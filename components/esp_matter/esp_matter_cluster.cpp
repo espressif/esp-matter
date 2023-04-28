@@ -1214,9 +1214,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 } /* color_control */
 
 namespace fan_control {
-const function_generic_t *function_list = NULL;
-const int function_flags = CLUSTER_FLAG_NONE;
-
+const function_generic_t function_list[] = {
+    (function_generic_t)MatterFanControlClusterServerAttributeChangedCallback,
+    (function_generic_t)MatterFanControlClusterServerPreAttributeChangedCallback,
+};
+const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
+        
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, FanControl::Id, flags);
@@ -1226,8 +1229,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        /* not implemented: Setting NULL since the MatterFanControlPluginServerInitCallback is not implemented */
-        set_plugin_server_init_callback(cluster, NULL);
+        set_plugin_server_init_callback(cluster, MatterFanControlPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -1243,7 +1245,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_fan_mode(cluster, config->fan_mode);
+            attribute::create_fan_mode(cluster, config->fan_mode, 0, 6);
             attribute::create_fan_mode_sequence(cluster, config->fan_mode_sequence);
             attribute::create_percent_setting(cluster, config->percent_setting);
             attribute::create_percent_current(cluster, config->percent_current);

@@ -1198,10 +1198,17 @@ attribute_t *create_primary_n_intensity(cluster_t *cluster, nullable<uint8_t> va
 namespace fan_control {
 namespace attribute {
 
-attribute_t *create_fan_mode(cluster_t *cluster, uint8_t value)
+attribute_t *create_fan_mode(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
 {
-    return esp_matter::attribute::create(cluster, FanControl::Attributes::FanMode::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
+    attribute_t *attribute =
+        esp_matter::attribute::create(cluster, FanControl::Attributes::FanMode::Id,
+                                      ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(min), esp_matter_enum8(max));
+    return attribute;
 }
 
 attribute_t *create_fan_mode_sequence(cluster_t *cluster, uint8_t value)
