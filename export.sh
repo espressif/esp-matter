@@ -54,7 +54,7 @@ esp_matter_export_main() {
     export PATH=${PATH}:${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/out/host
 
     # export zap-cli path
-    export export ZAP_INSTALL_PATH=${ESP_MATTER_PATH}/.zap
+    export ZAP_INSTALL_PATH=${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/.environment/cipd/packages/zap
 }
 
 esp_matter_export_main
