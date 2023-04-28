@@ -45,12 +45,24 @@ descriptor read parts-list 0x7283 0x0
 ```
 
 If there is no other Zigbee device on the Zigbee Network, you will get
-an empty result. Example:
+a result with only an aggregator endpoint. Example:
 
 ```
 Data = [
+    1,  <---------------------------- Aggregator Endpoint
+],
+```
+
+Then read the parts list from the Aggregator Endpoint, you will get an
+empty result.
+
+```
+descriptor read parts-list 0x7283 0x1
+...
+Data = [
 
 ],
+...
 ```
 
 ### 2.2 Setup Zigbee Bulb on ESP32-H2
@@ -65,10 +77,10 @@ idf.py -p <port> build flash monitor
 
 The Zigbee Bulb will be added to the Zigbee Network and a dynamic
 endpoint will be added on the Bridge device. You can read the parts list
-again to get the dynamic endpoint ID.
+on Aggregator Endpoint again to get the dynamic endpoint ID.
 
 ```
-descriptor read parts-list 0x7283 0x0
+descriptor read parts-list 0x7283 0x1
 ```
 
 The data will now contain the information of the connected Zigbee
@@ -76,12 +88,32 @@ devices. Example:
 
 ```
 Data = [
-    1, 
+    2,  <--------------------------Bridged Endpoint
 ],
 ```
 
-It means that the Zigbee Bulb is added as Endpoint 1 on the Bridge
-device. You can read the cluster servers list on the dynamic endpoint.
+It means that the Zigbee Bulb is added as Endpoint 1 on the Zigbee
+Bridge. You can read the device type list on the dynamic endpoint.
+
+```
+descriptor read device-type-list 0x7283 2
+```
+
+You will get the device types of the endpoint:
+
+```
+DeviceTypeList: 2 entries
+  [1]: {
+    Type: 19 <-------------------- Bridged Node device type
+    Revision: 1
+  }
+  [2]: {
+    Type: 256 <-------------------- OnOff Light device type
+    Revision: 2
+  }
+```
+
+You can also read the cluster servers list on the dynamic endpoint.
 
 ```
 descriptor read server-list 0x7283 0x1
@@ -91,10 +123,11 @@ This will give the list of supported server clusters. Example:
 
 ```
 OnDescriptorServerListListAttributeResponse: 4 entries
-    [1]: 6
-    [2]: 29
-    [3]: 57
-    [4]: 64
+    [1]: 3
+    [2]: 4
+    [3]: 5
+    [4]: 6    <------------------------ OnOff Cluster
+    [5]: 57   <------------------------ Bridged Device Basic Information Cluster
 ```
 
 ### 2.3 Control the bulb with chip-tool
@@ -102,7 +135,7 @@ OnDescriptorServerListListAttributeResponse: 4 entries
 Now you can control the Zigbee bulb using the chip tool.
 
 ```
-onoff toggle 0x7283 0x1
+onoff toggle 0x7283 0x2
 ```
 
 ## 3. Device Performance
@@ -115,18 +148,22 @@ The following is the Memory and Flash Usage.
     commissioned or connected to wifi yet.
 -   `After Commissioning` == Device is connected to wifi and is also
     commissioned and is rebooted.
--   device used: esp32c3_devkit_m
+-   `After Adding a Bridged device` == A Zigbee OnOff Light is added
+    on the Bridge.
+-   device used: esp32_devkit_c
 -   tested on:
-    [6a244a7](https://github.com/espressif/esp-matter/commit/6a244a7b1e5c70b0aa1bf57254f19718b0755d95)
-    (2022-06-16)
+    [b40bf8e3](https://github.com/espressif/esp-matter/commit/b40bf8e398161bcac515fd57eb13d14e031e3a91)
+    (2023-04-17)
+-   IDF: release/v5.1 [420ebd20](https://github.com/espressif/esp-idf/commit/420ebd208ae9eb71cb71ebd22742d1175f11addc)
 
-|                         | Bootup | After Commissioning |
-|:-                       |:-:     |:-:                  |
-|**Free Internal Memory** |66KB    |62KB                 |
+|                         | Bootup | After Commissioning | After Adding a Bridged device |
+|:-                       |:-:     |:-:                  |:-:                            |
+|**Free Internal Memory** |40KB    |113KB                |109KB                          |
 
-**Flash Usage**: Firmware binary size: 1.5MB
+**Flash Usage**: Firmware binary size: 1.6MB
 
 This should give you a good idea about the amount of free memory that is
 available for you to run your application's code.
 
-Applications that do not require BLE post commissioning, can disable it using app_ble_disable() once commissioning is complete. It is not done explicitly because of a known issue with esp32c3 and will be fixed with the next IDF release (v4.4.2).
+Applications that do not require BLE post commissioning, So BLE is disable
+once commissioning is complete in the test.
