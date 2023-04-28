@@ -10,9 +10,9 @@ Espressif's SDK for Matter is the official Matter development framework for ESP3
 
 ## Supported ESP-IDF and connectedhomeip versions
 
-- This SDK currently works with [commit bc8c9ece1](https://github.com/espressif/connectedhomeip/tree/bc8c9ece1) of connectedhomeip.
+- This SDK currently works with [tag v1.1.0.1](https://github.com/project-chip/connectedhomeip/tree/v1.1.0.1) of connectedhomeip.
 - For ESP32, ESP32-C3, and ESP32-S3, ESP-IDF [v5.0.1 release](https://github.com/espressif/esp-idf/releases/tag/v5.0.1) is required.
-- For ESP32-C2, ESP32-H2(preview) and ESP32-C6(preview) and Zigbee Bridge example, ESP-IDF branch at [commit bb9200ace](https://github.com/espressif/esp-idf/tree/bb9200ace) in branch release/v5.1 should be used.
+- For ESP32-C2, ESP32-H2(preview) and ESP32-C6(preview) and Zigbee Bridge example, ESP-IDF branch at [commit 420ebd208](https://github.com/espressif/esp-idf/tree/420ebd208) in branch release/v5.1 should be used.
 
 
 ## Documentation

@@ -160,78 +160,6 @@ static esp_err_t esp_matter_command_callback_commissioning_complete(const Concre
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_command_callback_scan_networks(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                           void *opaque_ptr)
-{
-    chip::app::Clusters::NetworkCommissioning::Commands::ScanNetworks::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfNetworkCommissioningClusterScanNetworksCallback((CommandHandler *)opaque_ptr, command_path,
-                                                               command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_add_or_update_wifi_network(const ConcreteCommandPath &command_path,
-                                                                        TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::NetworkCommissioning::Commands::AddOrUpdateWiFiNetwork::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfNetworkCommissioningClusterAddOrUpdateWiFiNetworkCallback((CommandHandler *)opaque_ptr, command_path,
-                                                                         command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_add_or_update_thread_network(const ConcreteCommandPath &command_path,
-                                                                          TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::NetworkCommissioning::Commands::AddOrUpdateThreadNetwork::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfNetworkCommissioningClusterAddOrUpdateThreadNetworkCallback((CommandHandler *)opaque_ptr, command_path,
-                                                                           command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_remove_network(const ConcreteCommandPath &command_path,
-                                                            TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::NetworkCommissioning::Commands::RemoveNetwork::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfNetworkCommissioningClusterRemoveNetworkCallback((CommandHandler *)opaque_ptr, command_path,
-                                                                command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_connect_network(const ConcreteCommandPath &command_path,
-                                                             TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::NetworkCommissioning::Commands::ConnectNetwork::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfNetworkCommissioningClusterConnectNetworkCallback((CommandHandler *)opaque_ptr, command_path,
-                                                                 command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_reorder_network(const ConcreteCommandPath &command_path,
-                                                             TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::NetworkCommissioning::Commands::ReorderNetwork::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfNetworkCommissioningClusterReorderNetworkCallback((CommandHandler *)opaque_ptr, command_path,
-                                                                 command_data);
-    }
-    return ESP_OK;
-}
-
 static esp_err_t esp_matter_command_callback_open_commissioning_window(const ConcreteCommandPath &command_path,
                                                                        TLVReader &tlv_data, void *opaque_ptr)
 {
@@ -1474,37 +1402,37 @@ namespace command {
 command_t *create_scan_networks(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, NetworkCommissioning::Commands::ScanNetworks::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_scan_networks);
+                                       NULL);
 }
 
 command_t *create_add_or_update_wifi_network(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, NetworkCommissioning::Commands::AddOrUpdateWiFiNetwork::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_add_or_update_wifi_network);
+                                       COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_add_or_update_thread_network(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, NetworkCommissioning::Commands::AddOrUpdateThreadNetwork::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_add_or_update_thread_network);
+                                       COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_remove_network(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, NetworkCommissioning::Commands::RemoveNetwork::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_remove_network);
+                                       COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_connect_network(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, NetworkCommissioning::Commands::ConnectNetwork::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_connect_network);
+                                       COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_reorder_network(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, NetworkCommissioning::Commands::ReorderNetwork::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_reorder_network);
+                                       COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_scan_networks_response(cluster_t *cluster)

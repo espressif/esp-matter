@@ -134,16 +134,28 @@ This section gives some examples on how to generate factory partition binary whi
 This is the example to generate factory images after pre-provisioning:
 
 - **Generate generic factory image**
-- ./mfg_tool.py -cd ~/test_cert/CD/Chip-CD-131B-1000.der -v 0x131B --vendor-name ESP -p 0x1000 --product-name light --hw-ver 1 --hw-ver-str v1.0 --mfg-date 2022-10-25 --passcode 19861989 --discriminator 601 --serial-num esp32c_dev3
+
+   ::
+
+      ./mfg_tool.py -cd ~/test_cert/CD/Chip-CD-131B-1000.der -v 0x131B --vendor-name ESP -p 0x1000 --product-name light --hw-ver 1 --hw-ver-str v1.0 --mfg-date 2022-10-25 --passcode 19861989 --discriminator 601 --serial-num esp32c_dev3
 
 - **Generate multiple generic factory images**
-- ./mfg_tool.py -n 10 -cd ~/test_cert/CD/Chip-CD-131B-1000.der -v 0x131B --vendor-name ESP -p 0x1000 --product-name light --hw-ver 1 --hw-ver-str v1.0 --mfg-date 2022-10-25
+
+   ::
+
+      ./mfg_tool.py -n 10 -cd ~/test_cert/CD/Chip-CD-131B-1000.der -v 0x131B --vendor-name ESP -p 0x1000 --product-name light --hw-ver 1 --hw-ver-str v1.0 --mfg-date 2022-10-25
 
 - **Generate factory image with rotating device unique identify**
-- ./mfg_tool.py -cd ~/test_cert/CD/Chip-CD-131B-1000.der -v 0x131B --vendor-name ESP -p 0x1000 --product-name light --hw-ver 1 --hw-ver-str v1.0 --mfg-date 2022-10-25 --passcode 19861989 --discriminator 601 --serial-num esp32c_dev3 --enable-rotating-device-id --rd-id-uid c0398f4980b07c9460f71c5421e1a3c5
+
+   ::
+
+      ./mfg_tool.py -cd ~/test_cert/CD/Chip-CD-131B-1000.der -v 0x131B --vendor-name ESP -p 0x1000 --product-name light --hw-ver 1 --hw-ver-str v1.0 --mfg-date 2022-10-25 --passcode 19861989 --discriminator 601 --serial-num esp32c_dev3 --enable-rotating-device-id --rd-id-uid c0398f4980b07c9460f71c5421e1a3c5
 
 - **Generate multiple factory images with csv and mcsv**
-- ./mfg_tool.py -cd ~/test_cert/CD/Chip-CD-131B-1000.der -v 0x131B --vendor-name ESP -p 0x1000 --product-name light --hw-ver 1 --hw-ver-str v1.0 --enable-rotating-device-id --mfg-date 2022-10-25 --csv mfg.csv --mcsv mfg_m.csv
+
+   ::
+
+      ./mfg_tool.py -cd ~/test_cert/CD/Chip-CD-131B-1000.der -v 0x131B --vendor-name ESP -p 0x1000 --product-name light --hw-ver 1 --hw-ver-str v1.0 --enable-rotating-device-id --mfg-date 2022-10-25 --csv mfg.csv --mcsv mfg_m.csv
 
 - **The example of csv and mcsv file**
 - CSV:
