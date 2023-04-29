@@ -309,7 +309,7 @@ attribute_t *create_primary_n_intensity(cluster_t * cluster, nullable<uint8_t> v
 
 namespace fan_control {
 namespace attribute {
-attribute_t *create_fan_mode(cluster_t *cluster, uint8_t value);
+attribute_t *create_fan_mode(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
 attribute_t *create_fan_mode_sequence(cluster_t *cluster, uint8_t value);
 attribute_t *create_percent_setting(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_percent_current(cluster_t *cluster, uint8_t value);
