@@ -637,6 +637,8 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
+    scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     window_covering::create(endpoint, &(config->window_covering), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
 
     return endpoint;
