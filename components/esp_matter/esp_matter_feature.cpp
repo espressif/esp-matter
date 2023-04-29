@@ -315,18 +315,25 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    update_feature_map(cluster, get_id());
-    update_color_capability(cluster, get_id());
 
-    /* Attributes not managed internally */
-    attribute::create_enhanced_current_hue(cluster, config->enhanced_current_hue);
+    uint32_t hs_feature_map = feature::hue_saturation::get_id();
+    if((get_feature_map_value(cluster) & hs_feature_map) == hs_feature_map) {
+        update_feature_map(cluster, get_id());
+        update_color_capability(cluster, get_id());
 
-    /* Commands */
-    command::create_enhanced_move_to_hue(cluster);
-    command::create_enhanced_move_hue(cluster);
-    command::create_enhanced_step_hue(cluster);
-    command::create_enhanced_move_to_hue_and_saturation(cluster);
+        /* Attributes not managed internally */
+        attribute::create_enhanced_current_hue(cluster, config->enhanced_current_hue);
 
+        /* Commands */
+        command::create_enhanced_move_to_hue(cluster);
+        command::create_enhanced_move_hue(cluster);
+        command::create_enhanced_step_hue(cluster);
+        command::create_enhanced_move_to_hue_and_saturation(cluster);
+
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support hue_saturation feature");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
     return ESP_OK;
 }
 } /* enhanced_hue */
@@ -343,18 +350,24 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    update_feature_map(cluster, get_id());
-    update_color_capability(cluster, get_id());
+    uint32_t eh_feature_map = feature::enhanced_hue::get_id();
+    if((get_feature_map_value(cluster) & eh_feature_map) == eh_feature_map) {
+        update_feature_map(cluster, get_id());
+        update_color_capability(cluster, get_id());
 
-    /* Attributes not managed internally */
-    attribute::create_color_loop_active(cluster, config->color_loop_active);
-    attribute::create_color_loop_direction(cluster, config->color_loop_direction);
-    attribute::create_color_loop_time(cluster, config->color_loop_time);
-    attribute::create_color_loop_start_enhanced_hue(cluster, config->color_loop_start_enhanced_hue);
-    attribute::create_color_loop_stored_enhanced_hue(cluster, config->color_loop_stored_enhanced_hue);
+        /* Attributes not managed internally */
+        attribute::create_color_loop_active(cluster, config->color_loop_active);
+        attribute::create_color_loop_direction(cluster, config->color_loop_direction);
+        attribute::create_color_loop_time(cluster, config->color_loop_time);
+        attribute::create_color_loop_start_enhanced_hue(cluster, config->color_loop_start_enhanced_hue);
+        attribute::create_color_loop_stored_enhanced_hue(cluster, config->color_loop_stored_enhanced_hue);
 
-    /* Commands */
-    command::create_color_loop_set(cluster);
+        /* Commands */
+        command::create_color_loop_set(cluster);
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support enhanced_hue feature");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
 
     return ESP_OK;
 }
@@ -427,10 +440,12 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    update_feature_map(cluster, get_id());
 
-    uint32_t pa_lt_and_lift_feature_map = get_id() | feature::lift::get_id();
-    if((get_feature_map_value(cluster) & pa_lt_and_lift_feature_map) == pa_lt_and_lift_feature_map) {
+    uint32_t lift_feature_map = feature::lift::get_id();
+    if((get_feature_map_value(cluster) & lift_feature_map) == lift_feature_map) {
+
+        update_feature_map(cluster, get_id());
+
         attribute::create_current_position_lift_percentage(cluster, config->current_position_lift_percentage);
         attribute::create_target_position_lift_percent_100ths(cluster, config->target_position_lift_percent_100ths);
         attribute::create_current_position_lift_percent_100ths(cluster, config->current_position_lift_percent_100ths);
@@ -529,10 +544,12 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    update_feature_map(cluster, get_id());
 
-    uint32_t pa_lt_and_tilt_feature_map = get_id() | feature::tilt::get_id();
-    if((get_feature_map_value(cluster) & pa_lt_and_tilt_feature_map) == pa_lt_and_tilt_feature_map) {
+    uint32_t tilt_feature_map = feature::tilt::get_id();
+    if((get_feature_map_value(cluster) & tilt_feature_map) == tilt_feature_map) {
+
+        update_feature_map(cluster, get_id());
+
         attribute::create_current_position_tilt_percentage(cluster, config->current_position_tilt_percentage);
         attribute::create_target_position_tilt_percent_100ths(cluster, config->target_position_tilt_percent_100ths);
         attribute::create_current_position_tilt_percent_100ths(cluster, config->current_position_tilt_percent_100ths);
