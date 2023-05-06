@@ -35,7 +35,85 @@ menu "ESP Matter"
             help
                 An implementation which reads attestation information from the esp_secure_cert partition
 
+        config CUSTOM_DAC_PROVIDER
+            bool "Attestation - Custom"
+            help
+                A custom implementation of DAC provider
+
     endchoice
+
+    choice ESP_MATTER_COMMISSIONABLE_DATA_PROVIDER
+        prompt "Commissionable Data Provider options"
+        default EXAMPLE_COMMISSIONABLE_DATA_PROVIDER
+        help
+            This option determines which commissionable data provider will be used.
+
+        config EXAMPLE_COMMISSIONABLE_DATA_PROVIDER
+            bool "Commissionable Data - Test"
+            help
+                An example Commissionable Data Provider which provides commissionable data information
+
+        config FACTORY_COMMISSIONABLE_DATA_PROVIDER
+            bool "Commissionable Data - Factory"
+            depends on ENABLE_ESP32_FACTORY_DATA_PROVIDER
+            help
+                An implementation which reads commissionable data information from the factory partition
+
+        config CUSTOM_COMMISSIONABLE_DATA_PROVIDER
+            bool "Commissionable Data - Custom"
+            help
+                A custom implementation of Commissionable Data provider
+
+    endchoice
+
+    choice ESP_MATTER_DEVICE_INSTANCE_INFO_PROVIDER
+        prompt "Device Instance Info Provider options"
+        default EXAMPLE_DEVICE_INSTANCE_INFO_PROVIDER
+        help
+            This option determines which device instance info provider will be used.
+
+        config EXAMPLE_DEVICE_INSTANCE_INFO_PROVIDER
+            bool "Device Instance Info - Test"
+            help
+                An example Device Instance Info Provider which provides device instance information
+
+        config FACTORY_DEVICE_INSTANCE_INFO_PROVIDER
+            bool "Device Instance Info - Factory"
+            depends on ENABLE_ESP32_FACTORY_DATA_PROVIDER && ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
+            help
+                An implementation which reads device instance information from the factory partition
+
+        config CUSTOM_DEVICE_INSTANCE_INFO_PROVIDER
+            bool "Device Instance Info - Custom"
+            help
+                A custom implementation of Device Instance Info provider
+
+    endchoice
+
+    choice ESP_MATTER_DEVICE_INFO_PROVIDER
+        prompt "Device Info Provider options"
+        default NONE_DEVICE_INFO_PROVIDER
+        help
+            This option determines which device info provider will be used.
+
+        config NONE_DEVICE_INFO_PROVIDER
+            bool "Device Info - None"
+            help
+                Do not set the Device Info Provider
+
+        config FACTORY_DEVICE_INFO_PROVIDER
+            bool "Device Info - Factory"
+            depends on ENABLE_ESP32_FACTORY_DATA_PROVIDER && ENABLE_ESP32_DEVICE_INFO_PROVIDER
+            help
+                An implementation which reads device information from the factory partition
+
+        config CUSTOM_DEVICE_INFO_PROVIDER
+            bool "Device Info - Custom"
+            help
+                A custom implementation of Device Info provider
+
+    endchoice
+
 
     config ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT
         int "Maximum dynamic endpoints"
