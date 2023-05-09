@@ -27,6 +27,7 @@ declare_args() {
   chip_enable_chipoble = true
   chip_bt_nimble_enabled = true
   chip_bt_bluedroid_enabled = true
+  chip_max_discovered_ip_addresses = 5
 }
 
 config("ESP32_custom_include") {
@@ -56,6 +57,7 @@ buildconfig_header("custom_buildconfig") {
     "INET_CONFIG_INCLUDE=<platform/ESP32_custom/InetPlatformConfig.h>",
     "SYSTEM_PLATFORM_CONFIG_INCLUDE=<platform/ESP32_custom/SystemPlatformConfig.h>",
     "CHIP_CONFIG_SOFTWARE_VERSION_NUMBER=${chip_config_software_version_number}",
+    "CHIP_DEVICE_CONFIG_MAX_DISCOVERED_IP_ADDRESSES=${chip_max_discovered_ip_addresses}",
   ]
 
   if (chip_enable_ota_requestor) {
