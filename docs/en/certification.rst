@@ -97,7 +97,7 @@ The option ``-n`` (count) is the number of generated binaries. In the above comm
 
 The option ``--paa-trust-store-path`` should be added when using chip-tool to pair the device for manual tests.
 
-.. only:: esp32 or esp32c3 or esp32c2 or esp32c6
+.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6
 
    ::
 

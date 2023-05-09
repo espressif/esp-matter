@@ -172,6 +172,12 @@ Choose IDF target.
 
       idf.py set-target esp32
 
+.. only:: esp32s3
+
+   ::
+
+      idf.py set-target esp32s3
+
 .. only:: esp32c3
 
    ::
@@ -266,7 +272,7 @@ Use ``chip-tool`` in interactive mode to commission the device:
    chip-tool interactive start
 
 
-.. only:: esp32 or esp32c3 or esp32c2 or esp32c6
+.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6
 
    ::
 
@@ -293,7 +299,7 @@ Above method commissions the device using setup passcode and discriminator. Devi
 
 To Commission the device using manual pairing code 34970112332
 
-.. only:: esp32 or esp32c3 or esp32c2 or esp32c6
+.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6
 
     ::
 
@@ -320,7 +326,7 @@ Above default manual pairing code contains following values:
 
 To commission the device using QR code MT:Y.K9042C00KA0648G00
 
-.. only:: esp32 or esp32c3 or esp32c2 or esp32c6
+.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6
 
     ::
 
