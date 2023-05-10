@@ -15,29 +15,40 @@ See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/de
 The steps below should be followed in order to access the fixed-labels.
 -   If monitoring the device using ``idf.py monitor``,press `` Ctrl + ]`` to stop the process.
 -   The following command must be executed to flash the mfg partition:
+
 ```
 esptool.py -p [port-name] write_flash 0x10000 mfg_binaries/20202020_3841.bin
 ```
+
 -   Execute the command ``idf.py monitor``
--   Commission the device with ``discriminator: 20202020``and `` passcode: 3841``
--   Command:
-```
-chip-tool pairing ble-wifi 0x7283 [ssid] [password] 20202020 3841
-```
+-   Commission the device with ``discriminator: 3841``and `` passcode: 20202020``
+
+    ```
+    chip-tool pairing ble-wifi 0x7283 [ssid] [password] 20202020 3841
+    ```
+
+- Alternatively, below QR Code or Manual pairing code can be used for commissioning
+    - Manualcode : 34970012334
+    - QRCode     : [MT:Y.K90CEK012Z.548G00](https://project-chip.github.io/connectedhomeip/qrcode.html?data=MT:Y.K90CEK012Z.548G00)
+
 -   To read the fixed-labels, use chip-tool.
--   Command :
-```
-chip-tool fixedlabel read label-list 0x7283 1
-```
+
+    ```
+    chip-tool fixedlabel read label-list 0x7283 1
+    ```
 
 The example command given below should be executed to write to the label-list of User Label Cluster.
+
 ```
 chip-tool userlabel write label-list '[{"label":"room", "value":"bedroom 1"}, {"label":"orientation", "value":"east"}]' 0x7283 1
 ```
+
 To read label-list of User Label Cluster execute the command given below.
+
 ```
 chip-tool userlabel read label-list 0x7283 1
 ```
+
 ## 2. Post Commissioning Setup
 
 This should be followed by: Commission the generic switch device

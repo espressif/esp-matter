@@ -228,3 +228,40 @@ and all the memory allocated to it is recovered. Here's the link to the
 However, if you want to continue using the BLE even after the commissioning process, you can disable the
 ``CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING``. This will ensure that the memory allocated to the BLE functionality
 is not released after the commissioning process, and the free RAM won't go up.
+
+A1.10 How to generate Matter Onboarding Codes (QR Code and Manual Pairing Code)
+-------------------------------------------------------------------------------
+
+When creating a factory partition using ``mfg_tool.py``, both the QR code and manual pairing codes are generated.
+
+Along with that, there are two more methods for generating Matter onboarding codes:
+
+-  Python script: `generate_setup_payload.py <https://github.com/project-chip/connectedhomeip/tree/master/src/setup_payload/python>`__.
+
+    ::
+
+        ./generate_setup_payload.py --discriminator 3131 --passcode 20201111 \
+                                    --vendor-id 65521 --product-id 32768 \
+                                    --commissioning-flow 0 --discovery-cap-bitmask 2
+
+- chip-tool
+
+    ::
+
+        // Generate the QR Code
+        chip-tool payload generate-qrcode --discriminator 3131 --setup-pin-code 20201111 \
+                                          --vendor-id 0xFFF1 --product-id 0x8004 \
+                                          --version 0 --commissioning-mode 0 --rendezvous 2
+
+        // Generates the short manual pairing code (11-digit).
+        chip-tool payload generate-manualcode --discriminator 3131 --setup-pin-code 20201111 \
+                                              --version 0 --commissioning-mode 0
+
+        // To generate a long manual pairing code (21-digit) that includes both the vendor ID and product ID,
+        // --commissioning-mode parameter must be set to either 1 or 2, indicating a non-standard commissioning flow.
+        chip-tool payload generate-manualcode --discriminator 3131 --setup-pin-code 20201111 \
+                                              --vendor-id 0xFFF1 --product-id 0x8004 \
+                                              --version 0 --commissioning-mode 1
+
+To create a QR code image, copy the QR code text and paste it into
+`CHIP: QR Code <https://project-chip.github.io/connectedhomeip/qrcode.html>`__.
