@@ -146,27 +146,7 @@ Run automated chip-tool tests and verify that the pairing commands are using the
 3.2.3 Menuconfig Options
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Here are the menuconfig options related to the usage of factory partition binary.
-
-- ``Use ESP32 Factory Data Provider`` in ``→ Component config → CHIP Device Layer → Commissioning options``
-
-  When enabling this option, the app will use the discriminator and spake2+ verifier in the factory partition binary instead of the hardcoded test ones.
-
-- ``Use ESP32 Device Instance Info Provider`` in ``→ Component config → CHIP Device Layer → Commissioning options``
-
-  When enabling this option, the app will read vendor name, vendor id, product name, product id, product url, product label, hardware version string, and unique id of rotating device id from the factory partition binary.
-
-- ``Use ESP32 Device Info Provider`` in ``→ Component config → CHIP Device Layer → Commissioning options``
-
-  When enabling this option, the app will read supported locales, supported calendar types, fixed labels, and user labels from the factory partition binary instead of using the hardcode ones.
-
-- ``DAC Provider options`` in ``→ Component config → ESP Matter``
-
-  When selecting ``Attestation - Test``, the app will use the hardcoded PAI certificate, DAC, DAC private key, and CD.
-
-  When selecting ``Attestation - Factory``, the app will use the PAI certificate, DAC, DAC private key, and CD in the factory partition binary.
-
-  When selecting ``Attestation - Secure Cert``, the app will use the PAI certificate, DAC, DAC private key, and CD in the secure cert partition. This option is for the `Pre-Provisioned Modules <https://docs.espressif.com/projects/esp-matter/en/latest/esp32/production.html#pre-provisioned-modules>`__. And the original vendor ID and product ID should be added to the CD file for the Pre-Provisioned Modules. Please contact your Espressif contact person for more information.
+Please consult the `factory data providers <./developing.html#factory-data-providers>`__ and adjust the menucofig options accordingly for the certification test.
 
 3.3 Matter OTA Image Generation
 -------------------------------

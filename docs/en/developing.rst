@@ -875,7 +875,7 @@ This section introduces the Matter controller example. Now this example supports
 
 2.4.5.1 Starting with device console
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-After you flash the controller example to the device, you can use `device console <https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#device-console>`__ to commission and send commands to the end-device. All of the controller commands start with *matter esp controller*.
+After you flash the controller example to the device, you can use `device console <./developing.html#device-console>`__ to commission and send commands to the end-device. All of the controller commands start with *matter esp controller*.
 
 2.4.5.2 Pairing commands
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -971,10 +971,77 @@ The ``group-settings`` command is used for setting group information of the cont
      matter esp controller group-settings bind-keyset <group_id> <ketset_id>
      matter esp controller group-settings unbind-keyset <group_id> <ketset_id>
 
-2.5 Using esp_secure_cert partition
+2.5 Factory Data Providers
+--------------------------
+
+2.5.1 Providers Introduction
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+There are four factory data providers, each with its own implementation, that need to be configured. These providers supply the device with necessary factory data, which is then read by the device according to their respective implementations.
+
+- ``Commissionable Data Provider``
+
+  This particular provider is responsible for retrieving commissionable data, which includes information such as setup-discriminator, spake2p-iteration-count, spake2p-salt, spake2p-verifier, and setup-passcode.
+
+- ``Device Attestation Credentials(DAC) Provider``
+
+  This particular provider is responsible for retrieving device attestation credentials, which includes information such as CD, firmware-information, DAC, and PAI certificate. And it can also sign message with the DAC private key.
+
+- ``Device Instance Info Provider``
+
+  This particular provider is responsible for retrieving device instance information, which includes vendor-name, vendor-id, product-name, product-id, product-url, product-label, hardware-version-string, hardware-version, rotating-device-id-unique-id, serial-number, manufacturing-data, and part-number.
+
+- ``Device Info Provider``
+
+  This particular provider is responsible for retrieving device information, which includes fixed-labels, user-labels, supported-locales, and supported-calendar-types.
+
+2.5.2 Configuration Options
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Different implementations of the four providers can be chosen in meuconfig:
+
+- ``Commissionable Data Provider options`` in ``→ Component config → ESP Matter``
+
+  When selecting ``Commissionable Data - Test``, the device will use the hardcoded Commissionable Data.
+
+  When selecting ``Commissionable Data - Factory``, the device will use commissionable data information from the factory partition. This option is visable only when ``CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`` is selected.
+
+  When selecting ``Commissionable Data - Custom``, the device will use the custom defined commissionable data provider to obtain commissionable data information. ``esp_matter::set_custom_commissionable_data_provider()`` should be called before ``esp_matter::start()`` to set the custom provider.
+
+- ``DAC Provider options`` in ``→ Component config → ESP Matter``
+
+  When selecting ``Attestation - Test``, the device will use the hardcoded Device Attestation Credentials.
+
+  When selecting ``Attestation - Factory``, the device will use the Device Attestation Credentials in the factory partition binary. This option is visable only when ``CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`` is selected.
+
+  When selecting ``Attestation - Secure Cert``, the device will use the Device Attestation Credentials in the secure cert partition. This option is for the `Pre-Provisioned Modules <./production.html#pre-provisioned-modules>`__. And the original vendor ID and product ID should be added to the CD file for the Pre-Provisioned Modules. Please contact your Espressif contact person for more information.
+
+  When selecting ``Attestation - Custom``, the device will use the custom defined DAC provider to obtain the Device Attestation Credentials. ``esp_matter::set_custom_dac_provider()`` should be called before ``esp_matter::start()`` to set the custom provider.
+
+- ``Device Instance Info Provider options`` in ``→ Component config → ESP Matter``
+
+  When selecting ``Device Instance Info - Test``, the device will use the hardcoded Device Instance Information.
+
+  When selecting ``Device Instance Info - Factory``, the device will use device instance information from the factory partition. This option is visable only when ``CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`` and ``ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER`` is selected.
+
+  When selecting ``Device Instance Info - Custom``, the device will use custom defined Device Instance Info Provider to obtain the Device Instance Information. ``esp_matter::set_custom_device_instance_info_provider`` should be called before ``esp_matter::start()`` to set the custom provider.
+
+- ``Device Info Provider options`` in ``→ Component config → ESP Matter``
+
+  When selecting ``Device Info - None``, the device will not use any device information provider. It should be selected when there are not related clusters on the device.
+
+  When selecting ``Device Info - Factory``, the device will use device information from the factory partition. This option is visable only when ``CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`` and ``ENABLE_ESP32_DEVICE_INFO_PROVIDER`` is selected.
+
+  When selecting ``Device Info - Custom``, the device will use custom defined Device Info Provider to obtain the Device Information. ``esp_matter::set_custom_device_info_provider`` should be called before ``esp_matter::start()`` to set the custom provider.
+
+2.5.3 Custom Providers
+~~~~~~~~~~~~~~~~~~~~~~
+
+In order to use custom providers, you need to define implementations of the four base classes of the providers and override the functions within them. And the custom providers should be set before ``esp_matter::start()`` is called.
+
+2.6 Using esp_secure_cert partition
 -----------------------------------
 
-2.5.1 Configuration Options
+2.6.1 Configuration Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Build the firmware with below configuration options
@@ -990,9 +1057,11 @@ Build the firmware with below configuration options
     # Enable some options which reads CD and other basic info from the factory partition
     CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER=y
     CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER=y
+    CONFIG_FACTORY_COMMISSIONABLE_DATA_PROVIDER=y
+    CONFIG_FACTORY_DEVICE_INSTANCE_INFO_PROVIDER=y
 
 
-2.5.2 Certification Declaration
+2.6.2 Certification Declaration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you do not have an certification declaration file then you can generate the test CD with the help of below mentioned steps.
@@ -1018,7 +1087,7 @@ For more info about the arguments, please check `here <https://github.com/espres
                               -O TEST_CD_FFF1_8001.der
 
 
-2.5.3 Factory Partition
+2.6.3 Factory Partition
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 Factory partition contains basic information like VID, PID, etc, and CD.
@@ -1057,7 +1126,7 @@ Factory partition binary will be generated at the below path. Please check for <
     [2022-12-02 11:18:12,381] [   INFO] - Generated output files at: out/fff1_8001/e17c95e1-521e-4979-b90b-04da648e21bb
 
 
-2.5.4 Flashing firmware, secure cert and factory partition
+2.6.4 Flashing firmware, secure cert and factory partition
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Flashing secure cert partition. Please check partition table for ``esp_secure_cert`` partition address.
@@ -1082,7 +1151,7 @@ Flash application
     idf.py flash
 
 
-2.5.5 Test commissioning using chip-tool
+2.6.5 Test commissioning using chip-tool
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If using the DACs signed by custom PAA that is not present in connectedhomeip repository,

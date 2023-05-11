@@ -37,13 +37,11 @@
 #include <platform/CHIPDeviceLayer.h>
 #include <platform/DeviceInfoProvider.h>
 #include <platform/DiagnosticDataProvider.h>
-#include <platform/ESP32/ESP32DeviceInfoProvider.h>
-#include <platform/ESP32/ESP32FactoryDataProvider.h>
 #include <platform/ESP32/ESP32Utils.h>
 #include <platform/ESP32/NetworkCommissioningDriver.h>
 #include <esp_matter_ota.h>
-#include <esp_matter_dac_provider.h>
 #include <esp_matter_mem.h>
+#include <esp_matter_providers.h>
 
 using chip::CommandId;
 using chip::DataVersion;
@@ -73,13 +71,6 @@ static bool esp_matter_started = false;
 namespace esp_matter {
 
 namespace {
-#if CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
-chip::DeviceLayer::ESP32FactoryDataProvider factory_data_provider;
-#endif // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
-
-#if CONFIG_ENABLE_ESP32_DEVICE_INFO_PROVIDER
-chip::DeviceLayer::ESP32DeviceInfoProvider device_info_provider;
-#endif
 
 void PostEvent(uint16_t eventType)
 {
@@ -906,18 +897,7 @@ static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
         return ESP_FAIL;
     }
 
-#if CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
-    SetCommissionableDataProvider(&factory_data_provider);
-#if CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
-    SetDeviceInstanceInfoProvider(&factory_data_provider);
-#endif // CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
-#if CONFIG_ENABLE_ESP32_DEVICE_INFO_PROVIDER
-    SetDeviceInfoProvider(&device_info_provider);
-#endif // CONFIG_ENABLE_ESP32_DEVICE_INFO_PROVIDER
-#endif // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
-
-    SetDeviceAttestationCredentialsProvider(get_dac_provider());
-
+    setup_providers();
     ConnectivityMgr().SetBLEAdvertisingEnabled(true);
     // ConnectivityMgr().SetWiFiAPMode(ConnectivityManager::kWiFiAPMode_Enabled);
     if (PlatformMgr().StartEventLoopTask() != CHIP_NO_ERROR) {
