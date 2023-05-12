@@ -385,7 +385,7 @@ def organize_output_files(suffix, args):
 
 def generate_summary(args):
     master_csv = os.sep.join([OUT_DIR['stage'], 'master.csv'])
-    summary_csv = os.sep.join([OUT_DIR['top'], 'summary-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H:%M:%S"))])
+    summary_csv = os.sep.join([OUT_DIR['top'], 'summary-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))])
 
     summary_csv_data = ''
     with open(master_csv, 'r') as mcsvf:
@@ -400,6 +400,10 @@ def generate_summary(args):
                                         args.vendor_id, args.product_id)
                 qrcode = payloads.generate_qrcode()
                 manualcode = payloads.generate_manualcode()
+                if args.commissioning_flow == CommissioningFlow.Standard:
+                    manualcode = manualcode[:4] + '-' + manualcode[4:7] + '-' + manualcode[7:]
+                else:
+                    manualcode = '"' + manualcode[:4] + '-' + manualcode[4:7] + '-' + manualcode[7:11] + '\n' + manualcode[11:15] + '-' + manualcode[15:18] + '-' + manualcode[18:20] + '-' + manualcode[20:21] + '"'
                 summary_csv_data += summary_lines[1 + int(row['Index'])] + ',' + pincode + ',' + qrcode + ',' + manualcode + '\n'
 
     with open(summary_csv, 'w') as scsvf:
