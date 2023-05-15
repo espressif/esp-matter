@@ -15,7 +15,8 @@ menu "ESP Matter"
 
     choice ESP_MATTER_DAC_PROVIDER
         prompt "DAC Provider options"
-        default EXAMPLE_DAC_PROVIDER
+        default FACTORY_PARTITION_DAC_PROVIDER if ENABLE_ESP32_FACTORY_DATA_PROVIDER
+        default EXAMPLE_DAC_PROVIDER if !ENABLE_ESP32_FACTORY_DATA_PROVIDER
         help
             This option determines which attestation credentials provider will be used.
 
@@ -44,12 +45,14 @@ menu "ESP Matter"
 
     choice ESP_MATTER_COMMISSIONABLE_DATA_PROVIDER
         prompt "Commissionable Data Provider options"
-        default EXAMPLE_COMMISSIONABLE_DATA_PROVIDER
+        default FACTORY_COMMISSIONABLE_DATA_PROVIDER if ENABLE_ESP32_FACTORY_DATA_PROVIDER
+        default EXAMPLE_COMMISSIONABLE_DATA_PROVIDER if !ENABLE_ESP32_FACTORY_DATA_PROVIDER
         help
             This option determines which commissionable data provider will be used.
 
         config EXAMPLE_COMMISSIONABLE_DATA_PROVIDER
             bool "Commissionable Data - Test"
+            depends on !ENABLE_ESP32_FACTORY_DATA_PROVIDER
             help
                 An example Commissionable Data Provider which provides commissionable data information
 
@@ -68,7 +71,8 @@ menu "ESP Matter"
 
     choice ESP_MATTER_DEVICE_INSTANCE_INFO_PROVIDER
         prompt "Device Instance Info Provider options"
-        default EXAMPLE_DEVICE_INSTANCE_INFO_PROVIDER
+        default FACTORY_DEVICE_INSTANCE_INFO_PROVIDER if ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
+        default EXAMPLE_DEVICE_INSTANCE_INFO_PROVIDER if !ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
         help
             This option determines which device instance info provider will be used.
 
@@ -92,7 +96,8 @@ menu "ESP Matter"
 
     choice ESP_MATTER_DEVICE_INFO_PROVIDER
         prompt "Device Info Provider options"
-        default NONE_DEVICE_INFO_PROVIDER
+        default FACTORY_DEVICE_INFO_PROVIDER if ENABLE_ESP32_DEVICE_INFO_PROVIDER
+        default NONE_DEVICE_INFO_PROVIDER if !ENABLE_ESP32_DEVICE_INFO_PROVIDER
         help
             This option determines which device info provider will be used.
 
