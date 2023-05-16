@@ -391,7 +391,7 @@ def organize_output_files(suffix, args):
 
 def generate_summary(args):
     master_csv = os.sep.join([OUT_DIR['stage'], 'master.csv'])
-    summary_csv = os.sep.join([OUT_DIR['top'], 'summary-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H:%M:%S"))])
+    summary_csv = os.sep.join([OUT_DIR['top'], 'summary-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))])
 
     summary_csv_data = ''
     with open(master_csv, 'r') as mcsvf:

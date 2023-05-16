@@ -333,4 +333,6 @@ def get_chip_manualcode(chip_tool, vid, pid, flow, discriminator, passcode):
     # TODO: change the format of 21-digits maunal code
     if manual_code_len == SHORT_MANUALCODE_LEN:
         ret = ret[:4] + '-' + ret[4:7] + '-' + ret[7:]
+    elif manual_code_len == LONG_MANUALCODE_LEN:
+        ret = '"' + ret[:4] + '-' + ret[4:7] + '-' + ret[7:11] + '\n' + ret[11:15] + '-' + ret[15:18] + '-' + ret[18:20] + '-' + ret[20:21] + '"'
     return ret
