@@ -24,7 +24,7 @@ Additionally, we also support developing on Windows Host using WSL.
 The Prerequisites for ESP-IDF and Matter:
 
 - Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v5.0.1/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
-- Please get the `Prerequisites <https://github.com/espressif/connectedhomeip/blob/v1.1.0.1/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
+- Please get the `Prerequisites <https://github.com/espressif/connectedhomeip/blob/v1.1-branch/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
 
 
 
