@@ -1037,8 +1037,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 namespace on_off {
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfOnOffClusterServerInitCallback,
+    (function_generic_t)MatterOnOffClusterServerShutdownCallback,
 };
-const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
@@ -1087,8 +1088,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 namespace level_control {
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfLevelControlClusterServerInitCallback,
+    (function_generic_t)MatterLevelControlClusterServerShutdownCallback,
 };
-const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
@@ -1147,8 +1149,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 namespace color_control {
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfColorControlClusterServerInitCallback,
+    (function_generic_t)MatterColorControlClusterServerShutdownCallback,
 };
-const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
@@ -1219,7 +1222,7 @@ const function_generic_t function_list[] = {
     (function_generic_t)MatterFanControlClusterServerPreAttributeChangedCallback,
 };
 const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
-        
+
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, FanControl::Id, flags);
@@ -1261,8 +1264,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 namespace thermostat {
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfThermostatClusterServerInitCallback,
+    (function_generic_t)MatterThermostatClusterServerPreAttributeChangedCallback,
 };
-const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -1306,9 +1310,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 namespace door_lock {
 const function_generic_t function_list[] = {
     (function_generic_t)MatterDoorLockClusterServerAttributeChangedCallback,
+    (function_generic_t)MatterDoorLockClusterServerShutdownCallback,
     (function_generic_t)MatterDoorLockClusterServerPreAttributeChangedCallback,
 };
-const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
+const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION |
+    CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -1526,8 +1532,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 } /* relative_humidity_measurement */
 
 namespace occupancy_sensing {
-const function_generic_t *function_list = NULL;
-const int function_flags = CLUSTER_FLAG_NONE;
+const function_generic_t function_list[] = {
+    (function_generic_t)emberAfOccupancySensingClusterServerInitCallback,
+};
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -1606,8 +1614,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 namespace localization_configuration {
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfLocalizationConfigurationClusterServerInitCallback,
-    (function_generic_t)MatterLocalizationConfigurationClusterServerPreAttributeChangedCallback
-};
+    (function_generic_t)MatterLocalizationConfigurationClusterServerPreAttributeChangedCallback};
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
@@ -1642,17 +1649,15 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
     }
 
-
     return cluster;
 }
 
-} /* localization_configuration_cluster */
+} /* localization_configuration */
 
 namespace time_format_localization {
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfTimeFormatLocalizationClusterServerInitCallback,
-    (function_generic_t)MatterLocalizationConfigurationClusterServerPreAttributeChangedCallback
-};
+    (function_generic_t)MatterLocalizationConfigurationClusterServerPreAttributeChangedCallback};
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
@@ -1703,30 +1708,32 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, IlluminanceMeasurement::Id, flags);
     if (!cluster) {
-	ESP_LOGE(TAG, "Could not create cluster");
-	return NULL;
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
     }
     if (flags & CLUSTER_FLAG_SERVER) {
-	set_plugin_server_init_callback(cluster, MatterIlluminanceMeasurementPluginServerInitCallback);
-	add_function_list(cluster, function_list, function_flags);
+        set_plugin_server_init_callback(cluster, MatterIlluminanceMeasurementPluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-	set_plugin_client_init_callback(cluster, MatterIlluminanceMeasurementPluginClientInitCallback);
-	create_default_binding_cluster(endpoint);
+        set_plugin_client_init_callback(cluster, MatterIlluminanceMeasurementPluginClientInitCallback);
+        create_default_binding_cluster(endpoint);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
-	/* Attributes managed internally */
-	global::attribute::create_feature_map(cluster, 0);
-	/** Attributes not managed internally **/
-	if (config) {
-	    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-	    attribute::create_illuminance_measured_value(cluster, config->illuminance_measured_value, 0x0000, 0xFFFF);
-	    attribute::create_illuminance_min_measured_value(cluster, config->illuminance_min_measured_value, 0x0001, 0xFFFD);
-	    attribute::create_illuminance_max_measured_value(cluster, config->illuminance_max_measured_value, 0x0002, 0xFFFE);
-	} else {
-		ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
-	}
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        /** Attributes not managed internally **/
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+            attribute::create_illuminance_measured_value(cluster, config->illuminance_measured_value, 0x0000, 0xFFFF);
+            attribute::create_illuminance_min_measured_value(cluster, config->illuminance_min_measured_value, 0x0001,
+                                                             0xFFFD);
+            attribute::create_illuminance_max_measured_value(cluster, config->illuminance_max_measured_value, 0x0002,
+                                                             0xFFFE);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
     }
 
     return cluster;
@@ -1741,30 +1748,30 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, PressureMeasurement::Id, flags);
     if (!cluster) {
-	ESP_LOGE(TAG, "Could not create cluster");
-	return NULL;
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
     }
     if (flags & CLUSTER_FLAG_SERVER) {
-	set_plugin_server_init_callback(cluster, MatterPressureMeasurementPluginServerInitCallback);
-	add_function_list(cluster, function_list, function_flags);
+        set_plugin_server_init_callback(cluster, MatterPressureMeasurementPluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-	set_plugin_client_init_callback(cluster, MatterPressureMeasurementPluginClientInitCallback);
-	create_default_binding_cluster(endpoint);
+        set_plugin_client_init_callback(cluster, MatterPressureMeasurementPluginClientInitCallback);
+        create_default_binding_cluster(endpoint);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
-	/* Attributes managed internally */
-	global::attribute::create_feature_map(cluster, 0);
-	/** Attributes not managed internally **/
-	if (config) {
-	    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-	    attribute::create_pressure_measured_value(cluster, config->pressure_measured_value);
-	    attribute::create_pressure_min_measured_value(cluster, config->pressure_min_measured_value);
-	    attribute::create_pressure_max_measured_value(cluster, config->pressure_max_measured_value);
-	} else {
-		ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
-	}
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        /** Attributes not managed internally **/
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+            attribute::create_pressure_measured_value(cluster, config->pressure_measured_value);
+            attribute::create_pressure_min_measured_value(cluster, config->pressure_min_measured_value);
+            attribute::create_pressure_max_measured_value(cluster, config->pressure_max_measured_value);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
     }
 
     return cluster;
@@ -1779,30 +1786,30 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, FlowMeasurement::Id, flags);
     if (!cluster) {
-	ESP_LOGE(TAG, "Could not create cluster");
-	return NULL;
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
     }
     if (flags & CLUSTER_FLAG_SERVER) {
-	set_plugin_server_init_callback(cluster, MatterFlowMeasurementPluginServerInitCallback);
-	add_function_list(cluster, function_list, function_flags);
+        set_plugin_server_init_callback(cluster, MatterFlowMeasurementPluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-	set_plugin_client_init_callback(cluster, MatterFlowMeasurementPluginClientInitCallback);
-	create_default_binding_cluster(endpoint);
+        set_plugin_client_init_callback(cluster, MatterFlowMeasurementPluginClientInitCallback);
+        create_default_binding_cluster(endpoint);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
-	/* Attributes managed internally */
-	global::attribute::create_feature_map(cluster, 0);
-	/** Attributes not managed internally **/
-	if (config) {
-	    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-	    attribute::create_flow_measured_value(cluster, config->flow_measured_value);
-	    attribute::create_flow_min_measured_value(cluster, config->flow_min_measured_value);
-	    attribute::create_flow_max_measured_value(cluster, config->flow_max_measured_value);
-	} else {
-	    ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
-	}
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        /** Attributes not managed internally **/
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+            attribute::create_flow_measured_value(cluster, config->flow_measured_value);
+            attribute::create_flow_min_measured_value(cluster, config->flow_min_measured_value);
+            attribute::create_flow_max_measured_value(cluster, config->flow_max_measured_value);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
     }
 
     return cluster;
@@ -1812,24 +1819,26 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 namespace pump_configuration_and_control {
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfPumpConfigurationAndControlClusterServerInitCallback,
+    (function_generic_t)MatterPumpConfigurationAndControlClusterServerAttributeChangedCallback,
     (function_generic_t)MatterPumpConfigurationAndControlClusterServerPreAttributeChangedCallback,
 };
-const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
+const int function_flags =
+    CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, PumpConfigurationAndControl::Id, flags);
     if (!cluster) {
-    	ESP_LOGE(TAG, "Could not create cluster");
-    	return NULL;
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
     }
     if (flags & CLUSTER_FLAG_SERVER) {
-    	set_plugin_server_init_callback(cluster, MatterPumpConfigurationAndControlPluginServerInitCallback);
-    	add_function_list(cluster, function_list, function_flags);
+        set_plugin_server_init_callback(cluster, MatterPumpConfigurationAndControlPluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-    	set_plugin_client_init_callback(cluster, MatterPumpConfigurationAndControlPluginClientInitCallback);
-    	create_default_binding_cluster(endpoint);
+        set_plugin_client_init_callback(cluster, MatterPumpConfigurationAndControlPluginClientInitCallback);
+        create_default_binding_cluster(endpoint);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -1838,16 +1847,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /** Attributes not managed internally **/
         if (config) {
-    	    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-    	    attribute::create_max_pressure(cluster, config->max_pressure);
-    	    attribute::create_max_speed(cluster, config->max_speed);
-    	    attribute::create_max_flow(cluster, config->max_flow);
-    	    attribute::create_effective_operation_mode(cluster, config->effective_operation_mode);
-    	    attribute::create_effective_control_mode(cluster, config->effective_control_mode);
-    	    attribute::create_capacity(cluster, config->capacity);
-    	    attribute::create_operation_mode(cluster, config->operation_mode);
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+            attribute::create_max_pressure(cluster, config->max_pressure);
+            attribute::create_max_speed(cluster, config->max_speed);
+            attribute::create_max_flow(cluster, config->max_flow);
+            attribute::create_effective_operation_mode(cluster, config->effective_operation_mode);
+            attribute::create_effective_control_mode(cluster, config->effective_control_mode);
+            attribute::create_capacity(cluster, config->capacity);
+            attribute::create_operation_mode(cluster, config->operation_mode);
         } else {
-    	    ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
 
