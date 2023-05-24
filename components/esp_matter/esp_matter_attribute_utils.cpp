@@ -1070,7 +1070,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         if (value) {
             using Traits = chip::app::NumericAttributeTraits<int>;
-            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.i)) {
+            if ((val->type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val->val.i)) {
                 Traits::SetNull(*(int *)value);
             } else {
                 Traits::WorkingToStorage(val->val.i, *(int *)value);
@@ -1088,7 +1088,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         if (value) {
             using Traits = chip::app::NumericAttributeTraits<float>;
-            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.f)) {
+            if ((val->type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val->val.f)) {
                 Traits::SetNull(*(float *)value);
             } else {
                 Traits::WorkingToStorage(val->val.f, *(float *)value);
@@ -1148,7 +1148,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         if (value) {
             using Traits = chip::app::NumericAttributeTraits<int8_t>;
-            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.i8)) {
+            if ((val->type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val->val.i8)) {
                 Traits::SetNull(*(int8_t *)value);
             } else {
                 Traits::WorkingToStorage(val->val.i8, *(int8_t *)value);
@@ -1166,7 +1166,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         if (value) {
             using Traits = chip::app::NumericAttributeTraits<uint8_t>;
-            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.u8)) {
+            if ((val->type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val->val.u8)) {
                 Traits::SetNull(*(uint8_t *)value);
             } else {
                 Traits::WorkingToStorage(val->val.u8, *(uint8_t *)value);
@@ -1184,7 +1184,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         if (value) {
             using Traits = chip::app::NumericAttributeTraits<int16_t>;
-            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.i16)) {
+            if ((val->type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val->val.i16)) {
                 Traits::SetNull(*(int16_t *)value);
             } else {
                 Traits::WorkingToStorage(val->val.i16, *(int16_t *)value);
@@ -1202,7 +1202,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         if (value) {
             using Traits = chip::app::NumericAttributeTraits<uint16_t>;
-            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.u16)) {
+            if ((val->type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val->val.u16)) {
                 Traits::SetNull(*(uint16_t *)value);
             } else {
                 Traits::WorkingToStorage(val->val.u16, *(uint16_t *)value);
@@ -1220,7 +1220,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         if (value) {
             using Traits = chip::app::NumericAttributeTraits<int32_t>;
-            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.i32)) {
+            if ((val->type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val->val.i32)) {
                 Traits::SetNull(*(int32_t *)value);
             } else {
                 Traits::WorkingToStorage(val->val.i32, *(int32_t *)value);
@@ -1238,7 +1238,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         if (value) {
             using Traits = chip::app::NumericAttributeTraits<uint32_t>;
-            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.u32)) {
+            if ((val->type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val->val.u32)) {
                 Traits::SetNull(*(uint32_t *)value);
             } else {
                 Traits::WorkingToStorage(val->val.u32, *(uint32_t *)value);
@@ -1256,7 +1256,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         if (value) {
             using Traits = chip::app::NumericAttributeTraits<int64_t>;
-            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.i64)) {
+            if ((val->type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val->val.i64)) {
                 Traits::SetNull(*(int64_t *)value);
             } else {
                 Traits::WorkingToStorage(val->val.i64, *(int64_t *)value);
@@ -1274,7 +1274,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         if (value) {
             using Traits = chip::app::NumericAttributeTraits<uint64_t>;
-            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.u64)) {
+            if ((val->type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val->val.u64)) {
                 Traits::SetNull(*(uint64_t *)value);
             } else {
                 Traits::WorkingToStorage(val->val.u64, *(uint64_t *)value);
@@ -1292,7 +1292,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         if (value) {
             using Traits = chip::app::NumericAttributeTraits<uint8_t>;
-            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.u8)) {
+            if ((val->type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val->val.u8)) {
                 Traits::SetNull(*(uint8_t *)value);
             } else {
                 Traits::WorkingToStorage(val->val.u8, *(uint8_t *)value);
@@ -1310,7 +1310,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         if (value) {
             using Traits = chip::app::NumericAttributeTraits<uint8_t>;
-            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.u8)) {
+            if ((val->type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val->val.u8)) {
                 Traits::SetNull(*(uint8_t *)value);
             } else {
                 Traits::WorkingToStorage(val->val.u8, *(uint8_t *)value);
@@ -1328,7 +1328,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         if (value) {
             using Traits = chip::app::NumericAttributeTraits<uint16_t>;
-            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.u16)) {
+            if ((val->type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val->val.u16)) {
                 Traits::SetNull(*(uint16_t *)value);
             } else {
                 Traits::WorkingToStorage(val->val.u16, *(uint16_t *)value);
@@ -1346,7 +1346,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         if (value) {
             using Traits = chip::app::NumericAttributeTraits<uint32_t>;
-            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.u32)) {
+            if ((val->type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val->val.u32)) {
                 Traits::SetNull(*(uint32_t *)value);
             } else {
                 Traits::WorkingToStorage(val->val.u32, *(uint32_t *)value);

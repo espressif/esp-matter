@@ -10,6 +10,20 @@
 
 #include <esp_err.h>
 #include <esp_matter.h>
+#include <hal/gpio_types.h>
+
+struct gpio_button
+{
+      gpio_num_t GPIO_PIN_VALUE;
+};
+
+struct button_endpoint
+{
+    gpio_button* button;
+    uint16_t endpoint;
+};
+
+extern int get_endpoint(gpio_button* button);
 
 typedef void *app_driver_handle_t;
 
@@ -17,10 +31,12 @@ typedef void *app_driver_handle_t;
  *
  * This initializes the button driver associated with the selected board.
  *
+ * @param[in] button Pointer to `gpio_button`.For boot button value is NULL.
+ *
  * @return Handle on success.
  * @return NULL in case of failure.
  */
-app_driver_handle_t app_driver_button_init();
+app_driver_handle_t app_driver_button_init(gpio_button *button = NULL);
 
 /** Driver Update
  *
