@@ -914,7 +914,8 @@ static esp_err_t execute_override_callback(attribute_t *attribute, callback_type
     if (override_callback) {
         return override_callback(type, endpoint_id, cluster_id, attribute_id, val, NULL);
     } else {
-        ESP_LOGI(TAG, "Attribute override callback not set, calling the common callback");
+        ESP_LOGI(TAG, "Attribute override callback not set for Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 ", calling the common callback",
+                 endpoint_id, cluster_id, attribute_id);
         return execute_callback(type, endpoint_id, cluster_id, attribute_id, val);
     }
     return ESP_OK;
@@ -1651,7 +1652,8 @@ esp_err_t get_val_raw(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attrib
 
     EmberAfStatus status = emberAfReadAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_size);
     if (status != EMBER_ZCL_STATUS_SUCCESS) {
-        ESP_LOGE(TAG, "Error getting raw value from matter: 0x%x", status);
+        ESP_LOGE(TAG, "Error getting Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 "'s raw value from matter: 0x%x",
+                 endpoint_id, cluster_id, attribute_id, status);
         if (lock_status == lock::SUCCESS) {
             lock::chip_stack_unlock();
         }
@@ -1693,7 +1695,8 @@ esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
     if (emberAfContainsServer(endpoint_id, cluster_id)) {
         status = emberAfWriteAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_type);
         if (status != EMBER_ZCL_STATUS_SUCCESS) {
-            ESP_LOGE(TAG, "Error updating attribute to matter: 0x%X", status);
+            ESP_LOGE(TAG, "Error updating Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " to matter: 0x%X", endpoint_id,
+                     cluster_id, attribute_id, status);
             esp_matter_mem_free(value);
             if (lock_status == lock::SUCCESS) {
                 lock::chip_stack_unlock();
@@ -1723,7 +1726,8 @@ esp_err_t report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
     cluster_t *cluster = cluster::get(endpoint, cluster_id);
     attribute_t *attribute = attribute::get(cluster, attribute_id);
     if (!attribute) {
-        ESP_LOGE(TAG, "Could not find the attribute");
+        ESP_LOGE(TAG, "Could not find Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32, endpoint_id, cluster_id,
+                 attribute_id);
         return ESP_FAIL;
     }
 
@@ -1731,7 +1735,8 @@ esp_err_t report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
     esp_matter_attr_val_t raw_val = esp_matter_invalid(NULL);
     attribute::get_val(attribute, &raw_val);
     if (val->type != raw_val.type) {
-        ESP_LOGE(TAG, "attribute type mismatch");
+        ESP_LOGE(TAG, "Attribute type mismatch when trying to report Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32,
+                 endpoint_id, cluster_id, attribute_id);
         return ESP_FAIL;
     }
     attribute::set_val(attribute, val);
@@ -1818,8 +1823,8 @@ EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint_id, Clust
     uint16_t attribute_size = 0;
     attribute::get_data_from_attr_val(&val, NULL, &attribute_size, NULL);
     if (attribute_size > max_read_length) {
-        ESP_LOGE(TAG, "Insufficient space for reading attribute: required: %" PRIu16 ", max: %" PRIu16 "", attribute_size,
-                 max_read_length);
+        ESP_LOGE(TAG, "Insufficient space for reading Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32
+                ": required: %" PRIu16 ", max: %" PRIu16 "", endpoint_id, cluster_id, attribute_id, attribute_size, max_read_length);
         return EMBER_ZCL_STATUS_RESOURCE_EXHAUSTED;
     }
 
