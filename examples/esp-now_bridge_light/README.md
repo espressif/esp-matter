@@ -16,13 +16,9 @@ See the [docs](https://docs.espressif.com/projects/esp-matter/en/main/esp32/deve
 
 ## 2. Post Commissioning Setup
 
-> Note: Matter Wi-Fi devices enters modem sleep after commissioning. This will impact the ESP-NOW operation as ESP-NOW low power is not yet integrated. A responder device cannot enter sleep mode in order to receive messages from an initiator any time. This is done by setting WIFI_PS_NONE. Reboot the bridge after commissioning to apply the setting and let the bridge exit sleep mode.
-When esp-matter is updated to work in IDFv5.0, this example will be updated to enable ESP-NOW low power. Then disabling sleep is not required.
-{.is-info}
-
 ### 2.1 Discovering bridge endpoint
 
-You can read the parts list from the Bridge to get the number of the bridged devices.
+You can read the parts list from the Bridge to get the endpoint ID of the bridged devices.
 
 ```
 descriptor read parts-list 0x7283 0x0
@@ -63,7 +59,7 @@ DeviceTypeList: 1 entries
    }
 ```
 
-### 2.x Bind bridge to a ESP-NOW switch
+### 2.2 Bind bridge to a ESP-NOW switch
 
 Trigger binding from the ESP-NOW switch. If you are using a C3 DevKit, double click the Boot button. If binding is successful, the LED on the DevKit running bridge example will toggle. A dynamic endpoint will be added on the Bridge device. You can read the parts list again to get the dynamic endpoint ID.
 
@@ -110,21 +106,19 @@ descriptor read client-list 0x7283 3
 Server list:
 
 ```
-ServerList: 5 entries
+ServerList: 4 entries
   [1]: 29
   [2]: 57 <-------------------- Bridged device basic information cluster
   [3]: 3
   [4]: 30 <-------------------- Binding cluster
-  [5]: 4
 ```
 
 Client list:
 
 ```
-ClientList: 3 entries
+ClientList: 2 entries
   [1]: 3
   [2]: 6 <---------------------- OnOff Cluster
-  [3]: 4
 ```
 
 ### 2.3 Bind light to bridge
@@ -141,8 +135,8 @@ The following is the Memory and Flash Usage.
 -   `After Commissioning` == Device is connected to wifi and is also commissioned and rebooted.
 -   `After Creating Bridge` == Device is bound to an ESP-NOW switch.
 -   device used: esp32c3_devkit_m
--   tested on: [3d643be](https://github.com/espressif/esp-matter/commit/3d643befa5d78344321f09a0280655f1297d5757)
-    (2023-04-06)
+-   tested on: [2f0929e](https://github.com/espressif/esp-matter/commit/2f0929e5f8fd58b1a4cbaa2bd8b171ce50ad2a75)
+    (2023-05-25)
 -   IDF: release/v5.1
 
 |                         | Bootup | After Commissioning | After Creating Bridge |
@@ -155,13 +149,3 @@ Note that the steps of commissioning and creating bridge are interchangable. Thi
 available for you to run your application's code.
 
 Applications that do not require BLE post commissioning, can disable it using app_ble_disable() once commissioning is complete.
-
-## 4. Pending Issues
-
-### 4.1 Responder Forwarding
-
-Go to ESP-NOW component source, in src/control/src/espnow_ctrl.c, comment the call to `espnow_ctrl_responder_forward()`. The purpose of this function is to allow responders to forward received messages to other responders, increasing the range and reliability of message reception in ESP-NOW network. This function does not assume which channel the receivers are in, so it will switch to every Wi-Fi channel and perform an espnow send. However in the Matter network, after the bridge is commissioned, it is not allowed to switch channel. The call to this function will return error. To prevent unnecessary errors, it is recommend to disable the forwarding.
-
-### 4.2 Channel for ESP-NOW Button
-
-If the ESP-NOW switch used is an ESP-NOW button, it has little capability to switch channel when sending messages. If the bridge switches channel after commissioning, it is difficult for the ESP-NOW button to scan all channels to search for the bridge. In this case, set the Wi-Fi channel of the AP to channel 1 or 6, as these are the first two channels when the button performs scanning, hence more likely to finish scanning successfully before it loses power.

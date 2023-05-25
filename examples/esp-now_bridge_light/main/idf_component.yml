@@ -1,6 +1,6 @@
 ## IDF Component Manager Manifest File
 dependencies:
-  espressif/esp-now: "==2.2.0"
+  espressif/esp-now: ">=2.2.0"
   ## Required IDF version
   idf:
     version: ">=4.1.0"
