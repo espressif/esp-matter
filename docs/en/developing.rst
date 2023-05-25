@@ -62,7 +62,7 @@ For using VSCode for development, please check `Developing in WSL <https://code.
    ::
 
       git clone --recursive https://github.com/espressif/esp-idf.git
-      cd esp-idf; git checkout 420ebd208; git submodule update --init --recursive;
+      cd esp-idf; git checkout 6ad6fb9; git submodule update --init --recursive;
       ./install.sh
       cd ..
 

@@ -69,7 +69,7 @@ set(INCLUDE_DIRS_LIST   "."
                         "${MATTER_SDK_PATH}/src"
                         "${ZAP_GENERATED_PATH}/../")
 
-set(REQUIRES_LIST       chip bt esp_matter_console nvs_flash app_update esp_secure_cert_mgr esp32_mbedtls esp_system openthread)
+set(REQUIRES_LIST       chip bt esp_matter_console nvs_flash app_update esp_secure_cert_mgr mbedtls esp_system openthread)
 
 idf_component_register( SRC_DIRS        ${SRC_DIRS_LIST}
                         INCLUDE_DIRS    ${INCLUDE_DIRS_LIST}
