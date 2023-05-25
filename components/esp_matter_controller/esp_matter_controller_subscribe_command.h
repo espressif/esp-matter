@@ -17,6 +17,7 @@
 #include <app/BufferedReadCallback.h>
 #include <controller/CommissioneeDeviceProxy.h>
 #include <esp_matter.h>
+#include <esp_matter_controller_utils.h>
 
 namespace esp_matter {
 namespace controller {
@@ -38,7 +39,8 @@ typedef enum {
 class subscribe_command : public ReadClient::Callback {
 public:
     subscribe_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_or_event_id,
-                      subscribe_command_type_t command_type, uint16_t min_interval, uint16_t max_interval)
+                      subscribe_command_type_t command_type, uint16_t min_interval, uint16_t max_interval,
+                      attribute_report_cb_t attribute_cb, event_report_cb_t event_cb)
         : m_node_id(node_id)
         , m_min_interval(min_interval)
         , m_max_interval(max_interval)
@@ -46,6 +48,8 @@ public:
         , m_buffered_read_cb(*this)
         , on_device_connected_cb(on_device_connected_fcn, this)
         , on_device_connection_failure_cb(on_device_connection_failure_fcn, this)
+        , attribute_data_cb(attribute_cb)
+        , event_data_cb(event_cb)
     {
         if (command_type == SUBSCRIBE_ATTRIBUTE) {
             m_attr_path.mEndpointId = endpoint_id;
@@ -100,11 +104,14 @@ private:
     };
     BufferedReadCallback m_buffered_read_cb;
 
-    static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr, const SessionHandle &sessionHandle);
+    static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr,
+                                        const SessionHandle &sessionHandle);
     static void on_device_connection_failure_fcn(void *context, const ScopedNodeId &peerId, CHIP_ERROR error);
 
     chip::Callback::Callback<chip::OnDeviceConnected> on_device_connected_cb;
     chip::Callback::Callback<chip::OnDeviceConnectionFailure> on_device_connection_failure_cb;
+    attribute_report_cb_t attribute_data_cb;
+    event_report_cb_t event_data_cb;
 };
 
 esp_err_t send_subscribe_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id,
