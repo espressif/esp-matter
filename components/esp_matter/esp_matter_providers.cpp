@@ -16,7 +16,7 @@
 #include <esp_matter_providers.h>
 #include <platform/ESP32/ESP32DeviceInfoProvider.h>
 #include <platform/ESP32/ESP32FactoryDataProvider.h>
-#include <secure_cert_dac_provider.h>
+#include <platform/ESP32/ESP32SecureCertDACProvider.h>
 
 using namespace chip::DeviceLayer;
 using namespace chip::Credentials;
@@ -73,7 +73,7 @@ void set_custom_device_info_provider(DeviceInfoProvider *provider)
 static DeviceAttestationCredentialsProvider *get_dac_provider(void)
 {
 #if CONFIG_SEC_CERT_DAC_PROVIDER
-    static SecureCertDACProvider instance;
+    static ESP32SecureCertDACProvider instance;
     return &instance;
 #elif CONFIG_FACTORY_PARTITION_DAC_PROVIDER
     return &factory_data_provider;
