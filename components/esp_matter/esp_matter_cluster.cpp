@@ -18,7 +18,7 @@
 #include <esp_matter_cluster.h>
 #include <esp_matter_core.h>
 
-#include <app-common/zap-generated/att-storage.h>
+#include <app/att-storage.h>
 #include <app-common/zap-generated/callback.h>
 #include <app/PluginApplicationCallbacks.h>
 
