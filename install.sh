@@ -15,9 +15,6 @@ source ${MATTER_PATH}/scripts/bootstrap.sh
 echo ""
 echo "Building host tools"
 echo ""
-if [ -d "${MATTER_PATH}/out/host" ]; then
-    rm -r ${MATTER_PATH}/out/host
-fi
 gn --root="${MATTER_PATH}" gen ${MATTER_PATH}/out/host
 ninja -C ${MATTER_PATH}/out/host
 echo ""

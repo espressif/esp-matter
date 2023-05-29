@@ -6,4 +6,4 @@ nvs_keys, data, nvs_keys, ,          0x1000, encrypted
 phy_init,  data, phy,     ,          0x1000,
 ota_0,    app, ota_0,     ,          0x1C0000,
 ota_1,    app, ota_1,     ,          0x1C0000,
-ot_storage,data, fat,     ,          0x6000,
+ot_storage,data, fat,     ,          0x2000,
