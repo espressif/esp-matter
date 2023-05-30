@@ -84,26 +84,6 @@ static esp_err_t app_attribute_update_cb(attribute::callback_type_t type, uint16
     return err;
 }
 
-esp_err_t wifi_is_provisioned(bool *provisioned)
-{
-    if (!provisioned) {
-        return ESP_ERR_INVALID_ARG;
-    }
-
-    *provisioned = false;
-
-    /* Get Wi-Fi Station configuration */
-    wifi_config_t wifi_cfg;
-    if (esp_wifi_get_config(WIFI_IF_STA, &wifi_cfg) != ESP_OK) {
-        return ESP_FAIL;
-    }
-
-    if (strlen((const char *) wifi_cfg.sta.ssid)) {
-        *provisioned = true;
-    }
-    return ESP_OK;
-}
-
 extern "C" void app_main()
 {
     esp_err_t err = ESP_OK;
@@ -167,13 +147,6 @@ extern "C" void app_main()
         ESP_LOGE(TAG, "Failed to resume the bridged endpoints: %d", err);
     }
 
-    bool provisioned = false;
-    /* Let's find out if the device is provisioned previously */
-    ESP_ERROR_CHECK(wifi_is_provisioned(&provisioned));
-    if (provisioned) {
-        ESP_LOGI(TAG, "WiFi already provisioned previously, disable PS");
-        esp_wifi_set_ps(WIFI_PS_NONE);
-    }
     app_espnow_init();
 
     /* Starting driver with default values */
