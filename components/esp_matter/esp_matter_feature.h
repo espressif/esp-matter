@@ -422,5 +422,36 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* feature */
 } /* time_format_localization */
 
+namespace temperature_control {
+namespace feature {
+namespace temperature_number {
+
+typedef struct config {
+    int16_t temp_setpoint;
+    int16_t min_temperature;
+    int16_t max_temperature;
+    int16_t step;
+    config() : temp_setpoint(2), min_temperature(0), max_temperature(10), step(1) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* temperature_number */
+
+namespace temperature_level {
+
+typedef struct config {
+    uint8_t current_temp_level_ind;
+    config() : current_temp_level_ind(1) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* temperature_level */
+} /* feature */
+} /* temperature_control */
+
 } /* cluster */
 } /* esp_matter */

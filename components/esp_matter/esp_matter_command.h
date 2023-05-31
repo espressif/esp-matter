@@ -255,5 +255,17 @@ command_t *create_go_to_tilt_percentage(cluster_t *cluster);
 } /* command */
 } /* window_covering */
 
+namespace temperature_control {
+namespace command {
+command_t *create_set_temperature(cluster_t *cluster);
+} /* command */
+} /* temperature_control */
+
+namespace refrigerator_alarm {
+namespace command {
+command_t *create_reset(cluster_t *cluster);
+} /* command */
+} /* refrigerator_alarm */
+
 } /* cluster */
 } /* esp_matter */
