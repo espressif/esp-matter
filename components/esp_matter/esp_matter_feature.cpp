@@ -1183,6 +1183,59 @@ esp_err_t add(cluster_t *cluster)
 
 } /* feature */
 } /* software_diagnostics */
+=======
+namespace temperature_control {
+namespace feature {
+namespace temperature_number {
+
+uint32_t get_id()
+{
+    return (uint32_t)TemperatureControl::Feature::kTemperatureNumber;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_temperature_setpoint(cluster, config->temp_setpoint);
+    attribute::create_min_temperature(cluster, config->min_temperature);
+    attribute::create_max_temperature(cluster, config->max_temperature);
+    attribute::create_step(cluster, config->step);
+
+    return ESP_OK;
+}
+
+} /* temperature_number */
+
+namespace temperature_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)TemperatureControl::Feature::kTemperatureLevel;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_current_temperature_level_index(cluster, config->current_temp_level_ind);
+
+    return ESP_OK;
+}
+
+} /* temperature_level */
+} /* feature */
+} /* temperature_control */
 
 } /* cluster */
 } /* esp_matter */

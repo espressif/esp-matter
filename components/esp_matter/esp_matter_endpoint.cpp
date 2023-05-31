@@ -1041,6 +1041,68 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
 }
 } /** room_air_conditioner **/
 
+namespace temperature_controlled_cabinet{
+
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_TEMPERATURE_CONTROLLED_CABINET_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_TEMPERATURE_CONTROLLED_CABINET_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+
+    temperature_control::create(endpoint, &(config->temperature_control), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
+
+    return endpoint;
+}
+} /** temperature_controlled_cabinet**/
+
+namespace refrigerator{
+
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_REFRIGERATOR_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_REFRIGERATOR_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+
+    return endpoint;
+}
+} /** refrigerator **/
+
 } /* endpoint */
 
 namespace node {

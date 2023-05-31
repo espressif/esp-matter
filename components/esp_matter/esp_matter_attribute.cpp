@@ -2504,5 +2504,55 @@ attribute_t *create_active_bat_charge_faults(cluster_t *cluster, uint8_t * value
 } /* attribute */
 } /* power_source */
 
+namespace temperature_control {
+namespace attribute {
+attribute_t *create_temperature_setpoint(cluster_t *cluster, int16_t value)
+{
+    return esp_matter::attribute::create(cluster, TemperatureControl::Attributes::TemperatureSetpoint::Id, ATTRIBUTE_FLAG_NONE, esp_matter_int16(value));
+}
+
+attribute_t *create_min_temperature(cluster_t *cluster, int16_t value)
+{
+    return esp_matter::attribute::create(cluster, TemperatureControl::Attributes::MinTemperature::Id, ATTRIBUTE_FLAG_NONE, esp_matter_int16(value));
+}
+
+attribute_t *create_max_temperature(cluster_t *cluster, int16_t value)
+{
+    return esp_matter::attribute::create(cluster, TemperatureControl::Attributes::MaxTemperature::Id, ATTRIBUTE_FLAG_NONE, esp_matter_int16(value));
+}
+
+attribute_t *create_step(cluster_t *cluster, int16_t value)
+{
+    return esp_matter::attribute::create(cluster, TemperatureControl::Attributes::Step::Id, ATTRIBUTE_FLAG_NONE, esp_matter_int16(value));
+}
+
+attribute_t *create_current_temperature_level_index(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, TemperatureControl::Attributes::CurrentTemperatureLevelIndex::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+}
+
+} /* attribute */
+} /* temperature_control */
+
+namespace refrigerator_alarm {
+namespace attribute {
+attribute_t *create_mask(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, RefrigeratorAlarm::Attributes::Mask::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_latch(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, RefrigeratorAlarm::Attributes::Latch::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_state(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, RefrigeratorAlarm::Attributes::State::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+} /* attribute */
+} /* refrigerator_alarm */
+
 } /* cluster */
 } /* esp_matter */

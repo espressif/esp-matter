@@ -517,5 +517,28 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* mode_select */
 
+namespace temperature_control {
+typedef struct config {
+    uint16_t cluster_revision;
+    feature::temperature_number::config_t temperature_number;
+    feature::temperature_level::config_t temperature_level;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* temperature_control */
+
+namespace refrigerator_alarm {
+typedef struct config {
+    uint16_t cluster_revision;
+    uint32_t mask;
+    uint32_t latch;
+    uint32_t state;
+    config() : cluster_revision(1), mask(1), latch(1), state(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* refrigerator_alarm */
+
 } /* cluster */
 } /* esp_matter */

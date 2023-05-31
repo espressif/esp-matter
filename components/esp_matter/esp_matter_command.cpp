@@ -2070,6 +2070,27 @@ command_t *create_change_to_mode(cluster_t *cluster)
 } /* command */
 } /* mode_select */
 
+namespace temperature_control {
+namespace command {
+command_t *create_set_temperature(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TemperatureControl::Commands::SetTemperature::Id, COMMAND_FLAG_ACCEPTED,
+                                       NULL);
+}
+
+} /* command */
+} /* temperature_control */
+
+namespace refrigerator_alarm {
+namespace command {
+command_t *create_reset(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, RefrigeratorAlarm::Commands::Reset::Id, COMMAND_FLAG_ACCEPTED,
+                                       NULL);
+}
+
+} /* command */
+} /* refrigerator_alarm */
 
 } /* cluster */
 } /* esp_matter */
