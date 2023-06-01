@@ -13,11 +13,11 @@
 
 typedef void *app_driver_handle_t;
 
-/** Initialize the switch driver
+/** Initialize the button driver
  *
  * This initializes the switch driver associated with the selected board.
  *
  * @return Handle on success.
  * @return NULL in case of failure.
  */
-app_driver_handle_t app_driver_refrigerator_init();
+app_driver_handle_t app_driver_button_init();

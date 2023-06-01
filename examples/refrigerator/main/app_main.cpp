@@ -86,18 +86,20 @@ extern "C" void app_main()
     nvs_flash_init();
 
     /* Initialize driver */
-    app_driver_handle_t switch_handle = app_driver_refrigerator_init();
-    app_reset_button_register(switch_handle);
+    app_driver_handle_t reset_handle = app_driver_button_init();
+    app_reset_button_register(reset_handle);
 
     /* Create a Matter node and add the mandatory Root Node device type on endpoint 0 */
     node::config_t node_config;
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
 
+    // "Identify", "Groups", "Scenes", "Refrigerator Mode Select" and "Refrigerator Alarm" are optional cluster for refrigerator device type so we are not adding them by default.
     refrigerator::config_t refrigerator_config;
-    endpoint_t *endpoint = refrigerator::create(node, &refrigerator_config, ENDPOINT_FLAG_NONE, switch_handle);
+    endpoint_t *endpoint = refrigerator::create(node, &refrigerator_config, ENDPOINT_FLAG_NONE, NULL);
 
+    // "Temperature Measurement", "Refrigerator and Temperature Controlled Cabinet Mode Select" are optional cluster for temperature_controlled_cabinet device type so we are not adding them by default.
     temperature_controlled_cabinet::config_t temperature_controlled_cabinet_config;
-    endpoint_t *endpoint1 = temperature_controlled_cabinet::create(node, &temperature_controlled_cabinet_config, ENDPOINT_FLAG_NONE, switch_handle);
+    endpoint_t *endpoint1 = temperature_controlled_cabinet::create(node, &temperature_controlled_cabinet_config, ENDPOINT_FLAG_NONE, NULL);
     
     /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
     if (!node || !endpoint || !endpoint1) {
@@ -105,6 +107,7 @@ extern "C" void app_main()
     }
     esp_matter::cluster_t *cluster = esp_matter::cluster::get(endpoint1, chip::app::Clusters::TemperatureControl::Id);
 
+    // Atlest one of temperature_number and temperature_level feature is mandatory.    
     cluster::temperature_control::feature::temperature_number::config_t temperature_number_config;
     cluster::temperature_control::feature::temperature_number::add(cluster, &temperature_number_config);
 
@@ -113,6 +116,12 @@ extern "C" void app_main()
 
     temp_ctrl_endpoint_id = endpoint::get_id(endpoint1);
     ESP_LOGI(TAG, "Temperature controlled cabinet created with endpoint_id %d", temp_ctrl_endpoint_id);
+
+    err = set_parent_endpoint(endpoint1, endpoint);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to set parent %d", err);
+    }
+
     /* Matter start */
     err = esp_matter::start(app_event_cb);
     if (err != ESP_OK) {
