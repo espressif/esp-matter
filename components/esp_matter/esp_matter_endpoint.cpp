@@ -1067,6 +1067,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     temperature_control::create(endpoint, &(config->temperature_control), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
 
     return endpoint;
@@ -1098,6 +1099,8 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
         return NULL;
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }

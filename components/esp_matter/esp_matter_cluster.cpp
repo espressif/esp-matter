@@ -1960,15 +1960,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        //set_plugin_server_init_callback(cluster, MatterTemperatureControlPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, MatterTemperatureControlPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        //set_plugin_client_init_callback(cluster, MatterTemperatureControlPluginClientInitCallback);
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -1986,10 +1980,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     /* Features */
     if (features & feature::temperature_number::get_id()) {
         feature::temperature_number::add(cluster, &(config->temperature_number));
-    } else{
-        if (features & feature::temperature_level::get_id()) {
-            feature::temperature_level::add(cluster, &(config->temperature_level));
-        }
+    }
+    if (features & feature::temperature_level::get_id()) {
+        feature::temperature_level::add(cluster, &(config->temperature_level));
+    }
+    if (features & feature::temperature_step::get_id()) {
+        feature::temperature_step::add(cluster, &(config->temperature_step));
     }
 
     return cluster;
@@ -2009,15 +2005,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        //set_plugin_server_init_callback(cluster, MatterRefrigeratorAlarmPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, MatterRefrigeratorAlarmPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        //set_plugin_client_init_callback(cluster, MatterRefrigeratorAlarmPluginClientInitCallback);
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -2025,15 +2015,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
             attribute::create_mask(cluster, config->mask);
-            attribute::create_latch(cluster, config->latch);
             attribute::create_state(cluster, config->state);
+            attribute::create_supported(cluster, config->supported);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
-    /* Commands */
-    command::create_reset(cluster);
-
 
     return cluster;
 }

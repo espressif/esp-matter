@@ -522,6 +522,7 @@ typedef struct config {
     uint16_t cluster_revision;
     feature::temperature_number::config_t temperature_number;
     feature::temperature_level::config_t temperature_level;
+    feature::temperature_step::config_t temperature_step;
     config() : cluster_revision(1) {}
 } config_t;
 
@@ -532,9 +533,9 @@ namespace refrigerator_alarm {
 typedef struct config {
     uint16_t cluster_revision;
     uint32_t mask;
-    uint32_t latch;
     uint32_t state;
-    config() : cluster_revision(1), mask(1), latch(1), state(0) {}
+    uint32_t supported;
+    config() : cluster_revision(1), mask(1), state(0), supported(1) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

@@ -1183,7 +1183,7 @@ esp_err_t add(cluster_t *cluster)
 
 } /* feature */
 } /* software_diagnostics */
-=======
+
 namespace temperature_control {
 namespace feature {
 namespace temperature_number {
@@ -1199,17 +1199,22 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    update_feature_map(cluster, get_id());
 
-    /* Attributes not managed internally */
-    attribute::create_temperature_setpoint(cluster, config->temp_setpoint);
-    attribute::create_min_temperature(cluster, config->min_temperature);
-    attribute::create_max_temperature(cluster, config->max_temperature);
-    attribute::create_step(cluster, config->step);
+    uint32_t temp_level_feature_map = feature::temperature_level::get_id();
+    if((get_feature_map_value(cluster) & temp_level_feature_map) != temp_level_feature_map) {
+        update_feature_map(cluster, get_id());
+
+        /* Attributes not managed internally */
+        attribute::create_temperature_setpoint(cluster, config->temp_setpoint);
+        attribute::create_min_temperature(cluster, config->min_temperature);
+        attribute::create_max_temperature(cluster, config->max_temperature);
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support either TemperatureNumber or TemperatureLevel feature");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
 
     return ESP_OK;
 }
-
 } /* temperature_number */
 
 namespace temperature_level {
@@ -1225,15 +1230,54 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    update_feature_map(cluster, get_id());
 
-    /* Attributes not managed internally */
-    attribute::create_current_temperature_level_index(cluster, config->current_temp_level_ind);
+    uint32_t temp_number_feature_map = feature::temperature_number::get_id();
+    if((get_feature_map_value(cluster) & temp_number_feature_map) != temp_number_feature_map) {
+        update_feature_map(cluster, get_id());
+
+        /* Attributes managed internally */
+        attribute::create_supported_temperature_levels(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        attribute::create_selected_temperature_level(cluster, config->selected_temp_level);
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support either TemperatureLevel or TemperatureNumber feature");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+    
+    return ESP_OK;
+}
+} /* temperature_level */
+
+namespace temperature_step {
+
+uint32_t get_id()
+{
+    return (uint32_t)TemperatureControl::Feature::kTemperatureStep;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    uint32_t temp_number_feature_map = feature::temperature_number::get_id();
+    if((get_feature_map_value(cluster) & temp_number_feature_map) == temp_number_feature_map) {
+        update_feature_map(cluster, get_id());
+
+        /* Attributes not managed internally */
+        attribute::create_step(cluster, config->step);
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support TemperatureNumber feature");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
 
     return ESP_OK;
 }
+} /* temperature_step */
 
-} /* temperature_level */
 } /* feature */
 } /* temperature_control */
 

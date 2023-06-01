@@ -1007,6 +1007,16 @@ static esp_err_t esp_matter_command_callback_change_to_mode(const ConcreteComman
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_set_temperature(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::TemperatureControl::Commands::SetTemperature::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfTemperatureControlClusterSetTemperatureCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 static esp_err_t esp_matter_command_callback_instance_action(const ConcreteCommandPath &command_path,
                                                              TLVReader &tlv_data, void *opaque_ptr)
 {
@@ -2075,22 +2085,11 @@ namespace command {
 command_t *create_set_temperature(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, TemperatureControl::Commands::SetTemperature::Id, COMMAND_FLAG_ACCEPTED,
-                                       NULL);
+                                       esp_matter_command_callback_set_temperature);
 }
 
 } /* command */
 } /* temperature_control */
-
-namespace refrigerator_alarm {
-namespace command {
-command_t *create_reset(cluster_t *cluster)
-{
-    return esp_matter::command::create(cluster, RefrigeratorAlarm::Commands::Reset::Id, COMMAND_FLAG_ACCEPTED,
-                                       NULL);
-}
-
-} /* command */
-} /* refrigerator_alarm */
 
 } /* cluster */
 } /* esp_matter */
