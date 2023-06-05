@@ -44,6 +44,10 @@ static_assert(ATTRIBUTE_LARGEST <= CHIP_CONFIG_MAX_ATTRIBUTE_STORE_ELEMENT_SIZE,
 
 // Number of fixed endpoints
 #define FIXED_ENDPOINT_COUNT (0)
+
+// Number of fixed endpoints with on-off server cluster
+#define EMBER_AF_ON_OFF_CLUSTER_SERVER_ENDPOINT_COUNT (0)
+
 #ifdef CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT
 #undef CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT
 #endif
