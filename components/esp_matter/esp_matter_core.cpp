@@ -45,6 +45,7 @@
 
 using chip::CommandId;
 using chip::DataVersion;
+using chip::EventId;
 using chip::kInvalidAttributeId;
 using chip::kInvalidCommandId;
 using chip::kInvalidClusterId;
@@ -157,6 +158,11 @@ typedef struct _command {
     struct _command *next;
 } _command_t;
 
+typedef struct _event {
+    uint32_t event_id;
+    struct _event *next;
+} _event_t;
+
 typedef struct _cluster {
     uint32_t cluster_id;
     uint16_t endpoint_id;
@@ -165,6 +171,7 @@ typedef struct _cluster {
     cluster::plugin_server_init_callback_t plugin_server_init_callback;
     _attribute_t *attribute_list;
     _command_t *command_list;
+    _event_t *event_list;
     struct _cluster *next;
 } _cluster_t;
 
@@ -262,6 +269,18 @@ static int get_count(_command_t *current, int command_flag)
     return count;
 }
 } /* command */
+
+namespace event {
+static int get_count(_event_t *current)
+{
+    int count = 0;
+    while (current) {
+        count++;
+        current = current->next;
+    }
+    return count;
+}
+}
 
 namespace attribute {
 
@@ -457,6 +476,10 @@ static esp_err_t disable(endpoint_t *endpoint)
         if (endpoint_type->cluster[cluster_index].generatedCommandList) {
             esp_matter_mem_free((void *)endpoint_type->cluster[cluster_index].generatedCommandList);
         }
+        /* Free events */
+        if (endpoint_type->cluster[cluster_index].eventList) {
+            esp_matter_mem_free((void *)endpoint_type->cluster[cluster_index].eventList);
+        }
     }
     esp_matter_mem_free((void *)endpoint_type->cluster);
 
@@ -547,6 +570,10 @@ esp_err_t enable(endpoint_t *endpoint)
     int command_count = 0;
     int command_index = 0;
     int command_flag = COMMAND_FLAG_NONE;
+    EventId *event_ids = NULL;
+    _event_t *event = NULL;
+    int event_count = 0;
+    int event_index = 0;
     int endpoint_index = 0;
 
     matter_clusters = (EmberAfCluster *)esp_matter_mem_calloc(1, cluster_count * sizeof(EmberAfCluster));
@@ -634,6 +661,25 @@ esp_err_t enable(endpoint_t *endpoint)
             generated_command_ids[command_index] = kInvalidCommandId;
         }
 
+        /* Event */
+        event = cluster->event_list;
+        event_count = event::get_count(event);
+        if (event_count > 0) {
+            event_index = 0;
+            event_ids = (EventId *)esp_matter_mem_calloc(1, (event_count + 1) * sizeof(EventId));
+            if (!event_ids) {
+                ESP_LOGE(TAG, "Couldn't allocate event_ids");
+                err = ESP_ERR_NO_MEM;
+                break;
+            }
+            while (event) {
+                event_ids[event_index] = event->event_id;
+                event_index++;
+                event = event->next;
+            }
+            event_ids[event_index] = chip::kInvalidEventId;
+        }
+
         /* Fill up the cluster */
         matter_clusters[cluster_index].clusterId = cluster->cluster_id;
         matter_clusters[cluster_index].attributes = matter_attributes;
@@ -642,6 +688,8 @@ esp_err_t enable(endpoint_t *endpoint)
         matter_clusters[cluster_index].functions = (EmberAfGenericClusterFunction *)cluster->function_list;
         matter_clusters[cluster_index].acceptedCommandList = accepted_command_ids;
         matter_clusters[cluster_index].generatedCommandList = generated_command_ids;
+        matter_clusters[cluster_index].eventList = event_ids;
+        matter_clusters[cluster_index].eventCount = event_count;
 
         /* Get next cluster */
         endpoint_type->endpointSize += matter_clusters[cluster_index].clusterSize;
@@ -652,6 +700,7 @@ esp_err_t enable(endpoint_t *endpoint)
         matter_attributes = NULL;
         accepted_command_ids = NULL;
         generated_command_ids = NULL;
+        event_ids = NULL;
     }
     if (err != ESP_OK) {
         goto cleanup;
@@ -692,6 +741,9 @@ cleanup:
     if (accepted_command_ids) {
         esp_matter_mem_free(accepted_command_ids);
     }
+    if (event_ids) {
+        esp_matter_mem_free(event_ids);
+    }
     if (matter_attributes) {
         esp_matter_mem_free(matter_attributes);
     }
@@ -707,6 +759,10 @@ cleanup:
             }
             if (matter_clusters[cluster_index].generatedCommandList) {
                 esp_matter_mem_free((void *)matter_clusters[cluster_index].generatedCommandList);
+            }
+            /* Free events */
+            if (matter_clusters[cluster_index].eventList) {
+                esp_matter_mem_free((void *)matter_clusters[cluster_index].eventList);
             }
         }
         esp_matter_mem_free(matter_clusters);
@@ -1710,6 +1766,112 @@ uint16_t get_flags(command_t *command)
 
 } /* command */
 
+namespace event {
+
+event_t *create(cluster_t *cluster, uint32_t event_id)
+{
+    /* Find */
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return NULL;
+    }
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    event_t *existing_event = get(cluster, event_id);
+    if (existing_event) {
+        ESP_LOGW(TAG, "Event 0x%08" PRIX32 " on cluster 0x%08" PRIX32 " already exists. Not creating again.", event_id,
+                 current_cluster->cluster_id);
+        return existing_event;
+    }
+
+    /* Allocate */
+    _event_t *event = (_event_t *)esp_matter_mem_calloc(1, sizeof(_event_t));
+    if (!event) {
+        ESP_LOGE(TAG, "Couldn't allocate _event_t");
+        return NULL;
+    }
+
+    /* Set */
+    event->event_id = event_id;
+
+    /* Add */
+    _event_t *previous_event = NULL;
+    _event_t *current_event = current_cluster->event_list;
+    while (current_event) {
+        previous_event = current_event;
+        current_event = current_event->next;
+    }
+    if (previous_event == NULL) {
+        current_cluster->event_list = event;
+    } else {
+        previous_event->next = event;
+    }
+
+    return (event_t *)event;
+}
+
+static esp_err_t destroy(event_t *event)
+{
+    if (!event) {
+        ESP_LOGE(TAG, "Event cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _event_t *current_event = (_event_t *)event;
+
+    /* Free */
+    esp_matter_mem_free(current_event);
+    return ESP_OK;
+}
+
+event_t *get(cluster_t *cluster, uint32_t event_id)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return NULL;
+    }
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    _event_t *current_event = (_event_t *)current_cluster->event_list;
+    while (current_event) {
+        if (current_event->event_id == event_id) {
+            break;
+        }
+        current_event = current_event->next;
+    }
+    return (event_t *)current_event;
+}
+
+event_t *get_first(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return NULL;
+    }
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    return (event_t *)current_cluster->event_list;
+}
+
+event_t *get_next(event_t *event)
+{
+    if (!event) {
+        ESP_LOGE(TAG, "Event cannot be NULL");
+        return NULL;
+    }
+    _event_t *current_event = (_event_t *)event;
+    return (event_t *)current_event->next;
+}
+
+uint32_t get_id(event_t *event)
+{
+    if (!event) {
+        ESP_LOGE(TAG, "Event cannot be NULL");
+        return NULL;
+    }
+    _event_t *current_event = (_event_t *)event;
+    return current_event->event_id;
+}
+
+} /* event */
+
+
 namespace cluster {
 
 cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags)
@@ -1798,6 +1960,14 @@ static esp_err_t destroy(cluster_t *cluster)
         _attribute_t *next_attribute = attribute->next;
         attribute::destroy((attribute_t *)attribute);
         attribute = next_attribute;
+    }
+
+    /* Parse and delete all events */
+    _event_t *event = current_cluster->event_list;
+    while (event) {
+        _event_t *next_event = event->next;
+        event::destroy((event_t *)event);
+        event = next_event;
     }
 
     /* Free */
