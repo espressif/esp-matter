@@ -1,4 +1,4 @@
-// Copyright 2022 Espressif Systems (Shanghai) PTE LTD
+// Copyright 2023 Espressif Systems (Shanghai) PTE LTD
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,6 +23,9 @@
 
 #define ESP_MATTER_RAINMAKER_COMMAND_LIMIT 5 /* This command can be called 5 times per reboot */
 #define ESP_MATTER_RAINMAKER_MAX_DATA_LEN 40
+#define ESP_MATTER_RAINMAKER_MAX_SIGN_DATA_LEN 40
+#define ESP_MATTER_RAINMAKER_MAX_NODE_ID_LEN 40
+#define ESP_MATTER_RAINMAKER_MAX_CHALLENGE_LEN 150
 
 using namespace chip::app::Clusters;
 
@@ -44,12 +47,19 @@ static constexpr chip::AttributeId Id = 0x00000000;
 namespace node_id {
 static constexpr chip::AttributeId Id = 0x00000001;
 } /* node_id */
+namespace challenge {
+static constexpr chip::AttributeId Id = 0x00000002;
+} /* challenge */
 } /* attribute */
 
 namespace command {
 namespace configuration {
+[[deprecated("Configuration command is deprecated and will be removed in future.")]]
 static constexpr chip::CommandId Id = 0x00000000;
 } /* configuration */
+namespace sign_data {
+static constexpr chip::CommandId Id = 0x00000001;
+} /* sign_data */
 } /* command */
 
 } /* rainmaker */
@@ -127,6 +137,15 @@ static esp_err_t node_id_attribute_update(char *node_id)
     uint32_t cluster_id = cluster::rainmaker::Id;
     uint32_t attribute_id = cluster::rainmaker::attribute::node_id::Id;
     esp_matter_attr_val_t val = esp_matter_char_str(node_id, strlen(node_id));
+    return attribute::update(endpoint_id, cluster_id, attribute_id, &val);
+}
+
+static esp_err_t challenge_attribute_update(char *challenge)
+{
+    uint16_t endpoint_id = cluster::rainmaker::endpoint_id;
+    uint32_t cluster_id = cluster::rainmaker::Id;
+    uint32_t attribute_id = cluster::rainmaker::attribute::challenge::Id;
+    esp_matter_attr_val_t val = esp_matter_char_str(challenge, strlen(challenge));
     return attribute::update(endpoint_id, cluster_id, attribute_id, &val);
 }
 
@@ -216,6 +235,58 @@ static esp_err_t command_callback(const ConcreteCommandPath &command_path, TLVRe
     return ESP_OK;
 }
 
+static esp_err_t sign_data_command_callback(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
+{
+    /* Get ids */
+    uint16_t endpoint_id = command_path.mEndpointId;
+    uint32_t cluster_id = command_path.mClusterId;
+    uint32_t command_id = command_path.mCommandId;
+
+    /* Return if this is not the rainmaker sign_data command */
+    if (endpoint_id != cluster::rainmaker::endpoint_id || cluster_id != cluster::rainmaker::Id ||
+        command_id != cluster::rainmaker::command::sign_data::Id) {
+        ESP_LOGE(TAG, "Got rainmaker command callback for some other command. This should not happen.");
+        return ESP_FAIL;
+    }
+    ESP_LOGI(TAG, "RainMaker sign_data command callback");
+    static int command_count = ESP_MATTER_RAINMAKER_COMMAND_LIMIT;
+    if (command_count <= 0) {
+        ESP_LOGE(TAG, "This command has reached a limit. Please reboot to try again.");
+        return ESP_FAIL;
+    }
+    command_count--;
+
+    /* Parse the tlv data */
+    chip::CharSpan config_value;
+    chip::app::DataModel::Decode(tlv_data, config_value);
+    if (!config_value.data() || config_value.size() <= 0) {
+        ESP_LOGE(TAG, "Command data not found or was not decoded correctly. The expected data is a string or the"
+                 "format is \"<data>\"");
+        return ESP_FAIL;
+    }
+
+    /* Copy the data. This is done to make the strings NULL terminated. */
+    char challenge[ESP_MATTER_RAINMAKER_MAX_SIGN_DATA_LEN] = {0};
+    strncpy(challenge, config_value.data(), config_value.size());
+    challenge[config_value.size()] = '\0';
+    ESP_LOGI(TAG, "challenge: %s", challenge);
+
+    // sign the data here
+    char *challenge_response = NULL;
+    size_t outlen = 0;
+    esp_err_t err = esp_rmaker_node_auth_solve_challenge((void *)challenge, config_value.size(), (void **)&challenge_response, &outlen);
+
+    // Return if challenge response is NULL
+    if (err != ESP_OK) {
+        return err;
+    }
+
+    challenge_attribute_update(challenge_response);
+    free(challenge_response);
+
+    return err;
+}
+
 static esp_err_t custom_cluster_create()
 {
     /* Get the endpoint */
@@ -232,13 +303,24 @@ static esp_err_t custom_cluster_create()
 
     /* Create custom node_id attribute */
     /* Update the value of the attribute after esp_rmaker_node_init() is done */
-    char node_id[32] = {0};
+    char node_id[ESP_MATTER_RAINMAKER_MAX_NODE_ID_LEN] = {0};
     attribute::create(cluster, cluster::rainmaker::attribute::node_id::Id, ATTRIBUTE_FLAG_NONE,
                       esp_matter_char_str(node_id, sizeof(node_id)));
+
+    /* Create custom challenge attribute */
+    /* Update the value of the attribute after sign_data command is called */
+    char challenge[ESP_MATTER_RAINMAKER_MAX_CHALLENGE_LEN] = {0};
+    attribute::create(cluster, cluster::rainmaker::attribute::challenge::Id, ATTRIBUTE_FLAG_NONE,
+                      esp_matter_char_str(challenge, sizeof(challenge)));
 
     /* Create custom configuration command */
     command::create(cluster, cluster::rainmaker::command::configuration::Id,
                     COMMAND_FLAG_ACCEPTED | COMMAND_FLAG_CUSTOM, command_callback);
+
+    /* Create custom sign_data command */
+    command::create(cluster, cluster::rainmaker::command::sign_data::Id,
+                    COMMAND_FLAG_ACCEPTED | COMMAND_FLAG_CUSTOM, sign_data_command_callback);
+
     return ESP_OK;
 }
 
