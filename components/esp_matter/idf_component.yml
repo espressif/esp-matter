@@ -4,3 +4,8 @@ dependencies:
   ## Required IDF version
   idf:
     version: ">=4.4.2"
+
+  espressif/esp_encrypted_img:
+    version: "2.0.3"
+    rules:
+      - if: "idf_version >=4.4"
