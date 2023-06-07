@@ -898,6 +898,17 @@ static esp_err_t esp_matter_command_callback_wifi_reset_counts(const ConcreteCom
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_retrieve_logs_request(const ConcreteCommandPath &command_path,
+                                                                    TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::DiagnosticLogs::Commands::RetrieveLogsRequest::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDiagnosticLogsClusterRetrieveLogsRequestCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 static esp_err_t esp_matter_command_callback_test_event_trigger(const ConcreteCommandPath &command_path,
                                                                   TLVReader &tlv_data, void *opaque_ptr)
 {
@@ -1232,6 +1243,23 @@ command_t *create_reset_counts(cluster_t *cluster)
 } /* command */
 } /* diagnostics_network_wifi */
 
+namespace diagnostic_logs {
+namespace command {
+
+command_t *create_retrieve_logs_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DiagnosticLogs::Commands::RetrieveLogsRequest::Id, COMMAND_FLAG_ACCEPTED,
+                                        esp_matter_command_callback_retrieve_logs_request);
+}
+
+command_t *create_retrieve_logs_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DiagnosticLogs::Commands::RetrieveLogsResponse::Id,
+                                        COMMAND_FLAG_GENERATED, NULL);
+}
+
+} /* command */
+} /* diagnostic_logs */
 
 namespace general_diagnostics {
 namespace command {
@@ -1244,6 +1272,18 @@ command_t *create_test_event_trigger(cluster_t *cluster)
 
 } /* command */
 } /* general_diagnostics */
+
+namespace software_diagnostics {
+namespace command {
+
+command_t *create_reset_watermarks(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, SoftwareDiagnostics::Commands::ResetWatermarks::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* software_diagnostics */
 
 namespace group_key_management {
 namespace command {

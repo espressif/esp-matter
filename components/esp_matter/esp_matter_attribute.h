@@ -135,6 +135,12 @@ attribute_t *create_test_event_triggers_enabled(cluster_t *cluster, bool value);
 } /* attribute */
 } /* general_diagnostics */
 
+namespace software_diagnostics {
+namespace attribute {
+attribute_t *create_current_heap_high_watermark(cluster_t *cluster, uint64_t value);
+} /* attribute */
+} /* software_diagnostics */
+
 namespace administrator_commissioning {
 namespace attribute {
 attribute_t *create_window_status(cluster_t *cluster, uint8_t value);

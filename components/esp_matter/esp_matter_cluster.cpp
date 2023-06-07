@@ -103,7 +103,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, Descriptor::Id, flags);
+    cluster_t *cluster = cluster::create(endpoint, Actions::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -1561,7 +1561,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 namespace time_format_localization {
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfTimeFormatLocalizationClusterServerInitCallback,
-    (function_generic_t)MatterLocalizationConfigurationClusterServerPreAttributeChangedCallback};
+    (function_generic_t)MatterTimeFormatLocalizationClusterServerPreAttributeChangedCallback};
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
@@ -1806,6 +1806,168 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 }
 } /* mode_select */
 
+namespace diagnostic_logs {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, DiagnosticLogs::Id, flags);
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        set_plugin_server_init_callback(cluster, MatterDiagnosticLogsPluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    /* commands */
+    command::create_retrieve_logs_request(cluster);
+    command::create_retrieve_logs_response(cluster);
+
+    return cluster;
+}
+} /* diagnostic_logs */
+
+namespace software_diagnostics {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, SoftwareDiagnostics::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        set_plugin_server_init_callback(cluster, MatterSoftwareDiagnosticsPluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    /* Features */
+    if (features & feature::watermarks::get_id()) {
+        feature::watermarks::add(cluster);
+    }
+
+    return cluster;
+}
+} /* software_diagnostics */
+
+// namespace binary_input_basic {
+//     // ToDo
+// } /* binary_input_basic */
+
+// namespace pulse_width_modulation {
+//     // ToDo
+// } /* pulse_width_modulation */
+
+// namespace unit_localization {
+//     // ToDo
+// } /* unit_localization */
+
+// namespace powersource_configuration {
+//     // ToDo
+// } /* powersource_configuration */
+
+// namespace powersource {
+//     // ToDo
+// } /* powersource */
+
+// namespace ethernet_network_diagnostics {
+//     // ToDo
+// } /* ethernet_network_diagnostics */
+
+// namespace proxy_configuration {
+//     // ToDo
+// } /* proxy_configuration */
+
+// namespace proxy_discovery {
+//     // ToDo
+// } /* proxy_discovery */
+
+// namespace proxy_valid {
+//     // ToDo
+// } /* proxy_valid */
+
+// namespace mode_select {
+//     // ToDo
+// } /* mode_select */
+
+// namespace barrier_control {
+//     // ToDo
+// } /* barrier_control */
+
+// namespace thermostat_userinterface_configuration {
+//     // ToDo
+// } /* thermostat_userinterface_configuration */
+
+// namespace ballast_configuration {
+//     // ToDo
+// } /* ballast_configuration */
+
+// namespace wakeonlan {
+//     // ToDo
+// } /* wakeonlan */
+
+// namespace channel {
+//     // ToDo
+// } /* channel */
+
+// namespace target_navigator {
+//     // ToDo
+// } /* target_navigator */
+
+// namespace media_playback {
+//     // ToDo
+// } /* media_playback */
+
+// namespace media_input {
+//     // ToDo
+// } /* media_input */
+
+// namespace lowpower {
+//     // ToDo
+// } /* lowpower */
+
+// namespace keypad_input {
+//     // ToDo
+// } /* keypad_input */
+
+// namespace content_launcher {
+//     // ToDo
+// } /* content_launcher */
+
+// namespace audio_output {
+//     // ToDo
+// } /* audio_output */
+
 #endif /* CONFIG_ESP_MATTER_ENABLE_DATA_MODEL */
+
 } /* cluster */
 } /* esp_matter */
