@@ -274,7 +274,7 @@ static esp_err_t sign_data_command_callback(const ConcreteCommandPath &command_p
     // sign the data here
     char *challenge_response = NULL;
     size_t outlen = 0;
-    esp_err_t err = esp_rmaker_node_auth_solve_challenge((void *)challenge, config_value.size(), (void **)&challenge_response, &outlen);
+    esp_err_t err = esp_rmaker_node_auth_sign_msg((void *)challenge, config_value.size(), (void **)&challenge_response, &outlen);
 
     // Return if challenge response is NULL
     if (err != ESP_OK) {
