@@ -207,6 +207,15 @@ attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, ui
 } /* attribute */
 } /* diagnostics_network_thread */
 
+namespace software_diagnostics {
+namespace attribute {
+attribute_t *create_thread_metrics(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_current_heap_free(cluster_t *cluster, uint64_t value);
+attribute_t *create_current_heap_used(cluster_t *cluster, uint64_t value);
+attribute_t *create_current_heap_high_watermark(cluster_t *cluster, uint64_t value);
+} /* attribute */
+} /* software_diagnostics */
+
 namespace bridged_device_basic_information {
 namespace attribute {
 attribute_t *create_node_label(cluster_t *cluster, char *value, uint16_t length);

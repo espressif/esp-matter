@@ -192,6 +192,16 @@ esp_err_t create_network_fault_change(cluster_t *cluster)
 } // namespace event
 } // namespace diagnostics_network_thread
 
+namespace software_diagnostics {
+namespace event {
+esp_err_t create_software_fault(cluster_t *cluster)
+{
+    event_t *event = esp_matter::event::create(cluster, SoftwareDiagnostics::Events::SoftwareFault::Id);
+    return event ? ESP_OK : ESP_FAIL;
+}
+} // namespace event
+} // namespace diagnostics_network_thread
+
 namespace time_synchronization {
 namespace event {
 esp_err_t create_dst_table_empty(cluster_t *cluster)

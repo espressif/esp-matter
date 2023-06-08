@@ -986,6 +986,17 @@ static esp_err_t esp_matter_command_callback_test_event_trigger(const ConcreteCo
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_reset_watermarks(const ConcreteCommandPath &command_path,
+                                                              TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::SoftwareDiagnostics::Commands::ResetWatermarks::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfSoftwareDiagnosticsClusterResetWatermarksCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 static esp_err_t esp_matter_command_callback_up_or_open(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                        void *opaque_ptr)
 {
@@ -1311,6 +1322,18 @@ command_t *create_test_event_trigger(cluster_t *cluster)
 
 } /* command */
 } /* general_diagnostics */
+
+namespace software_diagnostics {
+namespace command {
+
+command_t *create_reset_watermarks(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, SoftwareDiagnostics::Commands::ResetWatermarks::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_reset_watermarks);
+}
+
+} /* command */
+} /* software_diagnostics */
 
 namespace group_key_management {
 namespace command {

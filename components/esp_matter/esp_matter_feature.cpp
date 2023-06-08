@@ -63,6 +63,36 @@ static uint32_t get_feature_map_value(cluster_t *cluster)
     return val.val.u32;
 }
 
+namespace software_diagnostics {
+namespace feature {
+namespace watermarks {
+
+uint32_t get_id()
+{
+    return (uint32_t)SoftwareDiagnostics::Feature::kWaterMarks;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_current_heap_high_watermark(cluster, 0);
+
+    /* Commands */
+    command::create_reset_watermarks(cluster);
+
+    return ESP_OK;
+
+}
+} /* watermarks */
+} /* feature */
+} /* software_diagnostics */
+
 namespace on_off {
 namespace feature {
 namespace lighting {

@@ -706,6 +706,35 @@ attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, ui
 } /* attribute */
 } /* diagnostics_network_thread */
 
+namespace software_diagnostics {
+namespace attribute {
+attribute_t *create_thread_metrics(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, SoftwareDiagnostics::Attributes::ThreadMetrics::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_current_heap_free(cluster_t *cluster, uint64_t value)
+{
+    return esp_matter::attribute::create(cluster, SoftwareDiagnostics::Attributes::CurrentHeapFree::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+}
+
+attribute_t *create_current_heap_used(cluster_t *cluster, uint64_t value)
+{
+    return esp_matter::attribute::create(cluster, SoftwareDiagnostics::Attributes::CurrentHeapUsed::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+}
+
+attribute_t *create_current_heap_high_watermark(cluster_t *cluster, uint64_t value)
+{
+    return esp_matter::attribute::create(cluster, SoftwareDiagnostics::Attributes::CurrentHeapHighWatermark::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+}
+
+} /* attribute */
+} /* software_diagnostics */
+
 namespace bridged_device_basic_information {
 namespace attribute {
 

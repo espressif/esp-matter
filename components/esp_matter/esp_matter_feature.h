@@ -31,6 +31,15 @@
 namespace esp_matter {
 namespace cluster {
 
+namespace software_diagnostics {
+namespace feature {
+namespace watermarks {
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* watermarks */
+} /* feature */
+} /* software_diagnostics */
+
 namespace on_off {
 namespace feature {
 namespace lighting {

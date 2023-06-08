@@ -60,6 +60,12 @@ command_t *create_test_event_trigger(cluster_t *cluster);
 } /* command */
 } /* general_diagnostics */
 
+namespace software_diagnostics {
+namespace command {
+command_t *create_reset_watermarks(cluster_t *cluster);
+} /* command */
+} /* software_diagnostics */
+
 namespace group_key_management {
 namespace command {
 command_t *create_key_set_write(cluster_t *cluster);
