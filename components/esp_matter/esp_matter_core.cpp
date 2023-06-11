@@ -941,6 +941,9 @@ esp_err_t start(event_callback_t callback, intptr_t callback_arg)
         return ESP_ERR_INVALID_STATE;
     }
     esp_err_t err = esp_event_loop_create_default();
+    
+    // In case create event loop returns ESP_ERR_INVALID_STATE it is not necessary to fail startup 
+    // as of it means that default event loop is already initialized and no additional actions should be done.
     if (err != ESP_OK && err != ESP_ERR_INVALID_STATE) {
         ESP_LOGE(TAG, "Error create default event loop");
         return err;
