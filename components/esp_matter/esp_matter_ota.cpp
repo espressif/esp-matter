@@ -79,3 +79,12 @@ void esp_matter_ota_requestor_start(void)
     gRequestorUser.Init(&gRequestorCore, &gImageProcessor);
 #endif
 }
+
+#if CONFIG_ENABLE_ENCRYPTED_OTA
+esp_err_t esp_matter_ota_requestor_encrypted_init(const char *key, uint16_t size)
+{
+    VerifyOrReturnError(key != nullptr, ESP_ERR_INVALID_ARG);
+    VerifyOrReturnError(gImageProcessor.InitEncryptedOTA(chip::CharSpan{key, size}) == CHIP_NO_ERROR, ESP_ERR_INVALID_STATE);
+    return ESP_OK;
+}
+#endif // CONFIG_ENABLE_ENCRYPTED_OTA

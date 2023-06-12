@@ -1164,3 +1164,40 @@ Run the following command from host to commission the device.
 
     ./chip-tool pairing ble-wifi 1234 my_SSID my_PASSPHRASE my_PASSCODE my_DISCRIMINATOR --paa-trust-store-path /path/to/PAA-Certificates/
 
+
+2.7 Matter OTA
+--------------
+
+- Enable the ``CONFIG_ENABLE_OTA_REQUESTOR`` option to enable Matter OTA Requestor functionality.
+
+Please follow the `guide <https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/esp32/ota.md>`__
+in the connectedhomeip repository for generating a Matter OTA image and performing OTA.
+
+2.7.1 Encrypted Matter OTA
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The esp-matter SDK supports using a pre-encrypted application image for OTA upgrades.
+Please follow the steps below to enable and use encrypted application images for OTA upgrades.
+
+- Enable the ``CONFIG_ENABLE_OTA_REQUESTOR`` and ``CONFIG_ENABLE_ENCRYPTED_OTA`` options
+- The application code must make an API call to ``esp_matter_ota_requestor_encrypted_init()`` after calling
+  ``esp_matter::start()``. You can use the following code as a reference:
+
+::
+
+    #include <esp_matter_ota.h>
+
+    {
+        const char *rsa_private_key;    // Please set this to the buffer containing RSA 3072 private key in PEM format
+        uint16_t rsa_private_key_len;   // Please set this to the length of RSA 3072 private key
+
+        esp_err_t err = esp_matter_ota_requestor_encrypted_init(rsa_private_key, rsa_private_key_len);
+    }
+
+
+- Please refer to the `guide <https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/esp32/ota.md#encrypted-ota>`__
+  in the connectedhomeip repository for instructions on how to generate a private key, encrypted OTA image, and Matter OTA image.
+
+NOTE: There are several ways to store the private key, such as hardcoding it in the firmware, embedding it as a text
+file, or reading it from the NVS. We have demonstrated the use of the private key by embedding it as a text file in the
+light example.

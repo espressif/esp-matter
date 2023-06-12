@@ -26,3 +26,15 @@ esp_err_t esp_matter_ota_requestor_init(void);
  * 
  */
 void esp_matter_ota_requestor_start(void);
+
+/**
+ * @brief This API initializes the handling of encrypted OTA image
+ *
+ * @param[in] key  null terminated RSA-3072 key in PEM format
+ * @param[in] size Size of the key
+ *
+ * @return ESP_OK or success, appropriate error otherwise
+ */
+#if CONFIG_ENABLE_ENCRYPTED_OTA
+esp_err_t esp_matter_ota_requestor_encrypted_init(const char *key, uint16_t size);
+#endif // CONFIG_ENABLE_ENCRYPTED_OTA
