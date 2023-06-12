@@ -98,7 +98,7 @@ esp_matter_attr_val_t esp_matter_nullable_float(nullable<float> val)
     if (val.is_null()) {
         chip::app::NumericAttributeTraits<float>::SetNull(attr_val.val.f);
     } else {
-        attr_val.val.i = val.value();
+        attr_val.val.f = val.value();
     }
     return attr_val;
 }
