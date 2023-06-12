@@ -34,7 +34,8 @@ static const char *TAG = "read_command";
 namespace esp_matter {
 namespace controller {
 
-void read_command::on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr, const SessionHandle &sessionHandle)
+void read_command::on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr,
+                                           const SessionHandle &sessionHandle)
 {
     read_command *cmd = (read_command *)context;
     ReadPrepareParams params(sessionHandle);
@@ -113,6 +114,10 @@ void read_command::OnAttributeData(const chip::app::ConcreteDataAttributePath &p
     if (CHIP_NO_ERROR != error) {
         ESP_LOGE(TAG, "Response Failure: Can not decode Data");
     }
+
+    if (attribute_data_cb) {
+        attribute_data_cb(path, data);
+    }
 }
 
 void read_command::OnEventData(const chip::app::EventHeader &event_header, chip::TLV::TLVReader *data,
@@ -134,6 +139,10 @@ void read_command::OnEventData(const chip::app::EventHeader &event_header, chip:
     error = DataModelLogger::LogEvent(event_header, data);
     if (CHIP_NO_ERROR != error) {
         ESP_LOGE(TAG, "Response Failure: Can not decode Data");
+    }
+
+    if (event_data_cb) {
+        event_data_cb(event_header, data);
     }
 }
 
@@ -157,8 +166,8 @@ void read_command::OnDone(ReadClient *apReadClient)
 
 esp_err_t send_read_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id)
 {
-    read_command *cmd =
-        chip::Platform::New<read_command>(node_id, endpoint_id, cluster_id, attribute_id, READ_ATTRIBUTE);
+    read_command *cmd = chip::Platform::New<read_command>(node_id, endpoint_id, cluster_id, attribute_id,
+                                                          READ_ATTRIBUTE, nullptr, nullptr);
     if (!cmd) {
         ESP_LOGE(TAG, "Failed to alloc memory for read_command");
         return ESP_ERR_NO_MEM;
@@ -169,7 +178,8 @@ esp_err_t send_read_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_
 
 esp_err_t send_read_event_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t event_id)
 {
-    read_command *cmd = chip::Platform::New<read_command>(node_id, endpoint_id, cluster_id, event_id, READ_EVENT);
+    read_command *cmd =
+        chip::Platform::New<read_command>(node_id, endpoint_id, cluster_id, event_id, READ_EVENT, nullptr, nullptr);
     if (!cmd) {
         ESP_LOGE(TAG, "Failed to alloc memory for read_command");
         return ESP_ERR_NO_MEM;

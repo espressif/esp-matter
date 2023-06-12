@@ -16,6 +16,17 @@
 
 #include <stdint.h>
 
+#include <app/ConcreteAttributePath.h>
+#include <app/EventHeader.h>
+#include <lib/core/TLVReader.h>
+
+namespace esp_matter {
+namespace controller {
+using attribute_report_cb_t = void (*)(const chip::app::ConcreteDataAttributePath &path, chip::TLV::TLVReader *data);
+using event_report_cb_t = void (*)(const chip::app::EventHeader &header, chip::TLV::TLVReader *data);
+} // namespace controller
+} // namespace esp_matter
+
 int oct_str_to_byte_arr(char *oct_str, uint8_t *byte_array);
 
 uint64_t string_to_uint64(char *str);

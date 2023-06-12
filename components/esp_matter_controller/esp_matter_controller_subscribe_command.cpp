@@ -116,6 +116,10 @@ void subscribe_command::OnAttributeData(const chip::app::ConcreteDataAttributePa
     if (CHIP_NO_ERROR != error) {
         ESP_LOGE(TAG, "Response Failure: Can not decode Data");
     }
+
+    if (attribute_data_cb) {
+        attribute_data_cb(path, data);
+    }
 }
 
 void subscribe_command::OnEventData(const chip::app::EventHeader &event_header, chip::TLV::TLVReader *data,
@@ -137,6 +141,10 @@ void subscribe_command::OnEventData(const chip::app::EventHeader &event_header, 
     error = DataModelLogger::LogEvent(event_header, data);
     if (CHIP_NO_ERROR != error) {
         ESP_LOGE(TAG, "Response Failure: Can not decode Data");
+    }
+
+    if (event_data_cb) {
+        event_data_cb(event_header, data);
     }
 }
 
@@ -167,8 +175,9 @@ void subscribe_command::OnDone(ReadClient *apReadClient)
 esp_err_t send_subscribe_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id,
                                       uint32_t attribute_id, uint16_t min_interval, uint16_t max_interval)
 {
-    subscribe_command *cmd = chip::Platform::New<subscribe_command>(node_id, endpoint_id, cluster_id, attribute_id,
-                                                                    SUBSCRIBE_ATTRIBUTE, min_interval, max_interval);
+    subscribe_command *cmd =
+        chip::Platform::New<subscribe_command>(node_id, endpoint_id, cluster_id, attribute_id, SUBSCRIBE_ATTRIBUTE,
+                                               min_interval, max_interval, nullptr, nullptr);
     if (!cmd) {
         ESP_LOGE(TAG, "Failed to alloc memory for subscribe_command");
         return ESP_ERR_NO_MEM;
@@ -180,8 +189,8 @@ esp_err_t send_subscribe_attr_command(uint64_t node_id, uint16_t endpoint_id, ui
 esp_err_t send_subscribe_event_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t event_id,
                                        uint16_t min_interval, uint16_t max_interval)
 {
-    subscribe_command *cmd = chip::Platform::New<subscribe_command>(node_id, endpoint_id, cluster_id, event_id,
-                                                                    SUBSCRIBE_EVENT, min_interval, max_interval);
+    subscribe_command *cmd = chip::Platform::New<subscribe_command>(
+        node_id, endpoint_id, cluster_id, event_id, SUBSCRIBE_EVENT, min_interval, max_interval, nullptr, nullptr);
     if (!cmd) {
         ESP_LOGE(TAG, "Failed to alloc memory for subscribe_command");
         return ESP_ERR_NO_MEM;
