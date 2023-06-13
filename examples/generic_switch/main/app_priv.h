@@ -12,6 +12,10 @@
 #include <esp_matter.h>
 #include <hal/gpio_types.h>
 
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+#include "esp_openthread_types.h"
+#endif
+
 struct gpio_button
 {
       gpio_num_t GPIO_PIN_VALUE;
@@ -53,3 +57,20 @@ app_driver_handle_t app_driver_button_init(gpio_button *button = NULL);
  */
 esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_t endpoint_id, uint32_t cluster_id,
                                       uint32_t attribute_id, esp_matter_attr_val_t *val);
+
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+#define ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG()                                                  \
+    {                                                                                          \
+        .radio_mode = RADIO_MODE_NATIVE,                                                       \
+    }
+
+#define ESP_OPENTHREAD_DEFAULT_HOST_CONFIG()                                                   \
+    {                                                                                          \
+        .host_connection_mode = HOST_CONNECTION_MODE_NONE,                                     \
+    }
+
+#define ESP_OPENTHREAD_DEFAULT_PORT_CONFIG()                                                   \
+    {                                                                                          \
+        .storage_partition_name = "ot_storage", .netif_queue_size = 10, .task_queue_size = 10, \
+    }
+#endif

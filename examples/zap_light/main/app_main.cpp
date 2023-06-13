@@ -15,6 +15,9 @@
 
 #include <app_priv.h>
 #include <app_reset.h>
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+#include <platform/ESP32/OpenthreadLauncher.h>
+#endif
 
 using namespace esp_matter;
 using namespace esp_matter::attribute;
@@ -88,6 +91,16 @@ extern "C" void app_main()
     /* Initialize matter callback */
     attribute::set_callback(app_attribute_update_cb);
     light_endpoint_id = 1; /* This is from zap-generated/endpoint_config.h */
+
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+    /* Set OpenThread platform config */
+    esp_openthread_platform_config_t config = {
+        .radio_config = ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG(),
+        .host_config = ESP_OPENTHREAD_DEFAULT_HOST_CONFIG(),
+        .port_config = ESP_OPENTHREAD_DEFAULT_PORT_CONFIG(),
+    };
+    set_openthread_platform_config(&config);
+#endif
 
     /* Matter start */
     err = esp_matter::start(app_event_cb);
