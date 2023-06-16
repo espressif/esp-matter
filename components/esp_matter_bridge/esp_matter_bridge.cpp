@@ -171,11 +171,6 @@ static esp_err_t plugin_init_callback_endpoint(endpoint_t *endpoint)
         if (plugin_server_init_callback) {
             plugin_server_init_callback();
         }
-        cluster::plugin_client_init_callback_t plugin_client_init_callback =
-            cluster::get_plugin_client_init_callback(cluster);
-        if (plugin_client_init_callback) {
-            plugin_client_init_callback();
-        }
         cluster = cluster::get_next(cluster);
     }
     return ESP_OK;

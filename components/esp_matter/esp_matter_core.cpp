@@ -163,7 +163,6 @@ typedef struct _cluster {
     uint16_t flags;
     const cluster::function_generic_t *function_list;
     cluster::plugin_server_init_callback_t plugin_server_init_callback;
-    cluster::plugin_client_init_callback_t plugin_client_init_callback;
     _attribute_t *attribute_list;
     _command_t *command_list;
     struct _cluster *next;
@@ -1860,17 +1859,6 @@ esp_err_t set_plugin_server_init_callback(cluster_t *cluster, plugin_server_init
     return ESP_OK;
 }
 
-esp_err_t set_plugin_client_init_callback(cluster_t *cluster, plugin_client_init_callback_t callback)
-{
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-    _cluster_t *current_cluster = (_cluster_t *)cluster;
-    current_cluster->plugin_client_init_callback = callback;
-    return ESP_OK;
-}
-
 plugin_server_init_callback_t get_plugin_server_init_callback(cluster_t *cluster)
 {
     if (!cluster) {
@@ -1879,16 +1867,6 @@ plugin_server_init_callback_t get_plugin_server_init_callback(cluster_t *cluster
     }
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     return current_cluster->plugin_server_init_callback;
-}
-
-plugin_client_init_callback_t get_plugin_client_init_callback(cluster_t *cluster)
-{
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
-    _cluster_t *current_cluster = (_cluster_t *)cluster;
-    return current_cluster->plugin_client_init_callback;
 }
 
 esp_err_t add_function_list(cluster_t *cluster, const function_generic_t *function_list, int function_flags)

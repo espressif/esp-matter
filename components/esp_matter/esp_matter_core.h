@@ -298,13 +298,6 @@ namespace cluster {
  */
 typedef void (*plugin_server_init_callback_t)();
 
-/** Cluster plugin client init callback
- *
- * This callback will be called when the endpoints are initialised. This should be set to upstream's
- * `Matter<cluster_name>PluginClientInitCallback` API, if it exists.
- */
-typedef void (*plugin_client_init_callback_t)();
-
 /** Generic function
  *
  * This can be used to add additional functions based on `cluster_flags_t`.
@@ -383,20 +376,6 @@ uint32_t get_id(cluster_t *cluster);
  */
 esp_err_t set_plugin_server_init_callback(cluster_t *cluster, plugin_server_init_callback_t callback);
 
-/** Set cluster plugin client init callback
- *
- * Set the cluster plugin client init callback. This callback will be called when the endpoints are initialised. The
- * callback should be set to upstream's `Matter<cluster_name>PluginClientInitCallback` API for the cluster, if it
- * exists.
- *
- * @param[in] cluster Cluster handle.
- * @param[in] callback Plugin client init callback.
- *
- * @return ESP_OK on success.
- * @return error in case of failure.
- */
-esp_err_t set_plugin_client_init_callback(cluster_t *cluster, plugin_client_init_callback_t callback);
-
 /** Get cluster plugin server init callback
  *
  * Get the cluster plugin server init callback which has previously been set.
@@ -407,17 +386,6 @@ esp_err_t set_plugin_client_init_callback(cluster_t *cluster, plugin_client_init
  * @return NULL in case of failure or if it has not been set.
  */
 plugin_server_init_callback_t get_plugin_server_init_callback(cluster_t *cluster);
-
-/** Get cluster plugin client init callback
- *
- * Get the cluster plugin client init callback which has previously been set.
- *
- * @param[in] cluster Cluster handle.
- *
- * @return Plugin client init callback.
- * @return NULL in case of failure or if it has not been set.
- */
-plugin_client_init_callback_t get_plugin_client_init_callback(cluster_t *cluster);
 
 /** Add cluster function list
  *

@@ -23,7 +23,6 @@ set(PROJECT_VER_NUMBER 1)
 
 set(ESP_MATTER_PATH $ENV{ESP_MATTER_PATH})
 set(MATTER_SDK_PATH ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip)
-set(ZAP_GENERATED_PATH ${CMAKE_CURRENT_LIST_DIR}/main/zap-generated)
 
 # This should be done before using the IDF_TARGET variable.
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)

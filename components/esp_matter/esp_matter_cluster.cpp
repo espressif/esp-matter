@@ -46,11 +46,6 @@ void plugin_init_callback_common()
             if (plugin_server_init_callback) {
                 plugin_server_init_callback();
             }
-            /* Plugin client init callback */
-            plugin_client_init_callback_t plugin_client_init_callback = get_plugin_client_init_callback(cluster);
-            if (plugin_client_init_callback) {
-                plugin_client_init_callback();
-            }
             cluster = get_next(cluster);
         }
         endpoint = endpoint::get_next(endpoint);
@@ -69,7 +64,7 @@ cluster_t *create_default_binding_cluster(endpoint_t *endpoint)
     return binding::create(endpoint, &config, CLUSTER_FLAG_SERVER);
 }
 
-#if (FIXED_ENDPOINT_COUNT == 0)
+#if CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 namespace descriptor {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
@@ -85,9 +80,6 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterDescriptorPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterDescriptorPluginClientInitCallback);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -122,9 +114,6 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
         set_plugin_server_init_callback(cluster, NULL);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, NULL);
-    }
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
@@ -152,9 +141,6 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterAccessControlPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterAccessControlPluginClientInitCallback);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -190,9 +176,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterBasicInformationPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterBasicInformationPluginClientInitCallback);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -239,9 +222,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_server_init_callback(cluster, MatterBindingPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterBindingPluginClientInitCallback);
-    }
 
     /* Extra initialization */
     client::binding_init();
@@ -278,9 +258,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterOtaSoftwareUpdateProviderPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterOtaSoftwareUpdateProviderPluginClientInitCallback);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -322,9 +299,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_server_init_callback(cluster, MatterOtaSoftwareUpdateRequestorPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterOtaSoftwareUpdateRequestorPluginClientInitCallback);
-    }
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
@@ -364,9 +338,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterGeneralCommissioningPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterGeneralCommissioningPluginClientInitCallback);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -413,9 +384,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterNetworkCommissioningPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterNetworkCommissioningPluginClientInitCallback);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -469,9 +437,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_server_init_callback(cluster, MatterGeneralDiagnosticsPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterGeneralDiagnosticsPluginClientInitCallback);
-    }
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
@@ -509,9 +474,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterAdministratorCommissioningPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterAdministratorCommissioningPluginClientInitCallback);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -553,9 +515,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterOperationalCredentialsPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterOperationalCredentialsPluginClientInitCallback);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -610,9 +569,6 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
         set_plugin_server_init_callback(cluster, MatterGroupKeyManagementPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterGroupKeyManagementPluginClientInitCallback);
-    }
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
@@ -652,9 +608,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_server_init_callback(cluster, MatterWiFiNetworkDiagnosticsPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterWiFiNetworkDiagnosticsPluginClientInitCallback);
-    }
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
@@ -692,9 +645,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterThreadNetworkDiagnosticsPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterThreadNetworkDiagnosticsPluginClientInitCallback);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -748,9 +698,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterTimeSynchronizationPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterTimeSynchronizationPluginClientInitCallback);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -819,9 +766,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_server_init_callback(cluster, MatterUserLabelPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterUserLabelPluginClientInitCallback);
-    }
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
@@ -855,9 +799,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterFixedLabelPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterFixedLabelPluginClientInitCallback);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -895,9 +836,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterIdentifyPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterIdentifyPluginClientInitCallback);
     }
 
     /* Extra initialization */
@@ -942,9 +880,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterGroupsPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterGroupsPluginClientInitCallback);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -993,9 +928,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterScenesPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterScenesPluginClientInitCallback);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -1053,10 +985,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         set_plugin_server_init_callback(cluster, MatterOnOffPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterOnOffPluginClientInitCallback);
-        create_default_binding_cluster(endpoint);
-    }
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
@@ -1103,10 +1031,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterLevelControlPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterLevelControlPluginClientInitCallback);
-        create_default_binding_cluster(endpoint);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -1164,10 +1088,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterColorControlPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterColorControlPluginClientInitCallback);
-        create_default_binding_cluster(endpoint);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -1236,8 +1156,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-        /* not implemented: Setting NULL since the MatterFanControlPluginClientInitCallback is not implemented */
-        set_plugin_client_init_callback(cluster, NULL);
         create_default_binding_cluster(endpoint);
     }
 
@@ -1281,7 +1199,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterThermostatPluginClientInitCallback);
         create_default_binding_cluster(endpoint);
     }
 
@@ -1329,7 +1246,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterDoorLockPluginClientInitCallback);
         create_default_binding_cluster(endpoint);
     }
 
@@ -1377,7 +1293,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterWindowCoveringPluginClientInitCallback);
         create_default_binding_cluster(endpoint);
     }
 
@@ -1429,7 +1344,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterSwitchPluginClientInitCallback);
         create_default_binding_cluster(endpoint);
     }
 
@@ -1468,7 +1382,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterTemperatureMeasurementPluginClientInitCallback);
         create_default_binding_cluster(endpoint);
     }
 
@@ -1508,7 +1421,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterRelativeHumidityMeasurementPluginClientInitCallback);
         create_default_binding_cluster(endpoint);
     }
 
@@ -1550,7 +1462,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterOccupancySensingPluginClientInitCallback);
         create_default_binding_cluster(endpoint);
     }
 
@@ -1590,7 +1501,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterBooleanStatePluginClientInitCallback);
         create_default_binding_cluster(endpoint);
     }
 
@@ -1628,9 +1538,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterLocalizationConfigurationPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterLocalizationConfigurationPluginClientInitCallback);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -1671,9 +1578,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterTimeFormatLocalizationPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterTimeFormatLocalizationPluginClientInitCallback);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -1716,7 +1620,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterIlluminanceMeasurementPluginClientInitCallback);
         create_default_binding_cluster(endpoint);
     }
 
@@ -1756,7 +1659,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterPressureMeasurementPluginClientInitCallback);
         create_default_binding_cluster(endpoint);
     }
 
@@ -1794,7 +1696,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterFlowMeasurementPluginClientInitCallback);
         create_default_binding_cluster(endpoint);
     }
 
@@ -1837,7 +1738,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterPumpConfigurationAndControlPluginClientInitCallback);
         create_default_binding_cluster(endpoint);
     }
 
@@ -1863,6 +1763,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 } /* pump_configuration_and_control */
-#endif // FIXED_ENDPOINT_COUNT == 0
+#endif /* CONFIG_ESP_MATTER_ENABLE_DATA_MODEL */
 } /* cluster */
 } /* esp_matter */
