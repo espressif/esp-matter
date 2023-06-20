@@ -400,6 +400,7 @@ def generate_summary(args):
                                         args.vendor_id, args.product_id)
                 qrcode = payloads.generate_qrcode()
                 manualcode = payloads.generate_manualcode()
+                # ToDo: remove this if qrcode tool can handle the standard manual code format
                 if args.commissioning_flow == CommissioningFlow.Standard:
                     manualcode = manualcode[:4] + '-' + manualcode[4:7] + '-' + manualcode[7:]
                 else:
@@ -430,6 +431,11 @@ def generate_onboarding_data(args, index, discriminator, passcode):
                             args.vendor_id, args.product_id)
     chip_qrcode = payloads.generate_qrcode()
     chip_manualcode = payloads.generate_manualcode()
+    # ToDo: remove this if qrcode tool can handle the standard manual code format
+    if args.commissioning_flow == CommissioningFlow.Standard:
+        chip_manualcode = chip_manualcode[:4] + '-' + chip_manualcode[4:7] + '-' + chip_manualcode[7:]
+    else:
+        chip_manualcode = '"' + chip_manualcode[:4] + '-' + chip_manualcode[4:7] + '-' + chip_manualcode[7:11] + '\n' + chip_manualcode[11:15] + '-' + chip_manualcode[15:18] + '-' + chip_manualcode[18:20] + '-' + chip_manualcode[20:21] + '"'
 
     logging.info('Generated QR code: ' + chip_qrcode)
     logging.info('Generated manual code: ' + chip_manualcode)
