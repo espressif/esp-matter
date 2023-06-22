@@ -406,6 +406,11 @@ def generate_summary(args):
                                          args.commissioning_flow, discriminator, pincode, args.discovery_mode)
                 manualcode = get_chip_manualcode(TOOLS['chip-tool'], args.vendor_id, args.product_id,
                                                  args.commissioning_flow, discriminator, pincode)
+                # ToDo: remove this if qrcode tool can handle the standard manual code format
+                if args.commissioning_flow == CommissioningFlow.Standard:
+                    manualcode = manualcode[:4] + '-' + manualcode[4:7] + '-' + manualcode[7:]
+                else:
+                    manualcode = '"' + manualcode[:4] + '-' + manualcode[4:7] + '-' + manualcode[7:11] + '\n' + manualcode[11:15] + '-' + manualcode[15:18] + '-' + manualcode[18:20] + '-' + manualcode[20:21] + '"'
                 summary_csv_data += summary_lines[1 + int(row['Index'])] + ',' + pincode + ',' + qrcode + ',' + manualcode + '\n'
 
     with open(summary_csv, 'w') as scsvf:
@@ -429,6 +434,11 @@ def generate_onboarding_data(args, index, discriminator, passcode):
                                           args.commissioning_flow, discriminator, passcode)
     chip_qrcode = get_chip_qrcode(TOOLS['chip-tool'], args.vendor_id, args.product_id,
                                   args.commissioning_flow, discriminator, passcode, args.discovery_mode)
+    # ToDo: remove this if qrcode tool can handle the standard manual code format
+    if args.commissioning_flow == CommissioningFlow.Standard:
+        chip_manualcode = chip_manualcode[:4] + '-' + chip_manualcode[4:7] + '-' + chip_manualcode[7:]
+    else:
+        chip_manualcode = '"' + chip_manualcode[:4] + '-' + chip_manualcode[4:7] + '-' + chip_manualcode[7:11] + '\n' + chip_manualcode[11:15] + '-' + chip_manualcode[15:18] + '-' + chip_manualcode[18:20] + '-' + chip_manualcode[20:21] + '"'
 
     logging.info('Generated QR code: ' + chip_qrcode)
     logging.info('Generated manual code: ' + chip_manualcode)
