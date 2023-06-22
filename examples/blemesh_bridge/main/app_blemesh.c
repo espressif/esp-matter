@@ -580,6 +580,7 @@ static void ble_mesh_generic_client_cb(esp_ble_mesh_generic_client_cb_event_t ev
         /* If failed to receive the responses, these messages will be resend */
         switch (opcode) {
         case ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_GET: {
+            ESP_LOGI(TAG, "ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_GET timeout, resend Generic OnOff Get");
             esp_ble_mesh_generic_client_get_state_t get_state = {0};
             ble_mesh_set_msg_common(&common, node->unicast, onoff_client.model, ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_GET);
             err = esp_ble_mesh_generic_client_get_state(&common, &get_state);
@@ -592,7 +593,7 @@ static void ble_mesh_generic_client_cb(esp_ble_mesh_generic_client_cb_event_t ev
         case ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_SET: {
             esp_ble_mesh_generic_client_set_state_t set_state = {0};
             node->onoff = param->status_cb.onoff_status.present_onoff;
-            ESP_LOGI(TAG, "ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_GET onoff: 0x%02x", node->onoff);
+            ESP_LOGI(TAG, "ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_SET timeout, resend Generic OnOff Set onoff: 0x%02x", node->onoff);
             ble_mesh_set_msg_common(&common, node->unicast, onoff_client.model, ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_SET);
             set_state.onoff_set.op_en = false;
             set_state.onoff_set.onoff = !node->onoff;
