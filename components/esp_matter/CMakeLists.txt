@@ -1,6 +1,4 @@
 set(SRC_DIRS_LIST       "."
-                        "zap_common/zap-generated"
-                        "${ZAP_GENERATED_PATH}"
                         "${MATTER_SDK_PATH}/zzz_generated/app-common/app-common/zap-generated/attributes"
                         "${MATTER_SDK_PATH}/src/app"
                         "${MATTER_SDK_PATH}/src/app/server"
@@ -24,6 +22,7 @@ set(SRC_DIRS_LIST       "."
                         "${MATTER_SDK_PATH}/src/app/clusters/door-lock-server"
                         "${MATTER_SDK_PATH}/src/app/clusters/ethernet-network-diagnostics-server"
                         "${MATTER_SDK_PATH}/src/app/clusters/fan-control-server"
+                        "${MATTER_SDK_PATH}/src/app/clusters/fault-injection-server"
                         "${MATTER_SDK_PATH}/src/app/clusters/fixed-label-server"
                         "${MATTER_SDK_PATH}/src/app/clusters/general-commissioning-server"
                         "${MATTER_SDK_PATH}/src/app/clusters/general-diagnostics-server"
@@ -64,10 +63,14 @@ set(SRC_DIRS_LIST       "."
 )
 
 set(INCLUDE_DIRS_LIST   "."
-                        "zap_common"
                         "${MATTER_SDK_PATH}/zzz_generated/app-common"
-                        "${MATTER_SDK_PATH}/src"
-                        "${ZAP_GENERATED_PATH}/../")
+                        "${MATTER_SDK_PATH}/third_party/nlfaultinjection/repo/include"
+                        "${MATTER_SDK_PATH}/src")
+
+if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
+    list(APPEND SRC_DIRS_LIST "zap_common/app")
+    list(APPEND INCLUDE_DIRS_LIST "zap_common")
+endif()
 
 set(REQUIRES_LIST       chip bt esp_matter_console nvs_flash app_update esp_secure_cert_mgr mbedtls esp_system openthread)
 
@@ -80,6 +83,11 @@ idf_component_register( SRC_DIRS        ${SRC_DIRS_LIST}
 # used uninitialized in this function
 idf_build_set_property(COMPILE_OPTIONS "-Wno-error=uninitialized;-Wno-error=maybe-uninitialized;-Wno-missing-field-initializers;" APPEND)
 idf_build_set_property(COMPILE_OPTIONS "-Wno-error=array-bounds" APPEND)
+
+if (NOT CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
+    target_include_directories(${COMPONENT_LIB} PUBLIC "${CMAKE_BINARY_DIR}/gen/app-codegen/cpp-app"
+                                                       "${CMAKE_BINARY_DIR}/gen/app-zapgen/zapgen/app-templates")
+endif()
 
 # For Xtensa chips, uint32_t was defined as 'unsigned' before v5.0, and after IDF v5.0 it is defined
 # as 'unsigned long', same as RISC-V. add this compile option to avoid format errors.

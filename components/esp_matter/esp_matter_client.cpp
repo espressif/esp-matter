@@ -193,7 +193,7 @@ static void send_command_failure_callback(void *context, CHIP_ERROR error)
 {
     ESP_LOGI(TAG, "FSend command failure");
 }
-
+#if CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 namespace on_off {
 namespace command {
 
@@ -1035,6 +1035,7 @@ esp_err_t send_remove_group(peer_device_t *remote_device, uint16_t remote_endpoi
 
 } // namespace command
 } // namespace groups
+#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 
 } // namespace cluster
 } // namespace esp_matter

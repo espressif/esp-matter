@@ -194,4 +194,13 @@ menu "ESP Matter"
 
             This option is kept disabled by default to maintain the backward compatibility.
 
+    config ESP_MATTER_ENABLE_DATA_MODEL
+        bool "Use ESP-Matter data model"
+        default y
+        help
+            This option should be disable for zap examples
+
+            If enabled, we will not use zap to define the data model of the node. All of the
+            endpoints are dynamic.
+
 endmenu
