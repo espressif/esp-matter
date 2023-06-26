@@ -16,6 +16,7 @@
 
 #include <esp_err.h>
 #include <esp_matter_core.h>
+#include <app-common/zap-generated/cluster-objects.h>
 
 namespace esp_matter {
 namespace cluster {

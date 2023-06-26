@@ -18,7 +18,6 @@
 #include <esp_matter_cluster.h>
 #include <esp_matter_core.h>
 
-#include <app-common/zap-generated/att-storage.h>
 #include <app-common/zap-generated/callback.h>
 #include <app/PluginApplicationCallbacks.h>
 
@@ -912,10 +911,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 } /* groups */
 
 namespace scenes {
-const function_generic_t function_list[] = {
-    (function_generic_t)emberAfScenesClusterServerInitCallback,
-};
-const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {

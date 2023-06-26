@@ -192,7 +192,7 @@ constexpr size_t k_max_subjects_per_acl = CHIP_CONFIG_EXAMPLE_ACCESS_CONTROL_MAX
 constexpr size_t k_max_targets_per_acl = CHIP_CONFIG_EXAMPLE_ACCESS_CONTROL_MAX_TARGETS_PER_ENTRY;
 
 using acl_obj = AccessControl::Structs::AccessControlEntryStruct::Type;
-using acl_target_obj = AccessControl::Structs::Target::Type;
+using acl_target_obj = AccessControl::Structs::AccessControlTargetStruct::Type;
 typedef struct acl_attr {
     acl_obj acl_array[k_max_acl_entries];
     uint64_t subjects_array[k_max_acl_entries][k_max_subjects_per_acl];

@@ -426,83 +426,6 @@ static esp_err_t esp_matter_command_callback_add_group_if_identifying(const Conc
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_command_callback_add_scene(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                       void *opaque_ptr)
-{
-    chip::app::Clusters::Scenes::Commands::AddScene::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfScenesClusterAddSceneCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_view_scene(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                        void *opaque_ptr)
-{
-    chip::app::Clusters::Scenes::Commands::ViewScene::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfScenesClusterViewSceneCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_remove_scene(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                          void *opaque_ptr)
-{
-    chip::app::Clusters::Scenes::Commands::RemoveScene::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfScenesClusterRemoveSceneCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_remove_all_scenes(const ConcreteCommandPath &command_path,
-                                                               TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::Scenes::Commands::RemoveAllScenes::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfScenesClusterRemoveAllScenesCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_store_scene(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                         void *opaque_ptr)
-{
-    chip::app::Clusters::Scenes::Commands::StoreScene::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfScenesClusterStoreSceneCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_recall_scene(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                          void *opaque_ptr)
-{
-    chip::app::Clusters::Scenes::Commands::RecallScene::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfScenesClusterRecallSceneCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_get_scene_membership(const ConcreteCommandPath &command_path,
-                                                                  TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::Scenes::Commands::GetSceneMembership::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfScenesClusterGetSceneMembershipCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
 static esp_err_t esp_matter_command_callback_off(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                  void *opaque_ptr)
 {
@@ -1694,44 +1617,37 @@ namespace command {
 
 command_t *create_add_scene(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::AddScene::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_add_scene);
+    return esp_matter::command::create(cluster, Scenes::Commands::AddScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_view_scene(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::ViewScene::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_view_scene);
+    return esp_matter::command::create(cluster, Scenes::Commands::ViewScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_remove_scene(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::RemoveScene::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_remove_scene);
+    return esp_matter::command::create(cluster, Scenes::Commands::RemoveScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_remove_all_scenes(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::RemoveAllScenes::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_remove_all_scenes);
+    return esp_matter::command::create(cluster, Scenes::Commands::RemoveAllScenes::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_store_scene(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::StoreScene::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_store_scene);
+    return esp_matter::command::create(cluster, Scenes::Commands::StoreScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_recall_scene(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::RecallScene::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_recall_scene);
+    return esp_matter::command::create(cluster, Scenes::Commands::RecallScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_get_scene_membership(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::GetSceneMembership::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_get_scene_membership);
+    return esp_matter::command::create(cluster, Scenes::Commands::GetSceneMembership::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_add_scene_response(cluster_t *cluster)

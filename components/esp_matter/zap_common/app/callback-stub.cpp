@@ -71,8 +71,8 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
     case app::Clusters::Channel::Id:
         emberAfChannelClusterInitCallback(endpoint);
         break;
-    case app::Clusters::ClientMonitoring::Id:
-        emberAfClientMonitoringClusterInitCallback(endpoint);
+    case app::Clusters::IcdManagement::Id:
+        emberAfIcdManagementClusterInitCallback(endpoint);
         break;
     case app::Clusters::ColorControl::Id:
         emberAfColorControlClusterInitCallback(endpoint);
@@ -303,7 +303,7 @@ void __attribute__((weak)) emberAfChannelClusterInitCallback(EndpointId endpoint
     // To prevent warning
     (void) endpoint;
 }
-void __attribute__((weak)) emberAfClientMonitoringClusterInitCallback(EndpointId endpoint)
+void __attribute__((weak)) emberAfIcdManagementClusterInitCallback(EndpointId endpoint)
 {
     // To prevent warning
     (void) endpoint;
