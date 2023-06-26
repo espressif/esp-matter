@@ -1,0 +1,6 @@
+pytest-embedded-serial-esp~=1.0
+pytest-embedded-idf~=1.0
+pytest-embedded-qemu~=1.0
+pytest-timeout
+netifaces
+esptool>=4.5
