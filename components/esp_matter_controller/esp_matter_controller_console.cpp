@@ -68,7 +68,34 @@ static esp_err_t controller_pairing_handler(int argc, char **argv)
         uint32_t pincode = string_to_uint32(argv[2]);
         return controller::pairing_on_network(nodeId, pincode);
     } else if (strncmp(argv[0], "ble-wifi", sizeof("ble-wifi")) == 0) {
+#if CONFIG_ENABLE_ESP32_BLE_CONTROLLER
+    	if (argc != 6) {
+            return ESP_ERR_INVALID_ARG;
+        }
+
+	char *ssid = NULL, *pwd = NULL;
+
+        ssid = strndup(argv[2], strlen(argv[2]) + 1);
+        pwd = strndup(argv[3], strlen(argv[3]) + 1);
+	if (ssid == NULL || pwd == NULL) {
+            return ESP_ERR_NO_MEM;
+        }
+
+        uint64_t nodeId = string_to_uint64(argv[1]);
+        uint32_t pincode = string_to_uint32(argv[4]);
+	uint16_t disc = string_to_uint16(argv[5]);
+
+        esp_err_t result = controller::pairing_ble_wifi(nodeId, pincode, disc, ssid, pwd);
+        if (result != ESP_OK) {
+            ESP_LOGE(TAG, "Pairing over ble failed");
+	}
+	if (ssid != NULL) free(ssid);
+        if (pwd != NULL) free(pwd);
+
+	return result;
+#else
         return ESP_ERR_NOT_SUPPORTED;
+#endif
     } else if (strncmp(argv[0], "ble-thread", sizeof("ble-thread")) == 0) {
         return ESP_ERR_NOT_SUPPORTED;
     }
@@ -259,8 +286,8 @@ esp_err_t controller_register_commands()
         {
             .name = "pairing",
             .description = "Pairing a node.\n"
-                           "\tUsage: controller pairing onnetwork [nodeid] [pincode] Or\n"
-                           "\tcontroller pairing ble-wifi [nodeid] [pincode] [discriminator] [ssid] [password] Or\n"
+                           "\tUsage: controller pairing onnetwork [nodeid] [pincode] OR\n"
+                           "\tcontroller pairing ble-wifi [nodeid] [pincode] [ssid] [password] [discriminator] OR\n"
                            "\tcontroller pairing ble-thread [nodeid] [pincode] [discriminator] [dataset]",
             .handler = controller_pairing_handler,
         },
