@@ -69,7 +69,7 @@ variables:
 
 .setup_ot_br: &setup_ot_br
   - cd ${CI_PROJECT_DIR}
-  - git clone ssh://git@gitlab.espressif.cn:27227/espressif/esp-thread-br.git
+  - git clone ${ESP_THREAD_BR_REPO_URL}
   - cd ${BR_PATH}/examples/basic_thread_border_router
   - idf.py set-target esp32s3
   - idf.py build
