@@ -223,8 +223,8 @@ def generate_dac(iteration, args, discriminator, passcode, ca_key, ca_cert):
     generate_keypair_bin(out_key_pem, out_private_key_bin, out_public_key_bin)
     logging.info('Generated DAC private key in binary format: {}'.format(out_private_key_bin))
     logging.info('Generated DAC public key in binary format: {}'.format(out_public_key_bin))
-    convert_private_key_from_pem_to_der(out_key_pem, out_key_der)
-    return out_cert_der, out_private_key_bin, out_public_key_bin, out_key_der
+    convert_private_key_from_pem_to_der(out_key_pem, out_private_key_der)
+    return out_cert_der, out_private_key_bin, out_public_key_bin, out_private_key_der
 
 
 def use_dac_from_args(args):
@@ -346,16 +346,37 @@ def write_per_device_unique_data(args):
                     dacs = generate_dac(int(row['Index']), args, int(row['Discriminator']),
                                         int(row['PIN Code']), PAI['key_pem'], PAI['cert_pem'])
 
-                chip_factory_update('dac-cert', os.path.abspath(dacs[0]))
-                chip_factory_update('dac-key', os.path.abspath(dacs[1]))
-                chip_factory_update('dac-pub-key', os.path.abspath(dacs[2]))
-                chip_factory_update('pai-cert', os.path.abspath(PAI['cert_der']))
-                secure_cert_partition_file_path = os.sep.join([OUT_DIR['top'], UUIDs[int(row['Index'])], UUIDs[int(row['Index'])] + '_esp_secure_cert.bin'])
+                if not args.dac_in_secure_cert:
+                    chip_factory_update('dac-cert', os.path.abspath(dacs[0]))
+                    chip_factory_update('dac-key', os.path.abspath(dacs[1]))
+                    chip_factory_update('dac-pub-key', os.path.abspath(dacs[2]))
+                    chip_factory_update('pai-cert', os.path.abspath(PAI['cert_der']))
+                else:
                 # esp secure cert partition
-                priv_key = tlv_priv_key_t(key_type = tlv_priv_key_type_t.ESP_SECURE_CERT_DEFAULT_FORMAT_KEY, key_path = os.path.abspath(dacs[3]), key_pass = None)
-                generate_partition_no_ds(priv_key = priv_key, device_cert = os.path.abspath(dacs[0]), ca_cert = os.path.abspath(PAI['cert_der']), idf_target = args.node_platform, op_file = secure_cert_partition_file_path)
+                    secure_cert_partition_file_path = os.sep.join([OUT_DIR['top'], UUIDs[int(row['Index'])], UUIDs[int(row['Index'])] + '_esp_secure_cert.bin'])
+                    if args.ds_peripheral:
+                        if args.target != "esp32h2":
+                            logging.error("DS peripheral is only supported for esp32h2 target")
+                            exit(1)
+                        if args.efuse_key_id == -1:
+                            logging.error("--efuse-key-id <value> is required when -ds or --ds-peripheral option is used")
+                            exit(1)
+                        priv_key = tlv_priv_key_t(key_type = tlv_priv_key_type_t.ESP_SECURE_CERT_ECDSA_PERIPHERAL_KEY, 
+                                                  key_path = os.path.abspath(dacs[3]), key_pass = None)
+                        priv_key.priv_key_len = 256
+                        priv_key.efuse_key_id = args.efuse_key_id
+                        generate_partition_ds(priv_key = priv_key, device_cert = os.path.abspath(dacs[0]), 
+                                              ca_cert = os.path.abspath(PAI['cert_der']), idf_target = args.target, 
+                                              op_file = secure_cert_partition_file_path)
+                    else:
+                        priv_key = tlv_priv_key_t(key_type = tlv_priv_key_type_t.ESP_SECURE_CERT_DEFAULT_FORMAT_KEY, 
+                                                  key_path = os.path.abspath(dacs[3]), key_pass = None)
+                        generate_partition_no_ds(priv_key = priv_key, device_cert = os.path.abspath(dacs[0]), 
+                                                 ca_cert = os.path.abspath(PAI['cert_der']), idf_target = args.target, 
+                                                 op_file = secure_cert_partition_file_path)
 
                 append_cn_dac_to_csv(UUIDs[int(row['Index'])], os.sep.join([OUT_DIR['top'], UUIDs[int(row['Index'])], "internal", "DAC_cert.pem"]))
+
             # If serial number is not passed, then generate one
             if (args.serial_num is None):
                 chip_factory_update('serial-num', binascii.b2a_hex(os.urandom(SERIAL_NUMBER_LEN)).decode('utf-8'))
@@ -372,7 +393,7 @@ def write_per_device_unique_data(args):
             # Generate onboarding data
             generate_onboarding_data(args, int(row['Index']), int(chip_factory_get_val('discriminator')), int(row['PIN Code']))
         if args.paa or args.pai:
-            logging.info("Generated CSV of CN and DAC: {}".format(OUT_FILE['cn_dac_csv']))
+            logging.info("Generated CSV of Common Name and DAC: {}".format(OUT_FILE['cn_dac_csv']))
 
 
 def organize_output_files(suffix, args):
@@ -506,14 +527,16 @@ def get_args():
                                           0:WiFi-SoftAP, 1:BLE, 2:On-network. Default is BLE.', choices=[0, 1, 2])
 
     g_dac = parser.add_argument_group('Device attestation credential options')
-    g_dac.add_argument('-cn', '--cn-prefix', default='ESP32',
-                       help='The common name prefix of the subject of the generated certificate.')
+    g_dac.add_argument('--dac-in-secure-cert', action="store_true", required=False,
+                        help='Store DAC in secure cert partition. By default, DAC is stored in nvs factory partition.')
     g_dac.add_argument('-lt', '--lifetime', default=4294967295, type=any_base_int,
                        help='Lifetime of the generated certificate. Default is 4294967295 if not specified, \
                               this indicate that certificate does not have well defined expiration date.')
     g_dac.add_argument('-vf', '--valid-from',
                        help='The start date for the certificate validity period in format <YYYY>-<MM>-<DD> [ <HH>:<MM>:<SS> ]. \
                               Default is current date.')
+    g_dac.add_argument('-cn', '--cn-prefix', default='ESP32',
+                       help='The common name prefix of the subject of the PAI certificate.')
     # If DAC is present then PAI key is not required, so it is marked as not required here
     # but, if DAC is not present then PAI key is required and that case is validated in validate_args()
     g_dac.add_argument('-c', '--cert', help='The input certificate file in PEM format.')
@@ -521,6 +544,11 @@ def get_args():
     g_dac.add_argument('-cd', '--cert-dclrn', help='The certificate declaration file in DER format.')
     g_dac.add_argument('--dac-cert', help='The input DAC certificate file in PEM format.')
     g_dac.add_argument('--dac-key', help='The input DAC private key file in PEM format.')
+    g_dac.add_argument('-ds', '--ds-peripheral', action="store_true",
+                       help='Use DS Peripheral in generating secure cert partition.')
+    g_dac.add_argument('--efuse-key-id', type=int, choices=range(0, 6), default=-1,
+                        help='Provide the efuse key_id which contains/will contain HMAC_KEY, default is 1')
+
     input_cert_group = g_dac.add_mutually_exclusive_group(required=False)
     input_cert_group.add_argument('--paa', action='store_true', help='Use input certificate as PAA certificate.')
     input_cert_group.add_argument('--pai', action='store_true', help='Use input certificate as PAI certificate.')
@@ -586,7 +614,7 @@ def add_optional_KVs(args):
     chip_factory_append('serial-num', 'data', 'string', args.serial_num)
 
     # Add certificates and keys
-    if args.paa or args.pai:
+    if args.paa or args.pai and not args.dac_in_secure_cert:
         chip_factory_append('dac-cert', 'file', 'binary', None)
         chip_factory_append('dac-key', 'file', 'binary', None)
         chip_factory_append('dac-pub-key', 'file', 'binary', None)

@@ -119,6 +119,26 @@ Below commands uses the test PAI signing certificate and key, test certificate d
    -cd path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/certification-declaration/Chip-Test-CD-FFF2-8001.der
 ```
 
+### Generate a factory partition and store DAC certificate and private key in secure cert partition [Optional argument : `--dac-in-secure-cert` and `--target`]
+```
+./mfg_tool.py -cn "My bulb" -v 0xFFF2 -p 0x8001 --pai \
+   -k path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/attestation/Chip-Test-PAI-FFF2-8001-Key.pem \
+   -c path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/attestation/Chip-Test-PAI-FFF2-8001-Cert.pem \
+   -cd path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/certification-declaration/Chip-Test-CD-FFF2-8001.der
+   --dac-in-secure-cert --target esp32
+```
+*NOTE*: By default, DAC certificates and private key is stored in the NVS factory partition. 
+
+### Generate a factory partition and store DAC certificate and private key in secure cert partition using DS Peripheral
+```
+./mfg_tool.py -cn "My bulb" -v 0xFFF2 -p 0x8001 --pai \
+   -k path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/attestation/Chip-Test-PAI-FFF2-8001-Key.pem \
+   -c path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/attestation/Chip-Test-PAI-FFF2-8001-Cert.pem \
+   -cd path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/certification-declaration/Chip-Test-CD-FFF2-8001.der
+   --dac-in-secure-cert --ds-peripheral --target esp32h2 --efuse-key-id 1
+```
+*NOTE*: Currently, only esp32h2 supports DS peripheral. 
+
 ### Generate 5 factory partitions [Optional argument : `-n`]
 ```
 ./mfg_tool.py -n 5 -cn "My bulb" -v 0xFFF2 -p 0x8001 --pai \
