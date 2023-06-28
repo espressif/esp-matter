@@ -867,7 +867,7 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
                 ESP_LOGE(TAG, "nimble_port_stop() failed");
                 return;
             }
-
+            vTaskDelay(100); // TODO: BT-3248
             nimble_port_deinit();
 #if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
             err = esp_nimble_hci_and_controller_deinit();
