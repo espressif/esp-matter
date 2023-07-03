@@ -71,6 +71,7 @@ variables:
   - cd ${CI_PROJECT_DIR}
   - git clone ${ESP_THREAD_BR_REPO_URL}
   - cd ${BR_PATH}/examples/basic_thread_border_router
+  - git checkout 25cfe641
   - idf.py set-target esp32s3
   - idf.py build
 
