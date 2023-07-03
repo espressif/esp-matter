@@ -69,7 +69,7 @@ namespace lighting {
 
 uint32_t get_id()
 {
-    return (uint32_t)OnOff::OnOffFeature::kLighting;
+    return (uint32_t)OnOff::Feature::kLighting;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -104,7 +104,7 @@ namespace on_off {
 
 uint32_t get_id()
 {
-    return (uint32_t)LevelControl::LevelControlFeature::kOnOff;
+    return (uint32_t)LevelControl::Feature::kOnOff;
 }
 
 esp_err_t add(cluster_t *cluster)
@@ -124,7 +124,7 @@ namespace lighting {
 
 uint32_t get_id()
 {
-    return (uint32_t)LevelControl::LevelControlFeature::kLighting;
+    return (uint32_t)LevelControl::Feature::kLighting;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -150,7 +150,7 @@ namespace frequency {
 
 uint32_t get_id()
 {
-    return (uint32_t)LevelControl::LevelControlFeature::kFrequency;
+    return (uint32_t)LevelControl::Feature::kFrequency;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -381,7 +381,7 @@ namespace lift {
 
 uint32_t get_id()
 {
-    return (uint32_t)WindowCovering::WindowCoveringFeature::kLift;
+    return (uint32_t)WindowCovering::Feature::kLift;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -409,7 +409,7 @@ namespace tilt {
 
 uint32_t get_id()
 {
-    return (uint32_t)WindowCovering::WindowCoveringFeature::kTilt;
+    return (uint32_t)WindowCovering::Feature::kTilt;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -431,7 +431,7 @@ namespace position_aware_lift {
 
 uint32_t get_id()
 {
-    return (uint32_t)WindowCovering::WindowCoveringFeature::kPositionAwareLift;
+    return (uint32_t)WindowCovering::Feature::kPositionAwareLift;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -472,7 +472,7 @@ namespace absolute_position {
 
 uint32_t get_id()
 {
-    return (uint32_t)WindowCovering::WindowCoveringFeature::kAbsolutePosition;
+    return (uint32_t)WindowCovering::Feature::kAbsolutePosition;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -535,7 +535,7 @@ namespace position_aware_tilt {
 
 uint32_t get_id()
 {
-    return (uint32_t)WindowCovering::WindowCoveringFeature::kPositionAwareTilt;
+    return (uint32_t)WindowCovering::Feature::kPositionAwareTilt;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)

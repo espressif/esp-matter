@@ -43,26 +43,26 @@ static esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, ui
 static void start_cb(Identify *identify)
 {
     ESP_LOGI(TAG, "Start callback");
-    execute_callback(START, identify->mEndpoint, identify->mCurrentEffectIdentifier, identify->mEffectVariant);
+    execute_callback(START, identify->mEndpoint, static_cast<uint8_t>(identify->mCurrentEffectIdentifier), static_cast<uint8_t>(identify->mEffectVariant));
 }
 
 static void stop_cb(Identify *identify)
 {
     ESP_LOGI(TAG, "Stop callback");
-    execute_callback(STOP, identify->mEndpoint, identify->mCurrentEffectIdentifier, identify->mEffectVariant);
+    execute_callback(STOP, identify->mEndpoint, static_cast<uint8_t>(identify->mCurrentEffectIdentifier), static_cast<uint8_t>(identify->mEffectVariant));
 }
 
 static void effect_cb(Identify *identify)
 {
     ESP_LOGI(TAG, "Effect callback");
-    execute_callback(EFFECT, identify->mEndpoint, identify->mCurrentEffectIdentifier, identify->mEffectVariant);
+    execute_callback(EFFECT, identify->mEndpoint, static_cast<uint8_t>(identify->mCurrentEffectIdentifier), static_cast<uint8_t>(identify->mEffectVariant));
 }
 
 esp_err_t init(uint16_t endpoint_id, uint8_t identify_type, uint8_t effect_identifier, uint8_t effect_variant)
 {
-    Identify *identify = new Identify(endpoint_id, start_cb, stop_cb, (EmberAfIdentifyIdentifyType)identify_type,
-                                      effect_cb, static_cast<EmberAfIdentifyEffectIdentifier>(effect_identifier),
-                                      static_cast<EmberAfIdentifyEffectVariant>(effect_variant));
+    Identify *identify = new Identify(endpoint_id, start_cb, stop_cb, (chip::app::Clusters::Identify::IdentifyTypeEnum)identify_type,
+                                      effect_cb, static_cast<chip::app::Clusters::Identify::EffectIdentifierEnum>(effect_identifier),
+                                      static_cast<chip::app::Clusters::Identify::EffectVariantEnum>(effect_variant));
     if (!identify) {
         ESP_LOGE(TAG, "Fail to create identify object");
         return ESP_FAIL;

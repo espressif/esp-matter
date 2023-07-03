@@ -30,7 +30,7 @@ application.
 #include <esp_matter_feature.h>
 #include <esp_matter_identify.h>
 
-#include <app-common/zap-generated/att-storage.h>
+#include <app/att-storage.h>
 #include <app/server/Dnssd.h>
 #include <platform/CHIPDeviceEvent.h>
 #include <platform/CHIPDeviceLayer.h>
