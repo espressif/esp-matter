@@ -222,6 +222,10 @@ static esp_err_t read_min_unused_endpoint_id()
     nvs_handle_t handle;
     esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, ESP_MATTER_NVS_NODE_NAMESPACE,
                                             NVS_READONLY, &handle);
+    if (err == ESP_ERR_NVS_NOT_FOUND) {
+        ESP_LOGI(TAG, "Cannot find the node nvs namespace");
+        return err;
+    }
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to open the node nvs_namespace");
         return err;
