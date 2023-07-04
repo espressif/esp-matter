@@ -265,3 +265,75 @@ Along with that, there are two more methods for generating Matter onboarding cod
 
 To create a QR code image, copy the QR code text and paste it into
 `CHIP: QR Code <https://project-chip.github.io/connectedhomeip/qrcode.html>`__.
+
+A1.11 Chip stack locking error ... Code is unsafe/racy
+------------------------------------------------------
+
+    ::
+
+        E (84728) chip[DL]: Chip stack locking error at 'src/system/SystemLayerImplFreeRTOS.cpp:55'. Code is unsafe/racy
+        E (84728) chip[-]: chipDie chipDie chipDie
+        abort() was called at PC 0x40139b7f on core 0
+        0x40139b7f: chip::Platform::Internal::AssertChipStackLockedByCurrentThread(char const*, int) at /home/jonathan/Desktop/Workspace/firmware/build/esp-idf/chip/../../../../esp-matter/connectedhomeip/connectedhomeip/config/esp32/third_party/connectedhomeip/src/lib/support/CodeUtils.h:508
+         (inlined by) chipDie at /home/jonathan/Desktop/Workspace/firmware/build/esp-idf/chip/../../../../esp-matter/connectedhomeip/connectedhomeip/config/esp32/third_party/connectedhomeip/src/lib/support/CodeUtils.h:518
+         (inlined by) chip::Platform::Internal::AssertChipStackLockedByCurrentThread(char const*, int) at /home/jonathan/Desktop/Workspace/firmware/build/esp-idf/chip/../../../../esp-matter/connectedhomeip/connectedhomeip/config/esp32/third_party/connectedhomeip/src/platform/LockTracker.cpp:36
+
+
+When interacting with Matter resources, it is necessary to perform the operations from within the Matter thread to avoid
+assertion errors. This applies to tasks such as getting and setting attributes, invoking commands, and performing
+operations using the server's object, such as opening or closing the commissioning window.
+
+To address this, there are two possible approaches:
+
+- Locking the Matter thread
+
+    ::
+
+        lock::chip_stack_lock(portMAX_DELAY);
+        ... // eg: access Matter attribute, open/close commissioning window.
+        lock::chip_stack_unlock();
+
+- Scheduling the work on Matter thread
+
+    ::
+
+        static void WorkHandler(intptr_t context);
+        {
+            ... // Do the stuff
+        }
+        chip::DeviceLayer::PlatformMgr().ScheduleWork(WorkHandler, <intptr_t>(nullptr));
+
+
+A1.12 Firmware Version Number
+-----------------------------
+
+Similar to the ESP-IDF's application versioning scheme, the ESP-Matter SDK provides two options for setting the firmware
+version. It depends on `CONFIG_APP_PROJECT_VER_FROM_CONFIG <https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/kconfig.html#config-app-project-ver-from-config>`__
+option and by default option is disabled.
+
+If the ``CONFIG_APP_PROJECT_VER_FROM_CONFIG`` option is disabled, you need to set the version and version string by
+defining the CMake variables in the project's ``CMakeLists.txt`` file. All the examples use this scheme and have these
+variables set. Here's an example:
+
+    ::
+
+        set(PROJECT_VER "1.0")
+        set(PROJECT_VER_NUMBER 1)
+
+On the other hand, if the ``CONFIG_APP_PROJECT_VER_FROM_CONFIG`` option is enabled, you need to set the version using
+the following configuration options:
+
+- Software Version
+    Set the ``CONFIG_DEVICE_SOFTWARE_VERSION_NUMBER`` option.
+    (Component config -> CHIP Device Layer -> Device Identification Options -> Device Software Version Number)
+
+- Software Version String
+    Set the ``CONFIG_APP_PROJECT_VER`` option. (Application manager -> Get the project version from Kconfig)
+
+**NOTES:**
+
+- Ensure you use the correct versioning scheme when building the OTA image.
+- Verify that the software version number in the firmware matches the one specified in the Matter OTA header.
+- The software version number of the OTA image must be numerically higher.
+- If you need to perform a functional rollback, the version number in the OTA image must be higher than the current
+  version, even though the binary content may match the previous OTA image.
