@@ -2068,7 +2068,7 @@ endpoint_t *get_next(endpoint_t *endpoint)
     return (endpoint_t *)current_endpoint->next;
 }
 
-uint16_t get_endpoint_count(node_t *node)
+uint16_t get_count(node_t *node)
 {
     if (!node) {
         ESP_LOGE(TAG, "Node cannot be NULL");

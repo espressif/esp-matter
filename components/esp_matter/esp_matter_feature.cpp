@@ -989,7 +989,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 namespace mode_select {
 namespace feature {
 
-namespace dep_on_off {
+namespace on_off {
 
 uint32_t get_id()
 {
@@ -1011,7 +1011,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     return ESP_OK;
 }
 
-} /* dep_on_off */
+} /* on_off */
 
 } /* feature */
 } /* mode_select */

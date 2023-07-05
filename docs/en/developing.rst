@@ -1235,16 +1235,19 @@ Use `mfg_tool <https://github.com/espressif/esp-matter/blob/main/tools/mfg_tool/
 
 For example we want to use mode_select cluster in light example.
 
+- Add implementation path toexample/light/main/CMakeList.txt
+
+::
+    Append "${MATTER_SDK_PATH}/examples/platform/esp32/mode-support" to SRC_DIRS
+
 - In file example/light/app_main.cpp.
 
 ::
     #include <examples/platform/esp32/mode-support/static-supported-modes-manager.h>
-    {
 
+    {
         cluster::mode_select::config_t ms_config;
         cluster_t *ms_cluster = cluster::mode_select::create(endpoint, &ms_config, CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
 
-        ModeSelect::StaticSupportedModesManager obj;
-        obj.InitEndpointArray(get_endpoint_count(node));
-
+        ModeSelect::StaticSupportedModesManager::getStaticSupportedModesManagerInstance().InitEndpointArray(get_endpoint_count(node));
     }

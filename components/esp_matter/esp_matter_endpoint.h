@@ -421,7 +421,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace mode_select_device {
 typedef struct config {
-	cluster::mode_select::config_t mode_select;
+    cluster::mode_select::config_t mode_select;
 } config_t;
 
 uint32_t get_device_type_id();

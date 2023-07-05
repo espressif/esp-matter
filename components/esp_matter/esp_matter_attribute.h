@@ -525,7 +525,7 @@ attribute_t *create_control_mode(cluster_t *cluster, uint8_t value);
 
 namespace mode_select {
 namespace attribute {
-attribute_t *create_mode_select_description(cluster_t *cluster, char * value, uint16_t length);
+attribute_t *create_mode_select_description(cluster_t *cluster, const char * value, uint16_t length);
 attribute_t *create_standard_namespace(cluster_t *cluster, const nullable<uint16_t> value);
 attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count);
 attribute_t *create_current_mode(cluster_t *cluster, uint8_t value);
