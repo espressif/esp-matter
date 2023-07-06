@@ -1238,11 +1238,13 @@ For example we want to use mode_select cluster in light example.
 - Add implementation path toexample/light/main/CMakeList.txt
 
 ::
+
     Append "${MATTER_SDK_PATH}/examples/platform/esp32/mode-support" to SRC_DIRS
 
 - In file example/light/app_main.cpp.
 
 ::
+
     #include <examples/platform/esp32/mode-support/static-supported-modes-manager.h>
 
     {
