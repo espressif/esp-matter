@@ -71,6 +71,7 @@ variables:
   - cd ${CI_PROJECT_DIR}
   - git clone ${ESP_THREAD_BR_REPO_URL}
   - cd ${BR_PATH}/examples/basic_thread_border_router
+  - git checkout 25cfe641
   - idf.py set-target esp32s3
   - idf.py build
 
@@ -169,8 +170,6 @@ build_esp_matter_examples_pytest_C6_idf_v5_1:
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --pytest_c6
     - *build_chip_tool
-  after_script:
-    - find . -name "*.bin"
 
 build_esp_matter_examples_pytest_H2_idf_v5_1:
   extends:
@@ -206,8 +205,6 @@ build_esp_matter_examples_pytest_H2_idf_v5_1:
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --pytest_h2
     - *build_chip_tool
-  after_script:
-    - find . -name "*.bin"
 
 build_esp_matter_examples_non_pytest_idf_v5_1:
   extends:
@@ -228,10 +225,9 @@ build_esp_matter_examples_non_pytest_idf_v5_1:
   script:
     - *build_external_platform_example
     - cd ${ESP_MATTER_PATH}
+    - rm  ./examples/*/dependencies.lock
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --no_pytest
-  after_script:
-    - find . -name "*.bin"
 
 build_esp_matter_examples_pytest_C3_idf_v4_4:
   extends:
@@ -255,8 +251,6 @@ build_esp_matter_examples_pytest_C3_idf_v4_4:
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --pytest_c3
     - *build_chip_tool
-  after_script:
-    - find . -name "*.bin"
 
 pytest_esp32c3_esp_matter_dut:
   stage: target_test
