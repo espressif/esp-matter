@@ -201,6 +201,17 @@ endpoint_t *get_first(node_t *node);
  */
 endpoint_t *get_next(endpoint_t *endpoint);
 
+/** Get endpoint count
+ *
+ * Get the endpoint count present on the node.
+ *
+ * @param[in] node Node handle.
+ *
+ * @return Endpoint count on success.
+ * @return 0 in case of failure.
+ */
+uint16_t get_count(node_t *node);
+
 /** Get endpoint ID
  *
  * Get the endpoint ID for the endpoint.

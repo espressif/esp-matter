@@ -61,6 +61,7 @@ set(SRC_DIRS_LIST       "."
                         "${MATTER_SDK_PATH}/src/app/clusters/wake-on-lan-server"
                         "${MATTER_SDK_PATH}/src/app/clusters/wifi-network-diagnostics-server"
                         "${MATTER_SDK_PATH}/src/app/clusters/window-covering-server"
+                        "${MATTER_SDK_PATH}/src/app/clusters/mode-select-server"
 )
 
 set(INCLUDE_DIRS_LIST   "."

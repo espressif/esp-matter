@@ -30,8 +30,10 @@ void esp_matter_ota_requestor_start(void);
 /**
  * @brief This API initializes the handling of encrypted OTA image
  *
- * @param[in] key  null terminated RSA-3072 key in PEM format
- * @param[in] size Size of the key
+ * @param[in] key  null terminated RSA-3072 key in PEM format.
+ *                 The key buffer must remain allocated and should not be freed. 
+ * @param[in] size Size of the key, size shall contain the null terminator as well.
+ *                 If using `strlen` then please consider adding +1 to the size.
  *
  * @return ESP_OK or success, appropriate error otherwise
  */

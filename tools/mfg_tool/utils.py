@@ -234,6 +234,33 @@ def get_fixed_label_dict(fixed_labels):
     return fl_dict
 
 
+# get_supported_modes_dict() converts the list of strings to per endpoint dictionaries.
+# example input  : ['0/label1/1/"1\0x8000, 2\0x8000",  1/label2/1/"1\0x8000, 2\0x8000"']
+# example outout : {'1': [{'Label': 'label1', 'Mode': 0, 'Semantic_Tag': [{'value': 1, 'mfgCode': 32768}, {'value': 2, 'mfgCode': 32768}]}, {'Label': 'label2', 'Mode': 1, 'Semantic_Tag': [{'value': 1, 'mfgCode': 32768}, {'value': 2, 'mfgCode': 32768}]}]}
+
+
+def get_supported_modes_dict(supported_modes):
+    output_dict = {}
+
+    for mode_str in supported_modes:
+        mode_label_strs = mode_str.split('/')
+        mode = mode_label_strs[0]
+        label = mode_label_strs[1]
+        ep = mode_label_strs[2]
+
+        semantic_tag_strs = mode_label_strs[3].split(', ')
+        semantic_tags = [{"value": int(v.split('\\')[0]), "mfgCode": int(v.split('\\')[1], 16)} for v in semantic_tag_strs]
+
+        mode_dict = {"Label": label, "Mode": int(mode), "Semantic_Tag": semantic_tags}
+
+        if ep in output_dict:
+            output_dict[ep].append(mode_dict)
+        else:
+            output_dict[ep] = [mode_dict]
+
+    return output_dict
+
+
 # Convert the certificate in PEM format to DER format
 def convert_x509_cert_from_pem_to_der(pem_file, out_der_file):
     with open(pem_file, 'rb') as f:

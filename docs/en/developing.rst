@@ -1201,3 +1201,55 @@ Please follow the steps below to enable and use encrypted application images for
 NOTE: There are several ways to store the private key, such as hardcoding it in the firmware, embedding it as a text
 file, or reading it from the NVS. We have demonstrated the use of the private key by embedding it as a text file in the
 light example.
+
+2.7.2 Mode Select
+==================
+
+This cluster provides an interface for controlling a characteristic of a device that can be set to one of several predefined values. For example, the light pattern of a disco ball, the mode of a massage chair, or the wash cycle of a laundry machine.
+
+2.7.2.1 Attribute Supported Modes
+---------------------------------
+
+This attribute is the list of supported modes that may be selected for the CurrentMode attribute. Each item in this list represents a unique mode as indicated by the Mode field of the ModeOptionStruct. Each entry in this list SHALL have a unique value for the Mode field.
+ESP_MATTER uses factory partition to set the values of Supported Modes attribute.
+
+2.7.2.2 Generate Factory Partition Using mfg_tool
+-------------------------------------------------
+
+Use `mfg_tool <https://github.com/espressif/esp-matter/blob/main/tools/mfg_tool/README.md>`__ to generate factory partition of the supported modes attribute.
+
+2.7.2.2.1 Usage
+---------------
+
+::
+
+    cd tools/mfg_tool
+    ./mfg_tool.py -cn "My bulb" -v 0xFFF2 -p 0x8001 --pai \
+    -k path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/attestation/Chip-Test-PAI-FFF2-8001-Key.pem \
+    -c path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/attestation/Chip-Test-PAI-FFF2-8001-Cert.pem \
+    -cd path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/certification-declaration/Chip-Test-CD-FFF2-8001.der \
+    --supported-modes mode1/label1/endpointId/"value\\mfgCode, value\\mfgCode"  mode2/label2/endpointId/"value\\mfgCode, value\\mfgCode"
+
+2.7.2.3 Build example
+---------------------
+
+For example we want to use mode_select cluster in light example.
+
+- Add implementation path toexample/light/main/CMakeList.txt
+
+::
+
+    Append "${MATTER_SDK_PATH}/examples/platform/esp32/mode-support" to SRC_DIRS
+
+- In file example/light/app_main.cpp.
+
+::
+
+    #include <examples/platform/esp32/mode-support/static-supported-modes-manager.h>
+
+    {
+        cluster::mode_select::config_t ms_config;
+        cluster_t *ms_cluster = cluster::mode_select::create(endpoint, &ms_config, CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
+
+        ModeSelect::StaticSupportedModesManager::getStaticSupportedModesManagerInstance().InitEndpointArray(get_endpoint_count(node));
+    }

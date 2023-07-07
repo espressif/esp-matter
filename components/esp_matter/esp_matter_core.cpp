@@ -2068,6 +2068,21 @@ endpoint_t *get_next(endpoint_t *endpoint)
     return (endpoint_t *)current_endpoint->next;
 }
 
+uint16_t get_count(node_t *node)
+{
+    if (!node) {
+        ESP_LOGE(TAG, "Node cannot be NULL");
+        return 0;
+    }
+    uint16_t count = 0; 
+    endpoint_t *endpoint = get_first(node);
+    while (endpoint) {
+        count++;
+        endpoint = get_next(endpoint);
+    }
+    return count;
+}
+
 uint16_t get_id(endpoint_t *endpoint)
 {
     if (!endpoint) {

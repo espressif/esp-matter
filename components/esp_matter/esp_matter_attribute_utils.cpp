@@ -319,6 +319,30 @@ esp_matter_attr_val_t esp_matter_nullable_enum8(nullable<uint8_t> val)
     return attr_val;
 }
 
+esp_matter_attr_val_t esp_matter_enum16(uint16_t val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_ENUM16,
+        .val = {
+            .u16 = val,
+        },
+    };
+    return attr_val;
+}
+
+esp_matter_attr_val_t esp_matter_nullable_enum16(nullable<uint16_t> val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16,
+    };
+    if (val.is_null()) {
+        chip::app::NumericAttributeTraits<uint16_t>::SetNull(attr_val.val.u16);
+    } else {
+        attr_val.val.u16 = val.value();
+    }
+    return attr_val;
+}
+
 esp_matter_attr_val_t esp_matter_bitmap8(uint8_t val)
 {
     esp_matter_attr_val_t attr_val = {
@@ -622,6 +646,18 @@ static esp_err_t console_set_handler(int argc, char **argv)
             uint8_t value = atoi(argv[3]);
             val = esp_matter_enum8(value);
         }
+    } else if (type == ESP_MATTER_VAL_TYPE_ENUM16) {
+        if (matter_attribute->IsNullable()) {
+            if (strncmp(argv[3], "null", sizeof("null")) == 0) {
+                val = esp_matter_nullable_enum16(nullable<uint16_t>());
+            } else {
+                uint16_t value = atoi(argv[3]);
+                val = esp_matter_nullable_enum16(value);
+            }
+        } else {
+            uint16_t value = atoi(argv[3]);
+            val = esp_matter_enum16(value);
+        }
     } else {
         ESP_LOGE(TAG, "Type not handled: %d", type);
         return ESP_ERR_INVALID_ARG;
@@ -834,6 +870,20 @@ static esp_err_t console_get_handler(int argc, char **argv)
         } else {
             val = esp_matter_enum8(Traits::StorageToWorking(value));
         }
+    } else if (type == ESP_MATTER_VAL_TYPE_ENUM16) {
+        using Traits = chip::app::NumericAttributeTraits<uint16_t>;
+        Traits::StorageType value;
+        uint8_t *read_able = Traits::ToAttributeStoreRepresentation(value);
+        get_val_raw(endpoint_id, cluster_id, attribute_id, read_able, sizeof(value));
+        if (matter_attribute->IsNullable()) {
+            if (Traits::IsNullValue(value)) {
+                val = esp_matter_nullable_enum16(nullable<uint16_t>());
+            } else {
+                val = esp_matter_nullable_enum16(Traits::StorageToWorking(value));
+            }
+        } else {
+            val = esp_matter_enum16(Traits::StorageToWorking(value));
+        }
     } else {
         ESP_LOGE(TAG, "Type not handled: %d", type);
         return ESP_ERR_INVALID_ARG;
@@ -980,6 +1030,10 @@ static esp_matter_val_type_t get_val_type_from_attribute_type(int attribute_type
         return ESP_MATTER_VAL_TYPE_ENUM8;
         break;
 
+    case ZCL_ENUM16_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_ENUM16;
+        break;
+
     case ZCL_BITMAP8_ATTRIBUTE_TYPE:
         return ESP_MATTER_VAL_TYPE_BITMAP8;
         break;
@@ -1011,6 +1065,7 @@ bool val_is_null(esp_matter_attr_val_t *val)
         return chip::app::NumericAttributeTraits<uint8_t>::IsNullValue(val->val.u8);
         break;
     case ESP_MATTER_VAL_TYPE_NULLABLE_UINT16:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16:
     case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16:
         return chip::app::NumericAttributeTraits<uint16_t>::IsNullValue(val->val.u16);
         break;
@@ -1300,6 +1355,24 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         break;
 
+    case ESP_MATTER_VAL_TYPE_ENUM16:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16:
+        if (attribute_type) {
+            *attribute_type = ZCL_ENUM16_ATTRIBUTE_TYPE;
+        }
+        if (attribute_size) {
+            *attribute_size = sizeof(uint16_t);
+        }
+        if (value) {
+            using Traits = chip::app::NumericAttributeTraits<uint16_t>;
+            if ((val->type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val->val.u16)) {
+                Traits::SetNull(*(uint16_t *)value);
+            } else {
+                Traits::WorkingToStorage(val->val.u16, *(uint16_t *)value);
+            }
+        }
+        break;
+
     case ESP_MATTER_VAL_TYPE_BITMAP8:
     case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8:
         if (attribute_type) {
@@ -1548,6 +1621,22 @@ static esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttri
         break;
     }
 
+    case ZCL_ENUM16_ATTRIBUTE_TYPE: {
+        using Traits = chip::app::NumericAttributeTraits<uint16_t>;
+        Traits::StorageType attribute_value;
+        memcpy((uint16_t *)&attribute_value, value, sizeof(Traits::StorageType));
+        if (attribute_metadata->IsNullable()) {
+            if (Traits::IsNullValue(attribute_value)) {
+                *val = esp_matter_nullable_enum16(nullable<uint16_t>());
+            } else {
+                *val = esp_matter_nullable_enum16(attribute_value);
+            }
+        } else {
+            *val = esp_matter_enum16(attribute_value);
+        }
+        break;
+    }
+
     case ZCL_BITMAP8_ATTRIBUTE_TYPE: {
         using Traits = chip::app::NumericAttributeTraits<uint8_t>;
         Traits::StorageType attribute_value;
@@ -1618,7 +1707,8 @@ void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
         ESP_LOGI(TAG, "********** %c : Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " is %" PRIi16 " **********", action,
                  endpoint_id, cluster_id, attribute_id, val->val.i16);
     } else if (val->type == ESP_MATTER_VAL_TYPE_UINT16 || val->type == ESP_MATTER_VAL_TYPE_BITMAP16
-               || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT16 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16) {
+                || val->type == ESP_MATTER_VAL_TYPE_ENUM16 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT16
+                || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16) {
         ESP_LOGI(TAG, "********** %c : Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " is %" PRIu16 " **********", action,
                  endpoint_id, cluster_id, attribute_id, val->val.u16);
     } else if (val->type == ESP_MATTER_VAL_TYPE_INT32|| val->type == ESP_MATTER_VAL_TYPE_NULLABLE_INT32) {
