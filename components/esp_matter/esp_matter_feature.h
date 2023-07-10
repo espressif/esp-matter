@@ -440,5 +440,23 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* feature */
 } /* mode_select */
 
+namespace software_diagnostics {
+namespace feature {
+
+namespace watermarks {
+
+typedef struct config {
+    uint64_t current_heap_high_watermark;
+    config() : current_heap_high_watermark(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* watermarks */
+
+} /* feature */
+} /* software_diagnostics */
+
 } /* cluster */
 } /* esp_matter */

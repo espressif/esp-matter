@@ -416,6 +416,19 @@ attribute_t *create_test_event_triggers_enabled(cluster_t *cluster, bool value)
 } /* attribute */
 } /* general_diagnostics */
 
+
+namespace software_diagnostics {
+namespace attribute {
+
+attribute_t *create_current_heap_high_watermark(cluster_t *cluster, uint64_t value)
+{
+    return esp_matter::attribute::create(cluster, SoftwareDiagnostics::Attributes::CurrentHeapHighWatermark::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+}
+
+} /* attribute */
+} /* software_diagnostics */
+
 namespace administrator_commissioning {
 namespace attribute {
 

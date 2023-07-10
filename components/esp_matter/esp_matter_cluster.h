@@ -111,6 +111,15 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* network_commissioning */
 
+namespace diagnostic_logs {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* diagnostic_logs */
+
 namespace general_diagnostics {
 typedef struct config {
     uint16_t cluster_revision;
@@ -119,6 +128,15 @@ typedef struct config {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* general_diagnostics */
+
+namespace software_diagnostics {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* software_diagnostics */
 
 namespace administrator_commissioning {
 typedef struct config {

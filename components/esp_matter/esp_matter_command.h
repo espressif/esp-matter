@@ -54,11 +54,24 @@ command_t *create_reset_counts(cluster_t *cluster);
 } /* command */
 } /* diagnostics_network_wifi */
 
+namespace diagnostic_logs {
+namespace command {
+command_t *create_retrieve_logs_request(cluster_t *cluster);
+command_t *create_retrieve_logs_response(cluster_t *cluster);
+} /* command */
+} /* diagnostic_logs */
+
 namespace general_diagnostics {
 namespace command {
 command_t *create_test_event_trigger(cluster_t *cluster);
 } /* command */
 } /* general_diagnostics */
+
+namespace software_diagnostics {
+namespace command {
+command_t *create_reset_watermarks(cluster_t *cluster);
+} /* command */
+} /* software_diagnostics */
 
 namespace group_key_management {
 namespace command {

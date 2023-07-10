@@ -1010,10 +1010,43 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
     return ESP_OK;
 }
-
 } /* on_off */
 
 } /* feature */
 } /* mode_select */
+
+namespace software_diagnostics {
+namespace feature {
+
+namespace watermarks {
+
+uint32_t get_id()
+{
+    // enum class for SoftwareDiagnosticsFeature is not present in the upstream code.
+    // Return the code according to the SPEC
+    return 0x01;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes managed internally */
+    attribute::create_current_heap_high_watermark(cluster, 0);
+
+    /* commands */
+    command::create_reset_watermarks(cluster);
+
+    return ESP_OK;
+}
+} /* watermarks */
+
+} /* feature */
+} /* software_diagnostics */
+
 } /* cluster */
 } /* esp_matter */
