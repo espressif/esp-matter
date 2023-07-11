@@ -59,4 +59,4 @@ If you want to test Matter on Espressif devices without any additional setup:
 
 .. |Try it with Launchpad| image:: ../_static/launchpad.png
                            :scale: 50 %
-.. _Try it with Launchpad: https://espressif.github.io/esp-launchpad/
+.. _Try it with Launchpad: https://espressif.github.io/esp-launchpad/?flashConfigURL=https://espressif.github.io/esp-matter/launchpad.toml
