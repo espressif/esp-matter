@@ -154,17 +154,25 @@ static_library("ESP32_custom") {
       "ConnectivityManagerImpl_WiFi.cpp",
       "NetworkCommissioningDriver.cpp",
       "NetworkCommissioningDriver.h",
-      "route_hook/ESP32RouteHook.c",
-      "route_hook/ESP32RouteHook.h",
-      "route_hook/ESP32RouteTable.c",
-      "route_hook/ESP32RouteTable.h",
     ]
     if (chip_mdns == "platform") {
       sources += [
-        "DnssdImpl.cpp",
-        "DnssdImpl.h",
+        "WiFiDnssdImpl.cpp",
+        "WiFiDnssdImpl.h",
       ]
     }
+    if (chip_enable_route_hook) {
+      sources += [
+        "route_hook/ESP32RouteHook.c",
+        "route_hook/ESP32RouteHook.h",
+        "route_hook/ESP32RouteTable.c",
+        "route_hook/ESP32RouteTable.h",
+      ]
+    }
+  }
+
+  if (chip_mdns == "platform") {
+    sources += [ "DnssdImpl.cpp" ]
   }
 
   if (chip_use_factory_data_provider) {
