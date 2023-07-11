@@ -1,0 +1,4 @@
+CONFIG_IDF_TARGET="esp32s3"
+
+# Enable ble controller
+CONFIG_ENABLE_ESP32_BLE_CONTROLLER=y

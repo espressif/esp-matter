@@ -872,7 +872,17 @@ As an example, you can build *light* example on ``ESP32_custom`` platform with f
 
 2.4.5 Controller Example
 ~~~~~~~~~~~~~~~~~~~~~~~~
-This section introduces the Matter controller example. Now this example supports 8 features of the standard Matter controller, including onnetwork-pairing, invoke-cluster-commands, read-attributes-commands, write-attributes-commands, read-events-commands, subscribe-attributes-commands, subscribe-events-commands, and groupsettings-command.
+This section introduces the Matter controller example. Now this example supports the following features of the standard Matter controller:
+
+- BLE-WiFi pairing
+- On-network pairing
+- Invoke cluster commands
+- Read attributes commands
+- Write attributes commands
+- Read events commands
+- Subscribe attributes commands
+- Subscribe events commands
+- Group settings command.
 
 2.4.5.1 Starting with device console
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -889,7 +899,12 @@ The ``pairing`` command is used for commissioning the end-devices. Here are thre
       matter esp wifi connect <ssid> <password>
       matter esp controller pairing onnetwork <node_id> <setup_passcode>
 
-- Ble-wifi pairing. This commissioning method is still not supported on current controller example.
+- Ble-wifi pairing. This pairing method is supported for ESP32S3. Before you execute this commissioning method, connect the controller to the Wi-Fi network and ensure that the end-device is in commissioning mode. You can use the command ``matter esp wifi connect`` to connect the controller to your wifi network. Then we can start the pairing.
+
+   ::
+
+      matter esp wifi connect <ssid> <password>
+      matter esp controller pairing ble-wifi <node_id> <ssid> <password> <pincode> <discriminator>
 
 - Ble-thread pairing. This commissioning method is still not supported on current controller example.
 

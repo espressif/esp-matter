@@ -287,7 +287,7 @@ esp_err_t controller_register_commands()
             .name = "pairing",
             .description = "Pairing a node.\n"
                            "\tUsage: controller pairing onnetwork [nodeid] [pincode] OR\n"
-                           "\tcontroller pairing ble-wifi [nodeid] [pincode] [ssid] [password] [discriminator] OR\n"
+                           "\tcontroller pairing ble-wifi [nodeid] [ssid] [password] [pincode] [discriminator] OR\n"
                            "\tcontroller pairing ble-thread [nodeid] [pincode] [discriminator] [dataset]",
             .handler = controller_pairing_handler,
         },
