@@ -1,0 +1,32 @@
+menu "ESP-NOW Bridge Application Configuration"
+
+    config ESP_IDF_VERSION
+        string
+        default "$ESP_IDF_VERSION"
+    if ESP_IDF_VERSION>="5.0"
+        config ESPNOW_BRIDGE_APP_PS_ENABLE
+            bool "ESP-NOW power saving"
+            default y
+            help
+                Enable to use ESP-NOW power saving feature. Note that ESP-NOW power saving in STA connected state is
+                available only for IDF version >= 5.0.
+    endif
+
+    config ESPNOW_BRIDGE_APP_WAKE_INTERVAL
+        int "Wake interval for connectionless modules to wake up periodically. (ms)"
+        depends on ESPNOW_BRIDGE_APP_PS_ENABLE
+        range 1 65535
+        default 200
+        help
+            Set the interval for connectionless module periodic wakeup. Recommend to configure interval in multiples of
+            hundred. (e.g. 100ms).
+
+    config ESPNOW_BRIDGE_APP_WAKE_WINDOW
+        int "Wake window for esp_now to stay awake in wake interval. (ms)"
+        depends on ESPNOW_BRIDGE_APP_PS_ENABLE
+        range 0 65535
+        default 110
+        help
+            Set wake window for esp_now to wake up in interval unit.
+ 
+endmenu

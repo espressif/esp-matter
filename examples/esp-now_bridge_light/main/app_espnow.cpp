@@ -18,6 +18,10 @@
 #include "espnow_ctrl.h"
 #include "app_espnow.h"
 
+#ifdef CONFIG_ESPNOW_BRIDGE_APP_PS_ENABLE
+#include <esp_wifi.h>
+#endif
+
 using namespace chip::app::Clusters;
 using namespace esp_matter;
 
@@ -155,6 +159,11 @@ void app_espnow_init()
     } else {
         ESP_LOGI(TAG, "espnow init fail.");
     }
+
+#ifdef CONFIG_ESPNOW_BRIDGE_APP_PS_ENABLE
+    esp_wifi_connectionless_module_set_wake_interval(CONFIG_ESPNOW_BRIDGE_APP_WAKE_INTERVAL);
+    esp_now_set_wake_window(CONFIG_ESPNOW_BRIDGE_APP_WAKE_WINDOW);
+#endif
 
     esp_event_handler_register(ESP_EVENT_ESPNOW, ESP_EVENT_ANY_ID, espnow_event_handler, NULL);
 
