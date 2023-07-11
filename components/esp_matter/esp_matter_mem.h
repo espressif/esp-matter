@@ -1,4 +1,4 @@
-// Copyright 2021 Espressif Systems (Shanghai) PTE LTD
+// Copyright 2023 Espressif Systems (Shanghai) PTE LTD
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,3 +24,9 @@ void *esp_matter_mem_calloc(size_t n, size_t size);
  * @param[in] ptr pointer to the memory to be freed.
  */
 void esp_matter_mem_free(void *ptr);
+
+/** ESP Matter realloc
+ * @param[in] ptr  Pointer to reallocate
+ * @param[in] size size to reallocate
+ */
+void *esp_matter_mem_realloc(void *ptr, size_t size);
