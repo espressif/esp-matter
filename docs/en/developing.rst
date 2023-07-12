@@ -30,7 +30,7 @@ The Prerequisites for ESP-IDF and Matter:
 
 
 2.1.1.1 Windows 10
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 Development on Windows is supported using Windows Subsystem for Linux (WSL). Please follow the below instructions to set up host.
 
@@ -1217,24 +1217,24 @@ NOTE: There are several ways to store the private key, such as hardcoding it in 
 file, or reading it from the NVS. We have demonstrated the use of the private key by embedding it as a text file in the
 light example.
 
-2.7.2 Mode Select
-==================
+2.8 Mode Select
+---------------
 
 This cluster provides an interface for controlling a characteristic of a device that can be set to one of several predefined values. For example, the light pattern of a disco ball, the mode of a massage chair, or the wash cycle of a laundry machine.
 
-2.7.2.1 Attribute Supported Modes
----------------------------------
+2.8.1 Attribute Supported Modes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This attribute is the list of supported modes that may be selected for the CurrentMode attribute. Each item in this list represents a unique mode as indicated by the Mode field of the ModeOptionStruct. Each entry in this list SHALL have a unique value for the Mode field.
 ESP_MATTER uses factory partition to set the values of Supported Modes attribute.
 
-2.7.2.2 Generate Factory Partition Using mfg_tool
--------------------------------------------------
+2.8.2 Generate Factory Partition Using mfg_tool
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Use `mfg_tool <https://github.com/espressif/esp-matter/blob/main/tools/mfg_tool/README.md>`__ to generate factory partition of the supported modes attribute.
 
-2.7.2.2.1 Usage
----------------
+2.8.2.1 Usage
+^^^^^^^^^^^^^
 
 ::
 
@@ -1245,8 +1245,8 @@ Use `mfg_tool <https://github.com/espressif/esp-matter/blob/main/tools/mfg_tool/
     -cd path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/certification-declaration/Chip-Test-CD-FFF2-8001.der \
     --supported-modes mode1/label1/endpointId/"value\\mfgCode, value\\mfgCode"  mode2/label2/endpointId/"value\\mfgCode, value\\mfgCode"
 
-2.7.2.3 Build example
----------------------
+2.8.3 Build example
+~~~~~~~~~~~~~~~~~~~
 
 For example we want to use mode_select cluster in light example.
 
