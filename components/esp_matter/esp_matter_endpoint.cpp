@@ -68,6 +68,51 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
 }
 } /* root_node */
 
+namespace power_source_device{
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_POWER_SOURCE_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_POWER_SOURCE_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    if (endpoint) {
+        return add(endpoint, config);
+    }
+    return endpoint;
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+	}
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type: err: %d", err);
+    }
+
+    cluster_t *cluster = descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
+    if (!cluster) {
+        return NULL;
+    }
+    cluster = power_source::create(endpoint, &(config->power_source), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
+    if (!cluster) {
+        return NULL;
+    }
+
+    return endpoint;
+}
+
+} /** power_source_device **/
+
 namespace on_off_light {
 uint32_t get_device_type_id()
 {

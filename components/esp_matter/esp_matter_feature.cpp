@@ -63,6 +63,122 @@ static uint32_t get_feature_map_value(cluster_t *cluster)
     return val.val.u32;
 }
 
+namespace power_source {
+namespace feature {
+namespace wired {
+
+uint32_t get_id()
+{
+    return (uint32_t)PowerSource::Feature::kWired;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_wired_current_type(cluster, config->wired_current_type);
+
+    return ESP_OK;
+}
+
+} /* wired */
+
+namespace battery {
+
+uint32_t get_id()
+{
+    return (uint32_t)PowerSource::Feature::kBattery;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_bat_charge_level(cluster, config->bat_charge_level);
+    attribute::create_bat_replacement_needed(cluster, config->bat_replacement_needed);
+    attribute::create_bat_replaceability(cluster, config->bat_replaceability);
+
+    return ESP_OK;
+}
+
+} /* battery */
+
+namespace rechargeable {
+
+uint32_t get_id()
+{
+    return (uint32_t)PowerSource::Feature::kRechargeable;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    uint32_t battery_feature_map = feature::battery::get_id();
+    if((get_feature_map_value(cluster) & battery_feature_map) == battery_feature_map) {
+
+        update_feature_map(cluster, get_id());
+
+        /* Attributes not managed internally */
+        attribute::create_bat_charge_state(cluster, config->bat_charge_state);
+        attribute::create_bat_functional_while_charging(cluster, config->bat_functional_while_charging);
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support Battery feature");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+
+    return ESP_OK;
+}
+
+} /* rechargeable */
+
+namespace replaceable {
+
+uint32_t get_id()
+{
+    return (uint32_t)PowerSource::Feature::kReplaceable;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    uint32_t battery_feature_map = feature::battery::get_id();
+    if((get_feature_map_value(cluster) & battery_feature_map) == battery_feature_map) {
+
+        update_feature_map(cluster, get_id());
+
+        /* Attributes not managed internally */
+        attribute::create_bat_replacement_description(cluster, config->bat_replacement_description, sizeof(config->bat_replacement_description));
+        attribute::create_bat_quantity(cluster, config->bat_quantity, 0, 255);
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support Battery feature");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+
+    return ESP_OK;
+}
+
+} /* replaceable */
+} /* feature */
+} /* power_source */
+
 namespace on_off {
 namespace feature {
 namespace lighting {

@@ -2225,5 +2225,284 @@ attribute_t *create_on_mode(cluster_t *cluster, nullable<uint8_t> value)
 } /* attribute */
 } /* mode_select */
 
+namespace power_source {
+namespace attribute {
+
+attribute_t *create_status(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::Status::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_order(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::Order::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(min), esp_matter_uint8(max));
+    return attribute;
+}
+
+attribute_t *create_description(cluster_t *cluster, const char * value, uint16_t length)
+{
+    if (length > k_max_description_length) {
+        ESP_LOGE(TAG, "Could not create attribute, string length out of bound");
+        return NULL;
+    }
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::Description::Id, ATTRIBUTE_FLAG_NONE, esp_matter_char_str((char *)value, length));
+}
+
+attribute_t *create_wired_assessed_input_voltage(cluster_t *cluster, nullable<uint32_t> value, uint32_t min, uint32_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::WiredAssessedInputVoltage::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(min), esp_matter_uint32(max));
+    return attribute;
+}
+
+attribute_t *create_wired_assessed_input_frequency(cluster_t *cluster, nullable<uint16_t> value, uint16_t min, uint16_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::WiredAssessedInputFrequency::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
+    return attribute;
+}
+
+attribute_t *create_wired_current_type(cluster_t *cluster, const uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::WiredCurrentType::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_wired_assessed_current(cluster_t *cluster,  nullable<uint32_t> value, uint32_t min, uint32_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::WiredAssessedCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(min), esp_matter_uint32(max));
+    return attribute;
+}
+
+attribute_t *create_wired_nominal_voltage(cluster_t *cluster, const uint32_t value, uint32_t min, uint32_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::WiredNominalVoltage::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(min), esp_matter_uint32(max));
+    return attribute;
+}
+
+attribute_t *create_wired_maximum_current(cluster_t *cluster, const uint32_t value, uint32_t min, uint32_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::WiredMaximumCurrent::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(min), esp_matter_uint32(max));
+    return attribute;
+}
+
+attribute_t *create_wired_present(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::WiredPresent::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+}
+
+attribute_t *create_active_wired_faults(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
+{
+    if (count > k_max_fault_count) {
+        ESP_LOGE(TAG, "Could not create attribute, list out of bound");
+        return NULL;
+    }
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::ActiveWiredFaults::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_bat_voltage(cluster_t *cluster, nullable<uint32_t> value, uint32_t min, uint32_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::BatVoltage::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(min), esp_matter_uint32(max));
+    return attribute;
+}
+
+attribute_t *create_bat_percent_remaining(cluster_t *cluster, nullable<uint8_t> value, uint8_t min, uint8_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::BatPercentRemaining::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(min), esp_matter_uint8(max));
+    return attribute;
+}
+
+attribute_t *create_bat_time_remaining(cluster_t *cluster, nullable<uint32_t> value, uint32_t min, uint32_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::BatTimeRemaining::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(min), esp_matter_uint32(max));
+    return attribute;
+}
+
+attribute_t *create_bat_charge_level(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::BatChargeLevel::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_bat_replacement_needed(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::BatReplacementNeeded::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+}
+
+attribute_t *create_bat_replaceability(cluster_t *cluster, const uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::BatReplaceability::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_bat_present(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::BatPresent::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+}
+
+attribute_t *create_active_bat_faults(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
+{
+    if (count > k_max_fault_count) {
+        ESP_LOGE(TAG, "Could not create attribute, list out of bound");
+        return NULL;
+    }
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::ActiveBatFaults::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_bat_replacement_description(cluster_t *cluster, const char * value, uint16_t length)
+{
+    if (length > k_max_description_length) {
+        ESP_LOGE(TAG, "Could not create attribute, string size out of bound");
+        return NULL;
+    }
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::BatReplacementDescription::Id, ATTRIBUTE_FLAG_NONE, esp_matter_char_str((char *)value, length));
+}
+
+attribute_t *create_bat_common_designation(cluster_t *cluster, const uint8_t value, uint8_t min, uint8_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::BatCommonDesignation::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(min), esp_matter_enum8(max));
+    return attribute;
+}
+
+attribute_t *create_bat_ansi_designation(cluster_t *cluster, const char * value, uint16_t length)
+{
+    if (length > k_max_designation_count) {
+        ESP_LOGE(TAG, "Could not create attribute, string size out of bound");
+        return NULL;
+    }
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::BatANSIDesignation::Id, ATTRIBUTE_FLAG_NONE, esp_matter_char_str((char *)value, length));
+}
+
+attribute_t *create_bat_iec_designation(cluster_t *cluster, const char * value, uint16_t length)
+{
+    if (length > k_max_designation_count) {
+        ESP_LOGE(TAG, "Could not create attribute, string size out of bound");
+        return NULL;
+    }
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::BatIECDesignation::Id, ATTRIBUTE_FLAG_NONE, esp_matter_char_str((char *)value, length));
+}
+
+attribute_t *create_bat_approved_chemistry(cluster_t *cluster, const uint8_t value, uint8_t min, uint8_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::BatApprovedChemistry::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(min), esp_matter_enum8(max));
+    return attribute;
+}
+
+attribute_t *create_bat_capacity(cluster_t *cluster, const uint32_t value, uint32_t min, uint32_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::BatCapacity::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(min), esp_matter_uint32(max));
+    return attribute;
+}
+
+attribute_t *create_bat_quantity(cluster_t *cluster, const uint8_t value, uint8_t min, uint8_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::BatQuantity::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(min), esp_matter_uint8(max));
+    return attribute;
+}
+
+attribute_t *create_bat_charge_state(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::BatChargeState::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_bat_time_to_full_charge(cluster_t *cluster, nullable<uint32_t> value, uint32_t min, uint32_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::BatTimeToFullCharge::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(min), esp_matter_uint32(max));
+    return attribute;
+}
+
+attribute_t *create_bat_functional_while_charging(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::BatFunctionalWhileCharging::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+}
+
+attribute_t *create_bat_charging_current(cluster_t *cluster, nullable<uint32_t> value, uint32_t min, uint32_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::BatChargingCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(min), esp_matter_uint32(max));
+    return attribute;
+}
+
+attribute_t *create_active_bat_charge_faults(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
+{
+    if (count > k_max_charge_faults_count) {
+        ESP_LOGE(TAG, "Could not create attribute, list out of bound");
+        return NULL;
+    }
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::ActiveBatChargeFaults::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+} /* power_source */
+
 } /* cluster */
 } /* esp_matter */
