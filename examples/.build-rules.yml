@@ -47,3 +47,9 @@ examples/zigbee_bridge:
     - if: IDF_TARGET in ["esp32"]
       temporary: true
       reason: the other targets are not tested yet
+
+examples/room_air_conditioner:
+  enable:
+    - if: IDF_TARGET in ["esp32", "esp32c3", "esp32c2", "esp32c6", "esp32h2"]
+      temporary: true
+      reason: the other targets are not tested yet
