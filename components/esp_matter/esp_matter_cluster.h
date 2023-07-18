@@ -260,7 +260,7 @@ typedef struct config {
     uint16_t current_group;
     bool scene_valid;
     uint8_t scene_name_support;
-    config() : cluster_revision(4), scene_count(0), current_scene(0), current_group(0), scene_valid(false),
+    config() : cluster_revision(5), scene_count(0), current_scene(0), current_group(0), scene_valid(false),
                scene_name_support(0) {}
 } config_t;
 
