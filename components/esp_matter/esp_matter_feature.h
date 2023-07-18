@@ -57,7 +57,7 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* battery */
 
-// Rechargeable feature is dependent on  Battery feature, inorder to add 
+// Rechargeable feature is dependent on  Battery feature, in order to add 
 // Rechargeable feature one must add Battery feature first.
 namespace rechargeable {
 typedef struct config {
@@ -71,7 +71,7 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* rechargeable */
 
-// Replaceable feature is dependent on  Battery feature, inorder to add 
+// Replaceable feature is dependent on  Battery feature, in order to add 
 // Replaceable feature one must add Battery feature first.
 namespace replaceable {
 typedef struct config {
@@ -199,6 +199,9 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* xy */
 
+// EnhancedHue feature is dependent on HueSaturation feature, in order to add
+// EnhancedHue feature one must add HueSaturation feature first.
+
 namespace enhanced_hue {
 
 typedef struct config {
@@ -210,6 +213,9 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* enhanced_hue */
+
+// ColorLoop feature is dependent on EnhancedHue feature, in order to add
+// ColorLoop feature one must add EnhancedHue feature first.
 
 namespace color_loop {
 
@@ -232,6 +238,7 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 
 namespace window_covering {
 namespace feature {
+
 namespace lift {
 
 typedef struct config {
@@ -256,6 +263,9 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* tilt */
 
+// PositionAwareLift feature is dependent on Lift feature, in order to add
+// PositionAwareLift feature one must add Lift feature first.
+
 namespace position_aware_lift {
 
 typedef struct config {
@@ -269,6 +279,9 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* position_aware_lift */
+
+// Attributes of AbsolutePosition feature may have dependency on LF, TL, PA_LF, PA_TL
+// feature, one must add features according to the usecase first.
 
 namespace absolute_position {
 
@@ -288,6 +301,9 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* absolute_position */
+
+// PositionAwareTilt feature is dependent on Tilt feature, in order to add
+// PositionAwareTilt feature one must add Tilt feature first.
 
 namespace position_aware_tilt {
 
@@ -328,40 +344,38 @@ esp_err_t add(cluster_t *cluster);
 namespace thermostat {
 namespace feature {
 
+// Heating feature is dependent on Auto feature, in order to add
+// Heating feature one must add Auto feature first.
+
 namespace heating {
 
 typedef struct config {
-   int16_t abs_min_heat_setpoint_limit; 
-   int16_t abs_max_heat_setpoint_limit;
-   uint8_t pi_heating_demand; 
    int16_t occupied_heating_setpoint; 
-   int16_t min_heat_setpoint_limit; 
-   int16_t max_heat_setpoint_limit;
 
-   config (): abs_min_heat_setpoint_limit(700), abs_max_heat_setpoint_limit(3000), pi_heating_demand(), occupied_heating_setpoint(2000), min_heat_setpoint_limit(700), max_heat_setpoint_limit(3000) {}
+   config (): occupied_heating_setpoint(2000) {}
 } config_t;
 
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 } /* heating */
 
+// Cooling feature is dependent on Auto feature, in order to add
+// Cooling feature one must add Auto feature first.
+
 namespace cooling {
 
 typedef struct config {
-   int16_t abs_min_cool_setpoint_limit; 
-   int16_t abs_max_cool_setpoint_limit;
-   uint8_t pi_cooling_demand; 
    int16_t occupied_cooling_setpoint; 
-   int16_t min_cool_setpoint_limit; 
-   int16_t max_cool_setpoint_limit;
 
-   config (): abs_min_cool_setpoint_limit(1600), abs_max_cool_setpoint_limit(3200), pi_cooling_demand(), occupied_cooling_setpoint(2600), min_cool_setpoint_limit(1600), max_cool_setpoint_limit(3200) {}
+   config (): occupied_cooling_setpoint(2600) {}
 } config_t;
 
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 } /* cooling */
 
+// Attributes of Occupancy feature may have dependency on Heating, Cooling and Setback
+// feature, one must add features according to the usecase first.
 namespace occupancy {
 
 typedef struct config {
@@ -411,9 +425,8 @@ namespace auto_mode {
 
 typedef struct config {
    int8_t min_setpoint_dead_band; 
-   uint8_t thermostat_running_mode; 
 
-   config (): min_setpoint_dead_band(25), thermostat_running_mode(0) {}
+   config (): min_setpoint_dead_band(25) {}
 } config_t;
 
 uint32_t get_id();
@@ -425,6 +438,8 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 
 namespace switch_cluster {
 namespace feature {
+
+// Note: Latching and Momentary switch features are mutually exclusive, only one of them shall be supported.
 
 namespace latching_switch {
 
@@ -440,6 +455,9 @@ esp_err_t add(cluster_t *cluster);
 
 } /* momentary_switch */
 
+// MomentarySwitchRelease feature is dependent on MomentarySwitch feature, in order to add
+// MomentarySwitchRelease feature one must add MomentarySwitch feature first.
+
 namespace momentary_switch_release {
 
 uint32_t get_id();
@@ -447,12 +465,18 @@ esp_err_t add(cluster_t *cluster);
 
 } /* momentary_switch_release */
 
+// MomentarySwitchRelease feature is dependent on MomentarySwitch and MomentarySwitchRelease feature, in order to add
+// MomentarySwitchRelease feature one must add MomentarySwitch and MomentarySwitchRelease feature first.
+
 namespace momentary_switch_long_press {
 
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 
 } /* momentary_switch_long_press */
+
+// MomentarySwitchRelease feature is dependent on MomentarySwitch and MomentarySwitchRelease feature, in order to add
+// MomentarySwitchRelease feature one must add MomentarySwitch and MomentarySwitchRelease feature first.
 
 namespace momentary_switch_multi_press {
 
@@ -554,7 +578,7 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* temperature_level */
 
 // TemperatureStep feature have conformance of TemperatureNumber feature,
-// inorder to support TemperatureStep cluster shall support TemperatureNumber.
+// in order to support TemperatureStep cluster shall support TemperatureNumber.
 namespace temperature_step {
 typedef struct config {
     int16_t step;

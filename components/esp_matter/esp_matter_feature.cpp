@@ -338,6 +338,7 @@ static esp_err_t update_color_capability(cluster_t *cluster, uint16_t value)
     still creating the data model. So, we are directly using attribute::set_val(). */
     return esp_matter::attribute::set_val(attribute, &val);
 }
+
 namespace hue_saturation {
 
 uint32_t get_id()
@@ -526,6 +527,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
+
     update_feature_map(cluster, get_id());
 
     attribute::create_number_of_actuations_lift(cluster, config->number_of_actuations_lift);
@@ -793,14 +795,16 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    update_feature_map(cluster, get_id());
+    uint32_t auto_feature_map = feature::auto_mode::get_id();
+    if((get_feature_map_value(cluster) & auto_feature_map) == auto_feature_map) {
 
-    attribute::create_abs_min_heat_setpoint_limit(cluster, config->abs_min_heat_setpoint_limit);
-    attribute::create_abs_max_heat_setpoint_limit(cluster, config->abs_max_heat_setpoint_limit);
-    attribute::create_pi_heating_demand(cluster, config->pi_heating_demand);
-    attribute::create_occupied_heating_setpoint(cluster, config->occupied_heating_setpoint);
-    attribute::create_min_heat_setpoint_limit(cluster, config->min_heat_setpoint_limit);
-    attribute::create_max_heat_setpoint_limit(cluster, config->max_heat_setpoint_limit);
+        update_feature_map(cluster, get_id());
+
+        attribute::create_occupied_heating_setpoint(cluster, config->occupied_heating_setpoint);
+    } else {
+	    ESP_LOGE(TAG, "Cluster shall support Auto feature");
+	    return ESP_ERR_NOT_SUPPORTED;
+    }
 
     return ESP_OK;
 }
@@ -822,14 +826,18 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    update_feature_map(cluster, get_id());
 
-    attribute::create_abs_min_cool_setpoint_limit(cluster, config->abs_min_cool_setpoint_limit);
-    attribute::create_abs_max_cool_setpoint_limit(cluster, config->abs_max_cool_setpoint_limit);
-    attribute::create_pi_cooling_demand(cluster, config->pi_cooling_demand);
-    attribute::create_occupied_cooling_setpoint(cluster, config->occupied_cooling_setpoint);
-    attribute::create_min_cool_setpoint_limit(cluster, config->min_cool_setpoint_limit);
-    attribute::create_max_cool_setpoint_limit(cluster, config->max_cool_setpoint_limit);
+    uint32_t auto_feature_map = feature::auto_mode::get_id();
+
+    if((get_feature_map_value(cluster) & auto_feature_map) == auto_feature_map) {
+
+        update_feature_map(cluster, get_id());
+
+        attribute::create_occupied_cooling_setpoint(cluster, config->occupied_cooling_setpoint);
+    } else {
+	    ESP_LOGE(TAG, "Cluster shall support Auto feature");
+	    return ESP_ERR_NOT_SUPPORTED;
+    }
 
     return ESP_OK;
 }
@@ -858,25 +866,19 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     uint32_t occ_and_heat_feature_map = get_id() | feature::heating::get_id();
     uint32_t occ_and_sb_feature_map = get_id() | feature::setback::get_id();
 
-    if((get_feature_map_value(cluster) & occ_and_cool_feature_map) == occ_and_cool_feature_map){
+    if((get_feature_map_value(cluster) & occ_and_cool_feature_map) == occ_and_cool_feature_map) {
         attribute::create_unoccupied_cooling_setpoint(cluster, config->unoccupied_cooling_setpoint);
-    }else{
-	ESP_LOGE(TAG, "Cluster shall support Cool feature");
-	return ESP_ERR_NOT_SUPPORTED;
     }
-    if((get_feature_map_value(cluster) & occ_and_heat_feature_map) == occ_and_heat_feature_map){
+
+    if((get_feature_map_value(cluster) & occ_and_heat_feature_map) == occ_and_heat_feature_map) {
         attribute::create_unoccupied_heating_setpoint(cluster, config->unoccupied_heating_setpoint);
-    }else{
-	ESP_LOGE(TAG, "Cluster shall support Heat feature");
-	return ESP_ERR_NOT_SUPPORTED;
     }
-    if((get_feature_map_value(cluster) & occ_and_sb_feature_map) == occ_and_sb_feature_map){
+
+    if((get_feature_map_value(cluster) & occ_and_sb_feature_map) == occ_and_sb_feature_map) {
+
         attribute::create_unoccupied_setback(cluster, config->unoccupied_setback);
         attribute::create_unoccupied_setback_min(cluster, config->unoccupied_setback_min);
         attribute::create_unoccupied_setback_max(cluster, config->unoccupied_setback_max);
-    }else{
-	ESP_LOGE(TAG, "Cluster shall support Setback feature");
-	return ESP_ERR_NOT_SUPPORTED;
     }
 
     return ESP_OK;
@@ -956,7 +958,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     update_feature_map(cluster, get_id());
 
     attribute::create_min_setpoint_dead_band(cluster, config->min_setpoint_dead_band);
-    attribute::create_thermostat_running_mode(cluster, config->thermostat_running_mode);
 
     return ESP_OK;
 }
@@ -980,8 +981,8 @@ esp_err_t add(cluster_t *cluster)
 {
     if((get_feature_map_value(cluster) & feature::momentary_switch::get_id()) == feature::momentary_switch::get_id())
     {
-	ESP_LOGE(TAG, "Latching switch is not supported because momentary switch is present");
-	return ESP_ERR_NOT_SUPPORTED;
+        ESP_LOGE(TAG, "Latching switch is not supported because momentary switch is present");
+        return ESP_ERR_NOT_SUPPORTED;
     }
     update_feature_map(cluster, get_id());
 
@@ -1003,8 +1004,8 @@ esp_err_t add(cluster_t *cluster)
 {
     if((get_feature_map_value(cluster) & feature::latching_switch::get_id()) == feature::latching_switch::get_id())
     {
-	ESP_LOGE(TAG, "Momentary switch is not supported because latching switch is present");
-	return ESP_ERR_NOT_SUPPORTED;
+        ESP_LOGE(TAG, "Momentary switch is not supported because latching switch is present");
+        return ESP_ERR_NOT_SUPPORTED;
     }
     update_feature_map(cluster, get_id());
 
