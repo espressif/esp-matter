@@ -26,7 +26,8 @@ from bitarray import bitarray
 from bitarray.util import ba2int
 import cryptography.hazmat.backends
 import cryptography.x509
-
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.backends import default_backend
 
 ROTATING_DEVICE_ID_UNIQUE_ID_LEN_BITS = 128
 SERIAL_NUMBER_LEN = 16
@@ -266,12 +267,26 @@ def convert_x509_cert_from_pem_to_der(pem_file, out_der_file):
     with open(pem_file, 'rb') as f:
         pem_data = f.read()
 
-    pem_cert = cryptography.x509.load_pem_x509_certificate(pem_data, cryptography.hazmat.backends.default_backend())
-    der_cert = pem_cert.public_bytes(cryptography.hazmat.primitives.serialization.Encoding.DER)
+    pem_cert = cryptography.x509.load_pem_x509_certificate(pem_data, default_backend())
+    der_cert = pem_cert.public_bytes(serialization.Encoding.DER)
 
     with open(out_der_file, 'wb') as f:
         f.write(der_cert)
 
+def convert_private_key_from_pem_to_der(pem_file, out_der_file):
+    with open(pem_file, 'rb') as f:
+        pem_data = f.read()
+
+    pem_key = serialization.load_pem_private_key(pem_data, None, default_backend())
+
+    der_key = pem_key.private_bytes(
+        encoding=serialization.Encoding.DER,
+        format=serialization.PrivateFormat.TraditionalOpenSSL,
+        encryption_algorithm=serialization.NoEncryption(),
+    )
+
+    with open(out_der_file, 'wb') as f:
+        f.write(der_key)
 
 # Generate the Public and Private key pair binaries
 def generate_keypair_bin(pem_file, out_privkey_bin, out_pubkey_bin):
