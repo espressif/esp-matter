@@ -159,10 +159,8 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 } /* access_control */
 
 namespace basic_information {
-const function_generic_t function_list[] = {
-    (function_generic_t)emberAfBasicInformationClusterServerInitCallback,
-};
-const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
+const function_generic_t * function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
