@@ -38,6 +38,8 @@ typedef handle_t cluster_t;
 typedef handle_t attribute_t;
 /** Command handle */
 typedef handle_t command_t;
+/** Event handle */
+typedef handle_t event_t;
 
 /** Event callback
  *
@@ -708,6 +710,67 @@ callback_t get_callback(command_t *command);
 uint16_t get_flags(command_t *command);
 
 } /* command */
+
+namespace event {
+
+/** Create event
+ *
+ * This will create a new event and add it to the cluster.
+ *
+ * @param[in] cluster Cluster handle.
+ * @param[in] event_id Event ID for the event.
+ *
+ * @return Event handle on success.
+ * @return NULL in case of failure.
+ */
+event_t *create(cluster_t *cluster, uint32_t event_id);
+
+/** Get event
+ *
+ * Get the event present on the cluster.
+ *
+ * @param[in] cluster Cluster handle.
+ * @param[in] event_id Event ID for the command.
+ *
+ * @return Event handle on success.
+ * @return NULL in case of failure.
+ */
+event_t *get(cluster_t *cluster, uint32_t event_id);
+
+/** Get first event
+ *
+ * Get the first event present on the cluster.
+ *
+ * @param[in] cluster Cluster handle.
+ *
+ * @return Event handle on success.
+ * @return NULL in case of failure.
+ */
+event_t *get_first(cluster_t *cluster);
+
+/** Get next event
+ *
+ * Get the next event present on the cluster.
+ *
+ * @param[in] event Event handle.
+ *
+ * @return Event handle on success.
+ * @return NULL in case of failure.
+ */
+event_t *get_next(event_t *event);
+
+/** Get event ID
+ *
+ * Get the event ID for the event.
+ *
+ * @param[in] event Event handle.
+ *
+ * @return Event ID on success.
+ * @return Invalid Event ID (0xFFFF'FFFF) in case of failure.
+ */
+uint32_t get_id(event_t *event);
+
+} /* event */
 
 /* Client APIs */
 namespace client {

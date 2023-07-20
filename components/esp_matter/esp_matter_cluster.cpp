@@ -122,6 +122,9 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
         attribute::create_endpoint_lists(cluster, NULL, 0, 0);
     }
 
+    event::create_action_failed(cluster);
+    event::create_state_changed(cluster);
+
     return cluster;
 }
 } /* actions */
@@ -153,6 +156,9 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
         /* Attributes updated later */
         global::attribute::create_feature_map(cluster, 0);
     }
+
+    event::create_access_control_entry_changed(cluster);
+    event::create_access_control_extension_changed(cluster);
 
     return cluster;
 }
@@ -198,6 +204,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
+
+    event::create_start_up(cluster);
 
     return cluster;
 }
@@ -312,6 +320,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
+
+    event::create_download_error(cluster);
+    event::create_state_transition(cluster);
+    event::create_version_applied(cluster);
 
     /* Commands */
     command::create_announce_ota_provider(cluster);
@@ -449,6 +461,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
+
+    event::create_boot_reason(cluster);
 
     command::create_test_event_trigger(cluster);
 
@@ -709,6 +723,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
     }
 
+    event::create_time_failure(cluster);
+
     return cluster;
 }
 } /* time_synchronization */
@@ -742,6 +758,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
+
+    event::create_reachable_changed(cluster);
 
     return cluster;
 }
@@ -1260,6 +1278,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
+
+    event::create_door_lock_alarm(cluster);
+    event::create_lock_operation(cluster);
+    event::create_lock_operation_error(cluster);
 
     /* Commands */
     command::create_lock_door(cluster);
