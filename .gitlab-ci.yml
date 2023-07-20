@@ -228,6 +228,9 @@ build_esp_matter_examples_non_pytest_idf_v5_1:
     - rm  ./examples/*/dependencies.lock
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --no_pytest
+      --parallel-count ${CI_NODE_TOTAL:-1}
+      --parallel-index ${CI_NODE_INDEX:-1}
+  parallel: 2
 
 build_esp_matter_examples_pytest_C3_idf_v4_4:
   extends:
