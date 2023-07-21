@@ -34,6 +34,7 @@
 #include <app/util/attribute-storage.h>
 #include <credentials/DeviceAttestationCredsProvider.h>
 #include <credentials/FabricTable.h>
+#include <lib/core/DataModelTypes.h>
 #include <platform/CHIPDeviceLayer.h>
 #include <platform/DeviceInfoProvider.h>
 #include <platform/DiagnosticDataProvider.h>
@@ -1863,7 +1864,7 @@ uint32_t get_id(event_t *event)
 {
     if (!event) {
         ESP_LOGE(TAG, "Event cannot be NULL");
-        return NULL;
+        return chip::kInvalidEventId;
     }
     _event_t *current_event = (_event_t *)event;
     return current_event->event_id;
