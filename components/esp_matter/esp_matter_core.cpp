@@ -43,6 +43,8 @@
 #include <esp_matter_mem.h>
 #include <esp_matter_providers.h>
 
+#include <esp_matter_nvs.h>
+
 using chip::CommandId;
 using chip::DataVersion;
 using chip::EventId;
@@ -1101,18 +1103,19 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, es
         attribute->val.val.a.t = val.val.a.t;
     }
 
+    bool attribute_updated = false;
     if (attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE) {
-        esp_matter_attr_val_t val_nvs = esp_matter_invalid(NULL);
-        val_nvs.type = val.type;
-        esp_err_t err = get_val_from_nvs((attribute_t *)attribute, &val_nvs);
+        // Lets directly read into attribute->val so that we don't have to set the attribute value again.
+        esp_err_t err = get_val_from_nvs(attribute->endpoint_id, attribute->cluster_id, attribute->attribute_id,
+                                            attribute->val);
         if (err == ESP_OK) {
-            set_val((attribute_t *)attribute, &val_nvs);
-        } else {
-            set_val((attribute_t *)attribute, &val);
+            attribute_updated = true;
         }
-    } else {
+    }
+    if (!attribute_updated) {
         set_val((attribute_t *)attribute, &val);
     }
+
     set_default_value_from_current_val((attribute_t *)attribute);
 
     /* Add */
@@ -1244,7 +1247,8 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
     }
 
     if (current_attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE) {
-        store_val_in_nvs(attribute);
+        store_val_in_nvs(current_attribute->endpoint_id, current_attribute->cluster_id,
+                            current_attribute->attribute_id, current_attribute->val);
     }
     return ESP_OK;
 }
