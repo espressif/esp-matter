@@ -1,4 +1,5 @@
 set(SRC_DIRS_LIST       "."
+                        "private"
                         "${MATTER_SDK_PATH}/zzz_generated/app-common/app-common/zap-generated/attributes"
                         "${MATTER_SDK_PATH}/src/app"
                         "${MATTER_SDK_PATH}/src/app/server"
@@ -78,6 +79,7 @@ set(REQUIRES_LIST       chip bt esp_matter_console nvs_flash app_update esp_secu
 
 idf_component_register( SRC_DIRS        ${SRC_DIRS_LIST}
                         INCLUDE_DIRS    ${INCLUDE_DIRS_LIST}
+                        PRIV_INCLUDE_DIRS "private"
                         REQUIRES        ${REQUIRES_LIST})
 
 # This has been added to fix the error and should be removed once fixed:
