@@ -211,6 +211,26 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 }
 
 } /* lighting */
+
+namespace dead_front {
+
+uint32_t get_id()
+{
+    return (uint32_t)OnOff::Feature::kDeadFront;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* dead_front */
 } /* feature */
 } /* on_off */
 

@@ -1033,7 +1033,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
-    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
+    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::dead_front::get_id());
     cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER);
 
     return endpoint;
