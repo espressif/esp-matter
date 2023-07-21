@@ -765,6 +765,55 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* bridged_device_basic_information */
 
+namespace power_source {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, PowerSource::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+    if (flags & CLUSTER_FLAG_SERVER) {
+        set_plugin_server_init_callback(cluster, MatterPowerSourcePluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        /** Attributes not managed internally **/
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+            attribute::create_status(cluster, config->status);
+            attribute::create_order(cluster, config->order, 0x00, 0xFF);
+            attribute::create_description(cluster, config->description, sizeof(config->description));
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    /* Features */
+    if (features & feature::wired::get_id()) {
+        feature::wired::add(cluster, &(config->wired));
+    }
+
+    if (features & feature::battery::get_id()) {
+        feature::battery::add(cluster, &(config->battery));
+    }
+
+    if (features & feature::rechargeable::get_id()) {
+        feature::rechargeable::add(cluster, &(config->rechargeable));
+    }
+
+    if (features & feature::replaceable::get_id()) {
+        feature::replaceable::add(cluster, &(config->replaceable));
+    }
+
+    return cluster;
+}
+} /* power_source */
+
 namespace user_label {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
@@ -1899,6 +1948,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 }
 } /* software_diagnostics */
 
+
 // namespace binary_input_basic {
 //     // ToDo
 // } /* binary_input_basic */
@@ -1915,10 +1965,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 //     // ToDo
 // } /* powersource_configuration */
 
-// namespace powersource {
-//     // ToDo
-// } /* powersource */
-
 // namespace ethernet_network_diagnostics {
 //     // ToDo
 // } /* ethernet_network_diagnostics */
@@ -1934,10 +1980,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 // namespace proxy_valid {
 //     // ToDo
 // } /* proxy_valid */
-
-// namespace mode_select {
-//     // ToDo
-// } /* mode_select */
 
 // namespace barrier_control {
 //     // ToDo

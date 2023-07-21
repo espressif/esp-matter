@@ -540,5 +540,46 @@ attribute_t *create_on_mode(cluster_t *cluster, nullable<uint8_t> value);
 } /* attribute */
 } /* mode_select */
 
+namespace power_source {
+constexpr uint8_t k_max_description_length = 60;
+constexpr uint8_t k_max_fault_count = 8;
+constexpr uint8_t k_max_designation_count = 20;
+constexpr uint8_t k_max_charge_faults_count = 16;
+
+namespace attribute {
+attribute_t *create_status(cluster_t *cluster, uint8_t value);
+attribute_t *create_order(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
+attribute_t *create_description(cluster_t *cluster, const char * value, uint16_t length);
+attribute_t *create_wired_assessed_input_voltage(cluster_t *cluster, nullable<uint32_t> value, uint32_t min, uint32_t max);
+attribute_t *create_wired_assessed_input_frequency(cluster_t *cluster, nullable<uint16_t> value, uint16_t min, uint16_t max);
+attribute_t *create_wired_current_type(cluster_t *cluster, const uint8_t value);
+attribute_t *create_wired_assessed_current(cluster_t *cluster, nullable<uint32_t> value, uint32_t min, uint32_t max);
+attribute_t *create_wired_nominal_voltage(cluster_t *cluster, const uint32_t value, uint32_t min, uint32_t max);
+attribute_t *create_wired_maximum_current(cluster_t *cluster, const uint32_t value, uint32_t min, uint32_t max);
+attribute_t *create_wired_present(cluster_t *cluster, bool value);
+attribute_t *create_active_wired_faults(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_bat_voltage(cluster_t *cluster, nullable<uint32_t> value, uint32_t min, uint32_t max);
+attribute_t *create_bat_percent_remaining(cluster_t *cluster, nullable<uint8_t> value, uint8_t min, uint8_t max);
+attribute_t *create_bat_time_remaining(cluster_t *cluster, nullable< uint32_t> value, uint32_t min, uint32_t max);
+attribute_t *create_bat_charge_level(cluster_t *cluster, uint8_t value);
+attribute_t *create_bat_replacement_needed(cluster_t *cluster, bool value);
+attribute_t *create_bat_replaceability(cluster_t *cluster, const uint8_t value);
+attribute_t *create_bat_present(cluster_t *cluster, bool value);
+attribute_t *create_active_bat_faults(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_bat_replacement_description(cluster_t *cluster, const char * value, uint16_t length);
+attribute_t *create_bat_common_designation(cluster_t *cluster, const uint8_t value, uint8_t min, uint8_t max);
+attribute_t *create_bat_ansi_designation(cluster_t *cluster, const char * value, uint16_t length);
+attribute_t *create_bat_iec_designation(cluster_t *cluster, const char * value, uint16_t length);
+attribute_t *create_bat_approved_chemistry(cluster_t *cluster, const uint8_t value, uint8_t min, uint8_t max);
+attribute_t *create_bat_capacity(cluster_t *cluster, const uint32_t value, uint32_t min, uint32_t max);
+attribute_t *create_bat_quantity(cluster_t *cluster, const uint8_t value, uint8_t min, uint8_t max);
+attribute_t *create_bat_charge_state(cluster_t *cluster, uint8_t value);
+attribute_t *create_bat_time_to_full_charge(cluster_t *cluster, nullable<uint32_t> value, uint32_t min, uint32_t max);
+attribute_t *create_bat_functional_while_charging(cluster_t *cluster, bool value);
+attribute_t *create_bat_charging_current(cluster_t *cluster, nullable<uint32_t> value, uint32_t min, uint32_t max);
+attribute_t *create_active_bat_charge_faults(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* power_source */
+
 } /* cluster */
 } /* esp_matter */

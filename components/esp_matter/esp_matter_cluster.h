@@ -197,6 +197,22 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* bridged_device_basic_information */
 
+namespace power_source {
+typedef struct config {
+    uint16_t cluster_revision;
+    uint8_t status;
+    uint8_t order;
+    char description[61];
+    feature::wired::config_t wired;
+    feature::battery::config_t battery;
+    feature::rechargeable::config_t rechargeable;
+    feature::replaceable::config_t replaceable;
+	config() : cluster_revision(1), status(0), order(0), description{0} {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* power_source */
+
 namespace user_label {
 typedef struct config {
     uint16_t cluster_revision;

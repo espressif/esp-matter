@@ -21,6 +21,8 @@
 /* Replace these with IDs from submodule whenever they are implemented */
 #define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID 0x0016
 #define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_POWER_SOURCE_DEVICE_TYPE_ID 0x0011
+#define ESP_MATTER_POWER_SOURCE_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_AGGREGATOR_DEVICE_TYPE_ID 0x000E
 #define ESP_MATTER_AGGREGATOR_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID 0x0013
@@ -106,6 +108,17 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* root_node */
+
+namespace power_source_device{
+typedef struct config {
+    cluster::power_source::config_t power_source;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
+} /* power_source_device */
 
 namespace on_off_light {
 typedef struct config {

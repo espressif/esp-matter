@@ -31,6 +31,63 @@
 namespace esp_matter {
 namespace cluster {
 
+namespace power_source {
+namespace feature {
+namespace wired {
+typedef struct config {
+    uint8_t wired_current_type;
+    config(): wired_current_type(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* wired */
+
+namespace battery {
+typedef struct config {
+    uint8_t bat_charge_level;
+    bool bat_replacement_needed;
+    uint8_t bat_replaceability;
+    config(): bat_charge_level(0), bat_replacement_needed(false), bat_replaceability(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* battery */
+
+// Rechargeable feature is dependent on  Battery feature, inorder to add 
+// Rechargeable feature one must add Battery feature first.
+namespace rechargeable {
+typedef struct config {
+    uint8_t bat_charge_state;
+    bool bat_functional_while_charging;
+    config(): bat_charge_state(0), bat_functional_while_charging(false) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* rechargeable */
+
+// Replaceable feature is dependent on  Battery feature, inorder to add 
+// Replaceable feature one must add Battery feature first.
+namespace replaceable {
+typedef struct config {
+    char bat_replacement_description[61];
+    uint8_t bat_quantity;
+    config(): bat_replacement_description{0}, bat_quantity(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* replaceable */
+
+} /* feature */
+} /* power_source */
+
 namespace on_off {
 namespace feature {
 namespace lighting {
