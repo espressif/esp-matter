@@ -104,6 +104,13 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* lighting */
+
+namespace dead_front {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* dead_front */
 } /* feature */
 } /* on_off */
 
