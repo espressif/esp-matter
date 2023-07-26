@@ -1097,7 +1097,9 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, es
     // After reboot, string and array are treated as Invalid. So need to store val.type and size of attribute value.
     attribute->val.type = val.type;
     if (val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
+        val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
         val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+        val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
         val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
         attribute->val.val.a.s = val.val.a.s;
         attribute->val.val.a.n = val.val.a.n;
@@ -1148,7 +1150,9 @@ static esp_err_t destroy(attribute_t *attribute)
 
     /* Delete val here, if required */
     if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
+        current_attribute->val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+        current_attribute->val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
         /* Free buf */
         if (current_attribute->val.val.a.b) {
@@ -1221,6 +1225,7 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
     }
     _attribute_t *current_attribute = (_attribute_t *)attribute;
     if (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING || val->type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+        val->type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING || val->type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
         val->type == ESP_MATTER_VAL_TYPE_ARRAY) {
         /* Free old buf */
         if (current_attribute->val.val.a.b) {
@@ -1275,7 +1280,9 @@ esp_err_t add_bounds(attribute_t *attribute, esp_matter_attr_val_t min, esp_matt
 
     /* Check if bounds can be set */
     if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
+        current_attribute->val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+        current_attribute->val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
         ESP_LOGE(TAG, "Bounds cannot be set for string/array type attributes");
         return ESP_ERR_INVALID_ARG;
