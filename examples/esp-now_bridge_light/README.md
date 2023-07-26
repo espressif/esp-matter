@@ -12,7 +12,7 @@ See the [docs](https://docs.espressif.com/projects/esp-matter/en/main/esp32/deve
 
 * Use a DevKit with LED, for example ESP32-C3-DevKitM to get more status indication.
 * Use the [switch example](https://github.com/espressif/esp-now/tree/master/examples/coin_cell_demo/switch) in ESP-NOW repository as the ESP-NOW switch.
-* Use the light example in this repository as the light device.
+* Use the [light example](../light/) in this repository as the light device.
 
 ## 2. Post Commissioning Setup
 
@@ -59,7 +59,7 @@ DeviceTypeList: 1 entries
    }
 ```
 
-### 2.2 Bind bridge to a ESP-NOW switch
+### 2.2 Bind bridge to an ESP-NOW switch
 
 Trigger binding from the ESP-NOW switch. If you are using a C3 DevKit, double click the Boot button. If binding is successful, the LED on the DevKit running bridge example will toggle. A dynamic endpoint will be added on the Bridge device. You can read the parts list again to get the dynamic endpoint ID.
 
@@ -121,18 +121,25 @@ ClientList: 2 entries
   [2]: 6 <---------------------- OnOff Cluster
 ```
 
-### 2.3 Bind light to bridge
+### 2.3 Unbind bridge from an ESP-NOW switch
+
+Trigger unbinding from the ESP-NOW switch. If you are using a C3 DevKit, long press the Boot button. If unbinding is successful, the LED on the DevKit running bridge example will toggle. The dynamic endpoint will be removed from the Bridge device. You can read the PartsList attribute again to verify the dynamic endpoint ID has been removed.
+
+> __Note__
+According to Matter specification, dynamic endpoint ID's will not be reused (apart from the exceptional wrap-around corner case). Hence if you bind the bridge to the switch again, a new endpoint number will be assigned.
+
+### 2.4 Bind light to bridge
 
 Follow the [instruction](../light_switch/README.md#21-bind-light-to-switch) in the light switch example to create a binding between the bridge and a Matter light. After that, pressing on the ESP-NOW switch will toggle both the LED on the bridge and the Matter light.
 
-## 3. Device Perfromance
+## 3. Device Performance
 
 ### 3.1 Memory Usage
 
 The following is the Memory and Flash Usage.
 
--   `Bootup` == Device just finished booting up. Device is not commissioned or connected to wifi yet.
--   `After Commissioning` == Device is connected to wifi and is also commissioned and rebooted.
+-   `Bootup` == Device just finished booting up. Device is not commissioned or connected to Wi-Fi yet.
+-   `After Commissioning` == Device is connected to Wi-Fi and is also commissioned and rebooted.
 -   `After Creating Bridge` == Device is bound to an ESP-NOW switch.
 -   device used: esp32c3_devkit_m
 -   tested on: [2f0929e](https://github.com/espressif/esp-matter/commit/2f0929e5f8fd58b1a4cbaa2bd8b171ce50ad2a75)
@@ -145,7 +152,7 @@ The following is the Memory and Flash Usage.
 
 **Flash Usage**: Firmware binary size: 1.3MB
 
-Note that the steps of commissioning and creating bridge are interchangable. This should give you a good idea about the amount of free memory that is
+Note that the steps of commissioning and creating bridge are interchangeable. This should give you a good idea about the amount of free memory that is
 available for you to run your application's code.
 
 Applications that do not require BLE post commissioning, can disable it using app_ble_disable() once commissioning is complete.
