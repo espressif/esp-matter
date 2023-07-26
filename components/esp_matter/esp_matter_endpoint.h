@@ -67,6 +67,10 @@
 #define ESP_MATTER_HUMIDITY_SENSOR_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_ROOM_AIR_CONDITIONER_DEVICE_TYPE_ID 0x0072
 #define ESP_MATTER_ROOM_AIR_CONDITIONER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_REFRIGERATOR_DEVICE_TYPE_ID 0x0070
+#define ESP_MATTER_REFRIGERATOR_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_TEMPERATURE_CONTROLLED_CABINET_DEVICE_TYPE_ID 0x0071
+#define ESP_MATTER_TEMPERATURE_CONTROLLED_CABINET_DEVICE_TYPE_VERSION 1
 
 #define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
 #define ESP_MATTER_FAN_DEVICE_TYPE_VERSION 1
@@ -457,6 +461,27 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /** room air conditioner **/
+
+namespace temperature_controlled_cabinet{
+typedef struct config {
+    cluster::temperature_control::config_t temperature_control;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
+} /** temperature_controlled_cabinet **/
+
+namespace refrigerator{
+typedef struct config {
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
+} /** refrigerator **/
 
 } /* endpoint */
 

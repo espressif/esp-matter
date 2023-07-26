@@ -522,5 +522,52 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* software_diagnostics */
 
+namespace temperature_control {
+namespace feature {
+
+// TemperatureNumber and TemperatureLevel features are mutually exclusive,
+// only one of them shall present.
+namespace temperature_number {
+typedef struct config {
+    int16_t temp_setpoint;
+    int16_t min_temperature;
+    int16_t max_temperature;
+    config() : temp_setpoint(1), min_temperature(0), max_temperature(10) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* temperature_number */
+
+// TemperatureNumber and TemperatureLevel features are mutually exclusive,
+// only one of them shall present.
+namespace temperature_level {
+typedef struct config {
+    uint8_t selected_temp_level;
+    config() : selected_temp_level(1) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* temperature_level */
+
+// TemperatureStep feature have conformance of TemperatureNumber feature,
+// inorder to support TemperatureStep cluster shall support TemperatureNumber.
+namespace temperature_step {
+typedef struct config {
+    int16_t step;
+    config() : step(1) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* temperature_step */
+
+} /* feature */
+} /* temperature_control */
+
 } /* cluster */
 } /* esp_matter */

@@ -274,5 +274,11 @@ command_t *create_change_to_mode(cluster_t *cluster);
 } /* command */
 } /* mode_select */
 
+namespace temperature_control {
+namespace command {
+command_t *create_set_temperature(cluster_t *cluster);
+} /* command */
+} /* temperature_control */
+
 } /* cluster */
 } /* esp_matter */

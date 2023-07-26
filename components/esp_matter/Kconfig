@@ -127,6 +127,20 @@ menu "ESP Matter"
         help
             The maximum dynamic endpoints supported.
 
+    config ESP_MATTER_MODE_SELECT_CLUSTER_ENDPOINT_COUNT
+        int "Endpoints on which mode select cluster is used"
+        range 0 255
+        default 0
+        help
+            Endpoint count which supports mode select.
+
+    config ESP_MATTER_TEMPERATURE_CONTROL_CLUSTER_ENDPOINT_COUNT
+        int "Endpoints on which temperature control cluster is used"
+        range 0 255
+        default 0
+        help
+            Endpoint count which supports temperature control.
+
     config ESP_MATTER_SCENES_TABLE_SIZE
         int "Scenes table size"
         range 1 255

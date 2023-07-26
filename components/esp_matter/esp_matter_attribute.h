@@ -581,5 +581,26 @@ attribute_t *create_active_bat_charge_faults(cluster_t *cluster, uint8_t * value
 } /* attribute */
 } /* power_source */
 
+namespace temperature_control {
+constexpr uint8_t k_max_temp_level_count = 16;
+
+namespace attribute {
+attribute_t *create_temperature_setpoint(cluster_t *cluster, int16_t value);
+attribute_t *create_min_temperature(cluster_t *cluster, const int16_t value);
+attribute_t *create_max_temperature(cluster_t *cluster, const int16_t value);
+attribute_t *create_step(cluster_t *cluster, const int16_t value);
+attribute_t *create_selected_temperature_level(cluster_t *cluster, uint8_t value);
+attribute_t *create_supported_temperature_levels(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* temperature_control */
+
+namespace refrigerator_alarm {
+namespace attribute {
+attribute_t *create_mask(cluster_t *cluster, uint32_t value);
+attribute_t *create_state(cluster_t *cluster, uint32_t value);
+attribute_t *create_supported(cluster_t *cluster, uint32_t value);
+} /* attribute */
+} /* refrigerator_alarm */
+
 } /* cluster */
 } /* esp_matter */
