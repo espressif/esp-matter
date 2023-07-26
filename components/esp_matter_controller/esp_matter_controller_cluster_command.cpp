@@ -60,7 +60,7 @@ static esp_err_t send_group_command(command_data_t *command_data, uint16_t group
 #if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     uint8_t fabric_index = commissioner::get_device_commissioner()->GetFabricIndex();
 #else
-    uint8_t fabric_index = 1;
+    uint8_t fabric_index = get_fabric_index();
 #endif
     switch (command_data->command_id) {
     case OnOff::Commands::On::Id:
@@ -371,7 +371,8 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
 
 } // namespace clusters
 
-void cluster_command::on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr, const SessionHandle &sessionHandle)
+void cluster_command::on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr,
+                                              const SessionHandle &sessionHandle)
 {
     cluster_command *cmd = reinterpret_cast<cluster_command *>(context);
     chip::OperationalDeviceProxy device_proxy(&exchangeMgr, sessionHandle);
@@ -432,7 +433,7 @@ esp_err_t cluster_command::send_command()
     }
 #else
     chip::Server *server = &(chip::Server::GetInstance());
-    server->GetCASESessionManager()->FindOrEstablishSession(ScopedNodeId(m_destination_id, /* fabric index */ 1),
+    server->GetCASESessionManager()->FindOrEstablishSession(ScopedNodeId(m_destination_id, get_fabric_index()),
                                                             &on_device_connected_cb, &on_device_connection_failure_cb);
     return ESP_OK;
 #endif

@@ -15,6 +15,25 @@
 #include <esp_matter_controller_utils.h>
 #include <string.h>
 
+namespace esp_matter {
+namespace controller {
+
+#if !CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+uint8_t s_controller_fabric_index = chip::kUndefinedFabricIndex;
+
+void set_fabric_index(uint8_t fabric_index)
+{
+    s_controller_fabric_index = fabric_index;
+}
+
+uint8_t get_fabric_index(void)
+{
+    return s_controller_fabric_index;
+}
+#endif // !CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+
+} // namespace controller
+} // namespace esp_matter
 static uint8_t char_to_hex_digit(char c)
 {
     if (c >= '0' && c <= '9') {

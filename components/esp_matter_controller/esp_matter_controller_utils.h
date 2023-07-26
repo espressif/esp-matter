@@ -29,6 +29,22 @@ using event_report_cb_t = void (*)(uint64_t remote_node_id, const chip::app::Eve
 using subscribe_done_cb_t = void (*)(uint64_t remote_node_id);
 using subscribe_failure_cb_t = void (*)(void *subscribe_command);
 
+#if !CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+/**
+ * @brief Set the fabric index of the controller.
+ *        The controller should be able to send commands to the devices on this fabric.
+ *
+ *      This should be called after the controller is added to the fabric.
+ */
+void set_fabric_index(uint8_t fabric_index);
+
+/**
+ * @brief Get the fabric index of the controller.
+ *
+ */
+uint8_t get_fabric_index();
+#endif // !CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+
 } // namespace controller
 } // namespace esp_matter
 

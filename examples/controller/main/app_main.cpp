@@ -12,11 +12,15 @@
 
 #include <esp_matter.h>
 #include <esp_matter_commissioner.h>
+#include <esp_matter_controller_utils.h>
 #include <esp_matter_console.h>
 #include <esp_matter_controller_console.h>
 #include <esp_matter_ota.h>
 
 #include <app_reset.h>
+
+#include <app/server/Server.h>
+#include <credentials/FabricTable.h>
 
 static const char *TAG = "app_main";
 uint16_t switch_endpoint_id = 0;
@@ -31,7 +35,13 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
     case chip::DeviceLayer::DeviceEventType::PublicEventTypes::kInterfaceIpAddressChanged:
         ESP_LOGI(TAG, "Interface IP Address changed");
         break;
-
+#if !CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+    case chip::DeviceLayer::DeviceEventType::kFabricCommitted:
+        if (chip::Server::GetInstance().GetFabricTable().FindFabricWithIndex(1)) {
+            esp_matter::controller::set_fabric_index(1);
+        }
+        break;
+#endif
     default:
         break;
     }

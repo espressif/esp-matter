@@ -87,7 +87,7 @@ esp_err_t read_command::send_command()
     }
 #else
     chip::Server *server = &(chip::Server::GetInstance());
-    server->GetCASESessionManager()->FindOrEstablishSession(ScopedNodeId(m_node_id, /* fabric index */ 1),
+    server->GetCASESessionManager()->FindOrEstablishSession(ScopedNodeId(m_node_id, get_fabric_index()),
                                                             &on_device_connected_cb, &on_device_connection_failure_cb);
     return ESP_OK;
 #endif

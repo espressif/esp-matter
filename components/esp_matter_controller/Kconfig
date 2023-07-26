@@ -20,6 +20,13 @@ menu "ESP Matter Controller"
         help
             Maximum number of active device the commissioner supports.
 
+    config ESP_MATTER_CONTROLLER_CUSTOM_CLUSTER_ENABLE
+        bool "Enable controller custom cluster"
+        depends on !ESP_MATTER_COMMISSIONER_ENABLE
+        default y
+        help
+            Enable the custom cluster of matter controller in the ESP Matter controller for Rainmaker Fabric suppport.
+
     choice ESP_MATTER_COMMISSIONER_ATTESTATION_TRUST_STORE
         prompt "Attestation Trust Store"
         depends on ESP_MATTER_COMMISSIONER_ENABLE
