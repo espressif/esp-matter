@@ -185,7 +185,7 @@ esp_err_t init(uint16_t commissioner_port)
     // Init InteractionModelEngine
     chip::app::InteractionModelEngine::GetInstance()->Init(&Server::GetInstance().GetExchangeManager(),
                                                            &Server::GetInstance().GetFabricTable(),
-                                                           Server::GetInstance().GetCASESessionManager());
+                                                           &Server::GetInstance().GetReportScheduler());
 
     FabricIndex fabricIndex = device_commissioner.GetFabricIndex();
     if (fabricIndex == kUndefinedFabricIndex) {
