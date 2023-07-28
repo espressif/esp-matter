@@ -1243,28 +1243,34 @@ Use `mfg_tool <https://github.com/espressif/esp-matter/blob/main/tools/mfg_tool/
     -k path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/attestation/Chip-Test-PAI-FFF2-8001-Key.pem \
     -c path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/attestation/Chip-Test-PAI-FFF2-8001-Cert.pem \
     -cd path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/certification-declaration/Chip-Test-CD-FFF2-8001.der \
-    --supported-modes mode1/label1/endpointId/"value\\mfgCode, value\\mfgCode"  mode2/label2/endpointId/"value\\mfgCode, value\\mfgCode"
+    --supported-modes mode1/label1/endpointId/"value\mfgCode, value\mfgCode"  mode2/label2/endpointId/"value\mfgCode, value\mfgCode"
+
+- For empty Semantic Tags list
+
+::
+
+    --supported-modes mode1/label1/endpointId  mode2/label2/endpointId
 
 2.8.3 Build example
 ~~~~~~~~~~~~~~~~~~~
 
 For example we want to use mode_select cluster in light example.
 
-- Add implementation path toexample/light/main/CMakeList.txt
+- Add source and include path to example/light/main/CMakeList.txt
 
 ::
 
-    Append "${MATTER_SDK_PATH}/examples/platform/esp32/mode-support" to SRC_DIRS
+    Append "${MATTER_SDK_PATH}/examples/platform/esp32/mode-support" to SRC_DIRS and PRIV_INCLUDE_DIRS
 
 - In file example/light/app_main.cpp.
 
 ::
 
-    #include <examples/platform/esp32/mode-support/static-supported-modes-manager.h>
+    #include <static-supported-modes-manager.h>
 
     {
         cluster::mode_select::config_t ms_config;
         cluster_t *ms_cluster = cluster::mode_select::create(endpoint, &ms_config, CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
 
-        ModeSelect::StaticSupportedModesManager::getStaticSupportedModesManagerInstance().InitEndpointArray(get_endpoint_count(node));
+        ModeSelect::StaticSupportedModesManager::getStaticSupportedModesManagerInstance().InitEndpointArray(get_count(node));
     }
