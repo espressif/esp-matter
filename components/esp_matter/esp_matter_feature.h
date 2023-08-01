@@ -569,5 +569,68 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* feature */
 } /* temperature_control */
 
+namespace fan_control {
+namespace feature {
+
+namespace multi_speed {
+constexpr uint32_t k_max_limit = 100;
+typedef struct config {
+    uint8_t speed_max;
+    nullable<uint8_t> speed_setting;
+    uint8_t speed_current;
+    config() : speed_max(10), speed_setting(0), speed_current(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* multi_speed */
+
+namespace fan_auto {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* fan_auto */
+
+namespace rocking {
+typedef struct config {
+    uint8_t rock_support;
+    uint8_t rock_setting;
+    config() : rock_support(0), rock_setting(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* rocking */
+
+namespace wind {
+typedef struct config {
+    uint8_t wind_support;
+    uint8_t wind_setting;
+    config() : wind_support(0), wind_setting(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* wind */
+
+namespace step {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* step */
+
+namespace airflow_direction {
+typedef struct config {
+    uint8_t airflow_direction;
+    config() : airflow_direction(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* airflow_direction */
+
+} /* feature */
+} /* fan_control */
+
 } /* cluster */
 } /* esp_matter */

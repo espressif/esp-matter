@@ -280,5 +280,11 @@ command_t *create_set_temperature(cluster_t *cluster);
 } /* command */
 } /* temperature_control */
 
+namespace fan_control {
+namespace command {
+command_t *create_step(cluster_t *cluster);
+} /* command */
+} /* fan_control */
+
 } /* cluster */
 } /* esp_matter */

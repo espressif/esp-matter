@@ -1281,5 +1281,139 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* temperature_control */
 
+namespace fan_control {
+namespace feature {
+
+namespace multi_speed {
+
+uint32_t get_id()
+{
+    return (uint32_t)FanControl::Feature::kMultiSpeed;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_speed_max(cluster, config->speed_max, 0, k_max_limit);
+    attribute::create_speed_setting(cluster, config->speed_setting, 0, config->speed_max);
+    attribute::create_speed_current(cluster, config->speed_current, 0, config->speed_max);
+
+    return ESP_OK;
+}
+} /* multi_speed */
+
+namespace fan_auto {
+
+uint32_t get_id()
+{
+    return (uint32_t)FanControl::Feature::kAuto;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+} /* fan_auto */
+
+namespace rocking {
+
+uint32_t get_id()
+{
+    return (uint32_t)FanControl::Feature::kRocking;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_rock_support(cluster, config->rock_support);
+    attribute::create_rock_setting(cluster, config->rock_setting);
+
+    return ESP_OK;
+}
+} /* rocking */
+
+namespace wind {
+
+uint32_t get_id()
+{
+    return (uint32_t)FanControl::Feature::kWind;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_wind_support(cluster, config->wind_support);
+    attribute::create_wind_setting(cluster, config->wind_setting);
+
+    return ESP_OK;
+}
+} /* wind */
+
+namespace step {
+
+uint32_t get_id()
+{
+    return (uint32_t)FanControl::Feature::kStep;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    command::create_step(cluster);
+    
+    return ESP_OK;
+}
+} /* step */
+
+namespace airflow_direction {
+
+uint32_t get_id()
+{
+    return (uint32_t)FanControl::Feature::kAirflowDirection;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_airflow_direction(cluster, config->airflow_direction);
+    
+    return ESP_OK;
+}
+} /* airflow_direction */
+
+} /* feature */
+} /* fan_control */
+
 } /* cluster */
 } /* esp_matter */
