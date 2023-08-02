@@ -1743,19 +1743,17 @@ esp_err_t get_val_raw(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attrib
         return ESP_FAIL;
     }
 
+    esp_err_t err = ESP_OK;
     EmberAfStatus status = emberAfReadAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_size);
     if (status != EMBER_ZCL_STATUS_SUCCESS) {
         ESP_LOGE(TAG, "Error getting Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 "'s raw value from matter: 0x%x",
                  endpoint_id, cluster_id, attribute_id, status);
-        if (lock_status == lock::SUCCESS) {
-            lock::chip_stack_unlock();
-        }
-        return ESP_FAIL;
+        err = ESP_FAIL;
     }
     if (lock_status == lock::SUCCESS) {
         lock::chip_stack_unlock();
     }
-    return ESP_OK;
+    return err;
 }
 
 esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val)
@@ -1821,6 +1819,9 @@ esp_err_t report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
     if (!attribute) {
         ESP_LOGE(TAG, "Could not find Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32, endpoint_id, cluster_id,
                  attribute_id);
+        if (lock_status == lock::SUCCESS) {
+            lock::chip_stack_unlock();
+        }
         return ESP_FAIL;
     }
 
@@ -1830,6 +1831,9 @@ esp_err_t report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
     if (val->type != raw_val.type) {
         ESP_LOGE(TAG, "Attribute type mismatch when trying to report Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32,
                  endpoint_id, cluster_id, attribute_id);
+        if (lock_status == lock::SUCCESS) {
+            lock::chip_stack_unlock();
+        }
         return ESP_FAIL;
     }
     attribute::set_val(attribute, val);
