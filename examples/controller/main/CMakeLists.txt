@@ -1,8 +1,5 @@
-set(PRIV_REQUIRES_LIST device esp_matter esp_matter_console esp_matter_controller app_reset)
 
-idf_component_register(SRC_DIRS          "."
-                      PRIV_INCLUDE_DIRS  "."
-                      PRIV_REQUIRES      ${PRIV_REQUIRES_LIST})
+idf_component_register(SRC_DIRS          ".")
 
 spiffs_create_partition_image(paa_cert ${CMAKE_SOURCE_DIR}/paa_cert FLASH_IN_PROJECT)
 

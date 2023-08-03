@@ -1,8 +1,5 @@
-set(PRIV_REQUIRES_LIST device esp_matter esp_matter_console app_reset)
-
 idf_component_register(SRC_DIRS          "."
-                      PRIV_INCLUDE_DIRS  "."
-                      PRIV_REQUIRES      ${PRIV_REQUIRES_LIST})
+                      PRIV_INCLUDE_DIRS  ".")
 
 # We must set CHIP_ROOT to include esp32_codegen.cmake
 get_filename_component(CHIP_ROOT "${MATTER_SDK_PATH}" REALPATH)
