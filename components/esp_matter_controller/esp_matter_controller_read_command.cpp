@@ -116,7 +116,7 @@ void read_command::OnAttributeData(const chip::app::ConcreteDataAttributePath &p
     }
 
     if (attribute_data_cb) {
-        attribute_data_cb(path, data);
+        attribute_data_cb(m_node_id, path, data);
     }
 }
 
@@ -142,7 +142,7 @@ void read_command::OnEventData(const chip::app::EventHeader &event_header, chip:
     }
 
     if (event_data_cb) {
-        event_data_cb(event_header, data);
+        event_data_cb(m_node_id, event_header, data);
     }
 }
 
