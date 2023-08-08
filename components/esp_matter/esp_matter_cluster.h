@@ -41,22 +41,37 @@ void plugin_init_callback_common();
  */
 
 namespace descriptor {
-cluster_t *create(endpoint_t *endpoint, uint8_t flags);
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* descriptor */
 
 namespace actions {
-cluster_t *create(endpoint_t *endpoint, uint8_t flags);
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* actions */
 
 namespace access_control {
-cluster_t *create(endpoint_t *endpoint, uint8_t flags);
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* access_control */
 
 namespace basic_information {
 typedef struct config {
     uint16_t cluster_revision;
     char node_label[32];
-    config() : cluster_revision(1), node_label{0} {}
+    config() : cluster_revision(2), node_label{0} {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -157,6 +172,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* operational_credentials */
 
 namespace group_key_management {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(2) {}
+} config_t;
+
 cluster_t *create(endpoint_t *endpoint, uint8_t flags);
 } /* group_key_management */
 
@@ -181,7 +201,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace time_synchronization {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(1) {}
+    config() : cluster_revision(2) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -191,7 +211,7 @@ namespace bridged_device_basic_information {
 typedef struct config {
     uint16_t cluster_revision;
     bool reachable;
-    config() : cluster_revision(1), reachable(true) {}
+    config() : cluster_revision(2), reachable(true) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -207,7 +227,7 @@ typedef struct config {
     feature::battery::config_t battery;
     feature::rechargeable::config_t rechargeable;
     feature::replaceable::config_t replaceable;
-	config() : cluster_revision(1), status(0), order(0), description{0} {}
+	config() : cluster_revision(2), status(0), order(0), description{0} {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -260,8 +280,9 @@ typedef struct config {
     uint16_t current_group;
     bool scene_valid;
     uint8_t scene_name_support;
+    uint16_t scene_table_size;
     config() : cluster_revision(5), scene_count(0), current_scene(0), current_group(0), scene_valid(false),
-               scene_name_support(0) {}
+               scene_name_support(0), scene_table_size(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -272,7 +293,7 @@ typedef struct config {
     uint16_t cluster_revision;
     bool on_off;
     feature::lighting::config_t lighting;
-    config() : cluster_revision(4), on_off(false) {}
+    config() : cluster_revision(5), on_off(false) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -304,7 +325,7 @@ typedef struct config {
     feature::xy::config_t xy;
     feature::enhanced_hue::config_t enhanced_hue;
     feature::color_loop::config_t color_loop;
-    config() : cluster_revision(5), color_mode(1), color_control_options(0), enhanced_color_mode(1),
+    config() : cluster_revision(6), color_mode(1), color_control_options(0), enhanced_color_mode(1),
                color_capabilities(0), number_of_primaries(0) {}
 } config_t;
 
@@ -330,7 +351,7 @@ typedef struct config {
     nullable<int16_t> local_temperature;
     uint8_t control_sequence_of_operation;
     uint8_t system_mode;
-    config() : cluster_revision(5), local_temperature(), control_sequence_of_operation(4), system_mode(1) {}
+    config() : cluster_revision(6), local_temperature(), control_sequence_of_operation(4), system_mode(1) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -344,7 +365,7 @@ typedef struct config {
     bool actuator_enabled;
     uint8_t operating_mode;
     uint16_t supported_operating_modes;
-    config() : cluster_revision(6), lock_state(0), lock_type(0), actuator_enabled(0), operating_mode(0), supported_operating_modes(0xFFF6) {}
+    config() : cluster_revision(7), lock_state(0), lock_type(0), actuator_enabled(0), operating_mode(0), supported_operating_modes(0xFFF6) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -511,7 +532,7 @@ typedef struct config {
     const nullable<uint16_t> standard_namespace;
     uint8_t current_mode;
     feature::on_off::config_t on_off;
-    config() : cluster_revision(1), mode_select_description{0}, standard_namespace(), current_mode(0) {}
+    config() : cluster_revision(2), mode_select_description{0}, standard_namespace(), current_mode(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);

@@ -99,6 +99,8 @@ namespace esp_matter {
 namespace endpoint {
 namespace root_node {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::access_control::config_t access_control;
     cluster::basic_information::config_t basic_information;
     cluster::general_commissioning::config_t general_commissioning;
     cluster::network_commissioning::config_t network_commissioning;
@@ -117,6 +119,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace power_source_device{
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::power_source::config_t power_source;
 } config_t;
 
@@ -128,6 +131,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace on_off_light {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::groups::config_t groups;
     cluster::scenes::config_t scenes;
@@ -142,6 +146,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace dimmable_light {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::groups::config_t groups;
     cluster::scenes::config_t scenes;
@@ -157,6 +162,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace color_temperature_light {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::groups::config_t groups;
     cluster::scenes::config_t scenes;
@@ -173,6 +179,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace extended_color_light {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::groups::config_t groups;
     cluster::scenes::config_t scenes;
@@ -189,6 +196,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace on_off_switch {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::binding::config_t binding;
 } config_t;
@@ -201,6 +209,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace dimmer_switch {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::binding::config_t binding;
 } config_t;
@@ -213,6 +222,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace color_dimmer_switch {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::binding::config_t binding;
 } config_t;
@@ -225,6 +235,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace generic_switch {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::switch_cluster::config_t switch_cluster;
 } config_t;
@@ -237,6 +248,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace on_off_plugin_unit {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::groups::config_t groups;
     cluster::scenes::config_t scenes;
@@ -251,6 +263,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace dimmable_plugin_unit {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::groups::config_t groups;
     cluster::scenes::config_t scenes;
@@ -266,6 +279,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace fan {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::groups::config_t groups;
     cluster::fan_control::config_t fan_control;
@@ -279,6 +293,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace thermostat {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::scenes::config_t scenes;
     cluster::thermostat::config_t thermostat;
@@ -291,14 +306,19 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* thermostat */
 
 namespace aggregator {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+} config_t;
+
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
-endpoint_t *create(node_t *node, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint);
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* aggregator */
 
 namespace bridged_node {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::bridged_device_basic_information::config_t bridged_device_basic_information;
 } config_t;
 
@@ -311,6 +331,7 @@ endpoint_t *resume(node_t *node, config_t *config, uint8_t flags, uint16_t endpo
 
 namespace door_lock {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::door_lock::config_t door_lock;
 } config_t;
@@ -323,6 +344,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace window_covering_device {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::groups::config_t groups;
     cluster::scenes::config_t scenes;
@@ -338,6 +360,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace temperature_sensor {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::temperature_measurement::config_t temperature_measurement;
 } config_t;
@@ -350,6 +373,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace humidity_sensor {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::relative_humidity_measurement::config_t relative_humidity_measurement;
 } config_t;
@@ -362,6 +386,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace occupancy_sensor {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::occupancy_sensing::config_t occupancy_sensing;
 } config_t;
@@ -374,6 +399,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace contact_sensor {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::boolean_state::config_t boolean_state;
 } config_t;
@@ -386,6 +412,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace light_sensor {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::illuminance_measurement::config_t illuminance_measurement;
 } config_t;
@@ -398,6 +425,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace pressure_sensor {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::pressure_measurement::config_t pressure_measurement;
 } config_t;
@@ -410,6 +438,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace flow_sensor {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::flow_measurement::config_t flow_measurement;
 } config_t;
@@ -422,6 +451,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace pump{
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::on_off::config_t on_off;
     cluster::pump_configuration_and_control::config_t pump_configuration_and_control;
@@ -440,6 +470,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace mode_select_device {
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::mode_select::config_t mode_select;
 } config_t;
 
@@ -451,6 +482,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace room_air_conditioner{
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::identify:: config_t identify;
     cluster::on_off::config_t on_off;
     cluster::thermostat::config_t thermostat;
@@ -464,6 +496,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace temperature_controlled_cabinet{
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
     cluster::temperature_control::config_t temperature_control;
 } config_t;
 
@@ -475,6 +508,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config);
 
 namespace refrigerator{
 typedef struct config {
+    cluster::descriptor::config_t descriptor;
 } config_t;
 
 uint32_t get_device_type_id();
