@@ -1,4 +1,4 @@
-bitarray==2.6.0
+bitarray>=2.6.0
 cryptography==36.0.0
 cffi==1.15.0
 future==0.18.2

@@ -15,8 +15,8 @@ source ${MATTER_PATH}/scripts/bootstrap.sh
 echo ""
 echo "Building host tools"
 echo ""
-gn --root="${MATTER_PATH}" gen ${MATTER_PATH}/out/host
-ninja -C ${MATTER_PATH}/out/host
+gn --root="${MATTER_PATH}" gen ${MATTER_PATH}/out/host --args='chip_inet_config_enable_ipv4=false'
+ninja -C ${MATTER_PATH}/out/host chip-cert chip-tool
 echo ""
 echo "Host tools built at: ${MATTER_PATH}/out/host"
 echo ""
