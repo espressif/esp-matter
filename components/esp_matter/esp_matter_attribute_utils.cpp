@@ -432,11 +432,45 @@ esp_matter_attr_val_t esp_matter_char_str(char *val, uint16_t data_size)
     return attr_val;
 }
 
+esp_matter_attr_val_t esp_matter_long_char_str(char *val, uint16_t data_size)
+{
+    uint16_t data_size_len = 2; /* Number of bytes used to store the length */
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING,
+        .val = {
+            .a = {
+                .b = (uint8_t *)val,
+                .s = data_size,
+                .n = data_size,
+                .t = (uint16_t)(data_size + data_size_len),
+            },
+        },
+    };
+    return attr_val;
+}
+
 esp_matter_attr_val_t esp_matter_octet_str(uint8_t *val, uint16_t data_size)
 {
     uint16_t data_size_len = 1; /* Number of bytes used to store the length */
     esp_matter_attr_val_t attr_val = {
         .type = ESP_MATTER_VAL_TYPE_OCTET_STRING,
+        .val = {
+            .a = {
+                .b = val,
+                .s = data_size,
+                .n = data_size,
+                .t = (uint16_t)(data_size + data_size_len),
+            },
+        },
+    };
+    return attr_val;
+}
+
+esp_matter_attr_val_t esp_matter_long_octet_str(uint8_t *val, uint16_t data_size)
+{
+    uint16_t data_size_len = 2; /* Number of bytes used to store the length */
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING,
         .val = {
             .a = {
                 .b = val,
@@ -598,6 +632,9 @@ static esp_err_t console_set_handler(int argc, char **argv)
     } else if (type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
         char *value = argv[3];
         val = esp_matter_char_str(value, strlen(value));
+    } else if (type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING) {
+        char *value = argv[3];
+        val = esp_matter_long_char_str(value, strlen(value));
     } else if (type == ESP_MATTER_VAL_TYPE_BITMAP8) {
         if (matter_attribute->IsNullable()) {
             if (strncmp(argv[3], "null", sizeof("null")) == 0) {
@@ -990,8 +1027,16 @@ static esp_matter_val_type_t get_val_type_from_attribute_type(int attribute_type
         return ESP_MATTER_VAL_TYPE_CHAR_STRING;
         break;
 
+    case ZCL_LONG_CHAR_STRING_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING;
+        break;
+
     case ZCL_OCTET_STRING_ATTRIBUTE_TYPE:
         return ESP_MATTER_VAL_TYPE_OCTET_STRING;
+        break;
+
+    case ZCL_LONG_OCTET_STRING_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING;
         break;
 
     case ZCL_INT8S_ATTRIBUTE_TYPE:
@@ -1179,9 +1224,37 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         break;
 
+    case ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING:
+        if (attribute_type) {
+            *attribute_type = ZCL_LONG_CHAR_STRING_ATTRIBUTE_TYPE;
+        }
+        if (attribute_size) {
+            *attribute_size = val->val.a.t;
+        }
+        if (value) {
+            int data_size_len = val->val.a.t - val->val.a.s;
+            memcpy(value, (uint8_t *)&val->val.a.s, data_size_len);
+            memcpy((value + data_size_len), (uint8_t *)val->val.a.b, (*attribute_size - data_size_len));
+        }
+        break;
+
     case ESP_MATTER_VAL_TYPE_OCTET_STRING:
         if (attribute_type) {
             *attribute_type = ZCL_OCTET_STRING_ATTRIBUTE_TYPE;
+        }
+        if (attribute_size) {
+            *attribute_size = val->val.a.t;
+        }
+        if (value) {
+            int data_size_len = val->val.a.t - val->val.a.s;
+            memcpy(value, (uint8_t *)&val->val.a.s, data_size_len);
+            memcpy((value + data_size_len), (uint8_t *)val->val.a.b, (*attribute_size - data_size_len));
+        }
+        break;
+
+    case ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING:
+        if (attribute_type) {
+            *attribute_type = ZCL_LONG_OCTET_STRING_ATTRIBUTE_TYPE;
         }
         if (attribute_size) {
             *attribute_size = val->val.a.t;
@@ -1466,12 +1539,30 @@ static esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttri
         break;
     }
 
+    case ZCL_LONG_CHAR_STRING_ATTRIBUTE_TYPE: {
+        *val = esp_matter_long_char_str(NULL, 0);
+        int data_size_len = val->val.a.t - val->val.a.s;
+        int data_count = 0;
+        memcpy(&data_count, &value[0], data_size_len);
+        *val = esp_matter_long_char_str((char *)(value + data_size_len), data_count);
+        break;
+    }
+
     case ZCL_OCTET_STRING_ATTRIBUTE_TYPE: {
         *val = esp_matter_octet_str(NULL, 0);
         int data_size_len = val->val.a.t - val->val.a.s;
         int data_count = 0;
         memcpy(&data_count, &value[0], data_size_len);
         *val = esp_matter_octet_str((value + data_size_len), data_count);
+        break;
+    }
+
+    case ZCL_LONG_OCTET_STRING_ATTRIBUTE_TYPE: {
+        *val = esp_matter_long_octet_str(NULL, 0);
+        int data_size_len = val->val.a.t - val->val.a.s;
+        int data_count = 0;
+        memcpy(&data_count, &value[0], data_size_len);
+        *val = esp_matter_long_octet_str((value + data_size_len), data_count);
         break;
     }
 
@@ -1725,6 +1816,9 @@ void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
         ESP_LOGI(TAG, "********** %c : Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " is %" PRIu64 " **********", action,
                  endpoint_id, cluster_id, attribute_id, val->val.u64);
     } else if (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " is %.*s **********", action,
+                 endpoint_id, cluster_id, attribute_id, val->val.a.s, val->val.a.b);
+    } else if (val->type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING) {
         ESP_LOGI(TAG, "********** %c : Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " is %.*s **********", action,
                  endpoint_id, cluster_id, attribute_id, val->val.a.s, val->val.a.b);
     } else {

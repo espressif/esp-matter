@@ -42,7 +42,9 @@ esp_err_t get_val_from_nvs(uint16_t endpoint_id, uint32_t cluster_id, uint32_t a
     ESP_LOGD(TAG, "read attribute from nvs: endpoint_id-0x%" PRIx16 ", cluster_id-0x%" PRIx32 ", attribute_id-0x%" PRIx32 "",
              endpoint_id, cluster_id, attribute_id);
     if (val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
+        val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
         val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+        val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
         val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
         size_t len = 0;
         if ((err = nvs_get_blob(handle, attribute_key, NULL, &len)) == ESP_OK) {
@@ -185,7 +187,9 @@ esp_err_t store_val_in_nvs(uint16_t endpoint_id, uint32_t cluster_id, uint32_t a
     ESP_LOGD(TAG, "Store attribute in nvs: endpoint_id-0x%" PRIx16 ", cluster_id-0x%" PRIx32 ", attribute_id-0x%" PRIx32 "",
              endpoint_id, cluster_id, attribute_id);
     if (val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
+        val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
         val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+        val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
         val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
         /* Store only if value is not NULL */
         if (val.val.a.b) {

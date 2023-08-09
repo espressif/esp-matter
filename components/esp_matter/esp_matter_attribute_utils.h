@@ -50,9 +50,9 @@ typedef enum {
     ESP_MATTER_VAL_TYPE_FLOAT = 3,
     /** Array Eg. [1,2,3] */
     ESP_MATTER_VAL_TYPE_ARRAY = 4,
-    /** Char String Eg. "123" */
+    /** Char String Eg. "123", Max length 0xFE */
     ESP_MATTER_VAL_TYPE_CHAR_STRING = 5,
-    /** Octet String Eg. [0x01, 0x20] */
+    /** Octet String Eg. [0x01, 0x20], Max length 0xFE */
     ESP_MATTER_VAL_TYPE_OCTET_STRING = 6,
     /** 8 bit signed integer */
     ESP_MATTER_VAL_TYPE_INT8 = 7,
@@ -80,6 +80,11 @@ typedef enum {
     ESP_MATTER_VAL_TYPE_BITMAP32 = 18,
     /** 16 bit enum */
     ESP_MATTER_VAL_TYPE_ENUM16 = 19,
+    /** Long Char String, Max length 0xFFFE **/
+    ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING = 20,
+    /** Long Octet String, Max length 0xFFFE **/
+    ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING = 21,
+
     /** nullable types **/
     ESP_MATTER_VAL_TYPE_NULLABLE_INTEGER = ESP_MATTER_VAL_TYPE_INTEGER + ESP_MATTER_VAL_NULLABLE_BASE,
     ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT = ESP_MATTER_VAL_TYPE_FLOAT + ESP_MATTER_VAL_NULLABLE_BASE,
@@ -298,9 +303,11 @@ esp_matter_attr_val_t esp_matter_nullable_bitmap32(nullable<uint32_t> val);
 
 /** Character string */
 esp_matter_attr_val_t esp_matter_char_str(char *val, uint16_t data_size);
+esp_matter_attr_val_t esp_matter_long_char_str(char *val, uint16_t data_size);
 
 /** Octet string */
 esp_matter_attr_val_t esp_matter_octet_str(uint8_t *val, uint16_t data_size);
+esp_matter_attr_val_t esp_matter_long_octet_str(uint8_t *val, uint16_t data_size);
 
 /** Array */
 esp_matter_attr_val_t esp_matter_array(uint8_t *val, uint16_t data_size, uint16_t count);
