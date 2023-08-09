@@ -1,5 +1,5 @@
 # Get the list of cluster directories present in ${MATTER_SDK_PATH}/src/app/clusters
-file(GLOB CLUSTER_DIR_LIST true ${MATTER_SDK_PATH}/src/app/clusters ${MATTER_SDK_PATH}/src/app/clusters/*)
+file(GLOB CLUSTER_DIR_LIST true ${MATTER_SDK_PATH}/src/app/clusters/*)
 
 set(SRC_DIRS_LIST       "."
                         "private"
@@ -8,8 +8,14 @@ set(SRC_DIRS_LIST       "."
                         "${MATTER_SDK_PATH}/src/app/server"
                         "${MATTER_SDK_PATH}/src/app/util"
                         "${MATTER_SDK_PATH}/src/app/reporting"
-                        "${CLUSTER_DIR_LIST}"
 )
+
+foreach(CLUSTER_DIR ${CLUSTER_DIR_LIST})
+    file(GLOB_RECURSE C_CPP_FILES "${CLUSTER_DIR}/*.c" "${CLUSTER_DIR}/*.cpp")
+    if (C_CPP_FILES)
+        list(APPEND SRC_DIRS_LIST "${CLUSTER_DIR}")
+    endif()
+endforeach()
 
 set(INCLUDE_DIRS_LIST   "."
                         "${MATTER_SDK_PATH}/zzz_generated/app-common"
