@@ -902,13 +902,9 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
         break;
 
     case chip::DeviceLayer::DeviceEventType::kDnssdInitialized:
-        // Wait some time to avoid issue https://github.com/project-chip/connectedhomeip/issues/25570
-        chip::DeviceLayer::SystemLayer().StartTimer(chip::System::Clock::Seconds16(2),
-                [](chip::System::Layer * systemLayer, void * appState) {
-                esp_matter_ota_requestor_start();
-                /* Initialize binding manager */
-                client::binding_manager_init();
-                } , NULL);
+        esp_matter_ota_requestor_start();
+        /* Initialize binding manager */
+        client::binding_manager_init();
         break;
 
     case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
