@@ -219,7 +219,7 @@ uint32_t get_id()
     return (uint32_t)OnOff::Feature::kDeadFront;
 }
 
-esp_err_t add(cluster_t *cluster, config_t *config)
+esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
