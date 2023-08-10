@@ -1224,10 +1224,10 @@ attribute_t *create_fan_mode(cluster_t *cluster, uint8_t value, uint8_t min, uin
     return attribute;
 }
 
-attribute_t *create_fan_mode_sequence(cluster_t *cluster, uint8_t value)
+attribute_t *create_fan_mode_sequence(cluster_t *cluster, const uint8_t value)
 {
     return esp_matter::attribute::create(cluster, FanControl::Attributes::FanModeSequence::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
 }
 
 attribute_t *create_percent_setting(cluster_t *cluster, nullable<uint8_t> value)
@@ -1241,6 +1241,73 @@ attribute_t *create_percent_current(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, FanControl::Attributes::PercentCurrent::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint8(value));
+}
+
+attribute_t *create_speed_max(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
+{
+    attribute_t *attribute =
+        esp_matter::attribute::create(cluster, FanControl::Attributes::SpeedMax::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(min), esp_matter_uint8(max));
+    return attribute;
+}
+
+attribute_t *create_speed_setting(cluster_t *cluster, nullable<uint8_t> value, uint8_t min, uint8_t max)
+{
+    attribute_t *attribute =
+        esp_matter::attribute::create(cluster, FanControl::Attributes::SpeedSetting::Id,
+                                      ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_nullable_uint8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(min), esp_matter_uint8(max));
+    return attribute;
+}
+
+attribute_t *create_speed_current(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
+{
+    attribute_t *attribute =
+        esp_matter::attribute::create(cluster, FanControl::Attributes::SpeedCurrent::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(min), esp_matter_uint8(max));
+    return attribute;
+}
+
+attribute_t *create_rock_support(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, FanControl::Attributes::RockSupport::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_bitmap8(value));
+}
+
+attribute_t *create_rock_setting(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, FanControl::Attributes::RockSetting::Id, ATTRIBUTE_FLAG_WRITABLE,
+                                         esp_matter_bitmap8(value));
+}
+
+attribute_t *create_wind_support(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, FanControl::Attributes::WindSupport::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_bitmap8(value));
+}
+
+attribute_t *create_wind_setting(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, FanControl::Attributes::WindSetting::Id, ATTRIBUTE_FLAG_WRITABLE,
+                                         esp_matter_bitmap8(value));
+}
+
+attribute_t *create_airflow_direction(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, FanControl::Attributes::AirflowDirection::Id, ATTRIBUTE_FLAG_WRITABLE,
+                                         esp_matter_enum8(value));
 }
 
 } /* attribute */

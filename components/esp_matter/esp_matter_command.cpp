@@ -1017,6 +1017,16 @@ static esp_err_t esp_matter_command_callback_set_temperature(const ConcreteComma
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_fan_step(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::FanControl::Commands::Step::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfFanControlClusterStepCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 static esp_err_t esp_matter_command_callback_instance_action(const ConcreteCommandPath &command_path,
                                                              TLVReader &tlv_data, void *opaque_ptr)
 {
@@ -2090,6 +2100,17 @@ command_t *create_set_temperature(cluster_t *cluster)
 
 } /* command */
 } /* temperature_control */
+
+namespace fan_control {
+namespace command {
+command_t *create_step(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, FanControl::Commands::Step::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_fan_step);
+}
+
+} /* command */
+} /* fan_control */
 
 } /* cluster */
 } /* esp_matter */
