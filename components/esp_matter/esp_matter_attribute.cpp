@@ -1048,7 +1048,7 @@ attribute_t *create_couple_color_temp_to_level_min_mireds(cluster_t *cluster, ui
 attribute_t *create_startup_color_temperature_mireds(cluster_t *cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, ColorControl::Attributes::StartUpColorTemperatureMireds::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_WRITABLE,
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
                                          esp_matter_nullable_uint16(value));
 }
 
