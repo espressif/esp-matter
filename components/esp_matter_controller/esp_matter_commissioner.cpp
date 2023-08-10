@@ -182,10 +182,6 @@ esp_err_t init(uint16_t commissioner_port)
     if (factory.SetupCommissioner(setupParams, *get_device_commissioner()) != CHIP_NO_ERROR) {
         return ESP_FAIL;
     }
-    // Init InteractionModelEngine
-    chip::app::InteractionModelEngine::GetInstance()->Init(&Server::GetInstance().GetExchangeManager(),
-                                                           &Server::GetInstance().GetFabricTable(),
-                                                           &Server::GetInstance().GetReportScheduler());
 
     FabricIndex fabricIndex = device_commissioner.GetFabricIndex();
     if (fabricIndex == kUndefinedFabricIndex) {
