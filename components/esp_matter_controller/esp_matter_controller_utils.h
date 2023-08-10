@@ -22,8 +22,10 @@
 
 namespace esp_matter {
 namespace controller {
-using attribute_report_cb_t = void (*)(const chip::app::ConcreteDataAttributePath &path, chip::TLV::TLVReader *data);
-using event_report_cb_t = void (*)(const chip::app::EventHeader &header, chip::TLV::TLVReader *data);
+using attribute_report_cb_t = void (*)(uint64_t remote_node_id, const chip::app::ConcreteDataAttributePath &path,
+                                       chip::TLV::TLVReader *data);
+using event_report_cb_t = void (*)(uint64_t remote_node_id, const chip::app::EventHeader &header,
+                                   chip::TLV::TLVReader *data);
 } // namespace controller
 } // namespace esp_matter
 
