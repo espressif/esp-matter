@@ -86,6 +86,15 @@ Features
     - RainMaker integration.
     - Zigbee to Matter and BLE Mesh to Matter Bridge.
 
+# 25-Sep-2023
+
+API Change
+
+```
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+```
+- Above API returns the esp_err instread of endpoint.
+
 Known Issues
 ------------
     - BLE memory is not freed if the device has already been commissioned on bootup.

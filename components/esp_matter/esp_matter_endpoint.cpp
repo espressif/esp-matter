@@ -36,16 +36,21 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     access_control::create(endpoint, &(config->access_control), CLUSTER_FLAG_SERVER);
@@ -68,7 +73,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
                            icd_management::feature::check_in_protocol_support::get_id());
 #endif
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* root_node */
 
@@ -86,33 +91,32 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    if (endpoint) {
-        return add(endpoint, config);
-    }
+    add(endpoint, config);
     return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
-        return NULL;
-	}
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type: err: %d", err);
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
     }
 
     cluster_t *cluster = descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     if (!cluster) {
-        return NULL;
+        return ESP_ERR_INVALID_STATE;
     }
     cluster = power_source::create(endpoint, &(config->power_source), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
     if (!cluster) {
-        return NULL;
+        return ESP_ERR_INVALID_STATE;
     }
 
-    return endpoint;
+    return ESP_OK;
 }
 
 } /** power_source_device **/
@@ -131,16 +135,21 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -149,7 +158,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
 
-    return endpoint;
+    return ESP_OK;
 }
 
 } /* on_off_light */
@@ -168,16 +177,21 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -188,7 +202,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER,
                           level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id());
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* dimmable_light */
 
@@ -206,16 +220,21 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-     if (!endpoint) {
+    if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -228,7 +247,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     color_control::create(endpoint, &(config->color_control), CLUSTER_FLAG_SERVER,
                           color_control::feature::color_temperature::get_id());
 
-    return endpoint;
+    return ESP_OK;
 }
 
 } /* color_temperature_light */
@@ -247,16 +266,21 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -272,8 +296,8 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
                           level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id());
     color_control::create(endpoint, &(config->color_control), CLUSTER_FLAG_SERVER,
                           color_control::feature::color_temperature::get_id() | color_control::feature::xy::get_id());
+    return ESP_OK;
 
-    return endpoint;
 }
 } /* extended_color_light */
 
@@ -291,23 +315,28 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
     binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* on_off_switch */
 
@@ -325,16 +354,21 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
@@ -342,7 +376,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     on_off::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     level_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
 
-    return endpoint;
+    return ESP_OK;
 }
 
 } /* dimmer_switch */
@@ -361,16 +395,21 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
@@ -379,7 +418,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     level_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     color_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* color_dimmer_switch */
 
@@ -397,22 +436,27 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     switch_cluster::create(endpoint, &(config->switch_cluster), CLUSTER_FLAG_SERVER);
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* color_dimmer_switch */
 
@@ -430,16 +474,21 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -448,7 +497,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* on_off_plugin_unit */
 
@@ -466,16 +515,21 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -486,7 +540,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER,
                           level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id());
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* dimmable_plugin_unit */
 
@@ -504,23 +558,28 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     fan_control::create(endpoint, &(config->fan_control), CLUSTER_FLAG_SERVER);
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* fan */
 
@@ -538,16 +597,21 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -555,7 +619,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER, cluster::thermostat::feature::cooling::get_id()
                                                                 | cluster::thermostat::feature::heating::get_id());
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* thermostat */
 
@@ -573,20 +637,25 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* aggregator */
 
@@ -605,28 +674,33 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 {
     // bridged node endpoints are always deletable
     endpoint_t *endpoint = endpoint::create(node, flags | ENDPOINT_FLAG_DESTROYABLE, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     bridged_device_basic_information::create(endpoint, &(config->bridged_device_basic_information), CLUSTER_FLAG_SERVER);
 
-    return endpoint;
+    return ESP_OK;
 }
 
 endpoint_t *resume(node_t *node, config_t *config, uint8_t flags, uint16_t endpoint_id, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::resume(node, flags | ENDPOINT_FLAG_DESTROYABLE, endpoint_id, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 } /* bridged_node */
 
@@ -644,23 +718,27 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     cluster::door_lock::create(endpoint, &(config->door_lock), CLUSTER_FLAG_SERVER);
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* door_lock */
 
@@ -678,17 +756,21 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void * priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -696,7 +778,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     window_covering::create(endpoint, &(config->window_covering), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* window_covering */
 
@@ -714,22 +796,27 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     temperature_measurement::create(endpoint, &(config->temperature_measurement), CLUSTER_FLAG_SERVER);
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* temperature_sensor */
 
@@ -747,22 +834,27 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     relative_humidity_measurement::create(endpoint, &(config->relative_humidity_measurement), CLUSTER_FLAG_SERVER);
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* humidity_sensor */
 
@@ -780,22 +872,27 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     occupancy_sensing::create(endpoint, &(config->occupancy_sensing), CLUSTER_FLAG_SERVER);
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* occupancy_sensor */
 
@@ -813,22 +910,27 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     boolean_state::create(endpoint, &(config->boolean_state), CLUSTER_FLAG_SERVER);
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* contact_sensor */
 
@@ -846,22 +948,27 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     illuminance_measurement::create(endpoint, &(config->illuminance_measurement), CLUSTER_FLAG_SERVER);
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* light_sensor */
 
@@ -879,22 +986,27 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     pressure_measurement::create(endpoint, &(config->pressure_measurement), CLUSTER_FLAG_SERVER);
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* pressure_sensor */
 
@@ -912,22 +1024,27 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     flow_measurement::create(endpoint, &(config->flow_measurement), CLUSTER_FLAG_SERVER);
 
-    return endpoint;
+    return ESP_OK;
 }
 } /* flow_sensor */
 
@@ -946,23 +1063,28 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
-        return NULL;
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
     pump_configuration_and_control::create(endpoint, &(config->pump_configuration_and_control), CLUSTER_FLAG_SERVER);
 
-    return endpoint;
+    return ESP_OK;
 }
 } /** pump **/
 
@@ -980,33 +1102,32 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    if (endpoint) {
-        return add(endpoint, config);
-    }
+    add(endpoint, config);
     return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
-        return NULL;
-	}
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type: err: %d", err);
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
     }
 
     cluster_t *cluster = descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     if (!cluster) {
-        return NULL;
+        return ESP_ERR_INVALID_STATE;
     }
     cluster = mode_select::create(endpoint, &(config->mode_select), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
     if (!cluster) {
-        return NULL;
+        return ESP_ERR_INVALID_STATE;
     }
 
-    return endpoint;
+    return ESP_OK;
 }
 } /** mode_select_device **/
 
@@ -1026,20 +1147,21 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    if (endpoint) {
-        return add(endpoint, config);
-    }
+    add(endpoint, config);
     return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
-        return NULL;
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
-
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -1047,7 +1169,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER, cluster::thermostat::feature::cooling::get_id()
                                                                     | cluster::thermostat::feature::heating::get_id());
 
-    return endpoint;
+    return ESP_OK;
 
 }
 } /** room_air_conditioner **/
@@ -1067,21 +1189,26 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
-        return NULL;
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     temperature_control::create(endpoint, &(config->temperature_control), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
 
-    return endpoint;
+    return ESP_OK;
 }
 } /** temperature_controlled_cabinet**/
 
@@ -1100,20 +1227,25 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    return add(endpoint, config);
+    add(endpoint, config);
+    return endpoint;
 }
 
-endpoint_t *add(endpoint_t *endpoint, config_t *config)
+esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
-        return NULL;
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
-    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
 
-    return endpoint;
+    return ESP_OK;
 }
 } /** refrigerator **/
 
