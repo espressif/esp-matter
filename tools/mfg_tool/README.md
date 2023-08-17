@@ -50,7 +50,7 @@ In the configuration menu, set the following additional configuration to use cus
 3. Enable **`Attestation - Factory`** [ Component config → ESP Matter → DAC Provider options → Attestation - Factory]
    > Enable config option `CONFIG_FACTORY_PARTITION_DAC_PROVIDER` to use DAC certificates from the factory partition during Attestation.
 4. Set **`chip-factory namespace partition label`** [Component config → CHIP Device Layer → Matter Manufacturing Options → chip-factory namespace partition label]
-   > Set config option [`CHIP_FACTORY_NAMESPACE_PARTITION_LABEL`](https://github.com/project-chip/connectedhomeip/blob/master/config/esp32/components/chip/Kconfig#L856) to choose the label of the partition to store key-values in the "chip-factory" namespace. The dafault chosen partition label is `nvs`.
+   > Set config option [`CHIP_FACTORY_NAMESPACE_PARTITION_LABEL`](https://github.com/project-chip/connectedhomeip/blob/master/config/esp32/components/chip/Kconfig#L856) to choose the label of the partition to store key-values in the "chip-factory" namespace. The default chosen partition label is `nvs`.
 
 ### mfg_gen.py
 `mfg_gen.py` is present at path `$IDF_PATH/tools/mass_mfg/mfg_gen.py`
