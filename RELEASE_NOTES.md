@@ -1,3 +1,7 @@
+# 29-August-2023
+
+- `ot_storage` partition is no longere required for thread devices as the mechanism for storing data related to the Thread network has been changed in the `openthread` component in ESP-IDF.
+
 # 14-April-2023
 
 #### *Changed how attribute data is stored in NVS*
