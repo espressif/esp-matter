@@ -88,6 +88,39 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* feature */
 } /* power_source */
 
+namespace scenes {
+namespace feature {
+namespace scene_names {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* scene_names */
+
+namespace explicit_feature {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* explicit_feature */
+
+namespace table_size {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* table_size */
+
+namespace fabric_scenes {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* fabric_scenes*/
+
+} /* feature */
+} /* scenes */
+
 namespace on_off {
 namespace feature {
 namespace lighting {

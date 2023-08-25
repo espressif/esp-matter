@@ -19,7 +19,7 @@ endforeach()
 
 set(INCLUDE_DIRS_LIST   "."
                         "${MATTER_SDK_PATH}/zzz_generated/app-common"
-                        "${MATTER_SDK_PATH}/third_party/nlfaultinjection/repo/include"
+                        "${MATTER_SDK_PATH}/third_party/nlfaultinjection/include"
                         "${MATTER_SDK_PATH}/src")
 
 if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)

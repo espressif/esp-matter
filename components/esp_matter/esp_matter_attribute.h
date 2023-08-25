@@ -62,19 +62,7 @@ attribute_t *create_access_control_entries_per_fabric(cluster_t *cluster, uint16
 } /* access_control */
 
 namespace basic_information {
-constexpr uint8_t k_max_vendor_name_length = 32; 
-constexpr uint8_t k_max_product_name_length = 32; 
 constexpr uint8_t k_max_node_label_length = 32; 
-constexpr uint8_t k_max_location_length = 2; 
-constexpr uint8_t k_min_version_string_length = 1; 
-constexpr uint8_t k_max_version_string_length = 64; 
-constexpr uint8_t k_min_manufacturing_date_length = 8; 
-constexpr uint8_t k_max_manufacturing_date_length = 16; 
-constexpr uint8_t k_max_part_number_length = 32; 
-constexpr uint8_t k_max_product_url_length = 32; 
-constexpr uint8_t k_max_product_label_length = 32; 
-constexpr uint8_t k_max_serial_number_length = 32; 
-constexpr uint8_t k_max_unique_id_length = 32;
 
 namespace attribute {
 attribute_t *create_data_model_revision(cluster_t *cluster, uint16_t value);
@@ -230,19 +218,7 @@ attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, ui
 } /* diagnostics_network_thread */
 
 namespace bridged_device_basic_information {
-constexpr uint8_t k_max_vendor_name_length = 32;
-constexpr uint8_t k_max_product_name_length = 32;
 constexpr uint8_t k_max_node_label_length = 32;
-constexpr uint8_t k_max_location_length = 2;
-constexpr uint8_t k_min_version_string_length = 1;
-constexpr uint8_t k_max_version_string_length = 64;
-constexpr uint8_t k_min_manufacturing_date_length = 8;
-constexpr uint8_t k_max_manufacturing_date_length = 16;
-constexpr uint8_t k_max_part_number_length = 32;
-constexpr uint8_t k_max_product_url_length = 32;
-constexpr uint8_t k_max_product_label_length = 32;
-constexpr uint8_t k_max_serial_number_length = 32;
-constexpr uint8_t k_max_unique_id_length = 32;
 
 namespace attribute {
 attribute_t *create_vendor_name(cluster_t *cluster, char *value, uint16_t length);
@@ -339,8 +315,8 @@ constexpr uint8_t k_max_compensation_text_length = 254;
 namespace attribute {
 attribute_t *create_current_hue(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
 attribute_t *create_current_saturation(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
-attribute_t *create_remaining_time(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
-attribute_t *create_color_mode(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
+attribute_t *create_remaining_time(cluster_t *cluster, uint16_t value);
+attribute_t *create_color_mode(cluster_t *cluster, uint8_t value);
 attribute_t *create_color_control_options(cluster_t *cluster, uint8_t value);
 attribute_t *create_enhanced_color_mode(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
 attribute_t *create_color_capabilities(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
@@ -348,7 +324,7 @@ attribute_t *create_color_temperature_mireds(cluster_t *cluster, uint16_t value,
 attribute_t *create_color_temp_physical_min_mireds(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
 attribute_t *create_color_temp_physical_max_mireds(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
 attribute_t *create_couple_color_temp_to_level_min_mireds(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
-attribute_t *create_startup_color_temperature_mireds(cluster_t *cluster, nullable<uint16_t> value, uint16_t min, uint16_t max);
+attribute_t *create_startup_color_temperature_mireds(cluster_t *cluster, nullable<uint16_t> value);
 attribute_t *create_current_x(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
 attribute_t *create_current_y(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
 attribute_t *create_drift_compensation(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
@@ -359,9 +335,9 @@ attribute_t *create_color_loop_direction(cluster_t *cluster, uint8_t value);
 attribute_t *create_color_loop_time(cluster_t *cluster, uint16_t value);
 attribute_t *create_color_loop_start_enhanced_hue(cluster_t *cluster, uint16_t value);
 attribute_t *create_color_loop_stored_enhanced_hue(cluster_t *cluster, uint16_t value);
-attribute_t *create_number_of_primaries(cluster_t *cluster, nullable<uint8_t> value, uint8_t min, uint8_t max);
-attribute_t *create_primary_n_x(cluster_t * cluster, uint16_t value,  uint16_t min, uint16_t max, uint8_t index);
-attribute_t *create_primary_n_y(cluster_t * cluster, uint16_t value, uint16_t min, uint16_t max, uint8_t index);
+attribute_t *create_number_of_primaries(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_primary_n_x(cluster_t * cluster, uint16_t value, uint8_t index);
+attribute_t *create_primary_n_y(cluster_t * cluster, uint16_t value, uint8_t index);
 attribute_t *create_primary_n_intensity(cluster_t * cluster, nullable<uint8_t> value, uint8_t index);
 } /* attribute */
 } /* color_control */
@@ -591,6 +567,8 @@ attribute_t *create_control_mode(cluster_t *cluster, uint8_t value);
 } /* pump_configuration_and_control */
 
 namespace mode_select {
+constexpr uint8_t k_max_mode_select_description_length = 64;
+
 namespace attribute {
 attribute_t *create_mode_select_description(cluster_t *cluster, const char * value, uint16_t length);
 attribute_t *create_standard_namespace(cluster_t *cluster, const nullable<uint16_t> value);

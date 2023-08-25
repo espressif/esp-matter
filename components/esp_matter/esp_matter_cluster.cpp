@@ -83,7 +83,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
-        global::attribute::create_cluster_revision(cluster, 0);
         attribute::create_device_list(cluster, NULL, 0, 0);
         attribute::create_server_list(cluster, NULL, 0, 0);
         attribute::create_client_list(cluster, NULL, 0, 0);
@@ -164,7 +163,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
-        global::attribute::create_cluster_revision(cluster, 0);
         attribute::create_acl(cluster, NULL, 0, 0);
         attribute::create_subjects_per_access_control_entry(cluster, 0);
         attribute::create_access_control_entries_per_fabric(cluster, 0);
@@ -382,7 +380,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-        attribute::create_breadcrumb(cluster, 0);
         global::attribute::create_event_list(cluster, NULL, 0, 0);
         attribute::create_regulatory_config(cluster, 0);
         attribute::create_location_capability(cluster, 0);
@@ -1210,23 +1207,27 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_color_mode(cluster, config->color_mode, 0, 2);
+            attribute::create_color_mode(cluster, config->color_mode);
             attribute::create_color_control_options(cluster, config->color_control_options);
             attribute::create_enhanced_color_mode(cluster, config->enhanced_color_mode, 0, 3);
             attribute::create_color_capabilities(cluster, config->color_capabilities, 0, 0x001f);
-            attribute::create_number_of_primaries(cluster, config->number_of_primaries, 0, 6);
+            attribute::create_number_of_primaries(cluster, config->number_of_primaries);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
 
         /* Attributes managed internally */
-        attribute::create_remaining_time(cluster, 0, 0, 65534);
-        uint16_t max_primary_value = static_cast<uint16_t>(0xfeff);
+        attribute::create_remaining_time(cluster, 0);
 	for (uint8_t idx = 1; idx <= config->number_of_primaries.value_or(0); ++idx) {
-            attribute::create_primary_n_x(cluster, 0, idx, 0, max_primary_value);
-            attribute::create_primary_n_y(cluster, 0, idx, 0, max_primary_value);
+            attribute::create_primary_n_x(cluster, 0, idx);
+            attribute::create_primary_n_y(cluster, 0, idx);
             attribute::create_primary_n_intensity(cluster, nullable<uint8_t>(), idx);
         }
+    }
+    
+    /* Commands */
+    if (features & feature::hue_saturation::get_id() || features & feature::color_temperature::get_id() || features & feature::xy::get_id()) {
+        command::create_stop_move_step(cluster);
     }
 
     /* Features */

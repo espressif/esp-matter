@@ -255,6 +255,8 @@ build_esp_matter_examples_pytest_C3_idf_v4_4:
   variables:
         IDF_VERSION: "v4.4.3"
   script:
+    - cd ${IDF_PATH}
+    - rm -rf components/cbor
     - cd ${ESP_MATTER_PATH}
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --pytest_c3

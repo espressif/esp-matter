@@ -179,6 +179,91 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* power_source */
 
+namespace scenes {
+namespace feature {
+namespace scene_names {
+
+uint32_t get_id()
+{
+    return (uint32_t)Scenes::Feature::kSceneNames;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* scene_names */
+
+namespace explicit_feature {
+
+uint32_t get_id()
+{
+    return (uint32_t)Scenes::Feature::kExplicit;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+ 
+    return ESP_OK;
+}
+
+} /* explicit_feature */
+
+namespace table_size {
+
+uint32_t get_id()
+{
+    return (uint32_t)Scenes::Feature::kTableSize;
+}
+
+esp_err_t add(cluster_t *cluster)
+{ 
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+ 
+    return ESP_OK;
+}
+
+} /* table_size */
+
+namespace fabric_scenes {
+
+uint32_t get_id()
+{ 
+    return (uint32_t)Scenes::Feature::kFabricScenes;
+}
+
+esp_err_t add(cluster_t *cluster)
+{ 
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+ 
+    return ESP_OK;
+}
+
+} /* fabric_scenes*/
+
+} /* feature */
+} /* scenes */
+
 namespace on_off {
 namespace feature {
 namespace lighting {
@@ -367,7 +452,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     command::create_move_saturation(cluster);
     command::create_step_saturation(cluster);
     command::create_move_to_hue_and_saturation(cluster);
-    command::create_stop_move_step(cluster);
 
     return ESP_OK;
 }
@@ -395,11 +479,10 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     attribute::create_color_temp_physical_min_mireds(cluster, config->color_temp_physical_min_mireds, 0, 0xfeff);
     attribute::create_color_temp_physical_max_mireds(cluster, config->color_temp_physical_max_mireds, 0, 0xfeff);
     attribute::create_couple_color_temp_to_level_min_mireds(cluster, config->couple_color_temp_to_level_min_mireds, config->color_temp_physical_min_mireds, config->color_temperature_mireds);
-    attribute::create_startup_color_temperature_mireds(cluster, config->startup_color_temperature_mireds, 0, 0xfeff);
+    attribute::create_startup_color_temperature_mireds(cluster, config->startup_color_temperature_mireds);
 
     /* Commands */
     command::create_move_to_color_temperature(cluster);
-    command::create_stop_move_step(cluster);
     command::create_move_color_temperature(cluster);
     command::create_step_color_temperature(cluster);
 
@@ -430,7 +513,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
     /* Commands */
     command::create_move_to_color(cluster);
-    command::create_stop_move_step(cluster);
     command::create_move_color(cluster);
     command::create_step_color(cluster);
 
