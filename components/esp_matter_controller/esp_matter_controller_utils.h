@@ -26,6 +26,9 @@ using attribute_report_cb_t = void (*)(uint64_t remote_node_id, const chip::app:
                                        chip::TLV::TLVReader *data);
 using event_report_cb_t = void (*)(uint64_t remote_node_id, const chip::app::EventHeader &header,
                                    chip::TLV::TLVReader *data);
+using subscribe_done_cb_t = void (*)(uint64_t remote_node_id);
+using subscribe_failure_cb_t = void (*)(void *subscribe_command);
+
 } // namespace controller
 } // namespace esp_matter
 

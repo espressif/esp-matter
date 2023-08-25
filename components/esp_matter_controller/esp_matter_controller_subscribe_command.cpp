@@ -76,6 +76,10 @@ void subscribe_command::on_device_connected_fcn(void *context, ExchangeManager &
 void subscribe_command::on_device_connection_failure_fcn(void *context, const ScopedNodeId &peerId, CHIP_ERROR error)
 {
     subscribe_command *cmd = (subscribe_command *)context;
+
+    if (cmd->subscribe_failure_cb)
+        cmd->subscribe_failure_cb((void *)cmd);
+
     chip::Platform::Delete(cmd);
     return;
 }
@@ -167,6 +171,10 @@ void subscribe_command::OnSubscriptionEstablished(chip::SubscriptionId subscript
 void subscribe_command::OnDone(ReadClient *apReadClient)
 {
     // This will be called when a subscription is closed.
+    if (subscribe_done_cb) {
+        subscribe_done_cb(m_node_id);
+    }
+
     ESP_LOGI(TAG, "Subscribe done");
     chip::Platform::Delete(apReadClient);
     chip::Platform::Delete(this);

@@ -40,7 +40,8 @@ class subscribe_command : public ReadClient::Callback {
 public:
     subscribe_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_or_event_id,
                       subscribe_command_type_t command_type, uint16_t min_interval, uint16_t max_interval,
-                      attribute_report_cb_t attribute_cb, event_report_cb_t event_cb)
+                      attribute_report_cb_t attribute_cb = nullptr, event_report_cb_t event_cb = nullptr,
+                      subscribe_done_cb_t done_cb = nullptr, subscribe_failure_cb_t connect_failure_cb = nullptr)
         : m_node_id(node_id)
         , m_min_interval(min_interval)
         , m_max_interval(max_interval)
@@ -50,6 +51,8 @@ public:
         , on_device_connection_failure_cb(on_device_connection_failure_fcn, this)
         , attribute_data_cb(attribute_cb)
         , event_data_cb(event_cb)
+        , subscribe_done_cb(done_cb)
+        , subscribe_failure_cb(connect_failure_cb)
     {
         if (command_type == SUBSCRIBE_ATTRIBUTE) {
             m_attr_path.mEndpointId = endpoint_id;
@@ -112,6 +115,8 @@ private:
     chip::Callback::Callback<chip::OnDeviceConnectionFailure> on_device_connection_failure_cb;
     attribute_report_cb_t attribute_data_cb;
     event_report_cb_t event_data_cb;
+    subscribe_done_cb_t subscribe_done_cb;
+    subscribe_failure_cb_t subscribe_failure_cb;
 };
 
 esp_err_t send_subscribe_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id,
