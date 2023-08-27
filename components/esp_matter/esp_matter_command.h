@@ -181,12 +181,18 @@ command_t *create_remove_all_scenes(cluster_t *cluster);
 command_t *create_store_scene(cluster_t *cluster);
 command_t *create_recall_scene(cluster_t *cluster);
 command_t *create_get_scene_membership(cluster_t *cluster);
+command_t *create_enhanced_add_scene(cluster_t *cluster);
+command_t *create_enhanced_view_scene(cluster_t *cluster);
+command_t *create_copy_scene(cluster_t *cluster);
 command_t *create_add_scene_response(cluster_t *cluster);
 command_t *create_view_scene_response(cluster_t *cluster);
 command_t *create_remove_scene_response(cluster_t *cluster);
 command_t *create_remove_all_scenes_response(cluster_t *cluster);
 command_t *create_store_scene_response(cluster_t *cluster);
 command_t *create_get_scene_membership_response(cluster_t *cluster);
+command_t *create_enhanced_add_scene_response(cluster_t *cluster);
+command_t *create_enhanced_view_scene_response(cluster_t *cluster);
+command_t *create_copy_scene_response(cluster_t *cluster);
 } /* command */
 } /* scenes */
 

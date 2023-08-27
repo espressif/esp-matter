@@ -23,6 +23,7 @@ static const char *TAG = "app_main";
 
 using namespace esp_matter;
 using namespace esp_matter::attribute;
+using namespace esp_matter::endpoint;
 
 uint16_t aggregator_endpoint_id = chip::kInvalidEndpointId;
 
@@ -88,7 +89,8 @@ extern "C" void app_main()
         ESP_LOGE(TAG, "Matter node creation failed");
     }
 
-    endpoint_t *aggregator = endpoint::aggregator::create(node, ENDPOINT_FLAG_NONE, NULL);
+    aggregator::config_t aggregator_config;
+    endpoint_t *aggregator = endpoint::aggregator::create(node, &aggregator_config, ENDPOINT_FLAG_NONE, NULL);
     if (!aggregator) {
         ESP_LOGE(TAG, "Matter aggregator endpoint creation failed");
     }

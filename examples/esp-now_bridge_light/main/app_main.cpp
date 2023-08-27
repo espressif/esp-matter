@@ -118,7 +118,8 @@ extern "C" void app_main()
         ESP_LOGE(TAG, "Matter color temperature light endpoint creation failed");
     }
 
-    endpoint_t *aggregator = endpoint::aggregator::create(node, ENDPOINT_FLAG_NONE, NULL);
+    aggregator::config_t aggregator_config;
+    endpoint_t *aggregator = endpoint::aggregator::create(node, &aggregator_config, ENDPOINT_FLAG_NONE, NULL);
     if (!aggregator) {
         ESP_LOGE(TAG, "Matter aggregator endpoint creation failed");
     }

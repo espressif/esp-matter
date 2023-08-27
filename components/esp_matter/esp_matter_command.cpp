@@ -1720,6 +1720,21 @@ command_t *create_get_scene_membership(cluster_t *cluster)
     return esp_matter::command::create(cluster, Scenes::Commands::GetSceneMembership::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
+command_t *create_enhanced_add_scene(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Scenes::Commands::EnhancedAddScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_enhanced_view_scene(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Scenes::Commands::EnhancedViewScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_copy_scene(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Scenes::Commands::CopyScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
 command_t *create_add_scene_response(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, Scenes::Commands::AddSceneResponse::Id, COMMAND_FLAG_GENERATED, NULL);
@@ -1751,6 +1766,21 @@ command_t *create_get_scene_membership_response(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, Scenes::Commands::GetSceneMembershipResponse::Id,
                                        COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_enhanced_add_scene_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Scenes::Commands::EnhancedAddSceneResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_enhanced_view_scene_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Scenes::Commands::EnhancedViewSceneResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_copy_scene_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Scenes::Commands::CopySceneResponse::Id, COMMAND_FLAG_GENERATED, NULL);
 }
 
 } /* command */

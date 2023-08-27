@@ -206,7 +206,8 @@ int create(uint8_t device_type_index)
             break;
         }
         case ESP_MATTER_AGGREGATOR: {
-            endpoint = esp_matter::endpoint::aggregator::create(node, ENDPOINT_FLAG_NONE, NULL);
+            esp_matter::endpoint::aggregator::config_t aggregator_config;
+	    endpoint = esp_matter::endpoint::aggregator::create(node, &aggregator_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
         case ESP_MATTER_BRIDGED_NODE: {

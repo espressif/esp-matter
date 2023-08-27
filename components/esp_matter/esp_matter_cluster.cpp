@@ -68,7 +68,7 @@ namespace descriptor {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, uint8_t flags)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, Descriptor::Id, flags);
     if (!cluster) {
@@ -91,6 +91,14 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 
         /* Attributes updated later */
         global::attribute::create_feature_map(cluster, 0);
+
+	/* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+
     }
 
     return cluster;
@@ -101,7 +109,7 @@ namespace actions {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, uint8_t flags)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, Actions::Id, flags);
     if (!cluster) {
@@ -120,6 +128,14 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
         global::attribute::create_feature_map(cluster, 0);
         attribute::create_action_list(cluster, NULL, 0, 0);
         attribute::create_endpoint_lists(cluster, NULL, 0, 0);
+
+	/* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+
     }
 
     event::create_action_failed(cluster);
@@ -133,7 +149,7 @@ namespace access_control {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, uint8_t flags)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, AccessControl::Id, flags);
     if (!cluster) {
@@ -155,6 +171,14 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 
         /* Attributes updated later */
         global::attribute::create_feature_map(cluster, 0);
+    
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+
     }
 
     event::create_access_control_entry_changed(cluster);
@@ -352,6 +376,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
+        attribute::create_breadcrumb(cluster, 0);
         attribute::create_regulatory_config(cluster, 0);
         attribute::create_location_capability(cluster, 0);
         attribute::create_basic_commissioning_info(cluster, NULL, 0, 0);
@@ -1004,7 +1029,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             attribute::create_current_group(cluster, config->current_group);
             attribute::create_scene_valid(cluster, config->scene_valid);
             attribute::create_scene_name_support(cluster, config->scene_name_support);
-        } else {
+            attribute::create_scene_table_size(cluster, config->scene_table_size);
+	} else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
@@ -1159,20 +1185,21 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_color_mode(cluster, config->color_mode);
+            attribute::create_color_mode(cluster, config->color_mode, 0, 2);
             attribute::create_color_control_options(cluster, config->color_control_options);
-            attribute::create_enhanced_color_mode(cluster, config->enhanced_color_mode);
-            attribute::create_color_capabilities(cluster, config->color_capabilities);
-            attribute::create_number_of_primaries(cluster, config->number_of_primaries);
+            attribute::create_enhanced_color_mode(cluster, config->enhanced_color_mode, 0, 3);
+            attribute::create_color_capabilities(cluster, config->color_capabilities, 0, 0x001f);
+            attribute::create_number_of_primaries(cluster, config->number_of_primaries, 0, 6);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
 
         /* Attributes managed internally */
-        attribute::create_remaining_time(cluster, 0);
-        for (uint8_t idx = 1; idx <= config->number_of_primaries.value_or(0); ++idx) {
-            attribute::create_primary_n_x(cluster, 0, idx);
-            attribute::create_primary_n_y(cluster, 0, idx);
+        attribute::create_remaining_time(cluster, 0, 0, 65534);
+        uint16_t max_primary_value = static_cast<uint16_t>(0xfeff);
+	for (uint8_t idx = 1; idx <= config->number_of_primaries.value_or(0); ++idx) {
+            attribute::create_primary_n_x(cluster, 0, idx, 0, max_primary_value);
+            attribute::create_primary_n_y(cluster, 0, idx, 0, max_primary_value);
             attribute::create_primary_n_intensity(cluster, nullable<uint8_t>(), idx);
         }
     }
