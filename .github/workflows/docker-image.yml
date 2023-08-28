@@ -83,5 +83,5 @@ jobs:
           platforms: ${{ env.BUILD_PLATFORMS }}
           build-args: |
             ESP_MATTER_CLONE_URL=${{ github.server_url }}/${{ github.repository }}.git
-            ESP_MATTER_CHECKOUT_REF=${{ GITHUB_REF_NAME  }}
+            ESP_MATTER_CHECKOUT_REF=${{ github.ref_name }}
             IDF_CHECKOUT_REF=${{ env.REQUIRED_IDF_VERSION }}

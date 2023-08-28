@@ -358,7 +358,8 @@ Alternatively, you can scan the below QR code image using Matter commissioners.
 
 .. figure:: ../_static/matter_qrcode_20202021_3840.png
     :align: center
-    :alt: Default QR Code
+    :alt: MT:Y.K9042C00KA0648G00
+    :scale: 70%
     :figclass: align-center
 
 If QR code is not visible, paste the below link into the browser and scan the QR code.

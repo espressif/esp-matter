@@ -47,7 +47,7 @@ jobs:
     strategy:
       matrix:
         build-dir: ['examples/light', 'examples/light_switch']
-        targets: ['esp32', 'esp32c3']
+        targets: ['esp32', 'esp32c3', 'esp32c6', 'esp32h2']
 
     steps:
       - run: mkdir -p images
