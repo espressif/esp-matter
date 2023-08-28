@@ -37,6 +37,12 @@ attribute_t *create_feature_map(cluster_t *cluster, uint32_t value)
                                          esp_matter_bitmap32(value));
 }
 
+attribute_t *create_event_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, Globals::Attributes::EventList::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array(value, length, count));
+}
+
 } /* attribute */
 } /* global */
 
