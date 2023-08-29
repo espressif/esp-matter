@@ -28,6 +28,9 @@ enum device_type_enum {
     ESP_MATTER_FLOW_SENSOR,
     ESP_MATTER_PUMP,
     ESP_MATTER_MODE_SELECT_DEVICE,
+    ESP_MATTER_RAC,
+    ESP_MATTER_TEMP_CTRL_CABINET,
+    ESP_MATTER_REFRIGERATOR,
     ESP_MATTER_DEVICE_TYPE_MAX
 };
 
@@ -61,6 +64,9 @@ const device_type_name device_type_list[ESP_MATTER_DEVICE_TYPE_MAX] = {
 	{"pressure_sensor", ESP_MATTER_PRESSURE_SENSOR},
 	{"flow_sensor", ESP_MATTER_FLOW_SENSOR},
 	{"pump", ESP_MATTER_PUMP},
-	{"mode_select_device", ESP_MATTER_MODE_SELECT_DEVICE}
+	{"mode_select_device", ESP_MATTER_MODE_SELECT_DEVICE},
+	{"room_ac", ESP_MATTER_RAC},
+	{"temp_ctrl_cabinet", ESP_MATTER_TEMP_CTRL_CABINET},
+	{"refrigerator", ESP_MATTER_REFRIGERATOR}
  };
 } /* namespace esp_matter */
