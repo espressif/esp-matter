@@ -91,3 +91,34 @@ uint8_t string_to_uint8(char *str)
 {
     return (uint8_t)string_to_uint32(str);
 }
+
+int64_t string_to_int64(char *str)
+{
+    return strtoll(str, NULL, 10);
+}
+
+int32_t string_to_int32(char *str)
+{
+    return strtol(str, NULL, 10);
+}
+
+int16_t string_to_int16(char *str)
+{
+    return (int16_t)string_to_int32(str);
+}
+
+int8_t string_to_int8(char *str)
+{
+    return (int8_t)string_to_int32(str);
+}
+
+bool string_to_bool(char *str)
+{
+    if (strcmp(str, "true") == 0) {
+        return true;
+    } else if (strcmp(str, "false") == 0) {
+        return false;
+    } else {
+        return string_to_uint8(str);
+    }
+}

@@ -14,9 +14,9 @@
 
 #pragma once
 
+#include <app-common/zap-generated/cluster-objects.h>
 #include <esp_err.h>
 #include <esp_matter_core.h>
-#include <app-common/zap-generated/cluster-objects.h>
 
 namespace esp_matter {
 namespace cluster {
@@ -154,6 +154,9 @@ namespace command {
 esp_err_t send_identify(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t identify_time);
 
 esp_err_t group_send_identify(uint8_t fabric_index, uint16_t group_id, uint16_t identify_time);
+
+esp_err_t send_trigger_effect(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t effect_identifier,
+                              uint8_t effect_variant);
 } // namespace command
 } // namespace identify
 
@@ -164,7 +167,7 @@ using keyset_read_callback =
     void (*)(void *, const chip::app::Clusters::GroupKeyManagement::Commands::KeySetRead::Type::ResponseType &);
 
 esp_err_t send_keyset_write(peer_device_t *remote_device, uint16_t remote_endpoint_id,
-                            group_keyset_struct group_keyset);
+                            group_keyset_struct &group_keyset);
 
 esp_err_t send_keyset_read(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t keyset_id,
                            keyset_read_callback read_callback);
@@ -192,6 +195,156 @@ esp_err_t send_remove_group(peer_device_t *remote_device, uint16_t remote_endpoi
 
 } // namespace command
 } // namespace groups
+
+namespace scenes {
+namespace command {
+
+using extension_field_sets = chip::app::DataModel::List<chip::app::Clusters::Scenes::Structs::ExtensionFieldSet::Type>;
+using add_scene_callback = void (*)(void *,
+                                    const chip::app::Clusters::Scenes::Commands::AddScene::Type::ResponseType &);
+using view_scene_callback = void (*)(void *,
+                                     const chip::app::Clusters::Scenes::Commands::ViewScene::Type::ResponseType &);
+using remove_scene_callback = void (*)(void *,
+                                       const chip::app::Clusters::Scenes::Commands::RemoveScene::Type::ResponseType &);
+using remove_all_scenes_callback =
+    void (*)(void *, const chip::app::Clusters::Scenes::Commands::RemoveAllScenes::Type::ResponseType &);
+using store_scene_callback = void (*)(void *,
+                                      const chip::app::Clusters::Scenes::Commands::StoreScene::Type::ResponseType &);
+using get_scene_membership_callback =
+    void (*)(void *, const chip::app::Clusters::Scenes::Commands::GetSceneMembership::Type::ResponseType &);
+
+esp_err_t send_add_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id, uint8_t scene_id,
+                         uint16_t transition_time, char *scene_name, extension_field_sets &efs,
+                         add_scene_callback add_scene_cb);
+
+esp_err_t send_view_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
+                          uint8_t scene_id, view_scene_callback view_scene_cb);
+
+esp_err_t send_remove_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
+                            uint8_t scene_id, remove_scene_callback remove_scene_cb);
+
+esp_err_t send_remove_all_scenes(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
+                                 remove_all_scenes_callback remove_all_scenes_cb);
+
+esp_err_t send_store_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
+                           uint8_t scene_id, store_scene_callback store_scene_cb);
+
+esp_err_t send_recall_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
+                            uint8_t scene_id);
+
+esp_err_t send_get_scene_membership(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
+                                    get_scene_membership_callback get_scene_membership_cb);
+
+} // namespace command
+} // namespace scenes
+
+namespace thermostat {
+namespace command {
+
+using transitions =
+    chip::app::DataModel::List<chip::app::Clusters::Thermostat::Structs::ThermostatScheduleTransition::Type>;
+
+using get_weekly_schedule_callback =
+    void (*)(void *, const chip::app::Clusters::Thermostat::Commands::GetWeeklySchedule::Type::ResponseType &);
+
+esp_err_t send_setpoint_raise_lower(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t mode,
+                                    uint8_t amount);
+
+esp_err_t send_set_weekly_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                   uint8_t num_of_tras_for_seq, uint8_t day_of_week_for_seq, uint8_t mode_for_seq,
+                                   transitions &trans);
+
+esp_err_t send_get_weekly_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t day_to_return,
+                                   uint8_t mode_to_return, get_weekly_schedule_callback get_weekly_schedule_cb);
+
+esp_err_t send_clear_weekly_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id);
+
+} // namespace command
+} // namespace thermostat
+
+namespace door_lock {
+namespace command {
+
+using get_week_day_schedule_callback =
+    void (*)(void *, const chip::app::Clusters::DoorLock::Commands::GetWeekDaySchedule::Type::ResponseType &);
+
+using get_year_day_schedule_callback =
+    void (*)(void *, const chip::app::Clusters::DoorLock::Commands::GetYearDaySchedule::Type::ResponseType &);
+
+using get_holiday_schedule_callback =
+    void (*)(void *, const chip::app::Clusters::DoorLock::Commands::GetHolidaySchedule::Type::ResponseType &);
+
+using get_user_callback = void (*)(void *,
+                                   const chip::app::Clusters::DoorLock::Commands::GetUser::Type::ResponseType &);
+
+using set_credential_callback =
+    void (*)(void *, const chip::app::Clusters::DoorLock::Commands::SetCredential::Type::ResponseType &);
+
+using get_credential_status_callback =
+    void (*)(void *, const chip::app::Clusters::DoorLock::Commands::GetCredentialStatus::Type::ResponseType &);
+
+using credential_struct = chip::app::Clusters::DoorLock::Structs::CredentialStruct::Type;
+
+esp_err_t send_lock_door(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t timed_invoke_timeout_ms);
+
+esp_err_t send_unlock_door(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t timed_invoke_timeout_ms);
+
+esp_err_t send_unlock_with_timeout(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t timeout,
+                                   uint16_t timed_invoke_timeout_ms);
+
+esp_err_t send_set_week_day_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t week_day_index,
+                                     uint16_t user_index, uint8_t days_mask, uint8_t start_hour, uint8_t start_minute,
+                                     uint8_t end_hour, uint8_t end_minute);
+
+esp_err_t send_get_week_day_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t week_day_index,
+                                     uint16_t user_index, get_week_day_schedule_callback success_cb);
+
+esp_err_t send_clear_week_day_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                       uint8_t week_day_index, uint16_t user_index);
+
+esp_err_t send_set_year_day_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t year_day_index,
+                                     uint16_t user_index, uint32_t local_start_time, uint32_t local_end_time);
+
+esp_err_t send_get_year_day_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t year_day_index,
+                                     uint16_t user_index, get_year_day_schedule_callback success_cb);
+
+esp_err_t send_clear_year_day_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                       uint8_t year_day_index, uint16_t user_index);
+
+esp_err_t send_set_holiday_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t holiday_index,
+                                    uint32_t local_start_time, uint32_t local_end_time, uint8_t operating_mode);
+
+esp_err_t send_get_holiday_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t holiday_index,
+                                    get_holiday_schedule_callback success_cb);
+
+esp_err_t send_clear_holiday_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t holiday_index);
+
+esp_err_t send_set_user(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t operation_type,
+                        uint16_t user_index, char *user_name, uint32_t user_unique_id, uint8_t user_status,
+                        uint8_t user_type, uint8_t credential_rule, uint16_t timed_invoke_timeout_ms);
+
+esp_err_t send_get_user(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t user_index,
+                        get_user_callback success_cb);
+
+esp_err_t send_clear_user(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t user_index,
+                          uint16_t timed_invoke_timeout_ms);
+
+esp_err_t send_set_credential(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t operation_type,
+                              credential_struct credential, uint8_t *credential_data, size_t credential_len,
+                              uint16_t user_index, uint8_t user_status, uint8_t user_type,
+                              set_credential_callback success_cb, uint16_t timed_invoke_timeout_ms);
+
+esp_err_t send_get_credential_status(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                     credential_struct &credential, get_credential_status_callback success_cb);
+
+esp_err_t send_clear_credential(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                credential_struct &credential, uint16_t timed_invoke_timeout_ms);
+
+esp_err_t send_unbolt_door(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t *pin_code,
+                           size_t pin_code_len, uint16_t timed_invoke_timeout_ms);
+
+} // namespace command
+} // namespace door_lock
 
 namespace window_covering {
 namespace command {

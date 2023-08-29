@@ -57,3 +57,13 @@ uint32_t string_to_uint32(char *str);
 uint16_t string_to_uint16(char *str);
 
 uint8_t string_to_uint8(char *str);
+
+int64_t string_to_int64(char *str);
+
+int32_t string_to_int32(char *str);
+
+int16_t string_to_int16(char *str);
+
+int8_t string_to_int8(char *str);
+
+bool string_to_bool(char *str);

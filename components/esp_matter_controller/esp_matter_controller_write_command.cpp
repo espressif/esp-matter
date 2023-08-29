@@ -535,6 +535,180 @@ static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_
 
 } // namespace group_key_management
 
+namespace identify {
+
+static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_t attribute_id, char *attribute_val_str)
+{
+    if (attribute_id == Identify::Attributes::IdentifyTime::Id) {
+        write_command<uint16_t> *cmd = New<write_command<uint16_t>>(node_id, endpoint_id, Identify::Id, attribute_id,
+                                                                    string_to_uint16(attribute_val_str));
+        ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
+        return cmd->send_command();
+    }
+    return ESP_ERR_NOT_SUPPORTED;
+}
+
+} // namespace identify
+
+namespace thermostat {
+
+static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_t attribute_id, char *attribute_val_str)
+{
+    esp_err_t err = ESP_OK;
+    switch (attribute_id) {
+    // uint8 value type
+    case Thermostat::Attributes::HVACSystemTypeConfiguration::Id:
+    case Thermostat::Attributes::RemoteSensing::Id:
+    case Thermostat::Attributes::ControlSequenceOfOperation::Id:
+    case Thermostat::Attributes::SystemMode::Id:
+    case Thermostat::Attributes::TemperatureSetpointHold::Id:
+    case Thermostat::Attributes::ThermostatProgrammingOperationMode::Id:
+    case Thermostat::Attributes::OccupiedSetback::Id:
+    case Thermostat::Attributes::UnoccupiedSetback::Id:
+    case Thermostat::Attributes::EmergencyHeatDelta::Id:
+    case Thermostat::Attributes::ACType::Id:
+    case Thermostat::Attributes::ACRefrigerantType::Id:
+    case Thermostat::Attributes::ACCompressorType::Id:
+    case Thermostat::Attributes::ACLouverPosition::Id:
+    case Thermostat::Attributes::ACCapacityformat::Id: {
+        write_command<uint8_t> *cmd = New<write_command<uint8_t>>(node_id, endpoint_id, Thermostat::Id, attribute_id,
+                                                                  string_to_uint8(attribute_val_str));
+        ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
+        err = cmd->send_command();
+        break;
+    }
+    // int8 value type
+    case Thermostat::Attributes::LocalTemperatureCalibration::Id:
+    case Thermostat::Attributes::MinSetpointDeadBand::Id: {
+        write_command<int8_t> *cmd = New<write_command<int8_t>>(node_id, endpoint_id, Thermostat::Id, attribute_id,
+                                                                string_to_int8(attribute_val_str));
+        ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
+        err = cmd->send_command();
+        break;
+    }
+    // int16 value type
+    case Thermostat::Attributes::OccupiedCoolingSetpoint::Id:
+    case Thermostat::Attributes::OccupiedHeatingSetpoint::Id:
+    case Thermostat::Attributes::UnoccupiedCoolingSetpoint::Id:
+    case Thermostat::Attributes::UnoccupiedHeatingSetpoint::Id:
+    case Thermostat::Attributes::MinHeatSetpointLimit::Id:
+    case Thermostat::Attributes::MaxHeatSetpointLimit::Id:
+    case Thermostat::Attributes::MinCoolSetpointLimit::Id:
+    case Thermostat::Attributes::MaxCoolSetpointLimit::Id: {
+        write_command<int16_t> *cmd = New<write_command<int16_t>>(node_id, endpoint_id, Thermostat::Id, attribute_id,
+                                                                  string_to_int16(attribute_val_str));
+        ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
+        err = cmd->send_command();
+        break;
+    }
+    // uint16 value type
+    case Thermostat::Attributes::TemperatureSetpointHoldDuration::Id:
+    case Thermostat::Attributes::ACCapacity::Id: {
+        write_command<uint16_t> *cmd = New<write_command<uint16_t>>(node_id, endpoint_id, Thermostat::Id, attribute_id,
+                                                                    string_to_uint16(attribute_val_str));
+        ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
+        err = cmd->send_command();
+        break;
+    }
+    // uint32 value type
+    case Thermostat::Attributes::ACErrorCode::Id: {
+        write_command<uint32_t> *cmd = New<write_command<uint32_t>>(node_id, endpoint_id, Thermostat::Id, attribute_id,
+                                                                    string_to_uint32(attribute_val_str));
+        ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
+        err = cmd->send_command();
+        break;
+    }
+    default:
+        err = ESP_ERR_NOT_SUPPORTED;
+        break;
+    }
+    return err;
+}
+
+} // namespace thermostat
+
+namespace door_lock {
+
+constexpr size_t k_max_language_str_len = 3;
+
+static void language_str_free(void *ctx)
+{
+    chip::Platform::MemoryFree(ctx);
+}
+
+static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_t attribute_id, char *attribute_val_str)
+{
+    esp_err_t err = ESP_OK;
+    switch (attribute_id) {
+    // uint32 value type
+    case DoorLock::Attributes::DoorOpenEvents::Id:
+    case DoorLock::Attributes::DoorClosedEvents::Id:
+    case DoorLock::Attributes::AutoRelockTime::Id: {
+        write_command<uint32_t> *cmd = New<write_command<uint32_t>>(node_id, endpoint_id, DoorLock::Id, attribute_id,
+                                                                    string_to_uint32(attribute_val_str));
+        ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
+        err = cmd->send_command();
+        break;
+    }
+    // uint16 value type
+    case DoorLock::Attributes::OpenPeriod::Id:
+    case DoorLock::Attributes::ExpiringUserTimeout::Id: {
+        write_command<uint16_t> *cmd = New<write_command<uint16_t>>(node_id, endpoint_id, DoorLock::Id, attribute_id,
+                                                                    string_to_uint16(attribute_val_str));
+        ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
+        err = cmd->send_command();
+        break;
+    }
+    // string value type
+    case DoorLock::Attributes::Language::Id: {
+        char *language_buf = static_cast<char *>(chip::Platform::MemoryAlloc(k_max_language_str_len));
+        if (!language_buf) {
+            ESP_LOGE(TAG, "Failed to alloc memory for language_buf");
+            return ESP_ERR_NO_MEM;
+        }
+        strncpy(language_buf, attribute_val_str, strnlen(attribute_val_str, k_max_language_str_len - 1));
+        language_buf[k_max_language_str_len - 1] = 0;
+        write_command<chip::CharSpan> *cmd = New<write_command<chip::CharSpan>>(
+            node_id, endpoint_id, DoorLock::Id, attribute_id, chip::CharSpan(language_buf, strlen(language_buf)));
+        ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
+        cmd->set_attribute_free_handler(language_str_free, language_buf);
+        err = cmd->send_command();
+        break;
+    }
+    // uint8 value type
+    case DoorLock::Attributes::LEDSettings::Id:
+    case DoorLock::Attributes::SoundVolume::Id:
+    case DoorLock::Attributes::OperatingMode::Id:
+    case DoorLock::Attributes::LocalProgrammingFeatures::Id:
+    case DoorLock::Attributes::WrongCodeEntryLimit::Id:
+    case DoorLock::Attributes::UserCodeTemporaryDisableTime::Id: {
+        write_command<uint8_t> *cmd = New<write_command<uint8_t>>(node_id, endpoint_id, DoorLock::Id, attribute_id,
+                                                                  string_to_uint8(attribute_val_str));
+        ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
+        err = cmd->send_command();
+        break;
+    }
+    // boolean value type
+    case DoorLock::Attributes::EnableLocalProgramming::Id:
+    case DoorLock::Attributes::EnableOneTouchLocking::Id:
+    case DoorLock::Attributes::EnableInsideStatusLED::Id:
+    case DoorLock::Attributes::EnablePrivacyModeButton::Id:
+    case DoorLock::Attributes::SendPINOverTheAir::Id:
+    case DoorLock::Attributes::RequirePINforRemoteOperation::Id: {
+        write_command<bool> *cmd = New<write_command<bool>>(node_id, endpoint_id, DoorLock::Id, attribute_id,
+                                                            string_to_bool(attribute_val_str));
+        ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
+        err = cmd->send_command();
+        break;
+    }
+    default:
+        err = ESP_ERR_NOT_SUPPORTED;
+        break;
+    }
+    return err;
+}
+} // namespace door_lock
+
 namespace occupancy_sensing {
 
 static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_t attribute_id, char *attribute_val_str)
@@ -585,6 +759,7 @@ static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_
     }
     default:
         err = ESP_ERR_NOT_SUPPORTED;
+        break;
     }
     return err;
 }
@@ -648,14 +823,23 @@ esp_err_t send_write_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32
         err = clusters::group_key_management::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
         break;
     case OccupancySensing::Id:
-        return clusters::occupancy_sensing::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
+        err = clusters::occupancy_sensing::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
         break;
     case WindowCovering::Id:
-        return clusters::window_covering::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
+        err = clusters::window_covering::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
         break;
     case ThermostatUserInterfaceConfiguration::Id:
-        return clusters::thermostat_userinterface_configuration::write_attribute(node_id, endpoint_id, attribute_id,
-                                                                                 attribute_val_str);
+        err = clusters::thermostat_userinterface_configuration::write_attribute(node_id, endpoint_id, attribute_id,
+                                                                                attribute_val_str);
+        break;
+    case Identify::Id:
+        err = clusters::identify::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
+        break;
+    case Thermostat::Id:
+        err = clusters::thermostat::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
+        break;
+    case DoorLock::Id:
+        err = clusters::door_lock::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
         break;
     default:
         err = ESP_ERR_NOT_SUPPORTED;
