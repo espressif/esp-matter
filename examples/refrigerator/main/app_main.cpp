@@ -16,6 +16,9 @@
 #include <app_priv.h>
 #include <app_reset.h>
 #include <static-supported-temperature-levels.h>
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+#include <platform/ESP32/OpenthreadLauncher.h>
+#endif
 
 static const char *TAG = "app_main";
 static uint16_t refrigerator_endpoint_id = 0;
@@ -122,6 +125,16 @@ extern "C" void app_main()
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to set parent %d", err);
     }
+
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+    /* Set OpenThread platform config */
+    esp_openthread_platform_config_t config = {
+        .radio_config = ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG(),
+        .host_config = ESP_OPENTHREAD_DEFAULT_HOST_CONFIG(),
+        .port_config = ESP_OPENTHREAD_DEFAULT_PORT_CONFIG(),
+    };
+    set_openthread_platform_config(&config);
+#endif
 
     /* Matter start */
     err = esp_matter::start(app_event_cb);
