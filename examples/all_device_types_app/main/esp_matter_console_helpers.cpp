@@ -284,6 +284,33 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::mode_select_device::create(node, &mode_select_device_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
+        case ESP_MATTER_RAC: {
+            esp_matter::endpoint::room_air_conditioner::config_t room_air_conditioner_config;
+            endpoint = esp_matter::endpoint::room_air_conditioner::create(node, &room_air_conditioner_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
+        case ESP_MATTER_TEMP_CTRL_CABINET: {
+            esp_matter::endpoint::temperature_controlled_cabinet::config_t temperature_controlled_cabinet_config;
+            endpoint = esp_matter::endpoint::temperature_controlled_cabinet::create(node, &temperature_controlled_cabinet_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
+        case ESP_MATTER_REFRIGERATOR: {
+            esp_matter::endpoint::refrigerator::config_t refrigerator_config;
+            endpoint = esp_matter::endpoint::refrigerator::create(node, &refrigerator_config, ENDPOINT_FLAG_NONE, NULL);
+
+            esp_matter::endpoint::temperature_controlled_cabinet::config_t temperature_controlled_cabinet_config;
+            esp_matter::endpoint_t *tcc_endpoint = esp_matter::endpoint::temperature_controlled_cabinet::create(node, &temperature_controlled_cabinet_config, ENDPOINT_FLAG_NONE, NULL);
+
+            if (!tcc_endpoint) {
+                ESP_LOGE(TAG, "Matter create endpoint failed");
+                return 1;
+            }
+
+            esp_matter::cluster_t *cluster = esp_matter::cluster::get(tcc_endpoint, chip::app::Clusters::TemperatureControl::Id);
+            cluster::temperature_control::feature::temperature_number::config_t temperature_number_config;
+            cluster::temperature_control::feature::temperature_number::add(cluster, &temperature_number_config);
+            break;
+        }
         default: {
             ESP_LOGE(TAG, "Please input a valid device type");
             break;
