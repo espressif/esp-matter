@@ -87,16 +87,6 @@ event_t *create_software_fault(cluster_t *cluster);
 } // namespace event
 } // namespace software_diagnostics
 
-namespace time_synchronization {
-namespace event {
-event_t *create_dst_table_empty(cluster_t *cluster);
-event_t *create_dst_status(cluster_t *cluster);
-event_t *create_time_zone_status(cluster_t *cluster);
-event_t *create_time_failure(cluster_t *cluster);
-event_t *create_missing_trusted_time_source(cluster_t *cluster);
-} // namespace event
-} // namespace time_synchronization
-
 namespace bridged_device_basic_information {
 namespace event {
 event_t *create_start_up(cluster_t *cluster);

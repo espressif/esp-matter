@@ -181,36 +181,6 @@ event_t *create_software_fault(cluster_t *cluster)
 } // namespace event
 } // namespace software_diagnostics
 
-namespace time_synchronization {
-namespace event {
-event_t *create_dst_table_empty(cluster_t *cluster)
-{
-    return esp_matter::event::create(cluster, TimeSynchronization::Events::DSTTableEmpty::Id);
-}
-
-event_t *create_dst_status(cluster_t *cluster)
-{
-    return esp_matter::event::create(cluster, TimeSynchronization::Events::DSTStatus::Id);
-}
-
-event_t *create_time_zone_status(cluster_t *cluster)
-{
-    return esp_matter::event::create(cluster, TimeSynchronization::Events::TimeZoneStatus::Id);
-}
-
-event_t *create_time_failure(cluster_t *cluster)
-{
-    return esp_matter::event::create(cluster, TimeSynchronization::Events::TimeFailure::Id);
-}
-
-event_t *create_missing_trusted_time_source(cluster_t *cluster)
-{
-    return esp_matter::event::create(cluster, TimeSynchronization::Events::MissingTrustedTimeSource::Id);
-}
-
-} // namespace event
-} // namespace time_synchronization
-
 namespace bridged_device_basic_information {
 namespace event {
 
