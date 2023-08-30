@@ -742,8 +742,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
     }
 
-    event::create_time_failure(cluster);
-
     return cluster;
 }
 } /* time_synchronization */
