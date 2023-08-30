@@ -30,6 +30,7 @@ namespace global {
 namespace attribute {
 attribute_t *create_cluster_revision(cluster_t *cluster, uint16_t value);
 attribute_t *create_feature_map(cluster_t *cluster, uint32_t value);
+attribute_t *create_event_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 } /* attribute */
 } /* global */
 
