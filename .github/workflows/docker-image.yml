@@ -40,11 +40,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Workaround for disk space issues on the GitHub runner
+      - run: sudo rm -rf /usr/share/dotnet
+      - run: sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
       # Depending on the branch/tag, set TAG_NAME (used when tagging the image).
       #
       # The following 3 steps cover the alternatives (tag, release branch, main branch):
-      - run: sudo rm -rf /usr/share/dotnet
-      - run: sudo rm -rf "$AGENT_TOOLSDIRECTORY"
       - name: Set variables (tags)
         if: ${{ github.ref_type == 'tag' }}
         run: |
