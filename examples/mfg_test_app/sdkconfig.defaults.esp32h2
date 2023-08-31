@@ -1,0 +1,2 @@
+# Enable DS Peripheral
+CONFIG_ESP_SECURE_CERT_DS_PERIPHERAL=y
