@@ -23,7 +23,7 @@ Additionally, we also support developing on Windows Host using WSL.
 
 The Prerequisites for ESP-IDF and Matter:
 
-- Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v5.0.1/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
+- Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v5.1.1/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
 - Please get the `Prerequisites <https://github.com/espressif/connectedhomeip/blob/v1.1-branch/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
 
 
@@ -47,17 +47,6 @@ For using VSCode for development, please check `Developing in WSL <https://code.
 
 2.1.2 Getting the Repositories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. only:: esp32 or esp32c3 or esp32c2
-
-   ::
-
-      git clone --recursive https://github.com/espressif/esp-idf.git
-      cd esp-idf; git checkout v5.0.1; git submodule update --init --recursive;
-      ./install.sh
-      cd ..
-
-.. only:: esp32h2 or esp32c6
 
    ::
 
@@ -195,13 +184,13 @@ Choose IDF target.
 
    ::
 
-      idf.py --preview set-target esp32h2
+      idf.py set-target esp32h2
 
 .. only:: esp32c6
 
    ::
 
-      idf.py --preview set-target esp32c6
+      idf.py set-target esp32c6
 
 -  If IDF target has not been set explicitly, then ``esp32`` is
    considered as default.

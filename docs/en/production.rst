@@ -190,7 +190,7 @@ verified software boot loader then checks the partition table and
 verifies the active application firmware and then boots it.
 
 Details about implementing the secure boot can be found here:
-`secure_boot <https://docs.espressif.com/projects/esp-idf/en/v5.0.1/security/secure-boot.html>`__.
+`secure_boot <https://docs.espressif.com/projects/esp-idf/en/v5.1.1/security/secure-boot.html>`__.
 
 4.4.2 Flash Encryption
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -204,7 +204,7 @@ allow to write the data to the flash by encrypting it. Both the
 read/write encryption operations happen transparently.
 
 Details about implementing the flash encryption can be found here:
-`flash_encryption <https://docs.espressif.com/projects/esp-idf/en/v5.0.1/security/flash-encryption.html>`__.
+`flash_encryption <https://docs.espressif.com/projects/esp-idf/en/v5.1.1/security/flash-encryption.html>`__.
 
 4.4.3 NVS Encryption
 ~~~~~~~~~~~~~~~~~~~~
@@ -221,4 +221,4 @@ encryption becomes a mandatory feature to secure the NVS encryption
 keys.
 
 Details about implementing the NVS encryption can be found here:
-`nvs_encryption <https://docs.espressif.com/projects/esp-idf/en/v5.0.1/api-reference/storage/nvs_flash.html#nvs-encryption>`__.
+`nvs_encryption <https://docs.espressif.com/projects/esp-idf/en/v5.1.1/api-reference/storage/nvs_flash.html#nvs-encryption>`__.
