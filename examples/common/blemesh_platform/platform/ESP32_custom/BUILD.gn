@@ -38,6 +38,8 @@ declare_args() {
   chip_enable_route_hook = false
 }
 
+chip_persist_subscriptions = true
+
 buildconfig_header("custom_buildconfig") {
   header = "CHIPDeviceBuildConfig.h"
   header_dir = "platform"
