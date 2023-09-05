@@ -6,6 +6,10 @@ In the ESP-NOW part, it acts as a responder whereas a ESP-NOW switch is an initi
 
 In the Matter part, it creates a Color Temperature Light device and an aggregator device using the ESP Matter data model. When binding with an ESP-NOW switch is complete, it also creates a dynamic OnOff Switch device that works like a normal Matter switch. When unbind from the ESP-NOW switch, the dynamic switch device is removed.
 
+This diagram gives a simplistic view of the data models involved in the interaction.
+
+![data model](./docs/esp-now-bridge-datamodel.drawio.svg)
+
 See the [docs](https://docs.espressif.com/projects/esp-matter/en/main/esp32/developing.html) for more information about building and flashing the firmware.
 
 ## 1. Additional Environment Setup

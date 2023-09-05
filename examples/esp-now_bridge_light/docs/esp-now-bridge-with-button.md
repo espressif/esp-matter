@@ -2,7 +2,19 @@
 
 ## Overview
 
-This application note describes the application of controlling the ESP-NOW Matter bridge using the ESP-NOW coin cell button, focusing on the power saving aspect of the application. Please refer to this [Application Note](https://github.com/espressif/esp-now/tree/master/examples/coin_cell_demo/switch/docs/button_in_matter_bridging.md) for the coin cell button part of the application note. For general ESP-NOW bridge application description, please refer to the [README](../README.md).
+This document outlines the application of controlling the ESP-NOW Matter bridge through the use of ESP-NOW coin cell button. Please refer to this [Application Note](https://github.com/espressif/esp-now/tree/master/examples/coin_cell_demo/switch/docs/button_in_matter_bridging.md) for the coin cell button part of the application note. For general ESP-NOW bridge application description, please refer to the [README](../README.md).
+
+## Data Models
+
+The diagram below gives an overview of the interactions between various devices in this application.
+
+![bridge overview](./esp-now-bridge-overall.drawio.svg)
+
+This diagram gives a simplistic view of the data models involved in the interaction.
+
+![data model](./esp-now-bridge-datamodel.drawio.svg)
+
+The coin cell button binds to the ESP-NOW Matter bridge so that it is able to send ESP-NOW controls to the bridge, then the bridge controls the Matter light through ONOFF Cluster.
 
 ## Power Saving
 
