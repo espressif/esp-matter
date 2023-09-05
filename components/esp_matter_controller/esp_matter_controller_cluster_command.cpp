@@ -369,6 +369,67 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
 
 } // namespace groups
 
+namespace window_covering {
+
+static esp_err_t send_command(command_data_t *command_data, peer_device_t *remote_device, uint16_t remote_endpoint_id)
+{
+    switch (command_data->command_id) {
+    case WindowCovering::Commands::UpOrOpen::Id: {
+        return esp_matter::cluster::window_covering::command::send_up_or_open(remote_device, remote_endpoint_id);
+        break;
+    }
+    case WindowCovering::Commands::DownOrClose::Id: {
+        return esp_matter::cluster::window_covering::command::send_down_or_close(remote_device, remote_endpoint_id);
+        break;
+    }
+    case WindowCovering::Commands::StopMotion::Id: {
+        return esp_matter::cluster::window_covering::command::send_stop_motion(remote_device, remote_endpoint_id);
+        break;
+    }
+    case WindowCovering::Commands::GoToLiftValue::Id: {
+        if (command_data->command_data_count != 1) {
+            ESP_LOGE(TAG, "The command data should in following order: lift_value");
+            return ESP_ERR_INVALID_ARG;
+        }
+        return esp_matter::cluster::window_covering::command::send_go_to_lift_value(
+            remote_device, remote_endpoint_id, string_to_uint16(command_data->command_data_str[0]));
+        break;
+    }
+    case WindowCovering::Commands::GoToLiftPercentage::Id: {
+        if (command_data->command_data_count != 1) {
+            ESP_LOGE(TAG, "The command data should in following order: lift_percentage");
+            return ESP_ERR_INVALID_ARG;
+        }
+        return esp_matter::cluster::window_covering::command::send_go_to_lift_percentage(
+            remote_device, remote_endpoint_id, string_to_uint16(command_data->command_data_str[0]));
+        break;
+    }
+    case WindowCovering::Commands::GoToTiltValue::Id: {
+        if (command_data->command_data_count != 1) {
+            ESP_LOGE(TAG, "The command data should in following order: tilt_value");
+            return ESP_ERR_INVALID_ARG;
+        }
+        return esp_matter::cluster::window_covering::command::send_go_to_tilt_value(
+            remote_device, remote_endpoint_id, string_to_uint16(command_data->command_data_str[0]));
+        break;
+    }
+    case WindowCovering::Commands::GoToTiltPercentage::Id: {
+        if (command_data->command_data_count != 1) {
+            ESP_LOGE(TAG, "The command data should in following order: tilt_percentage");
+            return ESP_ERR_INVALID_ARG;
+        }
+        return esp_matter::cluster::window_covering::command::send_go_to_tilt_percentage(
+            remote_device, remote_endpoint_id, string_to_uint16(command_data->command_data_str[0]));
+        break;
+    }
+    default:
+        break;
+    }
+    return ESP_ERR_NOT_SUPPORTED;
+}
+
+} // namespace window_covering
+
 } // namespace clusters
 
 void cluster_command::on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr, const SessionHandle &sessionHandle)
@@ -390,6 +451,9 @@ void cluster_command::on_device_connected_fcn(void *context, ExchangeManager &ex
         break;
     case Groups::Id:
         clusters::groups::send_command(cmd->m_command_data, &device_proxy, cmd->m_endpoint_id);
+        break;
+    case WindowCovering::Id:
+        clusters::window_covering::send_command(cmd->m_command_data, &device_proxy, cmd->m_endpoint_id);
         break;
     default:
         break;

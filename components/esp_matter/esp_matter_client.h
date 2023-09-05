@@ -193,5 +193,27 @@ esp_err_t send_remove_group(peer_device_t *remote_device, uint16_t remote_endpoi
 } // namespace command
 } // namespace groups
 
+namespace window_covering {
+namespace command {
+
+esp_err_t send_up_or_open(peer_device_t *remote_device, uint16_t remote_endpoint_id);
+
+esp_err_t send_down_or_close(peer_device_t *remote_device, uint16_t remote_endpoint_id);
+
+esp_err_t send_stop_motion(peer_device_t *remote_device, uint16_t remote_endpoint_id);
+
+esp_err_t send_go_to_lift_value(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t lift_value);
+
+esp_err_t send_go_to_lift_percentage(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                     uint16_t lift_percent100ths_value);
+
+esp_err_t send_go_to_tilt_value(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t tilt_value);
+
+esp_err_t send_go_to_tilt_percentage(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                     uint16_t tilt_percent100ths_value);
+
+} // namespace command
+} // namespace window_covering
+
 } // namespace cluster
 } // namespace esp_matter

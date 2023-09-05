@@ -534,6 +534,86 @@ static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_
 
 } // namespace group_key_management
 
+namespace occupancy_sensing {
+
+static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_t attribute_id, char *attribute_val_str)
+{
+    esp_err_t err = ESP_OK;
+    switch (attribute_id) {
+    case OccupancySensing::Attributes::PIROccupiedToUnoccupiedDelay::Id:
+    case OccupancySensing::Attributes::PIRUnoccupiedToOccupiedDelay::Id:
+    case OccupancySensing::Attributes::UltrasonicOccupiedToUnoccupiedDelay::Id:
+    case OccupancySensing::Attributes::UltrasonicUnoccupiedToOccupiedDelay::Id:
+    case OccupancySensing::Attributes::PhysicalContactOccupiedToUnoccupiedDelay::Id:
+    case OccupancySensing::Attributes::PhysicalContactUnoccupiedToOccupiedDelay::Id: {
+        write_command<uint16_t> *cmd = New<write_command<uint16_t>>(node_id, endpoint_id, OccupancySensing::Id,
+                                                                    attribute_id, string_to_uint16(attribute_val_str));
+        ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
+        return cmd->send_command();
+        break;
+    }
+    case OccupancySensing::Attributes::PIRUnoccupiedToOccupiedThreshold::Id:
+    case OccupancySensing::Attributes::UltrasonicUnoccupiedToOccupiedThreshold::Id:
+    case OccupancySensing::Attributes::PhysicalContactUnoccupiedToOccupiedThreshold::Id: {
+        write_command<uint8_t> *cmd = New<write_command<uint8_t>>(node_id, endpoint_id, OccupancySensing::Id,
+                                                                  attribute_id, string_to_uint8(attribute_val_str));
+        ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
+        return cmd->send_command();
+        break;
+    }
+    default:
+        err = ESP_ERR_NOT_SUPPORTED;
+    }
+    return err;
+}
+
+} // namespace occupancy_sensing
+
+namespace window_covering {
+
+static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_t attribute_id, char *attribute_val_str)
+{
+    esp_err_t err = ESP_OK;
+    switch (attribute_id) {
+    case WindowCovering::Attributes::Mode::Id: {
+        write_command<uint8_t> *cmd = New<write_command<uint8_t>>(node_id, endpoint_id, WindowCovering::Id,
+                                                                  attribute_id, string_to_uint8(attribute_val_str));
+        ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
+        return cmd->send_command();
+        break;
+    }
+    default:
+        err = ESP_ERR_NOT_SUPPORTED;
+    }
+    return err;
+}
+
+} // namespace window_covering
+
+namespace thermostat_userinterface_configuration {
+
+static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_t attribute_id, char *attribute_val_str)
+{
+    esp_err_t err = ESP_OK;
+    switch (attribute_id) {
+    case ThermostatUserInterfaceConfiguration::Attributes::TemperatureDisplayMode::Id:
+    case ThermostatUserInterfaceConfiguration::Attributes::KeypadLockout::Id:
+    case ThermostatUserInterfaceConfiguration::Attributes::ScheduleProgrammingVisibility::Id: {
+        write_command<uint8_t> *cmd =
+            New<write_command<uint8_t>>(node_id, endpoint_id, ThermostatUserInterfaceConfiguration::Id, attribute_id,
+                                        string_to_uint8(attribute_val_str));
+        ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
+        return cmd->send_command();
+        break;
+    }
+    default:
+        err = ESP_ERR_NOT_SUPPORTED;
+    }
+    return err;
+}
+
+} // namespace thermostat_userinterface_configuration
+
 } // namespace clusters
 
 esp_err_t send_write_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
@@ -557,6 +637,16 @@ esp_err_t send_write_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32
         break;
     case GroupKeyManagement::Id:
         return clusters::group_key_management::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
+        break;
+    case OccupancySensing::Id:
+        return clusters::occupancy_sensing::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
+        break;
+    case WindowCovering::Id:
+        return clusters::window_covering::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
+        break;
+    case ThermostatUserInterfaceConfiguration::Id:
+        return clusters::thermostat_userinterface_configuration::write_attribute(node_id, endpoint_id, attribute_id,
+                                                                                 attribute_val_str);
         break;
     default:
         return ESP_ERR_NOT_SUPPORTED;

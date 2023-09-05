@@ -1035,6 +1035,89 @@ esp_err_t send_remove_group(peer_device_t *remote_device, uint16_t remote_endpoi
 
 } // namespace command
 } // namespace groups
+
+namespace window_covering {
+namespace command {
+
+esp_err_t send_up_or_open(peer_device_t *remote_device, uint16_t remote_endpoint_id)
+{
+    WindowCovering::Commands::UpOrOpen::Type command_data;
+
+    chip::Controller::WindowCoveringCluster cluster(*remote_device->GetExchangeManager(),
+                                                    remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_down_or_close(peer_device_t *remote_device, uint16_t remote_endpoint_id)
+{
+    WindowCovering::Commands::DownOrClose::Type command_data;
+
+    chip::Controller::WindowCoveringCluster cluster(*remote_device->GetExchangeManager(),
+                                                    remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_stop_motion(peer_device_t *remote_device, uint16_t remote_endpoint_id)
+{
+    WindowCovering::Commands::StopMotion::Type command_data;
+
+    chip::Controller::WindowCoveringCluster cluster(*remote_device->GetExchangeManager(),
+                                                    remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_go_to_lift_value(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t lift_value)
+{
+    WindowCovering::Commands::GoToLiftValue::Type command_data;
+    command_data.liftValue = lift_value;
+
+    chip::Controller::WindowCoveringCluster cluster(*remote_device->GetExchangeManager(),
+                                                    remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_go_to_lift_percentage(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                     uint16_t lift_percent100ths_value)
+{
+    WindowCovering::Commands::GoToLiftPercentage::Type command_data;
+    command_data.liftPercent100thsValue = static_cast<chip::Percent100ths>(lift_percent100ths_value);
+
+    chip::Controller::WindowCoveringCluster cluster(*remote_device->GetExchangeManager(),
+                                                    remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_go_to_tilt_value(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t tilt_value)
+{
+    WindowCovering::Commands::GoToTiltValue::Type command_data;
+    command_data.tiltValue = tilt_value;
+
+    chip::Controller::WindowCoveringCluster cluster(*remote_device->GetExchangeManager(),
+                                                    remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_go_to_tilt_percentage(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                     uint16_t tilt_percent100ths_value)
+{
+    WindowCovering::Commands::GoToTiltPercentage::Type command_data;
+    command_data.tiltPercent100thsValue = static_cast<chip::Percent100ths>(tilt_percent100ths_value);
+
+    chip::Controller::WindowCoveringCluster cluster(*remote_device->GetExchangeManager(),
+                                                    remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+} // namespace command
+} // namespace window_covering
+
 #endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 
 } // namespace cluster
