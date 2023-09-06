@@ -236,6 +236,7 @@ def use_dac_from_args(args):
     out_cert_der = os.sep.join([OUT_DIR['top'], UUIDs[0], 'internal', 'DAC_cert.der'])
     out_private_key_bin = out_cert_der.replace('cert.der', 'private_key.bin')
     out_public_key_bin = out_cert_der.replace('cert.der', 'public_key.bin')
+    out_private_key_der = args.dac_key.replace('key.pem', 'key.der')
 
     convert_x509_cert_from_pem_to_der(args.dac_cert, out_cert_der)
     logging.info('Generated DAC certificate in DER format: {}'.format(out_cert_der))
@@ -244,7 +245,8 @@ def use_dac_from_args(args):
     logging.info('Generated DAC private key in binary format: {}'.format(out_private_key_bin))
     logging.info('Generated DAC public key in binary format: {}'.format(out_public_key_bin))
 
-    return out_cert_der, out_private_key_bin, out_public_key_bin
+    convert_private_key_from_pem_to_der(args.dac_key, out_private_key_der)
+    return out_cert_der, out_private_key_bin, out_public_key_bin, out_private_key_der
 
 
 def setup_out_dirs(vid, pid, count):
@@ -342,9 +344,11 @@ def write_per_device_unique_data(args):
             if args.paa or args.pai:
                 if args.dac_key is not None and args.dac_cert is not None:
                     dacs = use_dac_from_args(args)
+                    dac_cert_path = args.dac_cert
                 else:
                     dacs = generate_dac(int(row['Index']), args, int(row['Discriminator']),
                                         int(row['PIN Code']), PAI['key_pem'], PAI['cert_pem'])
+                    dac_cert_path = os.sep.join([OUT_DIR['top'], UUIDs[int(row['Index'])], "internal", "DAC_cert.pem"])
 
                 if not args.dac_in_secure_cert:
                     chip_factory_update('dac-cert', os.path.abspath(dacs[0]))
@@ -375,7 +379,7 @@ def write_per_device_unique_data(args):
                                                  ca_cert = os.path.abspath(PAI['cert_der']), idf_target = args.target, 
                                                  op_file = secure_cert_partition_file_path)
 
-                append_cn_dac_to_csv(UUIDs[int(row['Index'])], os.sep.join([OUT_DIR['top'], UUIDs[int(row['Index'])], "internal", "DAC_cert.pem"]))
+                append_cn_dac_to_csv(UUIDs[int(row['Index'])], dac_cert_path)
 
             # If serial number is not passed, then generate one
             if (args.serial_num is None):
