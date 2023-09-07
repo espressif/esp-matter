@@ -7,6 +7,13 @@ menu "ESP Matter"
         help
             The maximum device type count supported per endpoint.
 
+    config ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST
+        int "Largest attribute buffer size"
+        default 259
+        help
+            The Largest attribute size required for various attributes, the buffer will be used
+            for reading or writing attributes.
+
     config ESP_MATTER_NVS_PART_NAME
         string "ESP Matter NVS partition name"
         default "nvs"
