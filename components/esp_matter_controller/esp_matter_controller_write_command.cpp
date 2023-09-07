@@ -81,7 +81,7 @@ esp_err_t write_command<T>::send_command()
     }
 #else
     chip::Server *server = &(chip::Server::GetInstance());
-    server->GetCASESessionManager()->FindOrEstablishSession(ScopedNodeId(m_node_id, /* fabric index */ 1),
+    server->GetCASESessionManager()->FindOrEstablishSession(ScopedNodeId(m_node_id, get_fabric_index()),
                                                             &on_device_connected_cb, &on_device_connection_failure_cb);
     return ESP_OK;
 #endif
@@ -249,7 +249,8 @@ static esp_err_t parse_acl_json(char *json_str, acl_attr_t *acl, size_t *acl_siz
                                 "Failed to get targets from the ACL json string: Error on targets length");
             for (size_t targ_index = 0; targ_index < targets_num; ++targ_index) {
                 ESP_RETURN_ON_FALSE(json_arr_get_object(&jctx, targ_index) == 0, ESP_ERR_INVALID_ARG, TAG,
-                                    "Failed to get targets from the ACL json string: Error on targets-%u value", targ_index);
+                                    "Failed to get targets from the ACL json string: Error on targets-%u value",
+                                    targ_index);
                 int64_t cluster_val, device_type_val;
                 int endpoint_val;
                 bool exist_cluster, exist_endpoint, exist_device_type;
