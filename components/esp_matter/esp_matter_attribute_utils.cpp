@@ -1206,6 +1206,12 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         if (value) {
             int data_size_len = val->val.a.t - val->val.a.s;
             memcpy(value, (uint8_t *)&val->val.a.s, data_size_len);
+            if (*attribute_size > CONFIG_ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST)
+            {
+                ESP_LOGE(TAG, "Attribute buffer not enough, cannot copy the data to the attribute buffer."
+                         "Please configure the buffer size through menuconfig ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST");
+                return ESP_FAIL;
+            }
             memcpy((value + data_size_len), (uint8_t *)val->val.a.b, (*attribute_size - data_size_len));
         }
         break;
@@ -1220,6 +1226,12 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         if (value) {
             int data_size_len = val->val.a.t - val->val.a.s;
             memcpy(value, (uint8_t *)&val->val.a.s, data_size_len);
+            if (*attribute_size > CONFIG_ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST)
+            {
+                ESP_LOGE(TAG, "Attribute buffer not enough, cannot copy the data to the attribute buffer."
+                         "Please configure the buffer size through menuconfig ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST");
+                return ESP_FAIL;
+            }
             memcpy((value + data_size_len), (uint8_t *)val->val.a.b, (*attribute_size - data_size_len));
         }
         break;
@@ -1234,6 +1246,12 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         if (value) {
             int data_size_len = val->val.a.t - val->val.a.s;
             memcpy(value, (uint8_t *)&val->val.a.s, data_size_len);
+            if (*attribute_size > CONFIG_ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST)
+            {
+                ESP_LOGE(TAG, "Attribute buffer not enough, cannot copy the data to the attribute buffer."
+                         "Please configure the buffer size through menuconfig ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST");
+                return ESP_FAIL;
+            }
             memcpy((value + data_size_len), (uint8_t *)val->val.a.b, (*attribute_size - data_size_len));
         }
         break;
@@ -1248,6 +1266,12 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         if (value) {
             int data_size_len = val->val.a.t - val->val.a.s;
             memcpy(value, (uint8_t *)&val->val.a.s, data_size_len);
+            if (*attribute_size > CONFIG_ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST)
+            {
+                ESP_LOGE(TAG, "Attribute buffer not enough, cannot copy the data to the attribute buffer."
+                         "Please configure the buffer size through menuconfig ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST");
+                return ESP_FAIL;
+            }
             memcpy((value + data_size_len), (uint8_t *)val->val.a.b, (*attribute_size - data_size_len));
         }
         break;
@@ -1262,6 +1286,12 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         if (value) {
             int data_size_len = val->val.a.t - val->val.a.s;
             memcpy(value, (uint8_t *)&val->val.a.s, data_size_len);
+            if (*attribute_size > CONFIG_ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST)
+            {
+                ESP_LOGE(TAG, "Attribute buffer not enough, cannot copy the data to the attribute buffer."
+                         "Please configure the buffer size through menuconfig ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST");
+                return ESP_FAIL;
+            }
             memcpy((value + data_size_len), (uint8_t *)val->val.a.b, (*attribute_size - data_size_len));
         }
         break;
