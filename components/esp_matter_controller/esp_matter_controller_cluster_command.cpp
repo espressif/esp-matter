@@ -371,29 +371,38 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
 
 } // namespace clusters
 
+cluster_command_handler_t cluster_command::unsupported_cluster_command_handler = NULL;
+cluster_group_command_handler_t cluster_command::unsupported_cluster_group_command_handler = NULL;
+
 void cluster_command::on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr,
                                               const SessionHandle &sessionHandle)
 {
+    esp_err_t err = ESP_OK;
     cluster_command *cmd = reinterpret_cast<cluster_command *>(context);
     chip::OperationalDeviceProxy device_proxy(&exchangeMgr, sessionHandle);
     switch (cmd->m_command_data->cluster_id) {
     case OnOff::Id:
-        clusters::on_off::send_command(cmd->m_command_data, &device_proxy, cmd->m_endpoint_id);
+        err = clusters::on_off::send_command(cmd->m_command_data, &device_proxy, cmd->m_endpoint_id);
         break;
     case LevelControl::Id:
-        clusters::level_control::send_command(cmd->m_command_data, &device_proxy, cmd->m_endpoint_id);
+        err = clusters::level_control::send_command(cmd->m_command_data, &device_proxy, cmd->m_endpoint_id);
         break;
     case ColorControl::Id:
-        clusters::color_control::send_command(cmd->m_command_data, &device_proxy, cmd->m_endpoint_id);
+        err = clusters::color_control::send_command(cmd->m_command_data, &device_proxy, cmd->m_endpoint_id);
         break;
     case GroupKeyManagement::Id:
-        clusters::group_key_management::send_command(cmd->m_command_data, &device_proxy, cmd->m_endpoint_id);
+        err = clusters::group_key_management::send_command(cmd->m_command_data, &device_proxy, cmd->m_endpoint_id);
         break;
     case Groups::Id:
-        clusters::groups::send_command(cmd->m_command_data, &device_proxy, cmd->m_endpoint_id);
+        err = clusters::groups::send_command(cmd->m_command_data, &device_proxy, cmd->m_endpoint_id);
         break;
     default:
+        err = ESP_ERR_NOT_SUPPORTED;
         break;
+    }
+
+    if (err == ESP_ERR_NOT_SUPPORTED && unsupported_cluster_command_handler) {
+        unsupported_cluster_command_handler(cmd->m_command_data, &device_proxy, cmd->m_endpoint_id);
     }
     chip::Platform::Delete(cmd);
     return;
@@ -408,16 +417,22 @@ void cluster_command::on_device_connection_failure_fcn(void *context, const Scop
 
 esp_err_t cluster_command::dispatch_group_command(void *context)
 {
+    esp_err_t err = ESP_OK;
     cluster_command *cmd = reinterpret_cast<cluster_command *>(context);
     uint16_t group_id = cmd->m_destination_id & 0xFFFF;
     switch (cmd->m_command_data->cluster_id) {
     case OnOff::Id:
-        return clusters::on_off::send_group_command(cmd->m_command_data, group_id);
+        err = clusters::on_off::send_group_command(cmd->m_command_data, group_id);
         break;
     default:
+        err = ESP_ERR_NOT_SUPPORTED;
         break;
     }
-    return ESP_ERR_NOT_SUPPORTED;
+    if (err == ESP_ERR_NOT_SUPPORTED && unsupported_cluster_group_command_handler) {
+        err = unsupported_cluster_group_command_handler(cmd->m_command_data, group_id);
+    }
+    chip::Platform::Delete(cmd);
+    return err;
 }
 
 esp_err_t cluster_command::send_command()
