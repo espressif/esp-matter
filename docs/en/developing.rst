@@ -41,7 +41,7 @@ Development on Windows is supported using Windows Subsystem for Linux (WSL). Ple
 - Windows does not support exposing COM ports to WSL distros. Install usbipd-win on `Windows <https://github.com/dorssel/usbipd-win>`__
   and `WSL <https://github.com/espressif/vscode-esp-idf-extension/blob/master/docs/WSL.md#usbipd>`__ (usbipd-win `WSL Support <https://github.com/dorssel/usbipd-win/wiki/WSL-support>`__).
 - Here onwards process for setting esp-matter and building examples is same as other hosts.
-- Please clone the Repositories from inside WSL environment and not inside a mounted directory. 
+- Please clone the repositories from inside the WSL environment and not inside a mounted directory. 
 
 For using VSCode for development, please check `Developing in WSL <https://code.visualstudio.com/docs/remote/wsl>`__.
 
