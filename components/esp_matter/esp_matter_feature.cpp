@@ -795,16 +795,9 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    uint32_t auto_feature_map = feature::auto_mode::get_id();
-    if((get_feature_map_value(cluster) & auto_feature_map) == auto_feature_map) {
+    update_feature_map(cluster, get_id());
 
-        update_feature_map(cluster, get_id());
-
-        attribute::create_occupied_heating_setpoint(cluster, config->occupied_heating_setpoint);
-    } else {
-	    ESP_LOGE(TAG, "Cluster shall support Auto feature");
-	    return ESP_ERR_NOT_SUPPORTED;
-    }
+    attribute::create_occupied_heating_setpoint(cluster, config->occupied_heating_setpoint);
 
     return ESP_OK;
 }
@@ -827,17 +820,9 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         return ESP_ERR_INVALID_ARG;
     }
 
-    uint32_t auto_feature_map = feature::auto_mode::get_id();
+    update_feature_map(cluster, get_id());
 
-    if((get_feature_map_value(cluster) & auto_feature_map) == auto_feature_map) {
-
-        update_feature_map(cluster, get_id());
-
-        attribute::create_occupied_cooling_setpoint(cluster, config->occupied_cooling_setpoint);
-    } else {
-	    ESP_LOGE(TAG, "Cluster shall support Auto feature");
-	    return ESP_ERR_NOT_SUPPORTED;
-    }
+    attribute::create_occupied_cooling_setpoint(cluster, config->occupied_cooling_setpoint);
 
     return ESP_OK;
 }

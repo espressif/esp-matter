@@ -547,7 +547,9 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
-    cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER);
+    groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
+    cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER, cluster::thermostat::feature::cooling::get_id()
+                                                                | cluster::thermostat::feature::heating::get_id());
 
     return endpoint;
 }
@@ -1038,7 +1040,8 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::dead_front::get_id());
-    cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER);
+    cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER, cluster::thermostat::feature::cooling::get_id()
+                                                                    | cluster::thermostat::feature::heating::get_id());
 
     return endpoint;
 
