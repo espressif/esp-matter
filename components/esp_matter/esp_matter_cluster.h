@@ -351,10 +351,12 @@ typedef struct config {
     nullable<int16_t> local_temperature;
     uint8_t control_sequence_of_operation;
     uint8_t system_mode;
+    feature::heating::config_t heating;
+    feature::cooling::config_t cooling;
     config() : cluster_revision(6), local_temperature(), control_sequence_of_operation(4), system_mode(1) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* thermostat */
 
 namespace door_lock {

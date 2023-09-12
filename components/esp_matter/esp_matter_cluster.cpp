@@ -1299,7 +1299,7 @@ const function_generic_t function_list[] = {
 };
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, Thermostat::Id, flags);
     if (!cluster) {
@@ -1333,6 +1333,17 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     /* Commands */
     command::create_setpoint_raise_lower(cluster);
+
+    /* Features */
+    if (!(features & (feature::heating::get_id() | feature::cooling::get_id()))) {
+        ESP_LOGE(TAG, "Cluster shall support at least one of heating or cooling features.");
+    }
+    if (features & feature::heating::get_id()) {
+        feature::heating::add(cluster, &(config->heating));
+    }
+    if (features & feature::cooling::get_id()) {
+        feature::cooling::add(cluster, &(config->cooling));
+    }
 
     return cluster;
 }

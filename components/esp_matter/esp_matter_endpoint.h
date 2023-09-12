@@ -296,6 +296,7 @@ typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::scenes::config_t scenes;
+    cluster::groups::config_t groups;
     cluster::thermostat::config_t thermostat;
 } config_t;
 

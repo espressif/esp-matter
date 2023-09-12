@@ -377,9 +377,6 @@ esp_err_t add(cluster_t *cluster);
 namespace thermostat {
 namespace feature {
 
-// Heating feature is dependent on Auto feature, in order to add
-// Heating feature one must add Auto feature first.
-
 namespace heating {
 
 typedef struct config {
@@ -391,9 +388,6 @@ typedef struct config {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 } /* heating */
-
-// Cooling feature is dependent on Auto feature, in order to add
-// Cooling feature one must add Auto feature first.
 
 namespace cooling {
 
@@ -453,6 +447,9 @@ typedef struct config {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 } /* setback */
+
+// Auto feature mandates the Heating and Cooling feature, while adding
+// Auto feature one must add Heating and Colling features.
 
 namespace auto_mode {
 
