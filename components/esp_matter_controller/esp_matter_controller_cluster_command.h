@@ -36,6 +36,11 @@ typedef struct command_data {
     char command_data_str[k_max_command_data_size][k_max_command_data_str_len];
 } command_data_t;
 
+typedef esp_err_t (*cluster_command_handler_t)(command_data_t *command_data, chip::OperationalDeviceProxy *device_proxy,
+                                               uint16_t endpoint_id);
+
+typedef esp_err_t (*cluster_group_command_handler_t)(command_data_t *command_data, uint16_t group_id);
+
 class cluster_command {
 public:
     cluster_command(uint64_t destination_id, uint16_t endpoint_id, command_data_t *command_data)
@@ -56,16 +61,27 @@ public:
 
     esp_err_t send_command();
 
-    bool is_group_command() {
-        return chip::IsGroupId(m_destination_id);
+    bool is_group_command() { return chip::IsGroupId(m_destination_id); }
+
+    static void set_unsupported_cluster_command_handler(cluster_command_handler_t handler)
+    {
+        unsupported_cluster_command_handler = handler;
+    }
+
+    static void set_unsupported_cluster_group_command_handler(cluster_group_command_handler_t handler)
+    {
+        unsupported_cluster_group_command_handler = handler;
     }
 
 private:
     uint64_t m_destination_id;
     uint16_t m_endpoint_id;
     command_data_t *m_command_data;
+    static cluster_command_handler_t unsupported_cluster_command_handler;
+    static cluster_group_command_handler_t unsupported_cluster_group_command_handler;
 
-    static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr, const SessionHandle &sessionHandle);
+    static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr,
+                                        const SessionHandle &sessionHandle);
     static void on_device_connection_failure_fcn(void *context, const ScopedNodeId &peerId, CHIP_ERROR error);
 
     static esp_err_t dispatch_group_command(void *context);

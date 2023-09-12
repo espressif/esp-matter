@@ -617,27 +617,35 @@ static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_
 
 } // namespace clusters
 
+static attribute_write_handler_t s_unsupported_attribute_write_handler = NULL;
+
+void set_unsupported_attribute_write_handler(attribute_write_handler_t handler)
+{
+    s_unsupported_attribute_write_handler = handler;
+}
+
 esp_err_t send_write_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
                                   char *attribute_val_str)
 {
+    esp_err_t err = ESP_OK;
     switch (cluster_id) {
     case OnOff::Id:
-        return clusters::on_off::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
+        err = clusters::on_off::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
         break;
     case LevelControl::Id:
-        return clusters::level_control::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
+        err = clusters::level_control::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
         break;
     case ColorControl::Id:
-        return clusters::color_control::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
+        err = clusters::color_control::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
         break;
     case AccessControl::Id:
-        return clusters::access_control::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
+        err = clusters::access_control::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
         break;
     case Binding::Id:
-        return clusters::binding::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
+        err = clusters::binding::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
         break;
     case GroupKeyManagement::Id:
-        return clusters::group_key_management::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
+        err = clusters::group_key_management::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
         break;
     case OccupancySensing::Id:
         return clusters::occupancy_sensing::write_attribute(node_id, endpoint_id, attribute_id, attribute_val_str);
@@ -650,9 +658,14 @@ esp_err_t send_write_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32
                                                                                  attribute_val_str);
         break;
     default:
-        return ESP_ERR_NOT_SUPPORTED;
+        err = ESP_ERR_NOT_SUPPORTED;
     }
-    return ESP_ERR_NOT_SUPPORTED;
+
+    if (err == ESP_ERR_NOT_SUPPORTED && s_unsupported_attribute_write_handler) {
+        err = s_unsupported_attribute_write_handler(node_id, endpoint_id, cluster_id, attribute_id, attribute_val_str);
+    }
+
+    return err;
 }
 
 } // namespace controller

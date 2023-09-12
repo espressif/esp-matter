@@ -31,6 +31,9 @@ using chip::app::WriteClient;
 using chip::Messaging::ExchangeManager;
 using esp_matter::client::peer_device_t;
 
+typedef esp_err_t (*attribute_write_handler_t)(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id,
+                                               uint32_t attribute_id, char *attribute_val_str);
+
 template <class T>
 class write_command : public WriteClient::Callback {
 public:
@@ -100,12 +103,15 @@ private:
     attribute_free_handler m_attr_free;
     void *m_attr_free_ctx;
 
-    static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr, const SessionHandle &sessionHandle);
+    static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr,
+                                        const SessionHandle &sessionHandle);
     static void on_device_connection_failure_fcn(void *context, const ScopedNodeId &peerId, CHIP_ERROR error);
 
     chip::Callback::Callback<chip::OnDeviceConnected> on_device_connected_cb;
     chip::Callback::Callback<chip::OnDeviceConnectionFailure> on_device_connection_failure_cb;
 };
+
+void set_unsupported_attribute_write_handler(attribute_write_handler_t handler);
 
 esp_err_t send_write_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
                                   char *attribute_val_str);
