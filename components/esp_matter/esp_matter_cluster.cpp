@@ -726,9 +726,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
     }
 
-    /* commands */
-    command::create_reset_counts(cluster);
-
     return cluster;
 }
 } /* diagnostics_network_thread */
