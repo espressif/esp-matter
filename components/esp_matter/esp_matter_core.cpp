@@ -67,7 +67,6 @@ using chip::DeviceLayer::ThreadStackMgr;
 
 #define ESP_MATTER_NVS_PART_NAME CONFIG_ESP_MATTER_NVS_PART_NAME
 #define ESP_MATTER_MAX_DEVICE_TYPE_COUNT CONFIG_ESP_MATTER_MAX_DEVICE_TYPE_COUNT
-#define ESP_MATTER_NVS_NODE_NAMESPACE "node"
 
 static const char *TAG = "esp_matter_core";
 static bool esp_matter_started = false;
@@ -210,7 +209,7 @@ static esp_err_t store_min_unused_endpoint_id()
     }
 
     nvs_handle_t handle;
-    esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, ESP_MATTER_NVS_NODE_NAMESPACE,
+    esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, ESP_MATTER_KVS_NAMESPACE,
                                             NVS_READWRITE, &handle);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to open the node nvs_namespace");
@@ -230,18 +229,39 @@ static esp_err_t read_min_unused_endpoint_id()
     }
 
     nvs_handle_t handle;
-    esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, ESP_MATTER_NVS_NODE_NAMESPACE,
+    esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, ESP_MATTER_KVS_NAMESPACE,
                                             NVS_READONLY, &handle);
+    if (err == ESP_OK) {
+        err = nvs_get_u16(handle, "min_uu_ep_id", &node->min_unused_endpoint_id);
+        nvs_close(handle);
+    }
+
     if (err == ESP_ERR_NVS_NOT_FOUND) {
-        ESP_LOGI(TAG, "Cannot find the node nvs namespace");
-        return err;
+        ESP_LOGI(TAG, "Cannot find minimum unused endpoint_id, try to find in the previous namespace");
+        // Try to read the minimum unused endpoint_id from the previous node namespace.
+        err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, "node", NVS_READONLY, &handle);
+        if (err != ESP_OK) {
+            ESP_LOGI(TAG, "Failed to open node namespace");
+            return err;
+        }
+        err = nvs_get_u16(handle, "min_uu_ep_id", &node->min_unused_endpoint_id);
+        nvs_close(handle);
+        if (err == ESP_OK) {
+            // If the minimum unused endpoint_id is got, we will erase it from the previous namespace
+            // and store it to the new namespace.
+            if (nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, "node", NVS_READWRITE, &handle) == ESP_OK) {
+                if (nvs_erase_key(handle, "min_uu_ep_id") != ESP_OK) {
+                    ESP_LOGE(TAG, "Failed to erase minimum unused endpoint_id");
+                } else {
+                    nvs_commit(handle);
+                }
+                nvs_close(handle);
+            }
+            return store_min_unused_endpoint_id();
+        }
+    } else if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to get minimum unused endpoint_id in the %s nvs_namespace", ESP_MATTER_KVS_NAMESPACE);
     }
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to open the node nvs_namespace");
-        return err;
-    }
-    err = nvs_get_u16(handle, "min_uu_ep_id", &node->min_unused_endpoint_id);
-    nvs_close(handle);
     return err;
 }
 
@@ -414,27 +434,6 @@ static int get_next_index()
     return 0xFFFF;
 }
 
-static esp_err_t erase_persistent_data(endpoint_t *endpoint)
-{
-    uint16_t endpoint_id = endpoint::get_id(endpoint);
-    char nvs_namespace[16] = {0};
-    snprintf(nvs_namespace, 16, "endpoint_%" PRIX16 "", endpoint_id); /* endpoint_id */
-
-    nvs_handle_t handle;
-    esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, nvs_namespace, NVS_READWRITE, &handle);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Error opening partition: %s, %d", nvs_namespace, err);
-        return err;
-    }
-    err = nvs_erase_all(handle);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Error erasing partition: %s, %d", nvs_namespace, err);
-    }
-    nvs_commit(handle);
-    nvs_close(handle);
-    return err;
-}
-
 static esp_err_t disable(endpoint_t *endpoint)
 {
     if (!endpoint) {
@@ -504,8 +503,7 @@ static esp_err_t disable(endpoint_t *endpoint)
     esp_matter_mem_free(endpoint_type);
     current_endpoint->endpoint_type = NULL;
 
-    /* Clear endpoint persistent data in nvs flash */
-    return erase_persistent_data(endpoint);
+    return ESP_OK;
 }
 
 esp_err_t enable(endpoint_t *endpoint)
@@ -1056,29 +1054,18 @@ esp_err_t factory_reset()
     node_t *node = node::get();
     if (node) {
         /* ESP Matter data model is used. Erase all the data that we have added in nvs. */
-        nvs_handle_t node_handle;
-        err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, ESP_MATTER_NVS_NODE_NAMESPACE,
-                                      NVS_READWRITE, &node_handle);
-        if (err == ESP_OK) {
-            nvs_erase_all(node_handle);
-        }
-        nvs_commit(node_handle);
-        nvs_close(node_handle);
-
-        nvs_commit(node_handle);
-        nvs_close(node_handle);
-
-        endpoint_t *endpoint = endpoint::get_first(node);
-        while (endpoint) {
-            err = endpoint::erase_persistent_data(endpoint);
+        nvs_handle_t handle;
+        err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, ESP_MATTER_KVS_NAMESPACE, NVS_READWRITE, &handle);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to open esp_matter nvs partition ");
+        } else {
+            err = nvs_erase_all(handle);
             if (err != ESP_OK) {
-                ESP_LOGE(TAG, "Error erasing persistent data of endpoint %" PRIu16 "", endpoint::get_id(endpoint));
-                continue;
+                ESP_LOGE(TAG, "Failed to erase esp_matter nvs namespace");
+            } else {
+                nvs_commit(handle);
             }
-            endpoint = endpoint::get_next(endpoint);
-        }
-        if (err == ESP_OK) {
-            ESP_LOGI(TAG, "Erasing attribute data completed");
+            nvs_close(handle);
         }
     }
 
@@ -1186,6 +1173,11 @@ static esp_err_t destroy(attribute_t *attribute)
     /* Free bounds */
     if (current_attribute->bounds) {
         esp_matter_mem_free(current_attribute->bounds);
+    }
+
+    /* Erase the persistent data */
+    if (current_attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE) {
+        erase_val_in_nvs(current_attribute->endpoint_id, current_attribute->cluster_id, current_attribute->attribute_id);
     }
 
     /* Free */
@@ -1860,11 +1852,11 @@ endpoint_t *resume(node_t *node, uint8_t flags, uint16_t endpoint_id, void *priv
         current_endpoint = current_endpoint->next;
     }
 
-     /* Check */
-     if (endpoint_id >= current_node->min_unused_endpoint_id) {
+    /* Check */
+    if (endpoint_id >= current_node->min_unused_endpoint_id) {
         ESP_LOGE(TAG, "The endpoint_id of the resumed endpoint should have been used");
         return NULL;
-     }
+    }
 
      /* Allocate */
      _endpoint_t *endpoint = (_endpoint_t *)esp_matter_mem_calloc(1, sizeof(_endpoint_t));

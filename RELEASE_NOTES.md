@@ -1,6 +1,10 @@
+# 2-November-2023
+
+All of the non-volatile attribute values now are stored in the namespace `esp_matter_kvs` with the attribute key base64-encoded of bytes (`endpoint-id`+`cluster-id`+`attribute-id`). For the devices that store the non-volatile attribute values in the previous namespace with previous attribute-key, the values will be moved and the previous keys will be erased.
+
 # 29-August-2023
 
-- `ot_storage` partition is no longere required for thread devices as the mechanism for storing data related to the Thread network has been changed in the `openthread` component in ESP-IDF.
+- `ot_storage` partition is no longer required for thread devices as the mechanism for storing data related to the Thread network has been changed in the `openthread` component in ESP-IDF.
 
 # 14-April-2023
 
