@@ -35,6 +35,7 @@ namespace device_mgr {
 static matter_device_t *s_matter_device_list = NULL;
 static device_list_update_callback_t s_device_list_update_cb = NULL;
 static QueueHandle_t s_task_queue = NULL;
+static TaskHandle_t s_device_mgr_task = NULL;
 static SemaphoreHandle_t s_device_mgr_mutex = NULL;
 typedef esp_err_t (*esp_matter_device_mgr_task_t)(void *);
 
@@ -454,6 +455,10 @@ static esp_err_t update_device_list_task(void *endpoint_id_ptr)
 
 esp_err_t update_device_list(uint16_t endpoint_id)
 {
+    if (!s_task_queue) {
+        ESP_LOGE(TAG, "Failed to update device list as the task queue is not initialized");
+        return ESP_ERR_INVALID_STATE;
+    }
     uint16_t *endpoint_id_ptr = (uint16_t *)malloc(sizeof(uint16_t));
     *endpoint_id_ptr = endpoint_id;
     task_post_t task_post = {
@@ -494,10 +499,13 @@ static void device_mgr_task(void *aContext)
 
 esp_err_t init(uint16_t endpoint_id, device_list_update_callback_t dev_list_update_cb)
 {
+    if (s_device_mgr_task) {
+        return ESP_OK;
+    }
     uint8_t fabric_index;
     bool user_noc_installed = false;
     s_device_list_update_cb = dev_list_update_cb;
-    if (xTaskCreate(device_mgr_task, "device_mgr", 4096, NULL, 5, NULL) != pdTRUE) {
+    if (xTaskCreate(device_mgr_task, "device_mgr", 4096, NULL, 5, &s_device_mgr_task) != pdTRUE) {
         ESP_LOGE(TAG, "Failed to create device mgr task");
         return ESP_ERR_NO_MEM;
     }

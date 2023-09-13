@@ -378,7 +378,7 @@ cleanup:
 
 static esp_err_t generate_user_noc_csr(ScopedMemoryBufferWithSize<char> &csr_pem, uint8_t fabric_index, size_t &out_len)
 {
-    uint8_t csr_der_buf[chip::Crypto::kMAX_CSR_Length];
+    uint8_t csr_der_buf[chip::Crypto::kMIN_CSR_Buffer_Size];
     MutableByteSpan csr_span(csr_der_buf);
     chip::Server::GetInstance().GetFabricTable().AllocatePendingOperationalKey(chip::MakeOptional(fabric_index),
                                                                                csr_span);

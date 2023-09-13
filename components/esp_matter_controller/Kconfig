@@ -22,7 +22,7 @@ menu "ESP Matter Controller"
 
     config ESP_MATTER_CONTROLLER_CUSTOM_CLUSTER_ENABLE
         bool "Enable controller custom cluster"
-        depends on !ESP_MATTER_COMMISSIONER_ENABLE
+        depends on ESP_MATTER_CONTROLLER_ENABLE && !ESP_MATTER_COMMISSIONER_ENABLE
         default y
         help
             Enable the custom cluster of matter controller in the ESP Matter controller for Rainmaker Fabric suppport.
