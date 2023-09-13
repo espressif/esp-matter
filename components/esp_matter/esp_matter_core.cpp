@@ -893,7 +893,7 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
     switch (event->Type)
     {
     case chip::DeviceLayer::DeviceEventType::kInterfaceIpAddressChanged:
-#if CHIP_DEVICE_CONFIG_ENABLE_WIFI
+#if CHIP_DEVICE_CONFIG_ENABLE_WIFI || CHIP_DEVICE_CONFIG_ENABLE_ETHERNET
         if (event->InterfaceIpAddressChanged.Type == chip::DeviceLayer::InterfaceIpChangeType::kIpV6_Assigned ||
                 event->InterfaceIpAddressChanged.Type == chip::DeviceLayer::InterfaceIpChangeType::kIpV4_Assigned) {
             chip::app::DnssdServer::Instance().StartServer();
