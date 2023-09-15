@@ -900,7 +900,26 @@ The ``pairing`` command is used for commissioning the end-devices. Here are thre
 
 2.4.5.3 Cluster commands
 ^^^^^^^^^^^^^^^^^^^^^^^^
-The ``invoke-cmd`` command is used for sending cluster commands to the end-devices. Currently the controller only supports commands of on-off, level-control, and color-control clusters. The on-off cluster supports both unicast and multicast sending, and the other two clusters only support unicast sending.
+The ``invoke-cmd`` command is used for sending cluster commands to the end-devices. Currently the controller component has implemented the following commands for various clusters.
+
+**Unicast commands**:
+
+    | **OnOff Cluster** (On, Off, Toggle)
+    | **LevelControl Cluster** (Move, MoveToLevel, Step, Stop)
+    | **ColorControl Cluster** (MoveToHue, MoveToSaturation, MoveToHueAndSaturation)
+    | **GroupKeyManagement Cluster** (KeySetWrite, KeySetRead)
+    | **Groups Cluster** (AddGroup, ViewGroup, RemoveGroup)
+    | **Identify Cluster** (Identify, TriggerEffect)
+    | **Scenes Cluster** (AddScene, ViewScene, RemoveScene, RemoveAllScenes, StoreScene, RecallScene, GetSceneMembership)
+    | **Thermostat Cluster** (SetpointRaiseLower, SetWeeklySchedule, GetWeeklySchedule, ClearWeeklySchedule)
+    | **DoorLock Cluster** (LockDoor, UnlockDoor, UnlockWithTimeout)
+    | **WindowCovering Cluster** (UpOrOpen, DownOrClose, StopMotion, GoToLiftValue, GoToLiftPercentage, GoToTiltValue, GoToTiltPercentage)
+
+**Group commands**:
+
+    | **OnOff Cluster** (On, Off, Toggle)
+
+If you want to utilize commands not list above, you can use ``esp_matter::controller::cluster_command::set_unsupported_cluster_command_handler()`` and ``esp_matter::controller::cluster_command::set_unsupported_cluster_group_command_handler()`` to set handlers for the commands that are not currently implemented.
 
 - Send the cluster command:
 
@@ -932,13 +951,35 @@ The ``read-event`` command is used for sending the commands of reading events on
 
 2.4.5.6 Write attribute commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The ``write-attr`` command is used for sending the commands of writing attributes on the end-device. Currently the controller only supports unicast-attributes-writing of on-off, level-control, color-control, access-control, binding, and group-key-management clusters.
+The ``write-attr`` command is used for sending the commands of writing attributes on the end-device. Currently the controller component has implemented the capability to write attributes of the following clusters.
+
+    | **OnOff Cluster**
+    | **LevelControl Cluster**
+    | **ColorControl Cluster**
+    | **AccessControl Cluster**
+    | **Binding Cluster**
+    | **GroupKeyManagement Cluster**
+    | **Identify Cluster**
+    | **Thermostat Cluster**
+    | **DoorLock Cluster**
+    | **OccupancySensing Cluster**
+    | **WindowCovering Cluster**
+    | **ThermostatUserInterfaceConfiguration Cluster**
+
+If you want to send the writing-attribute commands to the clusters not listed above, you could use ``esp_matter::controller::set_unsupported_attribute_write_handler()`` to set the handler for clusters that are are not currently implemented.
 
 - Send the write-attribute command:
 
    ::
 
       matter esp controller write-attr <node_id> <endpoint_id> <cluster_id> <attribute_id> <attribute_value>
+
+Note: ``attribute_value`` could be formatted as JSON string, as an example, For Binding attribute, you should use the follow JSON structure as the ``attribute_value`` : ``"[{\"node\":1, \"endpoint\":1, \"cluster\":6}]"``
+
+   ::
+
+      matter esp controller write-attr <node_id> <endpoint_id> 30 0 "[{\"node\":1, \"endpoint\":1, \"cluster\":6}]"
+
 
 2.4.5.7 Subscribe attribute commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

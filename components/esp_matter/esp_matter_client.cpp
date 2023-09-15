@@ -50,7 +50,8 @@ esp_err_t set_command_callback(command_callback_t callback, group_command_callba
     return ESP_OK;
 }
 
-void esp_matter_connection_success_callback(void *context, ExchangeManager &exchangeMgr, const SessionHandle &sessionHandle)
+void esp_matter_connection_success_callback(void *context, ExchangeManager &exchangeMgr,
+                                            const SessionHandle &sessionHandle)
 {
     command_handle_t *cmd_handle = static_cast<command_handle_t *>(context);
     if (!cmd_handle) {
@@ -191,7 +192,7 @@ static void send_command_success_callback(void *context, const chip::app::DataMo
 
 static void send_command_failure_callback(void *context, CHIP_ERROR error)
 {
-    ESP_LOGI(TAG, "FSend command failure");
+    ESP_LOGI(TAG, "Send command failure: err: %" CHIP_ERROR_FORMAT, error.Format());
 }
 #if CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 namespace on_off {
@@ -961,13 +962,28 @@ esp_err_t group_send_identify(uint8_t fabric_index, uint16_t group_id, uint16_t 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
+
+esp_err_t send_trigger_effect(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t effect_identifier,
+                              uint8_t effect_variant)
+{
+    Identify::Commands::TriggerEffect::Type command_data;
+    command_data.effectIdentifier = Identify::EffectIdentifierEnum(effect_identifier);
+    command_data.effectVariant = Identify::EffectVariantEnum(effect_variant);
+
+    chip::Controller::IdentifyCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
 } // namespace command
 } // namespace identify
 
 namespace group_key_management {
 namespace command {
 
-esp_err_t send_keyset_write(peer_device_t *remote_device, uint16_t remote_endpoint_id, group_keyset_struct group_keyset)
+esp_err_t send_keyset_write(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                            group_keyset_struct &group_keyset)
 {
     GroupKeyManagement::Commands::KeySetWrite::Type command_data;
     command_data.groupKeySet = group_keyset;
@@ -1035,6 +1051,436 @@ esp_err_t send_remove_group(peer_device_t *remote_device, uint16_t remote_endpoi
 
 } // namespace command
 } // namespace groups
+
+namespace scenes {
+namespace command {
+
+esp_err_t send_add_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id, uint8_t scene_id,
+                         uint16_t transition_time, char *scene_name, extension_field_sets &efs,
+                         add_scene_callback add_scene_cb)
+{
+    Scenes::Commands::AddScene::Type command_data;
+    command_data.groupID = group_id;
+    command_data.sceneID = scene_id;
+    command_data.transitionTime = transition_time;
+    command_data.sceneName = chip::CharSpan(scene_name, strnlen(scene_name, 16));
+    command_data.extensionFieldSets = efs;
+
+    chip::Controller::ScenesCluster cluster(*remote_device->GetExchangeManager(),
+                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, add_scene_cb, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_view_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
+                          uint8_t scene_id, view_scene_callback view_scene_cb)
+{
+    Scenes::Commands::ViewScene::Type command_data;
+    command_data.groupID = group_id;
+    command_data.sceneID = scene_id;
+
+    chip::Controller::ScenesCluster cluster(*remote_device->GetExchangeManager(),
+                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, view_scene_cb, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_remove_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
+                            uint8_t scene_id, remove_scene_callback remove_scene_cb)
+{
+    Scenes::Commands::RemoveScene::Type command_data;
+    command_data.groupID = group_id;
+    command_data.sceneID = scene_id;
+
+    chip::Controller::ScenesCluster cluster(*remote_device->GetExchangeManager(),
+                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, remove_scene_cb, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_remove_all_scenes(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
+                                 remove_all_scenes_callback remove_all_scenes_cb)
+{
+    Scenes::Commands::RemoveAllScenes::Type command_data;
+    command_data.groupID = group_id;
+
+    chip::Controller::ScenesCluster cluster(*remote_device->GetExchangeManager(),
+                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, remove_all_scenes_cb, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_store_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
+                           uint8_t scene_id, store_scene_callback store_scene_cb)
+{
+    Scenes::Commands::StoreScene::Type command_data;
+    command_data.groupID = group_id;
+    command_data.sceneID = scene_id;
+
+    chip::Controller::ScenesCluster cluster(*remote_device->GetExchangeManager(),
+                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, store_scene_cb, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_recall_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
+                            uint8_t scene_id)
+{
+    Scenes::Commands::RecallScene::Type command_data;
+    command_data.groupID = group_id;
+    command_data.sceneID = scene_id;
+
+    chip::Controller::ScenesCluster cluster(*remote_device->GetExchangeManager(),
+                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_get_scene_membership(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
+                                    get_scene_membership_callback get_scene_membership_cb)
+{
+    Scenes::Commands::GetSceneMembership::Type command_data;
+    command_data.groupID = group_id;
+
+    chip::Controller::ScenesCluster cluster(*remote_device->GetExchangeManager(),
+                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, get_scene_membership_cb, send_command_failure_callback);
+    return ESP_OK;
+}
+
+} // namespace command
+} // namespace scenes
+
+namespace thermostat {
+namespace command {
+
+esp_err_t send_setpoint_raise_lower(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t mode,
+                                    uint8_t amount)
+{
+    Thermostat::Commands::SetpointRaiseLower::Type command_data;
+    command_data.mode = chip::app::Clusters::Thermostat::SetpointAdjustMode(mode);
+    command_data.amount = amount;
+
+    chip::Controller::ThermostatCluster cluster(*remote_device->GetExchangeManager(),
+                                                remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_set_weekly_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                   uint8_t num_of_tras_for_seq, uint8_t day_of_week_for_seq, uint8_t mode_for_seq,
+                                   transitions &trans)
+{
+    Thermostat::Commands::SetWeeklySchedule::Type command_data;
+    command_data.numberOfTransitionsForSequence = num_of_tras_for_seq;
+    command_data.dayOfWeekForSequence.SetRaw(day_of_week_for_seq);
+    command_data.modeForSequence.SetRaw(mode_for_seq);
+    command_data.transitions = trans;
+
+    chip::Controller::ThermostatCluster cluster(*remote_device->GetExchangeManager(),
+                                                remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_get_weekly_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t day_to_return,
+                                   uint8_t mode_to_return, get_weekly_schedule_callback get_weekly_schedule_cb)
+{
+    Thermostat::Commands::GetWeeklySchedule::Type command_data;
+    command_data.daysToReturn.SetRaw(day_to_return);
+    command_data.modeToReturn.SetRaw(mode_to_return);
+
+    chip::Controller::ThermostatCluster cluster(*remote_device->GetExchangeManager(),
+                                                remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, get_weekly_schedule_cb, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_clear_weekly_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id)
+{
+    Thermostat::Commands::ClearWeeklySchedule::Type command_data;
+
+    chip::Controller::ThermostatCluster cluster(*remote_device->GetExchangeManager(),
+                                                remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+} // namespace command
+} // namespace thermostat
+
+namespace door_lock {
+namespace command {
+
+esp_err_t send_lock_door(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t timed_invoke_timeout_ms)
+{
+    DoorLock::Commands::LockDoor::Type command_data;
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
+                          chip::MakeOptional(timed_invoke_timeout_ms));
+    return ESP_OK;
+}
+
+esp_err_t send_unlock_door(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t timed_invoke_timeout_ms)
+{
+    DoorLock::Commands::UnlockDoor::Type command_data;
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
+                          chip::MakeOptional(timed_invoke_timeout_ms));
+    return ESP_OK;
+}
+
+esp_err_t send_unlock_with_timeout(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t timeout,
+                                   uint16_t timed_invoke_timeout_ms)
+{
+    DoorLock::Commands::UnlockWithTimeout::Type command_data;
+    command_data.timeout = timeout;
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
+                          chip::MakeOptional(timed_invoke_timeout_ms));
+    return ESP_OK;
+}
+
+esp_err_t send_set_week_day_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t week_day_index,
+                                     uint16_t user_index, uint8_t days_mask, uint8_t start_hour, uint8_t start_minute,
+                                     uint8_t end_hour, uint8_t end_minute)
+{
+    DoorLock::Commands::SetWeekDaySchedule::Type command_data;
+    command_data.weekDayIndex = week_day_index;
+    command_data.userIndex = user_index;
+    command_data.daysMask.SetRaw(days_mask);
+    command_data.startHour = start_hour;
+    command_data.startMinute = start_minute;
+    command_data.endHour = end_hour;
+    command_data.endMinute = end_minute;
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_get_week_day_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t week_day_index,
+                                     uint16_t user_index, get_week_day_schedule_callback success_cb)
+{
+    DoorLock::Commands::GetWeekDaySchedule::Type command_data;
+    command_data.weekDayIndex = week_day_index;
+    command_data.userIndex = user_index;
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, success_cb, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_clear_week_day_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                       uint8_t week_day_index, uint16_t user_index)
+{
+    DoorLock::Commands::ClearWeekDaySchedule::Type command_data;
+    command_data.weekDayIndex = week_day_index;
+    command_data.userIndex = user_index;
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_set_year_day_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t year_day_index,
+                                     uint16_t user_index, uint32_t local_start_time, uint32_t local_end_time)
+{
+    DoorLock::Commands::SetYearDaySchedule::Type command_data;
+    command_data.yearDayIndex = year_day_index;
+    command_data.userIndex = user_index;
+    command_data.localStartTime = local_start_time;
+    command_data.localEndTime = local_end_time;
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_get_year_day_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t year_day_index,
+                                     uint16_t user_index, get_year_day_schedule_callback success_cb)
+{
+    DoorLock::Commands::GetYearDaySchedule::Type command_data;
+    command_data.yearDayIndex = year_day_index;
+    command_data.userIndex = user_index;
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, success_cb, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_clear_year_day_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                       uint8_t year_day_index, uint16_t user_index)
+{
+    DoorLock::Commands::ClearYearDaySchedule::Type command_data;
+    command_data.yearDayIndex = year_day_index;
+    command_data.userIndex = user_index;
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_set_holiday_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t holiday_index,
+                                    uint32_t local_start_time, uint32_t local_end_time, uint8_t operating_mode)
+{
+    DoorLock::Commands::SetHolidaySchedule::Type command_data;
+    command_data.holidayIndex = holiday_index;
+    command_data.localStartTime = local_start_time;
+    command_data.localEndTime = local_end_time;
+    command_data.operatingMode = DoorLock::OperatingModeEnum(operating_mode);
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_get_holiday_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t holiday_index,
+                                    get_holiday_schedule_callback success_cb)
+{
+    DoorLock::Commands::GetHolidaySchedule::Type command_data;
+    command_data.holidayIndex = holiday_index;
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, success_cb, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_clear_holiday_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t holiday_index)
+{
+    DoorLock::Commands::ClearHolidaySchedule::Type command_data;
+    command_data.holidayIndex = holiday_index;
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_set_user(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t operation_type,
+                        uint16_t user_index, char *user_name, uint32_t user_unique_id, uint8_t user_status,
+                        uint8_t user_type, uint8_t credential_rule, uint16_t timed_invoke_timeout_ms)
+{
+    DoorLock::Commands::SetUser::Type command_data;
+    command_data.operationType = DoorLock::DataOperationTypeEnum(operation_type);
+    command_data.userIndex = user_index;
+    if (user_name) {
+        command_data.userName = chip::app::DataModel::MakeNullable(chip::CharSpan(user_name, strlen(user_name)));
+    }
+    command_data.userUniqueID = chip::app::DataModel::MakeNullable(user_unique_id);
+    command_data.userStatus = chip::app::DataModel::MakeNullable(DoorLock::UserStatusEnum(user_status));
+    command_data.userType = chip::app::DataModel::MakeNullable(DoorLock::UserTypeEnum(user_type));
+    command_data.credentialRule = chip::app::DataModel::MakeNullable(DoorLock::CredentialRuleEnum(credential_rule));
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
+                          chip::MakeOptional(timed_invoke_timeout_ms));
+    return ESP_OK;
+}
+
+esp_err_t send_get_user(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t user_index,
+                        get_user_callback success_cb)
+{
+    DoorLock::Commands::GetUser::Type command_data;
+    command_data.userIndex = user_index;
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, success_cb, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_clear_user(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t user_index,
+                          uint16_t timed_invoke_timeout_ms)
+{
+    DoorLock::Commands::ClearUser::Type command_data;
+    command_data.userIndex = user_index;
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
+                          chip::MakeOptional(timed_invoke_timeout_ms));
+    return ESP_OK;
+}
+
+esp_err_t send_set_credential(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t operation_type,
+                              credential_struct credential, uint8_t *credential_data, size_t credential_len,
+                              uint16_t user_index, uint8_t user_status, uint8_t user_type,
+                              set_credential_callback success_cb, uint16_t timed_invoke_timeout_ms)
+{
+    DoorLock::Commands::SetCredential::Type command_data;
+    command_data.operationType = DoorLock::DataOperationTypeEnum(operation_type);
+    command_data.credential = credential;
+    command_data.credentialData = chip::ByteSpan(credential_data, credential_len);
+    command_data.userIndex = chip::app::DataModel::MakeNullable(user_index);
+    command_data.userStatus = chip::app::DataModel::MakeNullable(DoorLock::UserStatusEnum(user_status));
+    command_data.userType = chip::app::DataModel::MakeNullable(DoorLock::UserTypeEnum(user_type));
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, success_cb, send_command_failure_callback,
+                          chip::MakeOptional(timed_invoke_timeout_ms));
+    return ESP_OK;
+}
+
+esp_err_t send_get_credential_status(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                     credential_struct &credential, get_credential_status_callback success_cb)
+{
+    DoorLock::Commands::GetCredentialStatus::Type command_data;
+    command_data.credential = credential;
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, success_cb, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_clear_credential(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                credential_struct &credential, uint16_t timed_invoke_timeout_ms)
+{
+    DoorLock::Commands::ClearCredential::Type command_data;
+    command_data.credential = chip::app::DataModel::MakeNullable(credential);
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
+                          chip::MakeOptional(timed_invoke_timeout_ms));
+    return ESP_OK;
+}
+
+esp_err_t send_unbolt_door(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t *pin_code,
+                           size_t pin_code_len, uint16_t timed_invoke_timeout_ms)
+{
+    DoorLock::Commands::UnboltDoor::Type command_data;
+    if (pin_code) {
+        command_data.PINCode = chip::MakeOptional(chip::ByteSpan(pin_code, pin_code_len));
+    }
+
+    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
+                          chip::MakeOptional(timed_invoke_timeout_ms));
+    return ESP_OK;
+    return ESP_ERR_NOT_SUPPORTED;
+}
+
+} // namespace command
+} // namespace door_lock
 
 namespace window_covering {
 namespace command {
