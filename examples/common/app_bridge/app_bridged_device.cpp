@@ -160,7 +160,7 @@ app_bridged_device_t *app_bridge_create_bridged_device(node_t *node, uint16_t pa
     return new_dev;
 }
 
-esp_err_t app_bridge_initialize(node_t *node)
+esp_err_t app_bridge_initialize(node_t *node, bridge_ep_init_callback_t ep_init)
 {
     esp_err_t err = esp_matter_bridge::initialize(node);
     if (err != ESP_OK) {
@@ -197,6 +197,9 @@ esp_err_t app_bridge_initialize(node_t *node)
             new_dev->next = g_bridged_device_list;
             g_bridged_device_list = new_dev;
             g_current_bridged_device_count++;
+            
+            if (ep_init != NULL)
+            	ep_init(new_dev);
 
             //Enable the resumed endpoint
             esp_matter::endpoint::enable(new_dev->dev->endpoint);

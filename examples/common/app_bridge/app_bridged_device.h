@@ -70,7 +70,8 @@ app_bridged_device_t *app_bridge_create_bridged_device(node_t *node, uint16_t pa
                                                        app_bridged_device_type_t bridged_device_type,
                                                        app_bridged_device_address_t bridged_device_address);
 
-esp_err_t app_bridge_initialize(node_t *node);
+typedef void (*bridge_ep_init_callback_t)(app_bridged_device_t *bdev);
+esp_err_t app_bridge_initialize(node_t *node, bridge_ep_init_callback_t ep_init);
 
 esp_err_t app_bridge_remove_device(app_bridged_device_t *bridged_device);
 
