@@ -22,3 +22,5 @@ idf_component_register(SRC_DIRS ${src_dirs_list}
     EXCLUDE_SRCS ${exclude_srcs_list}
     INCLUDE_DIRS ${include_dirs_list}
     REQUIRES chip esp_matter esp_matter_console json_parser spiffs esp_http_client json_generator)
+
+idf_build_set_property(COMPILE_OPTIONS "-Wno-write-strings" APPEND)

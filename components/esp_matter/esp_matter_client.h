@@ -368,5 +368,22 @@ esp_err_t send_go_to_tilt_percentage(peer_device_t *remote_device, uint16_t remo
 } // namespace command
 } // namespace window_covering
 
+namespace administrator_commissioning {
+namespace command {
+
+esp_err_t send_open_commissioning_window(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                         uint16_t commissioning_timeout, chip::MutableByteSpan &pake_passcode_verifier,
+                                         uint16_t discriminator, uint32_t iterations, chip::MutableByteSpan &salt,
+                                         uint16_t timed_interaction_timeout_ms);
+
+esp_err_t send_open_basic_commissioning_window(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                               uint16_t commissioning_timeout, uint16_t timed_interaction_timeout_ms);
+
+esp_err_t send_revoke_commissioning(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                    uint16_t timed_interaction_timeout_ms);
+
+} // namespace command
+} // namespace administrator_commissioning
+
 } // namespace cluster
 } // namespace esp_matter
