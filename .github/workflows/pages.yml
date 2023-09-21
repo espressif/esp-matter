@@ -91,6 +91,7 @@ jobs:
       - name: generate launchpad config
         run: |
           cd images/
+          cp $ESP_MATTER_PATH/tools/launchpad/matter_logo.png .
           ls
           $ESP_MATTER_PATH/tools/launchpad/generate_launchpad_config.sh
 

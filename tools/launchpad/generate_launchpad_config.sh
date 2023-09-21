@@ -79,6 +79,9 @@ do
     # TODO: Update the android phone app links when it is available on android play store
     echo "ios_app_url = \"https://apps.apple.com/app/esp-rainmaker/id1497491540\"" >> $OUT_FILE
     echo "android_app_url = \"\"" >> $OUT_FILE
+    echo "setup_payload_logo = \"https://espressif.github.io/esp-matter/matter_logo.png\""
+    echo "setup_payload = \"MT:Y.K9042C00KA0648G00\""
+
     echo "" >> $OUT_FILE
 
     unset CHIPSETS IMAGES
