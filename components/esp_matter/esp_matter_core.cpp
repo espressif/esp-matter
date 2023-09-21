@@ -981,12 +981,28 @@ static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
         ESP_LOGE(TAG, "Failed to initialize Thread stack");
         return ESP_FAIL;
     }
+#if CHIP_CONFIG_ENABLE_ICD_SERVER
+    if (ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_SleepyEndDevice) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to set the Thread device type");
+        return ESP_FAIL;
+    }
 
+#elif CHIP_DEVICE_CONFIG_THREAD_FTD
+    if (ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_Router) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to set the Thread device type");
+        return ESP_FAIL;
+    }
+#else
+    if (ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_MinimalEndDevice) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to set the Thread device type");
+        return ESP_FAIL;
+    }
+#endif
     if (ThreadStackMgr().StartThreadTask() != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to launch Thread task");
         return ESP_FAIL;
     }
-#endif
+#endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD
 
     PlatformMgr().ScheduleWork(esp_matter_chip_init_task, reinterpret_cast<intptr_t>(xTaskGetCurrentTaskHandle()));
     // Wait for the matter stack to be initialized
@@ -1042,6 +1058,8 @@ esp_err_t factory_reset()
         if (err == ESP_OK) {
             nvs_erase_all(node_handle);
         }
+        nvs_commit(node_handle);
+        nvs_close(node_handle);
 
         nvs_close(node_handle);
         nvs_commit(node_handle);

@@ -63,6 +63,10 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     diagnostics_network_thread::create(endpoint, &(config->diagnostics_network_thread), CLUSTER_FLAG_SERVER);
 #endif
+#if CHIP_CONFIG_ENABLE_ICD_SERVER
+    icd_management::create(endpoint, &(config->icd_management), CLUSTER_FLAG_SERVER,
+                           icd_management::feature::check_in_protocol_support::get_id());
+#endif
 
     return endpoint;
 }
@@ -1039,7 +1043,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
 
     descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
-    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::dead_front::get_id());
+    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::dead_front_behavior::get_id());
     cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER, cluster::thermostat::feature::cooling::get_id()
                                                                     | cluster::thermostat::feature::heating::get_id());
 

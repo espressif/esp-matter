@@ -886,6 +886,48 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 }
 } /* power_source */
 
+namespace icd_management {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, IcdManagement::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+#if CONFIG_ENABLE_ICD_SERVER
+    if (flags & CLUSTER_FLAG_SERVER) {
+        set_plugin_server_init_callback(cluster, MatterIcdManagementPluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+            attribute::create_idle_mode_interval(cluster, config->idle_mode_interval, 500, 64800000);
+            attribute::create_active_mode_interval(cluster, config->active_mode_interval, 300);
+            attribute::create_active_mode_threshold(cluster, config->active_mode_threshold, 300);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    if (features & feature::check_in_protocol_support::get_id()) {
+        feature::check_in_protocol_support::config_t cip_config;
+        feature::check_in_protocol_support::add(cluster, &cip_config);
+    }
+#endif // CONFIG_ENABLE_ICD_SERVER
+    return cluster;
+}
+
+} /* icd_management */
+
 namespace user_label {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;

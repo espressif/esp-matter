@@ -57,7 +57,7 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* battery */
 
-// Rechargeable feature is dependent on  Battery feature, in order to add 
+// Rechargeable feature is dependent on  Battery feature, in order to add
 // Rechargeable feature one must add Battery feature first.
 namespace rechargeable {
 typedef struct config {
@@ -71,7 +71,7 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* rechargeable */
 
-// Replaceable feature is dependent on  Battery feature, in order to add 
+// Replaceable feature is dependent on  Battery feature, in order to add
 // Replaceable feature one must add Battery feature first.
 namespace replaceable {
 typedef struct config {
@@ -120,6 +120,19 @@ esp_err_t add(cluster_t *cluster);
 
 } /* feature */
 } /* scenes */
+namespace icd_management {
+namespace feature {
+namespace check_in_protocol_support {
+typedef struct config {
+    uint16_t clients_supported_per_fabric;
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* check_in_protocol_support */
+} /* feature */
+} /* icd_management */
 
 namespace on_off {
 namespace feature {
@@ -138,12 +151,12 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* lighting */
 
-namespace dead_front {
+namespace dead_front_behavior {
 
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 
-} /* dead_front */
+} /* dead_front_behavior */
 } /* feature */
 } /* on_off */
 

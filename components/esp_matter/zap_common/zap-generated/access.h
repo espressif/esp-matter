@@ -49,6 +49,8 @@
     0x0000003E, /* Cluster: Operational Credentials, Attribute: NOCs, Privilege: administer */ \
     /* Cluster: Group Key Management, Attribute: GroupKeyMap, Privilege: view */ \
     /* Cluster: User Label, Attribute: LabelList, Privilege: view */ \
+    0x00000046, /* Cluster: ICD Management, Attribute: RegisteredClients, Privilege: administer */ \
+    0x00000046, /* Cluster: ICD Management, Attribute: ICDCounter, Privilege: administer */ \
     /* Cluster: Door Lock, Attribute: DoorOpenEvents, Privilege: view */ \
     /* Cluster: Door Lock, Attribute: DoorClosedEvents, Privilege: view */ \
     /* Cluster: Door Lock, Attribute: OpenPeriod, Privilege: view */ \
@@ -112,6 +114,8 @@
     0x00000000, /* Cluster: Operational Credentials, Attribute: NOCs, Privilege: administer */ \
     /* Cluster: Group Key Management, Attribute: GroupKeyMap, Privilege: view */ \
     /* Cluster: User Label, Attribute: LabelList, Privilege: view */ \
+    0x00000003, /* Cluster: ICD Management, Attribute: RegisteredClients, Privilege: administer */ \
+    0x00000004, /* Cluster: ICD Management, Attribute: ICDCounter, Privilege: administer */ \
     /* Cluster: Door Lock, Attribute: DoorOpenEvents, Privilege: view */ \
     /* Cluster: Door Lock, Attribute: DoorClosedEvents, Privilege: view */ \
     /* Cluster: Door Lock, Attribute: OpenPeriod, Privilege: view */ \
@@ -175,6 +179,8 @@
     kMatterAccessPrivilegeAdminister, /* Cluster: Operational Credentials, Attribute: NOCs, Privilege: administer */ \
     /* Cluster: Group Key Management, Attribute: GroupKeyMap, Privilege: view */ \
     /* Cluster: User Label, Attribute: LabelList, Privilege: view */ \
+    kMatterAccessPrivilegeAdminister, /* Cluster: ICD Management, Attribute: RegisteredClients, Privilege: administer */ \
+    kMatterAccessPrivilegeAdminister, /* Cluster: ICD Management, Attribute: ICDCounter, Privilege: administer */ \
     /* Cluster: Door Lock, Attribute: DoorOpenEvents, Privilege: view */ \
     /* Cluster: Door Lock, Attribute: DoorClosedEvents, Privilege: view */ \
     /* Cluster: Door Lock, Attribute: OpenPeriod, Privilege: view */ \
@@ -404,6 +410,11 @@
     0x00000031, /* Cluster: Network Commissioning, Command: ConnectNetwork, Privilege: administer */ \
     0x00000031, /* Cluster: Network Commissioning, Command: ReorderNetwork, Privilege: administer */ \
     0x00000033, /* Cluster: General Diagnostics, Command: TestEventTrigger, Privilege: manage */ \
+    0x00000038, /* Cluster: Time Synchronization, Command: SetUTCTime, Privilege: administer */ \
+    0x00000038, /* Cluster: Time Synchronization, Command: SetTrustedTimeSource, Privilege: administer */ \
+    0x00000038, /* Cluster: Time Synchronization, Command: SetTimeZone, Privilege: manage */ \
+    0x00000038, /* Cluster: Time Synchronization, Command: SetDSTOffset, Privilege: manage */ \
+    0x00000038, /* Cluster: Time Synchronization, Command: SetDefaultNTP, Privilege: administer */ \
     0x0000003C, /* Cluster: Administrator Commissioning, Command: OpenCommissioningWindow, Privilege: administer */ \
     0x0000003C, /* Cluster: Administrator Commissioning, Command: OpenBasicCommissioningWindow, Privilege: administer */ \
     0x0000003C, /* Cluster: Administrator Commissioning, Command: RevokeCommissioning, Privilege: administer */ \
@@ -419,6 +430,9 @@
     0x0000003F, /* Cluster: Group Key Management, Command: KeySetRead, Privilege: administer */ \
     0x0000003F, /* Cluster: Group Key Management, Command: KeySetRemove, Privilege: administer */ \
     0x0000003F, /* Cluster: Group Key Management, Command: KeySetReadAllIndices, Privilege: administer */ \
+    0x00000046, /* Cluster: ICD Management, Command: RegisterClient, Privilege: manage */ \
+    0x00000046, /* Cluster: ICD Management, Command: UnregisterClient, Privilege: manage */ \
+    0x00000046, /* Cluster: ICD Management, Command: StayActiveRequest, Privilege: manage */ \
     0x00000101, /* Cluster: Door Lock, Command: SetWeekDaySchedule, Privilege: administer */ \
     0x00000101, /* Cluster: Door Lock, Command: GetWeekDaySchedule, Privilege: administer */ \
     0x00000101, /* Cluster: Door Lock, Command: ClearWeekDaySchedule, Privilege: administer */ \
@@ -430,8 +444,6 @@
     0x00000101, /* Cluster: Door Lock, Command: SetCredential, Privilege: administer */ \
     0x00000101, /* Cluster: Door Lock, Command: GetCredentialStatus, Privilege: administer */ \
     0x00000101, /* Cluster: Door Lock, Command: ClearCredential, Privilege: administer */ \
-    0x00001046, /* Cluster: Client Monitoring, Command: RegisterClientMonitoring, Privilege: manage */ \
-    0x00001046, /* Cluster: Client Monitoring, Command: UnregisterClientMonitoring, Privilege: manage */ \
     0xFFF1FC06, /* Cluster: Fault Injection, Command: FailAtFault, Privilege: manage */ \
     0xFFF1FC06, /* Cluster: Fault Injection, Command: FailRandomlyAtFault, Privilege: manage */ \
 }
@@ -458,6 +470,11 @@
     0x00000006, /* Cluster: Network Commissioning, Command: ConnectNetwork, Privilege: administer */ \
     0x00000008, /* Cluster: Network Commissioning, Command: ReorderNetwork, Privilege: administer */ \
     0x00000000, /* Cluster: General Diagnostics, Command: TestEventTrigger, Privilege: manage */ \
+    0x00000000, /* Cluster: Time Synchronization, Command: SetUTCTime, Privilege: administer */ \
+    0x00000001, /* Cluster: Time Synchronization, Command: SetTrustedTimeSource, Privilege: administer */ \
+    0x00000002, /* Cluster: Time Synchronization, Command: SetTimeZone, Privilege: manage */ \
+    0x00000004, /* Cluster: Time Synchronization, Command: SetDSTOffset, Privilege: manage */ \
+    0x00000005, /* Cluster: Time Synchronization, Command: SetDefaultNTP, Privilege: administer */ \
     0x00000000, /* Cluster: Administrator Commissioning, Command: OpenCommissioningWindow, Privilege: administer */ \
     0x00000001, /* Cluster: Administrator Commissioning, Command: OpenBasicCommissioningWindow, Privilege: administer */ \
     0x00000002, /* Cluster: Administrator Commissioning, Command: RevokeCommissioning, Privilege: administer */ \
@@ -473,6 +490,9 @@
     0x00000001, /* Cluster: Group Key Management, Command: KeySetRead, Privilege: administer */ \
     0x00000003, /* Cluster: Group Key Management, Command: KeySetRemove, Privilege: administer */ \
     0x00000004, /* Cluster: Group Key Management, Command: KeySetReadAllIndices, Privilege: administer */ \
+    0x00000000, /* Cluster: ICD Management, Command: RegisterClient, Privilege: manage */ \
+    0x00000002, /* Cluster: ICD Management, Command: UnregisterClient, Privilege: manage */ \
+    0x00000003, /* Cluster: ICD Management, Command: StayActiveRequest, Privilege: manage */ \
     0x0000000B, /* Cluster: Door Lock, Command: SetWeekDaySchedule, Privilege: administer */ \
     0x0000000C, /* Cluster: Door Lock, Command: GetWeekDaySchedule, Privilege: administer */ \
     0x0000000D, /* Cluster: Door Lock, Command: ClearWeekDaySchedule, Privilege: administer */ \
@@ -484,8 +504,6 @@
     0x00000022, /* Cluster: Door Lock, Command: SetCredential, Privilege: administer */ \
     0x00000024, /* Cluster: Door Lock, Command: GetCredentialStatus, Privilege: administer */ \
     0x00000026, /* Cluster: Door Lock, Command: ClearCredential, Privilege: administer */ \
-    0x00000000, /* Cluster: Client Monitoring, Command: RegisterClientMonitoring, Privilege: manage */ \
-    0x00000001, /* Cluster: Client Monitoring, Command: UnregisterClientMonitoring, Privilege: manage */ \
     0x00000000, /* Cluster: Fault Injection, Command: FailAtFault, Privilege: manage */ \
     0x00000001, /* Cluster: Fault Injection, Command: FailRandomlyAtFault, Privilege: manage */ \
 }
@@ -512,6 +530,11 @@
     kMatterAccessPrivilegeAdminister, /* Cluster: Network Commissioning, Command: ConnectNetwork, Privilege: administer */ \
     kMatterAccessPrivilegeAdminister, /* Cluster: Network Commissioning, Command: ReorderNetwork, Privilege: administer */ \
     kMatterAccessPrivilegeManage, /* Cluster: General Diagnostics, Command: TestEventTrigger, Privilege: manage */ \
+    kMatterAccessPrivilegeAdminister, /* Cluster: Time Synchronization, Command: SetUTCTime, Privilege: administer */ \
+    kMatterAccessPrivilegeAdminister, /* Cluster: Time Synchronization, Command: SetTrustedTimeSource, Privilege: administer */ \
+    kMatterAccessPrivilegeManage, /* Cluster: Time Synchronization, Command: SetTimeZone, Privilege: manage */ \
+    kMatterAccessPrivilegeManage, /* Cluster: Time Synchronization, Command: SetDSTOffset, Privilege: manage */ \
+    kMatterAccessPrivilegeAdminister, /* Cluster: Time Synchronization, Command: SetDefaultNTP, Privilege: administer */ \
     kMatterAccessPrivilegeAdminister, /* Cluster: Administrator Commissioning, Command: OpenCommissioningWindow, Privilege: administer */ \
     kMatterAccessPrivilegeAdminister, /* Cluster: Administrator Commissioning, Command: OpenBasicCommissioningWindow, Privilege: administer */ \
     kMatterAccessPrivilegeAdminister, /* Cluster: Administrator Commissioning, Command: RevokeCommissioning, Privilege: administer */ \
@@ -527,6 +550,9 @@
     kMatterAccessPrivilegeAdminister, /* Cluster: Group Key Management, Command: KeySetRead, Privilege: administer */ \
     kMatterAccessPrivilegeAdminister, /* Cluster: Group Key Management, Command: KeySetRemove, Privilege: administer */ \
     kMatterAccessPrivilegeAdminister, /* Cluster: Group Key Management, Command: KeySetReadAllIndices, Privilege: administer */ \
+    kMatterAccessPrivilegeManage, /* Cluster: ICD Management, Command: RegisterClient, Privilege: manage */ \
+    kMatterAccessPrivilegeManage, /* Cluster: ICD Management, Command: UnregisterClient, Privilege: manage */ \
+    kMatterAccessPrivilegeManage, /* Cluster: ICD Management, Command: StayActiveRequest, Privilege: manage */ \
     kMatterAccessPrivilegeAdminister, /* Cluster: Door Lock, Command: SetWeekDaySchedule, Privilege: administer */ \
     kMatterAccessPrivilegeAdminister, /* Cluster: Door Lock, Command: GetWeekDaySchedule, Privilege: administer */ \
     kMatterAccessPrivilegeAdminister, /* Cluster: Door Lock, Command: ClearWeekDaySchedule, Privilege: administer */ \
@@ -538,8 +564,6 @@
     kMatterAccessPrivilegeAdminister, /* Cluster: Door Lock, Command: SetCredential, Privilege: administer */ \
     kMatterAccessPrivilegeAdminister, /* Cluster: Door Lock, Command: GetCredentialStatus, Privilege: administer */ \
     kMatterAccessPrivilegeAdminister, /* Cluster: Door Lock, Command: ClearCredential, Privilege: administer */ \
-    kMatterAccessPrivilegeManage, /* Cluster: Client Monitoring, Command: RegisterClientMonitoring, Privilege: manage */ \
-    kMatterAccessPrivilegeManage, /* Cluster: Client Monitoring, Command: UnregisterClientMonitoring, Privilege: manage */ \
     kMatterAccessPrivilegeManage, /* Cluster: Fault Injection, Command: FailAtFault, Privilege: manage */ \
     kMatterAccessPrivilegeManage, /* Cluster: Fault Injection, Command: FailRandomlyAtFault, Privilege: manage */ \
 }
