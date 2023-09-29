@@ -337,3 +337,18 @@ the following configuration options:
 - The software version number of the OTA image must be numerically higher.
 - If you need to perform a functional rollback, the version number in the OTA image must be higher than the current
   version, even though the binary content may match the previous OTA image.
+
+
+A1.13 Stuck at "Solving dependencies requirements ....."
+--------------------------------------------------------
+
+When building an example, if it is stuck at "Solving dependencies requirements..."
+you can resolve this issue by clearing the component manager cache.
+
+    ::
+
+        # On Linux
+        rm -rf ~/.cache/Espressif/ComponentManager
+
+        # On macOS
+        rm -rf ~/Library/Caches/Espressif/ComponentManager

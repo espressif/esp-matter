@@ -531,6 +531,15 @@ typedef struct config {
     endpoint::root_node::config_t root_node;
 } config_t;
 
+/**
+ * @param[in] config             Configuration of the root node, a pointer to an object of type `node::config_t`.
+ * @param[in] attribute_callback This callback is called for every attribute update. The callback implementation shall
+ *                               handle the desired attributes and return an appropriate error code. If the attribute
+ *                               is not of your interest, please do not return an error code and strictly return ESP_OK.
+ * @param[in] identify_callback  This callback is invoked when clients interact with the Identify Cluster.
+ *                               In the callback implementation, an endpoint can identify itself.
+ *                               (e.g., by flashing an LED or light).
+ */
 node_t *create(config_t *config, attribute::callback_t attribute_callback,
                identification::callback_t identify_callback);
 
