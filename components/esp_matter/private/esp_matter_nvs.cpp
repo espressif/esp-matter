@@ -54,9 +54,9 @@ esp_err_t get_val_from_nvs(uint16_t endpoint_id, uint32_t cluster_id, uint32_t a
             } else {
                 nvs_get_blob(handle, attribute_key, buffer, &len);
                 val.val.a.b = buffer;
-                val.val.a.s = len;
                 val.val.a.n = len;
                 val.val.a.t = len + (val.val.a.t - val.val.a.s);
+                val.val.a.s = len;
             }
         }
     } else {
