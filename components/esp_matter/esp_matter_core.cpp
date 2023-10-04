@@ -423,6 +423,8 @@ static esp_err_t erase_persistent_data(endpoint_t *endpoint)
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error erasing partition: %s, %d", nvs_namespace, err);
     }
+    nvs_commit(handle);
+    nvs_close(handle);
     return err;
 }
 
@@ -1037,6 +1039,9 @@ esp_err_t factory_reset()
         if (err == ESP_OK) {
             nvs_erase_all(node_handle);
         }
+
+        nvs_close(node_handle);
+        nvs_commit(node_handle);
 
         endpoint_t *endpoint = endpoint::get_first(node);
         while (endpoint) {
