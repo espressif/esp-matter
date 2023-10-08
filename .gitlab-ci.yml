@@ -65,6 +65,7 @@ variables:
   # fetch submodules
   - export PYTHONPATH=${IDF_PATH}/tools/ci/python_packages/:${PYTHONPATH}
   - pip install python-gitlab
+  - pip install --upgrade idf-component-manager
   - python tools/ci/ci_fetch_submodule.py
 
 .setup_ot_br: &setup_ot_br
