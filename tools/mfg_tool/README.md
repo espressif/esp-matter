@@ -16,6 +16,7 @@
 ### Install python dependencies
 ```
 cd path/to/esp-matter/tools/mfg_tool
+source path/to/esp-idf/export.sh
 python3 -m pip install -r requirements.txt
 ```
 
