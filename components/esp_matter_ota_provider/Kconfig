@@ -1,0 +1,52 @@
+menu "ESP Matter OTA Provider"
+
+    config ESP_MATTER_OTA_PROVIDER_ENABLED
+        bool "Enable OTA provider"
+        default n
+        help
+            Enable OTA provider. The OTA Provider will fetch the OTA candidates from DCL MainNet or TestNet
+            and establish https connection with the ImageURI. Pass the download data to the Requestor with BDX
+            Protocol.
+
+    choice ESP_MATTER_OTA_PROVIDER_DCL_OPTION
+        prompt "OTA Provider DCL options"
+        depends on ESP_MATTER_OTA_PROVIDER_ENABLED
+        default ESP_MATTER_OTA_PROVIDER_DCL_MAINNET
+        help
+            The DCL used by the OTA Provider to fetch the OTA candidates.
+
+        config ESP_MATTER_OTA_PROVIDER_DCL_MAINNET
+            bool "DCL - MainNet"
+            help
+                MainNet DCL, the REST URL for it is 'https://on.dcl.csa-iot.org/'
+
+        config ESP_MATTER_OTA_PROVIDER_DCL_TESTNET
+            bool "DCL - TestNet"
+            help
+                TestNet DCL, the REST URL for it is 'https://on.test-net.dcl.csa-iot.org/'
+
+    endchoice
+
+    config ESP_MATTER_MAX_OTA_CANDIDATES_COUNT
+        int "OTA Provider Max Candidates Count"
+        depends on ESP_MATTER_OTA_PROVIDER_ENABLED
+        default 8
+        help
+            This value indicates the maximum count of the OTA candidates cache.
+
+    config ESP_MATTER_OTA_CANDIDATES_UPDATE_PERIODICALLY
+        bool "Update OTA Candidates Periodically"
+        depends on ESP_MATTER_OTA_PROVIDER_ENABLED
+        default true
+        help
+            Update the OTA candidates cache periodically.
+
+    config ESP_MATTER_OTA_CANDIDATES_UPDATE_PERIOD
+        int "OTA Candidates Update Period (hours)"
+        depends on ESP_MATTER_OTA_CANDIDATES_UPDATE_PERIODICALLY
+        range 1 480
+        default 36
+        help
+            OTA Candidates Update Period in Hours
+
+endmenu
