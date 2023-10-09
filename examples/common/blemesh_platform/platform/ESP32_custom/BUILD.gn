@@ -33,6 +33,7 @@ declare_args() {
   chip_max_discovered_ip_addresses = 5
   chip_use_secure_cert_dac_provider = false
   chip_use_esp32_ecdsa_peripheral = false
+  chip_enable_ethernet = false
   chip_enable_route_hook = false
 }
 
@@ -169,6 +170,13 @@ static_library("ESP32_custom") {
         "route_hook/ESP32RouteTable.h",
       ]
     }
+  }
+
+  if (chip_enable_ethernet) {
+    sources += [
+      "ConnectivityManagerImpl_Ethernet.cpp",
+      "NetworkCommissioningDriver_Ethernet.cpp",
+    ]
   }
 
   if (chip_mdns == "platform") {
