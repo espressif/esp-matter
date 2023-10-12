@@ -1043,8 +1043,8 @@ esp_err_t factory_reset()
             nvs_erase_all(node_handle);
         }
 
-        nvs_close(node_handle);
         nvs_commit(node_handle);
+        nvs_close(node_handle);
 
         endpoint_t *endpoint = endpoint::get_first(node);
         while (endpoint) {
