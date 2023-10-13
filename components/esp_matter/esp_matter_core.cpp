@@ -1514,16 +1514,19 @@ esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val)
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
         size_t len = 0;
         if ((err = nvs_get_blob(handle, attribute_key, NULL, &len)) == ESP_OK) {
+            // This function will only be called when recovering the non-volatile attributes during reboot
+            // Add we should not decrease the size of the attribute value
+            len = std::max(len, static_cast<size_t>(val->val.a.s));
             uint8_t *buffer = (uint8_t *)esp_matter_mem_calloc(1, len);
             if (!buffer) {
                 err = ESP_ERR_NO_MEM;
             } else {
-                nvs_get_blob(handle, attribute_key, buffer, &len);
                 val->type = current_attribute->val.type;
                 val->val.a.b = buffer;
                 val->val.a.s = len;
                 val->val.a.n = len;
                 val->val.a.t = len + (current_attribute->val.val.a.t - current_attribute->val.val.a.s);
+                nvs_get_blob(handle, attribute_key, buffer, &len);
             }
         }
     } else {
