@@ -38,7 +38,7 @@ static const char *TAG = "esp_matter_rainmaker";
 
 namespace esp_matter {
 
-// Rainmaker cluster data model definition
+// RainMaker cluster data model definition
 namespace cluster {
 namespace rainmaker {
 static constexpr chip::EndpointId endpoint_id = 0x00000000; /* Same as root node endpoint. This will always be
@@ -181,7 +181,21 @@ static void user_node_association_event_handler(void *arg, esp_event_base_t even
     }
 }
 
-static esp_err_t command_callback(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
+// RainMaker cluster, has two commands: "configuration" and "sign message."
+// The "configuration" command has been deprecated, and the iOS app uses "sign message" command for user node
+// association.
+//
+// As per Matter specification, the payload for an invoke command should be encapsulated in a TLV structure, and each
+// argument should be encoded using a context-specific tag.
+//
+// However, the iOS app continues to send the payload without the TLV structure and context-specific tag. Future
+// versions of iOS will support both methods of RainMaker user-node association and so, no specific action is required from
+// firmware developers.
+//
+// On the other hand, the "config_command_callback()" correctly parses the payload. It initially extracts the TLV
+// structure and then examines the context-specific tag before decoding the actual argument, which is of type octet
+// string.
+static esp_err_t config_command_callback(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
 {
     /* Get ids */
     uint16_t endpoint_id = command_path.mEndpointId;
@@ -203,13 +217,40 @@ static esp_err_t command_callback(const ConcreteCommandPath &command_path, TLVRe
     command_count--;
 
     /* Parse the tlv data */
+
+    if (chip::TLV::kTLVType_Structure != tlv_data.GetType()) {
+        return ESP_FAIL;
+    }
+    chip::TLV::TLVType mOuter;
+    if (CHIP_NO_ERROR != tlv_data.EnterContainer(mOuter)) {
+        return ESP_FAIL;
+    }
+    if (CHIP_NO_ERROR != tlv_data.Next()) {
+        return ESP_FAIL;
+    }
+    chip::TLV::Tag tag = tlv_data.GetTag();
+    if (!IsContextTag(tag)) {
+        return ESP_FAIL;
+    }
+    // check tag number, since this has only one argument, checking against 0
+    if (0 != TagNumFromTag(tag)) {
+        return ESP_FAIL;
+    }
+    // decode the octet string argument
     chip::CharSpan config_value;
-    DataModel::Decode(tlv_data, config_value);
+    if (CHIP_NO_ERROR != DataModel::Decode(tlv_data, config_value)) {
+        return ESP_FAIL;
+    }
+
     const char *data = config_value.data();
     int size = config_value.size();
     if (!data || size <= 0) {
         ESP_LOGE(TAG, "Command data not found or was not decoded correctly. The expected data is a string or the"
                  "format is \"<user_id>::<secret_key>\"");
+        return ESP_FAIL;
+    }
+
+    if (CHIP_NO_ERROR != tlv_data.ExitContainer(mOuter)) {
         return ESP_FAIL;
     }
 
@@ -351,7 +392,7 @@ static esp_err_t custom_cluster_create()
 
     /* Create custom configuration command */
     command::create(cluster, cluster::rainmaker::command::configuration::Id,
-                    COMMAND_FLAG_ACCEPTED | COMMAND_FLAG_CUSTOM, command_callback);
+                    COMMAND_FLAG_ACCEPTED | COMMAND_FLAG_CUSTOM, config_command_callback);
 
     /* Create custom sign_data command */
     command::create(cluster, cluster::rainmaker::command::sign_data::Id,
@@ -363,7 +404,7 @@ static esp_err_t custom_cluster_create()
 class RainmakerAttrAccess : public AttributeAccessInterface
 {
 public:
-    // Register for the Rainmaker cluster on endpoint 0.
+    // Register for the RainMaker cluster on endpoint 0.
     RainmakerAttrAccess() : AttributeAccessInterface(chip::Optional<chip::EndpointId>(cluster::rainmaker::endpoint_id),
             cluster::rainmaker::Id) {}
 
