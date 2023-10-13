@@ -259,8 +259,23 @@ namespace command {
 
 esp_err_t parse_string_from_tlv(TLVReader &tlv_data, ScopedMemoryBufferWithSize<char> &str)
 {
+    chip::TLV::TLVType outer;
     chip::CharSpan str_span;
-    chip::app::DataModel::Decode(tlv_data, str_span);
+    if (chip::TLV::kTLVType_Structure != tlv_data.GetType()) {
+        return ESP_FAIL;
+    }
+    if (tlv_data.EnterContainer(outer) != CHIP_NO_ERROR) {
+        return ESP_FAIL;
+    }
+    while (tlv_data.Next() == CHIP_NO_ERROR) {
+        if (!chip::TLV::IsContextTag(tlv_data.GetTag())) {
+            continue;
+        }
+        if (chip::TLV::TagNumFromTag(tlv_data.GetTag()) == 0) {
+            chip::app::DataModel::Decode(tlv_data, str_span);
+        }
+    }
+    tlv_data.ExitContainer(outer);
     ESP_RETURN_ON_FALSE(str_span.data() && str_span.size() > 0, ESP_FAIL, TAG, "Failed to decode the tlv_data");
     strncpy(str.Get(), str_span.data(), str_span.size());
     str[str_span.size()] = '\0';
@@ -864,7 +879,7 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
     set_plugin_server_init_callback(cluster, NULL);
     add_function_list(cluster, NULL, 0);
 
-    global::attribute::create_cluster_revision(cluster, 1);
+    global::attribute::create_cluster_revision(cluster, 2);
     global::attribute::create_feature_map(cluster, 0);
     {
         char *_refresh_token = (char *)calloc(ESP_MATTER_RAINMAKER_MAX_REFRESH_TOKEN_LEN, sizeof(char));
