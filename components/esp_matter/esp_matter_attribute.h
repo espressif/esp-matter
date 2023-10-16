@@ -424,6 +424,172 @@ attribute_t *create_ac_capacity_format(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* thermostat */
 
+namespace air_quality {
+namespace attribute {
+attribute_t *create_air_quality(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* air_quality */
+
+namespace carbon_monoxide_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value);
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value);
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value);
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* carbon_monoxide_concentration_measurement */
+
+namespace carbon_dioxide_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value);
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value);
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value);
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* carbon_dioxide_concentration_measurement */
+
+namespace nitrogen_dioxide_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value);
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value);
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value);
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* nitrogen_dioxide_concentration_measurement */
+
+namespace ozone_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value);
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value);
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value);
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* ozone_concentration_measurement */
+
+namespace formaldehyde_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value);
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value);
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value);
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* formaldehyde_concentration_measurement */
+
+namespace pm1_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value);
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value);
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value);
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* pm1_concentration_measurement */
+
+namespace pm25_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value);
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value);
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value);
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* pm25_concentration_measurement */
+
+namespace pm10_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value);
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value);
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value);
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* pm10_concentration_measurement */
+
+namespace radon_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value);
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value);
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value);
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* radon_concentration_measurement */
+
+namespace total_volatile_organic_compounds_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value);
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value);
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value);
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* total_volatile_organic_compounds_concentration_measurement */
+
 namespace door_lock {
 namespace attribute {
 attribute_t *create_lock_state(cluster_t *cluster, nullable<uint8_t> value);

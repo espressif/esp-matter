@@ -1447,6 +1447,414 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 }
 } /* thermostat */
 
+namespace air_quality {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, AirQuality::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+        attribute::create_air_quality(cluster, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    return cluster;
+}
+} /* air_quality */
+
+namespace  carbon_monoxide_concentration_measurement {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, CarbonMonoxideConcentrationMeasurement::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+        attribute::create_measurement_medium(cluster, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    return cluster;
+}
+
+} /* carbon_monoxide_concentration_measurement */
+
+namespace  carbon_dioxide_concentration_measurement {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, CarbonDioxideConcentrationMeasurement::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    return cluster;
+}
+
+} /* carbon_dioxide_concentration_measurement */
+
+namespace  nitrogen_dioxide_concentration_measurement {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, NitrogenDioxideConcentrationMeasurement::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    return cluster;
+}
+
+} /* nitrogen_dioxide_concentration_measurement */
+
+namespace  ozone_concentration_measurement {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, OzoneConcentrationMeasurement::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    return cluster;
+}
+
+} /* ozone_concentration_measurement */
+
+namespace  formaldehyde_concentration_measurement {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, FormaldehydeConcentrationMeasurement::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    return cluster;
+}
+
+} /* formaldehyde_concentration_measurement */
+
+namespace  pm1_concentration_measurement {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, Pm1ConcentrationMeasurement::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    return cluster;
+}
+
+} /* pm1_concentration_measurement */
+
+namespace  pm25_concentration_measurement {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, Pm25ConcentrationMeasurement::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    return cluster;
+}
+
+} /* pm25_concentration_measurement */
+
+namespace  pm10_concentration_measurement {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, Pm10ConcentrationMeasurement::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    return cluster;
+}
+
+} /* pm10_concentration_measurement */
+
+namespace  radon_concentration_measurement {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, RadonConcentrationMeasurement::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    return cluster;
+}
+
+} /* radon_concentration_measurement */
+
+namespace  total_volatile_organic_compounds_concentration_measurement {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, TotalVolatileOrganicCompoundsConcentrationMeasurement::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+	/* Attributes managed internally */
+	global::attribute::create_feature_map(cluster, 0);
+	global::attribute::create_event_list(cluster, NULL, 0,0);
+
+	/* Attributes not managed internally */
+	if (config) {
+	    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+	} else {
+	    ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+	}
+    }
+
+    return cluster;
+}
+
+} /* total_volatile_organic_compounds_concentration_measurement */
+
 namespace door_lock {
 const function_generic_t function_list[] = {
     (function_generic_t)MatterDoorLockClusterServerAttributeChangedCallback,

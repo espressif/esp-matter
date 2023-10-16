@@ -76,6 +76,8 @@
 #define ESP_MATTER_FAN_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID 0x0301
 #define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_AIR_QUALITY_SENSOR_DEVICE_TYPE_ID 0x002C
+#define ESP_MATTER_AIR_QUALITY_SENSOR_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID 0x000A
 #define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_ID 0x0202
@@ -306,6 +308,19 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* thermostat */
+
+namespace air_quality_sensor {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::identify::config_t identify;
+    cluster::air_quality::config_t air_quality;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* air_quality_sensor */
 
 namespace aggregator {
 typedef struct config {

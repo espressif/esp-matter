@@ -371,6 +371,85 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* thermostat */
 
+namespace air_quality {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* air_quality */
+
+namespace carbon_monoxide_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(3) {}
+} config_t;
+} /* carbon_monoxide_concentration_measurement */
+
+namespace carbon_dioxide_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(3) {}
+} config_t;
+} /* carbon_dioxide_concentration_measurement */
+
+namespace nitrogen_dioxide_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(3) {}
+} config_t;
+} /* nitrogen_dioxide_concentration_measurement */
+
+namespace ozone_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(3) {}
+} config_t;
+} /* ozone_concentration_measurement */
+
+namespace formaldehyde_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(3) {}
+} config_t;
+} /* formaldehyde_concentration_measurement */
+
+namespace pm1_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(3) {}
+} config_t;
+} /* pm1_concentration_measurement */
+
+namespace pm25_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(3) {}
+} config_t;
+} /* pm25_concentration_measurement */
+
+namespace pm10_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+} /* pm10_concentration_measurement */
+
+namespace radon_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(3) {}
+} config_t;
+} /* radon_concentration_measurement */
+
+namespace total_volatile_organic_compounds_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(3) {}
+} config_t;
+} /* total_volatile_organic_compounds_concentration_measurement */
+
 namespace door_lock {
 typedef struct config {
     uint16_t cluster_revision;
