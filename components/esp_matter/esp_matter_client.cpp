@@ -182,6 +182,7 @@ void binding_init()
 }
 } // namespace client
 
+#if CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 namespace cluster {
 using client::peer_device_t;
 
@@ -194,7 +195,6 @@ static void send_command_failure_callback(void *context, CHIP_ERROR error)
 {
     ESP_LOGI(TAG, "Send command failure: err: %" CHIP_ERROR_FORMAT, error.Format());
 }
-#if CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 namespace on_off {
 namespace command {
 
@@ -1616,7 +1616,7 @@ esp_err_t send_revoke_commissioning(peer_device_t *remote_device, uint16_t remot
 } // namespace command
 } // namespace administrator_commissioning
 
+} // namespace cluster
 #endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 
-} // namespace cluster
 } // namespace esp_matter

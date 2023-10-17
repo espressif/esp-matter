@@ -544,7 +544,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace room_air_conditioner{
 typedef struct config {
     cluster::descriptor::config_t descriptor;
-    cluster::identify:: config_t identify;
+    cluster::identify::config_t identify;
     cluster::on_off::config_t on_off;
     cluster::thermostat::config_t thermostat;
 } config_t;
