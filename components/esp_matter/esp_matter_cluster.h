@@ -468,6 +468,34 @@ typedef struct config {
 } config_t;
 } /* total_volatile_organic_compounds_concentration_measurement */
 
+namespace operational_state {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* operational_state */
+
+namespace dish_washer_mode {
+typedef struct config {
+    uint16_t cluster_revision;
+    uint8_t current_mode;
+    config() : cluster_revision(1), current_mode(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* dish_washer_mode */
+
+namespace dish_washer_alarm {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* dish_washer_alarm */
+
 namespace door_lock {
 typedef struct config {
     uint16_t cluster_revision;

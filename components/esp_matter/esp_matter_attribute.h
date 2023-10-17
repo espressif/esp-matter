@@ -612,6 +612,17 @@ attribute_t *create_level_value(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* total_volatile_organic_compounds_concentration_measurement */
 
+namespace operational_state {
+namespace attribute {
+attribute_t *create_phase_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_current_phase(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_countdown_time(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_operational_state_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_operational_state(cluster_t *cluster, uint8_t value);
+attribute_t *create_operational_error(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* operational_state */
+
 namespace door_lock {
 namespace attribute {
 attribute_t *create_lock_state(cluster_t *cluster, nullable<uint8_t> value);
@@ -622,6 +633,13 @@ attribute_t *create_operating_mode(cluster_t *cluster, uint8_t value, uint8_t mi
 attribute_t *create_supported_operating_modes(cluster_t *cluster, uint16_t value);
 } /* attribute */
 } /* door_lock */
+
+namespace dish_washer_mode {
+namespace attribute {
+attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count); 
+attribute_t *create_current_mode(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* dish_washer_mode */
 
 namespace window_covering {
 namespace attribute {

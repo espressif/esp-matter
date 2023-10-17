@@ -2708,6 +2708,63 @@ attribute_t *create_level_value(cluster_t *cluster, uint8_t value)
 } /* attribute */
 } /* total_volatile_organic_compound_concentration_measurement */
 
+namespace operational_state {
+namespace attribute {
+attribute_t *create_phase_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, OperationalState::Attributes::PhaseList::Id, ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_array(value, length, count));
+}
+
+attribute_t *create_current_phase(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, OperationalState::Attributes::CurrentPhase::Id, ATTRIBUTE_FLAG_NULLABLE,
+		      			 esp_matter_nullable_uint8(value));
+}
+
+attribute_t *create_countdown_time(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, OperationalState::Attributes::CountdownTime::Id, ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_operational_state_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, OperationalState::Attributes::OperationalStateList::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array(value, length, count));
+}
+
+attribute_t *create_operational_state(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, OperationalState::Attributes::OperationalState::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
+}
+
+attribute_t *create_operational_error(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, OperationalState::Attributes::OperationalError::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
+}
+
+} /* attribute */
+} /* operational_state */
+
+namespace dish_washer_mode {
+namespace attribute {
+
+attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, LaundryWasherMode::Attributes::SupportedModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, LaundryWasherMode::Attributes::CurrentMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+}
+
+} /* attribute */
+} /* dish_washer_mode */
+
 namespace door_lock {
 namespace attribute {
 
