@@ -71,6 +71,8 @@
 #define ESP_MATTER_REFRIGERATOR_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_TEMPERATURE_CONTROLLED_CABINET_DEVICE_TYPE_ID 0x0071
 #define ESP_MATTER_TEMPERATURE_CONTROLLED_CABINET_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_LAUNDRY_WASHER_DEVICE_TYPE_ID 0x0073
+#define ESP_MATTER_LAUNDRY_WASHER_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_DISH_WASHER_DEVICE_TYPE_ID 0x0075
 #define ESP_MATTER_DISH_WASHER_DEVICE_TYPE_VERSION 1
 
@@ -350,6 +352,17 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* dish_washer */
+
+namespace laundry_washer {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::operational_state::config_t operational_state;
+} config_t;
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* laundry_washer */
 
 namespace aggregator {
 typedef struct config {

@@ -634,6 +634,22 @@ attribute_t *create_supported_operating_modes(cluster_t *cluster, uint16_t value
 } /* attribute */
 } /* door_lock */
 
+namespace laundry_washer_mode {
+namespace attribute {
+attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_current_mode(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* laundry_washer_mode */
+
+namespace laundry_washer_controls {
+namespace attribute {
+attribute_t *create_spin_speeds(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_spin_speed_current(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_number_of_rinses(cluster_t *cluster, uint8_t value);
+attribute_t *create_supported_rinses(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* laundry_washer_controls */
+
 namespace dish_washer_mode {
 namespace attribute {
 attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count); 

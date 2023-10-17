@@ -2533,6 +2533,58 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* activated_carbon_filter_monitoring */
 
+namespace laundry_washer_controls {
+namespace feature {
+
+namespace spin {
+
+uint32_t get_id()
+{
+    return (uint32_t)LaundryWasherControls::Feature::kSpin;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    
+    update_feature_map(cluster, get_id());
+
+    attribute::create_spin_speed_current(cluster, config->spin_speed_current);
+
+    return ESP_OK;
+}
+
+} /* spin */
+
+namespace rinse {
+
+uint32_t get_id()
+{
+    return (uint32_t)LaundryWasherControls::Feature::kRinse;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+   
+    update_feature_map(cluster, get_id());
+
+    attribute::create_number_of_rinses(cluster, config->number_of_rinses);
+
+    return ESP_OK;
+}
+
+} /* rinse */
+
+} /* feature */
+} /* laundry_washer_controls */
+
 namespace thermostat {
 namespace feature {
 

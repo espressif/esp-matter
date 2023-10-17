@@ -264,6 +264,12 @@ command_t *create_get_weekly_schedule_response(cluster_t *cluster);
 } /* command */
 } /* thermostat */
 
+namespace laundry_washer_mode {
+namespace command {
+command_t *create_change_to_mode(cluster_t *cluster);
+} /* command */
+} /* laundry_washer_mode */
+
 namespace dish_washer_mode {
 namespace command {
 command_t *create_change_to_mode(cluster_t *cluster);

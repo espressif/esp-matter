@@ -477,6 +477,25 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* operational_state */
 
+namespace laundry_washer_mode {
+typedef struct config {
+    uint16_t cluster_revision;
+    uint8_t current_mode;
+    config() : cluster_revision(1), current_mode(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* laundry_washer_mode */
+
+namespace laundry_washer_controls {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* laundry_washer_controls */
+
 namespace dish_washer_mode {
 typedef struct config {
     uint16_t cluster_revision;

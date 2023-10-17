@@ -1227,6 +1227,36 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* activated_carbon_filter_monitoring */
 
+namespace laundry_washer_controls {
+namespace feature {
+
+namespace spin {
+
+typedef struct config {
+    uint8_t spin_speed_current;
+    config() : spin_speed_current(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* spin */
+
+namespace rinse {
+
+typedef struct config {
+    uint8_t number_of_rinses;
+    config() : number_of_rinses(1) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* rinse */
+
+} /* feature */
+} /* laundry_washer_controls */
+
 namespace switch_cluster {
 namespace feature {
 
