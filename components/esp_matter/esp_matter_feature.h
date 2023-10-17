@@ -1163,6 +1163,70 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* total_volatile_organic_compounds_concentration_measurement */
 
+namespace hepa_filter_monitoring {
+namespace feature {
+
+namespace condition {
+typedef struct config {
+    uint8_t condition;
+    uint8_t degradation_direction;
+    config() : condition(0), degradation_direction(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* condition */
+
+namespace warning {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* warning */
+
+namespace replacement_product_list {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* replacement_product_list */
+
+} /* feature */
+} /* hepa_filter_monitoring */
+
+namespace activated_carbon_filter_monitoring {
+namespace feature {
+
+namespace condition {
+typedef struct config {
+    uint8_t condition;
+    uint8_t degradation_direction;
+    config() : condition(0), degradation_direction(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* condition */
+
+namespace warning {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* warning */
+
+namespace replacement_product_list {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* replacement_product_list */
+
+} /* feature */
+} /* activated_carbon_filter_monitoring */
+
 namespace switch_cluster {
 namespace feature {
 

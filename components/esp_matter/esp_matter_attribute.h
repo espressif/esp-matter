@@ -430,6 +430,28 @@ attribute_t *create_air_quality(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* air_quality */
 
+namespace hepa_filter_monitoring {
+namespace attribute {
+attribute_t *create_condition(cluster_t *cluster, uint8_t value);
+attribute_t *create_degradation_direction(cluster_t *cluster, uint8_t value);
+attribute_t *create_change_indication(cluster_t *cluster, uint8_t value);
+attribute_t *create_in_place_indicator(cluster_t *cluster, bool value);
+attribute_t *create_last_changed_time(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_replacement_product_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* hepa_filter_monitoring */
+
+namespace activated_carbon_filter_monitoring {
+namespace attribute {
+attribute_t *create_condition(cluster_t *cluster, uint8_t value);
+attribute_t *create_degradation_direction(cluster_t *cluster, uint8_t value);
+attribute_t *create_change_indication(cluster_t *cluster, uint8_t value);
+attribute_t *create_in_place_indicator(cluster_t *cluster, bool value);
+attribute_t *create_last_changed_time(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_replacement_product_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* activated_carbon_filter_monitoring */
+
 namespace carbon_monoxide_concentration_measurement {
 namespace attribute {
 attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value);

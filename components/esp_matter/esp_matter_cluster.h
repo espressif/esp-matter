@@ -380,6 +380,24 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* air_quality */
 
+namespace hepa_filter_monitoring {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {} 
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* hepa_filter_monitoring */
+
+namespace activated_carbon_filter_monitoring {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {} 
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* activated_carbon_filter_monitoring */
+
 namespace carbon_monoxide_concentration_measurement {
 typedef struct config {
     uint16_t cluster_revision;

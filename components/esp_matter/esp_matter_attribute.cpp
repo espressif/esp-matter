@@ -1912,6 +1912,92 @@ attribute_t *create_air_quality(cluster_t *cluster, uint8_t value)
 } /* attribute */
 } /* air_quality */
 
+namespace hepa_filter_monitoring {
+namespace attribute {
+
+attribute_t *create_condition(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::Condition::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_degradation_direction(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::DegradationDirection::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
+}
+
+attribute_t *create_change_indication(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::ChangeIndication::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
+}
+
+attribute_t *create_in_place_indicator(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::InPlaceIndicator::Id, ATTRIBUTE_FLAG_NONE,
+		                         esp_matter_bool(value));
+}
+
+attribute_t *create_last_change_time(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::LastChangedTime::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE,
+		      			 esp_matter_nullable_uint8(value));
+}
+
+attribute_t *create_replacement_product_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::ReplacementProductList::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+} /* hepa_filter_monitoring */
+
+namespace activated_carbon_filter_monitoring {
+namespace attribute {
+
+attribute_t *create_condition(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ActivatedCarbonFilterMonitoring::Attributes::Condition::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_degradation_direction(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ActivatedCarbonFilterMonitoring::Attributes::DegradationDirection::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
+}
+
+attribute_t *create_change_indication(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ActivatedCarbonFilterMonitoring::Attributes::ChangeIndication::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
+}
+
+attribute_t *create_in_place_indicator(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, ActivatedCarbonFilterMonitoring::Attributes::InPlaceIndicator::Id, ATTRIBUTE_FLAG_NONE,
+		                         esp_matter_bool(value));
+}
+
+attribute_t *create_last_change_time(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, ActivatedCarbonFilterMonitoring::Attributes::LastChangedTime::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE,
+		      			 esp_matter_nullable_uint8(value));
+}
+
+attribute_t *create_replacement_product_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ActivatedCarbonFilterMonitoring::Attributes::ReplacementProductList::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+} /* activated_carbon_filter_monitoring */
+
 namespace carbon_monoxide_concentration_measurement {
 namespace attribute {
 attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value)

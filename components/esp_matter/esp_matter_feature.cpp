@@ -2391,6 +2391,148 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* total_volatile_organic_compounds_concentration_measurement */
 
+namespace hepa_filter_monitoring {
+namespace feature {
+
+namespace condition {
+
+uint32_t get_id()
+{
+    return (uint32_t)HepaFilterMonitoring::Feature::kCondition;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }    
+    update_feature_map(cluster, get_id());
+
+    attribute::create_condition(cluster, config->condition);
+    attribute::create_degradation_direction(cluster, config->degradation_direction);
+
+    return ESP_OK;
+}
+
+} /* condition */
+
+namespace warning {
+
+uint32_t get_id()
+{
+    return (uint32_t)HepaFilterMonitoring::Feature::kWarning;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* warning */
+
+namespace replacement_product_list {
+
+uint32_t get_id()
+{
+    return (uint32_t)HepaFilterMonitoring::Feature::kReplacementProductList;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_replacement_product_list(cluster, NULL, 0, 0);
+
+    return ESP_OK;
+}
+
+} /* replacement_product_list */
+
+} /* feature */
+} /* hepa_filter_monitoring */
+
+namespace activated_carbon_filter_monitoring {
+namespace feature {
+
+namespace condition {
+
+uint32_t get_id()
+{
+    return (uint32_t)ActivatedCarbonFilterMonitoring::Feature::kCondition;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_condition(cluster, config->condition);
+    attribute::create_degradation_direction(cluster, config->degradation_direction);
+
+    return ESP_OK;
+}
+
+} /* condition */
+
+namespace warning {
+
+uint32_t get_id()
+{
+    return (uint32_t)ActivatedCarbonFilterMonitoring::Feature::kWarning;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* warning */
+
+namespace replacement_product_list {
+
+uint32_t get_id()
+{
+    return (uint32_t)ActivatedCarbonFilterMonitoring::Feature::kReplacementProductList;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_replacement_product_list(cluster, NULL, 0, 0);
+
+    return ESP_OK;
+}
+
+} /* replacement_product_list */
+
+} /* feature */
+} /* activated_carbon_filter_monitoring */
+
 namespace thermostat {
 namespace feature {
 

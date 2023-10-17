@@ -301,5 +301,17 @@ command_t *create_step(cluster_t *cluster);
 } /* command */
 } /* fan_control */
 
+namespace hepa_filter_monitoring {
+namespace command {
+command_t *create_reset_condition(cluster_t *cluster);
+} /* command */
+} /* hepa_filter_monitoring */
+
+namespace activated_carbon_filter_monitoring {
+namespace command {
+command_t *create_reset_condition(cluster_t *cluster);
+} /* command */
+} /* activated_carbon_filter_monitoring */
+
 } /* cluster */
 } /* esp_matter */
