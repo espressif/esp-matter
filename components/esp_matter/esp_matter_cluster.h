@@ -720,5 +720,34 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* refrigerator_alarm */
 
+namespace rvc_run_mode {
+typedef struct config {
+    uint16_t cluster_revision;
+    uint8_t current_mode;
+    config() : cluster_revision(1), current_mode(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* rvc_run_mode */
+
+namespace rvc_clean_mode {
+typedef struct config {
+    uint16_t cluster_revision;
+    uint8_t current_mode;
+    config() : cluster_revision(1), current_mode(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* rvc_clean_mode */
+
+namespace rvc_operational_state {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* rvc_operational_state */
+
 } /* cluster */
 } /* esp_matter */

@@ -1399,6 +1399,46 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /** refrigerator **/
 
+namespace robotic_vaccum_cleaner{
+
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_ROBOTIC_VACCUM_CLEANER_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_ROBOTIC_VACCUM_CLEANER_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    add(endpoint, config);
+    return endpoint;
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return ESP_ERR_INVALID_ARG;
+    }    
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+	ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ", err: %d", get_device_type_id(), err);
+	return err;
+    }
+
+    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    rvc_run_mode::create(endpoint, &(config->rvc_run_mode), CLUSTER_FLAG_SERVER);
+    rvc_operational_state::create(endpoint, &(config->rvc_operational_state), CLUSTER_FLAG_SERVER);
+
+    return ESP_OK;
+}
+} /** robotic_vaccum_cleaner **/
+
 } /* endpoint */
 
 namespace node {

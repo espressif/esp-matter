@@ -325,5 +325,17 @@ command_t *create_reset_condition(cluster_t *cluster);
 } /* command */
 } /* activated_carbon_filter_monitoring */
 
+namespace rvc_run_mode {
+namespace command {
+command_t *create_change_to_mode(cluster_t *cluster);
+} /* command */
+} /* rvc_run_mode */
+
+namespace rvc_clean_mode {
+namespace command {
+command_t *create_change_to_mode(cluster_t *cluster);
+} /* command */
+} /* rvc_clean_mode */
+
 } /* cluster */
 } /* esp_matter */

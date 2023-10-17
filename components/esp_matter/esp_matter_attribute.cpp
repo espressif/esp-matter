@@ -3816,5 +3816,37 @@ attribute_t *create_supported(cluster_t *cluster, uint32_t value)
 } /* attribute */
 } /* refrigerator_alarm */
 
+namespace rvc_run_mode {
+namespace attribute {
+
+attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, RvcRunMode::Attributes::SupportedModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, RvcRunMode::Attributes::CurrentMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+}
+
+} /* attribute */
+} /* rvc_run_mode */
+
+namespace rvc_clean_mode {
+namespace attribute {
+
+attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, RvcCleanMode::Attributes::SupportedModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, RvcCleanMode::Attributes::CurrentMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+}
+
+} /* attribute */
+} /* rvc_clean_mode */
+
 } /* cluster */
 } /* esp_matter */
