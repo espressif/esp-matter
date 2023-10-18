@@ -215,7 +215,7 @@ esp_err_t add(cluster_t *cluster)
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
- 
+
     return ESP_OK;
 }
 
@@ -229,13 +229,13 @@ uint32_t get_id()
 }
 
 esp_err_t add(cluster_t *cluster)
-{ 
+{
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
- 
+
     return ESP_OK;
 }
 
@@ -244,18 +244,18 @@ esp_err_t add(cluster_t *cluster)
 namespace fabric_scenes {
 
 uint32_t get_id()
-{ 
+{
     return (uint32_t)Scenes::Feature::kFabricScenes;
 }
 
 esp_err_t add(cluster_t *cluster)
-{ 
+{
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
- 
+
     return ESP_OK;
 }
 
@@ -263,6 +263,42 @@ esp_err_t add(cluster_t *cluster)
 
 } /* feature */
 } /* scenes */
+
+namespace icd_management {
+namespace feature {
+namespace check_in_protocol_support {
+
+uint32_t get_id()
+{
+    return (uint32_t)IcdManagement::Feature::kCheckInProtocolSupport;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes managed internally */
+    attribute::create_registered_clients(cluster, NULL, 0, 0);
+    attribute::create_icd_counter(cluster, 0);
+
+    /* Attribute not managed internally*/
+    attribute::create_clients_supported_per_fabric(cluster, config->clients_supported_per_fabric, 1);
+
+    /* Commands */
+    command::create_register_client(cluster);
+    command::create_register_client_response(cluster);
+    command::create_unregister_client(cluster);
+
+    return ESP_OK;
+}
+
+} /* check_in_protocol_support */
+} /* feature */
+} /* icd_management */
 
 namespace on_off {
 namespace feature {
@@ -297,11 +333,11 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
 } /* lighting */
 
-namespace dead_front {
+namespace dead_front_behavior {
 
 uint32_t get_id()
 {
-    return (uint32_t)OnOff::Feature::kDeadFront;
+    return (uint32_t)OnOff::Feature::kDeadFrontBehavior;
 }
 
 esp_err_t add(cluster_t *cluster)
@@ -315,7 +351,7 @@ esp_err_t add(cluster_t *cluster)
     return ESP_OK;
 }
 
-} /* dead_front */
+} /* dead_front_behavior */
 } /* feature */
 } /* on_off */
 

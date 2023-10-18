@@ -109,6 +109,7 @@ typedef struct config {
     cluster::operational_credentials::config_t operational_credentials;
     cluster::diagnostics_network_wifi::config_t diagnostics_network_wifi;
     cluster::diagnostics_network_thread::config_t diagnostics_network_thread;
+    cluster::icd_management::config_t icd_management;
 } config_t;
 
 uint32_t get_device_type_id();

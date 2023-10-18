@@ -426,6 +426,45 @@ static esp_err_t esp_matter_command_callback_add_group_if_identifying(const Conc
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_register_client(const ConcreteCommandPath &command_path,
+                                                             TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::IcdManagement::Commands::RegisterClient::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+#if CONFIG_ENABLE_ICD_SERVER
+        emberAfIcdManagementClusterRegisterClientCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+#endif
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_unregister_client(const ConcreteCommandPath &command_path,
+                                                               TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::IcdManagement::Commands::UnregisterClient::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+#if CONFIG_ENABLE_ICD_SERVER
+        emberAfIcdManagementClusterUnregisterClientCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+#endif
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_stay_active_request(const ConcreteCommandPath &command_path,
+                                                                 TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::IcdManagement::Commands::StayActiveRequest::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+#if CONFIG_ENABLE_ICD_SERVER
+        emberAfIcdManagementClusterStayActiveRequestCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+#endif
+    }
+    return ESP_OK;
+}
+
 static esp_err_t esp_matter_command_callback_off(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                  void *opaque_ptr)
 {
@@ -1681,6 +1720,35 @@ command_t *create_remove_group_response(cluster_t *cluster)
 
 } /* command */
 } /* groups */
+
+namespace icd_management {
+namespace command {
+command_t *create_register_client(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, IcdManagement::Commands::RegisterClient::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_register_client);
+}
+
+command_t *create_register_client_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, IcdManagement::Commands::RegisterClientResponse::Id,
+                                       COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_unregister_client(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, IcdManagement::Commands::UnregisterClient::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_unregister_client);
+}
+
+command_t *create_stay_active_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, IcdManagement::Commands::StayActiveRequest::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_stay_active_request);
+}
+
+} /* command */
+} /* icd_management */
 
 namespace scenes {
 namespace command {

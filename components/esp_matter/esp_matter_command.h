@@ -172,6 +172,15 @@ command_t *create_remove_group_response(cluster_t *cluster);
 } /* command */
 } /* groups */
 
+namespace icd_management {
+namespace command {
+command_t *create_register_client(cluster_t *cluster);
+command_t *create_register_client_response(cluster_t *cluster);
+command_t *create_unregister_client(cluster_t *cluster);
+command_t *create_stay_active_request(cluster_t *cluster);
+} /* command */
+} /* icd_management */
+
 namespace scenes {
 namespace command {
 command_t *create_add_scene(cluster_t *cluster);

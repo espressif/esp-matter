@@ -542,6 +542,72 @@ attribute_t *create_max_group_keys_per_fabric(cluster_t *cluster, uint16_t value
 } /* attribute */
 } /* group_key_management */
 
+namespace icd_management {
+namespace attribute {
+attribute_t *create_idle_mode_interval(cluster_t *cluster, uint32_t value, uint32_t min, uint32_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, IcdManagement::Attributes::IdleModeInterval::Id,
+                                                           ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(min), esp_matter_uint32(max));
+    return attribute;
+}
+
+attribute_t *create_active_mode_interval(cluster_t *cluster, uint32_t value, uint32_t min)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, IcdManagement::Attributes::ActiveModeInterval::Id,
+                                                           ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(min), esp_matter_uint32(UINT32_MAX));
+    return attribute;
+}
+
+attribute_t *create_active_mode_threshold(cluster_t *cluster, uint16_t value, uint16_t min)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, IcdManagement::Attributes::ActiveModeThreshold::Id,
+                                                           ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(UINT16_MAX));
+    return attribute;
+}
+
+attribute_t *create_registered_clients(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, IcdManagement::Attributes::RegisteredClients::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_array(value,length, count));
+}
+
+attribute_t *create_icd_counter(cluster_t *cluster,uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, IcdManagement::Attributes::ICDCounter::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_uint32(value));
+}
+
+attribute_t *create_clients_supported_per_fabric(cluster_t *cluster, uint16_t value, uint16_t min)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, IcdManagement::Attributes::ClientsSupportedPerFabric::Id,
+                                                           ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(UINT16_MAX));
+    return attribute;
+
+}
+
+} /* attribute */
+} /* icd_management */
+
 namespace diagnostics_network_wifi {
 namespace attribute {
 

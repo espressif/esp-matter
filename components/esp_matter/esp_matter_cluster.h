@@ -233,6 +233,18 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* power_source */
 
+namespace icd_management {
+typedef struct config {
+    uint16_t cluster_revision;
+    uint32_t idle_mode_interval;
+    uint32_t active_mode_interval;
+    uint16_t active_mode_threshold;
+    config() : cluster_revision(1), idle_mode_interval(5000), active_mode_interval(300), active_mode_threshold(300) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* icd_management */
+
 namespace user_label {
 typedef struct config {
     uint16_t cluster_revision;

@@ -71,3 +71,9 @@ examples/mfg_test_app:
     - if: IDF_TARGET in ["esp32c3", "esp32c2", "esp32c6", "esp32h2"]
       temporary: true
       reason: the other targets are not tested yet
+
+examples/sleepy_device:
+  enable:
+    - if: IDF_TARGET in ["esp32h2"]
+      temporary: true
+      reason: the other targets are not tested yet
