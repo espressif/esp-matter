@@ -16,6 +16,7 @@
 
 #include <controller/CommissioneeDeviceProxy.h>
 #include <esp_matter.h>
+#include <esp_matter_client.h>
 #include <esp_matter_mem.h>
 
 namespace esp_matter {
@@ -23,74 +24,73 @@ namespace controller {
 
 using chip::ScopedNodeId;
 using chip::SessionHandle;
+using chip::app::ConcreteCommandPath;
+using chip::app::StatusIB;
 using chip::Messaging::ExchangeManager;
+using chip::TLV::TLVReader;
 using esp_matter::client::peer_device_t;
+using esp_matter::cluster::custom::command::custom_command_callback;
 
-constexpr size_t k_max_command_data_str_len = 256;
-constexpr size_t k_max_command_data_size = 8;
-
-typedef struct command_data {
-    uint32_t cluster_id;
-    uint32_t command_id;
-    int command_data_count;
-    char command_data_str[k_max_command_data_size][k_max_command_data_str_len];
-} command_data_t;
-
-typedef esp_err_t (*cluster_command_handler_t)(command_data_t *command_data, chip::OperationalDeviceProxy *device_proxy,
-                                               uint16_t endpoint_id);
-
-typedef esp_err_t (*cluster_group_command_handler_t)(command_data_t *command_data, uint16_t group_id);
+constexpr char k_empty_command_data_field[] = "{}";
+constexpr size_t k_command_data_field_buffer_size = CONFIG_ESP_MATTER_CONTROLLER_JSON_STRING_BUFFER_LEN;
 
 class cluster_command {
 public:
-    cluster_command(uint64_t destination_id, uint16_t endpoint_id, command_data_t *command_data)
+    cluster_command(uint64_t destination_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t command_id,
+                    const char *command_data_field,
+                    custom_command_callback::on_success_callback_t on_success = default_success_fcn,
+                    custom_command_callback::on_error_callback_t on_error = default_error_fcn)
         : m_destination_id(destination_id)
         , m_endpoint_id(endpoint_id)
-        , m_command_data(command_data)
+        , m_cluster_id(cluster_id)
+        , m_command_id(command_id)
         , on_device_connected_cb(on_device_connected_fcn, this)
         , on_device_connection_failure_cb(on_device_connection_failure_fcn, this)
+        , on_success_cb(on_success)
+        , on_error_cb(on_error)
     {
-    }
-
-    ~cluster_command()
-    {
-        if (m_command_data) {
-            esp_matter_mem_free(m_command_data);
+        if (command_data_field) {
+            strncpy(m_command_data_field, command_data_field, k_command_data_field_buffer_size - 1);
+            m_command_data_field[strnlen(command_data_field, k_command_data_field_buffer_size - 1)] = 0;
+        } else {
+            strcpy(m_command_data_field, k_empty_command_data_field);
+            m_command_data_field[strlen(k_empty_command_data_field)] = 0;
         }
     }
+
+    ~cluster_command() {}
 
     esp_err_t send_command();
 
     bool is_group_command() { return chip::IsGroupId(m_destination_id); }
 
-    static void set_unsupported_cluster_command_handler(cluster_command_handler_t handler)
-    {
-        unsupported_cluster_command_handler = handler;
-    }
-
-    static void set_unsupported_cluster_group_command_handler(cluster_group_command_handler_t handler)
-    {
-        unsupported_cluster_group_command_handler = handler;
-    }
-
 private:
     uint64_t m_destination_id;
     uint16_t m_endpoint_id;
-    command_data_t *m_command_data;
-    static cluster_command_handler_t unsupported_cluster_command_handler;
-    static cluster_group_command_handler_t unsupported_cluster_group_command_handler;
+    uint32_t m_cluster_id;
+    uint32_t m_command_id;
+    char m_command_data_field[k_command_data_field_buffer_size];
 
     static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr,
                                         const SessionHandle &sessionHandle);
     static void on_device_connection_failure_fcn(void *context, const ScopedNodeId &peerId, CHIP_ERROR error);
 
+    static void default_success_fcn(void *ctx, const ConcreteCommandPath &command_path, const StatusIB &status,
+                                    TLVReader *response_data);
+
+    static void default_error_fcn(void *ctx, CHIP_ERROR error);
+
     static esp_err_t dispatch_group_command(void *context);
 
     chip::Callback::Callback<chip::OnDeviceConnected> on_device_connected_cb;
     chip::Callback::Callback<chip::OnDeviceConnectionFailure> on_device_connection_failure_cb;
+
+    custom_command_callback::on_success_callback_t on_success_cb;
+    custom_command_callback::on_error_callback_t on_error_cb;
 };
 
-esp_err_t send_invoke_cluster_command(uint64_t node_id, uint16_t endpoint_id, int cmd_data_argc, char **cmd_data_argv);
+esp_err_t send_invoke_cluster_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t command_id,
+                                      const char *command_data_field);
 
 } // namespace controller
 } // namespace esp_matter

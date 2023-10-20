@@ -1175,8 +1175,8 @@ This section introduces the Matter controller example. Now this example supports
 - On-network pairing
 - Invoke cluster commands
 - Read attributes commands
-- Write attributes commands
 - Read events commands
+- Write attributes commands
 - Subscribe attributes commands
 - Subscribe events commands
 - Group settings command.
@@ -1212,27 +1212,15 @@ The ``pairing`` commands are used for commissioning end-devices and are availabl
 
 2.9.3 Cluster commands
 ~~~~~~~~~~~~~~~~~~~~~~
-The ``invoke-cmd`` command is used for sending cluster commands to the end-devices. Currently the controller component has implemented the following commands for various clusters.
+The ``invoke-cmd`` command is used for sending cluster commands to the end-devices. It utilizes a ``cluster_command`` class to establish the sessions and send the command packets. The class constructor function could accept two callback inputs:
 
-**Unicast commands**:
+- **Success callback**:
+  This callback will be called upon the reception of the success response. It could be used to handle the response data for the command that requires a reponse. Now the default success callback will print the response data for GroupKeyManagement, Groups, Scenes, Thermostat, and DoorLock clusters. If you want to handle the response data in your example, you can register your success callback when creating the ``cluster_command`` object.
 
-    | **OnOff Cluster** (On, Off, Toggle)
-    | **LevelControl Cluster** (Move, MoveToLevel, Step, Stop)
-    | **ColorControl Cluster** (MoveToHue, MoveToSaturation, MoveToHueAndSaturation)
-    | **GroupKeyManagement Cluster** (KeySetWrite, KeySetRead)
-    | **Groups Cluster** (AddGroup, ViewGroup, RemoveGroup)
-    | **Identify Cluster** (Identify, TriggerEffect)
-    | **Scenes Cluster** (AddScene, ViewScene, RemoveScene, RemoveAllScenes, StoreScene, RecallScene, GetSceneMembership)
-    | **Thermostat Cluster** (SetpointRaiseLower, SetWeeklySchedule, GetWeeklySchedule, ClearWeeklySchedule)
-    | **DoorLock Cluster** (LockDoor, UnlockDoor, UnlockWithTimeout)
-    | **WindowCovering Cluster** (UpOrOpen, DownOrClose, StopMotion, GoToLiftValue, GoToLiftPercentage, GoToTiltValue, GoToTiltPercentage)
-    | **AdministratorCommissioning Cluster** (OpenCommissioningWindow, OpenBasicCommissioningWindow, RevokeCommissioning)
+- **Error callback**:
+  This callback will be called upon the reception of the failure response or reponse timeout.
 
-**Multicast commands**:
-
-    | **OnOff Cluster** (On, Off, Toggle)
-
-If you want to utilize commands not list above, you can use ``esp_matter::controller::cluster_command::set_unsupported_cluster_command_handler()`` and ``esp_matter::controller::cluster_command::set_unsupported_cluster_group_command_handler()`` to set handlers for the commands that are not currently implemented.
+^^^^^^^^^^^^^^^^
 
 - Send the cluster command:
 
@@ -1242,26 +1230,30 @@ If you want to utilize commands not list above, you can use ``esp_matter::contro
 
 .. note::
 
-    - To use multicast commands, the ``group-id`` should begin with the ``0xFFFFFFFFFFFF`` prefix. And the ``endpoint-id`` is still required for multicast commands even if it will be ignored.
-    - You can obtain the order of the command data parameters with an empty ``command-data``.
+    - The ``command-data`` should utilize a JSON object string and the name of each item in this object should be ``\"<TagNumber>:<DataType>\"`` or ``\"<TagName>:<TagNumber>:<DataType>\"``. The TagNumber should be the same as the command parameter ID in SPEC and the supported DataTypes are listed in ``$ESP_MATTER_PATH/components/esp_matter/private/json_to_tlv.h``
 
-For KeySetWrite command in Group Key Management cluster, the ``command-data`` should include an argument in JSON format:
+    -For the DataType ``BYTES``, the value should be a Base64-Encoded string.
 
-  ::
 
-     matter esp controller invoke-cmd <node-id> <endpoint-id> 63 0 "{\"groupKeySetID\": 42,\"groupKeySecurityPolicy\": 0, \"epochKey0\":\"d0d1d2d3d4d5d6d7d8d9dadbdcdddedf\", \"epochStartTime0\": 2220000 }"
+Here are some examples of the ``command-data`` format.
 
-For AddGroup command in Groups cluster, the ``command-data`` should include a string argument:
+- For MoveToLevel command in LevelControl cluster, the ``command-data`` (move to level 10 in trasition time 0) should be:
 
   ::
 
-     matter esp controller invoke-cmd <node-id> <endpoint-id> 0x4 0 1 grp1
+    matter esp controller invoke-cmd <node-id> <endpoint-id> 8 0 "{\"0:UINT8\": 10, \"1:UINT16\": 0, \"2:UINT8\": 0, \"3:UINT8\": 0}"
 
-For OpenCommissioningWindow command in Administrator Commissioning cluster, the ``command_data`` is simplied to ``commissioning-timeout iterations discriminator``:
+- For KeySetWrite command in GroupKeyManagement cluster, the ``command-data`` should be:
 
   ::
 
-     matter esp controller invoke-cmd <node-id> <endpoint-id> 0x3c 0 500 1000 3840
+     matter esp controller invoke-cmd <node-id> <endpoint-id> 63 0 "{\"0:STRUCT\": {\"0:UINT16\": 42, \"1:UINT8\": 0, \"2:BYTES\": \"0NHS09TV1tfY2drb3N3e3w==\", \"3:UINT64\": 2220000, \"4:NULL\": null, \"5:NULL\": null, \"6:NULL\": null, \"7:NULL\": null}}"
+
+- For AddGroup command in Groups cluster, the ``command-data`` should be:
+
+  ::
+
+     matter esp controller invoke-cmd <node-id> <endpoint-id> 0x4 0 "{\"0:UINT16\": 1, \"1:STRING\": \"grp1\"}"
 
 2.9.4 Read commands
 ~~~~~~~~~~~~~~~~~~~
@@ -1295,22 +1287,7 @@ The ``read-event`` commands are used for sending the commands of reading events 
 
 2.9.5 Write attribute commands
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The ``write-attr`` command is used for sending the commands of writing attributes on the end-device. Currently the controller component has implemented the capability to write attributes of the following clusters.
-
-    | **OnOff Cluster**
-    | **LevelControl Cluster**
-    | **ColorControl Cluster**
-    | **AccessControl Cluster**
-    | **Binding Cluster**
-    | **GroupKeyManagement Cluster**
-    | **Identify Cluster**
-    | **Thermostat Cluster**
-    | **DoorLock Cluster**
-    | **OccupancySensing Cluster**
-    | **WindowCovering Cluster**
-    | **ThermostatUserInterfaceConfiguration Cluster**
-
-If you want to send the writing-attribute commands to the clusters not listed above, you could use ``esp_matter::controller::set_unsupported_attribute_write_handler()`` to set the handler for clusters that are not currently implemented.
+The ``write-attr`` command is used for sending the commands of writing attributes on the end-device.
 
 - Send the write-attribute command:
 
@@ -1320,16 +1297,33 @@ If you want to send the writing-attribute commands to the clusters not listed ab
 
 .. note::
 
-    ``attribute_value`` could be formatted as JSON string, as an example, for Binding attribute of Binding cluster,
-    you should use the follow JSON structure as the ``attribute_value`` : ``"[{\"node\":1, \"endpoint\":1, \"cluster\":6}]"``
+    - ``attribute_value`` should utilize a JSON object string. And the format of this string is the same as the ``command_data`` in `cluster commands <./developing.rst#cluster-commands>`__. This JSON object should contain only one item that represents the attribute value.
+
+
+Here are some examples of the ``attribute_value`` format.
+
+For StartUpOnOff attribute of OnOff Cluster, you should use the following JSON structures as the ``attribute_value`` to represent the StartUpOnOff ``2`` and ``null``:
+
+   ::
+
+      matter esp controller write-attr <node_id> <endpoint_id> 6 0x4003 ``"{\"0:UINT8\": 2}"``
+      matter esp controller write-attr <node_id> <endpoint_id> 6 0x4003 ``"{\"0:NULL\": null}"``
+
+For Binding attribute of Binding cluster, you should use the following JSON structure as the ``attribute_value`` to represent the binding list ``[{"node":1, "endpoint":1, "cluster":6}]``:
+
+   ::
+
+      matter esp controller write-attr <node_id> <endpoint_id> 30 0 ``"{\"0:ARRAY-STRUCT\":[{\"1:UINT64\":1, \"3:UINT16\":1, \"4:UINT32\": 6}]}"``
+
+For ACL attribute of AccessControl cluster, you should use the following JSON structure as the ``attribute_value`` to represent the AccessControlList ``[{"privilege": 5, "authMode": 2, "subjects": [112233], "targets": null}, {"privilege": 4, "authMode": 3, "subjects": [1], "targets": null}]``:
 
     ::
 
-        matter esp controller write-attr <node_id> <endpoint_id> 30 0 "[{\"node\":1, \"endpoint\":1, \"cluster\":6}]"
+      matter esp controller write-attr <node_id> <endpoint_id> 31 0 "{\"0:ARRAY-STRUCT\":[{\"1:UINT8\": 5, \"2:UINT8\": 2, \"3:ARRAY-UINT64\": [112233], \"4:NULL\": null}, {\"1:UINT8\": 4, \"2:UINT8\": 3, \"3:ARRAY-UINT64\": [1], \"4:NULL\": null}]}"
 
 2.9.6 Subscribe commands
 ~~~~~~~~~~~~~~~~~~~~~~~~
-The ``subscribe_command`` class is used for sending subscribe commands to other end-devices. Its constructor function could accept four callback inputings:
+The ``subscribe_command`` class is used for sending subscribe commands to other end-devices. Its constructor function could accept four callback inputs:
 
 - **Attribute report callback**:
   This callback will be invoked upon the reception of the attribute report for subscribe-attribute commands.

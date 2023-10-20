@@ -17,6 +17,7 @@
 #include <esp_matter_core.h>
 
 #include <app/clusters/bindings/BindingManager.h>
+#include <json_to_tlv.h>
 #include <zap-generated/CHIPClusters.h>
 
 using namespace chip::app::Clusters;
@@ -195,6 +196,113 @@ static void send_command_failure_callback(void *context, CHIP_ERROR error)
 {
     ESP_LOGI(TAG, "Send command failure: err: %" CHIP_ERROR_FORMAT, error.Format());
 }
+
+namespace custom {
+namespace command {
+
+using command_data_tag = chip::app::CommandDataIB::Tag;
+using chip::TLV::ContextTag;
+using chip::TLV::TLVWriter;
+
+esp_err_t send_command(void *ctx, peer_device_t *remote_device, const CommandPathParams &command_path,
+                       const char *command_data_json_str, custom_command_callback::on_success_callback_t on_success,
+                       custom_command_callback::on_error_callback_t on_error,
+                       const Optional<uint16_t> &timed_invoke_timeout_ms, const Optional<Timeout> &response_timeout)
+{
+    if (!remote_device->GetSecureSession().HasValue() || remote_device->GetSecureSession().Value()->IsGroupSession()) {
+        ESP_LOGE(TAG, "Invalid Session Type");
+        return ESP_ERR_INVALID_ARG;
+    }
+    if (command_path.mFlags.Has(chip::app::CommandPathFlags::kGroupIdValid)) {
+        ESP_LOGE(TAG, "Invalid CommandPathFlags");
+        return ESP_ERR_INVALID_ARG;
+    }
+    auto decoder = chip::Platform::MakeUnique<custom_command_callback>(ctx, on_success, on_error);
+    if (decoder == nullptr) {
+        ESP_LOGE(TAG, "No memory for command callback");
+        return ESP_ERR_NO_MEM;
+    }
+    auto on_done = [raw_decoder_ptr = decoder.get()](void *context, CommandSender *command_sender) {
+        chip::Platform::Delete(command_sender);
+        chip::Platform::Delete(raw_decoder_ptr);
+    };
+    decoder->set_on_done_callback(on_done);
+
+    auto command_sender = chip::Platform::MakeUnique<CommandSender>(decoder.get(), remote_device->GetExchangeManager(),
+                                                                    timed_invoke_timeout_ms.HasValue());
+    if (command_sender == nullptr) {
+        ESP_LOGE(TAG, "No memory for command sender");
+        return ESP_ERR_NO_MEM;
+    }
+    if (command_sender->PrepareCommand(command_path, /* aStartDataStruct */ false) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to prepare command");
+        return ESP_FAIL;
+    }
+    TLVWriter *writer = command_sender->GetCommandDataIBTLVWriter();
+    if (writer == nullptr) {
+        ESP_LOGE(TAG, "No TLV writer in command sender");
+        return ESP_ERR_INVALID_STATE;
+    }
+    esp_err_t err = json_to_tlv(command_data_json_str, *writer, ContextTag(command_data_tag::kFields));
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to convert json string to TLV");
+        return err;
+    }
+    if (command_sender->FinishCommand(timed_invoke_timeout_ms) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to finish command");
+        return ESP_FAIL;
+    }
+    if (command_sender->SendCommandRequest(remote_device->GetSecureSession().Value(), response_timeout) !=
+        CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to send command request");
+        return ESP_FAIL;
+    }
+    (void)decoder.release();
+    (void)command_sender.release();
+    return ESP_OK;
+}
+
+esp_err_t send_group_command(const uint8_t fabric_index, const CommandPathParams &command_path,
+                             const char *command_data_json_str)
+{
+    if (!command_path.mFlags.Has(chip::app::CommandPathFlags::kGroupIdValid)) {
+        ESP_LOGE(TAG, "Invalid CommandPathFlags");
+        return ESP_ERR_INVALID_ARG;
+    }
+    chip::Transport::OutgoingGroupSession session(command_path.mGroupId, fabric_index);
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    auto command_sender = chip::Platform::MakeUnique<chip::app::CommandSender>(nullptr, &exchange_mgr);
+    if (command_sender == nullptr) {
+        ESP_LOGE(TAG, "No memory for command sender");
+        return ESP_ERR_NO_MEM;
+    }
+    if (command_sender->PrepareCommand(command_path, /* aStartDataStruct */ false) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to prepare command");
+        return ESP_FAIL;
+    }
+    TLVWriter *writer = command_sender->GetCommandDataIBTLVWriter();
+    if (writer == nullptr) {
+        ESP_LOGE(TAG, "No TLV writer in command sender");
+        return ESP_ERR_INVALID_STATE;
+    }
+    esp_err_t err = json_to_tlv(command_data_json_str, *writer, ContextTag(command_data_tag::kFields));
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to convert json string to TLV");
+        return err;
+    }
+    if (command_sender->FinishCommand(chip::NullOptional) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to finish command");
+        return ESP_FAIL;
+    }
+    if (command_sender->SendGroupCommandRequest(SessionHandle(session)) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to send command request");
+        return ESP_FAIL;
+    }
+    return ESP_OK;
+}
+} // namespace command
+} // namespace custom
+
 namespace on_off {
 namespace command {
 

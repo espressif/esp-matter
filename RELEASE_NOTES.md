@@ -1,3 +1,7 @@
+# 9-November-2023
+
+- esp_matter_controller: Change the format of the command data field payload for cluster-invoke commands and the attribute value payload for attribute-write commands. Used unified JSON object format for these payloads. Please refer the document of ``Matter controller`` to learn how to construct them.
+
 # 2-November-2023
 
 All of the non-volatile attribute values now are stored in the namespace `esp_matter_kvs` with the attribute key base64-encoded of bytes (`endpoint-id`+`cluster-id`+`attribute-id`). For the devices that store the non-volatile attribute values in the previous namespace with previous attribute-key, the values will be moved and the previous keys will be erased.
