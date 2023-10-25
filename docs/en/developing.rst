@@ -41,13 +41,19 @@ Development on Windows is supported using Windows Subsystem for Linux (WSL). Ple
 - Windows does not support exposing COM ports to WSL distros. Install usbipd-win on `Windows <https://github.com/dorssel/usbipd-win>`__
   and `WSL <https://github.com/espressif/vscode-esp-idf-extension/blob/master/docs/WSL.md#usbipd>`__ (usbipd-win `WSL Support <https://github.com/dorssel/usbipd-win/wiki/WSL-support>`__).
 - Here onwards process for setting esp-matter and building examples is same as other hosts.
+- Please clone the repositories from inside the WSL environment and not inside a mounted directory. 
 
 For using VSCode for development, please check `Developing in WSL <https://code.visualstudio.com/docs/remote/wsl>`__.
 
 
 2.1.2 Getting the Repositories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Before cloning the repositories please confirm that the following Prerequisites are fulfilled.
 
+The Prerequisites for ESP-IDF and Matter:
+
+- Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v5.0.1/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
+- Please get the `Prerequisites <https://github.com/espressif/connectedhomeip/blob/v1.1-branch/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
    ::
 
       git clone --recursive https://github.com/espressif/esp-idf.git
