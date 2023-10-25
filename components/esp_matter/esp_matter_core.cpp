@@ -840,6 +840,40 @@ esp_err_t chip_stack_unlock()
 }
 } /* lock */
 
+static void deinit_ble_if_commissioned(void)
+{
+#if CONFIG_BT_ENABLED && CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING
+        if(chip::Server::GetInstance().GetFabricTable().FabricCount() > 0) {
+            esp_err_t err = ESP_OK;
+#if CONFIG_BT_NIMBLE_ENABLED
+            if (!ble_hs_is_enabled()) {
+                ESP_LOGI(TAG, "BLE already deinited");
+                return;
+            }
+
+            if (nimble_port_stop() != 0) {
+                ESP_LOGE(TAG, "nimble_port_stop() failed");
+                return;
+            }
+            nimble_port_deinit();
+#if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
+            err = esp_nimble_hci_and_controller_deinit();
+#endif
+#endif /* CONFIG_BT_NIMBLE_ENABLED */
+#if CONFIG_IDF_TARGET_ESP32
+            err |= esp_bt_mem_release(ESP_BT_MODE_BTDM);
+#elif CONFIG_IDF_TARGET_ESP32C2 || CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32S3 || CONFIG_IDF_TARGET_ESP32H2
+            err |= esp_bt_mem_release(ESP_BT_MODE_BLE);
+#endif
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "BLE deinit failed");
+                return;
+            }
+            ESP_LOGI(TAG, "BLE deinit successful and memory reclaimed");
+        }
+#endif /* CONFIG_BT_ENABLED && CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING */
+}
+
 static void esp_matter_chip_init_task(intptr_t context)
 {
     TaskHandle_t task_to_notify = reinterpret_cast<TaskHandle_t>(context);
@@ -861,6 +895,7 @@ static void esp_matter_chip_init_task(intptr_t context)
         chip::app::DnssdServer::Instance().StartServer();
     }
 #endif
+    deinit_ble_if_commissioned();
     if (endpoint::enable_all() != ESP_OK) {
         ESP_LOGE(TAG, "Enable all endpoints failure");
     }
@@ -913,41 +948,10 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
         ESP_LOGI(TAG, "Commissioning Complete");
         break;
 
-#if CONFIG_BT_ENABLED
-#if CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING
     case chip::DeviceLayer::DeviceEventType::kCHIPoBLEConnectionClosed:
-        if(chip::Server::GetInstance().GetFabricTable().FabricCount() > 0) {
-            esp_err_t err = ESP_OK;
-#if CONFIG_BT_NIMBLE_ENABLED
-            if (!ble_hs_is_enabled()) {
-                ESP_LOGI(TAG, "BLE already deinited");
-                return;
-            }
-
-            if (nimble_port_stop() != 0) {
-                ESP_LOGE(TAG, "nimble_port_stop() failed");
-                return;
-            }
-            vTaskDelay(100); // TODO: BT-3248
-            nimble_port_deinit();
-#if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
-            err = esp_nimble_hci_and_controller_deinit();
-#endif
-#endif /* CONFIG_BT_NIMBLE_ENABLED */
-#if CONFIG_IDF_TARGET_ESP32
-            err |= esp_bt_mem_release(ESP_BT_MODE_BTDM);
-#elif CONFIG_IDF_TARGET_ESP32C2 || CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32S3 || CONFIG_IDF_TARGET_ESP32H2
-            err |= esp_bt_mem_release(ESP_BT_MODE_BLE);
-#endif
-            if (err != ESP_OK) {
-                ESP_LOGE(TAG, "BLE deinit failed");
-                return;
-            }
-            ESP_LOGI(TAG, "BLE deinit successful and memory reclaimed");
-        }
+        ESP_LOGI(TAG, "BLE Disconnected");
+        deinit_ble_if_commissioned();
         break;
-#endif /* CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING */
-#endif /* CONFIG_BT_ENABLED */
     default:
         break;
     }
