@@ -375,7 +375,10 @@ def write_per_device_unique_data(args):
                                                  ca_cert = os.path.abspath(PAI['cert_der']), idf_target = args.target, 
                                                  op_file = secure_cert_partition_file_path)
 
-                append_cn_dac_to_csv(UUIDs[int(row['Index'])], os.sep.join([OUT_DIR['top'], UUIDs[int(row['Index'])], "internal", "DAC_cert.pem"]))
+                if args.dac_key is not None and args.dac_cert is not None:
+                    append_cn_dac_to_csv(UUIDs[int(row['Index'])], args.dac_cert)
+                else:
+                    append_cn_dac_to_csv(UUIDs[int(row['Index'])], os.sep.join([OUT_DIR['top'], UUIDs[int(row['Index'])], "internal", "DAC_cert.pem"]))
 
             # If serial number is not passed, then generate one
             if (args.serial_num is None):
