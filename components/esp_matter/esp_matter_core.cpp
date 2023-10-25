@@ -1102,18 +1102,18 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, es
         attribute->val.val.a.t = val.val.a.t;
     }
 
+    bool attribute_updated = false;
     if (attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE) {
-        esp_matter_attr_val_t val_nvs = esp_matter_invalid(NULL);
-        val_nvs.type = val.type;
-        esp_err_t err = get_val_from_nvs((attribute_t *)attribute, &val_nvs);
+        esp_err_t err = get_val_from_nvs((attribute_t *)attribute, attribute->val);
         if (err == ESP_OK) {
-            set_val((attribute_t *)attribute, &val_nvs);
-        } else {
-            set_val((attribute_t *)attribute, &val);
+            attribute_updated = true;
         }
-    } else {
+    }
+    
+    if (!attribute_updated) {
         set_val((attribute_t *)attribute, &val);
     }
+
     set_default_value_from_current_val((attribute_t *)attribute);
 
     /* Add */
@@ -1485,7 +1485,7 @@ esp_err_t store_val_in_nvs(attribute_t *attribute)
     return err;
 }
 
-esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val)
+esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t &val)
 {
     if (!attribute) {
         ESP_LOGE(TAG, "Attribute cannot be NULL");
@@ -1516,16 +1516,16 @@ esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val)
         if ((err = nvs_get_blob(handle, attribute_key, NULL, &len)) == ESP_OK) {
             // This function will only be called when recovering the non-volatile attributes during reboot
             // Add we should not decrease the size of the attribute value
-            len = std::max(len, static_cast<size_t>(val->val.a.s));
+            len = std::max(len, static_cast<size_t>(val.val.a.s));
             uint8_t *buffer = (uint8_t *)esp_matter_mem_calloc(1, len);
             if (!buffer) {
                 err = ESP_ERR_NO_MEM;
             } else {
-                val->type = current_attribute->val.type;
-                val->val.a.b = buffer;
-                val->val.a.s = len;
-                val->val.a.n = len;
-                val->val.a.t = len + (current_attribute->val.val.a.t - current_attribute->val.val.a.s);
+                val.type = current_attribute->val.type;
+                val.val.a.b = buffer;
+                val.val.a.s = len;
+                val.val.a.n = len;
+                val.val.a.t = len + (current_attribute->val.val.a.t - current_attribute->val.val.a.s);
                 nvs_get_blob(handle, attribute_key, buffer, &len);
             }
         }
@@ -1540,7 +1540,7 @@ esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val)
                 uint8_t b_val;
                 if ((err = nvs_get_u8(handle, attribute_key, &b_val)) == ESP_OK)
                 {
-                    val->val.b = (b_val != 0);
+                    val.val.b = (b_val != 0);
                 }
                 break;
             }
@@ -1548,7 +1548,7 @@ esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val)
             case ESP_MATTER_VAL_TYPE_INTEGER:
             case ESP_MATTER_VAL_TYPE_NULLABLE_INTEGER:
             {
-                err = nvs_get_i32(handle, attribute_key, reinterpret_cast<int32_t *>(&val->val.i));
+                err = nvs_get_i32(handle, attribute_key, reinterpret_cast<int32_t *>(&val.val.i));
                 break;
             }
 
@@ -1556,15 +1556,15 @@ esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val)
             case ESP_MATTER_VAL_TYPE_FLOAT:
             case ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT:
             {
-                size_t length = sizeof(val->val.f);
-                err = nvs_get_blob(handle, attribute_key, &val->val.f, &length);
+                size_t length = sizeof(val.val.f);
+                err = nvs_get_blob(handle, attribute_key, &val.val.f, &length);
                 break;
             }
 
             case ESP_MATTER_VAL_TYPE_INT8:
             case ESP_MATTER_VAL_TYPE_NULLABLE_INT8:
             {
-                err = nvs_get_i8(handle, attribute_key, &val->val.i8);
+                err = nvs_get_i8(handle, attribute_key, &val.val.i8);
                 break;
             }
 
@@ -1575,14 +1575,14 @@ esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val)
             case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8:
             case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8:
             {
-                err = nvs_get_u8(handle, attribute_key, &val->val.u8);
+                err = nvs_get_u8(handle, attribute_key, &val.val.u8);
                 break;
             }
 
             case ESP_MATTER_VAL_TYPE_INT16:
             case ESP_MATTER_VAL_TYPE_NULLABLE_INT16:
             {
-                err = nvs_get_i16(handle, attribute_key, &val->val.i16);
+                err = nvs_get_i16(handle, attribute_key, &val.val.i16);
                 break;
             }
 
@@ -1591,14 +1591,14 @@ esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val)
             case ESP_MATTER_VAL_TYPE_NULLABLE_UINT16:
             case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16:
             {
-                err = nvs_get_u16(handle, attribute_key, &val->val.u16);
+                err = nvs_get_u16(handle, attribute_key, &val.val.u16);
                 break;
             }
 
             case ESP_MATTER_VAL_TYPE_INT32:
             case ESP_MATTER_VAL_TYPE_NULLABLE_INT32:
             {
-                err = nvs_get_i32(handle, attribute_key, &val->val.i32);
+                err = nvs_get_i32(handle, attribute_key, &val.val.i32);
                 break;
             }
 
@@ -1607,21 +1607,21 @@ esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val)
             case ESP_MATTER_VAL_TYPE_NULLABLE_UINT32:
             case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32:
             {
-                err = nvs_get_u32(handle, attribute_key, &val->val.u32);
+                err = nvs_get_u32(handle, attribute_key, &val.val.u32);
                 break;
             }
 
             case ESP_MATTER_VAL_TYPE_INT64:
             case ESP_MATTER_VAL_TYPE_NULLABLE_INT64:
             {
-                err = nvs_get_i64(handle, attribute_key, &val->val.i64);
+                err = nvs_get_i64(handle, attribute_key, &val.val.i64);
                 break;
             }
 
             case ESP_MATTER_VAL_TYPE_UINT64:
             case ESP_MATTER_VAL_TYPE_NULLABLE_UINT64:
             {
-                err = nvs_get_u64(handle, attribute_key, &val->val.u64);
+                err = nvs_get_u64(handle, attribute_key, &val.val.u64);
                 break;
             }
 
@@ -1635,7 +1635,7 @@ esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val)
         }
 #else
         size_t len = sizeof(esp_matter_attr_val_t);
-        err = nvs_get_blob(handle, attribute_key, val, &len);
+        err = nvs_get_blob(handle, attribute_key, &val, &len);
 #endif // CONFIG_ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE
     }
     nvs_close(handle);

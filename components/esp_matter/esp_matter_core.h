@@ -592,7 +592,7 @@ esp_err_t store_val_in_nvs(attribute_t *attribute);
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val);
+esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t &val);
 
 } /* attribute */
 
