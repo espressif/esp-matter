@@ -371,6 +371,150 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* thermostat */
 
+namespace air_quality {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* air_quality */
+
+namespace hepa_filter_monitoring {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {} 
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* hepa_filter_monitoring */
+
+namespace activated_carbon_filter_monitoring {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {} 
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* activated_carbon_filter_monitoring */
+
+namespace carbon_monoxide_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(3) {}
+} config_t;
+} /* carbon_monoxide_concentration_measurement */
+
+namespace carbon_dioxide_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(3) {}
+} config_t;
+} /* carbon_dioxide_concentration_measurement */
+
+namespace nitrogen_dioxide_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(3) {}
+} config_t;
+} /* nitrogen_dioxide_concentration_measurement */
+
+namespace ozone_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(3) {}
+} config_t;
+} /* ozone_concentration_measurement */
+
+namespace formaldehyde_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(3) {}
+} config_t;
+} /* formaldehyde_concentration_measurement */
+
+namespace pm1_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(3) {}
+} config_t;
+} /* pm1_concentration_measurement */
+
+namespace pm25_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(3) {}
+} config_t;
+} /* pm25_concentration_measurement */
+
+namespace pm10_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+} /* pm10_concentration_measurement */
+
+namespace radon_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(3) {}
+} config_t;
+} /* radon_concentration_measurement */
+
+namespace total_volatile_organic_compounds_concentration_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(3) {}
+} config_t;
+} /* total_volatile_organic_compounds_concentration_measurement */
+
+namespace operational_state {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* operational_state */
+
+namespace laundry_washer_mode {
+typedef struct config {
+    uint16_t cluster_revision;
+    uint8_t current_mode;
+    config() : cluster_revision(1), current_mode(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* laundry_washer_mode */
+
+namespace laundry_washer_controls {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* laundry_washer_controls */
+
+namespace dish_washer_mode {
+typedef struct config {
+    uint16_t cluster_revision;
+    uint8_t current_mode;
+    config() : cluster_revision(1), current_mode(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* dish_washer_mode */
+
+namespace dish_washer_alarm {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* dish_washer_alarm */
+
 namespace door_lock {
 typedef struct config {
     uint16_t cluster_revision;
@@ -575,6 +719,35 @@ typedef struct config {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* refrigerator_alarm */
+
+namespace rvc_run_mode {
+typedef struct config {
+    uint16_t cluster_revision;
+    uint8_t current_mode;
+    config() : cluster_revision(1), current_mode(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* rvc_run_mode */
+
+namespace rvc_clean_mode {
+typedef struct config {
+    uint16_t cluster_revision;
+    uint8_t current_mode;
+    config() : cluster_revision(1), current_mode(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* rvc_clean_mode */
+
+namespace rvc_operational_state {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* rvc_operational_state */
 
 } /* cluster */
 } /* esp_matter */

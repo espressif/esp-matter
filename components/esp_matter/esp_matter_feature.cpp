@@ -895,6 +895,1696 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* diagnostics_network_wifi */
 
+namespace air_quality {
+namespace feature {
+
+namespace fair {
+
+uint32_t get_id()
+{
+    return (uint32_t)AirQuality::Feature::kFair;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }    
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* fair */
+
+namespace moderate {
+
+uint32_t get_id()
+{
+    return (uint32_t)AirQuality::Feature::kModerate;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+} 
+
+} /* moderate */
+
+namespace very_poor {
+
+uint32_t get_id()
+{
+    return (uint32_t)AirQuality::Feature::kVeryPoor;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* very_poor */
+
+namespace extremely_poor {
+
+uint32_t get_id()
+{
+    return (uint32_t)AirQuality::Feature::kExtremelyPoor;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* extremely_poor */
+
+} /* feature */
+} /* air_quality */
+
+namespace carbon_monoxide_concentration_measurement {
+namespace feature {
+
+namespace numeric_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)CarbonMonoxideConcentrationMeasurement::Feature::kNumericMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_measured_value(cluster, config->measured_value);
+    attribute::create_min_measured_value(cluster, config->min_measured_value);
+    attribute::create_max_measured_value(cluster, config->max_measured_value);
+    attribute::create_uncertainty(cluster, config->uncertainty);
+    attribute::create_measurement_unit(cluster, config->measurement_unit);
+
+    return ESP_OK;
+}
+
+} /* numeric_measurement */
+
+namespace level_indication {
+
+uint32_t get_id()
+{
+    return (uint32_t)CarbonMonoxideConcentrationMeasurement::Feature::kLevelIndication;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_level_value(cluster, config->level_value);
+
+    return ESP_OK;
+}
+
+} /* level_indication */
+
+namespace medium_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)CarbonMonoxideConcentrationMeasurement::Feature::kMediumLevel;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* medium_level */
+
+namespace critical_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)CarbonMonoxideConcentrationMeasurement::Feature::kCriticalLevel;
+
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* critical_level */
+
+namespace peak_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)CarbonMonoxideConcentrationMeasurement::Feature::kPeakMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_peak_measured_value(cluster, config->peak_measured_value);
+    attribute::create_peak_measured_value_window(cluster, config->peak_measured_value_window);
+
+    return ESP_OK;
+}
+
+} /* peak_measurement */
+
+namespace average_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)CarbonMonoxideConcentrationMeasurement::Feature::kAverageMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_average_measured_value(cluster, 0);
+    attribute::create_average_measured_value_window(cluster, 1);
+
+    return ESP_OK;
+}
+
+} /* average_measurement */
+
+} /* feature */
+} /* carbon_monoxide_concentration_measurement */
+
+namespace carbon_dioxide_concentration_measurement {
+namespace feature {
+
+namespace numeric_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)CarbonDioxideConcentrationMeasurement::Feature::kNumericMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_measured_value(cluster, config->measured_value);
+    attribute::create_min_measured_value(cluster, config->min_measured_value);
+    attribute::create_max_measured_value(cluster, config->max_measured_value);
+    attribute::create_uncertainty(cluster, config->uncertainty);
+    attribute::create_measurement_unit(cluster, config->measurement_unit);
+
+    return ESP_OK;
+}
+
+} /* numeric_measurement */
+
+namespace level_indication {
+
+uint32_t get_id()
+{
+    return (uint32_t)CarbonDioxideConcentrationMeasurement::Feature::kLevelIndication;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_level_value(cluster, config->level_value);
+
+    return ESP_OK;
+}
+
+} /* level_indication */
+
+namespace medium_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)CarbonDioxideConcentrationMeasurement::Feature::kMediumLevel;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* medium_level */
+
+namespace critical_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)CarbonDioxideConcentrationMeasurement::Feature::kCriticalLevel;
+
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* critical_level */
+
+namespace peak_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)CarbonDioxideConcentrationMeasurement::Feature::kPeakMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_peak_measured_value(cluster, config->peak_measured_value);
+    attribute::create_peak_measured_value_window(cluster, config->peak_measured_value_window);
+
+    return ESP_OK;
+}
+
+} /* peak_measurement */
+
+namespace average_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)CarbonDioxideConcentrationMeasurement::Feature::kAverageMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_average_measured_value(cluster, 0);
+    attribute::create_average_measured_value_window(cluster, 1);
+
+    return ESP_OK;
+}
+
+} /* average_measurement */
+
+} /* feature */
+} /* carbon_dioxide_concentration_measurement */
+
+namespace nitrogen_dioxide_concentration_measurement {
+namespace feature {
+
+namespace numeric_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)NitrogenDioxideConcentrationMeasurement::Feature::kNumericMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_measured_value(cluster, config->measured_value);
+    attribute::create_min_measured_value(cluster, config->min_measured_value);
+    attribute::create_max_measured_value(cluster, config->max_measured_value);
+    attribute::create_uncertainty(cluster, config->uncertainty);
+    attribute::create_measurement_unit(cluster, config->measurement_unit);
+
+    return ESP_OK;
+}
+
+} /* numeric_measurement */
+
+namespace level_indication {
+
+uint32_t get_id()
+{
+    return (uint32_t)NitrogenDioxideConcentrationMeasurement::Feature::kLevelIndication;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_level_value(cluster, config->level_value);
+
+    return ESP_OK;
+}
+
+} /* level_indication */
+
+namespace medium_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)NitrogenDioxideConcentrationMeasurement::Feature::kMediumLevel;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* medium_level */
+
+namespace critical_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)NitrogenDioxideConcentrationMeasurement::Feature::kCriticalLevel;
+
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* critical_level */
+
+namespace peak_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)NitrogenDioxideConcentrationMeasurement::Feature::kPeakMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_peak_measured_value(cluster, config->peak_measured_value);
+    attribute::create_peak_measured_value_window(cluster, config->peak_measured_value_window);
+
+    return ESP_OK;
+}
+
+} /* peak_measurement */
+
+namespace average_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)NitrogenDioxideConcentrationMeasurement::Feature::kAverageMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_average_measured_value(cluster, 0);
+    attribute::create_average_measured_value_window(cluster, 1);
+
+    return ESP_OK;
+}
+
+} /* average_measurement */
+
+} /* feature */
+} /* nitrogen_dioxide_concentration_measurement */
+
+namespace ozone_concentration_measurement {
+namespace feature {
+
+namespace numeric_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)OzoneConcentrationMeasurement::Feature::kNumericMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_measured_value(cluster, config->measured_value);
+    attribute::create_min_measured_value(cluster, config->min_measured_value);
+    attribute::create_max_measured_value(cluster, config->max_measured_value);
+    attribute::create_uncertainty(cluster, config->uncertainty);
+    attribute::create_measurement_unit(cluster, config->measurement_unit);
+
+    return ESP_OK;
+}
+
+} /* numeric_measurement */
+
+namespace level_indication {
+
+uint32_t get_id()
+{
+    return (uint32_t)OzoneConcentrationMeasurement::Feature::kLevelIndication;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_level_value(cluster, config->level_value);
+
+    return ESP_OK;
+}
+
+} /* level_indication */
+
+namespace medium_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)OzoneConcentrationMeasurement::Feature::kMediumLevel;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* medium_level */
+
+namespace critical_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)OzoneConcentrationMeasurement::Feature::kCriticalLevel;
+
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* critical_level */
+
+namespace peak_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)OzoneConcentrationMeasurement::Feature::kPeakMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_peak_measured_value(cluster, config->peak_measured_value);
+    attribute::create_peak_measured_value_window(cluster, config->peak_measured_value_window);
+
+    return ESP_OK;
+}
+
+} /* peak_measurement */
+
+namespace average_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)OzoneConcentrationMeasurement::Feature::kAverageMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_average_measured_value(cluster, 0);
+    attribute::create_average_measured_value_window(cluster, 1);
+
+    return ESP_OK;
+}
+
+} /* average_measurement */
+
+} /* feature */
+} /* ozone_concentration_measurement */
+
+namespace formaldehyde_concentration_measurement {
+namespace feature {
+
+namespace numeric_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)FormaldehydeConcentrationMeasurement::Feature::kNumericMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_measured_value(cluster, config->measured_value);
+    attribute::create_min_measured_value(cluster, config->min_measured_value);
+    attribute::create_max_measured_value(cluster, config->max_measured_value);
+    attribute::create_uncertainty(cluster, config->uncertainty);
+    attribute::create_measurement_unit(cluster, config->measurement_unit);
+
+    return ESP_OK;
+}
+
+} /* numeric_measurement */
+
+namespace level_indication {
+
+uint32_t get_id()
+{
+    return (uint32_t)FormaldehydeConcentrationMeasurement::Feature::kLevelIndication;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_level_value(cluster, config->level_value);
+
+    return ESP_OK;
+}
+
+} /* level_indication */
+
+namespace medium_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)FormaldehydeConcentrationMeasurement::Feature::kMediumLevel;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* medium_level */
+
+namespace critical_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)FormaldehydeConcentrationMeasurement::Feature::kCriticalLevel;
+
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* critical_level */
+
+namespace peak_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)FormaldehydeConcentrationMeasurement::Feature::kPeakMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_peak_measured_value(cluster, config->peak_measured_value);
+    attribute::create_peak_measured_value_window(cluster, config->peak_measured_value_window);
+
+    return ESP_OK;
+}
+
+} /* peak_measurement */
+
+namespace average_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)FormaldehydeConcentrationMeasurement::Feature::kAverageMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_average_measured_value(cluster, 0);
+    attribute::create_average_measured_value_window(cluster, 1);
+
+    return ESP_OK;
+}
+
+} /* average_measurement */
+
+} /* feature */
+} /* formaldehyde_concentration_measurement */
+
+namespace pm1_concentration_measurement {
+namespace feature {
+
+namespace numeric_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)Pm1ConcentrationMeasurement::Feature::kNumericMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_measured_value(cluster, config->measured_value);
+    attribute::create_min_measured_value(cluster, config->min_measured_value);
+    attribute::create_max_measured_value(cluster, config->max_measured_value);
+    attribute::create_uncertainty(cluster, config->uncertainty);
+    attribute::create_measurement_unit(cluster, config->measurement_unit);
+
+    return ESP_OK;
+}
+
+} /* numeric_measurement */
+
+namespace level_indication {
+
+uint32_t get_id()
+{
+    return (uint32_t)Pm1ConcentrationMeasurement::Feature::kLevelIndication;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_level_value(cluster, config->level_value);
+
+    return ESP_OK;
+}
+
+} /* level_indication */
+
+namespace medium_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)Pm1ConcentrationMeasurement::Feature::kMediumLevel;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* medium_level */
+
+namespace critical_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)Pm1ConcentrationMeasurement::Feature::kCriticalLevel;
+
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* critical_level */
+
+namespace peak_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)Pm1ConcentrationMeasurement::Feature::kPeakMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_peak_measured_value(cluster, config->peak_measured_value);
+    attribute::create_peak_measured_value_window(cluster, config->peak_measured_value_window);
+
+    return ESP_OK;
+}
+
+} /* peak_measurement */
+
+namespace average_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)Pm1ConcentrationMeasurement::Feature::kAverageMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_average_measured_value(cluster, 0);
+    attribute::create_average_measured_value_window(cluster, 1);
+
+    return ESP_OK;
+}
+
+} /* average_measurement */
+
+} /* feature */
+} /* pm1_concentration_measurement */
+
+namespace pm25_concentration_measurement {
+namespace feature {
+
+namespace numeric_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)Pm25ConcentrationMeasurement::Feature::kNumericMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_measured_value(cluster, config->measured_value);
+    attribute::create_min_measured_value(cluster, config->min_measured_value);
+    attribute::create_max_measured_value(cluster, config->max_measured_value);
+    attribute::create_uncertainty(cluster, config->uncertainty);
+    attribute::create_measurement_unit(cluster, config->measurement_unit);
+
+    return ESP_OK;
+}
+
+} /* numeric_measurement */
+
+namespace level_indication {
+
+uint32_t get_id()
+{
+    return (uint32_t)Pm25ConcentrationMeasurement::Feature::kLevelIndication;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_level_value(cluster, config->level_value);
+
+    return ESP_OK;
+}
+
+} /* level_indication */
+
+namespace medium_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)Pm25ConcentrationMeasurement::Feature::kMediumLevel;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* medium_level */
+
+namespace critical_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)Pm25ConcentrationMeasurement::Feature::kCriticalLevel;
+
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* critical_level */
+
+namespace peak_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)Pm25ConcentrationMeasurement::Feature::kPeakMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_peak_measured_value(cluster, config->peak_measured_value);
+    attribute::create_peak_measured_value_window(cluster, config->peak_measured_value_window);
+
+    return ESP_OK;
+}
+
+} /* peak_measurement */
+
+namespace average_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)Pm25ConcentrationMeasurement::Feature::kAverageMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_average_measured_value(cluster, 0);
+    attribute::create_average_measured_value_window(cluster, 1);
+
+    return ESP_OK;
+}
+
+} /* average_measurement */
+
+} /* feature */
+} /* pm25_concentration_measurement */
+
+namespace pm10_concentration_measurement {
+namespace feature {
+
+namespace numeric_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)Pm10ConcentrationMeasurement::Feature::kNumericMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_measured_value(cluster, config->measured_value);
+    attribute::create_min_measured_value(cluster, config->min_measured_value);
+    attribute::create_max_measured_value(cluster, config->max_measured_value);
+    attribute::create_uncertainty(cluster, config->uncertainty);
+    attribute::create_measurement_unit(cluster, config->measurement_unit);
+
+    return ESP_OK;
+}
+
+} /* numeric_measurement */
+
+namespace level_indication {
+
+uint32_t get_id()
+{
+    return (uint32_t)Pm10ConcentrationMeasurement::Feature::kLevelIndication;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_level_value(cluster, config->level_value);
+
+    return ESP_OK;
+}
+
+} /* level_indication */
+
+namespace medium_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)Pm10ConcentrationMeasurement::Feature::kMediumLevel;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* medium_level */
+
+namespace critical_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)Pm10ConcentrationMeasurement::Feature::kCriticalLevel;
+
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* critical_level */
+
+namespace peak_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)Pm10ConcentrationMeasurement::Feature::kPeakMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_peak_measured_value(cluster, config->peak_measured_value);
+    attribute::create_peak_measured_value_window(cluster, config->peak_measured_value_window);
+
+    return ESP_OK;
+}
+
+} /* peak_measurement */
+
+namespace average_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)Pm10ConcentrationMeasurement::Feature::kAverageMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_average_measured_value(cluster, 0);
+    attribute::create_average_measured_value_window(cluster, 1);
+
+    return ESP_OK;
+}
+
+} /* average_measurement */
+
+} /* feature */
+} /* pm10_concentration_measurement */
+
+namespace radon_concentration_measurement {
+namespace feature {
+
+namespace numeric_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)RadonConcentrationMeasurement::Feature::kNumericMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_measured_value(cluster, config->measured_value);
+    attribute::create_min_measured_value(cluster, config->min_measured_value);
+    attribute::create_max_measured_value(cluster, config->max_measured_value);
+    attribute::create_uncertainty(cluster, config->uncertainty);
+    attribute::create_measurement_unit(cluster, config->measurement_unit);
+
+    return ESP_OK;
+}
+
+} /* numeric_measurement */
+
+namespace level_indication {
+
+uint32_t get_id()
+{
+    return (uint32_t)RadonConcentrationMeasurement::Feature::kLevelIndication;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_level_value(cluster, config->level_value);
+
+    return ESP_OK;
+}
+
+} /* level_indication */
+
+namespace medium_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)RadonConcentrationMeasurement::Feature::kMediumLevel;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* medium_level */
+
+namespace critical_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)RadonConcentrationMeasurement::Feature::kCriticalLevel;
+
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* critical_level */
+
+namespace peak_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)RadonConcentrationMeasurement::Feature::kPeakMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_peak_measured_value(cluster, config->peak_measured_value);
+    attribute::create_peak_measured_value_window(cluster, config->peak_measured_value_window);
+
+    return ESP_OK;
+}
+
+} /* peak_measurement */
+
+namespace average_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)RadonConcentrationMeasurement::Feature::kAverageMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_average_measured_value(cluster, 0);
+    attribute::create_average_measured_value_window(cluster, 1);
+
+    return ESP_OK;
+}
+
+} /* average_measurement */
+
+} /* feature */
+} /* radon_concentration_measurement */
+
+namespace total_volatile_organic_compounds_concentration_measurement {
+namespace feature {
+
+namespace numeric_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)TotalVolatileOrganicCompoundsConcentrationMeasurement::Feature::kNumericMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_measured_value(cluster, config->measured_value);
+    attribute::create_min_measured_value(cluster, config->min_measured_value);
+    attribute::create_max_measured_value(cluster, config->max_measured_value);
+    attribute::create_uncertainty(cluster, config->uncertainty);
+    attribute::create_measurement_unit(cluster, config->measurement_unit);
+
+    return ESP_OK;
+}
+
+} /* numeric_measurement */
+
+namespace level_indication {
+
+uint32_t get_id()
+{
+    return (uint32_t)TotalVolatileOrganicCompoundsConcentrationMeasurement::Feature::kLevelIndication;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_level_value(cluster, config->level_value);
+
+    return ESP_OK;
+}
+
+} /* level_indication */
+
+namespace medium_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)TotalVolatileOrganicCompoundsConcentrationMeasurement::Feature::kMediumLevel;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* medium_level */
+
+namespace critical_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)TotalVolatileOrganicCompoundsConcentrationMeasurement::Feature::kCriticalLevel;
+
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* critical_level */
+
+namespace peak_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)TotalVolatileOrganicCompoundsConcentrationMeasurement::Feature::kPeakMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_peak_measured_value(cluster, config->peak_measured_value);
+    attribute::create_peak_measured_value_window(cluster, config->peak_measured_value_window);
+
+    return ESP_OK;
+}
+
+} /* peak_measurement */
+
+namespace average_measurement {
+
+uint32_t get_id()
+{
+    return (uint32_t)TotalVolatileOrganicCompoundsConcentrationMeasurement::Feature::kAverageMeasurement;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_average_measured_value(cluster, 0);
+    attribute::create_average_measured_value_window(cluster, 1);
+
+    return ESP_OK;
+}
+
+} /* average_measurement */
+
+} /* feature */
+} /* total_volatile_organic_compounds_concentration_measurement */
+
+namespace hepa_filter_monitoring {
+namespace feature {
+
+namespace condition {
+
+uint32_t get_id()
+{
+    return (uint32_t)HepaFilterMonitoring::Feature::kCondition;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }    
+    update_feature_map(cluster, get_id());
+
+    attribute::create_condition(cluster, config->condition);
+    attribute::create_degradation_direction(cluster, config->degradation_direction);
+
+    return ESP_OK;
+}
+
+} /* condition */
+
+namespace warning {
+
+uint32_t get_id()
+{
+    return (uint32_t)HepaFilterMonitoring::Feature::kWarning;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* warning */
+
+namespace replacement_product_list {
+
+uint32_t get_id()
+{
+    return (uint32_t)HepaFilterMonitoring::Feature::kReplacementProductList;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_replacement_product_list(cluster, NULL, 0, 0);
+
+    return ESP_OK;
+}
+
+} /* replacement_product_list */
+
+} /* feature */
+} /* hepa_filter_monitoring */
+
+namespace activated_carbon_filter_monitoring {
+namespace feature {
+
+namespace condition {
+
+uint32_t get_id()
+{
+    return (uint32_t)ActivatedCarbonFilterMonitoring::Feature::kCondition;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_condition(cluster, config->condition);
+    attribute::create_degradation_direction(cluster, config->degradation_direction);
+
+    return ESP_OK;
+}
+
+} /* condition */
+
+namespace warning {
+
+uint32_t get_id()
+{
+    return (uint32_t)ActivatedCarbonFilterMonitoring::Feature::kWarning;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* warning */
+
+namespace replacement_product_list {
+
+uint32_t get_id()
+{
+    return (uint32_t)ActivatedCarbonFilterMonitoring::Feature::kReplacementProductList;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_replacement_product_list(cluster, NULL, 0, 0);
+
+    return ESP_OK;
+}
+
+} /* replacement_product_list */
+
+} /* feature */
+} /* activated_carbon_filter_monitoring */
+
+namespace laundry_washer_controls {
+namespace feature {
+
+namespace spin {
+
+uint32_t get_id()
+{
+    return (uint32_t)LaundryWasherControls::Feature::kSpin;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    
+    update_feature_map(cluster, get_id());
+
+    attribute::create_spin_speed_current(cluster, config->spin_speed_current);
+
+    return ESP_OK;
+}
+
+} /* spin */
+
+namespace rinse {
+
+uint32_t get_id()
+{
+    return (uint32_t)LaundryWasherControls::Feature::kRinse;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+   
+    update_feature_map(cluster, get_id());
+
+    attribute::create_number_of_rinses(cluster, config->number_of_rinses);
+
+    return ESP_OK;
+}
+
+} /* rinse */
+
+} /* feature */
+} /* laundry_washer_controls */
+
 namespace thermostat {
 namespace feature {
 

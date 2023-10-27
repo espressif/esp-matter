@@ -182,31 +182,51 @@ esp_err_t set_device_type(device_t *bridged_device, uint32_t device_type_id)
         ESP_LOGE(TAG, "bridged_device cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
+    esp_err_t err = ESP_OK;
     switch (device_type_id) {
     case ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID: {
         on_off_light::config_t on_off_light_conf;
-        bridged_device->endpoint = on_off_light::add(bridged_device->endpoint, &on_off_light_conf);
+        err = on_off_light::add(bridged_device->endpoint, &on_off_light_conf);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to add device type");
+            return err;
+        }
         break;
     }
     case ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID: {
         dimmable_light::config_t dimmable_light_conf;
-        bridged_device->endpoint = dimmable_light::add(bridged_device->endpoint, &dimmable_light_conf);
+        err = dimmable_light::add(bridged_device->endpoint, &dimmable_light_conf);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to add device type");
+            return err;
+        }
         break;
     }
     case ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_ID: {
         color_temperature_light::config_t color_temperature_light_conf;
-        bridged_device->endpoint =
-            color_temperature_light::add(bridged_device->endpoint, &color_temperature_light_conf);
+        err = color_temperature_light::add(bridged_device->endpoint, &color_temperature_light_conf);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to add device type");
+            return err;
+        }
         break;
     }
     case ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_ID: {
         extended_color_light::config_t extended_color_light_conf;
-        bridged_device->endpoint = extended_color_light::add(bridged_device->endpoint, &extended_color_light_conf);
+        err = extended_color_light::add(bridged_device->endpoint, &extended_color_light_conf);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to add device type");
+            return err;
+        }
         break;
     }
     case ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID: {
         on_off_switch::config_t switch_config;
-        bridged_device->endpoint = on_off_switch::add(bridged_device->endpoint, &switch_config);
+        err = on_off_switch::add(bridged_device->endpoint, &switch_config);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to add device type");
+            return err;
+        }
         break;
     }
     default: {

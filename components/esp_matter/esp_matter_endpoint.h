@@ -71,11 +71,19 @@
 #define ESP_MATTER_REFRIGERATOR_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_TEMPERATURE_CONTROLLED_CABINET_DEVICE_TYPE_ID 0x0071
 #define ESP_MATTER_TEMPERATURE_CONTROLLED_CABINET_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_LAUNDRY_WASHER_DEVICE_TYPE_ID 0x0073
+#define ESP_MATTER_LAUNDRY_WASHER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_DISH_WASHER_DEVICE_TYPE_ID 0x0075
+#define ESP_MATTER_DISH_WASHER_DEVICE_TYPE_VERSION 1
 
 #define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
 #define ESP_MATTER_FAN_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID 0x0301
 #define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_AIR_QUALITY_SENSOR_DEVICE_TYPE_ID 0x002C
+#define ESP_MATTER_AIR_QUALITY_SENSOR_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_AIR_PURIFIER_DEVICE_TYPE_ID 0x002D
+#define ESP_MATTER_AIR_PURIFIER_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID 0x000A
 #define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_ID 0x0202
@@ -84,6 +92,8 @@
 #define ESP_MATTER_PUMP_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_MODE_SELECT_DEVICE_TYPE_ID 0x0027
 #define ESP_MATTER_MODE_SELECT_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_ROBOTIC_VACCUM_CLEANER_DEVICE_TYPE_ID 0x0074
+#define ESP_MATTER_ROBOTIC_VACCUM_CLEANER_DEVICE_TYPE_VERSION 1
 
 namespace esp_matter {
 
@@ -115,7 +125,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* root_node */
 
 namespace power_source_device{
@@ -127,7 +137,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* power_source_device */
 
 namespace on_off_light {
@@ -142,7 +152,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* on_off_light */
 
 namespace dimmable_light {
@@ -158,7 +168,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* dimmable_light */
 
 namespace color_temperature_light {
@@ -175,7 +185,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* color_temperature_light */
 
 namespace extended_color_light {
@@ -192,7 +202,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* extended_color_light */
 
 namespace on_off_switch {
@@ -205,7 +215,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* on_off_switch */
 
 namespace dimmer_switch {
@@ -218,7 +228,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* dimmer_switch */
 
 namespace color_dimmer_switch {
@@ -231,7 +241,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* color_dimmer_switch */
 
 namespace generic_switch {
@@ -244,7 +254,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* generic_switch */
 
 namespace on_off_plugin_unit {
@@ -259,7 +269,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* on_off_plugin_unit */
 
 namespace dimmable_plugin_unit {
@@ -275,7 +285,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* dimmable_plugin_unit */
 
 namespace fan {
@@ -289,7 +299,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* fan */
 
 namespace thermostat {
@@ -304,8 +314,57 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* thermostat */
+
+namespace air_quality_sensor {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::identify::config_t identify;
+    cluster::air_quality::config_t air_quality;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* air_quality_sensor */
+
+namespace air_purifier {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::identify::config_t identify;
+    cluster::fan_control::config_t fan_control;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* air_purifier */
+
+namespace dish_washer {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::operational_state::config_t operational_state;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* dish_washer */
+
+namespace laundry_washer {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::operational_state::config_t operational_state;
+} config_t;
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* laundry_washer */
 
 namespace aggregator {
 typedef struct config {
@@ -315,7 +374,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* aggregator */
 
 namespace bridged_node {
@@ -327,7 +386,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 endpoint_t *resume(node_t *node, config_t *config, uint8_t flags, uint16_t endpoint_id, void *priv_data);
 } /* bridged_node */
 
@@ -341,7 +400,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* door_lock */
 
 namespace window_covering_device {
@@ -357,7 +416,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* window_covering */
 
 namespace temperature_sensor {
@@ -370,7 +429,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* temperature_sensor */
 
 namespace humidity_sensor {
@@ -383,7 +442,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* humidity_sensor */
 
 namespace occupancy_sensor {
@@ -396,7 +455,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* occupancy_sensor */
 
 namespace contact_sensor {
@@ -409,7 +468,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* contact_sensor */
 
 namespace light_sensor {
@@ -422,7 +481,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* light_sensor */
 
 namespace pressure_sensor {
@@ -435,7 +494,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* pressure_sensor */
 
 namespace flow_sensor {
@@ -448,7 +507,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* flow_sensor */
 
 namespace pump{
@@ -467,7 +526,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** pump **/
 
 namespace mode_select_device {
@@ -479,13 +538,13 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** mode_select_device **/
 
 namespace room_air_conditioner{
 typedef struct config {
     cluster::descriptor::config_t descriptor;
-    cluster::identify:: config_t identify;
+    cluster::identify::config_t identify;
     cluster::on_off::config_t on_off;
     cluster::thermostat::config_t thermostat;
 } config_t;
@@ -493,7 +552,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** room air conditioner **/
 
 namespace temperature_controlled_cabinet{
@@ -505,7 +564,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** temperature_controlled_cabinet **/
 
 namespace refrigerator{
@@ -516,8 +575,22 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
-endpoint_t *add(endpoint_t *endpoint, config_t *config);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** refrigerator **/
+
+namespace robotic_vaccum_cleaner{
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::identify::config_t identify;
+    cluster::rvc_run_mode::config_t rvc_run_mode;
+    cluster::rvc_operational_state::config_t rvc_operational_state;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /** robotic_vaccum_cleaner **/
 
 } /* endpoint */
 

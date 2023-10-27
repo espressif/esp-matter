@@ -2112,6 +2112,26 @@ command_t *create_get_weekly_schedule_response(cluster_t *cluster)
 } /* command */
 } /* thermostat */
 
+namespace laundry_washer_mode {
+namespace command {
+command_t *create_change_to_mode(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, LaundryWasherMode::Commands::ChangeToMode::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* laundry_washer_mode */
+
+namespace dish_washer_mode {
+namespace command {
+command_t *create_change_to_mode(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DishwasherMode::Commands::ChangeToMode::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* dish_washer_mode */
+
 namespace door_lock {
 namespace command {
 
@@ -2209,6 +2229,46 @@ command_t *create_step(cluster_t *cluster)
 
 } /* command */
 } /* fan_control */
+
+namespace hepa_filter_monitoring {
+namespace command {
+command_t *create_reset_condition(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, HepaFilterMonitoring::Commands::ResetCondition::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* hepa_filter_monitoring */
+
+namespace activated_carbon_filter_monitoring {
+namespace command {
+command_t *create_reset_condition(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ActivatedCarbonFilterMonitoring::Commands::ResetCondition::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* activated_carbon_filter_monitoring */
+
+namespace rvc_run_mode {
+namespace command {
+command_t *create_change_to_mode(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, RvcRunMode::Commands::ChangeToMode::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_change_to_mode);
+}
+
+} /* command */
+} /* rvc_run_mode */
+
+namespace rvc_clean_mode {
+namespace command {
+command_t *create_change_to_mode(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, RvcCleanMode::Commands::ChangeToMode::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_change_to_mode);
+}
+
+} /* command */
+} /* rvc_clean_mode */
 
 } /* cluster */
 } /* esp_matter */

@@ -264,6 +264,18 @@ command_t *create_get_weekly_schedule_response(cluster_t *cluster);
 } /* command */
 } /* thermostat */
 
+namespace laundry_washer_mode {
+namespace command {
+command_t *create_change_to_mode(cluster_t *cluster);
+} /* command */
+} /* laundry_washer_mode */
+
+namespace dish_washer_mode {
+namespace command {
+command_t *create_change_to_mode(cluster_t *cluster);
+} /* command */
+} /* dish_washer_mode */
+
 namespace door_lock {
 namespace command {
 command_t *create_lock_door(cluster_t *cluster);
@@ -300,6 +312,30 @@ namespace command {
 command_t *create_step(cluster_t *cluster);
 } /* command */
 } /* fan_control */
+
+namespace hepa_filter_monitoring {
+namespace command {
+command_t *create_reset_condition(cluster_t *cluster);
+} /* command */
+} /* hepa_filter_monitoring */
+
+namespace activated_carbon_filter_monitoring {
+namespace command {
+command_t *create_reset_condition(cluster_t *cluster);
+} /* command */
+} /* activated_carbon_filter_monitoring */
+
+namespace rvc_run_mode {
+namespace command {
+command_t *create_change_to_mode(cluster_t *cluster);
+} /* command */
+} /* rvc_run_mode */
+
+namespace rvc_clean_mode {
+namespace command {
+command_t *create_change_to_mode(cluster_t *cluster);
+} /* command */
+} /* rvc_clean_mode */
 
 } /* cluster */
 } /* esp_matter */

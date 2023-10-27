@@ -1900,6 +1900,918 @@ attribute_t *create_ac_capacity_format(cluster_t *cluster, uint8_t value)
 } /* attribute */
 } /* thermostat */
 
+namespace air_quality {
+namespace attribute {
+
+attribute_t *create_air_quality(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, AirQuality::Attributes::AirQuality::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
+}
+
+} /* attribute */
+} /* air_quality */
+
+namespace hepa_filter_monitoring {
+namespace attribute {
+
+attribute_t *create_condition(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::Condition::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_degradation_direction(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::DegradationDirection::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
+}
+
+attribute_t *create_change_indication(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::ChangeIndication::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
+}
+
+attribute_t *create_in_place_indicator(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::InPlaceIndicator::Id, ATTRIBUTE_FLAG_NONE,
+		                         esp_matter_bool(value));
+}
+
+attribute_t *create_last_change_time(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::LastChangedTime::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE,
+		      			 esp_matter_nullable_uint8(value));
+}
+
+attribute_t *create_replacement_product_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::ReplacementProductList::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+} /* hepa_filter_monitoring */
+
+namespace activated_carbon_filter_monitoring {
+namespace attribute {
+
+attribute_t *create_condition(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ActivatedCarbonFilterMonitoring::Attributes::Condition::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_degradation_direction(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ActivatedCarbonFilterMonitoring::Attributes::DegradationDirection::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
+}
+
+attribute_t *create_change_indication(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ActivatedCarbonFilterMonitoring::Attributes::ChangeIndication::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
+}
+
+attribute_t *create_in_place_indicator(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, ActivatedCarbonFilterMonitoring::Attributes::InPlaceIndicator::Id, ATTRIBUTE_FLAG_NONE,
+		                         esp_matter_bool(value));
+}
+
+attribute_t *create_last_change_time(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, ActivatedCarbonFilterMonitoring::Attributes::LastChangedTime::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE,
+		      			 esp_matter_nullable_uint8(value));
+}
+
+attribute_t *create_replacement_product_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ActivatedCarbonFilterMonitoring::Attributes::ReplacementProductList::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+} /* activated_carbon_filter_monitoring */
+
+namespace carbon_monoxide_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MinMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MaxMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::Uncertainty::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementUnit::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementMedium::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value)
+{
+	return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::LevelValue::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+} /* attribute */
+} /* carbon_monoxide_concentration_measurement */
+
+namespace carbon_dioxide_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MinMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MaxMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::Uncertainty::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementUnit::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementMedium::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value)
+{
+	return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::LevelValue::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+} /* attribute */
+} /* carbon_dioxide_concentration_measurement */
+
+namespace nitrogen_dioxide_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MinMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MaxMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::Uncertainty::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementUnit::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementMedium::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value)
+{
+	return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::LevelValue::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+} /* attribute */
+} /* nitrogen_dioxide_concentration_measurement */
+
+namespace ozone_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MinMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MaxMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::Uncertainty::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementUnit::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementMedium::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value)
+{
+	return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::LevelValue::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+} /* attribute */
+} /* ozone_concentration_measurement */
+
+namespace formaldehyde_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MinMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MaxMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::Uncertainty::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementUnit::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementMedium::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value)
+{
+	return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::LevelValue::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+} /* attribute */
+} /* formaldehyde_concentration_measurement */
+
+namespace pm1_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MinMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MaxMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::Uncertainty::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementUnit::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementMedium::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value)
+{
+	return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::LevelValue::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+} /* attribute */
+} /* pm1_concentration_measurement */
+
+namespace pm25_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MinMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MaxMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::Uncertainty::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementUnit::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementMedium::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value)
+{
+	return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::LevelValue::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+} /* attribute */
+} /* pm25_concentration_measurement */
+
+namespace pm10_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MinMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MaxMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::Uncertainty::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementUnit::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementMedium::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value)
+{
+	return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::LevelValue::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+} /* attribute */
+} /* pm10_concentration_measurement */
+
+namespace radon_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MinMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MaxMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::Uncertainty::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementUnit::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementMedium::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value)
+{
+	return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::LevelValue::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+} /* attribute */
+} /* radon_concentration_measurement */
+
+namespace total_volatile_organic_compound_concentration_measurement {
+namespace attribute {
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MinMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MaxMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_peak_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::PeakMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_average_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValue::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_average_measured_value_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::AverageMeasuredValueWindow::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_uncertainty(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::Uncertainty::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_measurement_unit(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementUnit::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_measurement_medium(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::MeasurementMedium::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_level_value(cluster_t *cluster, uint8_t value)
+{
+	return esp_matter::attribute::create(cluster, CarbonMonoxideConcentrationMeasurement::Attributes::LevelValue::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+} /* attribute */
+} /* total_volatile_organic_compound_concentration_measurement */
+
+namespace operational_state {
+namespace attribute {
+attribute_t *create_phase_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, OperationalState::Attributes::PhaseList::Id, ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_array(value, length, count));
+}
+
+attribute_t *create_current_phase(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, OperationalState::Attributes::CurrentPhase::Id, ATTRIBUTE_FLAG_NULLABLE,
+		      			 esp_matter_nullable_uint8(value));
+}
+
+attribute_t *create_countdown_time(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, OperationalState::Attributes::CountdownTime::Id, ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_operational_state_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, OperationalState::Attributes::OperationalStateList::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array(value, length, count));
+}
+
+attribute_t *create_operational_state(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, OperationalState::Attributes::OperationalState::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
+}
+
+attribute_t *create_operational_error(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, OperationalState::Attributes::OperationalError::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
+}
+
+} /* attribute */
+} /* operational_state */
+
+namespace laundry_washer_mode {
+namespace attribute {
+
+attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, LaundryWasherMode::Attributes::SupportedModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, LaundryWasherMode::Attributes::CurrentMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+}
+
+} /* attribute */
+} /* laundry_washer_mode */
+
+namespace laundry_washer_controls {
+namespace attribute {
+
+attribute_t *create_spin_speeds(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, LaundryWasherControls::Attributes::SpinSpeeds::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array(value, length, count));
+}
+
+attribute_t *create_spin_speed_current(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, LaundryWasherControls::Attributes::SpinSpeedCurrent::Id,
+		                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_WRITABLE,
+                                         esp_matter_nullable_uint8(value));
+
+}
+
+attribute_t *create_number_of_rinses(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, LaundryWasherControls::Attributes::NumberOfRinses::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
+}
+
+attribute_t *create_supported_rinses(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, LaundryWasherControls::Attributes::SupportedRinses::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array(value, length, count));
+}
+} /* attribute */
+} /* laundry_washer_controls */
+
+namespace dish_washer_mode {
+namespace attribute {
+
+attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, LaundryWasherMode::Attributes::SupportedModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, LaundryWasherMode::Attributes::CurrentMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+}
+
+} /* attribute */
+} /* dish_washer_mode */
+
 namespace door_lock {
 namespace attribute {
 
@@ -2903,6 +3815,38 @@ attribute_t *create_supported(cluster_t *cluster, uint32_t value)
 
 } /* attribute */
 } /* refrigerator_alarm */
+
+namespace rvc_run_mode {
+namespace attribute {
+
+attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, RvcRunMode::Attributes::SupportedModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, RvcRunMode::Attributes::CurrentMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+}
+
+} /* attribute */
+} /* rvc_run_mode */
+
+namespace rvc_clean_mode {
+namespace attribute {
+
+attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, RvcCleanMode::Attributes::SupportedModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, RvcCleanMode::Attributes::CurrentMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+}
+
+} /* attribute */
+} /* rvc_clean_mode */
 
 } /* cluster */
 } /* esp_matter */
