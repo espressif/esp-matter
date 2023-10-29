@@ -578,7 +578,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** refrigerator **/
 
-namespace robotic_vaccum_cleaner{
+namespace robotic_vacuum_cleaner{
 typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
@@ -590,7 +590,7 @@ uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
-} /** robotic_vaccum_cleaner **/
+} /** robotic_vacuum_cleaner **/
 
 } /* endpoint */
 
