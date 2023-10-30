@@ -10,7 +10,9 @@ export ZAP_INSTALL_PATH=${MATTER_PATH}/.environment/cipd/packages/zap
 echo ""
 echo "Running Matter Setup"
 echo ""
+cd ${MATTER_PATH}
 source ${MATTER_PATH}/scripts/bootstrap.sh
+cd ${ESP_MATTER_PATH}
 
 echo ""
 echo "Building host tools"

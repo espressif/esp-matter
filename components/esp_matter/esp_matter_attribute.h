@@ -175,8 +175,8 @@ attribute_t *create_max_group_keys_per_fabric(cluster_t *cluster, uint16_t value
 
 namespace icd_management {
 namespace attribute {
-attribute_t *create_idle_mode_interval(cluster_t *cluster, uint32_t value, uint32_t min, uint32_t max);
-attribute_t *create_active_mode_interval(cluster_t *cluster, uint32_t value, uint32_t min);
+attribute_t *create_idle_mode_duration(cluster_t *cluster, uint32_t value, uint32_t min, uint32_t max);
+attribute_t *create_active_mode_duration(cluster_t *cluster, uint32_t value, uint32_t min);
 attribute_t *create_active_mode_threshold(cluster_t *cluster, uint16_t value, uint16_t min);
 attribute_t *create_registered_clients(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_icd_counter(cluster_t *cluster,uint32_t value);

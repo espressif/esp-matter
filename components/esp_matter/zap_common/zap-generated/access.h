@@ -276,6 +276,16 @@
     0x00000300, /* Cluster: Color Control, Attribute: ColorPointBY, Privilege: manage */ \
     0x00000300, /* Cluster: Color Control, Attribute: ColorPointBIntensity, Privilege: manage */ \
     0x00000300, /* Cluster: Color Control, Attribute: StartUpColorTemperatureMireds, Privilege: manage */ \
+    0x00000301, /* Cluster: Ballast Configuration, Attribute: MinLevel, Privilege: manage */ \
+    0x00000301, /* Cluster: Ballast Configuration, Attribute: MaxLevel, Privilege: manage */ \
+    0x00000301, /* Cluster: Ballast Configuration, Attribute: IntrinsicBallastFactor, Privilege: manage */ \
+    0x00000301, /* Cluster: Ballast Configuration, Attribute: BallastFactorAdjustment, Privilege: manage */ \
+    0x00000301, /* Cluster: Ballast Configuration, Attribute: LampType, Privilege: manage */ \
+    0x00000301, /* Cluster: Ballast Configuration, Attribute: LampManufacturer, Privilege: manage */ \
+    0x00000301, /* Cluster: Ballast Configuration, Attribute: LampRatedHours, Privilege: manage */ \
+    0x00000301, /* Cluster: Ballast Configuration, Attribute: LampBurnHours, Privilege: manage */ \
+    0x00000301, /* Cluster: Ballast Configuration, Attribute: LampAlarmMode, Privilege: manage */ \
+    0x00000301, /* Cluster: Ballast Configuration, Attribute: LampBurnHoursTripPoint, Privilege: manage */ \
 }
 
 // Parallel array data (cluster, *attribute*, privilege) for write attribute
@@ -330,6 +340,16 @@
     0x0000003B, /* Cluster: Color Control, Attribute: ColorPointBY, Privilege: manage */ \
     0x0000003C, /* Cluster: Color Control, Attribute: ColorPointBIntensity, Privilege: manage */ \
     0x00004010, /* Cluster: Color Control, Attribute: StartUpColorTemperatureMireds, Privilege: manage */ \
+    0x00000010, /* Cluster: Ballast Configuration, Attribute: MinLevel, Privilege: manage */ \
+    0x00000011, /* Cluster: Ballast Configuration, Attribute: MaxLevel, Privilege: manage */ \
+    0x00000014, /* Cluster: Ballast Configuration, Attribute: IntrinsicBallastFactor, Privilege: manage */ \
+    0x00000015, /* Cluster: Ballast Configuration, Attribute: BallastFactorAdjustment, Privilege: manage */ \
+    0x00000030, /* Cluster: Ballast Configuration, Attribute: LampType, Privilege: manage */ \
+    0x00000031, /* Cluster: Ballast Configuration, Attribute: LampManufacturer, Privilege: manage */ \
+    0x00000032, /* Cluster: Ballast Configuration, Attribute: LampRatedHours, Privilege: manage */ \
+    0x00000033, /* Cluster: Ballast Configuration, Attribute: LampBurnHours, Privilege: manage */ \
+    0x00000034, /* Cluster: Ballast Configuration, Attribute: LampAlarmMode, Privilege: manage */ \
+    0x00000035, /* Cluster: Ballast Configuration, Attribute: LampBurnHoursTripPoint, Privilege: manage */ \
 }
 
 // Parallel array data (cluster, attribute, *privilege*) for write attribute
@@ -384,6 +404,16 @@
     kMatterAccessPrivilegeManage, /* Cluster: Color Control, Attribute: ColorPointBY, Privilege: manage */ \
     kMatterAccessPrivilegeManage, /* Cluster: Color Control, Attribute: ColorPointBIntensity, Privilege: manage */ \
     kMatterAccessPrivilegeManage, /* Cluster: Color Control, Attribute: StartUpColorTemperatureMireds, Privilege: manage */ \
+    kMatterAccessPrivilegeManage, /* Cluster: Ballast Configuration, Attribute: MinLevel, Privilege: manage */ \
+    kMatterAccessPrivilegeManage, /* Cluster: Ballast Configuration, Attribute: MaxLevel, Privilege: manage */ \
+    kMatterAccessPrivilegeManage, /* Cluster: Ballast Configuration, Attribute: IntrinsicBallastFactor, Privilege: manage */ \
+    kMatterAccessPrivilegeManage, /* Cluster: Ballast Configuration, Attribute: BallastFactorAdjustment, Privilege: manage */ \
+    kMatterAccessPrivilegeManage, /* Cluster: Ballast Configuration, Attribute: LampType, Privilege: manage */ \
+    kMatterAccessPrivilegeManage, /* Cluster: Ballast Configuration, Attribute: LampManufacturer, Privilege: manage */ \
+    kMatterAccessPrivilegeManage, /* Cluster: Ballast Configuration, Attribute: LampRatedHours, Privilege: manage */ \
+    kMatterAccessPrivilegeManage, /* Cluster: Ballast Configuration, Attribute: LampBurnHours, Privilege: manage */ \
+    kMatterAccessPrivilegeManage, /* Cluster: Ballast Configuration, Attribute: LampAlarmMode, Privilege: manage */ \
+    kMatterAccessPrivilegeManage, /* Cluster: Ballast Configuration, Attribute: LampBurnHoursTripPoint, Privilege: manage */ \
 }
 
 ////////////////////////////////////////////////////////////////////////////////

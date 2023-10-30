@@ -544,9 +544,9 @@ attribute_t *create_max_group_keys_per_fabric(cluster_t *cluster, uint16_t value
 
 namespace icd_management {
 namespace attribute {
-attribute_t *create_idle_mode_interval(cluster_t *cluster, uint32_t value, uint32_t min, uint32_t max)
+attribute_t *create_idle_mode_duration(cluster_t *cluster, uint32_t value, uint32_t min, uint32_t max)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, IcdManagement::Attributes::IdleModeInterval::Id,
+    attribute_t *attribute = esp_matter::attribute::create(cluster, IcdManagement::Attributes::IdleModeDuration::Id,
                                                            ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
     if (!attribute) {
         ESP_LOGE(TAG, "Could not create attribute");
@@ -556,9 +556,9 @@ attribute_t *create_idle_mode_interval(cluster_t *cluster, uint32_t value, uint3
     return attribute;
 }
 
-attribute_t *create_active_mode_interval(cluster_t *cluster, uint32_t value, uint32_t min)
+attribute_t *create_active_mode_duration(cluster_t *cluster, uint32_t value, uint32_t min)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, IcdManagement::Attributes::ActiveModeInterval::Id,
+    attribute_t *attribute = esp_matter::attribute::create(cluster, IcdManagement::Attributes::ActiveModeDuration::Id,
                                                            ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
     if (!attribute) {
         ESP_LOGE(TAG, "Could not create attribute");
