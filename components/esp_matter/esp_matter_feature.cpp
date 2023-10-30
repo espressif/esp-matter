@@ -650,13 +650,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
     attribute::create_number_of_actuations_lift(cluster, config->number_of_actuations_lift);
 
-	// We should update config_status attribute as lift feature is added
-	uint8_t clear_second_bit = ~(uint8_t)(1 << 2);
-	esp_matter::attribute_t *attribute = esp_matter::attribute::get(cluster, WindowCovering::Attributes::ConfigStatus::Id);
-	esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-	esp_matter::attribute::get_val(attribute, &val);
-	val.val.u8 = val.val.u8 & clear_second_bit;
-	esp_matter::attribute::set_val(attribute, &val);
     return ESP_OK;
 }
 
