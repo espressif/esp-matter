@@ -1399,7 +1399,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /** refrigerator **/
 
-namespace robotic_vaccum_cleaner{
+namespace robotic_vacuum_cleaner{
 
 uint32_t get_device_type_id()
 {
@@ -1437,7 +1437,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     return ESP_OK;
 }
-} /** robotic_vaccum_cleaner **/
+} /** robotic_vacuum_cleaner **/
 
 } /* endpoint */
 
