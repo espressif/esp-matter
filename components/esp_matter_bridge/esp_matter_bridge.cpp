@@ -176,64 +176,19 @@ static esp_err_t plugin_init_callback_endpoint(endpoint_t *endpoint)
     return ESP_OK;
 }
 
-esp_err_t set_device_type(device_t *bridged_device, uint32_t device_type_id)
+static bridge_device_type_callback_t device_type_callback;
+
+esp_err_t set_device_type(device_t *bridged_device, uint32_t device_type_id, void *priv_data)
 {
+    esp_err_t err;
+
     if (!bridged_device) {
         ESP_LOGE(TAG, "bridged_device cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    esp_err_t err = ESP_OK;
-    switch (device_type_id) {
-    case ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID: {
-        on_off_light::config_t on_off_light_conf;
-        err = on_off_light::add(bridged_device->endpoint, &on_off_light_conf);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Failed to add device type");
-            return err;
-        }
-        break;
-    }
-    case ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID: {
-        dimmable_light::config_t dimmable_light_conf;
-        err = dimmable_light::add(bridged_device->endpoint, &dimmable_light_conf);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Failed to add device type");
-            return err;
-        }
-        break;
-    }
-    case ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_ID: {
-        color_temperature_light::config_t color_temperature_light_conf;
-        err = color_temperature_light::add(bridged_device->endpoint, &color_temperature_light_conf);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Failed to add device type");
-            return err;
-        }
-        break;
-    }
-    case ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_ID: {
-        extended_color_light::config_t extended_color_light_conf;
-        err = extended_color_light::add(bridged_device->endpoint, &extended_color_light_conf);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Failed to add device type");
-            return err;
-        }
-        break;
-    }
-    case ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID: {
-        on_off_switch::config_t switch_config;
-        err = on_off_switch::add(bridged_device->endpoint, &switch_config);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Failed to add device type");
-            return err;
-        }
-        break;
-    }
-    default: {
-        ESP_LOGE(TAG, "Unsupported bridged matter device type");
-        return ESP_ERR_INVALID_ARG;
-    }
-    }
+    err = device_type_callback(bridged_device->endpoint, device_type_id, priv_data);
+    if (err != ESP_OK)
+        return err;
     return plugin_init_callback_endpoint(bridged_device->endpoint);
 }
 
@@ -283,7 +238,7 @@ device_t *create_device(node_t *node, uint16_t parent_endpoint_id, uint32_t devi
         esp_matter_mem_free(dev);
         return NULL;
     }
-    if (set_device_type(dev, device_type_id) != ESP_OK) {
+    if (set_device_type(dev, device_type_id, priv_data) != ESP_OK) {
         ESP_LOGE(TAG, "Failed to add the device type for the bridged device");
         remove_device(dev);
         return NULL;
@@ -346,7 +301,7 @@ device_t *resume_device(node_t *node, uint16_t device_endpoint_id, void *priv_da
         erase_bridged_device_info(device_endpoint_id);
         return NULL;
     }
-    if (set_device_type(dev, persistent_info.device_type_id) != ESP_OK) {
+    if (set_device_type(dev, persistent_info.device_type_id, priv_data) != ESP_OK) {
         ESP_LOGE(TAG, "Failed to add the device type for the bridged device");
         remove_device(dev);
         return NULL;
@@ -374,12 +329,18 @@ esp_err_t remove_device(device_t *bridged_device)
     return error;
 }
 
-esp_err_t initialize(node_t *node)
+esp_err_t initialize(node_t *node, bridge_device_type_callback_t device_type_cb)
 {
     if (!node) {
         ESP_LOGE(TAG, "node could not be NULL");
         return ESP_ERR_INVALID_ARG;
     }
+    
+    if (!device_type_cb) {
+        ESP_LOGE(TAG, "device_type_callback cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    device_type_callback = device_type_cb;
 
     esp_err_t err = nvs_flash_init_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME);
     if (err != ESP_OK) {

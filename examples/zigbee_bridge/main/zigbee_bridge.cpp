@@ -38,7 +38,7 @@ void zigbee_bridge_find_bridged_on_off_light_cb(esp_zb_zdp_status_t zdo_status, 
             app_bridged_device_t *bridged_device =
                 app_bridge_create_bridged_device(node, aggregator_endpoint_id, ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID,
                                                  ESP_MATTER_BRIDGED_DEVICE_TYPE_ZIGBEE,
-                                                 app_bridge_zigbee_address(endpoint, addr));
+                                                 app_bridge_zigbee_address(endpoint, addr), NULL);
             if (!bridged_device) {
                 ESP_LOGE(TAG, "Failed to create zigbee bridged device (on_off light)");
                 return;

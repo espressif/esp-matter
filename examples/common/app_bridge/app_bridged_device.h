@@ -55,6 +55,8 @@ typedef struct app_bridged_device {
     app_bridged_device_address_t dev_addr;
     /** Pointer of Next Bridged Device */
     struct app_bridged_device *next;
+    /* User initialization data */
+    void *priv_data;
 } app_bridged_device_t;
 
 /** Bridged Device's Address APIs */
@@ -68,9 +70,10 @@ app_bridged_device_address_t app_bridge_espnow_address(uint8_t espnow_macaddr[6]
 app_bridged_device_t *app_bridge_create_bridged_device(node_t *node, uint16_t parent_endpoint_id,
                                                        uint32_t matter_device_type_id,
                                                        app_bridged_device_type_t bridged_device_type,
-                                                       app_bridged_device_address_t bridged_device_address);
+                                                       app_bridged_device_address_t bridged_device_address,
+                                                       void *priv_data);
 
-esp_err_t app_bridge_initialize(node_t *node);
+esp_err_t app_bridge_initialize(node_t *node, esp_matter_bridge::bridge_device_type_callback_t device_type_cb);
 
 esp_err_t app_bridge_remove_device(app_bridged_device_t *bridged_device);
 
