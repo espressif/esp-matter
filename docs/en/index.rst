@@ -21,5 +21,6 @@ Table of Contents
    2. Developing with the SDK <developing>
    3. Matter Certification <certification>
    4. Production Considerations <production>
-   5. API Reference <api-reference/index>
+   5. Security Considerations <security>
+   6. API Reference <api-reference/index>
    A1 Appendix FAQs <faq>

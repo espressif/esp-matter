@@ -112,7 +112,7 @@ Details about using the mass manufacturing utility can be found here:
 4.3.2 Pre-Provisioned Modules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-ESP32 modules can be pre-flashed with the manufacturing partition images
+{IDF_TARGET_NAME} modules can be pre-flashed with the manufacturing partition images
 during module manufacturing itself and then be shipped to you.
 
 This saves you the overhead of securely generating, encrypting and then
@@ -171,54 +171,3 @@ This is the example to generate factory images after pre-provisioning:
     | esp32c_dev6,c0398f4980b07c9460f71c5421e1a3c8,1237
     | esp32c_dev7,c0398f4980b07c9460f71c5421e1a3c9,1238
 
-
-4.4 Security
-------------
-
-Matter conformance requires you to protect the DACs that are uniquely programmed
-on each device. To achieve this, you need to take care of the following aspects.
-
-
-4.4.1 Secure Boot
-~~~~~~~~~~~~~~~~~
-
-Secure boot ensures that only trusted code runs on the device.
-
-ESP32 supports RSA based secure boot scheme whereby the bootROM verifies
-the software boot loader for authenticity using the RSA algorithm. The
-verified software boot loader then checks the partition table and
-verifies the active application firmware and then boots it.
-
-Details about implementing the secure boot can be found here:
-`secure_boot <https://docs.espressif.com/projects/esp-idf/en/v5.1.1/security/secure-boot.html>`__.
-
-4.4.2 Flash Encryption
-~~~~~~~~~~~~~~~~~~~~~~
-
-Flash encryption prevents the plain-text reading of the flash contents.
-
-ESP32 supports AES-256 based flash encryption scheme. The ESP32 flash
-controller has an ability to access the flash contents encrypted with a
-key and place them in the cache after decryption. It also has ability to
-allow to write the data to the flash by encrypting it. Both the
-read/write encryption operations happen transparently.
-
-Details about implementing the flash encryption can be found here:
-`flash_encryption <https://docs.espressif.com/projects/esp-idf/en/v5.1.1/security/flash-encryption.html>`__.
-
-4.4.3 NVS Encryption
-~~~~~~~~~~~~~~~~~~~~
-
-For the manufacturing data that needs to be stored on the device in the
-NVS format, ESP-IDF provides the NVS image creation utility which allows
-the encryption of NVS partition on the host using a randomly generated
-(per device unique) or pre-generated (common for a batch) NVS encryption
-key.
-
-A separate flash partition is used for storing the NVS encryption keys.
-This flash partition is then encrypted using flash encryption. So, flash
-encryption becomes a mandatory feature to secure the NVS encryption
-keys.
-
-Details about implementing the NVS encryption can be found here:
-`nvs_encryption <https://docs.espressif.com/projects/esp-idf/en/v5.1.1/api-reference/storage/nvs_flash.html#nvs-encryption>`__.
