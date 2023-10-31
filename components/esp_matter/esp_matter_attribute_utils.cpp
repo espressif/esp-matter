@@ -515,9 +515,9 @@ static esp_err_t console_set_handler(int argc, char **argv)
         return ESP_ERR_INVALID_ARG;
     }
 
-    uint16_t endpoint_id = strtol((const char *)&argv[0][2], NULL, 16);
-    uint32_t cluster_id = strtol((const char *)&argv[1][2], NULL, 16);
-    uint32_t attribute_id = strtol((const char *)&argv[2][2], NULL, 16);
+    uint16_t endpoint_id = strtoul((const char *)&argv[0][2], NULL, 16);
+    uint32_t cluster_id = strtoul((const char *)&argv[1][2], NULL, 16);
+    uint32_t attribute_id = strtoul((const char *)&argv[2][2], NULL, 16);
 
     /* Get type from matter_attribute */
     const EmberAfAttributeMetadata *matter_attribute = emberAfLocateAttributeMetadata(endpoint_id, cluster_id,
@@ -708,9 +708,9 @@ static esp_err_t console_get_handler(int argc, char **argv)
         ESP_LOGE(TAG, "The arguments for this command is invalid");
         return ESP_ERR_INVALID_ARG;
     }
-    uint16_t endpoint_id = strtol((const char *)&argv[0][2], NULL, 16);
-    uint32_t cluster_id = strtol((const char *)&argv[1][2], NULL, 16);
-    uint32_t attribute_id = strtol((const char *)&argv[2][2], NULL, 16);
+    uint16_t endpoint_id = strtoul((const char *)&argv[0][2], NULL, 16);
+    uint32_t cluster_id = strtoul((const char *)&argv[1][2], NULL, 16);
+    uint32_t attribute_id = strtoul((const char *)&argv[2][2], NULL, 16);
 
     /* Get type from matter_attribute */
     const EmberAfAttributeMetadata *matter_attribute = emberAfLocateAttributeMetadata(endpoint_id, cluster_id,
