@@ -76,6 +76,44 @@ static esp_err_t app_attribute_update_cb(callback_type_t type, uint16_t endpoint
     return err;
 }
 
+esp_err_t create_bridge_devices(esp_matter::endpoint_t *ep, uint32_t device_type_id, void *priv_data)
+{
+    esp_err_t err = ESP_OK;
+
+    switch (device_type_id) {
+    case ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID: {
+        on_off_light::config_t on_off_light_conf;
+        err = on_off_light::add(ep, &on_off_light_conf);
+        break;
+    }
+    case ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID: {
+        dimmable_light::config_t dimmable_light_conf;
+        err = dimmable_light::add(ep, &dimmable_light_conf);
+        break;
+    }
+    case ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_ID: {
+        color_temperature_light::config_t color_temperature_light_conf;
+        err = color_temperature_light::add(ep, &color_temperature_light_conf);
+        break;
+    }
+    case ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_ID: {
+        extended_color_light::config_t extended_color_light_conf;
+        err = extended_color_light::add(ep, &extended_color_light_conf);
+        break;
+    }
+    case ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID: {
+        on_off_switch::config_t switch_config;
+        err = on_off_switch::add(ep, &switch_config);
+        break;
+    }
+    default: {
+        ESP_LOGE(TAG, "Unsupported bridged matter device type");
+        return ESP_ERR_INVALID_ARG;
+    }
+    }
+    return err;
+}
+
 extern "C" void app_main()
 {
     esp_err_t err = ESP_OK;
@@ -106,7 +144,7 @@ extern "C" void app_main()
         ESP_LOGE(TAG, "Matter start failed: %d", err);
     }
 
-    err = app_bridge_initialize(node);
+    err = app_bridge_initialize(node, create_bridge_devices);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to resume the bridged endpoints: %d", err);
     }

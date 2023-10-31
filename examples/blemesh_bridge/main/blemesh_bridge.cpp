@@ -57,7 +57,7 @@ esp_err_t blemesh_bridge_match_bridged_onoff_light(uint8_t *composition_data, ui
             app_bridged_device_t *bridged_device =
                 app_bridge_create_bridged_device(node, aggregator_endpoint_id, ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID,
                                                  ESP_MATTER_BRIDGED_DEVICE_TYPE_BLEMESH,
-                                                 app_bridge_blemesh_address(blemesh_addr));
+                                                 app_bridge_blemesh_address(blemesh_addr), NULL);
             ESP_RETURN_ON_FALSE(bridged_device, ESP_FAIL, TAG, "Failed to create bridged device (on_off light)");
             ESP_LOGI(TAG, "Create/Update bridged node for 0x%04x bridged device on endpoint %d", blemesh_addr,
                     app_bridge_get_matter_endpointid_by_blemesh_addr(blemesh_addr));
