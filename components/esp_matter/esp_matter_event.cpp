@@ -237,6 +237,67 @@ event_t *create_reachable_changed(cluster_t *cluster)
 } // namespace event
 } // namespace bridged_device_basic_information
 
+namespace smoke_co_alarm {
+namespace event {
+
+event_t *create_smoke_alarm(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, SmokeCoAlarm::Events::SmokeAlarm::Id);
+}
+
+event_t *create_co_alarm(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, SmokeCoAlarm::Events::COAlarm::Id);
+}
+
+event_t *create_low_battery(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, SmokeCoAlarm::Events::LowBattery::Id);
+}
+
+event_t *create_hardware_fault(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, SmokeCoAlarm::Events::HardwareFault::Id);
+}
+
+event_t *create_end_of_service(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, SmokeCoAlarm::Events::EndOfService::Id);
+}
+
+event_t *create_self_test_complete(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, SmokeCoAlarm::Events::SelfTestComplete::Id);
+}
+
+event_t *create_alarm_muted(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, SmokeCoAlarm::Events::AlarmMuted::Id);
+}
+
+event_t *create_mute_ended(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, SmokeCoAlarm::Events::MuteEnded::Id);
+}
+
+event_t *create_interconnect_smoke_alarm(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, SmokeCoAlarm::Events::InterconnectSmokeAlarm::Id);
+}
+
+event_t *create_interconnect_co_alarm(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, SmokeCoAlarm::Events::InterconnectCOAlarm::Id);
+}
+
+event_t *create_all_clear(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, SmokeCoAlarm::Events::AllClear::Id);
+}
+
+} // namespace event
+} // namespace smoke_co_alarm
+
 namespace door_lock {
 namespace event {
 

@@ -2812,6 +2812,89 @@ attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
 } /* attribute */
 } /* dish_washer_mode */
 
+namespace smoke_co_alarm {
+namespace attribute {
+attribute_t *create_expressed_state(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, SmokeCoAlarm::Attributes::ExpressedState::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+					 esp_matter_enum8(value));
+}
+
+attribute_t *create_smoke_state(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, SmokeCoAlarm::Attributes::SmokeState::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+					 esp_matter_enum8(value));
+}
+
+attribute_t *create_co_state(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, SmokeCoAlarm::Attributes::COState::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+					 esp_matter_enum8(value));
+}
+
+attribute_t *create_battery_alert(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, SmokeCoAlarm::Attributes::BatteryAlert::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+					 esp_matter_enum8(value));
+}
+
+attribute_t *create_device_muted(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, SmokeCoAlarm::Attributes::DeviceMuted::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+		                        esp_matter_enum8(value));
+}
+
+attribute_t *create_test_in_progress(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, SmokeCoAlarm::Attributes::TestInProgress::Id, ATTRIBUTE_FLAG_NONE,
+		                        esp_matter_bool(value));
+}
+
+attribute_t *create_hardware_fault_alert(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, SmokeCoAlarm::Attributes::HardwareFaultAlert::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+		                        esp_matter_bool(value));
+}
+
+attribute_t *create_end_of_service_alert(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, SmokeCoAlarm::Attributes::EndOfServiceAlert::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+		                        esp_matter_enum8(value));
+}
+
+attribute_t *create_interconnect_smoke_alarm(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, SmokeCoAlarm::Attributes::InterconnectSmokeAlarm::Id, ATTRIBUTE_FLAG_NONE,
+		                        esp_matter_enum8(value));
+}
+
+attribute_t *create_interconnect_co_alarm(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, SmokeCoAlarm::Attributes::InterconnectCOAlarm::Id, ATTRIBUTE_FLAG_NONE,
+		                        esp_matter_enum8(value));
+}
+
+attribute_t *create_contamination_state(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, SmokeCoAlarm::Attributes::ContaminationState::Id, ATTRIBUTE_FLAG_NONE,
+		                        esp_matter_enum8(value));
+}
+
+attribute_t *create_smoke_sensitivity_level(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, SmokeCoAlarm::Attributes::SmokeSensitivityLevel::Id, ATTRIBUTE_FLAG_WRITABLE,
+		                        esp_matter_enum8(value));
+}
+
+attribute_t *create_expiry_date(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, SmokeCoAlarm::Attributes::ContaminationState::Id, ATTRIBUTE_FLAG_NONE,
+		                        esp_matter_uint32(value));
+}
+
+} /* attribute */
+} /* smoke_co_alarm */
+
 namespace door_lock {
 namespace attribute {
 

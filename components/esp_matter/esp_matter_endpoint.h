@@ -75,6 +75,8 @@
 #define ESP_MATTER_LAUNDRY_WASHER_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_DISH_WASHER_DEVICE_TYPE_ID 0x0075
 #define ESP_MATTER_DISH_WASHER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_SMOKE_CO_ALARM_DEVICE_TYPE_ID 0x0076
+#define ESP_MATTER_SMOKE_CO_ALARM_DEVICE_TYPE_VERSION 1
 
 #define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
 #define ESP_MATTER_FAN_DEVICE_TYPE_VERSION 1
@@ -365,6 +367,18 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* laundry_washer */
+
+namespace smoke_co_alarm {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::identify::config_t identify;
+    cluster::smoke_co_alarm::config_t smoke_co_alarm;
+} config_t;
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* smoke_co_alarm */
 
 namespace aggregator {
 typedef struct config {

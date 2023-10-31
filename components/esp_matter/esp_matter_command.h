@@ -276,6 +276,12 @@ command_t *create_change_to_mode(cluster_t *cluster);
 } /* command */
 } /* dish_washer_mode */
 
+namespace smoke_co_alarm {
+namespace command {
+command_t *create_self_test_request(cluster_t *cluster);
+} /* command */
+} /* smoke_co_alarm */
+
 namespace door_lock {
 namespace command {
 command_t *create_lock_door(cluster_t *cluster);

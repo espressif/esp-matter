@@ -2117,6 +2117,59 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* dish_washer_alarm */
 
+namespace smoke_co_alarm {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, SmokeCoAlarm::Id, flags);
+    if (!cluster) {
+	ESP_LOGE(TAG, "Could not create cluster");
+	return NULL;
+    }    
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+	add_function_list(cluster, function_list, function_flags);
+    }    
+    if (flags & CLUSTER_FLAG_CLIENT) {
+	create_default_binding_cluster(endpoint);
+    }    
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+	/* Attributes managed internally */
+	global::attribute::create_feature_map(cluster, 0);
+#if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
+	global::attribute::create_event_list(cluster, NULL, 0, 0);
+#endif
+	attribute::create_expressed_state(cluster, 0);
+	attribute::create_battery_alert(cluster, 0);
+	attribute::create_test_in_progress(cluster, false);
+	attribute::create_hardware_fault_alert(cluster, false);
+	attribute::create_end_of_service_alert(cluster, 0);
+
+	/* Attributes not managed internally */
+	if (config) {
+	    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+	} else {
+	    ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+	}
+    }
+
+    event::create_low_battery(cluster);
+    event::create_hardware_fault(cluster);
+    event::create_end_of_service(cluster);
+    event::create_self_test_complete(cluster);
+    event::create_all_clear(cluster);
+
+    /* Features */
+    feature::smoke_alarm::add(cluster);
+
+    return cluster;
+}
+} /* smoke_co_alarm */
+
+
 namespace door_lock {
 const function_generic_t function_list[] = {
     (function_generic_t)MatterDoorLockClusterServerAttributeChangedCallback,

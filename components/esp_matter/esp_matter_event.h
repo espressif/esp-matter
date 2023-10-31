@@ -106,6 +106,22 @@ event_t *create_reachable_changed(cluster_t *cluster);
 } // namespace event
 } // namespace bridged_device_basic_information
 
+namespace smoke_co_alarm {
+namespace event {
+event_t *create_smoke_alarm(cluster_t *cluster);
+event_t *create_co_alarm(cluster_t *cluster);
+event_t *create_low_battery(cluster_t *cluster);
+event_t *create_hardware_fault(cluster_t *cluster);
+event_t *create_end_of_service(cluster_t *cluster);
+event_t *create_self_test_complete(cluster_t *cluster);
+event_t *create_alarm_muted(cluster_t *cluster);
+event_t *create_mute_ended(cluster_t *cluster);
+event_t *create_interconnect_smoke_alarm(cluster_t *cluster);
+event_t *create_interconnect_co_alarm(cluster_t *cluster);
+event_t *create_all_clear(cluster_t *cluster);
+} // namespace event
+} // namespace smoke_co_alarm
+
 namespace door_lock {
 namespace event {
 event_t *create_door_lock_alarm(cluster_t *cluster);

@@ -809,6 +809,44 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /* laundry_washer */
 
+namespace smoke_co_alarm {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_SMOKE_CO_ALARM_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_SMOKE_CO_ALARM_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void * priv_data)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    add(endpoint, config);
+    return endpoint;
+}
+
+esp_err_t add(endpoint_t * endpoint, config_t * config)
+{
+    if (!endpoint) {
+	ESP_LOGE(TAG, "Endpoint cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }   
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+	ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ", err: %d", get_device_type_id(), err);
+	return err;
+    }
+
+    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster::smoke_co_alarm::create(endpoint, &(config->smoke_co_alarm), CLUSTER_FLAG_SERVER);
+
+    return ESP_OK;
+}
+} /* smoke_co_alarm */
+
 namespace bridged_node {
 uint32_t get_device_type_id()
 {
