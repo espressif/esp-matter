@@ -71,7 +71,8 @@ void pairing_command::OnCommissioningComplete(NodeId nodeId, CHIP_ERROR err)
     }
 }
 
-void pairing_command::OnDeviceConnectedFn(void *context, ExchangeManager &exchangeMgr, const SessionHandle &sessionHandle)
+void pairing_command::OnDeviceConnectedFn(void *context, ExchangeManager &exchangeMgr,
+                                          const SessionHandle &sessionHandle)
 {
     ESP_LOGI(TAG, "OnDeviceConnectedFn");
     CommissionerDiscoveryController *cdc = esp_matter::commissioner::get_discovery_controller();
@@ -145,13 +146,27 @@ esp_err_t pairing_on_network(NodeId node_id, uint32_t pincode)
 }
 
 #if CONFIG_ENABLE_ESP32_BLE_CONTROLLER
-esp_err_t pairing_ble_wifi(NodeId node_id, uint32_t pincode, uint16_t disc, const char * ssid, const char * pwd)
+esp_err_t pairing_ble_wifi(NodeId node_id, uint32_t pincode, uint16_t disc, const char *ssid, const char *pwd)
 {
-    RendezvousParameters params = RendezvousParameters().SetSetupPINCode(pincode).SetDiscriminator(disc).SetPeerAddress(chip::Transport::PeerAddress::BLE());
+    RendezvousParameters params = RendezvousParameters().SetSetupPINCode(pincode).SetDiscriminator(disc).SetPeerAddress(
+        chip::Transport::PeerAddress::BLE());
 
-    chip::ByteSpan nameSpan(reinterpret_cast<const uint8_t *>(ssid),strlen(ssid));
-    chip::ByteSpan pwdSpan(reinterpret_cast<const uint8_t *>(pwd),strlen(pwd));
-    CommissioningParameters commissioning_params = CommissioningParameters().SetWiFiCredentials(Controller::WiFiCredentials(nameSpan, pwdSpan));
+    chip::ByteSpan nameSpan(reinterpret_cast<const uint8_t *>(ssid), strlen(ssid));
+    chip::ByteSpan pwdSpan(reinterpret_cast<const uint8_t *>(pwd), strlen(pwd));
+    CommissioningParameters commissioning_params =
+        CommissioningParameters().SetWiFiCredentials(Controller::WiFiCredentials(nameSpan, pwdSpan));
+    get_device_commissioner()->PairDevice(node_id, params, commissioning_params);
+    return ESP_OK;
+}
+
+esp_err_t pairing_ble_thread(NodeId node_id, uint32_t pincode, uint16_t disc, uint8_t *dataset_tlvs, uint8_t dataset_len)
+{
+    RendezvousParameters params = RendezvousParameters().SetSetupPINCode(pincode).SetDiscriminator(disc).SetPeerAddress(
+        chip::Transport::PeerAddress::BLE());
+
+    chip::ByteSpan dataset_span(dataset_tlvs, dataset_len);
+    CommissioningParameters commissioning_params =
+        CommissioningParameters().SetThreadOperationalDataset(dataset_span);
     get_device_commissioner()->PairDevice(node_id, params, commissioning_params);
     return ESP_OK;
 }
