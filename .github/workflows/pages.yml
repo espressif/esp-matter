@@ -39,7 +39,7 @@ concurrency:
 jobs:
   Build:
     # Disable the job in forks
-    if: ${{ github.repository_owner == 'espressif' && github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.repository_owner == 'espressif' && (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success') }}
 
     runs-on: ubuntu-latest
     container:
@@ -91,7 +91,6 @@ jobs:
       - name: generate launchpad config
         run: |
           cd images/
-          cp $ESP_MATTER_PATH/tools/launchpad/matter_logo.png .
           ls
           $ESP_MATTER_PATH/tools/launchpad/generate_launchpad_config.sh
 

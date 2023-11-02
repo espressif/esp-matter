@@ -75,13 +75,10 @@ do
         echo $img >> $OUT_FILE
     done
 
-    # Write the esp-matter phone app links
     # TODO: Update the android phone app links when it is available on android play store
     echo "ios_app_url = \"https://apps.apple.com/app/esp-rainmaker/id1497491540\"" >> $OUT_FILE
     echo "android_app_url = \"\"" >> $OUT_FILE
-    echo "setup_payload_logo = \"https://espressif.github.io/esp-matter/matter_logo.png\""
-    echo "setup_payload = \"MT:Y.K9042C00KA0648G00\""
-
+    echo "readme.text = \"https://raw.githubusercontent.com/espressif/esp-matter/main/tools/launchpad/qrcode-content.md\"" >> $OUT_FILE
     echo "" >> $OUT_FILE
 
     unset CHIPSETS IMAGES
