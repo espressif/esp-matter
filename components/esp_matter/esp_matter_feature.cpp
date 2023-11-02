@@ -2585,6 +2585,66 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* laundry_washer_controls */
 
+namespace smoke_co_alarm {
+namespace feature {
+
+namespace smoke_alarm {
+
+uint32_t get_id()
+{
+    return (uint32_t)SmokeCoAlarm::Feature::kSmokeAlarm;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+
+    update_feature_map(cluster, get_id());
+
+    attribute::create_smoke_state(cluster, 0);
+    attribute::create_contamination_state(cluster, 0);
+    attribute::create_smoke_sensitivity_level(cluster, 0);
+
+    event::create_smoke_alarm(cluster);
+    event::create_interconnect_smoke_alarm(cluster);
+
+    return ESP_OK;
+}
+
+} /* smoke_alarm */
+
+namespace co_alarm {
+
+uint32_t get_id()
+{
+    return (uint32_t)SmokeCoAlarm::Feature::kCoAlarm;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+
+    update_feature_map(cluster, get_id());
+
+    attribute::create_co_state(cluster, 0);
+
+    event::create_co_alarm(cluster);
+    event::create_interconnect_co_alarm(cluster);
+
+    return ESP_OK;
+}
+
+} /* co_alarm */
+
+} /* feature */
+} /* smoke_co_alarm */
+
 namespace thermostat {
 namespace feature {
 

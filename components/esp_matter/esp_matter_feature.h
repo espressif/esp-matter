@@ -1257,6 +1257,26 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* feature */
 } /* laundry_washer_controls */
 
+namespace smoke_co_alarm {
+namespace feature {
+
+namespace smoke_alarm {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* smoke_alarm */
+
+namespace co_alarm {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* co_alarm */
+
+} /* feature */
+} /* smoke_co_alarm */
+
 namespace switch_cluster {
 namespace feature {
 
