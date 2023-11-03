@@ -41,9 +41,9 @@ static esp_err_t app_driver_bound_console_handler(int argc, char **argv)
                "\t\tExample: matter esp bound invoke-group 0x0001 0x0003 0x0000 0x78.\n");
     } else if (argc >= 4 && strncmp(argv[0], "invoke", sizeof("invoke")) == 0) {
         client::command_handle_t cmd_handle;
-        uint16_t local_endpoint_id = strtol((const char *)&argv[1][2], NULL, 16);
-        cmd_handle.cluster_id = strtol((const char *)&argv[2][2], NULL, 16);
-        cmd_handle.command_id = strtol((const char *)&argv[3][2], NULL, 16);
+        uint16_t local_endpoint_id = strtoul((const char *)&argv[1][2], NULL, 16);
+        cmd_handle.cluster_id = strtoul((const char *)&argv[2][2], NULL, 16);
+        cmd_handle.command_id = strtoul((const char *)&argv[3][2], NULL, 16);
         cmd_handle.is_group = false;
 
         if (argc > 4) {
@@ -63,9 +63,9 @@ static esp_err_t app_driver_bound_console_handler(int argc, char **argv)
         client::cluster_update(local_endpoint_id, &cmd_handle);
     } else if (argc >= 4 && strncmp(argv[0], "invoke-group", sizeof("invoke-group")) == 0) {
         client::command_handle_t cmd_handle;
-        uint16_t local_endpoint_id = strtol((const char *)&argv[1][2], NULL, 16);
-        cmd_handle.cluster_id = strtol((const char *)&argv[2][2], NULL, 16);
-        cmd_handle.command_id = strtol((const char *)&argv[3][2], NULL, 16);
+        uint16_t local_endpoint_id = strtoul((const char *)&argv[1][2], NULL, 16);
+        cmd_handle.cluster_id = strtoul((const char *)&argv[2][2], NULL, 16);
+        cmd_handle.command_id = strtoul((const char *)&argv[3][2], NULL, 16);
         cmd_handle.is_group = true;
 
         if (argc > 4) {
@@ -103,11 +103,11 @@ static esp_err_t app_driver_client_console_handler(int argc, char **argv)
                "\t\tExample: matter esp client invoke-group 0x0001 0x257 0x0003 0x0000 0x78.\n");
     } else if (argc >= 6 && strncmp(argv[0], "invoke", sizeof("invoke")) == 0) {
         client::command_handle_t cmd_handle;
-        uint8_t fabric_index = strtol((const char *)&argv[1][2], NULL, 16);
-        uint64_t node_id = strtol((const char *)&argv[2][2], NULL, 16);
-        cmd_handle.endpoint_id = strtol((const char *)&argv[3][2], NULL, 16);
-        cmd_handle.cluster_id = strtol((const char *)&argv[4][2], NULL, 16);
-        cmd_handle.command_id = strtol((const char *)&argv[5][2], NULL, 16);
+        uint8_t fabric_index = strtoul((const char *)&argv[1][2], NULL, 16);
+        uint64_t node_id = strtoull((const char *)&argv[2][2], NULL, 16);
+        cmd_handle.endpoint_id = strtoul((const char *)&argv[3][2], NULL, 16);
+        cmd_handle.cluster_id = strtoul((const char *)&argv[4][2], NULL, 16);
+        cmd_handle.command_id = strtoul((const char *)&argv[5][2], NULL, 16);
         cmd_handle.is_group = false;
 
         if (argc > 6) {
@@ -127,10 +127,10 @@ static esp_err_t app_driver_client_console_handler(int argc, char **argv)
         client::connect(fabric_index, node_id, &cmd_handle);
     } else if (argc >= 5 && strncmp(argv[0], "invoke-group", sizeof("invoke-group")) == 0) {
         client::command_handle_t cmd_handle;
-        uint8_t fabric_index = strtol((const char *)&argv[1][2], NULL, 16);
-        cmd_handle.group_id = strtol((const char *)&argv[2][2], NULL, 16);
-        cmd_handle.cluster_id = strtol((const char *)&argv[3][2], NULL, 16);
-        cmd_handle.command_id = strtol((const char *)&argv[4][2], NULL, 16);
+        uint8_t fabric_index = strtoul((const char *)&argv[1][2], NULL, 16);
+        cmd_handle.group_id = strtoul((const char *)&argv[2][2], NULL, 16);
+        cmd_handle.cluster_id = strtoul((const char *)&argv[3][2], NULL, 16);
+        cmd_handle.command_id = strtoul((const char *)&argv[4][2], NULL, 16);
         cmd_handle.is_group = true;
 
         if (argc > 5) {
@@ -208,7 +208,7 @@ void app_driver_client_command_callback(client::peer_device_t *peer_device, clie
                 return;
             }
             identify::command::send_identify(peer_device, cmd_handle->endpoint_id,
-                                             strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16));
+                                             strtoul((const char *)(cmd_handle->command_data) + 1, NULL, 16));
         } else {
             ESP_LOGE(TAG, "Unsupported command");
         }
@@ -245,7 +245,7 @@ void app_driver_client_group_command_callback(uint8_t fabric_index, client::comm
                 return;
             }
             identify::command::group_send_identify(fabric_index, cmd_handle->group_id,
-                                                   strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16));
+                                                   strtoul((const char *)(cmd_handle->command_data) + 1, NULL, 16));
         } else {
             ESP_LOGE(TAG, "Unsupported command");
         }
