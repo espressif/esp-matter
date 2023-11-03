@@ -16,11 +16,70 @@ about pairing and controling an end-device using this example
 
 ## 3. Controller in Rainmaker Fabric
 
-Matter Controller in Rainmaker Fabric will be soon avaliable in [Rainmaker Matter Examples](https://github.com/espressif/esp-rainmaker/tree/master/examples/matter)
+Matter Controller in Rainmaker Fabric is avaliable in [Rainmaker Matter Examples](https://github.com/espressif/esp-rainmaker/tree/master/examples/matter)
 
-## A2 Appendix FAQs
+## 4. OpenThread Border Router (OTBR) feature
 
-### A2.1 Pairing Command Failed
+### 4.1 Hardware Platform
+
+See the [docs](https://github.com/espressif/esp-thread-br#hardware-platforms) for more information about the hardware platform.
+
+### 4.2 Build
+
+The sdkconfig file `sdkconfig.defaults.otbr` is provided to enable the OTBR feature on the controller.
+Build and flash the controller example with the sdkconfig file 'sdkconfig.defaults.otbr'
+
+```
+idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults.otbr" set-target esp32s3 build
+idf.py -p <PORT> erase-flash flash monitor
+```
+
+*Notes*: The Thread Border Router DevKit Board uses USB port.
+
+### 4.3 Pair and Control
+
+- Pairing the controller with chip-tool
+
+```
+./chip-tool pairing ble-wifi 0x7483 <ssid> <password> 20202021 3840
+```
+
+- Initializing a new Thread network dataset and commit it as the active one
+
+```
+matter esp ot_cli dataset init new
+matter esp ot_cli dataset commit active
+```
+
+- Getting the operational dataset TLV-encoded string. The `<dataset_tlvs>` will be printed.
+
+```
+matter esp ot_cli dataset active -x
+```
+
+- Starting the Thread network
+
+```
+matter esp ot_cli ifconfig up
+matter esp ot_cli thread start
+```
+
+- Pairing the Thread end-device with chip-tool and write the ACL
+
+```
+./chip-tool pairing ble-thread 0x7484 hex:<dataset_tlvs> 20202021 3840
+./chip-tool accesscontrol write acl '[{"fabricIndex": 1, "privilege": 5, "authMode": 2, "subjects": [112233, 25731], "targets":null}]' 0x7484 0
+```
+
+- Control the Thread end-device on the device console (On/Off cluster Toggle command)
+
+```
+matter esp controller invoke-cmd 0x7484 1 6 2
+```
+
+## A1 Appendix FAQs
+
+### A1.1 Pairing Command Failed
 
 I cannot finish the commissioning on the controller example:
 
@@ -30,7 +89,7 @@ I cannot finish the commissioning on the controller example:
     -   The complete device logs for both the devices taken over UART.
     -   The esp-matter and esp-idf branch you are using.
 
-### A2.2 Command Send Failed
+### A1.2 Command Send Failed
 
 I cannot send commands to the light from the controller:
 
