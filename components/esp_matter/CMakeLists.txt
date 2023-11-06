@@ -4,7 +4,6 @@ file(GLOB CLUSTER_DIR_LIST true ${MATTER_SDK_PATH}/src/app/clusters/*)
 set(SRC_DIRS_LIST       "."
                         "private"
                         "${MATTER_SDK_PATH}/zzz_generated/app-common/app-common/zap-generated/attributes"
-                        "${MATTER_SDK_PATH}/src/app"
                         "${MATTER_SDK_PATH}/src/app/server"
                         "${MATTER_SDK_PATH}/src/app/util"
                         "${MATTER_SDK_PATH}/src/app/reporting"
@@ -53,3 +52,8 @@ if (CONFIG_IDF_TARGET_ARCH_XTENSA AND (${IDF_VERSION_MAJOR} LESS 5))
 endif()
 target_compile_options(${COMPONENT_LIB} PUBLIC
                        "-DCHIP_ADDRESS_RESOLVE_IMPL_INCLUDE_HEADER=<lib/address_resolve/AddressResolve_DefaultImpl.h>")
+
+# Time sync client feature depends on read client, disable it when read client is disabled.
+if (CONFIG_DISABLE_READ_CLIENT)
+    target_compile_options(${COMPONENT_LIB} PUBLIC "-DTIME_SYNC_ENABLE_TSC_FEATURE=0")
+endif()
