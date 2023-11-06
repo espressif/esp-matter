@@ -910,8 +910,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_idle_mode_interval(cluster, config->idle_mode_interval, 500, 64800000);
-            attribute::create_active_mode_interval(cluster, config->active_mode_interval, 300);
+            attribute::create_idle_mode_duration(cluster, config->idle_mode_interval, 500, 64800000);
+            attribute::create_active_mode_duration(cluster, config->active_mode_interval, 300);
             attribute::create_active_mode_threshold(cluster, config->active_mode_threshold, 300);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");

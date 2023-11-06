@@ -672,5 +672,12 @@ public:
     ~UnitTestingCluster() {}
 };
 
+class DLL_EXPORT SampleMeiCluster : public ClusterBase
+{
+public:
+    SampleMeiCluster(Messaging::ExchangeManager & exchangeManager, const SessionHandle & session, EndpointId endpoint) : ClusterBase(exchangeManager, session, endpoint) {}
+    ~SampleMeiCluster() {}
+};
+
 } // namespace Controller
 } // namespace chip
