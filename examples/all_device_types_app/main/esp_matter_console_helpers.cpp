@@ -311,6 +311,44 @@ int create(uint8_t device_type_index)
             cluster::temperature_control::feature::temperature_number::add(cluster, &temperature_number_config);
             break;
         }
+	case ESP_MATTER_AIR_PURIFIER: {
+	    esp_matter::endpoint::air_purifier::config_t air_purifier_config;
+	    endpoint = esp_matter::endpoint::air_purifier::create(node, &air_purifier_config, ENDPOINT_FLAG_NONE, NULL);
+	    break;
+	}
+	case ESP_MATTER_AIR_QUALITY_SENSOR: {
+            esp_matter::endpoint::air_quality_sensor::config_t air_quality_sensor_config;
+	    endpoint = esp_matter::endpoint::air_quality_sensor::create(node, &air_quality_sensor_config, ENDPOINT_FLAG_NONE, NULL);
+	    break;
+	}
+	case ESP_MATTER_ROBOTIC_VACUUM_CLEANER: {
+	    esp_matter::endpoint::robotic_vacuum_cleaner::config_t robotic_vacuum_cleaner_config;
+	    endpoint = esp_matter::endpoint::robotic_vacuum_cleaner::create(node, &robotic_vacuum_cleaner_config, ENDPOINT_FLAG_NONE, NULL);
+	    break;
+	}
+	case ESP_MATTER_LAUNDRY_WASHER: {
+	    esp_matter::endpoint::laundry_washer::config_t laundry_washer_config;
+	    endpoint = esp_matter::endpoint::laundry_washer::create(node, &laundry_washer_config, ENDPOINT_FLAG_NONE, NULL);
+	    break;
+	}
+	case ESP_MATTER_DISH_WASHER: {
+	    esp_matter::endpoint::dish_washer::config_t dish_washer_config;
+	    endpoint = esp_matter::endpoint::dish_washer::create(node, &dish_washer_config, ENDPOINT_FLAG_NONE, NULL);
+	    break;
+	}
+	case ESP_MATTER_SMOKE_CO_ALARM: {
+	    esp_matter::endpoint::smoke_co_alarm::config_t smoke_co_alarm_config;
+	    endpoint = esp_matter::endpoint::smoke_co_alarm::create(node, &smoke_co_alarm_config, ENDPOINT_FLAG_NONE, NULL);
+
+            esp_matter::endpoint::power_source_device::config_t power_source_config;
+            esp_matter::endpoint_t *ps_endpoint = esp_matter::endpoint::power_source_device::create(node, &power_source_config, ENDPOINT_FLAG_NONE, NULL);
+
+            if (!ps_endpoint) {
+                ESP_LOGE(TAG, "Matter create endpoint failed");
+                return 1;
+            }
+	    break;
+	}
         default: {
             ESP_LOGE(TAG, "Please input a valid device type");
             break;

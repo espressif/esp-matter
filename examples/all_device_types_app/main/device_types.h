@@ -31,6 +31,12 @@ enum device_type_enum {
     ESP_MATTER_RAC,
     ESP_MATTER_TEMP_CTRL_CABINET,
     ESP_MATTER_REFRIGERATOR,
+    ESP_MATTER_AIR_PURIFIER,
+    ESP_MATTER_AIR_QUALITY_SENSOR,
+    ESP_MATTER_ROBOTIC_VACUUM_CLEANER,
+    ESP_MATTER_LAUNDRY_WASHER,
+    ESP_MATTER_DISH_WASHER,
+    ESP_MATTER_SMOKE_CO_ALARM,
     ESP_MATTER_DEVICE_TYPE_MAX
 };
 
@@ -67,6 +73,12 @@ const device_type_name device_type_list[ESP_MATTER_DEVICE_TYPE_MAX] = {
 	{"mode_select_device", ESP_MATTER_MODE_SELECT_DEVICE},
 	{"room_ac", ESP_MATTER_RAC},
 	{"temp_ctrl_cabinet", ESP_MATTER_TEMP_CTRL_CABINET},
-	{"refrigerator", ESP_MATTER_REFRIGERATOR}
+	{"refrigerator", ESP_MATTER_REFRIGERATOR},
+	{"air_purifier", ESP_MATTER_AIR_PURIFIER},
+	{"air_quality_sensor", ESP_MATTER_AIR_QUALITY_SENSOR},
+	{"robotic_vacuum_cleaner", ESP_MATTER_ROBOTIC_VACUUM_CLEANER},
+	{"laundry_washer", ESP_MATTER_LAUNDRY_WASHER},
+	{"dish_washer", ESP_MATTER_DISH_WASHER},
+	{"smoke_co_alarm", ESP_MATTER_SMOKE_CO_ALARM}
  };
 } /* namespace esp_matter */
