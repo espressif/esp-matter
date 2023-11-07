@@ -1376,9 +1376,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
             attribute::create_fan_mode(cluster, config->fan_mode, 0, 6);
-            attribute::create_fan_mode_sequence(cluster, config->fan_mode_sequence);
-            attribute::create_percent_setting(cluster, config->percent_setting);
-            attribute::create_percent_current(cluster, config->percent_current);
+            attribute::create_fan_mode_sequence(cluster, config->fan_mode_sequence, 0, 5);
+            attribute::create_percent_setting(cluster, config->percent_setting, 0, 100);
+            attribute::create_percent_current(cluster, config->percent_current, 0, 100);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
