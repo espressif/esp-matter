@@ -264,6 +264,16 @@ command_t *create_get_weekly_schedule_response(cluster_t *cluster);
 } /* command */
 } /* thermostat */
 
+namespace operational_state {
+namespace command {
+command_t *create_pause(cluster_t *cluster);
+command_t *create_stop(cluster_t *cluster);
+command_t *create_start(cluster_t *cluster);
+command_t *create_resume(cluster_t *cluster);
+command_t *create_operational_command_response(cluster_t *cluster);
+} /* command */
+} /* operational_state */
+
 namespace laundry_washer_mode {
 namespace command {
 command_t *create_change_to_mode(cluster_t *cluster);

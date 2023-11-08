@@ -453,6 +453,21 @@ event_t *create_state_change(cluster_t *cluster)
 } // namespace event
 } // namespace boolean_state
 
+namespace operational_state {
+namespace event {
+
+event_t *create_operational_error(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, OperationalState::Events::OperationalError::Id);
+}
+
+event_t *create_operation_completion(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, OperationalState::Events::OperationCompletion::Id);
+}
+
+} // namespace event
+} // namespace operational_state
 namespace pump_configuration_and_control {
 namespace event {
 
