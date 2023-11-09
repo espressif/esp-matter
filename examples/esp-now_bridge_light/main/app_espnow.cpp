@@ -42,7 +42,6 @@ static void espnow_ctrl_onoff(espnow_addr_t src_addr, bool status)
     } else {
         cmd_handle.command_id = OnOff::Commands::Off::Id;
     }
-    cmd_handle.is_group = false;
     uint16_t bridged_switch_endpoint_id = app_bridge_get_matter_endpointid_by_espnow_macaddr(src_addr);
     ESP_LOGI(TAG, "Using bridge endpoint: %d", bridged_switch_endpoint_id);
 

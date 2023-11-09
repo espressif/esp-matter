@@ -116,12 +116,12 @@ static void esp_matter_command_client_binding_callback(const EmberBindingTableEn
         ESP_LOGE(TAG, "Failed to call the binding callback since command handle is NULL");
         return;
     }
-    if (binding.type == EMBER_UNICAST_BINDING && !cmd_handle->is_group && peer_device) {
+    if (binding.type == EMBER_UNICAST_BINDING && peer_device) {
         if (client_command_callback) {
             cmd_handle->endpoint_id = binding.remote;
             client_command_callback(peer_device, cmd_handle, command_callback_priv_data);
         }
-    } else if (binding.type == EMBER_MULTICAST_BINDING && cmd_handle->is_group && !peer_device) {
+    } else if (binding.type == EMBER_MULTICAST_BINDING && !peer_device) {
         if (client_group_command_callback) {
             cmd_handle->group_id = binding.groupId;
             client_group_command_callback(binding.fabricIndex, cmd_handle, command_callback_priv_data);

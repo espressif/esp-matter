@@ -32,36 +32,12 @@ static esp_err_t app_driver_bound_console_handler(int argc, char **argv)
         printf("Bound commands:\n"
                "\thelp: Print help\n"
                "\tinvoke: <local_endpoint_id> <cluster_id> <command_id> parameters ... \n"
-               "\t\tExample: matter esp bound invoke 0x0001 0x0008 0x0000 0x50 0x0 0x1 0x1.\n"
-               "\tinvoke-group: <local_endpoint_id> <cluster_id> <command_id> parameters ...\n"
-               "\t\tExample: matter esp bound invoke-group 0x0001 0x0008 0x0000 0x50 0x0 0x1 0x1.\n");
+               "\t\tExample: matter esp bound invoke 0x0001 0x0008 0x0000 0x50 0x0 0x1 0x1.\n");
     } else if (argc >= 4 && strncmp(argv[0], "invoke", sizeof("invoke")) == 0) {
         client::command_handle_t cmd_handle;
         uint16_t local_endpoint_id = strtoul((const char *)&argv[1][2], NULL, 16);
         cmd_handle.cluster_id = strtoul((const char *)&argv[2][2], NULL, 16);
         cmd_handle.command_id = strtoul((const char *)&argv[3][2], NULL, 16);
-        cmd_handle.is_group = false;
-
-        if (argc > 4) {
-           console_buffer[0] = argc - 4;
-           for (int i = 0; i < (argc - 4); i++) {
-                if ((argv[4+i][0] != '0') || (argv[4+i][1] != 'x') || (strlen((const char*)&argv[4+i][2]) > 10)) {
-                    ESP_LOGE(TAG, "Incorrect arguments. Check help for more details.");
-                    return ESP_ERR_INVALID_ARG;
-                }
-                strcpy((console_buffer + 1 + 10*i), &argv[4+i][2]);
-           }
-
-           cmd_handle.command_data = console_buffer;
-        }
-
-        client::cluster_update(local_endpoint_id, &cmd_handle);
-    } else if (argc >= 4 && strncmp(argv[0], "invoke-group", sizeof("invoke-group")) == 0) {
-        client::command_handle_t cmd_handle;
-        uint16_t local_endpoint_id = strtoul((const char *)&argv[1][2], NULL, 16);
-        cmd_handle.cluster_id = strtoul((const char *)&argv[2][2], NULL, 16);
-        cmd_handle.command_id = strtoul((const char *)&argv[3][2], NULL, 16);
-        cmd_handle.is_group = true;
 
         if (argc > 4) {
            console_buffer[0] = argc - 4;
@@ -104,7 +80,6 @@ static esp_err_t app_driver_client_console_handler(int argc, char **argv)
         cmd_handle.endpoint_id = strtoul((const char *)&argv[3][2], NULL, 16);
         cmd_handle.cluster_id = strtoul((const char *)&argv[4][2], NULL, 16);
         cmd_handle.command_id = strtoul((const char *)&argv[5][2], NULL, 16);
-        cmd_handle.is_group = false;
 
         if (argc > 6) {
            console_buffer[0] = argc - 6;
@@ -126,7 +101,6 @@ static esp_err_t app_driver_client_console_handler(int argc, char **argv)
         cmd_handle.group_id = strtoul((const char *)&argv[2][2], NULL, 16);
         cmd_handle.cluster_id = strtoul((const char *)&argv[3][2], NULL, 16);
         cmd_handle.command_id = strtoul((const char *)&argv[4][2], NULL, 16);
-        cmd_handle.is_group = true;
 
         if (argc > 5) {
            console_buffer[0] = argc - 5;

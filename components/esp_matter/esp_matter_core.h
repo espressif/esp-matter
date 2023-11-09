@@ -763,19 +763,11 @@ typedef struct command_handle {
     };
     uint32_t cluster_id;
     uint32_t command_id;
-    void *command_data { NULL };
-    bool is_group;
+    void *command_data;
     command_handle() : endpoint_id(chip::kInvalidEndpointId), cluster_id(chip::kInvalidClusterId),
-                  command_id(chip::kInvalidCommandId), command_data(NULL), is_group(false) {}
-    command_handle(struct command_handle* cmd) : cluster_id(cmd->cluster_id), command_id(cmd->command_id),
-                   command_data(cmd->command_data), is_group(cmd->is_group)
-    {
-        if (cmd->is_group) {
-            this->group_id = cmd->group_id;
-        } else {
-            this->endpoint_id = cmd->endpoint_id;
-        }
-    }
+                  command_id(chip::kInvalidCommandId), command_data(NULL){}
+    command_handle(struct command_handle* cmd) : endpoint_id(cmd->endpoint_id), cluster_id(cmd->cluster_id),
+                  command_id(cmd->command_id), command_data(cmd->command_data) {}
 } command_handle_t;
 
 /** Peer device handle */
