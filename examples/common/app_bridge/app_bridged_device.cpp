@@ -19,11 +19,25 @@
 
 #include <app_bridged_device.h>
 #include <esp_matter_mem.h>
+#include <nvs_key_allocator.h>
 
 // The bridge app can be used only when MAX_BRIDGED_DEVICE_COUNT > 0
 #if defined(MAX_BRIDGED_DEVICE_COUNT) && MAX_BRIDGED_DEVICE_COUNT > 0
-#define APP_BRIDGE_BRIDGED_DEVICE_ADDR_KEY "dev_addr"
-#define APP_BRIDGE_BRIDGED_DEVICE_TYPE_KEY "dev_type"
+
+namespace esp_matter_bridge {
+namespace nvs_key_allocator {
+static inline StorageKeyName endpoint_dev_addr(uint16_t endpoint_id)
+{
+    return StorageKeyName::Formatted("b/%x/da", endpoint_id);
+}
+
+static inline StorageKeyName endpoint_dev_type(uint16_t endpoint_id)
+{
+    return StorageKeyName::Formatted("b/%x/dt", endpoint_id);
+}
+
+} // namespace nvs_key_allocator
+} // namespace esp_matter_bridge
 
 using namespace esp_matter;
 
@@ -41,21 +55,21 @@ static esp_err_t app_bridge_store_bridged_device_info(app_bridged_device_t *brid
         return ESP_ERR_INVALID_ARG;
     }
     nvs_handle_t handle;
-    char namespace_name[16] = {0};
-    snprintf(namespace_name, 16, "bridge_ep_%X", bridged_device->dev->persistent_info.device_endpoint_id);
-    err = nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, namespace_name, NVS_READWRITE, &handle);
+    err = nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, ESP_MATTER_BRIDGE_NAMESPACE, NVS_READWRITE,
+                                  &handle);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error opening partition %s namespace %s. Err: %d", CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME,
-                 namespace_name, err);
+                 ESP_MATTER_BRIDGE_NAMESPACE, err);
         return err;
     }
-    err = nvs_set_blob(handle, APP_BRIDGE_BRIDGED_DEVICE_ADDR_KEY, &bridged_device->dev_addr,
-                       sizeof(app_bridged_device_address_t));
+    uint16_t endpoint_id = endpoint::get_id(bridged_device->dev->endpoint);
+    err = nvs_set_blob(handle, esp_matter_bridge::nvs_key_allocator::endpoint_dev_addr(endpoint_id).KeyName(),
+                       &bridged_device->dev_addr, sizeof(app_bridged_device_address_t));
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error storing the device address");
     }
-    err = nvs_set_blob(handle, APP_BRIDGE_BRIDGED_DEVICE_TYPE_KEY, &bridged_device->dev_type,
-                        sizeof(app_bridged_device_type_t));
+    err = nvs_set_blob(handle, esp_matter_bridge::nvs_key_allocator::endpoint_dev_type(endpoint_id).KeyName(),
+                       &bridged_device->dev_type, sizeof(app_bridged_device_type_t));
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error storing the device type");
     }
@@ -74,24 +88,49 @@ static esp_err_t app_bridge_read_bridged_device_info(app_bridged_device_type_t *
         return ESP_ERR_INVALID_ARG;
     }
     nvs_handle_t handle;
-    char namespace_name[16] = {0};
-    snprintf(namespace_name, 16, "bridge_ep_%X", matter_endpoint_id);
-    err = nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, namespace_name, NVS_READONLY, &handle);
+    err = nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, ESP_MATTER_BRIDGE_NAMESPACE, NVS_READONLY,
+                                  &handle);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error opening partition %s namespace %s. Err: %d", CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME,
-                 namespace_name, err);
+                 ESP_MATTER_BRIDGE_NAMESPACE, err);
         return err;
     }
     size_t len = sizeof(app_bridged_device_address_t);
-    err = nvs_get_blob(handle, APP_BRIDGE_BRIDGED_DEVICE_ADDR_KEY, device_addr, &len);
+    err = nvs_get_blob(handle, esp_matter_bridge::nvs_key_allocator::endpoint_dev_addr(matter_endpoint_id).KeyName(),
+                       device_addr, &len);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error reading the device address");
     }
     len = sizeof(app_bridged_device_type_t);
-    err = nvs_get_blob(handle, APP_BRIDGE_BRIDGED_DEVICE_TYPE_KEY, device_type, &len);
+    err = nvs_get_blob(handle, esp_matter_bridge::nvs_key_allocator::endpoint_dev_type(matter_endpoint_id).KeyName(),
+                       device_type, &len);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error reading the device type");
     }
+    nvs_close(handle);
+    return err;
+}
+
+static esp_err_t app_bridge_erase_bridged_device_info(uint16_t endpoint_id)
+{
+    esp_err_t err = ESP_OK;
+    nvs_handle_t handle;
+    err = nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, ESP_MATTER_BRIDGE_NAMESPACE, NVS_READWRITE,
+                                  &handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error opening partition %s namespace %s. Err: %d", CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME,
+                 ESP_MATTER_BRIDGE_NAMESPACE, err);
+        return err;
+    }
+    err = nvs_erase_key(handle, esp_matter_bridge::nvs_key_allocator::endpoint_dev_addr(endpoint_id).KeyName());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error erasing the device address");
+    }
+    err = nvs_erase_key(handle, esp_matter_bridge::nvs_key_allocator::endpoint_dev_type(endpoint_id).KeyName());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error erasing the device type");
+    }
+    nvs_commit(handle);
     nvs_close(handle);
     return err;
 }
@@ -181,7 +220,8 @@ esp_err_t app_bridge_initialize(node_t *node)
                          matter_endpoint_id_array[idx]);
                 continue;
             }
-            app_bridged_device_t *new_dev = (app_bridged_device_t *)esp_matter_mem_calloc(1, sizeof(app_bridged_device_t));
+            app_bridged_device_t *new_dev =
+                (app_bridged_device_t *)esp_matter_mem_calloc(1, sizeof(app_bridged_device_t));
             if (!new_dev) {
                 ESP_LOGE(TAG, "Failed to alloc memory for the resumed bridged device");
                 continue;
@@ -198,7 +238,7 @@ esp_err_t app_bridge_initialize(node_t *node)
             g_bridged_device_list = new_dev;
             g_current_bridged_device_count++;
 
-            //Enable the resumed endpoint
+            // Enable the resumed endpoint
             esp_matter::endpoint::enable(new_dev->dev->endpoint);
         }
     }
@@ -229,6 +269,9 @@ esp_err_t app_bridge_remove_device(app_bridged_device_t *bridged_device)
             return ESP_ERR_NOT_FOUND;
         }
     }
+
+    uint16_t endpoint_id = endpoint::get_id(bridged_device->dev->endpoint);
+    app_bridge_erase_bridged_device_info(endpoint_id);
 
     // Remove the bridged device from the node.
     error = esp_matter_bridge::remove_device(bridged_device->dev);
@@ -325,9 +368,8 @@ app_bridged_device_t *app_bridge_get_device_by_espnow_macaddr(uint8_t espnow_mac
 {
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
-        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ESPNOW) && current_dev->dev
-            && !memcmp(current_dev->dev_addr.espnow_macaddr, espnow_macaddr, 6)
-            ) {
+        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ESPNOW) && current_dev->dev &&
+            !memcmp(current_dev->dev_addr.espnow_macaddr, espnow_macaddr, 6)) {
             return current_dev;
         }
         current_dev = current_dev->next;
@@ -339,9 +381,8 @@ uint16_t app_bridge_get_matter_endpointid_by_espnow_macaddr(uint8_t espnow_macad
 {
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
-        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ESPNOW) && current_dev->dev
-            && !memcmp(current_dev->dev_addr.espnow_macaddr, espnow_macaddr, 6)
-            ) {
+        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ESPNOW) && current_dev->dev &&
+            !memcmp(current_dev->dev_addr.espnow_macaddr, espnow_macaddr, 6)) {
             return esp_matter::endpoint::get_id(current_dev->dev->endpoint);
         }
         current_dev = current_dev->next;
@@ -349,7 +390,7 @@ uint16_t app_bridge_get_matter_endpointid_by_espnow_macaddr(uint8_t espnow_macad
     return chip::kInvalidEndpointId;
 }
 
-uint8_t* app_bridge_get_espnow_macaddr_by_matter_endpointid(uint16_t matter_endpointid)
+uint8_t *app_bridge_get_espnow_macaddr_by_matter_endpointid(uint16_t matter_endpointid)
 {
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {

@@ -18,6 +18,9 @@
 #include <nvs_flash.h>
 #include <esp_matter_attribute_utils.h>
 #include <esp_matter_mem.h>
+#include <esp_matter_nvs.h>
+
+#include <lib/support/Base64.h>
 
 #define ESP_MATTER_NVS_PART_NAME CONFIG_ESP_MATTER_NVS_PART_NAME
 
@@ -26,21 +29,30 @@ namespace attribute {
 
 const char * TAG = "mtr_nvs";
 
-esp_err_t get_val_from_nvs(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t & val)
+static void get_attribute_key(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, char *attribute_key)
 {
-    /* Get keys */
-    char nvs_namespace[16] = {0};
-    char attribute_key[16] = {0};
-    snprintf(nvs_namespace, 16, "endpoint_%" PRIX16 "", endpoint_id); /* endpoint_id */
-    snprintf(attribute_key, 16, "%" PRIX32 ":%" PRIX32 "", cluster_id, attribute_id); /* cluster_id:attribute_id */
+     // Convert the the endpoint_id, cluster_id, attribute_id to base64 string
+     uint8_t encode_buf[10] = {0};
+     char base64_str[17] = {0};
+     memcpy(&encode_buf[0], &endpoint_id, sizeof(endpoint_id));
+     memcpy(&encode_buf[2], &cluster_id, sizeof(cluster_id));
+     memcpy(&encode_buf[6], &attribute_id, sizeof(attribute_id));
+     chip::Base64Encode(encode_buf, 10, base64_str);
+     // The last two character must be '='
+     assert(base64_str[14] == '=' && base64_str[15] == '=');
+     // Copy the string before '='
+     strncpy(attribute_key, base64_str, 14);
+     attribute_key[14] = 0;
+}
 
+static esp_err_t nvs_get_val(const char *nvs_namespace, const char *attribute_key, esp_matter_attr_val_t & val)
+{
     nvs_handle_t handle;
     esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, nvs_namespace, NVS_READONLY, &handle);
     if (err != ESP_OK) {
         return err;
     }
-    ESP_LOGD(TAG, "read attribute from nvs: endpoint_id-0x%" PRIx16 ", cluster_id-0x%" PRIx32 ", attribute_id-0x%" PRIx32 "",
-             endpoint_id, cluster_id, attribute_id);
+
     if (val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
         val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
         val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
@@ -175,20 +187,14 @@ esp_err_t get_val_from_nvs(uint16_t endpoint_id, uint32_t cluster_id, uint32_t a
     return err;
 }
 
-esp_err_t store_val_in_nvs(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, const esp_matter_attr_val_t & val)
+static esp_err_t nvs_store_val(const char *nvs_namespace, const char *attribute_key, const esp_matter_attr_val_t & val)
 {
-    char nvs_namespace[16] = {0};
-    char attribute_key[16] = {0};
-    snprintf(nvs_namespace, 16, "endpoint_%" PRIX16 "", endpoint_id); /* endpoint_id */
-    snprintf(attribute_key, 16, "%" PRIX32 ":%" PRIX32 "", cluster_id, attribute_id); /* cluster_id:attribute_id */
-
     nvs_handle_t handle;
     esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, nvs_namespace, NVS_READWRITE, &handle);
     if (err != ESP_OK) {
         return err;
     }
-    ESP_LOGD(TAG, "Store attribute in nvs: endpoint_id-0x%" PRIx16 ", cluster_id-0x%" PRIx32 ", attribute_id-0x%" PRIx32 "",
-             endpoint_id, cluster_id, attribute_id);
+
     if (val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
         val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
         val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
@@ -308,6 +314,70 @@ esp_err_t store_val_in_nvs(uint16_t endpoint_id, uint32_t cluster_id, uint32_t a
     }
     nvs_close(handle);
     return err;
+}
+
+static esp_err_t nvs_erase_val(const char *nvs_namespace, const char *attribute_key)
+{
+    nvs_handle_t handle;
+    esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, nvs_namespace, NVS_READWRITE, &handle);
+    if (err != ESP_OK) {
+        return err;
+    }
+    err = nvs_erase_key(handle, attribute_key);
+    nvs_commit(handle);
+    nvs_close(handle);
+    return err;
+}
+
+esp_err_t get_val_from_nvs(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t & val)
+{
+    /* Get attribute key */
+    char attribute_key[16] = {0};
+    get_attribute_key(endpoint_id, cluster_id, attribute_id, attribute_key);
+
+    ESP_LOGD(TAG, "read attribute from nvs: endpoint_id-0x%" PRIx16 ", cluster_id-0x%" PRIx32 ","
+                  " attribute_id-0x%" PRIx32 "", endpoint_id, cluster_id, attribute_id);
+    esp_err_t err = nvs_get_val(ESP_MATTER_KVS_NAMESPACE, attribute_key, val);
+    if (err == ESP_ERR_NVS_NOT_FOUND) {
+        // If we don't find attribute key in the esp_matter_kvs namespace, we will try to get the attribute value
+        // with the previous key from the previous namespace.
+        char nvs_namespace[16] = {0};
+        char old_attribute_key[16] = {0};
+        snprintf(nvs_namespace, 16, "endpoint_%" PRIX16 "", endpoint_id); /* endpoint_id */
+        snprintf(old_attribute_key, 16, "%" PRIX32 ":%" PRIX32 "", cluster_id, attribute_id); /* cluster_id:attribute_id */
+        err = nvs_get_val(nvs_namespace, old_attribute_key, val);
+        if (err == ESP_OK) {
+            // If we get the attribute value with the previous key, we will erase it and store it in current namespace
+            // with the new attribute key.
+            if (nvs_erase_val(nvs_namespace, old_attribute_key) != ESP_OK) {
+                ESP_LOGE(TAG, "Failed to erase old attribute key");
+            }
+            if (nvs_store_val(ESP_MATTER_KVS_NAMESPACE, attribute_key, val) != ESP_OK) {
+                ESP_LOGE(TAG, "Failed to store attribute_val with new attribute key");
+            }
+        }
+    }
+    return err;
+}
+
+esp_err_t store_val_in_nvs(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, const esp_matter_attr_val_t & val)
+{
+    /* Get attribute key */
+    char attribute_key[16] = {0};
+    get_attribute_key(endpoint_id, cluster_id, attribute_id, attribute_key);
+    ESP_LOGD(TAG, "Store attribute in nvs: endpoint_id-0x%" PRIx16 ", cluster_id-0x%" PRIx32 ", attribute_id-0x%" PRIx32 "",
+             endpoint_id, cluster_id, attribute_id);
+    return nvs_store_val(ESP_MATTER_KVS_NAMESPACE, attribute_key, val);
+}
+
+esp_err_t erase_val_in_nvs(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id)
+{
+    /* Get attribute key */
+    char attribute_key[16] = {0};
+    get_attribute_key(endpoint_id, cluster_id, attribute_id, attribute_key);
+    ESP_LOGD(TAG, "Erase attribute in nvs: endpoint_id-0x%" PRIx16 ", cluster_id-0x%" PRIx32 ", attribute_id-0x%" PRIx32 "",
+             endpoint_id, cluster_id, attribute_id);
+    return nvs_erase_val(ESP_MATTER_KVS_NAMESPACE, attribute_key);
 }
 
 } // namespace attribute

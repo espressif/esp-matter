@@ -40,7 +40,8 @@ esp_err_t get_bridged_endpoint_ids(uint16_t *matter_endpoint_id_array);
 
 esp_err_t erase_bridged_device_info(uint16_t matter_endpoint_id);
 
-device_t *create_device(esp_matter::node_t *node, uint16_t parent_endpoint_id, uint32_t device_type_id, void *priv_data);
+device_t *create_device(esp_matter::node_t *node, uint16_t parent_endpoint_id, uint32_t device_type_id,
+                        void *priv_data);
 
 device_t *resume_device(esp_matter::node_t *node, uint16_t device_endpoint_id, void *priv_data);
 

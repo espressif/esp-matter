@@ -582,29 +582,6 @@ esp_err_t set_override_callback(attribute_t *attribute, callback_t callback);
  */
 callback_t get_override_callback(attribute_t *attribute);
 
-/** Store in NVS
- *
- * Store the current attribute val in NVS.
- *
- * @param[in] attribute Attribute handle.
- *
- * @return ESP_OK on success.
- * @return error in case of failure.
- */
-esp_err_t store_val_in_nvs(attribute_t *attribute);
-
-/** Get from NVS
- *
- * Get the val for current attribute from NVS.
- *
- * @param[in] attribute Attribute handle.
- * @param[out] val Pointer to `esp_matter_attr_val_t`. Use appropriate elements as per the value type.
- *
- * @return ESP_OK on success.
- * @return error in case of failure.
- */
-esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val);
-
 } /* attribute */
 
 namespace command {

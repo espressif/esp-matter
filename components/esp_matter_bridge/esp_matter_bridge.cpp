@@ -20,10 +20,8 @@
 
 #include <esp_matter_bridge.h>
 #include <esp_matter_mem.h>
+#include <nvs_key_allocator.h>
 #if MAX_BRIDGED_DEVICE_COUNT > 0
-#define ESP_MATTER_BRIDGE_PESISTENT_INFO_KEY "persistent_info"
-#define ESP_MATTER_BRIDGE_NAMESPACE "bridge"
-#define ESP_MATTER_BRIDGE_ENDPOINT_ID_ARRAY_KEY "ep_id_array"
 
 static const char *TAG = "esp_matter_bridge";
 
@@ -35,31 +33,7 @@ namespace esp_matter_bridge {
 static uint16_t bridged_endpoint_id_array[MAX_BRIDGED_DEVICE_COUNT];
 
 /** Persistent Bridged Device Info **/
-static esp_err_t store_device_persistent_info(device_t *device)
-{
-    esp_err_t err = ESP_OK;
-    if (!device) {
-        ESP_LOGE(TAG, "device cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
-    nvs_handle_t handle;
-    char namespace_name[16] = {0};
-    snprintf(namespace_name, 16, "bridge_ep_%X", device->persistent_info.device_endpoint_id);
-    err = nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, namespace_name, NVS_READWRITE, &handle);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Error opening partition %s namespace %s. Err: %d", CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME,
-                 namespace_name, err);
-        return err;
-    }
-    err = nvs_set_blob(handle, ESP_MATTER_BRIDGE_PESISTENT_INFO_KEY, &device->persistent_info,
-                       sizeof(device_persistent_info_t));
-    nvs_commit(handle);
-    nvs_close(handle);
-    return err;
-}
-
-static esp_err_t read_device_persistent_info(device_persistent_info_t *persistent_info, uint16_t endpoint_id)
+static esp_err_t store_device_persistent_info(device_persistent_info_t *persistent_info)
 {
     esp_err_t err = ESP_OK;
     if (!persistent_info) {
@@ -68,17 +42,77 @@ static esp_err_t read_device_persistent_info(device_persistent_info_t *persisten
     }
 
     nvs_handle_t handle;
-    char namespace_name[16] = {0};
-    snprintf(namespace_name, 16, "bridge_ep_%X", endpoint_id);
-    err = nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, namespace_name, NVS_READONLY, &handle);
+    err = nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, ESP_MATTER_BRIDGE_NAMESPACE, NVS_READWRITE,
+                                  &handle);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error opening partition %s namespace %s. Err: %d", CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME,
-                 namespace_name, err);
+                 ESP_MATTER_BRIDGE_NAMESPACE, err);
+        return err;
+    }
+    uint16_t endpoint_id = persistent_info->device_endpoint_id;
+    err = nvs_set_blob(handle, nvs_key_allocator::endpoint_pesistent_info(endpoint_id).KeyName(),
+                       persistent_info, sizeof(device_persistent_info_t));
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed on nvs_set_blob when storing device_persistent_info");
+    }
+    err = nvs_commit(handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed on nvs_commit when storing device_persistent_info");
+    }
+    nvs_close(handle);
+    return err;
+}
+
+static esp_err_t nvs_get_device_persistent_info(const char *nvs_namespace, const char *nvs_key,
+                                                device_persistent_info_t *persistent_info)
+{
+    esp_err_t err = ESP_OK;
+    nvs_handle_t handle;
+    err = nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, nvs_namespace, NVS_READONLY, &handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error opening partition %s namespace %s. Err: %d", CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME,
+                 nvs_namespace, err);
         return err;
     }
     size_t len = sizeof(device_persistent_info_t);
-    err = nvs_get_blob(handle, ESP_MATTER_BRIDGE_PESISTENT_INFO_KEY, persistent_info, &len);
+    err = nvs_get_blob(handle, nvs_key, persistent_info, &len);
     nvs_close(handle);
+    return err;
+}
+static esp_err_t read_device_persistent_info(device_persistent_info_t *persistent_info, uint16_t endpoint_id)
+{
+    if (!persistent_info) {
+        ESP_LOGE(TAG, "persistent_info cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    esp_err_t err = nvs_get_device_persistent_info(ESP_MATTER_BRIDGE_NAMESPACE,
+                                                   nvs_key_allocator::endpoint_pesistent_info(endpoint_id).KeyName(),
+                                                   persistent_info);
+    if (err == ESP_ERR_NVS_NOT_FOUND) {
+        // If we don't find persistent_info key in the bridge namespace, we will try to get the persistent_info
+        // with the previous key from the previous namespace.
+        char nvs_namespace[16] = {0};
+        snprintf(nvs_namespace, 16, "bridge_ep_%X", endpoint_id);
+        err = nvs_get_device_persistent_info(nvs_namespace, "persistent_info", persistent_info);
+        if (err == ESP_OK) {
+            nvs_handle_t handle;
+            // If we get the persistent_info with the previous key, we will erase it and store it in current namespace
+            // with the new persistent_info key.
+            if (nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, nvs_namespace, NVS_READWRITE,
+                                        &handle) != ESP_OK) {
+                ESP_LOGE(TAG, "Failed to open %s namespace", nvs_namespace);
+            } else {
+                if (nvs_erase_key(handle, "persistent_info") != ESP_OK) {
+                    ESP_LOGE(TAG, "Failed to erase persistent_info");
+                } else {
+                    nvs_commit(handle);
+                }
+                nvs_close(handle);
+            }
+            store_device_persistent_info(persistent_info);
+        }
+    }
     return err;
 }
 
@@ -93,27 +127,61 @@ static esp_err_t store_bridged_endpoint_ids()
                  ESP_MATTER_BRIDGE_NAMESPACE, err);
         return err;
     }
-    err = nvs_set_blob(handle, ESP_MATTER_BRIDGE_ENDPOINT_ID_ARRAY_KEY, bridged_endpoint_id_array,
+    err = nvs_set_blob(handle, nvs_key_allocator::endpoint_ids_array().KeyName(), bridged_endpoint_id_array,
                        sizeof(bridged_endpoint_id_array));
-    nvs_commit(handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed on nvs_set_blob when storing bridged_endpoint_ids");
+    }
+    err = nvs_commit(handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed on nvs_commit when storing bridged_endpoint_ids");
+    }
+    nvs_close(handle);
+    return err;
+}
+
+static esp_err_t nvs_get_bridged_endpoint_ids(const char *nvs_namespace, const char *nvs_key)
+{
+    esp_err_t err = ESP_OK;
+    nvs_handle_t handle;
+    err = nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, nvs_namespace, NVS_READONLY, &handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error opening partition %s namespace %s. Err: %d", CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME,
+                 nvs_namespace, err);
+        return err;
+    }
+    size_t len = sizeof(bridged_endpoint_id_array);
+    err = nvs_get_blob(handle, nvs_key, bridged_endpoint_id_array, &len);
     nvs_close(handle);
     return err;
 }
 
 static esp_err_t read_bridged_endpoint_ids()
 {
-    esp_err_t err = ESP_OK;
-    nvs_handle_t handle;
-    err = nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, ESP_MATTER_BRIDGE_NAMESPACE, NVS_READONLY,
-                                  &handle);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Error opening partition %s namespace %s. Err: %d", CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME,
-                 ESP_MATTER_BRIDGE_NAMESPACE, err);
-        return err;
+    esp_err_t err =
+        nvs_get_bridged_endpoint_ids(ESP_MATTER_BRIDGE_NAMESPACE, nvs_key_allocator::endpoint_ids_array().KeyName());
+    if (err == ESP_ERR_NVS_NOT_FOUND) {
+        err = nvs_get_bridged_endpoint_ids(ESP_MATTER_BRIDGE_NAMESPACE, "ep_id_array");
+        // If we don't find endpoint_ids_array in the bridge namespace, we will try to get the attribute value
+        // with the previous key from the previous namespace.
+        if (err == ESP_OK) {
+            // If we get endpoint_ids_array with the previous key, we will erase it and store it in current namespace
+            // with the new endpoint_ids_array key.
+            nvs_handle_t handle;
+            if (nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, ESP_MATTER_BRIDGE_NAMESPACE,
+                                        NVS_READWRITE, &handle) != ESP_OK) {
+                ESP_LOGE(TAG, "Failed to open bridge namespace");
+            } else {
+                if (nvs_erase_key(handle, "ep_id_array") != ESP_OK) {
+                    ESP_LOGE(TAG, "Failed to erase old key");
+                } else {
+                    nvs_commit(handle);
+                }
+                nvs_close(handle);
+            }
+            store_bridged_endpoint_ids();
+        }
     }
-    size_t len = sizeof(bridged_endpoint_id_array);
-    err = nvs_get_blob(handle, ESP_MATTER_BRIDGE_ENDPOINT_ID_ARRAY_KEY, bridged_endpoint_id_array, &len);
-    nvs_close(handle);
     return err;
 }
 
@@ -143,15 +211,15 @@ esp_err_t erase_bridged_device_info(uint16_t endpoint_id)
     }
     // Clear the persistent information of the removed endpoint
     nvs_handle_t handle;
-    char namespace_name[16] = {0};
-    snprintf(namespace_name, 16, "bridge_ep_%X", endpoint_id);
-    err = nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, namespace_name, NVS_READWRITE, &handle);
+    err = nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, ESP_MATTER_BRIDGE_NAMESPACE, NVS_READWRITE,
+                                  &handle);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error opening partition %s namespace %s. Err: %d", CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME,
-                 namespace_name, err);
+                 ESP_MATTER_BRIDGE_NAMESPACE, err);
         return err;
     }
-    err = nvs_erase_all(handle);
+    err = nvs_erase_key(handle, nvs_key_allocator::endpoint_pesistent_info(endpoint_id).KeyName());
+    nvs_commit(handle);
     nvs_close(handle);
     return err;
 }
@@ -298,7 +366,7 @@ device_t *create_device(node_t *node, uint16_t parent_endpoint_id, uint32_t devi
     // Store the persistent information
     dev->persistent_info.device_endpoint_id = esp_matter::endpoint::get_id(dev->endpoint);
     dev->persistent_info.device_type_id = device_type_id;
-    if (store_device_persistent_info(dev) != ESP_OK) {
+    if (store_device_persistent_info(&dev->persistent_info) != ESP_OK) {
         ESP_LOGE(TAG, "Failed to store the persistent info for the bridged device");
         remove_device(dev);
         return NULL;
@@ -405,20 +473,22 @@ esp_err_t initialize(node_t *node)
     return err;
 }
 
-// TODO: Add a factory_reset_cb_register so that when we call esp_matter::factory_reset, we can erase other namespaces/partitions.
+// TODO: Add a factory_reset_cb_register so that when we call esp_matter::factory_reset, we can erase other
+// namespaces/partitions.
 esp_err_t factory_reset()
 {
-    if (read_bridged_endpoint_ids() != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to read the endpoint id array");
+    nvs_handle_t handle;
+    esp_err_t err = nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, ESP_MATTER_BRIDGE_NAMESPACE,
+                                            NVS_READWRITE, &handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error opening partition %s namespace %s. Err: %d", CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME,
+                 ESP_MATTER_BRIDGE_NAMESPACE, err);
+        return err;
     }
-
-    for (size_t idx = 0; idx < MAX_BRIDGED_DEVICE_COUNT; ++idx) {
-        if (bridged_endpoint_id_array[idx] != chip::kInvalidEndpointId) {
-            erase_bridged_device_info(bridged_endpoint_id_array[idx]);
-            bridged_endpoint_id_array[idx] = chip::kInvalidEndpointId;
-        }
-    }
-    return store_bridged_endpoint_ids();
+    err = nvs_erase_all(handle);
+    nvs_commit(handle);
+    nvs_close(handle);
+    return err;
 }
 
 } // namespace esp_matter_bridge
