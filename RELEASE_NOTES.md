@@ -13,7 +13,7 @@ By default primitive data types are stored as blob and that consumes more space 
 Added a configuration option (`CONFIG_ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE`) which uses
 the primitive data type specific NVS APIs to store the attribute. This saves space in NVS partition.
 
-Newer developements shall enable option `ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE` to save on NVS space.
+Newer developments shall enable option `ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE` to save on NVS space.
 All the examples have this option enabled.
 
 # 7-April-2023
@@ -36,7 +36,7 @@ esp_err_t esp_matter::identification::init(uint16_t endpoint_id, uint8_t identif
 ```
 
 - Above API now accepts the parameters for initial identification `effect_identifier` and `effect_variant`.
-- If not used then default value will be used for initialization
+- If not used, then default value will be used for initialization
 
 ```
 typedef esp_err_t (*callback_t)(callback_type_t type, uint16_t endpoint_id, uint8_t effect_id, uint8_t effect_variant,
@@ -97,7 +97,7 @@ API Change
 ```
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 ```
-- Above API returns the esp_err instread of endpoint.
+- Above API returns the esp_err instead of endpoint.
 
 Known Issues
 ------------
