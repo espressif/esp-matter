@@ -40,11 +40,13 @@ class subscribe_command : public ReadClient::Callback {
 public:
     subscribe_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_or_event_id,
                       subscribe_command_type_t command_type, uint16_t min_interval, uint16_t max_interval,
-                      attribute_report_cb_t attribute_cb = nullptr, event_report_cb_t event_cb = nullptr,
-                      subscribe_done_cb_t done_cb = nullptr, subscribe_failure_cb_t connect_failure_cb = nullptr)
+                      bool auto_resubscribe = true, attribute_report_cb_t attribute_cb = nullptr,
+                      event_report_cb_t event_cb = nullptr, subscribe_done_cb_t done_cb = nullptr,
+                      subscribe_failure_cb_t connect_failure_cb = nullptr)
         : m_node_id(node_id)
         , m_min_interval(min_interval)
         , m_max_interval(max_interval)
+        , m_auto_resubscribe(auto_resubscribe)
         , m_command_type(command_type)
         , m_buffered_read_cb(*this)
         , on_device_connected_cb(on_device_connected_fcn, this)
@@ -55,13 +57,9 @@ public:
         , subscribe_failure_cb(connect_failure_cb)
     {
         if (command_type == SUBSCRIBE_ATTRIBUTE) {
-            m_attr_path.mEndpointId = endpoint_id;
-            m_attr_path.mClusterId = cluster_id;
-            m_attr_path.mAttributeId = attribute_or_event_id;
+            m_attr_path = AttributePathParams(endpoint_id, cluster_id, attribute_or_event_id);
         } else if (command_type == SUBSCRIBE_EVENT) {
-            m_event_path.mEndpointId = endpoint_id;
-            m_event_path.mClusterId = cluster_id;
-            m_event_path.mEventId = attribute_or_event_id;
+            m_event_path = EventPathParams(endpoint_id, cluster_id, attribute_or_event_id);
         }
     }
 
@@ -74,8 +72,6 @@ public:
     EventPathParams &get_event_path() { return m_event_path; }
 
     subscribe_command_type_t get_command_type() { return m_command_type; }
-
-    BufferedReadCallback &get_buffered_read_cb() { return m_buffered_read_cb; }
 
     uint16_t get_min_interval() { return m_min_interval; }
 
@@ -96,10 +92,15 @@ public:
 
     void OnSubscriptionEstablished(chip::SubscriptionId subscriptionId) override;
 
+    CHIP_ERROR OnResubscriptionNeeded(ReadClient * apReadClient, CHIP_ERROR aTerminationCause) override;
+
 private:
     uint64_t m_node_id;
     uint16_t m_min_interval;
     uint16_t m_max_interval;
+    bool m_auto_resubscribe;
+    uint32_t m_subscription_id = 0;
+    uint8_t m_resubscribe_retries = 0;
     subscribe_command_type_t m_command_type;
     union {
         AttributePathParams m_attr_path;
@@ -120,10 +121,11 @@ private:
 };
 
 esp_err_t send_subscribe_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id,
-                                      uint32_t attribute_id, uint16_t min_interval, uint16_t max_interval);
+                                      uint32_t attribute_id, uint16_t min_interval, uint16_t max_interval,
+                                      bool auto_resubscribe = true);
 
 esp_err_t send_subscribe_event_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t event_id,
-                                       uint16_t min_interval, uint16_t max_interval);
+                                       uint16_t min_interval, uint16_t max_interval, bool auto_resubscribe = true);
 
 esp_err_t send_shutdown_subscription(uint64_t node_id, uint32_t subscription_id);
 
