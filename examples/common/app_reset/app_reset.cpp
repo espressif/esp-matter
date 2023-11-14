@@ -11,8 +11,8 @@
  */
 
 #include <esp_log.h>
-#include <device.h>
 #include <esp_matter.h>
+#include "iot_button.h"
 
 static const char *TAG = "app_reset";
 static bool perform_factory_reset = false;

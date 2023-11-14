@@ -4,3 +4,5 @@ dependencies:
     rules: # will add "optional_component" only when all if clauses are True
       - if: "idf_version >=5.0"
       - if: "target in [esp32c2]"
+  esp_bsp_generic:
+    version: "^1.1.0"
