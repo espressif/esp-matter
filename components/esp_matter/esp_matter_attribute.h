@@ -357,10 +357,10 @@ namespace fan_control {
 namespace attribute {
 attribute_t *create_fan_mode(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
 attribute_t *create_fan_mode_sequence(cluster_t *cluster, const uint8_t value, uint8_t min, uint8_t max);
-attribute_t *create_percent_setting(cluster_t *cluster, nullable<uint8_t> value, uint8_t min, uint8_t max);
+attribute_t *create_percent_setting(cluster_t *cluster, nullable<uint8_t> value, nullable<uint8_t> min, nullable<uint8_t> max);
 attribute_t *create_percent_current(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
 attribute_t *create_speed_max(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
-attribute_t *create_speed_setting(cluster_t *cluster, nullable<uint8_t> value, uint8_t min, uint8_t max);
+attribute_t *create_speed_setting(cluster_t *cluster, nullable<uint8_t> value, nullable<uint8_t> min, nullable<uint8_t> max);
 attribute_t *create_speed_current(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
 attribute_t *create_rock_support(cluster_t *cluster, uint8_t value);
 attribute_t *create_rock_setting(cluster_t *cluster, uint8_t value);
