@@ -1507,7 +1507,7 @@ attribute_t *create_fan_mode_sequence(cluster_t *cluster, const uint8_t value, u
     return attribute;
 }
 
-attribute_t *create_percent_setting(cluster_t *cluster, nullable<uint8_t> value, uint8_t min, uint8_t max)
+attribute_t *create_percent_setting(cluster_t *cluster, nullable<uint8_t> value, nullable<uint8_t> min, nullable<uint8_t> max)
 {
     attribute_t *attribute =
 	esp_matter::attribute::create(cluster, FanControl::Attributes::PercentSetting::Id,
@@ -1517,7 +1517,7 @@ attribute_t *create_percent_setting(cluster_t *cluster, nullable<uint8_t> value,
         ESP_LOGE(TAG, "Could not create attribute");
         return NULL;
     }
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(min), esp_matter_uint8(max));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint8(min), esp_matter_nullable_uint8(max));
     return attribute;
 }
 
@@ -1546,7 +1546,7 @@ attribute_t *create_speed_max(cluster_t *cluster, uint8_t value, uint8_t min, ui
     return attribute;
 }
 
-attribute_t *create_speed_setting(cluster_t *cluster, nullable<uint8_t> value, uint8_t min, uint8_t max)
+attribute_t *create_speed_setting(cluster_t *cluster, nullable<uint8_t> value, nullable<uint8_t> min, nullable<uint8_t> max)
 {
     attribute_t *attribute =
         esp_matter::attribute::create(cluster, FanControl::Attributes::SpeedSetting::Id,
@@ -1555,7 +1555,7 @@ attribute_t *create_speed_setting(cluster_t *cluster, nullable<uint8_t> value, u
         ESP_LOGE(TAG, "Could not create attribute");
         return NULL;
     }
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(min), esp_matter_uint8(max));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint8(min), esp_matter_nullable_uint8(max));
     return attribute;
 }
 
