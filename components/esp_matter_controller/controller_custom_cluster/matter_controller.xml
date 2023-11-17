@@ -27,8 +27,8 @@ limitations under the License.
 
     <globalAttribute side="either" code="0xFFFD" value="2"/>
 
-    <attribute side="server" code="0x0000" define="REFRESH_TOKEN" type="char_string" length="2048">RefreshToken</attribute>
-    <attribute side="server" code="0x0001" define="ACCESS_TOKEN" type="char_string" length="2048">AccessToken</attribute>
+    <attribute side="server" code="0x0000" define="REFRESH_TOKEN" type="long_char_string" length="2048">RefreshToken</attribute>
+    <attribute side="server" code="0x0001" define="ACCESS_TOKEN" type="long_char_string" length="2048">AccessToken</attribute>
     <attribute side="server" code="0x0002" define="AUTHORIZED" type="boolean" default="0">Authorized</attribute>
     <attribute side="server" code="0x0003" define="USER_NOC_INSTALLED" type="boolean" default="0">UserNOCInstalled</attribute>
     <attribute side="server" code="0x0004" define="ENDPOINT_URL" type="char_string" length="64">EndpointUrl</attribute>
