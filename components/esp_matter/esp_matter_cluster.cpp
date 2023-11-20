@@ -1988,7 +1988,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
         global::attribute::create_event_list(cluster, NULL, 0, 0);
-        
+        attribute::create_phase_list(cluster, NULL, 0, 0);
+        attribute::create_current_phase(cluster, 0);
+        attribute::create_operational_state_list(cluster, NULL, 0, 0);
+        attribute::create_operational_state(cluster, 0);
+        attribute::create_operational_error(cluster, 0);
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -1997,6 +2002,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
     }
     
+    event::create_operational_error(cluster);
+
     return cluster;
 }
 } /* operational_state */
