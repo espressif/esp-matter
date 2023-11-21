@@ -443,7 +443,20 @@ void init(void)
     /* Prompt to be printed before each line.
      * This can be customized, made dynamic, etc.
      */
-    const char* prompt = PROMPT_STR "> ";
+    const char* prompt = LOG_COLOR_I PROMPT_STR "> " LOG_RESET_COLOR;
+
+    /* Figure out if the terminal supports escape sequences */
+    int probe_status = linenoiseProbe();
+    if (probe_status) { /* zero indicates success */
+        linenoiseSetDumbMode(1);
+#if CONFIG_LOG_COLORS
+        /* Since the terminal doesn't support escape sequences,
+         * don't use color codes in the prompt.
+         */
+        prompt = PROMPT_STR "> ";
+#endif //CONFIG_LOG_COLORS
+    }
+
 
     /* Main loop */
     while(true) {
