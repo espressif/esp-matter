@@ -54,6 +54,12 @@ command_t *create_reset_counts(cluster_t *cluster);
 } /* command */
 } /* diagnostics_network_wifi */
 
+namespace diagnostics_network_ethernet {
+namespace command {
+command_t *create_reset_counts(cluster_t *cluster);
+} /* command */
+} /* diagnostics_network_ethernet */
+
 namespace diagnostic_logs {
 namespace command {
 command_t *create_retrieve_logs_request(cluster_t *cluster);

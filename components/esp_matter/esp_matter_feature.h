@@ -387,6 +387,39 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* diagnostics_network_wifi */
 
+namespace diagnostics_network_ethernet {
+namespace feature {
+
+namespace packets_counts {
+
+typedef struct config {
+    uint64_t packet_rx_count;
+    uint64_t packet_tx_count;
+    config() : packet_rx_count(0), packet_tx_count(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* packets_counts */
+
+namespace error_counts {
+
+typedef struct config {
+    uint64_t tx_error_count;
+    uint64_t collision_count;
+    uint64_t overrun_count;
+    config() : tx_error_count(0), collision_count(0), overrun_count(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* error_counts */
+
+} /* feature */
+} /* diagnostics_network_ethernet */
+
 namespace thermostat {
 namespace feature {
 

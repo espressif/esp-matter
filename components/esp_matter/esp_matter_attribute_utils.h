@@ -86,6 +86,7 @@ typedef enum {
     ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING = 21,
 
     /** nullable types **/
+    ESP_MATTER_VAL_TYPE_NULLABLE_BOOLEAN = ESP_MATTER_VAL_TYPE_BOOLEAN + ESP_MATTER_VAL_NULLABLE_BASE,
     ESP_MATTER_VAL_TYPE_NULLABLE_INTEGER = ESP_MATTER_VAL_TYPE_INTEGER + ESP_MATTER_VAL_NULLABLE_BASE,
     ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT = ESP_MATTER_VAL_TYPE_FLOAT + ESP_MATTER_VAL_NULLABLE_BASE,
     ESP_MATTER_VAL_TYPE_NULLABLE_INT8 = ESP_MATTER_VAL_TYPE_INT8 + ESP_MATTER_VAL_NULLABLE_BASE,
@@ -240,6 +241,7 @@ private:
 esp_matter_attr_val_t esp_matter_invalid(void *val);
 /** Boolean */
 esp_matter_attr_val_t esp_matter_bool(bool val);
+esp_matter_attr_val_t esp_matter_nullable_bool(nullable<bool> val);
 
 /** Integer */
 esp_matter_attr_val_t esp_matter_int(int val);

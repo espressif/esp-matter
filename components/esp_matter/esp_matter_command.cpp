@@ -948,6 +948,18 @@ static esp_err_t esp_matter_command_callback_wifi_reset_counts(const ConcreteCom
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_ethernet_reset_counts(const ConcreteCommandPath &command_path,
+								   TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::EthernetNetworkDiagnostics::Commands::ResetCounts::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+	emberAfEthernetNetworkDiagnosticsClusterResetCountsCallback((CommandHandler *)opaque_ptr, command_path,
+								    command_data);
+    }
+    return ESP_OK;
+}
+
 static esp_err_t esp_matter_command_callback_retrieve_logs_request(const ConcreteCommandPath &command_path,
                                                                     TLVReader &tlv_data, void *opaque_ptr)
 {
@@ -1312,6 +1324,18 @@ command_t *create_reset_counts(cluster_t *cluster)
 
 } /* command */
 } /* diagnostics_network_wifi */
+
+namespace diagnostics_network_ethernet {
+namespace command {
+
+command_t *create_reset_counts(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, EthernetNetworkDiagnostics::Commands::ResetCounts::Id, COMMAND_FLAG_ACCEPTED,
+				       esp_matter_command_callback_ethernet_reset_counts);
+}
+
+} /* command */
+} /* diagnostics_network_ethernet */
 
 namespace diagnostic_logs {
 namespace command {
