@@ -52,6 +52,8 @@ public:
             m_attr_path.mEndpointId = endpoint_id;
             m_attr_path.mClusterId = cluster_id;
             m_attr_path.mAttributeId = attribute_or_event_id;
+            if(m_attr_path.mAttributeId == 0xFFFFFFFF)
+                m_attr_path.SetWildcardAttributeId();
         } else if (command_type == READ_EVENT) {
             m_event_path.mEndpointId = endpoint_id;
             m_event_path.mClusterId = cluster_id;
