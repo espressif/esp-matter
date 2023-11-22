@@ -893,7 +893,6 @@ static void esp_matter_chip_init_task(intptr_t context)
         chip::app::DnssdServer::Instance().StartServer();
     }
 #endif
-    deinit_ble_if_commissioned();
     if (endpoint::enable_all() != ESP_OK) {
         ESP_LOGE(TAG, "Enable all endpoints failure");
     }
@@ -920,6 +919,7 @@ static void esp_matter_chip_init_task(intptr_t context)
         sEthernetNetworkCommissioningInstance.Init();
     }
 #endif
+    deinit_ble_if_commissioned();
     xTaskNotifyGive(task_to_notify);
 }
 
