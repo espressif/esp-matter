@@ -39,13 +39,14 @@ typedef enum {
 class read_command : public ReadClient::Callback {
 public:
     read_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_or_event_id,
-                 read_command_type_t command_type, attribute_report_cb_t attribute_cb, event_report_cb_t event_cb)
+                 read_command_type_t command_type, attribute_report_cb_t attribute_cb, attribute_report_ondone_cb_t attribute_done_cb, event_report_cb_t event_cb)
         : m_node_id(node_id)
         , m_command_type(command_type)
         , m_buffered_read_cb(*this)
         , on_device_connected_cb(on_device_connected_fcn, this)
         , on_device_connection_failure_cb(on_device_connection_failure_fcn, this)
         , attribute_data_cb(attribute_cb)
+        , attribute_data_ondone_cb(attribute_done_cb)
         , event_data_cb(event_cb)
     {
         if (command_type == READ_ATTRIBUTE) {
@@ -60,6 +61,8 @@ public:
             m_event_path.mEventId = attribute_or_event_id;
         }
     }
+
+    bool mOnDone = false;
 
     ~read_command() {}
 
@@ -103,7 +106,9 @@ private:
     chip::Callback::Callback<chip::OnDeviceConnectionFailure> on_device_connection_failure_cb;
 
     attribute_report_cb_t attribute_data_cb;
+    attribute_report_ondone_cb_t attribute_data_ondone_cb;
     event_report_cb_t event_data_cb;
+    
 };
 
 esp_err_t send_read_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id);
