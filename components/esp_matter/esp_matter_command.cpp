@@ -49,8 +49,14 @@ void DispatchSingleClusterCommandCommon(const ConcreteCommandPath &command_path,
         return;
     }
     esp_err_t err = ESP_OK;
-    callback_t callback = get_callback(command);
+    TLVReader tlv_reader;
+    tlv_reader.Init(tlv_data);
+    callback_t callback = get_user_callback(command);
     if (callback) {
+        err = callback(command_path, tlv_reader, opaque_ptr);
+    }
+    callback = get_callback(command);
+    if ((err == ESP_OK) && callback) {
         err = callback(command_path, tlv_data, opaque_ptr);
     }
     int flags = get_flags(command);
