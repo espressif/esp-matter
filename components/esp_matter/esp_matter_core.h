@@ -680,6 +680,28 @@ uint32_t get_id(command_t *command);
  */
 callback_t get_callback(command_t *command);
 
+/** Get command user_callback
+ *
+ * Get the command user_callback for the command.
+ *
+ * @param[in] command Command handle.
+ *
+ * @return Command user_callback on success.
+ * @return NULL in case of failure or if the callback was not set when creating the command.
+ */
+callback_t get_user_callback(command_t *command);
+
+/** Set command user_callback
+ *
+ * Set the user_callback for the command.
+ *
+ * @param[in] command Command handle.
+ * @param[in] user_callback callback_t.
+ *
+ * @return void
+ */
+void set_user_callback(command_t *command, callback_t user_callback);
+
 /** Get command flags
  *
  * Get the command flags for the command.
