@@ -157,6 +157,7 @@ typedef struct _command {
     uint32_t command_id;
     uint16_t flags;
     command::callback_t callback;
+    command::callback_t user_callback;
     struct _command *next;
 } _command_t;
 
@@ -1398,6 +1399,7 @@ command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callba
     command->command_id = command_id;
     command->flags = flags;
     command->callback = callback;
+    command->user_callback = NULL;
 
     /* Add */
     _command_t *previous_command = NULL;
@@ -1483,6 +1485,25 @@ callback_t get_callback(command_t *command)
     }
     _command_t *current_command = (_command_t *)command;
     return current_command->callback;
+}
+
+callback_t get_user_callback(command_t *command)
+{
+    if (!command) {
+        ESP_LOGE(TAG, "Command cannot be NULL");
+        return NULL;
+    }
+    _command_t *current_command = (_command_t *)command;
+    return current_command->user_callback;
+}
+
+void set_user_callback(command_t *command, callback_t user_callback)
+{
+    if (!command) {
+        ESP_LOGE(TAG, "Command cannot be NULL");
+    }
+    _command_t *current_command = (_command_t *)command;
+    current_command->user_callback = user_callback;
 }
 
 uint16_t get_flags(command_t *command)
