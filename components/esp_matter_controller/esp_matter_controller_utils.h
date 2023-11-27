@@ -17,6 +17,7 @@
 #include <stdint.h>
 
 #include <app/ConcreteAttributePath.h>
+#include <app/AttributePathParams.h>
 #include <app/EventHeader.h>
 #include <lib/core/TLVReader.h>
 
@@ -29,7 +30,7 @@ using event_report_cb_t = void (*)(uint64_t remote_node_id, const chip::app::Eve
 using subscribe_done_cb_t = void (*)(uint64_t remote_node_id);
 using subscribe_failure_cb_t = void (*)(void *subscribe_command);
 
-using attribute_report_ondone_cb_t = void (*)();
+using read_done_cb_t = void (*)(uint64_t remote_node_id, const chip::app::AttributePathParams &path);
 
 #if !CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 /**

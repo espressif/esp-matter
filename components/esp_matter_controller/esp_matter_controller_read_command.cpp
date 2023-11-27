@@ -110,13 +110,16 @@ void read_command::OnAttributeData(const chip::app::ConcreteDataAttributePath &p
         ESP_LOGE(TAG, "Response Failure: No Data");
         return;
     }
-    error = DataModelLogger::LogAttribute(path, data);
-    if (CHIP_NO_ERROR != error) {
-        ESP_LOGE(TAG, "Response Failure: Can not decode Data");
-    }
+
 
     if (attribute_data_cb) {
         attribute_data_cb(m_node_id, path, data);
+    }
+    else{
+        error = DataModelLogger::LogAttribute(path, data);
+        if (CHIP_NO_ERROR != error) {
+            ESP_LOGE(TAG, "Response Failure: Can not decode Data");
+        }
     }
 }
 
@@ -161,8 +164,8 @@ void read_command::OnDone(ReadClient *apReadClient)
 {
     ESP_LOGI(TAG, "read done");
 
-    if (attribute_data_ondone_cb) {
-        attribute_data_ondone_cb();
+    if (read_done_cb) {
+        read_done_cb(m_node_id,m_attr_path);
     }
     chip::Platform::Delete(apReadClient);
     chip::Platform::Delete(this);
