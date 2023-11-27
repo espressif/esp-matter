@@ -176,6 +176,19 @@ extern "C" void app_main()
     light_endpoint_id = endpoint::get_id(endpoint);
     ESP_LOGI(TAG, "Light created with endpoint_id %d", light_endpoint_id);
 
+    /* Mark deferred persistence for some attributes that might be changed rapidly */
+    cluster_t *level_control_cluster = cluster::get(endpoint, LevelControl::Id);
+    attribute_t *current_level_attribute = attribute::get(level_control_cluster, LevelControl::Attributes::CurrentLevel::Id);
+    attribute::set_deferred_persistence(current_level_attribute);
+
+    cluster_t *color_control_cluster = cluster::get(endpoint, ColorControl::Id);
+    attribute_t *current_x_attribute = attribute::get(color_control_cluster, ColorControl::Attributes::CurrentX::Id);
+    attribute::set_deferred_persistence(current_x_attribute);
+    attribute_t *current_y_attribute = attribute::get(color_control_cluster, ColorControl::Attributes::CurrentY::Id);
+    attribute::set_deferred_persistence(current_y_attribute);
+    attribute_t *color_temp_attribute = attribute::get(color_control_cluster, ColorControl::Attributes::ColorTemperatureMireds::Id);
+    attribute::set_deferred_persistence(color_temp_attribute);
+
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     /* Set OpenThread platform config */
     esp_openthread_platform_config_t config = {

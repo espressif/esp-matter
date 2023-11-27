@@ -84,6 +84,10 @@ typedef enum attribute_flags {
     /** The attribute read and write are overridden. The attribute value will be fetched from and will be updated using
     the override callback. The value of this attribute is not maintained internally. */
     ATTRIBUTE_FLAG_OVERRIDE = ATTRIBUTE_FLAG_NULLABLE << 1, /* 0x100 */
+    /** The attribute is non-volatile but its value will be changed frequently. If an attribute has this flag, its value
+     will not be written to flash immediately. A timer will be started and the attribute value will be written after
+     timeout. */
+    ATTRIBUTE_FLAG_DEFERRED = ATTRIBUTE_FLAG_NULLABLE << 2, /* 0x200 */
 } attribute_flags_t;
 
 /** Command flags */

@@ -582,6 +582,22 @@ esp_err_t set_override_callback(attribute_t *attribute, callback_t callback);
  */
 callback_t get_override_callback(attribute_t *attribute);
 
+/** Set attribute deferred persistence
+ *
+ * Only non-volatile attributes can be set with deferred presistence. If an attribute is configured with deferred
+ * presistence, any modifications to it will be enacted in its persistent storage with a specific delay
+ * (CONFIG_ESP_MATTER_DEFERRED_ATTR_PERSISTENCE_TIME_MS)
+ *
+ * It could be used for the non-volatile attribues which might be changed rapidly, such as CurrentLevel in LevelControl
+ * cluster.
+ *
+ * @param[in] attribute Attribute handle.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t set_deferred_persistence(attribute_t *attribute);
+
 } /* attribute */
 
 namespace command {
