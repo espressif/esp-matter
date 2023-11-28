@@ -29,7 +29,6 @@ using event_report_cb_t = void (*)(uint64_t remote_node_id, const chip::app::Eve
                                    chip::TLV::TLVReader *data);
 using subscribe_done_cb_t = void (*)(uint64_t remote_node_id);
 using subscribe_failure_cb_t = void (*)(void *subscribe_command);
-
 using read_done_cb_t = void (*)(uint64_t remote_node_id, const chip::app::AttributePathParams &path);
 
 #if !CONFIG_ESP_MATTER_COMMISSIONER_ENABLE

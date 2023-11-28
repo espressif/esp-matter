@@ -49,8 +49,10 @@ public:
         , read_done_cb(read_cb_done)
         , event_data_cb(event_cb)
     {
-        if (command_type == READ_ATTRIBUTE) {        
-            m_attr_path = AttributePathParams(endpoint_id, cluster_id, attribute_or_event_id);
+        if (command_type == READ_ATTRIBUTE) {
+            m_attr_path.mEndpointId = endpoint_id;
+            m_attr_path.mClusterId = cluster_id;
+            m_attr_path.mAttributeId = attribute_or_event_id;
         } else if (command_type == READ_EVENT) {
             m_event_path.mEndpointId = endpoint_id;
             m_event_path.mClusterId = cluster_id;
@@ -82,7 +84,6 @@ public:
     void OnDeallocatePaths(chip::app::ReadPrepareParams &&aReadPrepareParams) override;
 
     void OnDone(ReadClient *apReadClient) override;
-    
 
 private:
     uint64_t m_node_id;
@@ -101,9 +102,8 @@ private:
     chip::Callback::Callback<chip::OnDeviceConnectionFailure> on_device_connection_failure_cb;
 
     attribute_report_cb_t attribute_data_cb;
-    read_done_cb_t read_done_cb;
     event_report_cb_t event_data_cb;
-    
+    read_done_cb_t read_done_cb;
 };
 
 esp_err_t send_read_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id);
