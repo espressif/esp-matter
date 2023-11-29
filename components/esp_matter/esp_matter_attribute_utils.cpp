@@ -66,6 +66,20 @@ esp_matter_attr_val_t esp_matter_int(int val)
     return attr_val;
 }
 
+esp_matter_attr_val_t esp_matter_nullable_bool(nullable<bool> val)
+{
+    esp_matter_attr_val_t attr_val = {
+	.type = ESP_MATTER_VAL_TYPE_NULLABLE_BOOLEAN,
+    };
+    if (val.is_null()) {
+	chip::app::NumericAttributeTraits<bool>::SetNull(*(uint8_t *)(&(attr_val.val.b)));
+    }
+    else {
+	attr_val.val.b = val.value();
+    }
+    return attr_val;
+}
+
 esp_matter_attr_val_t esp_matter_nullable_int(nullable<int> val)
 {
     esp_matter_attr_val_t attr_val = {
@@ -1101,6 +1115,9 @@ static esp_matter_val_type_t get_val_type_from_attribute_type(int attribute_type
 bool val_is_null(esp_matter_attr_val_t *val)
 {
     switch (val->type) {
+    case ESP_MATTER_VAL_TYPE_NULLABLE_BOOLEAN:
+	return chip::app::NumericAttributeTraits<bool>::IsNullValue(*(uint8_t *)(&(val->val.b)));
+	break;
     case ESP_MATTER_VAL_TYPE_NULLABLE_INTEGER:
         return chip::app::NumericAttributeTraits<int>::IsNullValue(val->val.i);
         break;
@@ -1148,6 +1165,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
 {
     switch (val->type) {
     case ESP_MATTER_VAL_TYPE_BOOLEAN:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_BOOLEAN:
         if (attribute_type) {
             *attribute_type = ZCL_BOOLEAN_ATTRIBUTE_TYPE;
         }
@@ -1156,7 +1174,11 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         if (value) {
             using Traits = chip::app::NumericAttributeTraits<bool>;
-            Traits::WorkingToStorage(val->val.b, *value);
+            if ((val->type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(*(uint8_t *)(&(val->val.b)))) {
+                Traits::SetNull(*(uint8_t *)value);
+            } else {
+                Traits::WorkingToStorage(val->val.b, *(uint8_t *)value);
+            }
         }
         break;
 

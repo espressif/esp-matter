@@ -228,6 +228,20 @@ attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, ui
 } /* attribute */
 } /* diagnostics_network_thread */
 
+namespace diagnostics_network_ethernet {
+namespace attribute {
+attribute_t *create_phy_rate(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_full_duplex(cluster_t *cluster, nullable<bool> value);
+attribute_t *create_packet_rx_count(cluster_t *cluster, uint64_t value);
+attribute_t *create_packet_tx_count(cluster_t *cluster, uint64_t value);
+attribute_t *create_tx_error_count(cluster_t *cluster, uint64_t value);
+attribute_t *create_collision_count(cluster_t *cluster, uint64_t value);
+attribute_t *create_overrun_count(cluster_t *cluster, uint64_t value);
+attribute_t *create_carrier_detect(cluster_t *cluster, nullable<bool> value);
+attribute_t *create_time_since_reset(cluster_t *cluster, uint64_t value);
+} /* attribute */
+} /* diagnostics_network_ethernet */
+
 namespace bridged_device_basic_information {
 constexpr uint8_t k_max_node_label_length = 32;
 

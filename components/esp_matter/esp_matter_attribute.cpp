@@ -801,6 +801,60 @@ attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, ui
 } /* attribute */
 } /* diagnostics_network_thread */
 
+namespace diagnostics_network_ethernet {
+namespace attribute {
+
+attribute_t *create_phy_rate(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::PHYRate::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
+}
+
+attribute_t *create_full_duplex(cluster_t *cluster, nullable<bool> value)
+{
+    return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::FullDuplex::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_bool(value));
+}
+
+attribute_t *create_packet_rx_count(cluster_t *cluster, uint64_t value)
+{
+    return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::PacketRxCount::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+}
+
+attribute_t *create_packet_tx_count(cluster_t *cluster, uint64_t value)
+{
+    return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::PacketTxCount::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+}
+
+attribute_t *create_collision_count(cluster_t *cluster, uint64_t value)
+{
+    return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::CollisionCount::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+}
+
+attribute_t *create_overrun_count(cluster_t *cluster, uint64_t value)
+{
+    return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::OverrunCount::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+}
+
+attribute_t *create_carrier_detect(cluster_t *cluster, nullable<bool> value)
+{
+    return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::CarrierDetect::Id,
+					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_bool(value));
+}
+
+attribute_t *create_time_since_reset(cluster_t *cluster, uint64_t value)
+{
+    return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::TimeSinceReset::Id,
+					 ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+}
+
+} /* attribute */
+} /* diagnostics_network_ethernet */
+
 namespace bridged_device_basic_information {
 namespace attribute {
 

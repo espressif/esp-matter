@@ -889,6 +889,61 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* diagnostics_network_wifi */
 
+namespace diagnostics_network_ethernet {
+namespace feature {
+
+namespace packets_counts {
+
+uint32_t get_id()
+{
+    return (uint32_t)EthernetNetworkDiagnostics::Feature::kPacketCounts;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG; 
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes managed internally */
+    attribute::create_packet_rx_count(cluster, 0);
+    attribute::create_packet_tx_count(cluster, 0);
+
+    return ESP_OK;
+}
+
+} /* packets_counts */
+
+namespace error_counts {
+
+uint32_t get_id()
+{
+    return (uint32_t)EthernetNetworkDiagnostics::Feature::kErrorCounts;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes managed internally */
+    attribute::create_tx_error_count(cluster, config->tx_error_count);
+    attribute::create_collision_count(cluster, config->collision_count);
+    attribute::create_overrun_count(cluster, config->overrun_count);
+
+    return ESP_OK;
+}
+
+} /* error_counts */
+
+} /* feature */
+} /* diagnostics_network_ethernet */
+
 namespace air_quality {
 namespace feature {
 
