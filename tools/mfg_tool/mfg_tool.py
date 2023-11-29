@@ -617,7 +617,7 @@ def add_optional_KVs(args):
     chip_factory_append('serial-num', 'data', 'string', args.serial_num)
 
     # Add certificates and keys
-    if args.paa or args.pai and not args.dac_in_secure_cert:
+    if (args.paa or args.pai) and (not args.dac_in_secure_cert):
         chip_factory_append('dac-cert', 'file', 'binary', None)
         chip_factory_append('dac-key', 'file', 'binary', None)
         chip_factory_append('dac-pub-key', 'file', 'binary', None)
