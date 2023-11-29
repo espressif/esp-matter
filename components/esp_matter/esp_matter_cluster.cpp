@@ -3244,6 +3244,47 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* rvc_operational_state */
 
+namespace keypad_input {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, KeypadInput::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+	return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+#if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
+	global::attribute::create_event_list(cluster, NULL, 0, 0);
+#endif
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    /* Commands */
+    command::create_send_key(cluster);
+    command::create_send_key_response(cluster);
+
+    return cluster;
+}
+} /* keypad_input */
+
 // namespace binary_input_basic {
 //     // ToDo
 // } /* binary_input_basic */
@@ -3303,10 +3344,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 // namespace lowpower {
 //     // ToDo
 // } /* lowpower */
-
-// namespace keypad_input {
-//     // ToDo
-// } /* keypad_input */
 
 // namespace content_launcher {
 //     // ToDo

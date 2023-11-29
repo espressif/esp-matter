@@ -3318,5 +3318,68 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* fan_control */
 
+namespace keypad_input {
+namespace feature {
+
+namespace navigation_key_codes {
+
+uint32_t get_id()
+{
+    return (uint32_t)KeypadInput::Feature::kNavigationKeyCodes;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+	ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+} /* navigation_key_codes */
+
+namespace location_keys {
+
+uint32_t get_id()
+{
+    return (uint32_t)KeypadInput::Feature::kLocationKeys;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+} /* location_keys */
+
+namespace number_keys {
+
+uint32_t get_id()
+{
+    return (uint32_t)KeypadInput::Feature::kNumberKeys;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+} /* number_keys */
+
+} /* feature */
+} /* keypad_input */
+
 } /* cluster */
 } /* esp_matter */
