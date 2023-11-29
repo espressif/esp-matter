@@ -110,14 +110,17 @@ void read_command::OnAttributeData(const chip::app::ConcreteDataAttributePath &p
         ESP_LOGE(TAG, "Response Failure: No Data");
         return;
     }
-    error = DataModelLogger::LogAttribute(path, data);
-    if (CHIP_NO_ERROR != error) {
-        ESP_LOGE(TAG, "Response Failure: Can not decode Data");
-    }
-
     if (attribute_data_cb) {
         attribute_data_cb(m_node_id, path, data);
     }
+    else
+    {
+        error = DataModelLogger::LogAttribute(path, data);
+        if (CHIP_NO_ERROR != error) {
+        ESP_LOGE(TAG, "Response Failure: Can not decode Data");
+        }
+    }
+
 }
 
 void read_command::OnEventData(const chip::app::EventHeader &event_header, chip::TLV::TLVReader *data,
