@@ -161,7 +161,7 @@ void read_command::OnDone(ReadClient *apReadClient)
 {
     ESP_LOGI(TAG, "read done");
     if (read_done_cb) {
-        read_done_cb(m_node_id,m_attr_path);
+        read_done_cb(m_node_id, m_attr_path);
     }
     chip::Platform::Delete(apReadClient);
     chip::Platform::Delete(this);
@@ -170,7 +170,7 @@ void read_command::OnDone(ReadClient *apReadClient)
 esp_err_t send_read_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id)
 {
     read_command *cmd = chip::Platform::New<read_command>(node_id, endpoint_id, cluster_id, attribute_id,
-                                                          READ_ATTRIBUTE, nullptr,nullptr,nullptr);
+                                                          READ_ATTRIBUTE, nullptr, nullptr, nullptr);
     if (!cmd) {
         ESP_LOGE(TAG, "Failed to alloc memory for read_command");
         return ESP_ERR_NO_MEM;
@@ -182,7 +182,7 @@ esp_err_t send_read_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_
 esp_err_t send_read_event_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t event_id)
 {
     read_command *cmd =
-        chip::Platform::New<read_command>(node_id, endpoint_id, cluster_id, event_id, READ_EVENT, nullptr,nullptr,nullptr);
+        chip::Platform::New<read_command>(node_id, endpoint_id, cluster_id, event_id, READ_EVENT, nullptr, nullptr, nullptr);
     if (!cmd) {
         ESP_LOGE(TAG, "Failed to alloc memory for read_command");
         return ESP_ERR_NO_MEM;
