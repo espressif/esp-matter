@@ -15,6 +15,7 @@
  *    limitations under the License.
  */
 
+#include <esp_check.h>
 #include <esp_matter_controller_cluster_command.h>
 #include <esp_matter_controller_console.h>
 #include <esp_matter_controller_group_settings.h>
@@ -35,6 +36,7 @@
 #include <protocols/secure_channel/RendezvousParameters.h>
 
 using chip::NodeId;
+using chip::Platform::ScopedMemoryBufferWithSize;
 using chip::Inet::IPAddress;
 using chip::Transport::PeerAddress;
 using esp_matter::controller::command_data_t;
@@ -42,6 +44,86 @@ using esp_matter::controller::command_data_t;
 const static char *TAG = "controller_console";
 
 namespace esp_matter {
+
+static size_t get_array_size(const char *str)
+{
+    if (!str) {
+        return 0;
+    }
+    size_t ret = 1;
+    for (size_t i = 0; i < strlen(str); ++ i) {
+        if (str[i] == ',') {
+            ret++;
+        }
+    }
+    return ret;
+}
+
+static esp_err_t string_to_uint32_array(const char *str, ScopedMemoryBufferWithSize<uint32_t> &uint32_array)
+{
+    size_t array_len = get_array_size(str);
+    if (array_len == 0) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    uint32_array.Calloc(array_len);
+    if (!uint32_array.Get()) {
+        return ESP_ERR_NO_MEM;
+    }
+    char number[11]; // max(strlen("0xFFFFFFFF"), strlen("4294967295")) + 1
+    const char *next_number_start = str;
+    char *next_number_end = NULL;
+    size_t next_number_len = 0;
+    for (size_t i = 0; i < array_len; ++i) {
+        next_number_end = strchr(next_number_start, ',');
+        if (next_number_end > next_number_start) {
+            next_number_len = std::min((size_t)(next_number_end - next_number_start), sizeof(number) - 1);
+        } else if (i == array_len - 1) {
+            next_number_len = strnlen(next_number_start, sizeof(number) - 1);
+        } else {
+            return ESP_ERR_INVALID_ARG;
+        }
+        strncpy(number, next_number_start, next_number_len);
+        number[next_number_len] = 0;
+        uint32_array[i] = string_to_uint32(number);
+        if (next_number_end > next_number_start) {
+            next_number_start = next_number_end + 1;
+        }
+    }
+    return ESP_OK;
+}
+
+esp_err_t string_to_uint16_array(const char *str, ScopedMemoryBufferWithSize<uint16_t> &uint16_array)
+{
+    size_t array_len = get_array_size(str);
+    if (array_len == 0) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    uint16_array.Calloc(array_len);
+    if (!uint16_array.Get()) {
+        return ESP_ERR_NO_MEM;
+    }
+    char number[7]; // max(strlen(0xFFFF), strlen(65535)) + 1
+    const char *next_number_start = str;
+    char *next_number_end = NULL;
+    size_t next_number_len = 0;
+    for (size_t i = 0; i < array_len; ++i) {
+        next_number_end = strchr(next_number_start, ',');
+        if (next_number_end > next_number_start) {
+            next_number_len = std::min((size_t)(next_number_end - next_number_start), sizeof(number) - 1);
+        } else if (i == array_len - 1) {
+            next_number_len = strnlen(next_number_start, sizeof(number) - 1);
+        } else {
+            return ESP_ERR_INVALID_ARG;
+        }
+        strncpy(number, next_number_start, next_number_len);
+        number[next_number_len] = 0;
+        uint16_array[i] = string_to_uint16(number);
+        if (next_number_end > next_number_start) {
+            next_number_start = next_number_end + 1;
+        }
+    }
+    return ESP_OK;
+}
 
 namespace console {
 static engine controller_console;
@@ -187,11 +269,14 @@ static esp_err_t controller_read_attr_handler(int argc, char **argv)
     }
 
     uint64_t node_id = string_to_uint64(argv[0]);
-    uint16_t endpoint_id = string_to_uint16(argv[1]);
-    uint32_t cluster_id = string_to_uint32(argv[2]);
-    uint32_t attribute_id = string_to_uint32(argv[3]);
+    ScopedMemoryBufferWithSize<uint16_t> endpoint_ids;
+    ScopedMemoryBufferWithSize<uint32_t> cluster_ids;
+    ScopedMemoryBufferWithSize<uint32_t> attribute_ids;
+    ESP_RETURN_ON_ERROR(string_to_uint16_array(argv[1], endpoint_ids), TAG, "Failed to parse endpoint IDs");
+    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[2], cluster_ids), TAG, "Failed to parse cluster IDs");
+    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[3], attribute_ids), TAG, "Failed to parse attribute IDs");
 
-    return controller::send_read_attr_command(node_id, endpoint_id, cluster_id, attribute_id);
+    return controller::send_read_attr_command(node_id, endpoint_ids, cluster_ids, attribute_ids);
 }
 
 static esp_err_t controller_write_attr_handler(int argc, char **argv)
@@ -216,11 +301,14 @@ static esp_err_t controller_read_event_handler(int argc, char **argv)
     }
 
     uint64_t node_id = string_to_uint64(argv[0]);
-    uint16_t endpoint_id = string_to_uint16(argv[1]);
-    uint32_t cluster_id = string_to_uint32(argv[2]);
-    uint32_t event_id = string_to_uint32(argv[3]);
+    ScopedMemoryBufferWithSize<uint16_t> endpoint_ids;
+    ScopedMemoryBufferWithSize<uint32_t> cluster_ids;
+    ScopedMemoryBufferWithSize<uint32_t> event_ids;
+    ESP_RETURN_ON_ERROR(string_to_uint16_array(argv[1], endpoint_ids), TAG, "Failed to parse endpoint IDs");
+    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[2], cluster_ids), TAG, "Failed to parse cluster IDs");
+    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[3], event_ids), TAG, "Failed to parse event IDs");
 
-    return controller::send_read_event_command(node_id, endpoint_id, cluster_id, event_id);
+    return controller::send_read_event_command(node_id, endpoint_ids, cluster_ids, event_ids);
 }
 
 static esp_err_t controller_subscribe_attr_handler(int argc, char **argv)
@@ -230,12 +318,16 @@ static esp_err_t controller_subscribe_attr_handler(int argc, char **argv)
     }
 
     uint64_t node_id = string_to_uint64(argv[0]);
-    uint16_t endpoint_id = string_to_uint16(argv[1]);
-    uint32_t cluster_id = string_to_uint32(argv[2]);
-    uint32_t attribute_id = string_to_uint32(argv[3]);
+    ScopedMemoryBufferWithSize<uint16_t> endpoint_ids;
+    ScopedMemoryBufferWithSize<uint32_t> cluster_ids;
+    ScopedMemoryBufferWithSize<uint32_t> attribute_ids;
+    ESP_RETURN_ON_ERROR(string_to_uint16_array(argv[1], endpoint_ids), TAG, "Failed to parse endpoint IDs");
+    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[2], cluster_ids), TAG, "Failed to parse cluster IDs");
+    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[3], attribute_ids), TAG, "Failed to parse attribute IDs");
     uint16_t min_interval = string_to_uint16(argv[4]);
     uint16_t max_interval = string_to_uint16(argv[5]);
-    return controller::send_subscribe_attr_command(node_id, endpoint_id, cluster_id, attribute_id, min_interval,
+
+    return controller::send_subscribe_attr_command(node_id, endpoint_ids, cluster_ids, attribute_ids, min_interval,
                                                    max_interval);
 }
 
@@ -246,12 +338,15 @@ static esp_err_t controller_subscribe_event_handler(int argc, char **argv)
     }
 
     uint64_t node_id = string_to_uint64(argv[0]);
-    uint16_t endpoint_id = string_to_uint16(argv[1]);
-    uint32_t cluster_id = string_to_uint32(argv[2]);
-    uint32_t event_id = string_to_uint32(argv[3]);
+    ScopedMemoryBufferWithSize<uint16_t> endpoint_ids;
+    ScopedMemoryBufferWithSize<uint32_t> cluster_ids;
+    ScopedMemoryBufferWithSize<uint32_t> event_ids;
+    ESP_RETURN_ON_ERROR(string_to_uint16_array(argv[1], endpoint_ids), TAG, "Failed to parse endpoint IDs");
+    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[2], cluster_ids), TAG, "Failed to parse cluster IDs");
+    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[3], event_ids), TAG, "Failed to parse event IDs");
     uint16_t min_interval = string_to_uint16(argv[4]);
     uint16_t max_interval = string_to_uint16(argv[5]);
-    return controller::send_subscribe_event_command(node_id, endpoint_id, cluster_id, event_id, min_interval,
+    return controller::send_subscribe_event_command(node_id, endpoint_ids, cluster_ids, event_ids, min_interval,
                                                     max_interval);
 }
 

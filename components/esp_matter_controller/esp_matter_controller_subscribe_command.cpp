@@ -42,18 +42,16 @@ void subscribe_command::on_device_connected_fcn(void *context, ExchangeManager &
     subscribe_command *cmd = (subscribe_command *)context;
     ReadPrepareParams params(sessionHandle);
     CHIP_ERROR err = CHIP_NO_ERROR;
-
-    if (cmd->m_command_type == SUBSCRIBE_ATTRIBUTE) {
-        params.mpEventPathParamsList = nullptr;
-        params.mEventPathParamsListSize = 0;
-        params.mpAttributePathParamsList = &cmd->m_attr_path;
-        params.mAttributePathParamsListSize = 1;
-    } else if (cmd->m_command_type == SUBSCRIBE_EVENT) {
-        params.mpEventPathParamsList = &cmd->m_event_path;
-        params.mEventPathParamsListSize = 1;
-        params.mpAttributePathParamsList = nullptr;
-        params.mAttributePathParamsListSize = 0;
+    if (cmd->m_attr_paths.AllocatedSize() == 0 && cmd->m_event_paths.AllocatedSize() == 0) {
+        ESP_LOGE(TAG, "Cannot send Subscribe command with NULL attribute path and NULL event path");
+        chip::Platform::Delete(cmd);
+        return;
     }
+
+    params.mpAttributePathParamsList = cmd->m_attr_paths.Get();
+    params.mAttributePathParamsListSize = cmd->m_attr_paths.AllocatedSize();
+    params.mpEventPathParamsList = cmd->m_event_paths.Get();
+    params.mEventPathParamsListSize = cmd->m_event_paths.AllocatedSize();
     params.mIsFabricFiltered = 0;
     params.mpDataVersionFilterList = nullptr;
     params.mDataVersionFilterListSize = 0;
@@ -186,7 +184,8 @@ CHIP_ERROR subscribe_command::OnResubscriptionNeeded(ReadClient *apReadClient, C
 {
     m_resubscribe_retries++;
     if (m_resubscribe_retries > k_max_resubscribe_retries) {
-        ESP_LOGE(TAG, "Could not find the devices in %d retries, terminate the subscription", k_max_resubscribe_retries);
+        ESP_LOGE(TAG, "Could not find the devices in %d retries, terminate the subscription",
+                 k_max_resubscribe_retries);
         return aTerminationCause;
     }
     return apReadClient->DefaultResubscribePolicy(aTerminationCause);
@@ -203,32 +202,101 @@ void subscribe_command::OnDone(ReadClient *apReadClient)
     chip::Platform::Delete(this);
 }
 
-esp_err_t send_subscribe_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id,
-                                      uint32_t attribute_id, uint16_t min_interval, uint16_t max_interval,
-                                      bool auto_resubscribe)
+esp_err_t send_subscribe_attr_command(uint64_t node_id, ScopedMemoryBufferWithSize<uint16_t> &endpoint_ids,
+                                      ScopedMemoryBufferWithSize<uint32_t> &cluster_ids,
+                                      ScopedMemoryBufferWithSize<uint32_t> &attribute_ids, uint16_t min_interval,
+                                      uint16_t max_interval, bool auto_resubscribe)
 {
-    subscribe_command *cmd =
-        chip::Platform::New<subscribe_command>(node_id, endpoint_id, cluster_id, attribute_id, SUBSCRIBE_ATTRIBUTE,
-                                               min_interval, max_interval, auto_resubscribe);
+    if (endpoint_ids.AllocatedSize() != cluster_ids.AllocatedSize() ||
+        endpoint_ids.AllocatedSize() != attribute_ids.AllocatedSize()) {
+        ESP_LOGE(TAG,
+                 "The endpoint_id array length should be the same as the cluster_ids array length and the "
+                 "attribute_ids array length");
+        return ESP_ERR_INVALID_ARG;
+    }
+    ScopedMemoryBufferWithSize<AttributePathParams> attr_paths;
+    ScopedMemoryBufferWithSize<EventPathParams> event_paths;
+    attr_paths.Alloc(endpoint_ids.AllocatedSize());
+    if (!attr_paths.Get()) {
+        ESP_LOGE(TAG, "Failed to alloc memory for attribute paths");
+        return ESP_ERR_NO_MEM;
+    }
+    for (size_t i = 0; i < attr_paths.AllocatedSize(); ++i) {
+        attr_paths[i] = AttributePathParams(endpoint_ids[i], cluster_ids[i], attribute_ids[i]);
+    }
+
+    subscribe_command *cmd = chip::Platform::New<subscribe_command>(
+        node_id, std::move(attr_paths), std::move(event_paths), min_interval, max_interval, auto_resubscribe);
     if (!cmd) {
         ESP_LOGE(TAG, "Failed to alloc memory for subscribe_command");
         return ESP_ERR_NO_MEM;
     }
-
     return cmd->send_command();
+}
+
+esp_err_t send_subscribe_event_command(uint64_t node_id, ScopedMemoryBufferWithSize<uint16_t> &endpoint_ids,
+                                       ScopedMemoryBufferWithSize<uint32_t> &cluster_ids,
+                                       ScopedMemoryBufferWithSize<uint32_t> &event_ids, uint16_t min_interval,
+                                       uint16_t max_interval, bool auto_resubscribe)
+{
+    if (endpoint_ids.AllocatedSize() != cluster_ids.AllocatedSize() ||
+        endpoint_ids.AllocatedSize() != event_ids.AllocatedSize()) {
+        ESP_LOGE(TAG,
+                 "The endpoint_id array length should be the same as the cluster_ids array length and the "
+                 "attribute_ids array length");
+        return ESP_ERR_INVALID_ARG;
+    }
+    ScopedMemoryBufferWithSize<AttributePathParams> attr_paths;
+    ScopedMemoryBufferWithSize<EventPathParams> event_paths;
+    event_paths.Alloc(endpoint_ids.AllocatedSize());
+    if (!event_paths.Get()) {
+        ESP_LOGE(TAG, "Failed to alloc memory for attribute paths");
+        return ESP_ERR_NO_MEM;
+    }
+    for (size_t i = 0; i < event_paths.AllocatedSize(); ++i) {
+        event_paths[i] = EventPathParams(endpoint_ids[i], cluster_ids[i], event_ids[i]);
+    }
+
+    subscribe_command *cmd = chip::Platform::New<subscribe_command>(
+        node_id, std::move(attr_paths), std::move(event_paths), min_interval, max_interval, auto_resubscribe);
+    if (!cmd) {
+        ESP_LOGE(TAG, "Failed to alloc memory for subscribe_command");
+        return ESP_ERR_NO_MEM;
+    }
+    return cmd->send_command();
+}
+
+esp_err_t send_subscribe_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id,
+                                      uint32_t attribute_id, uint16_t min_interval, uint16_t max_interval,
+                                      bool auto_resubscribe)
+{
+    ScopedMemoryBufferWithSize<uint16_t> endpoint_ids;
+    ScopedMemoryBufferWithSize<uint32_t> cluster_ids;
+    ScopedMemoryBufferWithSize<uint32_t> attribute_ids;
+    endpoint_ids.Alloc(1);
+    cluster_ids.Alloc(1);
+    attribute_ids.Alloc(1);
+    if (!(endpoint_ids.Get() && cluster_ids.Get() && attribute_ids.Get())) {
+        return ESP_ERR_NO_MEM;
+    }
+    return send_subscribe_attr_command(node_id, endpoint_ids, cluster_ids, attribute_ids, min_interval, max_interval,
+                                       auto_resubscribe);
 }
 
 esp_err_t send_subscribe_event_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t event_id,
                                        uint16_t min_interval, uint16_t max_interval, bool auto_resubscribe)
 {
-    subscribe_command *cmd = chip::Platform::New<subscribe_command>(
-        node_id, endpoint_id, cluster_id, event_id, SUBSCRIBE_EVENT, min_interval, max_interval, auto_resubscribe);
-    if (!cmd) {
-        ESP_LOGE(TAG, "Failed to alloc memory for subscribe_command");
+    ScopedMemoryBufferWithSize<uint16_t> endpoint_ids;
+    ScopedMemoryBufferWithSize<uint32_t> cluster_ids;
+    ScopedMemoryBufferWithSize<uint32_t> event_ids;
+    endpoint_ids.Alloc(1);
+    cluster_ids.Alloc(1);
+    event_ids.Alloc(1);
+    if (!(endpoint_ids.Get() && cluster_ids.Get() && event_ids.Get())) {
         return ESP_ERR_NO_MEM;
     }
-
-    return cmd->send_command();
+    return send_subscribe_event_command(node_id, endpoint_ids, cluster_ids, event_ids, min_interval, max_interval,
+                                        auto_resubscribe);
 }
 
 esp_err_t send_shutdown_subscription(uint64_t node_id, uint32_t subscription_id)
