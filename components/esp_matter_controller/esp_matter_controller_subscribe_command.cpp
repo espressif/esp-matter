@@ -31,6 +31,8 @@ using chip::app::ReadPrepareParams;
 
 static const char *TAG = "read_command";
 
+static const uint8_t k_max_resubscribe_retries = 2;
+
 namespace esp_matter {
 namespace controller {
 
@@ -39,14 +41,15 @@ void subscribe_command::on_device_connected_fcn(void *context, ExchangeManager &
 {
     subscribe_command *cmd = (subscribe_command *)context;
     ReadPrepareParams params(sessionHandle);
+    CHIP_ERROR err = CHIP_NO_ERROR;
 
-    if (cmd->get_command_type() == SUBSCRIBE_ATTRIBUTE) {
+    if (cmd->m_command_type == SUBSCRIBE_ATTRIBUTE) {
         params.mpEventPathParamsList = nullptr;
         params.mEventPathParamsListSize = 0;
-        params.mpAttributePathParamsList = &cmd->get_attr_path();
+        params.mpAttributePathParamsList = &cmd->m_attr_path;
         params.mAttributePathParamsListSize = 1;
-    } else if (cmd->get_command_type() == SUBSCRIBE_EVENT) {
-        params.mpEventPathParamsList = &cmd->get_event_path();
+    } else if (cmd->m_command_type == SUBSCRIBE_EVENT) {
+        params.mpEventPathParamsList = &cmd->m_event_path;
         params.mEventPathParamsListSize = 1;
         params.mpAttributePathParamsList = nullptr;
         params.mAttributePathParamsListSize = 0;
@@ -54,18 +57,23 @@ void subscribe_command::on_device_connected_fcn(void *context, ExchangeManager &
     params.mIsFabricFiltered = 0;
     params.mpDataVersionFilterList = nullptr;
     params.mDataVersionFilterListSize = 0;
-    params.mMinIntervalFloorSeconds = cmd->get_min_interval();
-    params.mMaxIntervalCeilingSeconds = cmd->get_max_interval();
+    params.mMinIntervalFloorSeconds = cmd->m_min_interval;
+    params.mMaxIntervalCeilingSeconds = cmd->m_max_interval;
     params.mKeepSubscriptions = true;
 
     ReadClient *client =
-        chip::Platform::New<ReadClient>(InteractionModelEngine::GetInstance(), &exchangeMgr,
-                                        cmd->get_buffered_read_cb(), ReadClient::InteractionType::Subscribe);
+        chip::Platform::New<ReadClient>(InteractionModelEngine::GetInstance(), &exchangeMgr, cmd->m_buffered_read_cb,
+                                        ReadClient::InteractionType::Subscribe);
     if (!client) {
         ESP_LOGE(TAG, "Failed to alloc memory for read client");
         chip::Platform::Delete(cmd);
     }
-    if (CHIP_NO_ERROR != client->SendRequest(params)) {
+    if (cmd->m_auto_resubscribe) {
+        err = client->SendAutoResubscribeRequest(std::move(params));
+    } else {
+        err = client->SendRequest(params);
+    }
+    if (err != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to send read request");
         chip::Platform::Delete(client);
         chip::Platform::Delete(cmd);
@@ -111,12 +119,14 @@ void subscribe_command::OnAttributeData(const chip::app::ConcreteDataAttributePa
         ESP_LOGE(TAG, "Response Failure: %s", chip::ErrorStr(error));
         return;
     }
-
     if (data == nullptr) {
         ESP_LOGE(TAG, "Response Failure: No Data");
         return;
     }
-    error = DataModelLogger::LogAttribute(path, data);
+
+    chip::TLV::TLVReader log_data;
+    log_data.Init(*data);
+    error = DataModelLogger::LogAttribute(path, &log_data);
     if (CHIP_NO_ERROR != error) {
         ESP_LOGE(TAG, "Response Failure: Can not decode Data");
     }
@@ -137,12 +147,14 @@ void subscribe_command::OnEventData(const chip::app::EventHeader &event_header, 
             return;
         }
     }
-
     if (data == nullptr) {
         ESP_LOGE(TAG, "Response Failure: No Data");
         return;
     }
-    error = DataModelLogger::LogEvent(event_header, data);
+
+    chip::TLV::TLVReader log_data;
+    log_data.Init(*data);
+    error = DataModelLogger::LogEvent(event_header, &log_data);
     if (CHIP_NO_ERROR != error) {
         ESP_LOGE(TAG, "Response Failure: Can not decode Data");
     }
@@ -165,27 +177,39 @@ void subscribe_command::OnDeallocatePaths(chip::app::ReadPrepareParams &&aReadPr
 
 void subscribe_command::OnSubscriptionEstablished(chip::SubscriptionId subscriptionId)
 {
-    ESP_LOGI(TAG, "Subscribe established");
+    m_subscription_id = subscriptionId;
+    m_resubscribe_retries = 0;
+    ESP_LOGI(TAG, "Subscription 0x%" PRIx32 " established", subscriptionId);
+}
+
+CHIP_ERROR subscribe_command::OnResubscriptionNeeded(ReadClient *apReadClient, CHIP_ERROR aTerminationCause)
+{
+    m_resubscribe_retries++;
+    if (m_resubscribe_retries > k_max_resubscribe_retries) {
+        ESP_LOGE(TAG, "Could not find the devices in %d retries, terminate the subscription", k_max_resubscribe_retries);
+        return aTerminationCause;
+    }
+    return apReadClient->DefaultResubscribePolicy(aTerminationCause);
 }
 
 void subscribe_command::OnDone(ReadClient *apReadClient)
 {
-    // This will be called when a subscription is closed.
-    if (subscribe_done_cb) {
-        subscribe_done_cb(m_node_id);
-    }
-
-    ESP_LOGI(TAG, "Subscribe done");
+    ESP_LOGI(TAG, "Subscription 0x%" PRIx32 " Done for remote node 0x%" PRIx64, m_subscription_id, m_node_id);
     chip::Platform::Delete(apReadClient);
+    if (subscribe_done_cb) {
+        // This will be called when the subscription is terminated.
+        subscribe_done_cb(m_node_id, m_subscription_id);
+    }
     chip::Platform::Delete(this);
 }
 
 esp_err_t send_subscribe_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id,
-                                      uint32_t attribute_id, uint16_t min_interval, uint16_t max_interval)
+                                      uint32_t attribute_id, uint16_t min_interval, uint16_t max_interval,
+                                      bool auto_resubscribe)
 {
     subscribe_command *cmd =
         chip::Platform::New<subscribe_command>(node_id, endpoint_id, cluster_id, attribute_id, SUBSCRIBE_ATTRIBUTE,
-                                               min_interval, max_interval, nullptr, nullptr);
+                                               min_interval, max_interval, auto_resubscribe);
     if (!cmd) {
         ESP_LOGE(TAG, "Failed to alloc memory for subscribe_command");
         return ESP_ERR_NO_MEM;
@@ -195,10 +219,10 @@ esp_err_t send_subscribe_attr_command(uint64_t node_id, uint16_t endpoint_id, ui
 }
 
 esp_err_t send_subscribe_event_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t event_id,
-                                       uint16_t min_interval, uint16_t max_interval)
+                                       uint16_t min_interval, uint16_t max_interval, bool auto_resubscribe)
 {
     subscribe_command *cmd = chip::Platform::New<subscribe_command>(
-        node_id, endpoint_id, cluster_id, event_id, SUBSCRIBE_EVENT, min_interval, max_interval, nullptr, nullptr);
+        node_id, endpoint_id, cluster_id, event_id, SUBSCRIBE_EVENT, min_interval, max_interval, auto_resubscribe);
     if (!cmd) {
         ESP_LOGE(TAG, "Failed to alloc memory for subscribe_command");
         return ESP_ERR_NO_MEM;
