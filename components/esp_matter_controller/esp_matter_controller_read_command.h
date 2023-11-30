@@ -49,13 +49,10 @@ public:
         , event_data_cb(event_cb)
     {
         if (command_type == READ_ATTRIBUTE) {
-            m_attr_path.mEndpointId = endpoint_id;
-            m_attr_path.mClusterId = cluster_id;
-            m_attr_path.mAttributeId = attribute_or_event_id;
+            m_attr_path = AttributePathParams(endpoint_id, cluster_id, attribute_or_event_id);
+
         } else if (command_type == READ_EVENT) {
-            m_event_path.mEndpointId = endpoint_id;
-            m_event_path.mClusterId = cluster_id;
-            m_event_path.mEventId = attribute_or_event_id;
+            m_event_path = EventPathParams(endpoint_id, cluster_id, attribute_or_event_id);
         }
     }
 
