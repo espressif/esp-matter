@@ -1975,6 +1975,30 @@ attribute_t *create_ac_capacity_format(cluster_t *cluster, uint8_t value)
 } /* attribute */
 } /* thermostat */
 
+namespace thermostat_user_interface_configuration {
+namespace attribute {
+
+attribute_t *create_temperature_display_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ThermostatUserInterfaceConfiguration::Attributes::TemperatureDisplayMode::Id,
+		                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
+}
+
+attribute_t *create_keypad_lockout(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ThermostatUserInterfaceConfiguration::Attributes::KeypadLockout::Id,
+		                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
+}
+
+attribute_t *create_schedule_programming_visibility(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ThermostatUserInterfaceConfiguration::Attributes::ScheduleProgrammingVisibility::Id,
+		                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
+}
+
+} /* attribute */
+} /* thermostat_user_interface_configuration */
+
 namespace air_quality {
 namespace attribute {
 

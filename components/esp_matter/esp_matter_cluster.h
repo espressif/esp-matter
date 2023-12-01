@@ -380,6 +380,17 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* thermostat */
 
+namespace thermostat_user_interface_configuration {
+typedef struct config {
+    uint16_t cluster_revision;
+    uint8_t temperature_display_mode;
+    uint8_t keypad_lockout;
+    config() : cluster_revision(2), temperature_display_mode(0), keypad_lockout(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* thermostat_user_interface_configuration */
+
 namespace air_quality {
 typedef struct config {
     uint16_t cluster_revision;
