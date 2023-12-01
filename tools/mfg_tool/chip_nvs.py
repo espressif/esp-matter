@@ -41,11 +41,6 @@ CHIP_NVS_MAP = {
             'encoding': 'string',
             'value': None,
         },
-        'verifier': {
-            'type': 'data',
-            'encoding': 'string',
-            'value': None,
-        },
     }
 }
 

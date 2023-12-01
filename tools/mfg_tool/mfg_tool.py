@@ -99,17 +99,23 @@ def generate_passcodes(args):
     salt_len_max = 32
     with open(OUT_FILE['pin_csv'], 'w', newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(["Index", "PIN Code", "Iteration Count", "Salt", "Verifier"])
+        if args.enable_dynamic_passcode:
+            writer.writerow(["Index", "Iteration Count", "Salt"])
+        else:
+            writer.writerow(["Index", "PIN Code", "Iteration Count", "Salt", "Verifier"])
         for i in range(0, args.count):
-            if args.passcode:
-                passcode = args.passcode
-            else:
-                passcode = random.randint(1, 99999998)
-                if passcode in INVALID_PASSCODES:
-                    passcode -= 1
             salt = os.urandom(salt_len_max)
-            verifier = generate_verifier(passcode, salt, iter_count_max)
-            writer.writerow([i, passcode, iter_count_max, base64.b64encode(salt).decode('utf-8'), base64.b64encode(verifier).decode('utf-8')])
+            if args.enable_dynamic_passcode:
+                writer.writerow([i, iter_count_max, base64.b64encode(salt).decode('utf-8')])
+            else:
+                if args.passcode:
+                    passcode = args.passcode
+                else:
+                    passcode = random.randint(1, 99999998)
+                    if passcode in INVALID_PASSCODES:
+                        passcode -= 1
+                verifier = generate_verifier(passcode, salt, iter_count_max)
+                writer.writerow([i, passcode, iter_count_max, base64.b64encode(salt).decode('utf-8'), base64.b64encode(verifier).decode('utf-8')])
 
 
 def generate_discriminators(args):
@@ -187,7 +193,7 @@ def generate_pai(args, ca_key, ca_cert, out_key, out_cert):
     logging.info('Generated PAI private key: {}'.format(out_key))
 
 
-def generate_dac(iteration, args, discriminator, passcode, ca_key, ca_cert):
+def generate_dac(iteration, args, ca_key, ca_cert):
     out_key_pem = os.sep.join([OUT_DIR['top'], UUIDs[iteration], 'internal', 'DAC_key.pem'])
     out_private_key_der = out_key_pem.replace('key.pem', 'key.der')
     out_cert_pem = out_key_pem.replace('key.pem', 'cert.pem')
@@ -338,13 +344,13 @@ def write_per_device_unique_data(args):
             chip_factory_update('discriminator', row['Discriminator'])
             chip_factory_update('iteration-count', row['Iteration Count'])
             chip_factory_update('salt', row['Salt'])
-            chip_factory_update('verifier', row['Verifier'])
+            if not args.enable_dynamic_passcode:
+                chip_factory_update('verifier', row['Verifier'])
             if args.paa or args.pai:
                 if args.dac_key is not None and args.dac_cert is not None:
                     dacs = use_dac_from_args(args)
                 else:
-                    dacs = generate_dac(int(row['Index']), args, int(row['Discriminator']),
-                                        int(row['PIN Code']), PAI['key_pem'], PAI['cert_pem'])
+                    dacs = generate_dac(int(row['Index']), args, PAI['key_pem'], PAI['cert_pem'])
 
                 if not args.dac_in_secure_cert:
                     chip_factory_update('dac-cert', os.path.abspath(dacs[0]))
@@ -394,7 +400,8 @@ def write_per_device_unique_data(args):
             append_chip_mcsv_row(mcsv_row_data)
 
             # Generate onboarding data
-            generate_onboarding_data(args, int(row['Index']), int(chip_factory_get_val('discriminator')), int(row['PIN Code']))
+            if not args.enable_dynamic_passcode:
+                generate_onboarding_data(args, int(row['Index']), int(chip_factory_get_val('discriminator')), int(row['PIN Code']))
         if args.paa or args.pai:
             logging.info("Generated CSV of Common Name and DAC: {}".format(OUT_FILE['cn_dac_csv']))
 
@@ -435,22 +442,29 @@ def generate_summary(args):
     summary_csv_data = ''
     with open(master_csv, 'r') as mcsvf:
         summary_lines = mcsvf.read().splitlines()
-        summary_csv_data += summary_lines[0] + ',pincode,qrcode,manualcode\n'
+        summary_csv_data += summary_lines[0]
+        if not args.enable_dynamic_passcode:
+            summary_csv_data += ',pincode,qrcode,manualcode\n'
+        else:
+            summary_csv_data += '\n'
         with open(OUT_FILE['pin_disc_csv'], 'r') as pdcsvf:
             pin_disc_dict = csv.DictReader(pdcsvf)
             for row in pin_disc_dict:
-                pincode = row['PIN Code']
-                discriminator = row['Discriminator']
-                payloads = SetupPayload(int(discriminator), int(pincode), 1 << args.discovery_mode, CommissioningFlow(args.commissioning_flow),
-                                        args.vendor_id, args.product_id)
-                qrcode = payloads.generate_qrcode()
-                manualcode = payloads.generate_manualcode()
-                # ToDo: remove this if qrcode tool can handle the standard manual code format
-                if args.commissioning_flow == CommissioningFlow.Standard:
-                    manualcode = manualcode[:4] + '-' + manualcode[4:7] + '-' + manualcode[7:]
+                if not args.enable_dynamic_passcode:
+                    pincode = row['PIN Code']
+                    discriminator = row['Discriminator']
+                    payloads = SetupPayload(int(discriminator), int(pincode), 1 << args.discovery_mode, CommissioningFlow(args.commissioning_flow),
+                                            args.vendor_id, args.product_id)
+                    qrcode = payloads.generate_qrcode()
+                    manualcode = payloads.generate_manualcode()
+                    # ToDo: remove this if qrcode tool can handle the standard manual code format
+                    if args.commissioning_flow == CommissioningFlow.Standard:
+                        manualcode = manualcode[:4] + '-' + manualcode[4:7] + '-' + manualcode[7:]
+                    else:
+                        manualcode = '"' + manualcode[:4] + '-' + manualcode[4:7] + '-' + manualcode[7:11] + '\n' + manualcode[11:15] + '-' + manualcode[15:18] + '-' + manualcode[18:20] + '-' + manualcode[20:21] + '"'
+                    summary_csv_data += summary_lines[1 + int(row['Index'])] + ',' + pincode + ',' + qrcode + ',' + manualcode + '\n'
                 else:
-                    manualcode = '"' + manualcode[:4] + '-' + manualcode[4:7] + '-' + manualcode[7:11] + '\n' + manualcode[11:15] + '-' + manualcode[15:18] + '-' + manualcode[18:20] + '-' + manualcode[20:21] + '"'
-                summary_csv_data += summary_lines[1 + int(row['Index'])] + ',' + pincode + ',' + qrcode + ',' + manualcode + '\n'
+                    summary_csv_data += summary_lines[1 + int(row['Index'])] + '\n'
 
     with open(summary_csv, 'w') as scsvf:
         scsvf.write(summary_csv_data)
@@ -528,6 +542,11 @@ def get_args():
     g_commissioning.add_argument('-dm', '--discovery-mode', type=any_base_int, default=1,
                                  help='Commissionable device discovery networking technology. \
                                           0:WiFi-SoftAP, 1:BLE, 2:On-network. Default is BLE.', choices=[0, 1, 2])
+    g_commissioning.add_argument('--enable-dynamic-passcode', action="store_true", required=False,
+                                 help='Enable dynamic passcode. If enabling this option, the generated binaries will \
+                                         not include the spake2p verifier. so this option should work with a custom \
+                                         CommissionableDataProvider which can generate random passcode and \
+                                         corresponding verifier')
 
     g_dac = parser.add_argument_group('Device attestation credential options')
     g_dac.add_argument('--dac-in-secure-cert', action="store_true", required=False,
@@ -622,6 +641,9 @@ def add_optional_KVs(args):
         chip_factory_append('dac-key', 'file', 'binary', None)
         chip_factory_append('dac-pub-key', 'file', 'binary', None)
         chip_factory_append('pai-cert', 'file', 'binary', None)
+
+    if not args.enable_dynamic_passcode:
+        chip_factory_append('verifier', 'data', 'string', None)
 
     # Add certificate declaration
     if args.cert_dclrn:

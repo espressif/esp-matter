@@ -1,4 +1,10 @@
-idf_component_register(SRC_DIRS          "."
+set(SRC_DIRS_LIST ".")
+
+if (CONFIG_DYNAMIC_PASSCODE_COMMISSIONABLE_DATA_PROVIDER)
+    list(APPEND SRC_DIRS_LIST "custom_provider")
+endif()
+
+idf_component_register(SRC_DIRS          ${SRC_DIRS_LIST}
                       PRIV_INCLUDE_DIRS  ".")
 
 set_property(TARGET ${COMPONENT_LIB} PROPERTY CXX_STANDARD 17)
