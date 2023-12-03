@@ -9,6 +9,7 @@
 #pragma once
 
 #include "esp_err.h"
+#include "sdkconfig.h"
 #include <stdint.h>
 
 /*Zigbee Configuration*/
@@ -43,8 +44,8 @@
                     .rx_flow_ctrl_thresh = 0,              \
                     .source_clk = UART_SCLK_APB,           \
                 },                                         \
-            .rx_pin = 4,                                   \
-            .tx_pin = 5,                                   \
+            .rx_pin = CONFIG_PIN_TO_RCP_TX,                \
+            .tx_pin = CONFIG_PIN_TO_RCP_RX,                \
         },                                                 \
     }
 

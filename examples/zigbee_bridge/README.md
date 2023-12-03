@@ -2,8 +2,7 @@
 
 This example demonstrates a Matter-Zigbee Bridge that bridges Zigbee devices to Matter fabric.
 
-The Matter Bridge device is composed of two parts: The RCP running on
-ESP32-H2 and the bridge app running on ESP32.
+The Matter Bridge device is composed of two parts: The RCP running on ESP32-H2 and the bridge app running on ESP32-S3.
 
 See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
 
@@ -11,41 +10,64 @@ See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/de
 
 ### 1.1 Hardware connection
 
-Connect the two SoCs via UART, below is an example setup with ESP32
-DevKitC and ESP32-H2 DevKitC:
+There are two hardware type options for this example. You can choose one of the two options in menuconfig `ESP Matter Zigbee Bridge Example`->`Zigbee Bridge board type`.
+
+#### 1.1.1 Standalone DevKit boards
+Connect the two SoCs via UART, below is an example setup with ESP32-S3 DevKitC and ESP32-H2 DevKitC:
 
 ![Zigbee Bridge Hardware Connection](../../docs/_static/zigbee_bridge_hardware_connection.jpg)
 
-|  ESP32 Pin  | ESP32-H2 Pin |
-|-------------|--------------|
-|   GND       |    GND       |
-|   GPIO4     |    GPIO7     |
-|   GPIO5     |    GPIO8     |
+|  ESP32-S3 Pin  | ESP32-H2 Pin |
+|----------------|--------------|
+|   GND          |    GND       |
+|   GPIO4        |    TX        |
+|   GPIO5        |    RX        |
+
+#### 1.1.2 Zigbee Gateway DevKit board
+
+![Zigbee Gateway DevKit Board](../../docs/_static/esp-thread-border-router-zigbee-gateway-board.png)
 
 ### 1.2 Build and flash the RCP (ESP32-H2)
 
 ```
 cd ${IDF_PATH}/examples/zigbee/esp_zigbee_rcp/
-idf.py --preview set-target esp32h2
+idf.py set-target esp32h2
 idf.py -p <port> build flash
 ```
 
-The Matter Bridge will run on the ESP32 and Zigbee network will be
-formed.
+**Note**: The two SoCs on the Zigbee Gateway DevKit board use USB ports while the standalone DevKit boards use UART ports.
+
+### 1.3 Build and flash the Bridge (ESP32S3)
+
+For Standalone DevKit boards:
+
+```
+cd ${ESP_MATTER_PATH}/examples/zigbee_bridge
+idf.py set-target esp32s3
+idf.py -p <port> build flash
+```
+
+For Zigbee Gateway board:
+
+```
+cd ${ESP_MATTER_PATH}/examples/zigbee_bridge
+idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults.zb_gw_board" set-target esp32s3 build
+idf.py -p <port> flash
+```
+
+The Matter Zigbee Bridge will run on the ESP32-S3 and Zigbee network will be formed.
 
 ## 2. Post Commissioning Setup
 
 ### 2.1 Discovering Zigbee Devices
 
-You can read the parts list from the Bridge to get the number of the
-bridged devices.
+You can read the PartsList from the Bridge to get the number of the bridged devices.
 
 ```
 descriptor read parts-list 0x7283 0x0
 ```
 
-If there is no other Zigbee device on the Zigbee Network, you will get
-a result with only an aggregator endpoint. Example:
+If there is no other Zigbee device on the Zigbee Network, you will get a result with only an aggregator endpoint. Example:
 
 ```
 Data = [
@@ -53,8 +75,7 @@ Data = [
 ],
 ```
 
-Then read the parts list from the Aggregator Endpoint, you will get an
-empty result.
+Then read the PartsList from the Aggregator Endpoint, you will get an empty result.
 
 ```
 descriptor read parts-list 0x7283 0x1
@@ -70,21 +91,18 @@ Data = [
 Build and run Zigbee Bulb app on another ESP32-H2 board.
 
 ```
-cd ${IDF_PATH}/examples/zigbee/light_sample/light_bulb
-idf.py --preview set-target esp32h2
+cd ${IDF_PATH}/examples/zigbee/light_sample/HA_on_off_light
+idf.py set-target esp32h2
 idf.py -p <port> build flash monitor
 ```
 
-The Zigbee Bulb will be added to the Zigbee Network and a dynamic
-endpoint will be added on the Bridge device. You can read the parts list
-on Aggregator Endpoint again to get the dynamic endpoint ID.
+The Zigbee Bulb will be added to the Zigbee Network and a dynamic endpoint will be added on the Bridge device. You can read the PartsList on Aggregator Endpoint again to get the dynamic endpoint ID.
 
 ```
 descriptor read parts-list 0x7283 0x1
 ```
 
-The data will now contain the information of the connected Zigbee
-devices. Example:
+The data will now contain the information of the connected Zigbee devices. Example:
 
 ```
 Data = [
@@ -92,8 +110,7 @@ Data = [
 ],
 ```
 
-It means that the Zigbee Bulb is added as Endpoint 1 on the Zigbee
-Bridge. You can read the device type list on the dynamic endpoint.
+It means that the Zigbee Bulb is added as Endpoint 1 on the Zigbee Bridge. You can read the DeviceTypeList on the dynamic endpoint.
 
 ```
 descriptor read device-type-list 0x7283 2
@@ -113,7 +130,7 @@ DeviceTypeList: 2 entries
   }
 ```
 
-You can also read the cluster servers list on the dynamic endpoint.
+You can also read the cluster ServerList on the dynamic endpoint.
 
 ```
 descriptor read server-list 0x7283 0x1
