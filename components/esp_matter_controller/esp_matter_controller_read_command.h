@@ -102,8 +102,9 @@ private:
     chip::Callback::Callback<chip::OnDeviceConnectionFailure> on_device_connection_failure_cb;
 
     attribute_report_cb_t attribute_data_cb;
-    event_report_cb_t event_data_cb;
     read_done_cb_t read_done_cb;
+    event_report_cb_t event_data_cb;
+    
 };
 
 esp_err_t send_read_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id);
