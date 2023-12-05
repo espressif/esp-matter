@@ -269,7 +269,7 @@ static esp_err_t config_command_callback(const ConcreteCommandPath &command_path
 
     /* Get sizes */
     int user_id_index = 0;
-    int user_id_len = (int)(memchr(data, (int)ch, size) - data); /* (first ':') - (start of string) */
+    int user_id_len = (int)((char *)memchr(data, (int)ch, size) - data); /* (first ':') - (start of string) */
     int secret_key_index = (int)(&data[user_id_len] - data) + 2; /* (user id end) - (start of string) + 2 */
     int secret_key_len = size - secret_key_index;
     if (user_id_len <= 0 || user_id_len >= ESP_MATTER_RAINMAKER_MAX_DATA_LEN || secret_key_len <= 0 ||
