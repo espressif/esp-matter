@@ -416,10 +416,10 @@ static esp_err_t fetch_rainmaker_group_id(uint16_t endpoint_id, ScopedMemoryBuff
     http_len = esp_http_client_fetch_headers(client);
     http_status_code = esp_http_client_get_status_code(client);
     if ((http_len > 0) && (http_status_code == 200)) {
-        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize());
+        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize() - 1 );
         http_payload[http_len] = 0;
     } else {
-        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize());
+        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize() - 1);
         http_payload[http_len] = 0;
         ESP_LOGE(TAG, "Invalid response for %s", url);
         ESP_LOGE(TAG, "Status = %d, Data = %s", http_status_code, http_len > 0 ? http_payload.Get() : "None");
@@ -675,10 +675,10 @@ static esp_err_t issue_user_noc_request(ScopedMemoryBufferWithSize<char> &csr_pe
     http_status_code = esp_http_client_get_status_code(client);
     // Read response
     if ((http_len > 0) && (http_status_code == 200)) {
-        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize());
+        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize() - 1);
         http_payload[http_len] = 0;
     } else {
-        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize());
+        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize() - 1);
         http_payload[http_len] = 0;
         ESP_LOGE(TAG, "Invalid response for %s", url);
         ESP_LOGE(TAG, "Status = %d, Data = %s", http_status_code, http_len > 0 ? http_payload.Get() : "None");
@@ -1154,10 +1154,10 @@ static esp_err_t fetch_access_token(ScopedMemoryBufferWithSize<char> &refresh_to
     http_status_code = esp_http_client_get_status_code(client);
     // Read response
     if ((http_len > 0) && (http_status_code == 200)) {
-        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload_size);
+        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload_size - 1);
         http_payload[http_len] = 0;
     } else {
-        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload_size);
+        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload_size - 1);
         http_payload[http_len] = 0;
         ESP_LOGE(TAG, "Invalid response for %s", url);
         ESP_LOGE(TAG, "Status = %d, Data = %s", http_status_code, http_len > 0 ? http_payload.Get() : "None");
