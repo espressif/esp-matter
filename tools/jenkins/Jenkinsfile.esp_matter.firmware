@@ -1,0 +1,156 @@
+node('master') {
+    stage('Choose Docker') {
+        script {
+            checkout scm
+            product_choices = sh (script: 'for product in ${WORKSPACE}/examples/*/main; do echo $product | sed "s="${WORKSPACE}"/examples/==" | sed "s=/main==" ; done;', returnStdout:true).trim()
+            echo "Product Choices: ${product_choices}"
+        }
+    }
+}
+pipeline {
+    agent {
+        docker {
+            image 'registry.hub.docker.com/shripad97/esp_matter_jenkins:latest'
+            alwaysPull true
+        }
+    }
+    options {
+        timeout(time: 2, unit: 'HOURS')
+    }
+    parameters {
+        choice(name: 'product', choices: "${product_choices}", description: 'Product choices')
+        choice(name: 'chip', choices:['esp32c3', 'esp32', 'esp32h2', 'esp32c2','esp32c6'], description: 'Chips')
+        string(name: 'esp_matter_branch', defaultValue: 'main', description: 'Branch to be used for esp-matter')
+    }
+    environment {
+        REPOS_PATH="/opt/espressif"
+        IDF_PATH="${REPOS_PATH}/esp-idf"
+        ESP_MATTER_PATH="${REPOS_PATH}/esp-matter"
+        PROJECT_VER_SUFFIX="${BUILD_NUMBER}"
+    }
+    stages {
+        stage('Setup') {
+            steps {
+                script {
+                        currentBuild.displayName = "${BUILD_TAG}"
+                        currentBuild.description = "esp-matter Setup"
+                }
+                println('Running esp-matter Setup...')
+                catchError() {
+                    script {
+                        package_name = "esp_matter_firmware_${product}_${chip}"
+                        package_name = package_name + "_${BUILD_NUMBER}"
+                        env.PACKAGE_NAME = package_name
+                        env.PACKAGE_PATH = "${REPOS_PATH}/${PACKAGE_NAME}"
+                        echo "Package name: ${PACKAGE_NAME}"
+
+                        def esp_matter = load "${WORKSPACE}/tools/jenkins/esp_matter.groovy"
+                        esp_matter.setup_directories_firmware()
+                        esp_matter.setup_directories_script()
+                        esp_matter.setup_directories_tools()
+                        esp_matter.setup_environment()
+                    }
+                }
+            }
+            post {
+                success {
+                    echo 'Success for setup'
+                }
+                failure {
+                    echo 'Failure for setup'
+                    error('Failure for setup. Abort.')
+                }
+            }
+        }
+        stage("Build product") {
+            steps {
+                println('Build ${product} product binary for ${chip}.')
+                catchError() {
+                    script {
+                        def esp_matter = load "${WORKSPACE}/tools/jenkins/esp_matter.groovy"
+
+                        env.FIRMWARE_TYPE = "Evaluation"
+                        esp_matter.firmware_build()
+                        esp_matter.firmware_build_save()
+
+                    }
+                }
+            }
+            post {
+                success {
+                    echo 'Success for build product'
+                }
+                failure {
+                    echo 'Failure for build product'
+                    error('Failure for build product. Abort.')
+                }
+            }
+        }
+        stage("Support package") {
+            steps {
+                println('Create Support package.')
+                catchError() {
+                    script {
+                        def esp_matter = load "${WORKSPACE}/tools/jenkins/esp_matter.groovy"
+                        esp_matter.script_artifacts_create()
+                        esp_matter.tools_artifacts_create()
+                    }
+                }
+            }
+            post {
+                success {
+                    echo 'Success for script package'
+                }
+                failure {
+                    echo 'Failure for script package'
+                    error('Failure for script package. Abort.')
+                }
+            }
+        }
+        stage('Artifacts') {
+            steps {
+                println('Generating artifacts.')
+                catchError() {
+                    script {
+                        def esp_matter = load "${WORKSPACE}/tools/jenkins/esp_matter.groovy"
+                        esp_matter.artifacts_save()
+                    }
+                }
+            }
+            post {
+                success {
+                    archiveArtifacts artifacts: 'artifacts/*.tar.gz, artifacts/*.txt', fingerprint: true
+                    echo 'Success for artifacts'
+                }
+                failure {
+                    echo 'Failure for artifacts'
+                    error('Failure for artifacts. Abort.')
+                }
+            }
+        }
+        stage('Cleanup') {
+            steps {
+                echo 'Build Clean up.'
+            }
+            post {
+                always {
+                    cleanWs()
+                }
+                success {
+                    echo 'Success for cleanup'
+                }
+                failure {
+                    echo 'Failure for cleanup'
+                    error('Failure for cleanup. Abort.')
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Cleanup post'
+            cleanWs()
+        }
+    }
+}
+
