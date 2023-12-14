@@ -29,15 +29,18 @@ Connect the two SoCs via UART, below is an example setup with ESP32-S3 DevKitC a
 
 ### 1.2 Build and flash the RCP (ESP32-H2)
 
+Please use the [esp_zigbee_rcp](https://github.com/espressif/esp-zigbee-sdk/tree/main/examples/esp_zigbee_rcp) example in esp-zigbee-sdk repository to build the RCP for the ZigBee Bridge.
+
 ```
-cd ${IDF_PATH}/examples/zigbee/esp_zigbee_rcp/
+git clone https://github.com/espressif/esp-zigbee-sdk.git
+cd esp-zigbee-sdk/examples/esp_zigbee_rcp/
 idf.py set-target esp32h2
 idf.py -p <port> build flash
 ```
 
 **Note**: The two SoCs on the Zigbee Gateway DevKit board use USB ports while the standalone DevKit boards use UART ports.
 
-### 1.3 Build and flash the Bridge (ESP32S3)
+### 1.3 Build and flash the Bridge (ESP32-S3)
 
 For Standalone DevKit boards:
 
@@ -91,7 +94,7 @@ Data = [
 Build and run Zigbee Bulb app on another ESP32-H2 board.
 
 ```
-cd ${IDF_PATH}/examples/zigbee/light_sample/HA_on_off_light
+cd /path/to/esp-zigbee-sdk/examples/esp_zigbee_HA_sample/HA_on_off_light
 idf.py set-target esp32h2
 idf.py -p <port> build flash monitor
 ```
