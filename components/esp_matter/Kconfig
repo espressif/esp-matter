@@ -150,8 +150,8 @@ menu "ESP Matter"
 
     config ESP_MATTER_SCENES_TABLE_SIZE
         int "Scenes table size"
-        range 1 255
-        default 3
+        range 16 255
+        default 16
         help
             Size of the scenes table.
 

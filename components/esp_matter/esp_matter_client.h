@@ -242,7 +242,7 @@ namespace thermostat {
 namespace command {
 
 using transitions =
-    chip::app::DataModel::List<chip::app::Clusters::Thermostat::Structs::ThermostatScheduleTransition::Type>;
+    chip::app::DataModel::List<chip::app::Clusters::Thermostat::Structs::WeeklyScheduleTransitionStruct::Type>;
 
 using get_weekly_schedule_callback =
     void (*)(void *, const chip::app::Clusters::Thermostat::Commands::GetWeeklySchedule::Type::ResponseType &);

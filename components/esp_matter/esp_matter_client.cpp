@@ -1158,7 +1158,7 @@ esp_err_t send_setpoint_raise_lower(peer_device_t *remote_device, uint16_t remot
                                     uint8_t amount)
 {
     Thermostat::Commands::SetpointRaiseLower::Type command_data;
-    command_data.mode = chip::app::Clusters::Thermostat::SetpointAdjustMode(mode);
+    command_data.mode = chip::app::Clusters::Thermostat::SetpointRaiseLowerModeEnum(mode);
     command_data.amount = amount;
 
     chip::Controller::ThermostatCluster cluster(*remote_device->GetExchangeManager(),

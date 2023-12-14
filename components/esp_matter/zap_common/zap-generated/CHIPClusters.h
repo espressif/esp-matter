@@ -287,6 +287,34 @@ public:
     ~IcdManagementCluster() {}
 };
 
+class DLL_EXPORT TimerCluster : public ClusterBase
+{
+public:
+    TimerCluster(Messaging::ExchangeManager & exchangeManager, const SessionHandle & session, EndpointId endpoint) : ClusterBase(exchangeManager, session, endpoint) {}
+    ~TimerCluster() {}
+};
+
+class DLL_EXPORT OvenCavityOperationalStateCluster : public ClusterBase
+{
+public:
+    OvenCavityOperationalStateCluster(Messaging::ExchangeManager & exchangeManager, const SessionHandle & session, EndpointId endpoint) : ClusterBase(exchangeManager, session, endpoint) {}
+    ~OvenCavityOperationalStateCluster() {}
+};
+
+class DLL_EXPORT OvenModeCluster : public ClusterBase
+{
+public:
+    OvenModeCluster(Messaging::ExchangeManager & exchangeManager, const SessionHandle & session, EndpointId endpoint) : ClusterBase(exchangeManager, session, endpoint) {}
+    ~OvenModeCluster() {}
+};
+
+class DLL_EXPORT LaundryDryerControlsCluster : public ClusterBase
+{
+public:
+    LaundryDryerControlsCluster(Messaging::ExchangeManager & exchangeManager, const SessionHandle & session, EndpointId endpoint) : ClusterBase(exchangeManager, session, endpoint) {}
+    ~LaundryDryerControlsCluster() {}
+};
+
 class DLL_EXPORT ModeSelectCluster : public ClusterBase
 {
 public:
@@ -371,6 +399,13 @@ public:
     ~DishwasherAlarmCluster() {}
 };
 
+class DLL_EXPORT MicrowaveOvenModeCluster : public ClusterBase
+{
+public:
+    MicrowaveOvenModeCluster(Messaging::ExchangeManager & exchangeManager, const SessionHandle & session, EndpointId endpoint) : ClusterBase(exchangeManager, session, endpoint) {}
+    ~MicrowaveOvenModeCluster() {}
+};
+
 class DLL_EXPORT OperationalStateCluster : public ClusterBase
 {
 public:
@@ -397,6 +432,20 @@ class DLL_EXPORT ActivatedCarbonFilterMonitoringCluster : public ClusterBase
 public:
     ActivatedCarbonFilterMonitoringCluster(Messaging::ExchangeManager & exchangeManager, const SessionHandle & session, EndpointId endpoint) : ClusterBase(exchangeManager, session, endpoint) {}
     ~ActivatedCarbonFilterMonitoringCluster() {}
+};
+
+class DLL_EXPORT DeviceEnergyManagementCluster : public ClusterBase
+{
+public:
+    DeviceEnergyManagementCluster(Messaging::ExchangeManager & exchangeManager, const SessionHandle & session, EndpointId endpoint) : ClusterBase(exchangeManager, session, endpoint) {}
+    ~DeviceEnergyManagementCluster() {}
+};
+
+class DLL_EXPORT EnergyEvseCluster : public ClusterBase
+{
+public:
+    EnergyEvseCluster(Messaging::ExchangeManager & exchangeManager, const SessionHandle & session, EndpointId endpoint) : ClusterBase(exchangeManager, session, endpoint) {}
+    ~EnergyEvseCluster() {}
 };
 
 class DLL_EXPORT DoorLockCluster : public ClusterBase
