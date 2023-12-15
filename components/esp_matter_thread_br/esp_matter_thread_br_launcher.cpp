@@ -20,6 +20,9 @@
 #include <esp_openthread_lock.h>
 #include <esp_openthread_netif_glue.h>
 #include <esp_openthread_types.h>
+#if CONFIG_OPENTHREAD_BR_AUTO_UPDATE_RCP
+#include <esp_spiffs.h>
+#endif
 #include <esp_vfs_dev.h>
 #include <esp_vfs_eventfd.h>
 #include <memory>
@@ -82,6 +85,56 @@ esp_err_t cli_transmit_task_post(ot_cli_buffer_t &cli_buf)
 }
 #endif // CONFIG_OPENTHREAD_CLI
 
+#if CONFIG_OPENTHREAD_BR_AUTO_UPDATE_RCP
+#define RCP_VERSION_MAX_SIZE 100
+
+static void update_rcp(void)
+{
+    // Deinit uart to transfer UART to the serial loader
+    esp_openthread_rcp_deinit();
+    if (esp_rcp_update() == ESP_OK) {
+        esp_rcp_mark_image_verified(true);
+    } else {
+        esp_rcp_mark_image_verified(false);
+    }
+    esp_restart();
+}
+
+static void try_update_ot_rcp(void)
+{
+    ESP_LOGW(TAG, "Try to update openthread rcp");
+    char internal_rcp_version[RCP_VERSION_MAX_SIZE];
+    const char *running_rcp_version = otPlatRadioGetVersionString(esp_openthread_get_instance());
+
+    if (esp_rcp_load_version_in_storage(internal_rcp_version, sizeof(internal_rcp_version)) == ESP_OK) {
+        ESP_LOGI(TAG, "Internal RCP Version: %s", internal_rcp_version);
+        ESP_LOGI(TAG, "Running  RCP Version: %s", running_rcp_version);
+        if (strcmp(internal_rcp_version, running_rcp_version) == 0) {
+            esp_rcp_mark_image_verified(true);
+        } else {
+            update_rcp();
+        }
+    } else {
+        ESP_LOGI(TAG, "RCP firmware not found in storage, will reboot to try next image");
+        esp_rcp_mark_image_verified(false);
+        esp_restart();
+    }
+}
+
+static void rcp_failure_handler(void)
+{
+    esp_rcp_mark_image_unusable();
+    try_update_ot_rcp();
+    esp_rcp_reset();
+}
+
+esp_err_t thread_rcp_update_init(const esp_rcp_update_config_t *update_config)
+{
+    return esp_rcp_update_init(update_config);
+}
+
+#endif // CONFIG_OPENTHREAD_BR_AUTO_UPDATE_RCP
+
 static void ot_task_worker(void *aContext)
 {
     esp_openthread_platform_config_t *config = static_cast<esp_openthread_platform_config_t *>(aContext);
@@ -90,12 +143,18 @@ static void ot_task_worker(void *aContext)
     assert(openthread_netif != NULL);
 
     // Initialize the OpenThread stack
+#if CONFIG_OPENTHREAD_BR_AUTO_UPDATE_RCP
+    esp_openthread_register_rcp_failure_handler(rcp_failure_handler);
+#endif
     ESP_ERROR_CHECK(esp_openthread_init(config));
 #if CONFIG_OPENTHREAD_CLI
     otCliInit(esp_openthread_get_instance(), cli_output_callback, NULL);
 #endif
     // Initialize border routing features
     esp_openthread_lock_acquire(portMAX_DELAY);
+#if CONFIG_OPENTHREAD_BR_AUTO_UPDATE_RCP
+    try_update_ot_rcp();
+#endif
     ESP_ERROR_CHECK(esp_netif_attach(openthread_netif, esp_openthread_netif_glue_init(config)));
     ESP_ERROR_CHECK(esp_openthread_border_router_init());
 #if CONFIG_OPENTHREAD_LOG_LEVEL_DYNAMIC
@@ -120,6 +179,16 @@ static void ot_task_worker(void *aContext)
     vTaskDelete(NULL);
 }
 
+static esp_err_t init_spiffs(void)
+{
+#if CONFIG_OPENTHREAD_BR_AUTO_UPDATE_RCP
+    esp_vfs_spiffs_conf_t rcp_fw_conf = {
+        .base_path = "/rcp_fw", .partition_label = "rcp_fw", .max_files = 10, .format_if_mount_failed = false};
+    ESP_RETURN_ON_ERROR(esp_vfs_spiffs_register(&rcp_fw_conf), TAG, "Failed to mount rcp firmware storage");
+#endif
+    return ESP_OK;
+}
+
 esp_err_t thread_br_init(esp_openthread_platform_config_t *config)
 {
     static bool thread_br_initialized = false;
@@ -139,6 +208,7 @@ esp_err_t thread_br_init(esp_openthread_platform_config_t *config)
 #endif
     };
     ESP_RETURN_ON_ERROR(esp_vfs_eventfd_register(&eventfd_config), TAG, "Failed to register eventfd");
+    ESP_ERROR_CHECK(init_spiffs());
     esp_openthread_set_backbone_netif(esp_netif_get_handle_from_ifkey("WIFI_STA_DEF"));
 
     esp_openthread_platform_config_t *config_copy =

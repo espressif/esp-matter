@@ -10,3 +10,7 @@ endif()
 idf_component_register(SRCS             ${SRCS_LIST}
                        INCLUDE_DIRS     "."
                        REQUIRES         esp_matter openthread esp_netif vfs)
+
+if(CONFIG_OPENTHREAD_BR_AUTO_UPDATE_RCP)
+        idf_component_optional_requires(PRIVATE spiffs esp_rcp_update)
+endif()
