@@ -606,7 +606,7 @@ static void get_weekly_schedule_success_callback(
 }
 
 static constexpr uint8_t max_transitions_len = 10;
-using schedule_transition = chip::app::Clusters::Thermostat::Structs::ThermostatScheduleTransition::Type;
+using schedule_transition = chip::app::Clusters::Thermostat::Structs::WeeklyScheduleTransitionStruct::Type;
 
 static bool parse_schedule_transition_list(char *json_str, schedule_transition *transition_array,
                                            size_t &transitions_len)

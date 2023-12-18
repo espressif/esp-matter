@@ -85,6 +85,9 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
     case app::Clusters::DoorLock::Id:
         emberAfDoorLockClusterInitCallback(endpoint);
         break;
+    case app::Clusters::ElectricalEnergyMeasurement::Id:
+        emberAfElectricalEnergyMeasurementClusterInitCallback(endpoint);
+        break;
     case app::Clusters::ElectricalMeasurement::Id:
         emberAfElectricalMeasurementClusterInitCallback(endpoint);
         break;
@@ -153,6 +156,9 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
         break;
     case app::Clusters::MediaPlayback::Id:
         emberAfMediaPlaybackClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::MicrowaveOvenMode::Id:
+        emberAfMicrowaveOvenModeClusterInitCallback(endpoint);
         break;
     case app::Clusters::ModeSelect::Id:
         emberAfModeSelectClusterInitCallback(endpoint);
@@ -416,6 +422,11 @@ void __attribute__((weak)) emberAfDoorLockClusterInitCallback(EndpointId endpoin
     // To prevent warning
     (void) endpoint;
 }
+void __attribute__((weak)) emberAfElectricalEnergyMeasurementClusterInitCallback(EndpointId endpoint)
+{
+    // To prevent warning
+    (void) endpoint;
+}
 void __attribute__((weak)) emberAfElectricalMeasurementClusterInitCallback(EndpointId endpoint)
 {
     // To prevent warning
@@ -527,6 +538,11 @@ void __attribute__((weak)) emberAfMediaInputClusterInitCallback(EndpointId endpo
     (void) endpoint;
 }
 void __attribute__((weak)) emberAfMediaPlaybackClusterInitCallback(EndpointId endpoint)
+{
+    // To prevent warning
+    (void) endpoint;
+}
+void __attribute__((weak)) emberAfMicrowaveOvenModeClusterInitCallback(EndpointId endpoint)
 {
     // To prevent warning
     (void) endpoint;
