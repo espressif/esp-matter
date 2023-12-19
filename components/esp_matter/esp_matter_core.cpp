@@ -876,6 +876,7 @@ static void deinit_ble_if_commissioned(void)
                 return;
             }
             ESP_LOGI(TAG, "BLE deinit successful and memory reclaimed");
+            PostEvent(chip::DeviceLayer::DeviceEventType::kBLEDeinitialized);
         }
 #endif /* CONFIG_BT_ENABLED && CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING */
 }
