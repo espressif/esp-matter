@@ -119,7 +119,7 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
     cluster_id = ColorControl::Id;
     attribute_id = ColorControl::Attributes::CurrentHue::Id;
     attribute::get_val_raw(endpoint_id, cluster_id, attribute_id, &value, sizeof(uint8_t));
-    if (value == EMBER_ZCL_COLOR_MODE_CURRENT_HUE_AND_CURRENT_SATURATION) {
+    if (value == (uint8_t)ColorControl::ColorMode::kCurrentHueAndCurrentSaturation) {
         /* Setting hue */
         attribute_id = ColorControl::Attributes::CurrentHue::Id;
         attribute::get_val_raw(endpoint_id, cluster_id, attribute_id, &value, sizeof(uint8_t));
@@ -130,7 +130,7 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
         attribute::get_val_raw(endpoint_id, cluster_id, attribute_id, &value, sizeof(uint8_t));
         val = esp_matter_uint8(value);
         err |= app_driver_light_set_saturation(handle, &val);
-    } else if (value == EMBER_ZCL_COLOR_MODE_COLOR_TEMPERATURE) {
+    } else if (value == (uint8_t)ColorControl::ColorMode::kColorTemperature) {
         /* Setting temperature */
         attribute_id = ColorControl::Attributes::ColorTemperatureMireds::Id;
         attribute::get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value_u16, sizeof(uint16_t));
