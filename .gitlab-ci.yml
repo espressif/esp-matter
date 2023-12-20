@@ -232,7 +232,10 @@ build_esp_matter_examples_non_pytest_idf_v5_1:
   variables:
         IDF_VERSION: "6b1f40b9bfb91ec82fab4a60e5bfb4ca0c9b062f"
   script:
-    - *build_external_platform_example
+    # Disabling the external platform builds till we fix the build problem
+    # due to https://github.com/project-chip/connectedhomeip/pull/30531
+    # JIRA tracker: CON-942
+    # - *build_external_platform_example
     - *build_esp32c6_thread_example
 
     # mfg_test_app needs an secure boot signing key, generating one here

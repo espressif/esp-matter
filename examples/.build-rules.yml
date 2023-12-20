@@ -1,8 +1,11 @@
 # Documentation: .gitlab/ci/README.md#manifest-file-to-control-the-buildtest-apps
 
+# Disabling the external platform builds till we fix the build problem
+# due to https://github.com/project-chip/connectedhomeip/pull/30531
+# JIRA tracker: CON-942
 examples/blemesh_bridge:
   enable:
-    - if: IDF_TARGET in ["esp32", "esp32c3"]
+    - if: IDF_TARGET in [""]
       temporary: true
       reason: the other targets are not tested yet
 
