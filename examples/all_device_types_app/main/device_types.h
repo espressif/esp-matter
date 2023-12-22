@@ -37,6 +37,7 @@ enum device_type_enum {
     ESP_MATTER_LAUNDRY_WASHER,
     ESP_MATTER_DISH_WASHER,
     ESP_MATTER_SMOKE_CO_ALARM,
+    ESP_MATTER_WATER_LEAK_DETECTOR,
     ESP_MATTER_DEVICE_TYPE_MAX
 };
 
@@ -79,6 +80,7 @@ const device_type_name device_type_list[ESP_MATTER_DEVICE_TYPE_MAX] = {
 	{"robotic_vacuum_cleaner", ESP_MATTER_ROBOTIC_VACUUM_CLEANER},
 	{"laundry_washer", ESP_MATTER_LAUNDRY_WASHER},
 	{"dish_washer", ESP_MATTER_DISH_WASHER},
-	{"smoke_co_alarm", ESP_MATTER_SMOKE_CO_ALARM}
+	{"smoke_co_alarm", ESP_MATTER_SMOKE_CO_ALARM},
+	{"water_leak_detector", ESP_MATTER_WATER_LEAK_DETECTOR}
  };
 } /* namespace esp_matter */
