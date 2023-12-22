@@ -356,7 +356,8 @@ esp_err_t parse_string_from_tlv(TLVReader &tlv_data, ScopedMemoryBufferWithSize<
 }
 
 static esp_err_t fetch_rainmaker_group_id(uint16_t endpoint_id, ScopedMemoryBufferWithSize<char> &rainmaker_group_id,
-                                          uint64_t fabric_id)
+                                          uint64_t fabric_id, ScopedMemoryBufferWithSize<char> &start_id,
+                                          const int num_records, int &group_count)
 {
     esp_err_t ret = ESP_OK;
     char url[256] = {0};
@@ -374,10 +375,10 @@ static esp_err_t fetch_rainmaker_group_id(uint16_t endpoint_id, ScopedMemoryBuff
     ScopedMemoryBufferWithSize<char> http_payload;
     int http_len, http_status_code;
     jparse_ctx_t jctx;
-    int group_count;
     int group_index;
     char fabric_id_str[17];
     int rainmaker_group_id_len = 0;
+    int start_id_len = 0;
 
     ESP_RETURN_ON_FALSE(rainmaker_group_id.Get(), ESP_ERR_INVALID_ARG, TAG, "rainmaker_group_id cannot be NULL");
 
@@ -395,8 +396,10 @@ static esp_err_t fetch_rainmaker_group_id(uint16_t endpoint_id, ScopedMemoryBuff
     ESP_RETURN_ON_ERROR(attribute::access_token_attribute_get(endpoint_id, access_token.Get()), TAG,
                         "Failed to get access_token attribute value");
 
-    snprintf(url, sizeof(url), "%s/%s/%s?%s", endpoint_url.Get(), HTTP_API_VERSION, "user/node_group",
-             "node_list=false&sub_groups=false&node_details=false&is_matter=true&fabric_details=false");
+    snprintf(url, sizeof(url), "%s/%s/%s?%s&start_id=%s&num_records=%d", endpoint_url.Get(), HTTP_API_VERSION,
+             "user/node_group",
+             "node_list=false&sub_groups=false&node_details=false&is_matter=true&fabric_details=false", start_id.Get(),
+             num_records);
     client = esp_http_client_init(&config);
     ESP_RETURN_ON_FALSE(client, ESP_FAIL, TAG, "Failed to initialise HTTP Client.");
 
@@ -413,10 +416,10 @@ static esp_err_t fetch_rainmaker_group_id(uint16_t endpoint_id, ScopedMemoryBuff
     http_len = esp_http_client_fetch_headers(client);
     http_status_code = esp_http_client_get_status_code(client);
     if ((http_len > 0) && (http_status_code == 200)) {
-        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize());
+        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize() - 1 );
         http_payload[http_len] = 0;
     } else {
-        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize());
+        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize() - 1);
         http_payload[http_len] = 0;
         ESP_LOGE(TAG, "Invalid response for %s", url);
         ESP_LOGE(TAG, "Status = %d, Data = %s", http_status_code, http_len > 0 ? http_payload.Get() : "None");
@@ -424,6 +427,7 @@ static esp_err_t fetch_rainmaker_group_id(uint16_t endpoint_id, ScopedMemoryBuff
         goto close;
     }
     // Parse the response payload
+    ESP_LOGI(TAG, "http response:%s", http_payload.Get());
     ESP_GOTO_ON_FALSE(json_parse_start(&jctx, http_payload.Get(), http_len) == 0, ESP_FAIL, close, TAG,
                       "Failed to parse the http response json on json_parse_start");
     if (json_obj_get_array(&jctx, "groups", &group_count) != 0) {
@@ -441,6 +445,7 @@ static esp_err_t fetch_rainmaker_group_id(uint16_t endpoint_id, ScopedMemoryBuff
                         json_obj_get_string(&jctx, "group_id", rainmaker_group_id.Get(),
                                             rainmaker_group_id.AllocatedSize()) != 0) {
                         ESP_LOGE(TAG, "Failed to parse the group_id for fabric: 0x%llu", fabric_id);
+                        ret = ESP_FAIL;
                     } else {
                         rainmaker_group_id[rainmaker_group_id_len] = 0;
                     }
@@ -452,11 +457,15 @@ static esp_err_t fetch_rainmaker_group_id(uint16_t endpoint_id, ScopedMemoryBuff
         }
     }
     json_obj_leave_array(&jctx);
-    json_parse_end(&jctx);
-
+    // Get the next_id for the next fetch
     if (group_index == group_count) {
         ret = ESP_ERR_NOT_FOUND;
+        if (json_obj_get_strlen(&jctx, "next_id", &start_id_len) == 0 &&
+            json_obj_get_string(&jctx, "next_id", start_id.Get(), start_id.AllocatedSize()) == 0) {
+            start_id[start_id_len] = 0;
+        }
     }
+    json_parse_end(&jctx);
 
 close:
     esp_http_client_close(client);
@@ -589,13 +598,17 @@ static esp_err_t issue_user_noc_request(ScopedMemoryBufferWithSize<char> &csr_pe
     int cert_count;
     int noc_pem_len;
     size_t noc_der_len;
-    char noc_user_id[17];
+    char matter_node_id[17] = {0};
+    char noc_user_id[17] = {0};
     ScopedMemoryBufferWithSize<char> noc_pem;
     ScopedMemoryBufferWithSize<char> noc_pem_formatted;
     ScopedMemoryBufferWithSize<unsigned char> noc_der;
     ScopedMemoryBufferWithSize<unsigned char> noc_matter_cert;
     MutableByteSpan matter_cert_noc;
     auto &fabric_table = chip::Server::GetInstance().GetFabricTable();
+    const chip::FabricInfo *fabric_info = fabric_table.FindFabricWithIndex(fabric_index);
+    snprintf(matter_node_id, 17, "%016llX", fabric_info->GetNodeId());
+    matter_node_id[16] = 0;
 
     ScopedMemoryBufferWithSize<char> endpoint_url;
     ScopedMemoryBufferWithSize<char> access_token;
@@ -638,11 +651,13 @@ static esp_err_t issue_user_noc_request(ScopedMemoryBufferWithSize<char> &csr_pe
     json_gen_obj_set_string(&jstr, "operation", "add");
     json_gen_push_array(&jstr, "csr_requests");
     json_gen_start_object(&jstr);
-    json_gen_obj_set_string(&jstr, "csr", csr_pem_formatted.Get());
+    json_gen_obj_set_string(&jstr, "role", "secondary");
+    json_gen_obj_set_string(&jstr, "matter_node_id", matter_node_id);
     json_gen_obj_set_string(&jstr, "group_id", rainmaker_group_id.Get());
+    json_gen_obj_set_string(&jstr, "csr", csr_pem_formatted.Get());
     json_gen_end_object(&jstr);
     json_gen_pop_array(&jstr);
-    json_gen_obj_set_string(&jstr, "csr_type", "user");
+    json_gen_obj_set_string(&jstr, "csr_type", "controller");
     json_gen_end_object(&jstr);
     json_gen_str_end(&jstr);
     ESP_LOGI(TAG, "http write payload: %s", http_payload.Get());
@@ -660,10 +675,10 @@ static esp_err_t issue_user_noc_request(ScopedMemoryBufferWithSize<char> &csr_pe
     http_status_code = esp_http_client_get_status_code(client);
     // Read response
     if ((http_len > 0) && (http_status_code == 200)) {
-        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize());
+        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize() - 1);
         http_payload[http_len] = 0;
     } else {
-        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize());
+        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize() - 1);
         http_payload[http_len] = 0;
         ESP_LOGE(TAG, "Invalid response for %s", url);
         ESP_LOGE(TAG, "Status = %d, Data = %s", http_status_code, http_len > 0 ? http_payload.Get() : "None");
@@ -741,18 +756,28 @@ static esp_err_t install_user_noc(uint16_t endpoint_id, uint8_t fabric_index)
         chip::Server::GetInstance().GetFabricTable().FindFabricWithIndex(fabric_index);
     uint64_t fabric_id = fabric_info->GetFabricId();
     ScopedMemoryBufferWithSize<char> rainmaker_group_id;
+    ScopedMemoryBufferWithSize<char> next_group_id;
     ScopedMemoryBufferWithSize<char> csr_pem;
     size_t csr_pem_len = 1024;
+    esp_err_t err = ESP_OK;
 
     // Alloc memory for ScopedMemoryBuffers
     rainmaker_group_id.Calloc(ESP_MATTER_RAINMAKER_MAX_GROUP_ID_LEN);
     ESP_RETURN_ON_FALSE(rainmaker_group_id.Get(), ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for rainmaker_group_id");
+    next_group_id.Calloc(ESP_MATTER_RAINMAKER_MAX_GROUP_ID_LEN);
+    ESP_RETURN_ON_FALSE(next_group_id.Get(), ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for next_group_id");
     csr_pem.Calloc(csr_pem_len);
     ESP_RETURN_ON_FALSE(csr_pem.Get(), ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for csr_buf");
 
     // Fetch ther rainmaker_group_id
-    ESP_RETURN_ON_ERROR(fetch_rainmaker_group_id(endpoint_id, rainmaker_group_id, fabric_id), TAG,
-                        "Failed to fetch rainmaker_group_id");
+    int group_count = 0;
+    const int num_records = 4;
+    strcpy(next_group_id.Get(), "0");
+    do {
+        err = fetch_rainmaker_group_id(endpoint_id, rainmaker_group_id, fabric_id, next_group_id, num_records,
+                                       group_count);
+    } while (err == ESP_ERR_NOT_FOUND && group_count == num_records);
+    ESP_RETURN_ON_ERROR(err, TAG, "Failed to fetch rainmaker_group_id");
     // Update the rainmaker_group_id
     ESP_RETURN_ON_ERROR(attribute::rainmaker_group_id_attribute_update(endpoint_id, rainmaker_group_id.Get()), TAG,
                         "Failed to update rainmaker_group_id");
@@ -1129,10 +1154,10 @@ static esp_err_t fetch_access_token(ScopedMemoryBufferWithSize<char> &refresh_to
     http_status_code = esp_http_client_get_status_code(client);
     // Read response
     if ((http_len > 0) && (http_status_code == 200)) {
-        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload_size);
+        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload_size - 1);
         http_payload[http_len] = 0;
     } else {
-        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload_size);
+        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload_size - 1);
         http_payload[http_len] = 0;
         ESP_LOGE(TAG, "Invalid response for %s", url);
         ESP_LOGE(TAG, "Status = %d, Data = %s", http_status_code, http_len > 0 ? http_payload.Get() : "None");
