@@ -1,6 +1,14 @@
 set(src_dirs_list )
 set(include_dirs_list )
 set(exclude_srcs_list )
+set(requires_list chip esp_matter esp_matter_console spiffs)
+
+idf_build_get_property(rest_api_enabled REST_API_ENABLED)
+if (${rest_api_enabled})
+    list(APPEND requires_list rmaker_rest_apis)
+else()
+    set(rest_api_enabled FALSE)
+endif()
 
 if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
     list(APPEND src_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/core"
@@ -32,6 +40,6 @@ endif()
 idf_component_register(SRC_DIRS ${src_dirs_list}
     EXCLUDE_SRCS ${exclude_srcs_list}
     INCLUDE_DIRS ${include_dirs_list}
-    REQUIRES chip esp_matter esp_matter_console json_parser spiffs esp_http_client json_generator)
+    REQUIRES ${requires_list})
 
 idf_build_set_property(COMPILE_OPTIONS "-Wno-write-strings" APPEND)

@@ -15,35 +15,26 @@
 #pragma once
 
 #include <esp_err.h>
+#include <matter_device.h>
 
 namespace esp_matter {
 namespace controller {
 namespace device_mgr {
 
-#define ESP_MATTER_DEVICE_MAX_ENDPOINT 8
-#define ESP_MATTER_CONTROLLER_MAX_DEVICE_NAME_LEN 32
-
-typedef struct endpoint_entry {
-    uint16_t endpoint_id;
-    uint32_t device_type_id;
-    char device_name[ESP_MATTER_CONTROLLER_MAX_DEVICE_NAME_LEN];
-} endpoint_entry_t;
-
-typedef struct matter_device {
-    uint64_t node_id;
-    char rainmaker_node_id[24];
-    uint8_t endpoint_count;
-    endpoint_entry_t endpoints[ESP_MATTER_DEVICE_MAX_ENDPOINT];
-    bool reachable;
-    bool is_rainmaker_device;
-    struct matter_device *next;
-} matter_device_t;
+using endpoint_entry_t = endpoint_entry_t;
+using matter_device_t = matter_device_t;
 
 typedef void (*device_list_update_callback_t)(void);
 
-void free_device_list(matter_device_t *dev_list);
+inline void free_device_list(matter_device_t *dev_list)
+{
+    free_matter_device_list(dev_list);
+}
 
-void print_device_list(matter_device_t *dev_list);
+inline void print_device_list(matter_device_t *dev_list)
+{
+    print_matter_device_list(dev_list);
+}
 
 matter_device_t *get_device_list_clone();
 

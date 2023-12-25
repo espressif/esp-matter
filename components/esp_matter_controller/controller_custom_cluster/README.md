@@ -10,15 +10,15 @@ The Matter Controller Cluster offers an interface for managing the ESP Matter Co
 
 ## 2. Attributes
 
-| ID     | Name                    | Type           | Constranint | Quality | Default | Access | Conformance |
-|--------|-------------------------|----------------|-------------|---------|---------|--------|-------------|
-| 0x0000 | **RefreshToken**        | string         |             | N       |         | R V    | M           |
-| 0x0001 | **AccessToken**         | string         |             | N       |         | R V    | M           |
-| 0x0002 | **Authorized**          | bool           |             | N       | false   | R V    | M           |
-| 0x0003 | **UserNOCInstalled**    | bool           |             | N       | false   | R V    | M           |
-| 0x0004 | **EndpointURL**         | string         |             | N       |         | R V    | M           |
-| 0x0005 | **RainmakerGroupId**    | string         |             | N       |         | R V    | M           |
-| 0x0006 | **UserNOCFabricIndex**  | uint8_t        |             | N       |         | R V    | M           |
+| ID     | Name                     | Type    | Constranint | Quality | Default | Access | Conformance |
+|--------|--------------------------|---------|-------------|---------|---------|--------|-------------|
+| 0x0000 | **RefreshToken**         | string  |             | N       |         | R V    | M           |
+| 0x0001 | **RefreshTokenVerified** | bool    |             | N       | false   | R V    | M           |
+| 0x0002 | **Authorized**           | bool    |             | N       | false   | R V    | M           |
+| 0x0003 | **UserNOCInstalled**     | bool    |             | N       | false   | R V    | M           |
+| 0x0004 | **EndpointURL**          | string  |             | N       |         | R V    | M           |
+| 0x0005 | **RainmakerGroupId**     | string  |             | N       |         | R V    | M           |
+| 0x0006 | **UserNOCFabricIndex**   | uint8_t |             | N       |         | R V    | M           |
 
 ### 2.1 RefreshToken Attribute
 
@@ -26,9 +26,9 @@ This attribute stores the refresh token. For the HTTP REST Authenticated APIs, t
 
 Note: The access_token validity will expire after 1 hour.
 
-### 2.2 AccessToken Attribute
+### 2.2 RefreshTokenVerified Attribute
 
-This attribute stores the access token. It will be updated after the controller is authorized successfully. For the HTTP REST Authenticated APIs, the access_token will be passed in "Authorization" HTTP header as the authentication token. If the HTTP REST Authenticated APIs fail with decription "Unauthorized", the access_token will be updated.
+This attribute indicates whether current refresh_token is verified. It will be updated to **True** after success authorization and set to **False** after receiving ResetRefreshToken.
 
 ### 2.3 Authorized Attribute
 
