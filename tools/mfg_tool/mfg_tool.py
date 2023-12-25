@@ -236,6 +236,7 @@ def use_dac_from_args(args):
     out_cert_der = os.sep.join([OUT_DIR['top'], UUIDs[0], 'internal', 'DAC_cert.der'])
     out_private_key_bin = out_cert_der.replace('cert.der', 'private_key.bin')
     out_public_key_bin = out_cert_der.replace('cert.der', 'public_key.bin')
+    out_private_key_der = out_cert_der.replace('cert.der', 'key.der')
 
     convert_x509_cert_from_pem_to_der(args.dac_cert, out_cert_der)
     logging.info('Generated DAC certificate in DER format: {}'.format(out_cert_der))
@@ -243,8 +244,9 @@ def use_dac_from_args(args):
     generate_keypair_bin(args.dac_key, out_private_key_bin, out_public_key_bin)
     logging.info('Generated DAC private key in binary format: {}'.format(out_private_key_bin))
     logging.info('Generated DAC public key in binary format: {}'.format(out_public_key_bin))
+    convert_private_key_from_pem_to_der(args.dac_key, out_private_key_der)
 
-    return out_cert_der, out_private_key_bin, out_public_key_bin
+    return out_cert_der, out_private_key_bin, out_public_key_bin, out_private_key_der
 
 
 def setup_out_dirs(vid, pid, count):
