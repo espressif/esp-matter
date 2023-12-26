@@ -15,6 +15,9 @@
 #pragma once
 
 #include <esp_openthread.h>
+#if CONFIG_OPENTHREAD_BR_AUTO_UPDATE_RCP
+#include <esp_rcp_update.h>
+#endif
 
 #define OPENTHREAD_CLI_BUFFER_LENGTH 255
 
@@ -26,6 +29,10 @@ typedef struct {
 } ot_cli_buffer_t;
 
 esp_err_t thread_br_init(esp_openthread_platform_config_t *config);
+
+#if CONFIG_OPENTHREAD_BR_AUTO_UPDATE_RCP
+esp_err_t thread_rcp_update_init(const esp_rcp_update_config_t *update_config);
+#endif
 
 esp_err_t set_thread_enabled(bool enabled);
 
