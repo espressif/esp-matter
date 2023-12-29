@@ -129,7 +129,9 @@ This section gives some examples on how to generate factory partition binary whi
     | **Device unique data** (Discriminator, Verifier, Serial Number, etc)
     | **Manufacturing information** (Vendor name, Product name, Hardware version, etc)
 
-**Note:** the items listed in the examples are all mandatory, some common manufacturing information could be removed if they are hard coded in the firmware.
+.. note::
+
+    The items listed in the examples are all mandatory, some common manufacturing information could be removed if they are hard coded in the firmware.
 
 This is the example to generate factory images after pre-provisioning:
 

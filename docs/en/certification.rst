@@ -37,11 +37,11 @@ A test CD signed by the test CD signing keys in `connectedhomeip <https://github
                               --cert credentials/test/certification-declaration/Chip-Test-CD-Signing-Cert.pem \
                               --out path/to/test_CD_file
 
-Note1: The option ``--certification-type`` must be 1 for the Matter Certification Test.
+.. note::
 
-Note2: The options ``--vendor_id`` (vendor_id) should be the Vendor ID (VID) that the vendor receives from CSA, and ``--product_id`` (product_id) could be the Product ID (PID) choosed by the vendor. They should be the same as the attributes' value in basic information cluster.
-
-Note3: If the product uses the DACs and PAI certifications provided by a trusted third-party certification authority, the VID and PID in DAC are different from the ones in basic information cluster. Then the ``--dac-origin-vendor-id`` and ``--dac-origin-product-id`` options should be added in the command generating the test CD file.
+    - The option ``--certification-type`` must be 1 for the Matter Certification Test.
+    - The options ``--vendor_id`` (vendor_id) should be the Vendor ID (VID) that the vendor receives from CSA, and ``--product_id`` (product_id) could be the Product ID (PID) choosed by the vendor. They should be the same as the attributes' value in basic information cluster.
+    - If the product uses the DACs and PAI certifications provided by a trusted third-party certification authority, the VID and PID in DAC are different from the ones in basic information cluster. Then the ``--dac-origin-vendor-id`` and ``--dac-origin-product-id`` options should be added in the command generating the test CD file.
 
 3.2.2 Certificates and Keys
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -86,7 +86,9 @@ After getting the PAA certificate and key, the factory partition binary files wi
                   -cd /path/to/CD_file -v 0x131B --vendor_name Espressif -p 0x1234 \
                   --product-name Test-light --hw-ver 1 --hw-ver-str v1.0
 
-Note: For more information about the arguments, you can use ``./mfg_tool.py --help``
+.. note::
+
+    For more information about the arguments, you can use ``./mfg_tool.py --help``
 
 The option ``-n`` (count) is the number of generated binaries. In the above command, mfg_tool will generate PAI certificate and key and then use them to generate ``count`` different DACs and keys. It will use the generated certificates and keys to generate ``count`` factory partition binaries with different DACs, discriminators, and setup pincodes. Flash the factory binary to the device's NVS partition. Then the device will send the vendor's PAI certificate and DAC to the commissioner during commissioning.
 
@@ -115,9 +117,10 @@ The option ``--paa-trust-store-path`` should be added when using chip-tool to pa
      cd path/to/connnectedhomeip/out/host/
      ./chip-tool pairing ble-thread 0x7283 hex:<thread-dataset> <setup-pin-code> <discriminator> --paa-trust-store-path <paa-certificate-path>
 
-Notes1: ``pincode`` and ``discriminator`` are in the /out/<vid>-<pid>/<UUID>/<uuid>-onb_codes.csv.
+.. note::
 
-Notes2: PAA certificate should be converted to DER format using ``chip-cert`` and stored in ``paa-certificate-path``.
+    - ``pincode`` and ``discriminator`` are in the /out/<vid>-<pid>/<UUID>/<uuid>-onb_codes.csv.
+    - PAA certificate should be converted to DER format using ``chip-cert`` and stored in ``paa-certificate-path``.
 
 - Automated Tests (Verified by UI-Automated and UI-SemiAutomated)
 
@@ -160,7 +163,9 @@ Here are two ways to generate the OTA image.
 
 Enable ``Generate Matter OTA image`` in ``→ Component config → CHIP Device Layer → Matter OTA Image``, set ``Device Vendor Id`` and ``Device Product Id`` in ``→ Component config → CHIP Device Layer → Device Identification Options``, and edit the ``PROJECT_VER`` and the ``PROJECT_VER_NUMBER`` in the project's CMakelists. Build the example and the OTA image will be generated in the build path with the app binary file.
 
-Note: The ``PROJECT_VER_NUMBER`` should always be incremental. It should be higher than the version number of firmware to be updated.
+.. note::
+
+   The ``PROJECT_VER_NUMBER`` must always be incremental. It must be higher than the version number of firmware to be updated.
 
 3.3.2 Using ota_image_tool script
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -177,7 +182,9 @@ We should also edit the ``PROJECT_VER`` and the ``PROJECT_VER_NUMBER`` in the pr
     ./ota_image_tool.py create -v <vendor-id> -p <product-id> -vn 2 -vs v1.1 -da sha256 \
                                /path/to/original_app_bin /path/to/out_ota_bin
 
-Note: the ``-vn`` (version-number) and ``-vs`` (version-string) should match the values in the project's CMakelists.
+.. note::
+
+    The ``-vn`` (version-number) and ``-vs`` (version-string) should match the values in the project's CMakelists.
 
 3.4 PICS files
 --------------
@@ -272,7 +279,9 @@ In the console of ot-cli, discover the product IP address.
     HostAddress:fd11:66:0:0:22ae:27fe:13ac:54df TTL:6915
     TXT:[SII=35303030, SAI=333030, T=30] TTL:6913
 
-Notes: ``177AC531F48BE736-0000000000000190`` can be get with command ``avahi-browse -rt _matter._tcp``. ``177AC531F48BE736`` is the fabric ID and ``0000000000000190`` is the node ID.
+.. note::
+
+   ``177AC531F48BE736-0000000000000190`` can be get with command ``avahi-browse -rt _matter._tcp``. ``177AC531F48BE736`` is the fabric ID and ``0000000000000190`` is the node ID.
 
 Ping the IP address of the Wi-Fi device.
 
