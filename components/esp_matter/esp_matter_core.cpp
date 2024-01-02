@@ -969,7 +969,6 @@ static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
     }
 
     setup_providers();
-    ConnectivityMgr().SetBLEAdvertisingEnabled(true);
     // ConnectivityMgr().SetWiFiAPMode(ConnectivityManager::kWiFiAPMode_Enabled);
     if (PlatformMgr().StartEventLoopTask() != CHIP_NO_ERROR) {
         chip::Platform::MemoryShutdown();
