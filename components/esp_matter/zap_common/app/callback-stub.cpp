@@ -91,6 +91,9 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
     case app::Clusters::ElectricalMeasurement::Id:
         emberAfElectricalMeasurementClusterInitCallback(endpoint);
         break;
+    case app::Clusters::EnergyEvse::Id:
+        emberAfEnergyEvseClusterInitCallback(endpoint);
+        break;
     case app::Clusters::EthernetNetworkDiagnostics::Id:
         emberAfEthernetNetworkDiagnosticsClusterInitCallback(endpoint);
         break;
@@ -135,6 +138,9 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
         break;
     case app::Clusters::KeypadInput::Id:
         emberAfKeypadInputClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::LaundryDryerControls::Id:
+        emberAfLaundryDryerControlsClusterInitCallback(endpoint);
         break;
     case app::Clusters::LaundryWasherControls::Id:
         emberAfLaundryWasherControlsClusterInitCallback(endpoint);
@@ -432,6 +438,11 @@ void __attribute__((weak)) emberAfElectricalMeasurementClusterInitCallback(Endpo
     // To prevent warning
     (void) endpoint;
 }
+void __attribute__((weak)) emberAfEnergyEvseClusterInitCallback(EndpointId endpoint)
+{
+    // To prevent warning
+    (void) endpoint;
+}
 void __attribute__((weak)) emberAfEthernetNetworkDiagnosticsClusterInitCallback(EndpointId endpoint)
 {
     // To prevent warning
@@ -503,6 +514,11 @@ void __attribute__((weak)) emberAfIlluminanceMeasurementClusterInitCallback(Endp
     (void) endpoint;
 }
 void __attribute__((weak)) emberAfKeypadInputClusterInitCallback(EndpointId endpoint)
+{
+    // To prevent warning
+    (void) endpoint;
+}
+void __attribute__((weak)) emberAfLaundryDryerControlsClusterInitCallback(EndpointId endpoint)
 {
     // To prevent warning
     (void) endpoint;

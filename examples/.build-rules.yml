@@ -5,7 +5,7 @@
 # JIRA tracker: CON-942
 examples/blemesh_bridge:
   enable:
-    - if: IDF_TARGET in [""]
+    - if: IDF_TARGET in ["esp32", "esp32c3"]
       temporary: true
       reason: the other targets are not tested yet
 
