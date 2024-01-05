@@ -1,4 +1,4 @@
-6. API Reference
+7. API Reference
 ================
 
 .. toctree::
