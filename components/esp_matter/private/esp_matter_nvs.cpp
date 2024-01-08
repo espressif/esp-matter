@@ -45,6 +45,9 @@ static void get_attribute_key(uint16_t endpoint_id, uint32_t cluster_id, uint32_
      attribute_key[14] = 0;
 }
 
+static esp_err_t nvs_store_val(const char *nvs_namespace, const char *attribute_key, const esp_matter_attr_val_t & val);
+static esp_err_t nvs_erase_val(const char *nvs_namespace, const char *attribute_key);
+
 static esp_err_t nvs_get_val(const char *nvs_namespace, const char *attribute_key, esp_matter_attr_val_t & val)
 {
     nvs_handle_t handle;
@@ -71,13 +74,18 @@ static esp_err_t nvs_get_val(const char *nvs_namespace, const char *attribute_ke
                 val.val.a.n = len;
                 val.val.a.t = len + (val.val.a.t - val.val.a.s);
                 val.val.a.s = len;
-                nvs_get_blob(handle, attribute_key, buffer, &len);
+                err = nvs_get_blob(handle, attribute_key, buffer, &len);
             }
         }
-    } else {
-        // Handling how to get attributes in NVS based on config option.
-#if CONFIG_ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE
-        // This switch case handles primitive data types
+
+        nvs_close(handle);
+        return err;
+    }
+
+    // This switch case handles primitive data types
+    // if value is stored as primitive data type return it, else check if its stored as blob
+    // and convert it to primitive data type
+    {
         switch (val.type)
         {
             case ESP_MATTER_VAL_TYPE_BOOLEAN:
@@ -173,17 +181,35 @@ static esp_err_t nvs_get_val(const char *nvs_namespace, const char *attribute_ke
             default:
             {
                 // handle the case where the type is not recognized
-                err = ESP_ERR_INVALID_ARG;
+                nvs_close(handle);
                 ESP_LOGE(TAG, "Invalid attribute type: %u", val.type);
-                break;
+                return ESP_ERR_INVALID_ARG;
             }
         }
-#else
+    }
+
+    // Found the value as primitive data type
+    if (err == ESP_OK) {
+        nvs_close(handle);
+        return err;
+    }
+
+    if (err == ESP_ERR_NVS_NOT_FOUND) {
+        // Read as blob, if found, write as primitive data type
         size_t len = sizeof(esp_matter_attr_val_t);
         err = nvs_get_blob(handle, attribute_key, &val, &len);
-#endif // CONFIG_ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE
+        if (err == ESP_OK) {
+            // found it as a blob, close the handle
+            nvs_close(handle);
+
+            // nvs_store_val always stores primitive value using primitive data type APIs
+            err = nvs_store_val(nvs_namespace, attribute_key, val);
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "Failed to store as primitive data type");
+            }
+        }
     }
-    nvs_close(handle);
+
     return err;
 }
 
@@ -203,14 +229,12 @@ static esp_err_t nvs_store_val(const char *nvs_namespace, const char *attribute_
         /* Store only if value is not NULL */
         if (val.val.a.b) {
             err = nvs_set_blob(handle, attribute_key, val.val.a.b, val.val.a.s);
-            nvs_commit(handle);
         } else {
             err = ESP_OK;
         }
     } else {
-        // Handling how to store attributes in NVS based on config option.
-#if CONFIG_ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE
         // This switch case handles primitive data types
+        // always store values as primitive data type
         switch (val.type)
         {
             case ESP_MATTER_VAL_TYPE_BOOLEAN:
@@ -306,12 +330,8 @@ static esp_err_t nvs_store_val(const char *nvs_namespace, const char *attribute_
                 break;
             }
         }
-#else
-        err = nvs_set_blob(handle, attribute_key, &val, sizeof(esp_matter_attr_val_t));
-#endif // CONFIG_ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE
-
-        nvs_commit(handle);
     }
+    nvs_commit(handle);
     nvs_close(handle);
     return err;
 }
