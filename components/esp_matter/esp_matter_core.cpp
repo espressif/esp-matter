@@ -941,6 +941,7 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
                 return;
             }
             ESP_LOGI(TAG, "BLE deinit successful and memory reclaimed");
+            PostEvent(chip::DeviceLayer::DeviceEventType::kBLEDeinitialized);
         }
         break;
 #endif /* CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING */
