@@ -19,7 +19,7 @@ import("${chip_root}/src/platform/device.gni")
 
 declare_args() {
   # By default use default/example implementation of CommissionableDataProvider,
-  # DeviceAttestationCredentialsProvider and DeviceInstanceInforProvider
+  # DeviceAttestationCredentialsProvider and DeviceInstanceInfoProvider
   chip_use_transitional_commissionable_data_provider = true
   chip_use_factory_data_provider = false
   chip_use_device_info_provider = false
@@ -29,10 +29,6 @@ declare_args() {
   chip_bt_bluedroid_enabled = true
   chip_max_discovered_ip_addresses = 5
   chip_enable_route_hook = false
-}
-
-config("ESP32_custom_include") {
-  include_dirs = [ "../../" ]
 }
 
 buildconfig_header("custom_buildconfig") {
@@ -57,6 +53,12 @@ buildconfig_header("custom_buildconfig") {
     "CHIP_PLATFORM_CONFIG_INCLUDE=<platform/ESP32_custom/CHIPPlatformConfig.h>",
     "INET_CONFIG_INCLUDE=<platform/ESP32_custom/InetPlatformConfig.h>",
     "SYSTEM_PLATFORM_CONFIG_INCLUDE=<platform/ESP32_custom/SystemPlatformConfig.h>",
+    "EXTERNAL_CONFIGURATIONMANAGERIMPL_HEADER=<platform/ESP32_custom/ConfigurationManagerImpl.h>",
+    "EXTERNAL_CHIPDEVICEPLATFORMEVENT_HEADER=<platform/ESP32_custom/CHIPDevicePlatformEvent.h>",
+    "EXTERNAL_CONNECTIVITYMANAGERIMPL_HEADER=<platform/ESP32_custom/ConnectivityManagerImpl.h>",
+    "EXTERNAL_BLEMANAGERIMPL_HEADER=<platform/ESP32_custom/BLEManagerImpl.h>",
+    "EXTERNAL_KEYVALUESTOREMANAGERIMPL_HEADER=<platform/ESP32_custom/KeyValueStoreManagerImpl.h>",
+    "EXTERNAL_PLATFORMMANAGERIMPL_HEADER=<platform/ESP32_custom/PlatformManagerImpl.h>",
     "CHIP_CONFIG_SOFTWARE_VERSION_NUMBER=${chip_config_software_version_number}",
     "CHIP_DEVICE_CONFIG_MAX_DISCOVERED_IP_ADDRESSES=${chip_max_discovered_ip_addresses}",
   ]
@@ -69,10 +71,6 @@ buildconfig_header("custom_buildconfig") {
 group("platform_buildconfig") {
   public_deps = [
     ":custom_buildconfig",
-  ]
-
-  public_configs = [
-    ":ESP32_custom_include",
   ]
 }
 
@@ -111,10 +109,6 @@ static_library("ESP32_custom") {
     "${chip_root}/src/crypto",
     "${chip_root}/src/platform:platform_base",
     ":platform_buildconfig",
-  ]
-
-  public_configs = [
-    ":ESP32_custom_include",
   ]
 
   if (chip_enable_ota_requestor) {

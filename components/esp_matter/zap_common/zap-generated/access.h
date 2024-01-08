@@ -65,6 +65,9 @@
     /* Cluster: Door Lock, Attribute: WrongCodeEntryLimit, Privilege: view */ \
     /* Cluster: Door Lock, Attribute: UserCodeTemporaryDisableTime, Privilege: view */ \
     /* Cluster: Door Lock, Attribute: RequirePINforRemoteOperation, Privilege: view */ \
+    /* Cluster: Energy EVSE, Attribute: UserMaximumChargeCurrent, Privilege: view */ \
+    /* Cluster: Energy EVSE, Attribute: RandomizationDelayWindow, Privilege: view */ \
+    /* Cluster: Energy EVSE, Attribute: ApproximateEVEfficiency, Privilege: view */ \
     /* Cluster: Window Covering, Attribute: Mode, Privilege: view */ \
     /* Cluster: Pump Configuration and Control, Attribute: LifetimeRunningHours, Privilege: view */ \
     /* Cluster: Pump Configuration and Control, Attribute: LifetimeEnergyConsumed, Privilege: view */ \
@@ -131,6 +134,9 @@
     /* Cluster: Door Lock, Attribute: WrongCodeEntryLimit, Privilege: view */ \
     /* Cluster: Door Lock, Attribute: UserCodeTemporaryDisableTime, Privilege: view */ \
     /* Cluster: Door Lock, Attribute: RequirePINforRemoteOperation, Privilege: view */ \
+    /* Cluster: Energy EVSE, Attribute: UserMaximumChargeCurrent, Privilege: view */ \
+    /* Cluster: Energy EVSE, Attribute: RandomizationDelayWindow, Privilege: view */ \
+    /* Cluster: Energy EVSE, Attribute: ApproximateEVEfficiency, Privilege: view */ \
     /* Cluster: Window Covering, Attribute: Mode, Privilege: view */ \
     /* Cluster: Pump Configuration and Control, Attribute: LifetimeRunningHours, Privilege: view */ \
     /* Cluster: Pump Configuration and Control, Attribute: LifetimeEnergyConsumed, Privilege: view */ \
@@ -197,6 +203,9 @@
     /* Cluster: Door Lock, Attribute: WrongCodeEntryLimit, Privilege: view */ \
     /* Cluster: Door Lock, Attribute: UserCodeTemporaryDisableTime, Privilege: view */ \
     /* Cluster: Door Lock, Attribute: RequirePINforRemoteOperation, Privilege: view */ \
+    /* Cluster: Energy EVSE, Attribute: UserMaximumChargeCurrent, Privilege: view */ \
+    /* Cluster: Energy EVSE, Attribute: RandomizationDelayWindow, Privilege: view */ \
+    /* Cluster: Energy EVSE, Attribute: ApproximateEVEfficiency, Privilege: view */ \
     /* Cluster: Window Covering, Attribute: Mode, Privilege: view */ \
     /* Cluster: Pump Configuration and Control, Attribute: LifetimeRunningHours, Privilege: view */ \
     /* Cluster: Pump Configuration and Control, Attribute: LifetimeEnergyConsumed, Privilege: view */ \
@@ -260,6 +269,9 @@
     0x00000101, /* Cluster: Door Lock, Attribute: UserCodeTemporaryDisableTime, Privilege: administer */ \
     0x00000101, /* Cluster: Door Lock, Attribute: RequirePINforRemoteOperation, Privilege: administer */ \
     0x0000005C, /* Cluster: Smoke CO Alarm, Attribute: SmokeSensitivityLevel, Privilege: manage */ \
+    0x00000099, /* Cluster: Energy EVSE, Attribute: UserMaximumChargeCurrent, Privilege: manage */ \
+    0x00000099, /* Cluster: Energy EVSE, Attribute: RandomizationDelayWindow, Privilege: manage */ \
+    0x00000099, /* Cluster: Energy EVSE, Attribute: ApproximateEVEfficiency, Privilege: manage */ \
     0x00000102, /* Cluster: Window Covering, Attribute: Mode, Privilege: manage */ \
     0x00000200, /* Cluster: Pump Configuration and Control, Attribute: LifetimeRunningHours, Privilege: manage */ \
     0x00000200, /* Cluster: Pump Configuration and Control, Attribute: LifetimeEnergyConsumed, Privilege: manage */ \
@@ -331,6 +343,9 @@
     0x00000031, /* Cluster: Door Lock, Attribute: UserCodeTemporaryDisableTime, Privilege: administer */ \
     0x00000033, /* Cluster: Door Lock, Attribute: RequirePINforRemoteOperation, Privilege: administer */ \
     0x0000000B, /* Cluster: Smoke CO Alarm, Attribute: SmokeSensitivityLevel, Privilege: manage */ \
+    0x00000009, /* Cluster: Energy EVSE, Attribute: UserMaximumChargeCurrent, Privilege: manage */ \
+    0x0000000A, /* Cluster: Energy EVSE, Attribute: RandomizationDelayWindow, Privilege: manage */ \
+    0x00000027, /* Cluster: Energy EVSE, Attribute: ApproximateEVEfficiency, Privilege: manage */ \
     0x00000017, /* Cluster: Window Covering, Attribute: Mode, Privilege: manage */ \
     0x00000015, /* Cluster: Pump Configuration and Control, Attribute: LifetimeRunningHours, Privilege: manage */ \
     0x00000017, /* Cluster: Pump Configuration and Control, Attribute: LifetimeEnergyConsumed, Privilege: manage */ \
@@ -402,6 +417,9 @@
     kMatterAccessPrivilegeAdminister, /* Cluster: Door Lock, Attribute: UserCodeTemporaryDisableTime, Privilege: administer */ \
     kMatterAccessPrivilegeAdminister, /* Cluster: Door Lock, Attribute: RequirePINforRemoteOperation, Privilege: administer */ \
     kMatterAccessPrivilegeManage, /* Cluster: Smoke CO Alarm, Attribute: SmokeSensitivityLevel, Privilege: manage */ \
+    kMatterAccessPrivilegeManage, /* Cluster: Energy EVSE, Attribute: UserMaximumChargeCurrent, Privilege: manage */ \
+    kMatterAccessPrivilegeManage, /* Cluster: Energy EVSE, Attribute: RandomizationDelayWindow, Privilege: manage */ \
+    kMatterAccessPrivilegeManage, /* Cluster: Energy EVSE, Attribute: ApproximateEVEfficiency, Privilege: manage */ \
     kMatterAccessPrivilegeManage, /* Cluster: Window Covering, Attribute: Mode, Privilege: manage */ \
     kMatterAccessPrivilegeManage, /* Cluster: Pump Configuration and Control, Attribute: LifetimeRunningHours, Privilege: manage */ \
     kMatterAccessPrivilegeManage, /* Cluster: Pump Configuration and Control, Attribute: LifetimeEnergyConsumed, Privilege: manage */ \

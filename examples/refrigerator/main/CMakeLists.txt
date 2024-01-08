@@ -2,7 +2,7 @@ set(SRC_DIRS_LIST       "."
                         "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src"
    )
 
-set(INCLUDE_DIRS_LIST   "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/include" )
+set(INCLUDE_DIRS_LIST   "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/include")
 
 set(exclude_srcs_list   "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/binding-handler.cpp"
                         "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/bridged-actions-stub.cpp"
@@ -12,6 +12,7 @@ set(exclude_srcs_list   "${MATTER_SDK_PATH}/examples/all-clusters-app/all-cluste
                         "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/resource-monitoring-instances.cpp"
                         "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/smco-stub.cpp"
                         "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/static-supported-modes-manager.cpp"
+                        "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/energy-evse-stub.cpp"
    )
 
 idf_component_register(SRC_DIRS          ${SRC_DIRS_LIST}
