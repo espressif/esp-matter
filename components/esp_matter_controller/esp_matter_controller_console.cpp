@@ -52,6 +52,41 @@ static esp_err_t controller_help_handler(int argc, char **argv)
     return ESP_OK;
 }
 
+#if CONFIG_ENABLE_ESP32_BLE_CONTROLLER
+static int char_to_int(char ch)
+{
+    if ('A' <= ch && ch <= 'F') {
+        return 10 + ch - 'A';
+    } else if ('a' <= ch && ch <= 'f') {
+        return 10 + ch - 'a';
+    } else if ('0' <= ch && ch <= '9') {
+        return ch - '0';
+    }
+    return -1;
+}
+
+static bool convert_hex_str_to_bytes(const char *hex_str, uint8_t *bytes, uint8_t &bytes_len)
+{
+    if (!hex_str) {
+        return false;
+    }
+    size_t hex_str_len = strlen(hex_str);
+    if (hex_str_len == 0 || hex_str_len % 2 != 0 || hex_str_len / 2 > bytes_len) {
+        return false;
+    }
+    bytes_len = hex_str_len / 2;
+    for (size_t i = 0; i < bytes_len; ++i) {
+        int byte_h = char_to_int(hex_str[2 * i]);
+        int byte_l = char_to_int(hex_str[2 * i + 1]);
+        if (byte_h < 0 || byte_l < 0) {
+            return false;
+        }
+        bytes[i] = (byte_h << 4) + byte_l;
+    }
+    return true;
+}
+#endif // CONFIG_ENABLE_ESP32_BLE_CONTROLLER
+
 #if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 static esp_err_t controller_pairing_handler(int argc, char **argv)
 {
@@ -67,37 +102,44 @@ static esp_err_t controller_pairing_handler(int argc, char **argv)
         uint64_t nodeId = string_to_uint64(argv[1]);
         uint32_t pincode = string_to_uint32(argv[2]);
         return controller::pairing_on_network(nodeId, pincode);
-    } else if (strncmp(argv[0], "ble-wifi", sizeof("ble-wifi")) == 0) {
 #if CONFIG_ENABLE_ESP32_BLE_CONTROLLER
-    	if (argc != 6) {
+    } else if (strncmp(argv[0], "ble-wifi", sizeof("ble-wifi")) == 0) {
+        if (argc != 6) {
             return ESP_ERR_INVALID_ARG;
         }
-
-	char *ssid = NULL, *pwd = NULL;
-
-        ssid = strndup(argv[2], strlen(argv[2]) + 1);
-        pwd = strndup(argv[3], strlen(argv[3]) + 1);
-	if (ssid == NULL || pwd == NULL) {
-            return ESP_ERR_NO_MEM;
-        }
-
         uint64_t nodeId = string_to_uint64(argv[1]);
         uint32_t pincode = string_to_uint32(argv[4]);
-	uint16_t disc = string_to_uint16(argv[5]);
+        uint16_t disc = string_to_uint16(argv[5]);
 
-        esp_err_t result = controller::pairing_ble_wifi(nodeId, pincode, disc, ssid, pwd);
+        esp_err_t result = controller::pairing_ble_wifi(nodeId, pincode, disc, argv[2], argv[3]);
         if (result != ESP_OK) {
             ESP_LOGE(TAG, "Pairing over ble failed");
-	}
-	if (ssid != NULL) free(ssid);
-        if (pwd != NULL) free(pwd);
-
-	return result;
-#else
-        return ESP_ERR_NOT_SUPPORTED;
-#endif
+        }
+        return result;
     } else if (strncmp(argv[0], "ble-thread", sizeof("ble-thread")) == 0) {
+        if (argc != 5) {
+            return ESP_ERR_INVALID_ARG;
+        }
+        uint8_t dataset_tlvs_buf[254];
+        uint8_t dataset_tlvs_len = sizeof(dataset_tlvs_buf);
+        if (!convert_hex_str_to_bytes(argv[2], dataset_tlvs_buf, dataset_tlvs_len)) {
+            return ESP_ERR_INVALID_ARG;
+        }
+        uint64_t node_id = string_to_uint64(argv[1]);
+        uint32_t pincode = string_to_uint32(argv[3]);
+        uint16_t disc = string_to_uint16(argv[4]);
+
+        esp_err_t result = controller::pairing_ble_thread(node_id, pincode, disc, dataset_tlvs_buf, dataset_tlvs_len);
+        if (result != ESP_OK) {
+            ESP_LOGE(TAG, "Pairing over ble failed");
+        }
+        return result;
+#else // if !CONFIG_ENABLE_ESP32_BLE_CONTROLLER
+    } else if (strncmp(argv[0], "ble-wifi", sizeof("ble-wifi")) == 0 ||
+               strncmp(argv[0], "ble-thread", sizeof("ble-thread")) == 0) {
+        ESP_LOGE(TAG, "Please enable ENABLE_ESP32_BLE_CONTROLLER to use pairing %s command", argv[0]);
         return ESP_ERR_NOT_SUPPORTED;
+#endif // CONFIG_ENABLE_ESP32_BLE_CONTROLLER
     }
     return ESP_ERR_INVALID_ARG;
 }
@@ -288,7 +330,7 @@ esp_err_t controller_register_commands()
             .description = "Pairing a node.\n"
                            "\tUsage: controller pairing onnetwork [nodeid] [pincode] OR\n"
                            "\tcontroller pairing ble-wifi [nodeid] [ssid] [password] [pincode] [discriminator] OR\n"
-                           "\tcontroller pairing ble-thread [nodeid] [pincode] [discriminator] [dataset]",
+                           "\tcontroller pairing ble-thread [nodeid] [dataset] [pincode] [discriminator]",
             .handler = controller_pairing_handler,
         },
         {

@@ -1171,6 +1171,7 @@ For example we want to use mode_select cluster in light example.
 This section introduces the Matter controller example. Now this example supports the following features of the standard Matter controller:
 
 - BLE-WiFi pairing
+- BLE-Thread pairing
 - On-network pairing
 - Invoke cluster commands
 - Read attributes commands
@@ -1202,7 +1203,12 @@ The ``pairing`` commands are used for commissioning end-devices and are availabl
       matter esp wifi connect <ssid> <password>
       matter esp controller pairing ble-wifi <node_id> <ssid> <password> <pincode> <discriminator>
 
-- Ble-thread pairing. This commissioning method is still not supported on current controller example.
+- Ble-thread pairing. This pairing method is supported for ESP32S3. Before you execute this commissioning method, connect the controller to the Wi-Fi network in which there is a Thread Border Router (BR). And please ensure that the end-device is in commissioning mode. You can use the command ``matter esp wifi connect`` to connect the controller to your Wi-Fi network. Get the dataset tlvs of the Thread network that the Thread BR is in. Then we can start the pairing.
+
+  ::
+
+     matter esp wifi connect <ssid> <password>
+     matter esp controller pairing ble-thread <node_id> <dataset_tlvs> <pincode> <discriminator>
 
 2.9.3 Cluster commands
 ~~~~~~~~~~~~~~~~~~~~~~

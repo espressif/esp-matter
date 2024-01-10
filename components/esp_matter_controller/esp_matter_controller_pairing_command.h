@@ -81,7 +81,9 @@ private:
 
 esp_err_t pairing_on_network(NodeId node_id, uint32_t pincode);
 #if CONFIG_ENABLE_ESP32_BLE_CONTROLLER
-esp_err_t pairing_ble_wifi(NodeId node_id, uint32_t pincode, uint16_t disc, const char * ssid, const char * pwd);
+esp_err_t pairing_ble_wifi(NodeId node_id, uint32_t pincode, uint16_t disc, const char *ssid, const char *pwd);
+esp_err_t pairing_ble_thread(NodeId node_id, uint32_t pincode, uint16_t disc, uint8_t *dataset_tlvs,
+                             uint8_t dataset_len);
 #endif
 
 } // namespace controller
