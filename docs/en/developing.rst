@@ -21,13 +21,6 @@ host. Linux and Mac OS-X are the supported development hosts in Matter, the reco
 
 Additionally, we also support developing on Windows Host using WSL.
 
-The Prerequisites for ESP-IDF and Matter:
-
-- Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v5.1.1/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
-- Please get the `Prerequisites <https://github.com/espressif/connectedhomeip/blob/v1.1-branch/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
-
-
-
 
 2.1.1.1 Windows 10
 ^^^^^^^^^^^^^^^^^^
@@ -52,8 +45,17 @@ Before cloning the repositories please confirm that the following Prerequisites 
 
 The Prerequisites for ESP-IDF and Matter:
 
-- Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v5.0.1/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
-- Please get the `Prerequisites <https://github.com/espressif/connectedhomeip/blob/v1.1-branch/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
+- Please get the `Prerequisites for ESP-IDF`_. For beginners, please check `step by step installation guide`_ for esp-idf.
+- Please get the `Prerequisites for Matter`_.
+
+.. note::
+
+    ``git clone`` command accepts the optional argument ``--jobs N``, which can significantly speed up the
+    process by parallelizing submodule cloning. Consider using this option when cloning repositories.
+    It is also applicable when using ``./scripts/checkout_submodules.py`` to clone Matter submodules.
+
+Cloning esp-idf:
+
    ::
 
       git clone --recursive https://github.com/espressif/esp-idf.git
@@ -98,7 +100,10 @@ so if you want to do a shallow clone use the following command:
         ./install.sh
         cd ..
 
-Note: The modules for platform ``linux`` or ``darwin`` are required for the host tools building.
+
+.. note::
+
+    The modules for platform ``linux`` or ``darwin`` are required for the host tools building.
 
 To clone the esp-matter repository with all the submodules, use the following command:
 
@@ -113,17 +118,19 @@ To clone the esp-matter repository with all the submodules, use the following co
    ./install.sh
    cd ..
 
-Note: If it runs into some errors like:
+.. note::
 
-   ::
+    If it runs into some errors like:
+    ::
 
       dial tcp 108.160.167.174:443: connect: connection refused
 
-   ::
+    ::
 
       ConnectionResetError: [Errno 104] Connection reset by peer
 
-It's probably caused by some network connectivity issue, a VPN is required for most of the cases.
+    It's probably caused by some network connectivity issue, a VPN is required for most of the cases.
+
 
 2.1.3 Configuring the Environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -228,15 +235,15 @@ Choose IDF target.
 
    idf.py flash monitor
 
--  Note: If you are getting build errors like:
+.. note::
 
-   ::
+    If you are getting build errors like:
+    ::
 
       ERROR: This script was called from a virtual environment, can not create a virtual environment again
           
-   Run:
-
-   ::
+    It can be fixed by running below command:
+    ::
 
       pip install -r $IDF_PATH/requirements.txt
 
@@ -1025,7 +1032,10 @@ Factory partition binary will be generated at the below path. Please check for <
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Flashing secure cert partition. Please check partition table for ``esp_secure_cert`` partition address.
-NOTE: Flash only if not flashed on manufacturing line.
+
+.. note::
+
+    Flash only if not flashed on manufacturing line.
 
 ::
 
@@ -1092,9 +1102,11 @@ Please follow the steps below to enable and use encrypted application images for
 - Please refer to the `guide <https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/esp32/ota.md#encrypted-ota>`__
   in the connectedhomeip repository for instructions on how to generate a private key, encrypted OTA image, and Matter OTA image.
 
-NOTE: There are several ways to store the private key, such as hardcoding it in the firmware, embedding it as a text
-file, or reading it from the NVS. We have demonstrated the use of the private key by embedding it as a text file in the
-light example.
+.. note::
+
+    There are several ways to store the private key, such as hardcoding it in the firmware, embedding it as a text
+    file, or reading it from the NVS. We have demonstrated the use of the private key by embedding it as a text file in the
+    light example.
 
 2.8 Mode Select
 ---------------
@@ -1222,9 +1234,10 @@ If you want to utilize commands not list above, you can use ``esp_matter::contro
 
       matter esp controller invoke-cmd <node-id | group-id> <endpoint-id> <cluster-id> <command-id> <command-data>
 
-**Note**: To use multicast commands, the ``group-id`` should begin with the ``0xFFFFFFFFFFFF`` prefix. And the ``endpoint-id`` is still required for multicast commands even if it will be ignored.
+.. note::
 
-**Note**: You can obtain the order of the command data parameters with an empty ``command-data``.
+    - To use multicast commands, the ``group-id`` should begin with the ``0xFFFFFFFFFFFF`` prefix. And the ``endpoint-id`` is still required for multicast commands even if it will be ignored.
+    - You can obtain the order of the command data parameters with an empty ``command-data``.
 
 For KeySetWrite command in Group Key Management cluster, the ``command-data`` should include an argument in JSON format:
 
@@ -1295,15 +1308,18 @@ If you want to send the writing-attribute commands to the clusters not listed ab
 
 - Send the write-attribute command:
 
-   ::
+    ::
 
       matter esp controller write-attr <node-id> <endpoint-id> <cluster-id> <attribute-id> <attribute-value>
 
-**Note**: ``attribute_value`` could be formatted as JSON string, as an example, for Binding attribute of Binding cluster, you should use the follow JSON structure as the ``attribute_value`` : ``"[{\"node\":1, \"endpoint\":1, \"cluster\":6}]"``
+.. note::
 
-   ::
+    ``attribute_value`` could be formatted as JSON string, as an example, for Binding attribute of Binding cluster,
+    you should use the follow JSON structure as the ``attribute_value`` : ``"[{\"node\":1, \"endpoint\":1, \"cluster\":6}]"``
 
-      matter esp controller write-attr <node_id> <endpoint_id> 30 0 "[{\"node\":1, \"endpoint\":1, \"cluster\":6}]"
+    ::
+
+        matter esp controller write-attr <node_id> <endpoint_id> 30 0 "[{\"node\":1, \"endpoint\":1, \"cluster\":6}]"
 
 2.9.6 Subscribe commands
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1369,3 +1385,8 @@ The controller example offers two options for the Attestation Trust Storage whic
 - ``Attestation Trust Store - Spiffs``
 
   Read the PAA root certificates from the spiffs partition. The PAA der files should be placed in ``paa_cert`` directory so that they can be flashed into the spiffs partition of the controller.
+
+
+.. _`step by step installation guide`: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/linux-macos-setup.html
+.. _`Prerequisites for ESP-IDF`: https://docs.espressif.com/projects/esp-idf/en/v5.0.1/esp32/get-started/index.html#step-1-install-prerequisites
+.. _`Prerequisites for Matter`: https://github.com/espressif/connectedhomeip/blob/v1.1-branch/docs/guides/BUILDING.md#prerequisites

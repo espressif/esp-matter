@@ -330,13 +330,13 @@ the following configuration options:
 - Software Version String
     Set the ``CONFIG_APP_PROJECT_VER`` option. (Application manager -> Get the project version from Kconfig)
 
-**NOTES:**
+.. note::
 
-- Ensure you use the correct versioning scheme when building the OTA image.
-- Verify that the software version number in the firmware matches the one specified in the Matter OTA header.
-- The software version number of the OTA image must be numerically higher.
-- If you need to perform a functional rollback, the version number in the OTA image must be higher than the current
-  version, even though the binary content may match the previous OTA image.
+    - Ensure you use the correct versioning scheme when building the OTA image.
+    - Verify that the software version number in the firmware matches the one specified in the Matter OTA header.
+    - The software version number of the OTA image must be numerically higher.
+    - If you need to perform a functional rollback, the version number in the OTA image must be higher than the current
+      version, even though the binary content may match the previous OTA image.
 
 
 A1.13 Stuck at "Solving dependencies requirements ....."
