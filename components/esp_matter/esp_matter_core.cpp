@@ -1354,6 +1354,17 @@ esp_err_t set_override_callback(attribute_t *attribute, callback_t callback)
         return ESP_ERR_INVALID_ARG;
     }
     _attribute_t *current_attribute = (_attribute_t *)attribute;
+    if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY ||
+        current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+        current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
+        current_attribute->val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
+        current_attribute->val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING) {
+        // The override callback might allocate memory and we have no way to free the memory
+        // TODO: Add memory-safe override callback for these attribute types
+        ESP_LOGE(TAG, "Cannot set override callback for attribute 0x%" PRIX32 " on cluster 0x%" PRIX32,
+                 current_attribute->attribute_id, current_attribute->cluster_id);
+        return ESP_ERR_NOT_SUPPORTED;
+    }
     current_attribute->override_callback = callback;
     current_attribute->flags |= ATTRIBUTE_FLAG_OVERRIDE;
     return ESP_OK;
