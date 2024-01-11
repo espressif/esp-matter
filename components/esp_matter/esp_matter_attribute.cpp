@@ -73,6 +73,12 @@ attribute_t *create_parts_list(cluster_t *cluster, uint8_t *value, uint16_t leng
                                          esp_matter_array(value, length, count));
 }
 
+attribute_t *create_tag_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, Descriptor::Attributes::TagList::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array(value, length, count));
+}
+
 } /* attribute */
 } /* descriptor */
 

@@ -754,6 +754,17 @@ Examples:
 
       command_t *command = level_control::command::create_move_to_level(cluster);
 
+2.4.2.4 Features
+^^^^^^^^^^^^^^^^^^
+Optional features which are applicable to a cluster can also be added.
+
+- feature: taglist: Descriptor cluster:
+
+  ::
+
+      cluster_t* cluster = cluster::get(endpoint, Descriptor::Id);
+      descriptor::feature::taglist::add(cluster);
+
 2.4.3 Adding custom data model fields
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
