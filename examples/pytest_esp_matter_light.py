@@ -11,7 +11,7 @@ from typing import Tuple
 from pytest_embedded import Dut
 
 CURRENT_DIR_LIGHT = str(pathlib.Path(__file__).parent)+'/light'
-CHIP_TOOL_DIR = str(pathlib.Path(__file__).parent)+'/../connectedhomeip/connectedhomeip/examples/chip-tool'
+CHIP_TOOL_EXE = str(pathlib.Path(__file__).parent)+ '/../connectedhomeip/connectedhomeip/out/host/chip-tool'
 OT_BR_EXAMPLE_PATH = str(pathlib.Path(__file__).parent)+'/../esp-thread-br/examples/basic_thread_border_router'
 pytest_build_dir = CURRENT_DIR_LIGHT
 pytest_matter_thread_dir = CURRENT_DIR_LIGHT+'|'+OT_BR_EXAMPLE_PATH
@@ -33,7 +33,7 @@ def test_matter_commissioning_c3(dut:Dut) -> None:
     light.expect(r'chip\[DL\]\: Configuring CHIPoBLE advertising', timeout=20)
     # Start commissioning
     time.sleep(5)
-    command = CHIP_TOOL_DIR+'/out/chip-tool pairing ble-wifi 1 ChipTEH2 chiptest123 20202021 3840'
+    command = CHIP_TOOL_EXE + ' pairing ble-wifi 1 ChipTEH2 chiptest123 20202021 3840'
     out_str = subprocess.getoutput(command)
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))
@@ -41,7 +41,7 @@ def test_matter_commissioning_c3(dut:Dut) -> None:
       assert False
     # Use toggle command to turn-off the light
     time.sleep(3)
-    command = CHIP_TOOL_DIR+'/out/chip-tool onoff toggle 1 1'
+    command = CHIP_TOOL_EXE + ' onoff toggle 1 1'
     out_str = subprocess.getoutput(command)
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))
@@ -49,7 +49,7 @@ def test_matter_commissioning_c3(dut:Dut) -> None:
       assert False
     # Use toggle command to turn-on the light
     time.sleep(5)
-    command = CHIP_TOOL_DIR+'/out/chip-tool onoff toggle 1 1'
+    command = CHIP_TOOL_EXE + ' onoff toggle 1 1'
     out_str = subprocess.getoutput(command)
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))
@@ -72,7 +72,7 @@ def test_matter_commissioning_c6(dut:Dut) -> None:
     light.expect(r'chip\[DL\]\: Configuring CHIPoBLE advertising', timeout=20)
     # Start commissioning
     time.sleep(5)
-    command = CHIP_TOOL_DIR+'/out/chip-tool pairing ble-wifi 1 ChipTEH2 chiptest123 20202021 3840'
+    command = CHIP_TOOL_EXE + ' pairing ble-wifi 1 ChipTEH2 chiptest123 20202021 3840'
     out_str = subprocess.getoutput(command)
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))
@@ -80,7 +80,7 @@ def test_matter_commissioning_c6(dut:Dut) -> None:
       assert False
     # Use toggle command to turn-off the light
     time.sleep(3)
-    command = CHIP_TOOL_DIR+'/out/chip-tool onoff toggle 1 1'
+    command = CHIP_TOOL_EXE + ' onoff toggle 1 1'
     out_str = subprocess.getoutput(command)
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))
@@ -88,7 +88,7 @@ def test_matter_commissioning_c6(dut:Dut) -> None:
       assert False
     # Use toggle command to turn-on the light
     time.sleep(5)
-    command = CHIP_TOOL_DIR+'/out/chip-tool onoff toggle 1 1'
+    command = CHIP_TOOL_EXE + ' onoff toggle 1 1'
     out_str = subprocess.getoutput(command)
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))
@@ -213,7 +213,7 @@ def test_matter_commissioning_h2(dut:Tuple[Dut, Dut]) -> None:
     print(dataset)
     # Start commissioning
     time.sleep(2)
-    command = CHIP_TOOL_DIR+"/out/chip-tool pairing ble-thread 1 hex:{} ".format(dataset.strip())+"20202021 3840"
+    command = CHIP_TOOL_EXE + " pairing ble-thread 1 hex:{} ".format(dataset.strip())+"20202021 3840"
     out_str = subprocess.getoutput(command)
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))
@@ -221,7 +221,7 @@ def test_matter_commissioning_h2(dut:Tuple[Dut, Dut]) -> None:
       assert False
     # Use toggle command to turn-off the light
     time.sleep(2)
-    command = CHIP_TOOL_DIR+'/out/chip-tool onoff toggle 1 1'
+    command = CHIP_TOOL_EXE + ' onoff toggle 1 1'
     out_str = subprocess.getoutput(command)
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))
@@ -229,7 +229,7 @@ def test_matter_commissioning_h2(dut:Tuple[Dut, Dut]) -> None:
       assert False
     # Use toggle command to turn-on the light
     time.sleep(2)
-    command = CHIP_TOOL_DIR+'/out/chip-tool onoff toggle 1 1'
+    command = CHIP_TOOL_EXE + ' onoff toggle 1 1'
     out_str = subprocess.getoutput(command)
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))

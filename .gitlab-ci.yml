@@ -93,13 +93,6 @@ variables:
   - ./install.sh
   - . ./export.sh
 
-.build_chip_tool: &build_chip_tool
-    - cd ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip
-    - source scripts/activate.sh
-    - cd ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/examples/chip-tool
-    - gn gen out
-    - ninja -C out
-
 .build_matter_examples: &build_matter_examples
     - export MATTER_EXAMPLES_PATH=$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/examples
     - cd $MATTER_EXAMPLES_PATH/all-clusters-app/esp32
@@ -160,7 +153,7 @@ build_esp_matter_examples_pytest_C6_idf_v5_1:
       - "examples/**/build*/config/sdkconfig.json"
       - "examples/**/build*/bootloader/*.bin"
       - "examples/**/build*/partition_table/*.bin"
-      - "connectedhomeip/connectedhomeip/examples/chip-tool/out/chip-tool"
+      - "connectedhomeip/connectedhomeip/out/host/chip-tool"
     when: always
     expire_in: 4 days
   variables:
@@ -169,7 +162,6 @@ build_esp_matter_examples_pytest_C6_idf_v5_1:
     - cd ${ESP_MATTER_PATH}
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --pytest_c6
-    - *build_chip_tool
 
 build_esp_matter_examples_pytest_H2_idf_v5_1:
   extends:
@@ -193,7 +185,7 @@ build_esp_matter_examples_pytest_H2_idf_v5_1:
       - "${BR_PATH}/examples/basic_thread_border_router/build/bootloader/*.bin"
       - "${BR_PATH}/examples/basic_thread_border_router/build/config/sdkconfig.json"
       - "${BR_PATH}/examples/basic_thread_border_router/build/flasher_args.json"
-      - "connectedhomeip/connectedhomeip/examples/chip-tool/out/chip-tool"
+      - "connectedhomeip/connectedhomeip/out/host/chip-tool"
     when: always
     expire_in: 4 days
   variables:
@@ -204,7 +196,6 @@ build_esp_matter_examples_pytest_H2_idf_v5_1:
     - cd ${ESP_MATTER_PATH}
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --pytest_h2
-    - *build_chip_tool
 
 build_esp_matter_examples_non_pytest_idf_v5_1:
   extends:
@@ -241,7 +232,7 @@ build_esp_matter_examples_pytest_C3_idf_v4_4:
       - "examples/**/build*/config/sdkconfig.json"
       - "examples/**/build*/bootloader/*.bin"
       - "examples/**/build*/partition_table/*.bin"
-      - "connectedhomeip/connectedhomeip/examples/chip-tool/out/chip-tool"
+      - "connectedhomeip/connectedhomeip/out/host/chip-tool"
     when: always
     expire_in: 4 days
   variables:
@@ -250,7 +241,6 @@ build_esp_matter_examples_pytest_C3_idf_v4_4:
     - cd ${ESP_MATTER_PATH}
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --pytest_c3
-    - *build_chip_tool
 
 pytest_esp32c3_esp_matter_dut:
   stage: target_test
