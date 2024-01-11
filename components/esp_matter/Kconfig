@@ -20,6 +20,13 @@ menu "ESP Matter"
         help
             The NVS Partition name for ESP Matter to store the NONVOLATILE attribues
 
+    config ESP_MATTER_DEFERRED_ATTR_PERSISTENCE_TIME_MS
+        int "ESP Matter deferred attribute persistence time (ms)"
+        default 3000
+        help
+            Some non-volatile attributes might be changed frequently, which might result in rapid flash wearout.
+            For those attributes, set the flag 'ATTRIBUTE_FLAG_DEFERRED' to defer the flash-writing for the time.
+
     choice ESP_MATTER_DAC_PROVIDER
         prompt "DAC Provider options"
         default FACTORY_PARTITION_DAC_PROVIDER if ENABLE_ESP32_FACTORY_DATA_PROVIDER

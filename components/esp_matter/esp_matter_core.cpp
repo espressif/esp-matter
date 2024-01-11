@@ -1233,6 +1233,17 @@ uint32_t get_id(attribute_t *attribute)
     return current_attribute->attribute_id;
 }
 
+constexpr uint16_t k_deferred_attribute_persistence_time_ms = CONFIG_ESP_MATTER_DEFERRED_ATTR_PERSISTENCE_TIME_MS;
+
+static void deferred_attribute_write(chip::System::Layer *layer, void *attribute_ptr)
+{
+    _attribute_t *current_attribute = (_attribute_t *)attribute_ptr;
+    ESP_LOGI(TAG, "Store the deferred attribute 0x%" PRIx32 " of cluster 0x%" PRIX32 " on endpoint 0x%" PRIx16,
+                  current_attribute->attribute_id, current_attribute->cluster_id, current_attribute->endpoint_id);
+    store_val_in_nvs(current_attribute->endpoint_id, current_attribute->cluster_id, current_attribute->attribute_id,
+                     current_attribute->val);
+}
+
 esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
 {
     if (!attribute) {
@@ -1269,8 +1280,17 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
     }
 
     if (current_attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE) {
-        store_val_in_nvs(current_attribute->endpoint_id, current_attribute->cluster_id,
-                            current_attribute->attribute_id, current_attribute->val);
+        if (current_attribute->flags & ATTRIBUTE_FLAG_DEFERRED) {
+            if (chip::DeviceLayer::SystemLayer().IsTimerActive(deferred_attribute_write, current_attribute)) {
+                chip::DeviceLayer::SystemLayer().CancelTimer(deferred_attribute_write, current_attribute);
+            }
+            auto & system_layer = chip::DeviceLayer::SystemLayer();
+            system_layer.StartTimer(chip::System::Clock::Milliseconds16(k_deferred_attribute_persistence_time_ms),
+                                    deferred_attribute_write, current_attribute);
+        } else {
+            store_val_in_nvs(current_attribute->endpoint_id, current_attribute->cluster_id,
+                             current_attribute->attribute_id, current_attribute->val);
+        }
     }
     return ESP_OK;
 }
@@ -1378,6 +1398,21 @@ callback_t get_override_callback(attribute_t *attribute)
     }
     _attribute_t *current_attribute = (_attribute_t *)attribute;
     return current_attribute->override_callback;
+}
+
+esp_err_t set_deferred_persistence(attribute_t *attribute)
+{
+    if (!attribute) {
+        ESP_LOGE(TAG, "Attribute cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
+    if (!(current_attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE)) {
+        ESP_LOGE(TAG, "Attribute should be non-volatile to set a deferred persistence time");
+        return ESP_ERR_INVALID_ARG;
+    }
+    current_attribute->flags |= ATTRIBUTE_FLAG_DEFERRED;
+    return ESP_OK;
 }
 
 } /* attribute */
