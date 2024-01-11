@@ -36,8 +36,15 @@ Development on Windows is supported using Windows Subsystem for Linux (WSL). Ple
 - Here onwards process for setting esp-matter and building examples is same as other hosts.
 - Please clone the repositories from inside the WSL environment and not inside a mounted directory. 
 
+For using CHIP tool on WSL, please check `Using CHIP-tool in WSL <https://github.com/espressif/esp-matter/blob/main/docs/en/using_chip_tool.rst>`__.
+
 For using VSCode for development, please check `Developing in WSL <https://code.visualstudio.com/docs/remote/wsl>`__.
 
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+   
+   Using CHIP-tool in WSL <using_chip_tool>
 
 2.1.2 Getting the Repositories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,7 +66,7 @@ Cloning esp-idf:
    ::
 
       git clone --recursive https://github.com/espressif/esp-idf.git
-      cd esp-idf; git checkout 6b1f40b9bf; git submodule update --init --recursive;
+      cd esp-idf; git checkout v5.1.2; git submodule update --init --recursive;
       ./install.sh
       cd ..
 
