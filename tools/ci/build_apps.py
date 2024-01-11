@@ -9,7 +9,10 @@ import sys
 from pathlib import Path
 from typing import List
 
-from idf_build_apps import LOGGER, App, build_apps, find_apps, setup_logging
+import logging
+
+idf_build_apps_logger = logging.getLogger('idf_build_apps')
+from idf_build_apps import App, build_apps, find_apps, setup_logging
 
 # from idf_ci_utils import IDF_PATH, get_pytest_app_paths, get_pytest_cases, get_ttfw_app_paths
 
@@ -38,9 +41,9 @@ MAINFEST_FILES = [
 ]
 
 def _is_c6_pytest_app(app: App) -> bool:
-    print(app.name , app.target)
+    print(app.name, app.target)
     for pytest_app in PYTEST_C6_APPS:
-        print(pytest_app["name"] , pytest_app["target"])
+        print(pytest_app["name"], pytest_app["target"])
         if app.name == pytest_app["name"] and app.target == pytest_app["target"]:
             return True
     return False
@@ -68,14 +71,13 @@ def get_cmake_apps(
         target=target,
         build_dir='build_@t_@w',
         config_rules_str=config_rules_str,
-        build_log_path='build_log.txt',
-        size_json_path='size.json',
+        build_log_filename='build_log.txt',
+        size_json_filename='size.json',
         check_warnings=False,
         preserve=True,
         manifest_files=MAINFEST_FILES,
     )
     return apps
-
 
 def main(args: argparse.Namespace) -> None:
     apps = get_cmake_apps(args.paths, args.target, args.config)
@@ -93,8 +95,8 @@ def main(args: argparse.Namespace) -> None:
     else:
         apps_for_build = apps[:]
 
-    LOGGER.info('Found %d apps after filtering', len(apps_for_build))
-    LOGGER.info(
+    idf_build_apps_logger.info('Found %d apps after filtering', len(apps_for_build))
+    idf_build_apps_logger.info(
         'Suggest setting the parallel count to %d for this build job',
         len(apps_for_build) // APPS_BUILD_PER_JOB + 1,
     )
@@ -112,7 +114,6 @@ def main(args: argparse.Namespace) -> None:
     )
 
     sys.exit(ret_code)
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -177,3 +178,4 @@ if __name__ == '__main__':
         arguments.paths = [DEF_APP_PATH]
     setup_logging(verbose=1)  # Info
     main(arguments)
+
