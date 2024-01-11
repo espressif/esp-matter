@@ -63,6 +63,34 @@ static uint32_t get_feature_map_value(cluster_t *cluster)
     return val.val.u32;
 }
 
+namespace descriptor {
+namespace feature {
+namespace taglist {
+
+uint32_t get_id()
+{
+    return (uint32_t)Descriptor::Feature::kTagList;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes managed internally */
+    attribute::create_tag_list(cluster, NULL, 0, 0);
+
+    return ESP_OK;
+}
+
+} /* taglist */
+
+}
+}
+
 namespace power_source {
 namespace feature {
 namespace wired {

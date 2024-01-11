@@ -16,6 +16,8 @@
 
 #include <app_priv.h>
 #include <app_reset.h>
+#include <app/util/attribute-storage.h>
+
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
 #endif
@@ -28,7 +30,31 @@ static button_endpoint button_list[CONFIG_MAX_CONFIGURABLE_BUTTONS];
 using namespace esp_matter;
 using namespace esp_matter::attribute;
 using namespace esp_matter::endpoint;
+using namespace esp_matter::cluster;
 using namespace chip::app::Clusters;
+
+namespace {
+// Please refer to https://github.com/CHIP-Specifications/connectedhomeip-spec/blob/master/src/namespaces
+constexpr const uint8_t kNamespaceSwitches = 43;
+// Common Number Namespace: 7, tag 0 (Zero)
+constexpr const uint8_t kTagSwitchOn = 0;
+// Common Number Namespace: 7, tag 1 (One)
+constexpr const uint8_t kTagSwitchOff = 1;
+
+constexpr const uint8_t kNamespacePosition = 8;
+// Common Position Namespace: 8, tag: 0 (Left)
+constexpr const uint8_t kTagPositionLeft = 0;
+// Common Position Namespace: 8, tag: 1 (Right)
+constexpr const uint8_t kTagPositionRight = 1;
+
+const Descriptor::Structs::SemanticTagStruct::Type gEp0TagList[] = {
+    {.namespaceID = kNamespaceSwitches, .tag = kTagSwitchOn},
+    {.namespaceID = kNamespacePosition, .tag = kTagPositionRight}};
+const Descriptor::Structs::SemanticTagStruct::Type gEp1TagList[] = {
+    {.namespaceID = kNamespaceSwitches, .tag = kTagSwitchOff},
+    {.namespaceID = kNamespacePosition, .tag = kTagPositionLeft}};
+
+}
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
@@ -102,6 +128,9 @@ static esp_err_t create_button(struct gpio_button* button, node_t* node)
     /* Create a new endpoint. */
     generic_switch::config_t switch_config;
     endpoint_t *endpoint = generic_switch::create(node, &switch_config, ENDPOINT_FLAG_NONE, button_handle);
+
+    cluster_t* descriptor = cluster::get(endpoint,Descriptor::Id);
+    descriptor::feature::taglist::add(descriptor);
 
     /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
     if (!node || !endpoint)
@@ -200,6 +229,10 @@ extern "C" void app_main()
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Matter start failed: %d", err);
     }
+
+    SetTagList(0, chip::Span<const Descriptor::Structs::SemanticTagStruct::Type>(gEp0TagList));
+    SetTagList(1, chip::Span<const Descriptor::Structs::SemanticTagStruct::Type>(gEp1TagList));
+
 
     nvs_handle_t handle;
     nvs_open_from_partition(CONFIG_CHIP_FACTORY_NAMESPACE_PARTITION_LABEL, "chip-factory", NVS_READWRITE, &handle);

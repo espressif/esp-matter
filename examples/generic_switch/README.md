@@ -2,7 +2,12 @@
 
 This example creates a Generic Switch device using the ESP
 Matter data model.
-This example aims to demonstrate the use of Fixed Label Cluster and User Label Cluster which provide a feature for the device to tag an endpoint with zero or more read-only labels using nvs api and zero or more labels respectively.
+This example demonstrates the use of few optional data model elements like :
+- Fixed Label Cluster : provides a feature for the device to tag an endpoint with zero or more read only labels.(demonnstrated through nvs)
+- User Label Cluster : This cluster provides a feature to tag an endpoint with zero or more labels.
+- Taglist Feature of Descriptor Cluster : used to disambiguate sibling endpoints where two or more sibling
+  endpoints have an overlap in the supported device types with each such endpoint having a unique TagList.
+
 
 Note:
     In order to retrieve the label-list from the fixed-label cluster the two options:
@@ -47,6 +52,13 @@ To read label-list of User Label Cluster execute the command given below.
 
 ```
 chip-tool userlabel read label-list 0x7283 1
+
+### Using the TagList Feature
+
+To read the taglist of the Descriptor cluster execute the command given below.
+
+```
+chip-tool descriptor read tag-list 0x7283 0
 ```
 
 ## 2. Post Commissioning Setup

@@ -31,6 +31,18 @@
 namespace esp_matter {
 namespace cluster {
 
+namespace descriptor {
+namespace feature {
+namespace taglist {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* taglist */
+
+} /* feature */
+} /* descriptor */
+
 namespace power_source {
 namespace feature {
 namespace wired {
