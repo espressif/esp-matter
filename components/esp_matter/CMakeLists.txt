@@ -3,6 +3,7 @@ file(GLOB CLUSTER_DIR_LIST true ${MATTER_SDK_PATH}/src/app/clusters/*)
 
 set(SRC_DIRS_LIST       "."
                         "private"
+                        "utils"
                         "${MATTER_SDK_PATH}/zzz_generated/app-common/app-common/zap-generated/attributes"
                         "${MATTER_SDK_PATH}/src/app/server"
                         "${MATTER_SDK_PATH}/src/app/util"
@@ -17,6 +18,7 @@ foreach(CLUSTER_DIR ${CLUSTER_DIR_LIST})
 endforeach()
 
 set(INCLUDE_DIRS_LIST   "."
+                        "utils"
                         "${MATTER_SDK_PATH}/zzz_generated/app-common"
                         "${MATTER_SDK_PATH}/third_party/nlfaultinjection/include"
                         "${MATTER_SDK_PATH}/src")
@@ -26,7 +28,7 @@ if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
     list(APPEND INCLUDE_DIRS_LIST "zap_common")
 endif()
 
-set(REQUIRES_LIST       chip bt esp_matter_console nvs_flash app_update esp_secure_cert_mgr mbedtls esp_system openthread)
+set(REQUIRES_LIST       chip bt esp_matter_console nvs_flash app_update esp_secure_cert_mgr mbedtls esp_system openthread json)
 
 idf_component_register( SRC_DIRS        ${SRC_DIRS_LIST}
                         INCLUDE_DIRS    ${INCLUDE_DIRS_LIST}

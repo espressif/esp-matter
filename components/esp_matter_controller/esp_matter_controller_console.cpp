@@ -39,7 +39,6 @@ using chip::NodeId;
 using chip::Platform::ScopedMemoryBufferWithSize;
 using chip::Inet::IPAddress;
 using chip::Transport::PeerAddress;
-using esp_matter::controller::command_data_t;
 
 const static char *TAG = "controller_console";
 
@@ -189,6 +188,7 @@ static esp_err_t controller_pairing_handler(int argc, char **argv)
         if (argc != 6) {
             return ESP_ERR_INVALID_ARG;
         }
+
         uint64_t nodeId = string_to_uint64(argv[1]);
         uint32_t pincode = string_to_uint32(argv[4]);
         uint16_t disc = string_to_uint16(argv[5]);
@@ -300,8 +300,11 @@ static esp_err_t controller_invoke_command_handler(int argc, char **argv)
 
     uint64_t node_id = string_to_uint64(argv[0]);
     uint16_t endpoint_id = string_to_uint16(argv[1]);
+    uint32_t cluster_id = string_to_uint32(argv[2]);
+    uint32_t command_id = string_to_uint32(argv[3]);
 
-    return controller::send_invoke_cluster_command(node_id, endpoint_id, argc - 2, argv + 2);
+    return controller::send_invoke_cluster_command(node_id, endpoint_id, cluster_id, command_id,
+                                                   argc > 4 ? argv[4] : NULL);
 }
 
 static esp_err_t controller_read_attr_handler(int argc, char **argv)
@@ -441,7 +444,10 @@ esp_err_t controller_register_commands()
                 "Send command to the nodes.\n"
                 "\tUsage: controller invoke-cmd [node-id|group-id] [endpoint-id] [cluster-id] [command-id] [payload]\n"
                 "\tNotes: group-id should start with prefix '0xFFFFFFFFFFFF', endpoint-id will be ignored if the fist "
-                "parameter is group-id.",
+                "parameter is group-id.\n"
+                "\tNotes: The payload should be a JSON object that includes all the command data fields defined in the "
+                "SPEC. You can get the format of the payload from "
+                "https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#cluster-commands",
             .handler = controller_invoke_command_handler,
         },
         {
@@ -452,9 +458,12 @@ esp_err_t controller_register_commands()
         },
         {
             .name = "write-attr",
-            .description =
-                "Write attributes of the nodes.\n"
-                "\tUsage: controller write-attr [node-id|group-id] [endpoint-id] [cluster-id] [attr-id] [attr-value]",
+            .description = "Write attributes of the nodes.\n"
+                           "\tUsage: controller write-attr [node-id|group-id] [endpoint-id] [cluster-id] [attr-id] "
+                           "[attr-value]\n"
+                           "\tNotes: attr-value should be a JSON object that contains the attribute value JSON item."
+                           "You can get the format of the attr-value from "
+                           "https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#write-attribute-commands",
             .handler = controller_write_attr_handler,
         },
         {

@@ -20,6 +20,14 @@ menu "ESP Matter Controller"
         help
             Maximum number of active device the commissioner supports.
 
+    config ESP_MATTER_CONTROLLER_JSON_STRING_BUFFER_LEN
+        int "Max JSON string buffer length"
+        depends on ESP_MATTER_CONTROLLER_ENABLE
+        default 1024
+        help
+            Max JSON string buffer length. This buffer will be used to store the command data field
+            for cluster-invoked command or attribute value for write-attribute command.
+
     config ESP_MATTER_CONTROLLER_CUSTOM_CLUSTER_ENABLE
         bool "Enable controller custom cluster"
         depends on ESP_MATTER_CONTROLLER_ENABLE && !ESP_MATTER_COMMISSIONER_ENABLE
