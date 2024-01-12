@@ -1,66 +1,19 @@
+# Get the list of cluster directories present in ${MATTER_SDK_PATH}/src/app/clusters
+file(GLOB CLUSTER_DIR_LIST true ${MATTER_SDK_PATH}/src/app/clusters/*)
+
 set(SRC_DIRS_LIST       "."
                         "${MATTER_SDK_PATH}/zzz_generated/app-common/app-common/zap-generated/attributes"
-                        "${MATTER_SDK_PATH}/src/app"
                         "${MATTER_SDK_PATH}/src/app/server"
                         "${MATTER_SDK_PATH}/src/app/util"
                         "${MATTER_SDK_PATH}/src/app/reporting"
-                        "${MATTER_SDK_PATH}/src/app/clusters/access-control-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/account-login-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/administrator-commissioning-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/application-basic-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/application-launcher-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/audio-output-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/barrier-control-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/basic-information"
-                        "${MATTER_SDK_PATH}/src/app/clusters/bindings"
-                        "${MATTER_SDK_PATH}/src/app/clusters/bridged-device-basic-information-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/channel-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/color-control-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/content-launch-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/descriptor"
-                        "${MATTER_SDK_PATH}/src/app/clusters/diagnostic-logs-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/door-lock-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/ethernet-network-diagnostics-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/fan-control-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/fault-injection-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/fixed-label-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/general-commissioning-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/general-diagnostics-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/group-key-mgmt-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/groups-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/identify-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/keypad-input-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/level-control"
-                        "${MATTER_SDK_PATH}/src/app/clusters/localization-configuration-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/low-power-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/media-input-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/media-playback-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/mode-select-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/network-commissioning"
-                        "${MATTER_SDK_PATH}/src/app/clusters/occupancy-sensor-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/on-off-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/operational-credentials-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/ota-provider"
-                        "${MATTER_SDK_PATH}/src/app/clusters/ota-requestor"
-                        "${MATTER_SDK_PATH}/src/app/clusters/power-source-configuration-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/power-source-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/pump-configuration-and-control-client"
-                        "${MATTER_SDK_PATH}/src/app/clusters/pump-configuration-and-control-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/scenes"
-                        "${MATTER_SDK_PATH}/src/app/clusters/software-diagnostics-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/switch-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/target-navigator-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/test-cluster-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/thermostat-client"
-                        "${MATTER_SDK_PATH}/src/app/clusters/thermostat-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/thermostat-user-interface-configuration-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/thread-network-diagnostics-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/time-format-localization-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/user-label-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/wake-on-lan-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/wifi-network-diagnostics-server"
-                        "${MATTER_SDK_PATH}/src/app/clusters/window-covering-server"
 )
+
+foreach(CLUSTER_DIR ${CLUSTER_DIR_LIST})
+    file(GLOB_RECURSE C_CPP_FILES "${CLUSTER_DIR}/*.c" "${CLUSTER_DIR}/*.cpp")
+    if (C_CPP_FILES)
+        list(APPEND SRC_DIRS_LIST "${CLUSTER_DIR}")
+    endif()
+endforeach()
 
 set(INCLUDE_DIRS_LIST   "."
                         "${MATTER_SDK_PATH}/zzz_generated/app-common"
@@ -72,7 +25,7 @@ if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
     list(APPEND INCLUDE_DIRS_LIST "zap_common")
 endif()
 
-set(REQUIRES_LIST       chip bt esp_matter_console nvs_flash app_update esp_secure_cert_mgr mbedtls esp_system openthread)
+set(REQUIRES_LIST       chip bt esp_matter_console nvs_flash app_update esp_secure_cert_mgr mbedtls esp_system openthread json)
 
 idf_component_register( SRC_DIRS        ${SRC_DIRS_LIST}
                         INCLUDE_DIRS    ${INCLUDE_DIRS_LIST}
@@ -97,3 +50,8 @@ if (CONFIG_IDF_TARGET_ARCH_XTENSA AND (${IDF_VERSION_MAJOR} LESS 5))
 endif()
 target_compile_options(${COMPONENT_LIB} PUBLIC
                        "-DCHIP_ADDRESS_RESOLVE_IMPL_INCLUDE_HEADER=<lib/address_resolve/AddressResolve_DefaultImpl.h>")
+
+# Time sync client feature depends on read client, disable it when read client is disabled.
+if (CONFIG_DISABLE_READ_CLIENT)
+    target_compile_options(${COMPONENT_LIB} PUBLIC "-DTIME_SYNC_ENABLE_TSC_FEATURE=0")
+endif()
