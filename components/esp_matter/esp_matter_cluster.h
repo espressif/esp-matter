@@ -777,5 +777,14 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* rvc_operational_state */
 
+namespace keypad_input {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* keypad_input */
+
 } /* cluster */
 } /* esp_matter */

@@ -1542,5 +1542,29 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* feature */
 } /* fan_control */
 
+namespace keypad_input {
+namespace feature {
+
+namespace navigation_key_codes {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* navigation_key_codes */
+
+namespace location_keys {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* location_keys */
+
+namespace number_keys {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* number_keys */
+
+} /* feature */
+} /* keypad_input */
+
 } /* cluster */
 } /* esp_matter */

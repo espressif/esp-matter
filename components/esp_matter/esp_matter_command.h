@@ -359,5 +359,12 @@ command_t *create_change_to_mode(cluster_t *cluster);
 } /* command */
 } /* rvc_clean_mode */
 
+namespace keypad_input {
+namespace command {
+command_t *create_send_key(cluster_t *cluster);
+command_t *create_send_key_response(cluster_t *cluster);
+} /* command */
+} /* keypad_input */
+
 } /* cluster */
 } /* esp_matter */
