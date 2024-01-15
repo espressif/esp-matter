@@ -52,6 +52,7 @@ To read label-list of User Label Cluster execute the command given below.
 
 ```
 chip-tool userlabel read label-list 0x7283 1
+```
 
 ### Using the TagList Feature
 
