@@ -127,6 +127,10 @@ variables:
     - idf.py build
     - cp sdkconfig.defaults.c6_backup sdkconfig.defaults.esp32c6
 
+.build_controller_otbr_example: &build_controller_otbr_example
+    - cd $ESP_MATTER_PATH/examples/controller
+    - idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults.otbr" set-target esp32s3 build
+
 .build_examples_template:
   stage: build
   image: gitlab.espressif.cn:5050/app-frameworks/esp-matter/build-env:latest
@@ -225,6 +229,7 @@ build_esp_matter_examples_non_pytest_idf_v5_1:
   script:
     - *build_external_platform_example
     - *build_esp32c6_thread_example
+    - *build_controller_otbr_example
 
     # mfg_test_app needs an secure boot signing key, generating one here
     - cd ${ESP_MATTER_PATH}/examples/mfg_test_app
