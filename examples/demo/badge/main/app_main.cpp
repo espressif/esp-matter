@@ -15,6 +15,7 @@
 #include <esp_matter_ota.h>
 #include <esp_matter_attribute_utils.h>
 
+#include <common_macros.h>
 #include <app_priv.h>
 #include <app_reset.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
@@ -302,16 +303,13 @@ extern "C" void app_main()
     /* Create a Matter node and add the mandatory Root Node device type on endpoint 0 */
     node::config_t node_config;
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
+    ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
 
     on_off_light::config_t light_config;
     light_config.on_off.on_off = DEFAULT_POWER;
     light_config.on_off.lighting.start_up_on_off = nullptr;
     endpoint_t *endpoint = on_off_light::create(node, &light_config, ENDPOINT_FLAG_NONE, NULL);
-
-    /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
-    if (!node || !endpoint) {
-        ESP_LOGE(TAG, "Matter node creation failed");
-    }
+    ABORT_APP_ON_FAILURE(endpoint != nullptr, ESP_LOGE(TAG, "Failed to create on off light endpoint"));
 
     light_endpoint_id = endpoint::get_id(endpoint);
     ESP_LOGI(TAG, "Light created with endpoint_id %d", light_endpoint_id);
@@ -319,6 +317,7 @@ extern "C" void app_main()
     /* Create custom badge cluster in basic-information endpoint */
     uint32_t custom_cluster_id = BADGE_CLUSTER_ID;
     cluster_t *badge_cluster = cluster::create(endpoint::get(node, 0x0), custom_cluster_id, CLUSTER_FLAG_SERVER);
+    ABORT_APP_ON_FAILURE(badge_cluster != nullptr, ESP_LOGE(TAG, "Failed to create badge cluster"));
 
     /* Create custom attributes in badge cluster for retrieving the vcard properties */
     attribute::create(badge_cluster, NAME_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_long_char_str("", MAX_ATTR_SIZE));
@@ -341,9 +340,7 @@ extern "C" void app_main()
 
     /* Matter start */
     err = esp_matter::start(app_event_cb);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Matter start failed: %d", err);
-    }
+    ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
 
     /* Starting driver with default values */
     if (chip::Server::GetInstance().GetFabricTable().FabricCount())
@@ -351,9 +348,7 @@ extern "C" void app_main()
 
 #if CONFIG_ENABLE_ENCRYPTED_OTA
     err = esp_matter_ota_requestor_encrypted_init(s_decryption_key, s_decryption_key_len);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to initialized the encrypted OTA, err: %d", err);
-    }
+    ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to initialized the encrypted OTA, err: %d", err));
 #endif // CONFIG_ENABLE_ENCRYPTED_OTA
 
 #if CONFIG_ENABLE_CHIP_SHELL

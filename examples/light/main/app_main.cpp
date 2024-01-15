@@ -14,6 +14,7 @@
 #include <esp_matter_console.h>
 #include <esp_matter_ota.h>
 
+#include <common_macros.h>
 #include <app_priv.h>
 #include <app_reset.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
@@ -156,7 +157,10 @@ extern "C" void app_main()
 
     /* Create a Matter node and add the mandatory Root Node device type on endpoint 0 */
     node::config_t node_config;
+
+    // node handle can be used to add/modify other endpoints.
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
+    ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
 
     extended_color_light::config_t light_config;
     light_config.on_off.on_off = DEFAULT_POWER;
@@ -166,12 +170,10 @@ extern "C" void app_main()
     light_config.color_control.color_mode = (uint8_t)ColorControl::ColorMode::kColorTemperature;
     light_config.color_control.enhanced_color_mode = (uint8_t)ColorControl::ColorMode::kColorTemperature;
     light_config.color_control.color_temperature.startup_color_temperature_mireds = nullptr;
-    endpoint_t *endpoint = extended_color_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
 
-    /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
-    if (!node || !endpoint) {
-        ESP_LOGE(TAG, "Matter node creation failed");
-    }
+    // endpoint handles can be used to add/modify clusters.
+    endpoint_t *endpoint = extended_color_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
+    ABORT_APP_ON_FAILURE(endpoint != nullptr, ESP_LOGE(TAG, "Failed to create extended color light endpoint"));
 
     light_endpoint_id = endpoint::get_id(endpoint);
     ESP_LOGI(TAG, "Light created with endpoint_id %d", light_endpoint_id);
@@ -201,18 +203,14 @@ extern "C" void app_main()
 
     /* Matter start */
     err = esp_matter::start(app_event_cb);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Matter start failed: %d", err);
-    }
+    ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
 
     /* Starting driver with default values */
     app_driver_light_set_defaults(light_endpoint_id);
 
 #if CONFIG_ENABLE_ENCRYPTED_OTA
     err = esp_matter_ota_requestor_encrypted_init(s_decryption_key, s_decryption_key_len);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to initialized the encrypted OTA, err: %d", err);
-    }
+    ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to initialized the encrypted OTA, err: %d", err));
 #endif // CONFIG_ENABLE_ENCRYPTED_OTA
 
 #if CONFIG_ENABLE_CHIP_SHELL

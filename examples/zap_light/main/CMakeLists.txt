@@ -1,5 +1,5 @@
 idf_component_register(SRC_DIRS          "."
-                      PRIV_INCLUDE_DIRS  ".")
+                       PRIV_INCLUDE_DIRS  "." "${ESP_MATTER_PATH}/examples/common/utils")
 
 # We must set CHIP_ROOT to include esp32_codegen.cmake
 get_filename_component(CHIP_ROOT "${MATTER_SDK_PATH}" REALPATH)

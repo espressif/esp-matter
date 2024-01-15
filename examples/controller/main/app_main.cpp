@@ -25,6 +25,7 @@
 #include <esp_matter_thread_br_launcher.h>
 #include <esp_ot_config.h>
 #endif // CONFIG_OPENTHREAD_BORDER_ROUTER
+#include <common_macros.h>
 #include <app_reset.h>
 
 #include <app/server/Server.h>
@@ -90,22 +91,14 @@ extern "C" void app_main()
     // to a specific fabric.
     node::config_t node_config;
     node_t *node = node::create(&node_config, NULL, NULL);
-    if (!node) {
-        ESP_LOGE(TAG, "Failed to create esp_matter node");
-        return;
-    }
-    endpoint_t *root_endpoint = endpoint::get(node, 0);
-    if (!root_endpoint) {
-        ESP_LOGE(TAG, "Failed to create root_node endpoint");
-        return;
-    }
+    ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
+
 #endif // !CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 
     /* Matter start */
     err = esp_matter::start(app_event_cb);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Matter start failed: %d", err);
-    }
+    ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
+
 #if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     esp_matter::lock::chip_stack_lock(portMAX_DELAY);
     esp_matter::commissioner::init(5580);
