@@ -1281,12 +1281,11 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
 
     if (current_attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE) {
         if (current_attribute->flags & ATTRIBUTE_FLAG_DEFERRED) {
-            if (chip::DeviceLayer::SystemLayer().IsTimerActive(deferred_attribute_write, current_attribute)) {
-                chip::DeviceLayer::SystemLayer().CancelTimer(deferred_attribute_write, current_attribute);
+            if (!chip::DeviceLayer::SystemLayer().IsTimerActive(deferred_attribute_write, current_attribute)) {
+                auto & system_layer = chip::DeviceLayer::SystemLayer();
+                system_layer.StartTimer(chip::System::Clock::Milliseconds16(k_deferred_attribute_persistence_time_ms),
+                                        deferred_attribute_write, current_attribute);
             }
-            auto & system_layer = chip::DeviceLayer::SystemLayer();
-            system_layer.StartTimer(chip::System::Clock::Milliseconds16(k_deferred_attribute_persistence_time_ms),
-                                    deferred_attribute_write, current_attribute);
         } else {
             store_val_in_nvs(current_attribute->endpoint_id, current_attribute->cluster_id,
                              current_attribute->attribute_id, current_attribute->val);
