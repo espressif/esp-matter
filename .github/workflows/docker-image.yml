@@ -30,7 +30,7 @@ env:
   # Github runner is running out of space when we are building for multiple architectures in single runner
   BUILD_PLATFORMS: linux/amd64
   DOCKERHUB_REPO: ${{ github.repository }}
-  REQUIRED_IDF_VERSION: v5.1.1
+  REQUIRED_IDF_VERSION: v5.1.2
 
 jobs:
   build:
