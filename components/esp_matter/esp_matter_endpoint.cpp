@@ -458,7 +458,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     return ESP_OK;
 }
-} /* color_dimmer_switch */
+} /* generic_switch */
 
 namespace on_off_plugin_unit {
 uint32_t get_device_type_id()
