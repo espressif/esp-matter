@@ -36,6 +36,8 @@ typedef struct device {
     device_persistent_info_t persistent_info;
 } device_t;
 
+typedef esp_err_t (*bridge_device_type_callback_t)(esp_matter::endpoint_t *ep, uint32_t device_type_id, void *priv_data);
+
 esp_err_t get_bridged_endpoint_ids(uint16_t *matter_endpoint_id_array);
 
 esp_err_t erase_bridged_device_info(uint16_t matter_endpoint_id);
@@ -45,11 +47,11 @@ device_t *create_device(esp_matter::node_t *node, uint16_t parent_endpoint_id, u
 
 device_t *resume_device(esp_matter::node_t *node, uint16_t device_endpoint_id, void *priv_data);
 
-esp_err_t set_device_type(device_t *bridged_device, uint32_t device_type_id);
+esp_err_t set_device_type(device_t *bridged_device, uint32_t device_type_id, void *priv_data);
 
 esp_err_t remove_device(device_t *bridged_device);
 
-esp_err_t initialize(esp_matter::node_t *node);
+esp_err_t initialize(esp_matter::node_t *node, bridge_device_type_callback_t device_type_cb);
 
 esp_err_t factory_reset();
 } // namespace esp_matter_bridge

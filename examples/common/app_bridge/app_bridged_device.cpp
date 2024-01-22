@@ -42,7 +42,7 @@ static inline StorageKeyName endpoint_dev_type(uint16_t endpoint_id)
 using namespace esp_matter;
 
 static const char *TAG = "app_bridged_device";
-static app_bridged_device_t *g_bridged_device_list = NULL;
+app_bridged_device_t *g_bridged_device_list = NULL;
 static uint8_t g_current_bridged_device_count = 0;
 
 /** Persistent Bridged Device Info **/
@@ -169,13 +169,15 @@ app_bridged_device_address_t app_bridge_espnow_address(uint8_t espnow_macaddr[6]
 app_bridged_device_t *app_bridge_create_bridged_device(node_t *node, uint16_t parent_endpoint_id,
                                                        uint32_t matter_device_type_id,
                                                        app_bridged_device_type_t bridged_device_type,
-                                                       app_bridged_device_address_t bridged_device_address)
+                                                       app_bridged_device_address_t bridged_device_address,
+                                                       void *priv_data)
 {
     if (g_current_bridged_device_count >= MAX_BRIDGED_DEVICE_COUNT) {
         ESP_LOGE(TAG, "The device list is full, Could not add a zigbee bridged device");
         return NULL;
     }
     app_bridged_device_t *new_dev = (app_bridged_device_t *)esp_matter_mem_calloc(1, sizeof(app_bridged_device_t));
+    new_dev->priv_data = priv_data;
     new_dev->dev = esp_matter_bridge::create_device(node, parent_endpoint_id, matter_device_type_id, new_dev);
     if (!(new_dev->dev)) {
         ESP_LOGE(TAG, "Failed to create the bridged device");
@@ -199,9 +201,9 @@ app_bridged_device_t *app_bridge_create_bridged_device(node_t *node, uint16_t pa
     return new_dev;
 }
 
-esp_err_t app_bridge_initialize(node_t *node)
+esp_err_t app_bridge_initialize(node_t *node, esp_matter_bridge::bridge_device_type_callback_t device_type_cb)
 {
-    esp_err_t err = esp_matter_bridge::initialize(node);
+    esp_err_t err = esp_matter_bridge::initialize(node, device_type_cb);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to initialize the esp_matter_bridge");
         return err;

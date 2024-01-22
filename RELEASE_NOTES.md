@@ -1,3 +1,42 @@
+# 16-January-2024
+
+- We have moved the creation of bridge devices to the application callback.
+  Previously, bridge devices were created in the examples/common, but now creation
+  is delegated to the application.
+
+    Initialize the bridge with a callback.
+
+    ```
+    esp_err_t err = app_bridge_initialize(node, bridge_device_type_callback);
+    ```
+
+    Below is the example definition of callback creating on-off light.
+    ```
+	esp_err_t create_bridge_devices(esp_matter::endpoint_t *ep, uint32_t device_type_id, void *priv_data)
+	{
+		esp_err_t err = ESP_OK;
+
+		switch (device_type_id) {
+		case ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID: {
+			on_off_light::config_t on_off_light_conf;
+			err = on_off_light::add(ep, &on_off_light_conf);
+			break;
+        }
+		.
+		.
+		.
+		default: {
+			ESP_LOGE(TAG, "Unsupported bridged matter device type");
+			return ESP_ERR_INVALID_ARG;
+
+		}
+		return err;
+	}
+
+    ```
+
+- Similar changes are made in bridge apps.
+
 # 9-November-2023
 
 - esp_matter_controller: Change the format of the command data field payload for cluster-invoke commands and the attribute value payload for attribute-write commands. Used unified JSON object format for these payloads. Please refer the document of ``Matter controller`` to learn how to construct them.
