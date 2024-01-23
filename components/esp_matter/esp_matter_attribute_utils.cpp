@@ -1012,12 +1012,14 @@ static esp_err_t execute_override_callback(attribute_t *attribute, callback_type
                                            uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
     callback_t override_callback = attribute::get_override_callback(attribute);
+    void *priv_data = endpoint::get_priv_data(endpoint_id);
     if (override_callback) {
-        return override_callback(type, endpoint_id, cluster_id, attribute_id, val, NULL);
+        return override_callback(type, endpoint_id, cluster_id, attribute_id, val, priv_data);
     } else {
         ESP_LOGI(TAG, "Attribute override callback not set for Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 ", calling the common callback",
                  endpoint_id, cluster_id, attribute_id);
-        return execute_callback(type, endpoint_id, cluster_id, attribute_id, val);
+        if (attribute_callback)
+            return attribute_callback(type, endpoint_id, cluster_id, attribute_id, val, priv_data);
     }
     return ESP_OK;
 }
