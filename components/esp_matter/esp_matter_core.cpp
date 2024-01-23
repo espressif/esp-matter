@@ -861,7 +861,8 @@ static void deinit_ble_if_commissioned(void)
 #endif /* CONFIG_BT_NIMBLE_ENABLED */
 #if CONFIG_IDF_TARGET_ESP32
             err |= esp_bt_mem_release(ESP_BT_MODE_BTDM);
-#elif CONFIG_IDF_TARGET_ESP32C2 || CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32S3 || CONFIG_IDF_TARGET_ESP32H2
+#elif CONFIG_IDF_TARGET_ESP32C2 || CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32S3 || CONFIG_IDF_TARGET_ESP32H2 \
+       || CONFIG_IDF_TARGET_ESP32C6
             err |= esp_bt_mem_release(ESP_BT_MODE_BLE);
 #endif
             if (err != ESP_OK) {
@@ -1020,8 +1021,8 @@ esp_err_t start(event_callback_t callback, intptr_t callback_arg)
         return ESP_ERR_INVALID_STATE;
     }
     esp_err_t err = esp_event_loop_create_default();
-    
-    // In case create event loop returns ESP_ERR_INVALID_STATE it is not necessary to fail startup 
+
+    // In case create event loop returns ESP_ERR_INVALID_STATE it is not necessary to fail startup
     // as of it means that default event loop is already initialized and no additional actions should be done.
     if (err != ESP_OK && err != ESP_ERR_INVALID_STATE) {
         ESP_LOGE(TAG, "Error create default event loop");
@@ -2040,7 +2041,7 @@ uint16_t get_count(node_t *node)
         ESP_LOGE(TAG, "Node cannot be NULL");
         return 0;
     }
-    uint16_t count = 0; 
+    uint16_t count = 0;
     endpoint_t *endpoint = get_first(node);
     while (endpoint) {
         count++;
