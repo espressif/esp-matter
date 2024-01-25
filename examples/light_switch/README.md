@@ -201,6 +201,19 @@ available for you to run your application's code.
 
 Applications that do not require BLE post commissioning, can disable it using app_ble_disable() once commissioning is complete. It is not done explicitly because of a known issue with esp32c3 and will be fixed with the next IDF release (v4.4.2).
 
+## 4. Dynamic Passcode
+
+If the device features a screen capable of displaying the pairing QR Code, it is advisable to utilize a dynamic passcode for this purpose as the static passcode shall conform to more stringent rules. To enable the use of a dynamic passcode in the example, please ensure that the following configuration options are activated.
+
+```
+CONFIG_CUSTOM_COMMISSIONABLE_DATA_PROVIDER=y
+CONFIG_DYNAMIC_PASSCODE_COMMISSIONABLE_DATA_PROVIDER=y
+```
+After implementing these configurations, the device will generate a new, random passcode every time it reboots, if it is not yet commissioned. To obtain the commissioning QR Code, enter `matter onboardingcodes ble qrcode` in the device console, and then initiate the pairing process.
+```
+./chip-tool pairing code-wifi 1 <ssid> <password> <qrcode>
+```
+
 ## A2 Appendix FAQs
 
 ### A2.1 Binding Failed

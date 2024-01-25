@@ -13,11 +13,15 @@
 #include <esp_matter.h>
 #include <esp_matter_console.h>
 #include <esp_matter_ota.h>
+#include <esp_matter_providers.h>
 
 #include <app_priv.h>
 #include <app_reset.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
+#endif
+#if CONFIG_DYNAMIC_PASSCODE_COMMISSIONABLE_DATA_PROVIDER
+#include <custom_provider/dynamic_commissionable_data_provider.h>
 #endif
 
 static const char *TAG = "app_main";
@@ -26,6 +30,10 @@ uint16_t switch_endpoint_id = 0;
 using namespace esp_matter;
 using namespace esp_matter::attribute;
 using namespace esp_matter::endpoint;
+
+#if CONFIG_DYNAMIC_PASSCODE_COMMISSIONABLE_DATA_PROVIDER
+dynamic_commissionable_data_provider g_dynamic_passcode_provider;
+#endif
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
@@ -123,6 +131,11 @@ extern "C" void app_main()
         .port_config = ESP_OPENTHREAD_DEFAULT_PORT_CONFIG(),
     };
     set_openthread_platform_config(&config);
+#endif
+
+#if CONFIG_DYNAMIC_PASSCODE_COMMISSIONABLE_DATA_PROVIDER
+    /* This should be called before esp_matter::start() */
+    esp_matter::set_custom_commissionable_data_provider(&g_dynamic_passcode_provider);
 #endif
 
     /* Matter start */
