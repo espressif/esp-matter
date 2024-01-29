@@ -12,13 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <app/server/Server.h>
 #include <controller/CommissioneeDeviceProxy.h>
 #include <esp_log.h>
-#if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-#include <esp_matter_commissioner.h>
-#else
-#include <app/server/Server.h>
-#endif
+#include <esp_matter_controller_client.h>
 #include <esp_matter_controller_read_command.h>
 
 #include "DataModelLogger.h"
@@ -76,18 +73,27 @@ void read_command::on_device_connection_failure_fcn(void *context, const ScopedN
 
 esp_err_t read_command::send_command()
 {
-#if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+#ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
+    chip::Server &server = chip::Server::GetInstance();
+    server.GetCASESessionManager()->FindOrEstablishSession(ScopedNodeId(m_node_id, get_fabric_index()),
+                                                           &on_device_connected_cb, &on_device_connection_failure_cb);
+    return ESP_OK;
+#else
+    auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
+#ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     if (CHIP_NO_ERROR ==
-        commissioner::get_device_commissioner()->GetConnectedDevice(m_node_id, &on_device_connected_cb,
-                                                                    &on_device_connection_failure_cb)) {
+        controller_instance.get_commissioner()->GetConnectedDevice(m_node_id, &on_device_connected_cb,
+                                                                   &on_device_connection_failure_cb)) {
         return ESP_OK;
     }
 #else
-    chip::Server *server = &(chip::Server::GetInstance());
-    server->GetCASESessionManager()->FindOrEstablishSession(ScopedNodeId(m_node_id, get_fabric_index()),
-                                                            &on_device_connected_cb, &on_device_connection_failure_cb);
-    return ESP_OK;
-#endif
+    if (CHIP_NO_ERROR ==
+        controller_instance.get_controller()->GetConnectedDevice(m_node_id, &on_device_connected_cb,
+                                                                 &on_device_connection_failure_cb)) {
+        return ESP_OK;
+    }
+#endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+#endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 
     chip::Platform::Delete(this);
     return ESP_FAIL;
@@ -188,8 +194,8 @@ esp_err_t send_read_attr_command(uint64_t node_id, ScopedMemoryBufferWithSize<ui
         attr_paths[i] = AttributePathParams(endpoint_ids[i], cluster_ids[i], attribute_ids[i]);
     }
 
-    read_command *cmd =
-        chip::Platform::New<read_command>(node_id, std::move(attr_paths), std::move(event_paths), nullptr, nullptr, nullptr);
+    read_command *cmd = chip::Platform::New<read_command>(node_id, std::move(attr_paths), std::move(event_paths),
+                                                          nullptr, nullptr, nullptr);
     if (!cmd) {
         ESP_LOGE(TAG, "Failed to alloc memory for read_command");
         return ESP_ERR_NO_MEM;
@@ -219,8 +225,8 @@ esp_err_t send_read_event_command(uint64_t node_id, ScopedMemoryBufferWithSize<u
         event_paths[i] = EventPathParams(endpoint_ids[i], cluster_ids[i], event_ids[i]);
     }
 
-    read_command *cmd =
-        chip::Platform::New<read_command>(node_id, std::move(attr_paths), std::move(event_paths), nullptr, nullptr, nullptr);
+    read_command *cmd = chip::Platform::New<read_command>(node_id, std::move(attr_paths), std::move(event_paths),
+                                                          nullptr, nullptr, nullptr);
     if (!cmd) {
         ESP_LOGE(TAG, "Failed to alloc memory for read_command");
         return ESP_ERR_NO_MEM;

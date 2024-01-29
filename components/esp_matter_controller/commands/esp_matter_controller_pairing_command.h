@@ -42,15 +42,10 @@ typedef enum pairing_mode {
     PAIRING_MODE_ONNETWORK,
 } pairing_mode_t;
 
+/** Pairing command class to finish commissioning with Matter end-devices **/
 class pairing_command : public chip::Controller::DevicePairingDelegate,
                         public chip::Controller::DeviceDiscoveryDelegate {
 public:
-    pairing_command()
-        : mOnDeviceConnectedCallback(OnDeviceConnectedFn, this)
-        , mOnDeviceConnectionFailureCallback(OnDeviceConnectionFailureFn, this)
-    {
-    }
-
     /****************** DevicePairingDelegate Interface *****************/
     void OnStatusUpdate(DevicePairingDelegate::Status status) override;
     void OnPairingComplete(CHIP_ERROR error) override;
@@ -60,7 +55,11 @@ public:
     /****************** DeviceDiscoveryDelegate Interface ***************/
     void OnDiscoveredDevice(const chip::Dnssd::DiscoveredNodeData &nodeData) override;
 
-    static pairing_command &get_instance() { return instance; }
+    static pairing_command &get_instance()
+    {
+        static pairing_command s_instance;
+        return s_instance;
+    }
 
     NodeId m_remote_node_id;
     uint32_t m_setup_pincode;
@@ -69,19 +68,57 @@ public:
     pairing_mode_t m_pairing_mode;
 
 private:
-    static pairing_command instance;
+    pairing_command()
+        : mOnDeviceConnectedCallback(OnDeviceConnectedFn, this)
+        , mOnDeviceConnectionFailureCallback(OnDeviceConnectionFailureFn, this)
+    {
+    }
+    CommissioningParameters get_commissioning_params();
+
     static void OnDeviceConnectedFn(void *context, ExchangeManager &exchangeMgr, const SessionHandle &sessionHandle);
     static void OnDeviceConnectionFailureFn(void *context, const ScopedNodeId &peerId, CHIP_ERROR error);
-
-    CommissioningParameters get_commissioning_params();
 
     chip::Callback::Callback<chip::OnDeviceConnected> mOnDeviceConnectedCallback;
     chip::Callback::Callback<chip::OnDeviceConnectionFailure> mOnDeviceConnectionFailureCallback;
 };
 
+/**
+ * Pairing a Matter end-device on the same IP network
+ *
+ * @param[in] node_id NodeId assigned to the Matter end-device.
+ * @param[in] pincode Setup PIN code of the Matter end-device.
+ *
+ * @return ESP_OK on success
+ * @return error in case of failure
+ */
 esp_err_t pairing_on_network(NodeId node_id, uint32_t pincode);
 #if CONFIG_ENABLE_ESP32_BLE_CONTROLLER
+/**
+ * Pairing a Matter over Wi-Fi end-device with BLE
+ *
+ * @param[in] node_id NodeId assigned to the Matter end-device.
+ * @param[in] pincode Setup PIN code of the Matter end-device.
+ * @param[in] disc Discriminator of the Matter end-device.
+ * @param[in] ssid SSID of the Wi-Fi AP.
+ * @param[in] pwd Password of the Wi-Fi AP.
+ *
+ * @return ESP_OK on success
+ * @return error in case of failure
+ */
 esp_err_t pairing_ble_wifi(NodeId node_id, uint32_t pincode, uint16_t disc, const char *ssid, const char *pwd);
+
+/**
+ * Pairing a Matter over Thread end-device with BLE
+ *
+ * @param[in] node_id NodeId assigned to the Matter end-device.
+ * @param[in] pincode Setup PIN code of the Matter end-device.
+ * @param[in] disc Discriminator of the Matter end-device.
+ * @param[in] dataset_tlvs Dataset TLV string of the Thread network.
+ * @param[in] dataset_len Length of the dataset TLV string.
+ *
+ * @return ESP_OK on success
+ * @return error in case of failure
+ */
 esp_err_t pairing_ble_thread(NodeId node_id, uint32_t pincode, uint16_t disc, uint8_t *dataset_tlvs,
                              uint8_t dataset_len);
 #endif

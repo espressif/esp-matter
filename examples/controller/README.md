@@ -38,10 +38,10 @@ idf.py -p <PORT> erase-flash flash monitor
 
 ### 4.3 Pair and Control
 
-- Pairing the controller with chip-tool
+- Connect the controller to Wi-Fi network with the device console
 
 ```
-./chip-tool pairing ble-wifi 0x7483 <ssid> <password> 20202021 3840
+matter esp wifi connect {ssid} {password}
 ```
 
 - Initializing a new Thread network dataset and commit it as the active one
@@ -64,17 +64,16 @@ matter esp ot_cli ifconfig up
 matter esp ot_cli thread start
 ```
 
-- Pairing the Thread end-device with chip-tool and write the ACL
+- Pairing the Thread end-device
 
 ```
-./chip-tool pairing ble-thread 0x7484 hex:<dataset_tlvs> 20202021 3840
-./chip-tool accesscontrol write acl '[{"fabricIndex": 1, "privilege": 5, "authMode": 2, "subjects": [112233, 25731], "targets":null}]' 0x7484 0
+matter esp controller pairing ble-thread 1234 <dataset_tlvs> 20202021 3840
 ```
 
 - Control the Thread end-device on the device console (On/Off cluster Toggle command)
 
 ```
-matter esp controller invoke-cmd 0x7484 1 6 2
+matter esp controller invoke-cmd 1234 1 6 2
 ```
 
 ## A1 Appendix FAQs

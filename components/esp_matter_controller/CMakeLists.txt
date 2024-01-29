@@ -3,18 +3,29 @@ set(include_dirs_list )
 set(exclude_srcs_list )
 
 if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
-    list(APPEND src_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/logger/zap-generated")
-    list(APPEND include_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/logger")
+    list(APPEND src_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/core"
+                              "${CMAKE_CURRENT_SOURCE_DIR}/commands"
+                              "${CMAKE_CURRENT_SOURCE_DIR}/logger/zap-generated")
+    list(APPEND include_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/core"
+                                  "${CMAKE_CURRENT_SOURCE_DIR}/commands"
+                                  "${CMAKE_CURRENT_SOURCE_DIR}/logger")
 
     if (CONFIG_ESP_MATTER_CONTROLLER_CUSTOM_CLUSTER_ENABLE)
         list(APPEND src_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/controller_custom_cluster")
         list(APPEND include_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/controller_custom_cluster")
     endif()
-    if (NOT CONFIG_ESP_MATTER_COMMISSIONER_ENABLE)
-        list(APPEND exclude_srcs_list "${CMAKE_CURRENT_SOURCE_DIR}/esp_matter_commissioner.cpp"
-                                      "${CMAKE_CURRENT_SOURCE_DIR}/esp_matter_controller_pairing_command.cpp"
-                                      "${CMAKE_CURRENT_SOURCE_DIR}/esp_matter_attestation_trust_store.cpp"
-                                      "${CMAKE_CURRENT_SOURCE_DIR}/esp_matter_controller_group_settings.cpp")
+
+    if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
+        list(APPEND exclude_srcs_list "${CMAKE_CURRENT_SOURCE_DIR}/core/esp_matter_controller_client.cpp"
+                                      "${CMAKE_CURRENT_SOURCE_DIR}/core/esp_matter_controller_credentials_issuer.cpp"
+                                      "${CMAKE_CURRENT_SOURCE_DIR}/core/esp_matter_controller_group_settings.cpp")
+    endif()
+
+    if (CONFIG_ESP_MATTER_COMMISSIONER_ENABLE)
+        list(APPEND src_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/attestation_store")
+        list(APPEND include_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/attestation_store")
+    else()
+        list(APPEND exclude_srcs_list "${CMAKE_CURRENT_SOURCE_DIR}/commands/esp_matter_controller_pairing_command.cpp")
     endif()
 endif()
 

@@ -22,6 +22,7 @@
 #if CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 #include <zap-generated/CHIPClusters.h>
 #include "app/CASESessionManager.h"
+#include "app/CommandSender.h"
 #include "app/InteractionModelEngine.h"
 #endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 
@@ -242,7 +243,8 @@ esp_err_t send_command(void *ctx, peer_device_t *remote_device, const CommandPat
         ESP_LOGE(TAG, "No memory for command sender");
         return ESP_ERR_NO_MEM;
     }
-    if (command_sender->PrepareCommand(command_path, /* aStartDataStruct */ false) != CHIP_NO_ERROR) {
+    chip::app::CommandSender::PrepareCommandParameters prepare_command_params;
+    if (command_sender->PrepareCommand(command_path, prepare_command_params) != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to prepare command");
         return ESP_FAIL;
     }
@@ -256,7 +258,8 @@ esp_err_t send_command(void *ctx, peer_device_t *remote_device, const CommandPat
         ESP_LOGE(TAG, "Failed to convert json string to TLV");
         return err;
     }
-    if (command_sender->FinishCommand(timed_invoke_timeout_ms) != CHIP_NO_ERROR) {
+    chip::app::CommandSender::FinishCommandParameters finish_command_params(timed_invoke_timeout_ms);
+    if (command_sender->FinishCommand(finish_command_params) != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to finish command");
         return ESP_FAIL;
     }
@@ -284,7 +287,8 @@ esp_err_t send_group_command(const uint8_t fabric_index, const CommandPathParams
         ESP_LOGE(TAG, "No memory for command sender");
         return ESP_ERR_NO_MEM;
     }
-    if (command_sender->PrepareCommand(command_path, /* aStartDataStruct */ false) != CHIP_NO_ERROR) {
+    chip::app::CommandSender::PrepareCommandParameters prepare_command_params;
+    if (command_sender->PrepareCommand(command_path, prepare_command_params) != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to prepare command");
         return ESP_FAIL;
     }
@@ -298,7 +302,8 @@ esp_err_t send_group_command(const uint8_t fabric_index, const CommandPathParams
         ESP_LOGE(TAG, "Failed to convert json string to TLV");
         return err;
     }
-    if (command_sender->FinishCommand(chip::NullOptional) != CHIP_NO_ERROR) {
+    chip::app::CommandSender::FinishCommandParameters finish_command_params;
+    if (command_sender->FinishCommand(finish_command_params) != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to finish command");
         return ESP_FAIL;
     }

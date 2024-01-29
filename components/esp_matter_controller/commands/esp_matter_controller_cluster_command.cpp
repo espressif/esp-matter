@@ -14,17 +14,14 @@
 
 #include <DataModelLogger.h>
 #include <controller/CommissioneeDeviceProxy.h>
-#if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-#include <esp_matter_commissioner.h>
-#else
-#include <app/server/Server.h>
-#endif
 #include <esp_check.h>
+#include <esp_matter_controller_client.h>
 #include <esp_matter_controller_cluster_command.h>
 #include <esp_matter_controller_utils.h>
 #include <esp_matter_mem.h>
 #include <json_parser.h>
 
+#include <app/server/Server.h>
 #include <crypto/CHIPCryptoPAL.h>
 #include <setup_payload/ManualSetupPayloadGenerator.h>
 #include <setup_payload/QRCodeSetupPayloadGenerator.h>
@@ -101,7 +98,8 @@ void decode_response(const ConcreteCommandPath &command_path, TLVReader *reader)
     } else if (command_path.mCommandId == ScenesManagement::Commands::StoreSceneResponse::Id) {
         decode_command_response<ScenesManagement::Commands::StoreScene::Type::ResponseType>(command_path, reader);
     } else if (command_path.mCommandId == ScenesManagement::Commands::GetSceneMembershipResponse::Id) {
-        decode_command_response<ScenesManagement::Commands::GetSceneMembership::Type::ResponseType>(command_path, reader);
+        decode_command_response<ScenesManagement::Commands::GetSceneMembership::Type::ResponseType>(command_path,
+                                                                                                    reader);
     }
 }
 
@@ -209,11 +207,15 @@ esp_err_t cluster_command::dispatch_group_command(void *context)
     esp_err_t err = ESP_OK;
     cluster_command *cmd = reinterpret_cast<cluster_command *>(context);
     uint16_t group_id = cmd->m_destination_id & 0xFFFF;
-#if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-    uint8_t fabric_index = commissioner::get_device_commissioner()->GetFabricIndex();
-#else
+#ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
     uint8_t fabric_index = get_fabric_index();
-#endif
+#else
+#ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+    uint8_t fabric_index = matter_controller_client::get_instance().get_commissioner()->GetFabricIndex();
+#else
+    uint8_t fabric_index = matter_controller_client::get_instance().get_controller()->GetFabricIndex();
+#endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+#endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
     chip::app::CommandPathParams command_path = {cmd->m_endpoint_id, group_id, cmd->m_cluster_id, cmd->m_command_id,
                                                  chip::app::CommandPathFlags::kGroupIdValid};
     err = custom::command::send_group_command(fabric_index, command_path, cmd->m_command_data_field);
@@ -226,18 +228,27 @@ esp_err_t cluster_command::send_command()
     if (is_group_command()) {
         return dispatch_group_command(reinterpret_cast<void *>(this));
     }
-#if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+#ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
+    chip::Server &server = chip::Server::GetInstance();
+    server.GetCASESessionManager()->FindOrEstablishSession(ScopedNodeId(m_destination_id, get_fabric_index()),
+                                                           &on_device_connected_cb, &on_device_connection_failure_cb);
+    return ESP_OK;
+#else
+    auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
+#ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     if (CHIP_NO_ERROR ==
-        commissioner::get_device_commissioner()->GetConnectedDevice(m_destination_id, &on_device_connected_cb,
-                                                                    &on_device_connection_failure_cb)) {
+        controller_instance.get_commissioner()->GetConnectedDevice(m_destination_id, &on_device_connected_cb,
+                                                                   &on_device_connection_failure_cb)) {
         return ESP_OK;
     }
 #else
-    chip::Server *server = &(chip::Server::GetInstance());
-    server->GetCASESessionManager()->FindOrEstablishSession(ScopedNodeId(m_destination_id, get_fabric_index()),
-                                                            &on_device_connected_cb, &on_device_connection_failure_cb);
-    return ESP_OK;
-#endif
+    if (CHIP_NO_ERROR ==
+        controller_instance.get_controller()->GetConnectedDevice(m_destination_id, &on_device_connected_cb,
+                                                                 &on_device_connection_failure_cb)) {
+        return ESP_OK;
+    }
+#endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+#endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
     chip::Platform::Delete(this);
     return ESP_FAIL;
 }

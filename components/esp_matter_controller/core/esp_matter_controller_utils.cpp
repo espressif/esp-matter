@@ -18,7 +18,7 @@
 namespace esp_matter {
 namespace controller {
 
-#if !CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+#ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 uint8_t s_controller_fabric_index = chip::kUndefinedFabricIndex;
 
 void set_fabric_index(uint8_t fabric_index)
@@ -30,7 +30,7 @@ uint8_t get_fabric_index(void)
 {
     return s_controller_fabric_index;
 }
-#endif // !CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+#endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 
 } // namespace controller
 } // namespace esp_matter

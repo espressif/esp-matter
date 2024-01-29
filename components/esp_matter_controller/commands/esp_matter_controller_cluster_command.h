@@ -34,6 +34,7 @@ using esp_matter::cluster::custom::command::custom_command_callback;
 constexpr char k_empty_command_data_field[] = "{}";
 constexpr size_t k_command_data_field_buffer_size = CONFIG_ESP_MATTER_CONTROLLER_JSON_STRING_BUFFER_LEN;
 
+/** Cluster command class to send an invoke interaction command to a server **/
 class cluster_command {
 public:
     cluster_command(uint64_t destination_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t command_id,
@@ -89,8 +90,23 @@ private:
     custom_command_callback::on_error_callback_t on_error_cb;
 };
 
-esp_err_t send_invoke_cluster_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t command_id,
-                                      const char *command_data_field);
+/** Send cluster invoke command
+ *
+ * @note When the destination_id is a Matter GroupId, the endpoint_id parameter will be ignored.
+ * @note When the command has no data field, command_data_field can be NULL.
+ *
+ * @param[in] destination_id NodeId or GroupId
+ * @param[in] endpoint_id EndpointId
+ * @param[in] cluster_id ClusterId
+ * @param[in] command_id CommandId
+ * @param[in] command_data_field Command data string with JSON format
+ *            (https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#cluster-commands)
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t send_invoke_cluster_command(uint64_t destination_id, uint16_t endpoint_id, uint32_t cluster_id,
+                                      uint32_t command_id, const char *command_data_field);
 
 } // namespace controller
 } // namespace esp_matter
