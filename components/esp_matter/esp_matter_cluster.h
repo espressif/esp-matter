@@ -15,6 +15,7 @@
 #pragma once
 
 #include <esp_matter_core.h>
+#include <esp_matter_attribute.h>
 #include <esp_matter_feature.h>
 #include <stdint.h>
 
@@ -55,7 +56,7 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags);
 namespace basic_information {
 typedef struct config {
     uint16_t cluster_revision;
-    char node_label[32];
+    char node_label[k_max_node_label_length + 1];
     config() : cluster_revision(1), node_label{0} {}
 } config_t;
 
@@ -392,7 +393,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace localization_configuration {
 typedef struct config {
     uint16_t cluster_revision;
-    char active_locale[35];
+    char active_locale[k_max_active_locale_length + 1];
     config() : cluster_revision(4), active_locale{0} {}
 } config_t;
 

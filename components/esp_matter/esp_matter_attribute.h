@@ -14,7 +14,6 @@
 
 #pragma once
 
-#include <esp_matter.h>
 #include <esp_matter_core.h>
 
 namespace esp_matter {
@@ -62,6 +61,8 @@ attribute_t *create_access_control_entries_per_fabric(cluster_t *cluster, uint16
 } /* access_control */
 
 namespace basic_information {
+constexpr uint8_t k_max_node_label_length = 32;
+
 namespace attribute {
 attribute_t *create_data_model_revision(cluster_t *cluster, uint16_t value);
 attribute_t *create_vendor_name(cluster_t *cluster, char *value, uint16_t length);
@@ -210,6 +211,9 @@ attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, ui
 
 namespace bridged_device_basic_information {
 namespace attribute {
+
+constexpr uint8_t k_max_node_label_length = 32;
+
 attribute_t *create_node_label(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_reachable(cluster_t *cluster, bool value);
 } /* attribute */
@@ -449,6 +453,9 @@ attribute_t *state_value(cluster_t *cluster, bool value);
 } /* boolean_state */
 
 namespace localization_configuration {
+
+constexpr uint8_t k_max_active_locale_length = 35;
+
 namespace attribute {
 attribute_t *create_active_locale(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_supported_locales(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);

@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include <esp_matter_core.h>
 #include <stdint.h>
+#include <esp_matter_attribute.h>
 
 #define ESP_MATTER_NONE_FEATURE_ID 0x0000
 

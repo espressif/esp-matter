@@ -413,15 +413,19 @@ namespace attribute {
  *
  * This will create a new attribute and add it to the cluster.
  *
- * @param[in] cluster Cluster handle.
- * @param[in] attribute_id Attribute ID for the attribute.
- * @param[in] flags Bitmap of `attribute_flags_t`.
- * @param[in] val Default type and value of the attribute. Use appropriate elements as per the value type.
+ * @param[in] cluster       Cluster handle.
+ * @param[in] attribute_id  Attribute ID for the attribute.
+ * @param[in] flags         Bitmap of `attribute_flags_t`.
+ * @param[in] val           Default type and value of the attribute. Use appropriate elements as per the value type.
+ * @param[in] max_val_size  For attributes of type char string and long char string, the size should correspond to the
+ *                          maximum size defined in the specification. However, for other types of attributes, this
+ *                          parameter remains unused, and therefore the default value is set to 0
  *
  * @return Attribute handle on success.
  * @return NULL in case of failure.
  */
-attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, esp_matter_attr_val_t val);
+attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, esp_matter_attr_val_t val,
+                    uint16_t max_val_size = 0);
 
 /** Get attribute
  *

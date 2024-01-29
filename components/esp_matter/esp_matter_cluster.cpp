@@ -214,7 +214,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_node_label(cluster, config->node_label, sizeof(config->node_label));
+            attribute::create_node_label(cluster, config->node_label, strlen(config->node_label));
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -1672,7 +1672,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         if (config) {
             /* Attributes not managed internally */
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_active_locale(cluster, config->active_locale, sizeof(config->active_locale));
+            attribute::create_active_locale(cluster, config->active_locale, strlen(config->active_locale));
 
             /* Attributes managed internally */
             attribute::create_supported_locales(cluster, NULL, 0, 0);

@@ -14,6 +14,8 @@
 
 #include <esp_log.h>
 #include <esp_matter_attribute.h>
+#include <esp_matter.h>
+#include <esp_matter_core.h>
 
 static const char *TAG = "esp_matter_attribute";
 
@@ -173,7 +175,7 @@ attribute_t *create_node_label(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, BasicInformation::Attributes::NodeLabel::Id,
                                          ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
-                                         esp_matter_char_str(value, length));
+                                         esp_matter_char_str(value, length), k_max_node_label_length);
 }
 
 attribute_t *create_location(cluster_t *cluster, char *value, uint16_t length)
@@ -719,7 +721,7 @@ attribute_t *create_node_label(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::NodeLabel::Id,
                                          ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE,
-                                         esp_matter_char_str(value, length));
+                                         esp_matter_char_str(value, length), k_max_node_label_length);
 }
 
 attribute_t *create_reachable(cluster_t *cluster, bool value)
