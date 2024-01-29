@@ -17,6 +17,8 @@
 
 #include <app_priv.h>
 
+#include <app/server/Server.h>
+
 using namespace chip::app::Clusters;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
@@ -94,7 +96,8 @@ static esp_err_t app_driver_client_console_handler(int argc, char **argv)
            cmd_handle.command_data = console_buffer;
         }
 
-        client::connect(fabric_index, node_id, &cmd_handle);
+        auto &server = chip::Server::GetInstance();
+        client::connect(server.GetCASESessionManager(), fabric_index, node_id, &cmd_handle);
     } else if (argc >= 5 && strncmp(argv[0], "invoke-group", sizeof("invoke-group")) == 0) {
         client::command_handle_t cmd_handle;
         uint8_t fabric_index = strtoul((const char *)&argv[1][2], NULL, 16);

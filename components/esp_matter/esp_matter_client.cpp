@@ -19,6 +19,8 @@
 #include <app/clusters/bindings/BindingManager.h>
 #include <json_to_tlv.h>
 #include <zap-generated/CHIPClusters.h>
+#include "app/CASESessionManager.h"
+#include "app/InteractionModelEngine.h"
 
 using namespace chip::app::Clusters;
 using chip::BitMask;
@@ -77,8 +79,12 @@ void esp_matter_connection_failure_callback(void *context, const ScopedNodeId &p
     }
 }
 
-esp_err_t connect(uint8_t fabric_index, uint64_t node_id, command_handle_t *cmd_handle)
+esp_err_t connect(case_session_mgr_t *case_session_mgr, uint8_t fabric_index, uint64_t node_id,
+                  command_handle_t *cmd_handle)
 {
+    if (!case_session_mgr) {
+        return ESP_ERR_INVALID_ARG;
+    }
     static Callback<chip::OnDeviceConnected> success_callback(esp_matter_connection_success_callback, NULL);
     static Callback<chip::OnDeviceConnectionFailure> failure_callback(esp_matter_connection_failure_callback, NULL);
 
@@ -89,9 +95,8 @@ esp_err_t connect(uint8_t fabric_index, uint64_t node_id, command_handle_t *cmd_
     }
     success_callback.mContext = static_cast<void *>(context);
     failure_callback.mContext = static_cast<void *>(context);
-    Server *server = &(chip::Server::GetInstance());
-    server->GetCASESessionManager()->FindOrEstablishSession(ScopedNodeId(node_id, fabric_index), &success_callback,
-                                                            &failure_callback);
+    case_session_mgr->FindOrEstablishSession(ScopedNodeId(node_id, fabric_index), &success_callback,
+                                             &failure_callback);
     return ESP_OK;
 }
 
@@ -270,8 +275,8 @@ esp_err_t send_group_command(const uint8_t fabric_index, const CommandPathParams
         return ESP_ERR_INVALID_ARG;
     }
     chip::Transport::OutgoingGroupSession session(command_path.mGroupId, fabric_index);
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
-    auto command_sender = chip::Platform::MakeUnique<chip::app::CommandSender>(nullptr, &exchange_mgr);
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
+    auto command_sender = chip::Platform::MakeUnique<chip::app::CommandSender>(nullptr, exchange_mgr);
     if (command_sender == nullptr) {
         ESP_LOGE(TAG, "No memory for command sender");
         return ESP_ERR_NO_MEM;
@@ -319,9 +324,9 @@ esp_err_t send_on(peer_device_t *remote_device, uint16_t remote_endpoint_id)
 esp_err_t group_send_on(uint8_t fabric_index, uint16_t group_id)
 {
     OnOff::Commands::On::Type command_data;
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -338,9 +343,9 @@ esp_err_t send_off(peer_device_t *remote_device, uint16_t remote_endpoint_id)
 esp_err_t group_send_off(uint8_t fabric_index, uint16_t group_id)
 {
     OnOff::Commands::Off::Type command_data;
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -357,9 +362,9 @@ esp_err_t send_toggle(peer_device_t *remote_device, uint16_t remote_endpoint_id)
 esp_err_t group_send_toggle(uint8_t fabric_index, uint16_t group_id)
 {
     OnOff::Commands::Toggle::Type command_data;
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -393,9 +398,9 @@ esp_err_t group_send_move(uint8_t fabric_index, uint16_t group_id, uint8_t move_
     command_data.optionsMask.SetRaw(option_mask);
     command_data.optionsOverride.SetRaw(option_override);
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -423,9 +428,9 @@ esp_err_t group_send_move_to_level(uint8_t fabric_index, uint16_t group_id, uint
     command_data.optionsMask.SetRaw(option_mask);
     command_data.optionsOverride.SetRaw(option_override);
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -449,9 +454,9 @@ esp_err_t group_send_move_to_level_with_on_off(uint8_t fabric_index, uint16_t gr
     command_data.level = level;
     command_data.transitionTime.SetNonNull(transition_time);
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -474,9 +479,9 @@ esp_err_t group_send_move_with_on_off(uint8_t fabric_index, uint16_t group_id, u
     command_data.moveMode = (LevelControl::MoveMode)move_mode;
     command_data.rate.SetNonNull(rate);
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -506,9 +511,9 @@ esp_err_t group_send_step(uint8_t fabric_index, uint16_t group_id, uint8_t step_
     command_data.optionsMask.SetRaw(option_mask);
     command_data.optionsOverride.SetRaw(option_override);
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -534,9 +539,9 @@ esp_err_t group_send_step_with_on_off(uint8_t fabric_index, uint16_t group_id, u
     command_data.stepSize = step_size;
     command_data.transitionTime.SetNonNull(transition_time);
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -559,9 +564,9 @@ esp_err_t group_send_stop(uint8_t fabric_index, uint16_t group_id, uint8_t optio
     command_data.optionsMask.SetRaw(option_mask);
     command_data.optionsOverride.SetRaw(option_override);
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -579,9 +584,9 @@ esp_err_t group_send_stop_with_on_off(uint8_t fabric_index, uint16_t group_id)
 {
     LevelControl::Commands::Stop::Type command_data;
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -615,9 +620,9 @@ esp_err_t group_send_move_hue(uint8_t fabric_index, uint16_t group_id, uint8_t m
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -645,9 +650,9 @@ esp_err_t group_send_move_saturation(uint8_t fabric_index, uint16_t group_id, ui
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -677,9 +682,9 @@ esp_err_t group_send_move_to_hue(uint8_t fabric_index, uint16_t group_id, uint8_
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -711,9 +716,9 @@ esp_err_t group_send_move_to_hue_and_saturation(uint8_t fabric_index, uint16_t g
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -741,9 +746,9 @@ esp_err_t group_send_move_to_saturation(uint8_t fabric_index, uint16_t group_id,
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -773,9 +778,9 @@ esp_err_t group_send_step_hue(uint8_t fabric_index, uint16_t group_id, uint8_t s
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -806,9 +811,9 @@ esp_err_t group_send_step_saturation(uint8_t fabric_index, uint16_t group_id, ui
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -838,9 +843,9 @@ esp_err_t group_send_move_to_color(uint8_t fabric_index, uint16_t group_id, uint
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -868,9 +873,9 @@ esp_err_t group_send_move_color(uint8_t fabric_index, uint16_t group_id, int16_t
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -900,9 +905,9 @@ esp_err_t group_send_step_color(uint8_t fabric_index, uint16_t group_id, int16_t
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -932,9 +937,9 @@ esp_err_t group_send_move_to_color_temperature(uint8_t fabric_index, uint16_t gr
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -958,9 +963,9 @@ esp_err_t group_send_stop_move_step(uint8_t fabric_index, uint16_t group_id, uin
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -996,9 +1001,9 @@ esp_err_t group_send_move_color_temperature(uint8_t fabric_index, uint16_t group
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -1038,9 +1043,9 @@ esp_err_t group_send_step_color_temperature(uint8_t fabric_index, uint16_t group
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
@@ -1065,9 +1070,9 @@ esp_err_t group_send_identify(uint8_t fabric_index, uint16_t group_id, uint16_t 
     Identify::Commands::Identify::Type command_data;
     command_data.identifyTime = identify_time;
 
-    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
 
-    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
