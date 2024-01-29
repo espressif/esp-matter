@@ -18,9 +18,12 @@
 
 #include <app/clusters/bindings/BindingManager.h>
 #include <json_to_tlv.h>
+
+#if CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 #include <zap-generated/CHIPClusters.h>
 #include "app/CASESessionManager.h"
 #include "app/InteractionModelEngine.h"
+#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 
 using namespace chip::app::Clusters;
 using chip::BitMask;
@@ -122,12 +125,12 @@ static void esp_matter_command_client_binding_callback(const EmberBindingTableEn
         ESP_LOGE(TAG, "Failed to call the binding callback since command handle is NULL");
         return;
     }
-    if (binding.type == EMBER_UNICAST_BINDING && peer_device) {
+    if (binding.type == MATTER_UNICAST_BINDING && peer_device) {
         if (client_command_callback) {
             cmd_handle->endpoint_id = binding.remote;
             client_command_callback(peer_device, cmd_handle, command_callback_priv_data);
         }
-    } else if (binding.type == EMBER_MULTICAST_BINDING && !peer_device) {
+    } else if (binding.type == MATTER_MULTICAST_BINDING && !peer_device) {
         if (client_group_command_callback) {
             cmd_handle->group_id = binding.groupId;
             client_group_command_callback(binding.fabricIndex, cmd_handle, command_callback_priv_data);
@@ -1165,14 +1168,14 @@ esp_err_t send_remove_group(peer_device_t *remote_device, uint16_t remote_endpoi
 } // namespace command
 } // namespace groups
 
-namespace scenes {
+namespace scenes_management {
 namespace command {
 
 esp_err_t send_add_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id, uint8_t scene_id,
                          uint16_t transition_time, char *scene_name, extension_field_sets &efs,
                          add_scene_callback add_scene_cb)
 {
-    Scenes::Commands::AddScene::Type command_data;
+    ScenesManagement::Commands::AddScene::Type command_data;
     command_data.groupID = group_id;
     command_data.sceneID = scene_id;
     command_data.transitionTime = transition_time;
@@ -1188,7 +1191,7 @@ esp_err_t send_add_scene(peer_device_t *remote_device, uint16_t remote_endpoint_
 esp_err_t send_view_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
                           uint8_t scene_id, view_scene_callback view_scene_cb)
 {
-    Scenes::Commands::ViewScene::Type command_data;
+    ScenesManagement::Commands::ViewScene::Type command_data;
     command_data.groupID = group_id;
     command_data.sceneID = scene_id;
 
@@ -1201,7 +1204,7 @@ esp_err_t send_view_scene(peer_device_t *remote_device, uint16_t remote_endpoint
 esp_err_t send_remove_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
                             uint8_t scene_id, remove_scene_callback remove_scene_cb)
 {
-    Scenes::Commands::RemoveScene::Type command_data;
+    ScenesManagement::Commands::RemoveScene::Type command_data;
     command_data.groupID = group_id;
     command_data.sceneID = scene_id;
 
@@ -1214,7 +1217,7 @@ esp_err_t send_remove_scene(peer_device_t *remote_device, uint16_t remote_endpoi
 esp_err_t send_remove_all_scenes(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
                                  remove_all_scenes_callback remove_all_scenes_cb)
 {
-    Scenes::Commands::RemoveAllScenes::Type command_data;
+    ScenesManagement::Commands::RemoveAllScenes::Type command_data;
     command_data.groupID = group_id;
 
     chip::Controller::ScenesCluster cluster(*remote_device->GetExchangeManager(),
@@ -1226,7 +1229,7 @@ esp_err_t send_remove_all_scenes(peer_device_t *remote_device, uint16_t remote_e
 esp_err_t send_store_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
                            uint8_t scene_id, store_scene_callback store_scene_cb)
 {
-    Scenes::Commands::StoreScene::Type command_data;
+    ScenesManagement::Commands::StoreScene::Type command_data;
     command_data.groupID = group_id;
     command_data.sceneID = scene_id;
 
@@ -1239,7 +1242,7 @@ esp_err_t send_store_scene(peer_device_t *remote_device, uint16_t remote_endpoin
 esp_err_t send_recall_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
                             uint8_t scene_id)
 {
-    Scenes::Commands::RecallScene::Type command_data;
+    ScenesManagement::Commands::RecallScene::Type command_data;
     command_data.groupID = group_id;
     command_data.sceneID = scene_id;
 
@@ -1252,7 +1255,7 @@ esp_err_t send_recall_scene(peer_device_t *remote_device, uint16_t remote_endpoi
 esp_err_t send_get_scene_membership(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
                                     get_scene_membership_callback get_scene_membership_cb)
 {
-    Scenes::Commands::GetSceneMembership::Type command_data;
+    ScenesManagement::Commands::GetSceneMembership::Type command_data;
     command_data.groupID = group_id;
 
     chip::Controller::ScenesCluster cluster(*remote_device->GetExchangeManager(),
@@ -1262,7 +1265,7 @@ esp_err_t send_get_scene_membership(peer_device_t *remote_device, uint16_t remot
 }
 
 } // namespace command
-} // namespace scenes
+} // namespace scenes_management
 
 namespace thermostat {
 namespace command {

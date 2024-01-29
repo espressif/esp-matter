@@ -988,6 +988,17 @@ static esp_err_t esp_matter_command_callback_test_event_trigger(const ConcreteCo
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_time_snap_shot(const ConcreteCommandPath &command_path,
+                                                                  TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::GeneralDiagnostics::Commands::TimeSnapshot::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfGeneralDiagnosticsClusterTimeSnapshotCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 static esp_err_t esp_matter_command_callback_up_or_open(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                        void *opaque_ptr)
 {
@@ -1376,8 +1387,20 @@ namespace command {
 
 command_t *create_test_event_trigger(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, GeneralDiagnostics::Commands::TestEventTrigger::Id, COMMAND_FLAG_ACCEPTED, 
+    return esp_matter::command::create(cluster, GeneralDiagnostics::Commands::TestEventTrigger::Id, COMMAND_FLAG_ACCEPTED,
                                         esp_matter_command_callback_test_event_trigger);
+}
+
+command_t *create_time_snap_shot(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, GeneralDiagnostics::Commands::TimeSnapshot::Id, COMMAND_FLAG_ACCEPTED,
+                                        esp_matter_command_callback_time_snap_shot);
+}
+
+command_t *create_time_snap_shot_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, GeneralDiagnostics::Commands::TimeSnapshotResponse::Id, COMMAND_FLAG_GENERATED,
+                                        NULL);
 }
 
 } /* command */
@@ -1801,109 +1824,89 @@ command_t *create_stay_active_request(cluster_t *cluster)
 } /* command */
 } /* icd_management */
 
-namespace scenes {
+namespace scenes_management {
 namespace command {
 
 command_t *create_add_scene(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::AddScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
+    return esp_matter::command::create(cluster, ScenesManagement::Commands::AddScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_view_scene(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::ViewScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
+    return esp_matter::command::create(cluster, ScenesManagement::Commands::ViewScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_remove_scene(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::RemoveScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
+    return esp_matter::command::create(cluster, ScenesManagement::Commands::RemoveScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_remove_all_scenes(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::RemoveAllScenes::Id, COMMAND_FLAG_ACCEPTED, NULL);
+    return esp_matter::command::create(cluster, ScenesManagement::Commands::RemoveAllScenes::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_store_scene(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::StoreScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
+    return esp_matter::command::create(cluster, ScenesManagement::Commands::StoreScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_recall_scene(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::RecallScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
+    return esp_matter::command::create(cluster, ScenesManagement::Commands::RecallScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_get_scene_membership(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::GetSceneMembership::Id, COMMAND_FLAG_ACCEPTED, NULL);
-}
-
-command_t *create_enhanced_add_scene(cluster_t *cluster)
-{
-    return esp_matter::command::create(cluster, Scenes::Commands::EnhancedAddScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
-}
-
-command_t *create_enhanced_view_scene(cluster_t *cluster)
-{
-    return esp_matter::command::create(cluster, Scenes::Commands::EnhancedViewScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
+    return esp_matter::command::create(cluster, ScenesManagement::Commands::GetSceneMembership::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_copy_scene(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::CopyScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
+    return esp_matter::command::create(cluster, ScenesManagement::Commands::CopyScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_add_scene_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::AddSceneResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+    return esp_matter::command::create(cluster, ScenesManagement::Commands::AddSceneResponse::Id, COMMAND_FLAG_GENERATED, NULL);
 }
 
 command_t *create_view_scene_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::ViewSceneResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+    return esp_matter::command::create(cluster, ScenesManagement::Commands::ViewSceneResponse::Id, COMMAND_FLAG_GENERATED, NULL);
 }
 
 command_t *create_remove_scene_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::RemoveSceneResponse::Id, COMMAND_FLAG_GENERATED,
+    return esp_matter::command::create(cluster, ScenesManagement::Commands::RemoveSceneResponse::Id, COMMAND_FLAG_GENERATED,
                                        NULL);
 }
 
 command_t *create_remove_all_scenes_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::RemoveAllScenesResponse::Id, COMMAND_FLAG_GENERATED,
+    return esp_matter::command::create(cluster, ScenesManagement::Commands::RemoveAllScenesResponse::Id, COMMAND_FLAG_GENERATED,
                                        NULL);
 }
 
 command_t *create_store_scene_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::StoreSceneResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+    return esp_matter::command::create(cluster, ScenesManagement::Commands::StoreSceneResponse::Id, COMMAND_FLAG_GENERATED, NULL);
 }
 
 command_t *create_get_scene_membership_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::GetSceneMembershipResponse::Id,
+    return esp_matter::command::create(cluster, ScenesManagement::Commands::GetSceneMembershipResponse::Id,
                                        COMMAND_FLAG_GENERATED, NULL);
-}
-
-command_t *create_enhanced_add_scene_response(cluster_t *cluster)
-{
-    return esp_matter::command::create(cluster, Scenes::Commands::EnhancedAddSceneResponse::Id, COMMAND_FLAG_GENERATED, NULL);
-}
-
-command_t *create_enhanced_view_scene_response(cluster_t *cluster)
-{
-    return esp_matter::command::create(cluster, Scenes::Commands::EnhancedViewSceneResponse::Id, COMMAND_FLAG_GENERATED, NULL);
 }
 
 command_t *create_copy_scene_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Scenes::Commands::CopySceneResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+    return esp_matter::command::create(cluster, ScenesManagement::Commands::CopySceneResponse::Id, COMMAND_FLAG_GENERATED, NULL);
 }
 
 } /* command */
-} /* scenes */
+} /* scenes_management */
 
 namespace on_off {
 namespace command {

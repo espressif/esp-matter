@@ -71,7 +71,7 @@ namespace basic_information {
 typedef struct config {
     uint16_t cluster_revision;
     char node_label[32];
-    config() : cluster_revision(2), node_label{0} {}
+    config() : cluster_revision(3), node_label{0} {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -138,7 +138,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace general_diagnostics {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(1) {}
+    config() : cluster_revision(2) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -159,7 +159,7 @@ typedef struct config {
     config() : cluster_revision(1) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* administrator_commissioning */
 
 namespace operational_credentials {
@@ -192,7 +192,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace diagnostics_network_thread {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(1) {}
+    config() : cluster_revision(2) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -248,7 +248,7 @@ typedef struct config {
     uint32_t idle_mode_interval;
     uint32_t active_mode_interval;
     uint16_t active_mode_threshold;
-    config() : cluster_revision(1), idle_mode_interval(5000), active_mode_interval(300), active_mode_threshold(300) {}
+    config() : cluster_revision(2), idle_mode_interval(5000), active_mode_interval(300), active_mode_threshold(300) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -293,28 +293,22 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* groups */
 
-namespace scenes {
+namespace scenes_management {
 typedef struct config {
     uint16_t cluster_revision;
-    uint8_t scene_count;
-    uint8_t current_scene;
-    uint16_t current_group;
-    bool scene_valid;
-    uint8_t scene_name_support;
     uint16_t scene_table_size;
-    config() : cluster_revision(5), scene_count(0), current_scene(0), current_group(0), scene_valid(false),
-               scene_name_support(0), scene_table_size(0) {}
+    config() : cluster_revision(6), scene_table_size(16) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* scenes */
+} /* scenes_management */
 
 namespace on_off {
 typedef struct config {
     uint16_t cluster_revision;
     bool on_off;
     feature::lighting::config_t lighting;
-    config() : cluster_revision(5), on_off(false) {}
+    config() : cluster_revision(6), on_off(false) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -403,7 +397,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace hepa_filter_monitoring {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(1) {} 
+    config() : cluster_revision(1) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -412,7 +406,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace activated_carbon_filter_monitoring {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(1) {} 
+    config() : cluster_revision(1) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

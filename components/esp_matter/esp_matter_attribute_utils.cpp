@@ -1906,10 +1906,10 @@ esp_err_t get_val_raw(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attrib
     }
 
     esp_err_t err = ESP_OK;
-    EmberAfStatus status = emberAfReadAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_size);
-    if (status != EMBER_ZCL_STATUS_SUCCESS) {
+    Status status = emberAfReadAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_size);
+    if (status != Status::Success) {
         ESP_LOGE(TAG, "Error getting Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 "'s raw value from matter: 0x%x",
-                 endpoint_id, cluster_id, attribute_id, status);
+                 endpoint_id, cluster_id, attribute_id, static_cast<uint16_t>(status));
         err = ESP_FAIL;
     }
     if (lock_status == lock::SUCCESS) {
@@ -1944,12 +1944,12 @@ esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
     get_data_from_attr_val(val, &attribute_type, &attribute_size, value);
 
     /* Update matter */
-    EmberAfStatus status = EMBER_ZCL_STATUS_SUCCESS;
+    Status status = Status::Success;
     if (emberAfContainsServer(endpoint_id, cluster_id)) {
         status = emberAfWriteAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_type);
-        if (status != EMBER_ZCL_STATUS_SUCCESS) {
+        if (status != Status::Success) {
             ESP_LOGE(TAG, "Error updating Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " to matter: 0x%X", endpoint_id,
-                     cluster_id, attribute_id, status);
+                     cluster_id, attribute_id, static_cast<uint16_t>(status));
             esp_matter_mem_free(value);
             if (lock_status == lock::SUCCESS) {
                 lock::chip_stack_unlock();
@@ -2049,7 +2049,7 @@ void MatterPostAttributeChangeCallback(const chip::app::ConcreteAttributePath &p
     execute_callback(attribute::POST_UPDATE, endpoint_id, cluster_id, attribute_id, &val);
 }
 
-EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint_id, ClusterId cluster_id,
+Status emberAfExternalAttributeReadCallback(EndpointId endpoint_id, ClusterId cluster_id,
                                                    const EmberAfAttributeMetadata *matter_attribute, uint8_t *buffer,
                                                    uint16_t max_read_length)
 {
@@ -2057,7 +2057,7 @@ EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint_id, Clust
     uint32_t attribute_id = matter_attribute->attributeId;
     node_t *node = node::get();
     if (!node) {
-        return EMBER_ZCL_STATUS_FAILURE;
+        return Status::Failure;
     }
     endpoint_t *endpoint = endpoint::get(node, endpoint_id);
     cluster_t *cluster = cluster::get(endpoint, cluster_id);
@@ -2069,7 +2069,7 @@ EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint_id, Clust
         esp_err_t err = execute_override_callback(attribute, attribute::READ, endpoint_id, cluster_id, attribute_id,
                                                   &val);
         if (err != ESP_OK) {
-            return EMBER_ZCL_STATUS_FAILURE;
+            return Status::Failure;
         }
     } else {
         attribute::get_val(attribute, &val);
@@ -2084,22 +2084,22 @@ EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint_id, Clust
     if (attribute_size > max_read_length) {
         ESP_LOGE(TAG, "Insufficient space for reading Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32
                 ": required: %" PRIu16 ", max: %" PRIu16 "", endpoint_id, cluster_id, attribute_id, attribute_size, max_read_length);
-        return EMBER_ZCL_STATUS_RESOURCE_EXHAUSTED;
+        return Status::ResourceExhausted;
     }
 
     /* Assign value */
     attribute::get_data_from_attr_val(&val, NULL, &attribute_size, buffer);
-    return EMBER_ZCL_STATUS_SUCCESS;
+    return Status::Success;
 }
 
-EmberAfStatus emberAfExternalAttributeWriteCallback(EndpointId endpoint_id, ClusterId cluster_id,
+Status emberAfExternalAttributeWriteCallback(EndpointId endpoint_id, ClusterId cluster_id,
                                                     const EmberAfAttributeMetadata *matter_attribute, uint8_t *buffer)
 {
     /* Get value */
     uint32_t attribute_id = matter_attribute->attributeId;
     node_t *node = node::get();
     if (!node) {
-        return EMBER_ZCL_STATUS_FAILURE;
+        return Status::Failure;
     }
     endpoint_t *endpoint = endpoint::get(node, endpoint_id);
     cluster_t *cluster = cluster::get(endpoint, cluster_id);
@@ -2115,14 +2115,14 @@ EmberAfStatus emberAfExternalAttributeWriteCallback(EndpointId endpoint_id, Clus
     if (flags & ATTRIBUTE_FLAG_OVERRIDE) {
         esp_err_t err = execute_override_callback(attribute, attribute::WRITE, endpoint_id, cluster_id, attribute_id,
                                                   &val);
-        EmberAfStatus status = (err == ESP_OK) ? EMBER_ZCL_STATUS_SUCCESS : EMBER_ZCL_STATUS_FAILURE;
+        Status status = (err == ESP_OK) ? Status::Success : Status::Failure;
         return status;
     }
 
     /* Update val */
     if (val.type == ESP_MATTER_VAL_TYPE_INVALID) {
-        return EMBER_ZCL_STATUS_FAILURE;
+        return Status::Failure;
     }
     attribute::set_val(attribute, &val);
-    return EMBER_ZCL_STATUS_SUCCESS;
+    return Status::Success;
 }

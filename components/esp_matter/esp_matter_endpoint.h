@@ -149,7 +149,7 @@ typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::groups::config_t groups;
-    cluster::scenes::config_t scenes;
+    cluster::scenes_management::config_t scenes_management;
     cluster::on_off::config_t on_off;
 } config_t;
 
@@ -164,7 +164,7 @@ typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::groups::config_t groups;
-    cluster::scenes::config_t scenes;
+    cluster::scenes_management::config_t scenes_management;
     cluster::on_off::config_t on_off;
     cluster::level_control::config_t level_control;
 } config_t;
@@ -180,7 +180,7 @@ typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::groups::config_t groups;
-    cluster::scenes::config_t scenes;
+    cluster::scenes_management::config_t scenes_management;
     cluster::on_off::config_t on_off;
     cluster::level_control::config_t level_control;
     cluster::color_control::config_t color_control;
@@ -197,7 +197,7 @@ typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::groups::config_t groups;
-    cluster::scenes::config_t scenes;
+    cluster::scenes_management::config_t scenes_management;
     cluster::on_off::config_t on_off;
     cluster::level_control::config_t level_control;
     cluster::color_control::config_t color_control;
@@ -266,7 +266,7 @@ typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::groups::config_t groups;
-    cluster::scenes::config_t scenes;
+    cluster::scenes_management::config_t scenes_management;
     cluster::on_off::config_t on_off;
 } config_t;
 
@@ -281,7 +281,7 @@ typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::groups::config_t groups;
-    cluster::scenes::config_t scenes;
+    cluster::scenes_management::config_t scenes_management;
     cluster::on_off::config_t on_off;
     cluster::level_control::config_t level_control;
 } config_t;
@@ -310,7 +310,7 @@ namespace thermostat {
 typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
-    cluster::scenes::config_t scenes;
+    cluster::scenes_management::config_t scenes_management;
     cluster::groups::config_t groups;
     cluster::thermostat::config_t thermostat;
 } config_t;
@@ -424,7 +424,7 @@ typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::identify::config_t identify;
     cluster::groups::config_t groups;
-    cluster::scenes::config_t scenes;
+    cluster::scenes_management::config_t scenes_management;
     cluster::window_covering::config_t window_covering;
     config(uint8_t end_product_type = 0) : window_covering(end_product_type) {}
 } config_t;
