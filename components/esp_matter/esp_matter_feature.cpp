@@ -193,7 +193,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         update_feature_map(cluster, get_id());
 
         /* Attributes not managed internally */
-        attribute::create_bat_replacement_description(cluster, config->bat_replacement_description, sizeof(config->bat_replacement_description));
+        attribute::create_bat_replacement_description(cluster, config->bat_replacement_description, strlen(config->bat_replacement_description));
         attribute::create_bat_quantity(cluster, config->bat_quantity, 0, 255);
     } else {
         ESP_LOGE(TAG, "Cluster shall support Battery feature");
