@@ -16,7 +16,7 @@ The CHIP Tool requires access to the local network and bluetooth.
 1.2 Providing access to local network
 -------------------------------------
 
-WSL2 does not share an IP address with your computer. Because WSL2 was implemented with Hyper-V, it runs with a virtualized ethernet adapter. Your computer hides WSL2 behind a NAT where WSL2 has its own unique IP. 
+WSL2 does not share an IP address with your computer. Because WSL2 was implemented with Hyper-V, it runs with a virtualized ethernet adapter. Your computer hides WSL2 behind a NAT where WSL2 has its own unique IP.
 
 To provide an IP address from the local network,  WSL2 instance needs to be connected to a virtual Bridge through Hyper-V Manager.
 
@@ -33,7 +33,7 @@ To provide an IP address from the local network,  WSL2 instance needs to be conn
 1.2.1.2 Setting Up Hyper-V
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Ensure that hardware virtualization support is turned on in the BIOS settings 
+Ensure that hardware virtualization support is turned on in the BIOS settings
 Save the BIOS settings and boot up the machine normally.
 
 - Right click on the Windows button and select ‘Apps and Features’.
@@ -79,14 +79,14 @@ Create .wslconfig file on C:/Users/user-name/ and add the following lines to con
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: ini
-    
+
     ifconfig
 
 The IPv4 Address assigned to the eth0 will be from the local network and IPv6 Address will also be assigned to it.
 
 .. code-block:: ini
-    
-    avahi-browse _matter._tcp -r 
+
+    avahi-browse _matter._tcp -r
 
 
 If the configuration was done correctly, all the matter operational nodes performing mDns advertisement on the local network will be shown.
@@ -98,11 +98,11 @@ If the configuration was done correctly, all the matter operational nodes perfor
 
 
 
-1) Run  ```wsl --shutdown``` and wait for WSL instance to close.
+1) Run  `wsl --shutdown` and wait for WSL instance to close.
 2) Run Hyper-V Manager and open Virtual Switch Manager from Actions Pane.
 3) Disconnect and Reconnect to Wi-Fi.
 4) Start WSL instance.
-5) If still no IP is assigned, run ```sudo dhclient```
+5) If still no IP is assigned, run `sudo dhclient`
 
 
 1.3 Providing access to bluetooth
@@ -148,16 +148,16 @@ The new kernel image will be built.
 **Copy the new kernel**
 
 .. code-block:: ini
-    
+
     cp arch/x86/boot/bzImage /mnt/path/to/kernel/bluetooth-bzImage
 
 1.3.2 Configure WSL to use new custom kernel image
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Add the following line to the created ```.wslconfig``` file.
+Add the following line to the created `.wslconfig` file.
 
 .. code-block:: ini
-    
+
     [wsl2]
     kernel=c:\\users\\<user>\\bluetooth-bzImage
 
@@ -166,18 +166,17 @@ Replace the path with the path of new custom kernel built.
 1.3.3 Attaching Bluetooth module to WSL2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Get the busid of the bluetooth module.
+Get the BUSID of the bluetooth module. [`Tested using usbipd-win 4.0.0`]
+
 .. code-block:: ini
 
-    usbipd wsl list
+    usbipd list
 
 Attach the bluetooth module to WSL2 instance using usbipd.
 
 .. code-block:: ini
 
-    usbipd wsl attach --distribution Ubuntu-22.04 --busid 1-10
-
-Replace the --distribution and --busid arguments appropriately.
+    usbipd attach --wsl --busid=<BUSID>
 
 .. code-block:: ini
 
@@ -188,25 +187,30 @@ Replace the --distribution and --busid arguments appropriately.
 
 The bluetooth module should be available to WSL.
 
-1.3.4 Testing Bluetooth 
+1.3.4 Testing Bluetooth
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 Install bluez library and scan for bluetooth devices.
 
 .. code-block:: ini
-    
+
     sudo apt install bluez
 
 Start scanning for available Bluetooth devices.
 
 .. code-block:: ini
-    
+
     bluetoothctl scan on
 
 The bluetooth discovery should start.
 
 .. image:: ../_static/bluetooth_scan.png
    :alt: Bluetooth scanning
+
+**Tested Bluetooth modules:**
+
+- Intel AX201 series and above
+- Marvell AVASTAR Bluetooth Radio Adapter.
 
 1.4 Final .wslconfig file
 -------------------------
