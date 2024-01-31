@@ -1248,30 +1248,30 @@ The ``invoke-cmd`` command is used for sending cluster commands to the end-devic
 
 .. note::
 
-    - The ``command-data`` should utilize a JSON object string and the name of each item in this object should be ``\"<TagNumber>:<DataType>\"`` or ``\"<TagName>:<TagNumber>:<DataType>\"``. The TagNumber should be the same as the command parameter ID in SPEC and the supported DataTypes are listed in ``$ESP_MATTER_PATH/components/esp_matter/private/json_to_tlv.h``
+    - The ``command-data`` should utilize a JSON object string and the name of each item in this object should be ``\"<TagNumber>:<DataType>\"`` or ``\"<TagName>:<TagNumber>:<DataType>\"``. The TagNumber should be the same as the command parameter ID in Matter SPEC and the supported DataTypes are listed in ``$ESP_MATTER_PATH/components/esp_matter/utils/json_to_tlv.h``
 
-    -For the DataType ``BYTES``, the value should be a Base64-Encoded string.
+    - For the DataType ``bytes``, the value should be a Base64-Encoded string.
 
 
 Here are some examples of the ``command-data`` format.
 
-- For MoveToLevel command in LevelControl cluster, the ``command-data`` (move to level 10 in trasition time 0) should be:
+- For MoveToLevel command in LevelControl cluster, the ``command-data`` (``{"level": 10, "transitionTime": 0, "optionsMask": 0, "optionsOverride": 0}``) should be:
 
   ::
 
-    matter esp controller invoke-cmd <node-id> <endpoint-id> 8 0 "{\"0:UINT8\": 10, \"1:UINT16\": 0, \"2:UINT8\": 0, \"3:UINT8\": 0}"
+    matter esp controller invoke-cmd <node-id> <endpoint-id> 8 0 "{\"0:U8\": 10, \"1:U16\": 0, \"2:U8\": 0, \"3:U8\": 0}"
 
-- For KeySetWrite command in GroupKeyManagement cluster, the ``command-data`` should be:
-
-  ::
-
-     matter esp controller invoke-cmd <node-id> <endpoint-id> 63 0 "{\"0:STRUCT\": {\"0:UINT16\": 42, \"1:UINT8\": 0, \"2:BYTES\": \"0NHS09TV1tfY2drb3N3e3w==\", \"3:UINT64\": 2220000, \"4:NULL\": null, \"5:NULL\": null, \"6:NULL\": null, \"7:NULL\": null}}"
-
-- For AddGroup command in Groups cluster, the ``command-data`` should be:
+- For KeySetWrite command in GroupKeyManagement cluster, the ``command-data`` (``{"groupKeySet":{"groupKeySetID": 42, "groupKeySecurityPolicy": 0, "epochKey0": d0d1d2d3d4d5d6d7d8d9dadbdcdddedf, "epochStartTime0": 2220000, "epochKey1": null, "epochStartTime1": null, "epochKey2": null, "epochStartTime2": null}}``) should be:
 
   ::
 
-     matter esp controller invoke-cmd <node-id> <endpoint-id> 0x4 0 "{\"0:UINT16\": 1, \"1:STRING\": \"grp1\"}"
+     matter esp controller invoke-cmd <node-id> <endpoint-id> 63 0 "{\"0:OBJ\": {\"0:U16\": 42, \"1:U8\": 0, \"2:BS\": \"0NHS09TV1tfY2drb3N3e3w==\", \"3:U64\": 2220000, \"4:NULL\": null, \"5:NULL\": null, \"6:NULL\": null, \"7:NULL\": null}}"
+
+- For AddGroup command in Groups cluster, the ``command-data`` (``{"groupID": 1, "groupName": "grp1"}``) should be:
+
+  ::
+
+     matter esp controller invoke-cmd <node-id> <endpoint-id> 0x4 0 "{\"0:U16\": 1, \"1:STR\": \"grp1\"}"
 
 2.9.4 Read commands
 ~~~~~~~~~~~~~~~~~~~
@@ -1315,7 +1315,7 @@ The ``write-attr`` command is used for sending the commands of writing attribute
 
 .. note::
 
-    - ``attribute_value`` should utilize a JSON object string. And the format of this string is the same as the ``command_data`` in `cluster commands <./developing.rst#cluster-commands>`__. This JSON object should contain only one item that represents the attribute value.
+    - ``attribute_value`` should utilize a JSON object string. And the format of this string is the same as the ``command_data`` in `cluster commands <./developing.html#cluster-commands>`__. This JSON object should contain only one item that represents the attribute value.
 
 
 Here are some examples of the ``attribute_value`` format.
@@ -1324,20 +1324,20 @@ For StartUpOnOff attribute of OnOff Cluster, you should use the following JSON s
 
    ::
 
-      matter esp controller write-attr <node_id> <endpoint_id> 6 0x4003 ``"{\"0:UINT8\": 2}"``
+      matter esp controller write-attr <node_id> <endpoint_id> 6 0x4003 ``"{\"0:U8\": 2}"``
       matter esp controller write-attr <node_id> <endpoint_id> 6 0x4003 ``"{\"0:NULL\": null}"``
 
 For Binding attribute of Binding cluster, you should use the following JSON structure as the ``attribute_value`` to represent the binding list ``[{"node":1, "endpoint":1, "cluster":6}]``:
 
    ::
 
-      matter esp controller write-attr <node_id> <endpoint_id> 30 0 ``"{\"0:ARRAY-STRUCT\":[{\"1:UINT64\":1, \"3:UINT16\":1, \"4:UINT32\": 6}]}"``
+      matter esp controller write-attr <node_id> <endpoint_id> 30 0 ``"{\"0:ARR-OBJ\":[{\"1:U64\":1, \"3:U16\":1, \"4:U32\": 6}]}"``
 
 For ACL attribute of AccessControl cluster, you should use the following JSON structure as the ``attribute_value`` to represent the AccessControlList ``[{"privilege": 5, "authMode": 2, "subjects": [112233], "targets": null}, {"privilege": 4, "authMode": 3, "subjects": [1], "targets": null}]``:
 
     ::
 
-      matter esp controller write-attr <node_id> <endpoint_id> 31 0 "{\"0:ARRAY-STRUCT\":[{\"1:UINT8\": 5, \"2:UINT8\": 2, \"3:ARRAY-UINT64\": [112233], \"4:NULL\": null}, {\"1:UINT8\": 4, \"2:UINT8\": 3, \"3:ARRAY-UINT64\": [1], \"4:NULL\": null}]}"
+      matter esp controller write-attr <node_id> <endpoint_id> 31 0 "{\"0:ARR-OBJ\":[{\"1:U8\": 5, \"2:U8\": 2, \"3:ARR-U64\": [112233], \"4:NULL\": null}, {\"1:U8\": 4, \"2:U8\": 3, \"3:ARR-U64\": [1], \"4:NULL\": null}]}"
 
 2.9.6 Subscribe commands
 ~~~~~~~~~~~~~~~~~~~~~~~~

@@ -125,7 +125,7 @@ static esp_err_t type_str_to_tlv_element_type(const char *type_str, size_t len, 
     } else if (len == strlen(element_type::k_array) && strncmp(type_str, element_type::k_array, len) == 0) {
         type = TLVElementType::Array;
         return ESP_OK;
-    } else if (len == strlen(element_type::k_struct) && strncmp(type_str, element_type::k_struct, len) == 0) {
+    } else if (len == strlen(element_type::k_object) && strncmp(type_str, element_type::k_object, len) == 0) {
         type = TLVElementType::Structure;
         return ESP_OK;
     } else if (len == strlen(element_type::k_empty) && strncmp(type_str, element_type::k_empty, len) == 0) {
