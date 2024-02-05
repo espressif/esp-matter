@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <app/CASESessionManager.h>
 #include <app/DeviceProxy.h>
 #include <app/InteractionModelEngine.h>
 #include <app/util/af-types.h>
@@ -811,6 +812,9 @@ typedef struct command_handle {
 /** Peer device handle */
 typedef chip::DeviceProxy peer_device_t;
 
+/** CASE Session Manager */
+typedef chip::CASESessionManager case_session_mgr_t;
+
 /** Command send callback
  *
  * This callback will be called when `connect()` or `cluster_update()` is called and the connection completes. The
@@ -852,6 +856,7 @@ void binding_manager_init();
  *
  * Connect to another device on the same fabric to send a command.
  *
+ * @param[in] case_session_mgr CASE Session Manager to find or establish the session
  * @param[in] fabric_index Fabric index.
  * @param[in] node_id Node ID of the other device.
  * @param[in] cmd_handle Command to be sent to the remote device.
@@ -859,7 +864,8 @@ void binding_manager_init();
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t connect(uint8_t fabric_index, uint64_t node_id, command_handle_t *cmd_handle);
+esp_err_t connect(case_session_mgr_t *case_session_mgr, uint8_t fabric_index, uint64_t node_id,
+                  command_handle_t *cmd_handle);
 
 /** group_command_send
  *

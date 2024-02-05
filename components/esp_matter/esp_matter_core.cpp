@@ -71,6 +71,11 @@ using chip::DeviceLayer::ThreadStackMgr;
 static const char *TAG = "esp_matter_core";
 static bool esp_matter_started = false;
 
+#ifndef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
+// If Matter Server is disabled, we should have an empty InitDataModelHandler()
+void InitDataModelHandler() {}
+#endif
+
 namespace esp_matter {
 
 namespace {
@@ -839,6 +844,7 @@ esp_err_t chip_stack_unlock()
 }
 } /* lock */
 
+#ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 static void deinit_ble_if_commissioned(void)
 {
 #if CONFIG_BT_ENABLED && CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING
@@ -878,7 +884,6 @@ static void deinit_ble_if_commissioned(void)
 static void esp_matter_chip_init_task(intptr_t context)
 {
     TaskHandle_t task_to_notify = reinterpret_cast<TaskHandle_t>(context);
-
     static chip::CommonCaseDeviceServerInitParams initParams;
     initParams.InitializeStaticResourcesBeforeServerInit();
     initParams.appDelegate = &s_app_delegate;
@@ -925,6 +930,7 @@ static void esp_matter_chip_init_task(intptr_t context)
     deinit_ble_if_commissioned();
     xTaskNotifyGive(task_to_notify);
 }
+#endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 
 static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg)
 {
@@ -938,7 +944,7 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
         }
 #endif
         break;
-
+#ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
     case chip::DeviceLayer::DeviceEventType::kDnssdInitialized:
         esp_matter_ota_requestor_start();
         /* Initialize binding manager */
@@ -953,6 +959,7 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
         ESP_LOGI(TAG, "BLE Disconnected");
         deinit_ble_if_commissioned();
         break;
+#endif
     default:
         break;
     }
@@ -1008,9 +1015,11 @@ static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
     }
 #endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD
 
+#if CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
     PlatformMgr().ScheduleWork(esp_matter_chip_init_task, reinterpret_cast<intptr_t>(xTaskGetCurrentTaskHandle()));
     // Wait for the matter stack to be initialized
     xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);
+#endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
     return ESP_OK;
 }
 

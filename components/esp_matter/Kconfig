@@ -231,4 +231,13 @@ menu "ESP Matter"
             If enabled, we will not use zap to define the data model of the node. All of the
             endpoints are dynamic.
 
+    config ESP_MATTER_ENABLE_MATTER_SERVER
+        bool "Enable Matter Server"
+        default y
+        help
+            This option should be disable for client-only examples, such as Matter commissioner.
+
+            If enabled, we will start Matter server when calling esp_matter::start()
+            If disabled, the Matter server will not be initialized in esp_matter::start()
+
 endmenu

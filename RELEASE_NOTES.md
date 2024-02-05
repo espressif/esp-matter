@@ -1,3 +1,7 @@
+# 29-January-2024
+
+- Add a new parameter for esp_matter::client::connect() to set the CASESessionManager for finding or establishing the CASE sessions.
+
 # 16-January-2024
 
 - We have moved the creation of bridge devices to the application callback.
