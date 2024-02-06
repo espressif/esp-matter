@@ -1,0 +1,5 @@
+rsource "connectedhomeip/connectedhomeip/config/esp32/components/chip/Kconfig"
+rsource "components/esp_matter/Kconfig"
+rsource "components/esp_matter_bridge/Kconfig"
+rsource "components/esp_matter_console/Kconfig"
+rsource "components/esp_matter_controller/Kconfig"
