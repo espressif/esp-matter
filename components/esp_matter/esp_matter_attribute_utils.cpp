@@ -1241,42 +1241,56 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         break;
 
     case ESP_MATTER_VAL_TYPE_CHAR_STRING:
-        if (attribute_type) {
-            *attribute_type = ZCL_CHAR_STRING_ATTRIBUTE_TYPE;
-        }
-        if (attribute_size) {
-            *attribute_size = val->val.a.t;
-        }
-        if (value) {
-            int data_size_len = val->val.a.t - val->val.a.s;
-            memcpy(value, (uint8_t *)&val->val.a.s, data_size_len);
-            if (*attribute_size > CONFIG_ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST)
-            {
-                ESP_LOGE(TAG, "Attribute buffer not enough, cannot copy the data to the attribute buffer."
-                         "Please configure the buffer size through menuconfig ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST");
-                return ESP_FAIL;
+        {
+            if (attribute_type) {
+                *attribute_type = ZCL_CHAR_STRING_ATTRIBUTE_TYPE;
             }
-            memcpy((value + data_size_len), (uint8_t *)val->val.a.b, (*attribute_size - data_size_len));
+            size_t string_len = strnlen((const char *)val->val.a.b, val->val.a.s);
+            size_t data_size_len = val->val.a.t - val->val.a.s;
+            if (string_len >= UINT8_MAX || data_size_len != 1) {
+                return ESP_ERR_INVALID_ARG;
+            }
+            uint8_t data_size = string_len;
+            if (attribute_size) {
+                *attribute_size = string_len + data_size_len;
+            }
+            if (value) {
+                memcpy(value, (uint8_t *)&data_size, data_size_len);
+                if (*attribute_size > CONFIG_ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST)
+                {
+                    ESP_LOGE(TAG, "Attribute buffer not enough, cannot copy the data to the attribute buffer."
+                            "Please configure the buffer size through menuconfig ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST");
+                    return ESP_FAIL;
+                }
+                memcpy((value + data_size_len), (uint8_t *)val->val.a.b, (*attribute_size - data_size_len));
+            }
         }
         break;
 
     case ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING:
-        if (attribute_type) {
-            *attribute_type = ZCL_LONG_CHAR_STRING_ATTRIBUTE_TYPE;
-        }
-        if (attribute_size) {
-            *attribute_size = val->val.a.t;
-        }
-        if (value) {
-            int data_size_len = val->val.a.t - val->val.a.s;
-            memcpy(value, (uint8_t *)&val->val.a.s, data_size_len);
-            if (*attribute_size > CONFIG_ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST)
-            {
-                ESP_LOGE(TAG, "Attribute buffer not enough, cannot copy the data to the attribute buffer."
-                         "Please configure the buffer size through menuconfig ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST");
-                return ESP_FAIL;
+        {
+            if (attribute_type) {
+                *attribute_type = ZCL_LONG_CHAR_STRING_ATTRIBUTE_TYPE;
             }
-            memcpy((value + data_size_len), (uint8_t *)val->val.a.b, (*attribute_size - data_size_len));
+            size_t string_len = strnlen((const char *)val->val.a.b, val->val.a.s);
+            size_t data_size_len = val->val.a.t - val->val.a.s;
+            if (string_len >= UINT8_MAX || data_size_len != 2) {
+                return ESP_ERR_INVALID_ARG;
+            }
+            uint16_t data_size = string_len;
+            if (attribute_size) {
+                *attribute_size = string_len + data_size_len;
+            }
+            if (value) {
+                memcpy(value, (uint8_t *)&data_size, data_size_len);
+                if (*attribute_size > CONFIG_ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST)
+                {
+                    ESP_LOGE(TAG, "Attribute buffer not enough, cannot copy the data to the attribute buffer."
+                             "Please configure the buffer size through menuconfig ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST");
+                    return ESP_FAIL;
+                }
+                memcpy((value + data_size_len), (uint8_t *)val->val.a.b, (*attribute_size - data_size_len));
+            }
         }
         break;
 
