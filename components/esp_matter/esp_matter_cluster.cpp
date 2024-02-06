@@ -1263,14 +1263,24 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         }
     }
 
+    /* Features */
+    if (features & feature::off_only::get_id()) {
+        feature::off_only::add(cluster);
+    }
+    else {
+        if (features & feature::lighting::get_id()) {
+            feature::lighting::add(cluster, &(config->lighting));
+        }
+        if (features & feature::dead_front_behavior::get_id()) {
+            feature::dead_front_behavior::add(cluster);
+        }
+    }
+
     /* Commands */
     command::create_off(cluster);
-    command::create_on(cluster);
-    command::create_toggle(cluster);
-
-    /* Features */
-    if (features & feature::lighting::get_id()) {
-        feature::lighting::add(cluster, &(config->lighting));
+    if (!(features & feature::off_only::get_id())) {
+        command::create_on(cluster);
+        command::create_toggle(cluster);
     }
 
     return cluster;

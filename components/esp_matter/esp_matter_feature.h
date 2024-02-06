@@ -169,6 +169,13 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 
 } /* dead_front_behavior */
+
+namespace off_only {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* off_only */
 } /* feature */
 } /* on_off */
 
