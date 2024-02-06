@@ -129,6 +129,9 @@ attribute_t *create_interface_enabled(cluster_t *cluster, bool value);
 attribute_t *create_last_networking_status(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_last_network_id(cluster_t *cluster, uint8_t *value, uint16_t length);
 attribute_t *create_last_connect_error_value(cluster_t *cluster, nullable<int32_t> value);
+attribute_t *create_supported_wifi_bands(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_supported_thread_features(cluster_t *cluster, uint16_t value);
+attribute_t *create_thread_version(cluster_t *cluster, uint16_t value);
 } /* attribute */
 } /* network_commissioning */
 
