@@ -11,7 +11,7 @@ This example demonstrates the use of few optional data model elements like :
 
 Note:
     In order to retrieve the label-list from the fixed-label cluster the two options:
-    ``CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`` and ``CONFIG_ENABLE_ESP32_DEVICE_INFO_PROVIDER`` have been set through sdkcofig.defaults.
+    ``CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`` and ``CONFIG_ENABLE_ESP32_DEVICE_INFO_PROVIDER`` have been set through sdkconfig.defaults.
 
 See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
 
