@@ -21,6 +21,9 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include "freertos/semphr.h"
+
+#include <app/server/CommissioningWindowManager.h>
+#include <app/server/Server.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
 #endif
@@ -36,6 +39,8 @@ using namespace esp_matter;
 using namespace esp_matter::attribute;
 using namespace esp_matter::endpoint;
 using namespace chip::app::Clusters;
+
+constexpr auto k_timeout_seconds = 300;
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
@@ -67,6 +72,42 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
     case chip::DeviceLayer::DeviceEventType::kCommissioningWindowClosed:
         ESP_LOGI(TAG, "Commissioning window closed");
         break;
+
+    case chip::DeviceLayer::DeviceEventType::kFabricRemoved:
+        {
+            ESP_LOGI(TAG, "Fabric removed successfully");
+            if (chip::Server::GetInstance().GetFabricTable().FabricCount() == 0)
+            {
+                chip::CommissioningWindowManager & commissionMgr = chip::Server::GetInstance().GetCommissioningWindowManager();
+                constexpr auto kTimeoutSeconds = chip::System::Clock::Seconds16(k_timeout_seconds);
+                if (!commissionMgr.IsCommissioningWindowOpen())
+                {
+                    /* After removing last fabric, this example does not remove the Wi-Fi credentials
+                     * and still has IP connectivity so, only advertising on DNS-SD.
+                     */
+                    CHIP_ERROR err = commissionMgr.OpenBasicCommissioningWindow(kTimeoutSeconds,
+                                                    chip::CommissioningWindowAdvertisement::kDnssdOnly);
+                    if (err != CHIP_NO_ERROR)
+                    {
+                        ESP_LOGE(TAG, "Failed to open commissioning window, err:%" CHIP_ERROR_FORMAT, err.Format());
+                    }
+                }
+            }
+        break;
+        }
+
+    case chip::DeviceLayer::DeviceEventType::kFabricWillBeRemoved:
+        ESP_LOGI(TAG, "Fabric will be removed");
+        break;
+
+    case chip::DeviceLayer::DeviceEventType::kFabricUpdated:
+        ESP_LOGI(TAG, "Fabric is updated");
+        break;
+
+    case chip::DeviceLayer::DeviceEventType::kFabricCommitted:
+        ESP_LOGI(TAG, "Fabric is committed");
+        break;
+
 
     default:
         break;
