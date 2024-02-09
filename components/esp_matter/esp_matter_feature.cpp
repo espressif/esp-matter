@@ -3060,9 +3060,7 @@ namespace on_off {
 
 uint32_t get_id()
 {
-    // enum class for DepOnOff is not present in the upstream code.
-    // Return the code according to the SPEC
-    return 0x00;
+    return (uint32_t)ModeSelect::Feature::kOnOff;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
