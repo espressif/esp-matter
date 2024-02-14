@@ -34,7 +34,8 @@ esptool.py -p [port-name] write_flash 0x10000 mfg_binaries/20202020_3841.bin
 
 - Alternatively, below QR Code or Manual pairing code can be used for commissioning
     - Manualcode : 34970012334
-    - QRCode     : [MT:Y.K90CEK012Z.548G00](https://project-chip.github.io/connectedhomeip/qrcode.html?data=MT:Y.K90CEK012Z.548G00)
+    - QRCode     :
+    - ![QRCode](mfg_binaries/matter_qrcode_20202020_3841.png)
 
 -   To read the fixed-labels, use chip-tool.
 
