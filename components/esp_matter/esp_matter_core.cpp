@@ -1882,6 +1882,12 @@ endpoint_t *create(node_t *node, uint8_t flags, void *priv_data)
     }
     _node_t *current_node = (_node_t *)node;
 
+    if (get_count(node) >= CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT) {
+        ESP_LOGE(TAG, "Dynamic endpoint count cannot be greater than CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT:%u",
+                CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT);
+        return NULL;
+    }
+
     /* Allocate */
     _endpoint_t *endpoint = (_endpoint_t *)esp_matter_mem_calloc(1, sizeof(_endpoint_t));
     if (!endpoint) {

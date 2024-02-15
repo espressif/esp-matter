@@ -14,6 +14,7 @@
 #include <esp_matter_console.h>
 #include <esp_matter_ota.h>
 
+#include <common_macros.h>
 #include <app_bridged_device.h>
 #include <app_zboss.h>
 #include <zigbee_bridge.h>
@@ -124,30 +125,20 @@ extern "C" void app_main()
     /* Create a Matter node and add the mandatory Root Node device type on endpoint 0 */
     node::config_t node_config;
     node_t *node = node::create(&node_config, app_attribute_update_cb, NULL);
-
-    /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
-    if (!node) {
-        ESP_LOGE(TAG, "Matter node creation failed");
-    }
+    ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
 
     aggregator::config_t aggregator_config;
     endpoint_t *aggregator = endpoint::aggregator::create(node, &aggregator_config, ENDPOINT_FLAG_NONE, NULL);
-    if (!aggregator) {
-        ESP_LOGE(TAG, "Matter aggregator endpoint creation failed");
-    } else {
-        aggregator_endpoint_id = endpoint::get_id(aggregator);
-    }
+    ABORT_APP_ON_FAILURE(aggregator != nullptr, ESP_LOGE(TAG, "Failed to create aggregator endpoint"));
+
+    aggregator_endpoint_id = endpoint::get_id(aggregator);
 
     /* Matter start */
     err = esp_matter::start(app_event_cb);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Matter start failed: %d", err);
-    }
+    ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
 
     err = app_bridge_initialize(node, create_bridge_devices);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to resume the bridged endpoints: %d", err);
-    }
+    ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to resume the bridged endpoints: %d", err));
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter::console::diagnostics_register_commands();

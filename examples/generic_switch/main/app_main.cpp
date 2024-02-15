@@ -14,6 +14,7 @@
 #include <esp_matter_console.h>
 #include <esp_matter_ota.h>
 
+#include <common_macros.h>
 #include <app_priv.h>
 #include <app_reset.h>
 #include <app/util/attribute-storage.h>
@@ -202,9 +203,11 @@ extern "C" void app_main()
     /* Create a Matter node and add the mandatory Root Node device type on endpoint 0 */
     node::config_t node_config;
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
+    ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
 
     /* Call for Boot button */
     err = create_button(NULL, node);
+    ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to create generic switch button"));
 
     /* Use the code snippet commented below to create more physical buttons. */
 
@@ -226,16 +229,15 @@ extern "C" void app_main()
 
     /* Matter start */
     err = esp_matter::start(app_event_cb);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Matter start failed: %d", err);
-    }
+    ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
 
     SetTagList(0, chip::Span<const Descriptor::Structs::SemanticTagStruct::Type>(gEp0TagList));
     SetTagList(1, chip::Span<const Descriptor::Structs::SemanticTagStruct::Type>(gEp1TagList));
 
-
     nvs_handle_t handle;
     nvs_open_from_partition(CONFIG_CHIP_FACTORY_NAMESPACE_PARTITION_LABEL, "chip-factory", NVS_READWRITE, &handle);
+    ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to open namespace:chip-factory from partition:"
+                                                    CONFIG_CHIP_FACTORY_NAMESPACE_PARTITION_LABEL ", err:%d", err));
 
     int32_t out_value = 0;
     if (nvs_get_i32(handle, "fl-sz/1", &out_value) == ESP_ERR_NVS_NOT_FOUND)

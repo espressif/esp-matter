@@ -14,6 +14,7 @@
 #include <esp_matter_console.h>
 #include <esp_matter_ota.h>
 
+#include <common_macros.h>
 #include <app_priv.h>
 #include <app_reset.h>
 #include "esp_console.h"
@@ -142,20 +143,14 @@ extern "C" void app_main()
 
     /* Create a Matter node and add the mandatory Root Node device type on endpoint 0 */
     node::config_t node_config;
+    // node handle can be used to add/modify other endpoints.
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
-
-    /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
-    if (!node) {
-        ESP_LOGE(TAG, "Matter node creation failed");
-    }
+    ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
     
     uint8_t device_type_index;
     if(esp_matter::nvs_helpers::get_device_type_from_nvs(&device_type_index) != ESP_OK) {
         semaphoreHandle = xSemaphoreCreateBinary();
-        if (semaphoreHandle == NULL)
-        {
-            ESP_LOGE(TAG, "Failed to create semaphore %d");
-        }
+        ABORT_APP_ON_FAILURE(semaphoreHandle != nullptr, ESP_LOGE(TAG, "Failed to create semaphore"));
 
         ESP_LOGI(TAG, "\r\n\r\nEnter command: create --device_type to get started");
         example::console::init();
@@ -165,9 +160,7 @@ extern "C" void app_main()
         semaphoreHandle = NULL;
 
         example::console::deinit();
-    }
-    else
-    {
+    } else {
         esp_matter::data_model::create(device_type_index);
     }
 
@@ -183,10 +176,7 @@ extern "C" void app_main()
 
     /* Matter start */
      err = esp_matter::start(app_event_cb);
-     if (err != ESP_OK) {
-         ESP_LOGE(TAG, "Matter start failed: %d", err);
-     }
-
+     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter::console::diagnostics_register_commands();
