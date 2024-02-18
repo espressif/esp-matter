@@ -24,7 +24,7 @@ extern uint16_t light_endpoint_id;
 /* Do any conversions/remapping for the actual value here */
 static esp_err_t app_driver_light_set_power(led_indicator_handle_t handle, esp_matter_attr_val_t *val)
 {
-#if BSP_LED_NUM > 0
+#if BSP_LEDS_NUM > 0
     esp_err_t err = ESP_OK;
     if (val->val.b) {
         err = led_indicator_start(handle, BSP_LED_ON);
@@ -41,7 +41,7 @@ static esp_err_t app_driver_light_set_power(led_indicator_handle_t handle, esp_m
 static esp_err_t app_driver_light_set_brightness(led_indicator_handle_t handle, esp_matter_attr_val_t *val)
 {
     int value = REMAP_TO_RANGE(val->val.u8, MATTER_BRIGHTNESS, STANDARD_BRIGHTNESS);
-#if BSP_LED_NUM > 0
+#if BSP_LEDS_NUM > 0
     return led_indicator_set_brightness(handle, value);
 #else
     ESP_LOGI(TAG, "LED set brightness: %d", value);
@@ -52,7 +52,7 @@ static esp_err_t app_driver_light_set_brightness(led_indicator_handle_t handle, 
 static esp_err_t app_driver_light_set_hue(led_indicator_handle_t handle, esp_matter_attr_val_t *val)
 {
     int value = REMAP_TO_RANGE(val->val.u8, MATTER_HUE, STANDARD_HUE);
-#if BSP_LED_NUM > 0
+#if BSP_LEDS_NUM > 0
     uint32_t hsv = led_indicator_get_hsv(handle);
     SET_HUE(hsv, value);
     return led_indicator_set_hsv(handle, hsv);
@@ -65,7 +65,7 @@ static esp_err_t app_driver_light_set_hue(led_indicator_handle_t handle, esp_mat
 static esp_err_t app_driver_light_set_saturation(led_indicator_handle_t handle, esp_matter_attr_val_t *val)
 {
     int value = REMAP_TO_RANGE(val->val.u8, MATTER_SATURATION, STANDARD_SATURATION);
-#if BSP_LED_NUM > 0
+#if BSP_LEDS_NUM > 0
     uint32_t hsv = led_indicator_get_hsv(handle);
     SET_SATURATION(hsv, value);
     return led_indicator_set_hsv(handle, hsv);
@@ -78,7 +78,7 @@ static esp_err_t app_driver_light_set_saturation(led_indicator_handle_t handle, 
 static esp_err_t app_driver_light_set_temperature(led_indicator_handle_t handle, esp_matter_attr_val_t *val)
 {
     uint32_t value = REMAP_TO_RANGE_INVERSE(val->val.u16, STANDARD_TEMPERATURE_FACTOR);
-#if BSP_LED_NUM > 0
+#if BSP_LEDS_NUM > 0
     return led_indicator_set_color_temperature(handle, value);
 #else
     ESP_LOGI(TAG, "LED set temperature: %ld", value);
@@ -181,10 +181,10 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
 
 app_driver_handle_t app_driver_light_init()
 {
-#if BSP_LED_NUM > 0
+#if BSP_LEDS_NUM > 0
     /* Initialize led */
-    led_indicator_handle_t leds[BSP_LED_NUM];
-    ESP_ERROR_CHECK(bsp_led_indicator_create(leds, NULL, BSP_LED_NUM));
+    led_indicator_handle_t leds[BSP_LEDS_NUM];
+    ESP_ERROR_CHECK(bsp_led_indicator_create(leds, NULL, BSP_LEDS_NUM));
     led_indicator_set_hsv(leds[0], SET_HSV(DEFAULT_HUE, DEFAULT_SATURATION, DEFAULT_BRIGHTNESS));
     
     return (app_driver_handle_t)leds[0];
