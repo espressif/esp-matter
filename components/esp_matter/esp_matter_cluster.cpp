@@ -998,10 +998,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         }
     }
 
+#if CHIP_CONFIG_ENABLE_ICD_CIP
     if (features & feature::check_in_protocol_support::get_id()) {
         feature::check_in_protocol_support::config_t cip_config;
         feature::check_in_protocol_support::add(cluster, &cip_config);
     }
+#endif // CHIP_CONFIG_ENABLE_ICD_CIP
 #endif // CONFIG_ENABLE_ICD_SERVER
     return cluster;
 }
