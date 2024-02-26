@@ -602,6 +602,13 @@ esp_err_t enable(endpoint_t *endpoint)
             attribute::get_data_from_attr_val(&attribute->val, &matter_attributes[attribute_index].attributeType,
                                               &matter_attributes[attribute_index].size, NULL);
 
+            /* The length is not fixed for string attribute, so set it to the max size (32) to avoid overflow issue 
+             * when writing a longer string.
+             */
+            if (attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
+                matter_attributes[attribute_index].size = attribute->val.val.a.s;
+            }
+
             matter_clusters[cluster_index].clusterSize += matter_attributes[attribute_index].size;
             attribute = attribute->next;
             attribute_index++;
