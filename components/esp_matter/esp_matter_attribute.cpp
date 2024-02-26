@@ -411,6 +411,24 @@ attribute_t *create_last_connect_error_value(cluster_t *cluster, nullable<int32_
                                          ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int32(value));
 }
 
+attribute_t *create_supported_wifi_bands(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::SupportedWiFiBands::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_supported_thread_features(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::SupportedThreadFeatures::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_thread_version(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::ThreadVersion::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
 } /* attribute */
 } /* network_commissioning */
 
