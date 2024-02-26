@@ -13,6 +13,8 @@ set(exclude_srcs_list   "${MATTER_SDK_PATH}/examples/all-clusters-app/all-cluste
                         "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/smco-stub.cpp"
                         "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/static-supported-modes-manager.cpp"
                         "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/energy-evse-stub.cpp"
+                        "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/device-energy-management-stub.cpp"
+                        "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/electrical-power-measurement-stub.cpp"
    )
 
 idf_component_register(SRC_DIRS          ${SRC_DIRS_LIST}

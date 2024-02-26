@@ -55,6 +55,11 @@ endif()
 target_compile_options(${COMPONENT_LIB} PUBLIC
                        "-DCHIP_ADDRESS_RESOLVE_IMPL_INCLUDE_HEADER=<lib/address_resolve/AddressResolve_DefaultImpl.h>")
 
+# TODO: remove this option after https://github.com/project-chip/connectedhomeip/pull/32287 merged
+if (${IDF_VERSION_MAJOR} LESS 5)
+idf_build_set_property(COMPILE_OPTIONS "-Wno-error=conversion;-Wno-conversion" APPEND)
+endif()
+
 # Time sync client feature depends on read client, disable it when read client is disabled.
 if (CONFIG_DISABLE_READ_CLIENT)
     target_compile_options(${COMPONENT_LIB} PUBLIC "-DTIME_SYNC_ENABLE_TSC_FEATURE=0")
