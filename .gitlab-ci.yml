@@ -154,6 +154,25 @@ variables:
     REPOS_PATH: "$CI_PROJECT_DIR/repos"
     IDF_CCACHE_ENABLE: 1
 
+.build_managed_component_light_example:
+  stage: build
+  image: gitlab.espressif.cn:5050/app-frameworks/esp-matter/build-env:latest
+  tags:
+    - build
+    - matter_cache
+  before_script:
+    - *add_gitlab_ssh_key
+    - *get_build_caches
+    - *chip_submodule_update
+    - *setup_idf
+    - cd ${ESP_MATTER_PATH}
+    - mkdir -p ${REPOS_PATH}
+    - *update_build_caches
+  variables:
+    IDF_VERSION: "v5.1.2"
+    REPOS_PATH: "$CI_PROJECT_DIR/repos"
+    IDF_CCACHE_ENABLE: 1
+
 build_esp_matter_examples_pytest_C6_idf_v5_1:
   extends:
         - .build_examples_template
@@ -304,6 +323,15 @@ build_upstream_examples:
     when: manual
     script:
         - *build_matter_examples
+
+build_managed_component_light:
+    extends:
+        - .build_managed_component_light_example
+    when: manual
+    script:
+        - cd ${ESP_MATTER_PATH}/examples/managed_component_light
+        - idf.py set-target esp32c3
+        - idf.py build
 
 build_docs:
     stage: build
