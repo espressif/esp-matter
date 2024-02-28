@@ -241,7 +241,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_software_version_string(cluster, NULL, 0);
         attribute::create_capability_minima(cluster, NULL, 0, 0);
         attribute::create_specification_version(cluster, 0);
-        //attribute::create_max_path_per_invoke_version(cluster, 0);
+        attribute::create_max_paths_per_invoke(cluster, 0);
 
         /* Attributes not managed internally */
         if (config) {
@@ -594,7 +594,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 
     /* Commands */
     command::create_open_commissioning_window(cluster);
-    //command::create_open_basic_commissioning_window(cluster);
     command::create_revoke_commissioning(cluster);
 
     return cluster;
@@ -998,12 +997,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         }
     }
 
-#if CHIP_CONFIG_ENABLE_ICD_CIP
+#if defined(CHIP_CONFIG_ENABLE_ICD_CIP) && CHIP_CONFIG_ENABLE_ICD_CIP
     if (features & feature::check_in_protocol_support::get_id()) {
         feature::check_in_protocol_support::config_t cip_config;
         feature::check_in_protocol_support::add(cluster, &cip_config);
     }
-#endif // CHIP_CONFIG_ENABLE_ICD_CIP
+#endif // defined(CHIP_CONFIG_ENABLE_ICD_CIP) && CHIP_CONFIG_ENABLE_ICD_CIP
 #endif // CONFIG_ENABLE_ICD_SERVER
     return cluster;
 }
@@ -1215,7 +1214,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_last_configure_by(cluster, 0);
+            attribute::create_last_configured_by(cluster, 0);
             attribute::create_scene_table_size(cluster, config->scene_table_size);
             attribute::create_fabric_scene_info(cluster, NULL, 0, 0);
 	} else {

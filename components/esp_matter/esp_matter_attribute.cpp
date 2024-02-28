@@ -283,7 +283,7 @@ attribute_t *create_specification_version(cluster_t *cluster, uint32_t value)
                                          esp_matter_uint32(value));
 }
 
-attribute_t *create_max_path_per_invoke_version(cluster_t *cluster, uint16_t value)
+attribute_t *create_max_paths_per_invoke(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, BasicInformation::Attributes::MaxPathsPerInvoke::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint16(value));
@@ -1067,22 +1067,22 @@ attribute_t *create_group_name_support(cluster_t *cluster, uint8_t value)
 
 namespace scenes_management {
 namespace attribute {
-attribute_t *create_last_configure_by(cluster_t *cluster, uint64_t value)
+attribute_t *create_last_configured_by(cluster_t *cluster, uint64_t value)
 {
     return esp_matter::attribute::create(cluster, ScenesManagement::Attributes::LastConfiguredBy::Id, ATTRIBUTE_FLAG_NONE,
-                                          esp_matter_uint64(value));
+                                         esp_matter_uint64(value));
 }
 
 attribute_t *create_scene_table_size(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, ScenesManagement::Attributes::SceneTableSize::Id, ATTRIBUTE_FLAG_NONE,
-                                          esp_matter_uint16(value));
+                                         esp_matter_uint16(value));
 }
 
 attribute_t *create_fabric_scene_info(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, ScenesManagement::Attributes::FabricSceneInfo::Id, ATTRIBUTE_FLAG_NONE,
-                                          esp_matter_array((uint8_t*)value, length, count));
+                                         esp_matter_array((uint8_t*)value, length, count));
 }
 
 } /* attribute */
