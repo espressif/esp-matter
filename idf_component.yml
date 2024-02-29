@@ -1,5 +1,5 @@
 ## IDF Component Manager Manifest File
-version: 0.0.1
+version: 0.0.2
 description: Espressif's Matter SDK Component
 url: https://github.com/espressif/esp-matter
 files:
@@ -29,7 +29,7 @@ files:
         - "./connectedhomeip/connectedhomeip/src/app/util/**/*"
         - "./connectedhomeip/connectedhomeip/src/ble/*.*"
         - "./connectedhomeip/connectedhomeip/src/controller/*.*"
-        - "./connectedhomeip/connectedhomeip/src/controller/python/chip/tlv/*.*"
+        - "./connectedhomeip/connectedhomeip/src/controller/python/chip/tlv/tlvlist.py"
         - "./connectedhomeip/connectedhomeip/src/credentials/*.*"
         - "./connectedhomeip/connectedhomeip/src/credentials/attestation_verifier/**/*"
         - "./connectedhomeip/connectedhomeip/src/credentials/examples/**/*"
