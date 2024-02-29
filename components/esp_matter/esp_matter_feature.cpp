@@ -380,6 +380,26 @@ esp_err_t add(cluster_t *cluster)
 }
 
 } /* dead_front_behavior */
+
+namespace off_only {
+
+uint32_t get_id()
+{
+    return (uint32_t)OnOff::Feature::kOffOnly;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* off_only */
 } /* feature */
 } /* on_off */
 
