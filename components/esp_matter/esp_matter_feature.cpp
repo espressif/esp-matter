@@ -91,6 +91,35 @@ esp_err_t add(cluster_t *cluster)
 }
 }
 
+namespace administrator_commissioning {
+
+namespace feature {
+
+namespace basic {
+
+uint32_t get_id() {
+    return (uint32_t)AdministratorCommissioning::Feature::kBasic;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes managed internally */
+    command::create_open_basic_commissioning_window(cluster);
+
+    return ESP_OK;
+}
+
+} /* basic */
+
+}
+}
+
 namespace power_source {
 namespace feature {
 namespace wired {
@@ -207,13 +236,13 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* power_source */
 
-namespace scenes {
+namespace scenes_management {
 namespace feature {
 namespace scene_names {
 
 uint32_t get_id()
 {
-    return (uint32_t)Scenes::Feature::kSceneNames;
+    return (uint32_t)ScenesManagement::Feature::kSceneNames;
 }
 
 esp_err_t add(cluster_t *cluster)
@@ -228,69 +257,8 @@ esp_err_t add(cluster_t *cluster)
 }
 
 } /* scene_names */
-
-namespace explicit_feature {
-
-uint32_t get_id()
-{
-    return (uint32_t)Scenes::Feature::kExplicit;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-    update_feature_map(cluster, get_id());
-
-    return ESP_OK;
-}
-
-} /* explicit_feature */
-
-namespace table_size {
-
-uint32_t get_id()
-{
-    return (uint32_t)Scenes::Feature::kTableSize;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-    update_feature_map(cluster, get_id());
-
-    return ESP_OK;
-}
-
-} /* table_size */
-
-namespace fabric_scenes {
-
-uint32_t get_id()
-{
-    return (uint32_t)Scenes::Feature::kFabricScenes;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-    update_feature_map(cluster, get_id());
-
-    return ESP_OK;
-}
-
-} /* fabric_scenes*/
-
 } /* feature */
-} /* scenes */
+} /* scenes_management */
 
 namespace icd_management {
 namespace feature {
@@ -951,7 +919,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1007,7 +975,7 @@ esp_err_t add(cluster_t *cluster)
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
-    }    
+    }
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -1031,7 +999,7 @@ esp_err_t add(cluster_t *cluster)
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
-} 
+}
 
 } /* moderate */
 
@@ -1092,7 +1060,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1118,7 +1086,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1233,7 +1201,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1259,7 +1227,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1374,7 +1342,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1400,7 +1368,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1515,7 +1483,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1541,7 +1509,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1656,7 +1624,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1682,7 +1650,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1797,7 +1765,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1823,7 +1791,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1938,7 +1906,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1964,7 +1932,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2079,7 +2047,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2105,7 +2073,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2220,7 +2188,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2246,7 +2214,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2361,7 +2329,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2387,7 +2355,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
 	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG; 
+	return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2503,7 +2471,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
-    }    
+    }
     update_feature_map(cluster, get_id());
 
     attribute::create_condition(cluster, config->condition);
@@ -2646,7 +2614,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    
+
     update_feature_map(cluster, get_id());
 
     attribute::create_spin_speed_current(cluster, config->spin_speed_current);
@@ -2669,7 +2637,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-   
+
     update_feature_map(cluster, get_id());
 
     attribute::create_number_of_rinses(cluster, config->number_of_rinses);
@@ -3193,7 +3161,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         ESP_LOGE(TAG, "Cluster shall support either TemperatureLevel or TemperatureNumber feature");
         return ESP_ERR_NOT_SUPPORTED;
     }
-    
+
     return ESP_OK;
 }
 } /* temperature_level */
@@ -3335,7 +3303,7 @@ esp_err_t add(cluster_t *cluster)
     update_feature_map(cluster, get_id());
 
     command::create_step(cluster);
-    
+
     return ESP_OK;
 }
 } /* step */
@@ -3356,7 +3324,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     update_feature_map(cluster, get_id());
 
     attribute::create_airflow_direction(cluster, config->airflow_direction);
-    
+
     return ESP_OK;
 }
 } /* airflow_direction */

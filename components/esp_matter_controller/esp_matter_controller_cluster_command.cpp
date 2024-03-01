@@ -85,28 +85,28 @@ void decode_response(const ConcreteCommandPath &command_path, TLVReader *reader)
 } // namespace command
 } // namespace groups
 
-namespace scenes {
+namespace scenes_management {
 namespace command {
 
 void decode_response(const ConcreteCommandPath &command_path, TLVReader *reader)
 {
-    if (command_path.mCommandId == Scenes::Commands::AddSceneResponse::Id) {
-        decode_command_response<Scenes::Commands::AddScene::Type::ResponseType>(command_path, reader);
-    } else if (command_path.mCommandId == Scenes::Commands::ViewSceneResponse::Id) {
-        decode_command_response<Scenes::Commands::ViewScene::Type::ResponseType>(command_path, reader);
-    } else if (command_path.mCommandId == Scenes::Commands::RemoveSceneResponse::Id) {
-        decode_command_response<Scenes::Commands::RemoveScene::Type::ResponseType>(command_path, reader);
-    } else if (command_path.mCommandId == Scenes::Commands::RemoveAllScenesResponse::Id) {
-        decode_command_response<Scenes::Commands::RemoveAllScenes::Type::ResponseType>(command_path, reader);
-    } else if (command_path.mCommandId == Scenes::Commands::StoreSceneResponse::Id) {
-        decode_command_response<Scenes::Commands::StoreScene::Type::ResponseType>(command_path, reader);
-    } else if (command_path.mCommandId == Scenes::Commands::GetSceneMembershipResponse::Id) {
-        decode_command_response<Scenes::Commands::GetSceneMembership::Type::ResponseType>(command_path, reader);
+    if (command_path.mCommandId == ScenesManagement::Commands::AddSceneResponse::Id) {
+        decode_command_response<ScenesManagement::Commands::AddScene::Type::ResponseType>(command_path, reader);
+    } else if (command_path.mCommandId == ScenesManagement::Commands::ViewSceneResponse::Id) {
+        decode_command_response<ScenesManagement::Commands::ViewScene::Type::ResponseType>(command_path, reader);
+    } else if (command_path.mCommandId == ScenesManagement::Commands::RemoveSceneResponse::Id) {
+        decode_command_response<ScenesManagement::Commands::RemoveScene::Type::ResponseType>(command_path, reader);
+    } else if (command_path.mCommandId == ScenesManagement::Commands::RemoveAllScenesResponse::Id) {
+        decode_command_response<ScenesManagement::Commands::RemoveAllScenes::Type::ResponseType>(command_path, reader);
+    } else if (command_path.mCommandId == ScenesManagement::Commands::StoreSceneResponse::Id) {
+        decode_command_response<ScenesManagement::Commands::StoreScene::Type::ResponseType>(command_path, reader);
+    } else if (command_path.mCommandId == ScenesManagement::Commands::GetSceneMembershipResponse::Id) {
+        decode_command_response<ScenesManagement::Commands::GetSceneMembership::Type::ResponseType>(command_path, reader);
     }
 }
 
 } // namespace command
-} // namespace scenes
+} // namespace scenes_management
 
 namespace thermostat {
 namespace command {
@@ -185,8 +185,8 @@ void cluster_command::default_success_fcn(void *ctx, const ConcreteCommandPath &
     case Groups::Id:
         cluster::groups::command::decode_response(command_path, response_data);
         break;
-    case Scenes::Id:
-        cluster::scenes::command::decode_response(command_path, response_data);
+    case ScenesManagement::Id:
+        cluster::scenes_management::command::decode_response(command_path, response_data);
         break;
     case Thermostat::Id:
         cluster::thermostat::command::decode_response(command_path, response_data);

@@ -241,8 +241,8 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
     case app::Clusters::RvcRunMode::Id:
         emberAfRvcRunModeClusterInitCallback(endpoint);
         break;
-    case app::Clusters::Scenes::Id:
-        emberAfScenesClusterInitCallback(endpoint);
+    case app::Clusters::ScenesManagement::Id:
+        emberAfScenesManagementClusterInitCallback(endpoint);
         break;
     case app::Clusters::SmokeCoAlarm::Id:
         emberAfSmokeCoAlarmClusterInitCallback(endpoint);
@@ -688,7 +688,7 @@ void __attribute__((weak)) emberAfRvcRunModeClusterInitCallback(EndpointId endpo
     // To prevent warning
     (void) endpoint;
 }
-void __attribute__((weak)) emberAfScenesClusterInitCallback(EndpointId endpoint)
+void __attribute__((weak)) emberAfScenesManagementClusterInitCallback(EndpointId endpoint)
 {
     // To prevent warning
     (void) endpoint;

@@ -188,7 +188,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
         global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
-    
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -240,6 +240,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_software_version(cluster, 0);
         attribute::create_software_version_string(cluster, NULL, 0);
         attribute::create_capability_minima(cluster, NULL, 0, 0);
+        attribute::create_specification_version(cluster, 0);
+        attribute::create_max_paths_per_invoke(cluster, 0);
 
         /* Attributes not managed internally */
         if (config) {
@@ -524,6 +526,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         attribute::create_network_interfaces(cluster, NULL, 0, 0);
         attribute::create_reboot_count(cluster, 0);
+        attribute::create_up_time(cluster, 0);
         attribute::create_test_event_triggers_enabled(cluster, 0);
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
@@ -541,6 +544,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     event::create_boot_reason(cluster);
 
     command::create_test_event_trigger(cluster);
+    command::create_time_snap_shot(cluster);
+    command::create_time_snap_shot_response(cluster);
 
     return cluster;
 }
@@ -550,7 +555,7 @@ namespace administrator_commissioning {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, AdministratorCommissioning::Id, flags);
     if (!cluster) {
@@ -582,9 +587,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
     }
 
+     /* Features */
+    if (features & feature::basic::get_id()) {
+        feature::basic::add(cluster);
+    }
+
     /* Commands */
     command::create_open_commissioning_window(cluster);
-    command::create_open_basic_commissioning_window(cluster);
     command::create_revoke_commissioning(cluster);
 
     return cluster;
@@ -988,10 +997,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         }
     }
 
+#if defined(CHIP_CONFIG_ENABLE_ICD_CIP) && CHIP_CONFIG_ENABLE_ICD_CIP
     if (features & feature::check_in_protocol_support::get_id()) {
         feature::check_in_protocol_support::config_t cip_config;
         feature::check_in_protocol_support::add(cluster, &cip_config);
     }
+#endif // defined(CHIP_CONFIG_ENABLE_ICD_CIP) && CHIP_CONFIG_ENABLE_ICD_CIP
 #endif // CONFIG_ENABLE_ICD_SERVER
     return cluster;
 }
@@ -1175,20 +1186,20 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* groups */
 
-namespace scenes {
+namespace scenes_management {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, Scenes::Id, flags);
+    cluster_t *cluster = cluster::create(endpoint, ScenesManagement::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        static const auto plugin_server_init_cb = CALL_ONCE(MatterScenesPluginServerInitCallback);
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterScenesManagementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
     }
@@ -1203,12 +1214,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_scene_count(cluster, config->scene_count);
-            attribute::create_current_scene(cluster, config->current_scene);
-            attribute::create_current_group(cluster, config->current_group);
-            attribute::create_scene_valid(cluster, config->scene_valid);
-            attribute::create_scene_name_support(cluster, config->scene_name_support);
+            attribute::create_last_configured_by(cluster, 0);
             attribute::create_scene_table_size(cluster, config->scene_table_size);
+            attribute::create_fabric_scene_info(cluster, NULL, 0, 0);
 	} else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -1231,7 +1239,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* scenes */
+} /* scenes_management */
 
 namespace on_off {
 const function_generic_t function_list[] = {
@@ -1403,7 +1411,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
             attribute::create_primary_n_intensity(cluster, nullable<uint8_t>(), idx);
         }
     }
-    
+
     /* Commands */
     if (features & feature::hue_saturation::get_id() || features & feature::color_temperature::get_id() || features & feature::xy::get_id()) {
         command::create_stop_move_step(cluster);
@@ -1627,14 +1635,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
-    }    
+    }
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }    
+    }
     if (flags & CLUSTER_FLAG_CLIENT) {
         create_default_binding_cluster(endpoint);
-    }    
+    }
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
@@ -1649,8 +1657,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
-        }        
-    }        
+        }
+    }
 
     return cluster;
 }
@@ -1685,7 +1693,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         if (config) {
-            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -1724,7 +1732,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         if (config) {
-            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -1763,7 +1771,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         if (config) {
-            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -1802,7 +1810,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         if (config) {
-            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -1841,7 +1849,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         if (config) {
-            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -1880,7 +1888,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         if (config) {
-            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -1919,7 +1927,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         if (config) {
-            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -1958,7 +1966,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         if (config) {
-            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -1997,7 +2005,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         if (config) {
-            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -2036,7 +2044,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         if (config) {
-            global::attribute::create_cluster_revision(cluster, config->cluster_revision); 
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -2089,20 +2097,20 @@ const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
-{   
+{
     cluster_t *cluster = cluster::create(endpoint, OperationalState::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
     }
-    
+
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
         create_default_binding_cluster(endpoint);
     }
-    
+
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
@@ -2119,10 +2127,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
         } else {
-            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");   
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
-    
+
     event::create_operational_error(cluster);
 
     return cluster;
@@ -2176,7 +2184,7 @@ const function_generic_t function_list[] = {
 const int function_flags = CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
-{   
+{
     cluster_t *cluster = cluster::create(endpoint, LaundryWasherControls::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
@@ -2218,14 +2226,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
-    }    
+    }
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }    
+    }
     if (flags & CLUSTER_FLAG_CLIENT) {
         create_default_binding_cluster(endpoint);
-    }    
+    }
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
@@ -2257,14 +2265,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
-    }    
+    }
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }    
+    }
     if (flags & CLUSTER_FLAG_CLIENT) {
         create_default_binding_cluster(endpoint);
-    }    
+    }
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
@@ -2294,14 +2302,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (!cluster) {
 	ESP_LOGE(TAG, "Could not create cluster");
 	return NULL;
-    }    
+    }
 
     if (flags & CLUSTER_FLAG_SERVER) {
 	add_function_list(cluster, function_list, function_flags);
-    }    
+    }
     if (flags & CLUSTER_FLAG_CLIENT) {
 	create_default_binding_cluster(endpoint);
-    }    
+    }
 
     if (flags & CLUSTER_FLAG_SERVER) {
 	/* Attributes managed internally */
@@ -3154,23 +3162,23 @@ const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
-{   
+{
     cluster_t *cluster = cluster::create(endpoint, RvcRunMode::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
     }
-    
+
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-        
+
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
 	global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
 	attribute::create_supported_modes(cluster, NULL, 0, 0);
-        
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -3182,7 +3190,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     /* Commands */
     command::create_change_to_mode(cluster);
-    
+
     return cluster;
 }
 } /* rvc_run_mode */
@@ -3192,33 +3200,33 @@ const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
-{   
+{
     cluster_t *cluster = cluster::create(endpoint, RvcCleanMode::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
-    }    
-    
+    }
+
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-     
+
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
         global::attribute::create_event_list(cluster, NULL, 0, 0);
         attribute::create_supported_modes(cluster, NULL, 0, 0);
-     
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
             attribute::create_current_mode(cluster, config->current_mode);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
-        }    
-    }    
+        }
+    }
 
     /* Commands */
     command::create_change_to_mode(cluster);
-    
+
     return cluster;
 }
 } /* rvc_clean_mode */
@@ -3228,20 +3236,20 @@ const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
-{  
+{
     cluster_t *cluster = cluster::create(endpoint, RvcOperationalState::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
     }
-   
+
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
         create_default_binding_cluster(endpoint);
     }
-   
+
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
@@ -3256,7 +3264,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
-   
+
     return cluster;
 }
 } /* rvc_operational_state */

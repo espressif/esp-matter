@@ -95,7 +95,7 @@ void MatterRelativeHumidityMeasurementPluginServerInitCallback();
 void MatterRvcCleanModePluginServerInitCallback();
 void MatterRvcOperationalStatePluginServerInitCallback();
 void MatterRvcRunModePluginServerInitCallback();
-void MatterScenesPluginServerInitCallback();
+void MatterScenesManagementPluginServerInitCallback();
 void MatterSmokeCoAlarmPluginServerInitCallback();
 void MatterSoftwareDiagnosticsPluginServerInitCallback();
 void MatterSwitchPluginServerInitCallback();

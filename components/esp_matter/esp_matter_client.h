@@ -282,22 +282,22 @@ esp_err_t send_remove_group(peer_device_t *remote_device, uint16_t remote_endpoi
 } // namespace command
 } // namespace groups
 
-namespace scenes {
+namespace scenes_management {
 namespace command {
 
-using extension_field_sets = chip::app::DataModel::List<chip::app::Clusters::Scenes::Structs::ExtensionFieldSet::Type>;
+using extension_field_sets = chip::app::DataModel::List<chip::app::Clusters::ScenesManagement::Structs::ExtensionFieldSet::Type>;
 using add_scene_callback = void (*)(void *,
-                                    const chip::app::Clusters::Scenes::Commands::AddScene::Type::ResponseType &);
+                                    const chip::app::Clusters::ScenesManagement::Commands::AddScene::Type::ResponseType &);
 using view_scene_callback = void (*)(void *,
-                                     const chip::app::Clusters::Scenes::Commands::ViewScene::Type::ResponseType &);
+                                     const chip::app::Clusters::ScenesManagement::Commands::ViewScene::Type::ResponseType &);
 using remove_scene_callback = void (*)(void *,
-                                       const chip::app::Clusters::Scenes::Commands::RemoveScene::Type::ResponseType &);
+                                       const chip::app::Clusters::ScenesManagement::Commands::RemoveScene::Type::ResponseType &);
 using remove_all_scenes_callback =
-    void (*)(void *, const chip::app::Clusters::Scenes::Commands::RemoveAllScenes::Type::ResponseType &);
+    void (*)(void *, const chip::app::Clusters::ScenesManagement::Commands::RemoveAllScenes::Type::ResponseType &);
 using store_scene_callback = void (*)(void *,
-                                      const chip::app::Clusters::Scenes::Commands::StoreScene::Type::ResponseType &);
+                                      const chip::app::Clusters::ScenesManagement::Commands::StoreScene::Type::ResponseType &);
 using get_scene_membership_callback =
-    void (*)(void *, const chip::app::Clusters::Scenes::Commands::GetSceneMembership::Type::ResponseType &);
+    void (*)(void *, const chip::app::Clusters::ScenesManagement::Commands::GetSceneMembership::Type::ResponseType &);
 
 esp_err_t send_add_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id, uint8_t scene_id,
                          uint16_t transition_time, char *scene_name, extension_field_sets &efs,
@@ -322,7 +322,7 @@ esp_err_t send_get_scene_membership(peer_device_t *remote_device, uint16_t remot
                                     get_scene_membership_callback get_scene_membership_cb);
 
 } // namespace command
-} // namespace scenes
+} // namespace scenes_management
 
 namespace thermostat {
 namespace command {
