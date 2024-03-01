@@ -618,7 +618,7 @@ esp_err_t enable(endpoint_t *endpoint)
              */
             if (attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
                 attribute->val.type  == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING) {
-                matter_attributes[attribute_index].size = attribute->val.val.a.s;
+                matter_attributes[attribute_index].size = attribute->val.val.a.t;
             }
 
             matter_clusters[cluster_index].clusterSize += matter_attributes[attribute_index].size;
