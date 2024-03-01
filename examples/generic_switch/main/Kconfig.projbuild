@@ -1,0 +1,18 @@
+ menu "Demo"
+    config GENERIC_SWITCH_TYPE
+	choice
+	  prompt "Generic Switch Type"
+	  default GENERIC_SWITCH_TYPE_MOMENTARY
+	  help
+	      Define type of switch is latching or momentary.
+
+	  config GENERIC_SWITCH_TYPE_LATCHING
+	      bool "Generic Switch Type Latching"
+	  config GENERIC_SWITCH_TYPE_MOMENTARY
+	      bool "Generic Switch Type Momentary"
+	endchoice
+    config MAX_CONFIGURABLE_BUTTONS
+        int "Maximum physical configurable buttons"
+        default 5
+        range 1 5
+endmenu

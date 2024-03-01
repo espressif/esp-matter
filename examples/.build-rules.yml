@@ -1,0 +1,88 @@
+# Documentation: .gitlab/ci/README.md#manifest-file-to-control-the-buildtest-apps
+
+# Disabling the external platform builds till we fix the build problem
+# due to https://github.com/project-chip/connectedhomeip/pull/30531
+# JIRA tracker: CON-942
+examples/blemesh_bridge:
+  enable:
+    - if: IDF_TARGET in ["esp32", "esp32c3"]
+      temporary: true
+      reason: the other targets are not tested yet
+
+examples/zap_light:
+  enable:
+    - if: IDF_TARGET in ["esp32", "esp32h2"]
+      temporary: true
+      reason: the other targets are not tested yet
+
+examples/light_switch:
+  enable:
+    - if: IDF_TARGET in ["esp32", "esp32c6", "esp32c2", "esp32h2"]
+      temporary: true
+      reason: the other targets are not tested yet
+
+examples/light:
+  enable:
+    - if: IDF_TARGET in ["esp32", "esp32c3", "esp32c2", "esp32c6", "esp32h2"]
+      temporary: true
+      reason: the other targets are not tested yet
+
+examples/generic_switch:
+  enable:
+    - if: IDF_TARGET in ["esp32c2", "esp32c6", "esp32h2"]
+      temporary: true
+      reason: the other targets are not tested yet
+
+examples/esp-now_bridge_light:
+  enable:
+    - if: IDF_TARGET in ["esp32c3"]
+      temporary: true
+      reason: the other targets are not tested yet
+
+examples/controller:
+  enable:
+    - if: IDF_TARGET in ["esp32"]
+      temporary: true
+      reason: the other targets are not tested yet
+
+examples/zigbee_bridge:
+  enable:
+    - if: IDF_TARGET in ["esp32s3"]
+      temporary: true
+      reason: the other targets are not tested yet
+
+examples/room_air_conditioner:
+  enable:
+    - if: IDF_TARGET in ["esp32", "esp32c3", "esp32c2", "esp32c6", "esp32h2"]
+      temporary: true
+      reason: the other targets are not tested yet
+
+examples/refrigerator:
+  enable:
+    - if: IDF_TARGET in ["esp32", "esp32c3", "esp32c2", "esp32c6", "esp32h2"]
+      temporary: true
+      reason: the other targets are not tested yet
+
+examples/all_device_types_app:
+  enable:
+    - if: IDF_TARGET in ["esp32", "esp32c3", "esp32h2"]
+      temporary: true
+      reason: the other targets are not tested yet
+
+examples/mfg_test_app:
+  enable:
+    - if: IDF_TARGET in ["esp32c3", "esp32c2", "esp32c6", "esp32h2"]
+      temporary: true
+      reason: the other targets are not tested yet
+
+examples/icd_app:
+  enable:
+    - if: IDF_TARGET in ["esp32h2", "esp32c6"]
+      temporary: true
+      reason: the other targets are not tested yet
+
+examples/demo/badge:
+   enable:
+    - if: IDF_TARGET in ["esp32"]
+      temporary: true
+      reason: the other targets are not tested yet

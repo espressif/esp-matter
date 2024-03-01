@@ -1,0 +1,16 @@
+menu "ESP Matter Bridge"
+
+    config ESP_MATTER_AGGREGATOR_ENDPOINT_COUNT
+        int "The number of aggregator endpoints"
+        range 1 5
+        default 1
+        help
+            The number of aggregator endpoint for the bridge device
+
+    config ESP_MATTER_BRIDGE_INFO_PART_NAME
+        string "Bridge device information partition name"
+        default "nvs"
+        help
+            The NVS Partition name for Matter Bridge to store the bridged devices' information.
+
+endmenu

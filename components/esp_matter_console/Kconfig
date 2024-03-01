@@ -1,0 +1,15 @@
+menu "ESP Matter Console"
+
+    config ESP_MATTER_CONSOLE_TASK_STACK
+        int "Task stack size"
+        default 2048
+        help
+            Stack size of the console task.
+
+    config ESP_MATTER_CONSOLE_MAX_COMMANDS
+        int "Max commands supported"
+        default 10
+        help
+            Maximum number of commands that can be added for the 'matter esp <sub_command>' command.
+
+endmenu

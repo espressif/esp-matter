@@ -1,0 +1,57 @@
+menu "ESP Matter Controller"
+
+    config ESP_MATTER_CONTROLLER_ENABLE
+        bool "Enable matter controller"
+        default n
+        help
+            Enable the controller.
+
+    config ESP_MATTER_COMMISSIONER_ENABLE
+        bool "Enable matter commissioner"
+        depends on ESP_MATTER_CONTROLLER_ENABLE
+        default y
+        help
+            Enable the matter commissioner in the ESP Matter controller.
+
+    config ESP_MATTER_COMMISSIONER_MAX_ACTIVE_DEVICES
+        int "Max active device"
+        depends on ESP_MATTER_COMMISSIONER_ENABLE
+        default 5
+        help
+            Maximum number of active device the commissioner supports.
+
+    config ESP_MATTER_CONTROLLER_JSON_STRING_BUFFER_LEN
+        int "Max JSON string buffer length"
+        depends on ESP_MATTER_CONTROLLER_ENABLE
+        default 1024
+        help
+            Max JSON string buffer length. This buffer will be used to store the command data field
+            for cluster-invoked command or attribute value for write-attribute command.
+
+    config ESP_MATTER_CONTROLLER_CUSTOM_CLUSTER_ENABLE
+        bool "Enable controller custom cluster"
+        depends on ESP_MATTER_CONTROLLER_ENABLE && !ESP_MATTER_COMMISSIONER_ENABLE
+        default y
+        help
+            Enable the custom cluster of matter controller in the ESP Matter controller for Rainmaker Fabric suppport.
+
+    choice ESP_MATTER_COMMISSIONER_ATTESTATION_TRUST_STORE
+        prompt "Attestation Trust Store"
+        depends on ESP_MATTER_COMMISSIONER_ENABLE
+        default TEST_ATTESTATION_TRUST_STORE
+        help
+            This option determines where the commissioner reads PAA trust root certificate.
+
+        config TEST_ATTESTATION_TRUST_STORE
+            bool "Attestation Trust Store - Test"
+            help
+                Use the two hardcoded PAA certificates(Chip-Test-PAA-FFF1-Cert&Chip-Test-PAA-NoVID-Cert) in the firmware.
+
+        config SPIFFS_ATTESTATION_TRUST_STORE
+            bool "Attestation Trust Store - Spiffs"
+            help
+                Read the PAA root certificates from the spiffs partition
+
+    endchoice
+
+endmenu

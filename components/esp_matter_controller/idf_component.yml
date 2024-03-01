@@ -1,0 +1,4 @@
+## IDF Component Manager Manifest File
+dependencies:
+  espressif/json_parser: "~1.0.0"
+  espressif/json_generator: "~1.1.0"

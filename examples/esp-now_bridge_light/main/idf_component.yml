@@ -1,0 +1,19 @@
+## IDF Component Manager Manifest File
+dependencies:
+  # esp-now 2.5.0 will use 'dcm' member in esp_now_rate_config_t, and that member is introduced after IDF v5.1.2.
+  # TODO: update esp-now component to the latest version when updating ESP-IDF
+  espressif/esp-now: "2.4.0"
+  ## Required IDF version
+  idf:
+    version: ">=4.1.0"
+  # # Put list of dependencies here
+  # # For components maintained by Espressif:
+  # component: "~1.0.0"
+  # # For 3rd party components:
+  # username/component: ">=1.0.0,<2.0.0"
+  # username2/component2:
+  #   version: "~1.0.0"
+  #   # For transient dependencies `public` flag can be set.
+  #   # `public` flag doesn't have an effect dependencies of the `main` component.
+  #   # All dependencies of `main` are public by default.
+  #   public: true

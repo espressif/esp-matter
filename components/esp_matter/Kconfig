@@ -1,0 +1,243 @@
+menu "ESP Matter"
+
+    config ESP_MATTER_MAX_DEVICE_TYPE_COUNT
+        int "Maximum device types per endpoint"
+        range 1 255
+        default 16
+        help
+            The maximum device type count supported per endpoint.
+
+    config ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST
+        int "Largest attribute buffer size"
+        default 259
+        help
+            The Largest attribute size required for various attributes, the buffer will be used
+            for reading or writing attributes.
+
+    config ESP_MATTER_NVS_PART_NAME
+        string "ESP Matter NVS partition name"
+        default "nvs"
+        help
+            The NVS Partition name for ESP Matter to store the NONVOLATILE attribues
+
+    config ESP_MATTER_DEFERRED_ATTR_PERSISTENCE_TIME_MS
+        int "ESP Matter deferred attribute persistence time (ms)"
+        default 3000
+        help
+            Some non-volatile attributes might be changed frequently, which might result in rapid flash wearout.
+            For those attributes, set the flag 'ATTRIBUTE_FLAG_DEFERRED' to defer the flash-writing for the time.
+
+    choice ESP_MATTER_DAC_PROVIDER
+        prompt "DAC Provider options"
+        default FACTORY_PARTITION_DAC_PROVIDER if ENABLE_ESP32_FACTORY_DATA_PROVIDER
+        default EXAMPLE_DAC_PROVIDER if !ENABLE_ESP32_FACTORY_DATA_PROVIDER
+        help
+            This option determines which attestation credentials provider will be used.
+
+        config EXAMPLE_DAC_PROVIDER
+            bool "Attestation - Test"
+            help
+                An example DAC Provider which provides test attestation information
+
+        config FACTORY_PARTITION_DAC_PROVIDER
+            depends on ENABLE_ESP32_FACTORY_DATA_PROVIDER
+            bool "Attestation - Factory"
+            help
+                An implementation which reads attestation information from the factory partition
+
+        config SEC_CERT_DAC_PROVIDER
+            bool "Attestation - Secure Cert"
+            help
+                An implementation which reads attestation information from the esp_secure_cert partition
+
+        config CUSTOM_DAC_PROVIDER
+            bool "Attestation - Custom"
+            help
+                A custom implementation of DAC provider
+
+    endchoice
+
+    choice ESP_MATTER_COMMISSIONABLE_DATA_PROVIDER
+        prompt "Commissionable Data Provider options"
+        default FACTORY_COMMISSIONABLE_DATA_PROVIDER if ENABLE_ESP32_FACTORY_DATA_PROVIDER
+        default EXAMPLE_COMMISSIONABLE_DATA_PROVIDER if !ENABLE_ESP32_FACTORY_DATA_PROVIDER
+        help
+            This option determines which commissionable data provider will be used.
+
+        config EXAMPLE_COMMISSIONABLE_DATA_PROVIDER
+            bool "Commissionable Data - Test"
+            depends on !ENABLE_ESP32_FACTORY_DATA_PROVIDER
+            help
+                An example Commissionable Data Provider which provides commissionable data information
+
+        config FACTORY_COMMISSIONABLE_DATA_PROVIDER
+            bool "Commissionable Data - Factory"
+            depends on ENABLE_ESP32_FACTORY_DATA_PROVIDER
+            help
+                An implementation which reads commissionable data information from the factory partition
+
+        config CUSTOM_COMMISSIONABLE_DATA_PROVIDER
+            bool "Commissionable Data - Custom"
+            help
+                A custom implementation of Commissionable Data provider
+
+    endchoice
+
+    choice ESP_MATTER_DEVICE_INSTANCE_INFO_PROVIDER
+        prompt "Device Instance Info Provider options"
+        default FACTORY_DEVICE_INSTANCE_INFO_PROVIDER if ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
+        default EXAMPLE_DEVICE_INSTANCE_INFO_PROVIDER if !ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
+        help
+            This option determines which device instance info provider will be used.
+
+        config EXAMPLE_DEVICE_INSTANCE_INFO_PROVIDER
+            bool "Device Instance Info - Test"
+            help
+                An example Device Instance Info Provider which provides device instance information
+
+        config FACTORY_DEVICE_INSTANCE_INFO_PROVIDER
+            bool "Device Instance Info - Factory"
+            depends on ENABLE_ESP32_FACTORY_DATA_PROVIDER && ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
+            help
+                An implementation which reads device instance information from the factory partition
+
+        config CUSTOM_DEVICE_INSTANCE_INFO_PROVIDER
+            bool "Device Instance Info - Custom"
+            help
+                A custom implementation of Device Instance Info provider
+
+    endchoice
+
+    choice ESP_MATTER_DEVICE_INFO_PROVIDER
+        prompt "Device Info Provider options"
+        default FACTORY_DEVICE_INFO_PROVIDER if ENABLE_ESP32_DEVICE_INFO_PROVIDER
+        default NONE_DEVICE_INFO_PROVIDER if !ENABLE_ESP32_DEVICE_INFO_PROVIDER
+        help
+            This option determines which device info provider will be used.
+
+        config NONE_DEVICE_INFO_PROVIDER
+            bool "Device Info - None"
+            help
+                Do not set the Device Info Provider
+
+        config FACTORY_DEVICE_INFO_PROVIDER
+            bool "Device Info - Factory"
+            depends on ENABLE_ESP32_FACTORY_DATA_PROVIDER && ENABLE_ESP32_DEVICE_INFO_PROVIDER
+            help
+                An implementation which reads device information from the factory partition
+
+        config CUSTOM_DEVICE_INFO_PROVIDER
+            bool "Device Info - Custom"
+            help
+                A custom implementation of Device Info provider
+
+    endchoice
+
+
+    config ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT
+        int "Maximum dynamic endpoints"
+        range 1 255
+        default 16
+        help
+            The maximum dynamic endpoints supported.
+
+    config ESP_MATTER_MODE_SELECT_CLUSTER_ENDPOINT_COUNT
+        int "Endpoints on which mode select cluster is used"
+        range 0 255
+        default 0
+        help
+            Endpoint count which supports mode select.
+
+    config ESP_MATTER_TEMPERATURE_CONTROL_CLUSTER_ENDPOINT_COUNT
+        int "Endpoints on which temperature control cluster is used"
+        range 0 255
+        default 0
+        help
+            Endpoint count which supports temperature control.
+
+    config ESP_MATTER_SCENES_TABLE_SIZE
+        int "Scenes table size"
+        range 16 255
+        default 16
+        help
+            Size of the scenes table.
+
+    config ESP_MATTER_BINDING_TABLE_SIZE
+        int "Binding table size"
+        range 1 255
+        default 10
+        help
+            Size of the binding table.
+
+    config ESP_MATTER_UNICAST_MESSAGE_COUNT
+        int "Unicast message count"
+        range 1 255
+        default 10
+        help
+            APS unicast message count.
+
+    choice ESP_MATTER_MEM_ALLOC_MODE
+        prompt "Memory allocation strategy"
+        default ESP_MATTER_MEM_ALLOC_MODE_INTERNAL
+        help
+            Strategy for allocating memory for Matter data model, essentially provides ability to
+            allocate all required dynamic allocations from,
+
+            - Internal DRAM memory only
+            - External SPIRAM memory only
+            - Either internal or external memory based on default malloc()
+              behavior in ESP-IDF
+            - Internal IRAM memory wherever applicable else internal DRAM
+
+        config ESP_MATTER_MEM_ALLOC_MODE_INTERNAL
+            bool "Internal memory"
+
+        config ESP_MATTER_MEM_ALLOC_MODE_EXTERNAL
+            bool "External SPIRAM"
+            depends on SPIRAM_USE_CAPS_ALLOC || SPIRAM_USE_MALLOC
+
+        config ESP_MATTER_MEM_ALLOC_MODE_DEFAULT
+            bool "Default alloc mode"
+
+        config ESP_MATTER_MEM_ALLOC_MODE_IRAM_8BIT
+            bool "Internal IRAM"
+            depends on ESP32_IRAM_AS_8BIT_ACCESSIBLE_MEMORY
+            help
+                Allows to use IRAM memory region as 8bit accessible region.
+
+                Every unaligned (8bit or 16bit) access will result in an exception
+                and incur penalty of certain clock cycles per unaligned read/write.
+
+    endchoice #ESP_MATTER_MEM_ALLOC_MODE
+
+    config ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE
+        bool "Use compact attribute storage"
+        default n
+        help
+            Attributes can be stored as primitive data type or blob in NVS.
+            This option lets you select which one to use.
+
+            If enabled, attributes are stored as primitive data types in NVS.
+            If disabled, then attributes are stored as blob which consumes more space in NVS.
+
+            This option is kept disabled by default to maintain the backward compatibility.
+
+    config ESP_MATTER_ENABLE_DATA_MODEL
+        bool "Use ESP-Matter data model"
+        default y
+        help
+            This option should be disable for zap examples
+
+            If enabled, we will not use zap to define the data model of the node. All of the
+            endpoints are dynamic.
+
+    config ESP_MATTER_ENABLE_MATTER_SERVER
+        bool "Enable Matter Server"
+        default y
+        help
+            This option should be disable for client-only examples, such as Matter commissioner.
+
+            If enabled, we will start Matter server when calling esp_matter::start()
+            If disabled, the Matter server will not be initialized in esp_matter::start()
+
+endmenu

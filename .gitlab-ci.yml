@@ -1,0 +1,397 @@
+stages:
+    - build
+    - target_test
+    - docs
+
+variables:
+    ESP_MATTER_PATH: "$CI_PROJECT_DIR"
+    IDF_PATH: "$CI_PROJECT_DIR/esp-idf"
+    BR_PATH: "$CI_PROJECT_DIR/esp-thread-br"
+    IDF_GITHUB_ASSETS: "dl.espressif.com/github_assets"
+    GIT_STRATEGY: fetch
+    GIT_SUBMODULE_STRATEGY: none
+    IDF_SKIP_CHECK_SUBMODULES: 1
+    # This folder was on the runner host
+    MATTER_CACHE_DIR: /cache/matter_build
+
+.add_gitlab_ssh_key: &add_gitlab_ssh_key |
+  mkdir -p ~/.ssh
+  chmod 700 ~/.ssh
+  echo -n $GITLAB_KEY >> ~/.ssh/id_rsa_base64
+  base64 --decode --ignore-garbage ~/.ssh/id_rsa_base64 > ~/.ssh/id_rsa
+  chmod 600 ~/.ssh/id_rsa
+  echo -e "Host gitlab.espressif.cn\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+
+.get_build_caches: &get_build_caches
+  - |
+    if [ -d ${MATTER_CACHE_DIR}/ ]; then
+      echo "get matter_build cache ..."
+      mkdir -p .git/modules/
+      mkdir -p ~/.cache/pip/
+      mkdir -p ~/.cipd-cache-dir/
+      mkdir -p ~/.espressif/dist/
+      time rsync -a ${MATTER_CACHE_DIR}/git_modules/ .git/modules/ || true
+      time rsync -a ${MATTER_CACHE_DIR}/cache_pip/ ~/.cache/pip/ || true
+      time rsync -a ${MATTER_CACHE_DIR}/cipd_cache_dir/ ~/.cipd-cache-dir/ || true
+      time rsync -a ${MATTER_CACHE_DIR}/espressif_dist/ ~/.espressif/dist/ || true
+    fi
+
+.update_build_caches: &update_build_caches
+  - |
+    if [ -d ${MATTER_CACHE_DIR}/ ]; then
+      echo "update matter_build cache ..."
+      time rsync -a .git/modules/ ${MATTER_CACHE_DIR}/git_modules/ || true
+      time rsync -a ~/.cache/pip/ ${MATTER_CACHE_DIR}/cache_pip/ || true
+      time rsync -a ~/.cipd-cache-dir/ ${MATTER_CACHE_DIR}/cipd_cache_dir/ || true
+      time rsync -a ~/.espressif/dist/ ${MATTER_CACHE_DIR}/espressif_dist/ || true
+    fi
+
+.chip_submodule_update: &chip_submodule_update
+  - sed -i "s%https://github.com/espressif%${GITLAB_SSH_SERVER}/espressif%" .gitmodules
+  - git submodule sync --recursive
+  - git submodule update -f --init --recursive --depth 1
+
+.setup_idf: &setup_idf
+  # TODO: IDF_VERSION maybe a commit id, use `git fetch` rather than `git clone -b`
+  # - git clone -b ${IDF_VERSION} ${IDF_GIT_REPO_URL} --depth=1
+  - mkdir -p esp-idf
+  - cd esp-idf
+  - git init
+  - git remote add origin ${IDF_GIT_REPO_URL}
+  - git fetch origin ${IDF_VERSION}:refs/head --depth=1 -f
+  - git checkout ${IDF_VERSION}
+  - ./install.sh
+  - . ./export.sh
+  # fetch submodules
+  - export PYTHONPATH=${IDF_PATH}/tools/ci/python_packages/:${PYTHONPATH}
+  - pip install python-gitlab
+  - pip install --upgrade idf-component-manager
+  - python tools/ci/ci_fetch_submodule.py
+
+.setup_ot_br: &setup_ot_br
+  - cd ${CI_PROJECT_DIR}
+  - git clone ${ESP_THREAD_BR_REPO_URL}
+  - cd ${BR_PATH}/examples/basic_thread_border_router
+  - git checkout v1.0
+  - idf.py set-target esp32s3
+  - idf.py build
+
+.setup_ot_rcp: &setup_ot_rcp
+  - cd ${IDF_PATH}
+  - ./install.sh
+  - . ./export.sh
+  # fetch submodules
+  - export PYTHONPATH=${IDF_PATH}/tools/ci/python_packages/:${PYTHONPATH}
+  - pip install python-gitlab
+  - python tools/ci/ci_fetch_submodule.py
+  - cd examples/openthread/ot_rcp
+  - idf.py set-target esp32h2
+  - idf.py build
+
+.setup_matter: &setup_matter
+  - cd ${CI_PROJECT_DIR}
+  # Setting up Python environment still spend a pretty long time (15mins -> 5mins).
+  - ./install.sh
+  - . ./export.sh
+
+.build_matter_examples: &build_matter_examples
+    - export MATTER_EXAMPLES_PATH=$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/examples
+    - cd $MATTER_EXAMPLES_PATH/all-clusters-app/esp32
+    - idf.py build
+    - cd $MATTER_EXAMPLES_PATH/temperature-measurement-app/esp32
+    - idf.py build
+    - cd $MATTER_EXAMPLES_PATH/lock-app/esp32
+    - idf.py build
+    - cd $MATTER_EXAMPLES_PATH/pigweed-app/esp32
+    - idf.py build
+    - cd $MATTER_EXAMPLES_PATH/persistent-storage/esp32
+    - idf.py build
+
+.build_external_platform_example: &build_external_platform_example
+    - rm -rf $ESP_MATTER_PATH/../platform
+    - mkdir $ESP_MATTER_PATH/../platform
+    - cp -r $ESP_MATTER_PATH/connectedhomeip/connectedhomeip/src/platform/ESP32 $ESP_MATTER_PATH/../platform/ESP32_custom
+    - cp $ESP_MATTER_PATH/examples/common/external_platform/BUILD.gn $ESP_MATTER_PATH/../platform/ESP32_custom
+    - cd $ESP_MATTER_PATH/examples/light
+    - cp sdkconfig.defaults sdkconfig.defaults.backup
+    - cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
+    - idf.py set-target esp32
+    - idf.py build
+    - cp sdkconfig.defaults.backup sdkconfig.defaults
+
+.build_esp32c6_thread_example: &build_esp32c6_thread_example
+    - cd $ESP_MATTER_PATH/examples/light
+    - cp sdkconfig.defaults.esp32c6 sdkconfig.defaults.c6_backup
+    - cp sdkconfig.defaults.c6_thread sdkconfig.defaults.esp32c6
+    - idf.py set-target esp32c6
+    - idf.py build
+    - cp sdkconfig.defaults.c6_backup sdkconfig.defaults.esp32c6
+
+.build_controller_otbr_example: &build_controller_otbr_example
+    - cd $ESP_MATTER_PATH/examples/controller
+    - idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults.otbr" set-target esp32s3 build
+
+.build_examples_template:
+  stage: build
+  image: gitlab.espressif.cn:5050/app-frameworks/esp-matter/build-env:latest
+  tags:
+    - build
+    # runner: `sudo mkdir -p /cache/matter_build/`
+    # gitlab-runner config: `volumes = ["/cache:/cache:rw"]`
+    - matter_cache
+  before_script:
+    - *add_gitlab_ssh_key
+    - *get_build_caches
+    - *chip_submodule_update
+    - *setup_idf
+    - *setup_matter
+    - cd ${ESP_MATTER_PATH}
+    - mkdir -p ${REPOS_PATH}
+    # update caches only when setup succeed
+    - *update_build_caches
+  variables:
+    IDF_VERSION: "v5.0.1"
+    REPOS_PATH: "$CI_PROJECT_DIR/repos"
+    IDF_CCACHE_ENABLE: 1
+
+.build_managed_component_light_example:
+  stage: build
+  image: gitlab.espressif.cn:5050/app-frameworks/esp-matter/build-env:latest
+  tags:
+    - build
+    - matter_cache
+  before_script:
+    - *add_gitlab_ssh_key
+    - *get_build_caches
+    - *chip_submodule_update
+    - *setup_idf
+    - cd ${ESP_MATTER_PATH}
+    - mkdir -p ${REPOS_PATH}
+    - *update_build_caches
+  variables:
+    IDF_VERSION: "v5.1.2"
+    REPOS_PATH: "$CI_PROJECT_DIR/repos"
+    IDF_CCACHE_ENABLE: 1
+
+build_esp_matter_examples_pytest_C6_idf_v5_1:
+  extends:
+        - .build_examples_template
+  artifacts:
+    paths:
+      - "examples/**/build*/size.json"
+      - "examples/**/build*/build_log.txt"
+      - "examples/**/build*/*.bin"
+      - "examples/**/build*/flasher_args.json"
+      - "examples/**/build*/config/sdkconfig.json"
+      - "examples/**/build*/bootloader/*.bin"
+      - "examples/**/build*/partition_table/*.bin"
+      - "connectedhomeip/connectedhomeip/out/host/chip-tool"
+    when: always
+    expire_in: 4 days
+  variables:
+        IDF_VERSION: "v5.1.2"
+  script:
+    - cd ${ESP_MATTER_PATH}
+    - pip install -r tools/ci/requirements-build.txt
+    - python tools/ci/build_apps.py ./examples --pytest_c6
+
+build_esp_matter_examples_pytest_H2_idf_v5_1:
+  extends:
+        - .build_examples_template
+  artifacts:
+    paths:
+      - "examples/**/build*/size.json"
+      - "examples/**/build*/build_log.txt"
+      - "examples/**/build*/*.bin"
+      - "examples/**/build*/flasher_args.json"
+      - "examples/**/build*/config/sdkconfig.json"
+      - "examples/**/build*/bootloader/*.bin"
+      - "examples/**/build*/partition_table/*.bin"
+      - "${IDF_PATH}/examples/openthread/ot_rcp/build/*.bin"
+      - "${IDF_PATH}/examples/openthread/ot_rcp/build/partition_table/*.bin"
+      - "${IDF_PATH}/examples/openthread/ot_rcp/build/bootloader/*.bin"
+      - "${IDF_PATH}/examples/openthread/ot_rcp/build/config/sdkconfig.json"
+      - "${IDF_PATH}/examples/openthread/ot_rcp/build/flasher_args.json"
+      - "${BR_PATH}/examples/basic_thread_border_router/build/*.bin"
+      - "${BR_PATH}/examples/basic_thread_border_router/build/partition_table/*.bin"
+      - "${BR_PATH}/examples/basic_thread_border_router/build/bootloader/*.bin"
+      - "${BR_PATH}/examples/basic_thread_border_router/build/config/sdkconfig.json"
+      - "${BR_PATH}/examples/basic_thread_border_router/build/flasher_args.json"
+      - "connectedhomeip/connectedhomeip/out/host/chip-tool"
+    when: always
+    expire_in: 4 days
+  variables:
+        IDF_VERSION: "v5.1.2"
+  script:
+    - *setup_ot_rcp
+    - *setup_ot_br
+    - cd ${ESP_MATTER_PATH}
+    - pip install -r tools/ci/requirements-build.txt
+    - python tools/ci/build_apps.py ./examples --pytest_h2
+
+build_esp_matter_examples_non_pytest_idf_v5_1:
+  extends:
+        - .build_examples_template
+  artifacts:
+    paths:
+      - "examples/**/build*/size.json"
+      - "examples/**/build*/build_log.txt"
+      - "examples/**/build*/*.bin"
+      - "examples/**/build*/flasher_args.json"
+      - "examples/**/build*/config/sdkconfig.json"
+      - "examples/**/build*/bootloader/*.bin"
+      - "examples/**/build*/partition_table/*.bin"
+    when: always
+    expire_in: 4 days
+  variables:
+        IDF_VERSION: "v5.1.2"
+  script:
+    - *build_external_platform_example
+    - *build_esp32c6_thread_example
+    - *build_controller_otbr_example
+
+    # mfg_test_app needs an secure boot signing key, generating one here
+    - cd ${ESP_MATTER_PATH}/examples/mfg_test_app
+    - openssl genrsa -out secure_boot_signing_key.pem 3072
+
+    - cd ${ESP_MATTER_PATH}
+    - rm  ./examples/*/dependencies.lock
+    - pip install -r tools/ci/requirements-build.txt
+    - python tools/ci/build_apps.py ./examples --no_pytest
+      --parallel-count ${CI_NODE_TOTAL:-1}
+      --parallel-index ${CI_NODE_INDEX:-1}
+  parallel: 2
+
+build_esp_matter_examples_pytest_C3_idf_v4_4:
+  extends:
+        - .build_examples_template
+  artifacts:
+    paths:
+      - "examples/**/build*/size.json"
+      - "examples/**/build*/build_log.txt"
+      - "examples/**/build*/*.bin"
+      - "examples/**/build*/flasher_args.json"
+      - "examples/**/build*/config/sdkconfig.json"
+      - "examples/**/build*/bootloader/*.bin"
+      - "examples/**/build*/partition_table/*.bin"
+      - "connectedhomeip/connectedhomeip/out/host/chip-tool"
+    when: always
+    expire_in: 4 days
+  variables:
+        IDF_VERSION: "v4.4.3"
+  script:
+    - cd ${ESP_MATTER_PATH}
+    - pip install -r tools/ci/requirements-build.txt
+    - python tools/ci/build_apps.py ./examples --pytest_c3
+
+pytest_esp32c3_esp_matter_dut:
+  stage: target_test
+  image: ${TARGET_TEST_ENV}
+  needs:
+    - build_esp_matter_examples_pytest_C3_idf_v4_4
+  script:
+    - cd ${ESP_MATTER_PATH}
+    - pip install -r tools/ci/requirements-pytest.txt
+    - pytest examples/ --target esp32c3 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml
+  tags: ["esp32c3", "esp_matter_dut"]
+
+pytest_esp32c6_esp_matter_dut:
+  stage: target_test
+  image: ${TARGET_TEST_ENV}
+  needs:
+    - build_esp_matter_examples_pytest_C6_idf_v5_1
+  script:
+    - cd ${ESP_MATTER_PATH}
+    - pip install -r tools/ci/requirements-pytest.txt
+    - pytest examples/ --target esp32c6 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml
+  tags: ["esp32c6", "esp_matter_dut"]
+
+pytest_esp32h2_esp_matter_dut:
+  stage: target_test
+  image: ${TARGET_TEST_ENV}
+  needs:
+    - build_esp_matter_examples_pytest_H2_idf_v5_1
+  script:
+    - cd ${ESP_MATTER_PATH}
+    - pip install -r tools/ci/requirements-pytest.txt
+    - pytest examples/ --target esp32h2 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml
+  tags: ["esp32h2", "esp_matter_dut"]
+
+build_upstream_examples:
+    extends:
+        - .build_examples_template
+    when: manual
+    script:
+        - *build_matter_examples
+
+build_managed_component_light:
+    extends:
+        - .build_managed_component_light_example
+    when: manual
+    script:
+        - cd ${ESP_MATTER_PATH}/examples/managed_component_light
+        - idf.py set-target esp32c3
+        - idf.py build
+
+build_docs:
+    stage: build
+    image: $CI_DOCKER_REGISTRY/esp-idf-doc-env-v5.1:1-1
+    tags:
+        - build
+    variables:
+        ESP_DOCS_LATEST_BRANCH_NAME: "main"
+    artifacts:
+        when: always
+        paths:
+            - docs/_build/*/*/*.txt
+            - docs/_build/*/*/html/*
+        expire_in: 1 days
+    script:
+        - cd docs
+        - pip install -r requirements.txt
+        - build-docs -t esp32 esp32s3 esp32c2 esp32c3 esp32c6 esp32h2 -l en
+
+.deploy_docs_template:
+    stage: docs
+    image: $CI_DOCKER_REGISTRY/esp-idf-doc-env-v5.1:1-1
+    tags:
+        - docs
+    needs:
+        - build_docs
+    variables:
+        ESP_DOCS_LATEST_BRANCH_NAME: "main"
+    script:
+        - source ${CI_PROJECT_DIR}/docs/utils.sh
+        - add_doc_server_ssh_keys $DOCS_DEPLOY_PRIVATEKEY $DOCS_DEPLOY_SERVER $DOCS_DEPLOY_SERVER_USER
+        - export GIT_VER=$(git describe --always)
+        - pip install -r ${CI_PROJECT_DIR}/docs/requirements.txt
+        - deploy-docs
+
+deploy_docs_preview:
+    extends:
+        - .deploy_docs_template
+    when: always
+    variables:
+        TYPE: "preview"
+        DOCS_BUILD_DIR: "${CI_PROJECT_DIR}/docs/_build/"
+        DOCS_DEPLOY_PRIVATEKEY: "$DOCS_PREVIEW_DEPLOY_KEY"
+        DOCS_DEPLOY_SERVER: "$DOCS_PREVIEW_SERVER"
+        DOCS_DEPLOY_SERVER_USER: "$DOCS_PREVIEW_SERVER_USER"
+        DOCS_DEPLOY_PATH: "$DOCS_PREVIEW_PATH"
+        DOCS_DEPLOY_URL_BASE: "https://$DOCS_PREVIEW_SERVER_URL/docs/esp-matter"
+
+deploy_docs_production:
+    extends:
+        - .deploy_docs_template
+    only:
+      refs:
+        - main
+        - /^release\/v.*$/
+    variables:
+        TYPE: "preview"
+        DOCS_BUILD_DIR: "${CI_PROJECT_DIR}/docs/_build/"
+        DOCS_DEPLOY_PRIVATEKEY: "$DOCS_PROD_DEPLOY_KEY"
+        DOCS_DEPLOY_SERVER: "$DOCS_PROD_SERVER"
+        DOCS_DEPLOY_SERVER_USER: "$DOCS_PROD_SERVER_USER"
+        DOCS_DEPLOY_PATH: "$DOCS_PROD_PATH"
+        DOCS_DEPLOY_URL_BASE: "https://docs.espressif.com/projects/esp-matter"
