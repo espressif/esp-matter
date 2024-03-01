@@ -59,7 +59,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     network_commissioning::create(endpoint, &(config->network_commissioning), CLUSTER_FLAG_SERVER);
     general_diagnostics::create(endpoint, &(config->general_diagnostics), CLUSTER_FLAG_SERVER);
     administrator_commissioning::create(endpoint, &(config->administrator_commissioning), CLUSTER_FLAG_SERVER,
-                                         administrator_commissioning::feature::basic::get_id());
+                                        ESP_MATTER_NONE_FEATURE_ID);
     operational_credentials::create(endpoint, &(config->operational_credentials), CLUSTER_FLAG_SERVER);
     group_key_management::create(endpoint, CLUSTER_FLAG_SERVER);
 
