@@ -570,7 +570,7 @@ esp_err_t enable(endpoint_t *endpoint)
     /* This is needed to avoid 'crosses initialization' errors because of goto */
     esp_err_t err = ESP_OK;
     lock::status_t lock_status = lock::FAILED;
-    EmberAfStatus status = EMBER_ZCL_STATUS_SUCCESS;
+    CHIP_ERROR status = CHIP_NO_ERROR;
     EmberAfCluster *matter_clusters = NULL;
     _attribute_t *attribute = NULL;
     int attribute_count = 0;
@@ -746,8 +746,8 @@ esp_err_t enable(endpoint_t *endpoint)
     endpoint_index = endpoint::get_next_index();
     status = emberAfSetDynamicEndpoint(endpoint_index, current_endpoint->endpoint_id, endpoint_type, data_versions,
                                        device_types, current_endpoint->parent_endpoint_id);
-    if (status != EMBER_ZCL_STATUS_SUCCESS) {
-        ESP_LOGE(TAG, "Error adding dynamic endpoint %" PRIu16 ": 0x%x", current_endpoint->endpoint_id, status);
+    if (status != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Error adding dynamic endpoint %" PRIu16 ": %" CHIP_ERROR_FORMAT, current_endpoint->endpoint_id, status.Format());
         err = ESP_FAIL;
         if (lock_status == lock::SUCCESS) {
             lock::chip_stack_unlock();

@@ -90,6 +90,8 @@ attribute_t *create_local_config_disabled(cluster_t *cluster, bool value);
 attribute_t *create_reachable(cluster_t *cluster, bool value);
 attribute_t *create_unique_id(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_product_appearance(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_specification_version(cluster_t *cluster, uint32_t value);
+attribute_t *create_max_paths_per_invoke(cluster_t *cluster, uint16_t value);
 } /* attribute */
 } /* basic_information */
 
@@ -138,6 +140,7 @@ namespace general_diagnostics {
 namespace attribute {
 attribute_t *create_network_interfaces(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_reboot_count(cluster_t *cluster, uint16_t value);
+attribute_t *create_up_time(cluster_t *cluster, uint64_t value);
 attribute_t *create_test_event_triggers_enabled(cluster_t *cluster, bool value);
 } /* attribute */
 } /* general_diagnostics */
@@ -297,16 +300,13 @@ attribute_t *create_group_name_support(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* groups */
 
-namespace scenes {
+namespace scenes_management {
 namespace attribute {
-attribute_t *create_scene_count(cluster_t *cluster, uint8_t value);
-attribute_t *create_current_scene(cluster_t *cluster, uint8_t value);
-attribute_t *create_current_group(cluster_t *cluster, uint16_t value);
-attribute_t *create_scene_valid(cluster_t *cluster, bool value);
-attribute_t *create_scene_name_support(cluster_t *cluster, uint8_t value);
+attribute_t *create_last_configured_by(cluster_t *cluster, uint64_t value);
 attribute_t *create_scene_table_size(cluster_t *cluster, uint16_t value);
+attribute_t *create_fabric_scene_info(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count);
 } /* attribute */
-} /* scenes */
+} /* scenes_management */
 
 namespace on_off {
 namespace attribute {
@@ -677,7 +677,7 @@ attribute_t *create_supported_rinses(cluster_t *cluster, uint8_t *value, uint16_
 
 namespace dish_washer_mode {
 namespace attribute {
-attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count); 
+attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count);
 attribute_t *create_current_mode(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* dish_washer_mode */

@@ -43,6 +43,20 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* descriptor */
 
+namespace administrator_commissioning {
+
+namespace feature {
+
+namespace basic {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* basic */
+
+} /* feature */
+} /* administrator_commissioning */
+
 namespace power_source {
 namespace feature {
 namespace wired {
@@ -100,7 +114,7 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* feature */
 } /* power_source */
 
-namespace scenes {
+namespace scenes_management {
 namespace feature {
 namespace scene_names {
 
@@ -131,7 +145,7 @@ esp_err_t add(cluster_t *cluster);
 } /* fabric_scenes*/
 
 } /* feature */
-} /* scenes */
+} /* scenes_management */
 namespace icd_management {
 namespace feature {
 namespace check_in_protocol_support {
@@ -169,6 +183,13 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 
 } /* dead_front_behavior */
+
+namespace off_only {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* off_only */
 } /* feature */
 } /* on_off */
 
@@ -438,7 +459,7 @@ namespace feature {
 namespace heating {
 
 typedef struct config {
-   int16_t occupied_heating_setpoint; 
+   int16_t occupied_heating_setpoint;
 
    config (): occupied_heating_setpoint(2000) {}
 } config_t;
@@ -450,7 +471,7 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 namespace cooling {
 
 typedef struct config {
-   int16_t occupied_cooling_setpoint; 
+   int16_t occupied_cooling_setpoint;
 
    config (): occupied_cooling_setpoint(2600) {}
 } config_t;
@@ -464,12 +485,12 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 namespace occupancy {
 
 typedef struct config {
-   uint8_t occupancy; 
+   uint8_t occupancy;
    int16_t unoccupied_cooling_setpoint;
    int16_t unoccupied_heating_setpoint;
-   nullable<uint8_t> unoccupied_setback; 
-   nullable<uint8_t> unoccupied_setback_min; 
-   nullable<uint8_t> unoccupied_setback_max; 
+   nullable<uint8_t> unoccupied_setback;
+   nullable<uint8_t> unoccupied_setback_min;
+   nullable<uint8_t> unoccupied_setback_max;
 
    config (): occupancy(1), unoccupied_cooling_setpoint(2600), unoccupied_heating_setpoint(2000), unoccupied_setback(), unoccupied_setback_min(), unoccupied_setback_max() {}
 } config_t;
@@ -481,9 +502,9 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 namespace schedule_configuration {
 
 typedef struct config {
-   uint8_t start_of_week; 
-   uint8_t number_of_weekly_transitions; 
-   uint8_t number_of_daily_transitions; 
+   uint8_t start_of_week;
+   uint8_t number_of_weekly_transitions;
+   uint8_t number_of_daily_transitions;
 
    config (): start_of_week(0), number_of_weekly_transitions(0), number_of_daily_transitions(0) {}
 } config_t;
@@ -495,9 +516,9 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 namespace setback {
 
 typedef struct config {
-   nullable<uint8_t> occupied_setback; 
-   nullable<uint8_t> occupied_setback_min; 
-   nullable<uint8_t> occupied_setback_max; 
+   nullable<uint8_t> occupied_setback;
+   nullable<uint8_t> occupied_setback_min;
+   nullable<uint8_t> occupied_setback_max;
 
    config (): occupied_setback(), occupied_setback_min(), occupied_setback_max() {}
 } config_t;
@@ -512,7 +533,7 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 namespace auto_mode {
 
 typedef struct config {
-   int8_t min_setpoint_dead_band; 
+   int8_t min_setpoint_dead_band;
 
    config (): min_setpoint_dead_band(25) {}
 } config_t;

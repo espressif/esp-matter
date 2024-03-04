@@ -279,6 +279,18 @@ attribute_t *create_product_appearance(cluster_t *cluster, uint8_t *value, uint1
                                          ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
 }
 
+attribute_t *create_specification_version(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::SpecificationVersion::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint32(value));
+}
+
+attribute_t *create_max_paths_per_invoke(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::MaxPathsPerInvoke::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
 } /* attribute */
 } /* basic_information */
 
@@ -447,6 +459,12 @@ attribute_t *create_reboot_count(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, GeneralDiagnostics::Attributes::RebootCount::Id,
                                          ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint16(value));
+}
+
+attribute_t *create_up_time(cluster_t *cluster, uint64_t value)
+{
+    return esp_matter::attribute::create(cluster, GeneralDiagnostics::Attributes::UpTime::Id,
+                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint64(value));
 }
 
 attribute_t *create_test_event_triggers_enabled(cluster_t *cluster, bool value)
@@ -1049,47 +1067,28 @@ attribute_t *create_group_name_support(cluster_t *cluster, uint8_t value)
 } /* attribute */
 } /* groups */
 
-namespace scenes {
+namespace scenes_management {
 namespace attribute {
-
-attribute_t *create_scene_count(cluster_t *cluster, uint8_t value)
+attribute_t *create_last_configured_by(cluster_t *cluster, uint64_t value)
 {
-    return esp_matter::attribute::create(cluster, Scenes::Attributes::SceneCount::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint8(value));
-}
-
-attribute_t *create_current_scene(cluster_t *cluster, uint8_t value)
-{
-    return esp_matter::attribute::create(cluster, Scenes::Attributes::CurrentScene::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint8(value));
-}
-
-attribute_t *create_current_group(cluster_t *cluster, uint16_t value)
-{
-    return esp_matter::attribute::create(cluster, Scenes::Attributes::CurrentGroup::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint16(value));
-}
-
-attribute_t *create_scene_valid(cluster_t *cluster, bool value)
-{
-    return esp_matter::attribute::create(cluster, Scenes::Attributes::SceneValid::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_bool(value));
-}
-
-attribute_t *create_scene_name_support(cluster_t *cluster, uint8_t value)
-{
-    return esp_matter::attribute::create(cluster, Scenes::Attributes::NameSupport::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_bitmap8(value));
+    return esp_matter::attribute::create(cluster, ScenesManagement::Attributes::LastConfiguredBy::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint64(value));
 }
 
 attribute_t *create_scene_table_size(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, Scenes::Attributes::SceneTableSize::Id, ATTRIBUTE_FLAG_NONE,
-                                          esp_matter_uint16(value));
+    return esp_matter::attribute::create(cluster, ScenesManagement::Attributes::SceneTableSize::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_fabric_scene_info(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ScenesManagement::Attributes::FabricSceneInfo::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array((uint8_t*)value, length, count));
 }
 
 } /* attribute */
-} /* scenes */
+} /* scenes_management */
 
 namespace on_off {
 namespace attribute {
@@ -1253,7 +1252,7 @@ attribute_t *create_current_saturation(cluster_t *cluster, uint8_t value, uint8_
     attribute_t *attribute =
         esp_matter::attribute::create(cluster, ColorControl::Attributes::CurrentSaturation::Id,
                                       ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
-    if (!attribute) { 
+    if (!attribute) {
         ESP_LOGE(TAG, "Could not create attribute");
         return NULL;
     }
@@ -1310,7 +1309,7 @@ attribute_t *create_color_temperature_mireds(cluster_t *cluster, uint16_t value,
     attribute_t *attribute =
         esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTemperatureMireds::Id,
                                       ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint16(value));
-    if (!attribute) { 
+    if (!attribute) {
         ESP_LOGE(TAG, "Could not create attribute");
         return NULL;
     }
@@ -1323,7 +1322,7 @@ attribute_t *create_color_temp_physical_min_mireds(cluster_t *cluster, uint16_t 
     attribute_t *attribute =
         esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTempPhysicalMinMireds::Id,
                                       ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-    if (!attribute) { 
+    if (!attribute) {
         ESP_LOGE(TAG, "Could not create attribute");
         return NULL;
     }
@@ -1336,7 +1335,7 @@ attribute_t *create_color_temp_physical_max_mireds(cluster_t *cluster, uint16_t 
     attribute_t *attribute =
         esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTempPhysicalMaxMireds::Id,
                                       ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-    if (!attribute) { 
+    if (!attribute) {
         ESP_LOGE(TAG, "Could not create attribute");
         return NULL;
     }
@@ -1349,7 +1348,7 @@ attribute_t *create_couple_color_temp_to_level_min_mireds(cluster_t *cluster, ui
     attribute_t *attribute =
         esp_matter::attribute::create(cluster, ColorControl::Attributes::CoupleColorTempToLevelMinMireds::Id,
                                       ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-    if (!attribute) { 
+    if (!attribute) {
         ESP_LOGE(TAG, "Could not create attribute");
         return NULL;
     }
@@ -1393,7 +1392,7 @@ attribute_t *create_current_y(cluster_t *cluster, uint16_t value, uint16_t min, 
 attribute_t *create_drift_compensation(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
 {
     attribute_t *attribute =
-	esp_matter::attribute::create(cluster, ColorControl::Attributes::DriftCompensation::Id, 
+	esp_matter::attribute::create(cluster, ColorControl::Attributes::DriftCompensation::Id,
 			              ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
     if (!attribute) {
         ESP_LOGE(TAG, "Could not create attribute");
@@ -1486,7 +1485,7 @@ attribute_t *create_primary_n_x(cluster_t *cluster, uint16_t value, uint8_t inde
         break;
     }
     return NULL;
-            
+
 }
 
 attribute_t *create_primary_n_y(cluster_t *cluster, uint16_t value, uint8_t index)

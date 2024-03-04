@@ -1,23 +1,13 @@
-set(SRC_DIRS_LIST       "."
-                        "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src"
+set(SRC_LIST       app_driver.cpp
+                   app_main.cpp
+                   ${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/static-supported-temperature-levels.cpp
+                   ${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/tcc-mode.cpp
    )
 
 set(INCLUDE_DIRS_LIST   "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/include")
 
-set(exclude_srcs_list   "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/binding-handler.cpp"
-                        "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/bridged-actions-stub.cpp"
-                        "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/fan-stub.cpp"
-                        "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/operational-state-delegate-impl.cpp"
-                        "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/operational-state-delegates.cpp"
-                        "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/resource-monitoring-instances.cpp"
-                        "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/smco-stub.cpp"
-                        "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/static-supported-modes-manager.cpp"
-                        "${MATTER_SDK_PATH}/examples/all-clusters-app/all-clusters-common/src/energy-evse-stub.cpp"
-   )
-
-idf_component_register(SRC_DIRS          ${SRC_DIRS_LIST}
-                      EXCLUDE_SRCS       ${exclude_srcs_list}
-                      INCLUDE_DIRS    ${INCLUDE_DIRS_LIST}
+idf_component_register(SRCS              ${SRC_LIST}
+                      INCLUDE_DIRS       ${INCLUDE_DIRS_LIST}
                       PRIV_INCLUDE_DIRS  "." "${ESP_MATTER_PATH}/examples/common/utils")
 
 set_property(TARGET ${COMPONENT_LIB} PROPERTY CXX_STANDARD 17)

@@ -70,6 +70,8 @@ command_t *create_retrieve_logs_response(cluster_t *cluster);
 namespace general_diagnostics {
 namespace command {
 command_t *create_test_event_trigger(cluster_t *cluster);
+command_t *create_time_snap_shot(cluster_t *cluster);
+command_t *create_time_snap_shot_response(cluster_t *cluster);
 } /* command */
 } /* general_diagnostics */
 
@@ -187,7 +189,7 @@ command_t *create_stay_active_request(cluster_t *cluster);
 } /* command */
 } /* icd_management */
 
-namespace scenes {
+namespace scenes_management {
 namespace command {
 command_t *create_add_scene(cluster_t *cluster);
 command_t *create_view_scene(cluster_t *cluster);
@@ -196,8 +198,6 @@ command_t *create_remove_all_scenes(cluster_t *cluster);
 command_t *create_store_scene(cluster_t *cluster);
 command_t *create_recall_scene(cluster_t *cluster);
 command_t *create_get_scene_membership(cluster_t *cluster);
-command_t *create_enhanced_add_scene(cluster_t *cluster);
-command_t *create_enhanced_view_scene(cluster_t *cluster);
 command_t *create_copy_scene(cluster_t *cluster);
 command_t *create_add_scene_response(cluster_t *cluster);
 command_t *create_view_scene_response(cluster_t *cluster);
@@ -205,11 +205,9 @@ command_t *create_remove_scene_response(cluster_t *cluster);
 command_t *create_remove_all_scenes_response(cluster_t *cluster);
 command_t *create_store_scene_response(cluster_t *cluster);
 command_t *create_get_scene_membership_response(cluster_t *cluster);
-command_t *create_enhanced_add_scene_response(cluster_t *cluster);
-command_t *create_enhanced_view_scene_response(cluster_t *cluster);
 command_t *create_copy_scene_response(cluster_t *cluster);
 } /* command */
-} /* scenes */
+} /* scenes_management */
 
 namespace on_off {
 namespace command {

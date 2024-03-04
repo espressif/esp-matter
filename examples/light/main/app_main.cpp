@@ -11,6 +11,7 @@
 #include <nvs_flash.h>
 
 #include <esp_matter.h>
+#include <esp_matter_cluster.h>
 #include <esp_matter_console.h>
 #include <esp_matter_ota.h>
 
@@ -22,6 +23,8 @@
 #endif
 
 #include <app/server/CommissioningWindowManager.h>
+#include <app/clusters/diagnostic-logs-server/diagnostic-logs-server.h>
+#include <diagnostic-logs-provider-delegate-impl.h>
 #include <app/server/Server.h>
 
 static const char *TAG = "app_main";
@@ -162,6 +165,11 @@ extern "C" void app_main()
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
     ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
 
+    // add diagnostic logs cluster on root endpoint
+    cluster::diagnostic_logs::config_t diag_logs_config;
+    endpoint_t *root_ep = endpoint::get(node, 0); // get the root node ep
+    cluster::diagnostic_logs::create(root_ep, &diag_logs_config, CLUSTER_FLAG_SERVER);
+
     extended_color_light::config_t light_config;
     light_config.on_off.on_off = DEFAULT_POWER;
     light_config.on_off.lighting.start_up_on_off = nullptr;
@@ -221,4 +229,11 @@ extern "C" void app_main()
 #endif
     esp_matter::console::init();
 #endif
+}
+
+using namespace chip::app::Clusters::DiagnosticLogs;
+void emberAfDiagnosticLogsClusterInitCallback(chip::EndpointId endpoint)
+{
+    auto & logProvider = LogProvider::GetInstance();
+    DiagnosticLogsServer::Instance().SetDiagnosticLogsProviderDelegate(endpoint, &logProvider);
 }
