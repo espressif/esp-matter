@@ -164,7 +164,6 @@ variables:
   before_script:
     - *add_gitlab_ssh_key
     - *get_build_caches
-    - *chip_submodule_update
     - *setup_idf
     - cd ${ESP_MATTER_PATH}
     - mkdir -p ${REPOS_PATH}
@@ -328,7 +327,7 @@ build_upstream_examples:
 build_managed_component_light:
     extends:
         - .build_managed_component_light_example
-    when: manual
+    when: always
     script:
         - cd ${ESP_MATTER_PATH}/examples/managed_component_light
         - idf.py set-target esp32c3

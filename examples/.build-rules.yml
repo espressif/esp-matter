@@ -86,3 +86,9 @@ examples/demo/badge:
     - if: IDF_TARGET in ["esp32"]
       temporary: true
       reason: the other targets are not tested yet
+
+examples/managed_component_light:
+   enable:
+    - if: IDF_TARGET in [""]
+      temporary: true
+      reason: this should be compiled without setting up environment, another CI has been added
