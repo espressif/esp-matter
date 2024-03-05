@@ -297,7 +297,7 @@ namespace scenes_management {
 typedef struct config {
     uint16_t cluster_revision;
     uint16_t scene_table_size;
-    config() : cluster_revision(6), scene_table_size(16) {}
+    config() : cluster_revision(1), scene_table_size(16) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
