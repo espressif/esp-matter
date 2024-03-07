@@ -114,7 +114,10 @@ static_library("ESP32_custom") {
     "${chip_root}/src/setup_payload",
   ]
 
-  public = [ "${chip_root}/src/credentials/DeviceAttestationCredsProvider.h" ]
+  public = [
+    "${chip_root}/src/credentials/CHIPCert.h",
+    "${chip_root}/src/credentials/DeviceAttestationCredsProvider.h",
+  ]
 
   public_deps = [
     "${chip_root}/src/crypto",
@@ -132,19 +135,31 @@ static_library("ESP32_custom") {
   if (chip_enable_chipoble) {
     sources += [
       "BLEManagerImpl.h",
+      "ChipDeviceScanner.h",
     ]
+  }
+
+  if (chip_enable_ble_controller) {
+    sources += [ "ChipDeviceScanner.h" ]
   }
 
   if (chip_bt_nimble_enabled) {
-    sources += [
-      "nimble/BLEManagerImpl.cpp",
-    ]
+    sources += [ "nimble/BLEManagerImpl.cpp" ]
+    if (chip_enable_ble_controller) {
+      sources += [
+        "nimble/ChipDeviceScanner.cpp",
+        "nimble/blecent.h",
+        "nimble/misc.c",
+        "nimble/peer.c",
+      ]
+    }
   }
 
   if (chip_bt_bluedroid_enabled) {
-    sources += [
-      "bluedroid/BLEManagerImpl.cpp",
-    ]
+    sources += [ "bluedroid/BLEManagerImpl.cpp" ]
+    if (chip_enable_ble_controller) {
+      sources += [ "bluedroid/ChipDeviceScanner.cpp" ]
+    }
   }
 
   if (chip_enable_wifi) {
@@ -159,6 +174,9 @@ static_library("ESP32_custom") {
         "WiFiDnssdImpl.h",
       ]
     }
+    if (chip_mdns == "minimal") {
+      sources += [ "ESP32EndpointQueueFilter.h" ]
+    }
     if (chip_enable_route_hook) {
       sources += [
         "route_hook/ESP32RouteHook.c",
@@ -169,6 +187,10 @@ static_library("ESP32_custom") {
     }
   }
 
+  if (chip_mdns == "platform") {
+    sources += [ "DnssdImpl.cpp" ]
+  }
+
   if (chip_enable_ethernet) {
     sources += [
       "ConnectivityManagerImpl_Ethernet.cpp",
@@ -176,8 +198,23 @@ static_library("ESP32_custom") {
     ]
   }
 
-  if (chip_mdns == "platform") {
-    sources += [ "DnssdImpl.cpp" ]
+  if (chip_enable_openthread) {
+    sources += [
+      "${chip_root}/src/platform/OpenThread/GenericNetworkCommissioningThreadDriver.cpp",
+      "${chip_root}/src/platform/OpenThread/GenericNetworkCommissioningThreadDriver.h",
+      "${chip_root}/src/platform/OpenThread/OpenThreadUtils.cpp",
+      "OpenthreadLauncher.cpp",
+      "OpenthreadLauncher.h",
+      "ThreadStackManagerImpl.cpp",
+      "ThreadStackManagerImpl.h",
+    ]
+    if (chip_mdns == "platform") {
+      sources += [
+        "${chip_root}/src/platform/OpenThread/OpenThreadDnssdImpl.cpp",
+        "${chip_root}/src/platform/OpenThread/OpenThreadDnssdImpl.h",
+      ]
+    }
+    configs -= [ "${chip_root}/build/config/compiler:warnings_default" ]
   }
 
   if (chip_use_factory_data_provider) {
@@ -193,4 +230,20 @@ static_library("ESP32_custom") {
       "ESP32DeviceInfoProvider.h",
     ]
   }
+
+  if (chip_use_secure_cert_dac_provider) {
+    sources += [
+      "ESP32SecureCertDACProvider.cpp",
+      "ESP32SecureCertDACProvider.h",
+    ]
+  }
+
+  if (chip_use_esp32_ecdsa_peripheral) {
+    sources += [
+      "ESP32CHIPCryptoPAL.cpp",
+      "ESP32CHIPCryptoPAL.h",
+    ]
+  }
+
+  cflags = [ "-Wconversion" ]
 }
