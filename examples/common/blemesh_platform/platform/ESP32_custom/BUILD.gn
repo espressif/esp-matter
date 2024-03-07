@@ -33,6 +33,7 @@ declare_args() {
   chip_max_discovered_ip_addresses = 5
   chip_use_secure_cert_dac_provider = false
   chip_use_esp32_ecdsa_peripheral = false
+  chip_enable_ethernet = false
 }
 
 config("ESP32_custom_include") {
@@ -111,7 +112,10 @@ static_library("ESP32_custom") {
     "${chip_root}/src/setup_payload",
   ]
 
-  public = [ "${chip_root}/src/credentials/DeviceAttestationCredsProvider.h" ]
+  public = [
+    "${chip_root}/src/credentials/CHIPCert.h",
+    "${chip_root}/src/credentials/DeviceAttestationCredsProvider.h",
+  ]
 
   public_deps = [
     "${chip_root}/src/crypto",
@@ -133,19 +137,31 @@ static_library("ESP32_custom") {
   if (chip_enable_chipoble) {
     sources += [
       "BLEManagerImpl.h",
+      "ChipDeviceScanner.h",
     ]
+  }
+
+  if (chip_enable_ble_controller) {
+    sources += [ "ChipDeviceScanner.h" ]
   }
 
   if (chip_bt_nimble_enabled) {
-    sources += [
-      "nimble/BLEManagerImpl.cpp",
-    ]
+    sources += [ "nimble/BLEManagerImpl.cpp" ]
+    if (chip_enable_ble_controller) {
+      sources += [
+        "nimble/ChipDeviceScanner.cpp",
+        "nimble/blecent.h",
+        "nimble/misc.c",
+        "nimble/peer.c",
+      ]
+    }
   }
 
   if (chip_bt_bluedroid_enabled) {
-    sources += [
-      "bluedroid/BLEManagerImpl.cpp",
-    ]
+    sources += [ "bluedroid/BLEManagerImpl.cpp" ]
+    if (chip_enable_ble_controller) {
+      sources += [ "bluedroid/ChipDeviceScanner.cpp" ]
+    }
   }
 
   if (chip_enable_wifi) {
@@ -166,6 +182,27 @@ static_library("ESP32_custom") {
     }
   }
 
+  if (chip_enable_ethernet) {
+    sources += [
+      "ConnectivityManagerImpl_Ethernet.cpp",
+      "NetworkCommissioningDriver_Ethernet.cpp",
+    ]
+  }
+
+  if (chip_enable_openthread) {
+    sources += [
+      "${chip_root}/src/platform/OpenThread/DnssdImpl.cpp",
+      "${chip_root}/src/platform/OpenThread/GenericNetworkCommissioningThreadDriver.cpp",
+      "${chip_root}/src/platform/OpenThread/GenericNetworkCommissioningThreadDriver.h",
+      "../OpenThread/OpenThreadUtils.cpp",
+      "OpenthreadLauncher.c",
+      "OpenthreadLauncher.h",
+      "ThreadStackManagerImpl.cpp",
+      "ThreadStackManagerImpl.h",
+    ]
+    configs -= [ "${chip_root}/build/config/compiler:warnings_default" ]
+  }
+
   if (chip_use_factory_data_provider) {
     sources += [
       "ESP32FactoryDataProvider.cpp",
@@ -179,4 +216,20 @@ static_library("ESP32_custom") {
       "ESP32DeviceInfoProvider.h",
     ]
   }
+
+  if (chip_use_secure_cert_dac_provider) {
+    sources += [
+      "ESP32SecureCertDACProvider.cpp",
+      "ESP32SecureCertDACProvider.h",
+    ]
+  }
+
+  if (chip_use_esp32_ecdsa_peripheral) {
+    sources += [
+      "ESP32CHIPCryptoPAL.cpp",
+      "ESP32CHIPCryptoPAL.h",
+    ]
+  }
+
+  cflags = [ "-Wconversion" ]
 }
