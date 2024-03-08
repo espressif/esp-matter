@@ -575,12 +575,11 @@ namespace feature {
 
 namespace numeric_measurement {
 typedef struct config {
-    nullable<uint16_t> measured_value;
-    nullable<uint16_t> min_measured_value;
-    nullable<uint16_t> max_measured_value;
-    uint16_t uncertainty;
+    nullable<float> measured_value;
+    nullable<float> min_measured_value;
+    nullable<float> max_measured_value;
     uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), uncertainty(0), measurement_unit(0) {}
+    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
 } config_t;
 
 uint32_t get_id();
@@ -615,7 +614,7 @@ esp_err_t add(cluster_t *cluster);
 
 namespace peak_measurement {
 typedef struct config {
-    nullable<uint16_t> peak_measured_value;
+    nullable<float> peak_measured_value;
     uint32_t peak_measured_value_window;
     config() : peak_measured_value(), peak_measured_value_window(1) {}
 } config_t;
@@ -626,9 +625,14 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* peak_measurement */
 
 namespace average_measurement {
+typedef struct config {
+    nullable<float> average_measured_value;
+    uint32_t average_measured_value_window;
+    config() : average_measured_value(), average_measured_value_window(1) {}
+} config_t;
 
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* average_measurement */
 
@@ -640,12 +644,11 @@ namespace feature {
 
 namespace numeric_measurement {
 typedef struct config {
-    nullable<uint16_t> measured_value;
-    nullable<uint16_t> min_measured_value;
-    nullable<uint16_t> max_measured_value;
-    uint16_t uncertainty;
+    nullable<float> measured_value;
+    nullable<float> min_measured_value;
+    nullable<float> max_measured_value;
     uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), uncertainty(0), measurement_unit(0) {}
+    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
 } config_t;
 
 uint32_t get_id();
@@ -680,7 +683,7 @@ esp_err_t add(cluster_t *cluster);
 
 namespace peak_measurement {
 typedef struct config {
-    nullable<uint16_t> peak_measured_value;
+    nullable<float> peak_measured_value;
     uint32_t peak_measured_value_window;
     config() : peak_measured_value(), peak_measured_value_window(1) {}
 } config_t;
@@ -691,9 +694,14 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* peak_measurement */
 
 namespace average_measurement {
+typedef struct config {
+    nullable<float> average_measured_value;
+    uint32_t average_measured_value_window;
+    config() : average_measured_value(), average_measured_value_window(1) {}
+} config_t;
 
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* average_measurement */
 
@@ -705,12 +713,11 @@ namespace feature {
 
 namespace numeric_measurement {
 typedef struct config {
-    nullable<uint16_t> measured_value;
-    nullable<uint16_t> min_measured_value;
-    nullable<uint16_t> max_measured_value;
-    uint16_t uncertainty;
+    nullable<float> measured_value;
+    nullable<float> min_measured_value;
+    nullable<float> max_measured_value;
     uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), uncertainty(0), measurement_unit(0) {}
+    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
 } config_t;
 
 uint32_t get_id();
@@ -745,7 +752,7 @@ esp_err_t add(cluster_t *cluster);
 
 namespace peak_measurement {
 typedef struct config {
-    nullable<uint16_t> peak_measured_value;
+    nullable<float> peak_measured_value;
     uint32_t peak_measured_value_window;
     config() : peak_measured_value(), peak_measured_value_window(1) {}
 } config_t;
@@ -756,9 +763,14 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* peak_measurement */
 
 namespace average_measurement {
+typedef struct config {
+    nullable<float> average_measured_value;
+    uint32_t average_measured_value_window;
+    config() : average_measured_value(), average_measured_value_window(1) {}
+} config_t;
 
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* average_measurement */
 
@@ -770,12 +782,11 @@ namespace feature {
 
 namespace numeric_measurement {
 typedef struct config {
-    nullable<uint16_t> measured_value;
-    nullable<uint16_t> min_measured_value;
-    nullable<uint16_t> max_measured_value;
-    uint16_t uncertainty;
+    nullable<float> measured_value;
+    nullable<float> min_measured_value;
+    nullable<float> max_measured_value;
     uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), uncertainty(0), measurement_unit(0) {}
+    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
 } config_t;
 
 uint32_t get_id();
@@ -810,7 +821,7 @@ esp_err_t add(cluster_t *cluster);
 
 namespace peak_measurement {
 typedef struct config {
-    nullable<uint16_t> peak_measured_value;
+    nullable<float> peak_measured_value;
     uint32_t peak_measured_value_window;
     config() : peak_measured_value(), peak_measured_value_window(1) {}
 } config_t;
@@ -821,9 +832,14 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* peak_measurement */
 
 namespace average_measurement {
+typedef struct config {
+    nullable<float> average_measured_value;
+    uint32_t average_measured_value_window;
+    config() : average_measured_value(), average_measured_value_window(1) {}
+} config_t;
 
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* average_measurement */
 
@@ -835,12 +851,11 @@ namespace feature {
 
 namespace numeric_measurement {
 typedef struct config {
-    nullable<uint16_t> measured_value;
-    nullable<uint16_t> min_measured_value;
-    nullable<uint16_t> max_measured_value;
-    uint16_t uncertainty;
+    nullable<float> measured_value;
+    nullable<float> min_measured_value;
+    nullable<float> max_measured_value;
     uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), uncertainty(0), measurement_unit(0) {}
+    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
 } config_t;
 
 uint32_t get_id();
@@ -875,7 +890,7 @@ esp_err_t add(cluster_t *cluster);
 
 namespace peak_measurement {
 typedef struct config {
-    nullable<uint16_t> peak_measured_value;
+    nullable<float> peak_measured_value;
     uint32_t peak_measured_value_window;
     config() : peak_measured_value(), peak_measured_value_window(1) {}
 } config_t;
@@ -886,9 +901,14 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* peak_measurement */
 
 namespace average_measurement {
+typedef struct config {
+    nullable<float> average_measured_value;
+    uint32_t average_measured_value_window;
+    config() : average_measured_value(), average_measured_value_window(1) {}
+} config_t;
 
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* average_measurement */
 
@@ -900,12 +920,11 @@ namespace feature {
 
 namespace numeric_measurement {
 typedef struct config {
-    nullable<uint16_t> measured_value;
-    nullable<uint16_t> min_measured_value;
-    nullable<uint16_t> max_measured_value;
-    uint16_t uncertainty;
+    nullable<float> measured_value;
+    nullable<float> min_measured_value;
+    nullable<float> max_measured_value;
     uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), uncertainty(0), measurement_unit(0) {}
+    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
 } config_t;
 
 uint32_t get_id();
@@ -940,7 +959,7 @@ esp_err_t add(cluster_t *cluster);
 
 namespace peak_measurement {
 typedef struct config {
-    nullable<uint16_t> peak_measured_value;
+    nullable<float> peak_measured_value;
     uint32_t peak_measured_value_window;
     config() : peak_measured_value(), peak_measured_value_window(1) {}
 } config_t;
@@ -951,9 +970,14 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* peak_measurement */
 
 namespace average_measurement {
+typedef struct config {
+    nullable<float> average_measured_value;
+    uint32_t average_measured_value_window;
+    config() : average_measured_value(), average_measured_value_window(1) {}
+} config_t;
 
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* average_measurement */
 
@@ -965,12 +989,11 @@ namespace feature {
 
 namespace numeric_measurement {
 typedef struct config {
-    nullable<uint16_t> measured_value;
-    nullable<uint16_t> min_measured_value;
-    nullable<uint16_t> max_measured_value;
-    uint16_t uncertainty;
+    nullable<float> measured_value;
+    nullable<float> min_measured_value;
+    nullable<float> max_measured_value;
     uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), uncertainty(0), measurement_unit(0) {}
+    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
 } config_t;
 
 uint32_t get_id();
@@ -1005,7 +1028,7 @@ esp_err_t add(cluster_t *cluster);
 
 namespace peak_measurement {
 typedef struct config {
-    nullable<uint16_t> peak_measured_value;
+    nullable<float> peak_measured_value;
     uint32_t peak_measured_value_window;
     config() : peak_measured_value(), peak_measured_value_window(1) {}
 } config_t;
@@ -1016,9 +1039,14 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* peak_measurement */
 
 namespace average_measurement {
+typedef struct config {
+    nullable<float> average_measured_value;
+    uint32_t average_measured_value_window;
+    config() : average_measured_value(), average_measured_value_window(1) {}
+} config_t;
 
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* average_measurement */
 
@@ -1030,12 +1058,11 @@ namespace feature {
 
 namespace numeric_measurement {
 typedef struct config {
-    nullable<uint16_t> measured_value;
-    nullable<uint16_t> min_measured_value;
-    nullable<uint16_t> max_measured_value;
-    uint16_t uncertainty;
+    nullable<float> measured_value;
+    nullable<float> min_measured_value;
+    nullable<float> max_measured_value;
     uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), uncertainty(0), measurement_unit(0) {}
+    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
 } config_t;
 
 uint32_t get_id();
@@ -1070,7 +1097,7 @@ esp_err_t add(cluster_t *cluster);
 
 namespace peak_measurement {
 typedef struct config {
-    nullable<uint16_t> peak_measured_value;
+    nullable<float> peak_measured_value;
     uint32_t peak_measured_value_window;
     config() : peak_measured_value(), peak_measured_value_window(1) {}
 } config_t;
@@ -1081,9 +1108,14 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* peak_measurement */
 
 namespace average_measurement {
+typedef struct config {
+    nullable<float> average_measured_value;
+    uint32_t average_measured_value_window;
+    config() : average_measured_value(), average_measured_value_window(1) {}
+} config_t;
 
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* average_measurement */
 
@@ -1095,12 +1127,11 @@ namespace feature {
 
 namespace numeric_measurement {
 typedef struct config {
-    nullable<uint16_t> measured_value;
-    nullable<uint16_t> min_measured_value;
-    nullable<uint16_t> max_measured_value;
-    uint16_t uncertainty;
+    nullable<float> measured_value;
+    nullable<float> min_measured_value;
+    nullable<float> max_measured_value;
     uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), uncertainty(0), measurement_unit(0) {}
+    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
 } config_t;
 
 uint32_t get_id();
@@ -1135,7 +1166,7 @@ esp_err_t add(cluster_t *cluster);
 
 namespace peak_measurement {
 typedef struct config {
-    nullable<uint16_t> peak_measured_value;
+    nullable<float> peak_measured_value;
     uint32_t peak_measured_value_window;
     config() : peak_measured_value(), peak_measured_value_window(1) {}
 } config_t;
@@ -1146,9 +1177,14 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* peak_measurement */
 
 namespace average_measurement {
+typedef struct config {
+    nullable<float> average_measured_value;
+    uint32_t average_measured_value_window;
+    config() : average_measured_value(), average_measured_value_window(1) {}
+} config_t;
 
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* average_measurement */
 
@@ -1160,12 +1196,11 @@ namespace feature {
 
 namespace numeric_measurement {
 typedef struct config {
-    nullable<uint16_t> measured_value;
-    nullable<uint16_t> min_measured_value;
-    nullable<uint16_t> max_measured_value;
-    uint16_t uncertainty;
+    nullable<float> measured_value;
+    nullable<float> min_measured_value;
+    nullable<float> max_measured_value;
     uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), uncertainty(0), measurement_unit(0) {}
+    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
 } config_t;
 
 uint32_t get_id();
@@ -1200,7 +1235,7 @@ esp_err_t add(cluster_t *cluster);
 
 namespace peak_measurement {
 typedef struct config {
-    nullable<uint16_t> peak_measured_value;
+    nullable<float> peak_measured_value;
     uint32_t peak_measured_value_window;
     config() : peak_measured_value(), peak_measured_value_window(1) {}
 } config_t;
@@ -1211,9 +1246,14 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* peak_measurement */
 
 namespace average_measurement {
+typedef struct config {
+    nullable<float> average_measured_value;
+    uint32_t average_measured_value_window;
+    config() : average_measured_value(), average_measured_value_window(1) {}
+} config_t;
 
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* average_measurement */
 
