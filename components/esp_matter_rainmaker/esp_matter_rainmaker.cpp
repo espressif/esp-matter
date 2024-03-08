@@ -377,18 +377,18 @@ static esp_err_t custom_cluster_create()
     /* Update the value of the attribute after esp_rmaker_node_init() is done */
     char rmaker_node_id[ESP_MATTER_RAINMAKER_MAX_NODE_ID_LEN] = {0};
     attribute::create(cluster, cluster::rainmaker::attribute::rmaker_node_id::Id, ATTRIBUTE_FLAG_NONE,
-                      esp_matter_char_str(rmaker_node_id, sizeof(rmaker_node_id)));
+                      esp_matter_char_str(rmaker_node_id, strlen(rmaker_node_id)), sizeof(rmaker_node_id));
 
     /* Create custom challenge_response attribute */
     /* Update the value of the attribute after sign_data command is called */
     char challenge_response[ESP_MATTER_RAINMAKER_MAX_CHALLENGE_RESPONSE_LEN] = {0};
     attribute::create(cluster, cluster::rainmaker::attribute::challenge_response::Id, ATTRIBUTE_FLAG_NONE,
-                      esp_matter_char_str(challenge_response, sizeof(challenge_response)));
+                      esp_matter_char_str(challenge_response, strlen(challenge_response)), sizeof(challenge_response));
 
     /* Create custom challenge attribute */
     char challenge[ESP_MATTER_RAINMAKER_MAX_CHALLENGE_LEN] = {0};
     attribute::create(cluster, cluster::rainmaker::attribute::challenge::Id, ATTRIBUTE_FLAG_WRITABLE,
-                      esp_matter_char_str(challenge, sizeof(challenge)));
+                      esp_matter_char_str(challenge, strlen(challenge)), sizeof(challenge));
 
     /* Create custom configuration command */
     command::create(cluster, cluster::rainmaker::command::configuration::Id,
@@ -415,7 +415,10 @@ public:
 
     CHIP_ERROR Write(const ConcreteDataAttributePath & aPath, AttributeValueDecoder & aDecoder) override
     {
-        if (aPath == ConcreteDataAttributePath(cluster::rainmaker::endpoint_id, cluster::rainmaker::Id, cluster::rainmaker::attribute::challenge::Id))
+        ConcreteDataAttributePath challengeAttrPath(cluster::rainmaker::endpoint_id, cluster::rainmaker::Id,
+                                                        cluster::rainmaker::attribute::challenge::Id);
+
+        if (challengeAttrPath.MatchesConcreteAttributePath(aPath))
         {
             chip::CharSpan challenge;
             CHIP_ERROR c_err = aDecoder.Decode(challenge);
@@ -427,10 +430,8 @@ public:
 
             return (ESP_OK == sign_and_update_challenge_response(challenge)) ? CHIP_NO_ERROR : CHIP_ERROR_INCORRECT_STATE;
         }
-        else
-        {
-            return CHIP_NO_ERROR;
-        }
+
+        return CHIP_NO_ERROR;
     }
 };
 
