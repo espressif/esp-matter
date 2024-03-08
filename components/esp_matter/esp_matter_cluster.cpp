@@ -985,22 +985,27 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
+        attribute::create_idle_mode_duration(cluster, CONFIG_ICD_ACTIVE_MODE_INTERVAL_MS);
+        attribute::create_active_mode_duration(cluster, CONFIG_ICD_IDLE_MODE_INTERVAL_SEC);
+        attribute::create_active_mode_threshold(cluster, CONFIG_ICD_ACTIVE_MODE_THRESHOLD_MS);
 
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_idle_mode_duration(cluster, config->idle_mode_interval, 500, 64800000);
-            attribute::create_active_mode_duration(cluster, config->active_mode_interval, 300);
-            attribute::create_active_mode_threshold(cluster, config->active_mode_threshold, 300);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
 
 #if defined(CHIP_CONFIG_ENABLE_ICD_CIP) && CHIP_CONFIG_ENABLE_ICD_CIP
-    if (features & feature::check_in_protocol_support::get_id()) {
-        feature::check_in_protocol_support::config_t cip_config;
-        feature::check_in_protocol_support::add(cluster, &cip_config);
+    if (features & feature::long_idle_time_support::get_id()) {
+        feature::long_idle_time_support::add(cluster);
+        if (features & feature::user_active_mode_trigger::get_id()) {
+            feature::user_active_mode_trigger::add(cluster, &config->user_active_mode_trigger);
+        }
+        if (features & feature::check_in_protocol_support::get_id()) {
+            feature::check_in_protocol_support::add(cluster);
+        }
     }
 #endif // defined(CHIP_CONFIG_ENABLE_ICD_CIP) && CHIP_CONFIG_ENABLE_ICD_CIP
 #endif // CONFIG_ENABLE_ICD_SERVER

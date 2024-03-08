@@ -269,20 +269,24 @@ uint32_t get_id()
     return (uint32_t)IcdManagement::Feature::kCheckInProtocolSupport;
 }
 
-esp_err_t add(cluster_t *cluster, config_t *config)
+esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
+    uint32_t lits_feature_map = feature::long_idle_time_support::get_id();
+    if ((get_feature_map_value(cluster) & lits_feature_map) != lits_feature_map) {
+        ESP_LOGE(TAG, "Long Idle Time Support feature should be added to this cluster");
+        return ESP_ERR_INVALID_STATE;
+    }
+
     update_feature_map(cluster, get_id());
 
     /* Attributes managed internally */
     attribute::create_registered_clients(cluster, NULL, 0, 0);
     attribute::create_icd_counter(cluster, 0);
-
-    /* Attribute not managed internally*/
-    attribute::create_clients_supported_per_fabric(cluster, config->clients_supported_per_fabric, 1);
+    attribute::create_clients_supported_per_fabric(cluster, 0);
 
     /* Commands */
     command::create_register_client(cluster);
@@ -293,6 +297,63 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 }
 
 } /* check_in_protocol_support */
+
+namespace user_active_mode_trigger {
+
+uint32_t get_id()
+{
+    return (uint32_t)IcdManagement::Feature::kUserActiveModeTrigger;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    if (!config) {
+        ESP_LOGE(TAG, "config cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    uint32_t lits_feature_map = feature::long_idle_time_support::get_id();
+    if ((get_feature_map_value(cluster) & lits_feature_map) != lits_feature_map) {
+        ESP_LOGE(TAG, "Long Idle Time Support feature should be added to this cluster");
+        return ESP_ERR_INVALID_STATE;
+    }
+
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_user_active_mode_trigger_hint(cluster, config->user_active_mode_trigger_hint);
+    attribute::create_user_active_mode_trigger_instruction(cluster, config->user_active_mode_trigger_instruction,
+                                                           strlen(config->user_active_mode_trigger_instruction));
+
+   return ESP_OK;
+}
+
+} /* user_active_mode_trigger */
+
+namespace long_idle_time_support {
+
+uint32_t get_id()
+{
+    return (uint32_t)IcdManagement::Feature::kLongIdleTimeSupport;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_operating_mode(cluster, 0);
+    return ESP_OK;
+}
+
+} /* long_idle_time_support */
 } /* feature */
 } /* icd_management */
 
