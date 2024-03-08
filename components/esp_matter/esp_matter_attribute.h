@@ -14,7 +14,6 @@
 
 #pragma once
 
-#include <esp_matter.h>
 #include <esp_matter_core.h>
 
 namespace esp_matter {
@@ -768,6 +767,9 @@ attribute_t *state_value(cluster_t *cluster, bool value);
 } /* boolean_state */
 
 namespace localization_configuration {
+
+constexpr uint8_t k_max_active_locale_length = 35;
+
 namespace attribute {
 attribute_t *create_active_locale(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_supported_locales(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
@@ -861,6 +863,7 @@ constexpr uint8_t k_max_description_length = 60;
 constexpr uint8_t k_max_fault_count = 8;
 constexpr uint8_t k_max_designation_count = 20;
 constexpr uint8_t k_max_charge_faults_count = 16;
+constexpr uint8_t k_max_bat_replacement_description_length = 60;
 
 namespace attribute {
 attribute_t *create_status(cluster_t *cluster, uint8_t value);

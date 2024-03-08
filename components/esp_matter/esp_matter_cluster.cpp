@@ -246,7 +246,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_node_label(cluster, config->node_label, sizeof(config->node_label));
+            attribute::create_node_label(cluster, config->node_label, strlen(config->node_label));
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -937,7 +937,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
             attribute::create_status(cluster, config->status);
             attribute::create_order(cluster, config->order, 0x00, 0xFF);
-            attribute::create_description(cluster, config->description, sizeof(config->description));
+            attribute::create_description(cluster, config->description, strlen(config->description));
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -2704,7 +2704,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         if (config) {
             /* Attributes not managed internally */
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_active_locale(cluster, config->active_locale, sizeof(config->active_locale));
+            attribute::create_active_locale(cluster, config->active_locale, strlen(config->active_locale));
 
             /* Attributes managed internally */
             attribute::create_supported_locales(cluster, NULL, 0, 0);
@@ -2968,7 +2968,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         /** Attributes not managed internally **/
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_mode_select_description(cluster, config->mode_select_description, sizeof(config->mode_select_description));
+            attribute::create_mode_select_description(cluster, config->mode_select_description, strlen(config->mode_select_description));
             attribute::create_standard_namespace(cluster, config->standard_namespace);
             attribute::create_current_mode(cluster, config->current_mode);
         } else {

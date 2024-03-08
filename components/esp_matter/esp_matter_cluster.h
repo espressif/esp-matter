@@ -15,6 +15,7 @@
 #pragma once
 
 #include <esp_matter_core.h>
+#include <esp_matter_attribute.h>
 #include <esp_matter_feature.h>
 #include <stdint.h>
 
@@ -70,7 +71,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace basic_information {
 typedef struct config {
     uint16_t cluster_revision;
-    char node_label[32];
+    char node_label[k_max_node_label_length + 1];
     config() : cluster_revision(3), node_label{0} {}
 } config_t;
 
@@ -231,7 +232,7 @@ typedef struct config {
     uint16_t cluster_revision;
     uint8_t status;
     uint8_t order;
-    char description[61];
+    char description[k_max_description_length + 1];
     feature::wired::config_t wired;
     feature::battery::config_t battery;
     feature::rechargeable::config_t rechargeable;
@@ -627,7 +628,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace localization_configuration {
 typedef struct config {
     uint16_t cluster_revision;
-    char active_locale[35];
+    char active_locale[k_max_active_locale_length + 1];
     config() : cluster_revision(4), active_locale{0} {}
 } config_t;
 
@@ -708,7 +709,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace mode_select {
 typedef struct config {
     uint16_t cluster_revision;
-    char mode_select_description[64];
+    char mode_select_description[k_max_mode_select_description_length + 1];
     const nullable<uint16_t> standard_namespace;
     uint8_t current_mode;
     feature::on_off::config_t on_off;
