@@ -416,71 +416,101 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace carbon_monoxide_concentration_measurement {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(3) {}
+    uint8_t measurement_medium;
+    config() : cluster_revision(3), measurement_medium(0) {}
 } config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* carbon_monoxide_concentration_measurement */
 
 namespace carbon_dioxide_concentration_measurement {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(3) {}
+    uint8_t measurement_medium;
+    config() : cluster_revision(3), measurement_medium(0) {}
 } config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* carbon_dioxide_concentration_measurement */
 
 namespace nitrogen_dioxide_concentration_measurement {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(3) {}
+    uint8_t measurement_medium;
+    config() : cluster_revision(3), measurement_medium(0) {}
 } config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* nitrogen_dioxide_concentration_measurement */
 
 namespace ozone_concentration_measurement {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(3) {}
+    uint8_t measurement_medium;
+    config() : cluster_revision(3), measurement_medium(0) {}
 } config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* ozone_concentration_measurement */
 
 namespace formaldehyde_concentration_measurement {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(3) {}
+    uint8_t measurement_medium;
+    config() : cluster_revision(3), measurement_medium(0) {}
 } config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* formaldehyde_concentration_measurement */
 
 namespace pm1_concentration_measurement {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(3) {}
+    uint8_t measurement_medium;
+    config() : cluster_revision(3), measurement_medium(0) {}
 } config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* pm1_concentration_measurement */
 
 namespace pm25_concentration_measurement {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(3) {}
+    uint8_t measurement_medium;
+    config() : cluster_revision(3), measurement_medium(0) {}
 } config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* pm25_concentration_measurement */
 
 namespace pm10_concentration_measurement {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(1) {}
+    uint8_t measurement_medium;
+    config() : cluster_revision(3), measurement_medium(0) {}
 } config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* pm10_concentration_measurement */
 
 namespace radon_concentration_measurement {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(3) {}
+    uint8_t measurement_medium;
+    config() : cluster_revision(3), measurement_medium(0) {}
 } config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* radon_concentration_measurement */
 
 namespace total_volatile_organic_compounds_concentration_measurement {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(3) {}
+    uint8_t measurement_medium;
+    config() : cluster_revision(3), measurement_medium(0) {}
 } config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* total_volatile_organic_compounds_concentration_measurement */
 
 namespace operational_state {

@@ -718,13 +718,13 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
         command::create_go_to_lift_percentage(cluster);
 
-		// We should update config_status attribute as position_aware_lift feature is added
-		uint8_t set_third_bit = 1 << 3;
-		attribute_t *attribute = esp_matter::attribute::get(cluster, WindowCovering::Attributes::ConfigStatus::Id);
-		esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-		esp_matter::attribute::get_val(attribute, &val);
-		val.val.u8 = val.val.u8 | set_third_bit;
-		esp_matter::attribute::set_val(attribute, &val);
+        // We should update config_status attribute as position_aware_lift feature is added
+        uint8_t set_third_bit = 1 << 3;
+        attribute_t *attribute = esp_matter::attribute::get(cluster, WindowCovering::Attributes::ConfigStatus::Id);
+        esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+        esp_matter::attribute::get_val(attribute, &val);
+        val.val.u8 = val.val.u8 | set_third_bit;
+        esp_matter::attribute::set_val(attribute, &val);
     } else {
         ESP_LOGE(TAG, "Cluster shall support Lift feature");
         return ESP_ERR_NOT_SUPPORTED;
@@ -781,7 +781,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     }
 
     if((get_feature_map_value(cluster) & abs_and_lift_feature_map) == abs_and_lift_feature_map) {
-	    command::create_go_to_lift_value(cluster);
+        command::create_go_to_lift_value(cluster);
     } else {
         ESP_LOGW(TAG, "Lift commands were not created because cluster does not support Lift feature");
     }
@@ -822,13 +822,13 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
         command::create_go_to_tilt_percentage(cluster);
 
-		// We should update config_status attribute as position_aware_tilt feature is added
-		uint8_t set_fourth_bit = 1 << 4;
-		attribute_t *attribute = esp_matter::attribute::get(cluster, WindowCovering::Attributes::ConfigStatus::Id);
-		esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-		esp_matter::attribute::get_val(attribute, &val);
-		val.val.u8 = val.val.u8 | set_fourth_bit;
-		esp_matter::attribute::set_val(attribute, &val);
+        // We should update config_status attribute as position_aware_tilt feature is added
+        uint8_t set_fourth_bit = 1 << 4;
+        attribute_t *attribute = esp_matter::attribute::get(cluster, WindowCovering::Attributes::ConfigStatus::Id);
+        esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+        esp_matter::attribute::get_val(attribute, &val);
+        val.val.u8 = val.val.u8 | set_fourth_bit;
+        esp_matter::attribute::set_val(attribute, &val);
     } else {
         ESP_LOGE(TAG, "Cluster shall support Tilt feature");
         return ESP_ERR_NOT_SUPPORTED;
@@ -918,8 +918,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -942,8 +942,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1059,15 +1059,14 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
     attribute::create_min_measured_value(cluster, config->min_measured_value);
     attribute::create_max_measured_value(cluster, config->max_measured_value);
-    attribute::create_uncertainty(cluster, config->uncertainty);
     attribute::create_measurement_unit(cluster, config->measurement_unit);
 
     return ESP_OK;
@@ -1085,8 +1084,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1107,8 +1106,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1128,8 +1127,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1148,8 +1147,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1168,16 +1167,16 @@ uint32_t get_id()
     return (uint32_t)CarbonMonoxideConcentrationMeasurement::Feature::kAverageMeasurement;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
-    attribute::create_average_measured_value(cluster, 0);
-    attribute::create_average_measured_value_window(cluster, 1);
+    attribute::create_average_measured_value(cluster, config->average_measured_value);
+    attribute::create_average_measured_value_window(cluster, config->average_measured_value_window);
 
     return ESP_OK;
 }
@@ -1200,15 +1199,14 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
     attribute::create_min_measured_value(cluster, config->min_measured_value);
     attribute::create_max_measured_value(cluster, config->max_measured_value);
-    attribute::create_uncertainty(cluster, config->uncertainty);
     attribute::create_measurement_unit(cluster, config->measurement_unit);
 
     return ESP_OK;
@@ -1226,8 +1224,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1248,8 +1246,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1269,8 +1267,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1289,8 +1287,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1309,16 +1307,16 @@ uint32_t get_id()
     return (uint32_t)CarbonDioxideConcentrationMeasurement::Feature::kAverageMeasurement;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
-    attribute::create_average_measured_value(cluster, 0);
-    attribute::create_average_measured_value_window(cluster, 1);
+    attribute::create_average_measured_value(cluster, config->average_measured_value);
+    attribute::create_average_measured_value_window(cluster, config->average_measured_value_window);
 
     return ESP_OK;
 }
@@ -1341,15 +1339,14 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
     attribute::create_min_measured_value(cluster, config->min_measured_value);
     attribute::create_max_measured_value(cluster, config->max_measured_value);
-    attribute::create_uncertainty(cluster, config->uncertainty);
     attribute::create_measurement_unit(cluster, config->measurement_unit);
 
     return ESP_OK;
@@ -1367,8 +1364,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1389,8 +1386,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1410,8 +1407,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1430,8 +1427,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1450,16 +1447,16 @@ uint32_t get_id()
     return (uint32_t)NitrogenDioxideConcentrationMeasurement::Feature::kAverageMeasurement;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
-    attribute::create_average_measured_value(cluster, 0);
-    attribute::create_average_measured_value_window(cluster, 1);
+    attribute::create_average_measured_value(cluster, config->average_measured_value);
+    attribute::create_average_measured_value_window(cluster, config->average_measured_value_window);
 
     return ESP_OK;
 }
@@ -1482,15 +1479,14 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
     attribute::create_min_measured_value(cluster, config->min_measured_value);
     attribute::create_max_measured_value(cluster, config->max_measured_value);
-    attribute::create_uncertainty(cluster, config->uncertainty);
     attribute::create_measurement_unit(cluster, config->measurement_unit);
 
     return ESP_OK;
@@ -1508,8 +1504,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1530,8 +1526,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1551,8 +1547,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1571,8 +1567,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1591,16 +1587,16 @@ uint32_t get_id()
     return (uint32_t)OzoneConcentrationMeasurement::Feature::kAverageMeasurement;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
-    attribute::create_average_measured_value(cluster, 0);
-    attribute::create_average_measured_value_window(cluster, 1);
+    attribute::create_average_measured_value(cluster, config->average_measured_value);
+    attribute::create_average_measured_value_window(cluster, config->average_measured_value_window);
 
     return ESP_OK;
 }
@@ -1623,15 +1619,14 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
     attribute::create_min_measured_value(cluster, config->min_measured_value);
     attribute::create_max_measured_value(cluster, config->max_measured_value);
-    attribute::create_uncertainty(cluster, config->uncertainty);
     attribute::create_measurement_unit(cluster, config->measurement_unit);
 
     return ESP_OK;
@@ -1649,8 +1644,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1671,8 +1666,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1692,8 +1687,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1712,8 +1707,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1732,16 +1727,16 @@ uint32_t get_id()
     return (uint32_t)FormaldehydeConcentrationMeasurement::Feature::kAverageMeasurement;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
-    attribute::create_average_measured_value(cluster, 0);
-    attribute::create_average_measured_value_window(cluster, 1);
+    attribute::create_average_measured_value(cluster, config->average_measured_value);
+    attribute::create_average_measured_value_window(cluster, config->average_measured_value_window);
 
     return ESP_OK;
 }
@@ -1764,15 +1759,14 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
     attribute::create_min_measured_value(cluster, config->min_measured_value);
     attribute::create_max_measured_value(cluster, config->max_measured_value);
-    attribute::create_uncertainty(cluster, config->uncertainty);
     attribute::create_measurement_unit(cluster, config->measurement_unit);
 
     return ESP_OK;
@@ -1790,8 +1784,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1812,8 +1806,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1833,8 +1827,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1853,8 +1847,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1873,16 +1867,16 @@ uint32_t get_id()
     return (uint32_t)Pm1ConcentrationMeasurement::Feature::kAverageMeasurement;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
-    attribute::create_average_measured_value(cluster, 0);
-    attribute::create_average_measured_value_window(cluster, 1);
+    attribute::create_average_measured_value(cluster, config->average_measured_value);
+    attribute::create_average_measured_value_window(cluster, config->average_measured_value_window);
 
     return ESP_OK;
 }
@@ -1905,15 +1899,14 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
     attribute::create_min_measured_value(cluster, config->min_measured_value);
     attribute::create_max_measured_value(cluster, config->max_measured_value);
-    attribute::create_uncertainty(cluster, config->uncertainty);
     attribute::create_measurement_unit(cluster, config->measurement_unit);
 
     return ESP_OK;
@@ -1931,8 +1924,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1953,8 +1946,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1974,8 +1967,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -1994,8 +1987,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2014,16 +2007,16 @@ uint32_t get_id()
     return (uint32_t)Pm25ConcentrationMeasurement::Feature::kAverageMeasurement;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
-    attribute::create_average_measured_value(cluster, 0);
-    attribute::create_average_measured_value_window(cluster, 1);
+    attribute::create_average_measured_value(cluster, config->average_measured_value);
+    attribute::create_average_measured_value_window(cluster, config->average_measured_value_window);
 
     return ESP_OK;
 }
@@ -2046,15 +2039,14 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
     attribute::create_min_measured_value(cluster, config->min_measured_value);
     attribute::create_max_measured_value(cluster, config->max_measured_value);
-    attribute::create_uncertainty(cluster, config->uncertainty);
     attribute::create_measurement_unit(cluster, config->measurement_unit);
 
     return ESP_OK;
@@ -2072,8 +2064,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2094,8 +2086,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2115,8 +2107,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2135,8 +2127,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2155,16 +2147,16 @@ uint32_t get_id()
     return (uint32_t)Pm10ConcentrationMeasurement::Feature::kAverageMeasurement;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
-    attribute::create_average_measured_value(cluster, 0);
-    attribute::create_average_measured_value_window(cluster, 1);
+    attribute::create_average_measured_value(cluster, config->average_measured_value);
+    attribute::create_average_measured_value_window(cluster, config->average_measured_value_window);
 
     return ESP_OK;
 }
@@ -2187,15 +2179,14 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
     attribute::create_min_measured_value(cluster, config->min_measured_value);
     attribute::create_max_measured_value(cluster, config->max_measured_value);
-    attribute::create_uncertainty(cluster, config->uncertainty);
     attribute::create_measurement_unit(cluster, config->measurement_unit);
 
     return ESP_OK;
@@ -2213,8 +2204,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2235,8 +2226,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2256,8 +2247,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2276,8 +2267,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2296,16 +2287,16 @@ uint32_t get_id()
     return (uint32_t)RadonConcentrationMeasurement::Feature::kAverageMeasurement;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
-    attribute::create_average_measured_value(cluster, 0);
-    attribute::create_average_measured_value_window(cluster, 1);
+    attribute::create_average_measured_value(cluster, config->average_measured_value);
+    attribute::create_average_measured_value_window(cluster, config->average_measured_value_window);
 
     return ESP_OK;
 }
@@ -2328,15 +2319,14 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
     attribute::create_min_measured_value(cluster, config->min_measured_value);
     attribute::create_max_measured_value(cluster, config->max_measured_value);
-    attribute::create_uncertainty(cluster, config->uncertainty);
     attribute::create_measurement_unit(cluster, config->measurement_unit);
 
     return ESP_OK;
@@ -2354,8 +2344,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2376,8 +2366,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2397,8 +2387,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2417,8 +2407,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -2437,16 +2427,16 @@ uint32_t get_id()
     return (uint32_t)TotalVolatileOrganicCompoundsConcentrationMeasurement::Feature::kAverageMeasurement;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
-    attribute::create_average_measured_value(cluster, 0);
-    attribute::create_average_measured_value_window(cluster, 1);
+    attribute::create_average_measured_value(cluster, config->average_measured_value);
+    attribute::create_average_measured_value_window(cluster, config->average_measured_value_window);
 
     return ESP_OK;
 }
@@ -2663,8 +2653,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
 
     update_feature_map(cluster, get_id());
@@ -2691,8 +2681,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
 
     update_feature_map(cluster, get_id());
@@ -3345,8 +3335,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
-	ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -3365,7 +3355,7 @@ esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -3384,7 +3374,7 @@ esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 

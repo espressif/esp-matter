@@ -104,7 +104,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
 
-	/* Attributes not managed internally */
+    /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
         } else {
@@ -143,7 +143,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_action_list(cluster, NULL, 0, 0);
         attribute::create_endpoint_lists(cluster, NULL, 0, 0);
 
-	/* Attributes not managed internally */
+    /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
         } else {
@@ -804,26 +804,26 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, EthernetNetworkDiagnostics::Id, flags);
     if (!cluster) {
-	ESP_LOGE(TAG, "Could not create cluster");
-	return NULL;
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
     }
     if (flags & CLUSTER_FLAG_SERVER) {
-	static const auto plugin_server_init_cb = CALL_ONCE(MatterEthernetNetworkDiagnosticsPluginServerInitCallback);
-	set_plugin_server_init_callback(cluster, plugin_server_init_cb);
-	add_function_list(cluster, function_list, function_flags);
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterEthernetNetworkDiagnosticsPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
 
-	/* Attributes managed internally */
-	global::attribute::create_feature_map(cluster, 0);
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
 
         /* Attributes not managed internally */
-	if (config) {
-	    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-	} else {
-	    ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
-	}
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
     }
 
     /* Commands */
@@ -1217,7 +1217,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             attribute::create_last_configured_by(cluster, 0);
             attribute::create_scene_table_size(cluster, config->scene_table_size);
             attribute::create_fabric_scene_info(cluster, NULL, 0, 0);
-	} else {
+        } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
@@ -1405,7 +1405,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 
         /* Attributes managed internally */
         attribute::create_remaining_time(cluster, 0);
-	for (uint8_t idx = 1; idx <= config->number_of_primaries.value_or(0); ++idx) {
+        for (uint8_t idx = 1; idx <= config->number_of_primaries.value_or(0); ++idx) {
             attribute::create_primary_n_x(cluster, 0, idx);
             attribute::create_primary_n_y(cluster, 0, idx);
             attribute::create_primary_n_intensity(cluster, nullable<uint8_t>(), idx);
@@ -1556,30 +1556,30 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     cluster_t *cluster = cluster::create(endpoint, ThermostatUserInterfaceConfiguration::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
-	return NULL;
+        return NULL;
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
-	create_default_binding_cluster(endpoint);
+        create_default_binding_cluster(endpoint);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
 
-	/* Attributes managed internally */
-	   global::attribute::create_feature_map(cluster, 0);
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	   global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
 
         /* Attributes not managed internally */
-	if (config) {
-	    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-	    attribute::create_temperature_display_mode(cluster, config->temperature_display_mode);
-	    attribute::create_keypad_lockout(cluster, config->keypad_lockout);
-	} else {
-	        ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
-	}
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+            attribute::create_temperature_display_mode(cluster, config->temperature_display_mode);
+            attribute::create_keypad_lockout(cluster, config->keypad_lockout);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
     }
 
     return cluster;
@@ -1609,9 +1609,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
-	attribute::create_air_quality(cluster, 0);
+        attribute::create_air_quality(cluster, 0);
 
         /* Attributes not managed internally */
         if (config) {
@@ -1650,7 +1650,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
         global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
-	attribute::create_change_indication(cluster, 0);
+        attribute::create_change_indication(cluster, 0);
 
         /* Attributes not managed internally */
         if (config) {
@@ -1687,9 +1687,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
-	attribute::create_change_indication(cluster, 0);
+        attribute::create_change_indication(cluster, 0);
 
         /* Attributes not managed internally */
         if (config) {
@@ -1726,9 +1726,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
-	attribute::create_measurement_medium(cluster, 0);
+        attribute::create_measurement_medium(cluster, config->measurement_medium);
 
         /* Attributes not managed internally */
         if (config) {
@@ -1766,8 +1766,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
+        attribute::create_measurement_medium(cluster, config->measurement_medium);
 
         /* Attributes not managed internally */
         if (config) {
@@ -1805,8 +1806,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
+        attribute::create_measurement_medium(cluster, config->measurement_medium);
 
         /* Attributes not managed internally */
         if (config) {
@@ -1844,8 +1846,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
+        attribute::create_measurement_medium(cluster, config->measurement_medium);
 
         /* Attributes not managed internally */
         if (config) {
@@ -1883,8 +1886,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
+        attribute::create_measurement_medium(cluster, config->measurement_medium);
 
         /* Attributes not managed internally */
         if (config) {
@@ -1922,8 +1926,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
+        attribute::create_measurement_medium(cluster, config->measurement_medium);
 
         /* Attributes not managed internally */
         if (config) {
@@ -1961,8 +1966,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
+        attribute::create_measurement_medium(cluster, config->measurement_medium);
 
         /* Attributes not managed internally */
         if (config) {
@@ -2000,8 +2006,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
+        attribute::create_measurement_medium(cluster, config->measurement_medium);
 
         /* Attributes not managed internally */
         if (config) {
@@ -2039,8 +2046,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
+        attribute::create_measurement_medium(cluster, config->measurement_medium);
 
         /* Attributes not managed internally */
         if (config) {
@@ -2075,16 +2083,19 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
-	/* Attributes managed internally */
-	global::attribute::create_feature_map(cluster, 0);
-	global::attribute::create_event_list(cluster, NULL, 0,0);
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+#if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+#endif
+        attribute::create_measurement_medium(cluster, config->measurement_medium);
 
-	/* Attributes not managed internally */
-	if (config) {
-	    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-	} else {
-	    ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
-	}
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
     }
 
     return cluster;
@@ -2115,9 +2126,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
-	attribute::create_phase_list(cluster, NULL, 0, 0);
+        attribute::create_phase_list(cluster, NULL, 0, 0);
         attribute::create_current_phase(cluster, 0);
         attribute::create_operational_state_list(cluster, NULL, 0, 0);
         attribute::create_operational_state(cluster, 0);
@@ -2160,10 +2171,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
 
-	/* Attributes not managed internally */
+        /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
             attribute::create_current_mode(cluster, config->current_mode);
@@ -2202,7 +2213,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
         /* Attributes not managed internally */
         if (config) {
@@ -2239,7 +2250,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
 
         /* Attributes not managed internally */
@@ -2300,35 +2311,35 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, SmokeCoAlarm::Id, flags);
     if (!cluster) {
-	ESP_LOGE(TAG, "Could not create cluster");
-	return NULL;
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
-	add_function_list(cluster, function_list, function_flags);
+        add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-	create_default_binding_cluster(endpoint);
+        create_default_binding_cluster(endpoint);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
-	/* Attributes managed internally */
-	global::attribute::create_feature_map(cluster, 0);
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
-	attribute::create_expressed_state(cluster, 0);
-	attribute::create_battery_alert(cluster, 0);
-	attribute::create_test_in_progress(cluster, false);
-	attribute::create_hardware_fault_alert(cluster, false);
-	attribute::create_end_of_service_alert(cluster, 0);
+        attribute::create_expressed_state(cluster, 0);
+        attribute::create_battery_alert(cluster, 0);
+        attribute::create_test_in_progress(cluster, false);
+        attribute::create_hardware_fault_alert(cluster, false);
+        attribute::create_end_of_service_alert(cluster, 0);
 
-	/* Attributes not managed internally */
-	if (config) {
-	    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-	} else {
-	    ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
-	}
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
     }
 
     event::create_low_battery(cluster);
@@ -3175,9 +3186,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
-	attribute::create_supported_modes(cluster, NULL, 0, 0);
+        attribute::create_supported_modes(cluster, NULL, 0, 0);
 
         /* Attributes not managed internally */
         if (config) {
@@ -3254,7 +3265,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
 
         /* Attributes not managed internally */
@@ -3278,7 +3289,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     cluster_t *cluster = cluster::create(endpoint, KeypadInput::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
-	return NULL;
+        return NULL;
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -3291,7 +3302,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
-	global::attribute::create_event_list(cluster, NULL, 0, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
 
         /* Attributes not managed internally */
