@@ -1869,9 +1869,13 @@ namespace attribute {
 
 attribute_t *create_active_locale(cluster_t *cluster, char *value, uint16_t length)
 {
+    if (length > k_max_active_locale_length) {
+        ESP_LOGE(TAG, "Could not create attribute, string length out of bound");
+        return NULL;
+    }
     return esp_matter::attribute::create(cluster, LocalizationConfiguration::Attributes::ActiveLocale::Id,
                                          ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
-                                         esp_matter_char_str(value, length));
+                                         esp_matter_char_str(value, length), k_max_active_locale_length);
 }
 
 attribute_t *create_supported_locales(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
