@@ -3307,9 +3307,13 @@ namespace attribute {
 
 attribute_t *create_active_locale(cluster_t *cluster, char *value, uint16_t length)
 {
+    if (length > k_max_active_locale_length) {
+        ESP_LOGE(TAG, "Could not create attribute, string length out of bound");
+        return NULL;
+    }
     return esp_matter::attribute::create(cluster, LocalizationConfiguration::Attributes::ActiveLocale::Id,
                                          ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
-                                         esp_matter_char_str(value, length));
+                                         esp_matter_char_str(value, length), k_max_active_locale_length);
 }
 
 attribute_t *create_supported_locales(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -3831,7 +3835,7 @@ attribute_t *create_active_bat_faults(cluster_t *cluster, uint8_t * value, uint1
 
 attribute_t *create_bat_replacement_description(cluster_t *cluster, const char * value, uint16_t length)
 {
-    if (length > k_max_description_length) {
+    if (length > k_max_bat_replacement_description_length) {
         ESP_LOGE(TAG, "Could not create attribute, string size out of bound");
         return NULL;
     }
