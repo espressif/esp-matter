@@ -46,8 +46,8 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/app/AppBuildConfig.h
 #endif
 ")
 
-# Generating app/icd/ICDBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/app/icd/ICDBuildConfig.h
+# Generating app/icd/server/ICDServerBuildConfig.h
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/app/icd/server/ICDServerBuildConfig.h
 "#pragma once\n
 #ifdef CONFIG_ENABLE_ICD_SERVER
 #define CHIP_CONFIG_ENABLE_ICD_SERVER 1
@@ -55,6 +55,9 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/app/icd/ICDBuildConfig.h
 #define CHIP_CONFIG_ENABLE_ICD_SERVER 0
 #endif
 
+#define CHIP_CONFIG_ENABLE_ICD_LIT 0
+#define CHIP_CONFIG_ENABLE_ICD_CIP 0
+#define CHIP_CONFIG_ENABLE_ICD_UAT 0
 #define ICD_REPORT_ON_ENTER_ACTIVE_MODE 0
 #define ICD_MAX_NOTIFICATION_SUBSCRIBERS 1
 #define ICD_ENFORCE_SIT_SLOW_POLL_LIMIT 0

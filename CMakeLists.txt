@@ -1,6 +1,4 @@
-if(NOT MATTER_SDK_PATH)
-    get_filename_component(MATTER_SDK_PATH ${CMAKE_CURRENT_SOURCE_DIR}/connectedhomeip/connectedhomeip/ REALPATH)
-endif()
+get_filename_component(MATTER_SDK_PATH ${CMAKE_CURRENT_SOURCE_DIR}/connectedhomeip/connectedhomeip/ REALPATH)
 
 get_filename_component(CHIP_ROOT ${CMAKE_CURRENT_LIST_DIR}/connectedhomeip/connectedhomeip/ REALPATH)
 include(${CMAKE_CURRENT_LIST_DIR}/connectedhomeip/connectedhomeip/config/esp32/components/chip/ota-image.cmake)
@@ -29,7 +27,6 @@ endfunction()
 set(SRC_DIRS_LIST "${MATTER_SDK_PATH}/src/access"
                   "${MATTER_SDK_PATH}/src/access/examples"
                   "${MATTER_SDK_PATH}/src/app"
-                  "${MATTER_SDK_PATH}/src/app/icd/"
                   "${MATTER_SDK_PATH}/src/app/MessageDef"
                   "${MATTER_SDK_PATH}/src/app/reporting"
                   "${MATTER_SDK_PATH}/src/app/server"
@@ -105,6 +102,7 @@ set(EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/controller/ExamplePersistentStorag
                       "${MATTER_SDK_PATH}/src/lib/dnssd/minimal_mdns/AddressPolicy_LibNlImpl.cpp"
                       "${MATTER_SDK_PATH}/src/lib/dnssd/minimal_mdns/Logging.cpp"
                       "${MATTER_SDK_PATH}/src/lib/support/UnitTestRegistration.cpp"
+                      "${MATTER_SDK_PATH}/src/lib/support/UnitTest.cpp"
                       "${MATTER_SDK_PATH}/src/lib/support/UnitTestUtils.cpp"
                       "${MATTER_SDK_PATH}/src/lib/support/JniReferences.cpp"
                       "${MATTER_SDK_PATH}/src/lib/support/CHIPMem-Simple.cpp"
@@ -370,9 +368,8 @@ if (NOT CONFIG_ENABLE_CHIPOBLE)
                                   "${MATTER_SDK_PATH}/src/ble/BtpEngine.cpp")
 endif()
 
-if(NOT CONFIG_ENABLE_ICD_SERVER)
-    list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/icd/ICDManager.cpp"
-                                  "${MATTER_SDK_PATH}/src/app/icd/ICDNotifier.cpp")
+if(CONFIG_ENABLE_ICD_SERVER)
+    list(APPEND SRC_DIRS_LIST "${MATTER_SDK_PATH}/src/app/icd/server/")
 endif()
 
 idf_component_register(SRC_DIRS          ${SRC_DIRS_LIST}
@@ -441,10 +438,9 @@ target_link_libraries(${COMPONENT_LIB} INTERFACE -Wl,--start-group
                                                 ${chip_libraries}
                                                 -Wl,--end-group)
 
-# Build OTA image need a python package, leading a file change and distorying the hash of managed_components.
-# In next idf_component_manager release, this may be resolved by adding include/exclude for calculating component_hash.
+# TODO: Build OTA image need a python package, leading a file change and distorying the hash of managed_components.
 # Build Matter OTA image
-if (CONFIG_CHIP_OTA_IMAGE_BUILD)
+if (false AND CONFIG_CHIP_OTA_IMAGE_BUILD)
     chip_ota_image(chip-ota-image
         INPUT_FILES ${BUILD_DIR}/${CMAKE_PROJECT_NAME}.bin
         OUTPUT_FILE ${BUILD_DIR}/${CMAKE_PROJECT_NAME}-ota.bin
