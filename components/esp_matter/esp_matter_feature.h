@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include <esp_matter_core.h>
 #include <stdint.h>
+#include <esp_matter_attribute.h>
 
 #define ESP_MATTER_NONE_FEATURE_ID 0x0000
 
@@ -75,7 +75,7 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 // Replaceable feature one must add Battery feature first.
 namespace replaceable {
 typedef struct config {
-    char bat_replacement_description[61];
+    char bat_replacement_description[k_max_bat_replacement_description_length + 1];
     uint8_t bat_quantity;
     config(): bat_replacement_description{0}, bat_quantity(0) {}
 } config_t;

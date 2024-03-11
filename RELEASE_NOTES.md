@@ -1,3 +1,9 @@
+# 14-February-2024
+
+- An optional argument, `max_val_size`, has been introduced to the `esp_matter::attribute::create()` API.
+  This argument is utilized specifically when creating attributes of the char string and long char string data types
+  to specify the maximum supported value size of an attribute.
+
 # 2-November-2023
 
 All of the non-volatile attribute values now are stored in the namespace `esp_matter_kvs` with the attribute key base64-encoded of bytes (`endpoint-id`+`cluster-id`+`attribute-id`). For the devices that store the non-volatile attribute values in the previous namespace with previous attribute-key, the values will be moved and the previous keys will be erased.
