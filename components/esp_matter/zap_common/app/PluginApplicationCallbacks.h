@@ -114,6 +114,7 @@ void MatterUserLabelPluginServerInitCallback();
 void MatterWakeOnLanPluginServerInitCallback();
 void MatterWiFiNetworkDiagnosticsPluginServerInitCallback();
 void MatterWindowCoveringPluginServerInitCallback();
+void MatterBooleanStateConfigurationPluginServerInitCallback();
 
 #include <esp_matter_cluster.h>
 

@@ -1248,6 +1248,26 @@ static esp_err_t esp_matter_command_callback_send_key(const ConcreteCommandPath 
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_suppress_alarm(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::BooleanStateConfiguration::Commands::SuppressAlarm::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfBooleanStateConfigurationClusterSuppressAlarmCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_enable_disable_alarm(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::BooleanStateConfiguration::Commands::EnableDisableAlarm::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfBooleanStateConfigurationClusterEnableDisableAlarmCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 namespace esp_matter {
 namespace cluster {
 
@@ -2380,6 +2400,21 @@ command_t *create_send_key_response(cluster_t *cluster)
 
 } /* command */
 } /* keypad_input */
+
+namespace boolean_state_configuration {
+namespace command {
+command_t *create_suppress_alarm(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, BooleanStateConfiguration::Commands::SuppressAlarm::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_suppress_alarm);
+}
+
+command_t *create_enable_disable_alarm(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, BooleanStateConfiguration::Commands::EnableDisableAlarm::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_enable_disable_alarm);
+}
+
+} /* command */
+} /* boolean_state_configuration */
 
 } /* cluster */
 } /* esp_matter */

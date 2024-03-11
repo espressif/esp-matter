@@ -2664,7 +2664,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::state_value(cluster, config->state_value);
+            attribute::create_state_value(cluster, config->state_value);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -2673,6 +2673,60 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 } /* boolean_state */
+
+namespace boolean_state_configuration {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, BooleanStateConfiguration::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterBooleanStateConfigurationPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+#if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+#endif
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    
+    /* Features */
+    if (features & feature::visual::get_id()) {
+        feature::visual::add(cluster, &(config->visual));
+    }
+    if (features & feature::audible::get_id()) {
+        feature::audible::add(cluster, &(config->audible));
+    }
+    if (features & feature::alarm_suppress::get_id()) {
+        feature::alarm_suppress::add(cluster, &(config->alarm_suppress));
+    }
+    if (features & feature::sensitivity_level::get_id()) {
+        feature::sensitivity_level::add(cluster, &(config->sensitivity_level));
+    }
+    return cluster;
+}
+} /* boolean_state_configuration */
 
 namespace localization_configuration {
 const function_generic_t function_list[] = {

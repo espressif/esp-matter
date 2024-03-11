@@ -3395,5 +3395,108 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* keypad_input */
 
+namespace boolean_state_configuration {
+namespace feature {
+
+namespace visual {
+
+uint32_t get_id()
+{
+    return (uint32_t)BooleanStateConfiguration::Feature::kVisual;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_alarms_active(cluster, config->alarms_active);
+    attribute::create_alarms_supported(cluster, config->alarms_supported);
+
+    command::create_enable_disable_alarm(cluster);;
+    return ESP_OK;
+}
+} /* visual */
+
+namespace audible {
+
+uint32_t get_id()
+{
+    return (uint32_t)BooleanStateConfiguration::Feature::kAudible;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_alarms_active(cluster, config->alarms_active);
+    attribute::create_alarms_supported(cluster, config->alarms_supported);
+
+    command::create_enable_disable_alarm(cluster);;
+    return ESP_OK;
+}
+} /* audible */
+
+namespace alarm_suppress {
+
+uint32_t get_id()
+{
+    return (uint32_t)BooleanStateConfiguration::Feature::kAlarmSuppress;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+	    return ESP_ERR_INVALID_ARG;
+    }
+    uint32_t visual_feature_map = feature::visual::get_id();
+    uint32_t audible_feature_map = feature::audible::get_id();
+    if((get_feature_map_value(cluster) & visual_feature_map) == visual_feature_map ||
+       (get_feature_map_value(cluster) & audible_feature_map) == audible_feature_map) {
+        update_feature_map(cluster, get_id());
+
+        attribute::create_alarms_suppressed(cluster, config->alarms_suppressed);
+
+        command::create_suppress_alarm(cluster);
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support either visual or audio feature");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+    return ESP_OK;
+}
+} /* alarm_suppress */
+
+namespace sensitivity_level {
+
+uint32_t get_id()
+{
+    return (uint32_t)BooleanStateConfiguration::Feature::kSensitivityLevel;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+	return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_current_sensitivity_level(cluster, 0);
+    attribute::create_supported_sensitivity_levels(cluster, config->supported_sensitivity_levels);
+    return ESP_OK;
+}
+} /* sensitivity_level */
+
+} /* feature */
+} /* boolean_state_configuration */
+
 } /* cluster */
 } /* esp_matter */

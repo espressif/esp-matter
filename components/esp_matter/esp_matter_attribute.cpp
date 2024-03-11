@@ -3316,7 +3316,7 @@ attribute_t *create_occupancy_sensor_type_bitmap(cluster_t *cluster, uint8_t val
 namespace boolean_state {
 namespace attribute {
 
-attribute_t *state_value(cluster_t *cluster, bool value)
+attribute_t *create_state_value(cluster_t *cluster, bool value)
 {
     return esp_matter::attribute::create(cluster, BooleanState::Attributes::StateValue::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_bool(value));
@@ -3324,6 +3324,59 @@ attribute_t *state_value(cluster_t *cluster, bool value)
 
 } /* attribute */
 } /* boolean_state */
+
+namespace boolean_state_configuration {
+namespace attribute {
+attribute_t *create_current_sensitivity_level(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, BooleanStateConfiguration::Attributes::CurrentSensitivityLevel::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_supported_sensitivity_levels(cluster_t *cluster, const uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, BooleanStateConfiguration::Attributes::SupportedSensitivityLevels::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_default_sensitivity_level(cluster_t *cluster, const uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, BooleanStateConfiguration::Attributes::DefaultSensitivityLevel::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_alarms_active(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, BooleanStateConfiguration::Attributes::AlarmsActive::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_bitmap8(value));
+}
+
+attribute_t *create_alarms_suppressed(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, BooleanStateConfiguration::Attributes::AlarmsSuppressed::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_bitmap8(value));
+}
+
+attribute_t *create_alarms_enabled(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, BooleanStateConfiguration::Attributes::AlarmsEnabled::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_bitmap8(value));
+}
+
+attribute_t *create_alarms_supported(cluster_t *cluster, const uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, BooleanStateConfiguration::Attributes::AlarmsSupported::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_bitmap8(value));
+}
+
+attribute_t *create_sensor_fault(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, BooleanStateConfiguration::Attributes::SensorFault::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_bitmap8(value));
+}
+
+} /* attribute */
+} /* boolean_state_configuration */
 
 namespace localization_configuration {
 namespace attribute {
