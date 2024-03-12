@@ -173,7 +173,7 @@ app_bridged_device_t *app_bridge_create_bridged_device(node_t *node, uint16_t pa
                                                        void *priv_data)
 {
     if (g_current_bridged_device_count >= MAX_BRIDGED_DEVICE_COUNT) {
-        ESP_LOGE(TAG, "The device list is full, Could not add a zigbee bridged device");
+        ESP_LOGE(TAG, "The device list is full, could not add bridged device");
         return NULL;
     }
     app_bridged_device_t *new_dev = (app_bridged_device_t *)esp_matter_mem_calloc(1, sizeof(app_bridged_device_t));
