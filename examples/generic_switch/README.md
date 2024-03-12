@@ -3,7 +3,7 @@
 This example creates a Generic Switch device using the ESP
 Matter data model.
 This example demonstrates the use of few optional data model elements like :
-- Fixed Label Cluster : provides a feature for the device to tag an endpoint with zero or more read only labels.(demonnstrated through nvs)
+- Fixed Label Cluster : provides a feature for the device to tag an endpoint with zero or more read only labels.(demonstrated through nvs)
 - User Label Cluster : This cluster provides a feature to tag an endpoint with zero or more labels.
 - Taglist Feature of Descriptor Cluster : used to disambiguate sibling endpoints where two or more sibling
   endpoints have an overlap in the supported device types with each such endpoint having a unique TagList.
