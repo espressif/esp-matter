@@ -10,10 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <device.h>
 #include <esp_matter.h>
 #include <esp_matter_console.h>
-#include <led_driver.h>
+#include "bsp/esp-bsp.h"
 
 #include <app_priv.h>
 #include <app_reset.h>
@@ -244,9 +243,10 @@ static void app_driver_button_toggle_cb(void *arg, void *data)
 app_driver_handle_t app_driver_switch_init()
 {
     /* Initialize button */
-    button_config_t config = button_driver_get_config();
-    button_handle_t handle = iot_button_create(&config);
-    iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_toggle_cb, NULL);
+
+    button_handle_t btns[BSP_BUTTON_NUM];
+    ESP_ERROR_CHECK(bsp_iot_button_create(btns, NULL, BSP_BUTTON_NUM));
+    ESP_ERROR_CHECK(iot_button_register_cb(btns[0], BUTTON_PRESS_DOWN, app_driver_button_toggle_cb, NULL));
 
     /* Other initializations */
 #if CONFIG_ENABLE_CHIP_SHELL
@@ -254,5 +254,5 @@ app_driver_handle_t app_driver_switch_init()
 #endif // CONFIG_ENABLE_CHIP_SHELL
     client::set_command_callback(app_driver_client_command_callback, app_driver_client_group_command_callback, NULL);
 
-    return (app_driver_handle_t)handle;
+    return (app_driver_handle_t)btns[0];
 }
