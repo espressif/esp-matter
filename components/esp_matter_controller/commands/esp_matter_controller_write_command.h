@@ -79,7 +79,6 @@ public:
     void OnDone(WriteClient *client) override
     {
         ChipLogProgress(chipTool, "Write Done");
-        chip::Platform::Delete(client);
         chip::Platform::Delete(this);
     }
 
@@ -92,9 +91,6 @@ private:
     static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr,
                                         const SessionHandle &sessionHandle);
     static void on_device_connection_failure_fcn(void *context, const ScopedNodeId &peerId, CHIP_ERROR error);
-
-    static esp_err_t encode_attribute_value(uint8_t *encoded_buf, size_t encoded_buf_size,
-                                            const char *attr_val_json_str, TLVReader &out_reader);
 
     chip::Callback::Callback<chip::OnDeviceConnected> on_device_connected_cb;
     chip::Callback::Callback<chip::OnDeviceConnectionFailure> on_device_connection_failure_cb;

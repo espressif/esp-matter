@@ -12,12 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <esp_err.h>
 #include <esp_log.h>
 #include <esp_matter.h>
+#include <esp_matter_client.h>
 #include <esp_matter_core.h>
+#include <json_to_tlv.h>
 
 #include <app/clusters/bindings/BindingManager.h>
-#include <json_to_tlv.h>
+#include <app/ConcreteAttributePath.h>
+#include <app/EventHeader.h>
+#include <app/MessageDef/DataVersionFilterIBs.h>
+#include <app/MessageDef/StatusIB.h>
+#include <app/ReadClient.h>
+#include <app/ReadPrepareParams.h>
+#include <core/Optional.h>
+#include <core/TLVReader.h>
+#include <core/TLVWriter.h>
 
 #if CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 #include <zap-generated/CHIPClusters.h>
@@ -379,687 +390,6 @@ esp_err_t group_send_toggle(uint8_t fabric_index, uint16_t group_id)
 } // namespace command
 } // namespace on_off
 
-namespace level_control {
-namespace command {
-
-esp_err_t send_move(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t move_mode, uint8_t rate,
-                    uint8_t option_mask, uint8_t option_override)
-{
-    LevelControl::Commands::Move::Type command_data;
-    command_data.moveMode = (LevelControl::MoveMode)move_mode;
-    command_data.rate.SetNonNull(rate);
-    command_data.optionsMask.SetRaw(option_mask);
-    command_data.optionsOverride.SetRaw(option_override);
-
-    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_move(uint8_t fabric_index, uint16_t group_id, uint8_t move_mode, uint8_t rate, uint8_t option_mask,
-                          uint8_t option_override)
-{
-    LevelControl::Commands::Move::Type command_data;
-    command_data.moveMode = (LevelControl::MoveMode)move_mode;
-    command_data.rate.SetNonNull(rate);
-    command_data.optionsMask.SetRaw(option_mask);
-    command_data.optionsOverride.SetRaw(option_override);
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_move_to_level(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t level,
-                             uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
-{
-    LevelControl::Commands::MoveToLevel::Type command_data;
-    command_data.level = level;
-    command_data.transitionTime.SetNonNull(transition_time);
-    command_data.optionsMask.SetRaw(option_mask);
-    command_data.optionsOverride.SetRaw(option_override);
-
-    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_move_to_level(uint8_t fabric_index, uint16_t group_id, uint8_t level, uint16_t transition_time,
-                                   uint8_t option_mask, uint8_t option_override)
-{
-    LevelControl::Commands::MoveToLevel::Type command_data;
-    command_data.level = level;
-    command_data.transitionTime.SetNonNull(transition_time);
-    command_data.optionsMask.SetRaw(option_mask);
-    command_data.optionsOverride.SetRaw(option_override);
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_move_to_level_with_on_off(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t level,
-                                         uint16_t transition_time)
-{
-    LevelControl::Commands::MoveToLevelWithOnOff::Type command_data;
-    command_data.level = level;
-    command_data.transitionTime.SetNonNull(transition_time);
-
-    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_move_to_level_with_on_off(uint8_t fabric_index, uint16_t group_id, uint8_t level,
-                                               uint16_t transition_time)
-{
-    LevelControl::Commands::MoveToLevelWithOnOff::Type command_data;
-    command_data.level = level;
-    command_data.transitionTime.SetNonNull(transition_time);
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_move_with_on_off(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t move_mode,
-                                uint8_t rate)
-{
-    LevelControl::Commands::MoveWithOnOff::Type command_data;
-    command_data.moveMode = (LevelControl::MoveMode)move_mode;
-    command_data.rate.SetNonNull(rate);
-
-    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_move_with_on_off(uint8_t fabric_index, uint16_t group_id, uint8_t move_mode, uint8_t rate)
-{
-    LevelControl::Commands::MoveWithOnOff::Type command_data;
-    command_data.moveMode = (LevelControl::MoveMode)move_mode;
-    command_data.rate.SetNonNull(rate);
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_step(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t step_mode, uint8_t step_size,
-                    uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
-{
-    LevelControl::Commands::Step::Type command_data;
-    command_data.stepMode = (LevelControl::StepMode)step_mode;
-    command_data.stepSize = step_size;
-    command_data.transitionTime.SetNonNull(transition_time);
-    command_data.optionsMask.SetRaw(option_mask);
-    command_data.optionsOverride.SetRaw(option_override);
-
-    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_step(uint8_t fabric_index, uint16_t group_id, uint8_t step_mode, uint8_t step_size,
-                          uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
-{
-    LevelControl::Commands::Step::Type command_data;
-    command_data.stepMode = (LevelControl::StepMode)step_mode;
-    command_data.stepSize = step_size;
-    command_data.transitionTime.SetNonNull(transition_time);
-    command_data.optionsMask.SetRaw(option_mask);
-    command_data.optionsOverride.SetRaw(option_override);
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_step_with_on_off(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t step_mode,
-                                uint8_t step_size, uint16_t transition_time)
-{
-    LevelControl::Commands::StepWithOnOff::Type command_data;
-    command_data.stepMode = (LevelControl::StepMode)step_mode;
-    command_data.stepSize = step_size;
-    command_data.transitionTime.SetNonNull(transition_time);
-
-    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_step_with_on_off(uint8_t fabric_index, uint16_t group_id, uint8_t step_mode, uint8_t step_size,
-                                      uint16_t transition_time)
-{
-    LevelControl::Commands::StepWithOnOff::Type command_data;
-    command_data.stepMode = (LevelControl::StepMode)step_mode;
-    command_data.stepSize = step_size;
-    command_data.transitionTime.SetNonNull(transition_time);
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_stop(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t option_mask,
-                    uint8_t option_override)
-{
-    LevelControl::Commands::Stop::Type command_data;
-    command_data.optionsMask.SetRaw(option_mask);
-    command_data.optionsOverride.SetRaw(option_override);
-
-    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_stop(uint8_t fabric_index, uint16_t group_id, uint8_t option_mask, uint8_t option_override)
-{
-    LevelControl::Commands::Stop::Type command_data;
-    command_data.optionsMask.SetRaw(option_mask);
-    command_data.optionsOverride.SetRaw(option_override);
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_stop_with_on_off(peer_device_t *remote_device, uint16_t remote_endpoint_id)
-{
-    LevelControl::Commands::Stop::Type command_data;
-
-    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_stop_with_on_off(uint8_t fabric_index, uint16_t group_id)
-{
-    LevelControl::Commands::Stop::Type command_data;
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-} // namespace command
-} // namespace level_control
-
-namespace color_control {
-namespace command {
-
-esp_err_t send_move_hue(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t move_mode, uint8_t rate,
-                        uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::MoveHue::Type command_data;
-    command_data.moveMode = (ColorControl::HueMoveMode)move_mode;
-    command_data.rate = rate;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_move_hue(uint8_t fabric_index, uint16_t group_id, uint8_t move_mode, uint8_t rate,
-                              uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::MoveHue::Type command_data;
-    command_data.moveMode = (ColorControl::HueMoveMode)move_mode;
-    command_data.rate = rate;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_move_saturation(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t move_mode,
-                               uint8_t rate, uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::MoveSaturation::Type command_data;
-    command_data.moveMode = (ColorControl::SaturationMoveMode)move_mode;
-    command_data.rate = rate;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_move_saturation(uint8_t fabric_index, uint16_t group_id, uint8_t move_mode, uint8_t rate,
-                                     uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::MoveSaturation::Type command_data;
-    command_data.moveMode = (ColorControl::SaturationMoveMode)move_mode;
-    command_data.rate = rate;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_move_to_hue(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t hue, uint8_t direction,
-                           uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::MoveToHue::Type command_data;
-    command_data.hue = hue;
-    command_data.direction = (ColorControl::HueDirection)direction;
-    command_data.transitionTime = transition_time;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_move_to_hue(uint8_t fabric_index, uint16_t group_id, uint8_t hue, uint8_t direction,
-                                 uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::MoveToHue::Type command_data;
-    command_data.hue = hue;
-    command_data.direction = (ColorControl::HueDirection)direction;
-    command_data.transitionTime = transition_time;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_move_to_hue_and_saturation(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t hue,
-                                          uint8_t saturation, uint16_t transition_time, uint8_t option_mask,
-                                          uint8_t option_override)
-{
-    ColorControl::Commands::MoveToHueAndSaturation::Type command_data;
-    command_data.hue = hue;
-    command_data.saturation = saturation;
-    command_data.transitionTime = transition_time;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_move_to_hue_and_saturation(uint8_t fabric_index, uint16_t group_id, uint8_t hue,
-                                                uint8_t saturation, uint16_t transition_time, uint8_t option_mask,
-                                                uint8_t option_override)
-{
-    ColorControl::Commands::MoveToHueAndSaturation::Type command_data;
-    command_data.hue = hue;
-    command_data.saturation = saturation;
-    command_data.transitionTime = transition_time;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_move_to_saturation(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t saturation,
-                                  uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::MoveToSaturation::Type command_data;
-    command_data.saturation = saturation;
-    command_data.transitionTime = transition_time;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_move_to_saturation(uint8_t fabric_index, uint16_t group_id, uint8_t saturation,
-                                        uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::MoveToSaturation::Type command_data;
-    command_data.saturation = saturation;
-    command_data.transitionTime = transition_time;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_step_hue(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t step_mode, uint8_t step_size,
-                        uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::StepHue::Type command_data;
-    command_data.stepMode = (ColorControl::HueStepMode)step_mode;
-    command_data.stepSize = step_size;
-    command_data.transitionTime = transition_time;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_step_hue(uint8_t fabric_index, uint16_t group_id, uint8_t step_mode, uint8_t step_size,
-                              uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::StepHue::Type command_data;
-    command_data.stepMode = (ColorControl::HueStepMode)step_mode;
-    command_data.stepSize = step_size;
-    command_data.transitionTime = transition_time;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_step_saturation(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t step_mode,
-                               uint8_t step_size, uint16_t transition_time, uint8_t option_mask,
-                               uint8_t option_override)
-{
-    ColorControl::Commands::StepSaturation::Type command_data;
-    command_data.stepMode = (ColorControl::SaturationStepMode)step_mode;
-    command_data.stepSize = step_size;
-    command_data.transitionTime = transition_time;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_step_saturation(uint8_t fabric_index, uint16_t group_id, uint8_t step_mode, uint8_t step_size,
-                                     uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::StepSaturation::Type command_data;
-    command_data.stepMode = (ColorControl::SaturationStepMode)step_mode;
-    command_data.stepSize = step_size;
-    command_data.transitionTime = transition_time;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_move_to_color(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t color_x,
-                             uint16_t color_y, uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::MoveToColor::Type command_data;
-    command_data.colorX = color_x;
-    command_data.colorY = color_y;
-    command_data.transitionTime = transition_time;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_move_to_color(uint8_t fabric_index, uint16_t group_id, uint16_t color_x, uint16_t color_y,
-                                   uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::MoveToColor::Type command_data;
-    command_data.colorX = color_x;
-    command_data.colorY = color_y;
-    command_data.transitionTime = transition_time;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_move_color(peer_device_t *remote_device, uint16_t remote_endpoint_id, int16_t rate_x, int16_t rate_y,
-                          uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::MoveColor::Type command_data;
-    command_data.rateX = rate_x;
-    command_data.rateY = rate_y;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_move_color(uint8_t fabric_index, uint16_t group_id, int16_t rate_x, int16_t rate_y,
-                                uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::MoveColor::Type command_data;
-    command_data.rateX = rate_x;
-    command_data.rateY = rate_y;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_step_color(peer_device_t *remote_device, uint16_t remote_endpoint_id, int16_t step_x, int16_t step_y,
-                          uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::StepColor::Type command_data;
-    command_data.stepX = step_x;
-    command_data.stepY = step_y;
-    command_data.transitionTime = transition_time;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_step_color(uint8_t fabric_index, uint16_t group_id, int16_t step_x, int16_t step_y,
-                                uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::StepColor::Type command_data;
-    command_data.stepX = step_x;
-    command_data.stepY = step_y;
-    command_data.transitionTime = transition_time;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_move_to_color_temperature(peer_device_t *remote_device, uint16_t remote_endpoint_id,
-                                         uint16_t color_temperature_mireds, uint16_t transition_time,
-                                         uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::MoveToColorTemperature::Type command_data;
-    command_data.colorTemperatureMireds = color_temperature_mireds;
-    command_data.transitionTime = transition_time;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_move_to_color_temperature(uint8_t fabric_index, uint16_t group_id,
-                                               uint16_t color_temperature_mireds, uint16_t transition_time,
-                                               uint8_t option_mask, uint8_t option_override)
-{
-    ColorControl::Commands::MoveToColorTemperature::Type command_data;
-    command_data.colorTemperatureMireds = color_temperature_mireds;
-    command_data.transitionTime = transition_time;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_stop_move_step(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t option_mask,
-                              uint8_t option_override)
-{
-    ColorControl::Commands::StopMoveStep::Type command_data;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_stop_move_step(uint8_t fabric_index, uint16_t group_id, uint8_t option_mask,
-                                    uint8_t option_override)
-{
-    ColorControl::Commands::StopMoveStep::Type command_data;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_move_color_temperature(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t move_mode,
-                                      uint16_t rate, uint16_t color_temperature_minimum_mireds,
-                                      uint16_t color_temperature_maximum_mireds, uint8_t option_mask,
-                                      uint8_t option_override)
-{
-    ColorControl::Commands::MoveColorTemperature::Type command_data;
-    command_data.moveMode = static_cast<ColorControl::HueMoveMode>(move_mode);
-    command_data.rate = rate;
-    command_data.colorTemperatureMinimumMireds = color_temperature_minimum_mireds;
-    command_data.colorTemperatureMaximumMireds = color_temperature_maximum_mireds;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_move_color_temperature(uint8_t fabric_index, uint16_t group_id, uint8_t move_mode, uint16_t rate,
-                                            uint16_t color_temperature_minimum_mireds,
-                                            uint16_t color_temperature_maximum_mireds, uint8_t option_mask,
-                                            uint8_t option_override)
-{
-    ColorControl::Commands::MoveColorTemperature::Type command_data;
-    command_data.moveMode = static_cast<ColorControl::HueMoveMode>(move_mode);
-    command_data.rate = rate;
-    command_data.colorTemperatureMinimumMireds = color_temperature_minimum_mireds;
-    command_data.colorTemperatureMaximumMireds = color_temperature_maximum_mireds;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_step_color_temperature(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t step_mode,
-                                      uint16_t step_size, uint16_t transition_time,
-                                      uint16_t color_temperature_minimum_mireds,
-                                      uint16_t color_temperature_maximum_mireds, uint8_t option_mask,
-                                      uint8_t option_override)
-{
-    ColorControl::Commands::StepColorTemperature::Type command_data;
-    command_data.stepMode = static_cast<ColorControl::HueStepMode>(step_mode);
-    command_data.stepSize = step_size;
-    command_data.transitionTime = transition_time;
-    command_data.colorTemperatureMinimumMireds = color_temperature_minimum_mireds;
-    command_data.colorTemperatureMaximumMireds = color_temperature_maximum_mireds;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
-                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_step_color_temperature(uint8_t fabric_index, uint16_t group_id, uint8_t step_mode,
-                                            uint16_t step_size, uint16_t transition_time,
-                                            uint16_t color_temperature_minimum_mireds,
-                                            uint16_t color_temperature_maximum_mireds, uint8_t option_mask,
-                                            uint8_t option_override)
-{
-    ColorControl::Commands::StepColorTemperature::Type command_data;
-    command_data.stepMode = static_cast<ColorControl::HueStepMode>(step_mode);
-    command_data.stepSize = step_size;
-    command_data.transitionTime = transition_time;
-    command_data.colorTemperatureMinimumMireds = color_temperature_minimum_mireds;
-    command_data.colorTemperatureMaximumMireds = color_temperature_maximum_mireds;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-} // namespace command
-} // namespace color_control
-
 namespace identify {
 namespace command {
 esp_err_t send_identify(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t identify_time)
@@ -1100,644 +430,301 @@ esp_err_t send_trigger_effect(peer_device_t *remote_device, uint16_t remote_endp
 } // namespace command
 } // namespace identify
 
-namespace group_key_management {
-namespace command {
-
-esp_err_t send_keyset_write(peer_device_t *remote_device, uint16_t remote_endpoint_id,
-                            group_keyset_struct &group_keyset)
-{
-    GroupKeyManagement::Commands::KeySetWrite::Type command_data;
-    command_data.groupKeySet = group_keyset;
-
-    chip::Controller::GroupKeyManagementCluster cluster(*remote_device->GetExchangeManager(),
-                                                        remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_keyset_read(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t keyset_id,
-                           keyset_read_callback keyset_read_cb)
-{
-    GroupKeyManagement::Commands::KeySetRead::Type command_data;
-    command_data.groupKeySetID = keyset_id;
-
-    chip::Controller::GroupKeyManagementCluster cluster(*remote_device->GetExchangeManager(),
-                                                        remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, keyset_read_cb, send_command_failure_callback);
-    return ESP_OK;
-}
-
-} // namespace command
-} // namespace group_key_management
-
-namespace groups {
-namespace command {
-
-esp_err_t send_add_group(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id, char *group_name,
-                         add_group_callback add_group_cb)
-{
-    Groups::Commands::AddGroup::Type command_data;
-    command_data.groupID = group_id;
-    command_data.groupName = chip::CharSpan(group_name, strnlen(group_name, 16));
-
-    chip::Controller::GroupsCluster cluster(*remote_device->GetExchangeManager(),
-                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, add_group_cb, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_view_group(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
-                          view_group_callback view_group_cb)
-{
-    Groups::Commands::ViewGroup::Type command_data;
-    command_data.groupID = group_id;
-
-    chip::Controller::GroupsCluster cluster(*remote_device->GetExchangeManager(),
-                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, view_group_cb, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_remove_group(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
-                            remove_group_callback remove_group_cb)
-{
-    Groups::Commands::RemoveGroup::Type command_data;
-    command_data.groupID = group_id;
-
-    chip::Controller::GroupsCluster cluster(*remote_device->GetExchangeManager(),
-                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, remove_group_cb, send_command_failure_callback);
-    return ESP_OK;
-}
-
-} // namespace command
-} // namespace groups
-
-namespace scenes_management {
-namespace command {
-
-esp_err_t send_add_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id, uint8_t scene_id,
-                         uint16_t transition_time, char *scene_name, extension_field_sets &efs,
-                         add_scene_callback add_scene_cb)
-{
-    ScenesManagement::Commands::AddScene::Type command_data;
-    command_data.groupID = group_id;
-    command_data.sceneID = scene_id;
-    command_data.transitionTime = transition_time;
-    command_data.sceneName = chip::CharSpan(scene_name, strnlen(scene_name, 16));
-    command_data.extensionFieldSets = efs;
-
-    chip::Controller::ScenesManagementCluster cluster(*remote_device->GetExchangeManager(),
-                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, add_scene_cb, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_view_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
-                          uint8_t scene_id, view_scene_callback view_scene_cb)
-{
-    ScenesManagement::Commands::ViewScene::Type command_data;
-    command_data.groupID = group_id;
-    command_data.sceneID = scene_id;
-
-    chip::Controller::ScenesManagementCluster cluster(*remote_device->GetExchangeManager(),
-                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, view_scene_cb, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_remove_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
-                            uint8_t scene_id, remove_scene_callback remove_scene_cb)
-{
-    ScenesManagement::Commands::RemoveScene::Type command_data;
-    command_data.groupID = group_id;
-    command_data.sceneID = scene_id;
-
-    chip::Controller::ScenesManagementCluster cluster(*remote_device->GetExchangeManager(),
-                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, remove_scene_cb, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_remove_all_scenes(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
-                                 remove_all_scenes_callback remove_all_scenes_cb)
-{
-    ScenesManagement::Commands::RemoveAllScenes::Type command_data;
-    command_data.groupID = group_id;
-
-    chip::Controller::ScenesManagementCluster cluster(*remote_device->GetExchangeManager(),
-                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, remove_all_scenes_cb, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_store_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
-                           uint8_t scene_id, store_scene_callback store_scene_cb)
-{
-    ScenesManagement::Commands::StoreScene::Type command_data;
-    command_data.groupID = group_id;
-    command_data.sceneID = scene_id;
-
-    chip::Controller::ScenesManagementCluster cluster(*remote_device->GetExchangeManager(),
-                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, store_scene_cb, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_recall_scene(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
-                            uint8_t scene_id)
-{
-    ScenesManagement::Commands::RecallScene::Type command_data;
-    command_data.groupID = group_id;
-    command_data.sceneID = scene_id;
-
-    chip::Controller::ScenesManagementCluster cluster(*remote_device->GetExchangeManager(),
-                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_get_scene_membership(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
-                                    get_scene_membership_callback get_scene_membership_cb)
-{
-    ScenesManagement::Commands::GetSceneMembership::Type command_data;
-    command_data.groupID = group_id;
-
-    chip::Controller::ScenesManagementCluster cluster(*remote_device->GetExchangeManager(),
-                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, get_scene_membership_cb, send_command_failure_callback);
-    return ESP_OK;
-}
-
-} // namespace command
-} // namespace scenes_management
-
-namespace thermostat {
-namespace command {
-
-esp_err_t send_setpoint_raise_lower(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t mode,
-                                    uint8_t amount)
-{
-    Thermostat::Commands::SetpointRaiseLower::Type command_data;
-    command_data.mode = chip::app::Clusters::Thermostat::SetpointRaiseLowerModeEnum(mode);
-    command_data.amount = amount;
-
-    chip::Controller::ThermostatCluster cluster(*remote_device->GetExchangeManager(),
-                                                remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_set_weekly_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id,
-                                   uint8_t num_of_tras_for_seq, uint8_t day_of_week_for_seq, uint8_t mode_for_seq,
-                                   transitions &trans)
-{
-    Thermostat::Commands::SetWeeklySchedule::Type command_data;
-    command_data.numberOfTransitionsForSequence = num_of_tras_for_seq;
-    command_data.dayOfWeekForSequence.SetRaw(day_of_week_for_seq);
-    command_data.modeForSequence.SetRaw(mode_for_seq);
-    command_data.transitions = trans;
-
-    chip::Controller::ThermostatCluster cluster(*remote_device->GetExchangeManager(),
-                                                remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_get_weekly_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t day_to_return,
-                                   uint8_t mode_to_return, get_weekly_schedule_callback get_weekly_schedule_cb)
-{
-    Thermostat::Commands::GetWeeklySchedule::Type command_data;
-    command_data.daysToReturn.SetRaw(day_to_return);
-    command_data.modeToReturn.SetRaw(mode_to_return);
-
-    chip::Controller::ThermostatCluster cluster(*remote_device->GetExchangeManager(),
-                                                remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, get_weekly_schedule_cb, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_clear_weekly_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id)
-{
-    Thermostat::Commands::ClearWeeklySchedule::Type command_data;
-
-    chip::Controller::ThermostatCluster cluster(*remote_device->GetExchangeManager(),
-                                                remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-} // namespace command
-} // namespace thermostat
-
-namespace door_lock {
-namespace command {
-
-esp_err_t send_lock_door(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t timed_invoke_timeout_ms)
-{
-    DoorLock::Commands::LockDoor::Type command_data;
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
-                          chip::MakeOptional(timed_invoke_timeout_ms));
-    return ESP_OK;
-}
-
-esp_err_t send_unlock_door(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t timed_invoke_timeout_ms)
-{
-    DoorLock::Commands::UnlockDoor::Type command_data;
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
-                          chip::MakeOptional(timed_invoke_timeout_ms));
-    return ESP_OK;
-}
-
-esp_err_t send_unlock_with_timeout(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t timeout,
-                                   uint16_t timed_invoke_timeout_ms)
-{
-    DoorLock::Commands::UnlockWithTimeout::Type command_data;
-    command_data.timeout = timeout;
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
-                          chip::MakeOptional(timed_invoke_timeout_ms));
-    return ESP_OK;
-}
-
-esp_err_t send_set_week_day_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t week_day_index,
-                                     uint16_t user_index, uint8_t days_mask, uint8_t start_hour, uint8_t start_minute,
-                                     uint8_t end_hour, uint8_t end_minute)
-{
-    DoorLock::Commands::SetWeekDaySchedule::Type command_data;
-    command_data.weekDayIndex = week_day_index;
-    command_data.userIndex = user_index;
-    command_data.daysMask.SetRaw(days_mask);
-    command_data.startHour = start_hour;
-    command_data.startMinute = start_minute;
-    command_data.endHour = end_hour;
-    command_data.endMinute = end_minute;
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_get_week_day_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t week_day_index,
-                                     uint16_t user_index, get_week_day_schedule_callback success_cb)
-{
-    DoorLock::Commands::GetWeekDaySchedule::Type command_data;
-    command_data.weekDayIndex = week_day_index;
-    command_data.userIndex = user_index;
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, success_cb, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_clear_week_day_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id,
-                                       uint8_t week_day_index, uint16_t user_index)
-{
-    DoorLock::Commands::ClearWeekDaySchedule::Type command_data;
-    command_data.weekDayIndex = week_day_index;
-    command_data.userIndex = user_index;
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_set_year_day_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t year_day_index,
-                                     uint16_t user_index, uint32_t local_start_time, uint32_t local_end_time)
-{
-    DoorLock::Commands::SetYearDaySchedule::Type command_data;
-    command_data.yearDayIndex = year_day_index;
-    command_data.userIndex = user_index;
-    command_data.localStartTime = local_start_time;
-    command_data.localEndTime = local_end_time;
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_get_year_day_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t year_day_index,
-                                     uint16_t user_index, get_year_day_schedule_callback success_cb)
-{
-    DoorLock::Commands::GetYearDaySchedule::Type command_data;
-    command_data.yearDayIndex = year_day_index;
-    command_data.userIndex = user_index;
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, success_cb, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_clear_year_day_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id,
-                                       uint8_t year_day_index, uint16_t user_index)
-{
-    DoorLock::Commands::ClearYearDaySchedule::Type command_data;
-    command_data.yearDayIndex = year_day_index;
-    command_data.userIndex = user_index;
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_set_holiday_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t holiday_index,
-                                    uint32_t local_start_time, uint32_t local_end_time, uint8_t operating_mode)
-{
-    DoorLock::Commands::SetHolidaySchedule::Type command_data;
-    command_data.holidayIndex = holiday_index;
-    command_data.localStartTime = local_start_time;
-    command_data.localEndTime = local_end_time;
-    command_data.operatingMode = DoorLock::OperatingModeEnum(operating_mode);
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_get_holiday_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t holiday_index,
-                                    get_holiday_schedule_callback success_cb)
-{
-    DoorLock::Commands::GetHolidaySchedule::Type command_data;
-    command_data.holidayIndex = holiday_index;
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, success_cb, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_clear_holiday_schedule(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t holiday_index)
-{
-    DoorLock::Commands::ClearHolidaySchedule::Type command_data;
-    command_data.holidayIndex = holiday_index;
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_set_user(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t operation_type,
-                        uint16_t user_index, char *user_name, uint32_t user_unique_id, uint8_t user_status,
-                        uint8_t user_type, uint8_t credential_rule, uint16_t timed_invoke_timeout_ms)
-{
-    DoorLock::Commands::SetUser::Type command_data;
-    command_data.operationType = DoorLock::DataOperationTypeEnum(operation_type);
-    command_data.userIndex = user_index;
-    if (user_name) {
-        command_data.userName = chip::app::DataModel::MakeNullable(chip::CharSpan(user_name, strlen(user_name)));
-    }
-    command_data.userUniqueID = chip::app::DataModel::MakeNullable(user_unique_id);
-    command_data.userStatus = chip::app::DataModel::MakeNullable(DoorLock::UserStatusEnum(user_status));
-    command_data.userType = chip::app::DataModel::MakeNullable(DoorLock::UserTypeEnum(user_type));
-    command_data.credentialRule = chip::app::DataModel::MakeNullable(DoorLock::CredentialRuleEnum(credential_rule));
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
-                          chip::MakeOptional(timed_invoke_timeout_ms));
-    return ESP_OK;
-}
-
-esp_err_t send_get_user(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t user_index,
-                        get_user_callback success_cb)
-{
-    DoorLock::Commands::GetUser::Type command_data;
-    command_data.userIndex = user_index;
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, success_cb, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_clear_user(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t user_index,
-                          uint16_t timed_invoke_timeout_ms)
-{
-    DoorLock::Commands::ClearUser::Type command_data;
-    command_data.userIndex = user_index;
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
-                          chip::MakeOptional(timed_invoke_timeout_ms));
-    return ESP_OK;
-}
-
-esp_err_t send_set_credential(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t operation_type,
-                              credential_struct credential, uint8_t *credential_data, size_t credential_len,
-                              uint16_t user_index, uint8_t user_status, uint8_t user_type,
-                              set_credential_callback success_cb, uint16_t timed_invoke_timeout_ms)
-{
-    DoorLock::Commands::SetCredential::Type command_data;
-    command_data.operationType = DoorLock::DataOperationTypeEnum(operation_type);
-    command_data.credential = credential;
-    command_data.credentialData = chip::ByteSpan(credential_data, credential_len);
-    command_data.userIndex = chip::app::DataModel::MakeNullable(user_index);
-    command_data.userStatus = chip::app::DataModel::MakeNullable(DoorLock::UserStatusEnum(user_status));
-    command_data.userType = chip::app::DataModel::MakeNullable(DoorLock::UserTypeEnum(user_type));
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, success_cb, send_command_failure_callback,
-                          chip::MakeOptional(timed_invoke_timeout_ms));
-    return ESP_OK;
-}
-
-esp_err_t send_get_credential_status(peer_device_t *remote_device, uint16_t remote_endpoint_id,
-                                     credential_struct &credential, get_credential_status_callback success_cb)
-{
-    DoorLock::Commands::GetCredentialStatus::Type command_data;
-    command_data.credential = credential;
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, success_cb, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_clear_credential(peer_device_t *remote_device, uint16_t remote_endpoint_id,
-                                credential_struct &credential, uint16_t timed_invoke_timeout_ms)
-{
-    DoorLock::Commands::ClearCredential::Type command_data;
-    command_data.credential = chip::app::DataModel::MakeNullable(credential);
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
-                          chip::MakeOptional(timed_invoke_timeout_ms));
-    return ESP_OK;
-}
-
-esp_err_t send_unbolt_door(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t *pin_code,
-                           size_t pin_code_len, uint16_t timed_invoke_timeout_ms)
-{
-    DoorLock::Commands::UnboltDoor::Type command_data;
-    if (pin_code) {
-        command_data.PINCode = chip::MakeOptional(chip::ByteSpan(pin_code, pin_code_len));
-    }
-
-    chip::Controller::DoorLockCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
-                          chip::MakeOptional(timed_invoke_timeout_ms));
-    return ESP_OK;
-    return ESP_ERR_NOT_SUPPORTED;
-}
-
-} // namespace command
-} // namespace door_lock
-
-namespace window_covering {
-namespace command {
-
-esp_err_t send_up_or_open(peer_device_t *remote_device, uint16_t remote_endpoint_id)
-{
-    WindowCovering::Commands::UpOrOpen::Type command_data;
-
-    chip::Controller::WindowCoveringCluster cluster(*remote_device->GetExchangeManager(),
-                                                    remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_down_or_close(peer_device_t *remote_device, uint16_t remote_endpoint_id)
-{
-    WindowCovering::Commands::DownOrClose::Type command_data;
-
-    chip::Controller::WindowCoveringCluster cluster(*remote_device->GetExchangeManager(),
-                                                    remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_stop_motion(peer_device_t *remote_device, uint16_t remote_endpoint_id)
-{
-    WindowCovering::Commands::StopMotion::Type command_data;
-
-    chip::Controller::WindowCoveringCluster cluster(*remote_device->GetExchangeManager(),
-                                                    remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_go_to_lift_value(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t lift_value)
-{
-    WindowCovering::Commands::GoToLiftValue::Type command_data;
-    command_data.liftValue = lift_value;
-
-    chip::Controller::WindowCoveringCluster cluster(*remote_device->GetExchangeManager(),
-                                                    remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_go_to_lift_percentage(peer_device_t *remote_device, uint16_t remote_endpoint_id,
-                                     uint16_t lift_percent100ths_value)
-{
-    WindowCovering::Commands::GoToLiftPercentage::Type command_data;
-    command_data.liftPercent100thsValue = static_cast<chip::Percent100ths>(lift_percent100ths_value);
-
-    chip::Controller::WindowCoveringCluster cluster(*remote_device->GetExchangeManager(),
-                                                    remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_go_to_tilt_value(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t tilt_value)
-{
-    WindowCovering::Commands::GoToTiltValue::Type command_data;
-    command_data.tiltValue = tilt_value;
-
-    chip::Controller::WindowCoveringCluster cluster(*remote_device->GetExchangeManager(),
-                                                    remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t send_go_to_tilt_percentage(peer_device_t *remote_device, uint16_t remote_endpoint_id,
-                                     uint16_t tilt_percent100ths_value)
-{
-    WindowCovering::Commands::GoToTiltPercentage::Type command_data;
-    command_data.tiltPercent100thsValue = static_cast<chip::Percent100ths>(tilt_percent100ths_value);
-
-    chip::Controller::WindowCoveringCluster cluster(*remote_device->GetExchangeManager(),
-                                                    remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-} // namespace command
-} // namespace window_covering
-
-namespace administrator_commissioning {
-namespace command {
-
-esp_err_t send_open_commissioning_window(peer_device_t *remote_device, uint16_t remote_endpoint_id,
-                                         uint16_t commissioning_timeout, chip::MutableByteSpan &pake_passcode_verifier,
-                                         uint16_t discriminator, uint32_t iterations, chip::MutableByteSpan &salt,
-                                         uint16_t timed_interaction_timeout_ms)
-{
-    AdministratorCommissioning::Commands::OpenCommissioningWindow::Type command_data;
-    command_data.commissioningTimeout = commissioning_timeout;
-    command_data.PAKEPasscodeVerifier = pake_passcode_verifier;
-    command_data.discriminator = discriminator;
-    command_data.iterations = iterations;
-    command_data.salt = salt;
-
-    chip::Controller::AdministratorCommissioningCluster cluster(
-        *remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
-                          timed_interaction_timeout_ms);
-    return ESP_OK;
-}
-
-esp_err_t send_open_basic_commissioning_window(peer_device_t *remote_device, uint16_t remote_endpoint_id,
-                                               uint16_t commissioning_timeout, uint16_t timed_interaction_timeout_ms)
-{
-    AdministratorCommissioning::Commands::OpenBasicCommissioningWindow::Type command_data;
-    command_data.commissioningTimeout = commissioning_timeout;
-
-    chip::Controller::AdministratorCommissioningCluster cluster(
-        *remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
-
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
-                          timed_interaction_timeout_ms);
-    return ESP_OK;
-}
-
-esp_err_t send_revoke_commissioning(peer_device_t *remote_device, uint16_t remote_endpoint_id,
-                                    uint16_t timed_interaction_timeout_ms)
-{
-    AdministratorCommissioning::Commands::RevokeCommissioning::Type command_data;
-
-    chip::Controller::AdministratorCommissioningCluster cluster(
-        *remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
-
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback,
-                          timed_interaction_timeout_ms);
-    return ESP_OK;
-}
-
-} // namespace command
-} // namespace administrator_commissioning
-
 } // namespace cluster
+
+namespace interaction {
+
+using chip::app::ConcreteDataAttributePath;
+using chip::app::EventHeader;
+using chip::TLV::TLVReader;
+using chip::TLV::TLVWriter;
+using chip::app::StatusIB;
+using chip::SubscriptionId;
+using chip::app::DataVersionFilterIBs::Builder;
+using chip::app::ReadPrepareParams;
+
+class client_deleter_read_callback : public ReadClient::Callback
+{
+public:
+    client_deleter_read_callback(ReadClient::Callback & callback) : m_callback(callback) {}
+private:
+    void OnReportBegin() override { m_callback.OnReportBegin(); }
+    void OnReportEnd() override { m_callback.OnReportEnd(); }
+    void OnError(CHIP_ERROR aError) override { m_callback.OnError(aError); }
+
+    void OnAttributeData(const ConcreteDataAttributePath & aPath, TLVReader * apData, const StatusIB & aStatus) override
+    {
+        m_callback.OnAttributeData(aPath, apData, aStatus);
+    }
+
+    void OnEventData(const EventHeader & aEventHeader, TLVReader * apData, const StatusIB * apStatus) override
+    {
+        m_callback.OnEventData(aEventHeader, apData, apStatus);
+    }
+
+    void OnDone(ReadClient * apReadClient) override
+    {
+        m_callback.OnDone(apReadClient);
+        chip::Platform::Delete(apReadClient);
+        chip::Platform::Delete(this);
+    }
+
+    void OnSubscriptionEstablished(SubscriptionId aSubscriptionId) override
+    {
+        m_callback.OnSubscriptionEstablished(aSubscriptionId);
+    }
+
+    CHIP_ERROR OnResubscriptionNeeded(ReadClient * apReadClient, CHIP_ERROR aTerminationCause) override
+    {
+        return m_callback.OnResubscriptionNeeded(apReadClient, aTerminationCause);
+    }
+
+    void OnDeallocatePaths(chip::app::ReadPrepareParams && aReadPrepareParams) override
+    {
+        m_callback.OnDeallocatePaths(std::move(aReadPrepareParams));
+    }
+
+    CHIP_ERROR OnUpdateDataVersionFilterList(Builder & aDataVersionFilterIBsBuilder,
+                                             const chip::Span<AttributePathParams> & aAttributePaths,
+                                             bool & aEncodedDataVersionList) override
+    {
+        return m_callback.OnUpdateDataVersionFilterList(aDataVersionFilterIBsBuilder, aAttributePaths, aEncodedDataVersionList);
+    }
+
+    CHIP_ERROR GetHighestReceivedEventNumber(chip::Optional<chip::EventNumber> & aEventNumber) override
+    {
+        return m_callback.GetHighestReceivedEventNumber(aEventNumber);
+    }
+
+    void OnUnsolicitedMessageFromPublisher(ReadClient * apReadClient) override
+    {
+        m_callback.OnUnsolicitedMessageFromPublisher(apReadClient);
+    }
+
+    void OnCASESessionEstablished(const SessionHandle & aSession, ReadPrepareParams & aSubscriptionParams) override
+    {
+        m_callback.OnCASESessionEstablished(aSession, aSubscriptionParams);
+    }
+
+    ReadClient::Callback & m_callback;
+};
+
+esp_err_t send_read_command(client::peer_device_t *remote_device, AttributePathParams *attr_path, size_t attr_path_size,
+                            EventPathParams *event_path, size_t event_path_size, ReadClient::Callback &callback)
+{
+    if (!remote_device->GetSecureSession().HasValue() || remote_device->GetSecureSession().Value()->IsGroupSession()) {
+        ESP_LOGE(TAG, "Invalid Session Type");
+        return ESP_ERR_INVALID_ARG;
+    }
+    if ((!attr_path || attr_path_size == 0) && (!event_path || event_path_size == 0)) {
+        ESP_LOGE(TAG, "Invalid attribute path and event path");
+        return ESP_ERR_INVALID_ARG;
+    }
+    ReadPrepareParams params(remote_device->GetSecureSession().Value());
+    params.mpAttributePathParamsList = attr_path;
+    params.mAttributePathParamsListSize = attr_path_size;
+    params.mpEventPathParamsList = event_path;
+    params.mEventPathParamsListSize = event_path_size;
+    params.mpDataVersionFilterList = nullptr;
+    params.mDataVersionFilterListSize = 0;
+    params.mIsFabricFiltered = false;
+
+    auto client_deleter_callback = chip::Platform::MakeUnique<client_deleter_read_callback>(callback);
+    if (!client_deleter_callback) {
+        ESP_LOGE(TAG, "Failed to allocate memory for client deleter callback");
+        return ESP_ERR_NO_MEM;
+    }
+    auto client = chip::Platform::MakeUnique<ReadClient>(chip::app::InteractionModelEngine::GetInstance(),
+                                                         remote_device->GetExchangeManager(), *client_deleter_callback,
+                                                         ReadClient::InteractionType::Read);
+    if (!client) {
+        ESP_LOGE(TAG, "Failed to allocate memory for ReadClient");
+        return ESP_ERR_NO_MEM;
+    }
+
+    if (client->SendRequest(params) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to send read request");
+        return ESP_FAIL;
+    }
+    // The memory will be released when OnDone() is called
+    client.release();
+    client_deleter_callback.release();
+    return ESP_OK;
+}
+
+esp_err_t send_subscribe_command(client::peer_device_t *remote_device, AttributePathParams *attr_path,
+                                 size_t attr_path_size, EventPathParams *event_path, size_t event_path_size,
+                                 uint16_t min_interval, uint16_t max_interval, bool keep_subscription,
+                                 bool auto_resubscribe, ReadClient::Callback &callback)
+{
+    if (!remote_device->GetSecureSession().HasValue() || remote_device->GetSecureSession().Value()->IsGroupSession()) {
+        ESP_LOGE(TAG, "Invalid Session Type");
+        return ESP_ERR_INVALID_ARG;
+    }
+    if ((!attr_path || attr_path_size == 0) && (!event_path || event_path_size == 0)) {
+        ESP_LOGE(TAG, "Invalid attribute path and event path");
+        return ESP_ERR_INVALID_ARG;
+    }
+    ReadPrepareParams params(remote_device->GetSecureSession().Value());
+    params.mpAttributePathParamsList = attr_path;
+    params.mAttributePathParamsListSize = attr_path_size;
+    params.mpEventPathParamsList = event_path;
+    params.mEventPathParamsListSize = event_path_size;
+    params.mpDataVersionFilterList = nullptr;
+    params.mDataVersionFilterListSize = 0;
+    params.mIsFabricFiltered = false;
+    params.mMinIntervalFloorSeconds = min_interval;
+    params.mMaxIntervalCeilingSeconds = max_interval;
+    params.mKeepSubscriptions = keep_subscription;
+
+    auto client_deleter_callback = chip::Platform::MakeUnique<client_deleter_read_callback>(callback);
+    if (!client_deleter_callback) {
+        ESP_LOGE(TAG, "Failed to allocate memory for client deleter callback");
+        return ESP_ERR_NO_MEM;
+    }
+    auto client = chip::Platform::MakeUnique<ReadClient>(chip::app::InteractionModelEngine::GetInstance(),
+                                                         remote_device->GetExchangeManager(), *client_deleter_callback,
+                                                         ReadClient::InteractionType::Subscribe);
+    if (!client) {
+        ESP_LOGE(TAG, "Failed to allocate memory for ReadClient");
+        return ESP_ERR_NO_MEM;
+    }
+
+    CHIP_ERROR err = CHIP_NO_ERROR;
+    if (auto_resubscribe) {
+        err = client->SendAutoResubscribeRequest(std::move(params));
+    } else {
+        err = client->SendRequest(params);
+    }
+    if (err != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to send subcribe request");
+        return ESP_FAIL;
+    }
+    // The memory will be released when OnDone() is called
+    client.release();
+    client_deleter_callback.release();
+    return ESP_OK;
+}
+
+static constexpr size_t k_encoded_buf_size = chip::kMaxAppMessageLen;
+
+class client_deleter_write_callback : public WriteClient::Callback
+{
+public:
+    client_deleter_write_callback(WriteClient::Callback &callback) : m_callback(callback) {}
+    void OnResponse(const WriteClient * apWriteClient, const ConcreteDataAttributePath & aPath,
+                    StatusIB attributeStatus) override
+    {
+        m_callback.OnResponse(apWriteClient, aPath, attributeStatus);
+    }
+
+    void OnError(const WriteClient * apWriteClient, CHIP_ERROR aError) override
+    {
+        m_callback.OnError(apWriteClient, aError);
+    }
+
+    void OnDone(WriteClient *apWriteClient) override
+    {
+        m_callback.OnDone(apWriteClient);
+        chip::Platform::Delete(apWriteClient);
+        chip::Platform::Delete(this);
+    }
+private:
+    WriteClient::Callback & m_callback;
+};
+
+static esp_err_t encode_attribute_value(uint8_t *encoded_buf, size_t encoded_buf_size, const char *attr_val_json_str,
+                                        TLVReader &out_reader)
+{
+    TLVWriter writer;
+    uint32_t encoded_len = 0;
+    TLVReader reader;
+    esp_err_t err = ESP_OK;
+
+    writer.Init(encoded_buf, encoded_buf_size);
+    if ((err = json_to_tlv(attr_val_json_str, writer, chip::TLV::AnonymousTag())) != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to parse attribute value");
+        return err;
+    }
+    if (writer.Finalize() != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to finalize tlv writer");
+        return ESP_FAIL;
+    }
+    encoded_len = writer.GetLengthWritten();
+    reader.Init(encoded_buf, encoded_len);
+    if (reader.Next() != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to read next");
+        return ESP_FAIL;
+    }
+    if (reader.GetType() != chip::TLV::TLVType::kTLVType_Structure) {
+        ESP_LOGE(TAG, "The TLV type must be structure");
+        return ESP_ERR_INVALID_ARG;
+    }
+    if (reader.OpenContainer(out_reader) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to open container");
+        return ESP_FAIL;
+    }
+    if (out_reader.Next() != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to read next");
+        return ESP_FAIL;
+    }
+    return ESP_OK;
+}
+
+esp_err_t send_write_command(client::peer_device_t *remote_device, AttributePathParams &attr_path,
+                             const char *attr_val_json_str, WriteClient::Callback &callback,
+                             const chip::Optional<uint16_t> &timeout_ms)
+{
+    esp_err_t err = ESP_OK;
+    if (!remote_device->GetSecureSession().HasValue() || remote_device->GetSecureSession().Value()->IsGroupSession()) {
+        ESP_LOGE(TAG, "Invalid Session Type");
+        return ESP_ERR_INVALID_ARG;
+    }
+    if (attr_path.HasWildcardEndpointId()) {
+        ESP_LOGE(TAG, "Endpoint Id Invalid");
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    ConcreteDataAttributePath path(attr_path.mEndpointId, attr_path.mClusterId, attr_path.mAttributeId);
+
+    auto client_deleter_callback = chip::Platform::MakeUnique<client_deleter_write_callback>(callback);
+    if (!client_deleter_callback) {
+        ESP_LOGE(TAG, "Failed to allocate memory for client deleter callback");
+        return ESP_ERR_NO_MEM;
+    }
+    auto write_client = chip::Platform::MakeUnique<WriteClient>(remote_device->GetExchangeManager(),
+                                                                client_deleter_callback.get(), timeout_ms, false);
+    if (!write_client) {
+        ESP_LOGE(TAG, "Failed to allocate memory for WriteClient");
+        return ESP_ERR_NO_MEM;
+    }
+    chip::Platform::ScopedMemoryBuffer<uint8_t> encoded_buf;
+    encoded_buf.Alloc(k_encoded_buf_size);
+    if (!encoded_buf.Get()) {
+        ESP_LOGE(TAG, "Failed to alloc memory for encoded_buf");
+        return ESP_ERR_NO_MEM;
+    }
+    TLVReader attr_val_reader;
+    err = encode_attribute_value(encoded_buf.Get(), k_encoded_buf_size, attr_val_json_str, attr_val_reader);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to encode attribute value to a TLV reader");
+        return err;
+    }
+    if (write_client->PutPreencodedAttribute(path, attr_val_reader) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to put pre-encoded attribute value to WriteClient");
+        return ESP_FAIL;
+    }
+    if (write_client->SendWriteRequest(remote_device->GetSecureSession().Value()) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to Send Write Request");
+        return ESP_FAIL;
+    }
+    // Release the write_client and client deleter callback as it will be managed by the client deleter callback
+    write_client.release();
+    client_deleter_callback.release();
+    return ESP_OK;
+}
+
+} // namespace interaction
 #endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 
 } // namespace esp_matter

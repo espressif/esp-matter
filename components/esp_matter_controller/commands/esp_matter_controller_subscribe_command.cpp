@@ -37,40 +37,13 @@ void subscribe_command::on_device_connected_fcn(void *context, ExchangeManager &
                                                 const SessionHandle &sessionHandle)
 {
     subscribe_command *cmd = (subscribe_command *)context;
-    ReadPrepareParams params(sessionHandle);
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    if (cmd->m_attr_paths.AllocatedSize() == 0 && cmd->m_event_paths.AllocatedSize() == 0) {
-        ESP_LOGE(TAG, "Cannot send Subscribe command with NULL attribute path and NULL event path");
-        chip::Platform::Delete(cmd);
-        return;
-    }
-
-    params.mpAttributePathParamsList = cmd->m_attr_paths.Get();
-    params.mAttributePathParamsListSize = cmd->m_attr_paths.AllocatedSize();
-    params.mpEventPathParamsList = cmd->m_event_paths.Get();
-    params.mEventPathParamsListSize = cmd->m_event_paths.AllocatedSize();
-    params.mIsFabricFiltered = 0;
-    params.mpDataVersionFilterList = nullptr;
-    params.mDataVersionFilterListSize = 0;
-    params.mMinIntervalFloorSeconds = cmd->m_min_interval;
-    params.mMaxIntervalCeilingSeconds = cmd->m_max_interval;
-    params.mKeepSubscriptions = true;
-
-    ReadClient *client =
-        chip::Platform::New<ReadClient>(InteractionModelEngine::GetInstance(), &exchangeMgr, cmd->m_buffered_read_cb,
-                                        ReadClient::InteractionType::Subscribe);
-    if (!client) {
-        ESP_LOGE(TAG, "Failed to alloc memory for read client");
-        chip::Platform::Delete(cmd);
-    }
-    if (cmd->m_auto_resubscribe) {
-        err = client->SendAutoResubscribeRequest(std::move(params));
-    } else {
-        err = client->SendRequest(params);
-    }
-    if (err != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to send read request");
-        chip::Platform::Delete(client);
+    chip::OperationalDeviceProxy device_proxy(&exchangeMgr, sessionHandle);
+    esp_err_t err = interaction::send_subscribe_command(&device_proxy, cmd->m_attr_paths.Get(),
+                                                        cmd->m_attr_paths.AllocatedSize(), cmd->m_event_paths.Get(),
+                                                        cmd->m_event_paths.AllocatedSize(), cmd->m_min_interval,
+                                                        cmd->m_max_interval, true, cmd->m_auto_resubscribe,
+                                                        cmd->m_buffered_read_cb);
+    if (err != ESP_OK) {
         chip::Platform::Delete(cmd);
     }
     return;
@@ -200,7 +173,6 @@ CHIP_ERROR subscribe_command::OnResubscriptionNeeded(ReadClient *apReadClient, C
 void subscribe_command::OnDone(ReadClient *apReadClient)
 {
     ESP_LOGI(TAG, "Subscription 0x%" PRIx32 " Done for remote node 0x%" PRIx64, m_subscription_id, m_node_id);
-    chip::Platform::Delete(apReadClient);
     if (subscribe_done_cb) {
         // This will be called when the subscription is terminated.
         subscribe_done_cb(m_node_id, m_subscription_id);
