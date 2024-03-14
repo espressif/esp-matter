@@ -1543,9 +1543,9 @@ esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t &val)
             } else {
                 val.type = current_attribute->val.type;
                 val.val.a.b = buffer;
-                val.val.a.s = len;
                 val.val.a.n = len;
                 val.val.a.t = len + (current_attribute->val.val.a.t - current_attribute->val.val.a.s);
+                val.val.a.s = len;
                 nvs_get_blob(handle, attribute_key, buffer, &len);
             }
         }
