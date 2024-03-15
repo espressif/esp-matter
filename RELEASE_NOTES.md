@@ -1,3 +1,9 @@
+# 14-February-2024
+
+- An optional argument, `max_val_size`, has been introduced to the `esp_matter::attribute::create()` API.
+  This argument is utilized specifically when creating attributes of the char string and long char string data types
+  to specify the maximum supported value size of an attribute.
+
 # 29-August-2023
 
 - `ot_storage` partition is no longer required for Thread devices as the mechanism for storing data related to the Thread network has been changed in the `openthread` component in ESP-IDF.

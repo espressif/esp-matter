@@ -34,6 +34,7 @@
 #include <app/util/attribute-storage.h>
 #include <credentials/DeviceAttestationCredsProvider.h>
 #include <credentials/FabricTable.h>
+#include <lib/core/DataModelTypes.h>
 #include <platform/CHIPDeviceLayer.h>
 #include <platform/DeviceInfoProvider.h>
 #include <platform/DiagnosticDataProvider.h>
@@ -147,6 +148,9 @@ typedef struct _attribute {
     esp_matter_attr_bounds_t *bounds;
     EmberAfDefaultOrMinMaxAttributeValue default_value;
     uint16_t default_value_size;
+    // This is required when creating metadata for char string and long char string types of attributes.
+    // The size in the attribute metadata remains constant and is verified during write operations.
+    uint16_t max_val_size;
     attribute::callback_t override_callback;
     struct _attribute *next;
 } _attribute_t;
@@ -606,7 +610,13 @@ esp_err_t enable(endpoint_t *endpoint)
              * when writing a longer string.
              */
             if (attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
-                matter_attributes[attribute_index].size = attribute->val.val.a.s;
+                // Once the metadata is created, the attribute size becomes fixed and cannot be modified thereafter.
+                // For string and long string types, the size should be the maximum size defined in the specification
+                // plus the size_for_storing_str_len. The length byte is 1 for char string and 2 for long char string.
+                // For example, the maximum size of the Node-Label in the basic information cluster is 32 bytes,
+                // and it is a char string. Therefore, the size should be (32 + 1).
+                uint16_t size_for_storing_str_len = attribute->val.val.a.t - attribute->val.val.a.s;
+                matter_attributes[attribute_index].size = attribute->max_val_size + size_for_storing_str_len;
             }
 
             matter_clusters[cluster_index].clusterSize += matter_attributes[attribute_index].size;
@@ -1075,7 +1085,8 @@ esp_err_t factory_reset()
 }
 
 namespace attribute {
-attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, esp_matter_attr_val_t val)
+attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, esp_matter_attr_val_t val,
+                    uint16_t max_val_size)
 {
     /* Find */
     if (!cluster) {
@@ -1103,6 +1114,7 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, es
     attribute->endpoint_id = current_cluster->endpoint_id;
     attribute->flags = flags;
     attribute->flags |= ATTRIBUTE_FLAG_EXTERNAL_STORAGE;
+    attribute->max_val_size = max_val_size;
 
     // After reboot, string and array are treated as Invalid. So need to store val.type and size of attribute value.
     attribute->val.type = val.type;
@@ -1535,9 +1547,9 @@ esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t &val)
             } else {
                 val.type = current_attribute->val.type;
                 val.val.a.b = buffer;
-                val.val.a.s = len;
                 val.val.a.n = len;
                 val.val.a.t = len + (current_attribute->val.val.a.t - current_attribute->val.val.a.s);
+                val.val.a.s = len;
                 nvs_get_blob(handle, attribute_key, buffer, &len);
             }
         }
@@ -1879,7 +1891,7 @@ uint32_t get_id(event_t *event)
 {
     if (!event) {
         ESP_LOGE(TAG, "Event cannot be NULL");
-        return NULL;
+        return chip::kInvalidEventId;
     }
     _event_t *current_event = (_event_t *)event;
     return current_event->event_id;
