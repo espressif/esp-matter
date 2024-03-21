@@ -1182,7 +1182,7 @@ esp_err_t send_add_scene(peer_device_t *remote_device, uint16_t remote_endpoint_
     command_data.sceneName = chip::CharSpan(scene_name, strnlen(scene_name, 16));
     command_data.extensionFieldSets = efs;
 
-    chip::Controller::ScenesCluster cluster(*remote_device->GetExchangeManager(),
+    chip::Controller::ScenesManagementCluster cluster(*remote_device->GetExchangeManager(),
                                             remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, add_scene_cb, send_command_failure_callback);
     return ESP_OK;
@@ -1195,7 +1195,7 @@ esp_err_t send_view_scene(peer_device_t *remote_device, uint16_t remote_endpoint
     command_data.groupID = group_id;
     command_data.sceneID = scene_id;
 
-    chip::Controller::ScenesCluster cluster(*remote_device->GetExchangeManager(),
+    chip::Controller::ScenesManagementCluster cluster(*remote_device->GetExchangeManager(),
                                             remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, view_scene_cb, send_command_failure_callback);
     return ESP_OK;
@@ -1208,7 +1208,7 @@ esp_err_t send_remove_scene(peer_device_t *remote_device, uint16_t remote_endpoi
     command_data.groupID = group_id;
     command_data.sceneID = scene_id;
 
-    chip::Controller::ScenesCluster cluster(*remote_device->GetExchangeManager(),
+    chip::Controller::ScenesManagementCluster cluster(*remote_device->GetExchangeManager(),
                                             remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, remove_scene_cb, send_command_failure_callback);
     return ESP_OK;
@@ -1220,7 +1220,7 @@ esp_err_t send_remove_all_scenes(peer_device_t *remote_device, uint16_t remote_e
     ScenesManagement::Commands::RemoveAllScenes::Type command_data;
     command_data.groupID = group_id;
 
-    chip::Controller::ScenesCluster cluster(*remote_device->GetExchangeManager(),
+    chip::Controller::ScenesManagementCluster cluster(*remote_device->GetExchangeManager(),
                                             remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, remove_all_scenes_cb, send_command_failure_callback);
     return ESP_OK;
@@ -1233,7 +1233,7 @@ esp_err_t send_store_scene(peer_device_t *remote_device, uint16_t remote_endpoin
     command_data.groupID = group_id;
     command_data.sceneID = scene_id;
 
-    chip::Controller::ScenesCluster cluster(*remote_device->GetExchangeManager(),
+    chip::Controller::ScenesManagementCluster cluster(*remote_device->GetExchangeManager(),
                                             remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, store_scene_cb, send_command_failure_callback);
     return ESP_OK;
@@ -1246,7 +1246,7 @@ esp_err_t send_recall_scene(peer_device_t *remote_device, uint16_t remote_endpoi
     command_data.groupID = group_id;
     command_data.sceneID = scene_id;
 
-    chip::Controller::ScenesCluster cluster(*remote_device->GetExchangeManager(),
+    chip::Controller::ScenesManagementCluster cluster(*remote_device->GetExchangeManager(),
                                             remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
@@ -1258,7 +1258,7 @@ esp_err_t send_get_scene_membership(peer_device_t *remote_device, uint16_t remot
     ScenesManagement::Commands::GetSceneMembership::Type command_data;
     command_data.groupID = group_id;
 
-    chip::Controller::ScenesCluster cluster(*remote_device->GetExchangeManager(),
+    chip::Controller::ScenesManagementCluster cluster(*remote_device->GetExchangeManager(),
                                             remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, get_scene_membership_cb, send_command_failure_callback);
     return ESP_OK;
