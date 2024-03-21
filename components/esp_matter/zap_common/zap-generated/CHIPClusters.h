@@ -42,11 +42,11 @@ public:
     ~GroupsCluster() {}
 };
 
-class DLL_EXPORT ScenesCluster : public ClusterBase
+class DLL_EXPORT ScenesManagementCluster : public ClusterBase
 {
 public:
-    ScenesCluster(Messaging::ExchangeManager & exchangeManager, const SessionHandle & session, EndpointId endpoint) : ClusterBase(exchangeManager, session, endpoint) {}
-    ~ScenesCluster() {}
+    ScenesManagementCluster(Messaging::ExchangeManager & exchangeManager, const SessionHandle & session, EndpointId endpoint) : ClusterBase(exchangeManager, session, endpoint) {}
+    ~ScenesManagementCluster() {}
 };
 
 class DLL_EXPORT OnOffCluster : public ClusterBase
