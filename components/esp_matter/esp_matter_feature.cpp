@@ -3812,5 +3812,392 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* electrical_energy_measurement */
 
+namespace door_lock {
+namespace feature {
+
+namespace pin_credential {
+
+uint32_t get_id()
+{
+    return (uint32_t)DoorLock::Feature::kPinCredential;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_number_of_pin_users_supported(cluster, config->number_pin_users_supported);
+    attribute::create_max_pin_code_length(cluster, config->max_pin_code_length);
+    attribute::create_min_pin_code_length(cluster, config->min_pin_code_length);
+    attribute::create_wrong_code_entry_limit(cluster, config->wrong_code_entry_limit);
+    attribute::create_user_code_temporary_disable_time(cluster, config->user_code_temporary_disable_time);
+
+    uint32_t cota_feature_map = feature::credential_over_the_air_access::get_id();
+    if (get_feature_map_value(cluster) & cota_feature_map) {
+        attribute::create_require_pin_for_remote_operation(cluster, config->require_pin_for_remote_operation);
+    }
+
+    uint32_t usr_feature_map = feature::user::get_id();
+    if (!(get_feature_map_value(cluster) & usr_feature_map)) {
+        /* todo: some commands for !USR & PIN feature not define in the
+        connectedhomeip/connectedhomeip/zzz_generated/app-common/app-common/zap-generated/ids/Commands.h
+        will update when added*/
+    }
+
+    return ESP_OK;
+}
+} /* pin_credential */
+
+namespace rfid_credential {
+
+uint32_t get_id()
+{
+    return (uint32_t)DoorLock::Feature::kRfidCredential;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_number_of_rfid_users_supported(cluster, config->number_rfid_users_supported);
+    attribute::create_max_rfid_code_length(cluster, config->max_rfid_code_length);
+    attribute::create_min_rfid_code_length(cluster, config->min_rfid_code_length);
+    attribute::create_wrong_code_entry_limit(cluster, config->wrong_code_entry_limit);
+    attribute::create_user_code_temporary_disable_time(cluster, config->user_code_temporary_disable_time);
+
+    uint32_t usr_feature_map = feature::user::get_id();
+    if (!(get_feature_map_value(cluster) & usr_feature_map)) {
+        /* todo: some commands for !USR & RID feature not define in the
+        connectedhomeip/connectedhomeip/zzz_generated/app-common/app-common/zap-generated/ids/Commands.h
+        will update when added*/
+    }
+
+    return ESP_OK;
+}
+
+} /* rfid_credential */
+
+namespace finger_credentials {
+
+uint32_t get_id()
+{
+    return (uint32_t)DoorLock::Feature::kFingerCredentials;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    uint32_t usr_feature_map = feature::user::get_id();
+    if (!(get_feature_map_value(cluster) & usr_feature_map)) {
+        /* todo: some commands for !USR & FGP feature not define in the
+        connectedhomeip/connectedhomeip/zzz_generated/app-common/app-common/zap-generated/ids/Commands.h
+        will update when added*/
+    }
+
+    return ESP_OK;
+}
+
+} /* finger_credentials */
+
+namespace logging {
+
+uint32_t get_id()
+{
+    return (uint32_t)DoorLock::Feature::kLogging;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* todo: all attributes for LOG feature not define in the
+    connectedhomeip/connectedhomeip/zzz_generated/app-common/app-common/zap-generated/ids/Attributes.h
+    will update when added*/
+
+    /* todo: all commands for LOG feature not define in the
+    connectedhomeip/connectedhomeip/zzz_generated/app-common/app-common/zap-generated/ids/Commands.h
+    will update when added*/
+
+    return ESP_OK;
+}
+
+} /* logging */
+
+namespace weekday_access_schedules {
+
+uint32_t get_id()
+{
+    return (uint32_t)DoorLock::Feature::kWeekDayAccessSchedules;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_number_of_weekday_schedules_supported_per_user(cluster, 1);
+    /* Commands */
+    command::create_set_weekday_schedule(cluster);
+    command::create_get_weekday_schedule(cluster);
+    command::create_get_weekday_schedule_response(cluster);
+    command::create_clear_weekday_schedule(cluster);
+
+    return ESP_OK;
+}
+
+} /* weekday_access_schedules */
+
+namespace door_position_sensor {
+
+uint32_t get_id()
+{
+    return (uint32_t)DoorLock::Feature::kDoorPositionSensor;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_door_state(cluster, 0);
+    attribute::create_door_open_events(cluster, 0);
+    attribute::create_door_close_events(cluster, 0);
+    attribute::create_open_period(cluster, 0);
+
+    /* events */
+    event::create_door_state_change(cluster);
+
+    return ESP_OK;
+}
+
+} /* door_position_sensor */
+
+namespace face_credentials {
+
+uint32_t get_id()
+{
+    return (uint32_t)DoorLock::Feature::kFaceCredentials;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* face_credentials */
+
+namespace credential_over_the_air_access {
+
+uint32_t get_id()
+{
+    return (uint32_t)DoorLock::Feature::kCredentialsOverTheAirAccess;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    uint32_t pin_credential_feature_map = feature::pin_credential::get_id();
+    if (get_feature_map_value(cluster) & pin_credential_feature_map) {
+        attribute::create_require_pin_for_remote_operation(cluster, config->require_pin_for_remote_operation);
+    }
+
+    return ESP_OK;
+}
+
+} /* credential_over_the_air_access */
+
+namespace user {
+
+uint32_t get_id()
+{
+    return (uint32_t)DoorLock::Feature::kUser;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    uint32_t pin = feature::pin_credential::get_id();
+    uint32_t rid = feature::rfid_credential::get_id();
+    uint32_t fgp = feature::finger_credentials::get_id();
+    uint32_t face = feature::face_credentials::get_id();
+    uint32_t feature = get_feature_map_value(cluster);
+    if ((feature & (pin | rid | fgp | face)) == 0) {
+        ESP_LOGE(TAG, "Should add at least one of PIN, RID, FGP and FACE feature before add USR feature");
+        return ESP_FAIL;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_number_of_total_users_supported(cluster, config->number_of_total_user_supported);
+    attribute::create_credential_rules_support(cluster, config->credential_rules_supported);
+    attribute::create_number_of_credentials_supported_per_user(cluster, config->number_of_credentials_supported_per_user);
+    attribute::create_expiring_user_timeout(cluster, config->expiring_user_timeout);
+
+    /* Commands */
+    command::create_set_user(cluster);
+    command::create_get_user(cluster);
+    command::create_get_user_response(cluster);
+    command::create_clear_user(cluster);
+    command::create_set_credential(cluster);
+    command::create_set_credential_response(cluster);
+    command::create_get_credential_status(cluster);
+    command::create_get_credential_status_response(cluster);
+    command::create_clear_credential(cluster);
+
+    /* Events */
+    event::create_lock_user_change(cluster);
+
+    return ESP_OK;
+}
+
+} /* user */
+
+namespace notification {
+
+uint32_t get_id()
+{
+    return (uint32_t)DoorLock::Feature::kNotification;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* notification */
+
+namespace year_day_access_schedules {
+
+uint32_t get_id()
+{
+    return (uint32_t)DoorLock::Feature::kYearDayAccessSchedules;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_number_of_year_day_schedules_supported_per_user(cluster, 1);
+
+    /* Commands */
+    command::create_set_year_day_schedule(cluster);
+    command::create_get_year_day_schedule(cluster);
+    command::create_get_year_day_schedule_response(cluster);
+    command::create_clear_year_day_schedule(cluster);
+
+    return ESP_OK;
+}
+
+} /* year_day_access_schedules */
+
+namespace holiday_schedules {
+
+uint32_t get_id()
+{
+    return (uint32_t)DoorLock::Feature::kHolidaySchedules;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_number_of_holiday_schedules_supported(cluster, 1);
+
+    /* Commands */
+    command::create_set_holiday_schedule(cluster);
+    command::create_get_holiday_schedule(cluster);
+    command::create_get_holiday_schedule_response(cluster);
+    command::create_clear_holiday_schedule(cluster);
+
+    return ESP_OK;
+}
+
+} /* holiday_schedules */
+
+namespace unbolting {
+
+uint32_t get_id()
+{
+    return (uint32_t)DoorLock::Feature::kUnbolt;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Commands */
+    command::create_unbolt_door(cluster);
+
+    return ESP_OK;
+}
+
+} /* unbolting */
+
+} /* feature */
+} /* door_lock */
+
 } /* cluster */
 } /* esp_matter */

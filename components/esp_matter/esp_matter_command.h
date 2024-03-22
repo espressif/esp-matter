@@ -300,6 +300,29 @@ namespace door_lock {
 namespace command {
 command_t *create_lock_door(cluster_t *cluster);
 command_t *create_unlock_door(cluster_t *cluster);
+command_t *create_unlock_with_timeout(cluster_t *cluster);
+command_t *create_set_weekday_schedule(cluster_t *cluster);
+command_t *create_get_weekday_schedule(cluster_t *cluster);
+command_t *create_get_weekday_schedule_response(cluster_t *cluster);
+command_t *create_clear_weekday_schedule(cluster_t *cluster);
+command_t *create_set_year_day_schedule(cluster_t *cluster);
+command_t *create_get_year_day_schedule(cluster_t *cluster);
+command_t *create_get_year_day_schedule_response(cluster_t *cluster);
+command_t *create_clear_year_day_schedule(cluster_t *cluster);
+command_t *create_set_holiday_schedule(cluster_t *cluster);
+command_t *create_get_holiday_schedule(cluster_t *cluster);
+command_t *create_get_holiday_schedule_response(cluster_t *cluster);
+command_t *create_clear_holiday_schedule(cluster_t *cluster);
+command_t *create_set_user(cluster_t *cluster);
+command_t *create_get_user(cluster_t *cluster);
+command_t *create_get_user_response(cluster_t *cluster);
+command_t *create_clear_user(cluster_t *cluster);
+command_t *create_set_credential(cluster_t *cluster);
+command_t *create_set_credential_response(cluster_t *cluster);
+command_t *create_get_credential_status(cluster_t *cluster);
+command_t *create_get_credential_status_response(cluster_t *cluster);
+command_t *create_clear_credential(cluster_t *cluster);
+command_t *create_unbolt_door(cluster_t *cluster);
 } /* command */
 } /* door_lock */
 

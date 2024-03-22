@@ -1774,6 +1774,126 @@ esp_err_t add(cluster_t *cluster);
 
 } /* feature */
 } /* electrical_energy_measurement */
+namespace door_lock {
+namespace feature {
+
+namespace pin_credential {
+typedef struct config {
+    uint16_t number_pin_users_supported;
+    uint8_t max_pin_code_length;
+    uint8_t min_pin_code_length;
+    uint8_t wrong_code_entry_limit;
+    uint8_t user_code_temporary_disable_time;
+    bool require_pin_for_remote_operation;
+    config() : number_pin_users_supported(5), max_pin_code_length(16), min_pin_code_length(4),
+               wrong_code_entry_limit(5), user_code_temporary_disable_time(5),
+               require_pin_for_remote_operation(true) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* pin_credential */
+
+namespace rfid_credential {
+typedef struct config {
+    uint16_t number_rfid_users_supported;
+    uint8_t max_rfid_code_length;
+    uint8_t min_rfid_code_length;
+    uint8_t wrong_code_entry_limit;
+    uint8_t user_code_temporary_disable_time;
+    config() : number_rfid_users_supported(5), max_rfid_code_length(16), min_rfid_code_length(4),
+               wrong_code_entry_limit(5), user_code_temporary_disable_time(5) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* rfid_credential */
+
+namespace finger_credentials {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* finger_credentials */
+
+namespace logging {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* logging */
+
+namespace weekday_access_schedules {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* weekday_access_schedules */
+
+namespace door_position_sensor {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* door_position_sensor */
+
+namespace face_credentials {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* face_credentials */
+
+namespace credential_over_the_air_access {
+typedef struct config {
+    bool require_pin_for_remote_operation;
+    config() : require_pin_for_remote_operation(false) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* credential_over_the_air_access */
+
+namespace user {
+typedef struct config {
+    uint16_t number_of_total_user_supported;
+    uint16_t expiring_user_timeout;
+    uint8_t credential_rules_supported;
+    uint8_t number_of_credentials_supported_per_user;
+    config() : number_of_total_user_supported(5), expiring_user_timeout(5), credential_rules_supported(0), number_of_credentials_supported_per_user(3) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* user */
+
+namespace notification {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* notification */
+
+namespace year_day_access_schedules {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* year_day_access_schedules */
+
+namespace holiday_schedules {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* holiday_schedules */
+
+namespace holiday_schedules {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* holiday_schedules */
+
+namespace unbolting {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* unbolting */
+
+} /* feature */
+}/* door_lock */
 
 } /* cluster */
 } /* esp_matter */
