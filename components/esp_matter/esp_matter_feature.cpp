@@ -4165,6 +4165,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         ESP_LOGE(TAG, "Should add at least one of PIN, RID, FGP and FACE feature before add USR feature");
         return ESP_FAIL;
     }
+
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */

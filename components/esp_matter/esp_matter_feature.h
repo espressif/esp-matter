@@ -1822,6 +1822,7 @@ esp_err_t add(cluster_t *cluster);
 
 } /* feature */
 } /* electrical_energy_measurement */
+
 namespace door_lock {
 namespace feature {
 
