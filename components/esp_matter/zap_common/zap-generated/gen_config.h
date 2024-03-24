@@ -124,7 +124,7 @@
 #define ZCL_USING_PUMP_CONFIG_CONTROL_CLUSTER_SERVER
 #define ZCL_USING_PWM_CLUSTER_SERVER
 #define ZCL_USING_RELATIVE_HUMIDITY_MEASUREMENT_CLUSTER_SERVER
-#define ZCL_USING_SCENES_CLUSTER_SERVER
+#define ZCL_USING_SCENES_MANAGEMENT_CLUSTER_SERVER
 #define ZCL_USING_SHADE_CONFIG_CLUSTER_SERVER
 #define ZCL_USING_SODIUM_CONCENTRATION_MEASUREMENT_CLUSTER_SERVER
 #define ZCL_USING_SOFTWARE_DIAGNOSTICS_CLUSTER_SERVER
@@ -153,6 +153,7 @@
 /* Cluster specific macros which are generic */
 #define MATTER_DM_PLUGIN_ON_OFF                              // used in level control
 
+#define MATTER_DM_PLUGIN_LEVEL_CONTROL
 #define MATTER_DM_PLUGIN_LEVEL_CONTROL_MAXIMUM_LEVEL 254     // used in level control
 #define MATTER_DM_PLUGIN_LEVEL_CONTROL_MINIMUM_LEVEL 0       // used in level control
 #define MATTER_DM_PLUGIN_LEVEL_CONTROL_RATE 0                // used in level control
@@ -163,7 +164,7 @@
 
 #define MATTER_DM_PLUGIN_GROUPS_SERVER                       // used in scenes, util
 
-#define MATTER_DM_PLUGIN_SCENES                              // used in groups, level control, on off
+#define MATTER_DM_PLUGIN_SCENES_MANAGEMENT                   // used in groups, level control, on off
 
 #define MATTER_DM_PLUGIN_IAS_ZONE_SERVER_ZONE_TYPE 541       // used in ias zone server
 

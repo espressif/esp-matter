@@ -1187,8 +1187,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 } /* groups */
 
 namespace scenes_management {
-const function_generic_t *function_list = NULL;
-const int function_flags = CLUSTER_FLAG_NONE;
+const function_generic_t function_list[] = {
+    (function_generic_t)emberAfScenesManagementClusterServerInitCallback,
+    (function_generic_t)MatterScenesManagementClusterServerShutdownCallback,
+};
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -1214,7 +1217,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_last_configured_by(cluster, 0);
             attribute::create_scene_table_size(cluster, config->scene_table_size);
             attribute::create_fabric_scene_info(cluster, NULL, 0, 0);
         } else {
