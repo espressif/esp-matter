@@ -709,6 +709,18 @@ static esp_err_t console_set_handler(int argc, char **argv)
             uint16_t value = atoi(argv[3]);
             val = esp_matter_enum16(value);
         }
+    } else if (type == ESP_MATTER_VAL_TYPE_FLOAT) {
+        if (matter_attribute->IsNullable()) {
+            if (strncmp(argv[3], "null", sizeof("null")) == 0) {
+                val = esp_matter_nullable_float(nullable<float>());
+            } else {
+                float value = (float)atof(argv[3]);
+                val = esp_matter_nullable_float(value);
+            }
+        } else {
+            float value = (float)atof(argv[3]);
+            val = esp_matter_float(value);
+        }
     } else {
         ESP_LOGE(TAG, "Type not handled: %d", type);
         return ESP_ERR_INVALID_ARG;
@@ -934,6 +946,20 @@ static esp_err_t console_get_handler(int argc, char **argv)
             }
         } else {
             val = esp_matter_enum16(Traits::StorageToWorking(value));
+        }
+    } else if (type == ESP_MATTER_VAL_TYPE_FLOAT) {
+        using Traits = chip::app::NumericAttributeTraits<float>;
+        Traits::StorageType value;
+        uint8_t *read_able = Traits::ToAttributeStoreRepresentation(value);
+        get_val_raw(endpoint_id, cluster_id, attribute_id, read_able, sizeof(value));
+        if (matter_attribute->IsNullable()) {
+            if (Traits::IsNullValue(value)) {
+                val = esp_matter_nullable_float(nullable<float>());
+            } else {
+                val = esp_matter_nullable_float(Traits::StorageToWorking(value));
+            }
+        } else {
+            val = esp_matter_float(Traits::StorageToWorking(value));
         }
     } else {
         ESP_LOGE(TAG, "Type not handled: %d", type);
@@ -1824,6 +1850,22 @@ static esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttri
             }
         } else {
             *val = esp_matter_bitmap16(attribute_value);
+        }
+        break;
+    }
+
+    case ZCL_SINGLE_ATTRIBUTE_TYPE: {
+        using Traits = chip::app::NumericAttributeTraits<float>;
+        Traits::StorageType attribute_value;
+        memcpy((float *)&attribute_value, value, sizeof(Traits::StorageType));
+        if (attribute_metadata->IsNullable()) {
+            if (Traits::IsNullValue(attribute_value)) {
+                *val = esp_matter_nullable_float(nullable<float>());
+            } else {
+                *val = esp_matter_nullable_float(attribute_value);
+            }
+        } else {
+            *val = esp_matter_float(attribute_value);
         }
         break;
     }
