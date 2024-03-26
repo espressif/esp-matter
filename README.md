@@ -13,7 +13,7 @@ Espressif's SDK for Matter is the official Matter development framework for ESP3
 
 ## Supported ESP-IDF and connectedhomeip versions
 
-- This SDK currently works with tag [v1.1.0.2](https://github.com/project-chip/connectedhomeip/tree/v1.1.0.2) of connectedhomeip.
+- This SDK currently works with [v1.1-branch](https://github.com/project-chip/connectedhomeip/tree/v1.1-branch) of connectedhomeip.
 - For Matter projects development with this SDK, it is recommended to utilize ESP-IDF [Release v5.1.1](https://github.com/espressif/esp-idf/tree/v5.1.1)
 
 
