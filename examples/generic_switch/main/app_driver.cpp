@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <device.h>
+#include "bsp/esp-bsp.h"
 #include <esp_matter.h>
 #include <app-common/zap-generated/attributes/Accessors.h>
 
@@ -126,7 +126,7 @@ static void app_driver_button_multipress_complete(void *arg, void *data)
     // Press moves Position from 0 (idle) to 1 (press)
     uint8_t previousPosition = 1;
     uint8_t newPosition = 0;
-    static int total_number_of_presses_counted = current_number_of_presses_counted;
+    int total_number_of_presses_counted = current_number_of_presses_counted;
     lock::chip_stack_lock(portMAX_DELAY);
     chip::app::Clusters::Switch::Attributes::CurrentPosition::Set(switch_endpoint_id, newPosition);
     // MultiPress Complete event takes previousPosition and total_number_of_presses_counted as event data
@@ -140,25 +140,19 @@ static void app_driver_button_multipress_complete(void *arg, void *data)
 app_driver_handle_t app_driver_button_init(gpio_button * button)
 {
     /* Initialize button */
-    button_config_t config = button_driver_get_config();
-    if(button != NULL)
-    {
-            config.type =  button_type_t::BUTTON_TYPE_GPIO;
-            config.gpio_button_config.gpio_num = button->GPIO_PIN_VALUE;
-    }
-    button_handle_t handle = iot_button_create(&config);
-
+    button_handle_t btns[BSP_BUTTON_NUM];
+    ESP_ERROR_CHECK(bsp_iot_button_create(btns, NULL, BSP_BUTTON_NUM));
 
 #if CONFIG_GENERIC_SWITCH_TYPE_LATCHING
-    iot_button_register_cb(handle, BUTTON_DOUBLE_CLICK, app_driver_button_switch_latched, button);
+    iot_button_register_cb(btns[0], BUTTON_DOUBLE_CLICK, app_driver_button_switch_latched, button);
 #endif
 
 #if CONFIG_GENERIC_SWITCH_TYPE_MOMENTARY
-    iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_initial_pressed, button);
-    iot_button_register_cb(handle, BUTTON_PRESS_UP, app_driver_button_release, button);
-    iot_button_register_cb(handle, BUTTON_LONG_PRESS_START, app_driver_button_long_pressed, button);
-    iot_button_register_cb(handle, BUTTON_PRESS_REPEAT, app_driver_button_multipress_ongoing, button);
-    iot_button_register_cb(handle, BUTTON_PRESS_REPEAT_DONE, app_driver_button_multipress_complete, button);
+    iot_button_register_cb(btns[0], BUTTON_PRESS_DOWN, app_driver_button_initial_pressed, button);
+    iot_button_register_cb(btns[0], BUTTON_PRESS_UP, app_driver_button_release, button);
+    iot_button_register_cb(btns[0], BUTTON_LONG_PRESS_START, app_driver_button_long_pressed, button);
+    iot_button_register_cb(btns[0], BUTTON_PRESS_REPEAT, app_driver_button_multipress_ongoing, button);
+    iot_button_register_cb(btns[0], BUTTON_PRESS_REPEAT_DONE, app_driver_button_multipress_complete, button);
 #endif
-    return (app_driver_handle_t)handle;
+    return (app_driver_handle_t)btns[0];
 }
