@@ -5,9 +5,13 @@
    software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
    CONDITIONS OF ANY KIND, either express or implied.
 */
+#include <stdio.h>
+#include <string.h>
 
-#include <esp_err.h>
-#include <esp_log.h>
+#include "esp_err.h"
+#include "esp_log.h"
+#include "esp_console.h"
+
 #include <nvs_flash.h>
 
 #include <esp_matter.h>
@@ -16,7 +20,7 @@
 #include <common_macros.h>
 #include <app_priv.h>
 #include <app_reset.h>
-#include "esp_console.h"
+
 #include <helpers.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
@@ -33,15 +37,16 @@
 #endif // CONFIG_OPENTHREAD_BORDER_ROUTER
 
 
-
 static const char *TAG = "app_main";
 
+uint16_t app_endpoint_id = 0;
 // Semaphore is used to block esp_matter::start(), it will be unblock when we have
 // valid device type input from user.
 SemaphoreHandle_t semaphoreHandle = NULL;
 
 using namespace esp_matter;
 using namespace esp_matter::attribute;
+using namespace esp_matter::cluster;
 using namespace esp_matter::endpoint;
 using namespace chip::app::Clusters;
 
@@ -148,8 +153,14 @@ static esp_err_t app_identification_cb(identification::callback_type_t type, uin
 static esp_err_t app_attribute_update_cb(attribute::callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
                                          uint32_t attribute_id, esp_matter_attr_val_t *val, void *priv_data)
 {
+    esp_err_t err = ESP_OK;
     // If user want to use driver, can be called from here.
-    return ESP_OK;
+    if (type == PRE_UPDATE) {
+        /* Driver update */
+        app_driver_handle_t driver_handle = (app_driver_handle_t)priv_data;
+        err = app_driver_attribute_update(driver_handle, endpoint_id, cluster_id, attribute_id, val);
+    }
+    return err;
 }
 
 extern "C" void app_main()
@@ -166,7 +177,7 @@ extern "C" void app_main()
     ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
 
     uint8_t device_type_index;
-    if(esp_matter::nvs_helpers::get_device_type_from_nvs(&device_type_index) != ESP_OK) {
+    if (esp_matter::nvs_helpers::get_device_type_from_nvs(&device_type_index) != ESP_OK) {
         semaphoreHandle = xSemaphoreCreateBinary();
         ABORT_APP_ON_FAILURE(semaphoreHandle != nullptr, ESP_LOGE(TAG, "Failed to create semaphore"));
 
@@ -182,6 +193,10 @@ extern "C" void app_main()
         esp_matter::data_model::create(device_type_index);
     }
 
+    /* Initialize app driver, according to the device_type.
+    For now it's just for fan_control driver, Waiting for refinement*/
+    app_driver_init();
+
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     /* Set OpenThread platform config */
     esp_openthread_platform_config_t config = {
@@ -195,6 +210,9 @@ extern "C" void app_main()
     /* Matter start */
      err = esp_matter::start(app_event_cb);
      ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
+     if (err != ESP_OK) {
+         ESP_LOGE(TAG, "Matter start failed: %d", err);
+     }
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter::console::diagnostics_register_commands();
