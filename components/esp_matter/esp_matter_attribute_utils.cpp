@@ -1855,12 +1855,12 @@ void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
         ESP_LOGI(TAG, "********** %c : Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " is %f **********", action,
                  endpoint_id, cluster_id, attribute_id, val->val.f);
     } else if (val->type == ESP_MATTER_VAL_TYPE_INT8 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_INT8) {
-        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " is %" PRIi8 " **********", action,
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " is %i **********", action,
                  endpoint_id, cluster_id, attribute_id, val->val.i8);
     }  else if (val->type == ESP_MATTER_VAL_TYPE_UINT8 || val->type == ESP_MATTER_VAL_TYPE_BITMAP8
                || val->type == ESP_MATTER_VAL_TYPE_ENUM8 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT8
                || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8) {
-        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " is %" PRIu8 " **********", action,
+        ESP_LOGI(TAG, "********** %c : Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " is %u **********", action,
                  endpoint_id, cluster_id, attribute_id, val->val.u8);
     } else if (val->type == ESP_MATTER_VAL_TYPE_INT16 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_INT16) {
         ESP_LOGI(TAG, "********** %c : Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " is %" PRIi16 " **********", action,
