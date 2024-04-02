@@ -2009,5 +2009,32 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* microwave_oven_control */
 
+namespace valve_configuration_and_control {
+namespace feature {
+
+namespace time_sync {
+typedef struct config {
+    nullable<uint64_t> auto_close_time;
+    config() : auto_close_time() {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* time_sync */
+
+namespace level {
+typedef struct config {
+    nullable<uint8_t> current_level;
+    nullable<uint8_t> target_level;
+    config() : current_level(), target_level() {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* level */
+
+} /* feature */
+} /* valve_configuration_and_control */
+
 } /* cluster */
 } /* esp_matter */

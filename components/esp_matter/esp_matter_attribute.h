@@ -1061,5 +1061,21 @@ attribute_t *create_watt_rating(cluster_t *cluster, uint16_t value);
 } /* attribute */
 } /* microwave_oven_control */
 
+namespace valve_configuration_and_control {
+namespace attribute {
+attribute_t *create_open_duration(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_default_open_duration(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_auto_close_time(cluster_t *cluster, nullable<uint64_t> value);
+attribute_t *create_remaining_duration(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_current_state(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_target_state(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_current_level(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_target_level(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_default_open_level(cluster_t *cluster, uint8_t value);
+attribute_t *create_valve_fault(cluster_t *cluster, uint16_t value);
+attribute_t *create_level_step(cluster_t *cluster, const uint8_t value);
+} /* attribute */
+} /* valve_configuration_and_control */
+
 } /* cluster */
 } /* esp_matter */

@@ -434,6 +434,11 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::laundry_dryer::create(node, &laundry_dryer_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
+        case ESP_MATTER_WATER_VALVE: {
+            esp_matter::endpoint::water_valve::config_t water_valve_config;
+            endpoint = esp_matter::endpoint::water_valve::create(node, &water_valve_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
         default: {
             ESP_LOGE(TAG, "Please input a valid device type");
             break;

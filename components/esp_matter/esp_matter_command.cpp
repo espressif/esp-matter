@@ -1456,6 +1456,26 @@ static esp_err_t esp_matter_command_callback_enable_disable_alarm(const Concrete
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_open(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::ValveConfigurationAndControl::Commands::Open::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfValveConfigurationAndControlClusterOpenCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_close(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::ValveConfigurationAndControl::Commands::Close::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfValveConfigurationAndControlClusterCloseCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 namespace esp_matter {
 namespace cluster {
 
@@ -2778,6 +2798,21 @@ command_t *create_add_more_time(cluster_t *cluster)
 
 } /* command */
 } /* microwave_oven_control */
+
+namespace valve_configuration_and_control {
+namespace command {
+command_t *create_open(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ValveConfigurationAndControl::Commands::Open::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_open);
+}
+
+command_t *create_close(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ValveConfigurationAndControl::Commands::Close::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_close);
+}
+
+} /* command */
+} /* valve_configuration_and_control */
 
 } /* cluster */
 } /* esp_matter */

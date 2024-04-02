@@ -943,5 +943,20 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* energy_evse */
 
+namespace valve_configuration_and_control {
+typedef struct config {
+    uint16_t cluster_revision;
+    nullable<uint32_t> open_duration;
+    nullable<uint32_t> default_open_duration;
+    nullable<uint8_t> current_state;
+    nullable<uint8_t> target_state;
+    feature::time_sync::config_t time_sync;
+    feature::level::config_t level;
+    config() : cluster_revision(1), open_duration(), default_open_duration(), current_state(), target_state() {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* valve_configuration_and_control */
+
 } /* cluster */
 } /* esp_matter */
