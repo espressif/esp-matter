@@ -364,5 +364,12 @@ command_t *create_send_key_response(cluster_t *cluster);
 } /* command */
 } /* keypad_input */
 
+namespace boolean_state_configuration {
+namespace command {
+command_t *create_suppress_alarm(cluster_t *cluster);
+command_t *create_enable_disable_alarm(cluster_t *cluster);
+} /* command */
+} /* boolean_state_configuration */
+
 } /* cluster */
 } /* esp_matter */

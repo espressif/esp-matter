@@ -1627,5 +1627,57 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* keypad_input */
 
+namespace boolean_state_configuration {
+namespace feature {
+
+namespace visual {
+
+typedef struct config {
+    uint8_t alarms_active;
+    uint8_t alarms_supported;
+    config() : alarms_active(0), alarms_supported(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* visual */
+
+namespace audible {
+
+typedef struct config {
+    uint8_t alarms_active;
+    uint8_t alarms_supported;
+    config() : alarms_active(0), alarms_supported(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* audible */
+
+namespace alarm_suppress {
+
+typedef struct config {
+    uint8_t alarms_suppressed;
+    config() : alarms_suppressed(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* alarm_suppress */
+
+namespace sensitivity_level {
+
+typedef struct config {
+    uint8_t supported_sensitivity_levels;
+    config() : supported_sensitivity_levels(10) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* sensitivity_level */
+
+} /* feature */
+} /* boolean_state_configuration */
+
 } /* cluster */
 } /* esp_matter */

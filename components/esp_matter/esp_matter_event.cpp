@@ -453,6 +453,22 @@ event_t *create_state_change(cluster_t *cluster)
 } // namespace event
 } // namespace boolean_state
 
+namespace boolean_state_configuration {
+namespace event {
+
+event_t *create_alarms_state_changed(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, BooleanStateConfiguration::Events::AlarmsStateChanged::Id);
+}
+
+event_t *create_sensor_fault(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, BooleanStateConfiguration::Events::SensorFault::Id);
+}
+
+} // namespace event
+} // namespace boolean_state_configuration
+
 namespace operational_state {
 namespace event {
 

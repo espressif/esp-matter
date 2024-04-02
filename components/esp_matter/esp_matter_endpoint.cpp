@@ -1516,6 +1516,45 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /* water_leak_detector */
 
+namespace rain_sensor {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_RAIN_SENSOR_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_RAIN_SENSOR_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    add(endpoint, config);
+    return endpoint;
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
+
+    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster_t *cluster = boolean_state::create(endpoint, &(config->boolean_state), CLUSTER_FLAG_SERVER);
+
+    boolean_state::event::create_state_change(cluster);
+    return ESP_OK;
+}
+} /* rain_sensor */
+
 } /* endpoint */
 
 namespace node {

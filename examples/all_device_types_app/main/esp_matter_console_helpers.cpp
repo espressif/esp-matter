@@ -359,6 +359,11 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::power_source_device::create(node, &power_source_device_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
+        case ESP_MATTER_RAIN_SENSOR: {
+            esp_matter::endpoint::rain_sensor::config_t rain_sensor_config;
+            endpoint = esp_matter::endpoint::rain_sensor::create(node, &rain_sensor_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
         default: {
             ESP_LOGE(TAG, "Please input a valid device type");
             break;

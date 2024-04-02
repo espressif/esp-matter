@@ -655,6 +655,19 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* boolean_state */
 
+namespace boolean_state_configuration {
+typedef struct config {
+    uint16_t cluster_revision;
+    feature::visual::config_t visual;
+    feature::audible::config_t audible;
+    feature::alarm_suppress::config_t alarm_suppress;
+    feature::sensitivity_level::config_t sensitivity_level;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* boolean_state */
+
 namespace localization_configuration {
 typedef struct config {
     uint16_t cluster_revision;
