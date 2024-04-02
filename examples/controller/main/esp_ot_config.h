@@ -28,7 +28,7 @@
     {                                                      \
         .radio_mode = RADIO_MODE_UART_RCP,                 \
         .radio_uart_config = {                             \
-            .port = UART_NUM_1,                                     \
+            .port = UART_NUM_1,                            \
             .uart_config =                                 \
                 {                                          \
                     .baud_rate = 460800,                   \
