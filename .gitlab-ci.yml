@@ -13,6 +13,7 @@ variables:
     IDF_SKIP_CHECK_SUBMODULES: 1
     # This folder was on the runner host
     MATTER_CACHE_DIR: /cache/matter_build
+    IDF_CHECKOUT_REF: "v5.1.2"
 
 .add_gitlab_ssh_key: &add_gitlab_ssh_key |
   mkdir -p ~/.ssh
