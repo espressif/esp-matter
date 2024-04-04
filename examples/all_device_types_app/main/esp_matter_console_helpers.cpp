@@ -375,6 +375,11 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::water_leak_detector::create(node, &water_leak_detector_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
+        case ESP_MATTER_WATER_FREEZE_DETECTOR: {
+            esp_matter::endpoint::water_freeze_detector::config_t water_freeze_detector_config;
+            endpoint = esp_matter::endpoint::water_freeze_detector::create(node, &water_freeze_detector_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
         case ESP_MATTER_POWER_SOURCE: {
             esp_matter::endpoint::power_source_device::config_t power_source_device_config;
             endpoint = esp_matter::endpoint::power_source_device::create(node, &power_source_device_config, ENDPOINT_FLAG_NONE, NULL);

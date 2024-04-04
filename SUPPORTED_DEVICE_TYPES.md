@@ -55,6 +55,7 @@ g. Sensors
 8. Smoke CO Alarm
 9. Water Leak Detector
 10. Rain Sensor
+11. Water Freeze Detector
 
 h. Robotic
 1. Robotic Vacuum Cleaner
