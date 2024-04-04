@@ -47,6 +47,7 @@ enum device_type_enum {
     ESP_MATTER_ENERGY_EVSE,
     ESP_MATTER_MICROWAVE_OVEN,
     ESP_MATTER_EXTRACTOR_HOOD,
+    ESP_MATTER_LAUNDRY_DRYER,
     ESP_MATTER_DEVICE_TYPE_MAX
 };
 
@@ -99,6 +100,7 @@ const device_type_name device_type_list[ESP_MATTER_DEVICE_TYPE_MAX] = {
     {"cooktop", ESP_MATTER_COOKTOP},
     {"energy_evse", ESP_MATTER_ENERGY_EVSE},
     {"microwave_oven", ESP_MATTER_MICROWAVE_OVEN},
-    {"extractor_hood", ESP_MATTER_EXTRACTOR_HOOD}
+    {"extractor_hood", ESP_MATTER_EXTRACTOR_HOOD},
+	{"laundry_dryer", ESP_MATTER_LAUNDRY_DRYER}
 };
 } /* namespace esp_matter */

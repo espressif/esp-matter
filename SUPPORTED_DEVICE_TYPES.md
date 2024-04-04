@@ -72,3 +72,4 @@ i. Appliance
 9. Energy Evse
 10. Microwave Oven
 11. Extractor Hood
+12. Laundry Dryer

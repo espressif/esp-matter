@@ -79,6 +79,8 @@
 #define ESP_MATTER_MICROWAVE_OVEN_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_SMOKE_CO_ALARM_DEVICE_TYPE_ID 0x0076
 #define ESP_MATTER_SMOKE_CO_ALARM_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_LAUNDRY_DRYER_DEVICE_TYPE_ID 0x007C
+#define ESP_MATTER_LAUNDRY_DRYER_DEVICE_TYPE_VERSION 1
 
 #define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
 #define ESP_MATTER_FAN_DEVICE_TYPE_VERSION 1
@@ -387,6 +389,17 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* laundry_washer */
+
+namespace laundry_dryer {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::operational_state::config_t operational_state;
+} config_t;
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* laundry_dryer */
 
 namespace smoke_co_alarm {
 typedef struct config {

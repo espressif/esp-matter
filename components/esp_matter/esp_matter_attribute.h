@@ -703,6 +703,20 @@ attribute_t *create_supported_rinses(cluster_t *cluster, uint8_t *value, uint16_
 } /* attribute */
 } /* laundry_washer_controls */
 
+namespace laundry_dryer_controls {
+namespace attribute {
+attribute_t *create_supported_dryness_levels(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_selected_dryness_level(cluster_t *cluster, nullable<uint8_t> value);
+} /* attribute */
+} /* laundry_dryer_controls */
+
+namespace dish_washer_mode {
+namespace attribute {
+attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_current_mode(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* dish_washer_mode */
+
 namespace smoke_co_alarm {
 namespace attribute {
 attribute_t *create_expressed_state(cluster_t *cluster, uint8_t value);

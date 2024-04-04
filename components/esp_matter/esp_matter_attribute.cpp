@@ -2898,6 +2898,40 @@ attribute_t *create_supported_rinses(cluster_t *cluster, uint8_t *value, uint16_
 } /* attribute */
 } /* laundry_washer_controls */
 
+namespace laundry_dryer_controls {
+namespace attribute {
+attribute_t *create_supported_dryness_levels(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, LaundryDryerControls::Attributes::SupportedDrynessLevels::Id,
+            ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_selected_dryness_level(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, LaundryDryerControls::Attributes::SelectedDrynessLevel::Id,
+            ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_nullable_uint8(value));
+
+}
+
+} /* attribute */
+} /* laundry_dryer_controls */
+
+namespace dish_washer_mode {
+namespace attribute {
+
+attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, LaundryWasherMode::Attributes::SupportedModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, LaundryWasherMode::Attributes::CurrentMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+}
+
+} /* attribute */
+} /* dish_washer_mode */
+
 namespace smoke_co_alarm {
 namespace attribute {
 attribute_t *create_expressed_state(cluster_t *cluster, uint8_t value)
