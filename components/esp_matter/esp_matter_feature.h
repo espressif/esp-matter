@@ -1445,7 +1445,7 @@ namespace feature {
 namespace calendar_format {
 
 typedef struct config {
-    nullable<uint8_t> active_calendar_type;
+    uint8_t active_calendar_type;
     config() : active_calendar_type(0) {}
 } config_t;
 

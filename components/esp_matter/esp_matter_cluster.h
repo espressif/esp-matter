@@ -681,7 +681,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace time_format_localization {
 typedef struct config {
     uint16_t cluster_revision;
-    nullable<uint8_t> hour_format;
+    uint8_t hour_format;
     feature::calendar_format::config_t calendar_format;
     config() : cluster_revision(4), hour_format(0) {}
 } config_t;

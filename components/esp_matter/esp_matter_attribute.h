@@ -791,8 +791,8 @@ attribute_t *create_supported_locales(cluster_t *cluster, uint8_t *value, uint16
 
 namespace time_format_localization {
 namespace attribute {
-attribute_t *create_hour_format(cluster_t *cluster, nullable<uint8_t> value);
-attribute_t *create_active_calendar_type(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_hour_format(cluster_t *cluster, uint8_t value);
+attribute_t *create_active_calendar_type(cluster_t *cluster, uint8_t value);
 attribute_t *create_supported_calendar_types(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 } /* attribute */
 } /* time_format_localization */
