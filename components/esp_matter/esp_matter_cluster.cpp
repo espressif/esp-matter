@@ -3377,6 +3377,178 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* keypad_input */
 
+namespace power_topology {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, PowerTopology::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        add_function_list(cluster, function_list, function_flags);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+#if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+#endif
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    /* Features */
+    if (features & feature::node_topology::get_id()) {
+        feature::node_topology::add(cluster);
+    }
+    else if (features & feature::tree_topology::get_id()) {
+            feature::tree_topology::add(cluster);
+        }
+        else if (features & feature::set_topology::get_id()) {
+            feature::set_topology::add(cluster);
+            if (features & feature::dynamic_power_flow::get_id()) {
+                feature::dynamic_power_flow::add(cluster);
+            }
+        }
+    
+    return cluster;
+}
+} /* power_topology */
+
+namespace electrical_power_measurement {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, ElectricalPowerMeasurement::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        add_function_list(cluster, function_list, function_flags);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+#if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+#endif
+        attribute::create_power_mode(cluster, 0);
+        attribute::create_number_of_measurement_types(cluster, 0);
+        attribute::create_accuracy(cluster, NULL, 0, 0);
+        attribute::create_active_power(cluster, 0);
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    /* Features */
+    if((features & feature::direct_current::get_id()) || (features & feature::alternating_current::get_id())) {
+        if (features & feature::direct_current::get_id()) {
+            feature::direct_current::add(cluster);
+        }
+        if (features & feature::alternating_current::get_id()) {
+            feature::alternating_current::add(cluster);
+
+            if (features & feature::polyphase_power::get_id()) {
+                feature::polyphase_power::add(cluster);
+            }
+
+            if (features & feature::harmonics::get_id()) {
+                feature::harmonics::add(cluster);
+            }
+
+            if (features & feature::power_quality::get_id()) {
+                feature::power_quality::add(cluster);
+            }
+        }
+    } else {
+        ESP_LOGE(TAG, "At least one of the feature from Direct Current, Alternating Current shall be supported.");
+        return NULL;
+    }
+
+    return cluster;
+}
+} /* electrical_power_measurement */
+
+namespace electrical_energy_measurement {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, ElectricalEnergyMeasurement::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        add_function_list(cluster, function_list, function_flags);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+#if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+#endif
+        attribute::create_accuracy(cluster, NULL, 0, 0);
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    /* Features */
+    if((features & feature::imported_energy::get_id()) || (features & feature::exported_energy::get_id())) {
+        if (features & feature::imported_energy::get_id()) {
+            feature::imported_energy::add(cluster);
+        }
+        if (features & feature::exported_energy::get_id()) {
+            feature::exported_energy::add(cluster);
+        }
+    } else {
+        ESP_LOGE(TAG, "At least one of the feature from Imported Energy, Exported Energy shall be supported.");
+        return NULL;
+    }
+
+    if((features & feature::cumulative_energy::get_id()) || (features & feature::periodic_energy::get_id())) {
+        if (features & feature::cumulative_energy::get_id()) {
+            feature::cumulative_energy::add(cluster);
+        }
+        if (features & feature::periodic_energy::get_id()) {
+            feature::periodic_energy::add(cluster);
+        }
+    } else {
+        ESP_LOGE(TAG, "At least one of the feature from Cumulative Energy, Periodic Energy shall be supported.");
+        return NULL;
+    }
+
+    return cluster;
+}
+} /* electrical_energy_measurement */
+
 // namespace binary_input_basic {
 //     // ToDo
 // } /* binary_input_basic */

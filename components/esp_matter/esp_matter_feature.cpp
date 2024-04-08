@@ -3488,5 +3488,329 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* boolean_state_configuration */
 
+namespace power_topology {
+namespace feature {
+
+namespace node_topology {
+
+uint32_t get_id()
+{
+    return (uint32_t)PowerTopology::Feature::kNodeTopology;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+} /* node_topology */
+
+namespace tree_topology {
+
+uint32_t get_id()
+{
+    return (uint32_t)PowerTopology::Feature::kTreeTopology;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+} /* tree_topology */
+
+namespace set_topology {
+
+uint32_t get_id()
+{
+    return (uint32_t)PowerTopology::Feature::kSetTopology;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_available_endpoints(cluster, NULL, 0, 0);
+    return ESP_OK;
+}
+} /* set_topology */
+
+namespace dynamic_power_flow {
+
+uint32_t get_id()
+{
+    return (uint32_t)PowerTopology::Feature::kDynamicPowerFlow;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    uint32_t set_topology_feature_map = feature::set_topology::get_id();
+    if((get_feature_map_value(cluster) & set_topology_feature_map) == set_topology_feature_map) {
+
+        update_feature_map(cluster, get_id());
+
+        attribute::create_active_endpoints(cluster, NULL, 0, 0);
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support Set Topology feature");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+
+    return ESP_OK;
+}
+} /* dynamic_power_flow */
+
+} /* feature */
+} /* power_topology */
+
+namespace electrical_power_measurement {
+namespace feature {
+
+namespace direct_current {
+
+uint32_t get_id()
+{
+    return (uint32_t)ElectricalPowerMeasurement::Feature::kDirectCurrent;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+} /* direct_current */
+
+namespace alternating_current {
+
+uint32_t get_id()
+{
+    return (uint32_t)ElectricalPowerMeasurement::Feature::kAlternatingCurrent;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+} /* alternating_current */
+
+namespace polyphase_power {
+
+uint32_t get_id()
+{
+    return (uint32_t)ElectricalPowerMeasurement::Feature::kPolyphasePower;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    uint32_t ac_feature_map = feature::alternating_current::get_id();
+    if((get_feature_map_value(cluster) & ac_feature_map) == ac_feature_map) {
+
+        update_feature_map(cluster, get_id());
+
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support Alternating Current feature");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+
+
+    return ESP_OK;
+}
+} /* polyphase_power */
+
+namespace harmonics {
+
+uint32_t get_id()
+{
+    return (uint32_t)ElectricalPowerMeasurement::Feature::kHarmonics;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    uint32_t ac_feature_map = feature::alternating_current::get_id();
+    if((get_feature_map_value(cluster) & ac_feature_map) == ac_feature_map) {
+
+        update_feature_map(cluster, get_id());
+
+        attribute::create_harmonic_currents(cluster, NULL, 0, 0);
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support Alternating Current feature");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+
+
+    return ESP_OK;
+}
+} /* harmonics */
+
+namespace power_quality {
+
+uint32_t get_id()
+{
+    return (uint32_t)ElectricalPowerMeasurement::Feature::kPowerQuality;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    uint32_t ac_feature_map = feature::alternating_current::get_id();
+    if((get_feature_map_value(cluster) & ac_feature_map) == ac_feature_map) {
+
+        update_feature_map(cluster, get_id());
+
+        attribute::create_harmonic_phases(cluster, NULL, 0, 0);
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support Alternating Current feature");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+
+
+    return ESP_OK;
+}
+} /* power_quality */
+
+} /* feature */
+} /* electrical_power_measurement */
+
+namespace electrical_energy_measurement {
+namespace feature {
+
+namespace imported_energy {
+
+uint32_t get_id()
+{
+    return (uint32_t)ElectricalEnergyMeasurement::Feature::kImportedEnergy;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+} /* imported_energy */
+
+namespace exported_energy {
+
+uint32_t get_id()
+{
+    return (uint32_t)ElectricalEnergyMeasurement::Feature::kExportedEnergy;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+} /* exported_energy */
+
+namespace cumulative_energy {
+
+uint32_t get_id()
+{
+    return (uint32_t)ElectricalEnergyMeasurement::Feature::kCumulativeEnergy;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    update_feature_map(cluster, get_id());
+    uint32_t imported_feature_map = feature::imported_energy::get_id();
+    uint32_t exported_feature_map = feature::exported_energy::get_id();
+    if((get_feature_map_value(cluster) & imported_feature_map) == imported_feature_map) {
+        attribute::create_cumulative_energy_imported(cluster, NULL, 0, 0);
+    }
+    if((get_feature_map_value(cluster) & exported_feature_map) == exported_feature_map) {
+        attribute::create_cumulative_energy_exported(cluster, NULL, 0, 0);
+    }
+
+    event::create_cumulative_energy_measured(cluster);
+    return ESP_OK;
+}
+} /* cumulative_energy */
+
+namespace periodic_energy {
+
+uint32_t get_id()
+{
+    return (uint32_t)ElectricalEnergyMeasurement::Feature::kPeriodicEnergy;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    update_feature_map(cluster, get_id());
+    uint32_t imported_feature_map = feature::imported_energy::get_id();
+    uint32_t exported_feature_map = feature::exported_energy::get_id();
+    if((get_feature_map_value(cluster) & imported_feature_map) == imported_feature_map) {
+        attribute::create_periodic_energy_imported(cluster, NULL, 0, 0);
+    }
+    if((get_feature_map_value(cluster) & exported_feature_map) == exported_feature_map) {
+        attribute::create_periodic_energy_exported(cluster, NULL, 0, 0);
+    }
+
+    event::create_periodic_energy_measured(cluster);
+    return ESP_OK;
+}
+} /* periodic_energy */
+
+} /* feature */
+} /* electrical_energy_measurement */
+
 } /* cluster */
 } /* esp_matter */

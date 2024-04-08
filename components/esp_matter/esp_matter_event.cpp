@@ -680,5 +680,30 @@ esp_err_t send_turbine_operation()
 } // namespace event
 } // namespace pump_configuration_and_control
 
+namespace electrical_power_measurement {
+namespace event {
+
+event_t *create_measurement_period_ranges(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, ElectricalPowerMeasurement::Events::MeasurementPeriodRanges::Id);
+}
+} // namespace event
+} // namespace electrical_power_measurement
+
+namespace electrical_energy_measurement {
+namespace event {
+
+event_t *create_cumulative_energy_measured(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, ElectricalEnergyMeasurement::Events::CumulativeEnergyMeasured::Id);
+}
+
+event_t *create_periodic_energy_measured(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, ElectricalEnergyMeasurement::Events::PeriodicEnergyMeasured::Id);
+}
+} // namespace event
+} // namespace electrical_energy_measurement
+
 } // namespace cluster
 } // namespace esp_matter

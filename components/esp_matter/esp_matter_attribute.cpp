@@ -4117,5 +4117,162 @@ attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
 } /* attribute */
 } /* rvc_clean_mode */
 
+namespace power_topology {
+namespace attribute {
+
+attribute_t *create_available_endpoints(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, PowerTopology::Attributes::AvailableEndpoints::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_active_endpoints(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, PowerTopology::Attributes::ActiveEndpoints::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+} /* attribute */
+} /* power_topology */
+
+namespace electrical_power_measurement {
+namespace attribute {
+attribute_t *create_power_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::PowerMode::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_number_of_measurement_types(cluster_t *cluster, const uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::NumberOfMeasurementTypes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+}
+
+attribute_t *create_accuracy(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::Accuracy::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_ranges(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::Ranges::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_voltage(cluster_t *cluster, nullable<int64_t> value)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::Voltage::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+}
+
+attribute_t *create_active_current(cluster_t *cluster, nullable<int64_t> value)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::ActiveCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+}
+
+attribute_t *create_reactive_current(cluster_t *cluster, nullable<int64_t> value)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::ReactiveCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+}
+
+attribute_t *create_apparent_current(cluster_t *cluster, nullable<int64_t> value)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::ApparentCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+}
+
+attribute_t *create_active_power(cluster_t *cluster, nullable<int64_t> value)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::ActivePower::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+}
+
+attribute_t *create_reactive_power(cluster_t *cluster, nullable<int64_t> value)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::ReactivePower::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+}
+
+attribute_t *create_apparent_power(cluster_t *cluster, nullable<int64_t> value)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::ApparentPower::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+}
+
+attribute_t *create_rms_voltage(cluster_t *cluster, nullable<int64_t> value)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::RMSVoltage::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+}
+
+attribute_t *create_rms_current(cluster_t *cluster, nullable<int64_t> value)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::RMSCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+}
+
+attribute_t *create_rms_power(cluster_t *cluster, nullable<int64_t> value)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::RMSPower::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+}
+
+attribute_t *create_frequency(cluster_t *cluster, nullable<int64_t> value)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::Frequency::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+}
+
+attribute_t *create_harmonic_currents(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::HarmonicCurrents::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_harmonic_phases(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::HarmonicPhases::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_power_factor(cluster_t *cluster, nullable<int64_t> value)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::PowerFactor::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+}
+
+attribute_t *create_neutral_current(cluster_t *cluster, nullable<int64_t> value)
+{
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::NeutralCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+}
+
+} /* attribute */
+} /* electrical_power_measurement */
+
+namespace electrical_energy_measurement {
+namespace attribute {
+attribute_t *create_accuracy(cluster_t *cluster, const uint8_t* value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ElectricalEnergyMeasurement::Attributes::Accuracy::Id,
+            ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_cumulative_energy_imported(cluster_t *cluster, const uint8_t* value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ElectricalEnergyMeasurement::Attributes::
+        CumulativeEnergyImported::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_cumulative_energy_exported(cluster_t *cluster, const uint8_t* value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ElectricalEnergyMeasurement::Attributes::
+        CumulativeEnergyExported::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_periodic_energy_imported(cluster_t *cluster, const uint8_t* value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ElectricalEnergyMeasurement::Attributes::
+        PeriodicEnergyImported::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_periodic_energy_exported(cluster_t *cluster, const uint8_t* value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ElectricalEnergyMeasurement::Attributes::
+        PeriodicEnergyExported::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_cumulative_energy_reset(cluster_t *cluster, const uint8_t* value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ElectricalEnergyMeasurement::Attributes::
+        CumulativeEnergyReset::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+} /* attribute */
+} /* electrical_energy_measurement */
+
 } /* cluster */
 } /* esp_matter */
