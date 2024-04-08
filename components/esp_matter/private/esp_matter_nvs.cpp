@@ -203,10 +203,10 @@ static esp_err_t nvs_store_val(const char *nvs_namespace, const char *attribute_
         /* Store only if value is not NULL */
         if (val.val.a.b) {
             err = nvs_set_blob(handle, attribute_key, val.val.a.b, val.val.a.s);
-            nvs_commit(handle);
         } else {
-            err = ESP_OK;
+            err = nvs_erase_key(handle, attribute_key);
         }
+        nvs_commit(handle);
     } else {
         // Handling how to store attributes in NVS based on config option.
 #if CONFIG_ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE

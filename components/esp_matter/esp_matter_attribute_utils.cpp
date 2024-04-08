@@ -1271,7 +1271,10 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             if (attribute_type) {
                 *attribute_type = ZCL_CHAR_STRING_ATTRIBUTE_TYPE;
             }
-            size_t string_len = strnlen((const char *)val->val.a.b, val->val.a.s);
+            size_t string_len = 0;
+            if (val->val.a.b) {
+                string_len = strnlen((const char *)val->val.a.b, val->val.a.s);
+            }
             size_t data_size_len = val->val.a.t - val->val.a.s;
             if (string_len >= UINT8_MAX || data_size_len != 1) {
                 return ESP_ERR_INVALID_ARG;
@@ -1298,7 +1301,10 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             if (attribute_type) {
                 *attribute_type = ZCL_LONG_CHAR_STRING_ATTRIBUTE_TYPE;
             }
-            size_t string_len = strnlen((const char *)val->val.a.b, val->val.a.s);
+            size_t string_len = 0;
+            if (val->val.a.b) {
+                string_len = strnlen((const char *)val->val.a.b, val->val.a.s);
+            }
             size_t data_size_len = val->val.a.t - val->val.a.s;
             if (string_len >= UINT8_MAX || data_size_len != 2) {
                 return ESP_ERR_INVALID_ARG;
@@ -1926,11 +1932,15 @@ void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
         ESP_LOGI(TAG, "********** %c : Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " is %" PRIu64 " **********", action,
                  endpoint_id, cluster_id, attribute_id, val->val.u64);
     } else if (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
+        const char *b = val->val.a.b ? (const char *)val->val.a.b : "(empty)";
+        uint16_t s = val->val.a.b ? s : strlen("(empty)");
         ESP_LOGI(TAG, "********** %c : Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " is %.*s **********", action,
-                 endpoint_id, cluster_id, attribute_id, val->val.a.s, val->val.a.b);
+                 endpoint_id, cluster_id, attribute_id, s, b);
     } else if (val->type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING) {
+        const char *b = val->val.a.b ? (const char *)val->val.a.b : "(empty)";
+        uint16_t s = val->val.a.b ? s : strlen("(empty)");
         ESP_LOGI(TAG, "********** %c : Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " is %.*s **********", action,
-                 endpoint_id, cluster_id, attribute_id, val->val.a.s, val->val.a.b);
+                 endpoint_id, cluster_id, attribute_id, s, b);
     } else {
         ESP_LOGI(TAG, "********** %c : Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " is <invalid type: %d> **********", action,
                  endpoint_id, cluster_id, attribute_id, val->type);
