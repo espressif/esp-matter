@@ -16,14 +16,14 @@
 
 #include <stdint.h>
 
-#include <app/ConcreteAttributePath.h>
 #include <app/AttributePathParams.h>
+#include <app/ConcreteAttributePath.h>
 #include <app/EventHeader.h>
 #include <lib/core/TLVReader.h>
 
-using chip::Platform::ScopedMemoryBufferWithSize;
 using chip::app::AttributePathParams;
 using chip::app::EventPathParams;
+using chip::Platform::ScopedMemoryBufferWithSize;
 
 namespace esp_matter {
 namespace controller {
@@ -33,15 +33,16 @@ using event_report_cb_t = void (*)(uint64_t remote_node_id, const chip::app::Eve
                                    chip::TLV::TLVReader *data);
 using subscribe_done_cb_t = void (*)(uint64_t remote_node_id, uint32_t subscription_id);
 using subscribe_failure_cb_t = void (*)(void *subscribe_command);
-using read_done_cb_t = void (*)(uint64_t remote_node_id, const ScopedMemoryBufferWithSize<AttributePathParams> &attr_paths,
+using read_done_cb_t = void (*)(uint64_t remote_node_id,
+                                const ScopedMemoryBufferWithSize<AttributePathParams> &attr_paths,
                                 const ScopedMemoryBufferWithSize<EventPathParams> &EventPathParams);
 
-#if !CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+#if CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 /**
  * @brief Set the fabric index of the controller.
- *        The controller should be able to send commands to the devices on this fabric.
- *
- *      This should be called after the controller is added to the fabric.
+ *        If Matter server is enabled on the controller, the controller could join multiple fabrics.
+ *        We should choose one on which the controller is able to send commands to other end-devices.
+ *        This should be called after the controller server is added to the fabric.
  */
 void set_fabric_index(uint8_t fabric_index);
 
@@ -50,7 +51,7 @@ void set_fabric_index(uint8_t fabric_index);
  *
  */
 uint8_t get_fabric_index();
-#endif // !CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+#endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 
 } // namespace controller
 } // namespace esp_matter

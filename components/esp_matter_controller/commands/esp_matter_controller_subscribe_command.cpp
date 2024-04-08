@@ -12,13 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <app/server/Server.h>
 #include <controller/CommissioneeDeviceProxy.h>
 #include <esp_log.h>
-#if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-#include <esp_matter_commissioner.h>
-#else
-#include <app/server/Server.h>
-#endif
+#include <esp_matter_controller_client.h>
 #include <esp_matter_controller_subscribe_command.h>
 
 #include "DataModelLogger.h"
@@ -92,18 +89,27 @@ void subscribe_command::on_device_connection_failure_fcn(void *context, const Sc
 
 esp_err_t subscribe_command::send_command()
 {
-#if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-    if (CHIP_NO_ERROR ==
-        commissioner::get_device_commissioner()->GetConnectedDevice(m_node_id, &on_device_connected_cb,
-                                                                    &on_device_connection_failure_cb)) {
-        return ESP_OK;
-    }
-#else
+#ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
     chip::Server *server = &(chip::Server::GetInstance());
     server->GetCASESessionManager()->FindOrEstablishSession(ScopedNodeId(m_node_id, get_fabric_index()),
                                                             &on_device_connected_cb, &on_device_connection_failure_cb);
     return ESP_OK;
-#endif
+#else
+    auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
+#ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+    if (CHIP_NO_ERROR ==
+        controller_instance.get_commissioner()->GetConnectedDevice(m_node_id, &on_device_connected_cb,
+                                                                   &on_device_connection_failure_cb)) {
+        return ESP_OK;
+    }
+#else
+    if (CHIP_NO_ERROR ==
+        controller_instance.get_controller()->GetConnectedDevice(m_node_id, &on_device_connected_cb,
+                                                                 &on_device_connection_failure_cb)) {
+        return ESP_OK;
+    }
+#endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+#endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
     chip::Platform::Delete(this);
     return ESP_FAIL;
 }
@@ -304,7 +310,8 @@ esp_err_t send_shutdown_subscription(uint64_t node_id, uint32_t subscription_id)
     if (CHIP_NO_ERROR !=
         InteractionModelEngine::GetInstance()->ShutdownSubscription(
 #if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-            ScopedNodeId(node_id, commissioner::get_device_commissioner()->GetFabricIndex()), subscription_id)) {
+            ScopedNodeId(node_id, matter_controller_client::get_instance().get_commissioner()->GetFabricIndex()),
+            subscription_id)) {
 #else
             ScopedNodeId(node_id, /* fabric index */ 1), subscription_id)) {
 #endif

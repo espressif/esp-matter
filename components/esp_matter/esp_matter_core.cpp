@@ -1037,6 +1037,7 @@ static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
     // Wait for the matter stack to be initialized
     xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);
 #endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
+
     return ESP_OK;
 }
 
@@ -1068,11 +1069,14 @@ esp_err_t start(event_callback_t callback, intptr_t callback_arg)
         return err;
     }
     esp_matter_started = true;
+#ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
+    // If Matter server is not enabled. we will never use minimum unused endpoint id.
     err = node::read_min_unused_endpoint_id();
     // If the min_unused_endpoint_id is not found, we will write the current min_unused_endpoint_id in nvs.
     if (err == ESP_ERR_NVS_NOT_FOUND) {
         err = node::store_min_unused_endpoint_id();
     }
+#endif
     return err;
 }
 

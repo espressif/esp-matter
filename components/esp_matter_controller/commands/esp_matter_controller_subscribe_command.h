@@ -38,8 +38,10 @@ typedef enum {
     SUBSCRIBE_EVENT,
 } subscribe_command_type_t;
 
+/** Subscribe command class to send a subscribe interaction command to a server **/
 class subscribe_command : public ReadClient::Callback {
 public:
+    /** Constructor for command with multiple paths**/
     subscribe_command(uint64_t node_id, ScopedMemoryBufferWithSize<AttributePathParams> &&attr_paths,
                       ScopedMemoryBufferWithSize<EventPathParams> &&event_paths, uint16_t min_interval,
                       uint16_t max_interval, bool auto_resubscribe = true, attribute_report_cb_t attribute_cb = nullptr,
@@ -61,6 +63,10 @@ public:
     {
     }
 
+    /** Constructor for command with single path.
+     * @note 0xFFFF could be used as wildcard EndpointId
+     * @note 0xFFFFFFFF could be used as wildcard ClusterId/AttributeId/EventId
+     */
     subscribe_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_or_event_id,
                       subscribe_command_type_t command_type, uint16_t min_interval, uint16_t max_interval,
                       bool auto_resubscribe = true, attribute_report_cb_t attribute_cb = nullptr,
@@ -135,20 +141,84 @@ private:
     subscribe_failure_cb_t subscribe_failure_cb;
 };
 
+/** Send subscribe command with multiple attribute paths
+ *
+ * @note The three arrays should has the same size and the order of the three arrays should be the same as
+ * the attribute paths.
+ *
+ * @param[in] node_id Remote NodeId
+ * @param[in] endpoint_ids EndpointId array of the multiple attribute paths
+ * @param[in] cluster_ids ClusterId array of the multiple attribute paths
+ * @param[in] attribute_ids AttributeId array of the multiple attribute paths
+ * @param[in] min_interval Minimum interval of the subscription
+ * @param[in] max_interval Maximum interval of the subscription
+ * @param[in] auto_resubscribe Auto re-subscribe flag
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
 esp_err_t send_subscribe_attr_command(uint64_t node_id, ScopedMemoryBufferWithSize<uint16_t> &endpoint_ids,
                                       ScopedMemoryBufferWithSize<uint32_t> &cluster_ids,
                                       ScopedMemoryBufferWithSize<uint32_t> &attribute_ids, uint16_t min_interval,
                                       uint16_t max_interval, bool auto_resubscribe = true);
 
+/** Send subscribe command with multiple event paths
+ *
+ * @note The three arrays should has the same size and the order of the three arrays should be the same as
+ * the event paths.
+ *
+ * @param[in] node_id Remote NodeId
+ * @param[in] endpoint_ids EndpointId array of the multiple event paths
+ * @param[in] cluster_ids ClusterId array of the multiple event paths
+ * @param[in] event_ids EventId array of the multiple event paths
+ * @param[in] min_interval Minimum interval of the subscription
+ * @param[in] max_interval Maximum interval of the subscription
+ * @param[in] auto_resubscribe Auto re-subscribe flag
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
 esp_err_t send_subscribe_event_command(uint64_t node_id, ScopedMemoryBufferWithSize<uint16_t> &endpoint_ids,
                                        ScopedMemoryBufferWithSize<uint32_t> &cluster_ids,
                                        ScopedMemoryBufferWithSize<uint32_t> &event_ids, uint16_t min_interval,
                                        uint16_t max_interval, bool auto_resubscribe = true);
 
+/** Send subscribe command with single attribute path
+ *
+ * @note 0xFFFF could be used as wildcard EndpointId
+ * @note 0xFFFFFFFF could be used as wildcard ClusterId/AttributeId/EventId
+ *
+ * @param[in] node_id Remote NodeId
+ * @param[in] endpoint_id EndpointId of the attribute path
+ * @param[in] cluster_id ClusterId of the attribute path
+ * @param[in] attribute_id AttributeId of the attribue path
+ * @param[in] min_interval Minimum interval of the subscription
+ * @param[in] max_interval Maximum interval of the subscription
+ * @param[in] auto_resubscribe Auto re-subscribe flag
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
 esp_err_t send_subscribe_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id,
                                       uint32_t attribute_id, uint16_t min_interval, uint16_t max_interval,
                                       bool auto_resubscribe = true);
 
+/** Send subscribe command with single event path
+ *
+ * @note 0xFFFF could be used as wildcard EndpointId
+ * @note 0xFFFFFFFF could be used as wildcard ClusterId/AttributeId/EventId
+ *
+ * @param[in] node_id Remote NodeId
+ * @param[in] endpoint_id EndpointId of the event path
+ * @param[in] cluster_id ClusterId of the event path
+ * @param[in] event_id AttributeId of the event path
+ * @param[in] min_interval Minimum interval of the subscription
+ * @param[in] max_interval Maximum interval of the subscription
+ * @param[in] auto_resubscribe Auto re-subscribe flag
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
 esp_err_t send_subscribe_event_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t event_id,
                                        uint16_t min_interval, uint16_t max_interval, bool auto_resubscribe = true);
 

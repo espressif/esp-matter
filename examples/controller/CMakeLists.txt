@@ -37,11 +37,6 @@ project(controller)
 idf_build_set_property(CXX_COMPILE_OPTIONS "-std=gnu++17;-Os;-DCHIP_HAVE_CONFIG_H" APPEND)
 idf_build_set_property(C_COMPILE_OPTIONS "-Os" APPEND)
 
-if (CONFIG_ESP_MATTER_COMMISSIONER_ENABLE)
-    idf_build_set_property(CXX_COMPILE_OPTIONS "-DCHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY=1;-DCHIP_CONFIG_CONTROLLER_MAX_ACTIVE_DEVICES=${CONFIG_ESP_MATTER_COMMISSIONER_MAX_ACTIVE_DEVICES}" APPEND)
-    idf_build_set_property(C_COMPILE_OPTIONS "-DCHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY=1;-DCHIP_CONFIG_CONTROLLER_MAX_ACTIVE_DEVICES=${CONFIG_ESP_MATTER_COMMISSIONER_MAX_ACTIVE_DEVICES}" APPEND)
-endif()
-
 # For RISCV chips, project_include.cmake sets -Wno-format, but does not clear various
 # flags that depend on -Wformat
 idf_build_set_property(COMPILE_OPTIONS "-Wno-format-nonliteral;-Wno-format-security" APPEND)

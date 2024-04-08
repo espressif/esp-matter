@@ -36,8 +36,8 @@
 #include <protocols/secure_channel/RendezvousParameters.h>
 
 using chip::NodeId;
-using chip::Platform::ScopedMemoryBufferWithSize;
 using chip::Inet::IPAddress;
+using chip::Platform::ScopedMemoryBufferWithSize;
 using chip::Transport::PeerAddress;
 
 const static char *TAG = "controller_console";
@@ -50,7 +50,7 @@ static size_t get_array_size(const char *str)
         return 0;
     }
     size_t ret = 1;
-    for (size_t i = 0; i < strlen(str); ++ i) {
+    for (size_t i = 0; i < strlen(str); ++i) {
         if (str[i] == ',') {
             ret++;
         }
@@ -133,7 +133,7 @@ static esp_err_t controller_help_handler(int argc, char **argv)
     return ESP_OK;
 }
 
-#if CONFIG_ENABLE_ESP32_BLE_CONTROLLER
+#if defined(CONFIG_ENABLE_ESP32_BLE_CONTROLLER) && defined(CONFIG_ESP_MATTER_COMMISSIONER_ENABLE)
 static int char_to_int(char ch)
 {
     if ('A' <= ch && ch <= 'F') {
@@ -166,7 +166,7 @@ static bool convert_hex_str_to_bytes(const char *hex_str, uint8_t *bytes, uint8_
     }
     return true;
 }
-#endif // CONFIG_ENABLE_ESP32_BLE_CONTROLLER
+#endif // defined(CONFIG_ENABLE_ESP32_BLE_CONTROLLER) && defined(CONFIG_ESP_MATTER_COMMISSIONER_ENABLE)
 
 #if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 static esp_err_t controller_pairing_handler(int argc, char **argv)
@@ -225,7 +225,9 @@ static esp_err_t controller_pairing_handler(int argc, char **argv)
     }
     return ESP_ERR_INVALID_ARG;
 }
+#endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 
+#ifndef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 static esp_err_t controller_group_settings_handler(int argc, char **argv)
 {
     if (argc >= 1) {
@@ -290,7 +292,7 @@ static esp_err_t controller_group_settings_handler(int argc, char **argv)
     ESP_LOGI(TAG, "Unbind keyset : controller group-settings unbind-keyset <group_id> <ketset_id>");
     return ESP_OK;
 }
-#endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+#endif
 
 static esp_err_t controller_invoke_command_handler(int argc, char **argv)
 {
@@ -416,82 +418,83 @@ static esp_err_t controller_dispatch(int argc, char **argv)
 esp_err_t controller_register_commands()
 {
     // Subcommands for root command: `controller <subcommand>`
-    const static command_t controller_sub_commands[] = {
-        {
-            .name = "help",
-            .description = "print this page",
-            .handler = controller_help_handler,
-        },
+    const static command_t controller_sub_commands[] =
+    { {
+          .name = "help",
+          .description = "print this page",
+          .handler = controller_help_handler,
+      },
 #if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-        {
-            .name = "pairing",
-            .description = "Pairing a node.\n"
-                           "\tUsage: controller pairing onnetwork [nodeid] [pincode] OR\n"
-                           "\tcontroller pairing ble-wifi [nodeid] [ssid] [password] [pincode] [discriminator] OR\n"
-                           "\tcontroller pairing ble-thread [nodeid] [dataset] [pincode] [discriminator]",
-            .handler = controller_pairing_handler,
-        },
-        {
-            .name = "group-settings",
-            .description = "Managing the groups and keysets of the controller.\n"
-                           "\tUsage: controller group-settings <sub-commands>",
-            .handler = controller_group_settings_handler,
-        },
+      {
+          .name = "pairing",
+          .description = "Pairing a node.\n"
+                         "\tUsage: controller pairing onnetwork [nodeid] [pincode] OR\n"
+                         "\tcontroller pairing ble-wifi [nodeid] [ssid] [password] [pincode] [discriminator] OR\n"
+                         "\tcontroller pairing ble-thread [nodeid] [dataset] [pincode] [discriminator]",
+          .handler = controller_pairing_handler,
+      },
+      {
+          .name = "group-settings",
+          .description = "Managing the groups and keysets of the controller.\n"
+                         "\tUsage: controller group-settings <sub-commands>",
+          .handler = controller_group_settings_handler,
+      },
 #endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-        {
-            .name = "invoke-cmd",
-            .description =
-                "Send command to the nodes.\n"
-                "\tUsage: controller invoke-cmd [node-id|group-id] [endpoint-id] [cluster-id] [command-id] [payload]\n"
-                "\tNotes: group-id should start with prefix '0xFFFFFFFFFFFF', endpoint-id will be ignored if the fist "
-                "parameter is group-id.\n"
-                "\tNotes: The payload should be a JSON object that includes all the command data fields defined in the "
-                "SPEC. You can get the format of the payload from "
-                "https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#cluster-commands",
-            .handler = controller_invoke_command_handler,
-        },
-        {
-            .name = "read-attr",
-            .description = "Read attributes of the nodes.\n"
-                           "\tUsage: controller read-attr [node-id] [endpoint-id] [cluster-id] [attr-id]",
-            .handler = controller_read_attr_handler,
-        },
-        {
-            .name = "write-attr",
-            .description = "Write attributes of the nodes.\n"
-                           "\tUsage: controller write-attr [node-id|group-id] [endpoint-id] [cluster-id] [attr-id] "
-                           "[attr-value]\n"
-                           "\tNotes: attr-value should be a JSON object that contains the attribute value JSON item."
-                           "You can get the format of the attr-value from "
-                           "https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#write-attribute-commands",
-            .handler = controller_write_attr_handler,
-        },
-        {
-            .name = "read-event",
-            .description = "Read events of the nodes.\n"
-                           "\tUsage: controller read-event [node-id] [endpoint-id] [cluster-id] [event-id]",
-            .handler = controller_read_event_handler,
-        },
-        {
-            .name = "subs-attr",
-            .description = "Subscribe attributes of the nodes.\n"
-                           "\tUsage: controller subs-attr [node-id] [endpoint-id] [cluster-id] [attr-id] "
-                           "[min-interval] [max-interval]",
-            .handler = controller_subscribe_attr_handler,
-        },
-        {
-            .name = "subs-event",
-            .description = "Subscribe events of the nodes.\n"
-                           "\tUsage: controller subs-attr [node-id] [endpoint-id] [cluster-id] [event-id] "
-                           "[min-interval] [max-interval]",
-            .handler = controller_subscribe_event_handler,
-        },
-        {
-            .name = "shutdown-subs",
-            .description = "Shutdown subscription.\n"
-                           "\tUsage: controller shutdown-subs [node-id] [subscription-id]",
-            .handler = controller_shutdown_subscription_handler,
-        },
+      {
+          .name = "invoke-cmd",
+          .description =
+              "Send command to the nodes.\n"
+              "\tUsage: controller invoke-cmd [node-id|group-id] [endpoint-id] [cluster-id] [command-id] [payload]\n"
+              "\tNotes: group-id should start with prefix '0xFFFFFFFFFFFF', endpoint-id will be ignored if the fist "
+              "parameter is group-id.\n"
+              "\tNotes: The payload should be a JSON object that includes all the command data fields defined in the "
+              "SPEC. You can get the format of the payload from "
+              "https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#cluster-commands",
+          .handler = controller_invoke_command_handler,
+      },
+      {
+          .name = "read-attr",
+          .description = "Read attributes of the nodes.\n"
+                         "\tUsage: controller read-attr [node-id] [endpoint-id] [cluster-id] [attr-id]",
+          .handler = controller_read_attr_handler,
+      },
+      {
+          .name = "write-attr",
+          .description =
+              "Write attributes of the nodes.\n"
+              "\tUsage: controller write-attr [node-id|group-id] [endpoint-id] [cluster-id] [attr-id] "
+              "[attr-value]\n"
+              "\tNotes: attr-value should be a JSON object that contains the attribute value JSON item."
+              "You can get the format of the attr-value from "
+              "https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#write-attribute-commands",
+          .handler = controller_write_attr_handler,
+      },
+      {
+          .name = "read-event",
+          .description = "Read events of the nodes.\n"
+                         "\tUsage: controller read-event [node-id] [endpoint-id] [cluster-id] [event-id]",
+          .handler = controller_read_event_handler,
+      },
+      {
+          .name = "subs-attr",
+          .description = "Subscribe attributes of the nodes.\n"
+                         "\tUsage: controller subs-attr [node-id] [endpoint-id] [cluster-id] [attr-id] "
+                         "[min-interval] [max-interval]",
+          .handler = controller_subscribe_attr_handler,
+      },
+      {
+          .name = "subs-event",
+          .description = "Subscribe events of the nodes.\n"
+                         "\tUsage: controller subs-attr [node-id] [endpoint-id] [cluster-id] [event-id] "
+                         "[min-interval] [max-interval]",
+          .handler = controller_subscribe_event_handler,
+      },
+      {
+          .name = "shutdown-subs",
+          .description = "Shutdown subscription.\n"
+                         "\tUsage: controller shutdown-subs [node-id] [subscription-id]",
+          .handler = controller_shutdown_subscription_handler,
+      },
     };
 
     const static command_t controller_command = {

@@ -6,19 +6,19 @@ menu "ESP Matter Controller"
         help
             Enable the controller.
 
+    config ESP_MATTER_CONTROLLER_VENDOR_ID
+        int "Matter Controller Vendor ID"
+        depends on ESP_MATTER_CONTROLLER_ENABLE && !ESP_MATTER_ENABLE_MATTER_SERVER
+        default 4891
+        help
+            Vendor ID for the controller
+
     config ESP_MATTER_COMMISSIONER_ENABLE
         bool "Enable matter commissioner"
-        depends on ESP_MATTER_CONTROLLER_ENABLE
+        depends on ESP_MATTER_CONTROLLER_ENABLE && !ESP_MATTER_ENABLE_MATTER_SERVER
         default y
         help
             Enable the matter commissioner in the ESP Matter controller.
-
-    config ESP_MATTER_COMMISSIONER_MAX_ACTIVE_DEVICES
-        int "Max active device"
-        depends on ESP_MATTER_COMMISSIONER_ENABLE
-        default 5
-        help
-            Maximum number of active device the commissioner supports.
 
     config ESP_MATTER_CONTROLLER_JSON_STRING_BUFFER_LEN
         int "Max JSON string buffer length"
@@ -30,8 +30,8 @@ menu "ESP Matter Controller"
 
     config ESP_MATTER_CONTROLLER_CUSTOM_CLUSTER_ENABLE
         bool "Enable controller custom cluster"
-        depends on ESP_MATTER_CONTROLLER_ENABLE && !ESP_MATTER_COMMISSIONER_ENABLE
-        default y
+        depends on ESP_MATTER_CONTROLLER_ENABLE && ESP_MATTER_ENABLE_MATTER_SERVER
+        default n
         help
             Enable the custom cluster of matter controller in the ESP Matter controller for Rainmaker Fabric suppport.
 
@@ -51,6 +51,30 @@ menu "ESP Matter Controller"
             bool "Attestation Trust Store - Spiffs"
             help
                 Read the PAA root certificates from the spiffs partition
+
+        config CUSTOM_ATTESTATION_TRUST_STORE
+            bool "Attestation Trust Store - Custom"
+            help
+                Use the custom Attestation Trust Store
+
+    endchoice
+
+    choice ESP_MATTER_COMMISSIONER_OPERATIONAL_CREDS_ISSUER
+        prompt "Operational Credentials Issuer"
+        depends on !ESP_MATTER_ENABLE_MATTER_SERVER
+        default TEST_OPERATIONAL_CREDS_ISSUER
+        help
+            This option determines how the commissioner generates the NOC chains for the end-devices and itself.
+
+        config TEST_OPERATIONAL_CREDS_ISSUER
+            bool "Operational Credentials Issuer - Test"
+            help
+                Use the ExampleOperationalCredentialsIssuer from Matter controller Code
+
+        config CUSTOM_OPERATIONAL_CREDS_ISSUER
+            bool "Operational Credentials Issuer - Custom"
+            help
+                Use the custom OperationalCredentialsIssuer
 
     endchoice
 

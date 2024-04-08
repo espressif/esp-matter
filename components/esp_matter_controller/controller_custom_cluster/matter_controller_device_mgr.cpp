@@ -89,6 +89,7 @@ void print_device_list(matter_device_t *dev_list)
             ESP_LOGI(TAG, "        {");
             ESP_LOGI(TAG, "           endpoint_id: %d,", dev->endpoints[i].endpoint_id);
             ESP_LOGI(TAG, "           device_type_id: 0x%lx,", dev->endpoints[i].device_type_id);
+            ESP_LOGI(TAG, "           device_name: %s,", dev->endpoints[i].device_name);
             ESP_LOGI(TAG, "        },");
         }
         ESP_LOGI(TAG, "    ]");
@@ -195,6 +196,13 @@ static esp_err_t get_metadata(jparse_ctx_t *jctx, matter_device_t *dev)
                 json_obj_leave_array(jctx);
             }
             dev->endpoint_count = 1;
+            int device_name_len = ESP_MATTER_CONTROLLER_MAX_DEVICE_NAME_LEN;
+            if (json_obj_get_strlen(jctx, "deviceName", &device_name_len) == 0 &&
+                device_name_len < ESP_MATTER_CONTROLLER_MAX_DEVICE_NAME_LEN) {
+                json_obj_get_string(jctx, "deviceName", dev->endpoints[0].device_name,
+                                    ESP_MATTER_CONTROLLER_MAX_DEVICE_NAME_LEN);
+                dev->endpoints[0].device_name[device_name_len] = 0;
+            }
         }
         json_obj_get_bool(jctx, "isRainmaker", &(dev->is_rainmaker_device));
         json_obj_leave_object(jctx);

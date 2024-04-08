@@ -37,8 +37,10 @@ using esp_matter::client::peer_device_t;
 constexpr char *k_null_attribute_val_str = "null";
 constexpr size_t k_attr_val_str_buf_size = CONFIG_ESP_MATTER_CONTROLLER_JSON_STRING_BUFFER_LEN;
 
+/** Write command class to send a write interaction command to a server **/
 class write_command : public WriteClient::Callback {
 public:
+    /** Constructor for command with an attribute path**/
     write_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
                   const char *attribute_val_str)
         : m_node_id(node_id)
@@ -98,6 +100,18 @@ private:
     chip::Callback::Callback<chip::OnDeviceConnectionFailure> on_device_connection_failure_cb;
 };
 
+/** Send write attribute command
+ *
+ * @param[in] node_id Remote NodeId
+ * @param[in] endpoint_id EndpointId
+ * @param[in] cluster_id ClusterId
+ * @param[in] attribute_id AttributeId
+ * @param[in] attr_val_json_str Attribute value string with JSON format
+ *            (https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#write-attribute-commands)
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
 esp_err_t send_write_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
                                   const char *attr_val_json_str);
 

@@ -38,8 +38,10 @@ typedef enum {
     READ_EVENT,
 } read_command_type_t;
 
+/** Read command class to send a read interaction command to a server **/
 class read_command : public ReadClient::Callback {
 public:
+    /** Constructor for command with multiple paths**/
     read_command(uint64_t node_id, ScopedMemoryBufferWithSize<AttributePathParams> &&attr_paths,
                  ScopedMemoryBufferWithSize<EventPathParams> &&event_paths, attribute_report_cb_t attribute_cb,
                  read_done_cb_t read_cb_done, event_report_cb_t event_cb)
@@ -54,7 +56,10 @@ public:
         , event_data_cb(event_cb)
     {
     }
-
+    /** Constructor for command with single path.
+     * @note 0xFFFF could be used as wildcard EndpointId
+     * @note 0xFFFFFFFF could be used as wildcard ClusterId/AttributeId/EventId
+     */
     read_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_or_event_id,
                  read_command_type_t command_type, attribute_report_cb_t attribute_cb, read_done_cb_t read_cb_done,
                  event_report_cb_t event_cb)
@@ -113,19 +118,70 @@ private:
     attribute_report_cb_t attribute_data_cb;
     read_done_cb_t read_done_cb;
     event_report_cb_t event_data_cb;
-    
 };
 
+/** Send read command with multiple attribute paths
+ *
+ * @note The three arrays should has the same size and the order of the three arrays should be the same as
+ * the attribute paths.
+ *
+ * @param[in] node_id Remote NodeId
+ * @param[in] endpoint_ids EndpointId array of the multiple attribute paths
+ * @param[in] cluster_ids ClusterId array of the multiple attribute paths
+ * @param[in] attribute_ids AttributeId array of the multiple attribute paths
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
 esp_err_t send_read_attr_command(uint64_t node_id, ScopedMemoryBufferWithSize<uint16_t> &endpoint_ids,
                                  ScopedMemoryBufferWithSize<uint32_t> &cluster_ids,
                                  ScopedMemoryBufferWithSize<uint32_t> &attribute_ids);
 
+/** Send read command with multiple event paths
+ *
+ * @note The three arrays should has the same size and the order of the three arrays should be the same as
+ * the event paths.
+ *
+ * @param[in] node_id Remote NodeId
+ * @param[in] endpoint_ids EndpointId array of the multiple event paths
+ * @param[in] cluster_ids ClusterId array of the multiple event paths
+ * @param[in] event_ids EventId array of the multiple event paths
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
 esp_err_t send_read_event_command(uint64_t node_id, ScopedMemoryBufferWithSize<uint16_t> &endpoint_ids,
                                   ScopedMemoryBufferWithSize<uint32_t> &cluster_ids,
                                   ScopedMemoryBufferWithSize<uint32_t> &event_ids);
 
+/** Send read command with single attribute path
+ *
+ * @note 0xFFFF could be used as wildcard EndpointId
+ * @note 0xFFFFFFFF could be used as wildcard ClusterId/AttributeId/EventId
+ *
+ * @param[in] node_id Remote NodeId
+ * @param[in] endpoint_id EndpointId
+ * @param[in] cluster_id ClusterId
+ * @param[in] attribute_id AttributeId
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
 esp_err_t send_read_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id);
 
+/** Send read command with single event path
+ *
+ * @note 0xFFFF could be used as wildcard EndpointId
+ * @note 0xFFFFFFFF could be used as wildcard ClusterId/AttributeId/EventId
+ *
+ * @param[in] node_id Remote NodeId
+ * @param[in] endpoint_id EndpointId
+ * @param[in] cluster_id ClusterId
+ * @param[in] event_id EventId
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
 esp_err_t send_read_event_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t event_id);
 
 } // namespace controller

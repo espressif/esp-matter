@@ -21,10 +21,12 @@ namespace controller {
 namespace device_mgr {
 
 #define ESP_MATTER_DEVICE_MAX_ENDPOINT 8
+#define ESP_MATTER_CONTROLLER_MAX_DEVICE_NAME_LEN 32
 
 typedef struct endpoint_entry {
     uint16_t endpoint_id;
     uint32_t device_type_id;
+    char device_name[ESP_MATTER_CONTROLLER_MAX_DEVICE_NAME_LEN];
 } endpoint_entry_t;
 
 typedef struct matter_device {

@@ -12,19 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <esp_matter_commissioner.h>
+#include <esp_log.h>
+#include <esp_matter_controller_client.h>
 #include <esp_matter_controller_pairing_command.h>
 
 static const char *TAG = "pairing_command";
 
-using namespace esp_matter::commissioner;
 using namespace chip;
 using namespace chip::Controller;
 
 namespace esp_matter {
 namespace controller {
-
-pairing_command pairing_command::instance;
 
 void pairing_command::OnStatusUpdate(DevicePairingDelegate::Status status)
 {
@@ -60,14 +58,11 @@ void pairing_command::OnCommissioningComplete(NodeId nodeId, CHIP_ERROR err)
 {
     if (err == CHIP_NO_ERROR) {
         ESP_LOGI(TAG, "Device commissioning completed with success - getting OperationalDeviceProxy");
-        esp_matter::commissioner::get_device_commissioner()->GetConnectedDevice(nodeId, &mOnDeviceConnectedCallback,
-                                                                                &mOnDeviceConnectionFailureCallback);
+        auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
+        controller_instance.get_commissioner()->GetConnectedDevice(nodeId, &mOnDeviceConnectedCallback,
+                                                                   &mOnDeviceConnectionFailureCallback);
     } else {
         ESP_LOGI(TAG, "Device commissioning Failure: Matter%s", ErrorStr(err));
-        CommissionerDiscoveryController *cdc = esp_matter::commissioner::get_discovery_controller();
-        if (cdc != nullptr) {
-            cdc->CommissioningFailed(err);
-        }
     }
 }
 
@@ -75,24 +70,11 @@ void pairing_command::OnDeviceConnectedFn(void *context, ExchangeManager &exchan
                                           const SessionHandle &sessionHandle)
 {
     ESP_LOGI(TAG, "OnDeviceConnectedFn");
-    CommissionerDiscoveryController *cdc = esp_matter::commissioner::get_discovery_controller();
-
-    if (cdc != nullptr) {
-        uint16_t vendorId = get_auto_commissioner()->GetCommissioningParameters().GetRemoteVendorId().Value();
-        uint16_t productId = get_auto_commissioner()->GetCommissioningParameters().GetRemoteProductId().Value();
-        ESP_LOGI(TAG, " ----- AutoCommissioner -- Commissionee vendorId=0x%04X productId=0x%04X", vendorId, productId);
-
-        cdc->CommissioningSucceeded(vendorId, productId, get_instance().m_remote_node_id, exchangeMgr, sessionHandle);
-    }
 }
 
 void pairing_command::OnDeviceConnectionFailureFn(void *context, const ScopedNodeId &peerId, CHIP_ERROR err)
 {
     ESP_LOGI(TAG, "OnDeviceConnectionFailureFn - attempt to get OperationalDeviceProxy failed");
-    CommissionerDiscoveryController *cdc = esp_matter::commissioner::get_discovery_controller();
-    if (cdc != nullptr) {
-        cdc->CommissioningFailed(err);
-    }
 }
 
 CommissioningParameters pairing_command::get_commissioning_params()
@@ -111,6 +93,7 @@ CommissioningParameters pairing_command::get_commissioning_params()
 
 void pairing_command::OnDiscoveredDevice(const chip::Dnssd::DiscoveredNodeData &nodeData)
 {
+    auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
     // Ignore nodes with closed comissioning window
     VerifyOrReturn(nodeData.commissionData.commissioningMode != 0);
     const uint16_t port = nodeData.resolutionData.port;
@@ -119,7 +102,7 @@ void pairing_command::OnDiscoveredDevice(const chip::Dnssd::DiscoveredNodeData &
     ESP_LOGI(TAG, "Discovered Device: %s:%u", buf, port);
 
     // Stop Mdns discovery. TODO: Check whether it is a right method
-    get_device_commissioner()->RegisterDeviceDiscoveryDelegate(nullptr);
+    controller_instance.get_commissioner()->RegisterDeviceDiscoveryDelegate(nullptr);
 
     Inet::InterfaceId interfaceId = nodeData.resolutionData.ipAddress[0].IsIPv6LinkLocal()
         ? nodeData.resolutionData.interfaceId
@@ -127,18 +110,19 @@ void pairing_command::OnDiscoveredDevice(const chip::Dnssd::DiscoveredNodeData &
     PeerAddress peerAddress = PeerAddress::UDP(nodeData.resolutionData.ipAddress[0], port, interfaceId);
     RendezvousParameters params = RendezvousParameters().SetSetupPINCode(m_setup_pincode).SetPeerAddress(peerAddress);
     CommissioningParameters commissioning_params = get_commissioning_params();
-    get_device_commissioner()->PairDevice(m_remote_node_id, params, commissioning_params);
+    controller_instance.get_commissioner()->PairDevice(m_remote_node_id, params, commissioning_params);
 }
 
 esp_err_t pairing_on_network(NodeId node_id, uint32_t pincode)
 {
     Dnssd::DiscoveryFilter filter(chip::Dnssd::DiscoveryFilterType::kNone);
-    get_device_commissioner()->RegisterDeviceDiscoveryDelegate(&pairing_command::get_instance());
+    auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
+    controller_instance.get_commissioner()->RegisterDeviceDiscoveryDelegate(&pairing_command::get_instance());
     pairing_command::get_instance().m_pairing_mode = PAIRING_MODE_ONNETWORK;
     pairing_command::get_instance().m_setup_pincode = pincode;
     pairing_command::get_instance().m_remote_node_id = node_id;
     pairing_command::get_instance().m_pairing_network_type = NETWORK_TYPE_NONE;
-    if (CHIP_NO_ERROR != get_device_commissioner()->DiscoverCommissionableNodes(filter)) {
+    if (CHIP_NO_ERROR != controller_instance.get_commissioner()->DiscoverCommissionableNodes(filter)) {
         ESP_LOGE(TAG, "Failed to discover commissionable nodes");
         return ESP_FAIL;
     }
@@ -155,19 +139,21 @@ esp_err_t pairing_ble_wifi(NodeId node_id, uint32_t pincode, uint16_t disc, cons
     chip::ByteSpan pwdSpan(reinterpret_cast<const uint8_t *>(pwd), strlen(pwd));
     CommissioningParameters commissioning_params =
         CommissioningParameters().SetWiFiCredentials(Controller::WiFiCredentials(nameSpan, pwdSpan));
-    get_device_commissioner()->PairDevice(node_id, params, commissioning_params);
+    auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
+    controller_instance.get_commissioner()->PairDevice(node_id, params, commissioning_params);
     return ESP_OK;
 }
 
-esp_err_t pairing_ble_thread(NodeId node_id, uint32_t pincode, uint16_t disc, uint8_t *dataset_tlvs, uint8_t dataset_len)
+esp_err_t pairing_ble_thread(NodeId node_id, uint32_t pincode, uint16_t disc, uint8_t *dataset_tlvs,
+                             uint8_t dataset_len)
 {
     RendezvousParameters params = RendezvousParameters().SetSetupPINCode(pincode).SetDiscriminator(disc).SetPeerAddress(
         chip::Transport::PeerAddress::BLE());
 
     chip::ByteSpan dataset_span(dataset_tlvs, dataset_len);
-    CommissioningParameters commissioning_params =
-        CommissioningParameters().SetThreadOperationalDataset(dataset_span);
-    get_device_commissioner()->PairDevice(node_id, params, commissioning_params);
+    CommissioningParameters commissioning_params = CommissioningParameters().SetThreadOperationalDataset(dataset_span);
+    auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
+    controller_instance.get_commissioner()->PairDevice(node_id, params, commissioning_params);
     return ESP_OK;
 }
 #endif
