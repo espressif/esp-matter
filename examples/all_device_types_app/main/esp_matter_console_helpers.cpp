@@ -77,10 +77,14 @@ static void initialize_console(void)
         .source_clk = UART_SCLK_XTAL,
 #endif
     };
+#if (CONFIG_ESP_CONSOLE_UART_NUM == 0)
+    uart_port_t uart_port = UART_NUM_0;
+#elif (CONFIG_ESP_CONSOLE_UART_NUM == 1)
+    uart_port_t uart_port = UART_NUM_1;
+#endif
     /* Install UART driver for interrupt-driven reads and writes */
-    ESP_ERROR_CHECK( uart_driver_install(CONFIG_ESP_CONSOLE_UART_NUM,
-            256, 0, 0, NULL, 0) );
-    ESP_ERROR_CHECK( uart_param_config(CONFIG_ESP_CONSOLE_UART_NUM, &uart_config) );
+    ESP_ERROR_CHECK( uart_driver_install(uart_port, 256, 0, 0, NULL, 0) );
+    ESP_ERROR_CHECK( uart_param_config(uart_port, &uart_config) );
 
     /* Tell VFS to use UART driver */
     esp_vfs_dev_uart_use_driver(CONFIG_ESP_CONSOLE_UART_NUM);
@@ -354,7 +358,7 @@ int create(uint8_t device_type_index)
             break;
         }
     }
-     
+
     if (!endpoint) {
         ESP_LOGE(TAG, "Matter create endpoint failed");
         return 1;
@@ -372,7 +376,7 @@ int create(uint8_t device_type_index)
             xSemaphoreGive(semaphoreHandle);
         }
     }
-     
+
     return 0;
 }
 
@@ -387,7 +391,7 @@ namespace console {
      struct arg_str *device_type;
      struct arg_end *end;
  } create_device_args;
- 
+
 static int create(int argc, char **argv)
 {
     int nerrors = arg_parse(argc, argv, (void **) &create_device_args);
@@ -426,11 +430,11 @@ esp_err_t register_create_device_commands()
     };
 
     return esp_console_cmd_register(&create_cmd);
-    
+
 }
 
 void init(void)
-{    
+{
 #if CONFIG_STORE_HISTORY
     initialize_filesystem();
     ESP_LOGI(TAG, "Command history enabled");
@@ -498,7 +502,7 @@ void init(void)
 }
 
 void deinit(void)
-{    
+{
     fflush(stdout);
     fsync(fileno(stdout));
     esp_console_deinit();
