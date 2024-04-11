@@ -1,7 +1,7 @@
 5. Security Considerations
 ==========================
 
-{IDF_TARGET_RELEASE:default="v5.1.2"}
+{IDF_TARGET_RELEASE:default="v5.2.1"}
 
 5.1 Overview
 ------------
