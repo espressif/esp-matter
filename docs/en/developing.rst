@@ -23,7 +23,7 @@ Additionally, we also support developing on Windows Host using WSL.
 
 The Prerequisites for ESP-IDF and Matter:
 
-- Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v5.0.1/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
+- Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v5.2.1/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
 - Please get the `Prerequisites <https://github.com/espressif/connectedhomeip/blob/v1.1-branch/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
 
 
@@ -53,7 +53,7 @@ For using VSCode for development, please check `Developing in WSL <https://code.
    ::
 
       git clone --recursive https://github.com/espressif/esp-idf.git
-      cd esp-idf; git checkout v5.0.1; git submodule update --init --recursive;
+      cd esp-idf; git checkout v5.2.1; git submodule update --init --recursive;
       ./install.sh
       cd ..
 
@@ -62,7 +62,7 @@ For using VSCode for development, please check `Developing in WSL <https://code.
    ::
 
       git clone --recursive https://github.com/espressif/esp-idf.git
-      cd esp-idf; git checkout v5.1.1; git submodule update --init --recursive;
+      cd esp-idf; git checkout v5.2.1; git submodule update --init --recursive;
       ./install.sh
       cd ..
 
@@ -238,7 +238,7 @@ Choose IDF target.
    ::
 
       ERROR: This script was called from a virtual environment, can not create a virtual environment again
-          
+
    Run:
 
    ::
@@ -636,14 +636,14 @@ creating in the *app_main.cpp* of the example. Examples:
 -  on_off_light:
 
    ::
-   
+
       on_off_light::config_t light_config;
       endpoint_t *endpoint = on_off_light::create(node, &light_config, ENDPOINT_FLAG_NONE);
 
 -  fan:
 
    ::
-   
+
       fan::config_t fan_config;
       endpoint_t *endpoint = fan::create(node, &fan_config, ENDPOINT_FLAG_NONE);
 
@@ -681,7 +681,7 @@ creating in the *app_main.cpp* of the example. Examples:
 2.4.2.2 Clusters
 ^^^^^^^^^^^^^^^^
 
-Additional clusters can also be added to an endpoint. Examples: 
+Additional clusters can also be added to an endpoint. Examples:
 
 -  on_off:
 
@@ -700,7 +700,7 @@ Additional clusters can also be added to an endpoint. Examples:
 - window_covering:
 
       ::
-   
+
          window_covering::config_t window_covering_config(static_cast<uint8_t>(chip::app::Clusters::WindowCovering::EndProductType::kTiltOnlyInteriorBlind));
          cluster_t *cluster = window_covering::create(endpoint, &window_covering_config, CLUSTER_FLAG_SERVER);
 
@@ -723,7 +723,7 @@ Additional clusters can also be added to an endpoint. Examples:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Additional attributes and commands can also be added to a cluster.
-Examples: 
+Examples:
 
 -  attribute: on_off:
 
@@ -772,19 +772,19 @@ Non-Standard endpoint can be created, without any clusters.
 2.4.3.2 Clusters
 ^^^^^^^^^^^^^^^^
 
-Non-Standard/Custom clusters can also be created: 
+Non-Standard/Custom clusters can also be created:
 
 -  Cluster create:
 
    ::
-      
+
       uint32_t custom_cluster_id = 0x131bfc00;
       cluster_t *cluster = cluster::create(endpoint, custom_cluster_id, CLUSTER_FLAG_SERVER);
 
 2.4.3.3 Attributes and Commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Non-Standard/Custom attributes can also be created on any cluster: 
+Non-Standard/Custom attributes can also be created on any cluster:
 
 -  Attribute create:
 
