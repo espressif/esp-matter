@@ -33,6 +33,7 @@ set(MATTER_SDK_PATH ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip)
 # This should be done before using the IDF_TARGET variable.
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 include($ENV{ESP_MATTER_DEVICE_PATH}/esp_matter_device.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/../common/cmake_common/components_include.cmake)
 
 set(EXTRA_COMPONENT_DIRS
     "${ESP_MATTER_PATH}/examples/common"
