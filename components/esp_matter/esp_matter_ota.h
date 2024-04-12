@@ -17,6 +17,21 @@
 #include "esp_err.h"
 #include "sdkconfig.h"
 
+typedef struct {
+    /**
+     * Timeout (in seconds) for querying default OTA Providers
+     * Default querying interval is 86400 seconds (24 Hrs)
+     */
+    uint32_t periodic_query_timeout;
+    /**
+     * Timer timeout (in seconds) which detects the OTA being stuck in non-idle state
+     * Something went wrong and OTA Requestor is stuck in a non-idle state for too long.
+     * Default timeout is 300 seconds
+     */
+    uint32_t watchdog_timeout;
+} esp_matter_ota_config_t;
+
+
 /** Initialize the Matter OTA Requestor
  *
  */
@@ -35,8 +50,19 @@ void esp_matter_ota_requestor_start(void);
  * @param[in] size Size of the key, size shall contain the null terminator as well.
  *                 If using `strlen` then please consider adding +1 to the size.
  *
- * @return ESP_OK or success, appropriate error otherwise
+ * @return ESP_OK on success, appropriate error otherwise
  */
 #if CONFIG_ENABLE_ENCRYPTED_OTA
 esp_err_t esp_matter_ota_requestor_encrypted_init(const char *key, uint16_t size);
 #endif // CONFIG_ENABLE_ENCRYPTED_OTA
+
+/**
+ * @brief Set the OTA Requestor configuration parameters
+ *
+ * @param config OTA configuration structure of type esp_matter_ota_config_t
+ *
+ * @return ESP_OK on success, appropriate error code otherwise
+ *
+ * @note Ensure that this API is called only after esp_matter::start() has been invoked.
+ */
+esp_err_t esp_matter_ota_requestor_set_config(const esp_matter_ota_config_t & config);

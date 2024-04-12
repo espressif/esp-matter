@@ -22,6 +22,7 @@
 #include <platform/ESP32/OTAImageProcessorImpl.h>
 
 #include <esp_matter.h>
+#include <esp_matter_ota.h>
 #include <zap-generated/endpoint_config.h>
 
 using chip::BDXDownloader;
@@ -88,3 +89,20 @@ esp_err_t esp_matter_ota_requestor_encrypted_init(const char *key, uint16_t size
     return ESP_OK;
 }
 #endif // CONFIG_ENABLE_ENCRYPTED_OTA
+
+
+esp_err_t esp_matter_ota_requestor_set_config(const esp_matter_ota_config_t & config)
+{
+#if CONFIG_ENABLE_OTA_REQUESTOR
+    if (config.periodic_query_timeout) {
+        gRequestorUser.SetPeriodicQueryTimeout(config.periodic_query_timeout);
+    }
+    if (config.watchdog_timeout) {
+        gRequestorUser.SetWatchdogTimeout(config.watchdog_timeout);
+    }
+
+    return ESP_OK;
+#else
+    return ESP_ERR_NOT_SUPPORTED;
+#endif // CONFIG_ENABLE_OTA_REQUESTOR
+}
