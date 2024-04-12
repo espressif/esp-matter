@@ -20,7 +20,7 @@
 // Prevent multiple inclusion
 #pragma once
 
-#include <app/util/privilege-storage.h>
+#include <access/Privilege.h>
 
 // Prevent changing generated format
 // clang-format off
@@ -68,6 +68,8 @@
     /* Cluster: Energy EVSE, Attribute: UserMaximumChargeCurrent, Privilege: view */ \
     /* Cluster: Energy EVSE, Attribute: RandomizationDelayWindow, Privilege: view */ \
     /* Cluster: Energy EVSE, Attribute: ApproximateEVEfficiency, Privilege: view */ \
+    /* Cluster: Energy Preference, Attribute: CurrentEnergyBalance, Privilege: view */ \
+    /* Cluster: Energy Preference, Attribute: CurrentLowPowerModeSensitivity, Privilege: view */ \
     /* Cluster: Window Covering, Attribute: Mode, Privilege: view */ \
     /* Cluster: Pump Configuration and Control, Attribute: LifetimeRunningHours, Privilege: view */ \
     /* Cluster: Pump Configuration and Control, Attribute: LifetimeEnergyConsumed, Privilege: view */ \
@@ -137,6 +139,8 @@
     /* Cluster: Energy EVSE, Attribute: UserMaximumChargeCurrent, Privilege: view */ \
     /* Cluster: Energy EVSE, Attribute: RandomizationDelayWindow, Privilege: view */ \
     /* Cluster: Energy EVSE, Attribute: ApproximateEVEfficiency, Privilege: view */ \
+    /* Cluster: Energy Preference, Attribute: CurrentEnergyBalance, Privilege: view */ \
+    /* Cluster: Energy Preference, Attribute: CurrentLowPowerModeSensitivity, Privilege: view */ \
     /* Cluster: Window Covering, Attribute: Mode, Privilege: view */ \
     /* Cluster: Pump Configuration and Control, Attribute: LifetimeRunningHours, Privilege: view */ \
     /* Cluster: Pump Configuration and Control, Attribute: LifetimeEnergyConsumed, Privilege: view */ \
@@ -206,6 +210,8 @@
     /* Cluster: Energy EVSE, Attribute: UserMaximumChargeCurrent, Privilege: view */ \
     /* Cluster: Energy EVSE, Attribute: RandomizationDelayWindow, Privilege: view */ \
     /* Cluster: Energy EVSE, Attribute: ApproximateEVEfficiency, Privilege: view */ \
+    /* Cluster: Energy Preference, Attribute: CurrentEnergyBalance, Privilege: view */ \
+    /* Cluster: Energy Preference, Attribute: CurrentLowPowerModeSensitivity, Privilege: view */ \
     /* Cluster: Window Covering, Attribute: Mode, Privilege: view */ \
     /* Cluster: Pump Configuration and Control, Attribute: LifetimeRunningHours, Privilege: view */ \
     /* Cluster: Pump Configuration and Control, Attribute: LifetimeEnergyConsumed, Privilege: view */ \
@@ -284,6 +290,8 @@
     0x00000201, /* Cluster: Thermostat, Attribute: MinSetpointDeadBand, Privilege: manage */ \
     0x00000201, /* Cluster: Thermostat, Attribute: ControlSequenceOfOperation, Privilege: manage */ \
     0x00000201, /* Cluster: Thermostat, Attribute: SystemMode, Privilege: manage */ \
+    0x00000201, /* Cluster: Thermostat, Attribute: Presets, Privilege: manage */ \
+    0x00000201, /* Cluster: Thermostat, Attribute: Schedules, Privilege: manage */ \
     0x00000204, /* Cluster: Thermostat User Interface Configuration, Attribute: KeypadLockout, Privilege: manage */ \
     0x00000204, /* Cluster: Thermostat User Interface Configuration, Attribute: ScheduleProgrammingVisibility, Privilege: manage */ \
     0x00000300, /* Cluster: Color Control, Attribute: WhitePointX, Privilege: manage */ \
@@ -358,6 +366,8 @@
     0x00000019, /* Cluster: Thermostat, Attribute: MinSetpointDeadBand, Privilege: manage */ \
     0x0000001B, /* Cluster: Thermostat, Attribute: ControlSequenceOfOperation, Privilege: manage */ \
     0x0000001C, /* Cluster: Thermostat, Attribute: SystemMode, Privilege: manage */ \
+    0x00000050, /* Cluster: Thermostat, Attribute: Presets, Privilege: manage */ \
+    0x00000051, /* Cluster: Thermostat, Attribute: Schedules, Privilege: manage */ \
     0x00000001, /* Cluster: Thermostat User Interface Configuration, Attribute: KeypadLockout, Privilege: manage */ \
     0x00000002, /* Cluster: Thermostat User Interface Configuration, Attribute: ScheduleProgrammingVisibility, Privilege: manage */ \
     0x00000030, /* Cluster: Color Control, Attribute: WhitePointX, Privilege: manage */ \
@@ -432,6 +442,8 @@
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Attribute: MinSetpointDeadBand, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Attribute: ControlSequenceOfOperation, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Attribute: SystemMode, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Thermostat, Attribute: Presets, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Thermostat, Attribute: Schedules, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat User Interface Configuration, Attribute: KeypadLockout, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat User Interface Configuration, Attribute: ScheduleProgrammingVisibility, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Color Control, Attribute: WhitePointX, Privilege: manage */ \
@@ -468,10 +480,6 @@
     0x00000004, /* Cluster: Groups, Command: RemoveGroup, Privilege: manage */ \
     0x00000004, /* Cluster: Groups, Command: RemoveAllGroups, Privilege: manage */ \
     0x00000004, /* Cluster: Groups, Command: AddGroupIfIdentifying, Privilege: manage */ \
-    0x00000005, /* Cluster: Scenes, Command: AddScene, Privilege: manage */ \
-    0x00000005, /* Cluster: Scenes, Command: RemoveScene, Privilege: manage */ \
-    0x00000005, /* Cluster: Scenes, Command: RemoveAllScenes, Privilege: manage */ \
-    0x00000005, /* Cluster: Scenes, Command: StoreScene, Privilege: manage */ \
     0x00000030, /* Cluster: General Commissioning, Command: ArmFailSafe, Privilege: administer */ \
     0x00000030, /* Cluster: General Commissioning, Command: SetRegulatoryConfig, Privilege: administer */ \
     0x00000030, /* Cluster: General Commissioning, Command: CommissioningComplete, Privilege: administer */ \
@@ -508,6 +516,10 @@
     0x00000046, /* Cluster: ICD Management, Command: RegisterClient, Privilege: manage */ \
     0x00000046, /* Cluster: ICD Management, Command: UnregisterClient, Privilege: manage */ \
     0x00000046, /* Cluster: ICD Management, Command: StayActiveRequest, Privilege: manage */ \
+    0x00000062, /* Cluster: Scenes Management, Command: AddScene, Privilege: manage */ \
+    0x00000062, /* Cluster: Scenes Management, Command: RemoveScene, Privilege: manage */ \
+    0x00000062, /* Cluster: Scenes Management, Command: RemoveAllScenes, Privilege: manage */ \
+    0x00000062, /* Cluster: Scenes Management, Command: StoreScene, Privilege: manage */ \
     0x00000101, /* Cluster: Door Lock, Command: SetWeekDaySchedule, Privilege: administer */ \
     0x00000101, /* Cluster: Door Lock, Command: GetWeekDaySchedule, Privilege: administer */ \
     0x00000101, /* Cluster: Door Lock, Command: ClearWeekDaySchedule, Privilege: administer */ \
@@ -531,10 +543,6 @@
     0x00000003, /* Cluster: Groups, Command: RemoveGroup, Privilege: manage */ \
     0x00000004, /* Cluster: Groups, Command: RemoveAllGroups, Privilege: manage */ \
     0x00000005, /* Cluster: Groups, Command: AddGroupIfIdentifying, Privilege: manage */ \
-    0x00000000, /* Cluster: Scenes, Command: AddScene, Privilege: manage */ \
-    0x00000002, /* Cluster: Scenes, Command: RemoveScene, Privilege: manage */ \
-    0x00000003, /* Cluster: Scenes, Command: RemoveAllScenes, Privilege: manage */ \
-    0x00000004, /* Cluster: Scenes, Command: StoreScene, Privilege: manage */ \
     0x00000000, /* Cluster: General Commissioning, Command: ArmFailSafe, Privilege: administer */ \
     0x00000002, /* Cluster: General Commissioning, Command: SetRegulatoryConfig, Privilege: administer */ \
     0x00000004, /* Cluster: General Commissioning, Command: CommissioningComplete, Privilege: administer */ \
@@ -571,6 +579,10 @@
     0x00000000, /* Cluster: ICD Management, Command: RegisterClient, Privilege: manage */ \
     0x00000002, /* Cluster: ICD Management, Command: UnregisterClient, Privilege: manage */ \
     0x00000003, /* Cluster: ICD Management, Command: StayActiveRequest, Privilege: manage */ \
+    0x00000000, /* Cluster: Scenes Management, Command: AddScene, Privilege: manage */ \
+    0x00000002, /* Cluster: Scenes Management, Command: RemoveScene, Privilege: manage */ \
+    0x00000003, /* Cluster: Scenes Management, Command: RemoveAllScenes, Privilege: manage */ \
+    0x00000004, /* Cluster: Scenes Management, Command: StoreScene, Privilege: manage */ \
     0x0000000B, /* Cluster: Door Lock, Command: SetWeekDaySchedule, Privilege: administer */ \
     0x0000000C, /* Cluster: Door Lock, Command: GetWeekDaySchedule, Privilege: administer */ \
     0x0000000D, /* Cluster: Door Lock, Command: ClearWeekDaySchedule, Privilege: administer */ \
@@ -594,10 +606,6 @@
     chip::Access::Privilege::kManage, /* Cluster: Groups, Command: RemoveGroup, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Groups, Command: RemoveAllGroups, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Groups, Command: AddGroupIfIdentifying, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: Scenes, Command: AddScene, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: Scenes, Command: RemoveScene, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: Scenes, Command: RemoveAllScenes, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: Scenes, Command: StoreScene, Privilege: manage */ \
     chip::Access::Privilege::kAdminister, /* Cluster: General Commissioning, Command: ArmFailSafe, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: General Commissioning, Command: SetRegulatoryConfig, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: General Commissioning, Command: CommissioningComplete, Privilege: administer */ \
@@ -634,6 +642,10 @@
     chip::Access::Privilege::kManage, /* Cluster: ICD Management, Command: RegisterClient, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: ICD Management, Command: UnregisterClient, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: ICD Management, Command: StayActiveRequest, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Scenes Management, Command: AddScene, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Scenes Management, Command: RemoveScene, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Scenes Management, Command: RemoveAllScenes, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Scenes Management, Command: StoreScene, Privilege: manage */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Door Lock, Command: SetWeekDaySchedule, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Door Lock, Command: GetWeekDaySchedule, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Door Lock, Command: ClearWeekDaySchedule, Privilege: administer */ \

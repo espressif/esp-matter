@@ -72,9 +72,23 @@ static const char *TAG = "esp_matter_core";
 static bool esp_matter_started = false;
 
 #ifndef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
-// If Matter Server is disabled, we should have an empty InitDataModelHandler()
+// If Matter Server is disabled, these functions are required by InteractionModelEngine but not linked
+// as they are defined in other files. They will be never used if server is not enable. Define empty
+// functions in esp_matter_core.cpp to make sure that they are linked
 void InitDataModelHandler() {}
-#endif
+
+namespace chip {
+namespace app {
+void DispatchSingleClusterCommand(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                  CommandHandler *command_obj) {}
+} // namespace app
+} // namespace chip
+
+bool emberAfContainsAttribute(chip::EndpointId endpoint, chip::ClusterId clusterId, chip::AttributeId attributeId)
+{
+    return false;
+}
+#endif // !CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 
 namespace esp_matter {
 
