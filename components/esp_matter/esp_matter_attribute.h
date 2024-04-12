@@ -948,5 +948,47 @@ attribute_t *create_current_mode(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* rvc_clean_mode */
 
+namespace power_topology {
+namespace attribute {
+attribute_t *create_available_endpoints(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_active_endpoints(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* power_topology */
+
+namespace electrical_power_measurement {
+namespace attribute {
+attribute_t *create_power_mode(cluster_t *cluster, uint8_t value);
+attribute_t *create_number_of_measurement_types(cluster_t *cluster, const uint8_t value);
+attribute_t *create_accuracy(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_ranges(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_voltage(cluster_t *cluster, nullable<int64_t> value);
+attribute_t *create_active_current(cluster_t *cluster, nullable<int64_t> value);
+attribute_t *create_reactive_current(cluster_t *cluster, nullable<int64_t> value);
+attribute_t *create_apparent_current(cluster_t *cluster, nullable<int64_t> value);
+attribute_t *create_active_power(cluster_t *cluster, nullable<int64_t> value);
+attribute_t *create_reactive_power(cluster_t *cluster, nullable<int64_t> value);
+attribute_t *create_apparent_power(cluster_t *cluster, nullable<int64_t> value);
+attribute_t *create_rms_voltage(cluster_t *cluster, nullable<int64_t> value);
+attribute_t *create_rms_current(cluster_t *cluster, nullable<int64_t> value);
+attribute_t *create_rms_power(cluster_t *cluster, nullable<int64_t> value);
+attribute_t *create_frequency(cluster_t *cluster, nullable<int64_t> value);
+attribute_t *create_harmonic_currents(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_harmonic_phases(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_power_factor(cluster_t *cluster, nullable<int64_t> value);
+attribute_t *create_neutral_current(cluster_t *cluster, nullable<int64_t> value);
+} /* attribute */
+} /* electrical_power_measurement */
+
+namespace electrical_energy_measurement {
+namespace attribute {
+attribute_t *create_accuracy(cluster_t *cluster, const uint8_t* value, uint16_t length, uint16_t count);
+attribute_t *create_cumulative_energy_imported(cluster_t *cluster, const uint8_t* value, uint16_t length, uint16_t count);
+attribute_t *create_cumulative_energy_exported(cluster_t *cluster, const uint8_t* value, uint16_t length, uint16_t count);
+attribute_t *create_periodic_energy_imported(cluster_t *cluster, const uint8_t* value, uint16_t length, uint16_t count);
+attribute_t *create_periodic_energy_exported(cluster_t *cluster, const uint8_t* value, uint16_t length, uint16_t count);
+attribute_t *create_cumulative_energy_reset(cluster_t *cluster, const uint8_t* value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* electrical_energy_measurement */
+
 } /* cluster */
 } /* esp_matter */

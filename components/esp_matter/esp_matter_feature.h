@@ -1679,5 +1679,101 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* feature */
 } /* boolean_state_configuration */
 
+namespace power_topology {
+namespace feature {
+
+namespace node_topology {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* node_topology */
+
+namespace tree_topology {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* tree_topology */
+
+namespace set_topology {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* set_topology */
+
+namespace dynamic_power_flow {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* dynamic_power_flow */
+
+} /* feature */
+} /* power_topology */
+
+namespace electrical_power_measurement {
+namespace feature {
+
+namespace direct_current {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* direct_current */
+
+namespace alternating_current {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* alternating_current */
+
+namespace polyphase_power {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* polyphase_power */
+
+namespace harmonics {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* harmonics */
+
+namespace power_quality {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* power_quality */
+
+} /* feature */
+} /* electrical_power_measurement */
+
+namespace electrical_energy_measurement {
+namespace feature {
+
+namespace imported_energy {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* imported_energy */
+
+namespace exported_energy {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* exported_energy */
+
+namespace cumulative_energy {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* cumulative_energy */
+
+namespace periodic_energy {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* periodic_energy */
+
+} /* feature */
+} /* electrical_energy_measurement */
+
 } /* cluster */
 } /* esp_matter */

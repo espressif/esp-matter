@@ -824,5 +824,32 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* keypad_input */
 
+namespace power_topology {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* power_topology */
+
+namespace electrical_power_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* electrical_power_measurement */
+
+namespace electrical_energy_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* electrical_energy_measurement */
+
 } /* cluster */
 } /* esp_matter */

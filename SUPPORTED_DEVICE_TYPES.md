@@ -9,6 +9,7 @@ Utility Device Types
 4. OTA Provider
 5. Aggregator
 6. Bridged Node
+7. Electrical Sensor
 
 Application Device Types
 
@@ -53,6 +54,7 @@ g. Sensors
 7. Flow Sensor
 8. Smoke CO Alarm
 9. Water Leak Detector
+10. Rain Sensor
 
 h. Robotic
 1. Robotic Vacuum Cleaner
