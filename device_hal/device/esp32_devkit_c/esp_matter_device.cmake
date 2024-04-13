@@ -7,5 +7,4 @@ SET(device_type     esp32_devkit_c)
 SET(led_type        gpio)
 SET(button_type     iot)
 
-SET(extra_components_dirs_append    "$ENV{ESP_MATTER_DEVICE_PATH}/../../led_driver"
-                                    "$ENV{ESP_MATTER_DEVICE_PATH}/../../button_driver/iot_button")
+SET(extra_components_dirs_append "$ENV{ESP_MATTER_DEVICE_PATH}/../../button_driver/iot_button")

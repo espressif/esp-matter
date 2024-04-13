@@ -13,12 +13,13 @@
 
 #include <esp_log.h>
 #include <iot_button.h>
-#include <led_driver.h>
+//#include <led_driver.h>
 
 #define LED_GPIO_PIN GPIO_NUM_5
 #define LED_CHANNEL 0 /* LEDC_CHANNEL_0 */
-#define BUTTON_GPIO_PIN GPIO_NUM_0
+#define BUTTON_GPIO_PIN GPIO_NUM_14
 
+/*
 led_driver_config_t led_driver_get_config()
 {
     led_driver_config_t config = {
@@ -27,6 +28,7 @@ led_driver_config_t led_driver_get_config()
     };
     return config;
 }
+*/
 
 button_config_t button_driver_get_config()
 {

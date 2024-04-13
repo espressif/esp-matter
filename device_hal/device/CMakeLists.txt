@@ -1,6 +1,6 @@
 include($ENV{ESP_MATTER_DEVICE_PATH}/esp_matter_device.cmake)
 
-set(requires led_driver)
+
 
 if ("${button_type}" STREQUAL "iot")
     list(APPEND requires iot_button)
