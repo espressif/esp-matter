@@ -17,6 +17,7 @@
 
 #include <esp_check.h>
 #include <esp_matter_controller_cluster_command.h>
+#include <esp_matter_controller_client.h>
 #include <esp_matter_controller_console.h>
 #include <esp_matter_controller_group_settings.h>
 #include <esp_matter_controller_pairing_command.h>
@@ -225,6 +226,53 @@ static esp_err_t controller_pairing_handler(int argc, char **argv)
     }
     return ESP_ERR_INVALID_ARG;
 }
+
+#if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
+static esp_err_t controller_udc_handler(int argc, char **argv)
+{
+    if (argc < 1 || argc > 3) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    if (strncmp(argv[0], "reset", sizeof("reset")) == 0) {
+        if (argc != 1) {
+            return ESP_ERR_INVALID_ARG;
+        }
+        controller::matter_controller_client::get_instance()
+            .get_commissioner()->GetUserDirectedCommissioningServer()->ResetUDCClientProcessingStates();
+    } else if (strncmp(argv[0], "print", sizeof("print")) == 0) {
+        if (argc != 1) {
+            return ESP_ERR_INVALID_ARG;
+        }
+        controller::matter_controller_client::get_instance()
+            .get_commissioner()->GetUserDirectedCommissioningServer()->PrintUDCClients();
+    } else if (strncmp(argv[0], "commission", sizeof("commission")) == 0) {
+        if (argc != 3) {
+            return ESP_ERR_INVALID_ARG;
+        }
+        uint32_t pincode = string_to_uint32(argv[1]);
+        printf("pincode %ld", pincode);
+        size_t index = (size_t)string_to_uint32(argv[2]);
+        controller::matter_controller_client &instance = controller::matter_controller_client::get_instance();
+        UDCClientState *state =
+            instance.get_commissioner()->GetUserDirectedCommissioningServer()->GetUDCClients().GetUDCClientState(index);
+        ESP_RETURN_ON_FALSE(state != nullptr, ESP_FAIL, TAG, "UDC client not found");
+        state->SetUDCClientProcessingState(chip::Controller::UDCClientProcessingState::kCommissioningNode);
+
+        chip::NodeId gRemoteId = chip::kTestDeviceNodeId;
+        chip::RendezvousParameters params = chip::RendezvousParameters()
+            .SetSetupPINCode(pincode).SetDiscriminator(state->GetLongDiscriminator()).SetPeerAddress(state->GetPeerAddress());
+        do {
+            chip::DRBG_get_bytes(reinterpret_cast<uint8_t *>(&gRemoteId), sizeof(gRemoteId));
+        } while (!chip::IsOperationalNodeId(gRemoteId));
+
+        ESP_RETURN_ON_FALSE(instance.get_commissioner()->PairDevice(gRemoteId, params) == CHIP_NO_ERROR, ESP_FAIL, TAG,
+                            "Failed to commission udc");
+    } else {
+        return ESP_ERR_INVALID_ARG;
+    }
+    return ESP_OK;
+}
+#endif // CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
 #endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 
 #ifndef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
@@ -439,6 +487,16 @@ esp_err_t controller_register_commands()
                          "\tUsage: controller group-settings <sub-commands>",
           .handler = controller_group_settings_handler,
       },
+#if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
+      {
+          .name = "udc",
+          .description = "UDC command.\n"
+                         "\tUsage: controller udc reset OR\n"
+                         "\tcontroller udc print OR\n"
+                         "\tcontroller udc commission [pincode] [udc-entry]",
+          .handler = controller_udc_handler,
+      },
+#endif
 #endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
       {
           .name = "invoke-cmd",

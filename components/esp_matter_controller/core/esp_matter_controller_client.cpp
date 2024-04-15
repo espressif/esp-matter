@@ -50,6 +50,10 @@ using chip::Platform::ScopedMemoryBufferWithSize;
 namespace esp_matter {
 namespace controller {
 
+#if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
+ESPCommissionerCallback commissioner_callback;
+#endif
+
 esp_err_t matter_controller_client::init(NodeId node_id, FabricId fabric_id, uint16_t listen_port)
 {
     chip::Controller::FactoryInitParams factory_init_params;
@@ -153,6 +157,12 @@ esp_err_t matter_controller_client::setup_commissioner()
                                                                 compressed_fabric_id_span) == CHIP_NO_ERROR,
                         ESP_FAIL, TAG, "Failed to set ipk for commissioner fabric");
     // m_icd_client_storage.UpdateFabricList(fabric_index);
+
+#if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
+    get_discovery_controller()->SetUserDirectedCommissioningServer(get_commissioner()->GetUserDirectedCommissioningServer());
+    get_discovery_controller()->SetCommissionerCallback(&commissioner_callback);
+#endif
+
     m_device_commissioner.RegisterPairingDelegate(&controller::pairing_command::get_instance());
 
     return ESP_OK;
