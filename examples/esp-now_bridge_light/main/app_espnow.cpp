@@ -166,7 +166,7 @@ void app_espnow_init()
 
     esp_event_handler_register(ESP_EVENT_ESPNOW, ESP_EVENT_ANY_ID, espnow_event_handler, NULL);
 
-    ESP_ERROR_CHECK(espnow_ctrl_responder_bind(30 * 1000, -55, NULL));
+    ESP_ERROR_CHECK(espnow_ctrl_responder_bind(30 * 60 * 1000, -55, NULL));
     // Without registering this callback, it crashes when calling the callback espnow_ctrl_responder_raw_data_cb
     espnow_ctrl_responder_data(espnow_ctrl_responder_data_cb);
     espnow_ctrl_recv(espnow_ctrl_responder_raw_data_cb);
