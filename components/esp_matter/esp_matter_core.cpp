@@ -224,7 +224,7 @@ namespace node {
 
 static _node_t *node = NULL;
 
-#if defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTE_ENABLE_DATA_MODEL)
+#if defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
 // If Matter server or ESP-Matter data model is not enabled. we will never use minimum unused endpoint id.
 static esp_err_t store_min_unused_endpoint_id()
 {
@@ -289,7 +289,7 @@ static esp_err_t read_min_unused_endpoint_id()
     }
     return err;
 }
-#endif // defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTE_ENABLE_DATA_MODEL)
+#endif // defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
 } /* node */
 
 namespace cluster {
@@ -1085,13 +1085,13 @@ esp_err_t start(event_callback_t callback, intptr_t callback_arg)
         return err;
     }
     esp_matter_started = true;
-#if defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTE_ENABLE_DATA_MODEL)
+#if defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
     err = node::read_min_unused_endpoint_id();
     // If the min_unused_endpoint_id is not found, we will write the current min_unused_endpoint_id in nvs.
     if (err == ESP_ERR_NVS_NOT_FOUND) {
         err = node::store_min_unused_endpoint_id();
     }
-#endif // defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTE_ENABLE_DATA_MODEL)
+#endif // defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
     return err;
 }
 
@@ -1931,12 +1931,12 @@ endpoint_t *create(node_t *node, uint8_t flags, void *priv_data)
     endpoint->parent_endpoint_id = chip::kInvalidEndpointId;
     endpoint->flags = flags;
     endpoint->priv_data = priv_data;
-#if defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTE_ENABLE_DATA_MODEL)
+#if defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
     /* Store */
     if (esp_matter_started) {
         node::store_min_unused_endpoint_id();
     }
-#endif // defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTE_ENABLE_DATA_MODEL)
+#endif // defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
 
     /* Add */
     _endpoint_t *previous_endpoint = NULL;
