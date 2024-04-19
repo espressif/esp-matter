@@ -921,11 +921,14 @@ Different implementations of the four providers can be chosen in meuconfig:
 
 - ``Commissionable Data Provider options`` in ``→ Component config → ESP Matter``
 
-  When selecting ``Commissionable Data - Test``, the device will use the hardcoded Commissionable Data.
+  When selecting ``Commissionable Data - Test``, the device will use the hardcoded Commissionable Data. This uses the legacy commissionable data
+  provider and provides the test values. These test values are enclosed in ``CONFIG_ENABLE_TEST_SETUP_PARAMS`` option and enabled by default.
 
   When selecting ``Commissionable Data - Factory``, the device will use commissionable data information from the factory partition. This option is visable only when ``CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`` is selected.
 
   When selecting ``Commissionable Data - Custom``, the device will use the custom defined commissionable data provider to obtain commissionable data information. ``esp_matter::set_custom_commissionable_data_provider()`` should be called before ``esp_matter::start()`` to set the custom provider.
+
+  If you are using ``Factory`` or ``Custom`` commissionable data provides, then disable the ``CONFIG_ENABLE_TEST_SETUP_PARAMS`` option.
 
 - ``DAC Provider options`` in ``→ Component config → ESP Matter``
 
