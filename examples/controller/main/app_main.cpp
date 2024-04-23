@@ -17,6 +17,7 @@
 #include <esp_matter_controller_utils.h>
 #include <esp_matter_ota.h>
 #if CONFIG_OPENTHREAD_BORDER_ROUTER
+#include <esp_matter_thread_br_cluster.h>
 #include <esp_matter_thread_br_console.h>
 #include <esp_matter_thread_br_launcher.h>
 #include <esp_ot_config.h>

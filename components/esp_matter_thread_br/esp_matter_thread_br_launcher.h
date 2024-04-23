@@ -18,6 +18,7 @@
 #if CONFIG_OPENTHREAD_BR_AUTO_UPDATE_RCP
 #include <esp_rcp_update.h>
 #endif
+#include <openthread/border_agent.h>
 
 #define OPENTHREAD_CLI_BUFFER_LENGTH 255
 
@@ -39,6 +40,8 @@ esp_err_t set_thread_enabled(bool enabled);
 esp_err_t set_thread_dataset_tlvs(otOperationalDatasetTlvs *dataset_tlvs);
 
 esp_err_t get_thread_dataset_tlvs(otOperationalDatasetTlvs *dataset_tlvs);
+
+esp_err_t get_border_agent_id(otBorderAgentId *border_agent_id);
 
 uint8_t get_thread_role();
 
