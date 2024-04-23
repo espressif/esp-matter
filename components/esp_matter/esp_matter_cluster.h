@@ -246,10 +246,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 namespace icd_management {
 typedef struct config {
     uint16_t cluster_revision;
-    uint32_t idle_mode_interval;
-    uint32_t active_mode_interval;
-    uint16_t active_mode_threshold;
-    config() : cluster_revision(2), idle_mode_interval(5000), active_mode_interval(300), active_mode_threshold(300) {}
+    feature::user_active_mode_trigger::config_t user_active_mode_trigger;
+    config() : cluster_revision(2) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
