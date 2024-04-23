@@ -275,6 +275,18 @@ esp_err_t get_thread_dataset_tlvs(otOperationalDatasetTlvs *dataset_tlvs)
     return ESP_OK;
 }
 
+
+esp_err_t get_border_agent_id(otBorderAgentId *border_agent_id)
+{
+    if (!border_agent_id) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    scoped_thread_lock lock;
+    ESP_RETURN_ON_FALSE(otBorderAgentGetId(esp_openthread_get_instance(), border_agent_id) == OT_ERROR_NONE, ESP_FAIL,
+                        TAG, "Failed to get Border Agent Id");
+    return ESP_OK;
+}
+
 uint8_t get_thread_role()
 {
     scoped_thread_lock lock;
