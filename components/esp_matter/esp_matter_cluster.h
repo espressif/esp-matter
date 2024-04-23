@@ -369,6 +369,11 @@ typedef struct config {
     uint8_t system_mode;
     feature::heating::config_t heating;
     feature::cooling::config_t cooling;
+    feature::occupancy::config_t occupancy;
+    feature::setback::config_t setback;
+    feature::schedule_configuration::config_t schedule_configuration;
+    feature::auto_mode::config_t auto_mode;
+    feature::local_temperature_not_exposed::config_t local_temperature_not_exposed;
     config() : cluster_revision(6), local_temperature(), control_sequence_of_operation(4), system_mode(1) {}
 } config_t;
 
