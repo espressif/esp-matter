@@ -312,6 +312,12 @@ namespace cluster {
  */
 typedef void (*plugin_server_init_callback_t)();
 
+/** Cluster delegate server init callback
+ *
+ * This callback will be called when the endpoints are initialised.
+ */
+typedef void (*delegate_init_callback_t)(void *ptr, uint16_t endpoint_id);
+
 /** Generic function
  *
  * This can be used to add additional functions based on `cluster_flags_t`.
@@ -376,6 +382,17 @@ cluster_t *get_next(cluster_t *cluster);
  */
 uint32_t get_id(cluster_t *cluster);
 
+/** Get delegate pointer
+ *
+ * Get the delegate pointer for the cluster.
+ *
+ * @param[in] cluster Cluster handle.
+ *
+ * @return pointer of delegate class on success.
+ * @return nullptr in case of failure.
+ */
+void *get_delegate_impl(cluster_t *cluster);
+
 /** Set cluster plugin server init callback
  *
  * Set the cluster plugin server init callback. This callback will be called when the endpoints are initialised. The
@@ -390,6 +407,17 @@ uint32_t get_id(cluster_t *cluster);
  */
 esp_err_t set_plugin_server_init_callback(cluster_t *cluster, plugin_server_init_callback_t callback);
 
+/** Set server cluster delegate init callback
+ *
+ * @param[in] cluster Cluster handle.
+ * @param[in] callback Delegate server init callback.
+ * @param[in] delegate Pointer to delegate impl..
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t set_delegate_and_init_callback(cluster_t *cluster, delegate_init_callback_t callback, void *delegate);
+
 /** Get cluster plugin server init callback
  *
  * Get the cluster plugin server init callback which has previously been set.
@@ -400,6 +428,15 @@ esp_err_t set_plugin_server_init_callback(cluster_t *cluster, plugin_server_init
  * @return NULL in case of failure or if it has not been set.
  */
 plugin_server_init_callback_t get_plugin_server_init_callback(cluster_t *cluster);
+
+/** Get server cluster delegate init callback
+ *
+ * @param[in] cluster Cluster handle.
+ *
+ * @return Delegate init callback.
+ * @return NULL in case of failure or if it has not been set.
+ */
+delegate_init_callback_t get_delegate_init_callback(cluster_t *cluster);
 
 /** Add cluster function list
  *
