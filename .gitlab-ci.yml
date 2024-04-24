@@ -230,6 +230,28 @@ build_esp_matter_examples_pytest_H2_idf_v5_1:
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --pytest_h2
 
+build_esp_matter_examples_pytest_C2_idf_v5_1:
+  extends:
+        - .build_examples_template
+  artifacts:
+    paths:
+      - "examples/**/build*/size.json"
+      - "examples/**/build*/build_log.txt"
+      - "examples/**/build*/*.bin"
+      - "examples/**/build*/flasher_args.json"
+      - "examples/**/build*/config/sdkconfig.json"
+      - "examples/**/build*/bootloader/*.bin"
+      - "examples/**/build*/partition_table/*.bin"
+      - "connectedhomeip/connectedhomeip/out/host/chip-tool"
+    when: always
+    expire_in: 4 days
+  variables:
+        IDF_VERSION: "v5.2.1"
+  script:
+    - cd ${ESP_MATTER_PATH}
+    - pip install -r tools/ci/requirements-build.txt
+    - python tools/ci/build_apps.py ./examples --pytest_c2
+
 build_esp_matter_examples_non_pytest_idf_v5_1:
   extends:
         - .build_examples_template
@@ -306,6 +328,17 @@ pytest_esp32c6_esp_matter_dut:
     - pip install -r tools/ci/requirements-pytest.txt
     - pytest examples/ --target esp32c6 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml
   tags: ["esp32c6", "esp_matter_dut"]
+
+pytest_esp32c2_esp_matter_dut:
+  stage: target_test
+  image: ${TARGET_TEST_ENV}
+  needs:
+    - build_esp_matter_examples_pytest_C2_idf_v5_1
+  script:
+    - cd ${ESP_MATTER_PATH}
+    - pip install -r tools/ci/requirements-pytest.txt
+    - pytest examples/ --target esp32c2 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml
+  tags: ["esp32c2", "esp_matter_dut"]
 
 pytest_esp32h2_esp_matter_dut:
   stage: target_test
