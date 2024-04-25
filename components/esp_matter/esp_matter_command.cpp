@@ -888,6 +888,193 @@ static esp_err_t esp_matter_command_callback_unlock_door(const ConcreteCommandPa
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_unlock_with_timeout(const ConcreteCommandPath &command_path,
+                                                                 TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::UnlockWithTimeout::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterUnlockWithTimeoutCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_set_weekday_schedule(const ConcreteCommandPath &command_path,
+                                                                  TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::SetWeekDaySchedule::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterSetWeekDayScheduleCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_get_weekday_schedule(const ConcreteCommandPath &command_path,
+                                                                  TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::GetWeekDaySchedule::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterGetWeekDayScheduleCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_clear_weekday_schedule(const ConcreteCommandPath &command_path,
+                                                                    TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::ClearWeekDaySchedule::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterClearWeekDayScheduleCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_set_year_day_schedule(const ConcreteCommandPath &command_path,
+                                                                   TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::SetYearDaySchedule::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterSetYearDayScheduleCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_get_year_day_schedule(const ConcreteCommandPath &command_path,
+                                                                   TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::GetYearDaySchedule::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterGetYearDayScheduleCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_clear_year_day_schedule(const ConcreteCommandPath &command_path,
+                                                                     TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::ClearYearDaySchedule::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterClearYearDayScheduleCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_set_holiday_schedule(const ConcreteCommandPath &command_path,
+                                                                  TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::SetHolidaySchedule::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterSetHolidayScheduleCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_get_holiday_schedule(const ConcreteCommandPath &command_path,
+                                                                  TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::GetHolidaySchedule::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterGetHolidayScheduleCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_clear_holiday_schedule(const ConcreteCommandPath &command_path,
+                                                                    TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::ClearHolidaySchedule::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterClearHolidayScheduleCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_set_user(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                      void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::SetUser::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterSetUserCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_get_user(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                      void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::GetUser::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterGetUserCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_clear_user(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                        void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::ClearUser::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterClearUserCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_set_credential(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                            void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::SetCredential::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterSetCredentialCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_get_credential_status(const ConcreteCommandPath &command_path,
+                                                                   TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::GetCredentialStatus::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterGetCredentialStatusCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_clear_credential(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                              void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::ClearCredential::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterClearCredentialCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_unbolt_door(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                         void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::UnboltDoor::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterUnboltDoorCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 static esp_err_t esp_matter_command_callback_setpoint_raise_lower(const ConcreteCommandPath &command_path,
                                                                   TLVReader &tlv_data, void *opaque_ptr)
 {
@@ -2261,6 +2448,144 @@ command_t *create_unlock_door(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, DoorLock::Commands::UnlockDoor::Id, COMMAND_FLAG_ACCEPTED,
                                        esp_matter_command_callback_unlock_door);
+}
+
+command_t *create_unlock_with_timeout(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::UnlockWithTimeout::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_unlock_with_timeout);
+}
+
+command_t *create_set_weekday_schedule(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::SetWeekDaySchedule::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_set_weekday_schedule);
+}
+
+command_t *create_get_weekday_schedule(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::GetWeekDaySchedule::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_get_weekday_schedule);
+}
+
+command_t *create_get_weekday_schedule_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::GetWeekDayScheduleResponse::Id, COMMAND_FLAG_GENERATED,
+                                       NULL);
+}
+
+command_t *create_clear_weekday_schedule(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::ClearWeekDaySchedule::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_clear_weekday_schedule);
+}
+
+command_t *create_set_year_day_schedule(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::SetYearDaySchedule::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_set_year_day_schedule);
+}
+
+command_t *create_get_year_day_schedule(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::GetYearDaySchedule::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_get_year_day_schedule);
+}
+
+command_t *create_get_year_day_schedule_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::GetYearDayScheduleResponse::Id, COMMAND_FLAG_GENERATED,
+                                       NULL);
+}
+
+command_t *create_clear_year_day_schedule(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::ClearYearDaySchedule::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_clear_year_day_schedule);
+}
+
+command_t *create_set_holiday_schedule(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::SetHolidaySchedule::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_set_holiday_schedule);
+}
+
+command_t *create_get_holiday_schedule(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::GetHolidaySchedule::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_get_holiday_schedule);
+}
+
+command_t *create_get_holiday_schedule_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::GetHolidayScheduleResponse::Id, COMMAND_FLAG_GENERATED,
+                                       NULL);
+}
+
+command_t *create_clear_holiday_schedule(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::ClearHolidaySchedule::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_clear_holiday_schedule);
+}
+
+command_t *create_set_user(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::SetUser::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_set_user);
+}
+
+command_t *create_get_user(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::GetUser::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_get_user);
+}
+
+command_t *create_get_user_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::GetUserResponse::Id, COMMAND_FLAG_GENERATED,
+                                       NULL);
+}
+
+command_t *create_clear_user(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::ClearUser::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_clear_user);
+}
+
+command_t *create_set_credential(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::SetCredential::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_set_credential);
+}
+
+command_t *create_set_credential_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::SetCredentialResponse::Id, COMMAND_FLAG_GENERATED,
+                                       NULL);
+}
+
+command_t *create_get_credential_status(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::GetCredentialStatus::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_get_credential_status);
+}
+
+command_t *create_get_credential_status_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::GetCredentialStatusResponse::Id, COMMAND_FLAG_GENERATED,
+                                       NULL);
+}
+
+command_t *create_clear_credential(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::ClearCredential::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_clear_credential);
+}
+
+command_t *create_unbolt_door(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::UnboltDoor::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_unbolt_door);
 }
 
 } /* command */

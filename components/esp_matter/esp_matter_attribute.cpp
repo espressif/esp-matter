@@ -3033,10 +3033,128 @@ attribute_t *create_actuator_enabled(cluster_t *cluster, bool value)
                                          esp_matter_bool(value));
 }
 
+attribute_t *create_door_state(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::DoorState::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_nullable_enum8(value));
+}
+
+attribute_t *create_door_open_events(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::DoorOpenEvents::Id, ATTRIBUTE_FLAG_WRITABLE,
+                                         esp_matter_uint32(value));
+}
+
+attribute_t *create_door_close_events(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::DoorClosedEvents::Id, ATTRIBUTE_FLAG_WRITABLE,
+                                         esp_matter_uint32(value));
+}
+
+attribute_t *create_open_period(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::OpenPeriod::Id, ATTRIBUTE_FLAG_WRITABLE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_number_of_total_users_supported(cluster_t *cluster, const uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::NumberOfTotalUsersSupported::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_number_of_pin_users_supported(cluster_t *cluster, const uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::NumberOfPINUsersSupported::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_number_of_rfid_users_supported(cluster_t *cluster, const uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::NumberOfRFIDUsersSupported::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_number_of_weekday_schedules_supported_per_user(cluster_t *cluster, const uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::NumberOfWeekDaySchedulesSupportedPerUser::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_number_of_year_day_schedules_supported_per_user(cluster_t *cluster, const uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::NumberOfYearDaySchedulesSupportedPerUser::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_number_of_holiday_schedules_supported(cluster_t *cluster, const uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::NumberOfHolidaySchedulesSupported::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_max_pin_code_length(cluster_t *cluster, const uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::MaxPINCodeLength::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_min_pin_code_length(cluster_t *cluster, const uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::MinPINCodeLength::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_max_rfid_code_length(cluster_t *cluster, const uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::MaxRFIDCodeLength::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_min_rfid_code_length(cluster_t *cluster, const uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::MinRFIDCodeLength::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_credential_rules_support(cluster_t *cluster, const uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::CredentialRulesSupport::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_bitmap8(value));
+}
+
+attribute_t *create_number_of_credentials_supported_per_user(cluster_t *cluster, const uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::NumberOfCredentialsSupportedPerUser::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_language(cluster_t *cluster, const char * value, uint16_t length)
+{
+    if (length > k_max_language_length) {
+        ESP_LOGE(TAG, "Could not create attribute, string size out of bound");
+        return NULL;
+    }
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::Language::Id, ATTRIBUTE_FLAG_WRITABLE,
+                                         esp_matter_char_str((char *)value, length), k_max_language_length);
+}
+
+attribute_t *create_led_settings(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::LEDSettings::Id, ATTRIBUTE_FLAG_WRITABLE,
+                                         esp_matter_enum8(value));
+}
+
 attribute_t *create_auto_relock_time(cluster_t *cluster, uint32_t value)
 {
     return esp_matter::attribute::create(cluster, DoorLock::Attributes::AutoRelockTime::Id, ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_uint32(value));
+}
+
+attribute_t *create_sound_valume(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::SoundVolume::Id, ATTRIBUTE_FLAG_WRITABLE,
+                                         esp_matter_enum8(value));
 }
 
 attribute_t *create_operating_mode(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
@@ -3051,10 +3169,94 @@ attribute_t *create_operating_mode(cluster_t *cluster, uint8_t value, uint8_t mi
     return attribute;
 }
 
-attribute_t *create_supported_operating_modes(cluster_t *cluster, uint16_t value)
+attribute_t *create_supported_operating_modes(cluster_t *cluster, const uint16_t value)
 {
     return esp_matter::attribute::create(cluster, DoorLock::Attributes::SupportedOperatingModes::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_bitmap16(value));
+}
+
+attribute_t *create_default_configuration_register(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::DefaultConfigurationRegister::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_bitmap16(value));
+}
+
+attribute_t *create_enable_local_programming(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::EnableLocalProgramming::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_bool(value));
+}
+
+attribute_t *create_enable_one_touch_locking(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::EnableOneTouchLocking::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_bool(value));
+}
+
+attribute_t *create_enable_inside_status_led(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::EnableInsideStatusLED::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_bool(value));
+}
+
+attribute_t *create_enable_privacy_mode_button(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::EnablePrivacyModeButton::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_bool(value));
+}
+
+attribute_t *create_local_programming_features(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::LocalProgrammingFeatures::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_bitmap8(value));
+}
+
+attribute_t *create_wrong_code_entry_limit(cluster_t *cluster, uint8_t value)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, DoorLock::Attributes::WrongCodeEntryLimit::Id,
+                                                           ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(1), esp_matter_uint8(255));
+    return attribute;
+}
+
+attribute_t *create_user_code_temporary_disable_time(cluster_t *cluster, uint8_t value)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, DoorLock::Attributes::UserCodeTemporaryDisableTime::Id,
+                                                           ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(1), esp_matter_uint8(255));
+    return attribute;
+}
+
+attribute_t *create_send_pin_over_the_air(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::SendPINOverTheAir::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_bool(value));
+}
+
+attribute_t *create_require_pin_for_remote_operation(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::RequirePINforRemoteOperation::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_bool(value));
+}
+
+attribute_t *create_expiring_user_timeout(cluster_t *cluster, uint16_t value)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, DoorLock::Attributes::ExpiringUserTimeout::Id,
+                                                           ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint16(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(1), esp_matter_uint16(2880));
+    return attribute;
 }
 
 } /* attribute */

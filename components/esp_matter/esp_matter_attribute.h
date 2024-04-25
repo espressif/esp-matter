@@ -652,13 +652,45 @@ attribute_t *create_operational_error(cluster_t *cluster, uint8_t value);
 } /* operational_state */
 
 namespace door_lock {
+constexpr uint8_t k_max_language_length = 3;
+
 namespace attribute {
 attribute_t *create_lock_state(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_lock_type(cluster_t *cluster, uint8_t value);
 attribute_t *create_actuator_enabled(cluster_t *cluster, bool value);
+attribute_t *create_door_state(cluster_t *cluster, uint8_t value);
+attribute_t *create_door_open_events(cluster_t *cluster, uint32_t value);
+attribute_t *create_door_close_events(cluster_t *cluster, uint32_t value);
+attribute_t *create_open_period(cluster_t *cluster, uint16_t value);
+attribute_t *create_number_of_total_users_supported(cluster_t *cluster, const uint16_t value);
+attribute_t *create_number_of_pin_users_supported(cluster_t *cluster, const uint16_t value);
+attribute_t *create_number_of_rfid_users_supported(cluster_t *cluster, const uint16_t value);
+attribute_t *create_number_of_weekday_schedules_supported_per_user(cluster_t *cluster, const uint8_t value);
+attribute_t *create_number_of_year_day_schedules_supported_per_user(cluster_t *cluster, const uint8_t value);
+attribute_t *create_number_of_holiday_schedules_supported(cluster_t *cluster, const uint8_t value);
+attribute_t *create_max_pin_code_length(cluster_t *cluster, const uint8_t value);
+attribute_t *create_min_pin_code_length(cluster_t *cluster, const uint8_t value);
+attribute_t *create_max_rfid_code_length(cluster_t *cluster, const uint8_t value);
+attribute_t *create_min_rfid_code_length(cluster_t *cluster, const uint8_t value);
+attribute_t *create_credential_rules_support(cluster_t *cluster, const uint8_t value);
+attribute_t *create_number_of_credentials_supported_per_user(cluster_t *cluster, const uint8_t value);
+attribute_t *create_language(cluster_t *cluster, const char * value, uint16_t length);
+attribute_t *create_led_settings(cluster_t *cluster, uint8_t value);
 attribute_t *create_auto_relock_time(cluster_t *cluster, uint32_t value);
+attribute_t *create_sound_valume(cluster_t *cluster, uint8_t value);
 attribute_t *create_operating_mode(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
-attribute_t *create_supported_operating_modes(cluster_t *cluster, uint16_t value);
+attribute_t *create_supported_operating_modes(cluster_t *cluster, const uint16_t value);
+attribute_t *create_default_configuration_register(cluster_t *cluster, uint16_t value);
+attribute_t *create_enable_local_programming(cluster_t *cluster, bool value);
+attribute_t *create_enable_one_touch_locking(cluster_t *cluster, bool value);
+attribute_t *create_enable_inside_status_led(cluster_t *cluster, bool value);
+attribute_t *create_enable_privacy_mode_button(cluster_t *cluster, bool value);
+attribute_t *create_local_programming_features(cluster_t *cluster, uint8_t value);
+attribute_t *create_wrong_code_entry_limit(cluster_t *cluster, uint8_t value);
+attribute_t *create_user_code_temporary_disable_time(cluster_t *cluster, uint8_t value);
+attribute_t *create_send_pin_over_the_air(cluster_t *cluster, bool value);
+attribute_t *create_require_pin_for_remote_operation(cluster_t *cluster, bool value);
+attribute_t *create_expiring_user_timeout(cluster_t *cluster, uint16_t value);
 } /* attribute */
 } /* door_lock */
 
