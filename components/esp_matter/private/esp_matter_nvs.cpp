@@ -230,8 +230,9 @@ static esp_err_t nvs_store_val(const char *nvs_namespace, const char *attribute_
         if (val.val.a.b) {
             err = nvs_set_blob(handle, attribute_key, val.val.a.b, val.val.a.s);
         } else {
-            err = ESP_OK;
+            err = nvs_erase_key(handle, attribute_key);
         }
+        nvs_commit(handle);
     } else {
         // This switch case handles primitive data types
         // always store values as primitive data type
