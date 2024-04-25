@@ -40,6 +40,13 @@ MAINFEST_FILES = [
     str(PROJECT_ROOT / 'examples' / '.build-rules.yml'),
 ]
 
+PYTEST_C2_APPS = [
+    {"target": "esp32c2", "name": "light"},
+]
+MAINFEST_FILES = [
+    str(PROJECT_ROOT / 'examples' / '.build-rules.yml'),
+]
+
 def _is_c6_pytest_app(app: App) -> bool:
     print(app.name, app.target)
     for pytest_app in PYTEST_C6_APPS:
@@ -56,6 +63,12 @@ def _is_h2_pytest_app(app: App) -> bool:
 
 def _is_c3_pytest_app(app: App) -> bool:
     for pytest_app in PYTEST_C3_APPS:
+        if app.name == pytest_app["name"] and app.target == pytest_app["target"]:
+            return True
+    return False
+
+def _is_c2_pytest_app(app: App) -> bool:
+    for pytest_app in PYTEST_C2_APPS:
         if app.name == pytest_app["name"] and app.target == pytest_app["target"]:
             return True
     return False
@@ -83,7 +96,7 @@ def main(args: argparse.Namespace) -> None:
     apps = get_cmake_apps(args.paths, args.target, args.config)
 
     # no_pytest and only_pytest can not be both True
-    assert not (args.no_pytest and args.pytest_c6 and args.pytest_h2 and args.pytest_c3)
+    assert not (args.no_pytest and args.pytest_c6 and args.pytest_h2 and args.pytest_c3 and args.pytest_c2)
     if args.no_pytest:
         apps_for_build = [app for app in apps if not (_is_c6_pytest_app(app) or _is_h2_pytest_app(app))]
     elif args.pytest_c6:
@@ -92,6 +105,8 @@ def main(args: argparse.Namespace) -> None:
         apps_for_build = [app for app in apps if _is_h2_pytest_app(app)]
     elif args.pytest_c3:
         apps_for_build = [app for app in apps if _is_c3_pytest_app(app)]
+    elif args.pytest_c2:
+        apps_for_build = [app for app in apps if _is_c2_pytest_app(app)]
     else:
         apps_for_build = apps[:]
 
@@ -166,6 +181,11 @@ if __name__ == '__main__':
         '--pytest_c3',
         action="store_true",
         help='Only build pytest apps, definded in PYTEST_C3_APPS',
+    )
+    parser.add_argument(
+        '--pytest_c2',
+        action="store_true",
+        help='Only build pytest apps, definded in PYTEST_C2_APPS',
     )
     parser.add_argument(
         '--collect-size-info',

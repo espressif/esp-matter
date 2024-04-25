@@ -54,7 +54,46 @@ def test_matter_commissioning_c3(dut:Dut) -> None:
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))
     if len(result) != 0:
-      assert False      
+      assert False
+
+@pytest.mark.esp32c2
+@pytest.mark.esp_matter_dut
+@pytest.mark.parametrize(
+    ' count, app_path, target, erase_all', [
+        ( 1, pytest_build_dir, 'esp32c2', 'y'),
+    ],
+    indirect=True,
+)
+
+# Matter over wifi commissioning
+def test_matter_commissioning_c2(dut:Dut) -> None:
+    light = dut
+    # BLE start advertising
+    light.expect(r'chip\[DL\]\: Configuring CHIPoBLE advertising', timeout=20)
+    # Start commissioning
+    time.sleep(5)
+    command = CHIP_TOOL_EXE + ' pairing ble-wifi 1 ChipTEH2 chiptest123 20202021 3840'
+    out_str = subprocess.getoutput(command)
+    print(out_str)
+    result = re.findall(r'Run command failure', str(out_str))
+    if len(result) != 0:
+      assert False
+    # Use toggle command to turn-off the light
+    time.sleep(3)
+    command = CHIP_TOOL_EXE + ' onoff toggle 1 1'
+    out_str = subprocess.getoutput(command)
+    print(out_str)
+    result = re.findall(r'Run command failure', str(out_str))
+    if len(result) != 0:
+      assert False
+    # Use toggle command to turn-on the light
+    time.sleep(5)
+    command = CHIP_TOOL_EXE + ' onoff toggle 1 1'
+    out_str = subprocess.getoutput(command)
+    print(out_str)
+    result = re.findall(r'Run command failure', str(out_str))
+    if len(result) != 0:
+      assert False
 
 @pytest.mark.esp32c6
 @pytest.mark.esp_matter_dut
@@ -93,7 +132,7 @@ def test_matter_commissioning_c6(dut:Dut) -> None:
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))
     if len(result) != 0:
-      assert False   
+      assert False
 
 
 # get the host interface name
