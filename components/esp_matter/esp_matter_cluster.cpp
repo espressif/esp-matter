@@ -872,6 +872,46 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* time_synchronization */
 
+namespace unit_localization {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, UnitLocalization::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        add_function_list(cluster, function_list, function_flags);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+#if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+#endif
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    /* Features */
+    if (features & feature::temperature_unit::get_id()) {
+        feature::temperature_unit::add(cluster, &(config->temperature_unit));
+    }
+
+    return cluster;
+}
+} /* unit_localization */
+
 namespace bridged_device_basic_information {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
@@ -3561,10 +3601,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 // namespace pulse_width_modulation {
 //     // ToDo
 // } /* pulse_width_modulation */
-
-// namespace unit_localization {
-//     // ToDo
-// } /* unit_localization */
 
 // namespace powersource_configuration {
 //     // ToDo

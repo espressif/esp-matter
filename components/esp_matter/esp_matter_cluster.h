@@ -217,6 +217,16 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* time_synchronization */
 
+namespace unit_localization {
+typedef struct config {
+    uint16_t cluster_revision;
+    feature::temperature_unit::config_t temperature_unit;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* unit_localization */
+
 namespace bridged_device_basic_information {
 typedef struct config {
     uint16_t cluster_revision;

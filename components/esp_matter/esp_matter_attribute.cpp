@@ -3394,6 +3394,18 @@ attribute_t *create_supported_locales(cluster_t *cluster, uint8_t *value, uint16
 } /* attribute */
 } /* localization_configuration */
 
+namespace unit_localization {
+namespace attribute {
+
+attribute_t *create_temperature_unit(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, UnitLocalization::Attributes::TemperatureUnit::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_enum8(value));
+}
+} /* attribute */
+} /* unit_localization */
+
 namespace time_format_localization {
 namespace attribute {
 
