@@ -3058,6 +3058,35 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* switch_cluster */
 
+namespace unit_localization {
+namespace feature {
+
+namespace temperature_unit {
+
+uint32_t get_id()
+{
+    return (uint32_t)UnitLocalization::Feature::kTemperatureUnit;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_temperature_unit(cluster, config->temperature_unit);
+
+    return ESP_OK;
+}
+
+} /* temperature_unit */
+
+} /* feature */
+} /* unit_localization */
+
 namespace time_format_localization {
 namespace feature {
 
