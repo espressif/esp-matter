@@ -1587,7 +1587,21 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     if (features & feature::cooling::get_id()) {
         feature::cooling::add(cluster, &(config->cooling));
     }
-
+    if (features & feature::setback::get_id()) {
+        feature::setback::add(cluster, &(config->setback));
+    }
+    if (features & feature::occupancy::get_id()) {
+        feature::occupancy::add(cluster, &(config->occupancy));
+    }
+    if (features & feature::schedule_configuration::get_id()) {
+        feature::schedule_configuration::add(cluster, &(config->schedule_configuration));
+    }
+    if (features & feature::auto_mode::get_id()) {
+        feature::auto_mode::add(cluster, &(config->auto_mode));
+    }
+    if (features & feature::local_temperature_not_exposed::get_id()) {
+        feature::local_temperature_not_exposed::add(cluster, &(config->local_temperature_not_exposed));
+    }
     return cluster;
 }
 } /* thermostat */

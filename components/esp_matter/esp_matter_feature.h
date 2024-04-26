@@ -560,6 +560,18 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 } /* auto_mode */
 
+namespace local_temperature_not_exposed {
+
+typedef struct config {
+    int16_t local_temperature_calibration;
+
+    config (): local_temperature_calibration(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* local_temperature_not_exposed */
+
 } /* feature */
 } /* thermostat */
 

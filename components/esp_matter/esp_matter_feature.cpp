@@ -2768,9 +2768,7 @@ namespace heating {
 
 uint32_t get_id()
 {
-    // The ThermostatFeature enum class is not added in the upstream code.
-    // Return the code according to the SPEC
-    return 0x01;
+    return (uint32_t)Thermostat::Feature::kHeating;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -2792,9 +2790,7 @@ namespace cooling {
 
 uint32_t get_id()
 {
-    // The ThermostatFeature enum class is not added in the upstream code.
-    // Return the code according to the SPEC
-    return 0x02;
+    return (uint32_t)Thermostat::Feature::kCooling;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -2816,9 +2812,7 @@ namespace occupancy {
 
 uint32_t get_id()
 {
-    // The ThermostatFeature enum class is not added in the upstream code.
-    // Return the code according to the SPEC
-    return 0x04;
+    return (uint32_t)Thermostat::Feature::kOccupancy;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -2858,9 +2852,7 @@ namespace schedule_configuration {
 
 uint32_t get_id()
 {
-    // The ThermostatFeature enum class is not added in the upstream code.
-    // Return the code according to the SPEC
-    return 0x08;
+    return (uint32_t)Thermostat::Feature::kScheduleConfiguration;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -2888,9 +2880,7 @@ namespace setback {
 
 uint32_t get_id()
 {
-    // The ThermostatFeature enum class is not added in the upstream code.
-    // Return the code according to the SPEC
-    return 0x10;
+    return (uint32_t)Thermostat::Feature::kSetback;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -2913,9 +2903,7 @@ namespace auto_mode {
 
 uint32_t get_id()
 {
-    // The ThermostatFeature enum class is not added in the upstream code.
-    // Return the code according to the SPEC
-    return 0x20;
+    return (uint32_t)Thermostat::Feature::kAutoMode;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -2931,6 +2919,25 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     return ESP_OK;
 }
 } /* auto_mode */
+
+namespace local_temperature_not_exposed {
+
+uint32_t get_id()
+{
+    return (uint32_t)Thermostat::Feature::kLocalTemperatureNotExposed;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+} /* local_temperature_not_exposed */
 
 } /* feature */
 } /* thermostat */
