@@ -13,6 +13,9 @@
 #include "driver/mcpwm.h"
 #include "soc/mcpwm_periph.h"
 #include <device.h>
+#include <math.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 #include <esp_matter.h>
 #include "bsp/esp-bsp.h"
@@ -26,19 +29,38 @@ using namespace esp_matter::cluster;
 static const char *TAG = "app_driver";
 extern uint16_t light_endpoint_id;
 
-// Define GPIO pin connected to the signal input of the servo
-#define SERVO1_GPIO 13
-#define SERVO2_GPIO 25
-#define SERVO3_GPIO 33
-#define SERVO4_GPIO 32
+// Define the number of servos
+#define NUM_SERVOS 4 
 
-#define NUM_SERVOS 4 // Define the number of servos
+// Define GPIO pin connected to the signal input of the servo
+//#define SERVO1_GPIO 13
+//#define SERVO2_GPIO 25
+//#define SERVO3_GPIO 33
+//#define SERVO4_GPIO 32
+
+#define SERVO1_GPIO 13
+#define SERVO2_GPIO 12
+#define SERVO3_GPIO 14
+#define SERVO4_GPIO 25
+
+#define release_open        20  //OK
+#define release_locked      130 //OK
+#define tensioner_loose     30  //OK
+#define tensioner_charged   110 //OK
+#define lid_closed          0   //OK
+#define lid_open            165 //OK
+#define lid_reload          115
+#define reload_closed       125 //OK
+#define reload_open         30  //OK
 
 // Define servo names
-const char* servo_names[NUM_SERVOS] = {"Tensioner", "Release", "Lid", "Reload"};
+const char* servo_names[NUM_SERVOS] = {"Release", "Tensioner", "Lid", "Reload"};
 
 // Define GPIO pins for each servo
 const int servo_pins[NUM_SERVOS] = {SERVO1_GPIO, SERVO2_GPIO, SERVO3_GPIO, SERVO4_GPIO};
+
+// Define two separate units
+const mcpwm_unit_t servo_pwm_unit[NUM_SERVOS] = {MCPWM_UNIT_0, MCPWM_UNIT_1, MCPWM_UNIT_0, MCPWM_UNIT_1};
 
 // Define two separate timers
 const mcpwm_timer_t servo_pwm_timer[NUM_SERVOS] = {MCPWM_TIMER_0, MCPWM_TIMER_0, MCPWM_TIMER_1, MCPWM_TIMER_1};
@@ -74,81 +96,131 @@ static void toggle_OnOff_attribute() {
 
 /* Do any conversions/remapping for the actual value here */
 /*ELIA MODS*/
+int angle_to_duty(int angle){
+    int result = static_cast<int>((static_cast<double>(angle) / SERVO_MAX_DEGREE) * (SERVO_MAX_PULSEWIDTH - SERVO_MIN_PULSEWIDTH) + SERVO_MIN_PULSEWIDTH);
+    return result;
+}
+
+static void drive_servo_smoothly(int servo_id, int start, int end, int total_delay) {
+    // ALERT: delay_time_ms cannot be less than 10!! A certain value of num_steps implies a certain minimum total delay!!
+    const int num_steps = 100;
+    const int delay_time_ms = total_delay / num_steps;
+    const int start_duty = angle_to_duty(start);
+    const int end_duty = angle_to_duty(end);
+    
+    // Iterate through a number of steps to smoothly change the duty cycle from start to end
+    // The angle varies from 0 to pi/2, creating a sinusoidal increment in duty cycle
+    for (int i = 0; i < num_steps; i++) {
+        double angle = M_PI/2 * i / (num_steps - 1); // Angle ranges from 0 to pi/2
+        double duty = sin(angle) * sin(angle) * (end_duty - start_duty) + start_duty;
+        mcpwm_set_duty_in_us(servo_pwm_unit[servo_id], servo_pwm_timer[servo_id], servo_pwm_generator[servo_id], duty);
+        // Wait for a short duration
+        vTaskDelay(delay_time_ms / portTICK_PERIOD_MS);
+    }
+}
+
+static void drive_servo_linearly(int servo_id, int start, int end, int total_delay) {
+    // ALERT: delay_time_ms cannot be less than 10!! A certain value of num_steps implies a certain minimum total delay!!
+    const int num_steps = 100;
+    const int delay_time_ms = total_delay / num_steps;
+    const int start_duty = angle_to_duty(start);
+    const int end_duty = angle_to_duty(end);
+    
+    // Iterate through a number of steps to linearly change the duty cycle from start to end
+    for (int i = 0; i < num_steps; i++) {
+        //double duty = i / num_steps * (end_duty - start_duty) + start_duty;
+        double duty = static_cast<double>(i) / num_steps * (end_duty - start_duty) + start_duty;
+        mcpwm_set_duty_in_us(servo_pwm_unit[servo_id], servo_pwm_timer[servo_id], servo_pwm_generator[servo_id], duty);
+        // Wait for a short duration
+        vTaskDelay(delay_time_ms / portTICK_PERIOD_MS);
+    }
+}
+
+static void launch(void *pvParameters) {
+    mcpwm_config_t pwm_config;
+    pwm_config.frequency = 50;  // Set frequency to 50Hz, suitable for most servos
+    pwm_config.cmpr_a = 0;      // Initial duty cycle
+    pwm_config.counter_mode = MCPWM_UP_COUNTER;
+    pwm_config.duty_mode = MCPWM_DUTY_MODE_0;
+    //mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config);
+    //mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_1, &pwm_config);
+
+    // Initialize and configure MCPWM for each servo
+    for (int servo_id = 0; servo_id < NUM_SERVOS; servo_id++) {
+        ESP_LOGI(TAG, "Initializing %s with GPIO pin %d", servo_names[servo_id], servo_pins[servo_id]);
+        mcpwm_gpio_init(servo_pwm_unit[servo_id], servo_pwm_signals[servo_id], servo_pins[servo_id]);
+        // Use separate timers for each servo
+        mcpwm_init(servo_pwm_unit[servo_id], servo_pwm_timer[servo_id], &pwm_config);
+        mcpwm_set_duty_in_us(servo_pwm_unit[servo_id], servo_pwm_timer[servo_id], servo_pwm_generator[servo_id], 0);
+    }
+
+    //vTaskDelay(5000 / portTICK_PERIOD_MS);
+    int duty = angle_to_duty(tensioner_loose);
+    mcpwm_set_duty_in_us(servo_pwm_unit[1], servo_pwm_timer[1], servo_pwm_generator[1], duty);
+    duty = angle_to_duty(reload_closed);
+    mcpwm_set_duty_in_us(servo_pwm_unit[3], servo_pwm_timer[3], servo_pwm_generator[3], duty);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    duty = angle_to_duty(release_locked);
+    mcpwm_set_duty_in_us(servo_pwm_unit[0], servo_pwm_timer[0], servo_pwm_generator[0], duty);
+    duty = angle_to_duty(lid_closed);
+    mcpwm_set_duty_in_us(servo_pwm_unit[2], servo_pwm_timer[2], servo_pwm_generator[2], duty);
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+
+    // Open lid
+    drive_servo_smoothly(2, lid_closed, lid_open, 1500);
+    vTaskDelay(100 / portTICK_PERIOD_MS);
+
+    // Charge tensioner
+    drive_servo_linearly(1, tensioner_loose, tensioner_charged, 1000);
+    vTaskDelay(200 / portTICK_PERIOD_MS);
+
+    // Release lock
+    drive_servo_linearly(0, release_locked, release_open, 1000);
+    vTaskDelay(100 / portTICK_PERIOD_MS);
+
+    // Fold tensioner
+    drive_servo_smoothly(1, tensioner_charged, tensioner_loose, 1000);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+
+    // Lock the release and toggle reload
+    duty = angle_to_duty(release_locked);
+    mcpwm_set_duty_in_us(servo_pwm_unit[0], servo_pwm_timer[0], servo_pwm_generator[0], duty);
+    duty = angle_to_duty(reload_open);
+    mcpwm_set_duty_in_us(servo_pwm_unit[3], servo_pwm_timer[3], servo_pwm_generator[3], duty);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    duty = angle_to_duty(reload_closed);
+    mcpwm_set_duty_in_us(servo_pwm_unit[3], servo_pwm_timer[3], servo_pwm_generator[3], duty);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+
+    // Tilt lid to reload
+    duty = angle_to_duty(lid_reload);
+    mcpwm_set_duty_in_us(servo_pwm_unit[2], servo_pwm_timer[2], servo_pwm_generator[2], duty);
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+
+    // Close lid
+    drive_servo_smoothly(2, lid_reload, lid_closed, 2000);
+
+    // Stop PWM generation for each servo
+    for (int servo_id = 0; servo_id < NUM_SERVOS; servo_id++) {
+        mcpwm_set_duty_in_us(servo_pwm_unit[servo_id], servo_pwm_timer[servo_id], servo_pwm_generator[servo_id], 0);
+        mcpwm_stop(servo_pwm_unit[servo_id], servo_pwm_timer[servo_id]);
+    }
+    // Delete the task from within the function
+    vTaskDelete(NULL);
+}
+
 static esp_err_t app_driver_light_set_power(led_indicator_handle_t handle, esp_matter_attr_val_t *val)
 {
     if (val->val.b) {
         ESP_LOGI(TAG, "================================== Catapult power ON signal received: %d", val->val.b);
-        
-        mcpwm_config_t pwm_config;
-        pwm_config.frequency = 50;  // Set frequency to 50Hz, suitable for most servos
-        pwm_config.cmpr_a = 0;      // Initial duty cycle
-        pwm_config.counter_mode = MCPWM_UP_COUNTER;
-        pwm_config.duty_mode = MCPWM_DUTY_MODE_0;
-        mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config);
-        mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_1, &pwm_config);
+        xTaskCreate(&launch,         // Function to run
+                "launch_task",   // Task name
+                4096,                 // Stack size (in words, not bytes)
+                NULL,                 // No parameter to pass to the task
+                5,                    // Priority (higher number means higher priority)
+                NULL);                // Task handle (can be NULL if not needed)
 
-        // Initialize and configure MCPWM for each servo
-        for (int servo_id = 0; servo_id < NUM_SERVOS; servo_id++) {
-            ESP_LOGI(TAG, "Initializing %s with GPIO pin %d", servo_names[servo_id], servo_pins[servo_id]);
-            mcpwm_gpio_init(MCPWM_UNIT_0, servo_pwm_signals[servo_id], servo_pins[servo_id]);
-            
-        }
-        // Rotate each servo from 0 to 90 degrees
-        for (int i = 0; i <= SERVO_MAX_DEGREE; i++) {
-            for (int servo_id = 0; servo_id < NUM_SERVOS; servo_id++) {
-                mcpwm_set_duty_in_us(MCPWM_UNIT_0, servo_pwm_timer[servo_id], servo_pwm_generator[servo_id], 
-                                        SERVO_MIN_PULSEWIDTH + ((SERVO_MAX_PULSEWIDTH - SERVO_MIN_PULSEWIDTH) * i / SERVO_MAX_DEGREE));
-            }
-            vTaskDelay(20 / portTICK_PERIOD_MS); // Wait 20ms between each step
-        }
-
-        // Rotate each servo from 90 to 0 degrees
-        for (int i = SERVO_MAX_DEGREE; i >= 0; i--) {
-            for (int servo_id = 0; servo_id < NUM_SERVOS; servo_id++) {
-                mcpwm_set_duty_in_us(MCPWM_UNIT_0, servo_pwm_timer[servo_id], servo_pwm_generator[servo_id], 
-                                        SERVO_MIN_PULSEWIDTH + ((SERVO_MAX_PULSEWIDTH - SERVO_MIN_PULSEWIDTH) * i / SERVO_MAX_DEGREE));
-            }
-            vTaskDelay(20 / portTICK_PERIOD_MS); // Wait 20ms between each step
-        }
-
-        // Stop PWM generation for each servo
-        for (int servo_id = 0; servo_id < NUM_SERVOS; servo_id++) {
-            mcpwm_set_duty_in_us(MCPWM_UNIT_0, servo_pwm_timer[servo_id], servo_pwm_generator[servo_id], 0);
-            mcpwm_stop(MCPWM_UNIT_0, servo_pwm_timer[servo_id]);
-        }
-
-        /*
-        // Initialize MCPWM
-        mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, SERVO_GPIO);
-        // Configure MCPWM
-        mcpwm_config_t pwm_config;
-        pwm_config.frequency = 50;  // Set frequency to 50Hz, suitable for most servos
-        pwm_config.cmpr_a = 0;      // Initial duty cycle
-        pwm_config.counter_mode = MCPWM_UP_COUNTER;
-        pwm_config.duty_mode = MCPWM_DUTY_MODE_0;
-        mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config);
-        
-
-        // Rotate servo from 0 to 180 degrees
-        for (int i = 0; i <= SERVO_MAX_DEGREE; i++) {
-            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, 
-                                    SERVO_MIN_PULSEWIDTH + ((SERVO_MAX_PULSEWIDTH - SERVO_MIN_PULSEWIDTH) * i / SERVO_MAX_DEGREE));
-            vTaskDelay(20 / portTICK_PERIOD_MS); // Wait 20ms between each step
-        }
-        // Rotate servo from 180 to 0 degrees
-        for (int i = SERVO_MAX_DEGREE; i >= 0; i--) {
-            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, 
-                                    SERVO_MIN_PULSEWIDTH + ((SERVO_MAX_PULSEWIDTH - SERVO_MIN_PULSEWIDTH) * i / SERVO_MAX_DEGREE));
-            vTaskDelay(20 / portTICK_PERIOD_MS); // Wait 20ms between each step
-        }
-        
-        // Set PWM duty cycle to 0
-        mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, 0);
-
-        // Deinitialize MCPWM
-        mcpwm_stop(MCPWM_UNIT_0, MCPWM_TIMER_0);
-        */
-
+        //launch();
 
         ESP_LOGI(TAG, "ELIA ================================== Attempting to turn OFF the OnOff attribute");
         toggle_OnOff_attribute();
@@ -235,12 +307,16 @@ app_driver_handle_t app_driver_light_init()
 app_driver_handle_t app_driver_button_init()
 {
     /* Initialize button */
-    //button_handle_t btns[BSP_BUTTON_NUM];
-    //ESP_ERROR_CHECK(bsp_iot_button_create(btns, NULL, BSP_BUTTON_NUM));
-    //ESP_ERROR_CHECK(iot_button_register_cb(btns[0], BUTTON_PRESS_DOWN, app_driver_button_toggle_cb, NULL));
-
-    button_config_t config = button_driver_get_config();
+    button_config_t config = {
+        .type = BUTTON_TYPE_GPIO,
+        .gpio_button_config = {
+            .gpio_num = 17,
+            .active_level = 0,
+        }
+    };
     button_handle_t handle = iot_button_create(&config);
+    //button_config_t config = button_driver_get_config();
+    //button_handle_t handle = iot_button_create(&config);
     iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_toggle_cb, NULL);
     
     return (app_driver_handle_t)handle;
