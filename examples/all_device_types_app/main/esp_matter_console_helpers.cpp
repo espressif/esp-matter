@@ -395,6 +395,11 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::electrical_sensor::create(node, &electrical_sensor_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
+        case ESP_MATTER_COOKTOP: {
+            esp_matter::endpoint::cooktop::config_t cooktop_config;
+            endpoint = esp_matter::endpoint::cooktop::create(node, &cooktop_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
         default: {
             ESP_LOGE(TAG, "Please input a valid device type");
             break;

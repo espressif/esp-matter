@@ -67,3 +67,5 @@ i. Appliance
 4. Refrigerator
 5. Temperature Controlled Cabinet
 6. Oven
+7. Cook Surface
+8. Cooktop

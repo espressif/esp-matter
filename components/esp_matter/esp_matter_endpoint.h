@@ -100,6 +100,10 @@
 #define ESP_MATTER_WATER_LEAK_DETECTOR_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_RAIN_SENSOR_DEVICE_TYPE_ID 0x0044
 #define ESP_MATTER_RAIN_SENSOR_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_COOK_SURFACE_DEVICE_TYPE_ID 0x0077
+#define ESP_MATTER_COOK_SURFACE_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_COOKTOP_DEVICE_TYPE_ID 0x0078
+#define ESP_MATTER_COOKTOP_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_ELECTRICAL_SENSOR_DEVICE_TYPE_ID 0x0510
 #define ESP_MATTER_ELECTRICAL_SENSOR_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_OVEN_DEVICE_TYPE_ID 0x007B
@@ -678,6 +682,30 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* electrical_sensor */
+
+namespace cook_surface {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::temperature_control::config_t temperature_control;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* cook_surface */
+
+namespace cooktop {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::on_off::config_t on_off;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* cooktop */
 
 } /* endpoint */
 
