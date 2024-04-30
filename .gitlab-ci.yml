@@ -1,11 +1,18 @@
 stages:
+    - docker_build
     - build
     - target_test
     - docs
 
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH
+
 variables:
     ESP_MATTER_PATH: "$CI_PROJECT_DIR"
-    IDF_PATH: "$CI_PROJECT_DIR/esp-idf"
     BR_PATH: "$CI_PROJECT_DIR/esp-thread-br"
     IDF_GITHUB_ASSETS: "dl.espressif.com/github_assets"
     GIT_STRATEGY: fetch
@@ -13,7 +20,13 @@ variables:
     IDF_SKIP_CHECK_SUBMODULES: 1
     # This folder was on the runner host
     MATTER_CACHE_DIR: /cache/matter_build
-    IDF_CHECKOUT_REF: "v5.1.2"
+    # This variable represents the latest idf version supported for the target branch.
+    # Note: Do change this variable in case of idf version change MR.
+    IDF_CHECKOUT_REF: "v5.2.1"
+    # This variable represents the short hash of the connectedhomeip submodule.
+    # Note: Do change this short hash on submodule update MRs.
+    CHIP_SHORT_HASH: "5bb5c9e2"
+    DOCKER_IMAGE_NAME: "espressif/chip-idf"
 
 .add_gitlab_ssh_key: &add_gitlab_ssh_key |
   mkdir -p ~/.ssh
@@ -47,28 +60,6 @@ variables:
       time rsync -a ~/.espressif/dist/ ${MATTER_CACHE_DIR}/espressif_dist/ || true
     fi
 
-.chip_submodule_update: &chip_submodule_update
-  - sed -i "s%https://github.com/espressif%${GITLAB_SSH_SERVER}/espressif%" .gitmodules
-  - git submodule sync --recursive
-  - git submodule update -f --init --recursive --depth 1
-
-.setup_idf: &setup_idf
-  # TODO: IDF_VERSION maybe a commit id, use `git fetch` rather than `git clone -b`
-  # - git clone -b ${IDF_VERSION} ${IDF_GIT_REPO_URL} --depth=1
-  - mkdir -p esp-idf
-  - cd esp-idf
-  - git init
-  - git remote add origin ${IDF_GIT_REPO_URL}
-  - git fetch origin ${IDF_VERSION}:refs/head --depth=1 -f
-  - git checkout ${IDF_VERSION}
-  - ./install.sh
-  - . ./export.sh
-  # fetch submodules
-  - export PYTHONPATH=${IDF_PATH}/tools/ci/python_packages/:${PYTHONPATH}
-  - pip install python-gitlab
-  - pip install --upgrade idf-component-manager
-  - python tools/ci/ci_fetch_submodule.py
-
 .setup_ot_br: &setup_ot_br
   - cd ${CI_PROJECT_DIR}
   - git clone ${ESP_THREAD_BR_REPO_URL}
@@ -89,11 +80,21 @@ variables:
   - idf.py set-target esp32h2
   - idf.py build
 
+.setup_idf: &setup_idf
+  - source ${IDF_PATH}/export.sh
+  - export PYTHONPATH=${IDF_PATH}/tools/ci/python_packages/:${PYTHONPATH}
+  - pip install python-gitlab
+  - pip install --upgrade idf-component-manager
+  - cd ${IDF_PATH}
+  - python tools/ci/ci_fetch_submodule.py
+
 .setup_matter: &setup_matter
-  - cd ${CI_PROJECT_DIR}
-  # Setting up Python environment still spend a pretty long time (15mins -> 5mins).
-  - ./install.sh
-  - . ./export.sh
+   - cd ${ESP_MATTER_PATH}
+   - rm -rf connectedhomeip/connectedhomeip  # Remove submodule directory
+   - ln -s ${CHIP_SUBMODULE_PATH} connectedhomeip/connectedhomeip  # Create symlink to specified CHIP_SUBMODULE_PATH
+   - cd ${ESP_MATTER_PATH}
+   - . ./export.sh
+   - python3 -m pip install -r requirements.txt
 
 .build_matter_examples: &build_matter_examples
     - export MATTER_EXAMPLES_PATH=$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/examples
@@ -109,11 +110,14 @@ variables:
     - idf.py build
 
 .build_external_platform_example: &build_external_platform_example
-    - rm -rf $ESP_MATTER_PATH/../platform
-    - mkdir $ESP_MATTER_PATH/../platform
-    - cp -r $ESP_MATTER_PATH/connectedhomeip/connectedhomeip/src/platform/ESP32 $ESP_MATTER_PATH/../platform/ESP32_custom
-    - cp $ESP_MATTER_PATH/examples/common/external_platform/BUILD.gn $ESP_MATTER_PATH/../platform/ESP32_custom
-    - cd $ESP_MATTER_PATH/examples/light
+    - rm -rf ${ESP_MATTER_PATH}/../platform
+    - mkdir -p ${ESP_MATTER_PATH}/../platform
+    - cp -r ${CHIP_SUBMODULE_PATH}/src/platform/ESP32 $ESP_MATTER_PATH/../platform/ESP32_custom
+    - cp ${ESP_MATTER_PATH}/examples/common/external_platform/BUILD.gn $ESP_MATTER_PATH/../platform/ESP32_custom
+    - cd ${ESP_MATTER_PATH}/examples/blemesh_bridge
+    - cp sdkconfig.defaults sdkconfig.defaults.backup
+    - cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
+    - cd ${ESP_MATTER_PATH}/examples/light
     - cp sdkconfig.defaults sdkconfig.defaults.backup
     - cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
     - idf.py set-target esp32
@@ -132,9 +136,51 @@ variables:
     - cd $ESP_MATTER_PATH/examples/controller
     - idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults.otbr" set-target esp32s3 build
 
+build_image:
+  stage: docker_build
+  image: espressif/dind:1
+  tags:
+    - amd64
+    - dind
+    - internet
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "main"
+  before_script:
+    - mkdir -p $HOME/.docker
+    - echo $DOCKER_AUTH_CONFIG > $HOME/.docker/config.json
+  script:
+    - cd ${ESP_MATTER_PATH}
+    - chip_head_commit=$(git rev-parse HEAD:connectedhomeip/connectedhomeip)
+    - |
+      if echo "${chip_head_commit}" | grep -q "^${CHIP_SHORT_HASH}"; then
+          echo "The CHIP_SHORT_HASH variable is set to correct value. Matches with current head commit"
+      else
+          echo "The CHIP_SHORT_HASH seems to be incorrect or you have updated the submodule but not the CHIP_SHORT_HASH variable above"
+          exit 1
+      fi
+    - TAG="chip_${CHIP_SHORT_HASH}_idf_${IDF_VERSION}"
+    - echo $TAG
+    - |
+      if wget -qO- "https://hub.docker.com/v2/repositories/espressif/chip-idf/tags" | grep -q ${TAG}; then
+          echo "No Differences detected. The docker image with ${TAG} is present in docker hub. Skipping docker build "
+      else
+          echo "Differences detected. The docker image with ${TAG} is not present on docker hub. Triggering docker build due to submdoule update or idf version change in CI."
+          cd ${ESP_MATTER_PATH}/tools/docker/chip_idf
+          docker build --build-arg CHIP_CHECKOUT_REF=${chip_head_commit} --build-arg IDF_CHECKOUT_REF=${IDF_VERSION} --tag ${DOCKER_IMAGE_NAME}:${TAG} .
+          docker push ${DOCKER_IMAGE_NAME}:${TAG} .
+      fi
+  parallel:
+    matrix:
+      # Change the idf version here in case of idf version change MR.
+      - IDF_VERSION:
+          - "v4.4.3"
+          - "v5.2.1"
+
 .build_examples_template:
   stage: build
-  image: gitlab.espressif.cn:5050/app-frameworks/esp-matter/build-env:latest
+  image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" ||  $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main" 
   tags:
     - build
     # runner: `sudo mkdir -p /cache/matter_build/`
@@ -143,21 +189,22 @@ variables:
   before_script:
     - *add_gitlab_ssh_key
     - *get_build_caches
-    - *chip_submodule_update
     - *setup_idf
-    - *setup_matter
     - cd ${ESP_MATTER_PATH}
     - mkdir -p ${REPOS_PATH}
+    - *setup_matter
     # update caches only when setup succeed
     - *update_build_caches
   variables:
-    IDF_VERSION: "v5.0.1"
     REPOS_PATH: "$CI_PROJECT_DIR/repos"
     IDF_CCACHE_ENABLE: 1
 
+
 .build_managed_component_light_example:
   stage: build
-  image: gitlab.espressif.cn:5050/app-frameworks/esp-matter/build-env:latest
+  image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" ||  $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
   tags:
     - build
     - matter_cache
@@ -169,13 +216,15 @@ variables:
     - mkdir -p ${REPOS_PATH}
     - *update_build_caches
   variables:
-    IDF_VERSION: "v5.2.1"
     REPOS_PATH: "$CI_PROJECT_DIR/repos"
     IDF_CCACHE_ENABLE: 1
 
 build_esp_matter_examples_pytest_C6_idf_v5_1:
   extends:
         - .build_examples_template
+  needs:
+    - job: build_image
+      optional: true
   artifacts:
     paths:
       - "examples/**/build*/size.json"
@@ -188,8 +237,6 @@ build_esp_matter_examples_pytest_C6_idf_v5_1:
       - "connectedhomeip/connectedhomeip/out/host/chip-tool"
     when: always
     expire_in: 4 days
-  variables:
-        IDF_VERSION: "v5.2.1"
   script:
     - cd ${ESP_MATTER_PATH}
     - pip install -r tools/ci/requirements-build.txt
@@ -198,6 +245,9 @@ build_esp_matter_examples_pytest_C6_idf_v5_1:
 build_esp_matter_examples_pytest_H2_idf_v5_1:
   extends:
         - .build_examples_template
+  needs:
+    - job: build_image
+      optional: true
   artifacts:
     paths:
       - "examples/**/build*/size.json"
@@ -220,8 +270,6 @@ build_esp_matter_examples_pytest_H2_idf_v5_1:
       - "connectedhomeip/connectedhomeip/out/host/chip-tool"
     when: always
     expire_in: 4 days
-  variables:
-        IDF_VERSION: "v5.2.1"
   script:
     - *setup_ot_rcp
     - *setup_ot_br
@@ -232,6 +280,9 @@ build_esp_matter_examples_pytest_H2_idf_v5_1:
 build_esp_matter_examples_pytest_C2_idf_v5_1:
   extends:
         - .build_examples_template
+  needs:
+    - job: build_image
+      optional: true
   artifacts:
     paths:
       - "examples/**/build*/size.json"
@@ -244,8 +295,6 @@ build_esp_matter_examples_pytest_C2_idf_v5_1:
       - "connectedhomeip/connectedhomeip/out/host/chip-tool"
     when: always
     expire_in: 4 days
-  variables:
-        IDF_VERSION: "v5.2.1"
   script:
     - cd ${ESP_MATTER_PATH}
     - pip install -r tools/ci/requirements-build.txt
@@ -254,6 +303,9 @@ build_esp_matter_examples_pytest_C2_idf_v5_1:
 build_esp_matter_examples_non_pytest_idf_v5_1:
   extends:
         - .build_examples_template
+  needs:
+    - job: build_image
+      optional: true
   artifacts:
     paths:
       - "examples/**/build*/size.json"
@@ -265,8 +317,6 @@ build_esp_matter_examples_non_pytest_idf_v5_1:
       - "examples/**/build*/partition_table/*.bin"
     when: always
     expire_in: 4 days
-  variables:
-        IDF_VERSION: "v5.2.1"
   script:
     - *build_external_platform_example
     - *build_esp32c6_thread_example
@@ -287,6 +337,10 @@ build_esp_matter_examples_non_pytest_idf_v5_1:
 build_esp_matter_examples_pytest_C3_idf_v4_4:
   extends:
         - .build_examples_template
+  image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
+  needs:
+    - job: build_image
+      optional: true
   artifacts:
     paths:
       - "examples/**/build*/size.json"
@@ -299,53 +353,71 @@ build_esp_matter_examples_pytest_C3_idf_v4_4:
       - "connectedhomeip/connectedhomeip/out/host/chip-tool"
     when: always
     expire_in: 4 days
-  variables:
-        IDF_VERSION: "v4.4.3"
   script:
     - cd ${ESP_MATTER_PATH}
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --pytest_c3
+  variables:
+    IDF_CHECKOUT_REF: "v4.4.3"
 
 pytest_esp32c3_esp_matter_dut:
   stage: target_test
-  image: ${TARGET_TEST_ENV}
+  image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
   needs:
     - build_esp_matter_examples_pytest_C3_idf_v4_4
   script:
     - cd ${ESP_MATTER_PATH}
+    - rm -rf connectedhomeip/connectedhomeip
+    - ln -s ${CHIP_SUBMODULE_PATH} connectedhomeip/connectedhomeip
     - pip install -r tools/ci/requirements-pytest.txt
     - pytest examples/ --target esp32c3 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml
   tags: ["esp32c3", "esp_matter_dut"]
+  variables:
+    IDF_CHECKOUT_REF: "v4.4.3"
 
 pytest_esp32c6_esp_matter_dut:
   stage: target_test
-  image: ${TARGET_TEST_ENV}
+  image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' ||  $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push" 
   needs:
     - build_esp_matter_examples_pytest_C6_idf_v5_1
   script:
     - cd ${ESP_MATTER_PATH}
+    - rm -rf connectedhomeip/connectedhomeip
+    - ln -s ${CHIP_SUBMODULE_PATH} connectedhomeip/connectedhomeip
     - pip install -r tools/ci/requirements-pytest.txt
     - pytest examples/ --target esp32c6 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml
   tags: ["esp32c6", "esp_matter_dut"]
 
 pytest_esp32c2_esp_matter_dut:
   stage: target_test
-  image: ${TARGET_TEST_ENV}
+  image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' ||  $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
   needs:
     - build_esp_matter_examples_pytest_C2_idf_v5_1
   script:
     - cd ${ESP_MATTER_PATH}
+    - rm -rf connectedhomeip/connectedhomeip
+    - ln -s ${CHIP_SUBMODULE_PATH} connectedhomeip/connectedhomeip
     - pip install -r tools/ci/requirements-pytest.txt
     - pytest examples/ --target esp32c2 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml
   tags: ["esp32c2", "esp_matter_dut"]
 
 pytest_esp32h2_esp_matter_dut:
   stage: target_test
-  image: ${TARGET_TEST_ENV}
+  image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
   needs:
     - build_esp_matter_examples_pytest_H2_idf_v5_1
   script:
     - cd ${ESP_MATTER_PATH}
+    - rm -rf connectedhomeip/connectedhomeip
+    - ln -s ${CHIP_SUBMODULE_PATH} connectedhomeip/connectedhomeip
     - pip install -r tools/ci/requirements-pytest.txt
     - pytest examples/ --target esp32h2 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml
   tags: ["esp32h2", "esp_matter_dut"]
@@ -360,7 +432,9 @@ build_upstream_examples:
 build_managed_component_light:
     extends:
         - .build_managed_component_light_example
-    when: always
+    needs:
+      - job: build_image
+        optional: true
     script:
         - cd ${ESP_MATTER_PATH}/examples/managed_component_light
         - idf.py set-target esp32c3
@@ -369,6 +443,8 @@ build_managed_component_light:
 build_docs:
     stage: build
     image: $CI_DOCKER_REGISTRY/esp-idf-doc-env-v5.1:1-1
+    rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
     tags:
         - build
     variables:
@@ -403,7 +479,8 @@ build_docs:
 deploy_docs_preview:
     extends:
         - .deploy_docs_template
-    when: always
+    rules:
+      - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
     variables:
         TYPE: "preview"
         DOCS_BUILD_DIR: "${CI_PROJECT_DIR}/docs/_build/"
