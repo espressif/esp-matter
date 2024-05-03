@@ -315,6 +315,23 @@ int create(uint8_t device_type_index)
             cluster::temperature_control::feature::temperature_number::add(cluster, &temperature_number_config);
             break;
         }
+        case ESP_MATTER_OVEN: {
+            esp_matter::endpoint::oven::config_t oven_config;
+            endpoint = esp_matter::endpoint::oven::create(node, &oven_config, ENDPOINT_FLAG_NONE, NULL);
+
+            esp_matter::endpoint::temperature_controlled_cabinet::config_t temperature_controlled_cabinet_config;
+            esp_matter::endpoint_t *tcc_endpoint = esp_matter::endpoint::temperature_controlled_cabinet::create(node, &temperature_controlled_cabinet_config, ENDPOINT_FLAG_NONE, NULL);
+
+            if (!tcc_endpoint) {
+                ESP_LOGE(TAG, "Matter create endpoint failed");
+                return 1;
+            }
+
+            esp_matter::cluster_t *cluster = esp_matter::cluster::get(tcc_endpoint, chip::app::Clusters::TemperatureControl::Id);
+            cluster::temperature_control::feature::temperature_number::config_t temperature_number_config;
+            cluster::temperature_control::feature::temperature_number::add(cluster, &temperature_number_config);
+            break;
+        }
         case ESP_MATTER_AIR_PURIFIER: {
             esp_matter::endpoint::air_purifier::config_t air_purifier_config;
             endpoint = esp_matter::endpoint::air_purifier::create(node, &air_purifier_config, ENDPOINT_FLAG_NONE, NULL);
