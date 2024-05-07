@@ -569,7 +569,8 @@ namespace laundry_dryer_controls {
 typedef struct config {
     uint16_t cluster_revision;
     nullable<uint8_t> selected_dryness_level;
-    config() : cluster_revision(1), selected_dryness_level(0) {}
+    void *delegate;
+    config() : cluster_revision(1), selected_dryness_level(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

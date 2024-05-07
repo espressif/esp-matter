@@ -101,6 +101,15 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `Resource Monitoring`_, `Resource Monitoring Delegate`_
 
+9.1.2 Laundry Dryer Controls Cluster
+------------------------------------
+
+.. csv-table:: Delegate and its impl
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Laundry Dryer Controls`_, `Laundry Dryer Controls Delegate`_
+
+
 .. note::
     Make sure that after implementing delegate class, you set the delegate class pointer at the time of creating cluster.
 
@@ -126,3 +135,5 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Fan Control Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/src/fan-stub.cpp
 .. _`Resource Monitoring`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/resource-monitoring-server/resource-monitoring-server.h
 .. _`Resource Monitoring Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/resource-monitoring-delegates.h
+.. _`Laundry Dryer Controls`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/laundry-dryer-controls-server/laundry-dryer-controls-server.h
+.. _`Laundry Dryer Controls Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/laundry-dryer-controls-delegate-impl.h
