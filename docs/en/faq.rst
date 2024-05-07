@@ -352,3 +352,23 @@ you can resolve this issue by clearing the component manager cache.
 
         # On macOS
         rm -rf ~/Library/Caches/Espressif/ComponentManager
+
+
+A1.14 ESP32-C2 log garbled, unable to perform Matter commissioning and other abnormal issues
+--------------------------------------------------------------------------------------------
+
+When encountering the above issues, the following possible causes may exist:
+1. Incorrect baud rate settings. See `UART console baud rate <https://docs.espressif.com/projects/esp-idf/en/latest/esp32c2/api-reference/kconfig.html#config-esp-console-uart-baudrate>`__.
+2. Incorrect XTAL crystal frequency settings. The default XTAL crystal frequency in the SDK examples is 26 Mhz, if the ESP32-C2 board used for testing is 40 MHz, please change the configuration as `CONFIG_XTAL_FREQ_40=y`. See `Main XTAL frequency <https://docs.espressif.com/projects/esp-idf/en/latest/esp32c2/api-reference/kconfig.html#main-xtal-config>`__. You can check the XTAL frequency with this command. 
+
+   ::
+
+      $ esptool.py flash_id
+      esptool.py v4.7.0
+      Serial port /dev/ttyUSB0
+      Connecting....
+      Detecting chip type... ESP32-C2
+      Chip is ESP32-C2 (revision v1.0)
+      Features: WiFi, BLE
+      Crystal is 26MHz
+      MAC: 08:3a:8d:49:b3:90
