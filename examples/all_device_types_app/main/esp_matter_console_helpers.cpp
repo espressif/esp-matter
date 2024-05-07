@@ -424,6 +424,11 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::microwave_oven::create(node, &microwave_oven_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
+        case ESP_MATTER_EXTRACTOR_HOOD: {
+            esp_matter::endpoint::extractor_hood::config_t extractor_hood_config;
+            endpoint = esp_matter::endpoint::extractor_hood::create(node, &extractor_hood_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
         default: {
             ESP_LOGE(TAG, "Please input a valid device type");
             break;

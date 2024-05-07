@@ -27,6 +27,9 @@ void EnergyEvseDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void MicrowaveOvenModeDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void MicrowaveOvenControlDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void OperationalStateDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void FanControlDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void HepaFilterMonitoringDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void ActivatedCarbonFilterMonitoringDelegateInitCB(void *delegate, uint16_t endpoint_id);
 } // namespace delegate_cb
 
 } // namespace cluster

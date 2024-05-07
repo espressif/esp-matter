@@ -369,7 +369,8 @@ typedef struct config {
     uint8_t fan_mode_sequence;
     nullable<uint8_t> percent_setting;
     uint8_t percent_current;
-    config() : cluster_revision(4), fan_mode(0), fan_mode_sequence(2), percent_setting(0), percent_current(0) {}
+    void *delegate;
+    config() : cluster_revision(4), fan_mode(0), fan_mode_sequence(2), percent_setting(0), percent_current(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -417,7 +418,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace hepa_filter_monitoring {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(1) {}
+    void *delegate;
+    config() : cluster_revision(1), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -426,7 +428,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace activated_carbon_filter_monitoring {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(1) {}
+    void *delegate;
+    config() : cluster_revision(1), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
