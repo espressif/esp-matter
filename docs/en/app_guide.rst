@@ -101,13 +101,22 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `Resource Monitoring`_, `Resource Monitoring Delegate`_
 
-9.1.2 Laundry Dryer Controls Cluster
+9.1.7 Laundry Dryer Controls Cluster
 ------------------------------------
 
 .. csv-table:: Delegate and its impl
   :header: "Delegate Class", "Reference Implementation"
 
   `Laundry Dryer Controls`_, `Laundry Dryer Controls Delegate`_
+
+
+9.1.8 Valve Configuration And Control Cluster
+---------------------------------------------
+
+.. csv-table:: Delegate and its impl
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Valve Configuration And Control`_, None
 
 
 .. note::
@@ -137,3 +146,4 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Resource Monitoring Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/resource-monitoring-delegates.h
 .. _`Laundry Dryer Controls`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/laundry-dryer-controls-server/laundry-dryer-controls-server.h
 .. _`Laundry Dryer Controls Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/laundry-dryer-controls-delegate-impl.h
+.. _`Valve Configuration And Control`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/valve-configuration-and-control-server/valve-configuration-and-control-delegate.h

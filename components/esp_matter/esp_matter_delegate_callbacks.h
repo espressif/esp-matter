@@ -31,6 +31,7 @@ void FanControlDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void HepaFilterMonitoringDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void ActivatedCarbonFilterMonitoringDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void LaundryDryerControlsDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void ValveConfigurationAndControlDelegateInitCB(void *delegate, uint16_t endpoint_id);
 } // namespace delegate_cb
 
 } // namespace cluster

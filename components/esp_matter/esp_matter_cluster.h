@@ -952,7 +952,8 @@ typedef struct config {
     nullable<uint8_t> target_state;
     feature::time_sync::config_t time_sync;
     feature::level::config_t level;
-    config() : cluster_revision(1), open_duration(), default_open_duration(), current_state(), target_state() {}
+    void *delegate;
+    config() : cluster_revision(1), open_duration(), default_open_duration(), current_state(), target_state(), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
