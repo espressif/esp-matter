@@ -2202,6 +2202,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = OperationalStateDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -3439,6 +3443,93 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 } /* rvc_clean_mode */
+
+namespace microwave_oven_mode {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, MicrowaveOvenMode::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = MicrowaveOvenModeDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+        mode_base::attribute::create_supported_modes(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+            mode_base::attribute::create_current_mode(cluster, config->current_mode);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    return cluster;
+}
+} /* microwave_oven_mode */
+
+namespace microwave_oven_control {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, MicrowaveOvenControl::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = MicrowaveOvenControlDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+        microwave_oven_control::attribute::create_cook_time(cluster, 0);
+        microwave_oven_control::attribute::create_max_cook_time(cluster, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    /* Commands */
+    command::create_set_cooking_parameters(cluster);
+
+    if (features & feature::power_as_number::get_id()) {
+        feature::power_as_number::add(cluster);
+    }
+    if (features & feature::power_in_watts::get_id()) {
+        feature::power_in_watts::add(cluster);
+    }
+    if (features & feature::power_number_limits::get_id()) {
+        feature::power_number_limits::add(cluster);
+    }
+
+    return cluster;
+}
+} /* microwave_oven_control */
 
 namespace rvc_operational_state {
 const function_generic_t *function_list = NULL;

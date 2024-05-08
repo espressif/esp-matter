@@ -4565,5 +4565,55 @@ attribute_t *create_session_energy_discharged(cluster_t *cluster, nullable<int64
 } /* attribute */
 } /* energy_evse */
 
+namespace microwave_oven_control {
+namespace attribute {
+attribute_t *create_cook_time(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::CookTime::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_max_cook_time(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::MaxCookTime::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_power_setting(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::PowerSetting::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+}
+
+attribute_t *create_min_power(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::MinPower::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+}
+
+attribute_t *create_max_power(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::MaxPower::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+}
+
+attribute_t *create_power_step(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::PowerStep::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+}
+
+attribute_t *create_supported_watts(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::SupportedWatts::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_selected_watt_index(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::SelectedWattIndex::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+}
+
+attribute_t *create_watt_rating(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::WattRating::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+} /* attribute */
+} /* microwave_oven_control */
+
 } /* cluster */
 } /* esp_matter */

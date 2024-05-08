@@ -1791,6 +1791,46 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /* energy_evse */
 
+namespace microwave_oven {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_MICROWAVE_OVEN_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_MICROWAVE_OVEN_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    add(endpoint, config);
+    return endpoint;
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
+
+    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
+    cluster_t *cluster = operational_state::create(endpoint, &(config->operational_state), CLUSTER_FLAG_SERVER);
+    operational_state::attribute::create_countdown_time(cluster, 0);
+    microwave_oven_mode::create(endpoint, &(config->microwave_oven_mode), CLUSTER_FLAG_SERVER);
+    microwave_oven_control::create(endpoint, &(config->microwave_oven_control), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
+
+    return ESP_OK;
+}
+} /* microwave_oven */
+
 } /* endpoint */
 
 namespace node {

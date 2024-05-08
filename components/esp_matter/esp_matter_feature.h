@@ -1985,5 +1985,29 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* energy_evse */
 
+namespace microwave_oven_control {
+namespace feature {
+
+namespace power_as_number {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* power_as_number */
+
+namespace power_in_watts {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* power_in_watts */
+
+namespace power_number_limits {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* power_number_limits */
+
+} /* feature */
+} /* microwave_oven_control */
+
 } /* cluster */
 } /* esp_matter */

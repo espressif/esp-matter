@@ -390,5 +390,12 @@ command_t *create_get_targets_response(cluster_t *cluster);
 } /* command */
 } /* energy_evse */
 
+namespace microwave_oven_control {
+namespace command {
+command_t *create_set_cooking_parameters(cluster_t *cluster);
+command_t *create_add_more_time(cluster_t *cluster);
+} /* command */
+} /* microwave_oven_control */
+
 } /* cluster */
 } /* esp_matter */

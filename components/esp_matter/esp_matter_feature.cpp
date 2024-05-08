@@ -4427,5 +4427,96 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* energy_evse */
 
+namespace microwave_oven_control {
+namespace feature {
+
+namespace power_as_number {
+
+uint32_t get_id()
+{
+    return (uint32_t)MicrowaveOvenControl::Feature::kPowerAsNumber;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    uint32_t power_in_watts_feature_map = feature::power_in_watts::get_id();
+    if((get_feature_map_value(cluster) & power_in_watts_feature_map) != power_in_watts_feature_map) {
+        update_feature_map(cluster, get_id());
+        /* Attributes managed internally */
+        attribute::create_power_setting(cluster, 0);
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support either PowerAsNumber or PowerInWatts feature");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+
+    return ESP_OK;
+}
+} /* power_as_number */
+
+namespace power_in_watts {
+
+uint32_t get_id()
+{
+    return (uint32_t)MicrowaveOvenControl::Feature::kPowerInWatts;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    uint32_t power_as_number_feature_map = feature::power_as_number::get_id();
+    if((get_feature_map_value(cluster) & power_as_number_feature_map) != power_as_number_feature_map) {
+        update_feature_map(cluster, get_id());
+        /* Attributes managed internally */
+        attribute::create_supported_watts(cluster, NULL, 0, 0);
+        attribute::create_selected_watt_index(cluster, 0);
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support either PowerInWatts or PowerAsNumber feature");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+
+    return ESP_OK;
+}
+} /* power_in_watts */
+
+namespace power_number_limits {
+
+uint32_t get_id()
+{
+    return (uint32_t)MicrowaveOvenControl::Feature::kPowerNumberLimits;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    uint32_t power_as_number_feature_map = feature::power_as_number::get_id();
+    if((get_feature_map_value(cluster) & power_as_number_feature_map) != power_as_number_feature_map) {
+        update_feature_map(cluster, get_id());
+        /* Attributes managed internally */
+        attribute::create_min_power(cluster, 0);
+        attribute::create_max_power(cluster, 0);
+        attribute::create_power_step(cluster, 0);
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support PowerAsNumber feature.");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+
+    return ESP_OK;
+}
+} /* power_number_limits */
+
+} /* feature */
+} /* microwave_oven_control */
+
 } /* cluster */
 } /* esp_matter */
