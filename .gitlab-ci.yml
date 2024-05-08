@@ -404,7 +404,7 @@ pytest_esp32c2_esp_matter_dut:
     - rm -rf connectedhomeip/connectedhomeip
     - ln -s ${CHIP_SUBMODULE_PATH} connectedhomeip/connectedhomeip
     - pip install -r tools/ci/requirements-pytest.txt
-    - pytest examples/ --target esp32c2 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml
+    - pytest examples/ --target esp32c2 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml --baud 74880
   tags: ["esp32c2", "esp_matter_dut"]
 
 pytest_esp32h2_esp_matter_dut:
