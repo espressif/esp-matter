@@ -20,6 +20,9 @@
 #include <app/util/af-types.h>
 #include <esp_err.h>
 #include <esp_matter_attribute_utils.h>
+#include <app/AttributePathParams.h>
+#include <app/CommandPathParams.h>
+#include <app/EventPathParams.h>
 
 using chip::app::ConcreteCommandPath;
 using chip::DeviceLayer::ChipDeviceEvent;
@@ -795,23 +798,44 @@ uint32_t get_id(event_t *event);
 /* Client APIs */
 namespace client {
 
-/** Command handle as the input when calling `connect()` or `cluster_update()`
+/** Client request types
+ */
+typedef enum {
+    INVOKE_CMD = 0,
+    READ_ATTR = 1,
+    READ_EVENT = 2,
+    WRITE_ATTR = 3,
+    SUBSCRIBE_ATTR = 4,
+    SUBSCRIBE_EVENT = 5,
+} request_type_t;
+
+/** Request handle as the input when calling `connect()` or `cluster_update()`
  *
  */
 
-typedef struct command_handle {
+typedef struct request_handle {
+    request_type_t type;
     union {
-        uint16_t endpoint_id;
-        uint16_t group_id;
+        chip::app::AttributePathParams attribute_path;
+        chip::app::EventPathParams event_path;
+        chip::app::CommandPathParams command_path;
     };
-    uint32_t cluster_id;
-    uint32_t command_id;
-    void *command_data;
-    command_handle() : endpoint_id(chip::kInvalidEndpointId), cluster_id(chip::kInvalidClusterId),
-                  command_id(chip::kInvalidCommandId), command_data(NULL){}
-    command_handle(struct command_handle* cmd) : endpoint_id(cmd->endpoint_id), cluster_id(cmd->cluster_id),
-                  command_id(cmd->command_id), command_data(cmd->command_data) {}
-} command_handle_t;
+    /* This could be the command data field when the request type is INVOKE_CMD,
+     * or the attribute value data when the request type is WRITE_ATTR.
+     */
+    void *request_data;
+    request_handle() : type(INVOKE_CMD), request_data(NULL) {}
+    request_handle(struct request_handle* req) : type(req->type), request_data(req->request_data)
+    {
+        if (req->type == INVOKE_CMD) {
+            command_path = req->command_path;
+        } else if (req->type == WRITE_ATTR || req->type == READ_ATTR || req->type == SUBSCRIBE_ATTR) {
+            attribute_path = req->attribute_path;
+        } else if (req->type == READ_EVENT || req->type == SUBSCRIBE_EVENT) {
+            event_path = req->event_path;
+        }
+    }
+} request_handle_t;
 
 /** Peer device handle */
 typedef chip::DeviceProxy peer_device_t;
@@ -819,28 +843,30 @@ typedef chip::DeviceProxy peer_device_t;
 /** CASE Session Manager */
 typedef chip::CASESessionManager case_session_mgr_t;
 
-/** Command send callback
+/** Request send callback
  *
  * This callback will be called when `connect()` or `cluster_update()` is called and the connection completes. The
- * send_command APIs can then be called from the callback.
+ * send_request APIs can then be called from the callback.
  *
  * @param[in] peer_device Peer device handle. This can be passed to the send_command APIs.
- * @param[in] cmd_handle Command handle used by `connect()` or `cluster_update()`.
+ * @param[in] req_handle Request handle used by `connect()` or `cluster_update()`.
  * @param[in] priv_data (Optional) Private data associated with the callback. This will be passed to callback. It
  * should stay allocated throughout the lifetime of the device.
  */
-typedef void (*command_callback_t)(peer_device_t *peer_device, command_handle_t *cmd_handle, void *priv_data);
+typedef void (*request_callback_t)(peer_device_t *peer_device, request_handle_t *req_handle, void *priv_data);
 
-/** Group command send callback
+/** Group request send callback
  *
- * This callback will be called when `cluster_update()` is called and the group command is triggered for binding cluster.
+ * This callback will be called when `cluster_update()` is called and the group request is triggered for binding cluster.
+ *
+ * @note: The request type should be INVOKE_CMD and the command should not expect a response.
  *
  * @param[in] fabric_index The index of the fabric that the group command is sent to.
- * @param[in] cmd_handle  Command handle used by `cluster_update()`.
+ * @param[in] req_handle Request handle used by `cluster_update()`.
  * @param[in] priv_data (Optional) Private data associated with the callback. This will be passed to callback. It
  * should stay allocated throughout the lifetime of the device.
  */
-typedef void (*group_command_callback_t)(uint8_t fabric_index, command_handle_t *cmd_handle, void *priv_data);
+typedef void (*group_request_callback_t)(uint8_t fabric_index, request_handle_t *req_handle, void *priv_data);
 
 /** Initialize binding
  *
@@ -858,59 +884,59 @@ void binding_manager_init();
 
 /** Connect
  *
- * Connect to another device on the same fabric to send a command.
+ * Connect to another device on the same fabric to send a request.
  *
  * @param[in] case_session_mgr CASE Session Manager to find or establish the session
  * @param[in] fabric_index Fabric index.
  * @param[in] node_id Node ID of the other device.
- * @param[in] cmd_handle Command to be sent to the remote device.
+ * @param[in] req_handle Request to be sent to the remote device.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
 esp_err_t connect(case_session_mgr_t *case_session_mgr, uint8_t fabric_index, uint64_t node_id,
-                  command_handle_t *cmd_handle);
+                  request_handle_t *req_handle);
 
-/** group_command_send
+/** group_request_send
  *
- * on the same fabric to send a group command.
+ * on the same fabric to send a group request.
  *
  * @param[in] fabric_index Fabric index.
- * @param[in] cmd_handle Command to be sent to the group.
+ * @param[in] req_handle Request to be sent to the group.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t group_command_send(uint8_t fabric_index, command_handle_t *cmd_handle);
+esp_err_t group_request_send(uint8_t fabric_index, request_handle_t *req_handle);
 
-/** Set command send callback
+/** Set request send callback
  *
- * Set the common command send callback and the group command send callback. The common callback will be called
+ * Set the common request send callback and the group request send callback. The common callback will be called
  * when `connect()` or `cluster_update()` is called and the connection completes. The group callback will be called
- * when `cluster_update()` is called and the group command is triggered.
+ * when `cluster_update()` is called and the group request is triggered.
  *
- * @param[in] callback command send callback.
- * @param[in] g_callback group command send callback
+ * @param[in] callback request send callback.
+ * @param[in] g_callback group request send callback
  * @param[in] priv_data (Optional) Private data associated with the callback. This will be passed to callback. It
  * should stay allocated throughout the lifetime of the device.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t set_command_callback(command_callback_t callback, group_command_callback_t g_callback, void *priv_data);
+esp_err_t set_request_callback(request_callback_t callback, group_request_callback_t g_callback, void *priv_data);
 
 /** Cluster update
  *
- * For an already binded device, this API can be used to get the command send callback, and the send_command APIs can
+ * For an already binded device, this API can be used to get the request send callback, and the send_request APIs can
  * then be called from the callback.
  *
  * @param[in] local_endpoint_id The ID of the local endpoint with a binding cluster.
- * @param[in] cmd_handle Command information to notify the bound cluster changed.
+ * @param[in] req_handle Request information to notify the bound cluster changed.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t cluster_update(uint16_t local_endpoint_id, command_handle_t *cmd_handle);
+esp_err_t cluster_update(uint16_t local_endpoint_id, request_handle_t *req_handle);
 
 } /* client */
 } /* esp_matter */

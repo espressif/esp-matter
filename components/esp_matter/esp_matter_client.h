@@ -143,15 +143,15 @@ using chip::app::EventPathParams;
 using chip::app::ReadClient;
 using chip::app::WriteClient;
 
-esp_err_t send_read_command(client::peer_device_t *remote_device, AttributePathParams *attr_path, size_t attr_path_size,
+esp_err_t send_read_request(client::peer_device_t *remote_device, AttributePathParams *attr_path, size_t attr_path_size,
                             EventPathParams *event_path, size_t event_path_size, ReadClient::Callback &callback);
 
-esp_err_t send_subscribe_command(client::peer_device_t *remote_device, AttributePathParams *attr_path,
+esp_err_t send_subscribe_request(client::peer_device_t *remote_device, AttributePathParams *attr_path,
                                  size_t attr_path_size, EventPathParams *event_path, size_t event_path_size,
                                  uint16_t min_interval, uint16_t max_interval, bool keep_subscription,
                                  bool auto_resubscribe, ReadClient::Callback &callback);
 
-esp_err_t send_write_command(client::peer_device_t *remote_device, AttributePathParams &attr_path,
+esp_err_t send_write_request(client::peer_device_t *remote_device, AttributePathParams &attr_path,
                              const char *attr_val_json_str, WriteClient::Callback &callback,
                              const chip::Optional<uint16_t> &timeout_ms);
 

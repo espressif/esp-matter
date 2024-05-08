@@ -55,47 +55,47 @@ static const char *TAG = "esp_matter_client";
 namespace esp_matter {
 namespace client {
 
-static command_callback_t client_command_callback = NULL;
-static group_command_callback_t client_group_command_callback = NULL;
-static void *command_callback_priv_data;
+static request_callback_t client_request_callback = NULL;
+static group_request_callback_t client_group_request_callback = NULL;
+static void *request_callback_priv_data;
 static bool initialize_binding_manager = false;
 
-esp_err_t set_command_callback(command_callback_t callback, group_command_callback_t g_callback, void *priv_data)
+esp_err_t set_request_callback(request_callback_t callback, group_request_callback_t g_callback, void *priv_data)
 {
-    client_command_callback = callback;
-    client_group_command_callback = g_callback;
-    command_callback_priv_data = priv_data;
+    client_request_callback = callback;
+    client_group_request_callback = g_callback;
+    request_callback_priv_data = priv_data;
     return ESP_OK;
 }
 
 void esp_matter_connection_success_callback(void *context, ExchangeManager &exchangeMgr,
                                             const SessionHandle &sessionHandle)
 {
-    command_handle_t *cmd_handle = static_cast<command_handle_t *>(context);
-    if (!cmd_handle) {
-        ESP_LOGE(TAG, "Failed to call connect_success_callback since the command handle is NULL");
+    request_handle_t *req_handle = static_cast<request_handle_t *>(context);
+    if (!req_handle) {
+        ESP_LOGE(TAG, "Failed to call connect_success_callback since the request handle is NULL");
         return;
     }
     ESP_LOGI(TAG, "New connection success");
     // Only unicast binding needs to establish the connection
-    if (client_command_callback) {
+    if (client_request_callback) {
         OperationalDeviceProxy device(&exchangeMgr, sessionHandle);
-        client_command_callback(&device, cmd_handle, command_callback_priv_data);
+        client_request_callback(&device, req_handle, request_callback_priv_data);
     }
-    chip::Platform::Delete(cmd_handle);
+    chip::Platform::Delete(req_handle);
 }
 
 void esp_matter_connection_failure_callback(void *context, const ScopedNodeId &peerId, CHIP_ERROR error)
 {
-    command_handle_t *cmd_handle = static_cast<command_handle_t *>(context);
+    request_handle_t *req_handle = static_cast<request_handle_t *>(context);
     ESP_LOGI(TAG, "New connection failure");
-    if (cmd_handle) {
-        chip::Platform::Delete(cmd_handle);
+    if (req_handle) {
+        chip::Platform::Delete(req_handle);
     }
 }
 
 esp_err_t connect(case_session_mgr_t *case_session_mgr, uint8_t fabric_index, uint64_t node_id,
-                  command_handle_t *cmd_handle)
+                  request_handle_t *req_handle)
 {
     if (!case_session_mgr) {
         return ESP_ERR_INVALID_ARG;
@@ -103,7 +103,7 @@ esp_err_t connect(case_session_mgr_t *case_session_mgr, uint8_t fabric_index, ui
     static Callback<chip::OnDeviceConnected> success_callback(esp_matter_connection_success_callback, NULL);
     static Callback<chip::OnDeviceConnectionFailure> failure_callback(esp_matter_connection_failure_callback, NULL);
 
-    command_handle_t *context = chip::Platform::New<command_handle_t>(cmd_handle);
+    request_handle_t *context = chip::Platform::New<request_handle_t>(req_handle);
     if (!context) {
         ESP_LOGE(TAG, "failed to alloc memory for the command handle");
         return ESP_ERR_NO_MEM;
@@ -115,15 +115,15 @@ esp_err_t connect(case_session_mgr_t *case_session_mgr, uint8_t fabric_index, ui
     return ESP_OK;
 }
 
-esp_err_t group_command_send(uint8_t fabric_index, command_handle_t *cmd_handle)
+esp_err_t group_request_send(uint8_t fabric_index, request_handle_t *req_handle)
 {
-    if (!cmd_handle) {
+    if (!req_handle) {
         ESP_LOGE(TAG, "command handle is null");
         return ESP_ERR_NO_MEM;
     }
 
-    if (client_group_command_callback) {
-        client_group_command_callback(fabric_index, cmd_handle, command_callback_priv_data);
+    if (client_group_request_callback) {
+        client_group_request_callback(fabric_index, req_handle, request_callback_priv_data);
     }
 
     return ESP_OK;
@@ -132,20 +132,30 @@ esp_err_t group_command_send(uint8_t fabric_index, command_handle_t *cmd_handle)
 static void esp_matter_command_client_binding_callback(const EmberBindingTableEntry &binding,
                                                        OperationalDeviceProxy *peer_device, void *context)
 {
-    command_handle_t *cmd_handle = static_cast<command_handle_t *>(context);
-    if (!cmd_handle) {
+    request_handle_t *req_handle = static_cast<request_handle_t *>(context);
+    if (!req_handle) {
         ESP_LOGE(TAG, "Failed to call the binding callback since command handle is NULL");
         return;
     }
     if (binding.type == MATTER_UNICAST_BINDING && peer_device) {
-        if (client_command_callback) {
-            cmd_handle->endpoint_id = binding.remote;
-            client_command_callback(peer_device, cmd_handle, command_callback_priv_data);
+        if (client_request_callback) {
+            if (req_handle->type == INVOKE_CMD) {
+                req_handle->command_path.mEndpointId = binding.remote;
+            } else if (req_handle->type == WRITE_ATTR || req_handle->type == READ_ATTR || req_handle->type == SUBSCRIBE_ATTR) {
+                req_handle->attribute_path.mEndpointId = binding.remote;
+            } else if (req_handle->type == READ_EVENT || req_handle->type == SUBSCRIBE_EVENT) {
+                req_handle->event_path.mEndpointId = binding.remote;
+            }
+            client_request_callback(peer_device, req_handle, request_callback_priv_data);
         }
     } else if (binding.type == MATTER_MULTICAST_BINDING && !peer_device) {
-        if (client_group_command_callback) {
-            cmd_handle->group_id = binding.groupId;
-            client_group_command_callback(binding.fabricIndex, cmd_handle, command_callback_priv_data);
+        if (client_group_request_callback) {
+            if (req_handle->type == INVOKE_CMD) {
+                req_handle->command_path.mGroupId = binding.groupId;
+            } else {
+                return;
+            }
+            client_group_request_callback(binding.fabricIndex, req_handle, request_callback_priv_data);
         }
     }
 }
@@ -153,19 +163,30 @@ static void esp_matter_command_client_binding_callback(const EmberBindingTableEn
 static void esp_matter_binding_context_release(void *context)
 {
     if (context) {
-        chip::Platform::Delete(static_cast<command_handle_t *>(context));
+        chip::Platform::Delete(static_cast<request_handle_t *>(context));
     }
 }
 
-esp_err_t cluster_update(uint16_t local_endpoint_id, command_handle_t *cmd_handle)
+esp_err_t cluster_update(uint16_t local_endpoint_id, request_handle_t *req_handle)
 {
-    command_handle_t *context = chip::Platform::New<command_handle_t>(cmd_handle);
+    request_handle_t *context = chip::Platform::New<request_handle_t>(req_handle);
     if (!context) {
-        ESP_LOGE(TAG, "failed to alloc memory for the command handle");
+        ESP_LOGE(TAG, "failed to alloc memory for the request handle");
         return ESP_ERR_NO_MEM;
     }
+    chip::ClusterId notified_cluster_id = chip::kInvalidClusterId;
+    if (req_handle->type == INVOKE_CMD) {
+        notified_cluster_id = req_handle->command_path.mClusterId;
+    } else if (req_handle->type == WRITE_ATTR || req_handle->type == READ_ATTR || req_handle->type == SUBSCRIBE_ATTR) {
+        notified_cluster_id = req_handle->attribute_path.mClusterId;
+    } else if (req_handle->type == READ_EVENT || req_handle->type == SUBSCRIBE_EVENT) {
+        notified_cluster_id = req_handle->event_path.mClusterId;
+    }
+    if (notified_cluster_id == chip::kInvalidClusterId) {
+        return ESP_ERR_INVALID_ARG;
+    }
     if (CHIP_NO_ERROR !=
-        chip::BindingManager::GetInstance().NotifyBoundClusterChanged(local_endpoint_id, cmd_handle->cluster_id,
+        chip::BindingManager::GetInstance().NotifyBoundClusterChanged(local_endpoint_id, notified_cluster_id,
                                                                       static_cast<void *>(context))) {
         chip::Platform::Delete(context);
         ESP_LOGE(TAG, "failed to notify the bound cluster changed");
@@ -509,7 +530,7 @@ private:
     ReadClient::Callback & m_callback;
 };
 
-esp_err_t send_read_command(client::peer_device_t *remote_device, AttributePathParams *attr_path, size_t attr_path_size,
+esp_err_t send_read_request(client::peer_device_t *remote_device, AttributePathParams *attr_path, size_t attr_path_size,
                             EventPathParams *event_path, size_t event_path_size, ReadClient::Callback &callback)
 {
     if (!remote_device->GetSecureSession().HasValue() || remote_device->GetSecureSession().Value()->IsGroupSession()) {
@@ -552,7 +573,7 @@ esp_err_t send_read_command(client::peer_device_t *remote_device, AttributePathP
     return ESP_OK;
 }
 
-esp_err_t send_subscribe_command(client::peer_device_t *remote_device, AttributePathParams *attr_path,
+esp_err_t send_subscribe_request(client::peer_device_t *remote_device, AttributePathParams *attr_path,
                                  size_t attr_path_size, EventPathParams *event_path, size_t event_path_size,
                                  uint16_t min_interval, uint16_t max_interval, bool keep_subscription,
                                  bool auto_resubscribe, ReadClient::Callback &callback)
@@ -671,7 +692,7 @@ static esp_err_t encode_attribute_value(uint8_t *encoded_buf, size_t encoded_buf
     return ESP_OK;
 }
 
-esp_err_t send_write_command(client::peer_device_t *remote_device, AttributePathParams &attr_path,
+esp_err_t send_write_request(client::peer_device_t *remote_device, AttributePathParams &attr_path,
                              const char *attr_val_json_str, WriteClient::Callback &callback,
                              const chip::Optional<uint16_t> &timeout_ms)
 {

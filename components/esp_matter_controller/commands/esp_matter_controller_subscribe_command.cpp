@@ -38,7 +38,7 @@ void subscribe_command::on_device_connected_fcn(void *context, ExchangeManager &
 {
     subscribe_command *cmd = (subscribe_command *)context;
     chip::OperationalDeviceProxy device_proxy(&exchangeMgr, sessionHandle);
-    esp_err_t err = interaction::send_subscribe_command(&device_proxy, cmd->m_attr_paths.Get(),
+    esp_err_t err = interaction::send_subscribe_request(&device_proxy, cmd->m_attr_paths.Get(),
                                                         cmd->m_attr_paths.AllocatedSize(), cmd->m_event_paths.Get(),
                                                         cmd->m_event_paths.AllocatedSize(), cmd->m_min_interval,
                                                         cmd->m_max_interval, true, cmd->m_auto_resubscribe,
