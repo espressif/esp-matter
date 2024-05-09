@@ -26,4 +26,4 @@ endif()
 
 # setting the final sdkconfig path
 message(SDKCONFIG_PATH ": ${SDKCONFIG_FILES}")
-set(SDKCONFIG_DEFAULTS ${SDKCONFIG_FILES})
+list(APPEND SDKCONFIG_DEFAULTS ${SDKCONFIG_FILES})
