@@ -25,7 +25,7 @@ variables:
     IDF_CHECKOUT_REF: "v5.2.1"
     # This variable represents the short hash of the connectedhomeip submodule.
     # Note: Do change this short hash on submodule update MRs.
-    CHIP_SHORT_HASH: "5bb5c9e2"
+    CHIP_SHORT_HASH: "13ab158f10"
     DOCKER_IMAGE_NAME: "espressif/chip-idf"
 
 .add_gitlab_ssh_key: &add_gitlab_ssh_key |
@@ -167,7 +167,7 @@ build_image:
           echo "Differences detected. The docker image with ${TAG} is not present on docker hub. Triggering docker build due to submdoule update or idf version change in CI."
           cd ${ESP_MATTER_PATH}/tools/docker/chip_idf
           docker build --build-arg CHIP_CHECKOUT_REF=${chip_head_commit} --build-arg IDF_CHECKOUT_REF=${IDF_VERSION} --tag ${DOCKER_IMAGE_NAME}:${TAG} .
-          docker push ${DOCKER_IMAGE_NAME}:${TAG} .
+          docker push ${DOCKER_IMAGE_NAME}:${TAG}
       fi
   parallel:
     matrix:
@@ -180,7 +180,7 @@ build_image:
   stage: build
   image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" ||  $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main" 
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" ||  $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
   tags:
     - build
     # runner: `sudo mkdir -p /cache/matter_build/`
@@ -381,7 +381,7 @@ pytest_esp32c6_esp_matter_dut:
   stage: target_test
   image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' ||  $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push" 
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' ||  $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
   needs:
     - build_esp_matter_examples_pytest_C6_idf_v5_1
   script:

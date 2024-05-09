@@ -131,8 +131,6 @@ enum
     /** Signals that operational credentials are changed, which may not be persistent.
     Can be used to affect what is needed for UpdateNOC prior to commit */
     kFabricUpdated,
-    /** Signals that BLE is deinitialized and heap memory is reclaimed */
-    kBLEDeinitialized,
 };
 
 } // DeviceEventType
