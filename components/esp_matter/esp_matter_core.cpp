@@ -194,6 +194,8 @@ typedef struct _cluster {
     uint16_t flags;
     const cluster::function_generic_t *function_list;
     cluster::plugin_server_init_callback_t plugin_server_init_callback;
+    cluster::delegate_init_callback_t delegate_init_callback;
+    void * delegate_pointer;
     _attribute_t *attribute_list;
     _command_t *command_list;
     _event_t *event_list;
@@ -1052,6 +1054,8 @@ static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
     PlatformMgr().ScheduleWork(esp_matter_chip_init_task, reinterpret_cast<intptr_t>(xTaskGetCurrentTaskHandle()));
     // Wait for the matter stack to be initialized
     xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);
+    // Initialise clusters which have delegate implemented
+    esp_matter::cluster::delegate_init_callback_common();
 #endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 
     return ESP_OK;
@@ -1866,6 +1870,16 @@ uint32_t get_id(cluster_t *cluster)
     return current_cluster->cluster_id;
 }
 
+void *get_delegate_impl(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return NULL;
+    }
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    return current_cluster->delegate_pointer;
+}
+
 esp_err_t set_plugin_server_init_callback(cluster_t *cluster, plugin_server_init_callback_t callback)
 {
     if (!cluster) {
@@ -1885,6 +1899,28 @@ plugin_server_init_callback_t get_plugin_server_init_callback(cluster_t *cluster
     }
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     return current_cluster->plugin_server_init_callback;
+}
+
+esp_err_t set_delegate_and_init_callback(cluster_t *cluster, delegate_init_callback_t callback, void *delegate)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    current_cluster->delegate_init_callback = callback;
+    current_cluster->delegate_pointer = delegate;
+    return ESP_OK;
+}
+
+delegate_init_callback_t get_delegate_init_callback(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return NULL;
+    }
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    return current_cluster->delegate_init_callback;
 }
 
 esp_err_t add_function_list(cluster_t *cluster, const function_generic_t *function_list, int function_flags)

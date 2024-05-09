@@ -31,6 +31,12 @@ namespace cluster {
  */
 void plugin_init_callback_common();
 
+/** Common cluster delegate init callback
+ *
+ * This is the common delegate init callback which calls the delegate init callbacks in the clusters.
+ */
+void delegate_init_callback_common();
+
 /** Specific cluster create APIs
  *
  * These APIs also create the mandatory attributes and commands for the cluster. If the mandatory attribute is not
