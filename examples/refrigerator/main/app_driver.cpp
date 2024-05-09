@@ -6,7 +6,7 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
-#include <device.h>
+#include "bsp/esp-bsp.h"
 
 #include <app_priv.h>
 #include <app_reset.h>
@@ -14,8 +14,8 @@
 app_driver_handle_t app_driver_button_init()
 {
     /* Initialize button */
-    button_config_t config = button_driver_get_config();
-    button_handle_t handle = iot_button_create(&config);
+    button_handle_t btns[BSP_BUTTON_NUM];
+    ESP_ERROR_CHECK(bsp_iot_button_create(btns, NULL, BSP_BUTTON_NUM));
 
-    return (app_driver_handle_t)handle;
+    return (app_driver_handle_t)btns[0];
 }
