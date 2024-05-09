@@ -58,7 +58,15 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
               , `Laundry Washer Mode`_
               , `Dish Washer Mode`_
               , `Rvc Run And Rvc Clean Mode`_
+              , `Energy Evse Mode`_
 
+9.1.2 Energy Evse Cluster
+-------------------------
+
+.. csv-table:: Delegate and its impl
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Energy Evse`_, `Energy Evse Delegate`_
 
 .. note::
     Make sure that after implementing delegate class, you set the delegate class pointer at the time of creating cluster.
@@ -74,3 +82,6 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Laundry Washer Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/laundry-washer-mode.h
 .. _`Dish Washer Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/dishwasher-mode.h
 .. _`Rvc Run And Rvc Clean Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/rvc-modes.h
+.. _`Energy Evse Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/energy-evse-modes.h
+.. _`Energy Evse`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/energy-evse-server/energy-evse-server.h
+.. _`Energy Evse Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/energy-management-app/energy-management-common/include/EnergyEvseDelegateImpl.h

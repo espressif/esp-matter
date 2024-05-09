@@ -3691,6 +3691,112 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 }
 } /* electrical_energy_measurement */
 
+namespace energy_evse_mode {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, EnergyEvseMode::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = EnergyEvseModeDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+        mode_base::attribute::create_supported_modes(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+            mode_base::attribute::create_current_mode(cluster, config->current_mode);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    /* Commands */
+    mode_base::command::create_change_to_mode(cluster);
+
+    return cluster;
+}
+} /* energy_evse_mode */
+
+namespace energy_evse {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, EnergyEvse::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = EnergyEvseDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+        attribute::create_state(cluster, 0);
+        attribute::create_supply_state(cluster, 0);
+        attribute::create_fault_state(cluster, 0);
+        attribute::create_charging_enabled_until(cluster, 0);
+        attribute::create_circuit_capacity(cluster, 0);
+        attribute::create_minimum_charge_current(cluster, 0);
+        attribute::create_maximum_charge_current(cluster, 0);
+        attribute::create_session_id(cluster, 0);
+        attribute::create_session_duration(cluster, 0);
+        attribute::create_session_energy_charged(cluster, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+     /* Features */
+    if (features & feature::charging_preferences::get_id()) {
+        feature::charging_preferences::add(cluster);
+    }
+    if (features & feature::soc_reporting::get_id()) {
+        feature::soc_reporting::add(cluster);
+    }
+    if (features & feature::plug_and_charge::get_id()) {
+        feature::plug_and_charge::add(cluster);
+    }
+    if (features & feature::rfid::get_id()) {
+        feature::rfid::add(cluster);
+    }
+    if (features & feature::v2x::get_id()) {
+        feature::v2x::add(cluster);
+    }
+
+    /* Commands */
+    command::create_disable(cluster);
+    command::create_enable_charging(cluster);
+
+    return cluster;
+}
+} /* energy_evse */
+
 // namespace binary_input_basic {
 //     // ToDo
 // } /* binary_input_basic */

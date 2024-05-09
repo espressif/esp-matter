@@ -377,5 +377,18 @@ command_t *create_enable_disable_alarm(cluster_t *cluster);
 } /* command */
 } /* boolean_state_configuration */
 
+namespace energy_evse {
+namespace command {
+command_t *create_disable(cluster_t *cluster);
+command_t *create_enable_charging(cluster_t *cluster);
+command_t *create_enable_discharging(cluster_t *cluster);
+command_t *create_start_diagnostics(cluster_t *cluster);
+command_t *create_set_targets(cluster_t *cluster);
+command_t *create_get_targets(cluster_t *cluster);
+command_t *create_clear_targets(cluster_t *cluster);
+command_t *create_get_targets_response(cluster_t *cluster);
+} /* command */
+} /* energy_evse */
+
 } /* cluster */
 } /* esp_matter */

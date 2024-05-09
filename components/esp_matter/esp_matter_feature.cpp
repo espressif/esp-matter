@@ -4297,5 +4297,135 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* door_lock */
 
+namespace energy_evse {
+namespace feature {
+namespace charging_preferences {
+
+uint32_t get_id()
+{
+    return (uint32_t)EnergyEvse::Feature::kChargingPreferences;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes managed internally */
+    attribute::create_next_charge_start_time(cluster, 0);
+    attribute::create_next_charge_target_time(cluster, 0);
+    attribute::create_next_charge_required_energy(cluster, 0);
+    attribute::create_next_charge_target_soc(cluster, 0);
+
+    /* Commands */
+    command::create_set_targets(cluster);
+    command::create_get_targets(cluster);
+    command::create_clear_targets(cluster);
+    command::create_get_targets_response(cluster);
+    return ESP_OK;
+}
+
+} /* charging_preferences */
+
+namespace soc_reporting {
+
+uint32_t get_id()
+{
+    return (uint32_t)EnergyEvse::Feature::kSoCReporting;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes managed internally */
+    attribute::create_state_of_charge(cluster, 0);
+    attribute::create_battery_capacity(cluster, 0);
+
+    return ESP_OK;
+}
+
+} /* soc_reporting */
+
+namespace plug_and_charge {
+
+uint32_t get_id()
+{
+    return (uint32_t)EnergyEvse::Feature::kPlugAndCharge;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes managed internally */
+    attribute::create_vehicle_id(cluster, NULL, 0);
+
+    return ESP_OK;
+}
+
+} /* plug_and_charge */
+
+namespace rfid {
+
+uint32_t get_id()
+{
+    return (uint32_t)EnergyEvse::Feature::kRfid;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* rfid */
+
+namespace v2x {
+
+uint32_t get_id()
+{
+    return (uint32_t)EnergyEvse::Feature::kV2x;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes managed internally */
+    attribute::create_discharging_enabled_until(cluster, 0);
+    attribute::create_maximum_discharge_current(cluster, 0);
+    attribute::create_session_energy_discharged(cluster, 0);
+
+    /* Commands */
+    command::create_enable_discharging(cluster);
+    return ESP_OK;
+}
+
+} /* v2x*/
+
+} /* feature */
+} /* energy_evse */
+
 } /* cluster */
 } /* esp_matter */

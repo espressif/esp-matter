@@ -44,6 +44,7 @@ enum device_type_enum {
     ESP_MATTER_ELECTRICAL_SENSOR,
     ESP_MATTER_OVEN,
     ESP_MATTER_COOKTOP,
+    ESP_MATTER_ENERGY_EVSE,
     ESP_MATTER_DEVICE_TYPE_MAX
 };
 
@@ -93,6 +94,7 @@ const device_type_name device_type_list[ESP_MATTER_DEVICE_TYPE_MAX] = {
     {"rain_sensor", ESP_MATTER_RAIN_SENSOR},
     {"electrical_sensor", ESP_MATTER_ELECTRICAL_SENSOR},
     {"oven", ESP_MATTER_OVEN},
-    {"cooktop", ESP_MATTER_COOKTOP}
+    {"cooktop", ESP_MATTER_COOKTOP},
+    {"energy_evse", ESP_MATTER_ENERGY_EVSE}
 };
 } /* namespace esp_matter */

@@ -1012,5 +1012,33 @@ attribute_t *create_cumulative_energy_reset(cluster_t *cluster, const uint8_t* v
 } /* attribute */
 } /* electrical_energy_measurement */
 
+namespace energy_evse {
+namespace attribute {
+attribute_t *create_state(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_supply_state(cluster_t *cluster, uint8_t value);
+attribute_t *create_fault_state(cluster_t *cluster, uint8_t value);
+attribute_t *create_charging_enabled_until(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_discharging_enabled_until(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_circuit_capacity(cluster_t *cluster, int64_t value);
+attribute_t *create_minimum_charge_current(cluster_t *cluster, int64_t value);
+attribute_t *create_maximum_charge_current(cluster_t *cluster, int64_t value);
+attribute_t *create_maximum_discharge_current(cluster_t *cluster, int64_t value);
+attribute_t *create_user_maximum_charge_current(cluster_t *cluster, int64_t value);
+attribute_t *create_randomization_delay_window(cluster_t *cluster, uint32_t value);
+attribute_t *create_next_charge_start_time(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_next_charge_target_time(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_next_charge_required_energy(cluster_t *cluster, nullable<int64_t> value);
+attribute_t *create_next_charge_target_soc(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_approximate_ev_efficiency(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_state_of_charge(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_battery_capacity(cluster_t *cluster, nullable<int64_t> value);
+attribute_t *create_vehicle_id(cluster_t *cluster, char *value, uint16_t length);
+attribute_t *create_session_id(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_session_duration(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_session_energy_charged(cluster_t *cluster, nullable<int64_t> value);
+attribute_t *create_session_energy_discharged(cluster_t *cluster, nullable<int64_t> value);
+} /* attribute */
+} /* energy_evse */
+
 } /* cluster */
 } /* esp_matter */

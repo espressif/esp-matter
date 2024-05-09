@@ -404,6 +404,21 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::cooktop::create(node, &cooktop_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
+        case ESP_MATTER_ENERGY_EVSE: {
+            esp_matter::endpoint::energy_evse::config_t energy_evse_config;
+            endpoint = esp_matter::endpoint::energy_evse::create(node, &energy_evse_config, ENDPOINT_FLAG_NONE, NULL);
+
+            esp_matter::endpoint::power_source_device::config_t power_source_config;
+            esp_matter::endpoint_t *ps_endpoint = esp_matter::endpoint::power_source_device::create(node, &power_source_config, ENDPOINT_FLAG_NONE, NULL);
+            esp_matter::endpoint::electrical_sensor::config_t electrical_sensor_config;
+            esp_matter::endpoint::electrical_sensor::add(ps_endpoint, &electrical_sensor_config);
+
+            if (!ps_endpoint) {
+                ESP_LOGE(TAG, "Matter create endpoint failed");
+                return 1;
+            }
+            break;
+        }
         default: {
             ESP_LOGE(TAG, "Please input a valid device type");
             break;
