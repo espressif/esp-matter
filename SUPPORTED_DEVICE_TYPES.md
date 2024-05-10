@@ -65,3 +65,4 @@ i. Appliance
 3. Room Air Conditioner
 4. Refrigerator
 5. Temperature Controlled Cabinet
+6. Oven

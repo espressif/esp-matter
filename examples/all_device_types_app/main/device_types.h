@@ -41,6 +41,7 @@ enum device_type_enum {
     ESP_MATTER_POWER_SOURCE,
     ESP_MATTER_RAIN_SENSOR,
     ESP_MATTER_ELECTRICAL_SENSOR,
+    ESP_MATTER_OVEN,
     ESP_MATTER_DEVICE_TYPE_MAX
 };
 
@@ -87,6 +88,7 @@ const device_type_name device_type_list[ESP_MATTER_DEVICE_TYPE_MAX] = {
     {"water_leak_detector", ESP_MATTER_WATER_LEAK_DETECTOR},
     {"power_source", ESP_MATTER_POWER_SOURCE},
     {"rain_sensor", ESP_MATTER_RAIN_SENSOR},
-    {"electrical_sensor", ESP_MATTER_ELECTRICAL_SENSOR}
+    {"electrical_sensor", ESP_MATTER_ELECTRICAL_SENSOR},
+    {"oven", ESP_MATTER_OVEN}
  };
 } /* namespace esp_matter */

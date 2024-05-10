@@ -102,6 +102,8 @@
 #define ESP_MATTER_RAIN_SENSOR_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_ELECTRICAL_SENSOR_DEVICE_TYPE_ID 0x0510
 #define ESP_MATTER_ELECTRICAL_SENSOR_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_OVEN_DEVICE_TYPE_ID 0x007B
+#define ESP_MATTER_OVEN_DEVICE_TYPE_VERSION 1
 
 namespace esp_matter {
 
@@ -597,6 +599,17 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** refrigerator **/
+
+namespace oven {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /** oven **/
 
 namespace robotic_vacuum_cleaner{
 typedef struct config {
