@@ -38,6 +38,7 @@ enum device_type_enum {
     ESP_MATTER_DISH_WASHER,
     ESP_MATTER_SMOKE_CO_ALARM,
     ESP_MATTER_WATER_LEAK_DETECTOR,
+    ESP_MATTER_WATER_FREEZE_DETECTOR,
     ESP_MATTER_POWER_SOURCE,
     ESP_MATTER_RAIN_SENSOR,
     ESP_MATTER_ELECTRICAL_SENSOR,
@@ -86,9 +87,10 @@ const device_type_name device_type_list[ESP_MATTER_DEVICE_TYPE_MAX] = {
     {"dish_washer", ESP_MATTER_DISH_WASHER},
     {"smoke_co_alarm", ESP_MATTER_SMOKE_CO_ALARM},
     {"water_leak_detector", ESP_MATTER_WATER_LEAK_DETECTOR},
+    {"water_freeze_detector", ESP_MATTER_WATER_FREEZE_DETECTOR},
     {"power_source", ESP_MATTER_POWER_SOURCE},
     {"rain_sensor", ESP_MATTER_RAIN_SENSOR},
     {"electrical_sensor", ESP_MATTER_ELECTRICAL_SENSOR},
     {"oven", ESP_MATTER_OVEN}
- };
+};
 } /* namespace esp_matter */
