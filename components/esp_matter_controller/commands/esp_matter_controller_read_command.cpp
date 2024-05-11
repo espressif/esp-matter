@@ -14,15 +14,16 @@
 
 #include <controller/CommissioneeDeviceProxy.h>
 #include <esp_log.h>
+#include <esp_matter_client.h>
 #include <esp_matter_controller_client.h>
 #include <esp_matter_controller_read_command.h>
-#include <esp_matter_client.h>
 
 #include <app/server/Server.h>
 
 #include "DataModelLogger.h"
 
 using namespace chip::app::Clusters;
+using namespace esp_matter::client;
 using chip::DeviceProxy;
 using chip::app::InteractionModelEngine;
 using chip::app::ReadClient;
@@ -38,9 +39,9 @@ void read_command::on_device_connected_fcn(void *context, ExchangeManager &excha
 {
     read_command *cmd = (read_command *)context;
     chip::OperationalDeviceProxy device_proxy(&exchangeMgr, sessionHandle);
-    esp_err_t err = interaction::send_read_request(&device_proxy, cmd->m_attr_paths.Get(),
-                                                   cmd->m_attr_paths.AllocatedSize(), cmd->m_event_paths.Get(),
-                                                   cmd->m_event_paths.AllocatedSize(), cmd->m_buffered_read_cb);
+    esp_err_t err = interaction::read::send_request(&device_proxy, cmd->m_attr_paths.Get(),
+                                                    cmd->m_attr_paths.AllocatedSize(), cmd->m_event_paths.Get(),
+                                                    cmd->m_event_paths.AllocatedSize(), cmd->m_buffered_read_cb);
     if (err != ESP_OK) {
         chip::Platform::Delete(cmd);
     }

@@ -82,10 +82,10 @@ static esp_err_t app_driver_client_console_handler(int argc, char **argv)
         req_handle.type = esp_matter::client::INVOKE_CMD;
         uint8_t fabric_index = strtoul((const char *)&argv[1][2], NULL, 16);
         uint64_t node_id = strtoull((const char *)&argv[2][2], NULL, 16);
-        req_handle.command_path.mFlags.Set(chip::app::CommandPathFlags::kEndpointIdValid);
-        req_handle.command_path.mEndpointId = strtoul((const char *)&argv[3][2], NULL, 16);
-        req_handle.command_path.mClusterId = strtoul((const char *)&argv[4][2], NULL, 16);
-        req_handle.command_path.mCommandId = strtoul((const char *)&argv[5][2], NULL, 16);
+        req_handle.command_path = {(chip::EndpointId)strtoul((const char *)&argv[3][2], NULL, 16) /* EndpointId */,
+                                   0 /* GroupId */, strtoul((const char *)&argv[4][2], NULL, 16) /* ClusterId */,
+                                   strtoul((const char *)&argv[5][2], NULL, 16) /* CommandId */,
+                                   chip::app::CommandPathFlags::kEndpointIdValid};
 
         if (argc > 6) {
            console_buffer[0] = argc - 6;
@@ -106,10 +106,10 @@ static esp_err_t app_driver_client_console_handler(int argc, char **argv)
         client::request_handle_t req_handle;
         req_handle.type = esp_matter::client::INVOKE_CMD;
         uint8_t fabric_index = strtoul((const char *)&argv[1][2], NULL, 16);
-        req_handle.command_path.mFlags.Set(chip::app::CommandPathFlags::kGroupIdValid);
-        req_handle.command_path.mGroupId = strtoul((const char *)&argv[2][2], NULL, 16);
-        req_handle.command_path.mClusterId = strtoul((const char *)&argv[3][2], NULL, 16);
-        req_handle.command_path.mCommandId = strtoul((const char *)&argv[4][2], NULL, 16);
+        req_handle.command_path = {
+            0 /* EndpointId */, (chip::GroupId)strtoul((const char *)&argv[2][2], NULL, 16) /* GroupId */,
+            strtoul((const char *)&argv[3][2], NULL, 16) /* ClusterId */,
+            strtoul((const char *)&argv[4][2], NULL, 16) /* CommandId */, chip::app::CommandPathFlags::kGroupIdValid};
 
         if (argc > 5) {
            console_buffer[0] = argc - 5;
@@ -159,6 +159,17 @@ static void app_driver_register_commands()
 }
 #endif // CONFIG_ENABLE_CHIP_SHELL
 
+static void send_command_success_callback(void *context, const ConcreteCommandPath &command_path,
+                                          const chip::app::StatusIB &status, TLVReader *response_data)
+{
+    ESP_LOGI(TAG, "Send command success");
+}
+
+static void send_command_failure_callback(void *context, CHIP_ERROR error)
+{
+    ESP_LOGI(TAG, "Send command failure: err :%" CHIP_ERROR_FORMAT, error.Format());
+}
+
 void app_driver_client_invoke_command_callback(client::peer_device_t *peer_device, client::request_handle_t *req_handle,
                                          void *priv_data)
 {
@@ -166,40 +177,28 @@ void app_driver_client_invoke_command_callback(client::peer_device_t *peer_devic
         !req_handle->command_path.mFlags.Has(chip::app::CommandPathFlags::kEndpointIdValid)) {
         return;
     }
+    char command_data_str[32];
     if (req_handle->command_path.mClusterId == OnOff::Id) {
-        switch(req_handle->command_path.mCommandId) {
-            case OnOff::Commands::Off::Id:
-            {
-                on_off::command::send_off(peer_device, req_handle->command_path.mEndpointId);
-                break;
-            };
-            case OnOff::Commands::On::Id:
-            {
-                on_off::command::send_on(peer_device, req_handle->command_path.mEndpointId);
-                break;
-            };
-            case OnOff::Commands::Toggle::Id:
-            {
-                on_off::command::send_toggle(peer_device, req_handle->command_path.mEndpointId);
-                break;
-            };
-            default:
-                break;
-        }
+        strcpy(command_data_str, "{}");
     } else if (req_handle->command_path.mClusterId == Identify::Id) {
         if (req_handle->command_path.mCommandId == Identify::Commands::Identify::Id) {
             if (((char *)req_handle->request_data)[0] != 1) {
                 ESP_LOGE(TAG, "Number of parameters error");
                 return;
             }
-            identify::command::send_identify(peer_device, req_handle->command_path.mEndpointId,
-                                             strtoul((const char *)(req_handle->request_data) + 1, NULL, 16));
+            sprintf(command_data_str, "{\"0:U16\": %ld}",
+                    strtoul((const char *)(req_handle->request_data) + 1, NULL, 16));
         } else {
             ESP_LOGE(TAG, "Unsupported command");
+            return;
         }
     } else {
         ESP_LOGE(TAG, "Unsupported cluster");
+        return;
     }
+    client::interaction::invoke::send_request(NULL, peer_device, req_handle->command_path, command_data_str,
+                                              send_command_success_callback, send_command_failure_callback,
+                                              chip::NullOptional);
 }
 
 void app_driver_client_group_invoke_command_callback(uint8_t fabric_index, client::request_handle_t *req_handle, void *priv_data)
@@ -208,41 +207,26 @@ void app_driver_client_group_invoke_command_callback(uint8_t fabric_index, clien
         !req_handle->command_path.mFlags.Has(chip::app::CommandPathFlags::kGroupIdValid)) {
         return;
     }
-
+    char command_data_str[32];
     if (req_handle->command_path.mClusterId == OnOff::Id) {
-        switch(req_handle->command_path.mCommandId) {
-            case OnOff::Commands::Off::Id:
-            {
-                on_off::command::group_send_off(fabric_index, req_handle->command_path.mGroupId);
-                break;
-            };
-            case OnOff::Commands::On::Id:
-            {
-                on_off::command::group_send_on(fabric_index, req_handle->command_path.mGroupId);
-                break;
-            };
-            case OnOff::Commands::Toggle::Id:
-            {
-                on_off::command::group_send_toggle(fabric_index, req_handle->command_path.mGroupId);
-                break;
-            };
-            default:
-                break;
-        }
+        strcpy(command_data_str, "{}");
     } else if (req_handle->command_path.mClusterId == Identify::Id) {
         if (req_handle->command_path.mCommandId == Identify::Commands::Identify::Id) {
             if (((char *)req_handle->request_data)[0] != 1) {
                 ESP_LOGE(TAG, "Number of parameters error");
                 return;
             }
-            identify::command::group_send_identify(fabric_index, req_handle->command_path.mGroupId,
-                                                   strtoul((const char *)(req_handle->request_data) + 1, NULL, 16));
+            sprintf(command_data_str, "{\"0:U16\": %ld}",
+                    strtoul((const char *)(req_handle->request_data) + 1, NULL, 16));
         } else {
             ESP_LOGE(TAG, "Unsupported command");
+            return;
         }
     } else {
         ESP_LOGE(TAG, "Unsupported cluster");
+        return;
     }
+    client::interaction::invoke::send_group_request(fabric_index, req_handle->command_path, command_data_str);
 }
 
 /* Do any conversions/remapping for the actual value here */

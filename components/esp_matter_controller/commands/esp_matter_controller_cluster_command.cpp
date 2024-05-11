@@ -29,6 +29,7 @@
 
 using namespace chip::app::Clusters;
 using namespace esp_matter::cluster;
+using namespace esp_matter::client;
 static const char *TAG = "cluster_command";
 
 namespace esp_matter {
@@ -153,7 +154,7 @@ void cluster_command::on_device_connected_fcn(void *context, ExchangeManager &ex
     chip::OperationalDeviceProxy device_proxy(&exchangeMgr, sessionHandle);
     chip::app::CommandPathParams command_path = {cmd->m_endpoint_id, 0, cmd->m_cluster_id, cmd->m_command_id,
                                                  chip::app::CommandPathFlags::kEndpointIdValid};
-    custom::command::send_command(context, &device_proxy, command_path, cmd->m_command_data_field, cmd->on_success_cb,
+    interaction::invoke::send_request(context, &device_proxy, command_path, cmd->m_command_data_field, cmd->on_success_cb,
                                   cmd->on_error_cb, chip::NullOptional);
     chip::Platform::Delete(cmd);
     return;
@@ -218,7 +219,7 @@ esp_err_t cluster_command::dispatch_group_command(void *context)
 #endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
     chip::app::CommandPathParams command_path = {cmd->m_endpoint_id, group_id, cmd->m_cluster_id, cmd->m_command_id,
                                                  chip::app::CommandPathFlags::kGroupIdValid};
-    err = custom::command::send_group_command(fabric_index, command_path, cmd->m_command_data_field);
+    err = interaction::invoke::send_group_request(fabric_index, command_path, cmd->m_command_data_field);
     chip::Platform::Delete(cmd);
     return err;
 }

@@ -19,24 +19,28 @@
 #include <esp_matter_core.h>
 
 namespace esp_matter {
-namespace cluster {
-using client::peer_device_t;
-
-/** Custom command send APIs
- *
- * They can be used for all the commands of all the clusters, including the custom clusters.
- */
-namespace custom {
-namespace command {
+namespace client {
+namespace interaction {
 
 using chip::Optional;
+using chip::app::AttributePathParams;
 using chip::app::CommandPathParams;
 using chip::app::CommandSender;
 using chip::app::ConcreteCommandPath;
+using chip::app::EventPathParams;
+using chip::app::ReadClient;
 using chip::app::StatusIB;
+using chip::app::WriteClient;
 using chip::Messaging::ExchangeManager;
 using chip::System::Clock::Timeout;
 using chip::TLV::TLVReader;
+using client::peer_device_t;
+
+/** Command invoke APIs
+ *
+ * They can be used for all the commands of all the clusters, including the custom clusters.
+ */
+namespace invoke {
 
 class custom_command_callback final : public chip::app::CommandSender::Callback {
 public:
@@ -96,65 +100,42 @@ private:
     void *context;
 };
 
-esp_err_t send_command(void *ctx, peer_device_t *remote_device, const CommandPathParams &command_path,
+esp_err_t send_request(void *ctx, peer_device_t *remote_device, const CommandPathParams &command_path,
                        const char *command_data_json_str, custom_command_callback::on_success_callback_t on_success,
                        custom_command_callback::on_error_callback_t on_error,
                        const Optional<uint16_t> &timed_invoke_timeout_ms,
                        const Optional<Timeout> &response_timeout = chip::NullOptional);
 
-esp_err_t send_group_command(const uint8_t fabric_index, const CommandPathParams &command_path,
+esp_err_t send_group_request(const uint8_t fabric_index, const CommandPathParams &command_path,
                              const char *command_data_json_str);
+} // namespace invoke
 
-} // namespace command
-} // namespace custom
-
-/** Specific command send APIs
+/** Attribute/event read API
  *
- * If some standard command is not present here, it can be added.
+ * It can be used for reading all the attributes/events of all the clusters, including the custom clusters.
  */
+namespace read {
+esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams *attr_path, size_t attr_path_size,
+                       EventPathParams *event_path, size_t event_path_size, ReadClient::Callback &callback);
+} // namespace read
 
-namespace on_off {
-namespace command {
-esp_err_t send_off(peer_device_t *remote_device, uint16_t remote_endpoint_id);
-esp_err_t send_on(peer_device_t *remote_device, uint16_t remote_endpoint_id);
-esp_err_t send_toggle(peer_device_t *remote_device, uint16_t remote_endpoint_id);
-esp_err_t group_send_off(uint8_t fabric_index, uint16_t group_id);
-esp_err_t group_send_on(uint8_t fabric_index, uint16_t group_id);
-esp_err_t group_send_toggle(uint8_t fabric_index, uint16_t group_id);
-} // namespace command
-} // namespace on_off
+/** Attribute write API
+ *
+ * It can be used for writing all the attributes of all the clusters, including the custom clusters.
+ */
+namespace write {
+esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams &attr_path,
+                       const char *attr_val_json_str, WriteClient::Callback &callback,
+                       const chip::Optional<uint16_t> &timeout_ms);
+} // namespace write
 
-namespace identify {
-namespace command {
-esp_err_t send_identify(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t identify_time);
-
-esp_err_t group_send_identify(uint8_t fabric_index, uint16_t group_id, uint16_t identify_time);
-
-esp_err_t send_trigger_effect(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t effect_identifier,
-                              uint8_t effect_variant);
-} // namespace command
-} // namespace identify
-} // namespace cluster
-
-namespace interaction {
-
-using chip::app::AttributePathParams;
-using chip::app::EventPathParams;
-using chip::app::ReadClient;
-using chip::app::WriteClient;
-
-esp_err_t send_read_request(client::peer_device_t *remote_device, AttributePathParams *attr_path, size_t attr_path_size,
-                            EventPathParams *event_path, size_t event_path_size, ReadClient::Callback &callback);
-
-esp_err_t send_subscribe_request(client::peer_device_t *remote_device, AttributePathParams *attr_path,
-                                 size_t attr_path_size, EventPathParams *event_path, size_t event_path_size,
-                                 uint16_t min_interval, uint16_t max_interval, bool keep_subscription,
-                                 bool auto_resubscribe, ReadClient::Callback &callback);
-
-esp_err_t send_write_request(client::peer_device_t *remote_device, AttributePathParams &attr_path,
-                             const char *attr_val_json_str, WriteClient::Callback &callback,
-                             const chip::Optional<uint16_t> &timeout_ms);
+namespace subscribe {
+esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams *attr_path, size_t attr_path_size,
+                       EventPathParams *event_path, size_t event_path_size, uint16_t min_interval,
+                       uint16_t max_interval, bool keep_subscription, bool auto_resubscribe,
+                       ReadClient::Callback &callback);
+} // namespace subscribe
 
 } // namespace interaction
-
+} // namespace client
 } // namespace esp_matter

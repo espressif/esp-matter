@@ -29,7 +29,7 @@ using chip::app::StatusIB;
 using chip::Messaging::ExchangeManager;
 using chip::TLV::TLVReader;
 using esp_matter::client::peer_device_t;
-using esp_matter::cluster::custom::command::custom_command_callback;
+using esp_matter::client::interaction::invoke::custom_command_callback;
 
 constexpr char k_empty_command_data_field[] = "{}";
 constexpr size_t k_command_data_field_buffer_size = CONFIG_ESP_MATTER_CONTROLLER_JSON_STRING_BUFFER_LEN;

@@ -19,10 +19,11 @@
 #include <esp_matter_controller_write_command.h>
 #include <json_to_tlv.h>
 
-#include <app/server/Server.h>
 #include <app/OperationalSessionSetup.h>
+#include <app/server/Server.h>
 
 using namespace chip::app::Clusters;
+using namespace esp_matter::client;
 using chip::ByteSpan;
 using chip::DeviceProxy;
 using chip::app::DataModel::List;
@@ -45,8 +46,8 @@ void write_command::on_device_connected_fcn(void *context, ExchangeManager &exch
 {
     write_command *cmd = (write_command *)context;
     chip::OperationalDeviceProxy device_proxy(&exchangeMgr, sessionHandle);
-    esp_err_t err = interaction::send_write_request(&device_proxy, cmd->m_attr_path, cmd->m_attr_val_str,
-                                                    cmd->m_chunked_callback, chip::NullOptional);
+    esp_err_t err = interaction::write::send_request(&device_proxy, cmd->m_attr_path, cmd->m_attr_val_str,
+                                                     cmd->m_chunked_callback, chip::NullOptional);
     if (err != ESP_OK) {
         chip::Platform::Delete(cmd);
     }

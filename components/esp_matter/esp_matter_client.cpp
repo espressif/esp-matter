@@ -19,33 +19,25 @@
 #include <esp_matter_core.h>
 #include <json_to_tlv.h>
 
-#include <app/clusters/bindings/BindingManager.h>
 #include <app/ConcreteAttributePath.h>
 #include <app/EventHeader.h>
 #include <app/MessageDef/DataVersionFilterIBs.h>
 #include <app/MessageDef/StatusIB.h>
 #include <app/ReadClient.h>
 #include <app/ReadPrepareParams.h>
+#include <app/clusters/bindings/BindingManager.h>
 #include <core/Optional.h>
 #include <core/TLVReader.h>
 #include <core/TLVWriter.h>
 
-#if CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
-#include <zap-generated/CHIPClusters.h>
-#include "app/CASESessionManager.h"
+#include "app/CommandPathParams.h"
 #include "app/CommandSender.h"
 #include "app/InteractionModelEngine.h"
-#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 
 using namespace chip::app::Clusters;
-using chip::BitMask;
 using chip::DeviceProxy;
-using chip::FabricInfo;
-using chip::kInvalidEndpointId;
 using chip::OperationalDeviceProxy;
-using chip::OperationalSessionSetup;
 using chip::ScopedNodeId;
-using chip::Server;
 using chip::SessionHandle;
 using chip::Callback::Callback;
 using chip::Messaging::ExchangeManager;
@@ -110,8 +102,7 @@ esp_err_t connect(case_session_mgr_t *case_session_mgr, uint8_t fabric_index, ui
     }
     success_callback.mContext = static_cast<void *>(context);
     failure_callback.mContext = static_cast<void *>(context);
-    case_session_mgr->FindOrEstablishSession(ScopedNodeId(node_id, fabric_index), &success_callback,
-                                             &failure_callback);
+    case_session_mgr->FindOrEstablishSession(ScopedNodeId(node_id, fabric_index), &success_callback, &failure_callback);
     return ESP_OK;
 }
 
@@ -140,8 +131,11 @@ static void esp_matter_command_client_binding_callback(const EmberBindingTableEn
     if (binding.type == MATTER_UNICAST_BINDING && peer_device) {
         if (client_request_callback) {
             if (req_handle->type == INVOKE_CMD) {
+                req_handle->command_path.mFlags.Set(chip::app::CommandPathFlags::kEndpointIdValid);
+                req_handle->command_path.mFlags.Clear(chip::app::CommandPathFlags::kGroupIdValid);
                 req_handle->command_path.mEndpointId = binding.remote;
-            } else if (req_handle->type == WRITE_ATTR || req_handle->type == READ_ATTR || req_handle->type == SUBSCRIBE_ATTR) {
+            } else if (req_handle->type == WRITE_ATTR || req_handle->type == READ_ATTR ||
+                       req_handle->type == SUBSCRIBE_ATTR) {
                 req_handle->attribute_path.mEndpointId = binding.remote;
             } else if (req_handle->type == READ_EVENT || req_handle->type == SUBSCRIBE_EVENT) {
                 req_handle->event_path.mEndpointId = binding.remote;
@@ -151,6 +145,8 @@ static void esp_matter_command_client_binding_callback(const EmberBindingTableEn
     } else if (binding.type == MATTER_MULTICAST_BINDING && !peer_device) {
         if (client_group_request_callback) {
             if (req_handle->type == INVOKE_CMD) {
+                req_handle->command_path.mFlags.Set(chip::app::CommandPathFlags::kGroupIdValid);
+                req_handle->command_path.mFlags.Clear(chip::app::CommandPathFlags::kEndpointIdValid);
                 req_handle->command_path.mGroupId = binding.groupId;
             } else {
                 return;
@@ -222,30 +218,15 @@ void binding_init()
 {
     initialize_binding_manager = true;
 }
-} // namespace client
 
-#if CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
-namespace cluster {
-using client::peer_device_t;
-
-static void send_command_success_callback(void *context, const chip::app::DataModel::NullObjectType &data)
-{
-    ESP_LOGI(TAG, "Send command success");
-}
-
-static void send_command_failure_callback(void *context, CHIP_ERROR error)
-{
-    ESP_LOGI(TAG, "Send command failure: err: %" CHIP_ERROR_FORMAT, error.Format());
-}
-
-namespace custom {
-namespace command {
+namespace interaction {
+namespace invoke {
 
 using command_data_tag = chip::app::CommandDataIB::Tag;
 using chip::TLV::ContextTag;
 using chip::TLV::TLVWriter;
 
-esp_err_t send_command(void *ctx, peer_device_t *remote_device, const CommandPathParams &command_path,
+esp_err_t send_request(void *ctx, peer_device_t *remote_device, const CommandPathParams &command_path,
                        const char *command_data_json_str, custom_command_callback::on_success_callback_t on_success,
                        custom_command_callback::on_error_callback_t on_error,
                        const Optional<uint16_t> &timed_invoke_timeout_ms, const Optional<Timeout> &response_timeout)
@@ -305,7 +286,7 @@ esp_err_t send_command(void *ctx, peer_device_t *remote_device, const CommandPat
     return ESP_OK;
 }
 
-esp_err_t send_group_command(const uint8_t fabric_index, const CommandPathParams &command_path,
+esp_err_t send_group_request(const uint8_t fabric_index, const CommandPathParams &command_path,
                              const char *command_data_json_str)
 {
     if (!command_path.mFlags.Has(chip::app::CommandPathFlags::kGroupIdValid)) {
@@ -313,7 +294,8 @@ esp_err_t send_group_command(const uint8_t fabric_index, const CommandPathParams
         return ESP_ERR_INVALID_ARG;
     }
     chip::Transport::OutgoingGroupSession session(command_path.mGroupId, fabric_index);
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
+    chip::Messaging::ExchangeManager *exchange_mgr =
+        chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
     auto command_sender = chip::Platform::MakeUnique<chip::app::CommandSender>(nullptr, exchange_mgr);
     if (command_sender == nullptr) {
         ESP_LOGE(TAG, "No memory for command sender");
@@ -345,145 +327,41 @@ esp_err_t send_group_command(const uint8_t fabric_index, const CommandPathParams
     }
     return ESP_OK;
 }
-} // namespace command
-} // namespace custom
 
-namespace on_off {
-namespace command {
+} // namespace invoke
 
-esp_err_t send_on(peer_device_t *remote_device, uint16_t remote_endpoint_id)
-{
-    OnOff::Commands::On::Type command_data;
-
-    chip::Controller::OnOffCluster cluster(*remote_device->GetExchangeManager(),
-                                           remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_on(uint8_t fabric_index, uint16_t group_id)
-{
-    OnOff::Commands::On::Type command_data;
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_off(peer_device_t *remote_device, uint16_t remote_endpoint_id)
-{
-    OnOff::Commands::Off::Type command_data;
-
-    chip::Controller::OnOffCluster cluster(*remote_device->GetExchangeManager(),
-                                           remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_off(uint8_t fabric_index, uint16_t group_id)
-{
-    OnOff::Commands::Off::Type command_data;
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_toggle(peer_device_t *remote_device, uint16_t remote_endpoint_id)
-{
-    OnOff::Commands::Toggle::Type command_data;
-
-    chip::Controller::OnOffCluster cluster(*remote_device->GetExchangeManager(),
-                                           remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_toggle(uint8_t fabric_index, uint16_t group_id)
-{
-    OnOff::Commands::Toggle::Type command_data;
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-} // namespace command
-} // namespace on_off
-
-namespace identify {
-namespace command {
-esp_err_t send_identify(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t identify_time)
-{
-    Identify::Commands::Identify::Type command_data;
-    command_data.identifyTime = identify_time;
-
-    chip::Controller::IdentifyCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-esp_err_t group_send_identify(uint8_t fabric_index, uint16_t group_id, uint16_t identify_time)
-{
-    Identify::Commands::Identify::Type command_data;
-    command_data.identifyTime = identify_time;
-
-    chip::Messaging::ExchangeManager *exchange_mgr = chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
-
-    chip::Controller::InvokeGroupCommandRequest(exchange_mgr, fabric_index, group_id, command_data);
-    return ESP_OK;
-}
-
-esp_err_t send_trigger_effect(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t effect_identifier,
-                              uint8_t effect_variant)
-{
-    Identify::Commands::TriggerEffect::Type command_data;
-    command_data.effectIdentifier = Identify::EffectIdentifierEnum(effect_identifier);
-    command_data.effectVariant = Identify::EffectVariantEnum(effect_variant);
-
-    chip::Controller::IdentifyCluster cluster(*remote_device->GetExchangeManager(),
-                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
-    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
-    return ESP_OK;
-}
-
-} // namespace command
-} // namespace identify
-
-} // namespace cluster
-
-namespace interaction {
-
+using chip::SubscriptionId;
 using chip::app::ConcreteDataAttributePath;
 using chip::app::EventHeader;
+using chip::app::ReadPrepareParams;
+using chip::app::StatusIB;
+using chip::app::DataVersionFilterIBs::Builder;
 using chip::TLV::TLVReader;
 using chip::TLV::TLVWriter;
-using chip::app::StatusIB;
-using chip::SubscriptionId;
-using chip::app::DataVersionFilterIBs::Builder;
-using chip::app::ReadPrepareParams;
 
-class client_deleter_read_callback : public ReadClient::Callback
-{
+class client_deleter_read_callback : public ReadClient::Callback {
 public:
-    client_deleter_read_callback(ReadClient::Callback & callback) : m_callback(callback) {}
+    client_deleter_read_callback(ReadClient::Callback &callback)
+        : m_callback(callback)
+    {
+    }
+
 private:
     void OnReportBegin() override { m_callback.OnReportBegin(); }
     void OnReportEnd() override { m_callback.OnReportEnd(); }
     void OnError(CHIP_ERROR aError) override { m_callback.OnError(aError); }
 
-    void OnAttributeData(const ConcreteDataAttributePath & aPath, TLVReader * apData, const StatusIB & aStatus) override
+    void OnAttributeData(const ConcreteDataAttributePath &aPath, TLVReader *apData, const StatusIB &aStatus) override
     {
         m_callback.OnAttributeData(aPath, apData, aStatus);
     }
 
-    void OnEventData(const EventHeader & aEventHeader, TLVReader * apData, const StatusIB * apStatus) override
+    void OnEventData(const EventHeader &aEventHeader, TLVReader *apData, const StatusIB *apStatus) override
     {
         m_callback.OnEventData(aEventHeader, apData, apStatus);
     }
 
-    void OnDone(ReadClient * apReadClient) override
+    void OnDone(ReadClient *apReadClient) override
     {
         m_callback.OnDone(apReadClient);
         chip::Platform::Delete(apReadClient);
@@ -495,43 +373,46 @@ private:
         m_callback.OnSubscriptionEstablished(aSubscriptionId);
     }
 
-    CHIP_ERROR OnResubscriptionNeeded(ReadClient * apReadClient, CHIP_ERROR aTerminationCause) override
+    CHIP_ERROR OnResubscriptionNeeded(ReadClient *apReadClient, CHIP_ERROR aTerminationCause) override
     {
         return m_callback.OnResubscriptionNeeded(apReadClient, aTerminationCause);
     }
 
-    void OnDeallocatePaths(chip::app::ReadPrepareParams && aReadPrepareParams) override
+    void OnDeallocatePaths(chip::app::ReadPrepareParams &&aReadPrepareParams) override
     {
         m_callback.OnDeallocatePaths(std::move(aReadPrepareParams));
     }
 
-    CHIP_ERROR OnUpdateDataVersionFilterList(Builder & aDataVersionFilterIBsBuilder,
-                                             const chip::Span<AttributePathParams> & aAttributePaths,
-                                             bool & aEncodedDataVersionList) override
+    CHIP_ERROR OnUpdateDataVersionFilterList(Builder &aDataVersionFilterIBsBuilder,
+                                             const chip::Span<AttributePathParams> &aAttributePaths,
+                                             bool &aEncodedDataVersionList) override
     {
-        return m_callback.OnUpdateDataVersionFilterList(aDataVersionFilterIBsBuilder, aAttributePaths, aEncodedDataVersionList);
+        return m_callback.OnUpdateDataVersionFilterList(aDataVersionFilterIBsBuilder, aAttributePaths,
+                                                        aEncodedDataVersionList);
     }
 
-    CHIP_ERROR GetHighestReceivedEventNumber(chip::Optional<chip::EventNumber> & aEventNumber) override
+    CHIP_ERROR GetHighestReceivedEventNumber(chip::Optional<chip::EventNumber> &aEventNumber) override
     {
         return m_callback.GetHighestReceivedEventNumber(aEventNumber);
     }
 
-    void OnUnsolicitedMessageFromPublisher(ReadClient * apReadClient) override
+    void OnUnsolicitedMessageFromPublisher(ReadClient *apReadClient) override
     {
         m_callback.OnUnsolicitedMessageFromPublisher(apReadClient);
     }
 
-    void OnCASESessionEstablished(const SessionHandle & aSession, ReadPrepareParams & aSubscriptionParams) override
+    void OnCASESessionEstablished(const SessionHandle &aSession, ReadPrepareParams &aSubscriptionParams) override
     {
         m_callback.OnCASESessionEstablished(aSession, aSubscriptionParams);
     }
 
-    ReadClient::Callback & m_callback;
+    ReadClient::Callback &m_callback;
 };
 
-esp_err_t send_read_request(client::peer_device_t *remote_device, AttributePathParams *attr_path, size_t attr_path_size,
-                            EventPathParams *event_path, size_t event_path_size, ReadClient::Callback &callback)
+namespace read {
+
+esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams *attr_path, size_t attr_path_size,
+                       EventPathParams *event_path, size_t event_path_size, ReadClient::Callback &callback)
 {
     if (!remote_device->GetSecureSession().HasValue() || remote_device->GetSecureSession().Value()->IsGroupSession()) {
         ESP_LOGE(TAG, "Invalid Session Type");
@@ -573,10 +454,14 @@ esp_err_t send_read_request(client::peer_device_t *remote_device, AttributePathP
     return ESP_OK;
 }
 
-esp_err_t send_subscribe_request(client::peer_device_t *remote_device, AttributePathParams *attr_path,
-                                 size_t attr_path_size, EventPathParams *event_path, size_t event_path_size,
-                                 uint16_t min_interval, uint16_t max_interval, bool keep_subscription,
-                                 bool auto_resubscribe, ReadClient::Callback &callback)
+} // namespace read
+
+namespace subscribe {
+
+esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams *attr_path, size_t attr_path_size,
+                       EventPathParams *event_path, size_t event_path_size, uint16_t min_interval,
+                       uint16_t max_interval, bool keep_subscription, bool auto_resubscribe,
+                       ReadClient::Callback &callback)
 {
     if (!remote_device->GetSecureSession().HasValue() || remote_device->GetSecureSession().Value()->IsGroupSession()) {
         ESP_LOGE(TAG, "Invalid Session Type");
@@ -627,19 +512,24 @@ esp_err_t send_subscribe_request(client::peer_device_t *remote_device, Attribute
     return ESP_OK;
 }
 
+} // namespace subscribe
+
+namespace write {
 static constexpr size_t k_encoded_buf_size = chip::kMaxAppMessageLen;
 
-class client_deleter_write_callback : public WriteClient::Callback
-{
+class client_deleter_write_callback : public WriteClient::Callback {
 public:
-    client_deleter_write_callback(WriteClient::Callback &callback) : m_callback(callback) {}
-    void OnResponse(const WriteClient * apWriteClient, const ConcreteDataAttributePath & aPath,
+    client_deleter_write_callback(WriteClient::Callback &callback)
+        : m_callback(callback)
+    {
+    }
+    void OnResponse(const WriteClient *apWriteClient, const ConcreteDataAttributePath &aPath,
                     StatusIB attributeStatus) override
     {
         m_callback.OnResponse(apWriteClient, aPath, attributeStatus);
     }
 
-    void OnError(const WriteClient * apWriteClient, CHIP_ERROR aError) override
+    void OnError(const WriteClient *apWriteClient, CHIP_ERROR aError) override
     {
         m_callback.OnError(apWriteClient, aError);
     }
@@ -650,8 +540,9 @@ public:
         chip::Platform::Delete(apWriteClient);
         chip::Platform::Delete(this);
     }
+
 private:
-    WriteClient::Callback & m_callback;
+    WriteClient::Callback &m_callback;
 };
 
 static esp_err_t encode_attribute_value(uint8_t *encoded_buf, size_t encoded_buf_size, const char *attr_val_json_str,
@@ -692,9 +583,9 @@ static esp_err_t encode_attribute_value(uint8_t *encoded_buf, size_t encoded_buf
     return ESP_OK;
 }
 
-esp_err_t send_write_request(client::peer_device_t *remote_device, AttributePathParams &attr_path,
-                             const char *attr_val_json_str, WriteClient::Callback &callback,
-                             const chip::Optional<uint16_t> &timeout_ms)
+esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams &attr_path,
+                       const char *attr_val_json_str, WriteClient::Callback &callback,
+                       const chip::Optional<uint16_t> &timeout_ms)
 {
     esp_err_t err = ESP_OK;
     if (!remote_device->GetSecureSession().HasValue() || remote_device->GetSecureSession().Value()->IsGroupSession()) {
@@ -745,7 +636,7 @@ esp_err_t send_write_request(client::peer_device_t *remote_device, AttributePath
     return ESP_OK;
 }
 
+} // namespace write
 } // namespace interaction
-#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
-
+} // namespace client
 } // namespace esp_matter
