@@ -934,7 +934,7 @@ As an example, you can build *light* example on ``ESP32_custom`` platform with f
    cp -r $ESP_MATTER_PATH/connectedhomeip/connectedhomeip/src/platform/ESP32 $ESP_MATTER_PATH/../platform/ESP32_custom
    cp $ESP_MATTER_PATH/examples/common/external_platform/BUILD.gn $ESP_MATTER_PATH/../platform/ESP32_custom
    cd $ESP_MATTER_PATH/examples/light
-   cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
+   cp sdkconfig.defaults.ext_plat sdkconfig.defaults
    idf.py build
 
 2.6 Factory Data Providers
