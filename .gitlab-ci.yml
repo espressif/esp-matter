@@ -114,9 +114,6 @@ variables:
     - mkdir -p ${ESP_MATTER_PATH}/../platform
     - cp -r ${CHIP_SUBMODULE_PATH}/src/platform/ESP32 $ESP_MATTER_PATH/../platform/ESP32_custom
     - cp ${ESP_MATTER_PATH}/examples/common/external_platform/BUILD.gn $ESP_MATTER_PATH/../platform/ESP32_custom
-    - cd ${ESP_MATTER_PATH}/examples/blemesh_bridge
-    - cp sdkconfig.defaults sdkconfig.defaults.backup
-    - cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
     - cd ${ESP_MATTER_PATH}/examples/light
     - cp sdkconfig.defaults sdkconfig.defaults.backup
     - cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
@@ -300,7 +297,18 @@ build_esp_matter_examples_pytest_C2_idf_v5_1:
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --pytest_c2
 
-build_esp_matter_examples_non_pytest_idf_v5_1:
+build_ext_plat_c6_thread_controller_examples:
+  extends:
+        - .build_examples_template
+  needs:
+    - job: build_image
+      optional: true
+  script:
+    - *build_external_platform_example
+    - *build_esp32c6_thread_example
+    - *build_controller_otbr_example
+
+build_esp_matter_examples:
   extends:
         - .build_examples_template
   needs:
@@ -318,16 +326,16 @@ build_esp_matter_examples_non_pytest_idf_v5_1:
     when: always
     expire_in: 4 days
   script:
-    - *build_external_platform_example
-    - *build_esp32c6_thread_example
-    - *build_controller_otbr_example
-
-    # mfg_test_app needs an secure boot signing key, generating one here
+     # mfg_test_app needs an secure boot signing key, generating one here
     - cd ${ESP_MATTER_PATH}/examples/mfg_test_app
     - openssl genrsa -out secure_boot_signing_key.pem 3072
 
+    # steps for external platform build for blemesh_bridge app
+    - cd ${ESP_MATTER_PATH}/examples/blemesh_bridge
+    - cp sdkconfig.defaults sdkconfig.defaults.backup
+    - cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
+
     - cd ${ESP_MATTER_PATH}
-    - rm  ./examples/*/dependencies.lock
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --no_pytest
       --parallel-count ${CI_NODE_TOTAL:-1}
