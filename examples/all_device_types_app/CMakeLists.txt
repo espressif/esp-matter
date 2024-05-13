@@ -13,6 +13,8 @@ if(NOT DEFINED ENV{ESP_MATTER_DEVICE_PATH})
         set(ENV{ESP_MATTER_DEVICE_PATH} $ENV{ESP_MATTER_PATH}/device_hal/device/esp32c3_devkit_m)
     elseif("${IDF_TARGET}" STREQUAL "esp32h2")
         set(ENV{ESP_MATTER_DEVICE_PATH} $ENV{ESP_MATTER_PATH}/device_hal/device/esp32h2_devkit_c)
+    elseif("${IDF_TARGET}" STREQUAL "esp32c2")
+	set(ENV{ESP_MATTER_DEVICE_PATH} $ENV{ESP_MATTER_PATH}/device_hal/device/esp32c2_devkit_m)
     else()
         message(FATAL_ERROR "Unsupported IDF_TARGET")
     endif()
@@ -27,6 +29,7 @@ set(MATTER_SDK_PATH ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip)
 # This should be done before using the IDF_TARGET variable.
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 include($ENV{ESP_MATTER_DEVICE_PATH}/esp_matter_device.cmake)
+include(${ESP_MATTER_PATH}/examples/common/cmake_common/components_include.cmake)
 
 set(EXTRA_COMPONENT_DIRS
     "${ESP_MATTER_PATH}/examples/common"
@@ -36,6 +39,10 @@ set(EXTRA_COMPONENT_DIRS
     ${extra_components_dirs_append})
 
 project(all_device_types_app)
+
+if(CONFIG_IDF_TARGET_ESP32C2)
+    include(relinker)
+endif()
 
 idf_build_set_property(CXX_COMPILE_OPTIONS "-std=gnu++17;-Os;-DCHIP_HAVE_CONFIG_H;-Wno-overloaded-virtual" APPEND)
 idf_build_set_property(C_COMPILE_OPTIONS "-Os" APPEND)
