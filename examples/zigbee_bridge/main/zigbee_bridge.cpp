@@ -13,6 +13,7 @@
 #include <esp_matter.h>
 #include <esp_matter_bridge.h>
 #include <zigbee_bridge.h>
+#include <app_zboss.h>
 
 static const char *TAG = "zigbee_bridge";
 
@@ -60,10 +61,13 @@ esp_err_t zigbee_bridge_attribute_update(uint16_t endpoint_id, uint32_t cluster_
                 esp_zb_zcl_on_off_cmd_t cmd_req;
                 cmd_req.zcl_basic_cmd.dst_addr_u.addr_short = zigbee_device->dev_addr.zigbee_shortaddr;
                 cmd_req.zcl_basic_cmd.dst_endpoint = zigbee_device->dev_addr.zigbee_endpointid;
-                cmd_req.zcl_basic_cmd.src_endpoint = esp_matter::endpoint::get_id(zigbee_device->dev->endpoint);
+                cmd_req.zcl_basic_cmd.src_endpoint = ESP_BRIDGE_ON_OFF_ENDPOINT;
                 cmd_req.address_mode = ESP_ZB_APS_ADDR_MODE_16_ENDP_PRESENT;
                 cmd_req.on_off_cmd_id = val->val.b ? ESP_ZB_ZCL_CMD_ON_OFF_ON_ID : ESP_ZB_ZCL_CMD_ON_OFF_OFF_ID;
-                esp_zb_zcl_on_off_cmd_req(&cmd_req);
+                if (esp_zb_lock_acquire(portMAX_DELAY)) {
+                    esp_zb_zcl_on_off_cmd_req(&cmd_req);
+                    esp_zb_lock_release();
+                }
             }
         }
     }

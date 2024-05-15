@@ -103,6 +103,21 @@ static void zboss_task(void *pvParameters)
     /* initialize Zigbee stack with Zigbee coordinator config */
     esp_zb_cfg_t zb_nwk_cfg = ESP_ZB_ZC_CONFIG();
     esp_zb_init(&zb_nwk_cfg);
+
+    // TODO: Send Zigbee command without client data model (TZ-883)
+    /* add an onoff endpoint to send the Zigbee onoff command through esp_zb_zcl_on_off_cmd_req */
+    esp_zb_cluster_list_t *cluster_list = esp_zb_zcl_cluster_list_create();
+    esp_zb_cluster_list_add_on_off_cluster(cluster_list, esp_zb_on_off_cluster_create(NULL),
+                                           ESP_ZB_ZCL_CLUSTER_CLIENT_ROLE);
+    esp_zb_endpoint_config_t endpoint_config = {
+        .endpoint = ESP_BRIDGE_ON_OFF_ENDPOINT,
+        .app_profile_id = ESP_ZB_AF_HA_PROFILE_ID,
+        .app_device_id = ESP_ZB_HA_ON_OFF_OUTPUT_DEVICE_ID,
+    };
+    esp_zb_ep_list_t *endpoint_list = esp_zb_ep_list_create();
+    esp_zb_ep_list_add_ep(endpoint_list, cluster_list, endpoint_config);
+    esp_zb_device_register(endpoint_list);
+
     /* initiate Zigbee Stack start without zb_send_no_autostart_signal auto-start */
     esp_zb_set_primary_network_channel_set(ESP_ZB_PRIMARY_CHANNEL_MASK);
     ESP_ERROR_CHECK(esp_zb_start(false));
