@@ -17,6 +17,12 @@ See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/de
 
 ## 1. Additional Environment Setup
 
+### 1.1 Enabling insights (Optional)
+
+Follow the steps mentioned [here](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/insights.html)
+
+### 1.2 Flash the factory partition 
+
 The steps below should be followed in order to access the fixed-labels.
 -   If monitoring the device using ``idf.py monitor``,press `` Ctrl + ]`` to stop the process.
 -   The following command must be executed to flash the mfg partition:
@@ -26,6 +32,8 @@ esptool.py -p [port-name] write_flash 0x10000 mfg_binaries/20202020_3841.bin
 ```
 
 -   Execute the command ``idf.py monitor``
+
+## 2.Commissioning and Control
 -   Commission the device with ``discriminator: 3841``and `` passcode: 20202020``
 
     ```
@@ -37,25 +45,27 @@ esptool.py -p [port-name] write_flash 0x10000 mfg_binaries/20202020_3841.bin
     - QRCode     :
     - ![QRCode](mfg_binaries/matter_qrcode_20202020_3841.png)
 
--   To read the fixed-labels, use chip-tool.
+### 2.1 Fixed-Labels
+- To read the fixed-labels, use chip-tool.
 
     ```
     chip-tool fixedlabel read label-list 0x7283 1
     ```
 
-The example command given below should be executed to write to the label-list of User Label Cluster.
+### 2.2 User-Labels
+- The example command given below should be executed to write to the label-list of User Label Cluster.
 
 ```
 chip-tool userlabel write label-list '[{"label":"room", "value":"bedroom 1"}, {"label":"orientation", "value":"east"}]' 0x7283 1
 ```
 
-To read label-list of User Label Cluster execute the command given below.
+- To read label-list of User Label Cluster execute the command given below.
 
 ```
 chip-tool userlabel read label-list 0x7283 1
 ```
 
-### Using the TagList Feature
+### 2.3 Using the TagList Feature
 
 To read the taglist of the Descriptor cluster execute the command given below.
 

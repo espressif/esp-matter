@@ -15,6 +15,7 @@
 #include <esp_matter_ota.h>
 
 #include <common_macros.h>
+#include <enable_esp_insights.h>
 #include <app_priv.h>
 #include <app_reset.h>
 #include <app/util/attribute-storage.h>
@@ -33,6 +34,11 @@ using namespace esp_matter::attribute;
 using namespace esp_matter::endpoint;
 using namespace esp_matter::cluster;
 using namespace chip::app::Clusters;
+
+#if CONFIG_ENABLE_ESP_INSIGHTS_TRACE
+extern const char insights_auth_key_start[] asm("_binary_insights_auth_key_txt_start");
+extern const char insights_auth_key_end[] asm("_binary_insights_auth_key_txt_end");
+#endif
 
 namespace {
 // Please refer to https://github.com/CHIP-Specifications/connectedhomeip-spec/blob/master/src/namespaces
@@ -230,6 +236,10 @@ extern "C" void app_main()
     /* Matter start */
     err = esp_matter::start(app_event_cb);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
+
+#if CONFIG_ENABLE_ESP_INSIGHTS_TRACE
+    enable_insights(insights_auth_key_start);
+#endif
 
     SetTagList(0, chip::Span<const Descriptor::Structs::SemanticTagStruct::Type>(gEp0TagList));
     SetTagList(1, chip::Span<const Descriptor::Structs::SemanticTagStruct::Type>(gEp1TagList));
