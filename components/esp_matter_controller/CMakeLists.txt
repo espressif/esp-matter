@@ -1,6 +1,7 @@
 set(src_dirs_list )
 set(include_dirs_list )
 set(exclude_srcs_list )
+set(requires_list chip esp_matter esp_matter_console spiffs)
 
 if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
     list(APPEND src_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/core"
@@ -9,11 +10,6 @@ if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
     list(APPEND include_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/core"
                                   "${CMAKE_CURRENT_SOURCE_DIR}/commands"
                                   "${CMAKE_CURRENT_SOURCE_DIR}/logger")
-
-    if (CONFIG_ESP_MATTER_CONTROLLER_CUSTOM_CLUSTER_ENABLE)
-        list(APPEND src_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/controller_custom_cluster")
-        list(APPEND include_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/controller_custom_cluster")
-    endif()
 
     if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
         list(APPEND exclude_srcs_list "${CMAKE_CURRENT_SOURCE_DIR}/core/esp_matter_controller_client.cpp"
@@ -32,6 +28,6 @@ endif()
 idf_component_register(SRC_DIRS ${src_dirs_list}
     EXCLUDE_SRCS ${exclude_srcs_list}
     INCLUDE_DIRS ${include_dirs_list}
-    REQUIRES chip esp_matter esp_matter_console json_parser spiffs esp_http_client json_generator)
+    REQUIRES ${requires_list})
 
 idf_build_set_property(COMPILE_OPTIONS "-Wno-write-strings" APPEND)
