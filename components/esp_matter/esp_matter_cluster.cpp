@@ -17,6 +17,7 @@
 #include <esp_matter_attribute.h>
 #include <esp_matter_cluster.h>
 #include <esp_matter_core.h>
+#include <esp_matter_delegate_callbacks.h>
 
 #include <app-common/zap-generated/callback.h>
 #include <app/PluginApplicationCallbacks.h>
@@ -24,6 +25,7 @@
 static const char *TAG = "esp_matter_cluster";
 
 using namespace chip::app::Clusters;
+using namespace esp_matter::cluster::delegate_cb;
 
 #define CALL_ONCE(cb)                           \
     [](){                                       \
@@ -2245,6 +2247,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        if (config && config -> delegate != nullptr) {
+            static const auto delegate_init_cb = LaundryWasherModeDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -2261,7 +2267,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_current_mode(cluster, config->current_mode);
+            mode_base::attribute::create_current_mode(cluster, config->current_mode);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -2331,6 +2337,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        if (config && config -> delegate != nullptr) {
+            static const auto delegate_init_cb = DishWasherModeDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
@@ -2340,7 +2350,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_current_mode(cluster, config->current_mode);
+            mode_base::attribute::create_current_mode(cluster, config->current_mode);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -3306,6 +3316,48 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* refrigerator_alarm */
 
+namespace refrigerator_and_tcc_mode {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, RefrigeratorAndTemperatureControlledCabinetMode::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config && config -> delegate != nullptr) {
+            static const auto delegate_init_cb = RefrigeratorAndTCCModeDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+#if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+#endif
+	    mode_base::attribute::create_supported_modes(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+            mode_base::attribute::create_current_mode(cluster, config->current_mode);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    /* Commands */
+    mode_base::command::create_change_to_mode(cluster);
+
+    return cluster;
+}
+} /* refrigerator_and_tcc_mode */
+
 namespace rvc_run_mode {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
@@ -3319,6 +3371,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        if (config && config -> delegate != nullptr) {
+            static const auto delegate_init_cb = RvcRunModeDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -3326,19 +3382,19 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
         global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
-        attribute::create_supported_modes(cluster, NULL, 0, 0);
+        mode_base::attribute::create_supported_modes(cluster, NULL, 0, 0);
 
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_current_mode(cluster, config->current_mode);
+            mode_base::attribute::create_current_mode(cluster, config->current_mode);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
 
     /* Commands */
-    command::create_change_to_mode(cluster);
+    mode_base::command::create_change_to_mode(cluster);
 
     return cluster;
 }
@@ -3357,24 +3413,28 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        if (config && config -> delegate != nullptr) {
+            static const auto delegate_init_cb = RvcCleanModeDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
         global::attribute::create_event_list(cluster, NULL, 0, 0);
-        attribute::create_supported_modes(cluster, NULL, 0, 0);
+        mode_base::attribute::create_supported_modes(cluster, NULL, 0, 0);
 
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_current_mode(cluster, config->current_mode);
+            mode_base::attribute::create_current_mode(cluster, config->current_mode);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
 
     /* Commands */
-    command::create_change_to_mode(cluster);
+    mode_base::command::create_change_to_mode(cluster);
 
     return cluster;
 }

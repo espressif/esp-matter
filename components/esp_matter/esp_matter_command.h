@@ -278,18 +278,6 @@ command_t *create_operational_command_response(cluster_t *cluster);
 } /* command */
 } /* operational_state */
 
-namespace laundry_washer_mode {
-namespace command {
-command_t *create_change_to_mode(cluster_t *cluster);
-} /* command */
-} /* laundry_washer_mode */
-
-namespace dish_washer_mode {
-namespace command {
-command_t *create_change_to_mode(cluster_t *cluster);
-} /* command */
-} /* dish_washer_mode */
-
 namespace smoke_co_alarm {
 namespace command {
 command_t *create_self_test_request(cluster_t *cluster);
@@ -368,17 +356,12 @@ command_t *create_reset_condition(cluster_t *cluster);
 } /* command */
 } /* activated_carbon_filter_monitoring */
 
-namespace rvc_run_mode {
+namespace mode_base {
 namespace command {
 command_t *create_change_to_mode(cluster_t *cluster);
+command_t *create_change_to_mode_response(cluster_t *cluster, uint16_t command_id);
 } /* command */
-} /* rvc_run_mode */
-
-namespace rvc_clean_mode {
-namespace command {
-command_t *create_change_to_mode(cluster_t *cluster);
-} /* command */
-} /* rvc_clean_mode */
+} /* mode_base */
 
 namespace keypad_input {
 namespace command {

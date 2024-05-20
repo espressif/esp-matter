@@ -694,13 +694,6 @@ attribute_t *create_expiring_user_timeout(cluster_t *cluster, uint16_t value);
 } /* attribute */
 } /* door_lock */
 
-namespace laundry_washer_mode {
-namespace attribute {
-attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count);
-attribute_t *create_current_mode(cluster_t *cluster, uint8_t value);
-} /* attribute */
-} /* laundry_washer_mode */
-
 namespace laundry_washer_controls {
 namespace attribute {
 attribute_t *create_spin_speeds(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
@@ -709,13 +702,6 @@ attribute_t *create_number_of_rinses(cluster_t *cluster, uint8_t value);
 attribute_t *create_supported_rinses(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 } /* attribute */
 } /* laundry_washer_controls */
-
-namespace dish_washer_mode {
-namespace attribute {
-attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count);
-attribute_t *create_current_mode(cluster_t *cluster, uint8_t value);
-} /* attribute */
-} /* dish_washer_mode */
 
 namespace smoke_co_alarm {
 namespace attribute {
@@ -975,19 +961,14 @@ attribute_t *create_supported(cluster_t *cluster, uint32_t value);
 } /* attribute */
 } /* refrigerator_alarm */
 
-namespace rvc_run_mode {
+namespace mode_base {
 namespace attribute {
 attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count);
 attribute_t *create_current_mode(cluster_t *cluster, uint8_t value);
+attribute_t *create_start_up_mode(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_on_mode(cluster_t *cluster, nullable<uint8_t> value);
 } /* attribute */
-} /* rvc_run_mode */
-
-namespace rvc_clean_mode {
-namespace attribute {
-attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count);
-attribute_t *create_current_mode(cluster_t *cluster, uint8_t value);
-} /* attribute */
-} /* rvc_clean_mode */
+} /* mode_base */
 
 namespace power_topology {
 namespace attribute {

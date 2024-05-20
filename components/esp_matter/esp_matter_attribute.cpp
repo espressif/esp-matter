@@ -16,6 +16,7 @@
 #include <esp_matter_attribute.h>
 #include <esp_matter.h>
 #include <esp_matter_core.h>
+#include <app/clusters/mode-base-server/mode-base-cluster-objects.h>
 
 static const char *TAG = "esp_matter_attribute";
 
@@ -2866,22 +2867,6 @@ attribute_t *create_operational_error(cluster_t *cluster, uint8_t value)
 } /* attribute */
 } /* operational_state */
 
-namespace laundry_washer_mode {
-namespace attribute {
-
-attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
-{
-    return esp_matter::attribute::create(cluster, LaundryWasherMode::Attributes::SupportedModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
-}
-
-attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
-{
-    return esp_matter::attribute::create(cluster, LaundryWasherMode::Attributes::CurrentMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
-}
-
-} /* attribute */
-} /* laundry_washer_mode */
-
 namespace laundry_washer_controls {
 namespace attribute {
 
@@ -2912,22 +2897,6 @@ attribute_t *create_supported_rinses(cluster_t *cluster, uint8_t *value, uint16_
 }
 } /* attribute */
 } /* laundry_washer_controls */
-
-namespace dish_washer_mode {
-namespace attribute {
-
-attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
-{
-    return esp_matter::attribute::create(cluster, LaundryWasherMode::Attributes::SupportedModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
-}
-
-attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
-{
-    return esp_matter::attribute::create(cluster, LaundryWasherMode::Attributes::CurrentMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
-}
-
-} /* attribute */
-} /* dish_washer_mode */
 
 namespace smoke_co_alarm {
 namespace attribute {
@@ -4292,37 +4261,30 @@ attribute_t *create_supported(cluster_t *cluster, uint32_t value)
 } /* attribute */
 } /* refrigerator_alarm */
 
-namespace rvc_run_mode {
+namespace mode_base {
 namespace attribute {
 
 attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, RvcRunMode::Attributes::SupportedModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+    return esp_matter::attribute::create(cluster, ModeBase::Attributes::SupportedModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
 }
 
 attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, RvcRunMode::Attributes::CurrentMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, ModeBase::Attributes::CurrentMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
 }
 
-} /* attribute */
-} /* rvc_run_mode */
-
-namespace rvc_clean_mode {
-namespace attribute {
-
-attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
+attribute_t *create_start_up_mode(cluster_t *cluster, nullable<uint8_t> value)
 {
-    return esp_matter::attribute::create(cluster, RvcCleanMode::Attributes::SupportedModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+    return esp_matter::attribute::create(cluster, ModeBase::Attributes::StartUpMode::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint8(value));
 }
 
-attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
+attribute_t *create_on_mode(cluster_t *cluster, nullable<uint8_t> value)
 {
-    return esp_matter::attribute::create(cluster, RvcCleanMode::Attributes::CurrentMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, ModeBase::Attributes::OnMode::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint8(value));
 }
-
 } /* attribute */
-} /* rvc_clean_mode */
+} /* mode_base */
 
 namespace power_topology {
 namespace attribute {

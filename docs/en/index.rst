@@ -25,4 +25,5 @@ Table of Contents
    6. RAM and Flash Optimizations <optimizations>
    7. API Reference <api-reference/index>
    8. Integration with esp-insights <insights>
+   9. Application User Guide <app_guide>
    A1 Appendix FAQs <faq>
