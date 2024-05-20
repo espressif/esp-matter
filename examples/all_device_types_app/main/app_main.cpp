@@ -12,7 +12,6 @@
 
 #include <esp_matter.h>
 #include <esp_matter_console.h>
-#include <esp_matter_ota.h>
 
 #include <common_macros.h>
 #include <app_priv.h>

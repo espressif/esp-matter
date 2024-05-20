@@ -16,6 +16,10 @@
 #include "esp_vfs_fat.h"
 #include "hal/uart_types.h"
 #include "driver/uart.h"
+#if CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG
+#include "esp_vfs_usb_serial_jtag.h"
+#include "driver/usb_serial_jtag.h"
+#endif // CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG
 #include <helpers.h>
 #include <device_types.h>
 #include <string.h>
