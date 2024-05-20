@@ -20,6 +20,7 @@
 #include <app-common/zap-generated/callback.h>
 #include <app/InteractionModelEngine.h>
 #include <app/util/af.h>
+#include <app/clusters/mode-base-server/mode-base-cluster-objects.h>
 
 using namespace chip::app::Clusters;
 using chip::app::CommandHandler;
@@ -2403,26 +2404,6 @@ command_t *create_operational_command_response(cluster_t *cluster)
 } /* command */
 } /* operational_state */
 
-namespace laundry_washer_mode {
-namespace command {
-command_t *create_change_to_mode(cluster_t *cluster)
-{
-    return esp_matter::command::create(cluster, LaundryWasherMode::Commands::ChangeToMode::Id, COMMAND_FLAG_ACCEPTED, NULL);
-}
-
-} /* command */
-} /* laundry_washer_mode */
-
-namespace dish_washer_mode {
-namespace command {
-command_t *create_change_to_mode(cluster_t *cluster)
-{
-    return esp_matter::command::create(cluster, DishwasherMode::Commands::ChangeToMode::Id, COMMAND_FLAG_ACCEPTED, NULL);
-}
-
-} /* command */
-} /* dish_washer_mode */
-
 namespace smoke_co_alarm {
 namespace command {
 
@@ -2691,25 +2672,22 @@ command_t *create_reset_condition(cluster_t *cluster)
 } /* command */
 } /* activated_carbon_filter_monitoring */
 
-namespace rvc_run_mode {
+namespace mode_base {
 namespace command {
+
+// command response is null because of InvokeCommandHandler is overriden in srs/app/clusters/mode-base
 command_t *create_change_to_mode(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, RvcRunMode::Commands::ChangeToMode::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_change_to_mode);
+    return esp_matter::command::create(cluster, ModeBase::Commands::ChangeToMode::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_change_to_mode_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ModeBase::Commands::ChangeToModeResponse::Id, COMMAND_FLAG_GENERATED, NULL);
 }
 
 } /* command */
-} /* rvc_run_mode */
-
-namespace rvc_clean_mode {
-namespace command {
-command_t *create_change_to_mode(cluster_t *cluster)
-{
-    return esp_matter::command::create(cluster, RvcCleanMode::Commands::ChangeToMode::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_change_to_mode);
-}
-
-} /* command */
-} /* rvc_clean_mode */
+} /* mode_base */
 
 namespace keypad_input {
 namespace command {

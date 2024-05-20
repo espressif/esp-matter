@@ -1,0 +1,76 @@
+9. Application User Guide
+<<<<<<<<<<<<<<<<<<<<<<<<<
+
+9.1. Delegate Implementation
+============================
+
+As per the implementation in the connectedhomeip repository, some of the clusters
+require an application defined delegate to consume specific data and actions.
+In order to provide this flexibity to the application, esp-matter facilitates delegate
+initilization callbacks in the cluster create API. It is expected that application
+will define it's data and actions in the form of delegate-impl class and set the
+delegate while creating cluster/device type.
+
+List of clusters with delegate:
+    - Mode Base Cluster (all derived types of clusters).
+    - Content Launch Cluster.
+    - Fan Control Cluster.
+    - Audio Output Cluster.
+    - Energy EVSE Cluster.
+    - Device Energy Management Cluster.
+    - Microwave Oven Control Cluster.
+    - Door Lock Cluster.
+    - Messages Cluster.
+    - Operational State Cluster.
+    - Electrical Power Measurement Cluster.
+    - Media Playback Cluster.
+    - Power Topology Cluster.
+    - Content App Observer Cluster.
+    - Channel Cluster.
+    - Resource Monitoring Cluster.
+    - Application Basic Cluster.
+    - Dishwasher Alarm Cluster.
+    - Boolean State Configuration Cluster.
+    - Laundry Dryer Controls Cluster.
+    - Media Input Cluster.
+    - Application Launcher Cluster.
+    - Laundry Washer Controls Cluster.
+    - Valve Configuration And Control Cluster.
+    - Window Covering Cluster.
+    - Content Control Cluster.
+    - Time Synchronization Cluster.
+    - Low Power Cluster.
+    - Keypad Input Cluster.
+    - Account Login Cluster.
+    - Wake On Lan Cluster.
+    - Target Navigator Cluster.
+
+9.1.1 Mode Base Cluster
+-----------------------
+
+It is a base cluster for ModeEVSE, ModeOven, ModeRVSRun, ModeRVSClean, ModeDishwasher,
+ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
+
+.. csv-table:: Delegate and its impl
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Mode Base`_, `Refrigeratore And TCC Mode`_
+              , `Laundry Washer Mode`_
+              , `Dish Washer Mode`_
+              , `Rvc Run And Rvc Clean Mode`_
+
+
+.. note::
+    Make sure that after implementing delegate class, you set the delegate class pointer at the time of creating cluster.
+
+   ::
+
+      robotic_vacuum_cleaner::config_t rvc_config;
+      rvc_config.rvc_run_mode.delegate = object_of_delegate_class;
+      endpoint_t *endpoint = robotic_vacuum_cleaner::create(node, & rvc_config, ENDPOINT_FLAG_NONE);
+
+.. _`Mode Base`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/mode-base-server/mode-base-server.h
+.. _`Refrigeratore And TCC Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/tcc-mode.h
+.. _`Laundry Washer Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/laundry-washer-mode.h
+.. _`Dish Washer Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/dishwasher-mode.h
+.. _`Rvc Run And Rvc Clean Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/rvc-modes.h

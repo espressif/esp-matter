@@ -545,7 +545,8 @@ namespace laundry_washer_mode {
 typedef struct config {
     uint16_t cluster_revision;
     uint8_t current_mode;
-    config() : cluster_revision(1), current_mode(0) {}
+    void *delegate;
+    config() : cluster_revision(1), current_mode(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -564,7 +565,8 @@ namespace dish_washer_mode {
 typedef struct config {
     uint16_t cluster_revision;
     uint8_t current_mode;
-    config() : cluster_revision(1), current_mode(0) {}
+    void *delegate;
+    config() : cluster_revision(1), current_mode(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -806,11 +808,23 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* refrigerator_alarm */
 
+namespace refrigerator_and_tcc_mode {
+typedef struct config {
+    uint16_t cluster_revision;
+    uint8_t current_mode;
+    void *delegate;
+    config() : cluster_revision(1), current_mode(0), delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* refrigerator_and_tcc_mode */
+
 namespace rvc_run_mode {
 typedef struct config {
     uint16_t cluster_revision;
     uint8_t current_mode;
-    config() : cluster_revision(1), current_mode(0) {}
+    void *delegate;
+    config() : cluster_revision(1), current_mode(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -820,7 +834,8 @@ namespace rvc_clean_mode {
 typedef struct config {
     uint16_t cluster_revision;
     uint8_t current_mode;
-    config() : cluster_revision(1), current_mode(0) {}
+    void *delegate;
+    config() : cluster_revision(1), current_mode(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
