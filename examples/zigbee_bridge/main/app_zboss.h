@@ -9,13 +9,13 @@
 #pragma once
 
 #include "esp_err.h"
-#include "sdkconfig.h"
-#include <stdint.h>
+#include "esp_zigbee_core.h"
 
-/*Zigbee Configuration*/
-#define MAX_CHILDREN 10 /* < The maximum amount of connected devices */
-#define INSTALLCODE_POLICY_ENABLE false /* enable the install code policy for security */
-#define ESP_ZB_PRIMARY_CHANNEL_MASK     (1l << 13) /* Zigbee primary channel mask use in the example */
+/* Zigbee Configuration */
+#define MAX_CHILDREN                    10          /* the max amount of connected devices */
+#define INSTALLCODE_POLICY_ENABLE       false       /* enable the install code policy for security */
+#define ESP_ZB_PRIMARY_CHANNEL_MASK     (1l << 13)  /* Zigbee primary channel mask use in the example */
+#define ESP_BRIDGE_ON_OFF_ENDPOINT      (2)         /* esp onoff device endpoint, used to send onoff controlling commands */
 
 #define ESP_ZB_ZC_CONFIG()                                      \
     {                                                           \
@@ -31,12 +31,12 @@
 
 #define ESP_ZB_DEFAULT_RADIO_CONFIG()                      \
     {                                                      \
-        .radio_mode = RADIO_MODE_UART_RCP,                 \
+        .radio_mode = ZB_RADIO_MODE_UART_RCP,              \
         .radio_uart_config = {                             \
             .port = 1,                                     \
             .uart_config =                                 \
                 {                                          \
-                    .baud_rate = 115200,                   \
+                    .baud_rate = 460800,                   \
                     .data_bits = UART_DATA_8_BITS,         \
                     .parity = UART_PARITY_DISABLE,         \
                     .stop_bits = UART_STOP_BITS_1,         \
@@ -49,9 +49,9 @@
         },                                                 \
     }
 
-#define ESP_ZB_DEFAULT_HOST_CONFIG()                       \
-    {                                                      \
-        .host_connection_mode = HOST_CONNECTION_MODE_NONE, \
+#define ESP_ZB_DEFAULT_HOST_CONFIG()                          \
+    {                                                         \
+        .host_connection_mode = ZB_HOST_CONNECTION_MODE_NONE, \
     }
 
 void launch_app_zboss(void);
