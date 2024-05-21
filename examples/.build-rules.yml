@@ -92,3 +92,9 @@ examples/managed_component_light:
     - if: IDF_TARGET in [""]
       temporary: true
       reason: this should be compiled without setting up environment, another CI has been added
+
+examples/door_lock:
+  enable:
+    - if: IDF_TARGET in ["esp32", "esp32c3", "esp32c2", "esp32c6", "esp32h2"]
+      temporary: true
+      reason: the other targets are not tested yet
