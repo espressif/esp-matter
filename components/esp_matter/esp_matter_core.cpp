@@ -16,16 +16,6 @@
 #include <esp_matter.h>
 #include <esp_matter_core.h>
 #include <nvs.h>
-#if CONFIG_BT_ENABLED
-#include <esp_bt.h>
-#if CONFIG_BT_NIMBLE_ENABLED
-#if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
-#include <esp_nimble_hci.h>
-#endif
-#include <host/ble_hs.h>
-#include <nimble/nimble_port.h>
-#endif /* CONFIG_BT_NIMBLE_ENABLED */
-#endif /* CONFIG_BT_ENABLED */
 
 #include <app/clusters/network-commissioning/network-commissioning.h>
 #include <app/clusters/general-diagnostics-server/general-diagnostics-server.h>
