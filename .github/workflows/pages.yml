@@ -37,7 +37,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  Build:
+  Build-Matter:
     # Disable the job in forks
     if: ${{ github.repository_owner == 'espressif' && (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success') }}
 
@@ -46,8 +46,13 @@ jobs:
       image: espressif/esp-matter:latest
     strategy:
       matrix:
-        build-dir: ['examples/light', 'examples/light_switch']
-        targets: ['esp32', 'esp32c3', 'esp32c6', 'esp32h2']
+        targets:
+          - {example: light, target: esp32, prefix: wifi}
+          - {example: light, target: esp32c3, prefix: wifi}
+          - {example: light, target: esp32c6, prefix: wifi}
+          - {example: light, target: esp32c6, prefix: thread, sdkconfig: sdkconfig.defaults.c6_thread}
+          - {example: light, target: esp32h2, prefix: thread}
+          - {example: light_switch, target: esp32c3, prefix: wifi}
 
     steps:
       - run: mkdir -p images
@@ -55,24 +60,104 @@ jobs:
         run: |
           . $IDF_PATH/export.sh
           . $ESP_MATTER_PATH/export.sh
-          cd $ESP_MATTER_PATH/${{matrix.build-dir}}
-          idf.py set-target ${{matrix.targets}} build
+          cd $ESP_MATTER_PATH/examples/${{ matrix.targets.example }}
+
+          SDK_CFG="sdkconfig.defaults"
+          if [ "${{ matrix.targets.sdkconfig }}" != "" ]; then
+            # sdkconfig.defaults.esp32c6 contains the configuration for wifi
+            # For now its a workaround for not including wifi configs in C6's final sdkconfig
+            # we can restructure the sdkconfig for c6_wifi and c6_thread and re-visit this
+            # https://docs.espressif.com/projects/esp-idf/en/v5.2.1/esp32c6/api-guides/build-system.html#custom-sdkconfig-defaults
+            # Please check the above link for sequece of application of configuration
+            rm -f sdkconfig.defaults.${{ matrix.targets.target }}
+
+            SDK_CFG="$SDK_CFG;${{ matrix.targets.sdkconfig }}"
+          elif [ -f sdkconfig.defaults.${{ matrix.targets.target }} ]; then
+            SDK_CFG="$SDK_CFG;sdkconfig.defaults.${{ matrix.targets.target }}"
+          fi
+
+          idf.py -D SDKCONFIG_DEFAULTS="$SDK_CFG" set-target ${{ matrix.targets.target }} build
           cd build
+
           TARGET_CHIP=`cat project_description.json | python3 -c 'import sys,json; print(json.load(sys.stdin)["target"])'`
           APP_BIN=`cat project_description.json | python3 -c 'import sys,json; print(json.load(sys.stdin)["app_bin"])'`
-          esptool.py --chip $TARGET_CHIP merge_bin -o "$GITHUB_WORKSPACE/images/$TARGET_CHIP"_"$APP_BIN" `cat flash_args | tr '\n' '\ '`
+          OUT_BIN="$GITHUB_WORKSPACE/images/$TARGET_CHIP"_${{ matrix.targets.prefix }}_"$APP_BIN"
+          esptool.py --chip $TARGET_CHIP merge_bin -o $OUT_BIN `cat flash_args | tr '\n' '\ '`
+
+          # record the esp-idf and esp-matter commit
+          idf_rev=`git -C $IDF_PATH rev-parse --short HEAD`
+          mtr_rev=`git -C $ESP_MATTER_PATH rev-parse --short HEAD`
+          chip_rev=`git -C $ESP_MATTER_PATH/connectedhomeip/connectedhomeip rev-parse --short HEAD`
+          echo "- esp-idf: [$idf_rev](https://github.com/espressif/esp-idf/tree/$idf_rev)" >> $GITHUB_WORKSPACE/images/.esp-idf
+          echo "- esp-matter: [$mtr_rev](https://github.com/espressif/esp-matter/tree/$mtr_rev)" >> $GITHUB_WORKSPACE/images/.esp-matter
+          echo "- connectedhomeip: [$chip_rev](https://github.com/project-chip/connectedhomeip/tree/$chip_rev)" >> $GITHUB_WORKSPACE/images/.chip
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: build-images
+          name: build-images-${{ matrix.targets.target }}-${{ matrix.targets.prefix }}-${{ matrix.targets.example }}
           path: images/
+
+  Build-Rainmaker:
+    # Disable the job in forks
+    if: ${{ github.repository_owner == 'espressif' && (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success') }}
+
+    runs-on: ubuntu-latest
+    container:
+      image: espressif/esp-matter:latest
+    strategy:
+      matrix:
+        targets:
+          - {example: matter_light, target: esp32c3, prefix: wifi_rainmaker}
+
+    steps:
+      - run: mkdir -p images
+
+      - uses: actions/checkout@v4
+        with:
+          repository: 'espressif/esp-rainmaker'
+          submodules: 'recursive'
+          path: 'esp-rainmaker'
+
+      - name: build application
+        run: |
+          . $IDF_PATH/export.sh
+          . $ESP_MATTER_PATH/export.sh
+          cd esp-rainmaker/examples/matter/${{ matrix.targets.example }}
+
+          SDK_CFG="sdkconfig.defaults"
+          if [ "${{ matrix.targets.sdkconfig }}" != "" ]; then
+            SDK_CFG="$SDK_CFG;${{ matrix.targets.sdkconfig }}"
+          elif [ -f sdkconfig.defaults.${{ matrix.targets.target }} ]; then
+            SDK_CFG="$SDK_CFG;sdkconfig.defaults.${{ matrix.targets.target }}"
+          fi
+
+          idf.py -D SDKCONFIG_DEFAULTS="$SDK_CFG" set-target ${{ matrix.targets.target }} build
+          cd build
+
+          TARGET_CHIP=`cat project_description.json | python3 -c 'import sys,json; print(json.load(sys.stdin)["target"])'`
+          APP_BIN=`cat project_description.json | python3 -c 'import sys,json; print(json.load(sys.stdin)["app_bin"])'`
+          OUT_BIN="$GITHUB_WORKSPACE/images/$TARGET_CHIP"_${{ matrix.targets.prefix }}_"$APP_BIN"
+          esptool.py --chip $TARGET_CHIP merge_bin -o $OUT_BIN `cat flash_args | tr '\n' '\ '`
+
+          # record the esp-rainmaker commit
+          rmaker_rev=`git rev-parse --short HEAD`
+          echo "- esp-rainmaker: [$rmaker_rev](https://github.com/espressif/esp-rainmaker/tree/$rmaker_rev)" >> $GITHUB_WORKSPACE/images/.esp-rainmaker
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-images-${{ matrix.targets.target }}-${{ matrix.targets.prefix }}-${{ matrix.targets.example }}
+          path: images/
+
 
   deploy:
     # Disable the job in forks
     if: ${{ github.repository_owner == 'espressif' }}
 
-    needs: Build
+    needs:
+      - Build-Matter
+      - Build-Rainmaker
 
     environment:
       name: github-pages
@@ -83,25 +168,34 @@ jobs:
 
     steps:
       - name: Download builds
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: build-images
+          pattern: build-images-*
           path: images/
+          merge-multiple: true
 
       - name: generate launchpad config
         run: |
           cd images/
-          ls
-          $ESP_MATTER_PATH/tools/launchpad/generate_launchpad_config.sh
+          $ESP_MATTER_PATH/tools/launchpad/generate_launchpad_config.sh ${{ github.repository_owner }}
+
+          # Put together the commit ids used when building the firmwares
+          echo "#### Build Config" >> build_cfg.md
+          cat .esp-idf >> build_cfg.md
+          cat .esp-matter >> build_cfg.md
+          cat .chip >> build_cfg.md
+          cat .esp-rainmaker >> build_cfg.md
+
+          tree -H '.' -L 1 --noreport -T 'ESP Matter Launchpad Artifacts' -shi --charset utf-8 -I "index.html" -o index.html
 
       - name: Setup Pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v4
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: images/
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
