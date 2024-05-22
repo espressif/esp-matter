@@ -39,6 +39,9 @@
 #include <stdint.h>
 #include <transport/TransportMgr.h>
 
+#if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
+#include <controller/CommissionerDiscoveryController.h>
+#endif
 namespace esp_matter {
 namespace controller {
 
@@ -91,6 +94,9 @@ public:
 #ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     esp_err_t setup_commissioner();
     MatterDeviceCommissioner *get_commissioner() { return &m_device_commissioner; }
+#if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
+    CommissionerDiscoveryController *get_discovery_controller() { return &m_commissioner_discovery_controller; }
+#endif
 #else
     esp_err_t setup_controller(chip::MutableByteSpan &ipk);
     MatterDeviceController *get_controller() { return &m_device_controller; }
@@ -115,11 +121,29 @@ private:
 #ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     chip::Controller::AutoCommissioner m_auto_commissioner;
     MatterDeviceCommissioner m_device_commissioner;
+#if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
+    CommissionerDiscoveryController m_commissioner_discovery_controller;
+#endif
 #else
     MatterDeviceController m_device_controller;
 #endif
 };
 #endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
+
+#if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
+class ESPCommissionerCallback : public CommissionerCallback {
+    void ReadyForCommissioning(uint32_t pincode, uint16_t longDiscriminator, PeerAddress peerAddress) override
+    {
+        NodeId gRemoteId = chip::kTestDeviceNodeId;
+        chip::RendezvousParameters params = chip::RendezvousParameters()
+            .SetSetupPINCode(pincode).SetDiscriminator(longDiscriminator).SetPeerAddress(peerAddress);
+        do {
+            chip::DRBG_get_bytes(reinterpret_cast<uint8_t *>(&gRemoteId), sizeof(gRemoteId));
+        } while (!chip::IsOperationalNodeId(gRemoteId));
+        matter_controller_client::get_instance().get_commissioner()->PairDevice(gRemoteId, params);
+    }
+};
+#endif
 
 } // namespace controller
 } // namespace esp_matter
