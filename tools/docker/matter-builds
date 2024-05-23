@@ -7,14 +7,6 @@ ARG IDF_CLONE_URL=https://github.com/espressif/esp-idf.git
 ARG IDF_CHECKOUT_REF=v5.1
 
 RUN set -x \
-    && apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -fy --no-install-recommends \
-    tree \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/ \
-    && : # last line
-
-RUN set -x \
     && mkdir -p /tmp/esp-idf \
     && cd /tmp/esp-idf \
     && git init \
@@ -56,6 +48,14 @@ RUN set -x \
     && cd ../.. \
     && . $IDF_PATH/export.sh \
     && ./install.sh \
+    && : # last line
+
+RUN set -x \
+    && apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -fy --no-install-recommends \
+    tree \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/ \
     && : # last line
 
 COPY entrypoint.sh /opt/esp/entrypoint.sh
