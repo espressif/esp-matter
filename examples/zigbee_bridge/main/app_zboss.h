@@ -15,7 +15,6 @@
 #define MAX_CHILDREN                    10          /* the max amount of connected devices */
 #define INSTALLCODE_POLICY_ENABLE       false       /* enable the install code policy for security */
 #define ESP_ZB_PRIMARY_CHANNEL_MASK     (1l << 13)  /* Zigbee primary channel mask use in the example */
-#define ESP_BRIDGE_ON_OFF_ENDPOINT      (2)         /* esp onoff device endpoint, used to send onoff controlling commands */
 
 #define ESP_ZB_ZC_CONFIG()                                      \
     {                                                           \
