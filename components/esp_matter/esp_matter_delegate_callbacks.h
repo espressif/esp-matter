@@ -22,6 +22,8 @@ void DishWasherModeDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void RefrigeratorAndTCCModeDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void RvcRunModeDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void RvcCleanModeDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void EnergyEvseModeDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void EnergyEvseDelegateInitCB(void *delegate, uint16_t endpoint_id);
 } // namespace delegate_cb
 
 } // namespace cluster

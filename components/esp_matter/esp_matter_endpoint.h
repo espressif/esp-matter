@@ -110,6 +110,8 @@
 #define ESP_MATTER_OVEN_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_WATER_FREEZE_DETECTOR_DEVICE_TYPE_ID 0x0041
 #define ESP_MATTER_WATER_FREEZE_DETECTOR_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_ENERGY_EVSE_DEVICE_TYPE_ID 0x050C
+#define ESP_MATTER_ENERGY_EVSE_DEVICE_TYPE_VERSION 1
 
 namespace esp_matter {
 
@@ -706,6 +708,19 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* cooktop */
+
+namespace energy_evse {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::energy_evse::config_t energy_evse;
+    cluster::energy_evse_mode::config_t energy_evse_mode;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* energy_evse */
 
 } /* endpoint */
 

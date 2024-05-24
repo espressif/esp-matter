@@ -2719,6 +2719,51 @@ command_t *create_enable_disable_alarm(cluster_t *cluster)
 } /* command */
 } /* boolean_state_configuration */
 
+namespace energy_evse {
+namespace command {
+command_t *create_disable(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, EnergyEvse::Commands::Disable::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_enable_charging(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, EnergyEvse::Commands::EnableCharging::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_enable_discharging(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, EnergyEvse::Commands::EnableDischarging::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_start_diagnostics(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, EnergyEvse::Commands::StartDiagnostics::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_set_targets(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, EnergyEvse::Commands::SetTargets::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_get_targets(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, EnergyEvse::Commands::GetTargets::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_clear_targets(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, EnergyEvse::Commands::ClearTargets::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_get_targets_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, EnergyEvse::Commands::GetTargetsResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+}
+
+} /* command */
+} /* energy_evse */
+
 } /* cluster */
 } /* esp_matter */
 

@@ -886,5 +886,26 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* electrical_energy_measurement */
 
+namespace energy_evse_mode {
+typedef struct config {
+    uint16_t cluster_revision;
+    uint8_t current_mode;
+    void *delegate;
+    config() : cluster_revision(1), current_mode(0), delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* energy_evse_mode */
+
+namespace energy_evse {
+typedef struct config {
+    uint16_t cluster_revision;
+    void *delegate;
+    config() : cluster_revision(1), delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* energy_evse */
+
 } /* cluster */
 } /* esp_matter */

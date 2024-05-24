@@ -4443,5 +4443,127 @@ attribute_t *create_cumulative_energy_reset(cluster_t *cluster, const uint8_t* v
 } /* attribute */
 } /* electrical_energy_measurement */
 
+namespace energy_evse {
+namespace attribute {
+
+attribute_t *create_state(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::State::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
+}
+
+attribute_t *create_supply_state(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::SupplyState::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_fault_state(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::FaultState::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_charging_enabled_until(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::ChargingEnabledUntil::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_discharging_enabled_until(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::DischargingEnabledUntil::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_circuit_capacity(cluster_t *cluster, int64_t value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::CircuitCapacity::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int64(value));
+}
+
+attribute_t *create_minimum_charge_current(cluster_t *cluster, int64_t value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::MinimumChargeCurrent::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int64(value));
+}
+
+attribute_t *create_maximum_charge_current(cluster_t *cluster, int64_t value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::MaximumChargeCurrent::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int64(value));
+}
+
+attribute_t *create_maximum_discharge_current(cluster_t *cluster, int64_t value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::MaximumDischargeCurrent::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int64(value));
+}
+
+attribute_t *create_user_maximum_charge_current(cluster_t *cluster, int64_t value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::UserMaximumChargeCurrent::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int64(value));
+}
+
+attribute_t *create_randomization_delay_window(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::RandomizationDelayWindow::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint32(value));
+}
+
+attribute_t *create_next_charge_start_time(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::NextChargeStartTime::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_next_charge_target_time(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::NextChargeTargetTime::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_next_charge_required_energy(cluster_t *cluster, nullable<int64_t> value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::NextChargeRequiredEnergy::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+}
+
+attribute_t *create_next_charge_target_soc(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::NextChargeTargetSoC::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+}
+
+attribute_t *create_approximate_ev_efficiency(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::ApproximateEVEfficiency::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_state_of_charge(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::StateOfCharge::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+}
+
+attribute_t *create_battery_capacity(cluster_t *cluster, nullable<int64_t> value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::BatteryCapacity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+}
+
+attribute_t *create_vehicle_id(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::VehicleID::Id, ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_char_str(value, length));
+}
+
+attribute_t *create_session_id(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::SessionID::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_session_duration(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::SessionDuration::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_session_energy_charged(cluster_t *cluster, nullable<int64_t> value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::SessionEnergyCharged::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_int64(value));
+}
+
+attribute_t *create_session_energy_discharged(cluster_t *cluster, nullable<int64_t> value)
+{
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::SessionEnergyDischarged::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_int64(value));
+}
+
+} /* attribute */
+} /* energy_evse */
+
 } /* cluster */
 } /* esp_matter */

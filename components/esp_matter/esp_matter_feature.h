@@ -146,6 +146,7 @@ esp_err_t add(cluster_t *cluster);
 
 } /* feature */
 } /* scenes_management */
+
 namespace icd_management {
 namespace feature {
 namespace check_in_protocol_support {
@@ -1943,6 +1944,46 @@ esp_err_t add(cluster_t *cluster);
 
 } /* feature */
 }/* door_lock */
+
+namespace energy_evse {
+namespace feature {
+namespace charging_preferences {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* charging_preferences */
+
+namespace soc_reporting {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* soc_reporting */
+
+namespace plug_and_charge {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* plug_and_charge */
+
+namespace rfid {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* rfid */
+
+namespace v2x {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* v2x */
+
+} /* feature */
+} /* energy_evse */
 
 } /* cluster */
 } /* esp_matter */

@@ -69,3 +69,4 @@ i. Appliance
 6. Oven
 7. Cook Surface
 8. Cooktop
+9. Energy Evse

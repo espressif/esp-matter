@@ -17,7 +17,7 @@
 #include <esp_matter_delegate_callbacks.h>
 #include <esp_matter_core.h>
 #include <app/clusters/mode-base-server/mode-base-server.h>
-
+#include <app/clusters/energy-evse-server/energy-evse-server.h>
 
 using namespace chip::app::Clusters;
 namespace esp_matter {
@@ -74,6 +74,25 @@ void RvcRunModeDelegateInitCB(void *delegate, uint16_t endpoint_id)
 void RvcCleanModeDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     InitModeDelegate(delegate, endpoint_id, RvcCleanMode::Id);
+}
+
+void EnergyEvseModeDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    InitModeDelegate(delegate, endpoint_id, EnergyEvseMode::Id);
+}
+
+void EnergyEvseDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    static EnergyEvse::Instance * energyEvseInstance = nullptr;
+    EnergyEvse::Delegate *energy_evse_delegate = static_cast<EnergyEvse::Delegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, EnergyEvse::Id);
+    energyEvseInstance = new EnergyEvse::Instance(endpoint_id, *energy_evse_delegate, chip::BitMask<EnergyEvse::Feature, uint32_t>(feature_map),
+                            chip::BitMask<EnergyEvse::OptionalAttributes, uint32_t>(), chip::BitMask<EnergyEvse::OptionalCommands, uint32_t>());
+    energyEvseInstance->Init();
 }
 
 } // namespace delegate_cb
