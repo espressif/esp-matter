@@ -22,6 +22,7 @@
 #include <app/clusters/operational-state-server/operational-state-server.h>
 #include <app/clusters/resource-monitoring-server/resource-monitoring-server.h>
 #include <app/clusters/fan-control-server/fan-control-server.h>
+#include <app/clusters/laundry-dryer-controls-server/laundry-dryer-controls-server.h>
 
 using namespace chip::app::Clusters;
 namespace esp_matter {
@@ -181,6 +182,16 @@ void ActivatedCarbonFilterMonitoringDelegateInitCB(void *delegate, uint16_t endp
     activatedCarbonFilterMonitoringInstance = new ResourceMonitoring::Instance(resource_monitoring_delegate, endpoint_id, ActivatedCarbonFilterMonitoring::Id,
                                             static_cast<uint32_t>(feature_map), ResourceMonitoring::DegradationDirectionEnum::kDown, true);
     activatedCarbonFilterMonitoringInstance->Init();
+}
+
+void LaundryDryerControlsDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    LaundryDryerControls::Delegate *laundry_dryer_controls_delegate = static_cast<LaundryDryerControls::Delegate*>(delegate);
+    LaundryDryerControls::LaundryDryerControlsServer::SetDefaultDelegate(endpoint_id, laundry_dryer_controls_delegate);
 }
 
 } // namespace delegate_cb

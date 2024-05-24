@@ -565,6 +565,17 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* laundry_washer_controls */
 
+namespace laundry_dryer_controls {
+typedef struct config {
+    uint16_t cluster_revision;
+    nullable<uint8_t> selected_dryness_level;
+    void *delegate;
+    config() : cluster_revision(1), selected_dryness_level(0), delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* laundry_dryer_controls */
+
 namespace dish_washer_mode {
 typedef struct config {
     uint16_t cluster_revision;
