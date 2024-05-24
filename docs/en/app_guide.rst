@@ -85,6 +85,22 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `Microwave Oven Control`_, None
 
+9.1.5 Fan Control Cluster
+-------------------------
+
+.. csv-table:: Delegate and its impl
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Fan Control`_, `Fan Control Delegate`_
+
+9.1.6 Resource Monitoring Cluster
+---------------------------------
+
+.. csv-table:: Delegate and its impl
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Resource Monitoring`_, `Resource Monitoring Delegate`_
+
 .. note::
     Make sure that after implementing delegate class, you set the delegate class pointer at the time of creating cluster.
 
@@ -106,3 +122,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Operational State`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/operational-state-server/operational-state-server.h
 .. _`Operational State Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/operational-state-delegate-impl.h
 .. _`Microwave Oven Control`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/microwave-oven-control-server/microwave-oven-control-server.h
+.. _`Fan Control`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/fan-control-server/fan-control-delegate.h
+.. _`Fan Control Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/src/fan-stub.cpp
+.. _`Resource Monitoring`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/resource-monitoring-server/resource-monitoring-server.h
+.. _`Resource Monitoring Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/resource-monitoring-delegates.h

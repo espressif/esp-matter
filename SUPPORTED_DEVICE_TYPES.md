@@ -71,3 +71,4 @@ i. Appliance
 8. Cooktop
 9. Energy Evse
 10. Microwave Oven
+11. Extractor Hood

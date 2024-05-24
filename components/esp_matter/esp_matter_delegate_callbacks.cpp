@@ -20,6 +20,8 @@
 #include <app/clusters/energy-evse-server/energy-evse-server.h>
 #include <app/clusters/microwave-oven-control-server/microwave-oven-control-server.h>
 #include <app/clusters/operational-state-server/operational-state-server.h>
+#include <app/clusters/resource-monitoring-server/resource-monitoring-server.h>
+#include <app/clusters/fan-control-server/fan-control-server.h>
 
 using namespace chip::app::Clusters;
 namespace esp_matter {
@@ -141,6 +143,44 @@ void OperationalStateDelegateInitCB(void *delegate, uint16_t endpoint_id)
     OperationalState::Delegate *operational_state_delegate = static_cast<OperationalState::Delegate*>(delegate);
     operationalStateInstance = new OperationalState::Instance(operational_state_delegate, endpoint_id);
     operationalStateInstance->Init();
+}
+
+void FanControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    FanControl::Delegate *fan_control_delegate = static_cast<FanControl::Delegate*>(delegate);
+    FanControl::SetDefaultDelegate(endpoint_id, fan_control_delegate);
+}
+
+void HepaFilterMonitoringDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    static ResourceMonitoring::Instance * hepaFilterMonitoringInstance = nullptr;
+    ResourceMonitoring::Delegate *resource_monitoring_delegate = static_cast<ResourceMonitoring::Delegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, HepaFilterMonitoring::Id);
+    hepaFilterMonitoringInstance = new ResourceMonitoring::Instance(resource_monitoring_delegate, endpoint_id, HepaFilterMonitoring::Id,
+                                        static_cast<uint32_t>(feature_map), ResourceMonitoring::DegradationDirectionEnum::kDown, true);
+    hepaFilterMonitoringInstance->Init();
+}
+
+void ActivatedCarbonFilterMonitoringDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    static ResourceMonitoring::Instance * activatedCarbonFilterMonitoringInstance = nullptr;
+    ResourceMonitoring::Delegate *resource_monitoring_delegate = static_cast<ResourceMonitoring::Delegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, ActivatedCarbonFilterMonitoring::Id);
+    activatedCarbonFilterMonitoringInstance = new ResourceMonitoring::Instance(resource_monitoring_delegate, endpoint_id, ActivatedCarbonFilterMonitoring::Id,
+                                            static_cast<uint32_t>(feature_map), ResourceMonitoring::DegradationDirectionEnum::kDown, true);
+    activatedCarbonFilterMonitoringInstance->Init();
 }
 
 } // namespace delegate_cb

@@ -114,6 +114,8 @@
 #define ESP_MATTER_WATER_FREEZE_DETECTOR_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_ENERGY_EVSE_DEVICE_TYPE_ID 0x050C
 #define ESP_MATTER_ENERGY_EVSE_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_EXTRACTOR_HOOD_DEVICE_TYPE_ID 0x007A
+#define ESP_MATTER_EXTRACTOR_HOOD_DEVICE_TYPE_VERSION 1
 
 namespace esp_matter {
 
@@ -737,6 +739,18 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* microwave_oven */
+
+namespace extractor_hood {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::fan_control::config_t fan_control;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* extractor_hood */
 
 } /* endpoint */
 
