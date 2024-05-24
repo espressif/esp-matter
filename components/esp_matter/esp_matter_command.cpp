@@ -2764,6 +2764,21 @@ command_t *create_get_targets_response(cluster_t *cluster)
 } /* command */
 } /* energy_evse */
 
+namespace microwave_oven_control {
+namespace command {
+command_t *create_set_cooking_parameters(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, MicrowaveOvenControl::Commands::SetCookingParameters::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_add_more_time(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, MicrowaveOvenControl::Commands::AddMoreTime::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* microwave_oven_control */
+
 } /* cluster */
 } /* esp_matter */
 

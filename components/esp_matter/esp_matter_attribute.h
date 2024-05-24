@@ -1040,5 +1040,19 @@ attribute_t *create_session_energy_discharged(cluster_t *cluster, nullable<int64
 } /* attribute */
 } /* energy_evse */
 
+namespace microwave_oven_control {
+namespace attribute {
+attribute_t *create_cook_time(cluster_t *cluster, uint32_t value);
+attribute_t *create_max_cook_time(cluster_t *cluster, uint32_t value);
+attribute_t *create_power_setting(cluster_t *cluster, uint8_t value);
+attribute_t *create_min_power(cluster_t *cluster, uint8_t value);
+attribute_t *create_max_power(cluster_t *cluster, uint8_t value);
+attribute_t *create_power_step(cluster_t *cluster, uint8_t value);
+attribute_t *create_supported_watts(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_selected_watt_index(cluster_t *cluster, uint8_t value);
+attribute_t *create_watt_rating(cluster_t *cluster, uint16_t value);
+} /* attribute */
+} /* microwave_oven_control */
+
 } /* cluster */
 } /* esp_matter */

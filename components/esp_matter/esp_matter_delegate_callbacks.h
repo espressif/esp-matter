@@ -24,6 +24,9 @@ void RvcRunModeDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void RvcCleanModeDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void EnergyEvseModeDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void EnergyEvseDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void MicrowaveOvenModeDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void MicrowaveOvenControlDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void OperationalStateDelegateInitCB(void *delegate, uint16_t endpoint_id);
 } // namespace delegate_cb
 
 } // namespace cluster

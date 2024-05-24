@@ -59,6 +59,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
               , `Dish Washer Mode`_
               , `Rvc Run And Rvc Clean Mode`_
               , `Energy Evse Mode`_
+              , `Microwave Oven Mode`_
 
 9.1.2 Energy Evse Cluster
 -------------------------
@@ -67,6 +68,22 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
   :header: "Delegate Class", "Reference Implementation"
 
   `Energy Evse`_, `Energy Evse Delegate`_
+
+9.1.3 Operational State Cluster
+-------------------------------
+
+.. csv-table:: Delegate and its impl
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Operational State`_, `Operational State Delegate`_
+
+9.1.4 Microwave Oven Control Cluster
+------------------------------------
+
+.. csv-table:: Delegate and its impl
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Microwave Oven Control`_, None
 
 .. note::
     Make sure that after implementing delegate class, you set the delegate class pointer at the time of creating cluster.
@@ -85,3 +102,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Energy Evse Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/energy-evse-modes.h
 .. _`Energy Evse`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/energy-evse-server/energy-evse-server.h
 .. _`Energy Evse Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/energy-management-app/energy-management-common/include/EnergyEvseDelegateImpl.h
+.. _`Microwave Oven Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/microwave-oven-mode.h
+.. _`Operational State`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/operational-state-server/operational-state-server.h
+.. _`Operational State Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/operational-state-delegate-impl.h
+.. _`Microwave Oven Control`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/microwave-oven-control-server/microwave-oven-control-server.h

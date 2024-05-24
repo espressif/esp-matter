@@ -70,3 +70,4 @@ i. Appliance
 7. Cook Surface
 8. Cooktop
 9. Energy Evse
+10. Microwave Oven

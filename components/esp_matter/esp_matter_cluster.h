@@ -535,7 +535,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace operational_state {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(1) {}
+    void *delegate;
+    config() : cluster_revision(1), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -840,6 +841,27 @@ typedef struct config {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* rvc_clean_mode */
+
+namespace microwave_oven_mode {
+typedef struct config {
+    uint16_t cluster_revision;
+    uint8_t current_mode;
+    void *delegate;
+    config() : cluster_revision(1), current_mode(0), delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* microwave_oven_mode */
+
+namespace microwave_oven_control {
+typedef struct config {
+    uint16_t cluster_revision;
+    void *delegate;
+    config() : cluster_revision(1), delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* microwave_oven_control */
 
 namespace rvc_operational_state {
 typedef struct config {

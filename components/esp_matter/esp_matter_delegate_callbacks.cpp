@@ -18,6 +18,8 @@
 #include <esp_matter_core.h>
 #include <app/clusters/mode-base-server/mode-base-server.h>
 #include <app/clusters/energy-evse-server/energy-evse-server.h>
+#include <app/clusters/microwave-oven-control-server/microwave-oven-control-server.h>
+#include <app/clusters/operational-state-server/operational-state-server.h>
 
 using namespace chip::app::Clusters;
 namespace esp_matter {
@@ -81,6 +83,11 @@ void EnergyEvseModeDelegateInitCB(void *delegate, uint16_t endpoint_id)
     InitModeDelegate(delegate, endpoint_id, EnergyEvseMode::Id);
 }
 
+void MicrowaveOvenModeDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    InitModeDelegate(delegate, endpoint_id, MicrowaveOvenMode::Id);
+}
+
 void EnergyEvseDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     if(delegate == nullptr)
@@ -93,6 +100,47 @@ void EnergyEvseDelegateInitCB(void *delegate, uint16_t endpoint_id)
     energyEvseInstance = new EnergyEvse::Instance(endpoint_id, *energy_evse_delegate, chip::BitMask<EnergyEvse::Feature, uint32_t>(feature_map),
                             chip::BitMask<EnergyEvse::OptionalAttributes, uint32_t>(), chip::BitMask<EnergyEvse::OptionalCommands, uint32_t>());
     energyEvseInstance->Init();
+}
+
+void MicrowaveOvenControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    // Get delegates of MicrowaveOvenMode and OperationalState clusters.
+    node_t *node = node::get();
+    endpoint_t *endpoint = endpoint::get(node, endpoint_id);
+    cluster_t *cluster = cluster::get(endpoint, MicrowaveOvenMode::Id);
+    ModeBase::Delegate *microwave_oven_mode_delegate = static_cast<ModeBase::Delegate*>(get_delegate_impl(cluster));
+    cluster = cluster::get(endpoint, OperationalState::Id);
+    OperationalState::Delegate *operational_state_delegate = static_cast<OperationalState::Delegate*>(get_delegate_impl(cluster));
+    if(delegate == nullptr || microwave_oven_mode_delegate == nullptr || operational_state_delegate == nullptr)
+    {
+        return;
+    }
+    // Create instances of clusters.
+    static ModeBase::Instance * microwaveOvenModeInstance = nullptr;
+    static OperationalState::Instance * operationalStateInstance = nullptr;
+    static MicrowaveOvenControl::Instance * microwaveOvenControlInstance = nullptr;
+    MicrowaveOvenControl::Delegate *microwave_oven_control_delegate = static_cast<MicrowaveOvenControl::Delegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, MicrowaveOvenMode::Id);
+
+    microwaveOvenModeInstance = new ModeBase::Instance(microwave_oven_mode_delegate, endpoint_id, MicrowaveOvenMode::Id, feature_map);
+    operationalStateInstance = new OperationalState::Instance(operational_state_delegate, endpoint_id);
+
+    feature_map = get_feature_map_value(endpoint_id, MicrowaveOvenControl::Id);
+    microwaveOvenControlInstance = new MicrowaveOvenControl::Instance(microwave_oven_control_delegate, endpoint_id, MicrowaveOvenControl::Id, feature_map,
+                                        *operationalStateInstance, *microwaveOvenModeInstance);
+    microwaveOvenControlInstance->Init();
+}
+
+void OperationalStateDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    static OperationalState::Instance * operationalStateInstance = nullptr;
+    OperationalState::Delegate *operational_state_delegate = static_cast<OperationalState::Delegate*>(delegate);
+    operationalStateInstance = new OperationalState::Instance(operational_state_delegate, endpoint_id);
+    operationalStateInstance->Init();
 }
 
 } // namespace delegate_cb
