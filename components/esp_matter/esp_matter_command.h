@@ -397,5 +397,12 @@ command_t *create_add_more_time(cluster_t *cluster);
 } /* command */
 } /* microwave_oven_control */
 
+namespace valve_configuration_and_control {
+namespace command {
+command_t *create_open(cluster_t *cluster);
+command_t *create_close(cluster_t *cluster);
+} /* command */
+} /* valve_configuration_and_control */
+
 } /* cluster */
 } /* esp_matter */

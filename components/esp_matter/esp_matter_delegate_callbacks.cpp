@@ -23,6 +23,7 @@
 #include <app/clusters/resource-monitoring-server/resource-monitoring-server.h>
 #include <app/clusters/fan-control-server/fan-control-server.h>
 #include <app/clusters/laundry-dryer-controls-server/laundry-dryer-controls-server.h>
+#include <app/clusters/valve-configuration-and-control-server/valve-configuration-and-control-server.h>
 
 using namespace chip::app::Clusters;
 namespace esp_matter {
@@ -192,6 +193,16 @@ void LaundryDryerControlsDelegateInitCB(void *delegate, uint16_t endpoint_id)
     }
     LaundryDryerControls::Delegate *laundry_dryer_controls_delegate = static_cast<LaundryDryerControls::Delegate*>(delegate);
     LaundryDryerControls::LaundryDryerControlsServer::SetDefaultDelegate(endpoint_id, laundry_dryer_controls_delegate);
+}
+
+void ValveConfigurationAndControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    ValveConfigurationAndControl::Delegate *valve_configuration_and_control_delegate = static_cast<ValveConfigurationAndControl::Delegate*>(delegate);
+    ValveConfigurationAndControl::SetDefaultDelegate(endpoint_id, valve_configuration_and_control_delegate);
 }
 
 } // namespace delegate_cb

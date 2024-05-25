@@ -4633,5 +4633,65 @@ attribute_t *create_watt_rating(cluster_t *cluster, uint16_t value)
 } /* attribute */
 } /* microwave_oven_control */
 
+namespace valve_configuration_and_control {
+namespace attribute {
+attribute_t *create_open_duration(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, ValveConfigurationAndControl::Attributes::OpenDuration::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_default_open_duration(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, ValveConfigurationAndControl::Attributes::DefaultOpenDuration::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_auto_close_time(cluster_t *cluster, nullable<uint64_t> value)
+{
+    return esp_matter::attribute::create(cluster, ValveConfigurationAndControl::Attributes::AutoCloseTime::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint64(value));
+}
+
+attribute_t *create_remaining_duration(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, ValveConfigurationAndControl::Attributes::RemainingDuration::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_current_state(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, ValveConfigurationAndControl::Attributes::CurrentState::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
+}
+
+attribute_t *create_target_state(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, ValveConfigurationAndControl::Attributes::TargetState::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
+}
+
+attribute_t *create_current_level(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, ValveConfigurationAndControl::Attributes::CurrentLevel::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+}
+
+attribute_t *create_target_level(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, ValveConfigurationAndControl::Attributes::TargetLevel::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+}
+
+attribute_t *create_default_open_level(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ValveConfigurationAndControl::Attributes::DefaultOpenLevel::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint8(value));
+}
+
+attribute_t *create_valve_fault(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ValveConfigurationAndControl::Attributes::ValveFault::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bitmap16(value));
+}
+
+attribute_t *create_level_step(cluster_t *cluster, const uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ValveConfigurationAndControl::Attributes::LevelStep::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+}
+
+} /* attribute */
+} /* valve_configuration_and_control */
+
 } /* cluster */
 } /* esp_matter */

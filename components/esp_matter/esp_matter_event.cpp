@@ -705,5 +705,19 @@ event_t *create_periodic_energy_measured(cluster_t *cluster)
 } // namespace event
 } // namespace electrical_energy_measurement
 
+namespace valve_configuration_and_control {
+namespace event {
+event_t *create_valve_state_changed(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, ValveConfigurationAndControl::Events::ValveStateChanged::Id);
+}
+
+event_t *create_valve_fault(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, ValveConfigurationAndControl::Events::ValveFault::Id);
+}
+} // namespace event
+} // namespace valve_configuration_and_control
+
 } // namespace cluster
 } // namespace esp_matter

@@ -3496,7 +3496,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -3519,7 +3519,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -4517,6 +4517,55 @@ esp_err_t add(cluster_t *cluster)
 
 } /* feature */
 } /* microwave_oven_control */
+
+namespace valve_configuration_and_control {
+namespace feature {
+
+namespace time_sync {
+
+uint32_t get_id()
+{
+    return (uint32_t)ValveConfigurationAndControl::Feature::kTimeSync;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_auto_close_time(cluster, config->auto_close_time);
+
+    return ESP_OK;
+}
+} /* time_sync */
+
+namespace level {
+
+uint32_t get_id()
+{
+    return (uint32_t)ValveConfigurationAndControl::Feature::kLevel;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_current_level(cluster, config->current_level);
+    attribute::create_target_level(cluster, config->target_level);
+
+    return ESP_OK;
+}
+} /* level */
+
+} /* feature */
+} /* valve_configuration_and_control */
 
 } /* cluster */
 } /* esp_matter */

@@ -3921,7 +3921,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         }
     }
 
-     /* Features */
+    /* Features */
     if (features & feature::charging_preferences::get_id()) {
         feature::charging_preferences::add(cluster);
     }
@@ -3945,6 +3945,66 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     return cluster;
 }
 } /* energy_evse */
+
+namespace valve_configuration_and_control {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, ValveConfigurationAndControl::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = ValveConfigurationAndControlDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterValveConfigurationAndControlPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        attribute::create_remaining_duration(cluster, 0);
+#if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+#endif
+
+        /** Attributes not managed internally **/
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+            attribute::create_open_duration(cluster, config->open_duration);
+            attribute::create_default_open_duration(cluster, config->default_open_duration);
+            attribute::create_current_state(cluster, config->current_state);
+            attribute::create_target_state(cluster, config->target_state);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    /* Commands */
+    command::create_open(cluster);
+    command::create_close(cluster);
+
+    /* Features */
+    if (features & feature::time_sync::get_id()) {
+        feature::time_sync::add(cluster, &(config->time_sync));
+    }
+    if (features & feature::level::get_id()) {
+        feature::level::add(cluster, &(config->level));
+    }
+
+    return cluster;
+}
+} /* valve_configuration_and_control */
 
 // namespace binary_input_basic {
 //     // ToDo

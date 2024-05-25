@@ -30,6 +30,7 @@ c. Smart Plugs/Outlets
 1. On/Off Plugin Unit
 2. Dimmable Plugin Unit
 3. Pump
+4. Water Valve
 
 d. Generic
 1. Mode Select
