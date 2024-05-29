@@ -7,9 +7,9 @@ Utility Device Types
 2. Power Source
 3. OTA Requestor
 4. OTA Provider
-5. Aggregator
-6. Bridged Node
-7. Electrical Sensor
+5. Bridged Node
+6. Electrical Sensor
+7. Device Energy Management
 
 Application Device Types
 
@@ -34,6 +34,7 @@ c. Smart Plugs/Outlets
 
 d. Generic
 1. Mode Select
+2. Aggregator
 
 e. HVAC
 1. Fan
@@ -58,10 +59,10 @@ g. Sensors
 10. Rain Sensor
 11. Water Freeze Detector
 
-h. Robotic
+h. Robotic Devices
 1. Robotic Vacuum Cleaner
 
-i. Appliance
+i. Appliances
 1. Dishwasher
 2. Laundry Washer
 3. Room Air Conditioner
@@ -70,7 +71,9 @@ i. Appliance
 6. Oven
 7. Cook Surface
 8. Cooktop
-9. Energy Evse
-10. Microwave Oven
-11. Extractor Hood
-12. Laundry Dryer
+9. Microwave Oven
+10. Extractor Hood
+11. Laundry Dryer
+
+j. Energy
+1. EVSE (Electric Vehicle Supply Equipment)

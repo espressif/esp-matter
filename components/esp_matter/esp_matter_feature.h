@@ -2036,5 +2036,53 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* feature */
 } /* valve_configuration_and_control */
 
+namespace device_energy_management {
+namespace feature {
+
+namespace power_adjustment {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* power_adjustment */
+
+namespace power_forecast_reporting {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* power_forecast_reporting */
+
+namespace state_forecast_reporting {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* state_forecast_reporting */
+
+namespace start_time_adjustment {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* start_time_adjustment */
+
+namespace pausable {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* pausable */
+
+namespace forecast_adjustment {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* forecast_adjustment */
+
+namespace constraint_based_adjustment {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* constraint_based_adjustment */
+
+} /* feature */
+} /* device_energy_management */
+
 } /* cluster */
 } /* esp_matter */

@@ -439,6 +439,11 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::water_valve::create(node, &water_valve_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
+        case ESP_MATTER_DEVICE_ENERGY_MANAGEMENT: {
+            esp_matter::endpoint::device_energy_management::config_t device_energy_management_config;
+            endpoint = esp_matter::endpoint::device_energy_management::create(node, &device_energy_management_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
         default: {
             ESP_LOGE(TAG, "Please input a valid device type");
             break;

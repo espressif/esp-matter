@@ -4006,6 +4006,122 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 }
 } /* valve_configuration_and_control */
 
+namespace device_energy_management {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, DeviceEnergyManagement::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = DeviceEnergyManagementDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterDeviceEnergyManagementPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+#if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+#endif
+
+        /* Attributes should managed by application */
+        attribute::create_esa_type(cluster, 0);
+        attribute::create_esa_can_generate(cluster, 0);
+        attribute::create_esa_state(cluster, 0);
+        attribute::create_abs_min_power(cluster, 0);
+        attribute::create_abs_max_power(cluster, 0);
+        /** Attributes not managed internally **/
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    /* Features */
+    if (features & feature::power_adjustment::get_id()) {
+        feature::power_adjustment::add(cluster);
+    }
+    if (features & feature::power_forecast_reporting::get_id()) {
+        feature::power_forecast_reporting::add(cluster);
+    }
+    if (features & feature::state_forecast_reporting::get_id()) {
+        if ((!(features & feature::power_adjustment::get_id()) ||
+            (features & feature::start_time_adjustment::get_id()) ||
+            (features & feature::pausable::get_id()) ||
+            (features & feature::forecast_adjustment::get_id()) ||
+            (features & feature::constraint_based_adjustment::get_id())) &&
+            !(features & feature::power_forecast_reporting::get_id())) {
+        
+            feature::state_forecast_reporting::add(cluster);
+        }
+    }
+    if (features & feature::pausable::get_id()) {
+        feature::pausable::add(cluster);
+    }
+    if (features & feature::forecast_adjustment::get_id()) {
+        feature::forecast_adjustment::add(cluster);
+    }
+    if (features & feature::constraint_based_adjustment::get_id()) {
+        feature::constraint_based_adjustment::add(cluster);
+    }
+    return cluster;
+}
+} /* device_energy_management */
+
+namespace device_energy_management_mode {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, DeviceEnergyManagementMode::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = DeviceEnergyManagementModeDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+        mode_base::attribute::create_supported_modes(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+            mode_base::attribute::create_current_mode(cluster, config->current_mode);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    /* Commands */
+    mode_base::command::create_change_to_mode(cluster);
+
+    return cluster;
+}
+} /* device_energy_management_mode */
+
 // namespace binary_input_basic {
 //     // ToDo
 // } /* binary_input_basic */

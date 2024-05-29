@@ -2814,6 +2814,51 @@ command_t *create_close(cluster_t *cluster)
 } /* command */
 } /* valve_configuration_and_control */
 
+namespace device_energy_management {
+namespace command {
+command_t *create_power_adjust_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DeviceEnergyManagement::Commands::PowerAdjustRequest::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_cancel_power_adjust_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DeviceEnergyManagement::Commands::CancelPowerAdjustRequest::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_start_time_adjust_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DeviceEnergyManagement::Commands::StartTimeAdjustRequest::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_pause_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DeviceEnergyManagement::Commands::PauseRequest::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_resume_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DeviceEnergyManagement::Commands::ResumeRequest::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_modify_forecast_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DeviceEnergyManagement::Commands::ModifyForecastRequest::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_request_constraint_based_forecast(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DeviceEnergyManagement::Commands::RequestConstraintBasedForecast::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_cancel_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DeviceEnergyManagement::Commands::CancelRequest::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* device_energy_management */
+
 } /* cluster */
 } /* esp_matter */
 

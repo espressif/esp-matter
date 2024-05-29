@@ -1944,6 +1944,45 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /** water_valve **/
 
+namespace device_energy_management {
+
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_DEVICE_ENERGY_MANAGEMENT_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_DEVICE_ENERGY_MANAGEMENT_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    add(endpoint, config);
+    return endpoint;
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
+
+    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
+    cluster::device_energy_management::create(endpoint, &(config->device_energy_management), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
+    device_energy_management_mode::create(endpoint, &(config->device_energy_management_mode), CLUSTER_FLAG_SERVER);
+
+    return ESP_OK;
+}
+} /** device_energy_management **/
+
 } /* endpoint */
 
 namespace node {

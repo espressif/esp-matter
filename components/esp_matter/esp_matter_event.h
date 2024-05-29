@@ -214,5 +214,14 @@ event_t *create_valve_fault(cluster_t *cluster);
 } // namespace event
 } // namespace valve_configuration_and_control
 
+namespace device_energy_management {
+namespace event {
+event_t *create_power_adjust_start(cluster_t *cluster);
+event_t *create_power_adjust_end(cluster_t *cluster);
+event_t *create_paused(cluster_t *cluster);
+event_t *create_resumed(cluster_t *cluster);
+} // namespace event
+} // namespace device_energy_management
+
 } // namespace cluster
 } // namespace esp_matter

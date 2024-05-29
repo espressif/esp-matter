@@ -120,6 +120,8 @@
 #define ESP_MATTER_EXTRACTOR_HOOD_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_WATER_VALVE_DEVICE_TYPE_ID 0x0042
 #define ESP_MATTER_WATER_VALVE_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_DEVICE_ENERGY_MANAGEMENT_DEVICE_TYPE_ID 0x050D
+#define ESP_MATTER_DEVICE_ENERGY_MANAGEMENT_DEVICE_TYPE_VERSION 1
 
 namespace esp_matter {
 
@@ -779,6 +781,19 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** water_valve **/
+
+namespace device_energy_management {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::device_energy_management::config_t device_energy_management;
+    cluster::device_energy_management_mode::config_t device_energy_management_mode;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* device_energy_management */
 
 } /* endpoint */
 
