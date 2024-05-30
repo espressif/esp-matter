@@ -10,9 +10,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <device.h>
 #include <esp_matter.h>
-#include <led_driver.h>
+#include "bsp/esp-bsp.h"
 
 #include <app_priv.h>
 
@@ -38,7 +37,7 @@ static esp_err_t set_default_epaper(esp_matter_attr_val_t *val)
 }
 
 /* Do any conversions/remapping for the actual value here */
-static esp_err_t app_driver_light_set_power(led_driver_handle_t handle, esp_matter_attr_val_t *val)
+static esp_err_t app_driver_light_set_power(led_indicator_handle_t handle, esp_matter_attr_val_t *val)
 {
     return set_default_epaper(val);
 }
@@ -133,7 +132,7 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
 {
     esp_err_t err = ESP_OK;
     void *priv_data = endpoint::get_priv_data(endpoint_id);
-    led_driver_handle_t handle = (led_driver_handle_t)priv_data;
+    led_indicator_handle_t handle = (led_indicator_handle_t)priv_data;
     node_t *node = node::get();
     endpoint_t *endpoint = endpoint::get(node, endpoint_id);
     cluster_t *cluster = NULL;
@@ -193,15 +192,10 @@ static void factory_reset_badge(void *arg, void *data)
 app_driver_handle_t app_driver_button_init()
 {
     /* Initialize button */
-    button_config_t config = {
-        .type = BUTTON_TYPE_GPIO,
-        .gpio_button_config = {
-            .gpio_num = 39,
-            .active_level = 0,
-        }
-    };
-    button_handle_t handle = iot_button_create(&config);
-    iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_toggle_cb, NULL);
-    iot_button_register_cb(handle, BUTTON_LONG_PRESS_START, factory_reset_badge, NULL);
-    return (app_driver_handle_t)handle;
+    button_handle_t btns[BSP_BUTTON_NUM];
+    ESP_ERROR_CHECK(bsp_iot_button_create(btns, NULL, BSP_BUTTON_NUM));
+    ESP_ERROR_CHECK(iot_button_register_cb(btns[0], BUTTON_PRESS_DOWN, app_driver_button_toggle_cb, NULL));
+    ESP_ERROR_CHECK(iot_button_register_cb(btns[0], BUTTON_LONG_PRESS_START, factory_reset_badge, NULL));
+
+    return (app_driver_handle_t)btns[0];
 }
