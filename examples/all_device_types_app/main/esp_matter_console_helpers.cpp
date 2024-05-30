@@ -66,14 +66,6 @@ static void initialize_filesystem(void)
 }
 #endif // CONFIG_STORE_HISTORY
 
-#if CONFIG_IDF_TARGET_ESP32 || CONFIG_IDF_TARGET_ESP32S3
-void emberAfFanControlClusterInitCallback(chip::EndpointId endpoint)
-{
-    static FanDelegateImpl fan_delegate(app_endpoint_id);
-    chip::app::Clusters::FanControl::SetDefaultDelegate(app_endpoint_id,&fan_delegate);
-}
-#endif
-
 static void initialize_console(void)
 {
     /* Drain stdout before reconfiguring it */
@@ -226,6 +218,10 @@ int create(uint8_t device_type_index)
         }
         case ESP_MATTER_FAN: {
             esp_matter::endpoint::fan::config_t fan_config;
+            #if CONFIG_IDF_TARGET_ESP32 || CONFIG_IDF_TARGET_ESP32S3
+            static FanDelegateImpl fan_delegate(app_endpoint_id);
+            fan_config.fan_control.delegate = &fan_delegate;
+            #endif
             endpoint = esp_matter::endpoint::fan::create(node, &fan_config, ENDPOINT_FLAG_NONE, NULL);
             cluster_t *cluster = cluster::get(endpoint, chip::app::Clusters::FanControl::Id);
             cluster::fan_control::feature::multi_speed::config_t multispeed_config;
