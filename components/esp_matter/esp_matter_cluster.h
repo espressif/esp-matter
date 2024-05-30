@@ -44,7 +44,7 @@ void plugin_init_callback_common();
 namespace descriptor {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(1) {}
+    config() : cluster_revision(2) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -102,7 +102,7 @@ typedef struct config {
     bool update_possible;
     uint8_t update_state;
     nullable<uint8_t> update_state_progress;
-    config() : cluster_revision(1), update_possible(1), update_state(0), update_state_progress(0) {}
+    config() : cluster_revision(1), update_possible(true), update_state(0), update_state_progress() {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -328,7 +328,7 @@ typedef struct config {
     nullable<uint8_t> on_level;
     uint8_t options;
     feature::lighting::config_t lighting;
-    config() : cluster_revision(5), current_level(0xFE), on_level(0xFE), options(0) {}
+    config() : cluster_revision(5), current_level(), on_level(), options(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -539,6 +539,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace smoke_co_alarm {
 typedef struct config {
     uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -602,7 +603,7 @@ typedef struct config {
     nullable<uint16_t> measured_value;
     nullable<uint16_t> min_measured_value;
     nullable<uint16_t> max_measured_value;
-    config() : cluster_revision(3), measured_value(), min_measured_value(0), max_measured_value(10000) {}
+    config() : cluster_revision(3), measured_value(), min_measured_value(), max_measured_value() {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -658,7 +659,7 @@ typedef struct config {
     nullable<uint16_t> illuminance_measured_value;
     nullable<uint16_t> illuminance_min_measured_value;
     nullable<uint16_t> illuminance_max_measured_value;
-    config() : cluster_revision(3), illuminance_measured_value(0), illuminance_min_measured_value(1), illuminance_max_measured_value(2) {}
+    config() : cluster_revision(3), illuminance_measured_value(0), illuminance_min_measured_value(), illuminance_max_measured_value() {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
