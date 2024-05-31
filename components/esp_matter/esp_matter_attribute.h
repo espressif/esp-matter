@@ -1090,5 +1090,21 @@ attribute_t *create_opt_out_state(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* device_energy_management */
 
+namespace application_basic {
+constexpr uint8_t k_max_vendor_name_length          = 32;
+constexpr uint8_t k_max_application_version_length  = 32;
+
+namespace attribute {
+attribute_t *create_vendor_name(cluster_t *cluster, char *value, uint16_t length);
+attribute_t *create_vendor_id(cluster_t *cluster, uint16_t value);
+attribute_t *create_application_name(cluster_t *cluster, char *value, uint16_t length);
+attribute_t *create_product_id(cluster_t *cluster, uint16_t value);
+attribute_t *create_application(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_status(cluster_t *cluster, uint16_t value);
+attribute_t *create_application_version(cluster_t *cluster, char *value, uint16_t length);
+attribute_t *create_allowed_vendor_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* application_basic */
+
 } /* cluster */
 } /* esp_matter */

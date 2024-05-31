@@ -217,7 +217,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace time_synchronization {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(2) {}
+    void *delegate;
+    config() : cluster_revision(2), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -613,7 +614,8 @@ typedef struct config {
     bool actuator_enabled;
     uint8_t operating_mode;
     uint16_t supported_operating_modes;
-    config() : cluster_revision(7), lock_state(0), lock_type(0), actuator_enabled(0), operating_mode(0), supported_operating_modes(0xFFF6) {}
+    void *delegate;
+    config() : cluster_revision(7), lock_state(0), lock_type(0), actuator_enabled(0), operating_mode(0), supported_operating_modes(0xFFF6), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -699,7 +701,8 @@ typedef struct config {
     feature::audible::config_t audible;
     feature::alarm_suppress::config_t alarm_suppress;
     feature::sensitivity_level::config_t sensitivity_level;
-    config() : cluster_revision(1) {}
+    void *delegate;
+    config() : cluster_revision(1), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -979,6 +982,16 @@ typedef struct config {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* device_energy_management_mode */
+
+namespace application_basic {
+typedef struct config {
+    uint16_t cluster_revision;
+    void *delegate;
+    config() : cluster_revision(1), delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* application_basic */
 
 } /* cluster */
 } /* esp_matter */

@@ -25,6 +25,10 @@
 #include <app/clusters/laundry-dryer-controls-server/laundry-dryer-controls-server.h>
 #include <app/clusters/valve-configuration-and-control-server/valve-configuration-and-control-server.h>
 #include <app/clusters/device-energy-management-server/device-energy-management-server.h>
+#include <app/clusters/door-lock-server/door-lock-server.h>
+#include <app/clusters/boolean-state-configuration-server/boolean-state-configuration-server.h>
+#include <app/clusters/time-synchronization-server/time-synchronization-server.h>
+#include <app/clusters/application-basic-server/application-basic-server.h>
 
 using namespace chip::app::Clusters;
 namespace esp_matter {
@@ -222,6 +226,46 @@ void DeviceEnergyManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
     uint32_t feature_map = get_feature_map_value(endpoint_id, DeviceEnergyManagement::Id);
     deviceEnergyManagementInstance = new DeviceEnergyManagement::Instance(endpoint_id, *device_energy_management_delegate, chip::BitMask<DeviceEnergyManagement::Feature, uint32_t>(feature_map));
     deviceEnergyManagementInstance->Init();
+}
+
+void DoorLockDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    DoorLock::Delegate *door_lock_delegate = static_cast<DoorLock::Delegate*>(delegate);
+    DoorLock::SetDefaultDelegate(endpoint_id, door_lock_delegate);
+}
+
+void BooleanStateConfigurationDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    BooleanStateConfiguration::Delegate *boolean_state_configuration_delegate = static_cast<BooleanStateConfiguration::Delegate*>(delegate);
+    BooleanStateConfiguration::SetDefaultDelegate(endpoint_id, boolean_state_configuration_delegate);
+}
+
+void TimeSynchronizationDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    TimeSynchronization::Delegate *time_synchronization_delegate = static_cast<TimeSynchronization::Delegate*>(delegate);
+    TimeSynchronization::SetDefaultDelegate(time_synchronization_delegate);
+}
+
+void ApplicationBasicDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    ApplicationBasic::Delegate *application_basic_delegate = static_cast<ApplicationBasic::Delegate*>(delegate);
+    ApplicationBasic::SetDefaultDelegate(endpoint_id, application_basic_delegate);
 }
 
 } // namespace delegate_cb
