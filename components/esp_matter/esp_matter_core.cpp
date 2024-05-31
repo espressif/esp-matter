@@ -624,7 +624,7 @@ esp_err_t enable(endpoint_t *endpoint)
             attribute::get_data_from_attr_val(&attribute->val, &matter_attributes[attribute_index].attributeType,
                                               &matter_attributes[attribute_index].size, NULL);
 
-            /* The length is not fixed for string attribute, so set it to the max size (32) to avoid overflow issue 
+            /* The length is not fixed for string attribute, so set it to the max size (32) to avoid overflow issue
              * when writing a longer string.
              */
             if (attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
@@ -2015,6 +2015,9 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
         return ESP_FAIL;
     }
 
+    /* Disable */
+    disable(endpoint);
+
     /* Find current endpoint and remove from list */
     _endpoint_t *current_endpoint = current_node->endpoint_list;
     _endpoint_t *previous_endpoint = NULL;
@@ -2034,9 +2037,6 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
     } else {
         previous_endpoint->next = current_endpoint->next;
     }
-
-    /* Disable */
-    disable(endpoint);
 
     /* Parse and delete all clusters */
     _cluster_t *cluster = current_endpoint->cluster_list;
