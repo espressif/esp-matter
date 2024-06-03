@@ -29,11 +29,11 @@ Connect the two SoCs via UART, below is an example setup with ESP32-S3 DevKitC a
 
 ### 1.2 Build and flash the RCP (ESP32-H2)
 
-Please use the [esp_zigbee_rcp](https://github.com/espressif/esp-zigbee-sdk/tree/main/examples/esp_zigbee_rcp) example in esp-zigbee-sdk repository to build the RCP for the ZigBee Bridge.
+Please use the [ot_rcp](https://github.com/espressif/esp-idf/tree/master/examples/openthread/ot_rcp) example to build the RCP for the ZigBee Bridge.
 
 ```
-git clone https://github.com/espressif/esp-zigbee-sdk.git
-cd esp-zigbee-sdk/examples/esp_zigbee_rcp/
+cd $IDF_PATH/examples/openthread/ot_rcp/
+idf.py menuconfig -> OPENTHREAD_NCP_VENDOR_HOOK=y
 idf.py set-target esp32h2
 idf.py -p <port> build flash
 ```
@@ -63,6 +63,8 @@ The Matter Zigbee Bridge will run on the ESP32-S3 and Zigbee network will be for
 ## 2. Post Commissioning Setup
 
 ### 2.1 Discovering Zigbee Devices
+
+Commissioning the Matter Zigbee Bridge first, 0x7283 in description below is its Node Id.
 
 You can read the PartsList from the Bridge to get the number of the bridged devices.
 
