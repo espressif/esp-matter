@@ -959,5 +959,26 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* valve_configuration_and_control */
 
+namespace device_energy_management {
+typedef struct config {
+    uint16_t cluster_revision;
+    void *delegate;
+    config() : cluster_revision(4), delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* device_energy_management */
+
+namespace device_energy_management_mode {
+typedef struct config {
+    uint16_t cluster_revision;
+    uint8_t current_mode;
+    void *delegate;
+    config() : cluster_revision(1), current_mode(0), delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* device_energy_management_mode */
+
 } /* cluster */
 } /* esp_matter */

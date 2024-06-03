@@ -24,6 +24,7 @@
 #include <app/clusters/fan-control-server/fan-control-server.h>
 #include <app/clusters/laundry-dryer-controls-server/laundry-dryer-controls-server.h>
 #include <app/clusters/valve-configuration-and-control-server/valve-configuration-and-control-server.h>
+#include <app/clusters/device-energy-management-server/device-energy-management-server.h>
 
 using namespace chip::app::Clusters;
 namespace esp_matter {
@@ -90,6 +91,11 @@ void EnergyEvseModeDelegateInitCB(void *delegate, uint16_t endpoint_id)
 void MicrowaveOvenModeDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     InitModeDelegate(delegate, endpoint_id, MicrowaveOvenMode::Id);
+}
+
+void DeviceEnergyManagementModeDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    InitModeDelegate(delegate, endpoint_id, DeviceEnergyManagementMode::Id);
 }
 
 void EnergyEvseDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -203,6 +209,19 @@ void ValveConfigurationAndControlDelegateInitCB(void *delegate, uint16_t endpoin
     }
     ValveConfigurationAndControl::Delegate *valve_configuration_and_control_delegate = static_cast<ValveConfigurationAndControl::Delegate*>(delegate);
     ValveConfigurationAndControl::SetDefaultDelegate(endpoint_id, valve_configuration_and_control_delegate);
+}
+
+void DeviceEnergyManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    static DeviceEnergyManagement::Instance * deviceEnergyManagementInstance = nullptr;
+    DeviceEnergyManagement::Delegate *device_energy_management_delegate = static_cast<DeviceEnergyManagement::Delegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, DeviceEnergyManagement::Id);
+    deviceEnergyManagementInstance = new DeviceEnergyManagement::Instance(endpoint_id, *device_energy_management_delegate, chip::BitMask<DeviceEnergyManagement::Feature, uint32_t>(feature_map));
+    deviceEnergyManagementInstance->Init();
 }
 
 } // namespace delegate_cb

@@ -60,6 +60,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
               , `Rvc Run And Rvc Clean Mode`_
               , `Energy Evse Mode`_
               , `Microwave Oven Mode`_
+              , `Device Energy Management Mode`_
 
 9.1.2 Energy Evse Cluster
 -------------------------
@@ -118,6 +119,14 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `Valve Configuration And Control`_, None
 
+9.1.9 Device Energy Management Cluster
+--------------------------------------
+
+.. csv-table:: Delegate and its impl
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Device Energy Management`_, `Device Energy Management Delegate`_
+
 
 .. note::
     Make sure that after implementing delegate class, you set the delegate class pointer at the time of creating cluster.
@@ -134,9 +143,10 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Dish Washer Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/dishwasher-mode.h
 .. _`Rvc Run And Rvc Clean Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/rvc-modes.h
 .. _`Energy Evse Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/energy-evse-modes.h
+.. _`Microwave Oven Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/microwave-oven-mode.h
+.. _`Device Energy Management Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/energy-management-app/energy-management-common/include/device-energy-management-modes.h
 .. _`Energy Evse`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/energy-evse-server/energy-evse-server.h
 .. _`Energy Evse Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/energy-management-app/energy-management-common/include/EnergyEvseDelegateImpl.h
-.. _`Microwave Oven Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/microwave-oven-mode.h
 .. _`Operational State`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/operational-state-server/operational-state-server.h
 .. _`Operational State Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/operational-state-delegate-impl.h
 .. _`Microwave Oven Control`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/microwave-oven-control-server/microwave-oven-control-server.h
@@ -147,3 +157,5 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Laundry Dryer Controls`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/laundry-dryer-controls-server/laundry-dryer-controls-server.h
 .. _`Laundry Dryer Controls Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/laundry-dryer-controls-delegate-impl.h
 .. _`Valve Configuration And Control`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/valve-configuration-and-control-server/valve-configuration-and-control-delegate.h
+.. _`Device Energy Management`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/device-energy-management-server/device-energy-management-server.h
+.. _`Device Energy Management Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/energy-management-app/energy-management-common/include/DeviceEnergyManagementDelegateImpl.h

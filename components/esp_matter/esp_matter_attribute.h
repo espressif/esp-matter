@@ -1077,5 +1077,18 @@ attribute_t *create_level_step(cluster_t *cluster, const uint8_t value);
 } /* attribute */
 } /* valve_configuration_and_control */
 
+namespace device_energy_management {
+namespace attribute {
+attribute_t *create_esa_type(cluster_t *cluster, const uint8_t value);
+attribute_t *create_esa_can_generate(cluster_t *cluster, const bool value);
+attribute_t *create_esa_state(cluster_t *cluster, uint8_t value);
+attribute_t *create_abs_min_power(cluster_t *cluster, int64_t value);
+attribute_t *create_abs_max_power(cluster_t *cluster, int64_t value);
+attribute_t *create_power_adjustment_capability(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_forecast(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_opt_out_state(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* device_energy_management */
+
 } /* cluster */
 } /* esp_matter */

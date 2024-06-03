@@ -404,5 +404,18 @@ command_t *create_close(cluster_t *cluster);
 } /* command */
 } /* valve_configuration_and_control */
 
+namespace device_energy_management {
+namespace command {
+command_t *create_power_adjust_request(cluster_t *cluster);
+command_t *create_cancel_power_adjust_request(cluster_t *cluster);
+command_t *create_start_time_adjust_request(cluster_t *cluster);
+command_t *create_pause_request(cluster_t *cluster);
+command_t *create_resume_request(cluster_t *cluster);
+command_t *create_modify_forecast_request(cluster_t *cluster);
+command_t *create_request_constraint_based_forecast(cluster_t *cluster);
+command_t *create_cancel_request(cluster_t *cluster);
+} /* command */
+} /* device_energy_management */
+
 } /* cluster */
 } /* esp_matter */

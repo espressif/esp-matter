@@ -4567,5 +4567,200 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* valve_configuration_and_control */
 
+namespace device_energy_management {
+namespace feature {
+
+namespace power_adjustment {
+
+uint32_t get_id()
+{
+    return (uint32_t)DeviceEnergyManagement::Feature::kPowerAdjustment;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    attribute::create_power_adjustment_capability(cluster, NULL, 0, 0);
+    attribute::create_opt_out_state(cluster, 0);
+
+    /* Commands */
+    command::create_power_adjust_request(cluster);
+    command::create_cancel_power_adjust_request(cluster);
+
+    /* Events */
+    event::create_power_adjust_start(cluster);
+    event::create_power_adjust_end(cluster);
+
+
+    return ESP_OK;
+}
+} /* power_adjustment */
+
+namespace power_forecast_reporting {
+
+uint32_t get_id()
+{
+    return (uint32_t)DeviceEnergyManagement::Feature::kPowerForecastReporting;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    attribute::create_forecast(cluster, NULL, 0, 0);
+
+    return ESP_OK;
+}
+} /* power_forecast_reporting */
+
+namespace state_forecast_reporting {
+
+uint32_t get_id()
+{
+    return (uint32_t)DeviceEnergyManagement::Feature::kStateForecastReporting;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    uint32_t power_adjustment_id            = feature::power_adjustment::get_id();
+    uint32_t power_forecast_reporting       = feature::power_forecast_reporting::get_id();
+    uint32_t start_time_adjustment_id       = feature::start_time_adjustment::get_id();
+    uint32_t pausable_id                    = feature::pausable::get_id();
+    uint32_t forecast_adjustment_id         = feature::forecast_adjustment::get_id();
+    uint32_t constraint_based_adjustment_id = feature::constraint_based_adjustment::get_id();
+    uint32_t feature_map_value              = get_feature_map_value(cluster);
+    if((((feature_map_value & power_adjustment_id)              != power_adjustment_id) ||
+        ((feature_map_value & start_time_adjustment_id)         == start_time_adjustment_id) ||
+        ((feature_map_value & pausable_id)                      == pausable_id) ||
+        ((feature_map_value & forecast_adjustment_id)           == forecast_adjustment_id) ||
+        ((feature_map_value & constraint_based_adjustment_id)   == constraint_based_adjustment_id)) &&
+        ((feature_map_value & power_forecast_reporting)         != power_forecast_reporting)) {
+        update_feature_map(cluster, get_id());
+        attribute::create_forecast(cluster, NULL, 0, 0);
+    } else {
+        ESP_LOGE(TAG, "Cluster shall satisfy condition (STA|PAU|FA|CON|!PA)&!PFR of feature");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+
+
+    return ESP_OK;
+}
+} /* state_forecast_reporting */
+
+namespace start_time_adjustment {
+
+uint32_t get_id()
+{
+    return (uint32_t)DeviceEnergyManagement::Feature::kStartTimeAdjustment;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    attribute::create_opt_out_state(cluster, 0);
+
+    /* Commands */
+    command::create_start_time_adjust_request(cluster);
+    command::create_cancel_request(cluster);
+
+    return ESP_OK;
+}
+} /* start_time_adjustment */
+
+namespace pausable {
+
+uint32_t get_id()
+{
+    return (uint32_t)DeviceEnergyManagement::Feature::kPausable;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    attribute::create_opt_out_state(cluster, 0);
+
+    /* Commands */
+    command::create_pause_request(cluster);
+    command::create_resume_request(cluster);
+
+    /* Events */
+    event::create_paused(cluster);
+    event::create_resumed(cluster);
+
+    return ESP_OK;
+}
+} /* pausable */
+
+namespace forecast_adjustment {
+
+uint32_t get_id()
+{
+    return (uint32_t)DeviceEnergyManagement::Feature::kForecastAdjustment;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    attribute::create_opt_out_state(cluster, 0);
+
+    /* Commands */
+    command::create_modify_forecast_request(cluster);
+    command::create_cancel_request(cluster);
+
+    return ESP_OK;
+}
+} /* forecast_adjustment */
+
+namespace constraint_based_adjustment {
+
+uint32_t get_id()
+{
+    return (uint32_t)DeviceEnergyManagement::Feature::kConstraintBasedAdjustment;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    attribute::create_opt_out_state(cluster, 0);
+
+    /* Commands */
+    command::create_request_constraint_based_forecast(cluster);
+    command::create_cancel_request(cluster);
+
+    return ESP_OK;
+}
+} /* constraint_based_adjustment */
+
+} /* feature */
+} /* device_energy_management */
+
 } /* cluster */
 } /* esp_matter */

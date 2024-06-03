@@ -4693,5 +4693,50 @@ attribute_t *create_level_step(cluster_t *cluster, const uint8_t value)
 } /* attribute */
 } /* valve_configuration_and_control */
 
+namespace device_energy_management {
+namespace attribute {
+attribute_t *create_esa_type(cluster_t *cluster, const uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::ESAType::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_esa_can_generate(cluster_t *cluster, const bool value)
+{
+    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::ESACanGenerate::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+}
+
+attribute_t *create_esa_state(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::ESAState::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_abs_min_power(cluster_t *cluster, int64_t value)
+{
+    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::AbsMinPower::Id, ATTRIBUTE_FLAG_NONE, esp_matter_int64(value));
+}
+
+attribute_t *create_abs_max_power(cluster_t *cluster, int64_t value)
+{
+    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::AbsMaxPower::Id, ATTRIBUTE_FLAG_NONE, esp_matter_int64(value));
+}
+
+attribute_t *create_power_adjustment_capability(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::PowerAdjustmentCapability::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_forecast(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::Forecast::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_opt_out_state(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::OptOutState::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+} /* attribute */
+} /* device_energy_management */
+
 } /* cluster */
 } /* esp_matter */
