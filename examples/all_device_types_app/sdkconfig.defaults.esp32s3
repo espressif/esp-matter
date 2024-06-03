@@ -1,0 +1,5 @@
+CONFIG_IDF_TARGET="esp32s3"
+
+# use for otbr option
+CONFIG_LWIP_IPV6_NUM_ADDRESSES=8
+
