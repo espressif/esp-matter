@@ -539,7 +539,7 @@ namespace operational_state {
 typedef struct config {
     uint16_t cluster_revision;
     void *delegate;
-    config() : cluster_revision(1), delegate(nullptr) {}
+    config() : cluster_revision(2), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
