@@ -18,6 +18,7 @@
 #include <esp_matter.h>
 #include <esp_matter_client.h>
 #include <esp_matter_mem.h>
+#include <lib/core/Optional.h>
 
 namespace esp_matter {
 namespace controller {
@@ -39,12 +40,14 @@ class cluster_command {
 public:
     cluster_command(uint64_t destination_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t command_id,
                     const char *command_data_field,
+                    const chip::Optional<uint16_t> timed_invoke_timeout_ms = chip::NullOptional,
                     custom_command_callback::on_success_callback_t on_success = default_success_fcn,
                     custom_command_callback::on_error_callback_t on_error = default_error_fcn)
         : m_destination_id(destination_id)
         , m_endpoint_id(endpoint_id)
         , m_cluster_id(cluster_id)
         , m_command_id(command_id)
+        , m_timed_invoke_timeout_ms(timed_invoke_timeout_ms)
         , on_device_connected_cb(on_device_connected_fcn, this)
         , on_device_connection_failure_cb(on_device_connection_failure_fcn, this)
         , on_success_cb(on_success)
@@ -71,6 +74,7 @@ private:
     uint32_t m_cluster_id;
     uint32_t m_command_id;
     char m_command_data_field[k_command_data_field_buffer_size];
+    chip::Optional<uint16_t> m_timed_invoke_timeout_ms;
 
     static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr,
                                         const SessionHandle &sessionHandle);
@@ -101,12 +105,14 @@ private:
  * @param[in] command_id CommandId
  * @param[in] command_data_field Command data string with JSON format
  *            (https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#cluster-commands)
+ * @param[in] timed_invoke_timeout_ms Timeout in millisecond for timed-invoke command
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
 esp_err_t send_invoke_cluster_command(uint64_t destination_id, uint16_t endpoint_id, uint32_t cluster_id,
-                                      uint32_t command_id, const char *command_data_field);
+                                      uint32_t command_id, const char *command_data_field,
+                                      chip::Optional<uint16_t> timed_invoke_timeout_ms = chip::NullOptional);
 
 } // namespace controller
 } // namespace esp_matter
