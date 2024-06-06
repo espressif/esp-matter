@@ -6,25 +6,32 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
-#include <esp_check.h>
-#include <esp_log.h>
-#include <esp_matter.h>
+#include <string.h>
+#include "esp_check.h"
+#include "esp_log.h"
+#include "esp_matter.h"
 #include "esp_console.h"
 #include "esp_vfs_dev.h"
 #include "linenoise/linenoise.h"
 #include "argtable3/argtable3.h"
 #include "esp_vfs_fat.h"
+#include "driver/usb_serial_jtag.h"
+#include "esp_vfs_usb_serial_jtag.h"
 #include "hal/uart_types.h"
 #include "driver/uart.h"
 #if CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG
 #include "esp_vfs_usb_serial_jtag.h"
 #include "driver/usb_serial_jtag.h"
 #endif // CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG
+#include <app_priv.h>
 #include <helpers.h>
 #include <device_types.h>
-#include <string.h>
+#include <app/clusters/fan-control-server/fan-control-delegate.h>
+#include <app/clusters/fan-control-server/fan-control-server.h>
 
 using namespace esp_matter;
+
+extern uint16_t app_endpoint_id;
 
 static const char *TAG = "esp_matter_console_helpers";
 
@@ -32,11 +39,17 @@ extern SemaphoreHandle_t semaphoreHandle;
 
 #define PROMPT_STR CONFIG_IDF_TARGET
 
+#define SPEED_MAX_SET 100
+#define ROCK_SET 0
+#define ROCK_SUPPORT_SET 7
+#define AIRFLOW_DIRECTION_SET 0
+#define WIND_SET  0
+#define WIND_SUPPORT_SET 7
+
 #if CONFIG_STORE_HISTORY
 
 #define MOUNT_PATH "/data"
 #define HISTORY_PATH MOUNT_PATH "/history.txt"
-
 
 static void initialize_filesystem(void)
 {
@@ -205,7 +218,34 @@ int create(uint8_t device_type_index)
         }
         case ESP_MATTER_FAN: {
             esp_matter::endpoint::fan::config_t fan_config;
+            #if CONFIG_IDF_TARGET_ESP32 || CONFIG_IDF_TARGET_ESP32S3
+            static FanDelegateImpl fan_delegate(app_endpoint_id);
+            fan_config.fan_control.delegate = &fan_delegate;
+            #endif
             endpoint = esp_matter::endpoint::fan::create(node, &fan_config, ENDPOINT_FLAG_NONE, NULL);
+            cluster_t *cluster = cluster::get(endpoint, chip::app::Clusters::FanControl::Id);
+            cluster::fan_control::feature::multi_speed::config_t multispeed_config;
+            cluster::fan_control::feature::rocking::config_t rock_config;
+            cluster::fan_control::feature::airflow_direction::config_t airflow_direction_config;
+            cluster::fan_control::feature::wind::config_t wind_config;
+
+            multispeed_config.speed_max = SPEED_MAX_SET;
+            cluster::fan_control::feature::multi_speed::add(cluster, &multispeed_config);
+
+            rock_config.rock_setting = ROCK_SET;
+            rock_config.rock_support = ROCK_SUPPORT_SET;
+            cluster::fan_control::feature::rocking::add(cluster, &rock_config);
+
+            airflow_direction_config.airflow_direction = AIRFLOW_DIRECTION_SET;
+            cluster::fan_control::feature::airflow_direction::add(cluster, &airflow_direction_config);
+
+            wind_config.wind_setting = WIND_SET;
+            wind_config.wind_support = WIND_SUPPORT_SET;
+            cluster::fan_control::feature::wind::add(cluster, &wind_config);
+
+            cluster::fan_control::feature::step::add(cluster);
+
+            app_endpoint_id = endpoint::get_id(endpoint);
             break;
         }
         case ESP_MATTER_THERMOSTAT: {

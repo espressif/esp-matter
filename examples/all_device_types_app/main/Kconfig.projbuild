@@ -1,0 +1,87 @@
+menu "App Driver Configuration"
+menu "Fan driver configuration"
+
+    menu "upper switch config"
+        config UPPER_SWITCH_PHASE_U_GPIO
+            int "upper switch PHASE_U GPIO"
+            default 25 if IDF_TARGET_ESP32
+            default 17 if IDF_TARGET_ESP32S3
+            default 17
+        config UPPER_SWITCH_PHASE_V_GPIO
+            int "upper switch PHASE_V GPIO"
+            default 26 if IDF_TARGET_ESP32
+            default 16 if IDF_TARGET_ESP32S3
+            default 16
+        config UPPER_SWITCH_PHASE_W_GPIO
+            int "upper switch PHASE_W GPIO"
+            default 27 if IDF_TARGET_ESP32
+            default 15 if IDF_TARGET_ESP32S3
+            default 15
+    endmenu
+
+    menu "lower switch config"
+        config LOWER_SWITCH_PHASE_U_GPIO
+            int "lower switch PHASE_U GPIO"
+            default 16 if IDF_TARGET_ESP32
+            default 12 if IDF_TARGET_ESP32S3
+            default 12
+        config LOWER_SWITCH_PHASE_V_GPIO
+            int "lower switch PHASE_V GPIO"
+            default 17 if IDF_TARGET_ESP32
+            default 11 if IDF_TARGET_ESP32S3
+            default 11
+        config LOWER_SWITCH_PHASE_W_GPIO
+            int "lower switch PHASE_W GPIO"
+            default 5 if IDF_TARGET_ESP32
+            default 10 if IDF_TARGET_ESP32S3
+            default 10
+
+    endmenu
+
+    menu "zero cross comparer config"
+        config ZERO_CROSS_COMPARER_PHASE_U_GPIO
+            int "zero cross comparer PHASE_U GPIO"
+            default 3 if IDF_TARGET_ESP32
+            default 3 if IDF_TARGET_ESP32S3
+            default 3
+        config ZERO_CROSS_COMPARER_PHASE_V_GPIO
+            int "zero cross comparer PHASE_V GPIO"
+            default 18 if IDF_TARGET_ESP32
+            default 46 if IDF_TARGET_ESP32S3
+            default 46
+        config ZERO_CROSS_COMPARER_PHASE_W_GPIO
+            int "zero cross comparer PHASE_W GPIO"
+            default 2 if IDF_TARGET_ESP32
+            default 9 if IDF_TARGET_ESP32S3
+            default 9
+    endmenu
+
+    menu "Step motor config"
+        config STEP_MOTOR_A0_GPIO
+            int "Step motor A+ GPIO"
+            default 12 if IDF_TARGET_ESP32
+            default 14 if IDF_TARGET_ESP32S3
+            default 14
+        config STEP_MOTOR_A1_GPIO
+            int "Step motor A- GPIO"
+            default 13 if IDF_TARGET_ESP32
+            default 21 if IDF_TARGET_ESP32S3
+            default 21
+        config STEP_MOTOR_B0_GPIO
+            int "Step motor B+ GPIO"
+            default 14 if IDF_TARGET_ESP32
+            default 47 if IDF_TARGET_ESP32S3
+            default 47
+        config STEP_MOTOR_B1_GPIO
+            int "Step motor B- GPIO"
+            default 15 if IDF_TARGET_ESP32
+            default 48 if IDF_TARGET_ESP32S3
+            default 48
+    endmenu
+
+    config POWER_BUTTON_GPIO
+        int "Power Button GPIO"
+        default 0
+
+endmenu
+endmenu

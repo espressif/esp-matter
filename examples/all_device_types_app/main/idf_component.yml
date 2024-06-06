@@ -4,4 +4,7 @@ dependencies:
     rules: # will add "optional_component" only when all if clauses are True
       - if: "idf_version >=5.0"
       - if: "target in [esp32c2]"
-
+  espressif/esp_sensorless_bldc_control:
+    version: "==0.2.0"
+    rules: # will add "optional_component" only when all if clauses are True
+      - if: "target in [esp32, esp32s3]"
