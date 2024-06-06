@@ -28,21 +28,8 @@ CONFIG_LWIP_HOOK_ND6_GET_GW_DEFAULT=y
 CONFIG_BUTTON_PERIOD_TIME_MS=20
 CONFIG_BUTTON_LONG_PRESS_TIME_MS=5000
 
-# disable softap by default
-CONFIG_ESP_WIFI_SOFTAP_SUPPORT=n
-
-# Disable DS Peripheral
-CONFIG_ESP_SECURE_CERT_DS_PERIPHERAL=n
-
-# Use compact attribute storage mode
-CONFIG_ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE=y
-
 # Enable HKDF in mbedtls
 CONFIG_MBEDTLS_HKDF_C=y
-
-# Increase LwIP IPv6 address number to 6 (MAX_FABRIC + 1)
-# unique local addresses for fabrics(MAX_FABRIC), a link local address(1)
-CONFIG_LWIP_IPV6_NUM_ADDRESSES=6
 
 # ESP32-S3-DevKitC-1 Settings
 # Buttons
