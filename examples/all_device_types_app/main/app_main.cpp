@@ -27,6 +27,11 @@
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
 #endif
+#if CONFIG_OPENTHREAD_BORDER_ROUTER
+#include <esp_matter_thread_br_console.h>
+#include <esp_matter_thread_br_launcher.h>
+#endif // CONFIG_OPENTHREAD_BORDER_ROUTER
+
 
 
 static const char *TAG = "app_main";
@@ -108,6 +113,20 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
         ESP_LOGI(TAG, "Fabric is committed");
         break;
 
+    case chip::DeviceLayer::DeviceEventType::kESPSystemEvent:
+        if (event->Platform.ESPSystemEvent.Base == IP_EVENT &&
+            event->Platform.ESPSystemEvent.Id == IP_EVENT_STA_GOT_IP) {
+#if CONFIG_OPENTHREAD_BORDER_ROUTER
+            esp_openthread_platform_config_t config = {
+                .radio_config = ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG(),
+                .host_config = ESP_OPENTHREAD_DEFAULT_HOST_CONFIG(),
+                .port_config = ESP_OPENTHREAD_DEFAULT_PORT_CONFIG(),
+            };
+            ESP_LOGI(TAG, "init thread br");
+            esp_matter::thread_br_init(&config);
+#endif
+        }
+        break;
 
     default:
         break;
@@ -145,7 +164,7 @@ extern "C" void app_main()
     // node handle can be used to add/modify other endpoints.
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
     ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
-    
+
     uint8_t device_type_index;
     if(esp_matter::nvs_helpers::get_device_type_from_nvs(&device_type_index) != ESP_OK) {
         semaphoreHandle = xSemaphoreCreateBinary();
@@ -181,5 +200,9 @@ extern "C" void app_main()
     esp_matter::console::diagnostics_register_commands();
     esp_matter::console::wifi_register_commands();
     esp_matter::console::init();
+#if CONFIG_OPENTHREAD_BORDER_ROUTER && CONFIG_OPENTHREAD_CLI
+    esp_matter::console::thread_br_cli_register_command();
+#endif // CONFIG_OPENTHREAD_BORDER_ROUTER && CONFIG_OPENTHREAD_CLI
+
 #endif
 }
