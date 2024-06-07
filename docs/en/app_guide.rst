@@ -51,7 +51,7 @@ List of clusters with delegate:
 It is a base cluster for ModeEVSE, ModeOven, ModeRVSRun, ModeRVSClean, ModeDishwasher,
 ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
-.. csv-table:: Delegate and its impl
+.. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Mode Base`_, `Refrigeratore And TCC Mode`_
@@ -65,7 +65,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 9.1.2 Energy Evse Cluster
 -------------------------
 
-.. csv-table:: Delegate and its impl
+.. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Energy Evse`_, `Energy Evse Delegate`_
@@ -73,7 +73,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 9.1.3 Operational State Cluster
 -------------------------------
 
-.. csv-table:: Delegate and its impl
+.. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Operational State`_, `Operational State Delegate`_
@@ -81,7 +81,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 9.1.4 Microwave Oven Control Cluster
 ------------------------------------
 
-.. csv-table:: Delegate and its impl
+.. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Microwave Oven Control`_, `Microwave Oven Control Delegate`_
@@ -89,7 +89,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 9.1.5 Fan Control Cluster
 -------------------------
 
-.. csv-table:: Delegate and its impl
+.. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Fan Control`_, `Fan Control Delegate`_
@@ -97,7 +97,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 9.1.6 Resource Monitoring Cluster
 ---------------------------------
 
-.. csv-table:: Delegate and its impl
+.. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Resource Monitoring`_, `Resource Monitoring Delegate`_
@@ -105,7 +105,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 9.1.7 Laundry Dryer Controls Cluster
 ------------------------------------
 
-.. csv-table:: Delegate and its impl
+.. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Laundry Dryer Controls`_, `Laundry Dryer Controls Delegate`_
@@ -114,7 +114,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 9.1.8 Valve Configuration And Control Cluster
 ---------------------------------------------
 
-.. csv-table:: Delegate and its impl
+.. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Valve Configuration And Control`_, `Valve Configuration And Control Delegate`_
@@ -122,7 +122,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 9.1.9 Device Energy Management Cluster
 --------------------------------------
 
-.. csv-table:: Delegate and its impl
+.. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Device Energy Management`_, `Device Energy Management Delegate`_
