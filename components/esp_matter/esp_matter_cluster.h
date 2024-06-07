@@ -901,7 +901,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace power_topology {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(1) {}
+    void *delegate;
+    config() : cluster_revision(1), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -910,7 +911,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 namespace electrical_power_measurement {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(1) {}
+    void *delegate;
+    config() : cluster_revision(1), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -919,7 +921,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 namespace electrical_energy_measurement {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(1) {}
+    void *delegate;
+    config() : cluster_revision(1), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);

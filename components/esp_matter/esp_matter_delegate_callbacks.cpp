@@ -29,6 +29,8 @@
 #include <app/clusters/boolean-state-configuration-server/boolean-state-configuration-server.h>
 #include <app/clusters/time-synchronization-server/time-synchronization-server.h>
 #include <app/clusters/application-basic-server/application-basic-server.h>
+#include <app/clusters/power-topology-server/power-topology-server.h>
+#include <app/clusters/electrical-power-measurement-server/electrical-power-measurement-server.h>
 
 using namespace chip::app::Clusters;
 namespace esp_matter {
@@ -266,6 +268,35 @@ void ApplicationBasicDelegateInitCB(void *delegate, uint16_t endpoint_id)
     }
     ApplicationBasic::Delegate *application_basic_delegate = static_cast<ApplicationBasic::Delegate*>(delegate);
     ApplicationBasic::SetDefaultDelegate(endpoint_id, application_basic_delegate);
+}
+
+void PowerTopologyDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    static PowerTopology::Instance * powerTopologyInstance = nullptr;
+    PowerTopology::Delegate *power_topology_delegate = static_cast<PowerTopology::Delegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, PowerTopology::Id);
+    powerTopologyInstance = new PowerTopology::Instance(endpoint_id, *power_topology_delegate, chip::BitMask<PowerTopology::Feature,
+                            uint32_t>(feature_map), chip::BitMask<PowerTopology::OptionalAttributes, uint32_t>(0));
+    powerTopologyInstance->Init();
+}
+
+void ElectricalPowerMeasurementDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    static ElectricalPowerMeasurement::Instance * electricalPowerMeasurementInstance = nullptr;
+    ElectricalPowerMeasurement::Delegate *electrical_power_measurement_delegate = static_cast<ElectricalPowerMeasurement::Delegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, ElectricalPowerMeasurement::Id);
+    electricalPowerMeasurementInstance = new ElectricalPowerMeasurement::Instance(endpoint_id, *electrical_power_measurement_delegate,
+                            chip::BitMask<ElectricalPowerMeasurement::Feature, uint32_t>(feature_map),
+                            chip::BitMask<ElectricalPowerMeasurement::OptionalAttributes, uint32_t>(0));
+    electricalPowerMeasurementInstance->Init();
 }
 
 } // namespace delegate_cb
