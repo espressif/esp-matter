@@ -543,7 +543,7 @@ esp_err_t controller_register_commands()
       {
           .name = "subs-event",
           .description = "Subscribe events of the nodes.\n"
-                         "\tUsage: controller subs-attr [node-id] [endpoint-id] [cluster-id] [event-id] "
+                         "\tUsage: controller subs-event [node-id] [endpoint-id] [cluster-id] [event-id] "
                          "[min-interval] [max-interval]",
           .handler = controller_subscribe_event_handler,
       },

@@ -35,19 +35,20 @@ static void espnow_ctrl_onoff(espnow_addr_t src_addr, bool status)
     ESP_LOGI(TAG, "ESP-NOW button pressed");
 
     // Update bound light
-    client::command_handle_t cmd_handle;
-    cmd_handle.cluster_id = OnOff::Id;
+    client::request_handle_t req_handle;
+    req_handle.type = esp_matter::client::INVOKE_CMD;
+    req_handle.command_path.mClusterId = OnOff::Id;
     if (status) {
-        cmd_handle.command_id = OnOff::Commands::On::Id;
+        req_handle.command_path.mCommandId = OnOff::Commands::On::Id;
     } else {
-        cmd_handle.command_id = OnOff::Commands::Off::Id;
+        req_handle.command_path.mCommandId = OnOff::Commands::Off::Id;
     }
     uint16_t bridged_switch_endpoint_id = app_bridge_get_matter_endpointid_by_espnow_macaddr(src_addr);
     ESP_LOGI(TAG, "Using bridge endpoint: %d", bridged_switch_endpoint_id);
 
     if (bridged_switch_endpoint_id != chip::kInvalidEndpointId) {
         lock::chip_stack_lock(portMAX_DELAY);
-        client::cluster_update(bridged_switch_endpoint_id, &cmd_handle);
+        client::cluster_update(bridged_switch_endpoint_id, &req_handle);
         lock::chip_stack_unlock();
     } else {
         ESP_LOGE(TAG, "Can't find endpoint for bridged device: " MACSTR, MAC2STR(src_addr));
