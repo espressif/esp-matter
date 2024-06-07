@@ -92,7 +92,6 @@ pipeline {
                 catchError() {
                     script {
                         def esp_matter = load "${WORKSPACE}/tools/jenkins/esp_matter.groovy"
-                        esp_matter.script_artifacts_create()
                         esp_matter.tools_artifacts_create()
                     }
                 }

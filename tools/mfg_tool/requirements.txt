@@ -1,9 +1,0 @@
-bitarray>=2.6.0
-cryptography==36.0.0
-cffi==1.15.0
-future==0.18.2
-pycparser==2.21
-pypng==0.0.21
-PyQRCode==1.2.1
-python_stdnum==1.18
-esp-secure-cert-tool==1.0.1

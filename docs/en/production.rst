@@ -84,8 +84,9 @@ assists an *OTA requestor* to get upgraded. The SDK examples support Matter OTA
 requestor role out of the box. The OTA provider could be a manufacturer specific
 phone app or any Matter node that has internet connectivity.
 
-Alternatively, `ESP RainMaker OTA <https://rainmaker.espressif.com/docs/ota.html>`__
-service can also be used to upgrade the firmware on the devices remotely. As opposed to the Matter OTA, ESP RainMaker OTA allows you the flexibility of delivering the OTA upgrades incrementally or to groups of devices.
+Alternatively, `ESP RainMaker OTA`_ service can also be used to upgrade the firmware
+on the devices remotely. As opposed to the Matter OTA, ESP RainMaker OTA allows you
+the flexibility of delivering the OTA upgrades incrementally or to groups of devices.
 
 
 4.3 Manufacturing
@@ -101,13 +102,12 @@ For commissioning a device into the Matter Fabric, the device requires the follo
 -   **Spake2+ parameters**: work as a proof of possession.
 
 These details are generally programmed in the manufacturing partition that is unique
-per device. ESP-Matter provides a utility (mfg_tool.py) to create these partition images
+per device. ESP-Matter provides a utility (esp-matter-mfg-tool) to create these partition images
 on a per-device basis for mass manufacturing purposes.
 
 When using the utility, by default, the above details will be included in the generated manufacturing partition image. The utility also has a provision to include additional details in the same image by using CSV files.
 
-Details about using the mass manufacturing utility can be found here:
-:project_file:`mfg_tool<tools/mfg_tool/README.md>`.
+Details about using the mass manufacturing utility can be found here: `esp-matter-mfg-tool`_
 
 4.3.2 Pre-Provisioned Modules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -120,8 +120,8 @@ programming the partition into the device at your end.
 
 Please contact your Espressif contact person for more information.
 
-4.3.3 The mfg_tool Example
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+4.3.3 The esp-matter-mfg-tool Example
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In Espressif Matter Prep-provisioning modules, the DAC key pair, DAC and PAI certificates are pre-flashed by default.
 
@@ -139,25 +139,25 @@ This is the example to generate factory images after pre-provisioning:
 
    ::
 
-      ./mfg_tool.py -cd ~/test_cert/CD/Chip-CD-131B-1000.der -v 0x131B --vendor-name ESP -p 0x1000 --product-name light --hw-ver 1 --hw-ver-str v1.0 --mfg-date 2022-10-25 --passcode 19861989 --discriminator 601 --serial-num esp32c_dev3
+      esp-matter-mfg-tool -cd ~/test_cert/CD/Chip-CD-131B-1000.der -v 0x131B --vendor-name ESP -p 0x1000 --product-name light --hw-ver 1 --hw-ver-str v1.0 --mfg-date 2022-10-25 --passcode 19861989 --discriminator 601 --serial-num esp32c_dev3
 
 - **Generate multiple generic factory images**
 
    ::
 
-      ./mfg_tool.py -n 10 -cd ~/test_cert/CD/Chip-CD-131B-1000.der -v 0x131B --vendor-name ESP -p 0x1000 --product-name light --hw-ver 1 --hw-ver-str v1.0 --mfg-date 2022-10-25
+      esp-matter-mfg-tool -n 10 -cd ~/test_cert/CD/Chip-CD-131B-1000.der -v 0x131B --vendor-name ESP -p 0x1000 --product-name light --hw-ver 1 --hw-ver-str v1.0 --mfg-date 2022-10-25
 
 - **Generate factory image with rotating device unique identify**
 
    ::
 
-      ./mfg_tool.py -cd ~/test_cert/CD/Chip-CD-131B-1000.der -v 0x131B --vendor-name ESP -p 0x1000 --product-name light --hw-ver 1 --hw-ver-str v1.0 --mfg-date 2022-10-25 --passcode 19861989 --discriminator 601 --serial-num esp32c_dev3 --enable-rotating-device-id --rd-id-uid c0398f4980b07c9460f71c5421e1a3c5
+      esp-matter-mfg-tool -cd ~/test_cert/CD/Chip-CD-131B-1000.der -v 0x131B --vendor-name ESP -p 0x1000 --product-name light --hw-ver 1 --hw-ver-str v1.0 --mfg-date 2022-10-25 --passcode 19861989 --discriminator 601 --serial-num esp32c_dev3 --enable-rotating-device-id --rd-id-uid c0398f4980b07c9460f71c5421e1a3c5
 
 - **Generate multiple factory images with csv and mcsv**
 
    ::
 
-      ./mfg_tool.py -cd ~/test_cert/CD/Chip-CD-131B-1000.der -v 0x131B --vendor-name ESP -p 0x1000 --product-name light --hw-ver 1 --hw-ver-str v1.0 --enable-rotating-device-id --mfg-date 2022-10-25 --csv mfg.csv --mcsv mfg_m.csv
+      esp-matter-mfg-tool -cd ~/test_cert/CD/Chip-CD-131B-1000.der -v 0x131B --vendor-name ESP -p 0x1000 --product-name light --hw-ver 1 --hw-ver-str v1.0 --enable-rotating-device-id --mfg-date 2022-10-25 --csv mfg.csv --mcsv mfg_m.csv
 
 - **The example of csv and mcsv file**
 - CSV:
@@ -173,3 +173,6 @@ This is the example to generate factory images after pre-provisioning:
     | esp32c_dev6,c0398f4980b07c9460f71c5421e1a3c8,1237
     | esp32c_dev7,c0398f4980b07c9460f71c5421e1a3c9,1238
 
+
+.. _`esp-matter-mfg-tool`: https://github.com/espressif/esp-matter-tools/tree/main/mfg_tool
+.. _`ESP RainMaker OTA`: https://rainmaker.espressif.com/docs/ota.html

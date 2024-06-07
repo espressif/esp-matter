@@ -1,3 +1,8 @@
+# 07-May-2024
+
+- `tools/mfg_tool.py` is moved to https://github.com/espressif/esp-matter-tools/tree/main/mfg_tool
+  and can be installed by running `python3 -m pip install esp-matter-mfg-tool`.
+
 # 14-February-2024
 
 - An optional argument, `max_val_size`, has been introduced to the `esp_matter::attribute::create()` API.

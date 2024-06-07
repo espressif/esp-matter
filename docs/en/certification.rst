@@ -48,7 +48,7 @@ A test CD signed by the test CD signing keys in `connectedhomeip <https://github
 
 For Matter Certification Test, vendors should generate their own test Product Attestation Authority (PAA) certificate, Product Attestation Intermediate (PAI) certificate, and Device Attestation Certificate (DAC), but not use the default test PAA certificate in `connectedhomeip <https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/credentials/test/attestation>`__ SDK repository. So you need to generate a PAA certificate, upload it to `TestNet <https://testnet.iotledger.io/>`__ following the instruction in `DCL Primer <https://groups.csa-iot.org/wg/matter-tsg/document/24705>`__, and use it to sign and attest PAI certificates which will be used to sign and attest the DACs. The PAI certificate, DAC, and DAC's private key should be stored in the product you submit to test.
 
-Here are the steps to generate the certificates and keys using `chip-cert <https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/src/tools/chip-cert/README.md>`__ and :project_file:`mfg_tool<tools/mfg_tool/README.md>`.
+Here are the steps to generate the certificates and keys using `chip-cert`_ and `esp-matter-mfg-tool`_.
 
 3.2.2.1 Generating PAA Certificate
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -68,29 +68,29 @@ Generate the vendor scoped PAA certificate and key, please make sure to change t
 3.2.2.2 Generating Factory Partition Binary Files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-After getting the PAA certificate and key, the factory partition binary files with PAI certificate, DAC, and DAC keys can be generated using mfg_tool.
+After getting the PAA certificate and key, the factory partition binary files with PAI certificate, DAC, and DAC keys can be generated using esp-matter-mfg-tool.
 
 - Install the requirements and export the dependent tools path if not done already
 
 ::
 
-    cd path/to/esp_matter/tools/mfg_tool
+    cd path/to/esp_matter
     python3 -m pip install -r requirements.txt
-    export PATH=$PATH:$PWD/../../connectedhomeip/connectedhomeip/out/host
+    export PATH=$PATH:$PWD/connectedhomeip/connectedhomeip/out/host
 
 - Generate factory partition binary files
 
 ::
 
-    ./mfg_tool.py -n <count> -cn Espressif --paa -c /path/to/PAA_certificate -k /path/to/PAA_key \
+    esp-matter-mfg-tool -n <count> -cn Espressif --paa -c /path/to/PAA_certificate -k /path/to/PAA_key \
                   -cd /path/to/CD_file -v 0x131B --vendor_name Espressif -p 0x1234 \
                   --product-name Test-light --hw-ver 1 --hw-ver-str v1.0
 
 .. note::
 
-    For more information about the arguments, you can use ``./mfg_tool.py --help``
+    For more information about the arguments, you can use ``esp-matter-mfg-tool --help``
 
-The option ``-n`` (count) is the number of generated binaries. In the above command, mfg_tool will generate PAI certificate and key and then use them to generate ``count`` different DACs and keys. It will use the generated certificates and keys to generate ``count`` factory partition binaries with different DACs, discriminators, and setup pincodes. Flash the factory binary to the device's NVS partition. Then the device will send the vendor's PAI certificate and DAC to the commissioner during commissioning.
+The option ``-n`` (count) is the number of generated binaries. In the above command, esp-matter-mfg-tool will generate PAI certificate and key and then use them to generate ``count`` different DACs and keys. It will use the generated certificates and keys to generate ``count`` factory partition binaries with different DACs, discriminators, and setup pincodes. Flash the factory binary to the device's NVS partition. Then the device will send the vendor's PAI certificate and DAC to the commissioner during commissioning.
 
 3.2.2.3 Using Vendor's PAA in Test Harness(TH)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -329,3 +329,7 @@ Here are some issues that you might meet in Matter Certification Test and quick 
 - ``TC-SU-2.7``
 
   The StateTransition event ``Applying`` might be missed because the OTA reboot time is too short. You can cherry-pick the commit from the `fixing Pull Request <https://github.com/project-chip/connectedhomeip/pull/24379>`__ to fix the issue.
+
+
+.. _`esp-matter-mfg-tool`: https://github.com/espressif/esp-matter-tools/tree/main/mfg_tool
+.. _`chip-cert`: https://github.com/espressif/connectedhomeip/tree/master/src/tools/chip-cert/README.md

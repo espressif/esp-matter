@@ -423,8 +423,7 @@ If QR code is not visible, paste the below link into the browser and scan the QR
     https://project-chip.github.io/connectedhomeip/qrcode.html?data=MT:Y.K9042C00KA0648G00
 
 If you want to use different values for commissioning the device, please use the
-`mfg-tool <https://github.com/espressif/esp-matter/tree/main/tools/mfg_tool#readme>`__
-to generate the factory partition which has to be flashed on the device.
+`esp-matter-mfg-tool`_ to generate the factory partition which has to be flashed on the device.
 It also generates the new pairing code and QR code image using which you can commission the device.
 
 2.3.1.2 Post Commissioning Setup
@@ -1065,15 +1064,15 @@ Export the dependent tools path
 
 ::
 
-    cd esp-matter/tools/mfg_tool
-    export PATH=$PATH:$PWD/../../connectedhomeip/connectedhomeip/out/host
+    cd esp-matter
+    export PATH=$PATH:$PWD/connectedhomeip/connectedhomeip/out/host
 
 
 Generate the factory partition, please use the APPROPRIATE values for ``-v`` (Vendor Id), ``-p`` (Product Id), and ``-cd`` (Certification Declaration).
 
 ::
 
-    ./mfg_tool.py --passcode 89674523 \
+    esp-matter-mfg-tool --passcode 89674523 \
                   --discriminator 2245 \
                   -cd TEST_CD_FFF1_8001.der \
                   -v 0xFFF1 --vendor-name Espressif \
@@ -1186,18 +1185,17 @@ This cluster provides an interface for controlling a characteristic of a device 
 This attribute is the list of supported modes that may be selected for the CurrentMode attribute. Each item in this list represents a unique mode as indicated by the Mode field of the ModeOptionStruct. Each entry in this list SHALL have a unique value for the Mode field.
 ESP_MATTER uses factory partition to set the values of Supported Modes attribute.
 
-2.9.2 Generate Factory Partition Using mfg_tool
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.9.2 Generate Factory Partition Using esp-matter-mfg-tool
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use `mfg_tool <https://github.com/espressif/esp-matter/blob/main/tools/mfg_tool/README.md>`__ to generate factory partition of the supported modes attribute.
+Use `esp-matter-mfg-tool`_ to generate factory partition of the supported modes attribute.
 
 2.9.2.1 Usage
 ^^^^^^^^^^^^^
 
 ::
 
-    cd tools/mfg_tool
-    ./mfg_tool.py -cn "My bulb" -v 0xFFF2 -p 0x8001 --pai \
+    esp-matter-mfg-tool -cn "My bulb" -v 0xFFF2 -p 0x8001 --pai \
     -k path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/attestation/Chip-Test-PAI-FFF2-8001-Key.pem \
     -c path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/attestation/Chip-Test-PAI-FFF2-8001-Cert.pem \
     -cd path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/certification-declaration/Chip-Test-CD-FFF2-8001.der \
@@ -1457,3 +1455,4 @@ The controller example offers two options for the Attestation Trust Storage whic
 .. _`step by step installation guide`: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/linux-macos-setup.html
 .. _`Prerequisites for ESP-IDF`: https://docs.espressif.com/projects/esp-idf/en/v5.0.1/esp32/get-started/index.html#step-1-install-prerequisites
 .. _`Prerequisites for Matter`: https://github.com/espressif/connectedhomeip/blob/v1.1-branch/docs/guides/BUILDING.md#prerequisites
+.. _`esp-matter-mfg-tool`: https://github.com/espressif/esp-matter-tools/tree/main/mfg_tool
