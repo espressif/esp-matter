@@ -34,6 +34,10 @@ void LaundryDryerControlsDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void ValveConfigurationAndControlDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void DeviceEnergyManagementDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void DeviceEnergyManagementModeDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void DoorLockDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void BooleanStateConfigurationDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void TimeSynchronizationDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void ApplicationBasicDelegateInitCB(void *delegate, uint16_t endpoint_id);
 } // namespace delegate_cb
 
 } // namespace cluster

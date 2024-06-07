@@ -4738,5 +4738,67 @@ attribute_t *create_opt_out_state(cluster_t *cluster, uint8_t value)
 } /* attribute */
 } /* device_energy_management */
 
+namespace application_basic {
+namespace attribute {
+attribute_t *create_vendor_name(cluster_t *cluster, char *value, uint16_t length)
+{
+    if (length > k_max_vendor_name_length) {
+        ESP_LOGE(TAG, "Could not create attribute, string length out of bound");
+        return NULL;
+    }
+    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::VendorName::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_char_str(value, length), k_max_vendor_name_length);
+}
+
+attribute_t *create_vendor_id(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::VendorID::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_application_name(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::ApplicationName::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_char_str(value, length));
+}
+
+attribute_t *create_product_id(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::ProductID::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_application(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::Application::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array(value, length, count));
+}
+
+attribute_t *create_status(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::Status::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
+}
+
+attribute_t *create_application_version(cluster_t *cluster, char *value, uint16_t length)
+{
+    if (length > k_max_application_version_length) {
+        ESP_LOGE(TAG, "Could not create attribute, string length out of bound");
+        return NULL;
+    }
+    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::ApplicationVersion::Id,
+                                        ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length),
+                                        k_max_application_version_length);
+}
+
+attribute_t *create_allowed_vendor_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::AllowedVendorList::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+} /* application_basic */
+
 } /* cluster */
 } /* esp_matter */
