@@ -160,7 +160,7 @@ How to use Rotating Device Identifier
 
 -  Enable the Rotating Device Identifier support in menuconfig.
 -  Add the ``--enable-rotating-device-id`` and add the ``--rd-id-uid`` to specify the ``Rotating ID Unique ID``
-   when use the mfg_tool.py to generate partition.bin file.
+   when use the ``esp-matter-mfg-tool`` to generate partition.bin file.
 
 Difference between Rotating ID Unique ID and Unique ID
 
@@ -232,7 +232,7 @@ is not released after the commissioning process, and the free RAM won't go up.
 A1.10 How to generate Matter Onboarding Codes (QR Code and Manual Pairing Code)
 -------------------------------------------------------------------------------
 
-When creating a factory partition using ``mfg_tool.py``, both the QR code and manual pairing codes are generated.
+When creating a factory partition using ``esp-matter-mfg-tool``, both the QR code and manual pairing codes are generated.
 
 Along with that, there are two more methods for generating Matter onboarding codes:
 

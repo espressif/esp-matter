@@ -166,49 +166,6 @@ def firmware_build_save() {
     '''
 }
 
-def script_artifacts_create() {
-    sh '''
-    PACKAGE_SCRIPT_PATH=${PACKAGE_PATH}/Script
-    SCRIPTS_DIRECTORY_NAME=manufacturing_scripts
-    SCRIPTS_PATH=${PACKAGE_SCRIPT_PATH}/${SCRIPTS_DIRECTORY_NAME}
-    mkdir -p ${SCRIPTS_PATH}
-
-    # esp-idf
-    mkdir -p ${SCRIPTS_PATH}/esp-idf
-    mkdir -p ${SCRIPTS_PATH}/esp-idf/components
-    mkdir -p ${SCRIPTS_PATH}/esp-idf/components/nvs_flash
-    cp -r ${IDF_PATH}/components/nvs_flash/nvs_partition_generator ${SCRIPTS_PATH}/esp-idf/components/nvs_flash/
-
-    mkdir -p ${SCRIPTS_PATH}/esp-idf/tools
-    cp -r ${IDF_PATH}/tools/mass_mfg ${SCRIPTS_PATH}/esp-idf/tools/
-
-    # esp-matter
-    mkdir -p ${SCRIPTS_PATH}/esp-matter
-    mkdir -p ${SCRIPTS_PATH}/esp-matter/tools
-    cp -r ${ESP_MATTER_PATH}/tools/mfg_tool ${SCRIPTS_PATH}/esp-matter/tools/
-
-    mkdir -p ${SCRIPTS_PATH}/esp-matter/connectedhomeip
-    mkdir -p ${SCRIPTS_PATH}/esp-matter/connectedhomeip/connectedhomeip
-    mkdir -p ${SCRIPTS_PATH}/esp-matter/connectedhomeip/connectedhomeip/scripts
-    mkdir -p ${SCRIPTS_PATH}/esp-matter/connectedhomeip/connectedhomeip/scripts/tools
-    cp -r ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/scripts/tools/spake2p ${SCRIPTS_PATH}/esp-matter/connectedhomeip/connectedhomeip/scripts/tools
-
-    mkdir -p ${SCRIPTS_PATH}/esp-matter/connectedhomeip/connectedhomeip/src
-    mkdir -p ${SCRIPTS_PATH}/esp-matter/connectedhomeip/connectedhomeip/src/setup_payload
-    cp -r ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/src/setup_payload/python ${SCRIPTS_PATH}/esp-matter/connectedhomeip/connectedhomeip/src/setup_payload
-
-    mkdir -p ${SCRIPTS_PATH}/esp-matter/connectedhomeip/connectedhomeip/credentials
-    cp -r ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/credentials/test ${SCRIPTS_PATH}/esp-matter/connectedhomeip/connectedhomeip/credentials
-    cp -r ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/credentials/production ${SCRIPTS_PATH}/esp-matter/connectedhomeip/connectedhomeip/credentials
-    cp -r ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/credentials/development ${SCRIPTS_PATH}/esp-matter/connectedhomeip/connectedhomeip/credentials
-
-    # script_description
-    mkdir -p ${SCRIPTS_PATH}/script_description
-    cp ${SCRIPTS_PATH}/esp-matter/tools/mfg_tool/requirements.txt ${SCRIPTS_PATH}/script_description/
-    cp ${SCRIPTS_PATH}/esp-matter/tools/mfg_tool/README.md ${SCRIPTS_PATH}/script_description/
-    '''
-}
-
 def tools_artifacts_create() {
     sh '''
     PACKAGE_TOOLS_PATH=${PACKAGE_PATH}/Tools
