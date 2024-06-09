@@ -16,6 +16,7 @@
 #include <math.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include <app_reset.h>
 
 #include <esp_matter.h>
 #include "bsp/esp-bsp.h"
@@ -315,9 +316,27 @@ app_driver_handle_t app_driver_button_init()
         }
     };
     button_handle_t handle = iot_button_create(&config);
-    //button_config_t config = button_driver_get_config();
-    //button_handle_t handle = iot_button_create(&config);
     iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_toggle_cb, NULL);
+    gpio_set_pull_mode((gpio_num_t)17, GPIO_PULLUP_ONLY);
+    
+    return (app_driver_handle_t)handle;
+}
+
+app_driver_handle_t app_driver_reset_button_init()
+{
+    /* Initialize button */
+    button_config_t config = {
+        .type = BUTTON_TYPE_GPIO,
+        .gpio_button_config = {
+            .gpio_num = 16,
+            .active_level = 0,
+        }
+    };
+    button_handle_t handle = iot_button_create(&config);
+    app_reset_button_register(handle);
+
+    // Enable internal pull-up resistor for GPIO 17
+    gpio_set_pull_mode((gpio_num_t)16, GPIO_PULLUP_ONLY);
     
     return (app_driver_handle_t)handle;
 }

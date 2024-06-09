@@ -52,6 +52,7 @@ app_driver_handle_t app_driver_light_init();
  * @return NULL in case of failure.
  */
 app_driver_handle_t app_driver_button_init();
+app_driver_handle_t app_driver_reset_button_init();
 
 /** Driver Update
  *
