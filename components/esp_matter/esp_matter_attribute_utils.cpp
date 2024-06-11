@@ -1933,12 +1933,12 @@ void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
                  endpoint_id, cluster_id, attribute_id, val->val.u64);
     } else if (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
         const char *b = val->val.a.b ? (const char *)val->val.a.b : "(empty)";
-        uint16_t s = val->val.a.b ? s : strlen("(empty)");
+        uint16_t s = val->val.a.b ? val->val.a.s : strlen("(empty)");
         ESP_LOGI(TAG, "********** %c : Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " is %.*s **********", action,
                  endpoint_id, cluster_id, attribute_id, s, b);
     } else if (val->type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING) {
         const char *b = val->val.a.b ? (const char *)val->val.a.b : "(empty)";
-        uint16_t s = val->val.a.b ? s : strlen("(empty)");
+        uint16_t s = val->val.a.b ? val->val.a.s : strlen("(empty)");
         ESP_LOGI(TAG, "********** %c : Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " is %.*s **********", action,
                  endpoint_id, cluster_id, attribute_id, s, b);
     } else {
