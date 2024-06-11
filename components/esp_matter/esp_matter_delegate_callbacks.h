@@ -38,6 +38,8 @@ void DoorLockDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void BooleanStateConfigurationDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void TimeSynchronizationDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void ApplicationBasicDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void PowerTopologyDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void ElectricalPowerMeasurementDelegateInitCB(void *delegate, uint16_t endpoint_id);
 } // namespace delegate_cb
 
 } // namespace cluster

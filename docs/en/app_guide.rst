@@ -130,7 +130,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 9.1.10 Door Lock Cluster
 ------------------------
 
-.. csv-table:: Delegate and its impl
+.. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Door Lock`_, None
@@ -138,7 +138,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 9.1.11 Boolean State Configuration Cluster
 ------------------------------------------
 
-.. csv-table:: Delegate and its impl
+.. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Boolean State Configuration`_, None
@@ -146,7 +146,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 9.1.12 Time Synchronization Cluster
 -----------------------------------
 
-.. csv-table:: Delegate and its impl
+.. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Time Synchronization`_, `Time Synchronization Delegate`_
@@ -154,10 +154,26 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 9.1.13 Application Basic Cluster
 --------------------------------
 
-.. csv-table:: Delegate and its impl
+.. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Application Basic`_, None
+
+9.1.14 Power Topology Cluster
+-----------------------------
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Power Topology`_, `Power Topology Delegate`_
+
+9.1.15 Electrical Power Measurement Cluster
+-------------------------------------------
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Electrical Power Measurement`_, `Electrical Power Measurement Delegate`_
 
 
 .. note::
@@ -198,3 +214,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Time Synchronization`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/time-synchronization-server/time-synchronization-delegate.h
 .. _`Time Synchronization Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/time-synchronization-server/DefaultTimeSyncDelegate.h
 .. _`Application Basic`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/application-basic-server/application-basic-delegate.h
+.. _`Power Topology`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/power-topology-server/power-topology-server.h
+.. _`Power Topology Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/energy-management-app/energy-management-common/include/PowerTopologyDelegate.h
+.. _`Electrical Power Measurement`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/electrical-power-measurement-server/electrical-power-measurement-server.h
+.. _`Electrical Power Measurement Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/energy-management-app/energy-management-common/include/ElectricalPowerMeasurementDelegate.h

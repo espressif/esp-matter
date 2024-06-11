@@ -3693,6 +3693,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = PowerTopologyDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
         add_function_list(cluster, function_list, function_flags);
     }
 
@@ -3742,6 +3746,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = ElectricalPowerMeasurementDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
         add_function_list(cluster, function_list, function_flags);
     }
 
