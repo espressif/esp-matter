@@ -16,8 +16,9 @@
  */
 
 #include <esp_check.h>
-#include <esp_matter_controller_cluster_command.h>
 #include <esp_matter_controller_client.h>
+#include <esp_matter_controller_cluster_command.h>
+#include <esp_matter_controller_commissioning_window_opener.h>
 #include <esp_matter_controller_console.h>
 #include <esp_matter_controller_group_settings.h>
 #include <esp_matter_controller_pairing_command.h>
@@ -238,13 +239,17 @@ static esp_err_t controller_udc_handler(int argc, char **argv)
             return ESP_ERR_INVALID_ARG;
         }
         controller::matter_controller_client::get_instance()
-            .get_commissioner()->GetUserDirectedCommissioningServer()->ResetUDCClientProcessingStates();
+            .get_commissioner()
+            ->GetUserDirectedCommissioningServer()
+            ->ResetUDCClientProcessingStates();
     } else if (strncmp(argv[0], "print", sizeof("print")) == 0) {
         if (argc != 1) {
             return ESP_ERR_INVALID_ARG;
         }
         controller::matter_controller_client::get_instance()
-            .get_commissioner()->GetUserDirectedCommissioningServer()->PrintUDCClients();
+            .get_commissioner()
+            ->GetUserDirectedCommissioningServer()
+            ->PrintUDCClients();
     } else if (strncmp(argv[0], "commission", sizeof("commission")) == 0) {
         if (argc != 3) {
             return ESP_ERR_INVALID_ARG;
@@ -260,7 +265,9 @@ static esp_err_t controller_udc_handler(int argc, char **argv)
 
         chip::NodeId gRemoteId = chip::kTestDeviceNodeId;
         chip::RendezvousParameters params = chip::RendezvousParameters()
-            .SetSetupPINCode(pincode).SetDiscriminator(state->GetLongDiscriminator()).SetPeerAddress(state->GetPeerAddress());
+                                                .SetSetupPINCode(pincode)
+                                                .SetDiscriminator(state->GetLongDiscriminator())
+                                                .SetPeerAddress(state->GetPeerAddress());
         do {
             chip::DRBG_get_bytes(reinterpret_cast<uint8_t *>(&gRemoteId), sizeof(gRemoteId));
         } while (!chip::IsOperationalNodeId(gRemoteId));
@@ -342,6 +349,30 @@ static esp_err_t controller_group_settings_handler(int argc, char **argv)
 }
 #endif
 
+static void print_manual_code(const char *manual_code)
+{
+    ESP_LOGI(TAG,
+             "*************************************Manual Code: [%s]**********************************************",
+             manual_code);
+}
+
+static esp_err_t open_commissioning_window_handler(int argc, char **argv)
+{
+    if (argc != 5) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    uint64_t node_id = string_to_uint64(argv[0]);
+    uint8_t option = string_to_uint8(argv[1]);
+    bool is_enhanced = option == 1;
+    uint16_t window_timeout = string_to_uint16(argv[2]);
+    uint32_t iteration = string_to_uint32(argv[3]);
+    uint16_t discriminator = string_to_uint16(argv[4]);
+
+    controller::commissioning_window_opener::get_instance().set_callback(print_manual_code);
+    return controller::commissioning_window_opener::get_instance().send_open_commissioning_window_command(
+        node_id, is_enhanced, window_timeout, iteration, discriminator, 10000 /* timed_invoke_timeout_ms */);
+}
+
 static esp_err_t controller_invoke_command_handler(int argc, char **argv)
 {
     if (argc < 4) {
@@ -352,6 +383,14 @@ static esp_err_t controller_invoke_command_handler(int argc, char **argv)
     uint16_t endpoint_id = string_to_uint16(argv[1]);
     uint32_t cluster_id = string_to_uint32(argv[2]);
     uint32_t command_id = string_to_uint32(argv[3]);
+
+    if (argc > 5) {
+        uint16_t timed_invoke_timeout_ms = string_to_uint16(argv[5]);
+        if (timed_invoke_timeout_ms > 0) {
+            return controller::send_invoke_cluster_command(node_id, endpoint_id, cluster_id, command_id, argv[4],
+                                                           chip::MakeOptional(timed_invoke_timeout_ms));
+        }
+    }
 
     return controller::send_invoke_cluster_command(node_id, endpoint_id, cluster_id, command_id,
                                                    argc > 4 ? argv[4] : NULL);
@@ -466,98 +505,113 @@ static esp_err_t controller_dispatch(int argc, char **argv)
 esp_err_t controller_register_commands()
 {
     // Subcommands for root command: `controller <subcommand>`
-    const static command_t controller_sub_commands[] =
-    { {
-          .name = "help",
-          .description = "print this page",
-          .handler = controller_help_handler,
-      },
+    const static command_t controller_sub_commands[] = {
+        {
+            .name = "help",
+            .description = "print this page",
+            .handler = controller_help_handler,
+        },
 #if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-      {
-          .name = "pairing",
-          .description = "Pairing a node.\n"
-                         "\tUsage: controller pairing onnetwork [nodeid] [pincode] OR\n"
-                         "\tcontroller pairing ble-wifi [nodeid] [ssid] [password] [pincode] [discriminator] OR\n"
-                         "\tcontroller pairing ble-thread [nodeid] [dataset] [pincode] [discriminator]",
-          .handler = controller_pairing_handler,
-      },
-      {
-          .name = "group-settings",
-          .description = "Managing the groups and keysets of the controller.\n"
-                         "\tUsage: controller group-settings <sub-commands>",
-          .handler = controller_group_settings_handler,
-      },
+        {
+            .name = "pairing",
+            .description = "Pairing a node.\n"
+                           "\tUsage: controller pairing onnetwork <nodeid> <pincode> OR\n"
+                           "\tcontroller pairing ble-wifi <nodeid> <ssid> <password> <pincode> <discriminator> OR\n"
+                           "\tcontroller pairing ble-thread <nodeid> <dataset> <pincode> <discriminator>",
+            .handler = controller_pairing_handler,
+        },
+        {
+            .name = "group-settings",
+            .description = "Managing the groups and keysets of the controller.\n"
+                           "\tUsage: controller group-settings <sub-commands>",
+            .handler = controller_group_settings_handler,
+        },
 #if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
-      {
-          .name = "udc",
-          .description = "UDC command.\n"
-                         "\tUsage: controller udc reset OR\n"
-                         "\tcontroller udc print OR\n"
-                         "\tcontroller udc commission [pincode] [udc-entry]",
-          .handler = controller_udc_handler,
-      },
+        {
+            .name = "udc",
+            .description = "UDC command.\n"
+                           "\tUsage: controller udc reset OR\n"
+                           "\tcontroller udc print OR\n"
+                           "\tcontroller udc commission <pincode> <udc-entry>",
+            .handler = controller_udc_handler,
+        },
 #endif
 #endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-      {
-          .name = "invoke-cmd",
-          .description =
-              "Send command to the nodes.\n"
-              "\tUsage: controller invoke-cmd [node-id|group-id] [endpoint-id] [cluster-id] [command-id] [payload]\n"
-              "\tNotes: group-id should start with prefix '0xFFFFFFFFFFFF', endpoint-id will be ignored if the fist "
-              "parameter is group-id.\n"
-              "\tNotes: The payload should be a JSON object that includes all the command data fields defined in the "
-              "SPEC. You can get the format of the payload from "
-              "https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#cluster-commands",
-          .handler = controller_invoke_command_handler,
-      },
-      {
-          .name = "read-attr",
-          .description = "Read attributes of the nodes.\n"
-                         "\tUsage: controller read-attr [node-id] [endpoint-id] [cluster-id] [attr-id]",
-          .handler = controller_read_attr_handler,
-      },
-      {
-          .name = "write-attr",
-          .description =
-              "Write attributes of the nodes.\n"
-              "\tUsage: controller write-attr [node-id|group-id] [endpoint-id] [cluster-id] [attr-id] "
-              "[attr-value]\n"
-              "\tNotes: attr-value should be a JSON object that contains the attribute value JSON item."
-              "You can get the format of the attr-value from "
-              "https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#write-attribute-commands",
-          .handler = controller_write_attr_handler,
-      },
-      {
-          .name = "read-event",
-          .description = "Read events of the nodes.\n"
-                         "\tUsage: controller read-event [node-id] [endpoint-id] [cluster-id] [event-id]",
-          .handler = controller_read_event_handler,
-      },
-      {
-          .name = "subs-attr",
-          .description = "Subscribe attributes of the nodes.\n"
-                         "\tUsage: controller subs-attr [node-id] [endpoint-id] [cluster-id] [attr-id] "
-                         "[min-interval] [max-interval]",
-          .handler = controller_subscribe_attr_handler,
-      },
-      {
-          .name = "subs-event",
-          .description = "Subscribe events of the nodes.\n"
-                         "\tUsage: controller subs-event [node-id] [endpoint-id] [cluster-id] [event-id] "
-                         "[min-interval] [max-interval]",
-          .handler = controller_subscribe_event_handler,
-      },
-      {
-          .name = "shutdown-subs",
-          .description = "Shutdown subscription.\n"
-                         "\tUsage: controller shutdown-subs [node-id] [subscription-id]",
-          .handler = controller_shutdown_subscription_handler,
-      },
+        {
+            .name = "open-commissioning-window",
+            .description =
+                "Send command to open basic/enhanced commissioning window\n"
+                "\tUsage: controller open-commissioning-window <node-id> <option> <window-timeout> <iteration> "
+                "<discriminator>\n"
+                "\toption: 1 to use enhanced commissioning window. 0 to use basic commissioning window.\n"
+                "\titeration: Number of PBKDF iterations to use to derive the verifier. Ignored if 'option' is 0.\n"
+                "\tdiscriminator: Discriminator to use for advertising.  Ignored if 'option' is 0.",
+            .handler = open_commissioning_window_handler,
+        },
+        {
+            .name = "invoke-cmd",
+            .description =
+                "Send command to the nodes.\n"
+                "\tUsage: controller invoke-cmd <node-id|group-id> <endpoint-id> <cluster-id> <command-id> "
+                "[command_data] [timed_invoke_timeout_ms]\n"
+                "\tNotes: group-id should start with prefix '0xFFFFFFFFFFFF', endpoint-id will be ignored if the fist "
+                "parameter is group-id.\n"
+                "\tNotes: The command_data should be a JSON object that includes all the command data fields defined "
+                "in the "
+                "SPEC. You can get the format of the payload from "
+                "https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#cluster-commands\n"
+                "\tNotes: The timed_invoke_timeout_ms should be used with command_data. If the command has no command "
+                "data field, please use '\"{}\"' as the command_data ",
+            .handler = controller_invoke_command_handler,
+        },
+        {
+            .name = "read-attr",
+            .description = "Read attributes of the nodes.\n"
+                           "\tUsage: controller read-attr <node-id> <endpoint-id> <cluster-id> <attr-id>",
+            .handler = controller_read_attr_handler,
+        },
+        {
+            .name = "write-attr",
+            .description =
+                "Write attributes of the nodes.\n"
+                "\tUsage: controller write-attr <node-id> <endpoint-id> <cluster-id> <attr-id> <attr-value>\n"
+                "\tNotes: attr-value should be a JSON object that contains the attribute value JSON item."
+                "You can get the format of the attr-value from "
+                "https://docs.espressif.com/projects/esp-matter/en/latest/esp32/"
+                "developing.html#write-attribute-commands",
+            .handler = controller_write_attr_handler,
+        },
+        {
+            .name = "read-event",
+            .description = "Read events of the nodes.\n"
+                           "\tUsage: controller read-event <node-id> <endpoint-id> <cluster-id> <event-id>",
+            .handler = controller_read_event_handler,
+        },
+        {
+            .name = "subs-attr",
+            .description = "Subscribe attributes of the nodes.\n"
+                           "\tUsage: controller subs-attr <node-id> <endpoint-id> <cluster-id> <attr-id> "
+                           "<min-interval> <max-interval>",
+            .handler = controller_subscribe_attr_handler,
+        },
+        {
+            .name = "subs-event",
+            .description = "Subscribe events of the nodes.\n"
+                           "\tUsage: controller subs-attr <node-id> <endpoint-id> <cluster-id> <event-id> "
+                           "<min-interval> <max-interval>",
+            .handler = controller_subscribe_event_handler,
+        },
+        {
+            .name = "shutdown-subs",
+            .description = "Shutdown subscription.\n"
+                           "\tUsage: controller shutdown-subs <node-id> <subscription-id>",
+            .handler = controller_shutdown_subscription_handler,
+        },
     };
 
     const static command_t controller_command = {
         .name = "controller",
-        .description = "Controller commands. Usage: matter esp controller [command_name]",
+        .description = "Controller commands. Usage: matter esp controller <command_name>",
         .handler = controller_dispatch,
     };
     // Register the controller commands

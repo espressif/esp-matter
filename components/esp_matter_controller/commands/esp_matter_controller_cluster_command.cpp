@@ -23,6 +23,7 @@
 
 #include <app/server/Server.h>
 #include <crypto/CHIPCryptoPAL.h>
+#include <lib/core/Optional.h>
 #include <setup_payload/ManualSetupPayloadGenerator.h>
 #include <setup_payload/QRCodeSetupPayloadGenerator.h>
 #include <setup_payload/SetupPayload.h>
@@ -154,8 +155,8 @@ void cluster_command::on_device_connected_fcn(void *context, ExchangeManager &ex
     chip::OperationalDeviceProxy device_proxy(&exchangeMgr, sessionHandle);
     chip::app::CommandPathParams command_path = {cmd->m_endpoint_id, 0, cmd->m_cluster_id, cmd->m_command_id,
                                                  chip::app::CommandPathFlags::kEndpointIdValid};
-    interaction::invoke::send_request(context, &device_proxy, command_path, cmd->m_command_data_field, cmd->on_success_cb,
-                                  cmd->on_error_cb, chip::NullOptional);
+    interaction::invoke::send_request(context, &device_proxy, command_path, cmd->m_command_data_field,
+                                      cmd->on_success_cb, cmd->on_error_cb, cmd->m_timed_invoke_timeout_ms);
     chip::Platform::Delete(cmd);
     return;
 }
@@ -255,14 +256,15 @@ esp_err_t cluster_command::send_command()
 }
 
 esp_err_t send_invoke_cluster_command(uint64_t destination_id, uint16_t endpoint_id, uint32_t cluster_id,
-                                      uint32_t command_id, const char *command_data_field)
+                                      uint32_t command_id, const char *command_data_field,
+                                      chip::Optional<uint16_t> timed_invoke_timeout_ms)
 {
     if (command_data_field && strlen(command_data_field) >= k_command_data_field_buffer_size) {
         ESP_LOGE(TAG, "The command data field buffer is too small for this command, please increase the buffer size");
         return ESP_ERR_INVALID_ARG;
     }
-    cluster_command *cmd =
-        chip::Platform::New<cluster_command>(destination_id, endpoint_id, cluster_id, command_id, command_data_field);
+    cluster_command *cmd = chip::Platform::New<cluster_command>(destination_id, endpoint_id, cluster_id, command_id,
+                                                                command_data_field, timed_invoke_timeout_ms);
     if (!cmd) {
         ESP_LOGE(TAG, "Failed to alloc memory for cluster_command");
         return ESP_ERR_NO_MEM;
