@@ -17,7 +17,8 @@ Espressif's SDK for Matter is the official Matter development framework for ESP3
 |             v1.0             | [release/v1.0](https://github.com/espressif/esp-matter/tree/release/v1.0) |
 |             v1.1             | [release/v1.1](https://github.com/espressif/esp-matter/tree/release/v1.1) |
 |             v1.2             | [release/v1.2](https://github.com/espressif/esp-matter/tree/release/v1.2) |
-|     v1.3 (Ongoing effort)    |         [main](https://github.com/espressif/esp-matter/tree/main)         |
+|             v1.3             | [release/v1.3](https://github.com/espressif/esp-matter/tree/release/v1.3) |
+|     v1.4 (Ongoing effort)    |         [main](https://github.com/espressif/esp-matter/tree/main)         |
 
 
 ## Getting the repositories
