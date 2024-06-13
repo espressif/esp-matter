@@ -1,5 +1,5 @@
 ## IDF Component Manager Manifest File
-version: 0.0.2
+version: 1.3.0
 description: Espressif's Matter SDK Component
 url: https://github.com/espressif/esp-matter
 files:
@@ -12,6 +12,7 @@ files:
         - "./generate-include-files.cmake"
         - "./ota-image.cmake"
         - "./README.md"
+        - "./CHANGELOG.md"
         - "./components/**/*"
         - "./connectedhomeip/connectedhomeip/config/esp32/components/chip/Kconfig"
         - "./connectedhomeip/connectedhomeip/config/esp32/components/chip/ota-image.cmake"
@@ -20,6 +21,7 @@ files:
         - "./connectedhomeip/connectedhomeip/src/app/*.*"
         - "./connectedhomeip/connectedhomeip/src/app/app-platform/**/*"
         - "./connectedhomeip/connectedhomeip/src/app/clusters/**/*"
+        - "./connectedhomeip/connectedhomeip/src/app/common/**/*"
         - "./connectedhomeip/connectedhomeip/src/app/data-model/**/*"
         - "./connectedhomeip/connectedhomeip/src/app/dynamic_server/**/*"
         - "./connectedhomeip/connectedhomeip/src/app/icd/**/*"

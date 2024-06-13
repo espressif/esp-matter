@@ -67,6 +67,7 @@ set(SRC_DIRS_LIST "${MATTER_SDK_PATH}/src/access"
 set(INCLUDE_DIRS_LIST "${MATTER_SDK_PATH}/src"
                       "${MATTER_SDK_PATH}/src/include"
                       "${MATTER_SDK_PATH}/src/lib"
+                      "${MATTER_SDK_PATH}/src/lib/dnssd"
                       "${MATTER_SDK_PATH}/src/platform/OpenThread"
                       "${MATTER_SDK_PATH}/third_party/nlfaultinjection/include"
                       "${MATTER_SDK_PATH}/third_party/nlassert/repo/include"
@@ -90,6 +91,7 @@ set(EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/controller/ExamplePersistentStorag
                       "${MATTER_SDK_PATH}/src/crypto/CHIPCryptoPALOpenSSL.cpp"
                       "${MATTER_SDK_PATH}/src/crypto/CHIPCryptoPALPSA.cpp"
                       "${MATTER_SDK_PATH}/src/crypto/PSAOperationalKeystore.cpp"
+                      "${MATTER_SDK_PATH}/src/crypto/PSASpake2p.cpp"
                       "${MATTER_SDK_PATH}/src/crypto/PSASessionKeystore.cpp"
                       "${MATTER_SDK_PATH}/src/inet/TCPEndPointImplOpenThread.cpp"
                       "${MATTER_SDK_PATH}/src/inet/TCPEndPointImplSockets.cpp"
@@ -144,20 +146,23 @@ endif()
 set(PRIV_INCLUDE_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter/private")
 
 if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
-    list(APPEND SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_controller"
+    list(APPEND SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_controller/core"
+                              "${ESP_COMPONENTS_PATH}/esp_matter_controller/commands"
                               "${ESP_COMPONENTS_PATH}/esp_matter_controller/logger/zap-generated")
-    list(APPEND INCLUDE_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_controller"
+    list(APPEND INCLUDE_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_controller/core"
+                                  "${ESP_COMPONENTS_PATH}/esp_matter_controller/commands"
                                   "${ESP_COMPONENTS_PATH}/esp_matter_controller/logger")
 
-    if (CONFIG_ESP_MATTER_CONTROLLER_CUSTOM_CLUSTER_ENABLE)
-        list(APPEND SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_controller/controller_custom_cluster")
-        list(APPEND INCLUDE_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_controller/controller_custom_cluster")
+     if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
+         list(APPEND EXCLUDE_SRCS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_controller/core/esp_matter_controller_client.cpp"
+                                       "${ESP_COMPONENTS_PATH}/esp_matter_controller/core/esp_matter_controller_credentials_issuer.cpp"
+                                       "${ESP_COMPONENTS_PATH}/esp_matter_controller/core/esp_matter_controller_group_settings.cpp")
     endif()
-    if (NOT CONFIG_ESP_MATTER_COMMISSIONER_ENABLE)
-        list(APPEND EXCLUDE_SRCS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_controller/esp_matter_commissioner.cpp"
-                                      "${ESP_COMPONENTS_PATH}/esp_matter_controller/esp_matter_controller_pairing_command.cpp"
-                                      "${ESP_COMPONENTS_PATH}/esp_matter_controller/esp_matter_attestation_trust_store.cpp"
-                                      "${ESP_COMPONENTS_PATH}/esp_matter_controller/esp_matter_controller_group_settings.cpp")
+    if (CONFIG_ESP_MATTER_COMMISSIONER_ENABLE)
+        list(APPEND SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_controller/attestation_store")
+        list(APPEND INCLUDE_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_controller/attestation_store")
+    else()
+        list(APPEND EXCLUDE_SRCS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_controller/commands/esp_matter_controller_pairing_command.cpp")
     endif()
 endif()
 
@@ -269,7 +274,16 @@ endif()
 
 if (CONFIG_ENABLE_ESP_INSIGHTS_TRACE)
     list(APPEND SRC_DIRS_LIST "${MATTER_SDK_PATH}/src/tracing/esp32_trace")
-    list(APPEND INCLUDE_DIRS_LIST "${MATTER_SDK_PATH}/src/tracing/esp32_trace/include")
+    list(APPEND INCLUDE_DIRS_LIST "${MATTER_SDK_PATH}/src/tracing/esp32_trace/include"
+                                  "${MATTER_SDK_PATH}/src/tracing/esp32_trace")
+    if (NOT CONFIG_ENABLE_ESP_INSIGHTS_SYSTEM_STATS)
+        list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/tracing/esp32_trace/insights_sys_stats.cpp")
+    endif()
+endif()
+
+if (NOT CONFIG_ENABLE_PERSIST_SUBSCRIPTIONS)
+    list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/SimpleSubscriptionResumptionStorage.cpp"
+                                  "${MATTER_SDK_PATH}/src/app/SubscriptionResumptionSessionEstablisher.cpp")
 endif()
 
 if (CONFIG_CHIP_ENABLE_EXTERNAL_PLATFORM)
@@ -296,7 +310,7 @@ else()
     endif()
 
     if ((CONFIG_USE_MINIMAL_MDNS) OR ((NOT CONFIG_ENABLE_WIFI_STATION) AND (NOT CONFIG_ENABLE_WIFI_AP)))
-        list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/platform/ESP32/WiFiDnssdImpl.cpp")
+        list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/platform/ESP32/ESP32DnssdImpl.cpp")
     endif()
 
     if((NOT CONFIG_ENABLE_WIFI_STATION) AND (NOT CONFIG_ENABLE_WIFI_AP))
@@ -407,7 +421,10 @@ endif()
 if (CONFIG_USE_MINIMAL_MDNS)
     target_compile_options(${COMPONENT_LIB} PUBLIC "-DCHIP_MINMDNS_DEFAULT_POLICY=1"
                                                    "-DCHIP_MINMDNS_USE_EPHEMERAL_UNICAST_PORT=0"
-                                                   "-DCHIP_MINMDNS_HIGH_VERBOSITY=0")
+                                                   "-DCHIP_MINMDNS_HIGH_VERBOSITY=0"
+                                                   "-DCHIP_DNSSD_DEFAULT_MINIMAL=1")
+else()
+    target_compile_options(${COMPONENT_LIB} PUBLIC "-DCHIP_DNSSD_DEFAULT_PLATFORM=1")
 endif()
 
 if (NOT CMAKE_BUILD_EARLY_EXPANSION)
