@@ -47,12 +47,12 @@ jobs:
     strategy:
       matrix:
         targets:
-          - {example: light, target: esp32, prefix: wifi}
-          - {example: light, target: esp32c3, prefix: wifi}
-          - {example: light, target: esp32c6, prefix: wifi}
-          - {example: light, target: esp32c6, prefix: thread, sdkconfig: sdkconfig.defaults.c6_thread}
-          - {example: light, target: esp32h2, prefix: thread}
-          - {example: light_switch, target: esp32c3, prefix: wifi}
+          - {example: light, target: esp32, prefix: wifi_matter}
+          - {example: light, target: esp32c3, prefix: wifi_matter}
+          - {example: light, target: esp32c6, prefix: wifi_matter}
+          - {example: light, target: esp32c6, prefix: thread_matter, sdkconfig: sdkconfig.defaults.c6_thread}
+          - {example: light, target: esp32h2, prefix: thread_matter}
+          - {example: light_switch, target: esp32c3, prefix: wifi_matter}
 
     steps:
       - run: mkdir -p images
