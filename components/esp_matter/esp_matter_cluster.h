@@ -471,5 +471,35 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* pump_configuration_and_control */
 
+namespace mode_select {
+typedef struct config {
+    uint16_t cluster_revision;
+    char mode_select_description[k_max_mode_select_description_length + 1];
+    const nullable<uint16_t> standard_namespace;
+    uint8_t current_mode;
+    feature::on_off::config_t on_off;
+    config() : cluster_revision(2), mode_select_description{0}, standard_namespace(), current_mode(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* mode_select */
+
 } /* cluster */
 } /* esp_matter */
+
+// To avoid compilation error function is defined weak here
+namespace chip {
+namespace app {
+namespace Clusters {
+namespace ModeSelect {
+
+void* __attribute__((weak)) getSupportedModesManager()
+{
+       // weak func
+       return nullptr;
+}
+
+} /* chip */
+} /* app */
+} /* Clusters */
+} /* ModeSelect */

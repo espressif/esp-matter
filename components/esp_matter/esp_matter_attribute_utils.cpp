@@ -319,6 +319,30 @@ esp_matter_attr_val_t esp_matter_nullable_enum8(nullable<uint8_t> val)
     return attr_val;
 }
 
+esp_matter_attr_val_t esp_matter_enum16(uint16_t val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_ENUM16,
+        .val = {
+            .u16 = val,
+        },
+    };
+    return attr_val;
+}
+
+esp_matter_attr_val_t esp_matter_nullable_enum16(nullable<uint16_t> val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16,
+    };
+    if (val.is_null()) {
+        chip::app::NumericAttributeTraits<uint16_t>::SetNull(attr_val.val.u16);
+    } else {
+        attr_val.val.u16 = val.value();
+    }
+    return attr_val;
+}
+
 esp_matter_attr_val_t esp_matter_bitmap8(uint8_t val)
 {
     esp_matter_attr_val_t attr_val = {
@@ -622,6 +646,18 @@ static esp_err_t console_set_handler(int argc, char **argv)
             uint8_t value = atoi(argv[3]);
             val = esp_matter_enum8(value);
         }
+    } else if (type == ESP_MATTER_VAL_TYPE_ENUM16) {
+        if (matter_attribute->IsNullable()) {
+            if (strncmp(argv[3], "null", sizeof("null")) == 0) {
+                val = esp_matter_nullable_enum16(nullable<uint16_t>());
+            } else {
+                uint16_t value = atoi(argv[3]);
+                val = esp_matter_nullable_enum16(value);
+            }
+        } else {
+            uint16_t value = atoi(argv[3]);
+            val = esp_matter_enum16(value);
+        }
     } else {
         ESP_LOGE(TAG, "Type not handled: %d", type);
         return ESP_ERR_INVALID_ARG;
@@ -833,6 +869,20 @@ static esp_err_t console_get_handler(int argc, char **argv)
             }
         } else {
             val = esp_matter_enum8(Traits::StorageToWorking(value));
+        }
+    } else if (type == ESP_MATTER_VAL_TYPE_ENUM16) {
+        using Traits = chip::app::NumericAttributeTraits<uint16_t>;
+        Traits::StorageType value;
+        uint8_t *read_able = Traits::ToAttributeStoreRepresentation(value);
+        get_val_raw(endpoint_id, cluster_id, attribute_id, read_able, sizeof(value));
+        if (matter_attribute->IsNullable()) {
+            if (Traits::IsNullValue(value)) {
+                val = esp_matter_nullable_enum16(nullable<uint16_t>());
+            } else {
+                val = esp_matter_nullable_enum16(Traits::StorageToWorking(value));
+            }
+        } else {
+            val = esp_matter_enum16(Traits::StorageToWorking(value));
         }
     } else {
         ESP_LOGE(TAG, "Type not handled: %d", type);
@@ -1569,6 +1619,22 @@ static esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttri
             }
         } else {
             *val = esp_matter_enum8(attribute_value);
+        }
+        break;
+    }
+
+    case ZCL_ENUM16_ATTRIBUTE_TYPE: {
+        using Traits = chip::app::NumericAttributeTraits<uint16_t>;
+        Traits::StorageType attribute_value;
+        memcpy((uint16_t *)&attribute_value, value, sizeof(Traits::StorageType));
+        if (attribute_metadata->IsNullable()) {
+            if (Traits::IsNullValue(attribute_value)) {
+                *val = esp_matter_nullable_enum16(nullable<uint16_t>());
+            } else {
+                *val = esp_matter_nullable_enum16(attribute_value);
+            }
+        } else {
+            *val = esp_matter_enum16(attribute_value);
         }
         break;
     }

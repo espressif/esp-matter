@@ -1903,6 +1903,55 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 } /* pump_configuration_and_control */
+
+namespace mode_select {
+const function_generic_t function_list[] = {
+    (function_generic_t)emberAfModeSelectClusterServerInitCallback,
+};
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, ModeSelect::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+    if (flags & CLUSTER_FLAG_SERVER) {
+        set_plugin_server_init_callback(cluster, MatterPumpConfigurationAndControlPluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+#if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
+        global::attribute::create_event_list(cluster, NULL, 0, 0);
+#endif
+        attribute::create_supported_modes(cluster, NULL, 0, 0);
+        /** Attributes not managed internally **/
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+            attribute::create_mode_select_description(cluster, config->mode_select_description, strlen(config->mode_select_description));
+            attribute::create_standard_namespace(cluster, config->standard_namespace);
+            attribute::create_current_mode(cluster, config->current_mode);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    /* Commands */
+    command::create_change_to_mode(cluster);
+
+    /* Features */
+    if (features & feature::on_off::get_id()) {
+        feature::on_off::add(cluster, &(config->on_off));
+    }
+    return cluster;
+}
+} /* mode_select */
+
 #endif /* CONFIG_ESP_MATTER_ENABLE_DATA_MODEL */
 } /* cluster */
 } /* esp_matter */
