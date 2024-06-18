@@ -461,11 +461,7 @@ Use the cluster commands to control the attributes.
 
 ::
 
-   colorcontrol move-to-saturation 200 0 0 0 0x7283 0x1
-
-::
-
-   colorcontrol move-to-hue 150 0 0 0 0 0x7283 0x1
+   colorcontrol move-to-color-temperature 0 10 0 0 0x7283 0x1
 
 chip-tool when used in interactive mode uses CASE resumption as against establishing CASE for cluster control commands. This results into shorter execution times, thereby improving the overall experience.
 
