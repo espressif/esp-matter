@@ -45,6 +45,9 @@ attribute_t *create_tag_list(cluster_t *cluster, uint8_t *value, uint16_t length
 
 namespace actions {
 namespace attribute {
+
+constexpr uint16_t k_max_setup_url_length = 256;
+
 attribute_t *create_action_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_endpoint_lists(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_setup_url(cluster_t *cluster, char *value, uint16_t length);
@@ -252,7 +255,17 @@ attribute_t *create_time_since_reset(cluster_t *cluster, uint64_t value);
 } /* diagnostics_network_ethernet */
 
 namespace bridged_device_basic_information {
+constexpr uint8_t k_max_vendor_name_length = 32;
+constexpr uint8_t k_max_product_name_length = 32;
 constexpr uint8_t k_max_node_label_length = 32;
+constexpr uint8_t k_max_hardware_version_string_length = 64;
+constexpr uint8_t k_max_software_version_string_length = 64;
+constexpr uint8_t k_max_manufacturing_date_length = 16;
+constexpr uint8_t k_max_part_number_length = 32;
+constexpr uint16_t k_max_product_url_length = 256;
+constexpr uint8_t k_max_product_label_length = 64;
+constexpr uint8_t k_max_serial_number_length = 32;
+constexpr uint8_t k_max_unique_id_length = 32;
 
 namespace attribute {
 attribute_t *create_vendor_name(cluster_t *cluster, char *value, uint16_t length);
@@ -1021,6 +1034,9 @@ attribute_t *create_cumulative_energy_reset(cluster_t *cluster, const uint8_t* v
 
 namespace energy_evse {
 namespace attribute {
+
+constexpr uint8_t k_max_vehicle_id_length = 32;
+
 attribute_t *create_state(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_supply_state(cluster_t *cluster, uint8_t value);
 attribute_t *create_fault_state(cluster_t *cluster, uint8_t value);
