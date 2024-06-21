@@ -103,7 +103,7 @@ attribute_t *create_endpoint_lists(cluster_t *cluster, uint8_t *value, uint16_t 
 attribute_t *create_setup_url(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, Actions::Attributes::SetupURL::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_char_str(value, length));
+                                         esp_matter_char_str(value, length), k_max_setup_url_length);
 }
 
 } /* attribute */
@@ -899,7 +899,7 @@ namespace attribute {
 attribute_t *create_vendor_name(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::VendorName::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_char_str(value, length));
+                                         esp_matter_char_str(value, length), k_max_vendor_name_length);
 }
 
 attribute_t *create_vendor_id(cluster_t *cluster, uint16_t value)
@@ -911,7 +911,7 @@ attribute_t *create_vendor_id(cluster_t *cluster, uint16_t value)
 attribute_t *create_product_name(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::ProductName::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_char_str(value, length));
+                                         esp_matter_char_str(value, length), k_max_product_name_length);
 }
 
 attribute_t *create_node_label(cluster_t *cluster, char *value, uint16_t length)
@@ -934,7 +934,7 @@ attribute_t *create_hardware_version(cluster_t *cluster, uint16_t value)
 attribute_t *create_hardware_version_string(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::HardwareVersionString::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length), k_max_hardware_version_string_length);
 }
 
 attribute_t *create_software_version(cluster_t *cluster, uint32_t value)
@@ -946,37 +946,37 @@ attribute_t *create_software_version(cluster_t *cluster, uint32_t value)
 attribute_t *create_software_version_string(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::SoftwareVersionString::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length), k_max_software_version_string_length);
 }
 
 attribute_t *create_manufacturing_date(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::ManufacturingDate::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length), k_max_manufacturing_date_length);
 }
 
 attribute_t *create_part_number(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::PartNumber::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_char_str(value, length));
+                                         esp_matter_char_str(value, length), k_max_part_number_length);
 }
 
 attribute_t *create_product_url(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::ProductURL::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_char_str(value, length));
+                                         esp_matter_char_str(value, length), k_max_product_url_length);
 }
 
 attribute_t *create_product_label(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::ProductLabel::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_char_str(value, length));
+                                         esp_matter_char_str(value, length), k_max_product_label_length);
 }
 
 attribute_t *create_serial_number(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::SerialNumber::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_char_str(value, length));
+                                         esp_matter_char_str(value, length), k_max_serial_number_length);
 }
 
 attribute_t *create_reachable(cluster_t *cluster, bool value)
@@ -988,7 +988,7 @@ attribute_t *create_reachable(cluster_t *cluster, bool value)
 attribute_t *create_unique_id(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::UniqueID::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_char_str(value, length));
+                                         esp_matter_char_str(value, length), k_max_unique_id_length);
 }
 
 attribute_t *create_product_appearance(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -998,7 +998,7 @@ attribute_t *create_product_appearance(cluster_t *cluster, uint8_t *value, uint1
 }
 
 } /* attribute */
-} /* bridged_device_basic */
+} /* bridged_device_basic_information */
 
 namespace user_label {
 namespace attribute {
@@ -1403,7 +1403,7 @@ attribute_t *create_compensation_text(cluster_t *cluster, char *value, uint16_t 
         return NULL;
     }
     return esp_matter::attribute::create(cluster, ColorControl::Attributes::CompensationText::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_char_str(value, length));
+                                         esp_matter_char_str(value, length), k_max_compensation_text_length);
 }
 
 attribute_t *create_enhanced_current_hue(cluster_t *cluster, uint16_t value)
@@ -4131,7 +4131,7 @@ attribute_t *create_bat_ansi_designation(cluster_t *cluster, const char * value,
         ESP_LOGE(TAG, "Could not create attribute, string size out of bound");
         return NULL;
     }
-    return esp_matter::attribute::create(cluster, PowerSource::Attributes::BatANSIDesignation::Id, ATTRIBUTE_FLAG_NONE, esp_matter_char_str((char *)value, length));
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::BatANSIDesignation::Id, ATTRIBUTE_FLAG_NONE, esp_matter_char_str((char *)value, length), k_max_designation_count);
 }
 
 attribute_t *create_bat_iec_designation(cluster_t *cluster, const char * value, uint16_t length)
@@ -4140,7 +4140,7 @@ attribute_t *create_bat_iec_designation(cluster_t *cluster, const char * value, 
         ESP_LOGE(TAG, "Could not create attribute, string size out of bound");
         return NULL;
     }
-    return esp_matter::attribute::create(cluster, PowerSource::Attributes::BatIECDesignation::Id, ATTRIBUTE_FLAG_NONE, esp_matter_char_str((char *)value, length));
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::BatIECDesignation::Id, ATTRIBUTE_FLAG_NONE, esp_matter_char_str((char *)value, length), k_max_designation_count);
 }
 
 attribute_t *create_bat_approved_chemistry(cluster_t *cluster, const uint8_t value, uint8_t min, uint8_t max)
@@ -4557,7 +4557,7 @@ attribute_t *create_battery_capacity(cluster_t *cluster, nullable<int64_t> value
 attribute_t *create_vehicle_id(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::VehicleID::Id, ATTRIBUTE_FLAG_NULLABLE,
-                                         esp_matter_char_str(value, length));
+                                         esp_matter_char_str(value, length), k_max_vehicle_id_length);
 }
 
 attribute_t *create_session_id(cluster_t *cluster, nullable<uint32_t> value)
