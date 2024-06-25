@@ -198,7 +198,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Operational State`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/operational-state-server/operational-state-server.h
 .. _`Operational State Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/operational-state-delegate-impl.h
 .. _`Microwave Oven Control`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/microwave-oven-control-server/microwave-oven-control-server.h
-.. _`Microwave Oven Control Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/microwave-oven-app/microwave-oven-common/include/microwave-oven-device.h
+.. _`Microwave Oven Control Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/microwave-oven-app/microwave-oven-common/include/microwave-oven-device.h
 .. _`Fan Control`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/fan-control-server/fan-control-delegate.h
 .. _`Fan Control Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/src/fan-stub.cpp
 .. _`Resource Monitoring`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/resource-monitoring-server/resource-monitoring-server.h
@@ -206,7 +206,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Laundry Dryer Controls`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/laundry-dryer-controls-server/laundry-dryer-controls-server.h
 .. _`Laundry Dryer Controls Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/laundry-dryer-controls-delegate-impl.h
 .. _`Valve Configuration And Control`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/valve-configuration-and-control-server/valve-configuration-and-control-delegate.h
-.. _`Valve Configuration And Control Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/all-clusters-app/linux/ValveControlDelegate.h
+.. _`Valve Configuration And Control Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/linux/ValveControlDelegate.h
 .. _`Device Energy Management`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/device-energy-management-server/device-energy-management-server.h
 .. _`Device Energy Management Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/energy-management-app/energy-management-common/include/DeviceEnergyManagementDelegateImpl.h
 .. _`Door Lock`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/door-lock-server/door-lock-delegate.h
