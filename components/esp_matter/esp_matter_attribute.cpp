@@ -2188,5 +2188,47 @@ attribute_t *create_control_mode(cluster_t *cluster, uint8_t value)
 } /* attribute */
 } /* pump_configuration_and_control */
 
+namespace mode_select {
+namespace attribute {
+
+attribute_t *create_mode_select_description(cluster_t *cluster, const char * value, uint16_t length)
+{
+    if (length > k_max_mode_select_description_length) {
+        ESP_LOGE(TAG, "Could not create attribute, string length out of bound");
+        return NULL;
+    }
+    return esp_matter::attribute::create(cluster, ModeSelect::Attributes::Description::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_char_str((char *)value, length),
+                                         k_max_mode_select_description_length);
+}
+
+attribute_t *create_standard_namespace(cluster_t *cluster, const nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, ModeSelect::Attributes::StandardNamespace::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum16(value));
+}
+
+attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ModeSelect::Attributes::SupportedModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+}
+
+attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ModeSelect::Attributes::CurrentMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+}
+
+attribute_t *create_start_up_mode(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, ModeSelect::Attributes::StartUpMode::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint8(value));
+}
+
+attribute_t *create_on_mode(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, ModeSelect::Attributes::OnMode::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint8(value));
+}
+
+} /* attribute */
+} /* mode_select */
+
 } /* cluster */
 } /* esp_matter */

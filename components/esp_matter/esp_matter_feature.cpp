@@ -986,5 +986,32 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* time_format_localization */
 
+namespace mode_select {
+namespace feature {
+
+namespace on_off {
+
+uint32_t get_id()
+{
+    return (uint32_t)ModeSelect::ModeSelectFeature::kDeponoff;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_on_mode(cluster, config->on_mode);
+
+    return ESP_OK;
+}
+} /* on_off */
+
+} /* feature */
+} /* mode_select */
+
 } /* cluster */
 } /* esp_matter */

@@ -78,6 +78,8 @@ typedef enum {
     ESP_MATTER_VAL_TYPE_BITMAP16 = 17,
     /** 32 bit bitmap */
     ESP_MATTER_VAL_TYPE_BITMAP32 = 18,
+    /** 16 bit enum */
+    ESP_MATTER_VAL_TYPE_ENUM16 = 19,
     /** nullable types **/
     ESP_MATTER_VAL_TYPE_NULLABLE_INTEGER = ESP_MATTER_VAL_TYPE_INTEGER + ESP_MATTER_VAL_NULLABLE_BASE,
     ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT = ESP_MATTER_VAL_TYPE_FLOAT + ESP_MATTER_VAL_NULLABLE_BASE,
@@ -93,6 +95,7 @@ typedef enum {
     ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8 = ESP_MATTER_VAL_TYPE_BITMAP8 + ESP_MATTER_VAL_NULLABLE_BASE,
     ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16 = ESP_MATTER_VAL_TYPE_BITMAP16 + ESP_MATTER_VAL_NULLABLE_BASE,
     ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32= ESP_MATTER_VAL_TYPE_BITMAP32 + ESP_MATTER_VAL_NULLABLE_BASE,
+    ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16 = ESP_MATTER_VAL_TYPE_ENUM16 + ESP_MATTER_VAL_NULLABLE_BASE,
 } esp_matter_val_type_t;
 
 /** ESP Matter Value */
@@ -276,6 +279,10 @@ esp_matter_attr_val_t esp_matter_nullable_uint64(nullable<uint64_t> val);
 /** 8 bit enum */
 esp_matter_attr_val_t esp_matter_enum8(uint8_t val);
 esp_matter_attr_val_t esp_matter_nullable_enum8(nullable<uint8_t> val);
+
+/** 16 bit enum */
+esp_matter_attr_val_t esp_matter_enum16(uint16_t val);
+esp_matter_attr_val_t esp_matter_nullable_enum16(nullable<uint16_t> val);
 
 /** 8 bit bitmap */
 esp_matter_attr_val_t esp_matter_bitmap8(uint8_t val);
