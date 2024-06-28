@@ -196,7 +196,7 @@ To add the esp_matter component to your project, run:
 
 ::
 
-   idf.py add-dependency "espressif/esp_matter^0.0.2"
+   idf.py add-dependency "espressif/esp_matter^1.3.0"
 
 An example with esp_matter component is offered:
 
