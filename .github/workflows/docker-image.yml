@@ -76,8 +76,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: tools/docker
-          file: tools/docker/matter-builds
+          context: tools/docker/matter_builds
           push: true
           tags: |
             ${{ env.DOCKERHUB_REPO }}:${{ env.TAG_NAME }}
