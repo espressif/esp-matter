@@ -86,6 +86,27 @@ void delegate_init_callback_common()
     }
 }
 
+void add_bounds_callback_common()
+{
+    node_t *node = node::get();
+    if (!node) {
+        /* Skip add_bounds_callback_common when ESP Matter data model is not used */
+        return;
+    }
+    endpoint_t *endpoint = endpoint::get_first(node);
+    while (endpoint) {
+        cluster_t *cluster = get_first(endpoint);
+        while (cluster) {
+            add_bounds_callback_t add_bounds_callback = get_add_bounds_callback(cluster);
+            if (add_bounds_callback) {
+                add_bounds_callback(cluster);
+            }
+            cluster = get_next(cluster);
+        }
+        endpoint = endpoint::get_next(endpoint);
+    }
+}
+
 cluster_t *create_default_binding_cluster(endpoint_t *endpoint)
 {
     /* Don't create binding cluster if it already exists on the endpoint */
@@ -96,6 +117,16 @@ cluster_t *create_default_binding_cluster(endpoint_t *endpoint)
     ESP_LOGI(TAG, "Creating default binding cluster");
     binding::config_t config;
     return binding::create(endpoint, &config, CLUSTER_FLAG_SERVER);
+}
+
+static esp_err_t get_attribute_value(cluster_t *cluster, uint32_t attribute_id, esp_matter_attr_val_t *val)
+{
+    attribute_t *attribute = esp_matter::attribute::get(cluster, attribute_id);
+    esp_err_t err = ESP_ERR_INVALID_ARG;
+    if(attribute) {
+        err = esp_matter::attribute::get_val(attribute, val);
+    }
+    return err;
 }
 
 #if CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
@@ -1004,6 +1035,32 @@ const function_generic_t function_list[] = {
 };
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION;
 
+static void add_bounds_cb(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster is NULL. Add bounds Failed!!");
+        return;
+    }
+    attribute_t *current_attribute = esp_matter::attribute::get_first(cluster);
+    if (!current_attribute) {
+        ESP_LOGE(TAG, "Attribute is NULL.");
+        return;
+    }
+    while(current_attribute) {
+        switch(esp_matter::attribute::get_id(current_attribute)) {
+
+            case Identify::Attributes::IdentifyType::Id: {
+                uint8_t min = 0, max = 6;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_enum8(min), esp_matter_enum8(max));
+                break;
+            }
+            default:
+                ESP_LOGI(TAG, "No need to set boudnds for attribute!!!");
+        }
+        current_attribute = esp_matter::attribute::get_next(current_attribute);
+    }
+}
+
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, Identify::Id, flags);
@@ -1015,6 +1072,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterIdentifyPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        set_add_bounds_callback(cluster, add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -1023,7 +1081,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         if (config) {
-            attribute::create_identify_time(cluster, config->identify_time, 0x0, 0xFFFE);
+            attribute::create_identify_time(cluster, config->identify_time);
             attribute::create_identify_type(cluster, config->identify_type);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
@@ -1095,6 +1153,32 @@ const function_generic_t function_list[] = {
 };
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION;
 
+static void add_bounds_cb(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster is NULL. Add bounds Failed!!");
+        return;
+    }
+    attribute_t *current_attribute = esp_matter::attribute::get_first(cluster);
+    if (!current_attribute) {
+        ESP_LOGE(TAG, "Attribute is NULL.");
+        return;
+    }
+    while(current_attribute) {
+        switch(esp_matter::attribute::get_id(current_attribute)) {
+
+            case ScenesManagement::Attributes::SceneTableSize::Id: {
+                uint16_t min = 16, max = UINT16_MAX;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint16(min), esp_matter_uint16(max));
+                break;
+            }
+            default:
+                ESP_LOGI(TAG, "No need to set boudnds for attribute!!!");
+        }
+        current_attribute = esp_matter::attribute::get_next(current_attribute);
+    }
+}
+
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ScenesManagement::Id, flags);
@@ -1106,6 +1190,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterScenesManagementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        set_add_bounds_callback(cluster, add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -1147,6 +1232,32 @@ const function_generic_t function_list[] = {
 };
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION;
 
+static void add_bounds_cb(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster is NULL. Add bounds Failed!!");
+        return;
+    }
+    attribute_t *current_attribute = esp_matter::attribute::get_first(cluster);
+    if (!current_attribute) {
+        ESP_LOGE(TAG, "Attribute is NULL.");
+        return;
+    }
+    while(current_attribute) {
+        switch(esp_matter::attribute::get_id(current_attribute)) {
+
+            case OnOff::Attributes::StartUpOnOff::Id: {
+                uint8_t min = 0, max = 2;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_nullable_enum8(min), esp_matter_nullable_enum8(max));
+                break;
+            }
+            default:
+                ESP_LOGI(TAG, "No need to set boudnds for attribute!!!");
+        }
+        current_attribute = esp_matter::attribute::get_next(current_attribute);
+    }
+}
+
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, OnOff::Id, flags);
@@ -1158,6 +1269,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterOnOffPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        set_add_bounds_callback(cluster, add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -1203,6 +1315,127 @@ const function_generic_t function_list[] = {
 };
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION;
 
+static void add_bounds_cb(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster is NULL. Add bounds Failed!!");
+        return;
+    }
+    attribute_t *current_attribute = esp_matter::attribute::get_first(cluster);
+    if (!current_attribute) {
+        ESP_LOGE(TAG, "Attribute is NULL.");
+        return;
+    }
+    while(current_attribute) {
+        switch(esp_matter::attribute::get_id(current_attribute)) {
+
+            case LevelControl::Attributes::CurrentLevel::Id: {
+                esp_matter_attr_val_t min_val = esp_matter_invalid(NULL);
+                esp_matter_attr_val_t max_val = esp_matter_invalid(NULL);
+                uint16_t min = 0, max = UINT16_MAX;
+                if(cluster::get_attribute_value(cluster, LevelControl::Attributes::MinLevel::Id,
+                                        &min_val) == ESP_OK)
+                {
+                    min = min_val.val.u16;
+                }
+                if(cluster::get_attribute_value(cluster, LevelControl::Attributes::MaxLevel::Id,
+                                        &max_val) == ESP_OK)
+                {
+                    max = max_val.val.u16;
+                }
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_nullable_uint8(min), esp_matter_nullable_uint8(max));
+                break;
+            }
+            case LevelControl::Attributes::MinLevel::Id: {
+                esp_matter_attr_val_t max_val = esp_matter_invalid(NULL);
+                uint8_t min = 1, max = UINT8_MAX;
+                if(cluster::get_attribute_value(cluster, LevelControl::Attributes::MaxLevel::Id,
+                                        &max_val) == ESP_OK)
+                {
+                    max = max_val.val.u8;
+                }
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint8(min), esp_matter_uint8(max));
+                break;
+            }
+            case LevelControl::Attributes::MaxLevel::Id: {
+                esp_matter_attr_val_t min_val = esp_matter_invalid(NULL);
+                uint8_t min = 1, max = UINT8_MAX;
+                if(cluster::get_attribute_value(cluster, LevelControl::Attributes::MinLevel::Id,
+                                        &min_val) == ESP_OK)
+                {
+                    min = min_val.val.u8;
+                }
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint8(min), esp_matter_uint8(max));
+                break;
+            }
+            case LevelControl::Attributes::CurrentFrequency::Id: {
+                esp_matter_attr_val_t min_val = esp_matter_invalid(NULL);
+                esp_matter_attr_val_t max_val = esp_matter_invalid(NULL);
+                uint16_t min = 0, max = UINT16_MAX;
+                if(cluster::get_attribute_value(cluster, LevelControl::Attributes::MinFrequency::Id,
+                                        &min_val) == ESP_OK)
+                {
+                    min = min_val.val.u16;
+                }
+                if(cluster::get_attribute_value(cluster, LevelControl::Attributes::MaxFrequency::Id,
+                                        &max_val) == ESP_OK)
+                {
+                    max = max_val.val.u16;
+                }
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint16(min), esp_matter_uint16(max));
+                break;
+            }
+            case LevelControl::Attributes::MinFrequency::Id: {
+                esp_matter_attr_val_t max_val = esp_matter_invalid(NULL);
+                uint16_t min = 0, max = UINT16_MAX;
+                if(cluster::get_attribute_value(cluster, LevelControl::Attributes::MaxFrequency::Id,
+                                        &max_val) == ESP_OK)
+                {
+                    max = max_val.val.u16;
+                }
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint16(min), esp_matter_uint16(max));
+                break;
+            }
+            case LevelControl::Attributes::MaxFrequency::Id: {
+                esp_matter_attr_val_t min_val = esp_matter_invalid(NULL);
+                uint16_t min = 0, max = UINT16_MAX;
+                if(cluster::get_attribute_value(cluster, LevelControl::Attributes::MinFrequency::Id,
+                                        &min_val) == ESP_OK)
+                {
+                    min = min_val.val.u16;
+                }
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint16(min), esp_matter_uint16(max));
+                break;
+            }
+            case LevelControl::Attributes::OnLevel::Id: {
+                esp_matter_attr_val_t min_val = esp_matter_invalid(NULL);
+                esp_matter_attr_val_t max_val = esp_matter_invalid(NULL);
+                uint8_t min = 0, max = UINT8_MAX;
+                if(cluster::get_attribute_value(cluster, LevelControl::Attributes::MinLevel::Id,
+                                        &min_val) == ESP_OK)
+                {
+                    min = min_val.val.u8;
+                }
+                if(cluster::get_attribute_value(cluster, LevelControl::Attributes::MaxLevel::Id,
+                                        &max_val) == ESP_OK)
+                {
+                    max = max_val.val.u8;
+                }
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_nullable_uint8(min), esp_matter_nullable_uint8(max));
+                break;
+            }
+            case LevelControl::Attributes::Options::Id: {
+                uint8_t min = 0, max = 3;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_bitmap8(min), esp_matter_bitmap8(max));
+                break;
+            }
+            default:
+                ESP_LOGI(TAG, "No need to set boudnds for attribute!!!");
+        }
+        current_attribute = esp_matter::attribute::get_next(current_attribute);
+    }
+}
+
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, LevelControl::Id, flags);
@@ -1214,6 +1447,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterLevelControlPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        set_add_bounds_callback(cluster, add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -1224,7 +1458,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         if (config) {
             attribute::create_current_level(cluster, config->current_level);
             attribute::create_on_level(cluster, config->on_level);
-            attribute::create_options(cluster, config->options, 0x0, 0x3);
+            attribute::create_options(cluster, config->options);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -1259,6 +1493,125 @@ const function_generic_t function_list[] = {
 };
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION;
 
+static void add_bounds_cb(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster is NULL. Add bounds Failed!!");
+        return;
+    }
+    attribute_t *current_attribute = esp_matter::attribute::get_first(cluster);
+    if (!current_attribute) {
+        ESP_LOGE(TAG, "Attribute is NULL.");
+        return;
+    }
+    while(current_attribute) {
+        switch(esp_matter::attribute::get_id(current_attribute)) {
+
+            case ColorControl::Attributes::CurrentHue::Id:
+            case ColorControl::Attributes::CurrentSaturation::Id: {
+                uint8_t min = 0, max = 254;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint8(min), esp_matter_uint8(max));
+                break;
+            }
+            case ColorControl::Attributes::RemainingTime::Id: {
+                uint16_t min = 0, max = 65534;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint16(min), esp_matter_uint16(max));
+                break;
+            }
+            case ColorControl::Attributes::CurrentX::Id:
+            case ColorControl::Attributes::CurrentY::Id:
+            case ColorControl::Attributes::ColorTemperatureMireds::Id:
+            case ColorControl::Attributes::Primary1X::Id:
+            case ColorControl::Attributes::Primary1Y::Id:
+            case ColorControl::Attributes::Primary2X::Id:
+            case ColorControl::Attributes::Primary2Y::Id:
+            case ColorControl::Attributes::Primary3X::Id:
+            case ColorControl::Attributes::Primary3Y::Id:
+            case ColorControl::Attributes::Primary4X::Id:
+            case ColorControl::Attributes::Primary4Y::Id:
+            case ColorControl::Attributes::Primary5X::Id:
+            case ColorControl::Attributes::Primary5Y::Id:
+            case ColorControl::Attributes::Primary6X::Id:
+            case ColorControl::Attributes::Primary6Y::Id:
+            case ColorControl::Attributes::WhitePointX::Id:
+            case ColorControl::Attributes::WhitePointY::Id:
+            case ColorControl::Attributes::ColorPointRX::Id:
+            case ColorControl::Attributes::ColorPointRY::Id:
+            case ColorControl::Attributes::ColorPointGX::Id:
+            case ColorControl::Attributes::ColorPointGY::Id:
+            case ColorControl::Attributes::ColorPointBX::Id:
+            case ColorControl::Attributes::ColorPointBY::Id:
+            case ColorControl::Attributes::ColorTempPhysicalMinMireds::Id:
+            case ColorControl::Attributes::ColorTempPhysicalMaxMireds::Id: {
+                uint16_t min = 0, max = 65279;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint16(min), esp_matter_uint16(max));
+                break;
+            }
+            case ColorControl::Attributes::DriftCompensation::Id: {
+                uint8_t min = 0, max = 4;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_enum8(min), esp_matter_enum8(max));
+                break;
+            }
+            case ColorControl::Attributes::ColorMode::Id: {
+                uint8_t min = 0, max = 2;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_enum8(min), esp_matter_enum8(max));
+                break;
+            }
+            case ColorControl::Attributes::Options::Id: {
+                uint8_t min = 0, max = 1;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_bitmap8(min), esp_matter_bitmap8(max));
+                break;
+            }
+            case ColorControl::Attributes::NumberOfPrimaries::Id: {
+                uint8_t min = 0, max = 6;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_nullable_uint8(min), esp_matter_nullable_uint8(max));
+                break;
+            }
+            case ColorControl::Attributes::EnhancedColorMode::Id: {
+                uint8_t min = 0, max = 3;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_enum8(min), esp_matter_enum8(max));
+                break;
+            }
+            case ColorControl::Attributes::ColorLoopActive::Id:
+            case ColorControl::Attributes::ColorLoopDirection::Id: {
+                uint8_t min = 0, max = 1;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint8(min), esp_matter_uint8(max));
+                break;
+            }
+            case ColorControl::Attributes::ColorCapabilities::Id: {
+                uint8_t min = 0, max = 31;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_bitmap16(min), esp_matter_bitmap16(max));
+                break;
+            }
+            case ColorControl::Attributes::StartUpColorTemperatureMireds::Id: {
+                uint16_t min = 0, max = 65279;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_nullable_uint16(min), esp_matter_nullable_uint16(max));
+                break;
+            }
+            case ColorControl::Attributes::CoupleColorTempToLevelMinMireds::Id: {
+                esp_matter_attr_val_t min_val = esp_matter_invalid(NULL);
+                esp_matter_attr_val_t max_val = esp_matter_invalid(NULL);
+                uint16_t min = 0, max = UINT16_MAX;
+                if(cluster::get_attribute_value(cluster, ColorControl::Attributes::ColorTempPhysicalMinMireds::Id,
+                                        &min_val) == ESP_OK)
+                {
+                    min = min_val.val.u16;
+                }
+                if(cluster::get_attribute_value(cluster, ColorControl::Attributes::ColorTemperatureMireds::Id,
+                                        &max_val) == ESP_OK)
+                {
+                    max = max_val.val.u16;
+                }
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint16(min), esp_matter_uint16(max));
+                break;
+            }
+            default:
+                ESP_LOGI(TAG, "No need to set boudnds for attribute!!!");
+        }
+        current_attribute = esp_matter::attribute::get_next(current_attribute);
+    }
+}
+
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, ColorControl::Id, flags);
@@ -1270,6 +1623,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterColorControlPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        set_add_bounds_callback(cluster, add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -1280,8 +1634,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         if (config) {
             attribute::create_color_mode(cluster, config->color_mode);
             attribute::create_color_control_options(cluster, config->color_control_options);
-            attribute::create_enhanced_color_mode(cluster, config->enhanced_color_mode, 0, 3);
-            attribute::create_color_capabilities(cluster, config->color_capabilities, 0, 0x001f);
+            attribute::create_enhanced_color_mode(cluster, config->enhanced_color_mode);
+            attribute::create_color_capabilities(cluster, config->color_capabilities);
             attribute::create_number_of_primaries(cluster, config->number_of_primaries);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");

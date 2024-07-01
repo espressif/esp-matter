@@ -549,8 +549,8 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     update_color_capability(cluster, get_id());
 
     /* Attributes not managed internally */
-    attribute::create_current_hue(cluster, config->current_hue, 0, 254);
-    attribute::create_current_saturation(cluster, config->current_saturation, 0, 254);
+    attribute::create_current_hue(cluster, config->current_hue);
+    attribute::create_current_saturation(cluster, config->current_saturation);
 
     /* Commands */
     command::create_move_to_hue(cluster);
@@ -583,10 +583,10 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     update_color_capability(cluster, get_id());
 
     /* Attributes not managed internally */
-    attribute::create_color_temperature_mireds(cluster, config->color_temperature_mireds, 0, 0xfeff);
-    attribute::create_color_temp_physical_min_mireds(cluster, config->color_temp_physical_min_mireds, 0, 0xfeff);
-    attribute::create_color_temp_physical_max_mireds(cluster, config->color_temp_physical_max_mireds, 0, 0xfeff);
-    attribute::create_couple_color_temp_to_level_min_mireds(cluster, config->couple_color_temp_to_level_min_mireds, config->color_temp_physical_min_mireds, config->color_temperature_mireds);
+    attribute::create_color_temperature_mireds(cluster, config->color_temperature_mireds);
+    attribute::create_color_temp_physical_min_mireds(cluster, config->color_temp_physical_min_mireds);
+    attribute::create_color_temp_physical_max_mireds(cluster, config->color_temp_physical_max_mireds);
+    attribute::create_couple_color_temp_to_level_min_mireds(cluster, config->couple_color_temp_to_level_min_mireds);
     attribute::create_startup_color_temperature_mireds(cluster, config->startup_color_temperature_mireds);
 
     /* Commands */
@@ -616,8 +616,8 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     update_color_capability(cluster, get_id());
 
     /* Attributes not managed internally */
-    attribute::create_current_x(cluster, config->current_x, 0, 0xfeff);
-    attribute::create_current_y(cluster, config->current_y, 0, 0xfeff);
+    attribute::create_current_x(cluster, config->current_x);
+    attribute::create_current_y(cluster, config->current_y);
 
     /* Commands */
     command::create_move_to_color(cluster);
