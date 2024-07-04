@@ -1988,7 +1988,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 namespace node {
 
 node_t *create(config_t *config, attribute::callback_t attribute_callback,
-               identification::callback_t identification_callback)
+               identification::callback_t identification_callback, void* priv_data)
 {
     attribute::set_callback(attribute_callback);
     identification::set_callback(identification_callback);
@@ -1999,8 +1999,7 @@ node_t *create(config_t *config, attribute::callback_t attribute_callback,
         return NULL;
     }
 
-    endpoint::root_node::create(node, &(config->root_node), ENDPOINT_FLAG_NONE, NULL);
-
+    endpoint::root_node::create(node, &(config->root_node), ENDPOINT_FLAG_NONE, priv_data);
     return node;
 }
 
