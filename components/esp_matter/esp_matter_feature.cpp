@@ -35,15 +35,7 @@ static esp_err_t update_feature_map(cluster_t *cluster, uint32_t value)
     /* Get the attribute */
     attribute_t *attribute = attribute::get(cluster, Globals::Attributes::FeatureMap::Id);
 
-    /* Create the attribute with the new value if it does not exist */
-    if (!attribute) {
-        attribute = global::attribute::create_feature_map(cluster, value);
-        if (!attribute) {
-            ESP_LOGE(TAG, "Could not create feature map attribute");
-            return ESP_FAIL;
-        }
-        return ESP_OK;
-    }
+    VerifyOrReturnError(attribute, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Feature map attribute cannot be null"));
 
     /* Update the value if the attribute already exists */
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
@@ -56,9 +48,11 @@ static esp_err_t update_feature_map(cluster_t *cluster, uint32_t value)
 
 static uint32_t get_feature_map_value(cluster_t *cluster)
 {
+    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
     attribute_t *attribute = attribute::get(cluster, Globals::Attributes::FeatureMap::Id);
 
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    VerifyOrReturnError(attribute, 0, ESP_LOGE(TAG, "Feature map attribute cannot be null"));
+
     attribute::get_val(attribute, &val);
     return val.val.u32;
 }
@@ -97,7 +91,8 @@ namespace feature {
 
 namespace basic {
 
-uint32_t get_id() {
+uint32_t get_id()
+{
     return (uint32_t)AdministratorCommissioning::Feature::kBasic;
 }
 
@@ -185,7 +180,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     }
 
     uint32_t battery_feature_map = feature::battery::get_id();
-    if((get_feature_map_value(cluster) & battery_feature_map) == battery_feature_map) {
+    if ((get_feature_map_value(cluster) & battery_feature_map) == battery_feature_map) {
 
         update_feature_map(cluster, get_id());
 
@@ -217,7 +212,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     }
 
     uint32_t battery_feature_map = feature::battery::get_id();
-    if((get_feature_map_value(cluster) & battery_feature_map) == battery_feature_map) {
+    if ((get_feature_map_value(cluster) & battery_feature_map) == battery_feature_map) {
 
         update_feature_map(cluster, get_id());
 
@@ -328,7 +323,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     attribute::create_user_active_mode_trigger_instruction(cluster, config->user_active_mode_trigger_instruction,
                                                            strlen(config->user_active_mode_trigger_instruction));
 
-   return ESP_OK;
+    return ESP_OK;
 }
 
 } /* user_active_mode_trigger */
@@ -649,7 +644,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     }
 
     uint32_t hs_feature_map = feature::hue_saturation::get_id();
-    if((get_feature_map_value(cluster) & hs_feature_map) == hs_feature_map) {
+    if ((get_feature_map_value(cluster) & hs_feature_map) == hs_feature_map) {
         update_feature_map(cluster, get_id());
         update_color_capability(cluster, get_id());
 
@@ -683,7 +678,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         return ESP_ERR_INVALID_ARG;
     }
     uint32_t eh_feature_map = feature::enhanced_hue::get_id();
-    if((get_feature_map_value(cluster) & eh_feature_map) == eh_feature_map) {
+    if ((get_feature_map_value(cluster) & eh_feature_map) == eh_feature_map) {
         update_feature_map(cluster, get_id());
         update_color_capability(cluster, get_id());
 
@@ -769,7 +764,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     }
 
     uint32_t lift_feature_map = feature::lift::get_id();
-    if((get_feature_map_value(cluster) & lift_feature_map) == lift_feature_map) {
+    if ((get_feature_map_value(cluster) & lift_feature_map) == lift_feature_map) {
 
         update_feature_map(cluster, get_id());
 
@@ -823,7 +818,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         ESP_LOGE(TAG, "Cluster shall support Lift (and optionally Position_Aware_Lift) and/or Tilt (and optionally Position_Aware_Tilt) features");
         return ESP_ERR_NOT_SUPPORTED;
     }
-    if((get_feature_map_value(cluster) & abs_and_pa_lf_and_lf_feature_map) == abs_and_pa_lf_and_lf_feature_map) {
+    if ((get_feature_map_value(cluster) & abs_and_pa_lf_and_lf_feature_map) == abs_and_pa_lf_and_lf_feature_map) {
         attribute::create_physical_closed_limit_lift(cluster, config->physical_closed_limit_lift);
         attribute::create_current_position_lift(cluster, config->current_position_lift);
         attribute::create_installed_open_limit_lift(cluster, config->installed_open_limit_lift);
@@ -832,7 +827,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         ESP_LOGW(TAG, "Lift related attributes were not created because cluster does not support Position_Aware_Lift feature");
     }
 
-    if((get_feature_map_value(cluster) & abs_and_pa_tl_and_tl_feature_map) == abs_and_pa_tl_and_tl_feature_map) {
+    if ((get_feature_map_value(cluster) & abs_and_pa_tl_and_tl_feature_map) == abs_and_pa_tl_and_tl_feature_map) {
         attribute::create_physical_closed_limit_tilt(cluster, config->physical_closed_limit_tilt);
         attribute::create_current_position_tilt(cluster, config->current_position_tilt);
         attribute::create_installed_open_limit_tilt(cluster, config->installed_open_limit_tilt);
@@ -841,13 +836,13 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         ESP_LOGW(TAG, "Tilt related attributes were not created because cluster does not support Position_Aware_Tilt feature");
     }
 
-    if((get_feature_map_value(cluster) & abs_and_lift_feature_map) == abs_and_lift_feature_map) {
+    if ((get_feature_map_value(cluster) & abs_and_lift_feature_map) == abs_and_lift_feature_map) {
         command::create_go_to_lift_value(cluster);
     } else {
         ESP_LOGW(TAG, "Lift commands were not created because cluster does not support Lift feature");
     }
 
-    if((get_feature_map_value(cluster) & abs_and_tilt_feature_map) == abs_and_tilt_feature_map) {
+    if ((get_feature_map_value(cluster) & abs_and_tilt_feature_map) == abs_and_tilt_feature_map) {
         command::create_go_to_tilt_value(cluster);
     } else {
         ESP_LOGW(TAG, "Tilt commands were not created because cluster does not support Tilt feature");
@@ -873,7 +868,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     }
 
     uint32_t tilt_feature_map = feature::tilt::get_id();
-    if((get_feature_map_value(cluster) & tilt_feature_map) == tilt_feature_map) {
+    if ((get_feature_map_value(cluster) & tilt_feature_map) == tilt_feature_map) {
 
         update_feature_map(cluster, get_id());
 
@@ -2829,15 +2824,15 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     uint32_t occ_and_heat_feature_map = get_id() | feature::heating::get_id();
     uint32_t occ_and_sb_feature_map = get_id() | feature::setback::get_id();
 
-    if((get_feature_map_value(cluster) & occ_and_cool_feature_map) == occ_and_cool_feature_map) {
+    if ((get_feature_map_value(cluster) & occ_and_cool_feature_map) == occ_and_cool_feature_map) {
         attribute::create_unoccupied_cooling_setpoint(cluster, config->unoccupied_cooling_setpoint);
     }
 
-    if((get_feature_map_value(cluster) & occ_and_heat_feature_map) == occ_and_heat_feature_map) {
+    if ((get_feature_map_value(cluster) & occ_and_heat_feature_map) == occ_and_heat_feature_map) {
         attribute::create_unoccupied_heating_setpoint(cluster, config->unoccupied_heating_setpoint);
     }
 
-    if((get_feature_map_value(cluster) & occ_and_sb_feature_map) == occ_and_sb_feature_map) {
+    if ((get_feature_map_value(cluster) & occ_and_sb_feature_map) == occ_and_sb_feature_map) {
 
         attribute::create_unoccupied_setback(cluster, config->unoccupied_setback);
         attribute::create_unoccupied_setback_min(cluster, config->unoccupied_setback_min);
@@ -2955,8 +2950,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if((get_feature_map_value(cluster) & feature::momentary_switch::get_id()) == feature::momentary_switch::get_id())
-    {
+    if ((get_feature_map_value(cluster) & feature::momentary_switch::get_id()) == feature::momentary_switch::get_id()) {
         ESP_LOGE(TAG, "Latching switch is not supported because momentary switch is present");
         return ESP_ERR_NOT_SUPPORTED;
     }
@@ -2978,8 +2972,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if((get_feature_map_value(cluster) & feature::latching_switch::get_id()) == feature::latching_switch::get_id())
-    {
+    if ((get_feature_map_value(cluster) & feature::latching_switch::get_id()) == feature::latching_switch::get_id()) {
         ESP_LOGE(TAG, "Momentary switch is not supported because latching switch is present");
         return ESP_ERR_NOT_SUPPORTED;
     }
@@ -3001,8 +2994,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if((get_feature_map_value(cluster) & feature::momentary_switch::get_id()) != feature::momentary_switch::get_id())
-    {
+    if ((get_feature_map_value(cluster) & feature::momentary_switch::get_id()) != feature::momentary_switch::get_id()) {
         ESP_LOGE(TAG, "Momentary switch release is not supported because momentary is absent");
         return ESP_ERR_NOT_SUPPORTED;
     }
@@ -3025,8 +3017,7 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     uint32_t momentary_and_momentart_switch_release_feature_map = feature::momentary_switch::get_id() | feature::momentary_switch_release::get_id();
-    if((get_feature_map_value(cluster) & momentary_and_momentart_switch_release_feature_map) != momentary_and_momentart_switch_release_feature_map)
-    {
+    if ((get_feature_map_value(cluster) & momentary_and_momentart_switch_release_feature_map) != momentary_and_momentart_switch_release_feature_map) {
         ESP_LOGE(TAG, "Momentary switch long press is not supported because momentary switch and/or momentary switch release is absent");
         return ESP_ERR_NOT_SUPPORTED;
     }
@@ -3049,8 +3040,7 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     uint32_t momentary_and_momentart_switch_release_feature_map = feature::momentary_switch::get_id() | feature::momentary_switch_release::get_id();
-    if((get_feature_map_value(cluster) & momentary_and_momentart_switch_release_feature_map) != momentary_and_momentart_switch_release_feature_map)
-    {
+    if ((get_feature_map_value(cluster) & momentary_and_momentart_switch_release_feature_map) != momentary_and_momentart_switch_release_feature_map) {
         ESP_LOGE(TAG, "Momentary switch multi press is not supported because momentary switch and/or momentary switch releaseis absent");
         return ESP_ERR_NOT_SUPPORTED;
     }
@@ -3205,7 +3195,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     }
 
     uint32_t temp_level_feature_map = feature::temperature_level::get_id();
-    if((get_feature_map_value(cluster) & temp_level_feature_map) != temp_level_feature_map) {
+    if ((get_feature_map_value(cluster) & temp_level_feature_map) != temp_level_feature_map) {
         update_feature_map(cluster, get_id());
 
         /* Attributes not managed internally */
@@ -3236,7 +3226,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     }
 
     uint32_t temp_number_feature_map = feature::temperature_number::get_id();
-    if((get_feature_map_value(cluster) & temp_number_feature_map) != temp_number_feature_map) {
+    if ((get_feature_map_value(cluster) & temp_number_feature_map) != temp_number_feature_map) {
         update_feature_map(cluster, get_id());
 
         /* Attributes managed internally */
@@ -3268,7 +3258,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     }
 
     uint32_t temp_number_feature_map = feature::temperature_number::get_id();
-    if((get_feature_map_value(cluster) & temp_number_feature_map) == temp_number_feature_map) {
+    if ((get_feature_map_value(cluster) & temp_number_feature_map) == temp_number_feature_map) {
         update_feature_map(cluster, get_id());
 
         /* Attributes not managed internally */
@@ -3542,12 +3532,12 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
-	    return ESP_ERR_INVALID_ARG;
+        return ESP_ERR_INVALID_ARG;
     }
     uint32_t visual_feature_map = feature::visual::get_id();
     uint32_t audible_feature_map = feature::audible::get_id();
-    if((get_feature_map_value(cluster) & visual_feature_map) == visual_feature_map ||
-       (get_feature_map_value(cluster) & audible_feature_map) == audible_feature_map) {
+    if ((get_feature_map_value(cluster) & visual_feature_map) == visual_feature_map ||
+            (get_feature_map_value(cluster) & audible_feature_map) == audible_feature_map) {
         update_feature_map(cluster, get_id());
 
         attribute::create_alarms_suppressed(cluster, config->alarms_suppressed);
@@ -3572,7 +3562,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
-	return ESP_ERR_INVALID_ARG;
+        return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
 
@@ -3660,7 +3650,7 @@ esp_err_t add(cluster_t *cluster)
         return ESP_ERR_INVALID_ARG;
     }
     uint32_t set_topology_feature_map = feature::set_topology::get_id();
-    if((get_feature_map_value(cluster) & set_topology_feature_map) == set_topology_feature_map) {
+    if ((get_feature_map_value(cluster) & set_topology_feature_map) == set_topology_feature_map) {
 
         update_feature_map(cluster, get_id());
 
@@ -3732,7 +3722,7 @@ esp_err_t add(cluster_t *cluster)
         return ESP_ERR_INVALID_ARG;
     }
     uint32_t ac_feature_map = feature::alternating_current::get_id();
-    if((get_feature_map_value(cluster) & ac_feature_map) == ac_feature_map) {
+    if ((get_feature_map_value(cluster) & ac_feature_map) == ac_feature_map) {
 
         update_feature_map(cluster, get_id());
 
@@ -3760,7 +3750,7 @@ esp_err_t add(cluster_t *cluster)
         return ESP_ERR_INVALID_ARG;
     }
     uint32_t ac_feature_map = feature::alternating_current::get_id();
-    if((get_feature_map_value(cluster) & ac_feature_map) == ac_feature_map) {
+    if ((get_feature_map_value(cluster) & ac_feature_map) == ac_feature_map) {
 
         update_feature_map(cluster, get_id());
 
@@ -3789,7 +3779,7 @@ esp_err_t add(cluster_t *cluster)
         return ESP_ERR_INVALID_ARG;
     }
     uint32_t ac_feature_map = feature::alternating_current::get_id();
-    if((get_feature_map_value(cluster) & ac_feature_map) == ac_feature_map) {
+    if ((get_feature_map_value(cluster) & ac_feature_map) == ac_feature_map) {
 
         update_feature_map(cluster, get_id());
 
@@ -3865,10 +3855,10 @@ esp_err_t add(cluster_t *cluster)
     update_feature_map(cluster, get_id());
     uint32_t imported_feature_map = feature::imported_energy::get_id();
     uint32_t exported_feature_map = feature::exported_energy::get_id();
-    if((get_feature_map_value(cluster) & imported_feature_map) == imported_feature_map) {
+    if ((get_feature_map_value(cluster) & imported_feature_map) == imported_feature_map) {
         attribute::create_cumulative_energy_imported(cluster, NULL, 0, 0);
     }
-    if((get_feature_map_value(cluster) & exported_feature_map) == exported_feature_map) {
+    if ((get_feature_map_value(cluster) & exported_feature_map) == exported_feature_map) {
         attribute::create_cumulative_energy_exported(cluster, NULL, 0, 0);
     }
 
@@ -3894,10 +3884,10 @@ esp_err_t add(cluster_t *cluster)
     update_feature_map(cluster, get_id());
     uint32_t imported_feature_map = feature::imported_energy::get_id();
     uint32_t exported_feature_map = feature::exported_energy::get_id();
-    if((get_feature_map_value(cluster) & imported_feature_map) == imported_feature_map) {
+    if ((get_feature_map_value(cluster) & imported_feature_map) == imported_feature_map) {
         attribute::create_periodic_energy_imported(cluster, NULL, 0, 0);
     }
-    if((get_feature_map_value(cluster) & exported_feature_map) == exported_feature_map) {
+    if ((get_feature_map_value(cluster) & exported_feature_map) == exported_feature_map) {
         attribute::create_periodic_energy_exported(cluster, NULL, 0, 0);
     }
 
@@ -4444,7 +4434,7 @@ esp_err_t add(cluster_t *cluster)
         return ESP_ERR_INVALID_ARG;
     }
     uint32_t power_in_watts_feature_map = feature::power_in_watts::get_id();
-    if((get_feature_map_value(cluster) & power_in_watts_feature_map) != power_in_watts_feature_map) {
+    if ((get_feature_map_value(cluster) & power_in_watts_feature_map) != power_in_watts_feature_map) {
         update_feature_map(cluster, get_id());
         /* Attributes managed internally */
         attribute::create_power_setting(cluster, 0);
@@ -4471,7 +4461,7 @@ esp_err_t add(cluster_t *cluster)
         return ESP_ERR_INVALID_ARG;
     }
     uint32_t power_as_number_feature_map = feature::power_as_number::get_id();
-    if((get_feature_map_value(cluster) & power_as_number_feature_map) != power_as_number_feature_map) {
+    if ((get_feature_map_value(cluster) & power_as_number_feature_map) != power_as_number_feature_map) {
         update_feature_map(cluster, get_id());
         /* Attributes managed internally */
         attribute::create_supported_watts(cluster, NULL, 0, 0);
@@ -4500,7 +4490,7 @@ esp_err_t add(cluster_t *cluster)
     }
 
     uint32_t power_as_number_feature_map = feature::power_as_number::get_id();
-    if((get_feature_map_value(cluster) & power_as_number_feature_map) != power_as_number_feature_map) {
+    if ((get_feature_map_value(cluster) & power_as_number_feature_map) != power_as_number_feature_map) {
         update_feature_map(cluster, get_id());
         /* Attributes managed internally */
         attribute::create_min_power(cluster, 0);
@@ -4641,12 +4631,12 @@ esp_err_t add(cluster_t *cluster)
     uint32_t forecast_adjustment_id         = feature::forecast_adjustment::get_id();
     uint32_t constraint_based_adjustment_id = feature::constraint_based_adjustment::get_id();
     uint32_t feature_map_value              = get_feature_map_value(cluster);
-    if((((feature_map_value & power_adjustment_id)              != power_adjustment_id) ||
-        ((feature_map_value & start_time_adjustment_id)         == start_time_adjustment_id) ||
-        ((feature_map_value & pausable_id)                      == pausable_id) ||
-        ((feature_map_value & forecast_adjustment_id)           == forecast_adjustment_id) ||
-        ((feature_map_value & constraint_based_adjustment_id)   == constraint_based_adjustment_id)) &&
-        ((feature_map_value & power_forecast_reporting)         != power_forecast_reporting)) {
+    if ((((feature_map_value & power_adjustment_id)              != power_adjustment_id) ||
+            ((feature_map_value & start_time_adjustment_id)         == start_time_adjustment_id) ||
+            ((feature_map_value & pausable_id)                      == pausable_id) ||
+            ((feature_map_value & forecast_adjustment_id)           == forecast_adjustment_id) ||
+            ((feature_map_value & constraint_based_adjustment_id)   == constraint_based_adjustment_id)) &&
+            ((feature_map_value & power_forecast_reporting)         != power_forecast_reporting)) {
         update_feature_map(cluster, get_id());
         attribute::create_forecast(cluster, NULL, 0, 0);
     } else {
