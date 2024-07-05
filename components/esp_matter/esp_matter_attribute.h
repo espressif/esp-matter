@@ -196,7 +196,7 @@ attribute_t *create_operating_mode(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* icd_management */
 
-namespace diagnostics_network_wifi {
+namespace wifi_network_diagnotics {
 namespace attribute {
 attribute_t *create_bssid(cluster_t *cluster, uint8_t *value, uint16_t length);
 attribute_t *create_security_type(cluster_t *cluster, nullable<uint8_t> value);
@@ -216,9 +216,9 @@ attribute_t *create_packet_unicast_tx_count(cluster_t *cluster, nullable<uint32_
 attribute_t *create_current_max_rate(cluster_t *cluster, nullable<uint64_t> value);
 attribute_t *create_overrun_count(cluster_t *cluster, nullable<uint64_t> value);
 } /* attribute */
-} /* diagnostics_network_wifi */
+} /* wifi_network_diagnotics */
 
-namespace diagnostics_network_thread {
+namespace thread_network_diagnostics {
 namespace attribute {
 attribute_t *create_channel(cluster_t *cluster, nullable<uint16_t> value);
 attribute_t *create_routing_role(cluster_t *cluster, nullable<uint8_t> value);
@@ -238,9 +238,9 @@ attribute_t *create_channel_page0_mask(cluster_t *cluster, uint8_t *value, uint1
 attribute_t *create_operational_dataset_components(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 } /* attribute */
-} /* diagnostics_network_thread */
+} /* thread_network_diagnostics */
 
-namespace diagnostics_network_ethernet {
+namespace ethernet_network_diagnostics {
 namespace attribute {
 attribute_t *create_phy_rate(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_full_duplex(cluster_t *cluster, nullable<bool> value);
@@ -252,7 +252,7 @@ attribute_t *create_overrun_count(cluster_t *cluster, uint64_t value);
 attribute_t *create_carrier_detect(cluster_t *cluster, nullable<bool> value);
 attribute_t *create_time_since_reset(cluster_t *cluster, uint64_t value);
 } /* attribute */
-} /* diagnostics_network_ethernet */
+} /* ethernet_network_diagnostics */
 
 namespace bridged_device_basic_information {
 constexpr uint8_t k_max_vendor_name_length = 32;

@@ -902,7 +902,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* window_covering */
 
-namespace diagnostics_network_wifi {
+namespace wifi_network_diagnotics {
 namespace feature {
 
 namespace packets_counts {
@@ -964,9 +964,9 @@ esp_err_t add(cluster_t *cluster)
 } /* error_counts */
 
 } /* feature */
-} /* diagnostics_network_wifi */
+} /* wifi_network_diagnotics */
 
-namespace diagnostics_network_ethernet {
+namespace ethernet_network_diagnostics {
 namespace feature {
 
 namespace packets_counts {
@@ -1019,7 +1019,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* error_counts */
 
 } /* feature */
-} /* diagnostics_network_ethernet */
+} /* ethernet_network_diagnostics */
 
 namespace air_quality {
 namespace feature {

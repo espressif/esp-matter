@@ -187,32 +187,32 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, uint8_t flags);
 } /* group_key_management */
 
-namespace diagnostics_network_wifi {
+namespace wifi_network_diagnotics {
 typedef struct config {
     uint16_t cluster_revision;
     config() : cluster_revision(1) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* diagnostics_network_wifi */
+} /* wifi_network_diagnotics */
 
-namespace diagnostics_network_thread {
+namespace thread_network_diagnostics {
 typedef struct config {
     uint16_t cluster_revision;
     config() : cluster_revision(2) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* diagnostics_network_thread */
+} /* thread_network_diagnostics */
 
-namespace diagnostics_network_ethernet {
+namespace ethernet_network_diagnostics {
 typedef struct config {
     uint16_t cluster_revision;
     config() : cluster_revision(1) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* diagnostics_network_ethernet */
+} /* ethernet_network_diagnostics */
 
 namespace time_synchronization {
 typedef struct config {
