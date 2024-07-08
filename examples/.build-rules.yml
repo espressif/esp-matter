@@ -98,3 +98,9 @@ examples/door_lock:
     - if: IDF_TARGET in ["esp32", "esp32c3", "esp32c2", "esp32c6", "esp32h2"]
       temporary: true
       reason: the other targets are not tested yet
+
+examples/ota_provider:
+  enable:
+    - if: IDF_TARGET in ["esp32s3"]
+      temporary: true
+      reason: the other targets are not tested yet
