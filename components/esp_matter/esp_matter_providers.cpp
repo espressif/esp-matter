@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <credentials/examples/DeviceAttestationCredsExample.h>
+#include <esp_log.h>
 #include <esp_matter_providers.h>
 #include <platform/ESP32/ESP32DeviceInfoProvider.h>
 #include <platform/ESP32/ESP32FactoryDataProvider.h>
