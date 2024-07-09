@@ -65,10 +65,7 @@ void esp_matter_connection_success_callback(void *context, ExchangeManager &exch
                                             const SessionHandle &sessionHandle)
 {
     request_handle_t *req_handle = static_cast<request_handle_t *>(context);
-    if (!req_handle) {
-        ESP_LOGE(TAG, "Failed to call connect_success_callback since the request handle is NULL");
-        return;
-    }
+    VerifyOrReturn(req_handle, ESP_LOGE(TAG, "Failed to call connect_success_callback since the request handle is NULL"));
     ESP_LOGI(TAG, "New connection success");
     // Only unicast binding needs to establish the connection
     if (client_request_callback) {
@@ -90,17 +87,12 @@ void esp_matter_connection_failure_callback(void *context, const ScopedNodeId &p
 esp_err_t connect(case_session_mgr_t *case_session_mgr, uint8_t fabric_index, uint64_t node_id,
                   request_handle_t *req_handle)
 {
-    if (!case_session_mgr) {
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(case_session_mgr, ESP_ERR_INVALID_ARG);
     static Callback<chip::OnDeviceConnected> success_callback(esp_matter_connection_success_callback, NULL);
     static Callback<chip::OnDeviceConnectionFailure> failure_callback(esp_matter_connection_failure_callback, NULL);
 
     request_handle_t *context = chip::Platform::New<request_handle_t>(req_handle);
-    if (!context) {
-        ESP_LOGE(TAG, "failed to alloc memory for the command handle");
-        return ESP_ERR_NO_MEM;
-    }
+    VerifyOrReturnError(context, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "failed to alloc memory for the command handle"));
     success_callback.mContext = static_cast<void *>(context);
     failure_callback.mContext = static_cast<void *>(context);
     case_session_mgr->FindOrEstablishSession(ScopedNodeId(node_id, fabric_index), &success_callback, &failure_callback);
@@ -109,11 +101,7 @@ esp_err_t connect(case_session_mgr_t *case_session_mgr, uint8_t fabric_index, ui
 
 esp_err_t group_request_send(uint8_t fabric_index, request_handle_t *req_handle)
 {
-    if (!req_handle) {
-        ESP_LOGE(TAG, "command handle is null");
-        return ESP_ERR_NO_MEM;
-    }
-
+    VerifyOrReturnError(req_handle, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "command handle is null"));
     if (client_group_request_callback) {
         client_group_request_callback(fabric_index, req_handle, request_callback_priv_data);
     }
@@ -125,10 +113,7 @@ static void esp_matter_command_client_binding_callback(const EmberBindingTableEn
                                                        OperationalDeviceProxy *peer_device, void *context)
 {
     request_handle_t *req_handle = static_cast<request_handle_t *>(context);
-    if (!req_handle) {
-        ESP_LOGE(TAG, "Failed to call the binding callback since command handle is NULL");
-        return;
-    }
+    VerifyOrReturn(req_handle, ESP_LOGE(TAG, "Failed to call the binding callback since command handle is NULL"));
     if (binding.type == MATTER_UNICAST_BINDING && peer_device) {
         if (client_request_callback) {
             if (req_handle->type == INVOKE_CMD) {
@@ -167,10 +152,7 @@ static void esp_matter_binding_context_release(void *context)
 esp_err_t cluster_update(uint16_t local_endpoint_id, request_handle_t *req_handle)
 {
     request_handle_t *context = chip::Platform::New<request_handle_t>(req_handle);
-    if (!context) {
-        ESP_LOGE(TAG, "failed to alloc memory for the request handle");
-        return ESP_ERR_NO_MEM;
-    }
+    VerifyOrReturnError(context, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "failed to alloc memory for the request handle"));
     chip::ClusterId notified_cluster_id = chip::kInvalidClusterId;
     if (req_handle->type == INVOKE_CMD) {
         notified_cluster_id = req_handle->command_path.mClusterId;
@@ -179,9 +161,7 @@ esp_err_t cluster_update(uint16_t local_endpoint_id, request_handle_t *req_handl
     } else if (req_handle->type == READ_EVENT || req_handle->type == SUBSCRIBE_EVENT) {
         notified_cluster_id = req_handle->event_path.mClusterId;
     }
-    if (notified_cluster_id == chip::kInvalidClusterId) {
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(notified_cluster_id != chip::kInvalidClusterId, ESP_ERR_INVALID_ARG);
     if (CHIP_NO_ERROR !=
         chip::BindingManager::GetInstance().NotifyBoundClusterChanged(local_endpoint_id, notified_cluster_id,
                                                                       static_cast<void *>(context))) {
@@ -250,19 +230,13 @@ esp_err_t send_request(void *ctx, peer_device_t *remote_device, const CommandPat
                        custom_command_callback::on_error_callback_t on_error,
                        const Optional<uint16_t> &timed_invoke_timeout_ms, const Optional<Timeout> &response_timeout)
 {
-    if (!remote_device->GetSecureSession().HasValue() || remote_device->GetSecureSession().Value()->IsGroupSession()) {
-        ESP_LOGE(TAG, "Invalid Session Type");
-        return ESP_ERR_INVALID_ARG;
-    }
-    if (command_path.mFlags.Has(chip::app::CommandPathFlags::kGroupIdValid)) {
-        ESP_LOGE(TAG, "Invalid CommandPathFlags");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(remote_device->GetSecureSession().HasValue() && !remote_device->GetSecureSession().Value()->IsGroupSession(),
+                        ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid Session Type"));
+    VerifyOrReturnError(!command_path.mFlags.Has(chip::app::CommandPathFlags::kGroupIdValid),
+                        ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid CommandPathFlags"));
     auto decoder = chip::Platform::MakeUnique<custom_command_callback>(ctx, on_success, on_error);
-    if (decoder == nullptr) {
-        ESP_LOGE(TAG, "No memory for command callback");
-        return ESP_ERR_NO_MEM;
-    }
+    VerifyOrReturnError(decoder != nullptr, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "No memory for command callback"));
+
     auto on_done = [raw_decoder_ptr = decoder.get()](void *context, CommandSender *command_sender) {
         chip::Platform::Delete(command_sender);
         chip::Platform::Delete(raw_decoder_ptr);
@@ -271,17 +245,10 @@ esp_err_t send_request(void *ctx, peer_device_t *remote_device, const CommandPat
 
     auto command_sender = chip::Platform::MakeUnique<CommandSender>(decoder.get(), remote_device->GetExchangeManager(),
                                                                     timed_invoke_timeout_ms.HasValue());
-    if (command_sender == nullptr) {
-        ESP_LOGE(TAG, "No memory for command sender");
-        return ESP_ERR_NO_MEM;
-    }
+    VerifyOrReturnError(command_sender != nullptr, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "No memory for command sender"));
     chip::app::CommandSender::AddRequestDataParameters add_request_data_params(timed_invoke_timeout_ms);
     command_sender->AddRequestData(command_path, encodable, add_request_data_params);
-    if (command_sender->SendCommandRequest(remote_device->GetSecureSession().Value(), response_timeout) !=
-        CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to send command request");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(command_sender->SendCommandRequest(remote_device->GetSecureSession().Value(), response_timeout) == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to send command request"));
     (void)decoder.release();
     (void)command_sender.release();
     return ESP_OK;
@@ -290,24 +257,15 @@ esp_err_t send_request(void *ctx, peer_device_t *remote_device, const CommandPat
 esp_err_t send_group_request(const uint8_t fabric_index, const CommandPathParams &command_path,
                              const EncodableToTLV &encodeable)
 {
-    if (!command_path.mFlags.Has(chip::app::CommandPathFlags::kGroupIdValid)) {
-        ESP_LOGE(TAG, "Invalid CommandPathFlags");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(command_path.mFlags.Has(chip::app::CommandPathFlags::kGroupIdValid), ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid CommandPathFlags"));
     chip::Transport::OutgoingGroupSession session(command_path.mGroupId, fabric_index);
     chip::Messaging::ExchangeManager *exchange_mgr =
         chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager();
     auto command_sender = chip::Platform::MakeUnique<chip::app::CommandSender>(nullptr, exchange_mgr);
-    if (command_sender == nullptr) {
-        ESP_LOGE(TAG, "No memory for command sender");
-        return ESP_ERR_NO_MEM;
-    }
+    VerifyOrReturnError(command_sender != nullptr, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "No memory for command sender"));
     chip::app::CommandSender::AddRequestDataParameters add_request_data_params;
     command_sender->AddRequestData(command_path, encodeable, add_request_data_params);
-    if (command_sender->SendGroupCommandRequest(SessionHandle(session)) != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to send command request");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(command_sender->SendGroupCommandRequest(SessionHandle(session)) == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to send command request"));
     return ESP_OK;
 }
 
@@ -397,14 +355,9 @@ namespace read {
 esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams *attr_path, size_t attr_path_size,
                        EventPathParams *event_path, size_t event_path_size, ReadClient::Callback &callback)
 {
-    if (!remote_device->GetSecureSession().HasValue() || remote_device->GetSecureSession().Value()->IsGroupSession()) {
-        ESP_LOGE(TAG, "Invalid Session Type");
-        return ESP_ERR_INVALID_ARG;
-    }
-    if ((!attr_path || attr_path_size == 0) && (!event_path || event_path_size == 0)) {
-        ESP_LOGE(TAG, "Invalid attribute path and event path");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(remote_device->GetSecureSession().HasValue() && !remote_device->GetSecureSession().Value()->IsGroupSession(), ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid Session Type"));
+    VerifyOrReturnError((attr_path && attr_path_size != 0) || (event_path && event_path_size != 0),
+                    ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid attribute path and event path"));
     ReadPrepareParams params(remote_device->GetSecureSession().Value());
     params.mpAttributePathParamsList = attr_path;
     params.mAttributePathParamsListSize = attr_path_size;
@@ -415,22 +368,15 @@ esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams
     params.mIsFabricFiltered = false;
 
     auto client_deleter_callback = chip::Platform::MakeUnique<client_deleter_read_callback>(callback);
-    if (!client_deleter_callback) {
-        ESP_LOGE(TAG, "Failed to allocate memory for client deleter callback");
-        return ESP_ERR_NO_MEM;
-    }
+    VerifyOrReturnError(client_deleter_callback, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "Failed to allocate memory for client deleter callback"));
     auto client = chip::Platform::MakeUnique<ReadClient>(chip::app::InteractionModelEngine::GetInstance(),
                                                          remote_device->GetExchangeManager(), *client_deleter_callback,
                                                          ReadClient::InteractionType::Read);
-    if (!client) {
-        ESP_LOGE(TAG, "Failed to allocate memory for ReadClient");
-        return ESP_ERR_NO_MEM;
-    }
+    VerifyOrReturnError(client, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "Failed to allocate memory for ReadClient"));
 
-    if (client->SendRequest(params) != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to send read request");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(client->SendRequest(params) == CHIP_NO_ERROR,
+                    ESP_FAIL, ESP_LOGE(TAG, "Failed to send read request"));
+
     // The memory will be released when OnDone() is called
     client.release();
     client_deleter_callback.release();
@@ -446,14 +392,10 @@ esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams
                        uint16_t max_interval, bool keep_subscription, bool auto_resubscribe,
                        ReadClient::Callback &callback)
 {
-    if (!remote_device->GetSecureSession().HasValue() || remote_device->GetSecureSession().Value()->IsGroupSession()) {
-        ESP_LOGE(TAG, "Invalid Session Type");
-        return ESP_ERR_INVALID_ARG;
-    }
-    if ((!attr_path || attr_path_size == 0) && (!event_path || event_path_size == 0)) {
-        ESP_LOGE(TAG, "Invalid attribute path and event path");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(remote_device->GetSecureSession().HasValue() && !remote_device->GetSecureSession().Value()->IsGroupSession(),
+                    ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid Session Type"));
+    VerifyOrReturnError((attr_path && attr_path_size != 0) || (event_path && event_path_size != 0),
+                    ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid attribute path and event path"));
     ReadPrepareParams params(remote_device->GetSecureSession().Value());
     params.mpAttributePathParamsList = attr_path;
     params.mAttributePathParamsListSize = attr_path_size;
@@ -467,17 +409,11 @@ esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams
     params.mKeepSubscriptions = keep_subscription;
 
     auto client_deleter_callback = chip::Platform::MakeUnique<client_deleter_read_callback>(callback);
-    if (!client_deleter_callback) {
-        ESP_LOGE(TAG, "Failed to allocate memory for client deleter callback");
-        return ESP_ERR_NO_MEM;
-    }
+    VerifyOrReturnError(client_deleter_callback, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "Failed to allocate memory for client deleter callback"));
     auto client = chip::Platform::MakeUnique<ReadClient>(chip::app::InteractionModelEngine::GetInstance(),
                                                          remote_device->GetExchangeManager(), *client_deleter_callback,
                                                          ReadClient::InteractionType::Subscribe);
-    if (!client) {
-        ESP_LOGE(TAG, "Failed to allocate memory for ReadClient");
-        return ESP_ERR_NO_MEM;
-    }
+    VerifyOrReturnError(client, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "Failed to allocate memory for ReadClient"));
 
     CHIP_ERROR err = CHIP_NO_ERROR;
     if (auto_resubscribe) {
@@ -485,10 +421,8 @@ esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams
     } else {
         err = client->SendRequest(params);
     }
-    if (err != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to send subcribe request");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(err == CHIP_NO_ERROR,
+                    ESP_FAIL, ESP_LOGE(TAG, "Failed to send subscribe request"));
     // The memory will be released when OnDone() is called
     client.release();
     client_deleter_callback.release();
@@ -536,32 +470,20 @@ static esp_err_t encode_attribute_value(uint8_t *encoded_buf, size_t encoded_buf
     TLVReader reader;
 
     writer.Init(encoded_buf, encoded_buf_size);
-    if (encodable.EncodeTo(writer, chip::TLV::AnonymousTag()) != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to encode attribute value");
-        return ESP_FAIL;
-    }
-    if (writer.Finalize() != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to finalize tlv writer");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(encodable.EncodeTo(writer, chip::TLV::AnonymousTag()) == CHIP_NO_ERROR,
+                    ESP_FAIL, ESP_LOGE(TAG, "Failed to encode attribute value"));
+    VerifyOrReturnError(writer.Finalize() == CHIP_NO_ERROR,
+                    ESP_FAIL, ESP_LOGE(TAG, "Failed to finalize TLV writer"));
     encoded_len = writer.GetLengthWritten();
     reader.Init(encoded_buf, encoded_len);
-    if (reader.Next() != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to read next");
-        return ESP_FAIL;
-    }
-    if (reader.GetType() != chip::TLV::TLVType::kTLVType_Structure) {
-        ESP_LOGE(TAG, "The TLV type must be structure");
-        return ESP_ERR_INVALID_ARG;
-    }
-    if (reader.OpenContainer(out_reader) != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to open container");
-        return ESP_FAIL;
-    }
-    if (out_reader.Next() != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to read next");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(reader.Next() == CHIP_NO_ERROR,
+                    ESP_FAIL, ESP_LOGE(TAG, "Failed to read next"));
+    VerifyOrReturnError(reader.GetType() == chip::TLV::TLVType::kTLVType_Structure,
+                    ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "The TLV type must be structure"));
+    VerifyOrReturnError(reader.OpenContainer(out_reader) == CHIP_NO_ERROR,
+                    ESP_FAIL, ESP_LOGE(TAG, "Failed to open container"));
+    VerifyOrReturnError(out_reader.Next() == CHIP_NO_ERROR,
+                    ESP_FAIL, ESP_LOGE(TAG, "Failed to read next"));
     return ESP_OK;
 }
 
@@ -570,48 +492,30 @@ esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams
                        const chip::Optional<uint16_t> &timeout_ms)
 {
     esp_err_t err = ESP_OK;
-    if (!remote_device->GetSecureSession().HasValue() || remote_device->GetSecureSession().Value()->IsGroupSession()) {
-        ESP_LOGE(TAG, "Invalid Session Type");
-        return ESP_ERR_INVALID_ARG;
-    }
-    if (attr_path.HasWildcardEndpointId()) {
-        ESP_LOGE(TAG, "Endpoint Id Invalid");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(remote_device->GetSecureSession().HasValue() && !remote_device->GetSecureSession().Value()->IsGroupSession(),
+                    ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid Session Type"));
+    VerifyOrReturnError(!attr_path.HasWildcardEndpointId(),
+                        ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint Id Invalid"));
 
     ConcreteDataAttributePath path(attr_path.mEndpointId, attr_path.mClusterId, attr_path.mAttributeId);
 
     auto client_deleter_callback = chip::Platform::MakeUnique<client_deleter_write_callback>(callback);
-    if (!client_deleter_callback) {
-        ESP_LOGE(TAG, "Failed to allocate memory for client deleter callback");
-        return ESP_ERR_NO_MEM;
-    }
+    VerifyOrReturnError(client_deleter_callback, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "Failed to allocate memory for client deleter callback"));
     auto write_client = chip::Platform::MakeUnique<WriteClient>(remote_device->GetExchangeManager(),
                                                                 client_deleter_callback.get(), timeout_ms, false);
-    if (!write_client) {
-        ESP_LOGE(TAG, "Failed to allocate memory for WriteClient");
-        return ESP_ERR_NO_MEM;
-    }
+    VerifyOrReturnError(write_client, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "Failed to allocate memory for WriteClient"));
     chip::Platform::ScopedMemoryBuffer<uint8_t> encoded_buf;
     encoded_buf.Alloc(k_encoded_buf_size);
-    if (!encoded_buf.Get()) {
-        ESP_LOGE(TAG, "Failed to alloc memory for encoded_buf");
-        return ESP_ERR_NO_MEM;
-    }
+    VerifyOrReturnError((encoded_buf.Get()), ESP_ERR_NO_MEM, ESP_LOGE(TAG, "Failed to alloc memory for encoded_buf"));
     TLVReader attr_val_reader;
     err = encode_attribute_value(encoded_buf.Get(), k_encoded_buf_size, encodable, attr_val_reader);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to encode attribute value to a TLV reader");
-        return err;
-    }
-    if (write_client->PutPreencodedAttribute(path, attr_val_reader) != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to put pre-encoded attribute value to WriteClient");
-        return ESP_FAIL;
-    }
-    if (write_client->SendWriteRequest(remote_device->GetSecureSession().Value()) != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to Send Write Request");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(err == ESP_OK,
+                    err, ESP_LOGE(TAG, "Failed to encode attribute value to a TLV reader"));
+    VerifyOrReturnError(write_client->PutPreencodedAttribute(path, attr_val_reader) == CHIP_NO_ERROR,
+                        ESP_FAIL, ESP_LOGE(TAG, "Failed to put pre-encoded attribute value to WriteClient"));
+    VerifyOrReturnError(write_client->SendWriteRequest(remote_device->GetSecureSession().Value()) == CHIP_NO_ERROR,
+                        ESP_FAIL, ESP_LOGE(TAG, "Failed to Send Write Request"));
+
     // Release the write_client and client deleter callback as it will be managed by the client deleter callback
     write_client.release();
     client_deleter_callback.release();

@@ -63,10 +63,7 @@ esp_err_t init(uint16_t endpoint_id, uint8_t identify_type, uint8_t effect_ident
     Identify *identify = chip::Platform::New<Identify>(endpoint_id, start_cb, stop_cb, (chip::app::Clusters::Identify::IdentifyTypeEnum)identify_type,
                                                        effect_cb, static_cast<chip::app::Clusters::Identify::EffectIdentifierEnum>(effect_identifier),
                                                        static_cast<chip::app::Clusters::Identify::EffectVariantEnum>(effect_variant));
-    if (!identify) {
-        ESP_LOGE(TAG, "Fail to create identify object");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(identify, ESP_FAIL, ESP_LOGE(TAG, "Fail to create identify object"));
     endpoint::set_identify(endpoint_id, (void *)identify);
     return ESP_OK;
 }

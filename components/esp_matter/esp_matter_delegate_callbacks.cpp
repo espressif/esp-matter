@@ -61,10 +61,7 @@ namespace delegate_cb {
 
 void InitModeDelegate(void *delegate, uint16_t endpoint_id, uint32_t cluster_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     static ModeBase::Instance * modeInstance = nullptr;
     ModeBase::Delegate *mode_delegate = static_cast<ModeBase::Delegate*>(delegate);
     uint32_t feature_map = get_feature_map_value(endpoint_id, cluster_id);
@@ -119,10 +116,7 @@ void DeviceEnergyManagementModeDelegateInitCB(void *delegate, uint16_t endpoint_
 
 void EnergyEvseDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     static EnergyEvse::Instance * energyEvseInstance = nullptr;
     EnergyEvse::Delegate *energy_evse_delegate = static_cast<EnergyEvse::Delegate*>(delegate);
     uint32_t feature_map = get_feature_map_value(endpoint_id, EnergyEvse::Id);
@@ -140,10 +134,7 @@ void MicrowaveOvenControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
     ModeBase::Delegate *microwave_oven_mode_delegate = static_cast<ModeBase::Delegate*>(get_delegate_impl(cluster));
     cluster = cluster::get(endpoint, OperationalState::Id);
     OperationalState::Delegate *operational_state_delegate = static_cast<OperationalState::Delegate*>(get_delegate_impl(cluster));
-    if(delegate == nullptr || microwave_oven_mode_delegate == nullptr || operational_state_delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr && microwave_oven_mode_delegate != nullptr && operational_state_delegate != nullptr);
     // Create instances of clusters.
     static ModeBase::Instance * microwaveOvenModeInstance = nullptr;
     static OperationalState::Instance * operationalStateInstance = nullptr;
@@ -162,10 +153,7 @@ void MicrowaveOvenControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
 
 void OperationalStateDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     static OperationalState::Instance * operationalStateInstance = nullptr;
     OperationalState::Delegate *operational_state_delegate = static_cast<OperationalState::Delegate*>(delegate);
     operationalStateInstance = new OperationalState::Instance(operational_state_delegate, endpoint_id);
@@ -174,20 +162,14 @@ void OperationalStateDelegateInitCB(void *delegate, uint16_t endpoint_id)
 
 void FanControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     FanControl::Delegate *fan_control_delegate = static_cast<FanControl::Delegate*>(delegate);
     FanControl::SetDefaultDelegate(endpoint_id, fan_control_delegate);
 }
 
 void HepaFilterMonitoringDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     static ResourceMonitoring::Instance * hepaFilterMonitoringInstance = nullptr;
     ResourceMonitoring::Delegate *resource_monitoring_delegate = static_cast<ResourceMonitoring::Delegate*>(delegate);
     uint32_t feature_map = get_feature_map_value(endpoint_id, HepaFilterMonitoring::Id);
@@ -198,10 +180,7 @@ void HepaFilterMonitoringDelegateInitCB(void *delegate, uint16_t endpoint_id)
 
 void ActivatedCarbonFilterMonitoringDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     static ResourceMonitoring::Instance * activatedCarbonFilterMonitoringInstance = nullptr;
     ResourceMonitoring::Delegate *resource_monitoring_delegate = static_cast<ResourceMonitoring::Delegate*>(delegate);
     uint32_t feature_map = get_feature_map_value(endpoint_id, ActivatedCarbonFilterMonitoring::Id);
@@ -212,30 +191,21 @@ void ActivatedCarbonFilterMonitoringDelegateInitCB(void *delegate, uint16_t endp
 
 void LaundryDryerControlsDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     LaundryDryerControls::Delegate *laundry_dryer_controls_delegate = static_cast<LaundryDryerControls::Delegate*>(delegate);
     LaundryDryerControls::LaundryDryerControlsServer::SetDefaultDelegate(endpoint_id, laundry_dryer_controls_delegate);
 }
 
 void ValveConfigurationAndControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     ValveConfigurationAndControl::Delegate *valve_configuration_and_control_delegate = static_cast<ValveConfigurationAndControl::Delegate*>(delegate);
     ValveConfigurationAndControl::SetDefaultDelegate(endpoint_id, valve_configuration_and_control_delegate);
 }
 
 void DeviceEnergyManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     static DeviceEnergyManagement::Instance * deviceEnergyManagementInstance = nullptr;
     DeviceEnergyManagement::Delegate *device_energy_management_delegate = static_cast<DeviceEnergyManagement::Delegate*>(delegate);
     uint32_t feature_map = get_feature_map_value(endpoint_id, DeviceEnergyManagement::Id);
@@ -245,50 +215,35 @@ void DeviceEnergyManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
 
 void DoorLockDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     DoorLock::Delegate *door_lock_delegate = static_cast<DoorLock::Delegate*>(delegate);
     DoorLockServer::Instance().SetDelegate(endpoint_id, door_lock_delegate);
 }
 
 void BooleanStateConfigurationDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     BooleanStateConfiguration::Delegate *boolean_state_configuration_delegate = static_cast<BooleanStateConfiguration::Delegate*>(delegate);
     BooleanStateConfiguration::SetDefaultDelegate(endpoint_id, boolean_state_configuration_delegate);
 }
 
 void TimeSynchronizationDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     TimeSynchronization::Delegate *time_synchronization_delegate = static_cast<TimeSynchronization::Delegate*>(delegate);
     TimeSynchronization::SetDefaultDelegate(time_synchronization_delegate);
 }
 
 void ApplicationBasicDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     ApplicationBasic::Delegate *application_basic_delegate = static_cast<ApplicationBasic::Delegate*>(delegate);
     ApplicationBasic::SetDefaultDelegate(endpoint_id, application_basic_delegate);
 }
 
 void PowerTopologyDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     static PowerTopology::Instance * powerTopologyInstance = nullptr;
     PowerTopology::Delegate *power_topology_delegate = static_cast<PowerTopology::Delegate*>(delegate);
     uint32_t feature_map = get_feature_map_value(endpoint_id, PowerTopology::Id);
@@ -299,10 +254,7 @@ void PowerTopologyDelegateInitCB(void *delegate, uint16_t endpoint_id)
 
 void ElectricalPowerMeasurementDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     static ElectricalPowerMeasurement::Instance * electricalPowerMeasurementInstance = nullptr;
     ElectricalPowerMeasurement::Delegate *electrical_power_measurement_delegate = static_cast<ElectricalPowerMeasurement::Delegate*>(delegate);
     uint32_t feature_map = get_feature_map_value(endpoint_id, ElectricalPowerMeasurement::Id);
@@ -314,50 +266,35 @@ void ElectricalPowerMeasurementDelegateInitCB(void *delegate, uint16_t endpoint_
 
 void LaundryWasherControlsDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     LaundryWasherControls::Delegate *laundry_washer_controls_delegate = static_cast<LaundryWasherControls::Delegate*>(delegate);
     LaundryWasherControls::LaundryWasherControlsServer::SetDefaultDelegate(endpoint_id, laundry_washer_controls_delegate);
 }
 
 void WindowCoveringDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     WindowCovering::Delegate *window_covering_delegate = static_cast<WindowCovering::Delegate*>(delegate);
     WindowCovering::SetDefaultDelegate(endpoint_id, window_covering_delegate);
 }
 
 void DishwasherAlarmDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     DishwasherAlarm::Delegate *dishwasher_alarm_delegate = static_cast<DishwasherAlarm::Delegate*>(delegate);
     DishwasherAlarm::SetDefaultDelegate(endpoint_id, dishwasher_alarm_delegate);
 }
 
 void KeypadInputDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     KeypadInput::Delegate *keypad_input_delegate = static_cast<KeypadInput::Delegate*>(delegate);
     KeypadInput::SetDefaultDelegate(endpoint_id, keypad_input_delegate);
 }
 
 void ModeSelectDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
-        return;
-    }
+    VerifyOrReturn(delegate != nullptr);
     ModeSelect::SupportedModesManager *supported_modes_manager = static_cast<ModeSelect::SupportedModesManager*>(delegate);
     ModeSelect::setSupportedModesManager(supported_modes_manager);
 }
