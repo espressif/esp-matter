@@ -23,12 +23,18 @@ ENV IDF_TOOLS_PATH=/opt/espressif/tools
 
 COPY --from=build /tmp/esp-idf /opt/espressif/esp-idf
 
+ARG IDF_CHECKOUT_REF
+RUN if [ "$IDF_CHECKOUT_REF" = "v4.4.3" ]; then \
+    sed -i 's/^gdbgui==/# gdbgui ==/' /opt/espressif/esp-idf/requirements.txt; \
+    fi
+
+RUN apt-get update && apt-get install -y python3-virtualenv
+
 # Setup the ESP-IDF
 WORKDIR /opt/espressif/esp-idf
 RUN set -x \
     && ./install.sh \
     && : # last line
-
 
 ARG CHIP_CLONE_URL=https://github.com/espressif/connectedhomeip.git
 ARG CHIP_CHECKOUT_REF=9f6d627e0262e1d023986291948bb4e845be803e
