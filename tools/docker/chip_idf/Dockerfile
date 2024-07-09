@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=54
 FROM ghcr.io/project-chip/chip-build:${VERSION} as build
 
 # Use IDF_CHECKOUT_REF to specify a tag, a branch or a specific commit ID.
