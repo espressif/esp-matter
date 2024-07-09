@@ -1,3 +1,9 @@
+# 08-July-2024
+- Changed diagnostic cluster namespaces as per the matter specifications
+  - diagnostics_network_wifi -> wifi_network_diagnotics  
+  - diagnostics_network_thread -> thread_network_diagnostics  
+  - diagnostics_network_ethernet -> ethernet_network_diagnostics
+
 # 07-May-2024
 
 - `tools/mfg_tool.py` is moved to https://github.com/espressif/esp-matter-tools/tree/main/mfg_tool

@@ -42,23 +42,23 @@ command_t *create_disable_action_with_duration(cluster_t *cluster);
 } /* command */
 } /* actions */
 
-namespace diagnostics_network_thread {
+namespace thread_network_diagnostics {
 namespace command {
 command_t *create_reset_counts(cluster_t *cluster);
 } /* command */
-} /* diagnostics_network_thread */
+} /* thread_network_diagnostics */
 
-namespace diagnostics_network_wifi {
+namespace wifi_network_diagnotics {
 namespace command {
 command_t *create_reset_counts(cluster_t *cluster);
 } /* command */
-} /* diagnostics_network_wifi */
+} /* wifi_network_diagnotics */
 
-namespace diagnostics_network_ethernet {
+namespace ethernet_network_diagnostics {
 namespace command {
 command_t *create_reset_counts(cluster_t *cluster);
 } /* command */
-} /* diagnostics_network_ethernet */
+} /* ethernet_network_diagnostics */
 
 namespace diagnostic_logs {
 namespace command {

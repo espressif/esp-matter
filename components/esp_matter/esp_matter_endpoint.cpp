@@ -64,10 +64,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     group_key_management::create(endpoint, CLUSTER_FLAG_SERVER);
 
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI
-    diagnostics_network_wifi::create(endpoint, &(config->diagnostics_network_wifi), CLUSTER_FLAG_SERVER);
+    wifi_network_diagnotics::create(endpoint, &(config->wifi_network_diagnotics), CLUSTER_FLAG_SERVER);
 #endif
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-    diagnostics_network_thread::create(endpoint, &(config->diagnostics_network_thread), CLUSTER_FLAG_SERVER);
+    thread_network_diagnostics::create(endpoint, &(config->thread_network_diagnostics), CLUSTER_FLAG_SERVER);
 #endif
 #if CHIP_CONFIG_ENABLE_ICD_SERVER
     icd_management::create(endpoint, &(config->icd_management), CLUSTER_FLAG_SERVER,

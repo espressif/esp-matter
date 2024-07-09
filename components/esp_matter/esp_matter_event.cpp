@@ -137,7 +137,7 @@ event_t *create_boot_reason(cluster_t *cluster)
 } // namespace event
 } // namespace general_diagnostics
 
-namespace diagnostics_network_wifi {
+namespace wifi_network_diagnotics {
 namespace event {
 event_t *create_disconnection(cluster_t *cluster)
 {
@@ -155,9 +155,9 @@ event_t *create_connection_status(cluster_t *cluster)
 }
 
 } // namespace event
-} // namespace diagnostics_network_wifi
+} // namespace wifi_network_diagnotics
 
-namespace diagnostics_network_thread {
+namespace thread_network_diagnostics {
 namespace event {
 event_t *create_connection_status(cluster_t *cluster)
 {
@@ -170,7 +170,7 @@ event_t *create_network_fault_change(cluster_t *cluster)
 }
 
 } // namespace event
-} // namespace diagnostics_network_thread
+} // namespace thread_network_diagnostics
 
 namespace software_diagnostics {
 namespace event {
