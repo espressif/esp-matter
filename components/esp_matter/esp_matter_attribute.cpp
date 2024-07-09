@@ -174,10 +174,7 @@ attribute_t *create_product_id(cluster_t *cluster, uint16_t value)
 
 attribute_t *create_node_label(cluster_t *cluster, char *value, uint16_t length)
 {
-    if (length > k_max_node_label_length) {
-        ESP_LOGE(TAG, "Could not create attribute, string length out of bound");
-        return NULL;
-    }
+    VerifyOrReturnValue(length <= k_max_node_label_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
     return esp_matter::attribute::create(cluster, BasicInformation::Attributes::NodeLabel::Id,
                                          ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
                                          esp_matter_char_str(value, length), k_max_node_label_length);
@@ -915,10 +912,7 @@ attribute_t *create_product_name(cluster_t *cluster, char *value, uint16_t lengt
 
 attribute_t *create_node_label(cluster_t *cluster, char *value, uint16_t length)
 {
-    if (length > k_max_node_label_length) {
-        ESP_LOGE(TAG, "Could not create attribute, string length out of bound");
-        return NULL;
-    }
+    VerifyOrReturnValue(length <= k_max_node_label_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
     return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::NodeLabel::Id,
                                          ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
                                          esp_matter_char_str(value, length), k_max_node_label_length);
@@ -1308,10 +1302,7 @@ attribute_t *create_drift_compensation(cluster_t *cluster, uint8_t value)
 
 attribute_t *create_compensation_text(cluster_t *cluster, char *value, uint16_t length)
 {
-    if (length > k_max_compensation_text_length) {
-        ESP_LOGE(TAG, "Could not create attribute, string length out of bound");
-        return NULL;
-    }
+    VerifyOrReturnValue(length <= k_max_compensation_text_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
     return esp_matter::attribute::create(cluster, ColorControl::Attributes::CompensationText::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_char_str(value, length), k_max_compensation_text_length);
 }
@@ -2965,10 +2956,8 @@ attribute_t *create_number_of_credentials_supported_per_user(cluster_t *cluster,
 
 attribute_t *create_language(cluster_t *cluster, const char * value, uint16_t length)
 {
-    if (length > k_max_language_length) {
-        ESP_LOGE(TAG, "Could not create attribute, string size out of bound");
-        return NULL;
-    }
+    VerifyOrReturnValue(length <= k_max_language_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string size out of bound"));
+    
     return esp_matter::attribute::create(cluster, DoorLock::Attributes::Language::Id, ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_char_str((char *)value, length), k_max_language_length);
 }
@@ -2995,10 +2984,7 @@ attribute_t *create_operating_mode(cluster_t *cluster, uint8_t value, uint8_t mi
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, DoorLock::Attributes::OperatingMode::Id,
                                                            ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), DoorLock::Attributes::OperatingMode::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(min), esp_matter_enum8(max));
     return attribute;
 }
@@ -3049,10 +3035,7 @@ attribute_t *create_wrong_code_entry_limit(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, DoorLock::Attributes::WrongCodeEntryLimit::Id,
                                                            ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint8(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), DoorLock::Attributes::WrongCodeEntryLimit::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(1), esp_matter_uint8(255));
     return attribute;
 }
@@ -3061,10 +3044,7 @@ attribute_t *create_user_code_temporary_disable_time(cluster_t *cluster, uint8_t
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, DoorLock::Attributes::UserCodeTemporaryDisableTime::Id,
                                                            ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint8(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), DoorLock::Attributes::UserCodeTemporaryDisableTime::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(1), esp_matter_uint8(255));
     return attribute;
 }
@@ -3085,10 +3065,7 @@ attribute_t *create_expiring_user_timeout(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, DoorLock::Attributes::ExpiringUserTimeout::Id,
                                                            ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint16(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), DoorLock::Attributes::ExpiringUserTimeout::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(1), esp_matter_uint16(2880));
     return attribute;
 }
@@ -3412,10 +3389,7 @@ namespace attribute {
 
 attribute_t *create_active_locale(cluster_t *cluster, char *value, uint16_t length)
 {
-    if (length > k_max_active_locale_length) {
-        ESP_LOGE(TAG, "Could not create attribute, string length out of bound");
-        return NULL;
-    }
+    VerifyOrReturnValue(length <= k_max_active_locale_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
     return esp_matter::attribute::create(cluster, LocalizationConfiguration::Attributes::ActiveLocale::Id,
                                          ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
                                          esp_matter_char_str(value, length), k_max_active_locale_length);
@@ -3474,10 +3448,7 @@ namespace attribute {
 attribute_t *create_illuminance_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, IlluminanceMeasurement::Attributes::MeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
-    if (!attribute) {
-	ESP_LOGE(TAG, "Could not create attribute");
-	return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), IlluminanceMeasurement::Attributes::MeasuredValue::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint16(min), esp_matter_nullable_uint16(max));
     return attribute;
 }
@@ -3485,10 +3456,7 @@ attribute_t *create_illuminance_measured_value(cluster_t *cluster, nullable<uint
 attribute_t *create_illuminance_min_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, IlluminanceMeasurement::Attributes::MinMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
-    if (!attribute) {
-	ESP_LOGE(TAG, "Could not create attribute");
-	return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), IlluminanceMeasurement::Attributes::MinMeasuredValue::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint16(min), esp_matter_nullable_uint16(max));
     return attribute;
 }
@@ -3496,10 +3464,7 @@ attribute_t *create_illuminance_min_measured_value(cluster_t *cluster, nullable<
 attribute_t *create_illuminance_max_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, IlluminanceMeasurement::Attributes::MaxMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
-    if (!attribute) {
-	ESP_LOGE(TAG, "Could not create attribute");
-	return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), IlluminanceMeasurement::Attributes::MaxMeasuredValue::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint16(min), esp_matter_nullable_uint16(max));
     return attribute;
 }
@@ -3507,10 +3472,7 @@ attribute_t *create_illuminance_max_measured_value(cluster_t *cluster, nullable<
 attribute_t *create_illuminance_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, IlluminanceMeasurement::Attributes::Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-   if (!attribute) {
-	ESP_LOGE(TAG, "Could not create attribute");
-	return NULL;
-   }
+   VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), IlluminanceMeasurement::Attributes::Tolerance::Id));
    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
    return attribute;
 }
@@ -3518,10 +3480,7 @@ attribute_t *create_illuminance_tolerance(cluster_t *cluster, uint16_t value, ui
 attribute_t *create_illuminance_light_sensor_type(cluster_t *cluster, nullable<uint8_t> value, nullable<uint8_t> min, nullable<uint8_t> max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, IlluminanceMeasurement::Attributes::LightSensorType::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
-    if (!attribute) {
-	ESP_LOGE(TAG, "Could not create attribute");
-	return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), IlluminanceMeasurement::Attributes::LightSensorType::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_enum8(min), esp_matter_nullable_enum8(max));
     return attribute;
 }
@@ -3550,10 +3509,7 @@ attribute_t *create_pressure_max_measured_value(cluster_t *cluster, nullable<int
 attribute_t *create_pressure_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-    if (!attribute) {
-	ESP_LOGE(TAG, "Could not create attribute");
-	return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PressureMeasurement::Attributes::Tolerance::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
     return attribute;
 }
@@ -3576,10 +3532,7 @@ attribute_t *create_pressure_max_scaled_value(cluster_t *cluster, nullable<int16
 attribute_t *create_pressure_scaled_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::ScaledTolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-    if (!attribute) {
-	ESP_LOGE(TAG, "Could not create attribute");
-	return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PressureMeasurement::Attributes::ScaledTolerance::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
     return attribute;
 }
@@ -3613,10 +3566,7 @@ attribute_t *create_flow_max_measured_value(cluster_t *cluster, nullable<uint16_
 attribute_t *create_flow_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, FlowMeasurement::Attributes::Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-    if (!attribute) {
-	ESP_LOGE(TAG, "Could not create attribute");
-	return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), FlowMeasurement::Attributes::Tolerance::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
     return attribute;
 }
@@ -3748,10 +3698,7 @@ namespace attribute {
 
 attribute_t *create_mode_select_description(cluster_t *cluster, const char * value, uint16_t length)
 {
-    if (length > k_max_mode_select_description_length) {
-        ESP_LOGE(TAG, "Could not create attribute, string length out of bound");
-        return NULL;
-    }
+    VerifyOrReturnValue(length <= k_max_mode_select_description_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
     return esp_matter::attribute::create(cluster, ModeSelect::Attributes::Description::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_char_str((char *)value, length),
                                          k_max_mode_select_description_length);
@@ -3796,20 +3743,14 @@ attribute_t *create_status(cluster_t *cluster, uint8_t value)
 attribute_t *create_order(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::Order::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PowerSource::Attributes::Order::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(min), esp_matter_uint8(max));
     return attribute;
 }
 
 attribute_t *create_description(cluster_t *cluster, const char * value, uint16_t length)
 {
-    if (length > k_max_description_length) {
-        ESP_LOGE(TAG, "Could not create attribute, string length out of bound");
-        return NULL;
-    }
+    VerifyOrReturnValue(length <= k_max_description_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
     return esp_matter::attribute::create(cluster, PowerSource::Attributes::Description::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_char_str((char *)value, length), k_max_description_length);
 }
@@ -3817,10 +3758,7 @@ attribute_t *create_description(cluster_t *cluster, const char * value, uint16_t
 attribute_t *create_wired_assessed_input_voltage(cluster_t *cluster, nullable<uint32_t> value, nullable<uint32_t> min, nullable<uint32_t> max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::WiredAssessedInputVoltage::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PowerSource::Attributes::WiredAssessedInputVoltage::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint32(min), esp_matter_nullable_uint32(max));
     return attribute;
 }
@@ -3828,10 +3766,7 @@ attribute_t *create_wired_assessed_input_voltage(cluster_t *cluster, nullable<ui
 attribute_t *create_wired_assessed_input_frequency(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::WiredAssessedInputFrequency::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PowerSource::Attributes::WiredAssessedInputFrequency::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint16(min), esp_matter_nullable_uint16(max));
     return attribute;
 }
@@ -3844,10 +3779,7 @@ attribute_t *create_wired_current_type(cluster_t *cluster, const uint8_t value)
 attribute_t *create_wired_assessed_current(cluster_t *cluster, nullable<uint32_t> value, nullable<uint32_t> min, nullable<uint32_t> max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::WiredAssessedCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PowerSource::Attributes::WiredAssessedCurrent::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint32(min), esp_matter_nullable_uint32(max));
     return attribute;
 }
@@ -3855,10 +3787,7 @@ attribute_t *create_wired_assessed_current(cluster_t *cluster, nullable<uint32_t
 attribute_t *create_wired_nominal_voltage(cluster_t *cluster, const uint32_t value, uint32_t min, uint32_t max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::WiredNominalVoltage::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PowerSource::Attributes::WiredNominalVoltage::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(min), esp_matter_uint32(max));
     return attribute;
 }
@@ -3866,10 +3795,7 @@ attribute_t *create_wired_nominal_voltage(cluster_t *cluster, const uint32_t val
 attribute_t *create_wired_maximum_current(cluster_t *cluster, const uint32_t value, uint32_t min, uint32_t max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::WiredMaximumCurrent::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PowerSource::Attributes::WiredMaximumCurrent::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(min), esp_matter_uint32(max));
     return attribute;
 }
@@ -3881,20 +3807,14 @@ attribute_t *create_wired_present(cluster_t *cluster, bool value)
 
 attribute_t *create_active_wired_faults(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
 {
-    if (count > k_max_fault_count) {
-        ESP_LOGE(TAG, "Could not create attribute, list out of bound");
-        return NULL;
-    }
+    VerifyOrReturnValue(count <= k_max_fault_count, NULL, ESP_LOGE(TAG, "Could not create attribute, list out of bound"));
     return esp_matter::attribute::create(cluster, PowerSource::Attributes::ActiveWiredFaults::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_bat_voltage(cluster_t *cluster, nullable<uint32_t> value, nullable<uint32_t> min, nullable<uint32_t> max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::BatVoltage::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PowerSource::Attributes::BatVoltage::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint32(min), esp_matter_nullable_uint32(max));
     return attribute;
 }
@@ -3902,10 +3822,7 @@ attribute_t *create_bat_voltage(cluster_t *cluster, nullable<uint32_t> value, nu
 attribute_t *create_bat_percent_remaining(cluster_t *cluster, nullable<uint8_t> value, nullable<uint8_t> min, nullable<uint8_t> max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::BatPercentRemaining::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PowerSource::Attributes::BatPercentRemaining::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint8(min), esp_matter_nullable_uint8(max));
     return attribute;
 }
@@ -3913,10 +3830,7 @@ attribute_t *create_bat_percent_remaining(cluster_t *cluster, nullable<uint8_t> 
 attribute_t *create_bat_time_remaining(cluster_t *cluster, nullable< uint32_t> value, nullable<uint32_t> min, nullable<uint32_t> max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::BatTimeRemaining::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PowerSource::Attributes::BatTimeRemaining::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint32(min), esp_matter_nullable_uint32(max));
     return attribute;
 }
@@ -3943,19 +3857,13 @@ attribute_t *create_bat_present(cluster_t *cluster, bool value)
 
 attribute_t *create_active_bat_faults(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
 {
-    if (count > k_max_fault_count) {
-        ESP_LOGE(TAG, "Could not create attribute, list out of bound");
-        return NULL;
-    }
+    VerifyOrReturnValue(count <= k_max_fault_count, NULL, ESP_LOGE(TAG, "Could not create attribute, list out of bound"));
     return esp_matter::attribute::create(cluster, PowerSource::Attributes::ActiveBatFaults::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_bat_replacement_description(cluster_t *cluster, const char * value, uint16_t length)
 {
-    if (length > k_max_bat_replacement_description_length) {
-        ESP_LOGE(TAG, "Could not create attribute, string size out of bound");
-        return NULL;
-    }
+    VerifyOrReturnValue(length <= k_max_bat_replacement_description_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string size out of bound"));
     return esp_matter::attribute::create(cluster, PowerSource::Attributes::BatReplacementDescription::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_char_str((char *)value, length),
                                          k_max_bat_replacement_description_length);
@@ -3964,39 +3872,27 @@ attribute_t *create_bat_replacement_description(cluster_t *cluster, const char *
 attribute_t *create_bat_common_designation(cluster_t *cluster, const uint8_t value, uint8_t min, uint8_t max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::BatCommonDesignation::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PowerSource::Attributes::BatCommonDesignation::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(min), esp_matter_enum8(max));
     return attribute;
 }
 
 attribute_t *create_bat_ansi_designation(cluster_t *cluster, const char * value, uint16_t length)
 {
-    if (length > k_max_designation_count) {
-        ESP_LOGE(TAG, "Could not create attribute, string size out of bound");
-        return NULL;
-    }
+    VerifyOrReturnValue(length <= k_max_designation_count, NULL, ESP_LOGE(TAG, "Could not create attribute, string size out of bound"));
     return esp_matter::attribute::create(cluster, PowerSource::Attributes::BatANSIDesignation::Id, ATTRIBUTE_FLAG_NONE, esp_matter_char_str((char *)value, length), k_max_designation_count);
 }
 
 attribute_t *create_bat_iec_designation(cluster_t *cluster, const char * value, uint16_t length)
 {
-    if (length > k_max_designation_count) {
-        ESP_LOGE(TAG, "Could not create attribute, string size out of bound");
-        return NULL;
-    }
+    VerifyOrReturnValue(length <= k_max_designation_count, NULL, ESP_LOGE(TAG, "Could not create attribute, string size out of bound"));
     return esp_matter::attribute::create(cluster, PowerSource::Attributes::BatIECDesignation::Id, ATTRIBUTE_FLAG_NONE, esp_matter_char_str((char *)value, length), k_max_designation_count);
 }
 
 attribute_t *create_bat_approved_chemistry(cluster_t *cluster, const uint8_t value, uint8_t min, uint8_t max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::BatApprovedChemistry::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PowerSource::Attributes::BatApprovedChemistry::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(min), esp_matter_enum8(max));
     return attribute;
 }
@@ -4004,10 +3900,7 @@ attribute_t *create_bat_approved_chemistry(cluster_t *cluster, const uint8_t val
 attribute_t *create_bat_capacity(cluster_t *cluster, const uint32_t value, uint32_t min, uint32_t max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::BatCapacity::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PowerSource::Attributes::BatCapacity::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(min), esp_matter_uint32(max));
     return attribute;
 }
@@ -4015,10 +3908,7 @@ attribute_t *create_bat_capacity(cluster_t *cluster, const uint32_t value, uint3
 attribute_t *create_bat_quantity(cluster_t *cluster, const uint8_t value, uint8_t min, uint8_t max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::BatQuantity::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PowerSource::Attributes::BatQuantity::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(min), esp_matter_uint8(max));
     return attribute;
 }
@@ -4031,10 +3921,7 @@ attribute_t *create_bat_charge_state(cluster_t *cluster, uint8_t value)
 attribute_t *create_bat_time_to_full_charge(cluster_t *cluster, nullable<uint32_t> value, nullable<uint32_t> min, nullable<uint32_t> max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::BatTimeToFullCharge::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PowerSource::Attributes::BatTimeToFullCharge::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint32(min), esp_matter_nullable_uint32(max));
     return attribute;
 }
@@ -4047,20 +3934,14 @@ attribute_t *create_bat_functional_while_charging(cluster_t *cluster, bool value
 attribute_t *create_bat_charging_current(cluster_t *cluster, nullable<uint32_t> value, nullable<uint32_t> min, nullable<uint32_t> max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSource::Attributes::BatChargingCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PowerSource::Attributes::BatChargingCurrent::Id));
     esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint32(min), esp_matter_nullable_uint32(max));
     return attribute;
 }
 
 attribute_t *create_active_bat_charge_faults(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
 {
-    if (count > k_max_charge_faults_count) {
-        ESP_LOGE(TAG, "Could not create attribute, list out of bound");
-        return NULL;
-    }
+    VerifyOrReturnValue(count <= k_max_charge_faults_count, NULL, ESP_LOGE(TAG, "Could not create attribute, list out of bound"));
     return esp_matter::attribute::create(cluster, PowerSource::Attributes::ActiveBatChargeFaults::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
 }
 
@@ -4096,10 +3977,7 @@ attribute_t *create_selected_temperature_level(cluster_t *cluster, uint8_t value
 
 attribute_t *create_supported_temperature_levels(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
 {
-    if (count > k_max_temp_level_count) {
-        ESP_LOGE(TAG, "Could not create attribute, list out of bound");
-        return NULL;
-    }
+    VerifyOrReturnValue(count <= k_max_temp_level_count, NULL, ESP_LOGE(TAG, "Could not create attribute, list out of bound"));
     return esp_matter::attribute::create(cluster, TemperatureControl::Attributes::SupportedTemperatureLevels::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
 }
 
@@ -4589,10 +4467,7 @@ namespace application_basic {
 namespace attribute {
 attribute_t *create_vendor_name(cluster_t *cluster, char *value, uint16_t length)
 {
-    if (length > k_max_vendor_name_length) {
-        ESP_LOGE(TAG, "Could not create attribute, string length out of bound");
-        return NULL;
-    }
+    VerifyOrReturnValue(length <= k_max_vendor_name_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
     return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::VendorName::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_char_str(value, length), k_max_vendor_name_length);
 }
@@ -4629,10 +4504,7 @@ attribute_t *create_status(cluster_t *cluster, uint8_t value)
 
 attribute_t *create_application_version(cluster_t *cluster, char *value, uint16_t length)
 {
-    if (length > k_max_application_version_length) {
-        ESP_LOGE(TAG, "Could not create attribute, string length out of bound");
-        return NULL;
-    }
+    VerifyOrReturnValue(length <= k_max_application_version_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
     return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::ApplicationVersion::Id,
                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length),
                                         k_max_application_version_length);
