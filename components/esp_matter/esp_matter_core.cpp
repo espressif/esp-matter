@@ -95,10 +95,7 @@ void PostEvent(uint16_t eventType)
     chip::DeviceLayer::ChipDeviceEvent event;
     event.Type = eventType;
     CHIP_ERROR error = chip::DeviceLayer::PlatformMgr().PostEvent(&event);
-    if (error != CHIP_NO_ERROR)
-    {
-        ESP_LOGE(TAG, "Failed to post event for event type:%" PRIu16 ", err:%" CHIP_ERROR_FORMAT, eventType, error.Format());
-    }
+    VerifyOrReturn(error == CHIP_NO_ERROR, ESP_LOGE(TAG, "Failed to post event for event type:%" PRIu16 ", err:%" CHIP_ERROR_FORMAT, eventType, error.Format()));
 }
 
 class AppDelegateImpl : public AppDelegate
@@ -227,18 +224,12 @@ static _node_t *node = NULL;
 // If Matter server or ESP-Matter data model is not enabled. we will never use minimum unused endpoint id.
 static esp_err_t store_min_unused_endpoint_id()
 {
-    if (!node || !esp_matter_started) {
-        ESP_LOGE(TAG, "Node does not exist or esp_matter does not start");
-        return ESP_ERR_INVALID_STATE;
-    }
-
+    VerifyOrReturnError((node && esp_matter_started), ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Node does not exist or esp_matter does not start"));
     nvs_handle_t handle;
     esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, ESP_MATTER_KVS_NAMESPACE,
                                             NVS_READWRITE, &handle);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to open the node nvs_namespace");
-        return err;
-    }
+
+    VerifyOrReturnError(err == ESP_OK, err, ESP_LOGE(TAG, "Failed to open the node nvs_namespace"));
     err = nvs_set_u16(handle, "min_uu_ep_id", node->min_unused_endpoint_id);
     nvs_commit(handle);
     nvs_close(handle);
@@ -247,10 +238,7 @@ static esp_err_t store_min_unused_endpoint_id()
 
 static esp_err_t read_min_unused_endpoint_id()
 {
-    if (!node || !esp_matter_started) {
-        ESP_LOGE(TAG, "Node does not exist or esp_matter does not start");
-        return ESP_ERR_INVALID_STATE;
-    }
+    VerifyOrReturnError((node && esp_matter_started), ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Node does not exist or esp_matter does not start"));
 
     nvs_handle_t handle;
     esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, ESP_MATTER_KVS_NAMESPACE,
@@ -264,10 +252,7 @@ static esp_err_t read_min_unused_endpoint_id()
         ESP_LOGI(TAG, "Cannot find minimum unused endpoint_id, try to find in the previous namespace");
         // Try to read the minimum unused endpoint_id from the previous node namespace.
         err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, "node", NVS_READONLY, &handle);
-        if (err != ESP_OK) {
-            ESP_LOGI(TAG, "Failed to open node namespace");
-            return err;
-        }
+        VerifyOrReturnError(err == ESP_OK, err, ESP_LOGI(TAG, "Failed to open node namespace"));
         err = nvs_get_u16(handle, "min_uu_ep_id", &node->min_unused_endpoint_id);
         nvs_close(handle);
         if (err == ESP_OK) {
@@ -373,10 +358,7 @@ static EmberAfAttributeMetadata *get_external_attribute_metadata(_attribute_t * 
 
 static esp_err_t free_default_value(attribute_t *attribute)
 {
-    if (!attribute) {
-        ESP_LOGE(TAG, "Attribute cannot be NULL");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(attribute, ESP_FAIL, ESP_LOGE(TAG, "Attribute cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
     EmberAfAttributeMetadata *matter_attribute = get_external_attribute_metadata(current_attribute);
     if (!matter_attribute) {
@@ -404,10 +386,7 @@ static EmberAfDefaultAttributeValue get_default_value_from_data(esp_matter_attr_
 {
     EmberAfDefaultAttributeValue default_value = (uint16_t)0;
     uint8_t *value = (uint8_t *)esp_matter_mem_calloc(1, attribute_size);
-    if (!value) {
-        ESP_LOGE(TAG, "Could not allocate value buffer for default value");
-        return default_value;
-    }
+    VerifyOrReturnValue(value, default_value, ESP_LOGE(TAG, "Could not allocate value buffer for default value"));
     get_data_from_attr_val(val, &attribute_type, &attribute_size, value);
 
     if (attribute_size > 2) {
@@ -430,10 +409,7 @@ static EmberAfDefaultAttributeValue get_default_value_from_data(esp_matter_attr_
 
 static esp_err_t set_default_value_from_current_val(attribute_t *attribute, esp_matter_attr_val_t *min, esp_matter_attr_val_t *max)
 {
-    if (!attribute) {
-        ESP_LOGE(TAG, "Attribute cannot be NULL");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(attribute, ESP_FAIL, ESP_LOGE(TAG, "Attribute cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
 
     EmberAfAttributeMetadata *matter_attribute = get_external_attribute_metadata(current_attribute);
@@ -453,10 +429,7 @@ static esp_err_t set_default_value_from_current_val(attribute_t *attribute, esp_
     if (current_attribute->flags & ATTRIBUTE_FLAG_MIN_MAX) {
         EmberAfAttributeMinMaxValue *temp_value = (EmberAfAttributeMinMaxValue *)esp_matter_mem_calloc(1,
                                                                                 sizeof(EmberAfAttributeMinMaxValue));
-        if (!temp_value) {
-            ESP_LOGE(TAG, "Could not allocate ptrToMinMaxValue for default value");
-            return ESP_FAIL;
-        }
+        VerifyOrReturnError(temp_value, ESP_FAIL, ESP_LOGE(TAG, "Could not allocate ptrToMinMaxValue for default value"));
         temp_value->defaultValue = get_default_value_from_data(val, attribute_type, attribute_size);
         temp_value->minValue = get_default_value_from_data(min, attribute_type, attribute_size);
         temp_value->maxValue = get_default_value_from_data(max, attribute_type, attribute_size);
@@ -488,17 +461,12 @@ static int get_next_index()
 
 static esp_err_t disable(endpoint_t *endpoint)
 {
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
 
     /* Take lock if not already taken */
     lock::status_t lock_status = lock::chip_stack_lock(portMAX_DELAY);
-    if (lock_status == lock::FAILED) {
-        ESP_LOGE(TAG, "Could not get task context");
-        return ESP_FAIL;
-    }
+
+    VerifyOrReturnError(lock_status != lock::FAILED, ESP_FAIL, ESP_LOGE(TAG, "Could not get task context"));
 
     /* Remove endpoint */
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
@@ -527,10 +495,7 @@ static esp_err_t disable(endpoint_t *endpoint)
 
 esp_err_t enable(endpoint_t *endpoint)
 {
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
 
     /* Device types */
@@ -745,10 +710,8 @@ cleanup:
 static esp_err_t enable_all()
 {
     node_t *node = node::get();
-    if (!node) {
-        /* Not returning error, since the node will not be initialized for application using the data model from zap */
-        return ESP_OK;
-    }
+    /* Not returning error, since the node will not be initialized for application using the data model from zap */
+    VerifyOrReturnError(node, ESP_OK);
 
     endpoint_t *endpoint = get_first(node);
     while (endpoint) {
@@ -764,21 +727,13 @@ namespace lock {
 status_t chip_stack_lock(uint32_t ticks_to_wait)
 {
 #if CHIP_STACK_LOCK_TRACKING_ENABLED
-    if (PlatformMgr().IsChipStackLockedByCurrentThread()) {
-        return ALREADY_TAKEN;
-    }
+    VerifyOrReturnValue(!PlatformMgr().IsChipStackLockedByCurrentThread(), ALREADY_TAKEN);
 #endif
-    if (ticks_to_wait == portMAX_DELAY) {
-        /* Special handling for max delay */
-        PlatformMgr().LockChipStack();
-        return SUCCESS;
-    }
+    VerifyOrReturnValue(ticks_to_wait != portMAX_DELAY, SUCCESS, PlatformMgr().LockChipStack());
     uint32_t ticks_remaining = ticks_to_wait;
     uint32_t ticks = DEFAULT_TICKS;
     while (ticks_remaining > 0) {
-        if (PlatformMgr().TryLockChipStack()) {
-            return SUCCESS;
-        }
+        VerifyOrReturnValue(!PlatformMgr().TryLockChipStack(), SUCCESS);
         ticks = ticks_remaining < DEFAULT_TICKS ? ticks_remaining : DEFAULT_TICKS;
         ticks_remaining -= ticks;
         ESP_LOGI(TAG, "Did not get lock yet. Retrying...");
@@ -895,14 +850,8 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
 
 static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
 {
-    if (chip::Platform::MemoryInit() != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to initialize CHIP memory pool");
-        return ESP_ERR_NO_MEM;
-    }
-    if (PlatformMgr().InitChipStack() != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to initialize CHIP stack");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(chip::Platform::MemoryInit() == CHIP_NO_ERROR, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "Failed to initialize CHIP memory pool"));
+    VerifyOrReturnError(PlatformMgr().InitChipStack() == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to initialize CHIP stack"));
 
     setup_providers();
     // ConnectivityMgr().SetWiFiAPMode(ConnectivityManager::kWiFiAPMode_Enabled);
@@ -917,31 +866,16 @@ static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
     }
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #ifdef CONFIG_ESP_MATTER_ENABLE_OPENTHREAD
-    if (ThreadStackMgr().InitThreadStack() != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to initialize Thread stack");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(ThreadStackMgr().InitThreadStack() == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to initialize Thread stack"));
 #if CHIP_CONFIG_ENABLE_ICD_SERVER
-    if (ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_SleepyEndDevice) != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to set the Thread device type");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_SleepyEndDevice) == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to set the Thread device type"));
 
 #elif CHIP_DEVICE_CONFIG_THREAD_FTD
-    if (ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_Router) != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to set the Thread device type");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_Router) == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to set the Thread device type"));
 #else
-    if (ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_MinimalEndDevice) != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to set the Thread device type");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_MinimalEndDevice) == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to set the Thread device type"));
 #endif
-    if (ThreadStackMgr().StartThreadTask() != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to launch Thread task");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(ThreadStackMgr().StartThreadTask() == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to launch Thread task"));
 #endif // CONFIG_ESP_MATTER_ENABLE_OPENTHREAD
 #endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD
 
@@ -961,31 +895,19 @@ static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
 
 esp_err_t start(event_callback_t callback, intptr_t callback_arg)
 {
-    if (esp_matter_started) {
-        ESP_LOGE(TAG, "esp_matter has started");
-        return ESP_ERR_INVALID_STATE;
-    }
+    VerifyOrReturnError(!esp_matter_started, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "esp_matter has started"));
     esp_err_t err = esp_event_loop_create_default();
 
     // In case create event loop returns ESP_ERR_INVALID_STATE it is not necessary to fail startup
     // as of it means that default event loop is already initialized and no additional actions should be done.
-    if (err != ESP_OK && err != ESP_ERR_INVALID_STATE) {
-        ESP_LOGE(TAG, "Error create default event loop");
-        return err;
-    }
+    VerifyOrReturnError((err == ESP_OK || err == ESP_ERR_INVALID_STATE), err, ESP_LOGE(TAG, "Error create default event loop"));
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI
-    if (chip::DeviceLayer::Internal::ESP32Utils::InitWiFiStack() != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Error initializing Wi-Fi stack");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(chip::DeviceLayer::Internal::ESP32Utils::InitWiFiStack() == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Error initializing Wi-Fi stack"));
 #endif
     esp_matter_ota_requestor_init();
 
     err = chip_init(callback, callback_arg);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Error initializing matter");
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err, ESP_LOGE(TAG, "Error initializing matter"));
     esp_matter_started = true;
 #if defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
     err = node::read_min_unused_endpoint_id();
@@ -1028,10 +950,7 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, e
                     uint16_t max_val_size)
 {
     /* Find */
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Cluster cannot be NULL."));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     attribute_t *existing_attribute = get(cluster, attribute_id);
     if (existing_attribute) {
@@ -1145,10 +1064,7 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, e
 
 static esp_err_t destroy(attribute_t *attribute)
 {
-    if (!attribute) {
-        ESP_LOGE(TAG, "Attribute cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(attribute, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Attribute cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
 
     if (current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY) {
@@ -1182,10 +1098,7 @@ static esp_err_t destroy(attribute_t *attribute)
 
 attribute_t *get(cluster_t *cluster, uint32_t attribute_id)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Cluster cannot be NULL."));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     _attribute_base_t *current_attribute = current_cluster->attribute_list;
     while (current_attribute) {
@@ -1206,30 +1119,21 @@ attribute_t *get(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
 
 attribute_t *get_first(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Cluster cannot be NULL."));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     return (attribute_t *)current_cluster->attribute_list;
 }
 
 attribute_t *get_next(attribute_t *attribute)
 {
-    if (!attribute) {
-        ESP_LOGE(TAG, "Attribute cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Attribute cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
     return (attribute_t *)current_attribute->next;
 }
 
 uint32_t get_id(attribute_t *attribute)
 {
-    if (!attribute) {
-        ESP_LOGE(TAG, "Attribute cannot be NULL");
-        return kInvalidAttributeId;
-    }
+    VerifyOrReturnValue(attribute, kInvalidAttributeId, ESP_LOGE(TAG, "Attribute cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
     return current_attribute->attribute_id;
 }
@@ -1247,10 +1151,7 @@ static void deferred_attribute_write(chip::System::Layer *layer, void *attribute
 
 esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
 {
-    if (!attribute) {
-        ESP_LOGE(TAG, "Attribute cannot be NULL");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(attribute, ESP_FAIL, ESP_LOGE(TAG, "Attribute cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
 
     ESP_RETURN_ON_FALSE(!(current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY), ESP_ERR_NOT_SUPPORTED, TAG,
@@ -1265,10 +1166,7 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
         if (val->val.a.s > 0) {
             /* Alloc new buf */
             uint8_t *new_buf = (uint8_t *)esp_matter_mem_calloc(1, val->val.a.s);
-            if (!new_buf) {
-                ESP_LOGE(TAG, "Could not allocate new buffer");
-                return ESP_ERR_NO_MEM;
-            }
+            VerifyOrReturnError(new_buf, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "Could not allocate new buffer"));
             /* Copy to new buf and assign */
             memcpy(new_buf, val->val.a.b, val->val.a.s);
             current_attribute->val.val.a.b = new_buf;
@@ -1299,10 +1197,7 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
 
 esp_err_t get_val(attribute_t *attribute, esp_matter_attr_val_t *val)
 {
-    if (!attribute) {
-        ESP_LOGE(TAG, "Attribute cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(attribute, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Attribute cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
 
     ESP_RETURN_ON_FALSE(!(current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY), ESP_ERR_NOT_SUPPORTED, TAG,
@@ -1313,10 +1208,7 @@ esp_err_t get_val(attribute_t *attribute, esp_matter_attr_val_t *val)
 
 esp_err_t add_bounds(attribute_t *attribute, esp_matter_attr_val_t min, esp_matter_attr_val_t max)
 {
-    if (!attribute) {
-        ESP_LOGE(TAG, "Attribute cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(attribute, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Attribute cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
 
     ESP_RETURN_ON_FALSE(!(current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY), ESP_ERR_NOT_SUPPORTED, TAG,
@@ -1331,11 +1223,8 @@ esp_err_t add_bounds(attribute_t *attribute, esp_matter_attr_val_t min, esp_matt
         ESP_LOGE(TAG, "Bounds cannot be set for string/array type attributes");
         return ESP_ERR_INVALID_ARG;
     }
-    if ((current_attribute->val.type != min.type) || (current_attribute->val.type != max.type)) {
-        ESP_LOGE(TAG, "Cannot set bounds because of val type mismatch: expected: %d, min: %d, max: %d",
-                 current_attribute->val.type, min.type, max.type);
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(((current_attribute->val.type == min.type) && (current_attribute->val.type == max.type)), ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cannot set bounds because of val type mismatch: expected: %d, min: %d, max: %d",
+                 current_attribute->val.type, min.type, max.type));
 
     EmberAfAttributeMetadata *matter_attribute= get_external_attribute_metadata(current_attribute);
     if (!matter_attribute) {
@@ -1387,20 +1276,14 @@ esp_err_t get_bounds(attribute_t *attribute, esp_matter_attr_bounds_t *bounds)
 
 uint16_t get_flags(attribute_t *attribute)
 {
-    if (!attribute) {
-        ESP_LOGE(TAG, "Attribute cannot be NULL");
-        return 0;
-    }
+    VerifyOrReturnValue(attribute, 0, ESP_LOGE(TAG, "Attribute cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
     return current_attribute->flags;
 }
 
 esp_err_t set_override_callback(attribute_t *attribute, callback_t callback)
 {
-    if (!attribute) {
-        ESP_LOGE(TAG, "Attribute cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(attribute, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Attribute cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
 
     ESP_RETURN_ON_FALSE(!(current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY), ESP_ERR_NOT_SUPPORTED, TAG,
@@ -1426,26 +1309,17 @@ esp_err_t set_override_callback(attribute_t *attribute, callback_t callback)
 
 callback_t get_override_callback(attribute_t *attribute)
 {
-    if (!attribute) {
-        ESP_LOGE(TAG, "Attribute cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Attribute cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
 
-    if (current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY) {
-        ESP_LOGE(TAG, "Attribute is not managed by esp matter data model");
-        return NULL;
-    }
+    VerifyOrReturnValue(!(current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY), NULL, ESP_LOGE(TAG, "Attribute is not managed by esp matter data model"));
 
     return current_attribute->override_callback;
 }
 
 esp_err_t set_deferred_persistence(attribute_t *attribute)
 {
-    if (!attribute) {
-        ESP_LOGE(TAG, "Attribute cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(attribute, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Attribute cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
 
     ESP_RETURN_ON_FALSE(!(current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY), ESP_ERR_NOT_SUPPORTED, TAG,
@@ -1465,10 +1339,7 @@ namespace command {
 command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callback_t callback)
 {
     /* Find */
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Cluster cannot be NULL."));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     command_t *existing_command = get(cluster, command_id, flags);
     if (existing_command) {
@@ -1479,10 +1350,7 @@ command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callba
 
     /* Allocate */
     _command_t *command = (_command_t *)esp_matter_mem_calloc(1, sizeof(_command_t));
-    if (!command) {
-        ESP_LOGE(TAG, "Couldn't allocate _command_t");
-        return NULL;
-    }
+    VerifyOrReturnValue(command, NULL, ESP_LOGE(TAG, "Couldn't allocate _command_t"));
 
     /* Set */
     command->command_id = command_id;
@@ -1508,10 +1376,7 @@ command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callba
 
 static esp_err_t destroy(command_t *command)
 {
-    if (!command) {
-        ESP_LOGE(TAG, "Command cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(command, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Command cannot be NULL"));
     _command_t *current_command = (_command_t *)command;
 
     /* Free */
@@ -1521,10 +1386,7 @@ static esp_err_t destroy(command_t *command)
 
 command_t *get(cluster_t *cluster, uint32_t command_id, uint16_t flags)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Cluster cannot be NULL."));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     _command_t *current_command = (_command_t *)current_cluster->command_list;
     while (current_command) {
@@ -1538,50 +1400,35 @@ command_t *get(cluster_t *cluster, uint32_t command_id, uint16_t flags)
 
 command_t *get_first(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Cluster cannot be NULL."));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     return (command_t *)current_cluster->command_list;
 }
 
 command_t *get_next(command_t *command)
 {
-    if (!command) {
-        ESP_LOGE(TAG, "Command cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(command, NULL, ESP_LOGE(TAG, "Command cannot be NULL"));
     _command_t *current_command = (_command_t *)command;
     return (command_t *)current_command->next;
 }
 
 uint32_t get_id(command_t *command)
 {
-    if (!command) {
-        ESP_LOGE(TAG, "Command cannot be NULL");
-        return kInvalidCommandId;
-    }
+    VerifyOrReturnValue(command, kInvalidCommandId, ESP_LOGE(TAG, "Command cannot be NULL"));
     _command_t *current_command = (_command_t *)command;
     return current_command->command_id;
 }
 
 callback_t get_callback(command_t *command)
 {
-    if (!command) {
-        ESP_LOGE(TAG, "Command cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(command, NULL, ESP_LOGE(TAG, "Command cannot be NULL"));
     _command_t *current_command = (_command_t *)command;
     return current_command->callback;
 }
 
 callback_t get_user_callback(command_t *command)
 {
-    if (!command) {
-        ESP_LOGE(TAG, "Command cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(command, NULL, ESP_LOGE(TAG, "Command cannot be NULL"));
     _command_t *current_command = (_command_t *)command;
     return current_command->user_callback;
 }
@@ -1597,10 +1444,7 @@ void set_user_callback(command_t *command, callback_t user_callback)
 
 uint16_t get_flags(command_t *command)
 {
-    if (!command) {
-        ESP_LOGE(TAG, "Command cannot be NULL");
-        return 0;
-    }
+    VerifyOrReturnValue(command, 0, ESP_LOGE(TAG, "Command cannot be NULL"));
     _command_t *current_command = (_command_t *)command;
     return current_command->flags;
 }
@@ -1612,10 +1456,7 @@ namespace event {
 event_t *create(cluster_t *cluster, uint32_t event_id)
 {
     /* Find */
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Cluster cannot be NULL."));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     event_t *existing_event = get(cluster, event_id);
     if (existing_event) {
@@ -1626,10 +1467,7 @@ event_t *create(cluster_t *cluster, uint32_t event_id)
 
     /* Allocate */
     _event_t *event = (_event_t *)esp_matter_mem_calloc(1, sizeof(_event_t));
-    if (!event) {
-        ESP_LOGE(TAG, "Couldn't allocate _event_t");
-        return NULL;
-    }
+    VerifyOrReturnValue(event, NULL, ESP_LOGE(TAG, "Couldn't allocate _event_t"));
 
     /* Set */
     event->event_id = event_id;
@@ -1652,10 +1490,7 @@ event_t *create(cluster_t *cluster, uint32_t event_id)
 
 static esp_err_t destroy(event_t *event)
 {
-    if (!event) {
-        ESP_LOGE(TAG, "Event cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(event, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Event cannot be NULL"));
     _event_t *current_event = (_event_t *)event;
 
     /* Free */
@@ -1665,10 +1500,7 @@ static esp_err_t destroy(event_t *event)
 
 event_t *get(cluster_t *cluster, uint32_t event_id)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Cluster cannot be NULL."));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     _event_t *current_event = (_event_t *)current_cluster->event_list;
     while (current_event) {
@@ -1682,30 +1514,21 @@ event_t *get(cluster_t *cluster, uint32_t event_id)
 
 event_t *get_first(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Cluster cannot be NULL."));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     return (event_t *)current_cluster->event_list;
 }
 
 event_t *get_next(event_t *event)
 {
-    if (!event) {
-        ESP_LOGE(TAG, "Event cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(event, NULL, ESP_LOGE(TAG, "Event cannot be NULL"));
     _event_t *current_event = (_event_t *)event;
     return (event_t *)current_event->next;
 }
 
 uint32_t get_id(event_t *event)
 {
-    if (!event) {
-        ESP_LOGE(TAG, "Event cannot be NULL");
-        return chip::kInvalidEventId;
-    }
+    VerifyOrReturnValue(event, chip::kInvalidEventId, ESP_LOGE(TAG, "Event cannot be NULL"));
     _event_t *current_event = (_event_t *)event;
     return current_event->event_id;
 }
@@ -1718,14 +1541,8 @@ namespace cluster {
 cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags)
 {
     /* Find */
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
-    }
-    if (!(flags & CLUSTER_FLAG_SERVER) && !(flags & CLUSTER_FLAG_CLIENT)) {
-        ESP_LOGE(TAG, "Server or client cluster flag not set");
-        return NULL;
-    }
+    VerifyOrReturnValue(endpoint, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
+    VerifyOrReturnValue(((flags & CLUSTER_FLAG_SERVER) || (flags & CLUSTER_FLAG_CLIENT)), NULL, ESP_LOGE(TAG, "Server or client cluster flag not set"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     cluster_t *existing_cluster = get(endpoint, cluster_id);
     if (existing_cluster) {
@@ -1803,10 +1620,7 @@ cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags)
 
 static esp_err_t destroy(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
 
     /* Parse and delete all commands */
@@ -1840,10 +1654,7 @@ static esp_err_t destroy(cluster_t *cluster)
 
 cluster_t *get(endpoint_t *endpoint, uint32_t cluster_id)
 {
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(endpoint, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     _cluster_t *current_cluster = (_cluster_t *)current_endpoint->cluster_list;
 
@@ -1875,30 +1686,21 @@ cluster_t *get(uint16_t endpoint_id, uint32_t cluster_id)
 
 cluster_t *get_first(endpoint_t *endpoint)
 {
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(endpoint, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     return (cluster_t *)current_endpoint->cluster_list;
 }
 
 cluster_t *get_next(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Cluster cannot be NULL."));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     return (cluster_t *)current_cluster->next;
 }
 
 uint32_t get_id(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return kInvalidClusterId;
-    }
+    VerifyOrReturnValue(cluster, kInvalidClusterId, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     endpoint_t *endpoint = endpoint::get(current_cluster->endpoint_id);
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
@@ -1907,20 +1709,14 @@ uint32_t get_id(cluster_t *cluster)
 
 void *get_delegate_impl(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Cluster cannot be NULL."));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     return current_cluster->delegate_pointer;
 }
 
 esp_err_t set_plugin_server_init_callback(cluster_t *cluster, plugin_server_init_callback_t callback)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     current_cluster->plugin_server_init_callback = callback;
     return ESP_OK;
@@ -1928,20 +1724,14 @@ esp_err_t set_plugin_server_init_callback(cluster_t *cluster, plugin_server_init
 
 plugin_server_init_callback_t get_plugin_server_init_callback(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Cluster cannot be NULL."));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     return current_cluster->plugin_server_init_callback;
 }
 
 esp_err_t set_delegate_and_init_callback(cluster_t *cluster, delegate_init_callback_t callback, void *delegate)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     current_cluster->delegate_init_callback = callback;
     current_cluster->delegate_pointer = delegate;
@@ -1950,20 +1740,14 @@ esp_err_t set_delegate_and_init_callback(cluster_t *cluster, delegate_init_callb
 
 delegate_init_callback_t get_delegate_init_callback(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Cluster cannot be NULL."));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     return current_cluster->delegate_init_callback;
 }
 
 esp_err_t set_add_bounds_callback(cluster_t *cluster, add_bounds_callback_t callback)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     current_cluster->add_bounds_callback = callback;
     return ESP_OK;
@@ -1971,20 +1755,14 @@ esp_err_t set_add_bounds_callback(cluster_t *cluster, add_bounds_callback_t call
 
 add_bounds_callback_t get_add_bounds_callback(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     return current_cluster->add_bounds_callback;
 }
 
 esp_err_t add_function_list(cluster_t *cluster, const function_generic_t *function_list, int function_flags)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
 
     endpoint_t *endpoint = endpoint::get(current_cluster->endpoint_id);
@@ -2002,24 +1780,15 @@ namespace endpoint {
 endpoint_t *create(node_t *node, uint8_t flags, void *priv_data)
 {
     /* Find */
-    if (!node) {
-        ESP_LOGE(TAG, "Node cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(node, NULL, ESP_LOGE(TAG, "Node cannot be NULL"));
     _node_t *current_node = (_node_t *)node;
 
-    if (get_count(node) >= CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT) {
-        ESP_LOGE(TAG, "Dynamic endpoint count cannot be greater than CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT:%u",
-                CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT);
-        return NULL;
-    }
+    VerifyOrReturnValue(get_count(node) < CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT, NULL, ESP_LOGE(TAG, "Dynamic endpoint count cannot be greater than CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT:%u",
+                CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT));
 
     /* Allocate */
     _endpoint_t *endpoint = (_endpoint_t *)esp_matter_mem_calloc(1, sizeof(_endpoint_t));
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Couldn't allocate _endpoint_t");
-        return NULL;
-    }
+    VerifyOrReturnValue(endpoint, NULL, ESP_LOGE(TAG, "Couldn't allocate _endpoint_t"));
 
     endpoint->endpoint_type = (EmberAfEndpointType *)esp_matter_mem_calloc(1, sizeof(EmberAfEndpointType));
     if (!endpoint->endpoint_type) {
@@ -2060,36 +1829,24 @@ endpoint_t *create(node_t *node, uint8_t flags, void *priv_data)
 endpoint_t *resume(node_t *node, uint8_t flags, uint16_t endpoint_id, void *priv_data)
 {
     /* Find */
-    if (!node) {
-        ESP_LOGE(TAG, "Node cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(node, NULL, ESP_LOGE(TAG, "Node cannot be NULL"));
     _node_t *current_node = (_node_t *)node;
     _endpoint_t *previous_endpoint = NULL;
     _endpoint_t *current_endpoint = current_node->endpoint_list;
     while (current_endpoint) {
-        if (current_endpoint->endpoint_id == endpoint_id) {
-            ESP_LOGE(TAG, "Could not resume an endpoint that has been added to the node");
-            return NULL;
-        }
+        VerifyOrReturnValue(current_endpoint->endpoint_id != endpoint_id, NULL, ESP_LOGE(TAG, "Could not resume an endpoint that has been added to the node"));
         previous_endpoint = current_endpoint;
         current_endpoint = current_endpoint->next;
     }
 
     /* Check */
-    if (endpoint_id >= current_node->min_unused_endpoint_id) {
-        ESP_LOGE(TAG, "The endpoint_id of the resumed endpoint should have been used");
-        return NULL;
-    }
+    VerifyOrReturnError(endpoint_id < current_node->min_unused_endpoint_id, NULL, ESP_LOGE(TAG, "The endpoint_id of the resumed endpoint should have been used"));
 
      /* Allocate */
      _endpoint_t *endpoint = (_endpoint_t *)esp_matter_mem_calloc(1, sizeof(_endpoint_t));
-     if (!endpoint) {
-         ESP_LOGE(TAG, "Couldn't allocate _endpoint_t");
-         return NULL;
-     }
+     VerifyOrReturnValue(endpoint, NULL, ESP_LOGE(TAG, "Couldn't allocate _endpoint_t"));
 
-    endpoint->endpoint_type = (EmberAfEndpointType *)esp_matter_mem_calloc(1, sizeof(EmberAfEndpointType));
+     endpoint->endpoint_type = (EmberAfEndpointType *)esp_matter_mem_calloc(1, sizeof(EmberAfEndpointType));
     if (!endpoint->endpoint_type) {
         ESP_LOGE(TAG, "Couldn't allocate EmberAfEndpointType");
         esp_matter_mem_free(endpoint);
@@ -2116,17 +1873,11 @@ endpoint_t *resume(node_t *node, uint8_t flags, uint16_t endpoint_id, void *priv
 
 esp_err_t destroy(node_t *node, endpoint_t *endpoint)
 {
-    if (!node || !endpoint) {
-        ESP_LOGE(TAG, "Node or endpoint cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError((node && endpoint), ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Node or endpoint cannot be NULL"));
     _node_t *current_node = (_node_t *)node;
     _endpoint_t *_endpoint = (_endpoint_t *)endpoint;
 
-    if (!(_endpoint->flags & ENDPOINT_FLAG_DESTROYABLE)) {
-        ESP_LOGE(TAG, "This endpoint cannot be deleted since the ENDPOINT_FLAG_DESTROYABLE is not set");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError((_endpoint->flags & ENDPOINT_FLAG_DESTROYABLE), ESP_FAIL, ESP_LOGE(TAG, "This endpoint cannot be deleted since the ENDPOINT_FLAG_DESTROYABLE is not set"));
 
     /* Disable */
     disable(endpoint);
@@ -2141,10 +1892,7 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
         previous_endpoint = current_endpoint;
         current_endpoint = current_endpoint->next;
     }
-    if (current_endpoint == NULL) {
-        ESP_LOGE(TAG, "Could not find the endpoint to delete");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(current_endpoint != NULL, ESP_FAIL, ESP_LOGE(TAG, "Could not find the endpoint to delete"));
 
     /* Parse and delete all clusters */
     _cluster_t *cluster = current_endpoint->cluster_list;
@@ -2160,10 +1908,7 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
     {
         /* Free all clusters in endpoint_type */
         EmberAfEndpointType *endpoint_type = current_endpoint->endpoint_type;
-        if (!endpoint_type) {
-            ESP_LOGE(TAG, "endpoint %" PRIu16 "'s endpoint_type is NULL", current_endpoint->endpoint_id);
-            return ESP_ERR_INVALID_STATE;
-        }
+        VerifyOrReturnError(endpoint_type, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "endpoint %" PRIu16 "'s endpoint_type is NULL", current_endpoint->endpoint_id));
         int cluster_count = endpoint_type->clusterCount;
         for (int cluster_index = 0; cluster_index < cluster_count; cluster_index++) {
             /* Free attributes */
@@ -2213,10 +1958,7 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
 
 endpoint_t *get(node_t *node, uint16_t endpoint_id)
 {
-    if (!node) {
-        ESP_LOGE(TAG, "Node cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(node, NULL, ESP_LOGE(TAG, "Node cannot be NULL"));
     _node_t *current_node = (_node_t *)node;
     _endpoint_t *current_endpoint = (_endpoint_t *)current_node->endpoint_list;
     while (current_endpoint) {
@@ -2237,30 +1979,21 @@ endpoint_t *get(uint16_t endpoint_id)
 
 endpoint_t *get_first(node_t *node)
 {
-    if (!node) {
-        ESP_LOGE(TAG, "Node cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(node, NULL, ESP_LOGE(TAG, "Node cannot be NULL"));
     _node_t *current_node = (_node_t *)node;
     return (endpoint_t *)current_node->endpoint_list;
 }
 
 endpoint_t *get_next(endpoint_t *endpoint)
 {
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue(endpoint, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     return (endpoint_t *)current_endpoint->next;
 }
 
 uint16_t get_count(node_t *node)
 {
-    if (!node) {
-        ESP_LOGE(TAG, "Node cannot be NULL");
-        return 0;
-    }
+    VerifyOrReturnValue(node, 0, ESP_LOGE(TAG, "Node cannot be NULL"));
     uint16_t count = 0;
     endpoint_t *endpoint = get_first(node);
     while (endpoint) {
@@ -2272,25 +2005,16 @@ uint16_t get_count(node_t *node)
 
 uint16_t get_id(endpoint_t *endpoint)
 {
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return kInvalidEndpointId;
-    }
+    VerifyOrReturnValue(endpoint, kInvalidEndpointId, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     return current_endpoint->endpoint_id;
 }
 
 esp_err_t add_device_type(endpoint_t *endpoint, uint32_t device_type_id, uint8_t device_type_version)
 {
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
-    if (current_endpoint->device_type_count >= ESP_MATTER_MAX_DEVICE_TYPE_COUNT) {
-        ESP_LOGE(TAG, "Could not add a new device type to the endpoint");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(current_endpoint->device_type_count < ESP_MATTER_MAX_DEVICE_TYPE_COUNT, ESP_FAIL, ESP_LOGE(TAG, "Could not add a new device type to the endpoint"));
     current_endpoint->device_type_ids[current_endpoint->device_type_count] = device_type_id;
     current_endpoint->device_type_versions[current_endpoint->device_type_count] = device_type_version;
     current_endpoint->device_type_count++;
@@ -2299,14 +2023,7 @@ esp_err_t add_device_type(endpoint_t *endpoint, uint32_t device_type_id, uint8_t
 
 uint32_t *get_device_type_ids(endpoint_t *endpoint, uint8_t *device_type_count_ptr)
 {
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
-    }
-    if (!device_type_count_ptr) {
-        ESP_LOGE(TAG, "device type count pointer cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue((endpoint && device_type_count_ptr), NULL, ESP_LOGE(TAG, "Endpoint and device type count pointer cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     *device_type_count_ptr = current_endpoint->device_type_count;
     return current_endpoint->device_type_ids;
@@ -2314,14 +2031,7 @@ uint32_t *get_device_type_ids(endpoint_t *endpoint, uint8_t *device_type_count_p
 
 uint8_t *get_device_type_versions(endpoint_t *endpoint, uint8_t *device_type_count_ptr)
 {
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
-    }
-    if (!device_type_count_ptr) {
-        ESP_LOGE(TAG, "device type count pointer cannot be NULL");
-        return NULL;
-    }
+    VerifyOrReturnValue((endpoint && device_type_count_ptr), NULL, ESP_LOGE(TAG, "Endpoint and device type count pointer cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     *device_type_count_ptr = current_endpoint->device_type_count;
     return current_endpoint->device_type_versions;
@@ -2329,10 +2039,7 @@ uint8_t *get_device_type_versions(endpoint_t *endpoint, uint8_t *device_type_cou
 
 esp_err_t set_parent_endpoint(endpoint_t *endpoint, endpoint_t *parent_endpoint)
 {
-    if (!endpoint || !parent_endpoint) {
-        ESP_LOGE(TAG, "Endpoint or parent_endpoint cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError((endpoint && parent_endpoint), ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint or parent_endpoint cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     _endpoint_t *current_parent_endpoint = (_endpoint_t *)parent_endpoint;
     current_endpoint->parent_endpoint_id = current_parent_endpoint->endpoint_id;
@@ -2342,15 +2049,10 @@ esp_err_t set_parent_endpoint(endpoint_t *endpoint, endpoint_t *parent_endpoint)
 void *get_priv_data(uint16_t endpoint_id)
 {
     node_t *node = node::get();
-    if (!node) {
-        /* This is not an error, since the node will not be initialized for application using the data model from zap */
-        return NULL;
-    }
+    /* This is not an error, since the node will not be initialized for application using the data model from zap */ 
+    VerifyOrReturnValue(node, NULL, ESP_LOGE(TAG, "Node not found"));
     endpoint_t *endpoint = get(node, endpoint_id);
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint not found");
-        return NULL;
-    }
+    VerifyOrReturnValue(endpoint, NULL, ESP_LOGE(TAG, "Endpoint not found"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     return current_endpoint->priv_data;
 }
@@ -2358,15 +2060,9 @@ void *get_priv_data(uint16_t endpoint_id)
 esp_err_t set_priv_data(uint16_t endpoint_id, void *priv_data)
 {
     node_t *node = node::get();
-    if (!node) {
-        ESP_LOGE(TAG, "Node is not initialized");
-        return ESP_ERR_INVALID_STATE;
-    }
+    VerifyOrReturnError(node, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Node is not initialized"));
     endpoint_t *endpoint = get(node, endpoint_id);
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint not found");
-        return ESP_ERR_NOT_FOUND;
-    }
+    VerifyOrReturnError(endpoint, ESP_ERR_NOT_FOUND, ESP_LOGE(TAG, "Endpoint not found"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     current_endpoint->priv_data = priv_data;
     return ESP_OK;
@@ -2375,15 +2071,9 @@ esp_err_t set_priv_data(uint16_t endpoint_id, void *priv_data)
 esp_err_t set_identify(uint16_t endpoint_id, void *identify)
 {
     node_t *node = node::get();
-    if (!node) {
-        ESP_LOGE(TAG, "Node not found");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(node, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Node not found"));
     endpoint_t *endpoint = get(node, endpoint_id);
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint not found");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint not found"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     current_endpoint->identify = (Identify *)identify;
     return ESP_OK;
@@ -2395,15 +2085,9 @@ namespace node {
 
 node_t *create_raw()
 {
-    if (node) {
-        ESP_LOGE(TAG, "Node already exists");
-        return (node_t *)node;
-    }
+    VerifyOrReturnValue(!node, (node_t*) node, ESP_LOGE(TAG, "Node already exists"));
     node = (_node_t *)esp_matter_mem_calloc(1, sizeof(_node_t));
-    if (!node) {
-        ESP_LOGE(TAG, "Couldn't allocate _node_t");
-        return NULL;
-    }
+    VerifyOrReturnValue(node, NULL, ESP_LOGE(TAG, "Couldn't allocate _node_t"));
     return (node_t *)node;
 }
 
