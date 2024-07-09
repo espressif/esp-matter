@@ -47,10 +47,8 @@ void plugin_init_callback_common()
 {
     ESP_LOGI(TAG, "Cluster plugin init common callback");
     node_t *node = node::get();
-    if (!node) {
-        /* Skip plugin_init_callback_common when ESP Matter data model is not used */
-        return;
-    }
+    /* Skip plugin_init_callback_common when ESP Matter data model is not used */
+    VerifyOrReturn(node);
     endpoint_t *endpoint = endpoint::get_first(node);
     while (endpoint) {
         cluster_t *cluster = get_first(endpoint);
@@ -69,10 +67,8 @@ void plugin_init_callback_common()
 void delegate_init_callback_common()
 {
     node_t *node = node::get();
-    if (!node) {
-        /* Skip delegate_init_callback_common when ESP Matter data model is not used */
-        return;
-    }
+    /* Skip delegate_init_callback_common when ESP Matter data model is not used */
+    VerifyOrReturn(node);
     endpoint_t *endpoint = endpoint::get_first(node);
     while (endpoint) {
         uint16_t endpoint_id = endpoint::get_id(endpoint);
@@ -92,10 +88,7 @@ void delegate_init_callback_common()
 void add_bounds_callback_common()
 {
     node_t *node = node::get();
-    if (!node) {
-        /* Skip add_bounds_callback_common when ESP Matter data model is not used */
-        return;
-    }
+    VerifyOrReturn(node);
     endpoint_t *endpoint = endpoint::get_first(node);
     while (endpoint) {
         cluster_t *cluster = get_first(endpoint);
@@ -114,9 +107,7 @@ cluster_t *create_default_binding_cluster(endpoint_t *endpoint)
 {
     /* Don't create binding cluster if it already exists on the endpoint */
     cluster_t *cluster = get(endpoint, Binding::Id);
-    if (cluster) {
-        return cluster;
-    }
+    VerifyOrReturnValue(!cluster, cluster);
     ESP_LOGI(TAG, "Creating default binding cluster");
     binding::config_t config;
     return binding::create(endpoint, &config, CLUSTER_FLAG_SERVER);
@@ -130,11 +121,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, Descriptor::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
-
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Descriptor::Id));
+    
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterDescriptorPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
@@ -163,10 +151,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, Actions::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Actions::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, NULL);
@@ -196,10 +181,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, AccessControl::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, AccessControl::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterAccessControlPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
@@ -232,10 +214,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, BasicInformation::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, BasicInformation::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterBasicInformationPluginServerInitCallback);
@@ -282,10 +261,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, Binding::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Binding::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterBindingPluginServerInitCallback);
@@ -315,10 +291,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, OtaSoftwareUpdateProvider::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OtaSoftwareUpdateProvider::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterOtaSoftwareUpdateProviderPluginServerInitCallback);
@@ -350,10 +323,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, OtaSoftwareUpdateRequestor::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OtaSoftwareUpdateRequestor::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterOtaSoftwareUpdateRequestorPluginServerInitCallback);
@@ -394,10 +364,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, GeneralCommissioning::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, GeneralCommissioning::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterGeneralCommissioningPluginServerInitCallback);
@@ -440,10 +407,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, NetworkCommissioning::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, NetworkCommissioning::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterNetworkCommissioningPluginServerInitCallback);
@@ -498,10 +462,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, GeneralDiagnostics::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, GeneralDiagnostics::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterGeneralDiagnosticsPluginServerInitCallback);
@@ -536,10 +497,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, AdministratorCommissioning::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, AdministratorCommissioning::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterAdministratorCommissioningPluginServerInitCallback);
@@ -577,10 +535,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, OperationalCredentials::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OperationalCredentials::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterOperationalCredentialsPluginServerInitCallback);
@@ -626,10 +581,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, GroupKeyManagement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, GroupKeyManagement::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterGroupKeyManagementPluginServerInitCallback);
@@ -665,10 +617,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, WiFiNetworkDiagnostics::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, WiFiNetworkDiagnostics::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterWiFiNetworkDiagnosticsPluginServerInitCallback);
@@ -699,10 +648,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ThreadNetworkDiagnostics::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ThreadNetworkDiagnostics::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterThreadNetworkDiagnosticsPluginServerInitCallback);
@@ -745,10 +691,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, EthernetNetworkDiagnostics::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, EthernetNetworkDiagnostics::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterEthernetNetworkDiagnosticsPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
@@ -776,10 +719,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, TimeSynchronization::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, TimeSynchronization::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
@@ -811,10 +751,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, UnitLocalization::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, UnitLocalization::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
@@ -842,10 +779,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, BridgedDeviceBasicInformation::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, BridgedDeviceBasicInformation::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         // There is not PluginServer(Client)InitCallback for this cluster
@@ -877,11 +811,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, PowerSource::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
-
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PowerSource::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterPowerSourcePluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
@@ -929,10 +859,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, IcdManagement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, IcdManagement::Id));
 #if CONFIG_ENABLE_ICD_SERVER
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterIcdManagementPluginServerInitCallback);
@@ -973,10 +900,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, UserLabel::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, UserLabel::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterUserLabelPluginServerInitCallback);
@@ -1003,10 +927,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, FixedLabel::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, FixedLabel::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterFixedLabelPluginServerInitCallback);
@@ -1036,10 +957,7 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_ATTRIBUTE_C
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, Identify::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Identify::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterIdentifyPluginServerInitCallback);
@@ -1083,10 +1001,7 @@ uint8_t get_server_cluster_count() { return server_cluster_count; }
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, Groups::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Groups::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterGroupsPluginServerInitCallback);
@@ -1133,10 +1048,7 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FU
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ScenesManagement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ScenesManagement::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterScenesManagementPluginServerInitCallback);
@@ -1186,10 +1098,7 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FU
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, OnOff::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OnOff::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterOnOffPluginServerInitCallback);
@@ -1243,10 +1152,7 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FU
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, LevelControl::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LevelControl::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterLevelControlPluginServerInitCallback);
@@ -1300,10 +1206,7 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FU
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, ColorControl::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ColorControl::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterColorControlPluginServerInitCallback);
@@ -1371,10 +1274,7 @@ const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION | CLUSTER_FLA
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, FanControl::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, FanControl::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
@@ -1419,10 +1319,7 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBU
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, Thermostat::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Thermostat::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterThermostatPluginServerInitCallback);
@@ -1489,10 +1386,7 @@ const int function_flags = CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ThermostatUserInterfaceConfiguration::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ThermostatUserInterfaceConfiguration::Id));
 
     if (flags & CLUSTER_FLAG_CLIENT) {
         create_default_binding_cluster(endpoint);
@@ -1525,10 +1419,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, AirQuality::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, AirQuality::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
@@ -1557,10 +1448,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, HepaFilterMonitoring::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, HepaFilterMonitoring::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
@@ -1593,10 +1481,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, HepaFilterMonitoring::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, HepaFilterMonitoring::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
@@ -1629,10 +1514,7 @@ static cluster_t *create(endpoint_t *endpoint, T *config, uint8_t flags, uint32_
                          const function_generic_t *function_list=NULL, const int function_flags=CLUSTER_FLAG_NONE)
 {
     cluster_t *cluster = cluster::create(endpoint, cluster_id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster, id: %lu", cluster_id);
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster, id: %lu", cluster_id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
@@ -1756,6 +1638,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 } /* total_volatile_organic_compounds_concentration_measurement */
 
+
 namespace operational_state {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
@@ -1763,10 +1646,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, OperationalState::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OperationalState::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
@@ -1805,10 +1685,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, LaundryWasherMode::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LaundryWasherMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config -> delegate != nullptr) {
@@ -1847,10 +1724,7 @@ const int function_flags = CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, LaundryWasherControls::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LaundryWasherControls::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config -> delegate != nullptr) {
@@ -1884,10 +1758,7 @@ const int function_flags = CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, LaundryDryerControls::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LaundryDryerControls::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
@@ -1924,10 +1795,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, DishwasherMode::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DishwasherMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
@@ -1963,10 +1831,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, DishwasherAlarm::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DishwasherAlarm::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config -> delegate != nullptr) {
@@ -1997,10 +1862,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, SmokeCoAlarm::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, SmokeCoAlarm::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
@@ -2048,10 +1910,7 @@ const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION | CLUSTER_FLA
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, DoorLock::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DoorLock::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config -> delegate != nullptr) {
@@ -2103,10 +1962,7 @@ const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, WindowCovering::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, WindowCovering::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterWindowCoveringPluginServerInitCallback);
@@ -2159,10 +2015,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, Switch::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Switch::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterSwitchPluginServerInitCallback);
@@ -2197,10 +2050,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, TemperatureMeasurement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, TemperatureMeasurement::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterTemperatureMeasurementPluginServerInitCallback);
@@ -2236,10 +2086,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, RelativeHumidityMeasurement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RelativeHumidityMeasurement::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterRelativeHumidityMeasurementPluginServerInitCallback);
@@ -2277,10 +2124,7 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, OccupancySensing::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OccupancySensing::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterOccupancySensingPluginServerInitCallback);
@@ -2316,10 +2160,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, BooleanState::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, BooleanState::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterBooleanStatePluginServerInitCallback);
@@ -2353,10 +2194,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, BooleanStateConfiguration::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, BooleanStateConfiguration::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config -> delegate != nullptr) {
@@ -2404,10 +2242,7 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBU
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, LocalizationConfiguration::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LocalizationConfiguration::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterLocalizationConfigurationPluginServerInitCallback);
@@ -2443,10 +2278,7 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBU
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, TimeFormatLocalization::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, TimeFormatLocalization::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterTimeFormatLocalizationPluginServerInitCallback);
@@ -2483,10 +2315,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, IlluminanceMeasurement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, IlluminanceMeasurement::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterIlluminanceMeasurementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
@@ -2523,10 +2352,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, PressureMeasurement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PressureMeasurement::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterPressureMeasurementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
@@ -2561,10 +2387,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, FlowMeasurement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, FlowMeasurement::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterFlowMeasurementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
@@ -2604,10 +2427,7 @@ const int function_flags =
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, PumpConfigurationAndControl::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PumpConfigurationAndControl::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterPumpConfigurationAndControlPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
@@ -2648,10 +2468,7 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, ModeSelect::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ModeSelect::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
             static const auto delegate_init_cb = ModeSelectDelegateInitCB;
@@ -2729,10 +2546,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, SoftwareDiagnostics::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, SoftwareDiagnostics::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterSoftwareDiagnosticsPluginServerInitCallback);
@@ -2761,10 +2575,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, TemperatureControl::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, TemperatureControl::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterTemperatureControlPluginServerInitCallback);
@@ -2803,10 +2614,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, RefrigeratorAlarm::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RefrigeratorAlarm::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterRefrigeratorAlarmPluginServerInitCallback);
@@ -2838,10 +2646,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, RefrigeratorAndTemperatureControlledCabinetMode::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RefrigeratorAndTemperatureControlledCabinetMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config -> delegate != nullptr) {
@@ -2878,10 +2683,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, RvcRunMode::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RvcRunMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config -> delegate != nullptr) {
@@ -2918,10 +2720,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, RvcCleanMode::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RvcCleanMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config -> delegate != nullptr) {
@@ -2957,10 +2756,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, MicrowaveOvenMode::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, MicrowaveOvenMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
@@ -2993,10 +2789,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, MicrowaveOvenControl::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, MicrowaveOvenControl::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
@@ -3038,10 +2831,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, RvcOperationalState::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RvcOperationalState::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
@@ -3068,10 +2858,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, KeypadInput::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, KeypadInput::Id));
 
     if (flags & CLUSTER_FLAG_CLIENT) {
         create_default_binding_cluster(endpoint);
@@ -3107,10 +2894,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, PowerTopology::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PowerTopology::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
@@ -3151,10 +2935,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, ElectricalPowerMeasurement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ElectricalPowerMeasurement::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
@@ -3210,10 +2991,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, ElectricalEnergyMeasurement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ElectricalEnergyMeasurement::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
@@ -3262,10 +3040,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, EnergyEvseMode::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, EnergyEvseMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
@@ -3301,10 +3076,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, EnergyEvse::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, EnergyEvse::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
@@ -3362,10 +3134,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, ValveConfigurationAndControl::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ValveConfigurationAndControl::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
             static const auto delegate_init_cb = ValveConfigurationAndControlDelegateInitCB;
@@ -3418,10 +3187,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, DeviceEnergyManagement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DeviceEnergyManagement::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
             static const auto delegate_init_cb = DeviceEnergyManagementDelegateInitCB;
@@ -3486,10 +3252,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, DeviceEnergyManagementMode::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DeviceEnergyManagementMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
@@ -3525,10 +3288,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, ApplicationBasic::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ApplicationBasic::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
             static const auto delegate_init_cb = ApplicationBasicDelegateInitCB;
@@ -3566,10 +3326,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, ThreadBorderRouterManagement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster"));
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
             static const auto delegate_init_cb = ThreadBorderRouterManagementDelegateInitCB;
