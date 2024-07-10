@@ -25,6 +25,7 @@ b. Switches
 2. Dimmer Switch
 3. Color Dimmer Switch
 4. Generic Switch
+5. Pump Controller
 
 c. Smart Plugs/Outlets
 1. On/Off Plugin Unit

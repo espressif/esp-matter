@@ -1321,6 +1321,47 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /** pump **/
 
+namespace pump_controller{
+
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_PUMP_CONTROLLER_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_PUMP_CONTROLLER_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    add(endpoint, config);
+    return endpoint;
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
+
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
+    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
+    pump_configuration_and_control::create(endpoint, &(config->pump_configuration_and_control), CLUSTER_FLAG_CLIENT);
+    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
+
+    return ESP_OK;
+}
+} /** pump_controller **/
+
 namespace mode_select_device {
 uint32_t get_device_type_id()
 {

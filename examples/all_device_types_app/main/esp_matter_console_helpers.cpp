@@ -484,6 +484,11 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::device_energy_management::create(node, &device_energy_management_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
+        case ESP_MATTER_PUMP_CONTROLLER: {
+            esp_matter::endpoint::pump_controller::config_t pump_controller_config;
+            endpoint = esp_matter::endpoint::pump_controller::create(node, &pump_controller_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
         default: {
             ESP_LOGE(TAG, "Please input a valid device type");
             break;
