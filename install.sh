@@ -2,6 +2,32 @@
 
 set -e
 
+# function to print help message
+print_help() {
+    echo "Options:"
+    echo "  --no-host-tool          Disable installation of host tools"
+    echo "  --help                  Display this help message"
+}
+
+# Parse command-line arguments
+NO_HOST_TOOL=false
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+         --no-host-tool)
+                 NO_HOST_TOOL=true
+                 ;;
+        --help)
+            print_help
+            exit 1
+            ;;
+         *)
+            print_help
+            exit 1
+            ;;
+  esac
+  shift
+done
+
 basedir=$(dirname "$0")
 ESP_MATTER_PATH=$(cd "${basedir}"; pwd)
 MATTER_PATH=${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip
@@ -17,11 +43,13 @@ cd ${ESP_MATTER_PATH}
 echo ""
 echo "Building host tools"
 echo ""
-gn --root="${MATTER_PATH}" gen ${MATTER_PATH}/out/host --args='chip_inet_config_enable_ipv4=false'
-ninja -C ${MATTER_PATH}/out/host chip-cert chip-tool
-echo ""
-echo "Host tools built at: ${MATTER_PATH}/out/host"
-echo ""
+
+if [ $NO_HOST_TOOL = false ]; then
+  gn --root="${MATTER_PATH}" gen ${MATTER_PATH}/out/host --args='chip_inet_config_enable_ipv4=false'
+  ninja -C ${MATTER_PATH}/out/host chip-cert chip-tool
+  echo ""
+  echo "Host tools built at: ${MATTER_PATH}/out/host"
+fi
 
 echo ""
 echo "Exit Matter environment"
