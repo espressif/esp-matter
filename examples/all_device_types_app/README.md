@@ -14,6 +14,12 @@ No additional setup is required.
 
 ## 2. Usage
 
+-  To build the app with a specific PROJECT_VER and PROJECT_VER_NUMBER for OTA firmware, use the following command from the command line:
+
+   For e.g.:
+
+   `idf.py -DCLI_PROJECT_VER="10.0" -DCLI_PROJECT_VER_NUMBER=10 build`
+
 On boot-up esp-idf console starts. In order to create a device user have to use console command.
 
 -   Use `create --device_type` to list all supported device types.
