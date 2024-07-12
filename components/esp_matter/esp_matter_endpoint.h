@@ -816,9 +816,12 @@ typedef struct config {
  * @param[in] identify_callback  This callback is invoked when clients interact with the Identify Cluster.
  *                               In the callback implementation, an endpoint can identify itself.
  *                               (e.g., by flashing an LED or light).
+ * @param[in] priv_data          Private data to send to the node. This parameter is optional 
+ *                               and defaults to nullptr.This private data can be accessed in the attribute callback 
+ *                               for the root endpoint only.
  */
 node_t *create(config_t *config, attribute::callback_t attribute_callback,
-               identification::callback_t identify_callback);
+               identification::callback_t identify_callback, void* priv_data = nullptr);   
 
 } /* node */
 } /* esp_matter */
