@@ -1,0 +1,25 @@
+menu "Plugin manager"
+    config MAX_CONFIGURABLE_PLUGS
+        int "Maximum virtual configurable plugs"
+        default 5
+        range 1 16
+
+    config GPIO_PLUG_1
+        int "GPIO pin number for plug 1"
+        default 3 if IDF_TARGET_ESP32S3
+        default 2 if !IDF_TARGET_ESP32S3
+        help
+            Set GPIO pin value for target chip to create plugin unit
+
+    config GPIO_PLUG_2
+        int "GPIO pin number for plug 2"
+        default 4
+        help
+            Set GPIO pin value for target chip to create plugin unit
+    
+    config GPIO_PLUG_3
+        int "GPIO pin number for plug 3"
+        default 5
+        help
+            Set GPIO pin value for target chip to create plugin unit
+endmenu
