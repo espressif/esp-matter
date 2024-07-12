@@ -72,6 +72,10 @@ pipeline {
                         esp_matter.firmware_build()
                         esp_matter.firmware_build_save()
 
+                        env.FIRMWARE_TYPE = "OTA"
+                        esp_matter.firmware_build()
+                        esp_matter.firmware_build_save()
+
                     }
                 }
             }

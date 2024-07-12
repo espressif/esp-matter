@@ -25,8 +25,6 @@ def setup_environment() {
     ./install.sh
     . ./export.sh
 
-    python3 -m pip install esp-matter-mfg-tool
-
     cd ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip
     scripts/examples/gn_build_example.sh examples/ota-provider-app/linux out/debug chip_config_network_layer_ble=false
 
@@ -71,7 +69,19 @@ def firmware_build() {
     echo "CONFIG_ESP_COREDUMP_ENABLE_TO_UART=y" >> sdkconfig.defaults
     echo "CONFIG_FACTORY_DEVICE_INSTANCE_INFO_PROVIDER=y" >> sdkconfig.defaults
 
-    idf.py set-target ${chip} build
+    idf.py set-target ${chip}
+    if [ "${FIRMWARE_TYPE}" = "OTA" ]; then
+       MIN_PROJECT_VER=10
+       MAX_PROJECT_VER=100
+       OTA_PROJECT_VER=$((RANDOM % (MAX_PROJECT_VER - MIN_PROJECT_VER + 1) + MIN_PROJECT_VER))
+       OTA_PROJECT_VER_STRING="${OTA_PROJECT_VER}.0"
+       echo "OTA Project Version Number: ${OTA_PROJECT_VER}" >> ${REPOS_PATH}/build_details.txt
+       echo "OTA Project Version String: ${OTA_PROJECT_VER_STRING}" >> ${REPOS_PATH}/build_details.txt
+       idf.py -DCLI_PROJECT_VER=${OTA_PROJECT_VER_STRING} -DCLI_PROJECT_VER_NUMBER=${OTA_PROJECT_VER} build
+    else
+       idf.py build
+    fi
+
     '''
 }
 
@@ -125,7 +135,7 @@ def tools_artifacts_create() {
     cp ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/out/host/chip-cert ${PACKAGE_PATH}/Tools/chip-cert
 
     mkdir -p ${PACKAGE_PATH}/Tools/chip-ota-provider-app
-    cp ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/out/debug/chip-ota-provider-app ${PACKAGE_PATH}Tools/chip-ota-provider-app
+    cp ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/out/debug/chip-ota-provider-app ${PACKAGE_PATH}/Tools/chip-ota-provider-app
 
     TOOL_PATH=${PACKAGE_PATH}/Tools/chip-ota-provider-app
 
