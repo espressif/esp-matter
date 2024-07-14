@@ -96,6 +96,8 @@
 #define ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_VERSION 3
 #define ESP_MATTER_PUMP_DEVICE_TYPE_ID 0x0303
 #define ESP_MATTER_PUMP_DEVICE_TYPE_VERSION 3
+#define ESP_MATTER_PUMP_CONTROLLER_DEVICE_TYPE_ID 0x0304
+#define ESP_MATTER_PUMP_CONTROLLER_DEVICE_TYPE_VERSION 4
 #define ESP_MATTER_MODE_SELECT_DEVICE_TYPE_ID 0x0027
 #define ESP_MATTER_MODE_SELECT_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_ROBOTIC_VACCUM_CLEANER_DEVICE_TYPE_ID 0x0074
@@ -579,6 +581,21 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** pump **/
+
+namespace pump_controller {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::identify::config_t identify;
+    cluster::on_off::config_t on_off;
+    cluster::pump_configuration_and_control::config_t pump_configuration_and_control;
+    cluster::binding::config_t binding;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /** pump_controller **/
 
 namespace mode_select_device {
 typedef struct config {
