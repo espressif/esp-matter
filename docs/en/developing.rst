@@ -137,6 +137,11 @@ so if you want to do a shallow clone use the following command:
 
     The modules for platform ``linux`` or ``darwin`` are required for the host tools building.
 
+.. note::
+
+    If you don't want to install host tools (chip-tool, chip-cert etc.) you can use ``./install.sh --no-host-tool``.
+
+
 To clone the esp-matter repository with all the submodules, use the following command:
 
 ::
