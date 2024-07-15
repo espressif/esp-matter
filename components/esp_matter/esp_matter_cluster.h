@@ -560,7 +560,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace laundry_washer_controls {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(1) {}
+    void *delegate;
+    config() : cluster_revision(1), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -591,7 +592,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace dish_washer_alarm {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(1) {}
+    void *delegate;
+    config() : cluster_revision(1), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -630,7 +632,8 @@ typedef struct config {
     const uint8_t end_product_type;
     uint8_t mode;
     feature::lift::config_t lift;
-    config(uint8_t end_product_type = 0) : cluster_revision(5), type(0), config_status(0), operational_status(0), end_product_type(end_product_type), mode(0) {}
+    void *delegate;
+    config(uint8_t end_product_type = 0) : cluster_revision(5), type(0), config_status(0), operational_status(0), end_product_type(end_product_type), mode(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -892,7 +895,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace keypad_input {
 typedef struct config {
     uint16_t cluster_revision;
-    config() : cluster_revision(1) {}
+    void *delegate;
+    config() : cluster_revision(1), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

@@ -31,6 +31,10 @@
 #include <app/clusters/application-basic-server/application-basic-server.h>
 #include <app/clusters/power-topology-server/power-topology-server.h>
 #include <app/clusters/electrical-power-measurement-server/electrical-power-measurement-server.h>
+#include <app/clusters/laundry-washer-controls-server/laundry-washer-controls-server.h>
+#include <app/clusters/window-covering-server/window-covering-server.h>
+#include <app/clusters/dishwasher-alarm-server/dishwasher-alarm-server.h>
+#include <app/clusters/keypad-input-server/keypad-input-server.h>
 
 using namespace chip::app::Clusters;
 namespace esp_matter {
@@ -297,6 +301,46 @@ void ElectricalPowerMeasurementDelegateInitCB(void *delegate, uint16_t endpoint_
                             chip::BitMask<ElectricalPowerMeasurement::Feature, uint32_t>(feature_map),
                             chip::BitMask<ElectricalPowerMeasurement::OptionalAttributes, uint32_t>(0));
     electricalPowerMeasurementInstance->Init();
+}
+
+void LaundryWasherControlsDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    LaundryWasherControls::Delegate *laundry_washer_controls_delegate = static_cast<LaundryWasherControls::Delegate*>(delegate);
+    LaundryWasherControls::LaundryWasherControlsServer::SetDefaultDelegate(endpoint_id, laundry_washer_controls_delegate);
+}
+
+void WindowCoveringDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    WindowCovering::Delegate *window_covering_delegate = static_cast<WindowCovering::Delegate*>(delegate);
+    WindowCovering::SetDefaultDelegate(endpoint_id, window_covering_delegate);
+}
+
+void DishwasherAlarmDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    DishwasherAlarm::Delegate *dishwasher_alarm_delegate = static_cast<DishwasherAlarm::Delegate*>(delegate);
+    DishwasherAlarm::SetDefaultDelegate(endpoint_id, dishwasher_alarm_delegate);
+}
+
+void KeypadInputDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    KeypadInput::Delegate *keypad_input_delegate = static_cast<KeypadInput::Delegate*>(delegate);
+    KeypadInput::SetDefaultDelegate(endpoint_id, keypad_input_delegate);
 }
 
 } // namespace delegate_cb

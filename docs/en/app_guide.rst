@@ -175,6 +175,38 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `Electrical Power Measurement`_, `Electrical Power Measurement Delegate`_
 
+9.1.16 Laundry Washer Controls Cluster
+--------------------------------------
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Laundry Washer Controls`_, `Laundry Washer Controls Delegate`_
+
+9.1.17 Window Covering Cluster
+------------------------------
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Window Covering`_, `Window Covering Delegate`_
+
+9.1.18 Dishwasher Alarm Cluster
+-------------------------------
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Dishwasher Alarm`_, `Dishwasher Alarm Delegate`_
+
+9.1.19 Keypad Input Cluster
+---------------------------
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Keypad Input`_, `Keypad Input Delegate`_
+
 
 .. note::
     Make sure that after implementing delegate class, you set the delegate class pointer at the time of creating cluster.
@@ -218,3 +250,11 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Power Topology Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/energy-management-app/energy-management-common/include/PowerTopologyDelegate.h
 .. _`Electrical Power Measurement`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/electrical-power-measurement-server/electrical-power-measurement-server.h
 .. _`Electrical Power Measurement Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/energy-management-app/energy-management-common/include/ElectricalPowerMeasurementDelegate.h
+.. _`Laundry Washer Controls`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/laundry-washer-controls-server/laundry-washer-controls-server.h
+.. _`Laundry Washer Controls Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/laundry-washer-controls-delegate-impl.h
+.. _`Window Covering`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/window-covering-server/window-covering-server.h
+.. _`Window Covering Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/linux/WindowCoveringManager.h
+.. _`Dishwasher Alarm`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/dishwasher-alarm-server/dishwasher-alarm-server.h
+.. _`Dishwasher Alarm Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/src/dishwasher-alarm-stub.cpp
+.. _`Keypad Input`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/keypad-input-server/keypad-input-server.h
+.. _`Keypad Input Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/chef/common/clusters/keypad-input/KeypadInputManager.h

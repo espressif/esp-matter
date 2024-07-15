@@ -40,6 +40,10 @@ void TimeSynchronizationDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void ApplicationBasicDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void PowerTopologyDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void ElectricalPowerMeasurementDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void LaundryWasherControlsDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void WindowCoveringDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void DishwasherAlarmDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void KeypadInputDelegateInitCB(void *delegate, uint16_t endpoint_id);
 } // namespace delegate_cb
 
 } // namespace cluster
