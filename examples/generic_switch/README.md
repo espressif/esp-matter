@@ -58,7 +58,7 @@ chip-tool userlabel read label-list 0x7283 1
 To read the taglist of the Descriptor cluster execute the command given below.
 
 ```
-chip-tool descriptor read tag-list 0x7283 0
+chip-tool descriptor read tag-list 0x7283 1
 ```
 
 ## 2. Post Commissioning Setup
