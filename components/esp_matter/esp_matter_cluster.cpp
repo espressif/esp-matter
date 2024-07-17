@@ -543,7 +543,7 @@ namespace administrator_commissioning {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, AdministratorCommissioning::Id, flags);
     if (!cluster) {
@@ -575,9 +575,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
     }
 
+    /* Features */
+    if (features & feature::basic::get_id()) {
+        feature::basic::add(cluster);
+    }
+
     /* Commands */
     command::create_open_commissioning_window(cluster);
-    command::create_open_basic_commissioning_window(cluster);
     command::create_revoke_commissioning(cluster);
 
     return cluster;
