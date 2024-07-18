@@ -230,7 +230,6 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 
     global::attribute::create_cluster_revision(cluster, 1);
     global::attribute::create_feature_map(cluster, 0);
-    global::attribute::create_event_list(cluster, NULL, 0, 0);
 
     // Attribute managed internally
     attribute::create_dataset_tlvs(cluster, NULL, 0);
