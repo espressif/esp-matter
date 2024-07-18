@@ -45,7 +45,7 @@ Data = [
 Build and run BLE Mesh onoff_server app on another ESP32-C3 board.
 
 ```
-cd ${IDF_PATH}/examples/bluetooth/esp_ble_mesh/ble_mesh_node/onoff_server
+cd ${IDF_PATH}/examples/bluetooth/esp_ble_mesh/onoff_models/onoff_server
 idf.py set-target esp32c3
 idf.py -p <port> build flash monitor
 ```
