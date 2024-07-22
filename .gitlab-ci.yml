@@ -158,7 +158,8 @@ build_image:
     - TAG="chip_${CHIP_SHORT_HASH}_idf_${IDF_VERSION}"
     - echo $TAG
     - |
-      if wget -qO- "https://hub.docker.com/v2/repositories/espressif/chip-idf/tags" | grep -q ${TAG}; then
+      url="https://hub.docker.com/v2/repositories/${DOCKER_IMAGE_NAME}/tags/${TAG}"
+      if wget -q --spider "$url"; then
           echo "No Differences detected. The docker image with ${TAG} is present in docker hub. Skipping docker build "
       else
           echo "Differences detected. The docker image with ${TAG} is not present on docker hub. Triggering docker build due to submdoule update or idf version change in CI."
