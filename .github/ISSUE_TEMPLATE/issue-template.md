@@ -15,8 +15,12 @@ A clear and concise description of what the bug is.
 - ESP-IDF Commit Id:
 - SoC (eg: ESP32 or ESP32-C3):
 - Device Logs (Please attach the log file):
+
 - Host Machine OS:
+- Host Machine Python version:
+
 - Commissioner app and versions if present:
+- Home hub app and versions if present:
 - Commissioner's logs if present:
 
 **Any additional details**
