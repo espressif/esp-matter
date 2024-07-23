@@ -10,7 +10,7 @@ node('master') {
 pipeline {
     agent {
         docker {
-            image 'registry.hub.docker.com/shripad97/esp_matter_jenkins:latest'
+            image 'espressif/esp-matter'
             alwaysPull true
         }
     }
@@ -45,9 +45,8 @@ pipeline {
                         echo "Package name: ${PACKAGE_NAME}"
 
                         def esp_matter = load "${WORKSPACE}/tools/jenkins/esp_matter.groovy"
-                        esp_matter.setup_directories_firmware()
-                        esp_matter.setup_directories_script()
-                        esp_matter.setup_directories_tools()
+
+                        esp_matter.setup_directories()
                         esp_matter.setup_environment()
                     }
                 }
@@ -73,6 +72,10 @@ pipeline {
                         esp_matter.firmware_build()
                         esp_matter.firmware_build_save()
 
+                        env.FIRMWARE_TYPE = "OTA"
+                        esp_matter.firmware_build()
+                        esp_matter.firmware_build_save()
+
                     }
                 }
             }
@@ -92,6 +95,7 @@ pipeline {
                 catchError() {
                     script {
                         def esp_matter = load "${WORKSPACE}/tools/jenkins/esp_matter.groovy"
+                        esp_matter.script_artifacts_create()
                         esp_matter.tools_artifacts_create()
                     }
                 }
@@ -152,4 +156,3 @@ pipeline {
         }
     }
 }
-

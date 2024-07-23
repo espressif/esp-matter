@@ -1,37 +1,29 @@
-def setup_directories_firmware() {
+def setup_directories() {
     sh '''
-    echo "repos path: ${REPOS_PATH}"
-    ls -l ${REPOS_PATH} 
-    cd ${REPOS_PATH}
-    cd ..
-    ls -l
-    mkdir -p ${PACKAGE_PATH}
-    mkdir -p ${PACKAGE_PATH}/Firmware
     mkdir -p ${PACKAGE_PATH}/Firmware/Evaluation
-    '''
-}
-
-def setup_directories_script() {
-    sh '''
-    cd ${REPOS_PATH}
-    mkdir -p ${PACKAGE_PATH}
     mkdir -p ${PACKAGE_PATH}/Script
-    '''
-}
-
-def setup_directories_tools() {
-    sh '''
-    cd ${REPOS_PATH}
-    mkdir -p ${PACKAGE_PATH}
     mkdir -p ${PACKAGE_PATH}/Tools
     '''
 }
 
 def setup_environment() {
     sh '''
-    cd ${REPOS_PATH}/esp-idf
+    cd ${IDF_PATH}
     . ./export.sh
-    cd ..
+
+    cd ${ESP_MATTER_PATH}
+    git config --global --add safe.directory ${REPOS_PATH}/esp-matter
+    git fetch origin main --depth 1
+    git checkout FETCH_HEAD
+    git clean -fd
+    git submodule update --init --depth 1
+
+    cd ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip
+    ./scripts/checkout_submodules.py --platform esp32 linux --shallow
+
+    cd ${ESP_MATTER_PATH}
+    ./install.sh
+    . ./export.sh
 
     cd ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip
     scripts/examples/gn_build_example.sh examples/ota-provider-app/linux out/debug chip_config_network_layer_ble=false
@@ -48,7 +40,6 @@ def setup_environment() {
     echo "product: ${product}" >> ${REPOS_PATH}/build_details.txt
     echo "chip: ${chip}" >> ${REPOS_PATH}/build_details.txt
     echo "flash_size: 4MB" >> ${REPOS_PATH}/build_details.txt
-    echo "secure_boot: enabled" >> ${REPOS_PATH}/build_details.txt
     
     printf "\n\n" >> ${REPOS_PATH}/build_details.txt
     '''
@@ -59,82 +50,38 @@ def firmware_build() {
     printf "\n\n" >> ${REPOS_PATH}/build_details.txt
     echo "firmware_type: ${FIRMWARE_TYPE}" >> ${REPOS_PATH}/build_details.txt
  
-    echo "product :${product} "
+    cd ${IDF_PATH}
+    . ./export.sh
+
+    cd ${ESP_MATTER_PATH}
+    . ./export.sh
+
     cd ${ESP_MATTER_PATH}/examples/${product}
     SDKCONFIG_FILE=${ESP_MATTER_PATH}/examples/${product}/sdkconfig.defaults
-   
-    . ${IDF_PATH}/export.sh
-    . ${ESP_MATTER_PATH}/export.sh;
 
-    idf.py fullclean
+    rm -rf build sdkconfig sdkconfig.old managed_components dependencies.lock
 
-    config_option1="CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER=y"
-    config_option2="CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER=y"
-    config_option3="CONFIG_SEC_CERT_DAC_PROVIDER=y"
-    config_option4="CONFIG_ESP_SECURE_CERT_DS_PERIPHERAL=n"
-    config_option5="CONFIG_ENABLE_OTA_REQUESTOR=y"
-    config_option6="CONFIG_ESP_COREDUMP_ENABLE_TO_UART=y"
-    config_option7="CONFIG_FACTORY_DEVICE_INSTANCE_INFO_PROVIDER=y"
-
-    if [ -e "sdkconfig.defaults.${chip}" ]; then
-        if ! grep -q "^${config_option1%%=*}=" "sdkconfig.defaults.${chip}"; then
-            echo "${config_option1}" >> "sdkconfig.defaults.${chip}"
-        fi
-
-        if ! grep -q "^${config_option2%%=*}=" "sdkconfig.defaults.${chip}"; then
-            echo "${config_option2}" >> "sdkconfig.defaults.${chip}"
-        fi
-
-        if ! grep -q "^${config_option3%%=*}=" "sdkconfig.defaults.${chip}"; then
-            echo "${config_option3}" >> "sdkconfig.defaults.${chip}"
-        fi
-
-        if [ "${chip}" != "esp32h2" ] && ! grep -q "^${config_option4%%=*}=" "sdkconfig.defaults.${chip}"; then
-            echo "${config_option4}" >> "sdkconfig.defaults.${chip}"
-        fi
-
-        if ! grep -q "${config_option5}" "sdkconfig.defaults.${chip}"; then
-                echo "${config_option5}" >> "sdkconfig.defaults.${chip}"
-        fi
-
-        echo "${config_option6}" >> "sdkconfig.defaults.${chip}"
-
-        if ! grep -q "${config_option7}" "sdkconfig.defaults.${chip}"; then
-                echo "${config_option7}" >> "sdkconfig.defaults.${chip}"
-        fi
-
-    else
-        if ! grep -q "^${config_option1%%=*}=" sdkconfig.defaults; then
-            echo "${config_option1}" >> "sdkconfig.defaults"
-        fi
-
-        if ! grep -q "^${config_option2%%=*}=" sdkconfig.defaults; then
-            echo "${config_option2}" >> "sdkconfig.defaults"
-        fi
-
-        if ! grep -q "^${config_option3%%=*}=" sdkconfig.defaults; then
-            echo "${config_option3}" >> "sdkconfig.defaults"
-        fi
-
-        if ! grep -q "^${config_option4%%=*}=" sdkconfig.defaults; then
-            echo "${config_option4}" >> "sdkconfig.defaults"
-        fi
-
-        if ! grep -q "${config_option5}" "sdkconfig.defaults"; then
-            echo "${config_option5}" >> "sdkconfig.defaults"
-        fi
-
-        echo "${config_option6}" >> "sdkconfig.defaults"
-
-        if ! grep -q "${config_option7}" "sdkconfig.defaults"; then
-            echo "${config_option7}" >> "sdkconfig.defaults"
-        fi
-    fi
+    echo "CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER=y" >> sdkconfig.defaults
+    echo "CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER=y" >> sdkconfig.defaults
+    echo "CONFIG_SEC_CERT_DAC_PROVIDER=y" >> sdkconfig.defaults
+    echo "CONFIG_ESP_SECURE_CERT_DS_PERIPHERAL=n" >> sdkconfig.defaults
+    echo "CONFIG_ENABLE_OTA_REQUESTOR=y" >> sdkconfig.defaults
+    echo "CONFIG_ESP_COREDUMP_ENABLE_TO_UART=y" >> sdkconfig.defaults
+    echo "CONFIG_FACTORY_DEVICE_INSTANCE_INFO_PROVIDER=y" >> sdkconfig.defaults
 
     idf.py set-target ${chip}
+    if [ "${FIRMWARE_TYPE}" = "OTA" ]; then
+       MIN_PROJECT_VER=10
+       MAX_PROJECT_VER=100
+       OTA_PROJECT_VER=$((RANDOM % (MAX_PROJECT_VER - MIN_PROJECT_VER + 1) + MIN_PROJECT_VER))
+       OTA_PROJECT_VER_STRING="${OTA_PROJECT_VER}.0"
+       echo "OTA Project Version Number: ${OTA_PROJECT_VER}" >> ${REPOS_PATH}/build_details.txt
+       echo "OTA Project Version String: ${OTA_PROJECT_VER_STRING}" >> ${REPOS_PATH}/build_details.txt
+       idf.py -DCLI_PROJECT_VER=${OTA_PROJECT_VER_STRING} -DCLI_PROJECT_VER_NUMBER=${OTA_PROJECT_VER} build
+    else
+       idf.py build
+    fi
 
-    cat sdkconfig
-    idf.py build
     '''
 }
 
@@ -166,28 +113,32 @@ def firmware_build_save() {
     '''
 }
 
+def script_artifacts_create() {
+    sh '''
+    SCRIPTS_PATH=${PACKAGE_PATH}/Script/manufacturing_scripts
+    mkdir -p ${SCRIPTS_PATH}
+
+    mkdir -p ${SCRIPTS_PATH}/esp-matter/connectedhomeip/connectedhomeip/credentials
+    cp -r ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/credentials/test ${SCRIPTS_PATH}/esp-matter/connectedhomeip/connectedhomeip/credentials
+    cp -r ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/credentials/production ${SCRIPTS_PATH}/esp-matter/connectedhomeip/connectedhomeip/credentials
+    cp -r ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/credentials/development ${SCRIPTS_PATH}/esp-matter/connectedhomeip/connectedhomeip/credentials
+
+    '''
+}
+
 def tools_artifacts_create() {
     sh '''
-    PACKAGE_TOOLS_PATH=${PACKAGE_PATH}/Tools
-    TOOL_DIRECTORY_NAME=chip-tool
-    TOOL_PATH=${PACKAGE_TOOLS_PATH}/${TOOL_DIRECTORY_NAME}
-    mkdir -p ${TOOL_PATH}
+    mkdir -p ${PACKAGE_PATH}/Tools/chip-tool
+    cp ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/out/host/chip-tool ${PACKAGE_PATH}/Tools/chip-tool
 
-    cp ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/out/host/chip-tool ${TOOL_PATH}/
+    mkdir -p ${PACKAGE_PATH}/Tools/chip-cert
+    cp ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/out/host/chip-cert ${PACKAGE_PATH}/Tools/chip-cert
 
-    TOOL_DIRECTORY_NAME=chip-cert
-    TOOL_PATH=${PACKAGE_TOOLS_PATH}/${TOOL_DIRECTORY_NAME}
-    mkdir -p ${TOOL_PATH}
+    mkdir -p ${PACKAGE_PATH}/Tools/chip-ota-provider-app
+    cp ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/out/debug/chip-ota-provider-app ${PACKAGE_PATH}/Tools/chip-ota-provider-app
 
-    cp ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/out/host/chip-cert ${TOOL_PATH}/
+    TOOL_PATH=${PACKAGE_PATH}/Tools/chip-ota-provider-app
 
-    TOOL_DIRECTORY_NAME=chip-ota-provider-app
-    TOOL_PATH=${PACKAGE_TOOLS_PATH}/${TOOL_DIRECTORY_NAME}
-    mkdir -p ${TOOL_PATH}
-
-    cp ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/out/debug/chip-ota-provider-app ${TOOL_PATH}/
-
-    # esp-matter
     mkdir -p ${TOOL_PATH}/esp-matter/connectedhomeip/connectedhomeip/src/app
     cp -r ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/src/app/ota_image_tool.py ${TOOL_PATH}/esp-matter/connectedhomeip/connectedhomeip/src/app
 

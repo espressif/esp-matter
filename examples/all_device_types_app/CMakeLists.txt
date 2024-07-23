@@ -31,7 +31,7 @@ else()
 endif()
 
 if(NOT DEFINED CLI_PROJECT_VER_NUMBER)
-    set(PROJECT_VER 1)
+    set(PROJECT_VER_NUMBER 1)
 else()
     set(PROJECT_VER_NUMBER "${CLI_PROJECT_VER_NUMBER}")
 endif()
