@@ -82,12 +82,36 @@ esp_err_t add(cluster_t *cluster)
 
     /* Attributes managed internally */
     attribute::create_tag_list(cluster, NULL, 0, 0);
-
     return ESP_OK;
 }
 
 } /* taglist */
+}
+}
 
+namespace administrator_commissioning {
+namespace feature {
+namespace basic {
+
+uint32_t get_id()
+{
+    return (uint32_t)AdministratorCommissioning::Feature::kBasic;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    command::create_open_basic_commissioning_window(cluster);
+
+    return ESP_OK;
+}
+
+} /* basic */
 }
 }
 

@@ -160,7 +160,7 @@ typedef struct config {
     config() : cluster_revision(1) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* administrator_commissioning */
 
 namespace operational_credentials {

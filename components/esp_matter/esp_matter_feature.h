@@ -43,6 +43,18 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* descriptor */
 
+namespace administrator_commissioning {
+namespace feature {
+namespace basic {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* basic */
+
+} /* feature */
+} /* administrator_commissioning */
+
 namespace power_source {
 namespace feature {
 namespace wired {
