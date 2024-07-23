@@ -22,6 +22,27 @@ namespace esp_matter {
 using namespace cluster;
 
 namespace endpoint {
+
+namespace common {
+
+template <typename T>
+using add_fn = esp_err_t (*)(endpoint_t *endpoint, T *config);
+
+template <typename T>
+endpoint_t *create(node_t *node, T *config, uint8_t flags, void *priv_data, add_fn<T> add)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Failed to create endpoint"));
+
+    cluster_t *descriptor_cluster = descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
+    VerifyOrReturnValue(descriptor_cluster != nullptr, NULL, ESP_LOGE(TAG, "Failed to create descriptor cluster"));
+
+    VerifyOrReturnValue(ESP_OK == add(endpoint, config), NULL, ESP_LOGE(TAG, "Failed to add cluster"));
+    return endpoint;
+}
+
+} // namespace common
+
 namespace root_node {
 uint32_t get_device_type_id()
 {
@@ -35,11 +56,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -90,11 +107,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -129,11 +142,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -169,11 +178,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -210,11 +215,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -254,11 +255,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -300,11 +297,12 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
+    endpoint_t * endpoint = common::create<config_t>(node, config, flags, priv_data, add);
+    VerifyOrReturnError(endpoint != nullptr, NULL);
+
+    cluster_t *binding_cluster = binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
+    VerifyOrReturnValue(binding_cluster != nullptr, NULL, ESP_LOGE(TAG, "Failed to create binding cluster"));
+
     return endpoint;
 }
 
@@ -337,11 +335,12 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
+    endpoint_t * endpoint = common::create<config_t>(node, config, flags, priv_data, add);
+    VerifyOrReturnError(endpoint != nullptr, NULL);
+
+    cluster_t *binding_cluster = binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
+    VerifyOrReturnValue(binding_cluster != nullptr, NULL, ESP_LOGE(TAG, "Failed to create binding cluster"));
+
     return endpoint;
 }
 
@@ -376,11 +375,12 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
+    endpoint_t * endpoint = common::create<config_t>(node, config, flags, priv_data, add);
+    VerifyOrReturnError(endpoint != nullptr, NULL);
+
+    cluster_t *binding_cluster = binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
+    VerifyOrReturnValue(binding_cluster != nullptr, NULL, ESP_LOGE(TAG, "Failed to create binding cluster"));
+
     return endpoint;
 }
 
@@ -415,11 +415,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -451,11 +447,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -490,11 +482,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -531,11 +519,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -568,11 +552,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -606,11 +586,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -639,11 +615,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -675,11 +647,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -711,11 +679,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -746,11 +710,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -781,11 +741,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -816,11 +772,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void * priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t * endpoint, config_t * config)
@@ -853,11 +805,7 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     // bridged node endpoints are always deletable
-    endpoint_t *endpoint = endpoint::create(node, flags | ENDPOINT_FLAG_DESTROYABLE, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags | ENDPOINT_FLAG_DESTROYABLE, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -895,11 +843,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -931,11 +875,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void * priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -969,11 +909,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1005,11 +941,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1041,11 +973,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1077,11 +1005,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1114,11 +1038,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1150,11 +1070,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1186,11 +1102,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1223,11 +1135,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1261,11 +1169,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1299,11 +1203,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1339,11 +1239,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1379,11 +1275,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1415,11 +1307,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1449,11 +1337,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1484,11 +1368,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1521,11 +1401,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1557,11 +1433,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1593,11 +1465,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1630,11 +1498,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1669,11 +1533,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1704,11 +1564,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1739,11 +1595,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1775,11 +1627,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1813,11 +1661,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1849,11 +1693,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
@@ -1886,11 +1726,7 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
