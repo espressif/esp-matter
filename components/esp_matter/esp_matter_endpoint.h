@@ -147,8 +147,6 @@ typedef struct config {
     cluster::general_diagnostics::config_t general_diagnostics;
     cluster::administrator_commissioning::config_t administrator_commissioning;
     cluster::operational_credentials::config_t operational_credentials;
-    cluster::wifi_network_diagnotics::config_t wifi_network_diagnotics;
-    cluster::thread_network_diagnostics::config_t thread_network_diagnostics;
     cluster::icd_management::config_t icd_management;
 } config_t;
 
