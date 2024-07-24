@@ -8,11 +8,9 @@ See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/de
 
 - ESP32-S3-DevKitM
 - chip-tool (For Matter commissioning)
-- Android RainMaker APP (For RainMaker Provisioning, version 3.4.1-50658f9)
+- Android RainMaker APP of version 3.4.1 or iOS RainMaker APP of version 3.2.0 (For RainMaker Provisioning)
 - [ESP-IDF](https://github.com/espressif/esp-idf) on commit 1022b2b447d364d2f2600045c75d81dd203dd15e
 - [ESP-RainMaker](https://github.com/espressif/esp-rainmaker) on commit 90a8d9edf9802ca23b14ff87fe3bbf826a1df228
-
-**Note:** iOS Rainmaker APP will crash after scanning the QR code, which is a known issue and will be fixed in the next release. Please do not use it for provisioning this example.
 
 ## 2. Additional Environment Setup
 
@@ -40,4 +38,4 @@ There are also some WiFi stack initialization changes to avoid duplicated Wi-Fi 
 
 ## 5. RainMaker Provisioning
 
-After you flash the example to the DevKit board, the console will print the QR code for RainMaker Provisioning. After you scan the QR code with the RainMaker Android App, the RainMaker provisioning will be done and the device will be added to your RainMaker home.
+After you flash the example to the DevKit board, the console will print the QR code for RainMaker Provisioning. After you scan the QR code with the RainMaker Phone App, the RainMaker provisioning will be done and the device will be added to your RainMaker home.
