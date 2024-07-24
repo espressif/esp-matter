@@ -290,6 +290,19 @@ esp_err_t set_parent_endpoint(endpoint_t *endpoint, endpoint_t *parent_endpoint)
  */
 void *get_priv_data(uint16_t endpoint_id);
 
+/** Set identify
+ *
+ * Set identify to the endpoint. The identify pointer should be dynamically allocated using 'chip::Platform::New<Identify>()',
+ * and once Matter stack is done using it, it will be freed by 'chip::Platform::Delete()'.
+ *
+ * @param[in] endpoint_id Endpoint id.
+ * @param[in] identify Identify pointer.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t set_identify(uint16_t endpoint_id, void *identify);
+
 /** Enable endpoint
  *
  * Enable the endpoint which has been previously created.
