@@ -976,7 +976,7 @@ CHIP_ERROR BLEManagerImpl::InitESPBleLayer(void)
         ble_svc_gap_init();
         ble_svc_gatt_init();
 
-        mGATTServices[0] = CHIPoBLEGATTService;
+        mGATTServices[1 - mSecondGATTServiceIndex] = CHIPoBLEGATTService;
         err = MapBLEError(ble_gatts_count_cfg(mGATTServices));
         if (err != CHIP_NO_ERROR)
         {

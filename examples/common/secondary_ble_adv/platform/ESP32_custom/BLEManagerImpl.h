@@ -149,13 +149,14 @@ public:
     CHIP_ERROR ConfigureScanResponseData(ByteSpan data);
     void ClearScanResponseData(void);
 
-    CHIP_ERROR SetSecondaryGATTService(struct ble_gatt_svc_def *gatt_svc)
+    CHIP_ERROR SetSecondaryGATTService(struct ble_gatt_svc_def *gatt_svc, size_t gattSvcIndex)
     {
-        if (!gatt_svc)
+        if (!gatt_svc || gattSvcIndex > 1)
         {
             return CHIP_ERROR_INVALID_ARGUMENT;
         }
-        memcpy(&mGATTServices[1], gatt_svc, sizeof(struct ble_gatt_svc_def));
+        mSecondGATTServiceIndex = gattSvcIndex;
+        memcpy(&mGATTServices[gattSvcIndex], gatt_svc, sizeof(struct ble_gatt_svc_def));
         return CHIP_NO_ERROR;
     }
 
@@ -442,6 +443,7 @@ private:
     CHIP_ERROR ConfigureSecondaryAdvertisingData(void);
     CHIP_ERROR StartSecondaryAdvertising(void);
     char mSecondaryAdvDeviceName[MAX_DEVICE_NAME_LEN + 1];
+    size_t mSecondGATTServiceIndex = 1;
     ble_uuid128_t mSecondaryAdvUuid;
     bool mSecondaryBleBonding;
     bool mSecondaryBleSmSc;

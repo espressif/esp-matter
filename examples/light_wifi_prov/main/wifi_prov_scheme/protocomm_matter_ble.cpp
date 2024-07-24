@@ -443,7 +443,7 @@ esp_err_t protocomm_matter_ble_start(protocomm_t *pc, const protocomm_matter_ble
 
     chip::DeviceLayer::Internal::BLEMgrImpl().SetSecondaryAdvDeviceName(config->device_name);
     chip::DeviceLayer::Internal::BLEMgrImpl().SetSecondaryAdvUuid(chip::ByteSpan(config->service_uuid));
-    chip::DeviceLayer::Internal::BLEMgrImpl().SetSecondaryGATTService(s_gatt_db);
+    chip::DeviceLayer::Internal::BLEMgrImpl().SetSecondaryGATTService(s_gatt_db, 0);
     chip::DeviceLayer::Internal::BLEMgrImpl().SetSecondaryBleSmConfig(config->ble_bonding, config->ble_sm_sc);
     chip::DeviceLayer::Internal::BLEMgrImpl().SetSecondaryAdvGapEventHandler(protocomm_matter_ble_gap_event);
     return ESP_OK;
