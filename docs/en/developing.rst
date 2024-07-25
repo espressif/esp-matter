@@ -62,7 +62,7 @@ Cloning esp-idf:
    ::
 
       git clone --recursive https://github.com/espressif/esp-idf.git
-      cd esp-idf; git checkout v5.2.1; git submodule update --init --recursive;
+      cd esp-idf; git checkout v5.2.3; git submodule update --init --recursive;
       ./install.sh
       cd ..
 
