@@ -1581,15 +1581,15 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* activated_carbon_filter_monitoring */
 
-namespace  carbon_monoxide_concentration_measurement {
-const function_generic_t *function_list = NULL;
-const int function_flags = CLUSTER_FLAG_NONE;
+namespace concentration_measurement {
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+template <typename T>
+static cluster_t *create(endpoint_t *endpoint, T *config, uint8_t flags, uint32_t cluster_id, uint32_t cluster_revision,
+                         const function_generic_t *function_list=NULL, const int function_flags=CLUSTER_FLAG_NONE)
 {
-    cluster_t *cluster = cluster::create(endpoint, CarbonMonoxideConcentrationMeasurement::Id, flags);
+    cluster_t *cluster = cluster::create(endpoint, cluster_id, flags);
     if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
+        ESP_LOGE(TAG, "Could not create cluster, id: %lu", cluster_id);
         return NULL;
     }
 
@@ -1599,7 +1599,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
-        attribute::create_measurement_medium(cluster, config->measurement_medium);
+        // For all concentration measurement cluster Attribute Id of measurement medium is 0x09
+        // Hence, using the hard coded value
+        attribute::create(cluster, 0x09, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(config->measurement_medium));
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -1610,303 +1612,105 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     return cluster;
+}
+
+} // concentration_measurement
+
+namespace  carbon_monoxide_concentration_measurement {
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    return concentration_measurement::create<config_t>(endpoint, config, flags,
+                                                       CarbonMonoxideConcentrationMeasurement::Id, cluster_revision);
 }
 
 } /* carbon_monoxide_concentration_measurement */
 
 namespace  carbon_dioxide_concentration_measurement {
-const function_generic_t *function_list = NULL;
-const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, CarbonDioxideConcentrationMeasurement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
-
-    if (flags & CLUSTER_FLAG_SERVER) {
-        add_function_list(cluster, function_list, function_flags);
-
-        /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, 0);
-
-        attribute::create_measurement_medium(cluster, config->measurement_medium);
-
-        /* Attributes not managed internally */
-        global::attribute::create_cluster_revision(cluster, cluster_revision);
-    }
-
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
-
-    return cluster;
+    return concentration_measurement::create<config_t>(endpoint, config, flags,
+                                                       CarbonDioxideConcentrationMeasurement::Id, cluster_revision);
 }
 
 } /* carbon_dioxide_concentration_measurement */
 
 namespace  nitrogen_dioxide_concentration_measurement {
-const function_generic_t *function_list = NULL;
-const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, NitrogenDioxideConcentrationMeasurement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
-
-    if (flags & CLUSTER_FLAG_SERVER) {
-        add_function_list(cluster, function_list, function_flags);
-
-        /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, 0);
-
-        attribute::create_measurement_medium(cluster, config->measurement_medium);
-
-        /* Attributes not managed internally */
-        global::attribute::create_cluster_revision(cluster, cluster_revision);
-    }
-
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
-
-    return cluster;
+    return concentration_measurement::create<config_t>(endpoint, config, flags,
+                                                       NitrogenDioxideConcentrationMeasurement::Id, cluster_revision);
 }
 
 } /* nitrogen_dioxide_concentration_measurement */
 
 namespace  ozone_concentration_measurement {
-const function_generic_t *function_list = NULL;
-const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, OzoneConcentrationMeasurement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
-
-    if (flags & CLUSTER_FLAG_SERVER) {
-        add_function_list(cluster, function_list, function_flags);
-
-        /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, 0);
-
-        attribute::create_measurement_medium(cluster, config->measurement_medium);
-
-        /* Attributes not managed internally */
-        global::attribute::create_cluster_revision(cluster, cluster_revision);
-    }
-
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
-
-    return cluster;
+    return concentration_measurement::create<config_t>(endpoint, config, flags,
+                                                       OzoneConcentrationMeasurement::Id, cluster_revision);
 }
 
 } /* ozone_concentration_measurement */
 
 namespace  formaldehyde_concentration_measurement {
-const function_generic_t *function_list = NULL;
-const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, FormaldehydeConcentrationMeasurement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
-
-    if (flags & CLUSTER_FLAG_SERVER) {
-        add_function_list(cluster, function_list, function_flags);
-
-        /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, 0);
-
-        attribute::create_measurement_medium(cluster, config->measurement_medium);
-
-        /* Attributes not managed internally */
-        global::attribute::create_cluster_revision(cluster, cluster_revision);
-    }
-
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
-
-    return cluster;
+    return concentration_measurement::create<config_t>(endpoint, config, flags,
+                                                       FormaldehydeConcentrationMeasurement::Id, cluster_revision);
 }
 
 } /* formaldehyde_concentration_measurement */
 
 namespace  pm1_concentration_measurement {
-const function_generic_t *function_list = NULL;
-const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, Pm1ConcentrationMeasurement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
-
-    if (flags & CLUSTER_FLAG_SERVER) {
-        add_function_list(cluster, function_list, function_flags);
-
-        /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, 0);
-
-        attribute::create_measurement_medium(cluster, config->measurement_medium);
-
-        /* Attributes not managed internally */
-        global::attribute::create_cluster_revision(cluster, cluster_revision);
-    }
-
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
-
-    return cluster;
+    return concentration_measurement::create<config_t>(endpoint, config, flags,
+                                                       Pm1ConcentrationMeasurement::Id, cluster_revision);
 }
 
 } /* pm1_concentration_measurement */
 
 namespace  pm25_concentration_measurement {
-const function_generic_t *function_list = NULL;
-const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, Pm25ConcentrationMeasurement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
-
-    if (flags & CLUSTER_FLAG_SERVER) {
-        add_function_list(cluster, function_list, function_flags);
-
-        /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, 0);
-
-        attribute::create_measurement_medium(cluster, config->measurement_medium);
-
-        /* Attributes not managed internally */
-        global::attribute::create_cluster_revision(cluster, cluster_revision);
-    }
-
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
-
-    return cluster;
+    return concentration_measurement::create<config_t>(endpoint, config, flags,
+                                                       Pm25ConcentrationMeasurement::Id, cluster_revision);
 }
 
 } /* pm25_concentration_measurement */
 
 namespace  pm10_concentration_measurement {
-const function_generic_t *function_list = NULL;
-const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, Pm10ConcentrationMeasurement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
-
-    if (flags & CLUSTER_FLAG_SERVER) {
-        add_function_list(cluster, function_list, function_flags);
-
-        /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, 0);
-
-        attribute::create_measurement_medium(cluster, config->measurement_medium);
-
-        /* Attributes not managed internally */
-        global::attribute::create_cluster_revision(cluster, cluster_revision);
-    }
-
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
-
-    return cluster;
+    return concentration_measurement::create<config_t>(endpoint, config, flags,
+                                                       Pm10ConcentrationMeasurement::Id, cluster_revision);
 }
 
 } /* pm10_concentration_measurement */
 
 namespace  radon_concentration_measurement {
-const function_generic_t *function_list = NULL;
-const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, RadonConcentrationMeasurement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
-
-    if (flags & CLUSTER_FLAG_SERVER) {
-        add_function_list(cluster, function_list, function_flags);
-
-        /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, 0);
-
-        attribute::create_measurement_medium(cluster, config->measurement_medium);
-
-        /* Attributes not managed internally */
-        global::attribute::create_cluster_revision(cluster, cluster_revision);
-    }
-
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
-
-    return cluster;
+    return concentration_measurement::create<config_t>(endpoint, config, flags,
+                                                       RadonConcentrationMeasurement::Id, cluster_revision);
 }
 
 } /* radon_concentration_measurement */
 
 namespace  total_volatile_organic_compounds_concentration_measurement {
-const function_generic_t *function_list = NULL;
-const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, TotalVolatileOrganicCompoundsConcentrationMeasurement::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
-
-    if (flags & CLUSTER_FLAG_SERVER) {
-        add_function_list(cluster, function_list, function_flags);
-
-        /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, 0);
-
-        attribute::create_measurement_medium(cluster, config->measurement_medium);
-
-        /* Attributes not managed internally */
-        global::attribute::create_cluster_revision(cluster, cluster_revision);
-    }
-
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
-
-    return cluster;
+    return concentration_measurement::create<config_t>(endpoint, config, flags, TotalVolatileOrganicCompoundsConcentrationMeasurement::Id, cluster_revision);
 }
 
 } /* total_volatile_organic_compounds_concentration_measurement */
