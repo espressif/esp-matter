@@ -449,6 +449,9 @@ esp_err_t factory_reset()
     err = nvs_erase_all(handle);
     nvs_commit(handle);
     nvs_close(handle);
+    for (size_t idx = 0; idx < MAX_BRIDGED_DEVICE_COUNT; ++idx) {
+        bridged_endpoint_id_array[idx] = chip::kInvalidEndpointId;
+    }
     return err;
 }
 
