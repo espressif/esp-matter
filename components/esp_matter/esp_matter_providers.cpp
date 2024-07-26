@@ -84,8 +84,10 @@ static DeviceAttestationCredentialsProvider *get_dac_provider(void)
     } else {
         ESP_LOGE(TAG, "custom_dac_provider cannot be NULL");
     }
-#endif
+#elif CONFIG_EXAMPLE_DAC_PROVIDER
     return chip::Credentials::Examples::GetExampleDACProvider();
+#endif
+    return NULL;
 }
 
 void setup_providers()
