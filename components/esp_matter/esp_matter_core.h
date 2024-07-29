@@ -290,6 +290,18 @@ esp_err_t set_parent_endpoint(endpoint_t *endpoint, endpoint_t *parent_endpoint)
  */
 void *get_priv_data(uint16_t endpoint_id);
 
+/** Set private data
+ *
+ * Set the private data after creating the endpoint.
+ *
+ * @param[in] endpoint_id Endpoint ID of the endpoint.
+ * @param[in] priv_data Private data of the endpoint.
+ *
+ * @return ESP_OK on success.
+ * @return ESP_ERR_INVALID_STATE or ESP_ERR_NOT_FOUND in case of failure.
+ */
+esp_err_t set_priv_data(uint16_t endpoint_id, void *priv_data);
+
 /** Enable endpoint
  *
  * Enable the endpoint which has been previously created.

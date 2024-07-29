@@ -2188,6 +2188,23 @@ void *get_priv_data(uint16_t endpoint_id)
     return current_endpoint->priv_data;
 }
 
+esp_err_t set_priv_data(uint16_t endpoint_id, void *priv_data)
+{
+    node_t *node = node::get();
+    if (!node) {
+        ESP_LOGE(TAG, "Node is not initialized");
+        return ESP_ERR_INVALID_STATE;
+    }
+    endpoint_t *endpoint = get(node, endpoint_id);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint not found");
+        return ESP_ERR_NOT_FOUND;
+    }
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    current_endpoint->priv_data = priv_data;
+    return ESP_OK;
+}
+
 } /* endpoint */
 
 namespace node {
