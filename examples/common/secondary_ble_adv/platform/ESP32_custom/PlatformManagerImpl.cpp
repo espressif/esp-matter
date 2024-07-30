@@ -60,6 +60,17 @@ static int app_entropy_source(void * data, unsigned char * output, size_t len, s
     return 0;
 }
 
+CHIP_ERROR PlatformManagerImpl::DisableESPEventDispatch()
+{
+    esp_err_t err = esp_event_handler_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, PlatformManagerImpl::HandleESPSystemEvent);
+    if (err != ESP_OK)
+    {
+        return Internal::ESP32Utils::MapError(err);
+    }
+    err = esp_event_handler_unregister(IP_EVENT, ESP_EVENT_ANY_ID, PlatformManagerImpl::HandleESPSystemEvent);
+    return Internal::ESP32Utils::MapError(err);
+}
+
 CHIP_ERROR PlatformManagerImpl::_InitChipStack(void)
 {
     // Arrange for CHIP-encapsulated ESP32 errors to be translated to text

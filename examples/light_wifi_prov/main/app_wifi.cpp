@@ -26,6 +26,8 @@
 #include <nvs_flash.h>
 #include <esp_timer.h>
 #include "app_wifi.h"
+#include <platform/PlatformManager.h>
+#include <platform/ESP32_custom/PlatformManagerImpl.h>
 
 ESP_EVENT_DEFINE_BASE(APP_WIFI_EVENT);
 
@@ -159,6 +161,7 @@ static void event_handler(void* arg, esp_event_base_t event_base,
         switch (event_id) {
             case PROTOCOMM_SECURITY_SESSION_SETUP_OK:
                 ESP_LOGI(TAG, "Secured session established!");
+                chip::DeviceLayer::PlatformManagerImpl::DisableESPEventDispatch();
                 break;
             case PROTOCOMM_SECURITY_SESSION_INVALID_SECURITY_PARAMS:
                 /* fall-through */
