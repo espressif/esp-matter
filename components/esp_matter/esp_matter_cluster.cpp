@@ -115,9 +115,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterDescriptorPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         attribute::create_device_list(cluster, NULL, 0, 0);
         attribute::create_server_list(cluster, NULL, 0, 0);
@@ -126,10 +124,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes updated later */
         global::attribute::create_feature_map(cluster, 0);
-
-
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, cluster_revision);
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
     }
 
     return cluster;
@@ -151,9 +147,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, NULL);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -186,9 +180,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterAccessControlPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         attribute::create_acl(cluster, NULL, 0, 0);
         attribute::create_subjects_per_access_control_entry(cluster, 0);
@@ -197,7 +189,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes updated later */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -226,9 +217,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterBasicInformationPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
         attribute::create_data_model_revision(cluster, 0);
@@ -247,6 +236,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+
         if (config) {
             attribute::create_node_label(cluster, config->node_label, strlen(config->node_label));
         } else {
@@ -276,12 +266,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterBindingPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    /* Extra initialization */
-    client::binding_init();
-
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -290,6 +275,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
     }
+
+    /* Extra initialization */
+    client::binding_init();
 
     return cluster;
 }
@@ -311,12 +299,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterOtaSoftwareUpdateProviderPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -349,9 +334,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterOtaSoftwareUpdateRequestorPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -395,9 +378,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterGeneralCommissioningPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -443,9 +424,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterNetworkCommissioningPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         attribute::create_max_networks(cluster, 0);
         attribute::create_networks(cluster, NULL, 0, 0);
@@ -463,7 +442,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_thread_version(cluster, 0);
 #endif
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -500,16 +478,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterGeneralDiagnosticsPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         attribute::create_network_interfaces(cluster, NULL, 0, 0);
         attribute::create_reboot_count(cluster, 0);
         attribute::create_up_time(cluster, 0);
         attribute::create_test_event_triggers_enabled(cluster, 0);
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -541,9 +516,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         static const auto plugin_server_init_cb = CALL_ONCE(MatterAdministratorCommissioningPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -584,9 +557,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterOperationalCredentialsPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -635,9 +606,7 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterGroupKeyManagementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -676,9 +645,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterWiFiNetworkDiagnosticsPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -712,9 +679,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterThreadNetworkDiagnosticsPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -792,15 +757,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             static const auto delegate_init_cb = TimeSynchronizationDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
+
         static const auto plugin_server_init_cb = CALL_ONCE(MatterTimeSynchronizationPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -826,12 +789,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -861,15 +821,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         // There is not PluginServer(Client)InitCallback for this cluster
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
-
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+
         if (config) {
             attribute::create_reachable(cluster, config->reachable);
         } else {
@@ -894,6 +852,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
     }
+
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterPowerSourcePluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
@@ -950,9 +909,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         static const auto plugin_server_init_cb = CALL_ONCE(MatterIcdManagementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
         attribute::create_idle_mode_duration(cluster, CONFIG_ICD_ACTIVE_MODE_INTERVAL_MS);
@@ -996,9 +953,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterUserLabelPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -1028,9 +983,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterFixedLabelPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -1063,16 +1016,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterIdentifyPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    /* Extra initialization */
-    uint16_t endpoint_id = endpoint::get_id(endpoint);
-    identification::init(endpoint_id, config->identify_type);
-
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -1083,6 +1029,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
+
+    /* Extra initialization */
+    uint16_t endpoint_id = endpoint::get_id(endpoint);
+    identification::init(endpoint_id, config->identify_type);
 
     /* Commands */
     command::create_identify(cluster);
@@ -1109,12 +1059,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterGroupsPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -1160,12 +1107,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterScenesManagementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -1215,12 +1159,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         static const auto plugin_server_init_cb = CALL_ONCE(MatterOnOffPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -1274,12 +1215,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         static const auto plugin_server_init_cb = CALL_ONCE(MatterLevelControlPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -1333,12 +1271,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         static const auto plugin_server_init_cb = CALL_ONCE(MatterColorControlPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -1410,15 +1345,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterFanControlPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -1430,6 +1359,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -1455,15 +1388,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         static const auto plugin_server_init_cb = CALL_ONCE(MatterThermostatPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -1474,6 +1401,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     /* Commands */
@@ -1532,7 +1463,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
-
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         if (config) {
@@ -1561,12 +1491,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -1574,6 +1499,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -1598,12 +1527,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -1611,6 +1535,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -1635,12 +1563,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -1648,6 +1571,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -1668,12 +1595,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -1681,6 +1603,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -1702,12 +1628,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -1715,6 +1636,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -1736,12 +1661,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -1749,6 +1669,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -1770,12 +1694,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -1783,6 +1702,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -1804,12 +1727,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -1817,6 +1735,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -1838,12 +1760,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -1851,6 +1768,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -1872,12 +1793,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -1885,6 +1801,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -1906,12 +1826,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -1919,6 +1834,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -1940,12 +1859,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -1953,6 +1867,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -1974,12 +1892,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -1987,6 +1900,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -2012,12 +1929,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -2029,6 +1941,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     event::create_operational_error(cluster);
@@ -2055,15 +1971,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -2072,6 +1982,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -2099,17 +2013,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -2137,12 +2050,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -2154,6 +2062,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -2174,19 +2086,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config -> delegate != nullptr) {
             static const auto delegate_init_cb = DishWasherModeDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -2195,6 +2101,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -2219,17 +2129,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -2250,12 +2159,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -2267,6 +2171,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     event::create_low_battery(cluster);
@@ -2308,15 +2216,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterDoorLockPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -2329,6 +2231,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     event::create_door_lock_alarm(cluster);
@@ -2365,12 +2271,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -2386,6 +2287,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     /* Commands */
@@ -2418,15 +2323,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterSwitchPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -2436,6 +2335,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -2458,15 +2361,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterTemperatureMeasurementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -2477,6 +2374,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -2499,15 +2400,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterRelativeHumidityMeasurementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -2518,6 +2413,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -2542,15 +2441,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterOccupancySensingPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -2561,6 +2454,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -2583,15 +2480,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterBooleanStatePluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -2600,6 +2491,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -2626,20 +2521,17 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         static const auto plugin_server_init_cb = CALL_ONCE(MatterBooleanStateConfigurationPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
     }
 
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
 
     /* Features */
     if (features & feature::visual::get_id()) {
@@ -2676,12 +2568,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterLocalizationConfigurationPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes not managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         if (config) {
@@ -2718,12 +2607,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         static const auto plugin_server_init_cb = CALL_ONCE(MatterTimeFormatLocalizationPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes not managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         if (config) {
             /* Attributes not managed internally */
@@ -2760,12 +2646,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterIlluminanceMeasurementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -2780,6 +2661,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -2801,12 +2686,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterPressureMeasurementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -2819,6 +2699,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -2840,12 +2724,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterFlowMeasurementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -2858,6 +2737,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -2884,15 +2767,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterPumpConfigurationAndControlPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -2907,6 +2784,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -2972,18 +2853,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterDiagnosticLogsPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
-
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     /* commands */
@@ -3010,11 +2889,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         static const auto plugin_server_init_cb = CALL_ONCE(MatterSoftwareDiagnosticsPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_SERVER) {
+
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -3047,7 +2924,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -3090,7 +2966,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -3321,18 +3196,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
-
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     return cluster;
@@ -3396,12 +3269,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -3443,9 +3313,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -3500,9 +3368,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
@@ -3659,16 +3525,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         static const auto plugin_server_init_cb = CALL_ONCE(MatterValveConfigurationAndControlPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
         attribute::create_remaining_duration(cluster, 0);
-
 
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -3680,6 +3540,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     /* Commands */
@@ -3717,15 +3581,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         static const auto plugin_server_init_cb = CALL_ONCE(MatterDeviceEnergyManagementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes should managed by application */
         attribute::create_esa_type(cluster, 0);
@@ -3735,6 +3593,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         attribute::create_abs_max_power(cluster, 0);
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
     }
 
     /* Features */
@@ -3826,15 +3688,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         static const auto plugin_server_init_cb = CALL_ONCE(MatterApplicationBasicPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
 
-    if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes should managed by application */
         attribute::create_application_name(cluster, NULL, 0);
@@ -3845,6 +3701,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
     }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
     return cluster;
 }
 } /* application_basic */
