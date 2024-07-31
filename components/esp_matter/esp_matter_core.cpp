@@ -19,6 +19,7 @@
 
 #include <app/clusters/network-commissioning/network-commissioning.h>
 #include <app/clusters/general-diagnostics-server/general-diagnostics-server.h>
+#include <app/clusters/identify-server/identify-server.h>
 #include <app/server/Dnssd.h>
 #include <app/server/Server.h>
 #include <app/util/attribute-storage.h>
@@ -204,6 +205,7 @@ typedef struct _endpoint {
     EmberAfDeviceType *device_types_ptr;
     uint16_t parent_endpoint_id;
     void *priv_data;
+    Identify *identify;
     struct _endpoint *next;
 } _endpoint_t;
 
@@ -514,6 +516,12 @@ static esp_err_t disable(endpoint_t *endpoint)
     if (current_endpoint->device_types_ptr) {
         esp_matter_mem_free(current_endpoint->device_types_ptr);
         current_endpoint->device_types_ptr = NULL;
+    }
+
+    /* Delete identify */
+    if (current_endpoint->identify) {
+        chip::Platform::Delete(current_endpoint->identify);
+        current_endpoint->identify = NULL;
     }
 
     /* Free endpoint type */
@@ -2202,6 +2210,23 @@ esp_err_t set_priv_data(uint16_t endpoint_id, void *priv_data)
     }
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     current_endpoint->priv_data = priv_data;
+    return ESP_OK;
+}
+
+esp_err_t set_identify(uint16_t endpoint_id, void *identify)
+{
+    node_t *node = node::get();
+    if (!node) {
+        ESP_LOGE(TAG, "Node not found");
+        return ESP_ERR_INVALID_ARG;
+    }
+    endpoint_t *endpoint = get(node, endpoint_id);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint not found");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    current_endpoint->identify = (Identify *)identify;
     return ESP_OK;
 }
 
