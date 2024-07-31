@@ -61,15 +61,6 @@ const device_type_handler device_handlers[] = {
     {"temperature_sensor", ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID, ADD_DEVICE_FUN(temperature_sensor)},
 };
 
-static uint32_t string_to_uint32(char *str)
-{
-    if (strlen(str) > 2 && str[0] == '0' && str[1] == 'x') {
-        return strtoul(&str[2], NULL, 16);
-    } else {
-        return strtoul(str, NULL, 10);
-    }
-}
-
 static bool is_device_type_supported(uint32_t device_type_id) {
     for (const auto &handler : device_handlers) {
         if (handler.device_type_id == device_type_id) {
@@ -94,10 +85,14 @@ static esp_err_t list_endpoint_handler(int argc, char *argv[])
     ESP_RETURN_ON_ERROR(esp_matter_bridge::get_bridged_endpoint_ids(matter_endpoint_id_array), TAG, 
                         "Failed to get bridged endpoint id");
     ESP_LOGI(TAG, "Bridged endpoint id:");
+    uint8_t count = 0;
     for (size_t idx = 0; idx < MAX_BRIDGED_DEVICE_COUNT; ++idx) {
         if (matter_endpoint_id_array[idx] != chip::kInvalidEndpointId) {
-            ESP_LOGI(TAG, "id: %d", matter_endpoint_id_array[idx]);
+            ESP_LOGI(TAG, "Device %d endpoint id: %d", ++count, matter_endpoint_id_array[idx]);
         }
+    }
+    if (count == 0) {
+        ESP_LOGI(TAG, "No bridged device");
     }
     return ESP_OK;
 }
@@ -115,7 +110,7 @@ static esp_err_t list_support_handler(int argc, char *argv[])
 static esp_err_t remove_bridge_device_handler(int argc, char *argv[])
 {
     ESP_RETURN_ON_FALSE(argc == 1, ESP_ERR_INVALID_ARG, TAG, "Incorrect arguments");
-    uint16_t endpoint_id = (uint16_t)string_to_uint32(argv[0]);
+    uint16_t endpoint_id = (uint16_t)strtoul(argv[0], NULL, 0);
     cli_bridged_device_t *previous_device = NULL;
     cli_bridged_device_t *current_device = cli_device;
     while (current_device) {
@@ -147,11 +142,12 @@ static esp_err_t add_bridge_device_handler(int argc, char *argv[])
 {
     ESP_RETURN_ON_FALSE(argc == 2, ESP_ERR_INVALID_ARG, TAG, "Incorrect arguments");
     node_t *node = node::get();
-    uint16_t parent_endpoint_id = (uint16_t)string_to_uint32(argv[0]);
-    uint32_t device_type_id = string_to_uint32(argv[1]);
+    uint16_t parent_endpoint_id = (uint16_t)strtoul(argv[0], NULL, 0);
+    uint32_t device_type_id = strtoul(argv[1], NULL, 0);
 
     if (!is_device_type_supported(device_type_id)) {
-        ESP_LOGE(TAG, "Unsupported bridged device type");
+        ESP_LOGE(TAG, "Device type 0x%04" PRIX32 " is unsupported", device_type_id);
+        list_support_handler(0, NULL);
         return ESP_ERR_INVALID_ARG;
     }
 

@@ -559,6 +559,18 @@ Additional Matter specific commands:
 
             matter esp ot_cli state
 
+-  Bridge device:
+
+   ::
+
+      matter esp bridge <command>
+
+   -  Example: add (Parent endpoint should have aggregator device type):
+
+      ::
+
+         matter esp bridge add <parent_endpoint_id> <device_type_id>
+
 2.5 Developing your Product
 ---------------------------
 
