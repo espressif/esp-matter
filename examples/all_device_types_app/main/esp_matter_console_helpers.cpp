@@ -255,12 +255,17 @@ int create(uint8_t device_type_index)
         }
         case ESP_MATTER_AGGREGATOR: {
             esp_matter::endpoint::aggregator::config_t aggregator_config;
-	    endpoint = esp_matter::endpoint::aggregator::create(node, &aggregator_config, ENDPOINT_FLAG_NONE, NULL);
+	        endpoint = esp_matter::endpoint::aggregator::create(node, &aggregator_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
         case ESP_MATTER_BRIDGED_NODE: {
             esp_matter::endpoint::bridged_node::config_t bridged_node_config;
             endpoint = esp_matter::endpoint::bridged_node::create(node, &bridged_node_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
+        case ESP_MATTER_CONTROL_BRIDGE: {
+            esp_matter::endpoint::control_bridge::config_t control_bridge_config;
+	        endpoint = esp_matter::endpoint::control_bridge::create(node, &control_bridge_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
         case ESP_MATTER_DOOR_LOCK: {

@@ -701,6 +701,47 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /* aggregator */
 
+namespace control_bridge {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_CONTROL_BRIDGE_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_CONTROL_BRIDGE_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t * endpoint = common::create<config_t>(node, config, flags, priv_data, add);
+    VerifyOrReturnError(endpoint != nullptr, NULL);
+
+    cluster_t *binding_cluster = binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
+    VerifyOrReturnValue(binding_cluster != nullptr, NULL, ESP_LOGE(TAG, "Failed to create binding cluster"));
+
+    return endpoint;
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed add device type id:%" PRIu32 ", err: %d", get_device_type_id(), err);
+	return err;
+    }
+
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+    groups::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
+    scenes_management::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
+    on_off::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
+    level_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
+    color_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
+    return ESP_OK;
+}
+} /* control_bridge */
+
 namespace air_quality_sensor {
 uint32_t get_device_type_id()
 {
