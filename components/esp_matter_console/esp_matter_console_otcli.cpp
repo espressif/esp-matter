@@ -52,7 +52,7 @@ esp_err_t otcli_register_commands()
 {
     static const command_t command = {
         .name = "ot_cli",
-        .description = "Openthread commands. Usage: matter esp otcli <thread_cli_command>.",
+        .description = "Openthread cli commands. Usage: matter esp ot_cli <command>.",
         .handler = otcli_handler,
     };
     return add_commands(&command, 1);

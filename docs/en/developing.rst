@@ -545,6 +545,20 @@ Additional Matter specific commands:
 
       matter esp wifi connect <ssid> <password>
 
+.. only:: esp32h2 or esp32c6
+
+   -  OpenThread command line:
+
+      ::
+
+         matter esp ot_cli <command>
+
+      -  Example: state of OpenThread:
+
+         ::
+
+            matter esp ot_cli state
+
 2.5 Developing your Product
 ---------------------------
 
