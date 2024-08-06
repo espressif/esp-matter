@@ -1226,6 +1226,12 @@ attribute_t *get(cluster_t *cluster, uint32_t attribute_id)
     return (attribute_t *)current_attribute;
 }
 
+attribute_t *get(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id)
+{
+    cluster_t *cluster = cluster::get(endpoint_id, cluster_id);
+    return get(cluster, attribute_id);
+}
+
 attribute_t *get_first(cluster_t *cluster)
 {
     if (!cluster) {
@@ -1811,6 +1817,12 @@ cluster_t *get(endpoint_t *endpoint, uint32_t cluster_id)
     return (cluster_t *)current_cluster;
 }
 
+cluster_t *get(uint16_t endpoint_id, uint32_t cluster_id)
+{
+    endpoint_t *endpoint = endpoint::get(endpoint_id);
+    return get(endpoint, cluster_id);
+}
+
 cluster_t *get_first(endpoint_t *endpoint)
 {
     if (!endpoint) {
@@ -2075,6 +2087,13 @@ endpoint_t *get(node_t *node, uint16_t endpoint_id)
     }
     return (endpoint_t *)current_endpoint;
 }
+
+endpoint_t *get(uint16_t endpoint_id)
+{
+    node_t *node = node::get();
+    return get(node, endpoint_id);
+}
+
 
 endpoint_t *get_first(node_t *node)
 {
