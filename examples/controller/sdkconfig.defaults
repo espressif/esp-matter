@@ -50,3 +50,6 @@ CONFIG_LWIP_IPV6_NUM_ADDRESSES=6
 
 # Enable project configurations
 CONFIG_CHIP_PROJECT_CONFIG="main/matter_project_config.h"
+
+# Increase console buffer length
+CONFIG_CHIP_SHELL_CMD_LINE_BUF_MAX_LENGTH=512
