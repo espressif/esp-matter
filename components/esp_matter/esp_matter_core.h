@@ -185,6 +185,17 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint);
  */
 endpoint_t *get(node_t *node, uint16_t endpoint_id);
 
+/** Get endpoint
+ *
+ * Get the endpoint present on the node.
+ *
+ * @param[in] endpoint_id Endpoint ID of the endpoint.
+ *
+ * @return Endpoint handle on success.
+ * @return NULL in case of failure.
+ */
+endpoint_t *get(uint16_t endpoint_id);
+
 /** Get first endpoint
  *
  * Get the first endpoint present on the node.
@@ -377,6 +388,18 @@ cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags);
  */
 cluster_t *get(endpoint_t *endpoint, uint32_t cluster_id);
 
+/** Get cluster
+ *
+ * Get the cluster present on the endpoint.
+ *
+ * @param[in] endpoint_id Endpoint id.
+ * @param[in] cluster_id Cluster ID for the cluster.
+ *
+ * @return Cluster handle on success.
+ * @return NULL in case of failure.
+ */
+cluster_t *get(uint16_t endpoint_id, uint32_t cluster_id);
+
 /** Get first cluster
  *
  * Get the first cluster present on the endpoint.
@@ -515,6 +538,20 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, es
  * @return NULL in case of failure.
  */
 attribute_t *get(cluster_t *cluster, uint32_t attribute_id);
+
+/** Get attribute
+ *
+ * Get the attribute present on the cluster.
+ *
+ * @param[in] endpoint_id Endpoint id..
+ * @param[in] cluster_id Cluster ID for the Cluster.
+ * @param[in] attribute_id Attribute ID for the attribute.
+ *
+ * @return Attribute handle on success.
+ * @return NULL in case of failure.
+ */
+attribute_t *get(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id);
+
 
 /** Get first attribute
  *
