@@ -44,6 +44,7 @@ void LaundryWasherControlsDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void WindowCoveringDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void DishwasherAlarmDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void KeypadInputDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void ModeSelectDelegateInitCB(void *delegate, uint16_t endpoint_id);
 } // namespace delegate_cb
 
 } // namespace cluster
