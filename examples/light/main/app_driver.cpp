@@ -95,10 +95,7 @@ static void app_driver_button_toggle_cb(void *arg, void *data)
     uint32_t cluster_id = OnOff::Id;
     uint32_t attribute_id = OnOff::Attributes::OnOff::Id;
 
-    node_t *node = node::get();
-    endpoint_t *endpoint = endpoint::get(node, endpoint_id);
-    cluster_t *cluster = cluster::get(endpoint, cluster_id);
-    attribute_t *attribute = attribute::get(cluster, attribute_id);
+    attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
 
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
     attribute::get_val(attribute, &val);
@@ -138,34 +135,28 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
     esp_err_t err = ESP_OK;
     void *priv_data = endpoint::get_priv_data(endpoint_id);
     led_indicator_handle_t handle = (led_indicator_handle_t)priv_data;
-    node_t *node = node::get();
-    endpoint_t *endpoint = endpoint::get(node, endpoint_id);
-    cluster_t *cluster = NULL;
-    attribute_t *attribute = NULL;
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
 
     /* Setting brightness */
-    cluster = cluster::get(endpoint, LevelControl::Id);
-    attribute = attribute::get(cluster, LevelControl::Attributes::CurrentLevel::Id);
+    attribute_t *attribute = attribute::get(endpoint_id, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id);
     attribute::get_val(attribute, &val);
     err |= app_driver_light_set_brightness(handle, &val);
 
     /* Setting color */
-    cluster = cluster::get(endpoint, ColorControl::Id);
-    attribute = attribute::get(cluster, ColorControl::Attributes::ColorMode::Id);
+    attribute = attribute::get(endpoint_id, ColorControl::Id, ColorControl::Attributes::ColorMode::Id);
     attribute::get_val(attribute, &val);
     if (val.val.u8 == (uint8_t)ColorControl::ColorMode::kCurrentHueAndCurrentSaturation) {
         /* Setting hue */
-        attribute = attribute::get(cluster, ColorControl::Attributes::CurrentHue::Id);
+        attribute = attribute::get(endpoint_id, ColorControl::Id, ColorControl::Attributes::CurrentHue::Id);
         attribute::get_val(attribute, &val);
         err |= app_driver_light_set_hue(handle, &val);
         /* Setting saturation */
-        attribute = attribute::get(cluster, ColorControl::Attributes::CurrentSaturation::Id);
+        attribute = attribute::get(endpoint_id, ColorControl::Id, ColorControl::Attributes::CurrentSaturation::Id);
         attribute::get_val(attribute, &val);
         err |= app_driver_light_set_saturation(handle, &val);
     } else if (val.val.u8 == (uint8_t)ColorControl::ColorMode::kColorTemperature) {
         /* Setting temperature */
-        attribute = attribute::get(cluster, ColorControl::Attributes::ColorTemperatureMireds::Id);
+        attribute = attribute::get(endpoint_id, ColorControl::Id, ColorControl::Attributes::ColorTemperatureMireds::Id);
         attribute::get_val(attribute, &val);
         err |= app_driver_light_set_temperature(handle, &val);
     } else {
@@ -173,8 +164,7 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
     }
 
     /* Setting power */
-    cluster = cluster::get(endpoint, OnOff::Id);
-    attribute = attribute::get(cluster, OnOff::Attributes::OnOff::Id);
+    attribute = attribute::get(endpoint_id, OnOff::Id, OnOff::Attributes::OnOff::Id);
     attribute::get_val(attribute, &val);
     err |= app_driver_light_set_power(handle, &val);
 

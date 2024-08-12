@@ -33,20 +33,14 @@ extern uint16_t app_endpoint_id;
 
 static void get_attribute(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
-    node_t *node = node::get();
-    endpoint_t *endpoint = endpoint::get(node, endpoint_id);
-    cluster_t *cluster = cluster::get(endpoint, cluster_id);
-    attribute_t *attribute = attribute::get(cluster, attribute_id);
+    attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
 
     attribute::get_val(attribute, val);
 }
 
 static esp_err_t set_attribute(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t val)
 {
-    node_t *node = node::get();
-    endpoint_t *endpoint = endpoint::get(node, endpoint_id);
-    cluster_t *cluster = cluster::get(endpoint, cluster_id);
-    attribute_t *attribute = attribute::get(cluster, attribute_id);
+    attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
 
     return attribute::set_val(attribute, &val);
 }

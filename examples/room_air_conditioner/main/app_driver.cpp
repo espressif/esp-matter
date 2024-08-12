@@ -35,10 +35,7 @@ static void app_driver_button_toggle_cb(void *arg, void *data)
     uint32_t cluster_id = OnOff::Id;
     uint32_t attribute_id = OnOff::Attributes::OnOff::Id;
 
-    node_t *node = node::get();
-    endpoint_t *endpoint = endpoint::get(node, endpoint_id);
-    cluster_t *cluster = cluster::get(endpoint, cluster_id);
-    attribute_t *attribute = attribute::get(cluster, attribute_id);
+    attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
 
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
     attribute::get_val(attribute, &val);
@@ -66,15 +63,10 @@ esp_err_t app_driver_room_air_conditioner_set_defaults(uint16_t endpoint_id)
     esp_err_t err = ESP_OK;
     void *priv_data = endpoint::get_priv_data(endpoint_id);
     led_driver_handle_t handle = (led_driver_handle_t)priv_data;
-    node_t *node = node::get();
-    endpoint_t *endpoint = endpoint::get(node, endpoint_id);
-    cluster_t *cluster = NULL;
-    attribute_t *attribute = NULL;
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
 
     /* Setting power */
-    cluster = cluster::get(endpoint, OnOff::Id);
-    attribute = attribute::get(cluster, OnOff::Attributes::OnOff::Id);
+    attribute_t *attribute = attribute::get(endpoint_id, OnOff::Id, OnOff::Attributes::OnOff::Id);
     attribute::get_val(attribute, &val);
     err |= app_driver_room_air_conditioner_set_power(handle, &val);
 
