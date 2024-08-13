@@ -84,7 +84,6 @@ variables:
   - source ${IDF_PATH}/export.sh
   - export PYTHONPATH=${IDF_PATH}/tools/ci/python_packages/:${PYTHONPATH}
   - pip install python-gitlab
-  - pip install --upgrade idf-component-manager
   - cd ${IDF_PATH}
   - python tools/ci/ci_fetch_submodule.py
 
@@ -210,6 +209,7 @@ build_image:
     - *add_gitlab_ssh_key
     - *get_build_caches
     - *setup_idf
+    - pip install 'idf-component-manager~=1.4.0'
     - cd ${ESP_MATTER_PATH}
     - mkdir -p ${REPOS_PATH}
     - *update_build_caches
