@@ -289,6 +289,9 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
     case app::Clusters::ScenesManagement::Id:
         emberAfScenesManagementClusterInitCallback(endpoint);
         break;
+    case app::Clusters::ServiceArea::Id:
+        emberAfServiceAreaClusterInitCallback(endpoint);
+        break;
     case app::Clusters::SmokeCoAlarm::Id:
         emberAfSmokeCoAlarmClusterInitCallback(endpoint);
         break;
@@ -313,8 +316,14 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
     case app::Clusters::ThermostatUserInterfaceConfiguration::Id:
         emberAfThermostatUserInterfaceConfigurationClusterInitCallback(endpoint);
         break;
+    case app::Clusters::ThreadBorderRouterManagement::Id:
+        emberAfThreadBorderRouterManagementClusterInitCallback(endpoint);
+        break;
     case app::Clusters::ThreadNetworkDiagnostics::Id:
         emberAfThreadNetworkDiagnosticsClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::ThreadNetworkDirectory::Id:
+        emberAfThreadNetworkDirectoryClusterInitCallback(endpoint);
         break;
     case app::Clusters::TimeFormatLocalization::Id:
         emberAfTimeFormatLocalizationClusterInitCallback(endpoint);
@@ -342,6 +351,9 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
         break;
     case app::Clusters::WiFiNetworkDiagnostics::Id:
         emberAfWiFiNetworkDiagnosticsClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::WiFiNetworkManagement::Id:
+        emberAfWiFiNetworkManagementClusterInitCallback(endpoint);
         break;
     case app::Clusters::WindowCovering::Id:
         emberAfWindowCoveringClusterInitCallback(endpoint);

@@ -25,7 +25,7 @@ variables:
     IDF_CHECKOUT_REF: "v5.2.1"
     # This variable represents the short hash of the connectedhomeip submodule.
     # Note: Do change this short hash on submodule update MRs.
-    CHIP_SHORT_HASH: "d83caf7fef"
+    CHIP_SHORT_HASH: "0460715589"
     DOCKER_IMAGE_NAME: "espressif/chip-idf"
 
 .add_gitlab_ssh_key: &add_gitlab_ssh_key |
@@ -62,6 +62,7 @@ variables:
 
 .setup_ot_br: &setup_ot_br
   - cd ${CI_PROJECT_DIR}
+  - apt-get install -y openssh-client
   - git clone ${ESP_THREAD_BR_REPO_URL}
   - cd ${BR_PATH}/examples/basic_thread_border_router
   - git checkout v1.0

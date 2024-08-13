@@ -18,6 +18,9 @@
 #include <esp_matter_thread_br_launcher.h>
 
 #include <app/util/attribute-storage.h>
+#include <app/AttributeValueDecoder.h>
+#include <app/AttributeAccessInterface.h>
+#include <app/AttributeAccessInterfaceRegistry.h>
 
 #define TAG "thread_br_custom_cluster"
 
@@ -80,7 +83,6 @@ namespace command {
 static esp_err_t configure_dataset_tlvs_command_callback(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                          void *opaque_ptr)
 {
-    uint16_t endpoint_id = command_path.mEndpointId;
     uint32_t cluster_id = command_path.mClusterId;
     uint32_t command_id = command_path.mCommandId;
 

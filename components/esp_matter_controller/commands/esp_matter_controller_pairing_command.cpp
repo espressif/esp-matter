@@ -91,23 +91,23 @@ CommissioningParameters pairing_command::get_commissioning_params()
     return CommissioningParameters();
 }
 
-void pairing_command::OnDiscoveredDevice(const chip::Dnssd::DiscoveredNodeData &nodeData)
+void pairing_command::OnDiscoveredDevice(const chip::Dnssd::CommissionNodeData &nodeData)
 {
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
     // Ignore nodes with closed comissioning window
-    VerifyOrReturn(nodeData.commissionData.commissioningMode != 0);
-    const uint16_t port = nodeData.resolutionData.port;
+    VerifyOrReturn(nodeData.commissioningMode != 0);
+    const uint16_t port = nodeData.port;
     char buf[chip::Inet::IPAddress::kMaxStringLength];
-    nodeData.resolutionData.ipAddress[0].ToString(buf);
+    nodeData.ipAddress[0].ToString(buf);
     ESP_LOGI(TAG, "Discovered Device: %s:%u", buf, port);
 
     // Stop Mdns discovery. TODO: Check whether it is a right method
     controller_instance.get_commissioner()->RegisterDeviceDiscoveryDelegate(nullptr);
 
-    Inet::InterfaceId interfaceId = nodeData.resolutionData.ipAddress[0].IsIPv6LinkLocal()
-        ? nodeData.resolutionData.interfaceId
+    Inet::InterfaceId interfaceId = nodeData.ipAddress[0].IsIPv6LinkLocal()
+        ? nodeData.interfaceId
         : Inet::InterfaceId::Null();
-    PeerAddress peerAddress = PeerAddress::UDP(nodeData.resolutionData.ipAddress[0], port, interfaceId);
+    PeerAddress peerAddress = PeerAddress::UDP(nodeData.ipAddress[0], port, interfaceId);
     RendezvousParameters params = RendezvousParameters().SetSetupPINCode(m_setup_pincode).SetPeerAddress(peerAddress);
     CommissioningParameters commissioning_params = get_commissioning_params();
     controller_instance.get_commissioner()->PairDevice(m_remote_node_id, params, commissioning_params);

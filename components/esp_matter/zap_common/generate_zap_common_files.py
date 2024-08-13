@@ -95,7 +95,7 @@ def word_format(word):
 
 
 def format_cluster_name(cluster_name):
-    words = re.split(r'[ /]', cluster_name)
+    words = re.split(r'[ /-]', cluster_name)
     capitalized_words = [word_format(word) for word in words]
     return ''.join(capitalized_words)
 

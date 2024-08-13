@@ -21,6 +21,7 @@
 #include <string.h>
 
 #include <app/util/attribute-storage.h>
+#include <app/util/attribute-table.h>
 #include <app/reporting/reporting.h>
 #include <protocols/interaction_model/Constants.h>
 

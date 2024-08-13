@@ -92,6 +92,7 @@ void MatterRvcOperationalStatePluginServerInitCallback();
 void MatterRvcRunModePluginServerInitCallback();
 void MatterSampleMeiPluginServerInitCallback();
 void MatterScenesManagementPluginServerInitCallback();
+void MatterServiceAreaPluginServerInitCallback();
 void MatterSmokeCoAlarmPluginServerInitCallback();
 void MatterSoftwareDiagnosticsPluginServerInitCallback();
 void MatterSwitchPluginServerInitCallback();
@@ -100,7 +101,9 @@ void MatterTemperatureControlPluginServerInitCallback();
 void MatterTemperatureMeasurementPluginServerInitCallback();
 void MatterThermostatPluginServerInitCallback();
 void MatterThermostatUserInterfaceConfigurationPluginServerInitCallback();
+void MatterThreadBorderRouterManagementPluginServerInitCallback();
 void MatterThreadNetworkDiagnosticsPluginServerInitCallback();
+void MatterThreadNetworkDirectoryPluginServerInitCallback();
 void MatterTimeFormatLocalizationPluginServerInitCallback();
 void MatterTimeSynchronizationPluginServerInitCallback();
 void MatterTotalVolatileOrganicCompoundsConcentrationMeasurementPluginServerInitCallback();
@@ -110,6 +113,7 @@ void MatterUserLabelPluginServerInitCallback();
 void MatterValveConfigurationAndControlPluginServerInitCallback();
 void MatterWakeOnLanPluginServerInitCallback();
 void MatterWiFiNetworkDiagnosticsPluginServerInitCallback();
+void MatterWiFiNetworkManagementPluginServerInitCallback();
 void MatterWindowCoveringPluginServerInitCallback();
 
 #include <esp_matter_cluster.h>

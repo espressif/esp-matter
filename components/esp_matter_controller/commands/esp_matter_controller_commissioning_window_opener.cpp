@@ -118,7 +118,7 @@ void commissioning_window_opener::on_device_connected_fcn(void *context, Exchang
         if (generate_pase_verifier(window_opener->m_iteration, window_opener->m_pincode, salt, verifier) != ESP_OK) {
             return;
         }
-        chip::Spake2pVerifierSerialized serialized_verifier;
+        chip::Crypto::Spake2pVerifierSerialized serialized_verifier;
         chip::MutableByteSpan serialized_verifier_span(serialized_verifier);
         if (verifier.Serialize(serialized_verifier_span) != CHIP_NO_ERROR) {
             ESP_LOGE(TAG, "Failed to serialize the verifier");
