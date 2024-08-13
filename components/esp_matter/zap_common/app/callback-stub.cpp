@@ -466,6 +466,11 @@ void __attribute__((weak)) emberAfScenesManagementClusterInitCallback(EndpointId
     // To prevent warning
     (void) endpoint;
 }
+void __attribute__((weak)) emberAfServiceAreaClusterInitCallback(EndpointId endpoint)
+{
+    // To prevent warning
+    (void) endpoint;
+}
 void __attribute__((weak)) emberAfSmokeCoAlarmClusterInitCallback(EndpointId endpoint)
 {
     // To prevent warning
@@ -506,7 +511,17 @@ void __attribute__((weak)) emberAfThermostatUserInterfaceConfigurationClusterIni
     // To prevent warning
     (void) endpoint;
 }
+void __attribute__((weak)) emberAfThreadBorderRouterManagementClusterInitCallback(EndpointId endpoint)
+{
+    // To prevent warning
+    (void) endpoint;
+}
 void __attribute__((weak)) emberAfThreadNetworkDiagnosticsClusterInitCallback(EndpointId endpoint)
+{
+    // To prevent warning
+    (void) endpoint;
+}
+void __attribute__((weak)) emberAfThreadNetworkDirectoryClusterInitCallback(EndpointId endpoint)
 {
     // To prevent warning
     (void) endpoint;
@@ -552,6 +567,11 @@ void __attribute__((weak)) emberAfWakeOnLanClusterInitCallback(EndpointId endpoi
     (void) endpoint;
 }
 void __attribute__((weak)) emberAfWiFiNetworkDiagnosticsClusterInitCallback(EndpointId endpoint)
+{
+    // To prevent warning
+    (void) endpoint;
+}
+void __attribute__((weak)) emberAfWiFiNetworkManagementClusterInitCallback(EndpointId endpoint)
 {
     // To prevent warning
     (void) endpoint;

@@ -19,7 +19,6 @@
 
 #include <app-common/zap-generated/callback.h>
 #include <app/InteractionModelEngine.h>
-#include <app/util/af.h>
 #include <app/clusters/mode-base-server/mode-base-cluster-objects.h>
 
 using namespace chip::app::Clusters;

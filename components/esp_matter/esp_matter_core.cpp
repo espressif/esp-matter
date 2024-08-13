@@ -23,6 +23,7 @@
 #include <app/server/Dnssd.h>
 #include <app/server/Server.h>
 #include <app/util/attribute-storage.h>
+#include <app/util/endpoint-config-api.h>
 #include <credentials/DeviceAttestationCredsProvider.h>
 #include <credentials/FabricTable.h>
 #include <lib/core/DataModelTypes.h>

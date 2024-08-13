@@ -16,6 +16,7 @@
 
 #include <controller/CHIPDeviceController.h>
 #include <esp_matter.h>
+#include "dnssd/Types.h"
 
 using chip::NodeId;
 using chip::ScopedNodeId;
@@ -53,7 +54,7 @@ public:
     void OnCommissioningComplete(NodeId deviceId, CHIP_ERROR error) override;
 
     /****************** DeviceDiscoveryDelegate Interface ***************/
-    void OnDiscoveredDevice(const chip::Dnssd::DiscoveredNodeData &nodeData) override;
+    void OnDiscoveredDevice(const chip::Dnssd::CommissionNodeData &nodeData) override;
 
     static pairing_command &get_instance()
     {

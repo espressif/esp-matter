@@ -36,6 +36,7 @@
 #include <lib/support/CodeUtils.h>
 #include <platform/CHIPDeviceLayer.h>
 #include <protocols/secure_channel/RendezvousParameters.h>
+#include <protocols/user_directed_commissioning/UserDirectedCommissioning.h>
 
 using chip::NodeId;
 using chip::Inet::IPAddress;
@@ -261,7 +262,7 @@ static esp_err_t controller_udc_handler(int argc, char **argv)
         UDCClientState *state =
             instance.get_commissioner()->GetUserDirectedCommissioningServer()->GetUDCClients().GetUDCClientState(index);
         ESP_RETURN_ON_FALSE(state != nullptr, ESP_FAIL, TAG, "UDC client not found");
-        state->SetUDCClientProcessingState(chip::Controller::UDCClientProcessingState::kCommissioningNode);
+        state->SetUDCClientProcessingState(chip::Protocols::UserDirectedCommissioning::UDCClientProcessingState::kCommissioningNode);
 
         chip::NodeId gRemoteId = chip::kTestDeviceNodeId;
         chip::RendezvousParameters params = chip::RendezvousParameters()
@@ -269,7 +270,7 @@ static esp_err_t controller_udc_handler(int argc, char **argv)
                                                 .SetDiscriminator(state->GetLongDiscriminator())
                                                 .SetPeerAddress(state->GetPeerAddress());
         do {
-            chip::DRBG_get_bytes(reinterpret_cast<uint8_t *>(&gRemoteId), sizeof(gRemoteId));
+            chip::Crypto::DRBG_get_bytes(reinterpret_cast<uint8_t *>(&gRemoteId), sizeof(gRemoteId));
         } while (!chip::IsOperationalNodeId(gRemoteId));
 
         ESP_RETURN_ON_FALSE(instance.get_commissioner()->PairDevice(gRemoteId, params) == CHIP_NO_ERROR, ESP_FAIL, TAG,

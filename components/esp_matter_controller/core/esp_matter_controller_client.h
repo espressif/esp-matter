@@ -138,7 +138,7 @@ class ESPCommissionerCallback : public CommissionerCallback {
         chip::RendezvousParameters params = chip::RendezvousParameters()
             .SetSetupPINCode(pincode).SetDiscriminator(longDiscriminator).SetPeerAddress(peerAddress);
         do {
-            chip::DRBG_get_bytes(reinterpret_cast<uint8_t *>(&gRemoteId), sizeof(gRemoteId));
+            chip::Crypto::DRBG_get_bytes(reinterpret_cast<uint8_t *>(&gRemoteId), sizeof(gRemoteId));
         } while (!chip::IsOperationalNodeId(gRemoteId));
         matter_controller_client::get_instance().get_commissioner()->PairDevice(gRemoteId, params);
     }

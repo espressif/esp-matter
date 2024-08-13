@@ -26,6 +26,8 @@
     0x00000101, /* Cluster: Door Lock, Attribute: AliroGroupResolvingKey, Privilege: administer */ \
     0x00000101, /* Cluster: Door Lock, Attribute: AliroSupportedBLEUWBProtocolVersions, Privilege: administer */ \
     0x00000101, /* Cluster: Door Lock, Attribute: AliroBLEAdvertisingVersion, Privilege: administer */ \
+    0x00000453, /* Cluster: Thread Network Directory, Attribute: PreferredExtendedPanID, Privilege: manage */ \
+    0x00000453, /* Cluster: Thread Network Directory, Attribute: ThreadNetworks, Privilege: operate */ \
     0x0000050D, /* Cluster: Application Basic, Attribute: AllowedVendorList, Privilege: administer */ \
 }
 
@@ -48,6 +50,8 @@
     0x00000084, /* Cluster: Door Lock, Attribute: AliroGroupResolvingKey, Privilege: administer */ \
     0x00000085, /* Cluster: Door Lock, Attribute: AliroSupportedBLEUWBProtocolVersions, Privilege: administer */ \
     0x00000086, /* Cluster: Door Lock, Attribute: AliroBLEAdvertisingVersion, Privilege: administer */ \
+    0x00000000, /* Cluster: Thread Network Directory, Attribute: PreferredExtendedPanID, Privilege: manage */ \
+    0x00000001, /* Cluster: Thread Network Directory, Attribute: ThreadNetworks, Privilege: operate */ \
     0x00000007, /* Cluster: Application Basic, Attribute: AllowedVendorList, Privilege: administer */ \
 }
 
@@ -70,6 +74,8 @@
     chip::Access::Privilege::kAdminister, /* Cluster: Door Lock, Attribute: AliroGroupResolvingKey, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Door Lock, Attribute: AliroSupportedBLEUWBProtocolVersions, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Door Lock, Attribute: AliroBLEAdvertisingVersion, Privilege: administer */ \
+    chip::Access::Privilege::kManage, /* Cluster: Thread Network Directory, Attribute: PreferredExtendedPanID, Privilege: manage */ \
+    chip::Access::Privilege::kOperate, /* Cluster: Thread Network Directory, Attribute: ThreadNetworks, Privilege: operate */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Application Basic, Attribute: AllowedVendorList, Privilege: administer */ \
 }
 
@@ -179,6 +185,7 @@
     0x00000406, /* Cluster: Occupancy Sensing, Attribute: PhysicalContactOccupiedToUnoccupiedDelay, Privilege: manage */ \
     0x00000406, /* Cluster: Occupancy Sensing, Attribute: PhysicalContactUnoccupiedToOccupiedDelay, Privilege: manage */ \
     0x00000406, /* Cluster: Occupancy Sensing, Attribute: PhysicalContactUnoccupiedToOccupiedThreshold, Privilege: manage */ \
+    0x00000453, /* Cluster: Thread Network Directory, Attribute: PreferredExtendedPanID, Privilege: manage */ \
 }
 
 // Parallel array data (cluster, *attribute*, privilege) for write attribute
@@ -285,6 +292,7 @@
     0x00000030, /* Cluster: Occupancy Sensing, Attribute: PhysicalContactOccupiedToUnoccupiedDelay, Privilege: manage */ \
     0x00000031, /* Cluster: Occupancy Sensing, Attribute: PhysicalContactUnoccupiedToOccupiedDelay, Privilege: manage */ \
     0x00000032, /* Cluster: Occupancy Sensing, Attribute: PhysicalContactUnoccupiedToOccupiedThreshold, Privilege: manage */ \
+    0x00000000, /* Cluster: Thread Network Directory, Attribute: PreferredExtendedPanID, Privilege: manage */ \
 }
 
 // Parallel array data (cluster, attribute, *privilege*) for write attribute
@@ -391,6 +399,7 @@
     chip::Access::Privilege::kManage, /* Cluster: Occupancy Sensing, Attribute: PhysicalContactOccupiedToUnoccupiedDelay, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Occupancy Sensing, Attribute: PhysicalContactUnoccupiedToOccupiedDelay, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Occupancy Sensing, Attribute: PhysicalContactUnoccupiedToOccupiedThreshold, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Thread Network Directory, Attribute: PreferredExtendedPanID, Privilege: manage */ \
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -467,6 +476,13 @@
     0x00000201, /* Cluster: Thermostat, Command: CancelPresetsSchedulesEditRequest, Privilege: manage */ \
     0x00000201, /* Cluster: Thermostat, Command: CommitPresetsSchedulesRequest, Privilege: manage */ \
     0x00000201, /* Cluster: Thermostat, Command: CancelSetActivePresetRequest, Privilege: manage */ \
+    0x00000451, /* Cluster: Wi-Fi Network Management, Command: NetworkPassphraseRequest, Privilege: administer */ \
+    0x00000452, /* Cluster: Thread Border Router Management, Command: GetActiveDatasetRequest, Privilege: manage */ \
+    0x00000452, /* Cluster: Thread Border Router Management, Command: GetPendingDatasetRequest, Privilege: manage */ \
+    0x00000452, /* Cluster: Thread Border Router Management, Command: SetActiveDatasetRequest, Privilege: manage */ \
+    0x00000452, /* Cluster: Thread Border Router Management, Command: SetPendingDatasetRequest, Privilege: manage */ \
+    0x00000453, /* Cluster: Thread Network Directory, Command: AddNetwork, Privilege: manage */ \
+    0x00000453, /* Cluster: Thread Network Directory, Command: RemoveNetwork, Privilege: manage */ \
     0x00000507, /* Cluster: Media Input, Command: RenameInput, Privilege: manage */ \
     0x0000050B, /* Cluster: Audio Output, Command: RenameOutput, Privilege: manage */ \
     0x0000050E, /* Cluster: Account Login, Command: GetSetupPIN, Privilege: administer */ \
@@ -547,6 +563,13 @@
     0x00000008, /* Cluster: Thermostat, Command: CancelPresetsSchedulesEditRequest, Privilege: manage */ \
     0x00000009, /* Cluster: Thermostat, Command: CommitPresetsSchedulesRequest, Privilege: manage */ \
     0x0000000A, /* Cluster: Thermostat, Command: CancelSetActivePresetRequest, Privilege: manage */ \
+    0x00000000, /* Cluster: Wi-Fi Network Management, Command: NetworkPassphraseRequest, Privilege: administer */ \
+    0x00000000, /* Cluster: Thread Border Router Management, Command: GetActiveDatasetRequest, Privilege: manage */ \
+    0x00000001, /* Cluster: Thread Border Router Management, Command: GetPendingDatasetRequest, Privilege: manage */ \
+    0x00000004, /* Cluster: Thread Border Router Management, Command: SetActiveDatasetRequest, Privilege: manage */ \
+    0x00000005, /* Cluster: Thread Border Router Management, Command: SetPendingDatasetRequest, Privilege: manage */ \
+    0x00000000, /* Cluster: Thread Network Directory, Command: AddNetwork, Privilege: manage */ \
+    0x00000001, /* Cluster: Thread Network Directory, Command: RemoveNetwork, Privilege: manage */ \
     0x00000003, /* Cluster: Media Input, Command: RenameInput, Privilege: manage */ \
     0x00000001, /* Cluster: Audio Output, Command: RenameOutput, Privilege: manage */ \
     0x00000000, /* Cluster: Account Login, Command: GetSetupPIN, Privilege: administer */ \
@@ -627,6 +650,13 @@
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Command: CancelPresetsSchedulesEditRequest, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Command: CommitPresetsSchedulesRequest, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Command: CancelSetActivePresetRequest, Privilege: manage */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Wi-Fi Network Management, Command: NetworkPassphraseRequest, Privilege: administer */ \
+    chip::Access::Privilege::kManage, /* Cluster: Thread Border Router Management, Command: GetActiveDatasetRequest, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Thread Border Router Management, Command: GetPendingDatasetRequest, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Thread Border Router Management, Command: SetActiveDatasetRequest, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Thread Border Router Management, Command: SetPendingDatasetRequest, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Thread Network Directory, Command: AddNetwork, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Thread Network Directory, Command: RemoveNetwork, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Media Input, Command: RenameInput, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Audio Output, Command: RenameOutput, Privilege: manage */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Account Login, Command: GetSetupPIN, Privilege: administer */ \
@@ -641,18 +671,21 @@
 #define GENERATED_ACCESS_READ_EVENT__CLUSTER { \
     0x0000001F, /* Cluster: Access Control, Event: AccessControlEntryChanged, Privilege: administer */ \
     0x0000001F, /* Cluster: Access Control, Event: AccessControlExtensionChanged, Privilege: administer */ \
+    0x00000453, /* Cluster: Thread Network Directory, Event: NetworkChanged, Privilege: operate */ \
 }
 
 // Parallel array data (cluster, *event*, privilege) for read event
 #define GENERATED_ACCESS_READ_EVENT__EVENT { \
     0x00000000, /* Cluster: Access Control, Event: AccessControlEntryChanged, Privilege: administer */ \
     0x00000001, /* Cluster: Access Control, Event: AccessControlExtensionChanged, Privilege: administer */ \
+    0x00000000, /* Cluster: Thread Network Directory, Event: NetworkChanged, Privilege: operate */ \
 }
 
 // Parallel array data (cluster, event, *privilege*) for read event
 #define GENERATED_ACCESS_READ_EVENT__PRIVILEGE { \
     chip::Access::Privilege::kAdminister, /* Cluster: Access Control, Event: AccessControlEntryChanged, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Access Control, Event: AccessControlExtensionChanged, Privilege: administer */ \
+    chip::Access::Privilege::kOperate, /* Cluster: Thread Network Directory, Event: NetworkChanged, Privilege: operate */ \
 }
 
 ////////////////////////////////////////////////////////////////////////////////

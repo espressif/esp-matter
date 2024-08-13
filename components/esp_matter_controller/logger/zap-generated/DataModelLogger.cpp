@@ -2517,7 +2517,7 @@ CHIP_ERROR DataModelLogger::LogValue(const char * label, size_t indent,
         }
     }
     {
-        CHIP_ERROR err = LogValue("SlotIsPauseable", indent + 1, value.slotIsPauseable);
+        CHIP_ERROR err = LogValue("SlotIsPauseable", indent + 1, value.slotIsPausable);
         if (err != CHIP_NO_ERROR)
         {
             DataModelLogger::LogString(indent + 1, "Struct truncated due to invalid value for 'SlotIsPauseable'");
@@ -2631,7 +2631,7 @@ DataModelLogger::LogValue(const char * label, size_t indent,
 {
     DataModelLogger::LogString(label, indent, "{");
     {
-        CHIP_ERROR err = LogValue("ForecastId", indent + 1, value.forecastId);
+        CHIP_ERROR err = LogValue("ForecastId", indent + 1, value.forecastID);
         if (err != CHIP_NO_ERROR)
         {
             DataModelLogger::LogString(indent + 1, "Struct truncated due to invalid value for 'ForecastId'");
@@ -2679,7 +2679,7 @@ DataModelLogger::LogValue(const char * label, size_t indent,
         }
     }
     {
-        CHIP_ERROR err = LogValue("IsPauseable", indent + 1, value.isPauseable);
+        CHIP_ERROR err = LogValue("IsPauseable", indent + 1, value.isPausable);
         if (err != CHIP_NO_ERROR)
         {
             DataModelLogger::LogString(indent + 1, "Struct truncated due to invalid value for 'IsPauseable'");
