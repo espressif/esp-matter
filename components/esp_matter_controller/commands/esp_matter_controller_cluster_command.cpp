@@ -259,10 +259,6 @@ esp_err_t send_invoke_cluster_command(uint64_t destination_id, uint16_t endpoint
                                       uint32_t command_id, const char *command_data_field,
                                       chip::Optional<uint16_t> timed_invoke_timeout_ms)
 {
-    if (command_data_field && strlen(command_data_field) >= k_command_data_field_buffer_size) {
-        ESP_LOGE(TAG, "The command data field buffer is too small for this command, please increase the buffer size");
-        return ESP_ERR_INVALID_ARG;
-    }
     cluster_command *cmd = chip::Platform::New<cluster_command>(destination_id, endpoint_id, cluster_id, command_id,
                                                                 command_data_field, timed_invoke_timeout_ms);
     if (!cmd) {

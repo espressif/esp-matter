@@ -31,9 +31,7 @@ using chip::Messaging::ExchangeManager;
 using chip::TLV::TLVReader;
 using esp_matter::client::peer_device_t;
 using esp_matter::client::interaction::invoke::custom_command_callback;
-
-constexpr char k_empty_command_data_field[] = "{}";
-constexpr size_t k_command_data_field_buffer_size = CONFIG_ESP_MATTER_CONTROLLER_JSON_STRING_BUFFER_LEN;
+using esp_matter::client::interaction::custom_encodable_type;
 
 /** Cluster command class to send an invoke interaction command to a server **/
 class cluster_command {
@@ -47,19 +45,13 @@ public:
         , m_endpoint_id(endpoint_id)
         , m_cluster_id(cluster_id)
         , m_command_id(command_id)
+        , m_command_data_field(command_data_field, custom_encodable_type::interaction_type::k_invoke_cmd)
         , m_timed_invoke_timeout_ms(timed_invoke_timeout_ms)
         , on_device_connected_cb(on_device_connected_fcn, this)
         , on_device_connection_failure_cb(on_device_connection_failure_fcn, this)
         , on_success_cb(on_success)
         , on_error_cb(on_error)
     {
-        if (command_data_field) {
-            strncpy(m_command_data_field, command_data_field, k_command_data_field_buffer_size - 1);
-            m_command_data_field[strnlen(command_data_field, k_command_data_field_buffer_size - 1)] = 0;
-        } else {
-            strcpy(m_command_data_field, k_empty_command_data_field);
-            m_command_data_field[strlen(k_empty_command_data_field)] = 0;
-        }
     }
 
     ~cluster_command() {}
@@ -73,7 +65,7 @@ private:
     uint16_t m_endpoint_id;
     uint32_t m_cluster_id;
     uint32_t m_command_id;
-    char m_command_data_field[k_command_data_field_buffer_size];
+    custom_encodable_type m_command_data_field;
     chip::Optional<uint16_t> m_timed_invoke_timeout_ms;
 
     static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr,

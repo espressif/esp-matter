@@ -46,7 +46,7 @@ void write_command::on_device_connected_fcn(void *context, ExchangeManager &exch
 {
     write_command *cmd = (write_command *)context;
     chip::OperationalDeviceProxy device_proxy(&exchangeMgr, sessionHandle);
-    esp_err_t err = interaction::write::send_request(&device_proxy, cmd->m_attr_path, cmd->m_attr_val_str,
+    esp_err_t err = interaction::write::send_request(&device_proxy, cmd->m_attr_path, cmd->m_attr_val,
                                                      cmd->m_chunked_callback, chip::NullOptional);
     if (err != ESP_OK) {
         chip::Platform::Delete(cmd);

@@ -33,9 +33,7 @@ using chip::app::WriteClient;
 using chip::Messaging::ExchangeManager;
 using chip::TLV::TLVElementType;
 using esp_matter::client::peer_device_t;
-
-constexpr char *k_null_attribute_val_str = "null";
-constexpr size_t k_attr_val_str_buf_size = CONFIG_ESP_MATTER_CONTROLLER_JSON_STRING_BUFFER_LEN;
+using esp_matter::client::interaction::custom_encodable_type;
 
 /** Write command class to send a write interaction command to a server **/
 class write_command : public WriteClient::Callback {
@@ -46,17 +44,9 @@ public:
         : m_node_id(node_id)
         , m_attr_path(endpoint_id, cluster_id, attribute_id)
         , m_chunked_callback(this)
+        , m_attr_val(attribute_val_str, custom_encodable_type::interaction_type::k_write_attr)
         , on_device_connected_cb(on_device_connected_fcn, this)
-        , on_device_connection_failure_cb(on_device_connection_failure_fcn, this)
-    {
-        if (attribute_val_str) {
-            strncpy(m_attr_val_str, attribute_val_str, k_attr_val_str_buf_size - 1);
-            m_attr_val_str[strnlen(attribute_val_str, k_attr_val_str_buf_size - 1)] = 0;
-        } else {
-            strcpy(m_attr_val_str, k_null_attribute_val_str);
-            m_attr_val_str[strlen(k_null_attribute_val_str)] = 0;
-        }
-    }
+        , on_device_connection_failure_cb(on_device_connection_failure_fcn, this) {}
 
     ~write_command() {}
 
@@ -86,7 +76,7 @@ private:
     uint64_t m_node_id;
     AttributePathParams m_attr_path;
     ChunkedWriteCallback m_chunked_callback;
-    char m_attr_val_str[k_attr_val_str_buf_size];
+    custom_encodable_type m_attr_val;
 
     static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr,
                                         const SessionHandle &sessionHandle);
