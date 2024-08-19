@@ -22,6 +22,8 @@ set(RMAKER_PATH $ENV{RMAKER_PATH})
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 include(${ESP_MATTER_PATH}/examples/common/cmake_common/components_include.cmake)
 
+idf_build_set_property(RAINMAKER_ENABLED 1)
+
 set(EXTRA_COMPONENT_DIRS
     "${ESP_MATTER_PATH}/examples/common"
     "${MATTER_SDK_PATH}/config/esp32/components"

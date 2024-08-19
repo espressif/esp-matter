@@ -7,6 +7,7 @@
 */
 
 #include "esp_matter_attribute_utils.h"
+#include "esp_matter_core.h"
 #include <esp_err.h>
 #include <esp_log.h>
 #include <nvs_flash.h>
@@ -14,6 +15,7 @@
 #include <esp_matter.h>
 #include <esp_matter_console.h>
 #include <esp_matter_ota.h>
+#include <esp_matter_rainmaker.h>
 
 #include <esp_rmaker_console.h>
 #include <esp_rmaker_core.h>
@@ -253,6 +255,8 @@ extern "C" void app_main()
         attribute::get(color_control_cluster, ColorControl::Attributes::ColorTemperatureMireds::Id);
     attribute::set_deferred_persistence(color_temp_attribute);
 
+    esp_matter::rainmaker::init();
+
     err = esp_event_loop_create_default();
 
     if (err != ESP_OK) {
@@ -260,6 +264,7 @@ extern "C" void app_main()
         return;
     }
     app_wifi_init();
+
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     /* Set OpenThread platform config */
     esp_openthread_platform_config_t config = {
@@ -278,7 +283,7 @@ extern "C" void app_main()
         vTaskDelay(5000 / portTICK_PERIOD_MS);
         abort();
     }
-
+    esp_matter::rainmaker::start();
     light_device = esp_rmaker_lightbulb_device_create("Light", light_handle, DEFAULT_POWER);
     esp_rmaker_device_add_bulk_cb(light_device, bulk_write_cb, NULL);
 
