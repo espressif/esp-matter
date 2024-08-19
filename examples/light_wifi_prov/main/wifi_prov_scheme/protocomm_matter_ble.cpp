@@ -84,6 +84,7 @@ static void protocomm_matter_ble_cleanup()
             free(protoble_internal->g_name_uuid_array);
         }
         free(protoble_internal);
+        protoble_internal = nullptr;
     }
 }
 
