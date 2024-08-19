@@ -213,7 +213,7 @@ ThreadBRAttrAccess g_attr_access;
 
 void thread_br_cluster_plugin_server_init_callback()
 {
-    registerAttributeAccessOverride(&g_attr_access);
+    chip::app::AttributeAccessInterfaceRegistry::Instance().Register(&g_attr_access);
 }
 
 const function_generic_t function_list[] = {};

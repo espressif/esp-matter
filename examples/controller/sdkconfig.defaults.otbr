@@ -92,3 +92,6 @@ CONFIG_MBEDTLS_HKDF_C=y
 
 # Increase console buffer length
 CONFIG_CHIP_SHELL_CMD_LINE_BUF_MAX_LENGTH=512
+
+# Disable WiFi network commissioning driver
+CONFIG_WIFI_NETWORK_COMMISSIONING_DRIVER=n

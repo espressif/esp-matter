@@ -19,7 +19,7 @@
 #include <esp_matter_controller_client.h>
 #include <esp_matter_controller_subscribe_command.h>
 
-#include "DataModelLogger.h"
+#include <commands/clusters/DataModelLogger.h>
 
 using namespace chip::app::Clusters;
 using namespace esp_matter::client;
