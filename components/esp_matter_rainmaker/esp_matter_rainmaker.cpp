@@ -22,6 +22,7 @@
 #include <esp_rmaker_user_mapping.h>
 #include <app/util/attribute-storage.h>
 #include <app/AttributeAccessInterface.h>
+#include <app/AttributeAccessInterfaceRegistry.h>
 
 #define ESP_MATTER_RAINMAKER_COMMAND_LIMIT              5 /* This command can be called 5 times per reboot */
 #define ESP_MATTER_RAINMAKER_MAX_DATA_LEN               40
