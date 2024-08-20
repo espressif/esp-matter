@@ -4,4 +4,4 @@ if (CONFIG_ENABLE_CHIP_SHELL)
 endif()
 idf_component_register(SRC_DIRS ${src_dirs}
                     INCLUDE_DIRS .
-                    PRIV_REQUIRES chip mbedtls esp_timer bt openthread)
+                    PRIV_REQUIRES chip mbedtls esp_timer bt openthread esp_rcp_update)
