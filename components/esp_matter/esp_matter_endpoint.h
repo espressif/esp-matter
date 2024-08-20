@@ -31,6 +31,8 @@
 #define ESP_MATTER_AGGREGATOR_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID 0x0013
 #define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_CONTROL_BRIDGE_DEVICE_TYPE_ID 0x0840
+#define ESP_MATTER_CONTROL_BRIDGE_DEVICE_TYPE_VERSION 3
 
 #define ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID 0x0100
 #define ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_VERSION 3
@@ -468,6 +470,19 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 endpoint_t *resume(node_t *node, config_t *config, uint8_t flags, uint16_t endpoint_id, void *priv_data);
 } /* bridged_node */
+
+namespace control_bridge {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::identify::config_t identify;
+    cluster::binding::config_t binding;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* control_bridge */
 
 namespace door_lock {
 typedef struct config {
