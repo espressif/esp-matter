@@ -14,9 +14,13 @@
 
 #pragma once
 
+#include <json_to_tlv.h>
 #include <app-common/zap-generated/cluster-objects.h>
+#include <app/data-model/EncodableToTLV.h>
+#include <cassert>
 #include <esp_err.h>
 #include <esp_matter_core.h>
+#include <string.h>
 
 namespace esp_matter {
 namespace client {
@@ -35,6 +39,44 @@ using chip::Messaging::ExchangeManager;
 using chip::System::Clock::Timeout;
 using chip::TLV::TLVReader;
 using client::peer_device_t;
+using chip::app::DataModel::EncodableToTLV;
+
+class custom_encodable_type : public EncodableToTLV
+{
+public:
+    const char *k_empty_command_data = "{}";
+    const char *k_null_attribute_data = "null";
+    enum interaction_type {
+        k_invoke_cmd = 0,
+        k_write_attr,
+    };
+
+    custom_encodable_type(const char *json_str, interaction_type usage)
+    {
+        if (json_str) {
+            m_json_str = strdup(json_str);
+        } else {
+            if (usage == k_invoke_cmd) {
+                m_json_str = strdup("{}");
+            } else if (usage == k_write_attr) {
+                m_json_str = strdup("null");
+            }
+        }
+        assert(m_json_str);
+    }
+
+    ~custom_encodable_type() { free(m_json_str); }
+
+    CHIP_ERROR EncodeTo(chip::TLV::TLVWriter & writer, chip::TLV::Tag tag) const override
+    {
+        if (json_to_tlv(m_json_str, writer, tag) != ESP_OK) {
+            return CHIP_ERROR_INTERNAL;
+        }
+        return CHIP_NO_ERROR;
+    }
+private:
+    char *m_json_str = NULL;
+};
 
 /** Command invoke APIs
  *
@@ -108,6 +150,18 @@ esp_err_t send_request(void *ctx, peer_device_t *remote_device, const CommandPat
 
 esp_err_t send_group_request(const uint8_t fabric_index, const CommandPathParams &command_path,
                              const char *command_data_json_str);
+
+esp_err_t send_request(void *ctx, peer_device_t *remote_device, const CommandPathParams &command_path,
+                       const chip::app::DataModel::EncodableToTLV &encodable,
+                       custom_command_callback::on_success_callback_t on_success,
+                       custom_command_callback::on_error_callback_t on_error,
+                       const Optional<uint16_t> &timed_invoke_timeout_ms,
+                       const Optional<Timeout> &response_timeout = chip::NullOptional);
+
+
+esp_err_t send_group_request(const uint8_t fabric_index, const CommandPathParams &command_path,
+                             const chip::app::DataModel::EncodableToTLV &encodable);
+
 } // namespace invoke
 
 /** Attribute/event read API
@@ -126,6 +180,10 @@ esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams
 namespace write {
 esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams &attr_path,
                        const char *attr_val_json_str, WriteClient::Callback &callback,
+                       const chip::Optional<uint16_t> &timeout_ms);
+
+esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams &attr_path,
+                       const chip::app::DataModel::EncodableToTLV &encodable, WriteClient::Callback &callback,
                        const chip::Optional<uint16_t> &timeout_ms);
 } // namespace write
 

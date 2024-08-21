@@ -33,6 +33,7 @@
 #include "app/CommandPathParams.h"
 #include "app/CommandSender.h"
 #include "app/InteractionModelEngine.h"
+#include "app/data-model/EncodableToTLV.h"
 
 using namespace chip::app::Clusters;
 using chip::DeviceProxy;
@@ -220,6 +221,8 @@ void binding_init()
 }
 
 namespace interaction {
+using chip::app::DataModel::EncodableToTLV;
+
 namespace invoke {
 
 using command_data_tag = chip::app::CommandDataIB::Tag;
@@ -228,6 +231,22 @@ using chip::TLV::TLVWriter;
 
 esp_err_t send_request(void *ctx, peer_device_t *remote_device, const CommandPathParams &command_path,
                        const char *command_data_json_str, custom_command_callback::on_success_callback_t on_success,
+                       custom_command_callback::on_error_callback_t on_error,
+                       const Optional<uint16_t> &timed_invoke_timeout_ms, const Optional<Timeout> &response_timeout)
+{
+    custom_encodable_type type(command_data_json_str, custom_encodable_type::interaction_type::k_invoke_cmd);
+    return send_request(ctx, remote_device, command_path, type, on_success, on_error, timed_invoke_timeout_ms, response_timeout);
+}
+
+esp_err_t send_group_request(const uint8_t fabric_index, const CommandPathParams &command_path,
+                             const char *command_data_json_str)
+{
+    custom_encodable_type type(command_data_json_str, custom_encodable_type::interaction_type::k_invoke_cmd);
+    return send_group_request(fabric_index, command_path, type);
+}
+
+esp_err_t send_request(void *ctx, peer_device_t *remote_device, const CommandPathParams &command_path,
+                       const EncodableToTLV &encodable, custom_command_callback::on_success_callback_t on_success,
                        custom_command_callback::on_error_callback_t on_error,
                        const Optional<uint16_t> &timed_invoke_timeout_ms, const Optional<Timeout> &response_timeout)
 {
@@ -256,26 +275,8 @@ esp_err_t send_request(void *ctx, peer_device_t *remote_device, const CommandPat
         ESP_LOGE(TAG, "No memory for command sender");
         return ESP_ERR_NO_MEM;
     }
-    chip::app::CommandSender::PrepareCommandParameters prepare_command_params;
-    if (command_sender->PrepareCommand(command_path, prepare_command_params) != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to prepare command");
-        return ESP_FAIL;
-    }
-    TLVWriter *writer = command_sender->GetCommandDataIBTLVWriter();
-    if (writer == nullptr) {
-        ESP_LOGE(TAG, "No TLV writer in command sender");
-        return ESP_ERR_INVALID_STATE;
-    }
-    esp_err_t err = json_to_tlv(command_data_json_str, *writer, ContextTag(command_data_tag::kFields));
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to convert json string to TLV");
-        return err;
-    }
-    chip::app::CommandSender::FinishCommandParameters finish_command_params(timed_invoke_timeout_ms);
-    if (command_sender->FinishCommand(finish_command_params) != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to finish command");
-        return ESP_FAIL;
-    }
+    chip::app::CommandSender::AddRequestDataParameters add_request_data_params(timed_invoke_timeout_ms);
+    command_sender->AddRequestData(command_path, encodable, add_request_data_params);
     if (command_sender->SendCommandRequest(remote_device->GetSecureSession().Value(), response_timeout) !=
         CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to send command request");
@@ -287,7 +288,7 @@ esp_err_t send_request(void *ctx, peer_device_t *remote_device, const CommandPat
 }
 
 esp_err_t send_group_request(const uint8_t fabric_index, const CommandPathParams &command_path,
-                             const char *command_data_json_str)
+                             const EncodableToTLV &encodeable)
 {
     if (!command_path.mFlags.Has(chip::app::CommandPathFlags::kGroupIdValid)) {
         ESP_LOGE(TAG, "Invalid CommandPathFlags");
@@ -301,26 +302,8 @@ esp_err_t send_group_request(const uint8_t fabric_index, const CommandPathParams
         ESP_LOGE(TAG, "No memory for command sender");
         return ESP_ERR_NO_MEM;
     }
-    chip::app::CommandSender::PrepareCommandParameters prepare_command_params;
-    if (command_sender->PrepareCommand(command_path, prepare_command_params) != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to prepare command");
-        return ESP_FAIL;
-    }
-    TLVWriter *writer = command_sender->GetCommandDataIBTLVWriter();
-    if (writer == nullptr) {
-        ESP_LOGE(TAG, "No TLV writer in command sender");
-        return ESP_ERR_INVALID_STATE;
-    }
-    esp_err_t err = json_to_tlv(command_data_json_str, *writer, ContextTag(command_data_tag::kFields));
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to convert json string to TLV");
-        return err;
-    }
-    chip::app::CommandSender::FinishCommandParameters finish_command_params;
-    if (command_sender->FinishCommand(finish_command_params) != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to finish command");
-        return ESP_FAIL;
-    }
+    chip::app::CommandSender::AddRequestDataParameters add_request_data_params;
+    command_sender->AddRequestData(command_path, encodeable, add_request_data_params);
     if (command_sender->SendGroupCommandRequest(SessionHandle(session)) != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to send command request");
         return ESP_FAIL;
@@ -545,7 +528,7 @@ private:
     WriteClient::Callback &m_callback;
 };
 
-static esp_err_t encode_attribute_value(uint8_t *encoded_buf, size_t encoded_buf_size, const char *attr_val_json_str,
+static esp_err_t encode_attribute_value(uint8_t *encoded_buf, size_t encoded_buf_size, const EncodableToTLV &encodable,
                                         TLVReader &out_reader)
 {
     TLVWriter writer;
@@ -554,9 +537,9 @@ static esp_err_t encode_attribute_value(uint8_t *encoded_buf, size_t encoded_buf
     esp_err_t err = ESP_OK;
 
     writer.Init(encoded_buf, encoded_buf_size);
-    if ((err = json_to_tlv(attr_val_json_str, writer, chip::TLV::AnonymousTag())) != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to parse attribute value");
-        return err;
+    if (encodable.EncodeTo(writer, chip::TLV::AnonymousTag()) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to encode attribute value");
+        return ESP_FAIL;
     }
     if (writer.Finalize() != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to finalize tlv writer");
@@ -584,7 +567,7 @@ static esp_err_t encode_attribute_value(uint8_t *encoded_buf, size_t encoded_buf
 }
 
 esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams &attr_path,
-                       const char *attr_val_json_str, WriteClient::Callback &callback,
+                       const chip::app::DataModel::EncodableToTLV &encodable, WriteClient::Callback &callback,
                        const chip::Optional<uint16_t> &timeout_ms)
 {
     esp_err_t err = ESP_OK;
@@ -617,7 +600,7 @@ esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams
         return ESP_ERR_NO_MEM;
     }
     TLVReader attr_val_reader;
-    err = encode_attribute_value(encoded_buf.Get(), k_encoded_buf_size, attr_val_json_str, attr_val_reader);
+    err = encode_attribute_value(encoded_buf.Get(), k_encoded_buf_size, encodable, attr_val_reader);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to encode attribute value to a TLV reader");
         return err;
@@ -634,6 +617,15 @@ esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams
     write_client.release();
     client_deleter_callback.release();
     return ESP_OK;
+
+}
+
+esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams &attr_path,
+                       const char *attr_val_json_str, WriteClient::Callback &callback,
+                       const chip::Optional<uint16_t> &timeout_ms)
+{
+    custom_encodable_type type(attr_val_json_str, custom_encodable_type::interaction_type::k_write_attr);
+    return send_request(remote_device, attr_path, type, callback, timeout_ms);
 }
 
 } // namespace write
