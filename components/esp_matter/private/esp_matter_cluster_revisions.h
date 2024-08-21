@@ -367,6 +367,11 @@ namespace application_basic {
 constexpr uint16_t cluster_revision = 1;
 } // namespace application_basic
 
+namespace thread_border_router_management {
+constexpr uint16_t cluster_revision = 1;
+} // namespace thread_border_router_management
+
+
 } // namespace cluster
 } // namespace esp_matter
 

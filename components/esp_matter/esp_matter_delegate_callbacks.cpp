@@ -16,6 +16,7 @@
 #include <inttypes.h>
 #include <esp_matter_delegate_callbacks.h>
 #include <esp_matter_core.h>
+#include <esp_matter_feature.h>
 #include <app/clusters/mode-base-server/mode-base-server.h>
 #include <app/clusters/energy-evse-server/energy-evse-server.h>
 #include <app/clusters/microwave-oven-control-server/microwave-oven-control-server.h>
@@ -36,6 +37,7 @@
 #include <app/clusters/dishwasher-alarm-server/dishwasher-alarm-server.h>
 #include <app/clusters/keypad-input-server/keypad-input-server.h>
 #include <app/clusters/mode-select-server//supported-modes-manager.h>
+#include <app/clusters/thread-border-router-management-server/thread-border-router-management-server.h>
 
 using namespace chip::app::Clusters;
 namespace esp_matter {
@@ -352,6 +354,25 @@ void ModeSelectDelegateInitCB(void *delegate, uint16_t endpoint_id)
     }
     ModeSelect::SupportedModesManager *supported_modes_manager = static_cast<ModeSelect::SupportedModesManager*>(delegate);
     ModeSelect::setSupportedModesManager(supported_modes_manager);
+}
+
+void ThreadBorderRouterManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    assert(delegate != nullptr);
+    esp_matter::cluster_t *cluster = esp_matter::cluster::get(endpoint_id, ThreadBorderRouterManagement::Id);
+    assert(cluster != nullptr);
+    /* Get the attribute */
+    attribute_t *attribute = attribute::get(cluster, Globals::Attributes::FeatureMap::Id);
+    assert(attribute != nullptr);
+    /* Update the value if the attribute already exists */
+    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    attribute::get_val(attribute, &val);
+    bool pan_change_supported = (val.val.u32 & thread_border_router_management::feature::pan_change::get_id()) ? true : false;
+    ThreadBorderRouterManagement::Delegate *thread_br_delegate = static_cast<ThreadBorderRouterManagement::Delegate *>(delegate);
+    assert(thread_br_delegate->GetPanChangeSupported() == pan_change_supported);
+    ThreadBorderRouterManagement::ServerInstance *server_instance =
+        chip::Platform::New<ThreadBorderRouterManagement::ServerInstance>(endpoint_id, thread_br_delegate, chip::Server::GetInstance().GetFailSafeContext());
+    server_instance->Init();
 }
 
 } // namespace delegate_cb

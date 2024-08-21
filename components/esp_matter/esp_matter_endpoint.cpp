@@ -1885,6 +1885,40 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /** device_energy_management **/
 
+namespace thread_border_router {
+
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_THREAD_BORDER_ROUTER_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_THREAD_BORDER_ROUTER_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
+
+    thread_network_diagnostics::create(endpoint, &(config->thread_network_diagnostics), CLUSTER_FLAG_SERVER);
+    thread_border_router_management::create(endpoint, &(config->thread_border_router_management), CLUSTER_FLAG_SERVER,
+                                            thread_border_router_management::feature::pan_change::get_id());
+    return ESP_OK;
+}
+
+} /* thread_border_router */
+
 } /* endpoint */
 
 namespace node {

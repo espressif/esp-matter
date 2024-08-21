@@ -131,6 +131,9 @@
 #define ESP_MATTER_DEVICE_ENERGY_MANAGEMENT_DEVICE_TYPE_ID 0x050D
 #define ESP_MATTER_DEVICE_ENERGY_MANAGEMENT_DEVICE_TYPE_VERSION 1
 
+#define ESP_MATTER_THREAD_BORDER_ROUTER_DEVICE_TYPE_ID 0x0091
+#define ESP_MATTER_THREAD_BORDER_ROUTER_DEVICE_TYPE_VERSION 1
+
 namespace esp_matter {
 
 /** Specific endpoint (device type) create APIs
@@ -852,6 +855,19 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* device_energy_management */
+
+namespace thread_border_router {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::thread_network_diagnostics::config_t thread_network_diagnostics;
+    cluster::thread_border_router_management::config_t thread_border_router_management;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* thread_border_router */
 
 } /* endpoint */
 

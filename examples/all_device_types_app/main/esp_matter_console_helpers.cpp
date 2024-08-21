@@ -29,6 +29,13 @@
 #include <app/clusters/fan-control-server/fan-control-delegate.h>
 #include <app/clusters/fan-control-server/fan-control-server.h>
 
+#ifdef CONFIG_OPENTHREAD_BORDER_ROUTER
+#include <platform/KvsPersistentStorageDelegate.h>
+#include <platform/OpenThread/GenericThreadBorderRouterDelegate.h>
+using chip::app::Clusters::ThreadBorderRouterManagement::GenericOpenThreadBorderRouterDelegate;
+#endif // CONFIG_OPENTHREAD_BORDER_ROUTER
+
+
 using namespace esp_matter;
 
 extern uint16_t app_endpoint_id;
@@ -494,6 +501,24 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::pump_controller::create(node, &pump_controller_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
+#ifdef CONFIG_OPENTHREAD_BORDER_ROUTER
+        case ESP_MATTER_THREAD_BORDER_ROUTER: {
+            static chip::KvsPersistentStorageDelegate tbr_storage_delegate;
+            chip::DeviceLayer::PersistedStorage::KeyValueStoreManager & kvsManager = chip::DeviceLayer::PersistedStorage::KeyValueStoreMgr();
+            tbr_storage_delegate.Init(&kvsManager);
+            GenericOpenThreadBorderRouterDelegate *delegate = chip::Platform::New<GenericOpenThreadBorderRouterDelegate>(&tbr_storage_delegate);
+            if (!delegate) {
+                ESP_LOGE(TAG, "Failed to create thread_border_router delegate");
+                return 1;
+            }
+            char threadBRName[] = "Espressif-ThreadBR";
+            delegate->SetThreadBorderRouterName(chip::CharSpan(threadBRName));
+            esp_matter::endpoint::thread_border_router::config_t tbr_config;
+            tbr_config.thread_border_router_management.delegate = delegate;
+            endpoint = esp_matter::endpoint::thread_border_router::create(node, &tbr_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
+#endif
         default: {
             ESP_LOGE(TAG, "Please input a valid device type");
             break;
