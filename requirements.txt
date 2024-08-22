@@ -2,7 +2,7 @@
 lark==1.1.2
 stringcase==1.2.0
 # jinja2 is removed in IDF v5.0 environment, but it is required for matter building
-jinja2==3.0.1
+jinja2==3.1.4
 
 # https://github.com/psf/requests/blob/main/HISTORY.md#2300-2023-05-03
 urllib3<2
