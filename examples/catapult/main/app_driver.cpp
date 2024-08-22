@@ -49,7 +49,7 @@ extern uint16_t light_endpoint_id;
 #define tensioner_loose     30  //OK
 #define tensioner_charged   110 //OK
 #define lid_closed          0   //OK
-#define lid_open            165 //OK
+#define lid_open            150//165 //OK
 #define lid_reload          115
 #define reload_closed       125 //OK
 #define reload_open         30  //OK
