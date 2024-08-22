@@ -62,21 +62,12 @@ jobs:
           . $ESP_MATTER_PATH/export.sh
           cd $ESP_MATTER_PATH/examples/${{ matrix.targets.example }}
 
-          SDK_CFG="sdkconfig.defaults"
           if [ "${{ matrix.targets.sdkconfig }}" != "" ]; then
-            # sdkconfig.defaults.esp32c6 contains the configuration for wifi
-            # For now its a workaround for not including wifi configs in C6's final sdkconfig
-            # we can restructure the sdkconfig for c6_wifi and c6_thread and re-visit this
-            # https://docs.espressif.com/projects/esp-idf/en/v5.2.1/esp32c6/api-guides/build-system.html#custom-sdkconfig-defaults
-            # Please check the above link for sequece of application of configuration
-            rm -f sdkconfig.defaults.${{ matrix.targets.target }}
-
-            SDK_CFG="$SDK_CFG;${{ matrix.targets.sdkconfig }}"
+            idf.py -D SDKCONFIG_DEFAULTS="${{ matrix.targets.sdkconfig }}" set-target ${{ matrix.targets.target }} build
           elif [ -f sdkconfig.defaults.${{ matrix.targets.target }} ]; then
-            SDK_CFG="$SDK_CFG;sdkconfig.defaults.${{ matrix.targets.target }}"
+            idf.py set-target ${{ matrix.targets.target }} build
           fi
 
-          idf.py -D SDKCONFIG_DEFAULTS="$SDK_CFG" set-target ${{ matrix.targets.target }} build
           cd build
 
           TARGET_CHIP=`cat project_description.json | python3 -c 'import sys,json; print(json.load(sys.stdin)["target"])'`
