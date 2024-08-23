@@ -227,6 +227,10 @@ esp_err_t send_read_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_
     attribute_ids.Alloc(1);
     if (!(endpoint_ids.Get() && cluster_ids.Get() && attribute_ids.Get())) {
         return ESP_ERR_NO_MEM;
+    } else {
+        *endpoint_ids.Get() = endpoint_id;
+        *cluster_ids.Get() = cluster_id;
+        *attribute_ids.Get() = attribute_id;
     }
     return send_read_attr_command(node_id, endpoint_ids, cluster_ids, attribute_ids);
 }
@@ -241,6 +245,10 @@ esp_err_t send_read_event_command(uint64_t node_id, uint16_t endpoint_id, uint32
     event_ids.Alloc(1);
     if (!(endpoint_ids.Get() && cluster_ids.Get() && event_ids.Get())) {
         return ESP_ERR_NO_MEM;
+    } else {
+        *endpoint_ids.Get() = endpoint_id;
+        *cluster_ids.Get() = cluster_id;
+        *event_ids.Get() = event_id;
     }
     return send_read_event_command(node_id, endpoint_ids, cluster_ids, event_ids);
 }
