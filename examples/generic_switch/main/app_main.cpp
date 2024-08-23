@@ -54,10 +54,10 @@ constexpr const uint8_t kTagPositionLeft = 0;
 // Common Position Namespace: 8, tag: 1 (Right)
 constexpr const uint8_t kTagPositionRight = 1;
 
-const Descriptor::Structs::SemanticTagStruct::Type gEp0TagList[] = {
+const Descriptor::Structs::SemanticTagStruct::Type gEp1TagList[] = {
     {.namespaceID = kNamespaceSwitches, .tag = kTagSwitchOn},
     {.namespaceID = kNamespacePosition, .tag = kTagPositionRight}};
-const Descriptor::Structs::SemanticTagStruct::Type gEp1TagList[] = {
+const Descriptor::Structs::SemanticTagStruct::Type gEp2TagList[] = {
     {.namespaceID = kNamespaceSwitches, .tag = kTagSwitchOff},
     {.namespaceID = kNamespacePosition, .tag = kTagPositionLeft}};
 
@@ -241,8 +241,8 @@ extern "C" void app_main()
     enable_insights(insights_auth_key_start);
 #endif
 
-    SetTagList(0, chip::Span<const Descriptor::Structs::SemanticTagStruct::Type>(gEp0TagList));
     SetTagList(1, chip::Span<const Descriptor::Structs::SemanticTagStruct::Type>(gEp1TagList));
+    SetTagList(2, chip::Span<const Descriptor::Structs::SemanticTagStruct::Type>(gEp2TagList));
 
     nvs_handle_t handle;
     nvs_open_from_partition(CONFIG_CHIP_FACTORY_NAMESPACE_PARTITION_LABEL, "chip-factory", NVS_READWRITE, &handle);
