@@ -59,7 +59,15 @@ deactivate
 echo ""
 echo "Installing python dependencies for Matter"
 echo ""
-python3 -m pip install -r ${ESP_MATTER_PATH}/requirements.txt
+
+# Install python dependencies based on idf version
+if [[ $(git -C $IDF_PATH describe) == v4.4* ]]; then
+  echo "Installing requirements from requirements_idf_v4.4.txt"
+  python3 -m pip install -r ${ESP_MATTER_PATH}/requirements_idf_v4.4.txt
+else
+  echo "Installing requirements from requirements.txt"
+  python3 -m pip install -r ${ESP_MATTER_PATH}/requirements.txt
+fi
 
 echo "All done! You can now run:"
 echo ""
