@@ -365,6 +365,8 @@ build_esp_matter_examples_pytest_C3_idf_v4_4:
     expire_in: 4 days
   script:
     - cd ${ESP_MATTER_PATH}
+    # idf v4.4 requires jinja < 3.1 so lets install the dependencies for idf v4.4
+    - pip install -r requirements_idf_v4.4.txt
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --pytest_c3
   variables:
