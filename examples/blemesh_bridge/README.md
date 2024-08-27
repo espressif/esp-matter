@@ -4,6 +4,8 @@ This example demonstrates a Matter-BLE Mesh Bridge that bridges BLE Mesh devices
 
 See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
 
+💡 Important:  `create_bridge_devices` callback can be used to add data model elements (e.g., attributes, commands, etc.) to the bridge endpoint.
+
 ## 1. Additional Environment Setup
 
 No additional setup is required.

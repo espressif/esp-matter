@@ -6,6 +6,8 @@ The Matter Bridge device is composed of two parts: The RCP running on ESP32-H2 a
 
 See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
 
+💡 Important:  `create_bridge_devices` callback can be used to add data model elements (e.g., attributes, commands, etc.) to the bridge endpoint.
+
 ## 1. Additional Environment Setup
 
 ### 1.1 Hardware connection
