@@ -1061,12 +1061,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_feature_map(cluster, static_cast<uint32_t>(Groups::NameSupportBitmap::kGroupNames));
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         if (config) {
-            attribute::create_group_name_support(cluster, config->group_name_support);
+            attribute::create_group_name_support(cluster, chip::to_underlying(Groups::NameSupportBitmap::kGroupNames));
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }

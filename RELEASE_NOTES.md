@@ -1,3 +1,10 @@
+# 28-Aug-2024
+
+- Removed the configurability of the NameSupport attribute of the Groups cluster and enabled
+  it by default. The NameSupport and feature-map attributes of the Groups cluster must be kept
+  in sync, the connectedhomeip SDK enables the GroupName feature by default and set the
+  NameSupport attribute to appropriate value.
+
 # 08-July-2024
 - Changed diagnostic cluster namespaces as per the matter specifications
   - diagnostics_network_wifi -> wifi_network_diagnotics  
