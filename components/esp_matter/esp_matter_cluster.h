@@ -231,11 +231,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* identify */
 
 namespace groups {
-typedef struct config {
-    uint8_t group_name_support;
-    config() : group_name_support(0) {}
-} config_t;
-
+using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* groups */
 
