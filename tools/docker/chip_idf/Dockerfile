@@ -54,6 +54,6 @@ RUN set -x \
     && ./scripts/examples/gn_build_example.sh examples/chip-tool out/host \
     && : # last line
 
-COPY entrypoint.sh /opt/espressif//entrypoint.sh
+COPY entrypoint.sh /opt/espressif/entrypoint.sh
 ENTRYPOINT [ "/opt/espressif/entrypoint.sh" ]
 CMD [ "/bin/bash" ]
