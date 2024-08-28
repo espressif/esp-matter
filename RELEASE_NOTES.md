@@ -1,3 +1,10 @@
+# 28-Aug-2024
+
+- Removed the configurability of the NameSupport attribute of the Groups cluster and enabled
+  it by default. The NameSupport and feature-map attributes of the Groups cluster must be kept
+  in sync, the connectedhomeip SDK enables the GroupName feature by default and set the
+  NameSupport attribute to appropriate value.
+
 # 07-May-2024
 
 - `tools/mfg_tool.py` is moved to https://github.com/espressif/esp-matter-tools/tree/main/mfg_tool

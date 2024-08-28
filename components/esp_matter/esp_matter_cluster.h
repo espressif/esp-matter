@@ -302,8 +302,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace groups {
 typedef struct config {
     uint16_t cluster_revision;
-    uint8_t group_name_support;
-    config() : cluster_revision(4), group_name_support(0) {}
+    config() : cluster_revision(4) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
