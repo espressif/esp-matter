@@ -90,6 +90,8 @@ static esp_err_t app_attribute_update_cb(attribute::callback_type_t type, uint16
     return err;
 }
 
+// This callback is invoked after the creation or resumption of a bridge endpoint.
+// It can be used to add data model elements (e.g., attributes, commands, etc.) to the bridge endpoint.
 esp_err_t create_bridge_devices(esp_matter::endpoint_t *ep, uint32_t device_type_id, void *priv_data)
 {
     esp_err_t err = ESP_OK;
