@@ -304,7 +304,7 @@ attribute_t *create_label_list(cluster_t *cluster, uint8_t *value, uint16_t leng
 
 namespace identify {
 namespace attribute {
-attribute_t *create_identify_time(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
+attribute_t *create_identify_time(cluster_t *cluster, uint16_t value);
 attribute_t *create_identify_type(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* identify */
@@ -337,7 +337,7 @@ namespace level_control {
 namespace attribute {
 attribute_t *create_current_level(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_on_level(cluster_t *cluster, nullable<uint8_t> value);
-attribute_t *create_options(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
+attribute_t *create_options(cluster_t *cluster, uint8_t value);
 attribute_t *create_remaining_time(cluster_t *cluster, uint16_t value);
 attribute_t *create_min_level(cluster_t *cluster, uint8_t value);
 attribute_t *create_max_level(cluster_t *cluster, uint8_t value);
@@ -356,21 +356,21 @@ namespace color_control {
 constexpr uint8_t k_max_compensation_text_length = 254;
 
 namespace attribute {
-attribute_t *create_current_hue(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
-attribute_t *create_current_saturation(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
+attribute_t *create_current_hue(cluster_t *cluster, uint8_t value);
+attribute_t *create_current_saturation(cluster_t *cluster, uint8_t value);
 attribute_t *create_remaining_time(cluster_t *cluster, uint16_t value);
 attribute_t *create_color_mode(cluster_t *cluster, uint8_t value);
 attribute_t *create_color_control_options(cluster_t *cluster, uint8_t value);
-attribute_t *create_enhanced_color_mode(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
-attribute_t *create_color_capabilities(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
-attribute_t *create_color_temperature_mireds(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
-attribute_t *create_color_temp_physical_min_mireds(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
-attribute_t *create_color_temp_physical_max_mireds(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
-attribute_t *create_couple_color_temp_to_level_min_mireds(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
+attribute_t *create_enhanced_color_mode(cluster_t *cluster, uint8_t value);
+attribute_t *create_color_capabilities(cluster_t *cluster, uint16_t value);
+attribute_t *create_color_temperature_mireds(cluster_t *cluster, uint16_t value);
+attribute_t *create_color_temp_physical_min_mireds(cluster_t *cluster, uint16_t value);
+attribute_t *create_color_temp_physical_max_mireds(cluster_t *cluster, uint16_t value);
+attribute_t *create_couple_color_temp_to_level_min_mireds(cluster_t *cluster, uint16_t value);
 attribute_t *create_startup_color_temperature_mireds(cluster_t *cluster, nullable<uint16_t> value);
-attribute_t *create_current_x(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
-attribute_t *create_current_y(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
-attribute_t *create_drift_compensation(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
+attribute_t *create_current_x(cluster_t *cluster, uint16_t value);
+attribute_t *create_current_y(cluster_t *cluster, uint16_t value);
+attribute_t *create_drift_compensation(cluster_t *cluster, uint8_t value);
 attribute_t *create_compensation_text(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_enhanced_current_hue(cluster_t *cluster, uint16_t value);
 attribute_t *create_color_loop_active(cluster_t *cluster, uint8_t value);

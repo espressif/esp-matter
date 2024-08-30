@@ -1022,16 +1022,10 @@ attribute_t *create_label_list(cluster_t *cluster, uint8_t *value, uint16_t leng
 namespace identify {
 namespace attribute {
 
-attribute_t *create_identify_time(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+attribute_t *create_identify_time(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, Identify::Attributes::IdentifyTime::Id,
+    return esp_matter::attribute::create(cluster, Identify::Attributes::IdentifyTime::Id,
                                                            ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint16(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
-    return attribute;
 }
 
 attribute_t *create_identify_type(cluster_t *cluster, uint8_t value)
@@ -1134,16 +1128,10 @@ attribute_t *create_on_level(cluster_t *cluster, nullable<uint8_t> value)
                                          esp_matter_nullable_uint8(value));
 }
 
-attribute_t *create_options(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
+attribute_t *create_options(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, LevelControl::Attributes::Options::Id,
+    return esp_matter::attribute::create(cluster, LevelControl::Attributes::Options::Id,
                                                            ATTRIBUTE_FLAG_WRITABLE, esp_matter_bitmap8(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
-    esp_matter::attribute::add_bounds(attribute, esp_matter_bitmap8(min), esp_matter_bitmap8(max));
-    return attribute;
 }
 
 attribute_t *create_remaining_time(cluster_t *cluster, uint16_t value)
@@ -1222,30 +1210,16 @@ attribute_t *create_start_up_current_level(cluster_t *cluster, nullable<uint8_t>
 namespace color_control {
 namespace attribute {
 
-attribute_t *create_current_hue(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
+attribute_t *create_current_hue(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute =
-        esp_matter::attribute::create(cluster, ColorControl::Attributes::CurrentHue::Id,
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::CurrentHue::Id,
                		              ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(min), esp_matter_uint8(max));
-    return attribute;
 }
 
-attribute_t *create_current_saturation(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
+attribute_t *create_current_saturation(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute =
-        esp_matter::attribute::create(cluster, ColorControl::Attributes::CurrentSaturation::Id,
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::CurrentSaturation::Id,
                                       ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(min), esp_matter_uint8(max));
-    return attribute;
 }
 
 attribute_t *create_remaining_time(cluster_t *cluster, uint16_t value)
@@ -1266,82 +1240,40 @@ attribute_t *create_color_control_options(cluster_t *cluster, uint8_t value)
                                          esp_matter_bitmap8(value));
 }
 
-attribute_t *create_enhanced_color_mode(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
+attribute_t *create_enhanced_color_mode(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute =
-        esp_matter::attribute::create(cluster, ColorControl::Attributes::EnhancedColorMode::Id,
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::EnhancedColorMode::Id,
                                          ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(min), esp_matter_enum8(max));
-    return attribute;
 }
 
-attribute_t *create_color_capabilities(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+attribute_t *create_color_capabilities(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute =
-        esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorCapabilities::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorCapabilities::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_bitmap16(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
-    esp_matter::attribute::add_bounds(attribute, esp_matter_bitmap16(min), esp_matter_bitmap16(max));
-    return attribute;
 }
 
-attribute_t *create_color_temperature_mireds(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+attribute_t *create_color_temperature_mireds(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute =
-        esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTemperatureMireds::Id,
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTemperatureMireds::Id,
                                       ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint16(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
-    return attribute;
 }
 
-attribute_t *create_color_temp_physical_min_mireds(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+attribute_t *create_color_temp_physical_min_mireds(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute =
-        esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTempPhysicalMinMireds::Id,
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTempPhysicalMinMireds::Id,
                                       ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
-    return attribute;
 }
 
-attribute_t *create_color_temp_physical_max_mireds(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+attribute_t *create_color_temp_physical_max_mireds(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute =
-        esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTempPhysicalMaxMireds::Id,
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTempPhysicalMaxMireds::Id,
                                       ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
-    return attribute;
 }
 
-attribute_t *create_couple_color_temp_to_level_min_mireds(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+attribute_t *create_couple_color_temp_to_level_min_mireds(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute =
-        esp_matter::attribute::create(cluster, ColorControl::Attributes::CoupleColorTempToLevelMinMireds::Id,
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::CoupleColorTempToLevelMinMireds::Id,
                                       ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
-    return attribute;
 }
 
 attribute_t *create_startup_color_temperature_mireds(cluster_t *cluster, nullable<uint16_t> value)
@@ -1351,43 +1283,22 @@ attribute_t *create_startup_color_temperature_mireds(cluster_t *cluster, nullabl
                                       esp_matter_nullable_uint16(value));
 }
 
-attribute_t *create_current_x(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+attribute_t *create_current_x(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute =
-        esp_matter::attribute::create(cluster, ColorControl::Attributes::CurrentX::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::CurrentX::Id, ATTRIBUTE_FLAG_NONVOLATILE,
                                          esp_matter_uint16(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
-    return attribute;
 }
 
-attribute_t *create_current_y(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+attribute_t *create_current_y(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute =
-        esp_matter::attribute::create(cluster, ColorControl::Attributes::CurrentY::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::CurrentY::Id, ATTRIBUTE_FLAG_NONVOLATILE,
                                          esp_matter_uint16(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
-    return attribute;
 }
 
-attribute_t *create_drift_compensation(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
+attribute_t *create_drift_compensation(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute =
-	esp_matter::attribute::create(cluster, ColorControl::Attributes::DriftCompensation::Id,
+	return esp_matter::attribute::create(cluster, ColorControl::Attributes::DriftCompensation::Id,
 			              ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Could not create attribute");
-        return NULL;
-    }
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(min), esp_matter_enum8(max));
-    return attribute;
 }
 
 attribute_t *create_compensation_text(cluster_t *cluster, char *value, uint16_t length)

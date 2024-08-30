@@ -19,6 +19,7 @@
 #include <esp_matter_core.h>
 #include <esp_matter_delegate_callbacks.h>
 #include <esp_matter_cluster_revisions.h>
+#include <esp_matter_attribute_bounds.h>
 
 #include <app-common/zap-generated/callback.h>
 #include <app/PluginApplicationCallbacks.h>
@@ -79,6 +80,27 @@ void delegate_init_callback_common()
             delegate_init_callback_t delegate_init_callback = get_delegate_init_callback(cluster);
             if (delegate_init_callback) {
                 delegate_init_callback(get_delegate_impl(cluster), endpoint_id);
+            }
+            cluster = get_next(cluster);
+        }
+        endpoint = endpoint::get_next(endpoint);
+    }
+}
+
+void add_bounds_callback_common()
+{
+    node_t *node = node::get();
+    if (!node) {
+        /* Skip add_bounds_callback_common when ESP Matter data model is not used */
+        return;
+    }
+    endpoint_t *endpoint = endpoint::get_first(node);
+    while (endpoint) {
+        cluster_t *cluster = get_first(endpoint);
+        while (cluster) {
+            add_bounds_callback_t add_bounds_callback = get_add_bounds_callback(cluster);
+            if (add_bounds_callback) {
+                add_bounds_callback(cluster);
             }
             cluster = get_next(cluster);
         }
@@ -1015,6 +1037,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterIdentifyPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        set_add_bounds_callback(cluster, identify::add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -1023,7 +1046,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         if (config) {
-            attribute::create_identify_time(cluster, config->identify_time, 0x0, 0xFFFE);
+            attribute::create_identify_time(cluster, config->identify_time);
             attribute::create_identify_type(cluster, config->identify_type);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
@@ -1106,6 +1129,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterScenesManagementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        set_add_bounds_callback(cluster, scenes_management::add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -1158,6 +1182,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterOnOffPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        set_add_bounds_callback(cluster, on_off::add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -1214,6 +1239,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterLevelControlPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        set_add_bounds_callback(cluster, level_control::add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -1224,7 +1250,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         if (config) {
             attribute::create_current_level(cluster, config->current_level);
             attribute::create_on_level(cluster, config->on_level);
-            attribute::create_options(cluster, config->options, 0x0, 0x3);
+            attribute::create_options(cluster, config->options);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -1270,6 +1296,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterColorControlPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        set_add_bounds_callback(cluster, color_control::add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -1280,8 +1307,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         if (config) {
             attribute::create_color_mode(cluster, config->color_mode);
             attribute::create_color_control_options(cluster, config->color_control_options);
-            attribute::create_enhanced_color_mode(cluster, config->enhanced_color_mode, 0, 3);
-            attribute::create_color_capabilities(cluster, config->color_capabilities, 0, 0x001f);
+            attribute::create_enhanced_color_mode(cluster, config->enhanced_color_mode);
+            attribute::create_color_capabilities(cluster, config->color_capabilities);
             attribute::create_number_of_primaries(cluster, config->number_of_primaries);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");

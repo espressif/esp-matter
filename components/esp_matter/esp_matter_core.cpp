@@ -188,6 +188,7 @@ typedef struct _cluster {
     cluster::plugin_server_init_callback_t plugin_server_init_callback;
     cluster::delegate_init_callback_t delegate_init_callback;
     void * delegate_pointer;
+    cluster::add_bounds_callback_t add_bounds_callback;
     _attribute_t *attribute_list;
     _command_t *command_list;
     _event_t *event_list;
@@ -1023,6 +1024,9 @@ static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
 #endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD
 
 #if CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
+    // Add bounds to all attributes
+    esp_matter::cluster::add_bounds_callback_common();
+
     PlatformMgr().ScheduleWork(esp_matter_chip_init_task, reinterpret_cast<intptr_t>(xTaskGetCurrentTaskHandle()));
     // Wait for the matter stack to be initialized
     xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);
@@ -1905,6 +1909,27 @@ delegate_init_callback_t get_delegate_init_callback(cluster_t *cluster)
     }
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     return current_cluster->delegate_init_callback;
+}
+
+esp_err_t set_add_bounds_callback(cluster_t *cluster, add_bounds_callback_t callback)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    current_cluster->add_bounds_callback = callback;
+    return ESP_OK;
+}
+
+add_bounds_callback_t get_add_bounds_callback(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return NULL;
+    }
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    return current_cluster->add_bounds_callback;
 }
 
 esp_err_t add_function_list(cluster_t *cluster, const function_generic_t *function_list, int function_flags)

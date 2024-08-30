@@ -357,6 +357,12 @@ typedef void (*plugin_server_init_callback_t)();
  */
 typedef void (*delegate_init_callback_t)(void *ptr, uint16_t endpoint_id);
 
+/** Cluster add bounds callback
+ *
+ * This callback will be called when the endpoints are initialised.
+ */
+typedef void (*add_bounds_callback_t)(cluster_t *cluster);
+
 /** Generic function
  *
  * This can be used to add additional functions based on `cluster_flags_t`.
@@ -469,6 +475,16 @@ esp_err_t set_plugin_server_init_callback(cluster_t *cluster, plugin_server_init
  */
 esp_err_t set_delegate_and_init_callback(cluster_t *cluster, delegate_init_callback_t callback, void *delegate);
 
+/** Set server cluster add bounds callback
+ *
+ * @param[in] cluster Cluster handle.
+ * @param[in] callback Add bounds callback.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t set_add_bounds_callback(cluster_t *cluster, add_bounds_callback_t callback);
+
 /** Get cluster plugin server init callback
  *
  * Get the cluster plugin server init callback which has previously been set.
@@ -488,6 +504,15 @@ plugin_server_init_callback_t get_plugin_server_init_callback(cluster_t *cluster
  * @return NULL in case of failure or if it has not been set.
  */
 delegate_init_callback_t get_delegate_init_callback(cluster_t *cluster);
+
+/** Get server cluster add bounds callback
+ *
+ * @param[in] cluster Cluster handle.
+ *
+ * @return add bounds callback.
+ * @return NULL in case of failure or if it has not been set.
+ */
+add_bounds_callback_t get_add_bounds_callback(cluster_t *cluster);
 
 /** Add cluster function list
  *
