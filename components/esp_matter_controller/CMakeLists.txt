@@ -1,15 +1,21 @@
+if(NOT DEFINED ENV{ESP_MATTER_PATH})
+    message(FATAL_ERROR "Please set ESP_MATTER_PATH to the path of esp-matter repo")
+endif(NOT DEFINED ENV{ESP_MATTER_PATH})
+set(ESP_MATTER_PATH $ENV{ESP_MATTER_PATH})
+set(MATTER_SDK_PATH ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip)
+
 set(src_dirs_list )
 set(include_dirs_list )
 set(exclude_srcs_list )
 set(requires_list chip esp_matter esp_matter_console spiffs)
-
 if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
     list(APPEND src_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/core"
                               "${CMAKE_CURRENT_SOURCE_DIR}/commands"
-                              "${CMAKE_CURRENT_SOURCE_DIR}/logger/zap-generated")
+                              "${MATTER_SDK_PATH}/zzz_generated/chip-tool/zap-generated/cluster/logging")
     list(APPEND include_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/core"
                                   "${CMAKE_CURRENT_SOURCE_DIR}/commands"
-                                  "${CMAKE_CURRENT_SOURCE_DIR}/logger")
+                                  "${MATTER_SDK_PATH}/zzz_generated/chip-tool"
+                                  "${MATTER_SDK_PATH}/examples/chip-tool/")
 
     if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
         list(APPEND exclude_srcs_list "${CMAKE_CURRENT_SOURCE_DIR}/core/esp_matter_controller_client.cpp"

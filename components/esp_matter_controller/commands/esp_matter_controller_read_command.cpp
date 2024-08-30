@@ -20,7 +20,7 @@
 
 #include <app/server/Server.h>
 
-#include "DataModelLogger.h"
+#include <commands/clusters/DataModelLogger.h>
 
 using namespace chip::app::Clusters;
 using namespace esp_matter::client;

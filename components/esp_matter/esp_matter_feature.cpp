@@ -536,7 +536,7 @@ namespace hue_saturation {
 
 uint32_t get_id()
 {
-    return (uint32_t)ColorControl::ColorCapabilities::kHueSaturationSupported;
+    return (uint32_t)ColorControl::ColorCapabilitiesBitmap::kHueSaturation;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -570,7 +570,7 @@ namespace color_temperature {
 
 uint32_t get_id()
 {
-    return (uint32_t)ColorControl::ColorCapabilities::kColorTemperatureSupported;
+    return (uint32_t)ColorControl::ColorCapabilitiesBitmap::kColorTemperature;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -603,7 +603,7 @@ namespace xy {
 
 uint32_t get_id()
 {
-    return (uint32_t)ColorControl::ColorCapabilities::kXYAttributesSupported;
+    return (uint32_t)ColorControl::ColorCapabilitiesBitmap::kXy;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -633,7 +633,7 @@ namespace enhanced_hue {
 
 uint32_t get_id()
 {
-    return (uint32_t)chip::app::Clusters::ColorControl::ColorCapabilities::kEnhancedHueSupported;
+    return (uint32_t)chip::app::Clusters::ColorControl::ColorCapabilitiesBitmap::kEnhancedHue;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -668,7 +668,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 namespace color_loop {
 uint32_t get_id()
 {
-    return (uint32_t)chip::app::Clusters::ColorControl::ColorCapabilities::kColorLoopSupported;
+    return (uint32_t)chip::app::Clusters::ColorControl::ColorCapabilitiesBitmap::kColorLoop;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)

@@ -67,6 +67,9 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
     case app::Clusters::ColorControl::Id:
         emberAfColorControlClusterInitCallback(endpoint);
         break;
+    case app::Clusters::CommissionerControl::Id:
+        emberAfCommissionerControlClusterInitCallback(endpoint);
+        break;
     case app::Clusters::ContentAppObserver::Id:
         emberAfContentAppObserverClusterInitCallback(endpoint);
         break;
@@ -96,6 +99,9 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
         break;
     case app::Clusters::DoorLock::Id:
         emberAfDoorLockClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::EcosystemInformation::Id:
+        emberAfEcosystemInformationClusterInitCallback(endpoint);
         break;
     case app::Clusters::ElectricalEnergyMeasurement::Id:
         emberAfElectricalEnergyMeasurementClusterInitCallback(endpoint);
@@ -348,6 +354,12 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
         break;
     case app::Clusters::WakeOnLan::Id:
         emberAfWakeOnLanClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::WaterHeaterManagement::Id:
+        emberAfWaterHeaterManagementClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::WaterHeaterMode::Id:
+        emberAfWaterHeaterModeClusterInitCallback(endpoint);
         break;
     case app::Clusters::WiFiNetworkDiagnostics::Id:
         emberAfWiFiNetworkDiagnosticsClusterInitCallback(endpoint);

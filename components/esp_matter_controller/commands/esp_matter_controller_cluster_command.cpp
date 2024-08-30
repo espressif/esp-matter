@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <DataModelLogger.h>
+#include <commands/clusters/DataModelLogger.h>
 #include <controller/CommissioneeDeviceProxy.h>
 #include <esp_check.h>
 #include <esp_matter_controller_client.h>
@@ -43,14 +43,8 @@ esp_err_t decode_command_response(const ConcreteCommandPath &command_path, TLVRe
     ESP_RETURN_ON_FALSE(reader, ESP_ERR_INVALID_ARG, TAG, "reader cannot be NULL");
     ESP_RETURN_ON_FALSE(command_path.mClusterId == CommandResponseObjectT::GetClusterId() &&
                             command_path.mCommandId == CommandResponseObjectT::GetCommandId(),
-                        ESP_ERR_INVALID_ARG, TAG, "Wrong command to decode");
-    CommandResponseObjectT response;
-    ESP_RETURN_ON_FALSE(chip::app::DataModel::Decode(*reader, response) == CHIP_NO_ERROR, ESP_FAIL, TAG,
-                        "Failed to decode response ");
-    char header[64] = {0};
-    snprintf(header, 64, "cluster-0x%" PRIX32 ", command-0x%" PRIX32 " response:", command_path.mClusterId,
-             command_path.mCommandId);
-    DataModelLogger::LogValue(header, 1, response);
+                            ESP_ERR_INVALID_ARG, TAG, "Wrong command to decode");
+    DataModelLogger::LogCommand(command_path, reader);
     return ESP_OK;
 }
 

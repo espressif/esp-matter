@@ -241,7 +241,7 @@ void DoorLockDelegateInitCB(void *delegate, uint16_t endpoint_id)
         return;
     }
     DoorLock::Delegate *door_lock_delegate = static_cast<DoorLock::Delegate*>(delegate);
-    DoorLock::SetDefaultDelegate(endpoint_id, door_lock_delegate);
+    DoorLockServer::Instance().SetDelegate(endpoint_id, door_lock_delegate);
 }
 
 void BooleanStateConfigurationDelegateInitCB(void *delegate, uint16_t endpoint_id)
