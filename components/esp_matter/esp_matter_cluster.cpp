@@ -1230,7 +1230,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_feature_map(cluster, static_cast<uint32_t>(Groups::NameSupportBitmap::kGroupNames));
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
         global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
@@ -1238,7 +1238,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_group_name_support(cluster, config->group_name_support);
+            attribute::create_group_name_support(cluster, chip::to_underlying(Groups::NameSupportBitmap::kGroupNames));
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
