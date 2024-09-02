@@ -17,11 +17,21 @@ See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/de
 
 ## 1. Additional Environment Setup
 
-### 1.1 Enabling insights (Optional)
+### 1.1 Building the firmware
+
+There are two types of switches in the example which can be configured
+through menuconfig:
+
+- idf.py menuconfig -> Demo -> Generic Switch Type
+- To use latching switch, enable `GENERIC_SWITCH_TYPE_LATCHING`.
+- To use a momentary switch, enable `GENERIC_SWITCH_TYPE_MOMENTARY`.
+- By default momentary switch i.e `GENERIC_SWITCH_TYPE_MOMENTARY` is enabled.
+
+### 1.2 Enabling insights (Optional)
 
 Follow the steps mentioned [here](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/insights.html)
 
-### 1.2 Flash the factory partition 
+### 1.3 Flash the factory partition
 
 The steps below should be followed in order to access the fixed-labels.
 -   If monitoring the device using ``idf.py monitor``,press `` Ctrl + ]`` to stop the process.
@@ -77,8 +87,8 @@ chip-tool descriptor read tag-list 0x7283 1
 
 This should be followed by: Commission the generic switch device
 -   Turn on chip-tool interactive mode.	``./chip-tool interactive start``
--   By default latching switch is enabled so subscribe to switch-latched event via chip-tool.
-    ``switch subscribe-event switch-latched <min-interval> <max-interval> <destination-id> <endpoint-id>``
+-   By default momentary switch is enabled so subscribe to long-press event via chip-tool.
+    ``switch subscribe-event long-press <min-interval> <max-interval> <destination-id> <endpoint-id>``
 -   `Double press the boot button` on device so that client will receive event after max-interval.
 
 ### 2.1 Latching switch
