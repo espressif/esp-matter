@@ -1500,7 +1500,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
             attribute::create_local_temperature(cluster, config->local_temperature);
             attribute::create_control_sequence_of_operation(cluster, config->control_sequence_of_operation, 0x0, 0x5);
-            attribute::create_system_mode(cluster, config->system_mode, 0x0, 0x7);
+            attribute::create_system_mode(cluster, config->system_mode, 0x0, 0x9);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
