@@ -1,6 +1,3 @@
-# Get the list of cluster directories present in ${MATTER_SDK_PATH}/src/app/clusters
-file(GLOB CLUSTER_DIR_LIST true ${MATTER_SDK_PATH}/src/app/clusters/*)
-
 set(SRC_DIRS_LIST       "."
                         "private"
                         "utils"
@@ -10,28 +7,37 @@ set(SRC_DIRS_LIST       "."
                         "${MATTER_SDK_PATH}/src/app/reporting"
 )
 
-foreach(CLUSTER_DIR ${CLUSTER_DIR_LIST})
-    file(GLOB_RECURSE C_CPP_FILES "${CLUSTER_DIR}/*.c" "${CLUSTER_DIR}/*.cpp")
-    if (C_CPP_FILES)
-        list(APPEND SRC_DIRS_LIST "${CLUSTER_DIR}")
-    endif()
-endforeach()
-
 set(INCLUDE_DIRS_LIST   "."
                         "utils"
                         "${MATTER_SDK_PATH}/zzz_generated/app-common"
                         "${MATTER_SDK_PATH}/third_party/nlfaultinjection/include"
                         "${MATTER_SDK_PATH}/src")
 
+set(EXCLUDE_SRCS_LIST )
+
 if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
+    # Get the list of cluster directories present in ${MATTER_SDK_PATH}/src/app/clusters
+    file(GLOB CLUSTER_DIR_LIST true ${MATTER_SDK_PATH}/src/app/clusters/*)
+    foreach(CLUSTER_DIR ${CLUSTER_DIR_LIST})
+        file(GLOB_RECURSE C_CPP_FILES "${CLUSTER_DIR}/*.c" "${CLUSTER_DIR}/*.cpp")
+        if (C_CPP_FILES)
+            list(APPEND SRC_DIRS_LIST "${CLUSTER_DIR}")
+        endif()
+    endforeach()
+
     list(APPEND SRC_DIRS_LIST "zap_common/app")
     list(APPEND INCLUDE_DIRS_LIST "zap_common")
+else()
+    # Do not add all the clusters srcs to esp_matter for examples that don't use ESP-Matter Data Model(such as zap light example)
+    # For those examples, they should include the clusters srcs in their main component
+    list(APPEND EXCLUDE_SRCS_LIST "esp_matter_delegate_callbacks.cpp")
 endif()
 
 set(REQUIRES_LIST       chip bt esp_matter_console nvs_flash app_update esp_secure_cert_mgr mbedtls esp_system openthread json)
 
 idf_component_register( SRC_DIRS        ${SRC_DIRS_LIST}
                         INCLUDE_DIRS    ${INCLUDE_DIRS_LIST}
+                        EXCLUDE_SRCS    ${EXCLUDE_SRCS_LIST}
                         PRIV_INCLUDE_DIRS "private"
                         REQUIRES        ${REQUIRES_LIST})
 
