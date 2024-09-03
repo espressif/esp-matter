@@ -35,6 +35,7 @@
 #include <app/clusters/window-covering-server/window-covering-server.h>
 #include <app/clusters/dishwasher-alarm-server/dishwasher-alarm-server.h>
 #include <app/clusters/keypad-input-server/keypad-input-server.h>
+#include <app/clusters/mode-select-server//supported-modes-manager.h>
 
 using namespace chip::app::Clusters;
 namespace esp_matter {
@@ -341,6 +342,16 @@ void KeypadInputDelegateInitCB(void *delegate, uint16_t endpoint_id)
     }
     KeypadInput::Delegate *keypad_input_delegate = static_cast<KeypadInput::Delegate*>(delegate);
     KeypadInput::SetDefaultDelegate(endpoint_id, keypad_input_delegate);
+}
+
+void ModeSelectDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    ModeSelect::SupportedModesManager *supported_modes_manager = static_cast<ModeSelect::SupportedModesManager*>(delegate);
+    ModeSelect::setSupportedModesManager(supported_modes_manager);
 }
 
 } // namespace delegate_cb

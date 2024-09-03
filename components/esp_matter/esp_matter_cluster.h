@@ -683,7 +683,8 @@ typedef struct config {
     const nullable<uint16_t> standard_namespace;
     uint8_t current_mode;
     feature::on_off::config_t on_off;
-    config() : mode_select_description{0}, standard_namespace(), current_mode(0) {}
+    void *delegate;
+    config() : mode_select_description{0}, standard_namespace(), current_mode(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);

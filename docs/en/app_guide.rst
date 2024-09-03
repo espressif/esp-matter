@@ -44,6 +44,7 @@ List of clusters with delegate:
     - Account Login Cluster.
     - Wake On Lan Cluster.
     - Target Navigator Cluster.
+    - Mode Select Cluster.
 
 9.1.1 Mode Base Cluster
 -----------------------
@@ -207,6 +208,14 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `Keypad Input`_, `Keypad Input Delegate`_
 
+9.1.20 Mode Select Cluster
+--------------------------
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Mode Select`_, `Mode Select Delegate`_
+
 
 .. note::
     Make sure that after implementing delegate class, you set the delegate class pointer at the time of creating cluster.
@@ -258,3 +267,5 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Dishwasher Alarm Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/src/dishwasher-alarm-stub.cpp
 .. _`Keypad Input`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/keypad-input-server/keypad-input-server.h
 .. _`Keypad Input Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/chef/common/clusters/keypad-input/KeypadInputManager.h
+.. _`Mode Select`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/mode-select-server/supported-modes-manager.h
+.. _`Mode Select Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/static-supported-modes-manager.h
