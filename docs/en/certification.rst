@@ -22,7 +22,7 @@ Matter factory partition binary files contains the commissionable information (d
 
 A Certification Declaration (CD) is a cryptographic document that allows a Matter device to assert its protocol compliance. It can be generated with following steps. We need to generate the CD which matches the vendor id and product id in DAC and the ones in basic information cluster.
 
-A test CD signed by the test CD signing keys in `connectedhomeip <https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/credentials/test/certification-declaration>`__ SDK repository is required for Matter Certification Test, so the ``certification_type`` of it is 1 (provisional). The CD in official products passing the Matter Certification Test is issued by CSA and the ``certification_type`` is 2 (official).
+A test CD signed by the test CD signing keys in `connectedhomeip <https://github.com/espressif/connectedhomeip/tree/master/credentials/test/certification-declaration>`__ SDK repository is required for Matter Certification Test, so the ``certification_type`` of it is 1 (provisional). The CD in official products passing the Matter Certification Test is issued by CSA and the ``certification_type`` is 2 (official).
 
 - Generate the Test CD file
 
@@ -46,7 +46,7 @@ A test CD signed by the test CD signing keys in `connectedhomeip <https://github
 3.2.2 Certificates and Keys
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For Matter Certification Test, vendors should generate their own test Product Attestation Authority (PAA) certificate, Product Attestation Intermediate (PAI) certificate, and Device Attestation Certificate (DAC), but not use the default test PAA certificate in `connectedhomeip <https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/credentials/test/attestation>`__ SDK repository. So you need to generate a PAA certificate, upload it to `TestNet <https://testnet.iotledger.io/>`__ following the instruction in `DCL Primer <https://groups.csa-iot.org/wg/matter-tsg/document/24705>`__, and use it to sign and attest PAI certificates which will be used to sign and attest the DACs. The PAI certificate, DAC, and DAC's private key should be stored in the product you submit to test.
+For Matter Certification Test, vendors should generate their own test Product Attestation Authority (PAA) certificate, Product Attestation Intermediate (PAI) certificate, and Device Attestation Certificate (DAC), but not use the default test PAA certificate in `connectedhomeip <https://github.com/espressif/connectedhomeip/tree/master/credentials/test/attestation>`__ SDK repository. So you need to generate a PAA certificate, and use it to sign and attest PAI certificates which will be used to sign and attest the DACs. The PAI certificate, DAC, and DAC's private key should be stored in the product you submit to test.
 
 Here are the steps to generate the certificates and keys using `chip-cert`_ and `esp-matter-mfg-tool`_.
 
@@ -83,7 +83,7 @@ After getting the PAA certificate and key, the factory partition binary files wi
 ::
 
     esp-matter-mfg-tool -n <count> -cn Espressif --paa -c /path/to/PAA_certificate -k /path/to/PAA_key \
-                  -cd /path/to/CD_file -v 0x131B --vendor_name Espressif -p 0x1234 \
+                  -cd /path/to/CD_file -v 0x131B --vendor-name Espressif -p 0x1234 \
                   --product-name Test-light --hw-ver 1 --hw-ver-str v1.0
 
 .. note::
@@ -126,19 +126,19 @@ The option ``--paa-trust-store-path`` should be added when using chip-tool to pa
 
 Here are the steps to upload the PAA certificate and use it for automated tests:
 
-Enable PAA certificates using for chip-tool pairing
+In Test Harness, you should modify the project configuration to use the vendor's PAA for the DUT that requires a PAA certificate to perform a pairing operation. The flag ``chip_tool_use_paa_certs`` in the ``dut_config`` should be set to ``true`` to configure the Test Harness to use the PAA certificates.
 
 ::
 
-    cd ~/chip-certification-tool
-    ./scripts/stop.sh
-    ./scripts/pi-setup/update-paa-certs.h
-    rm .env
-    ./scripts/install-default-env.sh
-    echo "CHIP_TOOL_USE_PAA_CERTS=true" >> .env
-    ./scripts/start.sh
+    "dut_config": {
+        "discriminator": "3840",
+        "setup_code": "20202021",
+        "pairing_mode": "onnetwork",
+        "chip_tool_timeout": null,
+        "chip_tool_use_paa_certs": true
+    }
 
-Copy your PAA certificate to ``/var/paa-root-certs/``
+Make sure  to copy your PAA certificates in DER format to the default path ``/var/paa-root-certs/`` on the Raspberry-Pi.
 
 ::
 
@@ -191,7 +191,9 @@ We should also edit the ``PROJECT_VER`` and the ``PROJECT_VER_NUMBER`` in the pr
 
 The PICS files define the Matter features for the product. The authorized test provider will determine the test cases to be tested in Matter Certification Test according to the PICS files submitted.
 
-The `PICS Tool <https://picstool.csa-iot.org/>`__ website is the tool to open, modify, validate, and save the XML PICS files. The `reference XML PICS files <https://groups.csa-iot.org/wg/matter-csg/document/26122>`__ include all the reference PICS files and each of the XML files defines the features of one or several clusters on the products.
+The `PICS Tool <https://picstool.csa-iot.org/>`__ website is the tool to open, modify, validate, and save the XML PICS files. The `reference XML PICS template files <https://groups.csa-iot.org/wg/matter-csg/document/26122>`__ include all the reference PICS files and each of the XML files defines the features of one or several clusters on the products.
+
+A `PICS-generator tool <https://github.com/espressif/connectedhomeip/tree/master/src/tools/PICS-generator>`__ is provided to generate the PICS files with the reference PICS XML template files. The tools will read the supported clusters, attributes, commands, and event from a paired device and generate PICS files for that device. Note that the Base XML file will not be generated with this tool. You still need to modify it in the ``PICS TOOL``.
 
 Open the reference PICS files that include all the clusters of the product, and select the features supported by the product. Clicking the button ``Validate All``, the PICS Tool will validate all the XML files and generate a list of test cases to be tested in Matter Certification Test.
 
@@ -281,7 +283,7 @@ In the console of ot-cli, discover the product IP address.
 
 .. note::
 
-   ``177AC531F48BE736-0000000000000190`` can be get with command ``avahi-browse -rt _matter._tcp``. ``177AC531F48BE736`` is the fabric ID and ``0000000000000190`` is the node ID.
+   ``177AC531F48BE736-0000000000000190`` can be get with command ``avahi-browse -rt _matter._tcp``. ``177AC531F48BE736`` is the compressed Fabric ID and ``0000000000000190`` is the node ID.
 
 Ping the IP address of the Wi-Fi device.
 
@@ -322,14 +324,7 @@ Here are some issues that you might meet in Matter Certification Test and quick 
 
   No response on step 7 is expected (`Related issue <https://github.com/CHIP-Specifications/chip-test-plans/issues/1947>`__).
 
-  Step 17 might return Timeout for the examples before `commit 85abe2c <https://github.com/espressif/esp-matter/tree/85abe2cdd457f6f1d198af0ff1ee339ccd3c9bfb>`__. You can update the esp-matter or cherry-pick `commit d7cd5aa <https://github.com/project-chip/connectedhomeip/commit/d7cd5aac3fb8a3021d1a792034f78e9fc8e46845>`__ to the connectedhomeip repository.
-
   All the NetworkCommissioning commands are fail-safe required. If the commands fail with a ``FAILSAFE_REQUIRED`` status code. You need to send ``arm-fail-safe`` command and then send the NetworkCommissioning commands.
-
-- ``TC-SU-2.7``
-
-  The StateTransition event ``Applying`` might be missed because the OTA reboot time is too short. You can cherry-pick the commit from the `fixing Pull Request <https://github.com/project-chip/connectedhomeip/pull/24379>`__ to fix the issue.
-
 
 .. _`esp-matter-mfg-tool`: https://github.com/espressif/esp-matter-tools/tree/main/mfg_tool
 .. _`chip-cert`: https://github.com/espressif/connectedhomeip/tree/master/src/tools/chip-cert/README.md
