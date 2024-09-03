@@ -450,7 +450,7 @@ esp_err_t init()
         return err;
     }
 
-    registerAttributeAccessOverride(&gAttrAccess);
+    AttributeAccessInterfaceRegistry::Instance().Register(&gAttrAccess);
     return ESP_OK;
 
 }
