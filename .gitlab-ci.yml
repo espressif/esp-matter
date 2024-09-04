@@ -65,7 +65,6 @@ variables:
   # fetch submodules
   - export PYTHONPATH=${IDF_PATH}/tools/ci/python_packages/:${PYTHONPATH}
   - pip install python-gitlab
-  - pip install --upgrade idf-component-manager
   - python tools/ci/ci_fetch_submodule.py
 
 .setup_ot_br: &setup_ot_br
@@ -140,6 +139,7 @@ variables:
     - *get_build_caches
     - *chip_submodule_update
     - *setup_idf
+    - pip install 'idf-component-manager~=1.4.0'
     - *setup_matter
     - cd ${ESP_MATTER_PATH}
     - mkdir -p ${REPOS_PATH}
