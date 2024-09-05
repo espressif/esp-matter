@@ -78,7 +78,10 @@ attribute_t *create_hardware_version(cluster_t *cluster, uint16_t value);
 attribute_t *create_hardware_version_string(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_software_version(cluster_t *cluster, uint32_t value);
 attribute_t *create_software_version_string(cluster_t *cluster, char *value, uint16_t length);
+attribute_t *create_unique_id(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_capability_minima(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_specification_version(cluster_t *cluster, uint32_t value);
+attribute_t *create_max_paths_per_invoke(cluster_t *cluster, uint16_t value);
 
 /** These attributes are optional for the cluster, but when added to this cluster, the value is maintained internally.
   * If the attributes are added in some other cluster, then the value is not maintained internally.
@@ -90,10 +93,7 @@ attribute_t *create_product_label(cluster_t *cluster, char *value, uint16_t leng
 attribute_t *create_serial_number(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_local_config_disabled(cluster_t *cluster, bool value);
 attribute_t *create_reachable(cluster_t *cluster, bool value);
-attribute_t *create_unique_id(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_product_appearance(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
-attribute_t *create_specification_version(cluster_t *cluster, uint32_t value);
-attribute_t *create_max_paths_per_invoke(cluster_t *cluster, uint16_t value);
 } /* attribute */
 } /* basic_information */
 
