@@ -500,7 +500,7 @@ deploy_docs_preview:
         DOCS_DEPLOY_SERVER: "$DOCS_PREVIEW_SERVER"
         DOCS_DEPLOY_SERVER_USER: "$DOCS_PREVIEW_SERVER_USER"
         DOCS_DEPLOY_PATH: "$DOCS_PREVIEW_PATH"
-        DOCS_DEPLOY_URL_BASE: "https://$DOCS_PREVIEW_SERVER_URL/docs/esp-matter"
+        DOCS_DEPLOY_URL_BASE: "https://$DOCS_PREVIEW_SERVER_URL/$DOCS_PREVIEW_PATH"
 
 deploy_docs_production:
     extends:
@@ -516,4 +516,4 @@ deploy_docs_production:
         DOCS_DEPLOY_SERVER: "$DOCS_PROD_SERVER"
         DOCS_DEPLOY_SERVER_USER: "$DOCS_PROD_SERVER_USER"
         DOCS_DEPLOY_PATH: "$DOCS_PROD_PATH"
-        DOCS_DEPLOY_URL_BASE: "https://docs.espressif.com/projects/esp-matter"
+        DOCS_DEPLOY_URL_BASE: "https://$DOCS_PROD_SERVER/$DOCS_PROD_PATH"
