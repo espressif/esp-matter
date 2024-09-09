@@ -17,7 +17,6 @@
 #include <esp_matter_core.h>
 #include <nvs.h>
 
-#include <app/clusters/network-commissioning/network-commissioning.h>
 #include <app/clusters/general-diagnostics-server/general-diagnostics-server.h>
 #include <app/clusters/identify-server/identify-server.h>
 #include <app/server/Dnssd.h>
@@ -31,7 +30,6 @@
 #include <platform/DeviceInfoProvider.h>
 #include <platform/DiagnosticDataProvider.h>
 #include <platform/ESP32/ESP32Utils.h>
-#include <platform/ESP32/NetworkCommissioningDriver.h>
 #include <esp_matter_ota.h>
 #include <esp_matter_mem.h>
 #include <esp_matter_providers.h>
@@ -921,20 +919,6 @@ static void esp_matter_chip_init_task(intptr_t context)
     if (GetDiagnosticDataProvider().GetBootReason(bootReason) == CHIP_NO_ERROR) {
         chip::app::Clusters::GeneralDiagnosticsServer::Instance().OnDeviceReboot(bootReason);
     }
-#if CHIP_DEVICE_CONFIG_ENABLE_WIFI
-    {
-        static chip::app::Clusters::NetworkCommissioning::Instance sWiFiNetworkCommissioningInstance(0,
-                                            &(chip::DeviceLayer::NetworkCommissioning::ESPWiFiDriver::GetInstance()));
-        sWiFiNetworkCommissioningInstance.Init();
-    }
-#endif
-#if CHIP_DEVICE_CONFIG_ENABLE_ETHERNET
-    {
-        static chip::app::Clusters::NetworkCommissioning::Instance sEthernetNetworkCommissioningInstance(0,
-                                            &(chip::DeviceLayer::NetworkCommissioning::ESPEthernetDriver::GetInstance()));
-        sEthernetNetworkCommissioningInstance.Init();
-    }
-#endif
     PlatformMgr().ScheduleWork(deinit_ble_if_commissioned, reinterpret_cast<intptr_t>(nullptr));
     xTaskNotifyGive(task_to_notify);
 }
