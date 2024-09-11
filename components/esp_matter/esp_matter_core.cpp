@@ -350,21 +350,13 @@ static esp_err_t free_default_value(attribute_t *attribute)
     /* Free value if data is more than 2 bytes or if it is min max attribute */
     if (current_attribute->flags & ATTRIBUTE_FLAG_MIN_MAX) {
         if (current_attribute->default_value_size > 2) {
-            if (current_attribute->default_value.ptrToMinMaxValue->defaultValue.ptrToDefaultValue) {
-                esp_matter_mem_free((void *)current_attribute->default_value.ptrToMinMaxValue->defaultValue.ptrToDefaultValue);
-            }
-            if (current_attribute->default_value.ptrToMinMaxValue->minValue.ptrToDefaultValue) {
-                esp_matter_mem_free((void *)current_attribute->default_value.ptrToMinMaxValue->minValue.ptrToDefaultValue);
-            }
-            if (current_attribute->default_value.ptrToMinMaxValue->maxValue.ptrToDefaultValue) {
-                esp_matter_mem_free((void *)current_attribute->default_value.ptrToMinMaxValue->maxValue.ptrToDefaultValue);
-            }
+            esp_matter_mem_free((void *)current_attribute->default_value.ptrToMinMaxValue->defaultValue.ptrToDefaultValue);
+            esp_matter_mem_free((void *)current_attribute->default_value.ptrToMinMaxValue->minValue.ptrToDefaultValue);
+            esp_matter_mem_free((void *)current_attribute->default_value.ptrToMinMaxValue->maxValue.ptrToDefaultValue);
         }
         esp_matter_mem_free((void *)current_attribute->default_value.ptrToMinMaxValue);
     } else if (current_attribute->default_value_size > 2) {
-        if (current_attribute->default_value.ptrToDefaultValue) {
-            esp_matter_mem_free((void *)current_attribute->default_value.ptrToDefaultValue);
-        }
+        esp_matter_mem_free((void *)current_attribute->default_value.ptrToDefaultValue);
     }
     return ESP_OK;
 }
@@ -493,30 +485,20 @@ static esp_err_t disable(endpoint_t *endpoint)
         /* Free attributes */
         esp_matter_mem_free((void *)endpoint_type->cluster[cluster_index].attributes);
         /* Free commands */
-        if (endpoint_type->cluster[cluster_index].acceptedCommandList) {
-            esp_matter_mem_free((void *)endpoint_type->cluster[cluster_index].acceptedCommandList);
-        }
-        if (endpoint_type->cluster[cluster_index].generatedCommandList) {
-            esp_matter_mem_free((void *)endpoint_type->cluster[cluster_index].generatedCommandList);
-        }
+        esp_matter_mem_free((void *)endpoint_type->cluster[cluster_index].acceptedCommandList);
+        esp_matter_mem_free((void *)endpoint_type->cluster[cluster_index].generatedCommandList);
         /* Free events */
-        if (endpoint_type->cluster[cluster_index].eventList) {
-            esp_matter_mem_free((void *)endpoint_type->cluster[cluster_index].eventList);
-        }
+        esp_matter_mem_free((void *)endpoint_type->cluster[cluster_index].eventList);
     }
     esp_matter_mem_free((void *)endpoint_type->cluster);
 
     /* Free data versions */
-    if (current_endpoint->data_versions_ptr) {
-        esp_matter_mem_free(current_endpoint->data_versions_ptr);
-        current_endpoint->data_versions_ptr = NULL;
-    }
+    esp_matter_mem_free(current_endpoint->data_versions_ptr);
+    current_endpoint->data_versions_ptr = NULL;
 
     /* Free device types */
-    if (current_endpoint->device_types_ptr) {
-        esp_matter_mem_free(current_endpoint->device_types_ptr);
-        current_endpoint->device_types_ptr = NULL;
-    }
+    esp_matter_mem_free(current_endpoint->device_types_ptr);
+    current_endpoint->device_types_ptr = NULL;
 
     /* Delete identify */
     if (current_endpoint->identify) {
@@ -572,9 +554,7 @@ esp_err_t enable(endpoint_t *endpoint)
     DataVersion *data_versions_ptr = (DataVersion *)esp_matter_mem_calloc(1, cluster_count * sizeof(DataVersion));
     if (!data_versions_ptr) {
         ESP_LOGE(TAG, "Couldn't allocate data_versions");
-        esp_matter_mem_free(data_versions_ptr);
         esp_matter_mem_free(endpoint_type);
-        current_endpoint->data_versions_ptr = NULL;
         current_endpoint->endpoint_type = NULL;
         /* goto cleanup is not used here to avoid 'crosses initialization' of data_versions below */
         return ESP_ERR_NO_MEM;
@@ -777,50 +757,28 @@ esp_err_t enable(endpoint_t *endpoint)
     return err;
 
 cleanup:
-    if (generated_command_ids) {
-        esp_matter_mem_free(generated_command_ids);
-    }
-    if (accepted_command_ids) {
-        esp_matter_mem_free(accepted_command_ids);
-    }
-    if (event_ids) {
-        esp_matter_mem_free(event_ids);
-    }
-    if (matter_attributes) {
-        esp_matter_mem_free(matter_attributes);
-    }
+    esp_matter_mem_free(generated_command_ids);
+    esp_matter_mem_free(accepted_command_ids);
+    esp_matter_mem_free(event_ids);
+    esp_matter_mem_free(matter_attributes);
     if (matter_clusters) {
         for (int cluster_index = 0; cluster_index < cluster_count; cluster_index++) {
             /* Free attributes */
-            if (matter_clusters[cluster_index].attributes) {
-                esp_matter_mem_free((void *)matter_clusters[cluster_index].attributes);
-            }
+            esp_matter_mem_free((void *)matter_clusters[cluster_index].attributes);
             /* Free commands */
-            if (matter_clusters[cluster_index].acceptedCommandList) {
-                esp_matter_mem_free((void *)matter_clusters[cluster_index].acceptedCommandList);
-            }
-            if (matter_clusters[cluster_index].generatedCommandList) {
-                esp_matter_mem_free((void *)matter_clusters[cluster_index].generatedCommandList);
-            }
+            esp_matter_mem_free((void *)matter_clusters[cluster_index].acceptedCommandList);
+            esp_matter_mem_free((void *)matter_clusters[cluster_index].generatedCommandList);
             /* Free events */
-            if (matter_clusters[cluster_index].eventList) {
-                esp_matter_mem_free((void *)matter_clusters[cluster_index].eventList);
-            }
+            esp_matter_mem_free((void *)matter_clusters[cluster_index].eventList);
         }
         esp_matter_mem_free(matter_clusters);
     }
-    if (data_versions_ptr) {
-        esp_matter_mem_free(data_versions_ptr);
-        current_endpoint->data_versions_ptr = NULL;
-    }
-    if (device_types_ptr) {
-        esp_matter_mem_free(device_types_ptr);
-        current_endpoint->device_types_ptr = NULL;
-    }
-    if (endpoint_type) {
-        esp_matter_mem_free(endpoint_type);
-        current_endpoint->endpoint_type = NULL;
-    }
+    esp_matter_mem_free(data_versions_ptr);
+    current_endpoint->data_versions_ptr = NULL;
+    esp_matter_mem_free(device_types_ptr);
+    current_endpoint->device_types_ptr = NULL;
+    esp_matter_mem_free(endpoint_type);
+    current_endpoint->endpoint_type = NULL;
     return err;
 }
 
@@ -1178,15 +1136,11 @@ static esp_err_t destroy(attribute_t *attribute)
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
         /* Free buf */
-        if (current_attribute->val.val.a.b) {
-            esp_matter_mem_free(current_attribute->val.val.a.b);
-        }
+        esp_matter_mem_free(current_attribute->val.val.a.b);
     }
 
     /* Free bounds */
-    if (current_attribute->bounds) {
-        esp_matter_mem_free(current_attribute->bounds);
-    }
+    esp_matter_mem_free(current_attribute->bounds);
 
     /* Erase the persistent data */
     if (current_attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE) {
@@ -1273,10 +1227,8 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
         val->type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING || val->type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
         val->type == ESP_MATTER_VAL_TYPE_ARRAY) {
         /* Free old buf */
-        if (current_attribute->val.val.a.b) {
-            esp_matter_mem_free(current_attribute->val.val.a.b);
-            current_attribute->val.val.a.b = NULL;
-        }
+        esp_matter_mem_free(current_attribute->val.val.a.b);
+        current_attribute->val.val.a.b = NULL;
         if (val->val.a.s > 0) {
             /* Alloc new buf */
             uint8_t *new_buf = (uint8_t *)esp_matter_mem_calloc(1, val->val.a.s);

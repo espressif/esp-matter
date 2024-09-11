@@ -44,9 +44,5 @@ IRAM_ATTR void *esp_matter_mem_realloc(void *ptr, size_t size)
 
 IRAM_ATTR void esp_matter_mem_free(void *ptr)
 {
-#if CONFIG_ESP_MATTER_MEM_ALLOC_MODE_DEFAULT
     free(ptr);
-#else
-    heap_caps_free(ptr);
-#endif
 }
