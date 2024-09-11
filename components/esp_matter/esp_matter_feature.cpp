@@ -3293,9 +3293,9 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     }
     update_feature_map(cluster, get_id());
 
-    attribute::create_speed_max(cluster, config->speed_max, 0, k_max_limit);
-    attribute::create_speed_setting(cluster, config->speed_setting, 0, config->speed_max);
-    attribute::create_speed_current(cluster, config->speed_current, 0, config->speed_max);
+    attribute::create_speed_max(cluster, config->speed_max);
+    attribute::create_speed_setting(cluster, config->speed_setting);
+    attribute::create_speed_current(cluster, config->speed_current);
 
     return ESP_OK;
 }

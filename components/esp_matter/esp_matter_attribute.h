@@ -387,13 +387,13 @@ attribute_t *create_primary_n_intensity(cluster_t * cluster, nullable<uint8_t> v
 
 namespace fan_control {
 namespace attribute {
-attribute_t *create_fan_mode(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
-attribute_t *create_fan_mode_sequence(cluster_t *cluster, const uint8_t value, uint8_t min, uint8_t max);
-attribute_t *create_percent_setting(cluster_t *cluster, nullable<uint8_t> value, nullable<uint8_t> min, nullable<uint8_t> max);
-attribute_t *create_percent_current(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
-attribute_t *create_speed_max(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
-attribute_t *create_speed_setting(cluster_t *cluster, nullable<uint8_t> value, nullable<uint8_t> min, nullable<uint8_t> max);
-attribute_t *create_speed_current(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
+attribute_t *create_fan_mode(cluster_t *cluster, uint8_t value);
+attribute_t *create_fan_mode_sequence(cluster_t *cluster, const uint8_t value);
+attribute_t *create_percent_setting(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_percent_current(cluster_t *cluster, uint8_t value);
+attribute_t *create_speed_max(cluster_t *cluster, uint8_t value);
+attribute_t *create_speed_setting(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_speed_current(cluster_t *cluster, uint8_t value);
 attribute_t *create_rock_support(cluster_t *cluster, uint8_t value);
 attribute_t *create_rock_setting(cluster_t *cluster, uint8_t value);
 attribute_t *create_wind_support(cluster_t *cluster, uint8_t value);
@@ -425,8 +425,8 @@ attribute_t *create_min_cool_setpoint_limit(cluster_t *cluster, int16_t value);
 attribute_t *create_max_cool_setpoint_limit(cluster_t *cluster, int16_t value);
 attribute_t *create_min_setpoint_dead_band(cluster_t *cluster, int8_t value);
 attribute_t *create_remote_sensing(cluster_t *cluster, uint8_t value);
-attribute_t *create_control_sequence_of_operation(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
-attribute_t *create_system_mode(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
+attribute_t *create_control_sequence_of_operation(cluster_t *cluster, uint8_t value);
+attribute_t *create_system_mode(cluster_t *cluster, uint8_t value);
 attribute_t *create_thermostat_running_mode(cluster_t *cluster, uint8_t value);
 attribute_t *create_start_of_week(cluster_t *cluster, uint8_t value);
 attribute_t *create_number_of_weekly_transitions(cluster_t *cluster, uint8_t value);
