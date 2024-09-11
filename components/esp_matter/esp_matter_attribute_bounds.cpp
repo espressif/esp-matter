@@ -50,11 +50,11 @@ void add_bounds_cb(cluster_t *cluster)
 
             case Identify::Attributes::IdentifyType::Id: {
                 uint8_t min = 0, max = 6;
-                esp_matter::attribute::add_bounds(current_attribute, esp_matter_enum8(min), esp_matter_enum8(max));
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint8(min), esp_matter_uint8(max));
                 break;
             }
             default:
-                ESP_LOGI(TAG, "No need to set boudnds for attribute!!!");
+                break;
         }
         current_attribute = esp_matter::attribute::get_next(current_attribute);
     }
@@ -84,7 +84,7 @@ void add_bounds_cb(cluster_t *cluster)
                 break;
             }
             default:
-                ESP_LOGI(TAG, "No need to set boudnds for attribute!!!");
+                break;
         }
         current_attribute = esp_matter::attribute::get_next(current_attribute);
     }
@@ -113,7 +113,7 @@ void add_bounds_cb(cluster_t *cluster)
                 break;
             }
             default:
-                ESP_LOGI(TAG, "No need to set boudnds for attribute!!!");
+                break;
         }
         current_attribute = esp_matter::attribute::get_next(current_attribute);
     }
@@ -238,7 +238,7 @@ void add_bounds_cb(cluster_t *cluster)
                 break;
             }
             default:
-                ESP_LOGI(TAG, "No need to set boudnds for attribute!!!");
+                break;
         }
         current_attribute = esp_matter::attribute::get_next(current_attribute);
     }
@@ -361,7 +361,7 @@ void add_bounds_cb(cluster_t *cluster)
                 break;
             }
             default:
-                ESP_LOGI(TAG, "No need to set boudnds for attribute!!!");
+                break;
         }
         current_attribute = esp_matter::attribute::get_next(current_attribute);
     }
