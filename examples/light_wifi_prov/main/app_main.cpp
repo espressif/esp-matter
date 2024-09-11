@@ -7,7 +7,7 @@
 */
 
 #include "esp_matter_attribute_utils.h"
-#include "esp_matter_core.h"
+#include "esp_rmaker_user_mapping.h"
 #include <esp_err.h>
 #include <esp_log.h>
 #include <nvs_flash.h>
@@ -15,7 +15,6 @@
 #include <esp_matter.h>
 #include <esp_matter_console.h>
 #include <esp_matter_ota.h>
-#include <esp_matter_rainmaker.h>
 
 #include <esp_rmaker_console.h>
 #include <esp_rmaker_core.h>
@@ -255,8 +254,6 @@ extern "C" void app_main()
         attribute::get(color_control_cluster, ColorControl::Attributes::ColorTemperatureMireds::Id);
     attribute::set_deferred_persistence(color_temp_attribute);
 
-    esp_matter::rainmaker::init();
-
     err = esp_event_loop_create_default();
 
     if (err != ESP_OK) {
@@ -264,16 +261,6 @@ extern "C" void app_main()
         return;
     }
     app_wifi_init();
-
-#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-    /* Set OpenThread platform config */
-    esp_openthread_platform_config_t config = {
-        .radio_config = ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG(),
-        .host_config = ESP_OPENTHREAD_DEFAULT_HOST_CONFIG(),
-        .port_config = ESP_OPENTHREAD_DEFAULT_PORT_CONFIG(),
-    };
-    set_openthread_platform_config(&config);
-#endif
     esp_rmaker_config_t rainmaker_cfg = {
         .enable_time_sync = false,
     };
@@ -283,7 +270,7 @@ extern "C" void app_main()
         vTaskDelay(5000 / portTICK_PERIOD_MS);
         abort();
     }
-    esp_matter::rainmaker::start();
+
     light_device = esp_rmaker_lightbulb_device_create("Light", light_handle, DEFAULT_POWER);
     esp_rmaker_device_add_bulk_cb(light_device, bulk_write_cb, NULL);
 
@@ -301,11 +288,9 @@ extern "C" void app_main()
 
     esp_rmaker_schedule_enable();
 
-    esp_rmaker_start();
-
     err = app_wifi_set_custom_mfg_data(MGF_DATA_DEVICE_TYPE_LIGHT, MFG_DATA_DEVICE_SUBTYPE_LIGHT);
 
-    err = app_wifi_start(POP_TYPE_RANDOM);
+    err = app_wifi_start(POP_TYPE_MAC);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Could not start Wifi. Aborting!!!");
         abort();
@@ -322,13 +307,13 @@ extern "C" void app_main()
     err = esp_matter_ota_requestor_encrypted_init(s_decryption_key, s_decryption_key_len);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to initialized the encrypted OTA, err: %d", err));
 #endif // CONFIG_ENABLE_ENCRYPTED_OTA
+    if (esp_rmaker_user_node_mapping_get_state() == ESP_RMAKER_USER_MAPPING_DONE) {
+        chip::DeviceLayer::Internal::BLEMgr().Shutdown();
+    }
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter::console::diagnostics_register_commands();
     esp_matter::console::wifi_register_commands();
-#if CONFIG_OPENTHREAD_CLI
-    esp_matter::console::otcli_register_commands();
-#endif
     esp_matter::console::init();
 #endif
 }

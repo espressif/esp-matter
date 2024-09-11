@@ -5,29 +5,29 @@
    software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
    CONDITIONS OF ANY KIND, either express or implied.
 */
-#include <string.h>
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
-#include <freertos/event_groups.h>
-#include <esp_wifi.h>
 #include <esp_event.h>
-#include <esp_log.h>
 #include <esp_idf_version.h>
-#include <inttypes.h>
+#include <esp_log.h>
 #include <esp_rmaker_utils.h>
+#include <esp_wifi.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/event_groups.h>
+#include <freertos/task.h>
+#include <string.h>
 
 #include <esp_netif.h>
-
-#include <wifi_provisioning/manager.h>
 #include <wifi_prov_scheme_matter_ble.h>
+#include <wifi_provisioning/manager.h>
 
-#include <qrcode.h>
+#include <app_wifi.h>
+#include <esp_rmaker_core.h>
+#include <esp_timer.h>
 #include <nvs.h>
 #include <nvs_flash.h>
-#include <esp_timer.h>
-#include "app_wifi.h"
-#include <platform/PlatformManager.h>
+#include <platform/CHIPDeviceLayer.h>
 #include <platform/ESP32_custom/PlatformManagerImpl.h>
+#include <platform/PlatformManager.h>
+#include <qrcode.h>
 
 ESP_EVENT_DEFINE_BASE(APP_WIFI_EVENT);
 
@@ -35,32 +35,31 @@ static const char *TAG = "app_wifi";
 
 #define PROV_QR_VERSION "v1"
 
-#define PROV_TRANSPORT_BLE      "ble"
-#define QRCODE_BASE_URL     "https://rainmaker.espressif.com/qrcode.html"
+#define PROV_TRANSPORT_BLE "ble"
+#define QRCODE_BASE_URL "https://rainmaker.espressif.com/qrcode.html"
 
-#define CREDENTIALS_NAMESPACE   "rmaker_creds"
-#define RANDOM_NVS_KEY          "random"
+#define CREDENTIALS_NAMESPACE "rmaker_creds"
+#define RANDOM_NVS_KEY "random"
 
-#define POP_STR_SIZE    9
+#define POP_STR_SIZE 9
 static esp_timer_handle_t prov_stop_timer;
 /* Timeout period in minutes */
-#define APP_WIFI_PROV_TIMEOUT_PERIOD   30
+#define APP_WIFI_PROV_TIMEOUT_PERIOD 30
 /* Autofetch period in micro-seconds */
 static uint64_t prov_timeout_period = (APP_WIFI_PROV_TIMEOUT_PERIOD * 60 * 1000000LL);
 
 #define APP_PROV_STOP_ON_CREDS_MISMATCH
 
-
-#define ESP_RAINMAKER_GITHUB_EXAMPLES_PATH  "https://github.com/espressif/esp-rainmaker/blob/master/examples"
-#define ESP_RAINMAKER_INTRO_LINK    "https://rainmaker.espressif.com"
-#define ESP_RMAKER_PHONE_APP_LINK   "http://bit.ly/esp-rmaker"
-char esp_rainmaker_ascii_art[] = \
-"  ______  _____ _____    _____            _____ _   _ __  __          _  ________ _____\n"\
-" |  ____|/ ____|  __ \\  |  __ \\     /\\   |_   _| \\ | |  \\/  |   /\\   | |/ /  ____|  __ \\\n"\
-" | |__  | (___ | |__) | | |__) |   /  \\    | | |  \\| | \\  / |  /  \\  | ' /| |__  | |__) |\n"\
-" |  __|  \\___ \\|  ___/  |  _  /   / /\\ \\   | | | . ` | |\\/| | / /\\ \\ |  < |  __| |  _  /\n"\
-" | |____ ____) | |      | | \\ \\  / ____ \\ _| |_| |\\  | |  | |/ ____ \\| . \\| |____| | \\ \\\n"\
-" |______|_____/|_|      |_|  \\_\\/_/    \\_\\_____|_| \\_|_|  |_/_/    \\_\\_|\\_\\______|_|  \\_\\\n";
+#define ESP_RAINMAKER_GITHUB_EXAMPLES_PATH "https://github.com/espressif/esp-rainmaker/blob/master/examples"
+#define ESP_RAINMAKER_INTRO_LINK "https://rainmaker.espressif.com"
+#define ESP_RMAKER_PHONE_APP_LINK "http://bit.ly/esp-rmaker"
+char esp_rainmaker_ascii_art[] =
+    "  ______  _____ _____    _____            _____ _   _ __  __          _  ________ _____\n"
+    " |  ____|/ ____|  __ \\  |  __ \\     /\\   |_   _| \\ | |  \\/  |   /\\   | |/ /  ____|  __ \\\n"
+    " | |__  | (___ | |__) | | |__) |   /  \\    | | |  \\| | \\  / |  /  \\  | ' /| |__  | |__) |\n"
+    " |  __|  \\___ \\|  ___/  |  _  /   / /\\ \\   | | | . ` | |\\/| | / /\\ \\ |  < |  __| |  _  /\n"
+    " | |____ ____) | |      | | \\ \\  / ____ \\ _| |_| |\\  | |  | |/ ____ \\| . \\| |____| | \\ \\\n"
+    " |______|_____/|_|      |_|  \\_\\/_/    \\_\\_____|_| \\_|_|  |_/_/    \\_\\_|\\_\\______|_|  \\_\\\n";
 
 static uint8_t *custom_mfg_data = NULL;
 static size_t custom_mfg_data_len = 0;
@@ -83,6 +82,14 @@ esp_err_t app_wifi_set_custom_mfg_data(uint16_t device_type, uint8_t device_subt
     return ESP_OK;
 }
 
+static esp_err_t qrcode_display(const char *text)
+{
+#define MAX_QRCODE_VERSION 5
+    esp_qrcode_config_t cfg = ESP_QRCODE_CONFIG_DEFAULT();
+    cfg.max_qrcode_version = MAX_QRCODE_VERSION;
+    return esp_qrcode_generate(&cfg, text);
+}
+
 static void app_wifi_print_qr(const char *name, const char *pop, const char *transport)
 {
     if (!name || !transport) {
@@ -91,91 +98,96 @@ static void app_wifi_print_qr(const char *name, const char *pop, const char *tra
     }
     char payload[150];
     if (pop) {
-        snprintf(payload, sizeof(payload), "{\"ver\":\"%s\",\"name\":\"%s\"" \
-                ",\"pop\":\"%s\",\"transport\":\"%s\"}",
-                PROV_QR_VERSION, name, pop, transport);
+        snprintf(payload, sizeof(payload),
+                 "{\"ver\":\"%s\",\"name\":\"%s\""
+                 ",\"pop\":\"%s\",\"transport\":\"%s\"}",
+                 PROV_QR_VERSION, name, pop, transport);
     } else {
-        snprintf(payload, sizeof(payload), "{\"ver\":\"%s\",\"name\":\"%s\"" \
-                ",\"transport\":\"%s\"}",
-                PROV_QR_VERSION, name, transport);
+        snprintf(payload, sizeof(payload),
+                 "{\"ver\":\"%s\",\"name\":\"%s\""
+                 ",\"transport\":\"%s\"}",
+                 PROV_QR_VERSION, name, transport);
     }
     ESP_LOGI(TAG, "Scan this QR code from the ESP RainMaker phone app for Provisioning.");
     qrcode_display(payload);
-    ESP_LOGI(TAG, "If QR code is not visible, copy paste the below URL in a browser.\n%s?data=%s", QRCODE_BASE_URL, payload);
+    ESP_LOGI(TAG, "If QR code is not visible, copy paste the below URL in a browser.\n%s?data=%s", QRCODE_BASE_URL,
+             payload);
     esp_event_post(APP_WIFI_EVENT, APP_WIFI_EVENT_QR_DISPLAY, payload, strlen(payload) + 1, portMAX_DELAY);
 }
 
 /* Event handler for catching system events */
-static void event_handler(void* arg, esp_event_base_t event_base,
-                          int32_t event_id, void* event_data)
+static void event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
     static int retries = 0;
     static int failed_cnt = 0;
 
     if (event_base == WIFI_PROV_EVENT) {
         switch (event_id) {
-            case WIFI_PROV_START:
-                ESP_LOGI(TAG, "Provisioning started");
-                break;
-            case WIFI_PROV_CRED_RECV: {
-                wifi_sta_config_t *wifi_sta_cfg = (wifi_sta_config_t *)event_data;
-                ESP_LOGI(TAG, "Received Wi-Fi credentials"
-                         "\n\tSSID     : %s\n\tPassword : %s",
-                         (const char *) wifi_sta_cfg->ssid,
-                         (const char *) wifi_sta_cfg->password);
-                break;
-            }
-            case WIFI_PROV_CRED_FAIL: {
-                wifi_prov_sta_fail_reason_t *reason = (wifi_prov_sta_fail_reason_t *)event_data;
-                ESP_LOGE(TAG, "Provisioning failed!\n\tReason : %s"
-                         "\n\tPlease reset to factory and retry provisioning",
-                         (*reason == WIFI_PROV_STA_AUTH_ERROR) ?
-                         "Wi-Fi station authentication failed" : "Wi-Fi access-point not found");
-                retries++;
-                if (retries >= 5) {
-                    ESP_LOGI(TAG, "Failed to connect with provisioned AP, reseting provisioned credentials");
-                    wifi_prov_mgr_reset_sm_state_on_failure();
-                    esp_event_post(APP_WIFI_EVENT, APP_WIFI_EVENT_PROV_RESTART, NULL, 0, portMAX_DELAY);
-                    ESP_LOGW(TAG, "Failed to connect with provisioned AP, please reset to provisioning manually");
-                    retries = 0;
-                }
-                break;
-            }
-            case WIFI_PROV_CRED_SUCCESS:
-                ESP_LOGI(TAG, "Provisioning successful");
+        case WIFI_PROV_START:
+            ESP_LOGI(TAG, "Provisioning started");
+            break;
+        case WIFI_PROV_CRED_RECV: {
+            wifi_sta_config_t *wifi_sta_cfg = (wifi_sta_config_t *)event_data;
+            ESP_LOGI(TAG,
+                     "Received Wi-Fi credentials"
+                     "\n\tSSID     : %s\n\tPassword : %s",
+                     (const char *)wifi_sta_cfg->ssid, (const char *)wifi_sta_cfg->password);
+            break;
+        }
+        case WIFI_PROV_CRED_FAIL: {
+            wifi_prov_sta_fail_reason_t *reason = (wifi_prov_sta_fail_reason_t *)event_data;
+            ESP_LOGE(TAG,
+                     "Provisioning failed!\n\tReason : %s"
+                     "\n\tPlease reset to factory and retry provisioning",
+                     (*reason == WIFI_PROV_STA_AUTH_ERROR) ? "Wi-Fi station authentication failed"
+                                                           : "Wi-Fi access-point not found");
+            retries++;
+            if (retries >= 5) {
+                ESP_LOGI(TAG, "Failed to connect with provisioned AP, reseting provisioned credentials");
+                wifi_prov_mgr_reset_sm_state_on_failure();
+                esp_event_post(APP_WIFI_EVENT, APP_WIFI_EVENT_PROV_RESTART, NULL, 0, portMAX_DELAY);
+                ESP_LOGW(TAG, "Failed to connect with provisioned AP, please reset to provisioning manually");
                 retries = 0;
-                break;
-            case WIFI_PROV_END:
-                if (prov_stop_timer) {
-                    esp_timer_stop(prov_stop_timer);
-                    esp_timer_delete(prov_stop_timer);
-                    prov_stop_timer = NULL;
-                }
-                /* De-initialize manager once provisioning is finished */
-                wifi_prov_mgr_deinit();
-                break;
-            default:
-                break;
+            }
+            break;
+        }
+        case WIFI_PROV_CRED_SUCCESS:
+            ESP_LOGI(TAG, "Provisioning successful");
+            retries = 0;
+            break;
+        case WIFI_PROV_END:
+            if (prov_stop_timer) {
+                esp_timer_stop(prov_stop_timer);
+                esp_timer_delete(prov_stop_timer);
+                prov_stop_timer = NULL;
+            }
+            /* De-initialize manager once provisioning is finished */
+            wifi_prov_mgr_deinit();
+            break;
+        default:
+            break;
         }
     } else if (event_base == PROTOCOMM_SECURITY_SESSION_EVENT) {
         switch (event_id) {
-            case PROTOCOMM_SECURITY_SESSION_SETUP_OK:
-                ESP_LOGI(TAG, "Secured session established!");
-                chip::DeviceLayer::PlatformManagerImpl::DisableESPEventDispatch();
-                break;
-            case PROTOCOMM_SECURITY_SESSION_INVALID_SECURITY_PARAMS:
-                /* fall-through */
-            case PROTOCOMM_SECURITY_SESSION_CREDENTIALS_MISMATCH:
-                ESP_LOGE(TAG, "Received incorrect PoP or invalid security params! event: %d", (int) event_id);
-                if (++failed_cnt >= 5) {
-                    /* stop provisioning for security reasons */
-                    wifi_prov_mgr_stop_provisioning();
-                    ESP_LOGW(TAG, "Max PoP attempts reached! Provisioning disabled for security reasons. Please reboot device to restart provisioning");
-                    esp_event_post(APP_WIFI_EVENT, APP_WIFI_EVENT_PROV_CRED_MISMATCH, NULL, 0, portMAX_DELAY);
-                }
-                break;
-            default:
-                break;
+        case PROTOCOMM_SECURITY_SESSION_SETUP_OK:
+            ESP_LOGI(TAG, "Secured session established!");
+            esp_rmaker_start();
+            break;
+        case PROTOCOMM_SECURITY_SESSION_INVALID_SECURITY_PARAMS:
+            /* fall-through */
+        case PROTOCOMM_SECURITY_SESSION_CREDENTIALS_MISMATCH:
+            ESP_LOGE(TAG, "Received incorrect PoP or invalid security params! event: %d", (int)event_id);
+            if (++failed_cnt >= 5) {
+                /* stop provisioning for security reasons */
+                wifi_prov_mgr_stop_provisioning();
+                ESP_LOGW(TAG,
+                         "Max PoP attempts reached! Provisioning disabled for security reasons. Please reboot device "
+                         "to restart provisioning");
+                esp_event_post(APP_WIFI_EVENT, APP_WIFI_EVENT_PROV_CRED_MISMATCH, NULL, 0, portMAX_DELAY);
+            }
+            break;
+        default:
+            break;
         }
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
         ESP_LOGI(TAG, "Disconnected. Connecting to the AP again...");
@@ -190,9 +202,10 @@ static esp_err_t read_random_bytes_from_nvs(uint8_t **random_bytes, size_t *len)
     esp_err_t err;
     *len = 0;
 
-    if ((err = nvs_open_from_partition(CONFIG_ESP_RMAKER_FACTORY_PARTITION_NAME, CREDENTIALS_NAMESPACE,
-                                NVS_READONLY, &handle)) != ESP_OK) {
-        ESP_LOGD(TAG, "NVS open for %s %s %s failed with error %d", CONFIG_ESP_RMAKER_FACTORY_PARTITION_NAME, CREDENTIALS_NAMESPACE, RANDOM_NVS_KEY, err);
+    if ((err = nvs_open_from_partition(CONFIG_ESP_RMAKER_FACTORY_PARTITION_NAME, CREDENTIALS_NAMESPACE, NVS_READONLY,
+                                       &handle)) != ESP_OK) {
+        ESP_LOGD(TAG, "NVS open for %s %s %s failed with error %d", CONFIG_ESP_RMAKER_FACTORY_PARTITION_NAME,
+                 CREDENTIALS_NAMESPACE, RANDOM_NVS_KEY, err);
         return ESP_FAIL;
     }
 
@@ -244,14 +257,13 @@ static esp_err_t get_device_service_name(char *service_name, size_t max)
         snprintf(service_name, max, "%s_%02x%02x%02x", ssid_prefix, eth_mac[3], eth_mac[4], eth_mac[5]);
     } else {
         snprintf(service_name, max, "%s_%02x%02x%02x", ssid_prefix, nvs_random[nvs_random_size - 3],
-                nvs_random[nvs_random_size - 2], nvs_random[nvs_random_size - 1]);
+                 nvs_random[nvs_random_size - 2], nvs_random[nvs_random_size - 1]);
     }
     if (nvs_random) {
         free(nvs_random);
     }
     return ESP_OK;
 }
-
 
 static char *get_device_pop(app_wifi_pop_type_t pop_type)
 {
@@ -304,34 +316,32 @@ void app_wifi_init(void)
 {
     wifi_init_config_t cfg;
     esp_err_t err = esp_netif_init();
-    if (err != ESP_OK)
-    {
+    if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to initialize esp_netif");
         return;
     }
 
     // Lets not create a default station interface if already present
-    if (!esp_netif_get_handle_from_ifkey("WIFI_STA_DEF"))
-    {
-        if (!esp_netif_create_default_wifi_sta())
-        {
+    if (!esp_netif_get_handle_from_ifkey("WIFI_STA_DEF")) {
+        if (!esp_netif_create_default_wifi_sta()) {
             ESP_LOGE(TAG, "Failed to create the WiFi STA netif");
-            return;;
+            return;
+            ;
         }
     }
 
     // Initialize the ESP WiFi layer.
     cfg = WIFI_INIT_CONFIG_DEFAULT();
     err = esp_wifi_init(&cfg);
-    if (err != ESP_OK)
-    {
+    if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to initialize esp_wifi");
         return;
     }
     /* Register our event handler for Wi-Fi, IP and Provisioning related events */
     ESP_ERROR_CHECK(esp_event_handler_register(WIFI_PROV_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
 #ifdef APP_PROV_STOP_ON_CREDS_MISMATCH
-    ESP_ERROR_CHECK(esp_event_handler_register(PROTOCOMM_SECURITY_SESSION_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
+    ESP_ERROR_CHECK(
+        esp_event_handler_register(PROTOCOMM_SECURITY_SESSION_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
 #endif
     ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL));
@@ -349,16 +359,13 @@ esp_err_t app_wifi_start_timer(void)
     if (prov_timeout_period == 0) {
         return ESP_OK;
     }
-    esp_timer_create_args_t prov_stop_timer_conf = {
-        .callback = app_wifi_prov_stop,
-        .arg = NULL,
-        .dispatch_method = ESP_TIMER_TASK,
-        .name = "app_wifi_prov_stop_tm"
-    };
+    esp_timer_create_args_t prov_stop_timer_conf = {.callback = app_wifi_prov_stop,
+                                                    .arg = NULL,
+                                                    .dispatch_method = ESP_TIMER_TASK,
+                                                    .name = "app_wifi_prov_stop_tm"};
     if (esp_timer_create(&prov_stop_timer_conf, &prov_stop_timer) == ESP_OK) {
         esp_timer_start_once(prov_stop_timer, prov_timeout_period);
-        ESP_LOGI(TAG, "Provisioning will auto stop after %d minute(s).",
-                APP_WIFI_PROV_TIMEOUT_PERIOD);
+        ESP_LOGI(TAG, "Provisioning will auto stop after %d minute(s).", APP_WIFI_PROV_TIMEOUT_PERIOD);
         return ESP_OK;
     } else {
         ESP_LOGE(TAG, "Failed to create Provisioning auto stop timer.");
@@ -437,8 +444,7 @@ esp_err_t app_wifi_start(app_wifi_pop_type_t pop_type)
         uint8_t custom_service_uuid[] = {
             /* This is a random uuid. This can be modified if you want to change the BLE uuid. */
             /* 12th and 13th bit will be replaced by internal bits. */
-            0xb4, 0xdf, 0x5a, 0x1c, 0x3f, 0x6b, 0xf4, 0xbf,
-            0xea, 0x4a, 0x82, 0x03, 0x04, 0x90, 0x1a, 0x02,
+            0xb4, 0xdf, 0x5a, 0x1c, 0x3f, 0x6b, 0xf4, 0xbf, 0xea, 0x4a, 0x82, 0x03, 0x04, 0x90, 0x1a, 0x02,
         };
         esp_err_t err = wifi_prov_scheme_matter_ble_set_service_uuid(custom_service_uuid, sizeof(custom_service_uuid));
         if (err != ESP_OK) {
@@ -467,6 +473,10 @@ esp_err_t app_wifi_start(app_wifi_pop_type_t pop_type)
         /* We don't need the manager as device is already provisioned,
          * so let's release it's resources */
         wifi_prov_mgr_deinit();
+        ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+        ESP_ERROR_CHECK(esp_wifi_start());
+        esp_wifi_connect();
+        esp_rmaker_start();
     }
     if (custom_mfg_data) {
         free(custom_mfg_data);
