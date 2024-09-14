@@ -337,6 +337,13 @@ build_esp_matter_examples:
     - cp sdkconfig.defaults sdkconfig.defaults.backup
     - cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
 
+    # steps for external platform build for light_wifi_prov app
+    - cd ${ESP_MATTER_PATH}/examples/light_wifi_prov
+    - cp sdkconfig.defaults.esp32s3 sdkconfig.defaults.esp32s3.backup
+    - cp sdkconfig.defaults.esp32s3.ext_plat_ci sdkconfig.defaults.esp32s3
+    - cp sdkconfig.defaults.esp32c3 sdkconfig.defaults.esp32c3.backup
+    - cp sdkconfig.defaults.esp32c3.ext_plat_ci sdkconfig.defaults.esp32c3
+
     - cd ${ESP_MATTER_PATH}
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --no_pytest
