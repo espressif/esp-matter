@@ -1230,7 +1230,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, static_cast<uint32_t>(Groups::NameSupportBitmap::kGroupNames));
+        global::attribute::create_feature_map(cluster, static_cast<uint32_t>(Groups::Feature::kGroupNames));
 #if CHIP_CONFIG_ENABLE_EVENTLIST_ATTRIBUTE
         global::attribute::create_event_list(cluster, NULL, 0, 0);
 #endif
