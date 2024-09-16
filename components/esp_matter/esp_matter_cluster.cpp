@@ -1084,7 +1084,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, static_cast<uint32_t>(Groups::NameSupportBitmap::kGroupNames));
+        global::attribute::create_feature_map(cluster, static_cast<uint32_t>(Groups::Feature::kGroupNames));
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
