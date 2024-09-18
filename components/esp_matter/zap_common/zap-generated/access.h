@@ -34,7 +34,6 @@
     0x00000453, /* Cluster: Thread Network Directory, Attribute: PreferredExtendedPanID, Privilege: manage */ \
     0x00000453, /* Cluster: Thread Network Directory, Attribute: ThreadNetworks, Privilege: operate */ \
     0x0000050D, /* Cluster: Application Basic, Attribute: AllowedVendorList, Privilege: administer */ \
-    0x00000750, /* Cluster: Ecosystem Information, Attribute: RemovedOn, Privilege: manage */ \
     0x00000750, /* Cluster: Ecosystem Information, Attribute: DeviceDirectory, Privilege: manage */ \
     0x00000750, /* Cluster: Ecosystem Information, Attribute: LocationDirectory, Privilege: manage */ \
     0x00000751, /* Cluster: Commissioner Control, Attribute: SupportedDeviceCategories, Privilege: manage */ \
@@ -67,9 +66,8 @@
     0x00000000, /* Cluster: Thread Network Directory, Attribute: PreferredExtendedPanID, Privilege: manage */ \
     0x00000001, /* Cluster: Thread Network Directory, Attribute: ThreadNetworks, Privilege: operate */ \
     0x00000007, /* Cluster: Application Basic, Attribute: AllowedVendorList, Privilege: administer */ \
-    0x00000000, /* Cluster: Ecosystem Information, Attribute: RemovedOn, Privilege: manage */ \
-    0x00000001, /* Cluster: Ecosystem Information, Attribute: DeviceDirectory, Privilege: manage */ \
-    0x00000002, /* Cluster: Ecosystem Information, Attribute: LocationDirectory, Privilege: manage */ \
+    0x00000000, /* Cluster: Ecosystem Information, Attribute: DeviceDirectory, Privilege: manage */ \
+    0x00000001, /* Cluster: Ecosystem Information, Attribute: LocationDirectory, Privilege: manage */ \
     0x00000000, /* Cluster: Commissioner Control, Attribute: SupportedDeviceCategories, Privilege: manage */ \
 }
 
@@ -100,7 +98,6 @@
     chip::Access::Privilege::kManage, /* Cluster: Thread Network Directory, Attribute: PreferredExtendedPanID, Privilege: manage */ \
     chip::Access::Privilege::kOperate, /* Cluster: Thread Network Directory, Attribute: ThreadNetworks, Privilege: operate */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Application Basic, Attribute: AllowedVendorList, Privilege: administer */ \
-    chip::Access::Privilege::kManage, /* Cluster: Ecosystem Information, Attribute: RemovedOn, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Ecosystem Information, Attribute: DeviceDirectory, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Ecosystem Information, Attribute: LocationDirectory, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Commissioner Control, Attribute: SupportedDeviceCategories, Privilege: manage */ \
@@ -710,7 +707,6 @@
 #define GENERATED_ACCESS_READ_EVENT__CLUSTER { \
     0x0000001F, /* Cluster: Access Control, Event: AccessControlEntryChanged, Privilege: administer */ \
     0x0000001F, /* Cluster: Access Control, Event: AccessControlExtensionChanged, Privilege: administer */ \
-    0x0000001F, /* Cluster: Access Control, Event: AccessRestrictionEntryChanged, Privilege: administer */ \
     0x0000001F, /* Cluster: Access Control, Event: FabricRestrictionReviewUpdate, Privilege: administer */ \
     0x00000751, /* Cluster: Commissioner Control, Event: CommissioningRequestResult, Privilege: manage */ \
 }
@@ -719,8 +715,7 @@
 #define GENERATED_ACCESS_READ_EVENT__EVENT { \
     0x00000000, /* Cluster: Access Control, Event: AccessControlEntryChanged, Privilege: administer */ \
     0x00000001, /* Cluster: Access Control, Event: AccessControlExtensionChanged, Privilege: administer */ \
-    0x00000002, /* Cluster: Access Control, Event: AccessRestrictionEntryChanged, Privilege: administer */ \
-    0x00000003, /* Cluster: Access Control, Event: FabricRestrictionReviewUpdate, Privilege: administer */ \
+    0x00000002, /* Cluster: Access Control, Event: FabricRestrictionReviewUpdate, Privilege: administer */ \
     0x00000000, /* Cluster: Commissioner Control, Event: CommissioningRequestResult, Privilege: manage */ \
 }
 
@@ -728,7 +723,6 @@
 #define GENERATED_ACCESS_READ_EVENT__PRIVILEGE { \
     chip::Access::Privilege::kAdminister, /* Cluster: Access Control, Event: AccessControlEntryChanged, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Access Control, Event: AccessControlExtensionChanged, Privilege: administer */ \
-    chip::Access::Privilege::kAdminister, /* Cluster: Access Control, Event: AccessRestrictionEntryChanged, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Access Control, Event: FabricRestrictionReviewUpdate, Privilege: administer */ \
     chip::Access::Privilege::kManage, /* Cluster: Commissioner Control, Event: CommissioningRequestResult, Privilege: manage */ \
 }
