@@ -29,6 +29,7 @@
 #include <common_macros.h>
 #include "app-common/zap-generated/ids/Attributes.h"
 #include "app-common/zap-generated/ids/Clusters.h"
+#include "wifi_provisioning/manager.h"
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
 #endif
@@ -212,8 +213,7 @@ extern "C" void app_main()
 
     /* Initialize driver */
     app_driver_handle_t light_handle = app_driver_light_init();
-    app_driver_handle_t button_handle = app_driver_button_init();
-    app_reset_button_register(button_handle);
+    app_driver_button_init();
 
     /* Create a Matter node and add the mandatory Root Node device type on endpoint 0 */
     node::config_t node_config;
@@ -307,7 +307,10 @@ extern "C" void app_main()
     err = esp_matter_ota_requestor_encrypted_init(s_decryption_key, s_decryption_key_len);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to initialized the encrypted OTA, err: %d", err));
 #endif // CONFIG_ENABLE_ENCRYPTED_OTA
-    if (esp_rmaker_user_node_mapping_get_state() == ESP_RMAKER_USER_MAPPING_DONE) {
+    // If Wi-Fi is provisioned and RainMaker user node mapping is done, deinitialize the BLE.
+    bool is_wifi_provisioned = false;
+    wifi_prov_mgr_is_provisioned(&is_wifi_provisioned);
+    if (is_wifi_provisioned && esp_rmaker_user_node_mapping_get_state() == ESP_RMAKER_USER_MAPPING_DONE) {
         chip::DeviceLayer::Internal::BLEMgr().Shutdown();
     }
 

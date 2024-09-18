@@ -11,6 +11,7 @@
 #include <string.h>
 
 #include <esp_matter.h>
+#include <esp_rmaker_utils.h>
 #include "bsp/esp-bsp.h"
 
 #include <app_priv.h>
@@ -195,12 +196,35 @@ app_driver_handle_t app_driver_light_init()
 #endif
 }
 
+static bool perform_factory_reset = false;
+
+static void button_factory_reset_pressed_cb(void *arg, void *data)
+{
+    if (!perform_factory_reset) {
+        ESP_LOGI(TAG, "Factory reset triggered. Release the button to start factory reset.");
+        perform_factory_reset = true;
+    }
+}
+
+static void button_factory_reset_released_cb(void *arg, void *data)
+{
+    if (perform_factory_reset) {
+        ESP_LOGI(TAG, "Starting factory reset");
+        // Do RainMaker factory reset immediately and wait for 10 seconds
+        // so that the device can finish Matter factory reset.
+        esp_rmaker_factory_reset(0, 10);
+        esp_matter::factory_reset();
+        perform_factory_reset = false;
+    }
+}
+
 app_driver_handle_t app_driver_button_init()
 {
     /* Initialize button */
     button_handle_t btns[BSP_BUTTON_NUM];
     ESP_ERROR_CHECK(bsp_iot_button_create(btns, NULL, BSP_BUTTON_NUM));
     ESP_ERROR_CHECK(iot_button_register_cb(btns[0], BUTTON_PRESS_DOWN, app_driver_button_toggle_cb, NULL));
-    
+    ESP_ERROR_CHECK(iot_button_register_cb(btns[0], BUTTON_LONG_PRESS_HOLD, button_factory_reset_pressed_cb, NULL));
+    ESP_ERROR_CHECK(iot_button_register_cb(btns[0], BUTTON_PRESS_UP, button_factory_reset_released_cb, NULL));
     return (app_driver_handle_t)btns[0];
 }
