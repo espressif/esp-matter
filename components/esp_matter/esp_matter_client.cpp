@@ -534,7 +534,6 @@ static esp_err_t encode_attribute_value(uint8_t *encoded_buf, size_t encoded_buf
     TLVWriter writer;
     uint32_t encoded_len = 0;
     TLVReader reader;
-    esp_err_t err = ESP_OK;
 
     writer.Init(encoded_buf, encoded_buf_size);
     if (encodable.EncodeTo(writer, chip::TLV::AnonymousTag()) != CHIP_NO_ERROR) {
