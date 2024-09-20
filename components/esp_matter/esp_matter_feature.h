@@ -2084,5 +2084,18 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* device_energy_management */
 
+namespace thread_border_router_management {
+namespace feature {
+
+namespace pan_change {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* pan_change */
+
+} /* feature */
+} /* thread_border_router_management */
+
 } /* cluster */
 } /* esp_matter */

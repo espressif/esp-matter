@@ -864,5 +864,14 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* application_basic */
 
+namespace thread_border_router_management {
+typedef struct config {
+    void *delegate;
+    config() : delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* thread_border_router_management */
+
 } /* cluster */
 } /* esp_matter */

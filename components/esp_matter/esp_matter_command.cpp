@@ -2858,6 +2858,42 @@ command_t *create_cancel_request(cluster_t *cluster)
 } /* command */
 } /* device_energy_management */
 
+namespace thread_border_router_management {
+namespace command {
+
+command_t *create_get_active_dataset_request(cluster_t *cluster)
+{
+     return esp_matter::command::create(cluster, ThreadBorderRouterManagement::Commands::GetActiveDatasetRequest::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_get_pending_dataset_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ThreadBorderRouterManagement::Commands::GetPendingDatasetRequest::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_dataset_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ThreadBorderRouterManagement::Commands::DatasetResponse::Id,
+                                       COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_set_active_dataset_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ThreadBorderRouterManagement::Commands::SetActiveDatasetRequest::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_set_pending_dataset_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ThreadBorderRouterManagement::Commands::SetPendingDatasetRequest::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* thread_border_router_management */
+
 } /* cluster */
 } /* esp_matter */
 

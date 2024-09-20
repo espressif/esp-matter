@@ -17,6 +17,7 @@
 #include "sdkconfig.h"
 #if CONFIG_OPENTHREAD_BORDER_ROUTER
 #include "esp_openthread_types.h"
+#include <esp_rcp_update.h>
 
 #if CONFIG_OPENTHREAD_RADIO_NATIVE
 #define ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG() \
@@ -70,8 +71,6 @@
     }
 #endif // CONFIG_OPENTHREAD_RADIO_SPINEL_UART OR  CONFIG_OPENTHREAD_RADIO_SPINEL_SPI
 
-#define HOST_BAUD_RATE 115200
-
 #define ESP_OPENTHREAD_DEFAULT_HOST_CONFIG()               \
     {                                                      \
         .host_connection_mode = HOST_CONNECTION_MODE_NONE, \
@@ -81,8 +80,6 @@
     {                                                                                   \
         .storage_partition_name = "nvs", .netif_queue_size = 10, .task_queue_size = 10, \
     }
-
-#include <esp_rcp_update.h>
 
 #define ESP_OPENTHREAD_RCP_UPDATE_CONFIG()                                                                                         \
     {                                                                                                                              \

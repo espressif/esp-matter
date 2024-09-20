@@ -4705,5 +4705,47 @@ attribute_t *create_allowed_vendor_list(cluster_t *cluster, uint8_t *value, uint
 } /* attribute */
 } /* application_basic */
 
+namespace thread_border_router_management {
+namespace attribute {
+
+attribute_t *create_border_router_name(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, ThreadBorderRouterManagement::Attributes::BorderRouterName::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length));
+}
+
+attribute_t *create_border_agent_id(cluster_t *cluster, uint8_t *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, ThreadBorderRouterManagement::Attributes::BorderAgentID::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_octet_str(value, length));
+}
+
+attribute_t *create_thread_version(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ThreadBorderRouterManagement::Attributes::ThreadVersion::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_interface_enabled(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, ThreadBorderRouterManagement::Attributes::InterfaceEnabled::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+}
+
+attribute_t *create_active_dataset_timestamp(cluster_t *cluster, nullable<uint64_t> value)
+{
+    return esp_matter::attribute::create(cluster, ThreadBorderRouterManagement::Attributes::ActiveDatasetTimestamp::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_nullable_uint64(value));
+}
+
+attribute_t *create_pending_dataset_timestamp(cluster_t *cluster, nullable<uint64_t> value)
+{
+    return esp_matter::attribute::create(cluster, ThreadBorderRouterManagement::Attributes::PendingDatasetTimestamp::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_nullable_uint64(value));
+}
+
+} /* attribute */
+} /* thread_border_router_management */
+
 } /* cluster */
 } /* esp_matter */

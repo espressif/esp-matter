@@ -1121,5 +1121,16 @@ attribute_t *create_allowed_vendor_list(cluster_t *cluster, uint8_t *value, uint
 } /* attribute */
 } /* application_basic */
 
+namespace thread_border_router_management {
+namespace attribute {
+attribute_t *create_border_router_name(cluster_t *cluster, char *value, uint16_t length);
+attribute_t *create_border_agent_id(cluster_t *cluster, uint8_t *value, uint16_t length);
+attribute_t *create_thread_version(cluster_t *cluster, uint16_t value);
+attribute_t *create_interface_enabled(cluster_t *cluster, bool value);
+attribute_t *create_active_dataset_timestamp(cluster_t *cluster, nullable<uint64_t> value);
+attribute_t *create_pending_dataset_timestamp(cluster_t *cluster, nullable<uint64_t> value);
+} /* attribute */
+} /* thread_border_router_management */
+
 } /* cluster */
 } /* esp_matter */

@@ -252,6 +252,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_hardware_version_string(cluster, NULL, 0);
         attribute::create_software_version(cluster, 0);
         attribute::create_software_version_string(cluster, NULL, 0);
+        attribute::create_unique_id(cluster, NULL, 0);
         attribute::create_capability_minima(cluster, NULL, 0, 0);
         attribute::create_specification_version(cluster, 0);
         attribute::create_max_paths_per_invoke(cluster, 0);
@@ -3544,6 +3545,53 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     return cluster;
 }
 } /* application_basic */
+
+namespace thread_border_router_management {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, ThreadBorderRouterManagement::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = ThreadBorderRouterManagementDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterThreadBorderRouterManagementPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        attribute::create_border_router_name(cluster, nullptr, 0);
+        attribute::create_border_agent_id(cluster, nullptr, 0);
+        attribute::create_thread_version(cluster, 0);
+        attribute::create_interface_enabled(cluster, false);
+        nullable<uint64_t> timestamp;
+        attribute::create_active_dataset_timestamp(cluster, timestamp);
+
+        /** Attributes not managed internally **/
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    command::create_get_active_dataset_request(cluster);
+    command::create_get_pending_dataset_request(cluster);
+    command::create_dataset_response(cluster);
+    command::create_set_active_dataset_request(cluster);
+
+    if (features & feature::pan_change::get_id()) {
+        feature::pan_change::add(cluster);
+    }
+
+    return cluster;
+}
+
+} /* thread_border_router_management */
 
 // namespace binary_input_basic {
 //     // ToDo

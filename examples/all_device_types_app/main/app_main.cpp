@@ -30,12 +30,10 @@
 #include <app/server/Server.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
+#include <esp_openthread.h>
+#include <esp_openthread_border_router.h>
+#include <esp_openthread_lock.h>
 #endif
-#if CONFIG_OPENTHREAD_BORDER_ROUTER
-#include <esp_matter_thread_br_console.h>
-#include <esp_matter_thread_br_launcher.h>
-#endif // CONFIG_OPENTHREAD_BORDER_ROUTER
-
 
 static const char *TAG = "app_main";
 
@@ -121,14 +119,15 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
     case chip::DeviceLayer::DeviceEventType::kESPSystemEvent:
         if (event->Platform.ESPSystemEvent.Base == IP_EVENT &&
             event->Platform.ESPSystemEvent.Id == IP_EVENT_STA_GOT_IP) {
-#if CONFIG_OPENTHREAD_BORDER_ROUTER
-            esp_openthread_platform_config_t config = {
-                .radio_config = ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG(),
-                .host_config = ESP_OPENTHREAD_DEFAULT_HOST_CONFIG(),
-                .port_config = ESP_OPENTHREAD_DEFAULT_PORT_CONFIG(),
-            };
-            ESP_LOGI(TAG, "init thread br");
-            esp_matter::thread_br_init(&config);
+#ifdef CONFIG_OPENTHREAD_BORDER_ROUTER
+            static bool sThreadBRInitialized = false;
+            if (!sThreadBRInitialized) {
+                esp_openthread_set_backbone_netif(esp_netif_get_handle_from_ifkey("WIFI_STA_DEF"));
+                esp_openthread_lock_acquire(portMAX_DELAY);
+                esp_openthread_border_router_init();
+                esp_openthread_lock_release();
+                sThreadBRInitialized = true;
+            }
 #endif
         }
         break;
@@ -218,8 +217,8 @@ extern "C" void app_main()
     esp_matter::console::diagnostics_register_commands();
     esp_matter::console::wifi_register_commands();
     esp_matter::console::init();
-#if CONFIG_OPENTHREAD_BORDER_ROUTER && CONFIG_OPENTHREAD_CLI
-    esp_matter::console::thread_br_cli_register_command();
+#ifdef CONFIG_OPENTHREAD_CLI
+    esp_matter::console::otcli_register_commands();
 #endif // CONFIG_OPENTHREAD_BORDER_ROUTER && CONFIG_OPENTHREAD_CLI
 
 #endif

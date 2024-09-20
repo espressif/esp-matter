@@ -4752,5 +4752,36 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* device_energy_management */
 
+namespace thread_border_router_management {
+namespace feature {
+
+namespace pan_change {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ThreadBorderRouterManagement::Feature::kPANChange);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    /* attribute */
+    nullable<uint64_t> timestamp;
+    attribute::create_pending_dataset_timestamp(cluster, timestamp);
+
+    /* command */
+    command::create_set_pending_dataset_request(cluster);
+    return ESP_OK;
+}
+
+} /* pan_change */
+
+} /* feature */
+} /* thread_border_router_management */
+
 } /* cluster */
 } /* esp_matter */
