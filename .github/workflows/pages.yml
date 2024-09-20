@@ -62,9 +62,10 @@ jobs:
           . $ESP_MATTER_PATH/export.sh
           cd $ESP_MATTER_PATH/examples/${{ matrix.targets.example }}
 
-          if [ "${{ matrix.targets.sdkconfig }}" != "" ]; then
+          if [ "${{ matrix.targets.sdkconfig }}" != "" ]
+          then
             idf.py -D SDKCONFIG_DEFAULTS="${{ matrix.targets.sdkconfig }}" set-target ${{ matrix.targets.target }} build
-          elif [ -f sdkconfig.defaults.${{ matrix.targets.target }} ]; then
+          else
             idf.py set-target ${{ matrix.targets.target }} build
           fi
 
@@ -86,6 +87,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
+          include-hidden-files: true
           name: build-images-${{ matrix.targets.target }}-${{ matrix.targets.prefix }}-${{ matrix.targets.example }}
           path: images/
 
@@ -138,6 +140,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
+          include-hidden-files: true
           name: build-images-${{ matrix.targets.target }}-${{ matrix.targets.prefix }}-${{ matrix.targets.example }}
           path: images/
 
