@@ -1919,6 +1919,37 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
 } /* thread_border_router */
 
+namespace secondary_network_interface {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_SECONDARY_NETWORK_INTERFACE_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_SECONDARY_NETWORK_INTERFACE_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
+
+    network_commissioning::create(endpoint, &(config->network_commissioning), CLUSTER_FLAG_SERVER);
+
+    return ESP_OK;
+}
+} /* secondary_network_interface */
+
 } /* endpoint */
 
 namespace node {
