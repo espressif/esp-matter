@@ -2580,9 +2580,7 @@ namespace latching_switch {
 
 uint32_t get_id()
 {
-    // The SwitchFeature enum class is not added in the upstream code.
-    // Return the code according to the SPEC
-    return (uint32_t)0x01;
+    return (uint32_t)Switch::Feature::kLatchingSwitch;
 }
 
 esp_err_t add(cluster_t *cluster)
@@ -2590,6 +2588,7 @@ esp_err_t add(cluster_t *cluster)
     VerifyOrReturnError((get_feature_map_value(cluster) & feature::momentary_switch::get_id()) != feature::momentary_switch::get_id(), ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Latching switch is not supported because momentary switch is present"));
     update_feature_map(cluster, get_id());
 
+    event::create_switch_latched(cluster);
     return ESP_OK;
 }
 
@@ -2599,9 +2598,7 @@ namespace momentary_switch {
 
 uint32_t get_id()
 {
-    // The SwitchFeature enum class is not added in the upstream code.
-    // Return the code according to the SPEC
-    return (uint32_t)0x02;
+    return (uint32_t)Switch::Feature::kMomentarySwitch;
 }
 
 esp_err_t add(cluster_t *cluster)
@@ -2609,6 +2606,7 @@ esp_err_t add(cluster_t *cluster)
     VerifyOrReturnError((get_feature_map_value(cluster) & feature::latching_switch::get_id()) != feature::latching_switch::get_id(), ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch is not supported because latching switch is present"));
     update_feature_map(cluster, get_id());
 
+    event::create_initial_press(cluster);
     return ESP_OK;
 }
 
@@ -2618,16 +2616,19 @@ namespace momentary_switch_release {
 
 uint32_t get_id()
 {
-    // The SwitchFeature enum class is not added in the upstream code.
-    // Return the code according to the SPEC
-    return (uint32_t)0x04;
+    return (uint32_t)Switch::Feature::kMomentarySwitchRelease;
 }
 
 esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError((get_feature_map_value(cluster) & feature::momentary_switch::get_id()) == feature::momentary_switch::get_id(), ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch release is not supported because momentary is absent"));
+    uint32_t as_feature_map = feature::action_switch::get_id();
+    uint32_t ms_feature_map = feature::momentary_switch::get_id();
+    uint32_t feature_map = get_feature_map_value(cluster);
+    VerifyOrReturnError(((feature_map & ms_feature_map) != ms_feature_map) || ((feature_map & as_feature_map) == as_feature_map), ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch release is not supported."));
     update_feature_map(cluster, get_id());
 
+    event::create_short_release(cluster);
     return ESP_OK;
 }
 
@@ -2637,17 +2638,23 @@ namespace momentary_switch_long_press {
 
 uint32_t get_id()
 {
-    // The SwitchFeature enum class is not added in the upstream code.
-    // Return the code according to the SPEC
-    return (uint32_t)0x08;
+    return (uint32_t)Switch::Feature::kMomentarySwitchLongPress;
 }
 
 esp_err_t add(cluster_t *cluster)
 {
     uint32_t momentary_and_momentart_switch_release_feature_map = feature::momentary_switch::get_id() | feature::momentary_switch_release::get_id();
     VerifyOrReturnError((get_feature_map_value(cluster) & momentary_and_momentart_switch_release_feature_map) == momentary_and_momentart_switch_release_feature_map, ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch long press is not supported because momentary switch and/or momentary switch release is absent"));
+    uint32_t msr_feature_map = feature::momentary_switch_release::get_id();
+    uint32_t as_feature_map = feature::action_switch::get_id();
+    uint32_t ms_feature_map = feature::momentary_switch::get_id();
+    uint32_t feature_map = get_feature_map_value(cluster);
+    VerifyOrReturnError((feature_map & ms_feature_map) != ms_feature_map, ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch long press is not supported."));
+    VerifyOrReturnError(((feature_map & msr_feature_map) != msr_feature_map) && ((feature_map & as_feature_map) != as_feature_map), ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch long press is not supported."));
     update_feature_map(cluster, get_id());
 
+    event::create_long_press(cluster);
+    event::create_long_release(cluster);
     return ESP_OK;
 }
 
@@ -2657,23 +2664,55 @@ namespace momentary_switch_multi_press {
 
 uint32_t get_id()
 {
-    // The SwitchFeature enum class is not added in the upstream code.
-    // Return the code according to the SPEC
-    return (uint32_t)0x10;
+    return (uint32_t)Switch::Feature::kMomentarySwitchMultiPress;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     uint32_t momentary_and_momentart_switch_release_feature_map = feature::momentary_switch::get_id() | feature::momentary_switch_release::get_id();
     VerifyOrReturnError((get_feature_map_value(cluster) & momentary_and_momentart_switch_release_feature_map) == momentary_and_momentart_switch_release_feature_map, ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch multi press is not supported because momentary switch and/or momentary switch releaseis absent"));
+    uint32_t as_feature_map = feature::action_switch::get_id();
+    VerifyOrReturnError((get_feature_map_value(cluster) & as_feature_map) != as_feature_map, ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch multi press is not supported because action switch is absent"));
+    uint32_t ms_feature_map = feature::momentary_switch::get_id();
+    uint32_t msr_feature_map = feature::momentary_switch_release::get_id();
+    uint32_t ms_and_msr = ms_feature_map | msr_feature_map;
+    if ((get_feature_map_value(cluster) & as_feature_map) != as_feature_map) {
+        if ((get_feature_map_value(cluster) & ms_and_msr) != ms_and_msr) {
+            ESP_LOGE(TAG, "Momentary switch multi press is not supported.");
+            return ESP_ERR_NOT_SUPPORTED;
+        }
+        event::create_multi_press_ongoing(cluster);
+    }
     update_feature_map(cluster, get_id());
 
     attribute::create_multi_press_max(cluster, config->multi_press_max);
 
+    event::create_multi_press_complete(cluster);
     return ESP_OK;
 }
 
 } /* momentary_switch_multi_press */
+
+namespace action_switch {
+
+uint32_t get_id()
+{
+    return (uint32_t)Switch::Feature::kActionSwitch;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if ((get_feature_map_value(cluster) & feature::momentary_switch::get_id()) != feature::momentary_switch::get_id()) {
+        ESP_LOGE(TAG, "Momentary switch is present");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* action_switch */
+
 } /* feature */
 } /* switch_cluster */
 

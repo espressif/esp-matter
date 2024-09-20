@@ -1465,7 +1465,14 @@ typedef struct config {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 
-} /* momentary_switch_multi_pressy */
+} /* momentary_switch_multi_press */
+
+namespace action_switch {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* action_switch */
 } /* feature */
 } /* switch_cluster */
 
