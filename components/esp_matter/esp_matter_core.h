@@ -549,7 +549,7 @@ namespace attribute {
  * @return Attribute handle on success.
  * @return NULL in case of failure.
  */
-attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, esp_matter_attr_val_t val,
+attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, esp_matter_attr_val_t val,
                     uint16_t max_val_size = 0);
 
 /** Get attribute
@@ -560,7 +560,7 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, es
  * @param[in] attribute_id Attribute ID for the attribute.
  *
  * @return Attribute handle on success.
- * @return NULL in case of failure.
+ * @return NULL in case of failure or for attributes managed internally.
  */
 attribute_t *get(cluster_t *cluster, uint32_t attribute_id);
 
@@ -671,11 +671,12 @@ esp_err_t add_bounds(attribute_t *attribute, esp_matter_attr_val_t min, esp_matt
  * Get the bounds which have been added to the attribute.
  *
  * @param[in] attribute Attribute handle.
+ * @param[in] bounds Pointer to `esp_matter_attr_bounds_t`.
  *
- * @return Pointer to the attribute bounds structure.
- * @return NULL in case of failure or if the bounds were not added.
+ * @return ESP_OK on success.
+ * @return error in case of failure.
  */
-esp_matter_attr_bounds_t *get_bounds(attribute_t *attribute);
+esp_err_t get_bounds(attribute_t *attribute, esp_matter_attr_bounds_t *bounds);
 
 /** Get attribute flags
  *
