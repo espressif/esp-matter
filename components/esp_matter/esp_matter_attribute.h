@@ -670,7 +670,7 @@ namespace attribute {
 attribute_t *create_lock_state(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_lock_type(cluster_t *cluster, uint8_t value);
 attribute_t *create_actuator_enabled(cluster_t *cluster, bool value);
-attribute_t *create_door_state(cluster_t *cluster, uint8_t value);
+attribute_t *create_door_state(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_door_open_events(cluster_t *cluster, uint32_t value);
 attribute_t *create_door_close_events(cluster_t *cluster, uint32_t value);
 attribute_t *create_open_period(cluster_t *cluster, uint16_t value);
