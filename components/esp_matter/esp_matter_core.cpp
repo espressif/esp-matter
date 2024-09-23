@@ -155,23 +155,18 @@ FabricDelegateImpl s_fabric_delegate;
 
 }  // namespace
 
-typedef struct _internal_attribute {
-    uint16_t flags; // Ensure the memory layouts of flags and next are the same as struct _attribute.
-                    // Add this struct to distinguish between creating attributes failed and
-                    // creating attributes managed internally.
-    struct _internal_attribute *next;
-} _internal_attribute_t;
+struct _attribute_base_t {
+    uint16_t flags; // This struct is for attributes managed internally.
+    struct _attribute_base_t *next;
+};
 
-
-typedef struct _attribute {
-    uint16_t flags; // Set uint16_t to cover the range of attribute_flags_t
-    struct _attribute *next;
-    uint32_t cluster_id;
+struct _attribute_t : public _attribute_base_t {
+    uint32_t cluster_id; // This struct is for attributes not managed internally.
     uint16_t endpoint_id;
     uint16_t index;
     esp_matter_attr_val_t val;
     attribute::callback_t override_callback;
-} _attribute_t;
+};
 
 typedef struct _command {
     uint32_t command_id;
@@ -193,7 +188,7 @@ typedef struct _cluster {
     cluster::delegate_init_callback_t delegate_init_callback;
     void * delegate_pointer;
     cluster::add_bounds_callback_t add_bounds_callback;
-    _attribute_t *attribute_list; /* If attribute is managed internally, the actual pointer type is _internal_attribute_t.
+    _attribute_base_t *attribute_list; /* If attribute is managed internally, the actual pointer type is _internal_attribute_t.
                                      When operating attribute_list, do check the flags first! */
     EmberAfAttributeMetadata *matter_attributes;
     _command_t *command_list;
@@ -341,7 +336,7 @@ esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttributeTyp
                                  uint16_t attribute_size, uint8_t *value,
                                  const EmberAfAttributeMetadata * attribute_metadata);
 
-static int get_count(_attribute_t *current)
+static int get_count(_attribute_base_t *current)
 {
     int count = 0;
     while (current) {
@@ -1135,13 +1130,13 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, e
         }
         matter_clusters->clusterSize += matter_attribute->size;
     } else {
-        attribute = (_attribute_t *)esp_matter_mem_calloc(1, sizeof(_internal_attribute_t));
+        attribute = (_attribute_t *)esp_matter_mem_calloc(1, sizeof(_attribute_base_t));
         attribute->flags = flags;
     }
 
     /* Add */
-    _attribute_t *previous_attribute = NULL;
-    _attribute_t *current_attribute = current_cluster->attribute_list;
+    _attribute_base_t *previous_attribute = NULL;
+    _attribute_base_t *current_attribute = current_cluster->attribute_list;
     while (current_attribute) {
         previous_attribute = current_attribute;
         current_attribute = current_attribute->next;
@@ -1164,8 +1159,8 @@ static esp_err_t destroy(attribute_t *attribute)
     _attribute_t *current_attribute = (_attribute_t *)attribute;
 
     if (current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY) {
-        // For attribute managed internally, free as the _internal_attribute_t pointer.
-        esp_matter_mem_free((_internal_attribute_t *)attribute);
+        // For attribute managed internally, free as the _attribute_base_t pointer.
+        esp_matter_mem_free((_attribute_base_t *)attribute);
         return ESP_OK;
     }
 
@@ -1214,9 +1209,9 @@ attribute_t *get(cluster_t *cluster, uint32_t attribute_id)
         return NULL;
     }
 
-    _attribute_t *current_attribute = (_attribute_t *)current_cluster->attribute_list;
+    _attribute_base_t *current_attribute = current_cluster->attribute_list;
     while (current_attribute) {
-        if ((current_attribute->flags & ATTRIBUTE_FLAG_EXTERNAL_STORAGE) && (current_attribute->index == attribute_index)) {
+        if ((current_attribute->flags & ATTRIBUTE_FLAG_EXTERNAL_STORAGE) && (static_cast<_attribute_t *>(current_attribute)->index == attribute_index)) {
             break;
         }
         current_attribute = current_attribute->next;
@@ -1811,7 +1806,7 @@ cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags)
 
     /* Set */
     EmberAfCluster *matter_cluster = (EmberAfCluster *)&current_endpoint->endpoint_type->cluster[cluster->index];
-    cluster->endpoint_id = current_endpoint->endpoint_id;    
+    cluster->endpoint_id = current_endpoint->endpoint_id;
 
     matter_cluster->clusterId = cluster_id;
     matter_cluster->mask = flags;
@@ -1852,9 +1847,9 @@ static esp_err_t destroy(cluster_t *cluster)
     }
 
     /* Parse and delete all attributes */
-    _attribute_t *attribute = current_cluster->attribute_list;
+    _attribute_base_t *attribute = current_cluster->attribute_list;
     while (attribute) {
-        _attribute_t *next_attribute = attribute->next;
+        _attribute_base_t *next_attribute = attribute->next;
         attribute::destroy((attribute_t *)attribute);
         attribute = next_attribute;
     }
