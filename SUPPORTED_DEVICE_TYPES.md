@@ -10,6 +10,7 @@ Utility Device Types
 5. Bridged Node
 6. Electrical Sensor
 7. Device Energy Management
+8. Secondary Network Interface
 
 Application Device Types
 
