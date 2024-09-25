@@ -303,6 +303,18 @@ static int get_count(_cluster_t *current)
 } /* cluster */
 
 namespace command {
+#if defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
+command_list_t *get_cluster_accepted_command_list(uint32_t cluster_id);
+size_t get_cluster_accepted_command_count(uint32_t cluster_id);
+command_list_t *get_cluster_generated_command_list(uint32_t cluster_id);
+size_t get_cluster_generated_command_count(uint32_t cluster_id);
+#else
+command_list_t *get_cluster_accepted_command_list(uint32_t cluster_id) { return nullptr; }
+size_t get_cluster_accepted_command_count(uint32_t cluster_id) { return 0; }
+command_list_t *get_cluster_generated_command_list(uint32_t cluster_id) { return nullptr; }
+size_t get_cluster_generated_command_count(uint32_t cluster_id) {return 0; }
+#endif // defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
+
 static int get_count(_command_t *current, int command_flag)
 {
     int count = 0;
@@ -574,6 +586,8 @@ esp_err_t enable(endpoint_t *endpoint)
     CommandId *accepted_command_ids = NULL;
     CommandId *generated_command_ids = NULL;
     _command_t *command = NULL;
+    command_list_t *command_list = NULL;
+    uint32_t cluster_id = kInvalidClusterId;
     int command_count = 0;
     int command_index = 0;
     int command_flag = COMMAND_FLAG_NONE;
@@ -594,11 +608,13 @@ esp_err_t enable(endpoint_t *endpoint)
         command_flag = COMMAND_FLAG_NONE;
         accepted_command_ids = NULL;
         generated_command_ids = NULL;
+        cluster_id = cluster::get_id((cluster_t*)cluster);
 
         /* Client Generated Commands */
         command_flag = COMMAND_FLAG_ACCEPTED;
         command = cluster->command_list;
         command_count = command::get_count(command, command_flag);
+        command_count += command::get_cluster_accepted_command_count(cluster_id);
         if (command_count > 0) {
             command_index = 0;
             accepted_command_ids = (CommandId *)esp_matter_mem_calloc(1, (command_count + 1) * sizeof(CommandId));
@@ -614,6 +630,11 @@ esp_err_t enable(endpoint_t *endpoint)
                 }
                 command = command->next;
             }
+            command_list = command::get_cluster_accepted_command_list(cluster_id);
+            for(size_t index = 0; command_index < command_count && command_list; index++) {
+                accepted_command_ids[command_index] = command_list[index].command_id;
+                command_index++;
+            }
             accepted_command_ids[command_index] = kInvalidCommandId;
         }
 
@@ -621,6 +642,7 @@ esp_err_t enable(endpoint_t *endpoint)
         command_flag = COMMAND_FLAG_GENERATED;
         command = cluster->command_list;
         command_count = command::get_count(command, command_flag);
+        command_count += command::get_cluster_generated_command_count(cluster_id);
         if (command_count > 0) {
             command_index = 0;
             generated_command_ids = (CommandId *)esp_matter_mem_calloc(1, (command_count + 1) * sizeof(CommandId));
@@ -635,6 +657,11 @@ esp_err_t enable(endpoint_t *endpoint)
                     command_index++;
                 }
                 command = command->next;
+            }
+            command_list = command::get_cluster_generated_command_list(cluster_id);
+            for(size_t index = 0; command_index < command_count && command_list; index++) {
+                generated_command_ids[command_index] = command_list[index].command_id;
+                command_index++;
             }
             generated_command_ids[command_index] = kInvalidCommandId;
         }

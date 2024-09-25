@@ -17,6 +17,20 @@
 #include <esp_matter.h>
 
 namespace esp_matter {
+struct command_list_t {
+    uint32_t command_id;
+    uint8_t flags;
+    command::callback_t callback;
+};
+
+struct cluster_command_t {
+    uint32_t cluster_id;
+    size_t accepted_command_count;
+    size_t generated_command_count;
+    const command_list_t *accepted_command_list;
+    const command_list_t *generated_command_list;
+};
+
 namespace cluster {
 
 /** Specific command create APIs
