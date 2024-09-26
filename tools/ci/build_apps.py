@@ -87,7 +87,6 @@ def get_cmake_apps(
         build_log_filename='build_log.txt',
         size_json_filename='size.json',
         check_warnings=False,
-        preserve=True,
         manifest_files=MAINFEST_FILES,
     )
     return apps
