@@ -19,6 +19,9 @@
 #include <esp_matter_feature.h>
 #include <stdint.h>
 
+#include <app-common/zap-generated/cluster-enums.h>
+#include <lib/support/TypeTraits.h>
+
 namespace esp_matter {
 namespace cluster {
 
@@ -116,7 +119,17 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* general_commissioning */
 
 namespace network_commissioning {
-using config_t = common::config_t;
+typedef struct config {
+    uint32_t feature_map;
+    config() :
+#if CHIP_DEVICE_CONFIG_ENABLE_WIFI
+        feature_map(chip::to_underlying(chip::app::Clusters::NetworkCommissioning::Feature::kWiFiNetworkInterface)) {}
+#elif CHIP_DEVICE_CONFIG_ENABLE_THREAD
+        feature_map(chip::to_underlying(chip::app::Clusters::NetworkCommissioning::Feature::kThreadNetworkInterface)) {}
+#else
+        feature_map(chip::to_underlying(chip::app::Clusters::NetworkCommissioning::Feature::kEthernetNetworkInterface)) {}
+#endif
+} config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* network_commissioning */
 

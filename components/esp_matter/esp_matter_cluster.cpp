@@ -22,7 +22,9 @@
 #include <esp_matter_attribute_bounds.h>
 
 #include <app-common/zap-generated/callback.h>
+#include <app-common/zap-generated/cluster-enums.h>
 #include <app/PluginApplicationCallbacks.h>
+#include <lib/support/TypeTraits.h>
 
 static const char *TAG = "esp_matter_cluster";
 
@@ -457,13 +459,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_last_networking_status(cluster, nullable<uint8_t>());
         attribute::create_last_network_id(cluster, NULL, 0);
         attribute::create_last_connect_error_value(cluster, nullable<int32_t>());
-#if CHIP_DEVICE_CONFIG_ENABLE_WIFI
-        attribute::create_supported_wifi_bands(cluster, NULL, 0, 0);
-#endif
-#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-        attribute::create_supported_thread_features(cluster, 0);
-        attribute::create_thread_version(cluster, 0);
-#endif
+        if (config->feature_map & chip::to_underlying(NetworkCommissioning::Feature::kWiFiNetworkInterface)) {
+            attribute::create_supported_wifi_bands(cluster, NULL, 0, 0);
+        }
+        if (config->feature_map & chip::to_underlying(NetworkCommissioning::Feature::kThreadNetworkInterface)) {
+            attribute::create_supported_thread_features(cluster, 0);
+            attribute::create_thread_version(cluster, 0);
+        }
         global::attribute::create_feature_map(cluster, 0);
 
         /* Attributes not managed internally */
@@ -473,8 +475,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     /* Commands */
     command::create_scan_networks(cluster);
     command::create_scan_networks_response(cluster);
-    command::create_add_or_update_wifi_network(cluster);
-    command::create_add_or_update_thread_network(cluster);
+    if (config->feature_map & chip::to_underlying(NetworkCommissioning::Feature::kWiFiNetworkInterface)) {
+        command::create_add_or_update_wifi_network(cluster);
+    }
+    if (config->feature_map & chip::to_underlying(NetworkCommissioning::Feature::kThreadNetworkInterface)) {
+        command::create_add_or_update_thread_network(cluster);
+    }
     command::create_remove_network(cluster);
     command::create_network_config_response(cluster);
     command::create_connect_network(cluster);
