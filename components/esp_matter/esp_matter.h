@@ -88,7 +88,7 @@ typedef enum attribute_flags {
      will not be written to flash immediately. A timer will be started and the attribute value will be written after
      timeout. */
     ATTRIBUTE_FLAG_DEFERRED = ATTRIBUTE_FLAG_NULLABLE << 2, /* 0x100 */
-    /** The attribute is managed internally and  is not stored in the ESP Matter database.
+    /** The attribute is managed internally and is not stored in the ESP Matter database.
     If not set, ATTRIBUTE_FLAG_EXTERNAL_STORAGE flag will be enabled. */
     ATTRIBUTE_FLAG_MANAGED_INTERNALLY = ATTRIBUTE_FLAG_NULLABLE << 3, /* 0x200 */
 } attribute_flags_t;

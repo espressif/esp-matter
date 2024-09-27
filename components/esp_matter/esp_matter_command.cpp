@@ -42,9 +42,7 @@ void DispatchSingleClusterCommandCommon(const ConcreteCommandPath &command_path,
     uint32_t command_id = command_path.mCommandId;
     ESP_LOGI(TAG, "Received command 0x%08" PRIX32 " for endpoint 0x%04" PRIX16 "'s cluster 0x%08" PRIX32 "", command_id, endpoint_id, cluster_id);
 
-    node_t *node = node::get();
-    endpoint_t *endpoint = endpoint::get(node, endpoint_id);
-    cluster_t *cluster = cluster::get(endpoint, cluster_id);
+    cluster_t *cluster = cluster::get(endpoint_id, cluster_id);
     if (!cluster) {
         return;
     }
@@ -57,29 +55,28 @@ void DispatchSingleClusterCommandCommon(const ConcreteCommandPath &command_path,
     esp_err_t err = ESP_OK;
     TLVReader tlv_reader;
     tlv_reader.Init(tlv_data);
-    if ((err == ESP_OK) && standard_callback) {
-        err = standard_callback(command_path, tlv_data, opaque_ptr);
+    if (standard_callback) {
+        standard_callback(command_path, tlv_data, opaque_ptr);
     }
-    if (!command) {
-        return;
-    }
-    callback_t callback = get_user_callback(command);
-    if (callback) {
-        err = callback(command_path, tlv_reader, opaque_ptr);
-    }
-    callback = get_callback(command);
-    if ((err == ESP_OK) && callback) {
-        err = callback(command_path, tlv_data, opaque_ptr);
-    }
-    int flags = get_flags(command);
-    if (flags & COMMAND_FLAG_CUSTOM) {
-        chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
-        if (!command_obj) {
-            ESP_LOGE(TAG, "Command Object cannot be NULL");
-            return;
+    if (command) {
+        callback_t callback = get_user_callback(command);
+        if (callback) {
+            err = callback(command_path, tlv_reader, opaque_ptr);
         }
-        command_obj->AddStatus(command_path, err == ESP_OK ? chip::Protocols::InteractionModel::Status::Success :
-                                                             chip::Protocols::InteractionModel::Status::Failure);
+        callback = get_callback(command);
+        if ((err == ESP_OK) && callback) {
+            err = callback(command_path, tlv_data, opaque_ptr);
+        }
+        int flags = get_flags(command);
+        if (flags & COMMAND_FLAG_CUSTOM) {
+            chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
+            if (!command_obj) {
+                ESP_LOGE(TAG, "Command Object cannot be NULL");
+                return;
+            }
+            command_obj->AddStatus(command_path, err == ESP_OK ? chip::Protocols::InteractionModel::Status::Success :
+                                                                chip::Protocols::InteractionModel::Status::Failure);
+        }
     }
 }
 
@@ -1594,12 +1591,12 @@ command_t *create_reset_counts(cluster_t *cluster)
 namespace ethernet_network_diagnostics {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {EthernetNetworkDiagnostics::Commands::ResetCounts::Id, COMMAND_FLAG_ACCEPTED,
      esp_matter_command_callback_ethernet_reset_counts},
 };
 
-constexpr const command_list_t generated_command_list[] = {};
+constexpr const command_entry_t generated_command_list[] = {};
 
 command_t *create_reset_counts(cluster_t *cluster)
 {
@@ -1613,12 +1610,12 @@ command_t *create_reset_counts(cluster_t *cluster)
 namespace diagnostic_logs {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {DiagnosticLogs::Commands::RetrieveLogsRequest::Id, COMMAND_FLAG_ACCEPTED,
      esp_matter_command_callback_retrieve_logs_request},
 };
 
-constexpr const command_list_t generated_command_list[] = {
+constexpr const command_entry_t generated_command_list[] = {
     {DiagnosticLogs::Commands::RetrieveLogsResponse::Id, COMMAND_FLAG_GENERATED, NULL},
 };
 
@@ -1640,14 +1637,14 @@ command_t *create_retrieve_logs_response(cluster_t *cluster)
 namespace general_diagnostics {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {GeneralDiagnostics::Commands::TestEventTrigger::Id, COMMAND_FLAG_ACCEPTED,
      esp_matter_command_callback_test_event_trigger},
     {GeneralDiagnostics::Commands::TimeSnapshot::Id, COMMAND_FLAG_ACCEPTED,
      esp_matter_command_callback_time_snap_shot},
 };
 
-constexpr const command_list_t generated_command_list[] = {
+constexpr const command_entry_t generated_command_list[] = {
     {GeneralDiagnostics::Commands::TimeSnapshotResponse::Id, COMMAND_FLAG_GENERATED, NULL},
 };
 
@@ -1687,14 +1684,14 @@ command_t *create_reset_watermarks(cluster_t *cluster)
 namespace group_key_management {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {GroupKeyManagement::Commands::KeySetWrite::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_key_set_write},
     {GroupKeyManagement::Commands::KeySetRead::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_key_set_read},
     {GroupKeyManagement::Commands::KeySetRemove::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_key_set_remove},
     {GroupKeyManagement::Commands::KeySetReadAllIndices::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_key_set_read_all_indices},
 };
 
-constexpr const command_list_t generated_command_list[] = {
+constexpr const command_entry_t generated_command_list[] = {
     {GroupKeyManagement::Commands::KeySetReadResponse::Id, COMMAND_FLAG_GENERATED, NULL},
     {GroupKeyManagement::Commands::KeySetReadAllIndicesResponse::Id, COMMAND_FLAG_GENERATED, NULL},
 };
@@ -1741,7 +1738,7 @@ command_t *create_key_set_read_all_indices_response(cluster_t *cluster)
 namespace general_commissioning {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {GeneralCommissioning::Commands::ArmFailSafe::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_arm_fail_safe},
     {GeneralCommissioning::Commands::SetRegulatoryConfig::Id, COMMAND_FLAG_ACCEPTED,
      esp_matter_command_callback_set_regulatory_config},
@@ -1749,7 +1746,7 @@ constexpr const command_list_t accepted_command_list[] = {
      esp_matter_command_callback_commissioning_complete},
 };
 
-constexpr const command_list_t generated_command_list[] = {
+constexpr const command_entry_t generated_command_list[] = {
     {GeneralCommissioning::Commands::ArmFailSafeResponse::Id, COMMAND_FLAG_GENERATED, NULL},
     {GeneralCommissioning::Commands::SetRegulatoryConfigResponse::Id, COMMAND_FLAG_GENERATED, NULL},
     {GeneralCommissioning::Commands::CommissioningCompleteResponse::Id, COMMAND_FLAG_GENERATED, NULL},
@@ -1797,14 +1794,14 @@ command_t *create_commissioning_complete_response(cluster_t *cluster)
 namespace network_commissioning {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {NetworkCommissioning::Commands::ScanNetworks::Id, COMMAND_FLAG_ACCEPTED, NULL},
     {NetworkCommissioning::Commands::RemoveNetwork::Id, COMMAND_FLAG_ACCEPTED, NULL},
     {NetworkCommissioning::Commands::ConnectNetwork::Id, COMMAND_FLAG_ACCEPTED, NULL},
     {NetworkCommissioning::Commands::ReorderNetwork::Id, COMMAND_FLAG_ACCEPTED, NULL},
 };
 
-constexpr const command_list_t generated_command_list[] = {
+constexpr const command_entry_t generated_command_list[] = {
     {NetworkCommissioning::Commands::ScanNetworksResponse::Id, COMMAND_FLAG_GENERATED, NULL},
     {NetworkCommissioning::Commands::NetworkConfigResponse::Id, COMMAND_FLAG_GENERATED, NULL},
     {NetworkCommissioning::Commands::ConnectNetworkResponse::Id, COMMAND_FLAG_GENERATED, NULL},
@@ -1870,14 +1867,14 @@ command_t *create_connect_network_response(cluster_t *cluster)
 namespace administrator_commissioning {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {AdministratorCommissioning::Commands::OpenCommissioningWindow::Id, COMMAND_FLAG_ACCEPTED,
      esp_matter_command_callback_open_commissioning_window},
     {AdministratorCommissioning::Commands::RevokeCommissioning::Id, COMMAND_FLAG_ACCEPTED,
      esp_matter_command_callback_revoke_commissioning},
 };
 
-constexpr const command_list_t generated_command_list[] = {};
+constexpr const command_entry_t generated_command_list[] = {};
 
 command_t *create_open_commissioning_window(cluster_t *cluster)
 {
@@ -1904,7 +1901,7 @@ command_t *create_revoke_commissioning(cluster_t *cluster)
 namespace operational_credentials {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {OperationalCredentials::Commands::AttestationRequest::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_attestation_request},
     {OperationalCredentials::Commands::CertificateChainRequest::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_certificate_chain_request},
     {OperationalCredentials::Commands::CSRRequest::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_csr_request},
@@ -1915,7 +1912,7 @@ constexpr const command_list_t accepted_command_list[] = {
     {OperationalCredentials::Commands::AddTrustedRootCertificate::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_add_trusted_root_certificate},
 };
 
-constexpr const command_list_t generated_command_list[] = {
+constexpr const command_entry_t generated_command_list[] = {
     {OperationalCredentials::Commands::AttestationResponse::Id, COMMAND_FLAG_GENERATED, NULL},
     {OperationalCredentials::Commands::CertificateChainResponse::Id, COMMAND_FLAG_GENERATED, NULL},
     {OperationalCredentials::Commands::CSRResponse::Id, COMMAND_FLAG_GENERATED, NULL},
@@ -2000,7 +1997,7 @@ command_t *create_noc_response(cluster_t *cluster)
 namespace ota_provider {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {OtaSoftwareUpdateProvider::Commands::QueryImage::Id, COMMAND_FLAG_ACCEPTED,
      esp_matter_command_callback_query_image},
     {OtaSoftwareUpdateProvider::Commands::ApplyUpdateRequest::Id, COMMAND_FLAG_ACCEPTED,
@@ -2009,7 +2006,7 @@ constexpr const command_list_t accepted_command_list[] = {
      esp_matter_command_callback_notify_update_applied},
 };
 
-constexpr const command_list_t generated_command_list[] = {
+constexpr const command_entry_t generated_command_list[] = {
     {OtaSoftwareUpdateProvider::Commands::QueryImageResponse::Id, COMMAND_FLAG_GENERATED, NULL},
     {OtaSoftwareUpdateProvider::Commands::ApplyUpdateResponse::Id, COMMAND_FLAG_GENERATED, NULL},
 };
@@ -2050,12 +2047,12 @@ command_t *create_apply_update_response(cluster_t *cluster)
 namespace ota_requestor {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {OtaSoftwareUpdateRequestor::Commands::AnnounceOTAProvider::Id, COMMAND_FLAG_ACCEPTED,
      esp_matter_command_callback_announce_ota_provider},
 };
 
-constexpr const command_list_t generated_command_list[] = {};
+constexpr const command_entry_t generated_command_list[] = {};
 
 command_t *create_announce_ota_provider(cluster_t *cluster)
 {
@@ -2069,11 +2066,11 @@ command_t *create_announce_ota_provider(cluster_t *cluster)
 namespace identify {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {Identify::Commands::Identify::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_identify},
 };
 
-constexpr const command_list_t generated_command_list[] = {};
+constexpr const command_entry_t generated_command_list[] = {};
 
 command_t *create_identify(cluster_t *cluster)
 {
@@ -2093,7 +2090,7 @@ command_t *create_trigger_effect(cluster_t *cluster)
 namespace groups {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {Groups::Commands::AddGroup::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_add_group},
     {Groups::Commands::ViewGroup::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_view_group},
     {Groups::Commands::GetGroupMembership::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_get_group_membership},
@@ -2103,7 +2100,7 @@ constexpr const command_list_t accepted_command_list[] = {
      esp_matter_command_callback_add_group_if_identifying},
 };
 
-constexpr const command_list_t generated_command_list[] = {
+constexpr const command_entry_t generated_command_list[] = {
     {Groups::Commands::AddGroupResponse::Id, COMMAND_FLAG_GENERATED, NULL},
     {Groups::Commands::ViewGroupResponse::Id, COMMAND_FLAG_GENERATED, NULL},
     {Groups::Commands::GetGroupMembershipResponse::Id, COMMAND_FLAG_GENERATED, NULL},
@@ -2203,7 +2200,7 @@ command_t *create_stay_active_request(cluster_t *cluster)
 namespace scenes_management {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {ScenesManagement::Commands::AddScene::Id, COMMAND_FLAG_ACCEPTED, NULL},
     {ScenesManagement::Commands::ViewScene::Id, COMMAND_FLAG_ACCEPTED, NULL},
     {ScenesManagement::Commands::RemoveScene::Id, COMMAND_FLAG_ACCEPTED, NULL},
@@ -2213,7 +2210,7 @@ constexpr const command_list_t accepted_command_list[] = {
     {ScenesManagement::Commands::GetSceneMembership::Id, COMMAND_FLAG_ACCEPTED, NULL},
 };
 
-constexpr const command_list_t generated_command_list[] = {
+constexpr const command_entry_t generated_command_list[] = {
     {ScenesManagement::Commands::AddSceneResponse::Id, COMMAND_FLAG_GENERATED, NULL},
     {ScenesManagement::Commands::ViewSceneResponse::Id, COMMAND_FLAG_GENERATED, NULL},
     {ScenesManagement::Commands::RemoveSceneResponse::Id, COMMAND_FLAG_GENERATED, NULL},
@@ -2306,11 +2303,11 @@ command_t *create_copy_scene_response(cluster_t *cluster)
 namespace on_off {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {OnOff::Commands::Off::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_off},
 };
 
-constexpr const command_list_t generated_command_list[] = {};
+constexpr const command_entry_t generated_command_list[] = {};
 
 command_t *create_off(cluster_t *cluster)
 {
@@ -2354,7 +2351,7 @@ command_t *create_on_with_timed_off(cluster_t *cluster)
 namespace level_control {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {LevelControl::Commands::MoveToLevel::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_move_to_level},
     {LevelControl::Commands::Move::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_move},
     {LevelControl::Commands::Step::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_step},
@@ -2369,7 +2366,7 @@ constexpr const command_list_t accepted_command_list[] = {
      esp_matter_command_callback_stop_with_on_off},
 };
 
-constexpr const command_list_t generated_command_list[] = {};
+constexpr const command_entry_t generated_command_list[] = {};
 
 command_t *create_move_to_level(cluster_t *cluster)
 {
@@ -2551,12 +2548,12 @@ command_t *create_color_loop_set(cluster_t *cluster)
 namespace thermostat {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {Thermostat::Commands::SetpointRaiseLower::Id, COMMAND_FLAG_ACCEPTED,
      esp_matter_command_callback_setpoint_raise_lower},
 };
 
-constexpr const command_list_t generated_command_list[] = {};
+constexpr const command_entry_t generated_command_list[] = {};
 
 command_t *create_setpoint_raise_lower(cluster_t *cluster)
 {
@@ -2636,12 +2633,12 @@ command_t *create_self_test_request(cluster_t *cluster)
 namespace door_lock {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {DoorLock::Commands::LockDoor::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_lock_door},
     {DoorLock::Commands::UnlockDoor::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_unlock_door},
 };
 
-constexpr const command_list_t generated_command_list[] = {};
+constexpr const command_entry_t generated_command_list[] = {};
 
 command_t *create_lock_door(cluster_t *cluster)
 {
@@ -2799,13 +2796,13 @@ command_t *create_unbolt_door(cluster_t *cluster)
 namespace window_covering {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {WindowCovering::Commands::UpOrOpen::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_up_or_open},
     {WindowCovering::Commands::DownOrClose::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_down_or_close},
     {WindowCovering::Commands::StopMotion::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_stop_motion},
 };
 
-constexpr const command_list_t generated_command_list[] = {};
+constexpr const command_entry_t generated_command_list[] = {};
 
 command_t *create_up_or_open(cluster_t *cluster)
 {
@@ -2855,11 +2852,11 @@ command_t *create_go_to_tilt_percentage(cluster_t *cluster)
 namespace mode_select {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {ModeSelect::Commands::ChangeToMode::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_change_to_mode},
 };
 
-constexpr const command_list_t generated_command_list[] = {};
+constexpr const command_entry_t generated_command_list[] = {};
 
 command_t *create_change_to_mode(cluster_t *cluster)
 {
@@ -2872,12 +2869,12 @@ command_t *create_change_to_mode(cluster_t *cluster)
 namespace temperature_control {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {TemperatureControl::Commands::SetTemperature::Id, COMMAND_FLAG_ACCEPTED,
      esp_matter_command_callback_set_temperature},
 };
 
-constexpr const command_list_t generated_command_list[] = {};
+constexpr const command_entry_t generated_command_list[] = {};
 
 command_t *create_set_temperature(cluster_t *cluster)
 {
@@ -2939,11 +2936,11 @@ command_t *create_change_to_mode_response(cluster_t *cluster)
 namespace keypad_input {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {KeypadInput::Commands::SendKey::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_send_key},
 };
 
-constexpr const command_list_t generated_command_list[] = {
+constexpr const command_entry_t generated_command_list[] = {
     {KeypadInput::Commands::SendKeyResponse::Id, COMMAND_FLAG_GENERATED, NULL},
 };
 
@@ -2978,12 +2975,12 @@ command_t *create_enable_disable_alarm(cluster_t *cluster)
 namespace energy_evse {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {EnergyEvse::Commands::Disable::Id, COMMAND_FLAG_ACCEPTED, NULL},
     {EnergyEvse::Commands::EnableCharging::Id, COMMAND_FLAG_ACCEPTED, NULL},
 };
 
-constexpr const command_list_t generated_command_list[] = {};
+constexpr const command_entry_t generated_command_list[] = {};
 
 command_t *create_disable(cluster_t *cluster)
 {
@@ -3031,11 +3028,11 @@ command_t *create_get_targets_response(cluster_t *cluster)
 namespace microwave_oven_control {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {MicrowaveOvenControl::Commands::SetCookingParameters::Id, COMMAND_FLAG_ACCEPTED, NULL},
 };
 
-constexpr const command_list_t generated_command_list[] = {};
+constexpr const command_entry_t generated_command_list[] = {};
 
 command_t *create_set_cooking_parameters(cluster_t *cluster)
 {
@@ -3053,12 +3050,12 @@ command_t *create_add_more_time(cluster_t *cluster)
 namespace valve_configuration_and_control {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {ValveConfigurationAndControl::Commands::Open::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_open},
     {ValveConfigurationAndControl::Commands::Close::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_close},
 };
 
-constexpr const command_list_t generated_command_list[] = {};
+constexpr const command_entry_t generated_command_list[] = {};
 
 command_t *create_open(cluster_t *cluster)
 {
@@ -3121,13 +3118,13 @@ command_t *create_cancel_request(cluster_t *cluster)
 namespace thread_border_router_management {
 namespace command {
 
-constexpr const command_list_t accepted_command_list[] = {
+constexpr const command_entry_t accepted_command_list[] = {
     {ThreadBorderRouterManagement::Commands::GetActiveDatasetRequest::Id, COMMAND_FLAG_ACCEPTED, NULL},
     {ThreadBorderRouterManagement::Commands::GetPendingDatasetRequest::Id, COMMAND_FLAG_ACCEPTED, NULL},
     {ThreadBorderRouterManagement::Commands::SetActiveDatasetRequest::Id, COMMAND_FLAG_ACCEPTED, NULL},
 };
 
-constexpr const command_list_t generated_command_list[] = {
+constexpr const command_entry_t generated_command_list[] = {
     {ThreadBorderRouterManagement::Commands::DatasetResponse::Id, COMMAND_FLAG_GENERATED, NULL},
 };
 
@@ -3169,13 +3166,13 @@ command_t *create_set_pending_dataset_request(cluster_t *cluster)
 
 namespace esp_matter {
 namespace command {
-#define GET_ACCEPTED_COMMAND_COUNT(cluster) sizeof(cluster::command::accepted_command_list) / sizeof(command_list_t)
+#define GET_ACCEPTED_COMMAND_COUNT(cluster) sizeof(cluster::command::accepted_command_list) / sizeof(command_entry_t)
 #define GET_ACCEPTED_COMMAND_LIST(cluster) \
-    static_cast<const command_list_t *>(&cluster::command::accepted_command_list[0])
+    static_cast<const command_entry_t *>(&cluster::command::accepted_command_list[0])
 
-#define GET_GENERATED_COMMAND_COUNT(cluster) sizeof(cluster::command::generated_command_list) / sizeof(command_list_t)
+#define GET_GENERATED_COMMAND_COUNT(cluster) sizeof(cluster::command::generated_command_list) / sizeof(command_entry_t)
 #define GET_GENERATED_COMMAND_LIST(cluster) \
-    static_cast<const command_list_t *>(&cluster::command::generated_command_list[0])
+    static_cast<const command_entry_t *>(&cluster::command::generated_command_list[0])
 
 #define GET_COMMAND_COUNT_LIST(cluster)                                                                            \
     GET_ACCEPTED_COMMAND_COUNT(cluster), GET_GENERATED_COMMAND_COUNT(cluster), GET_ACCEPTED_COMMAND_LIST(cluster), \
@@ -3211,7 +3208,7 @@ constexpr const cluster_command_t cluster_command_table[] = {
 };
 
 #if defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
-const command_list_t *get_cluster_accepted_command_list(uint32_t cluster_id)
+const command_entry_t *get_cluster_accepted_command_list(uint32_t cluster_id)
 {
     for (auto const &cluster_command : cluster_command_table) {
         if (cluster_command.cluster_id == cluster_id) {
@@ -3231,7 +3228,7 @@ size_t get_cluster_accepted_command_count(uint32_t cluster_id)
     return 0;
 }
 
-const command_list_t *get_cluster_generated_command_list(uint32_t cluster_id)
+const command_entry_t *get_cluster_generated_command_list(uint32_t cluster_id)
 {
     for (auto const &cluster_command : cluster_command_table) {
         if (cluster_command.cluster_id == cluster_id) {

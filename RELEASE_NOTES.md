@@ -1,3 +1,11 @@
+# 15-Oct-2024
+
+API Change
+```
+esp_err_t get_bounds(attribute_t *attribute, esp_matter_attr_bounds_t *bounds);
+```
+- Above API returns the `esp_err_t` and has parameter `bounds`.
+
 # 28-Aug-2024
 
 - Removed the configurability of the NameSupport attribute of the Groups cluster and enabled
