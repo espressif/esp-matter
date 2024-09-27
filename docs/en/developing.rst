@@ -1251,11 +1251,13 @@ For example we want to use mode_select cluster in light example.
 
     #include <static-supported-modes-manager.h>
 
+    ModeSelect::StaticSupportedModesManager sStaticSupportedModesManager;
     {
         cluster::mode_select::config_t ms_config;
         cluster_t *ms_cluster = cluster::mode_select::create(endpoint, &ms_config, CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
 
-        ModeSelect::StaticSupportedModesManager::getStaticSupportedModesManagerInstance().InitEndpointArray(get_count(node));
+        sStaticSupportedModesManager.InitEndpointArray(get_count(node));
+        ModeSelect::setSupportedModesManager(&sStaticSupportedModesManager);
     }
 
 2.10 Matter Controller

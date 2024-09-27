@@ -226,46 +226,46 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
       rvc_config.rvc_run_mode.delegate = object_of_delegate_class;
       endpoint_t *endpoint = robotic_vacuum_cleaner::create(node, & rvc_config, ENDPOINT_FLAG_NONE);
 
-.. _`Mode Base`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/mode-base-server/mode-base-server.h
-.. _`Refrigeratore And TCC Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/tcc-mode.h
-.. _`Laundry Washer Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/laundry-washer-mode.h
-.. _`Dish Washer Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/dishwasher-mode.h
-.. _`Rvc Run And Rvc Clean Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/rvc-modes.h
-.. _`Energy Evse Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/energy-evse-modes.h
-.. _`Microwave Oven Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/microwave-oven-mode.h
-.. _`Device Energy Management Mode`: https://github.com/project-chip/connectedhomeip/blob/master/examples/energy-management-app/energy-management-common/include/device-energy-management-modes.h
-.. _`Energy Evse`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/energy-evse-server/energy-evse-server.h
-.. _`Energy Evse Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/energy-management-app/energy-management-common/include/EnergyEvseDelegateImpl.h
-.. _`Operational State`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/operational-state-server/operational-state-server.h
-.. _`Operational State Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/operational-state-delegate-impl.h
-.. _`Microwave Oven Control`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/microwave-oven-control-server/microwave-oven-control-server.h
-.. _`Microwave Oven Control Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/microwave-oven-app/microwave-oven-common/include/microwave-oven-device.h
-.. _`Fan Control`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/fan-control-server/fan-control-delegate.h
-.. _`Fan Control Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/src/fan-stub.cpp
-.. _`Resource Monitoring`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/resource-monitoring-server/resource-monitoring-server.h
-.. _`Resource Monitoring Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/resource-monitoring-delegates.h
-.. _`Laundry Dryer Controls`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/laundry-dryer-controls-server/laundry-dryer-controls-server.h
-.. _`Laundry Dryer Controls Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/laundry-dryer-controls-delegate-impl.h
-.. _`Valve Configuration And Control`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/valve-configuration-and-control-server/valve-configuration-and-control-delegate.h
-.. _`Valve Configuration And Control Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/linux/ValveControlDelegate.h
-.. _`Device Energy Management`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/device-energy-management-server/device-energy-management-server.h
-.. _`Device Energy Management Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/energy-management-app/energy-management-common/include/DeviceEnergyManagementDelegateImpl.h
-.. _`Door Lock`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/door-lock-server/door-lock-delegate.h
-.. _`Boolean State Configuration`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/boolean-state-configuration-server/boolean-state-configuration-delegate.h
-.. _`Time Synchronization`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/time-synchronization-server/time-synchronization-delegate.h
-.. _`Time Synchronization Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/time-synchronization-server/DefaultTimeSyncDelegate.h
-.. _`Application Basic`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/application-basic-server/application-basic-delegate.h
-.. _`Power Topology`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/power-topology-server/power-topology-server.h
-.. _`Power Topology Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/energy-management-app/energy-management-common/include/PowerTopologyDelegate.h
-.. _`Electrical Power Measurement`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/electrical-power-measurement-server/electrical-power-measurement-server.h
-.. _`Electrical Power Measurement Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/energy-management-app/energy-management-common/include/ElectricalPowerMeasurementDelegate.h
-.. _`Laundry Washer Controls`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/laundry-washer-controls-server/laundry-washer-controls-server.h
-.. _`Laundry Washer Controls Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/laundry-washer-controls-delegate-impl.h
-.. _`Window Covering`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/window-covering-server/window-covering-server.h
-.. _`Window Covering Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/linux/WindowCoveringManager.h
-.. _`Dishwasher Alarm`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/dishwasher-alarm-server/dishwasher-alarm-server.h
-.. _`Dishwasher Alarm Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/src/dishwasher-alarm-stub.cpp
-.. _`Keypad Input`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/keypad-input-server/keypad-input-server.h
-.. _`Keypad Input Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/chef/common/clusters/keypad-input/KeypadInputManager.h
-.. _`Mode Select`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/mode-select-server/supported-modes-manager.h
-.. _`Mode Select Delegate`: https://github.com/project-chip/connectedhomeip/blob/master/examples/all-clusters-app/all-clusters-common/include/static-supported-modes-manager.h
+.. _`Mode Base`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/mode-base-server/mode-base-server.h
+.. _`Refrigeratore And TCC Mode`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/all-clusters-app/all-clusters-common/include/tcc-mode.h
+.. _`Laundry Washer Mode`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/all-clusters-app/all-clusters-common/include/laundry-washer-mode.h
+.. _`Dish Washer Mode`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/all-clusters-app/all-clusters-common/include/dishwasher-mode.h
+.. _`Rvc Run And Rvc Clean Mode`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/all-clusters-app/all-clusters-common/include/rvc-modes.h
+.. _`Energy Evse Mode`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/energy-management-app/energy-management-common/energy-evse/include/energy-evse-modes.h
+.. _`Microwave Oven Mode`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/all-clusters-app/all-clusters-common/include/microwave-oven-mode.h
+.. _`Device Energy Management Mode`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/energy-management-app/energy-management-common/device-energy-management/include/device-energy-management-modes.h
+.. _`Energy Evse`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/energy-evse-server/energy-evse-server.h
+.. _`Energy Evse Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/energy-management-app/energy-management-common/energy-evse/include/EnergyEvseDelegateImpl.h
+.. _`Operational State`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/operational-state-server/operational-state-server.h
+.. _`Operational State Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/all-clusters-app/all-clusters-common/include/operational-state-delegate-impl.h
+.. _`Microwave Oven Control`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/microwave-oven-control-server/microwave-oven-control-server.h
+.. _`Microwave Oven Control Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/microwave-oven-app/microwave-oven-common/include/microwave-oven-device.h
+.. _`Fan Control`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/fan-control-server/fan-control-delegate.h
+.. _`Fan Control Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/all-clusters-app/all-clusters-common/src/fan-stub.cpp
+.. _`Resource Monitoring`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/resource-monitoring-server/resource-monitoring-server.h
+.. _`Resource Monitoring Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/all-clusters-app/all-clusters-common/include/resource-monitoring-delegates.h
+.. _`Laundry Dryer Controls`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/laundry-dryer-controls-server/laundry-dryer-controls-server.h
+.. _`Laundry Dryer Controls Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/all-clusters-app/all-clusters-common/include/laundry-dryer-controls-delegate-impl.h
+.. _`Valve Configuration And Control`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/valve-configuration-and-control-server/valve-configuration-and-control-delegate.h
+.. _`Valve Configuration And Control Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/all-clusters-app/linux/ValveControlDelegate.h
+.. _`Device Energy Management`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/device-energy-management-server/device-energy-management-server.h
+.. _`Device Energy Management Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/energy-management-app/energy-management-common/device-energy-management/include/DeviceEnergyManagementDelegateImpl.h
+.. _`Door Lock`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/door-lock-server/door-lock-delegate.h
+.. _`Boolean State Configuration`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/boolean-state-configuration-server/boolean-state-configuration-delegate.h
+.. _`Time Synchronization`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/time-synchronization-server/time-synchronization-delegate.h
+.. _`Time Synchronization Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/time-synchronization-server/DefaultTimeSyncDelegate.h
+.. _`Application Basic`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/application-basic-server/application-basic-delegate.h
+.. _`Power Topology`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/power-topology-server/power-topology-server.h
+.. _`Power Topology Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/energy-management-app/energy-management-common/energy-reporting/include/PowerTopologyDelegate.h
+.. _`Electrical Power Measurement`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/electrical-power-measurement-server/electrical-power-measurement-server.h
+.. _`Electrical Power Measurement Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/energy-management-app/energy-management-common/energy-reporting/include/ElectricalPowerMeasurementDelegate.h
+.. _`Laundry Washer Controls`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/laundry-washer-controls-server/laundry-washer-controls-server.h
+.. _`Laundry Washer Controls Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/all-clusters-app/all-clusters-common/include/laundry-washer-controls-delegate-impl.h
+.. _`Window Covering`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/window-covering-server/window-covering-server.h
+.. _`Window Covering Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/all-clusters-app/linux/WindowCoveringManager.h
+.. _`Dishwasher Alarm`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/dishwasher-alarm-server/dishwasher-alarm-server.h
+.. _`Dishwasher Alarm Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/all-clusters-app/all-clusters-common/src/dishwasher-alarm-stub.cpp
+.. _`Keypad Input`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/keypad-input-server/keypad-input-server.h
+.. _`Keypad Input Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/chef/common/clusters/keypad-input/KeypadInputManager.h
+.. _`Mode Select`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/mode-select-server/supported-modes-manager.h
+.. _`Mode Select Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/all-clusters-app/all-clusters-common/include/static-supported-modes-manager.h
