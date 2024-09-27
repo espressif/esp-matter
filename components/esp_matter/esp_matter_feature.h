@@ -1593,7 +1593,6 @@ namespace fan_control {
 namespace feature {
 
 namespace multi_speed {
-constexpr uint32_t k_max_limit = 100;
 typedef struct config {
     uint8_t speed_max;
     nullable<uint8_t> speed_setting;

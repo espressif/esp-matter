@@ -1372,6 +1372,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
         static const auto plugin_server_init_cb = CALL_ONCE(MatterFanControlPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        set_add_bounds_callback(cluster, fan_control::add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -1380,10 +1381,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         if (config) {
-            attribute::create_fan_mode(cluster, config->fan_mode, 0, 6);
-            attribute::create_fan_mode_sequence(cluster, config->fan_mode_sequence, 0, 5);
-            attribute::create_percent_setting(cluster, config->percent_setting, 0, 100);
-            attribute::create_percent_current(cluster, config->percent_current, 0, 100);
+            attribute::create_fan_mode(cluster, config->fan_mode);
+            attribute::create_fan_mode_sequence(cluster, config->fan_mode_sequence);
+            attribute::create_percent_setting(cluster, config->percent_setting);
+            attribute::create_percent_current(cluster, config->percent_current);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -1415,6 +1416,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterThermostatPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        set_add_bounds_callback(cluster, thermostat::add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -1424,8 +1426,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         if (config) {
             attribute::create_local_temperature(cluster, config->local_temperature);
-            attribute::create_control_sequence_of_operation(cluster, config->control_sequence_of_operation, 0x0, 0x5);
-            attribute::create_system_mode(cluster, config->system_mode, 0x0, 0x7);
+            attribute::create_control_sequence_of_operation(cluster, config->control_sequence_of_operation);
+            attribute::create_system_mode(cluster, config->system_mode);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }

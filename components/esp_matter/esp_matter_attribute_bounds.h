@@ -38,5 +38,13 @@ namespace color_control {
 void add_bounds_cb(cluster_t *cluster);
 } /* color_control */
 
+namespace fan_control {
+void add_bounds_cb(cluster_t *cluster);
+} /* fan_control */
+
+namespace thermostat {
+void add_bounds_cb(cluster_t *cluster);
+} /* thermostat */
+
 } /* cluster */
 } /* esp_matter */
