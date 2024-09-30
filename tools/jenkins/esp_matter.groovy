@@ -144,6 +144,10 @@ def tools_artifacts_create() {
 
     mkdir -p ${TOOL_PATH}/esp-matter/connectedhomeip/connectedhomeip/src/controller
     cp -r ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/src/controller/python ${TOOL_PATH}/esp-matter/connectedhomeip/connectedhomeip/src/controller
+
+    mkdir -p ${PACKAGE_PATH}/Tools/certs
+    cp -r ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/credentials/test/attestation/Chip-Test-PAA-NoVID-Cert.der ${PACKAGE_PATH}/Tools/certs
+
     '''
 }
 
