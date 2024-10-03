@@ -18,6 +18,14 @@
 #include <common_macros.h>
 #include <app_priv.h>
 #include <app_reset.h>
+#if CONFIG_SUBSCRIBE_TO_ON_OFF_SERVER_AFTER_BINDING
+#include <app/util/binding-table.h>
+#include <esp_matter_client.h>
+#include <app/AttributePathParams.h>
+#include <app/ConcreteAttributePath.h>
+#include <lib/core/TLVReader.h>
+#include <app/server/Server.h>
+#endif
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
 #endif
@@ -37,6 +45,10 @@ using namespace esp_matter::endpoint;
 
 #if CONFIG_DYNAMIC_PASSCODE_COMMISSIONABLE_DATA_PROVIDER
 dynamic_commissionable_data_provider g_dynamic_passcode_provider;
+#endif
+
+#if CONFIG_SUBSCRIBE_TO_ON_OFF_SERVER_AFTER_BINDING
+static bool do_subscribe = true;
 #endif
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
@@ -69,6 +81,41 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
     case chip::DeviceLayer::DeviceEventType::kCommissioningWindowClosed:
         ESP_LOGI(TAG, "Commissioning window closed");
         break;
+
+    case chip::DeviceLayer::DeviceEventType::kBindingsChangedViaCluster: {
+        ESP_LOGI(TAG, "Binding entry changed");
+#if CONFIG_SUBSCRIBE_TO_ON_OFF_SERVER_AFTER_BINDING
+        if(do_subscribe) {
+            for (const auto & binding : chip::BindingTable::GetInstance())
+            {
+                ESP_LOGI(
+                    TAG,
+                    "Read cached binding type=%d fabrixIndex=%d nodeId=0x" ChipLogFormatX64
+                    " groupId=%d local endpoint=%d remote endpoint=%d cluster=" ChipLogFormatMEI,
+                    binding.type, binding.fabricIndex, ChipLogValueX64(binding.nodeId), binding.groupId, binding.local,
+                    binding.remote, ChipLogValueMEI(binding.clusterId.value_or(0)));
+                if (binding.type == MATTER_UNICAST_BINDING && event->BindingsChanged.fabricIndex == binding.fabricIndex)
+                {
+                    ESP_LOGI(
+                        TAG,
+                        "Matched accessingFabricIndex with nodeId=0x" ChipLogFormatX64,
+                        ChipLogValueX64(binding.nodeId));
+
+                    uint32_t attribute_id = chip::app::Clusters::OnOff::Attributes::OnOff::Id;
+                    client::request_handle_t req_handle;
+                    req_handle.type = esp_matter::client::SUBSCRIBE_ATTR;
+                    req_handle.attribute_path = {binding.remote, binding.clusterId.value(), attribute_id};
+                    auto &server = chip::Server::GetInstance();
+                    client::connect(server.GetCASESessionManager(), binding.fabricIndex, binding.nodeId, &req_handle);
+                    break;
+                }
+            }
+            do_subscribe = false;
+        }
+#endif
+    }
+    break;
+
 
     default:
         break;

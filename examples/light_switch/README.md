@@ -9,7 +9,10 @@ See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/de
 
 ## 1. Additional Environment Setup
 
-No additional setup is required.
+This example demonstrates auto subscription to only one remote on/off server from on/off client after binding of light to switch.
+For example, switch that have a led indicator which indicates the on-off state of the bound light. The subscription can keep the indicator on the switch sync with the light node.
+-   Enable SUBSCRIBE_TO_ON_OFF_SERVER_AFTER_BINDING to enable this funcationality.
+Please check [Bind light to switch](#21-bind-light-to-switch) for more details.
 
 ## 2. Post Commissioning Setup
 

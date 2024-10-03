@@ -1,4 +1,5 @@
 menu "Example Configuration"
+
     visible if CUSTOM_COMMISSIONABLE_DATA_PROVIDER
 
     config DYNAMIC_PASSCODE_COMMISSIONABLE_DATA_PROVIDER
@@ -28,5 +29,11 @@ menu "Example Configuration"
         default "0NHS09TV1tfY2drb3N3e36ChoqOkpaanqKmqq6ytrq8="
         help
             Fixed salt in custom dynamic passcode commissionable data provider. It should be a Base64-Encoded string.
+
+    config SUBSCRIBE_TO_ON_OFF_SERVER_AFTER_BINDING
+        bool "Enable subscribe to on/off server after binding"
+        default n
+        help
+            "Enables auto subscription to on/off server from client on change in binding"
 
 endmenu
