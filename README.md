@@ -35,8 +35,9 @@ section in the ESP-Matter Programming Guide.
 
 ## Documentation
 
-Refer the [Programming Guide](https://docs.espressif.com/projects/esp-matter/en/latest/) for the latest version of the documentation.
+For a simplified explanation of Matter concepts and internals, please check out the [Espressif's Matter blog series](https://blog.espressif.com/matter-38ccf1d60bcd).
 
+Refer the [Programming Guide](https://docs.espressif.com/projects/esp-matter/en/latest/) for the latest version of the documentation.
 
 ## Matter Specifications
 Download the Matter specification from [CSA's official site](https://csa-iot.org/developer-resource/specifications-download-request/)
