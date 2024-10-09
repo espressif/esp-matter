@@ -38,10 +38,10 @@ jobs:
 
     strategy:
       matrix:
+        # Platforms to build the image for
         platform: [linux/amd64, linux/arm64]
 
     env:
-      # Platforms to build the image for
       # Github runner is running out of space when we are building for multiple architectures in single runner
       BUILD_PLATFORMS: ${{ matrix.platform }}
 
