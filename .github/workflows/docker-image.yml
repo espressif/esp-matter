@@ -26,9 +26,6 @@ on:
   workflow_dispatch:
 
 env:
-  # Platforms to build the image for
-  # Github runner is running out of space when we are building for multiple architectures in single runner
-  BUILD_PLATFORMS: linux/amd64
   DOCKERHUB_REPO: ${{ github.repository }}
   REQUIRED_IDF_VERSION: v5.2.1
 
@@ -38,6 +35,15 @@ jobs:
     if: ${{ github.repository_owner == 'espressif' }}
 
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        platform: [linux/amd64, linux/arm64]
+
+    env:
+      # Platforms to build the image for
+      # Github runner is running out of space when we are building for multiple architectures in single runner
+      BUILD_PLATFORMS: ${{ matrix.platform }}
 
     steps:
       # Workaround for disk space issues on the GitHub runner
