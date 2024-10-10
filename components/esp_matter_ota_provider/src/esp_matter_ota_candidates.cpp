@@ -313,7 +313,7 @@ static void _update_all_ota_candidates_cache()
     for (size_t index = 0; index < max_ota_candidate_count; ++index) {
         model_version_t *candidate = _ota_candidates_cache[index];
         if (candidate) {
-            uint32_t *software_version_array;
+            uint32_t *software_version_array = nullptr;
             size_t software_version_count;
             esp_err_t err = _query_software_version_array(candidate->vendor_id, candidate->product_id,
                                                           &software_version_array, software_version_count);
@@ -356,7 +356,7 @@ static void _ota_candidate_fetch_handler(ota_candidate_fetch_action_t &action)
         return;
     } else {
         // Cannot find the candidate from cache, we need to query DCL for a new candidate;
-        uint32_t *software_version_array;
+        uint32_t *software_version_array = nullptr;
         size_t software_version_count;
         esp_err_t err = _query_software_version_array(action.vendor_id, action.product_id, &software_version_array,
                                                       software_version_count);
