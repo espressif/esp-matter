@@ -941,8 +941,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-        attribute::create_idle_mode_duration(cluster, CONFIG_ICD_ACTIVE_MODE_INTERVAL_MS);
-        attribute::create_active_mode_duration(cluster, CONFIG_ICD_IDLE_MODE_INTERVAL_SEC);
+        attribute::create_idle_mode_duration(cluster, CONFIG_ICD_IDLE_MODE_INTERVAL_SEC);
+        attribute::create_active_mode_duration(cluster, CONFIG_ICD_ACTIVE_MODE_INTERVAL_MS);
         attribute::create_active_mode_threshold(cluster, CONFIG_ICD_ACTIVE_MODE_THRESHOLD_MS);
 
         /* Attributes not managed internally */
