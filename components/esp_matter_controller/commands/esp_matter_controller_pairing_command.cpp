@@ -91,13 +91,13 @@ CommissioningParameters pairing_command::get_commissioning_params()
     return CommissioningParameters();
 }
 
-void pairing_command::OnDiscoveredDevice(const chip::Dnssd::CommissionNodeData &nodeData)
+void pairing_command::OnDiscoveredDevice(const Dnssd::CommissionNodeData &nodeData)
 {
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
     // Ignore nodes with closed comissioning window
     VerifyOrReturn(nodeData.commissioningMode != 0);
     const uint16_t port = nodeData.port;
-    char buf[chip::Inet::IPAddress::kMaxStringLength];
+    char buf[Inet::IPAddress::kMaxStringLength];
     nodeData.ipAddress[0].ToString(buf);
     ESP_LOGI(TAG, "Discovered Device: %s:%u", buf, port);
 
@@ -115,7 +115,7 @@ void pairing_command::OnDiscoveredDevice(const chip::Dnssd::CommissionNodeData &
 
 esp_err_t pairing_on_network(NodeId node_id, uint32_t pincode)
 {
-    Dnssd::DiscoveryFilter filter(chip::Dnssd::DiscoveryFilterType::kNone);
+    Dnssd::DiscoveryFilter filter(Dnssd::DiscoveryFilterType::kNone);
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
     controller_instance.get_commissioner()->RegisterDeviceDiscoveryDelegate(&pairing_command::get_instance());
     pairing_command::get_instance().m_pairing_mode = PAIRING_MODE_ONNETWORK;
@@ -133,10 +133,10 @@ esp_err_t pairing_on_network(NodeId node_id, uint32_t pincode)
 esp_err_t pairing_ble_wifi(NodeId node_id, uint32_t pincode, uint16_t disc, const char *ssid, const char *pwd)
 {
     RendezvousParameters params = RendezvousParameters().SetSetupPINCode(pincode).SetDiscriminator(disc).SetPeerAddress(
-        chip::Transport::PeerAddress::BLE());
+        Transport::PeerAddress::BLE());
 
-    chip::ByteSpan nameSpan(reinterpret_cast<const uint8_t *>(ssid), strlen(ssid));
-    chip::ByteSpan pwdSpan(reinterpret_cast<const uint8_t *>(pwd), strlen(pwd));
+    ByteSpan nameSpan(reinterpret_cast<const uint8_t *>(ssid), strlen(ssid));
+    ByteSpan pwdSpan(reinterpret_cast<const uint8_t *>(pwd), strlen(pwd));
     CommissioningParameters commissioning_params =
         CommissioningParameters().SetWiFiCredentials(Controller::WiFiCredentials(nameSpan, pwdSpan));
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
@@ -148,14 +148,63 @@ esp_err_t pairing_ble_thread(NodeId node_id, uint32_t pincode, uint16_t disc, ui
                              uint8_t dataset_len)
 {
     RendezvousParameters params = RendezvousParameters().SetSetupPINCode(pincode).SetDiscriminator(disc).SetPeerAddress(
-        chip::Transport::PeerAddress::BLE());
+        Transport::PeerAddress::BLE());
 
-    chip::ByteSpan dataset_span(dataset_tlvs, dataset_len);
+    ByteSpan dataset_span(dataset_tlvs, dataset_len);
     CommissioningParameters commissioning_params = CommissioningParameters().SetThreadOperationalDataset(dataset_span);
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
     controller_instance.get_commissioner()->PairDevice(node_id, params, commissioning_params);
     return ESP_OK;
 }
 #endif
+
+esp_err_t pairing_code(NodeId nodeId, const char *payload)
+{
+    CommissioningParameters commissioning_params = CommissioningParameters();
+    auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
+    controller_instance.get_commissioner()->PairDevice(nodeId, payload, commissioning_params, DiscoveryType::kDiscoveryNetworkOnly);
+    return ESP_OK;
+}
+
+esp_err_t pairing_code_thread(NodeId nodeId, const char *payload, uint8_t *dataset_buf, uint8_t dataset_len)
+{
+    ByteSpan dataset_span(dataset_buf, dataset_len);
+
+    CommissioningParameters commissioning_params = CommissioningParameters().SetThreadOperationalDataset(dataset_span);
+    auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
+    controller_instance.get_commissioner()->PairDevice(nodeId, payload, commissioning_params, DiscoveryType::kAll);
+
+    return ESP_OK;
+}
+
+esp_err_t pairing_code_wifi(NodeId nodeId, const char *ssid, const char *password, const char *payload)
+{
+    ByteSpan nameSpan(reinterpret_cast<const uint8_t *>(ssid), strlen(ssid));
+    ByteSpan pwdSpan(reinterpret_cast<const uint8_t *>(password), strlen(password));
+
+    CommissioningParameters commissioning_params =
+        CommissioningParameters().SetWiFiCredentials(Controller::WiFiCredentials(nameSpan, pwdSpan));
+    auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
+    controller_instance.get_commissioner()->PairDevice(nodeId, payload, commissioning_params, DiscoveryType::kAll);
+
+    return ESP_OK;
+}
+
+esp_err_t pairing_code_wifi_thread(NodeId nodeId, const char *ssid, const char *password, const char *payload,
+                                    uint8_t *dataset_buf, uint8_t dataset_len)
+{
+    ByteSpan nameSpan(reinterpret_cast<const uint8_t *>(ssid), strlen(ssid));
+    ByteSpan pwdSpan(reinterpret_cast<const uint8_t *>(password), strlen(password));
+    ByteSpan dataset_span(dataset_buf, dataset_len);
+
+    CommissioningParameters commissioning_params =
+        CommissioningParameters().SetWiFiCredentials(Controller::WiFiCredentials(nameSpan, pwdSpan)).SetThreadOperationalDataset(
+            dataset_span);
+    auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
+    controller_instance.get_commissioner()->PairDevice(nodeId, payload, commissioning_params, DiscoveryType::kAll);
+
+    return ESP_OK;
+}
+
 } // namespace controller
 } // namespace esp_matter

@@ -122,7 +122,60 @@ esp_err_t pairing_ble_wifi(NodeId node_id, uint32_t pincode, uint16_t disc, cons
  */
 esp_err_t pairing_ble_thread(NodeId node_id, uint32_t pincode, uint16_t disc, uint8_t *dataset_tlvs,
                              uint8_t dataset_len);
-#endif
+#endif // CONFIG_ENABLE_ESP32_BLE_CONTROLLER
+
+/**
+ * Pair a on-network Matter end-device with a pairing code
+ *
+ * @param[in] node_id NodeId assigned to the Matter end-device.
+ * @param[in] payload Pairing code
+ *
+ * @return ESP_OK on success
+ * @return error in case of failure
+ */
+esp_err_t pairing_code(NodeId node_id, const char *payload);
+
+/**
+ * Pair a thread Matter end-device with a pairing code
+ *
+ * @param[in] node_id     NodeId assigned to the Matter end-device.
+ * @param[in] payload     Pairing code
+ * @param[in] dataset_buf Buffer containing the Thread network dataset
+ * @param[in] dataset_len Length of the dataset buffer
+ *
+ * @return ESP_OK on success
+ * @return error in case of failure
+ */
+esp_err_t pairing_code_thread(NodeId node_id, const char *payload, uint8_t *dataset_buf, uint8_t dataset_len);
+
+/**
+ * Pair a Wi-Fi Matter end-device with a pairing code
+ *
+ * @param[in] node_id  NodeId assigned to the Matter end-device.
+ * @param[in] ssid     SSID of the Wi-Fi AP.
+ * @param[in] password Password of the Wi-Fi AP.
+ * @param[in] payload  Pairing code
+ *
+ * @return ESP_OK on success
+ * @return error in case of failure
+ */
+esp_err_t pairing_code_wifi(NodeId node_id, const char *ssid, const char *password, const char *payload);
+
+/**
+ * Pair a Matter end-device which supports both Wi-Fi as well as Thread with a pairing code
+ *
+ * @param[in] node_id     NodeId that will be assigned to the Matter end-device.
+ * @param[in] ssid        SSID of the Wi-Fi AP.
+ * @param[in] password    Password of the Wi-Fi AP.
+ * @param[in] payload     Pairing code
+ * @param[in] dataset_buf Buffer containing the Thread network dataset
+ * @param[in] dataset_len Length of the dataset buffer
+ *
+ * @return ESP_OK on success
+ * @return error in case of failure
+ */
+esp_err_t pairing_code_wifi_thread(NodeId node_id, const char *ssid, const char *password, const char *payload,
+                                   uint8_t *dataset_buf, uint8_t dataset_len);
 
 } // namespace controller
 } // namespace esp_matter
