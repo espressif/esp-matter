@@ -258,9 +258,15 @@ static esp_err_t encode_tlv_element(const cJSON *val, TLV::TLVWriter &writer, co
         break;
     }
     case TLVElementType::Int64: {
-        ESP_RETURN_ON_FALSE(val->type == cJSON_Number, ESP_ERR_INVALID_ARG, TAG, "Invalid type");
-        int64_t int64_val =
-            (val->valueint < INT32_MAX && val->valueint > INT32_MIN) ? val->valueint : (int64_t)val->valuedouble;
+        ESP_RETURN_ON_FALSE(val->type == cJSON_Number || val->type == cJSON_String, ESP_ERR_INVALID_ARG, TAG,
+                            "Invalid type");
+        int64_t int64_val = 0;
+        if (val->type == cJSON_Number) {
+            int64_val =
+                (val->valueint < INT32_MAX && val->valueint > INT32_MIN) ? val->valueint : (int64_t)val->valuedouble;
+        } else {
+            int64_val = strtoll(val->valuestring, nullptr, 10);
+        }
         ESP_RETURN_ON_FALSE(writer.Put(tag, int64_val) == CHIP_NO_ERROR, ESP_FAIL, TAG, "Failed to encode");
         break;
     }
@@ -288,9 +294,15 @@ static esp_err_t encode_tlv_element(const cJSON *val, TLV::TLVWriter &writer, co
         break;
     }
     case TLVElementType::UInt64: {
-        ESP_RETURN_ON_FALSE(val->type == cJSON_Number, ESP_ERR_INVALID_ARG, TAG, "Invalid type");
-        ESP_RETURN_ON_FALSE(val->valueint >= 0, ESP_ERR_INVALID_ARG, TAG, "Invalid range");
-        uint64_t uint64_val = val->valueint < INT32_MAX ? val->valueint : (uint64_t)val->valuedouble;
+        ESP_RETURN_ON_FALSE(val->type == cJSON_Number || val->type == cJSON_String, ESP_ERR_INVALID_ARG, TAG,
+                            "Invalid type");
+        uint64_t uint64_val = 0;
+        if (val->type == cJSON_Number) {
+            ESP_RETURN_ON_FALSE(val->valueint >= 0, ESP_ERR_INVALID_ARG, TAG, "Invalid range");
+            uint64_val = val->valueint < INT32_MAX ? val->valueint : (uint64_t)val->valuedouble;
+        } else {
+            uint64_val = strtoull(val->valuestring, nullptr, 10);
+        }
         ESP_RETURN_ON_FALSE(writer.Put(tag, uint64_val) == CHIP_NO_ERROR, ESP_FAIL, TAG, "Failed to encode");
         break;
     }
