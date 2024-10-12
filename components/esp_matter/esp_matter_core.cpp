@@ -29,6 +29,7 @@
 
 #include <app/clusters/network-commissioning/network-commissioning.h>
 #include <app/clusters/general-diagnostics-server/general-diagnostics-server.h>
+#include <app/clusters/identify-server/identify-server.h>
 #include <app/server/Dnssd.h>
 #include <app/server/Server.h>
 #include <app/util/attribute-storage.h>
@@ -193,6 +194,7 @@ typedef struct _endpoint {
     EmberAfDeviceType *device_types_ptr;
     uint16_t parent_endpoint_id;
     void *priv_data;
+    Identify *identify;
     struct _endpoint *next;
 } _endpoint_t;
 
@@ -503,6 +505,12 @@ static esp_err_t disable(endpoint_t *endpoint)
         current_endpoint->device_types_ptr = NULL;
     }
 
+    /* Delete identify */
+    if (current_endpoint->identify) {
+        chip::Platform::Delete(current_endpoint->identify);
+        current_endpoint->identify = NULL;
+    }
+
     /* Free endpoint type */
     esp_matter_mem_free(endpoint_type);
     current_endpoint->endpoint_type = NULL;
@@ -611,7 +619,7 @@ esp_err_t enable(endpoint_t *endpoint)
             attribute::get_data_from_attr_val(&attribute->val, &matter_attributes[attribute_index].attributeType,
                                               &matter_attributes[attribute_index].size, NULL);
 
-            /* The length is not fixed for string attribute, so set it to the max size (32) to avoid overflow issue 
+            /* The length is not fixed for string attribute, so set it to the max size (32) to avoid overflow issue
              * when writing a longer string.
              */
             if (attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
@@ -1011,8 +1019,8 @@ esp_err_t start(event_callback_t callback, intptr_t callback_arg)
         return ESP_ERR_INVALID_STATE;
     }
     esp_err_t err = esp_event_loop_create_default();
-    
-    // In case create event loop returns ESP_ERR_INVALID_STATE it is not necessary to fail startup 
+
+    // In case create event loop returns ESP_ERR_INVALID_STATE it is not necessary to fail startup
     // as of it means that default event loop is already initialized and no additional actions should be done.
     if (err != ESP_OK && err != ESP_ERR_INVALID_STATE) {
         ESP_LOGE(TAG, "Error create default event loop");
@@ -1988,7 +1996,7 @@ uint16_t get_count(node_t *node)
         ESP_LOGE(TAG, "Node cannot be NULL");
         return 0;
     }
-    uint16_t count = 0; 
+    uint16_t count = 0;
     endpoint_t *endpoint = get_first(node);
     while (endpoint) {
         count++;
@@ -2080,6 +2088,23 @@ void *get_priv_data(uint16_t endpoint_id)
     }
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     return current_endpoint->priv_data;
+}
+
+esp_err_t set_identify(uint16_t endpoint_id, void *identify)
+{
+    node_t *node = node::get();
+    if (!node) {
+        ESP_LOGE(TAG, "Node not found");
+        return ESP_ERR_INVALID_ARG;
+    }
+    endpoint_t *endpoint = get(node, endpoint_id);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint not found");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    current_endpoint->identify = (Identify *)identify;
+    return ESP_OK;
 }
 
 } /* endpoint */
