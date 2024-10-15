@@ -627,8 +627,13 @@ attribute_t *create_user_active_mode_trigger_hint(cluster_t *cluster, uint32_t v
 
 attribute_t *create_user_active_mode_trigger_instruction(cluster_t *cluster, char *value, uint16_t length)
 {
+    if (length > k_user_active_mode_trigger_instruction_length) {
+        ESP_LOGE(TAG, "Could not create attribute, string length out of bound");
+        return NULL;
+    }
     return esp_matter::attribute::create(cluster, IcdManagement::Attributes::UserActiveModeTriggerInstruction::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length),
+                                         k_user_active_mode_trigger_instruction_length);
 }
 
 attribute_t *create_operating_mode(cluster_t *cluster, uint8_t value)
