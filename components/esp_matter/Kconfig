@@ -76,6 +76,11 @@ menu "ESP Matter"
             help
                 An implementation which reads commissionable data information from the factory partition
 
+        config SEC_CERT_COMMISSIONABLE_DATA_PROVIDER
+            bool "Commissionable Data - Secure Cert"
+            help
+                An implementation which reads commissionable data information from the esp_secure_cert partition
+
         config CUSTOM_COMMISSIONABLE_DATA_PROVIDER
             bool "Commissionable Data - Custom"
             help
@@ -100,6 +105,12 @@ menu "ESP Matter"
             depends on ENABLE_ESP32_FACTORY_DATA_PROVIDER && ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
             help
                 An implementation which reads device instance information from the factory partition
+
+        config SEC_CERT_DEVICE_INSTANCE_INFO_PROVIDER
+            bool "Device Instance Info - Secure Cert"
+            help
+                An implementation which reads unique id for generating rotating device identifier from
+                secure cert partition and all other device instance data from factory partition
 
         config CUSTOM_DEVICE_INSTANCE_INFO_PROVIDER
             bool "Device Instance Info - Custom"
