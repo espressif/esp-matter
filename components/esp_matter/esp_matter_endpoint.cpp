@@ -965,7 +965,12 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 endpoint_t *resume(node_t *node, config_t *config, uint8_t flags, uint16_t endpoint_id, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::resume(node, flags | ENDPOINT_FLAG_DESTROYABLE, endpoint_id, priv_data);
-    add(endpoint, config);
+    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Failed to create endpoint"));
+
+    cluster_t *descriptor_cluster = descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
+    VerifyOrReturnValue(descriptor_cluster != nullptr, NULL, ESP_LOGE(TAG, "Failed to create descriptor cluster"));
+
+    VerifyOrReturnValue(ESP_OK == add(endpoint, config), NULL, ESP_LOGE(TAG, "Failed to add cluster"));
     return endpoint;
 }
 } /* bridged_node */
