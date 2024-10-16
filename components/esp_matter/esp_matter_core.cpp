@@ -25,6 +25,7 @@
 #include <app/util/endpoint-config-api.h>
 #include <credentials/DeviceAttestationCredsProvider.h>
 #include <credentials/FabricTable.h>
+#include <credentials/GroupDataProviderImpl.h>
 #include <lib/core/DataModelTypes.h>
 #include <platform/CHIPDeviceLayer.h>
 #include <platform/DeviceInfoProvider.h>
@@ -57,6 +58,10 @@ using chip::DeviceLayer::ThreadStackMgr;
 
 #define ESP_MATTER_NVS_PART_NAME CONFIG_ESP_MATTER_NVS_PART_NAME
 #define ESP_MATTER_MAX_DEVICE_TYPE_COUNT CONFIG_ESP_MATTER_MAX_DEVICE_TYPE_COUNT
+
+// TODO: replace 4 with CONFIG_MAX_GROUPS_PER_FABRIC_PER_ENDPOINT
+// This will be fixed in https://github.com/project-chip/connectedhomeip/pull/35394
+#define MAX_GROUPS_PER_FABRIC_PER_ENDPOINT 4
 
 static const char *TAG = "esp_matter_core";
 static bool esp_matter_started = false;
@@ -849,8 +854,26 @@ static void esp_matter_chip_init_task(intptr_t context)
 {
     TaskHandle_t task_to_notify = reinterpret_cast<TaskHandle_t>(context);
     static chip::CommonCaseDeviceServerInitParams initParams;
+
     initParams.InitializeStaticResourcesBeforeServerInit();
     initParams.appDelegate = &s_app_delegate;
+
+#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
+    // Group data provider injection for dynamic data model
+    {
+        uint8_t groups_server_cluster_count = cluster::groups::get_server_cluster_count();
+        uint16_t max_groups_per_fabric = groups_server_cluster_count * MAX_GROUPS_PER_FABRIC_PER_ENDPOINT;
+
+        // since groupDataProvider is a static variable, it won't be released.
+        static chip::Credentials::GroupDataProviderImpl groupDataProvider(max_groups_per_fabric, CHIP_CONFIG_MAX_GROUP_KEYS_PER_FABRIC);
+
+        groupDataProvider.SetStorageDelegate(initParams.persistentStorageDelegate);
+        groupDataProvider.SetSessionKeystore(initParams.sessionKeystore);
+        groupDataProvider.Init();
+        initParams.groupDataProvider = &groupDataProvider;
+    }
+#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
+
     CHIP_ERROR ret = chip::Server::GetInstance().GetFabricTable().AddFabricDelegate(&s_fabric_delegate);
     if (ret != CHIP_NO_ERROR)
     {
