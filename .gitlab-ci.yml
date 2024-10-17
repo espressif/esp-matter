@@ -14,6 +14,7 @@ workflow:
 variables:
     ESP_MATTER_PATH: "$CI_PROJECT_DIR"
     BR_PATH: "$CI_PROJECT_DIR/esp-thread-br"
+    ESP_RMAKER_PATH: "$CI_PROJECT_DIR/esp-rainmaker"
     IDF_GITHUB_ASSETS: "dl.espressif.com/github_assets"
     GIT_STRATEGY: fetch
     GIT_SUBMODULE_STRATEGY: none
@@ -93,6 +94,11 @@ variables:
    - ln -s ${CHIP_SUBMODULE_PATH} connectedhomeip/connectedhomeip  # Create symlink to specified CHIP_SUBMODULE_PATH
    - cd ${ESP_MATTER_PATH}
    - . ./export.sh
+
+.setup_rainmaker: &setup_rainmaker
+  - cd ${CI_PROJECT_DIR}
+  - git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/espressif/esp-rainmaker.git
+  - cd ${ESP_RMAKER_PATH}/examples/matter/
 
 .build_matter_examples: &build_matter_examples
     - export MATTER_EXAMPLES_PATH=$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/examples
@@ -513,6 +519,49 @@ build_managed_component_light:
         - cd ${ESP_MATTER_PATH}/examples/managed_component_light
         - idf.py set-target esp32c3
         - idf.py build
+
+build_esp_rainmaker_apps:
+    stage: build
+    image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
+    allow_failure: false
+
+    tags:
+      - build
+
+    needs:
+      - job: build_image
+        optional: true
+
+    artifacts:
+        paths:
+            - ${ESP_RMAKER_PATH}/examples/matter/*/*build/*.bin
+        when: always
+        expire_in: 1 week
+
+    before_script:
+      - *setup_idf
+      - *setup_matter
+      - *setup_rainmaker
+    script:
+        - cd ${ESP_RMAKER_PATH}/examples/matter/matter_light
+        - idf.py set-target esp32c3 build
+
+        - cd ${ESP_RMAKER_PATH}/examples/matter/matter_switch
+        # Flash overflows on esp32c6, few optimizations
+        - echo "CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT=2" >> sdkconfig.defaults.esp32c6
+        - echo "CONFIG_NEWLIB_NANO_FORMAT=y" >> sdkconfig.defaults.esp32c6
+        - echo "CONFIG_ENABLE_CHIP_SHELL=n" >> sdkconfig.defaults.esp32c6
+        - idf.py set-target esp32c6 build
+
+        # just build controller example
+        - cd ${ESP_RMAKER_PATH}/examples/matter/matter_controller
+        - idf.py set-target esp32s3 build
+        - rm -rf sdkconfig
+
+        # build controller with TBR support
+        # thread lib changed the default number of ipv6 addresses to 12 so match that in the controller example
+        - echo "CONFIG_LWIP_IPV6_NUM_ADDRESSES=12" >> sdkconfig.defaults.otbr
+        - idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults.otbr" -B ot_br_build set-target esp32s3 build
 
 build_docs:
     stage: build
