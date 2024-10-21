@@ -170,6 +170,18 @@ static esp_err_t esp_matter_command_callback_commissioning_complete(const Concre
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_set_tc_acknowledgements(const ConcreteCommandPath &command_path,
+                                                                    TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::GeneralCommissioning::Commands::SetTCAcknowledgements::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfGeneralCommissioningClusterSetTCAcknowledgementsCallback((CommandHandler *)opaque_ptr, command_path,
+                                                                        command_data);
+    }
+    return ESP_OK;
+}
+
 static esp_err_t esp_matter_command_callback_open_commissioning_window(const ConcreteCommandPath &command_path,
                                                                        TLVReader &tlv_data, void *opaque_ptr)
 {
@@ -1079,6 +1091,28 @@ static esp_err_t esp_matter_command_callback_unbolt_door(const ConcreteCommandPa
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_set_aliro_reader_config(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                         void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::SetAliroReaderConfig::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterSetAliroReaderConfigCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_clear_aliro_reader_config(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                         void *opaque_ptr)
+{
+    chip::app::Clusters::DoorLock::Commands::ClearAliroReaderConfig::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfDoorLockClusterClearAliroReaderConfigCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 static esp_err_t esp_matter_command_callback_setpoint_raise_lower(const ConcreteCommandPath &command_path,
                                                                   TLVReader &tlv_data, void *opaque_ptr)
 {
@@ -1119,6 +1153,28 @@ static esp_err_t esp_matter_command_callback_clear_weekly_schedule(const Concret
     CHIP_ERROR error = Decode(tlv_data, command_data);
     if (error == CHIP_NO_ERROR) {
         emberAfThermostatClusterClearWeeklyScheduleCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_set_active_schedule_request(const ConcreteCommandPath &command_path,
+                                                                  TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::Thermostat::Commands::SetActiveScheduleRequest::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfThermostatClusterSetActiveScheduleRequestCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_set_active_preset_request(const ConcreteCommandPath &command_path,
+                                                                  TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::Thermostat::Commands::SetActivePresetRequest::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfThermostatClusterSetActivePresetRequestCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
     return ESP_OK;
 }
@@ -1429,6 +1485,26 @@ static esp_err_t esp_matter_command_callback_disable_action_with_duration(const 
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_review_fabric_restrictions(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::AccessControl::Commands::ReviewFabricRestrictions::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfAccessControlClusterReviewFabricRestrictionsCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_keep_active(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::BridgedDeviceBasicInformation::Commands::KeepActive::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfBridgedDeviceBasicInformationClusterKeepActiveCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 static esp_err_t esp_matter_command_callback_send_key(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
 {
     chip::app::Clusters::KeypadInput::Commands::SendKey::DecodableType command_data;
@@ -1558,6 +1634,33 @@ command_t *create_disable_action_with_duration(cluster_t *cluster)
 
 } /* command */
 } /* actions */
+
+namespace access_control {
+namespace command {
+command_t *create_review_fabric_restrictions(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, AccessControl::Commands::ReviewFabricRestrictions::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_review_fabric_restrictions);
+}
+
+command_t *create_review_fabric_restrictions_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, AccessControl::Commands::ReviewFabricRestrictionsResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+}
+
+} /* command */
+} /* access_control */
+
+namespace bridged_device_basic_information {
+namespace command {
+command_t *create_keep_active(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, BridgedDeviceBasicInformation::Commands::KeepActive::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_keep_active);
+}
+
+} /* command */
+} /* bridged_device_basic_information */
 
 namespace thread_network_diagnostics {
 namespace command {
@@ -1780,6 +1883,18 @@ command_t *create_set_regulatory_config_response(cluster_t *cluster)
 command_t *create_commissioning_complete_response(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, GeneralCommissioning::Commands::CommissioningCompleteResponse::Id,
+                                       COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_set_tc_acknowledgements(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, GeneralCommissioning::Commands::SetTCAcknowledgements::Id,
+                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_set_tc_acknowledgements);
+}
+
+command_t *create_set_tc_acknowledgements_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, GeneralCommissioning::Commands::SetTCAcknowledgementsResponse::Id,
                                        COMMAND_FLAG_GENERATED, NULL);
 }
 
@@ -2580,6 +2695,18 @@ command_t *create_get_weekly_schedule_response(cluster_t *cluster)
                                        NULL);
 }
 
+command_t *create_set_active_schedule_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Thermostat::Commands::SetActiveScheduleRequest::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_set_active_schedule_request);
+}
+
+command_t *create_set_active_preset_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Thermostat::Commands::SetActivePresetRequest::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_set_active_preset_request);
+}
+
 } /* command */
 } /* thermostat */
 
@@ -2783,6 +2910,18 @@ command_t *create_unbolt_door(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, DoorLock::Commands::UnboltDoor::Id, COMMAND_FLAG_ACCEPTED,
                                        esp_matter_command_callback_unbolt_door);
+}
+
+command_t *create_set_aliro_reader_config(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::SetAliroReaderConfig::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_set_aliro_reader_config);
+}
+
+command_t *create_clear_aliro_reader_config(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DoorLock::Commands::ClearAliroReaderConfig::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_clear_aliro_reader_config);
 }
 
 } /* command */

@@ -36,21 +36,21 @@ event_t *create_access_control_extension_changed(cluster_t *cluster)
     return esp_matter::event::create(cluster, AccessControl::Events::AccessControlExtensionChanged::Id);
 }
 
-esp_err_t send_state_changed(EndpointId endpoint, uint16_t action_id, uint32_t invoke_id, uint8_t action_state)
+event_t *create_fabric_restriction_review_update(cluster_t *cluster)
 {
-    /* Not implemented */
-    return ESP_OK;
+    return esp_matter::event::create(cluster, AccessControl::Events::FabricRestrictionReviewUpdate::Id);
 }
-
-esp_err_t send_action_failed(EndpointId endpoint, uint16_t action_id, uint32_t invoke_id, uint8_t action_state,
-                             uint8_t error)
-{
-    /* Not implemented */
-    return ESP_OK;
-}
-
 } // namespace event
 } // namespace access_control
+
+namespace bridged_device_basic_information {
+namespace event {
+event_t *create_active_changed(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, BridgedDeviceBasicInformation::Events::ActiveChanged::Id);
+}
+} // namespace event
+} // namespace bridged_device_basic_information
 
 namespace actions {
 namespace event {
@@ -62,6 +62,19 @@ event_t *create_state_changed(cluster_t *cluster)
 event_t *create_action_failed(cluster_t *cluster)
 {
     return esp_matter::event::create(cluster, Actions::Events::ActionFailed::Id);
+}
+
+esp_err_t send_state_changed(EndpointId endpoint, uint16_t action_id, uint32_t invoke_id, uint8_t action_state)
+{
+    /* Not implemented */
+    return ESP_OK;
+}
+
+esp_err_t send_action_failed(EndpointId endpoint, uint16_t action_id, uint32_t invoke_id, uint8_t action_state,
+                             uint8_t error)
+{
+    /* Not implemented */
+    return ESP_OK;
 }
 
 } // namespace event
@@ -768,6 +781,16 @@ event_t *create_commissioning_request_result(cluster_t *cluster)
 
 } // namespace event
 } // namespace commissioner_control
+
+namespace occupancy_sensing {
+namespace event {
+event_t *create_occupancy_changed(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, OccupancySensing::Events::OccupancyChanged::Id);
+}
+
+} // namespace event
+} // namespace occupancy_sensing
 
 } // namespace cluster
 } // namespace esp_matter

@@ -201,7 +201,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     event::create_access_control_entry_changed(cluster);
-    event::create_access_control_extension_changed(cluster);
 
     return cluster;
 }
@@ -729,6 +728,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
+        attribute::create_unique_id(cluster, NULL, 0);
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -1619,7 +1619,7 @@ const function_generic_t function_list[] = {
 };
 const int function_flags = CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, LaundryWasherControls::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LaundryWasherControls::Id));
@@ -1642,6 +1642,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         create_default_binding_cluster(endpoint);
     }
 
+    if (features & feature::spin::get_id()) {
+        feature::spin::add(cluster, &(config->spin));
+    }
+    if (features & feature::rinse::get_id()) {
+        feature::rinse::add(cluster, &(config->rinse));
+    }
     return cluster;
 }
 } /* laundry_washer_controls */

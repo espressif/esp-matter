@@ -30,6 +30,7 @@ namespace access_control {
 namespace event {
 event_t *create_access_control_entry_changed(cluster_t *cluster);
 event_t *create_access_control_extension_changed(cluster_t *cluster);
+event_t *create_fabric_restriction_review_update(cluster_t *cluster);
 } // namespace event
 } // namespace access_control
 
@@ -39,6 +40,12 @@ event_t *create_state_changed(cluster_t *cluster);
 event_t *create_action_failed(cluster_t *cluster);
 } // namespace event
 } // namespace actions
+
+namespace bridged_device_basic_information {
+namespace event {
+event_t *create_active_changed(cluster_t *cluster);
+} // namespace event
+} // namespace bridged_device_basic_information
 
 namespace basic_information {
 namespace event {
@@ -235,6 +242,12 @@ namespace event {
 event_t *create_commissioning_request_result(cluster_t *cluster);
 } // namespace event
 } // namespace commissioner_control
+
+namespace occupancy_sensing {
+namespace event {
+event_t *create_occupancy_changed(cluster_t *cluster);
+} // namespace event
+} // namespace occupancy_sensing
 
 } // namespace cluster
 } // namespace esp_matter

@@ -480,6 +480,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace laundry_washer_controls {
 typedef struct config {
+    feature::spin::config_t spin;
+    feature::rinse::config_t rinse;
     void *delegate;
     config() : delegate(nullptr) {}
 } config_t;

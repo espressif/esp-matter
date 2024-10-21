@@ -60,6 +60,10 @@ attribute_t *create_extension(cluster_t *cluster, uint8_t *value, uint16_t lengt
 attribute_t *create_subjects_per_access_control_entry(cluster_t *cluster, uint16_t value);
 attribute_t *create_targets_per_access_control_entry(cluster_t *cluster, uint16_t value);
 attribute_t *create_access_control_entries_per_fabric(cluster_t *cluster, uint16_t value);
+#if CHIP_CONFIG_USE_ACCESS_RESTRICTIONS
+attribute_t *create_commissioning_arl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_arl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+#endif
 } /* attribute */
 } /* access_control */
 
@@ -119,6 +123,11 @@ attribute_t *create_basic_commissioning_info(cluster_t *cluster, uint8_t *value,
 attribute_t *create_regulatory_config(cluster_t *cluster, uint8_t value);
 attribute_t *create_location_capability(cluster_t *cluster, uint8_t value);
 attribute_t *create_supports_concurrent_connection(cluster_t *cluster, bool value);
+attribute_t *create_tc_accepted_version(cluster_t *cluster, uint16_t value);
+attribute_t *create_tc_min_required_version(cluster_t *cluster, uint16_t value);
+attribute_t *create_tc_acknowledgements(cluster_t *cluster, uint16_t value);
+attribute_t *create_tc_acknowledgements_required(cluster_t *cluster, bool value);
+attribute_t *create_tc_update_deadline(cluster_t *cluster, nullable<uint32_t> value);
 } /* attribute */
 } /* general_commissioning */
 
@@ -238,6 +247,8 @@ attribute_t *create_security_policy(cluster_t *cluster, uint8_t *value, uint16_t
 attribute_t *create_channel_page0_mask(cluster_t *cluster, uint8_t *value, uint16_t length);
 attribute_t *create_operational_dataset_components(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_ext_address(cluster_t *cluster, nullable<uint64_t> value);
+attribute_t *create_rloc16(cluster_t *cluster, nullable<uint16_t> value);
 } /* attribute */
 } /* thread_network_diagnostics */
 
@@ -272,6 +283,7 @@ namespace attribute {
 attribute_t *create_vendor_name(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_vendor_id(cluster_t *cluster, uint16_t value);
 attribute_t *create_product_name(cluster_t *cluster, char *value, uint16_t length);
+attribute_t *create_product_id(cluster_t *cluster, uint16_t value);
 attribute_t *create_node_label(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_hardware_version(cluster_t *cluster, uint16_t value);
 attribute_t *create_hardware_version_string(cluster_t *cluster, char *value, uint16_t length);
@@ -405,6 +417,8 @@ attribute_t *create_airflow_direction(cluster_t *cluster, uint8_t value);
 } /* fan_control */
 
 namespace thermostat {
+const uint8_t k_max_active_preset_handle = 16u;
+const uint8_t k_max_active_schedule_handle = 16u;
 namespace attribute {
 attribute_t *create_local_temperature(cluster_t *cluster, nullable<int16_t> value);
 attribute_t *create_outdoor_temperature(cluster_t *cluster, nullable<int16_t> value);
@@ -455,6 +469,17 @@ attribute_t *create_ac_error_code(cluster_t *cluster, uint32_t value);
 attribute_t *create_ac_louver_position(cluster_t *cluster, uint8_t value);
 attribute_t *create_ac_coil_temperature(cluster_t *cluster, nullable<int16_t> value);
 attribute_t *create_ac_capacity_format(cluster_t *cluster, uint8_t value);
+attribute_t *create_preset_type(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_schedule_type(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_number_of_presets(cluster_t *cluster, uint8_t value);
+attribute_t *create_number_of_schedules(cluster_t *cluster, uint8_t value);
+attribute_t *create_number_of_schedule_transitions(cluster_t *cluster, uint8_t value);
+attribute_t *create_number_of_schedule_transition_per_day(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_active_preset_handle(cluster_t *cluster,  uint8_t*value, uint16_t length);
+attribute_t *create_active_schedule_handle(cluster_t *cluster, uint8_t *value, uint16_t length);
+attribute_t *create_presets(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_schedules(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_setpoint_hold_expiry_timestamp(cluster_t *cluster, nullable<uint32_t> value);
 } /* attribute */
 } /* thermostat */
 
@@ -667,6 +692,10 @@ attribute_t *create_operational_error(cluster_t *cluster, uint8_t value);
 
 namespace door_lock {
 constexpr uint8_t k_max_language_length = 3;
+constexpr uint8_t k_max_aliro_reader_verification_key = 65;
+constexpr uint8_t k_max_aliro_reader_group_identifier = 16;
+constexpr uint8_t k_max_aliro_reader_group_sub_identifier = 16;
+constexpr uint8_t k_max_aliro_group_resolving_key = 16;
 
 namespace attribute {
 attribute_t *create_lock_state(cluster_t *cluster, nullable<uint8_t> value);
@@ -705,6 +734,15 @@ attribute_t *create_user_code_temporary_disable_time(cluster_t *cluster, uint8_t
 attribute_t *create_send_pin_over_the_air(cluster_t *cluster, bool value);
 attribute_t *create_require_pin_for_remote_operation(cluster_t *cluster, bool value);
 attribute_t *create_expiring_user_timeout(cluster_t *cluster, uint16_t value);
+attribute_t *create_aliro_reader_verification_key(cluster_t *cluster, uint8_t * value, uint16_t length);
+attribute_t *create_aliro_reader_group_identifier(cluster_t *cluster, uint8_t * value, uint16_t length);
+attribute_t *create_aliro_reader_group_sub_identifier(cluster_t *cluster, uint8_t * value, uint16_t length);
+attribute_t *create_aliro_expedited_transaction_supported_protocol_versions(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_aliro_group_resolving_key(cluster_t *cluster, uint8_t * value, uint16_t length);
+attribute_t *create_aliro_supported_bleuwb_protocol_versions(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_aliro_ble_advertising_version(cluster_t *cluster, uint8_t value);
+attribute_t *create_number_of_aliro_credential_issuer_keys_supported(cluster_t *cluster, uint16_t value);
+attribute_t *create_number_of_aliro_endpoint_keys_supported(cluster_t *cluster, uint16_t value);
 } /* attribute */
 } /* door_lock */
 
@@ -799,6 +837,17 @@ namespace attribute {
 attribute_t *create_occupancy(cluster_t *cluster, uint8_t value);
 attribute_t *create_occupancy_sensor_type(cluster_t *cluster, uint8_t value);
 attribute_t *create_occupancy_sensor_type_bitmap(cluster_t *cluster, uint8_t value);
+attribute_t *create_hold_time(cluster_t *cluster, uint16_t value);
+attribute_t *create_hold_time_limits(cluster_t *cluster, uint8_t* value, uint16_t length, uint16_t count);
+attribute_t *create_pir_occupied_to_unoccupied_delay(cluster_t *cluster, uint16_t value);
+attribute_t *create_pir_unoccupied_to_occupied_delay(cluster_t *cluster, uint16_t value);
+attribute_t *create_pir_unoccupied_to_occupied_threshold(cluster_t *cluster, uint8_t value);
+attribute_t *create_ultrasonic_occupied_to_unoccupied_delay(cluster_t *cluster, uint16_t value);
+attribute_t *create_ultrasonic_unoccupied_to_occupied_delay(cluster_t *cluster, uint16_t value);
+attribute_t *create_ultrasonic_unoccupied_to_occupied_threshold(cluster_t *cluster, uint8_t value);
+attribute_t *create_physical_contact_occupied_to_unoccupied_delay(cluster_t *cluster, uint16_t value);
+attribute_t *create_physical_contact_unoccupied_to_occupied_delay(cluster_t *cluster, uint16_t value);
+attribute_t *create_physical_contact_unoccupied_to_occupied_threshold(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* occupancy_sensing */
 

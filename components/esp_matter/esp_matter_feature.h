@@ -43,6 +43,37 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* descriptor */
 
+namespace access_control {
+namespace feature {
+namespace extension {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* extension */
+
+namespace managed_device {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* managed_device */
+
+} /* feature */
+} /* access_control */
+
+namespace bridged_device_basic_information {
+namespace feature {
+namespace bridged_icd_support {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* bridged_icd_support */
+
+} /* feature */
+} /* bridged_device_basic_information */
+
 namespace administrator_commissioning {
 
 namespace feature {
@@ -56,6 +87,25 @@ esp_err_t add(cluster_t *cluster);
 
 } /* feature */
 } /* administrator_commissioning */
+
+namespace general_commissioning {
+namespace feature {
+namespace terms_and_conditions {
+typedef struct config {
+    uint16_t tc_accepted_version;
+    uint16_t tc_min_required_version;
+    uint16_t tc_acknowledgements;
+    bool tc_acknowledgements_required;
+    nullable<uint32_t> tc_update_deadline;
+    config(): tc_accepted_version(0), tc_min_required_version(0), tc_acknowledgements(0), tc_acknowledgements_required(true), tc_update_deadline(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* terms_and_conditions */
+} /* feature */
+} /* general_commissioning */
 
 namespace power_source {
 namespace feature {
@@ -571,6 +621,27 @@ typedef struct config {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 } /* local_temperature_not_exposed */
+
+namespace matter_schedule_configuration {
+
+typedef struct config {
+    uint8_t number_of_schedules;
+    uint8_t number_of_schedule_transitions;
+    nullable<uint8_t> number_of_schedule_transition_per_day;
+    uint8_t active_schedule_handle[k_max_active_schedule_handle];
+
+    config (): number_of_schedules(0), number_of_schedule_transitions(0), number_of_schedule_transition_per_day() {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* matter_schedule_configuration */
+
+namespace presets {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* presets */
 
 } /* feature */
 } /* thermostat */
@@ -1863,12 +1934,6 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 } /* finger_credentials */
 
-namespace logging {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-} /* logging */
-
 namespace weekday_access_schedules {
 
 uint32_t get_id();
@@ -1910,12 +1975,6 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 } /* user */
 
-namespace notification {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-} /* notification */
-
 namespace year_day_access_schedules {
 
 uint32_t get_id();
@@ -1939,6 +1998,18 @@ namespace unbolting {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 } /* unbolting */
+
+namespace aliro_provisioning {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* aliro_provisioning */
+
+namespace aliro_bleuwb{
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* aliro_bleuwb */
 
 } /* feature */
 }/* door_lock */
@@ -2176,6 +2247,59 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* feature */
 } /* energy_preference */
+
+namespace occupancy_sensing {
+namespace feature {
+
+namespace other {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* other */
+
+namespace passive_infrared {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* passive_infrared */
+
+namespace ultrasonic {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* ultrasonic */
+
+namespace physical_contact {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* physical_contact */
+
+namespace active_infrared {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* active_infrared */
+
+namespace radar {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* radar */
+
+namespace rf_sensing {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* rf_sensing */
+
+namespace vision {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* vision */
+} /* feature */
+} /* occupancy_sensing */
 
 } /* cluster */
 } /* esp_matter */
