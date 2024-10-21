@@ -228,4 +228,14 @@ menu "ESP Matter"
             If enabled, we will start Matter server when calling esp_matter::start()
             If disabled, the Matter server will not be initialized in esp_matter::start()
 
+    config ESP_MATTER_ENABLE_OPENTHREAD
+        bool "Initialize Thread stack and start Thread task when starting ESP-Matter"
+        default y
+        help
+            Enabled this option to initialize Thread stack and start Thread task when calling
+            esp_matter::start()
+
+            Disable this option to initialize Thread stack and start Thread task with more
+            flexibility.
+
 endmenu

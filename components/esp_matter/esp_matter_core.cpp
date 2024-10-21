@@ -961,6 +961,7 @@ static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
        PlatformMgr().AddEventHandler(callback, callback_arg);
     }
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+#ifdef CONFIG_ESP_MATTER_ENABLE_OPENTHREAD
     if (ThreadStackMgr().InitThreadStack() != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to initialize Thread stack");
         return ESP_FAIL;
@@ -986,6 +987,7 @@ static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
         ESP_LOGE(TAG, "Failed to launch Thread task");
         return ESP_FAIL;
     }
+#endif // CONFIG_ESP_MATTER_ENABLE_OPENTHREAD
 #endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD
 
 #if CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
