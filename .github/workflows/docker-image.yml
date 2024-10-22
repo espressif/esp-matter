@@ -26,9 +26,6 @@ on:
   workflow_dispatch:
 
 env:
-  # Platforms to build the image for
-  # Github runner is running out of space when we are building for multiple architectures in single runner
-  BUILD_PLATFORMS: linux/amd64
   DOCKERHUB_REPO: ${{ github.repository }}
   REQUIRED_IDF_VERSION: v5.2.1
 
@@ -38,12 +35,80 @@ jobs:
     if: ${{ github.repository_owner == 'espressif' }}
 
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        # Platforms to build the image for
+        # Using a separate runner for each image to work around space issues on a single runner
+        platform:
+          - linux/amd64
+          - linux/arm64
 
     steps:
       # Workaround for disk space issues on the GitHub runner
       - run: sudo rm -rf /usr/share/dotnet
       - run: sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 
+      # The following steps are the standard boilerplate from
+      # https://docs.docker.com/build/ci/github-actions/multi-platform/
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare artifact name
+        run: |
+          platform=${{ matrix.platform }}
+          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.DOCKERHUB_REPO }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: tools/docker/matter_builds
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: ${{ matrix.platform }}
+          outputs: type=image,name=${{ env.DOCKERHUB_REPO }},push-by-digest=true,name-canonical=true,push=true
+          build-args: |
+            ESP_MATTER_CLONE_URL=${{ github.server_url }}/${{ github.repository }}.git
+            ESP_MATTER_CHECKOUT_REF=${{ github.ref_name }}
+            IDF_CHECKOUT_REF=${{ env.REQUIRED_IDF_VERSION }}
+
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ env.PLATFORM_PAIR }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
       # Depending on the branch/tag, set TAG_NAME (used when tagging the image).
       #
       # The following 3 steps cover the alternatives (tag, release branch, main branch):
@@ -60,29 +125,37 @@ jobs:
         run: |
           echo "TAG_NAME=latest" >> $GITHUB_ENV
 
-      # The following steps are the standard boilerplate from
-      # https://github.com/marketplace/actions/build-and-push-docker-images
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Download digests
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/digests
+          pattern: digests-*
+          merge-multiple: true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.DOCKERHUB_REPO }}
+          tags: |
+            ${{ env.TAG_NAME }}
+            ${{ env.TAG_NAME }}_idf_${{ env.REQUIRED_IDF_VERSION }}
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Set up QEMU for multiarch builds
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: tools/docker/matter_builds
-          push: true
-          tags: |
-            ${{ env.DOCKERHUB_REPO }}:${{ env.TAG_NAME }}
-            ${{ env.DOCKERHUB_REPO }}:${{ env.TAG_NAME }}_idf_${{ env.REQUIRED_IDF_VERSION }}
-          platforms: ${{ env.BUILD_PLATFORMS }}
-          build-args: |
-            ESP_MATTER_CLONE_URL=${{ github.server_url }}/${{ github.repository }}.git
-            ESP_MATTER_CHECKOUT_REF=${{ github.ref_name }}
-            IDF_CHECKOUT_REF=${{ env.REQUIRED_IDF_VERSION }}
+
+      - name: Create manifest list and push
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf '${{ env.DOCKERHUB_REPO }}@sha256:%s ' *) 
+
+      - name: Inspect image
+        run: |
+          docker buildx imagetools inspect ${{ env.DOCKERHUB_REPO }}:${{ steps.meta.outputs.version }}
