@@ -1744,6 +1744,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     cluster::energy_evse::create(endpoint, &(config->energy_evse), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
     energy_evse_mode::create(endpoint, &(config->energy_evse_mode), CLUSTER_FLAG_SERVER);
+    cluster::device_energy_management::create(endpoint, &(config->device_energy_management), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
 
     return ESP_OK;
 }
