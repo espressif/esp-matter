@@ -90,11 +90,11 @@ variables:
 
 .setup_matter: &setup_matter
    - cd ${ESP_MATTER_PATH}
+   - ./install.sh --no-host-tool --no-bootstrap
    - rm -rf connectedhomeip/connectedhomeip  # Remove submodule directory
    - ln -s ${CHIP_SUBMODULE_PATH} connectedhomeip/connectedhomeip  # Create symlink to specified CHIP_SUBMODULE_PATH
    - cd ${ESP_MATTER_PATH}
    - . ./export.sh
-   - python3 -m pip install -r requirements.txt
 
 .build_matter_examples: &build_matter_examples
     - export MATTER_EXAMPLES_PATH=$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/examples
