@@ -127,6 +127,14 @@ variables:
     - idf.py build
     - cp sdkconfig.defaults.c6_backup sdkconfig.defaults.esp32c6
 
+.build_esp32c6_wifi_thread_example: &build_esp32c6_wifi_thread_example
+    - cd $ESP_MATTER_PATH/examples/light
+    - cp sdkconfig.defaults.esp32c6 sdkconfig.defaults.c6_backup
+    - cp sdkconfig.defaults.c6_wifi_thread sdkconfig.defaults.esp32c6
+    - idf.py set-target esp32c6
+    - idf.py build
+    - cp sdkconfig.defaults.c6_backup sdkconfig.defaults.esp32c6
+
 .build_controller_otbr_example: &build_controller_otbr_example
     - cd $ESP_MATTER_PATH/examples/controller
     - idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults.otbr" set-target esp32s3 build
@@ -303,6 +311,7 @@ build_ext_plat_c6_thread_controller_examples:
   script:
     - *build_external_platform_example
     - *build_esp32c6_thread_example
+    - *build_esp32c6_wifi_thread_example
     - *build_controller_otbr_example
 
 build_esp_matter_examples:
