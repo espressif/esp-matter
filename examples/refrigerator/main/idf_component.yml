@@ -4,5 +4,7 @@ dependencies:
     rules: # will add "optional_component" only when all if clauses are True
       - if: "idf_version >=5.0"
       - if: "target in [esp32c2]"
-  espressif/esp_bsp_generic:
-    version: "^1.1.0"
+  espressif/esp_bsp_devkit:
+    version: "^1.0.0"
+  espressif/led_strip:
+    version: "^2.0.0"
