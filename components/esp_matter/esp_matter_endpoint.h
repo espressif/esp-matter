@@ -146,8 +146,35 @@ namespace esp_matter {
  * If some standard endpoint (device type) is not present here, it can be added.
  * If a custom endpoint needs to be created, the low level esp_matter::endpoint::create() API can be used.
  */
-
 namespace endpoint {
+
+typedef struct {
+    cluster::descriptor::config_t descriptor;
+    cluster::identify::config_t identify;
+} app_base_config;
+
+typedef struct : app_base_config {
+    cluster::groups::config_t groups;
+} app_with_group_config;
+
+typedef struct : app_base_config {
+    cluster::binding::config_t binding;
+} app_client_config;
+
+typedef struct : app_with_group_config {
+    cluster::scenes_management::config_t scenes_management;
+    cluster::on_off::config_t on_off;
+} on_off_with_scenes_management_config;
+
+typedef struct : app_base_config {
+    cluster::boolean_state::config_t boolean_state;
+} app_with_bool_state_config;
+
+typedef struct {
+    cluster::descriptor::config_t descriptor;
+    cluster::operational_state::config_t operational_state;
+} app_with_operational_state_config;
+
 namespace root_node {
 typedef struct config {
     cluster::descriptor::config_t descriptor;
@@ -204,13 +231,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* power_source_device */
 
 namespace on_off_light {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
-    cluster::groups::config_t groups;
-    cluster::scenes_management::config_t scenes_management;
-    cluster::on_off::config_t on_off;
-} config_t;
+
+using config_t = on_off_with_scenes_management_config;
 
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
@@ -219,12 +241,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* on_off_light */
 
 namespace dimmable_light {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
-    cluster::groups::config_t groups;
-    cluster::scenes_management::config_t scenes_management;
-    cluster::on_off::config_t on_off;
+typedef struct config : on_off_light::config_t {
     cluster::level_control::config_t level_control;
 } config_t;
 
@@ -235,13 +252,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* dimmable_light */
 
 namespace color_temperature_light {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
-    cluster::groups::config_t groups;
-    cluster::scenes_management::config_t scenes_management;
-    cluster::on_off::config_t on_off;
-    cluster::level_control::config_t level_control;
+typedef struct config : dimmable_light::config_t {
     cluster::color_control::config_t color_control;
 } config_t;
 
@@ -252,13 +263,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* color_temperature_light */
 
 namespace extended_color_light {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
-    cluster::groups::config_t groups;
-    cluster::scenes_management::config_t scenes_management;
-    cluster::on_off::config_t on_off;
-    cluster::level_control::config_t level_control;
+typedef struct config : dimmable_light::config_t {
     cluster::color_control::config_t color_control;
 } config_t;
 
@@ -269,11 +274,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* extended_color_light */
 
 namespace on_off_switch {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
-    cluster::binding::config_t binding;
-} config_t;
+
+using config_t = app_client_config;
 
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
@@ -282,11 +284,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* on_off_switch */
 
 namespace dimmer_switch {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
-    cluster::binding::config_t binding;
-} config_t;
+
+using config_t = app_client_config;
 
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
@@ -295,11 +294,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* dimmer_switch */
 
 namespace color_dimmer_switch {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
-    cluster::binding::config_t binding;
-} config_t;
+
+using config_t = app_client_config;
 
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
@@ -308,9 +304,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* color_dimmer_switch */
 
 namespace generic_switch {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
+typedef struct config : app_base_config {
     cluster::switch_cluster::config_t switch_cluster;
 } config_t;
 
@@ -321,13 +315,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* generic_switch */
 
 namespace on_off_plugin_unit {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
-    cluster::groups::config_t groups;
-    cluster::scenes_management::config_t scenes_management;
-    cluster::on_off::config_t on_off;
-} config_t;
+
+using config_t = on_off_with_scenes_management_config;
 
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
@@ -336,12 +325,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* on_off_plugin_unit */
 
 namespace dimmable_plugin_unit {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
-    cluster::groups::config_t groups;
-    cluster::scenes_management::config_t scenes_management;
-    cluster::on_off::config_t on_off;
+typedef struct config : on_off_plugin_unit::config_t {
     cluster::level_control::config_t level_control;
 } config_t;
 
@@ -352,10 +336,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* dimmable_plugin_unit */
 
 namespace fan {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
-    cluster::groups::config_t groups;
+typedef struct config : app_with_group_config {
     cluster::fan_control::config_t fan_control;
 } config_t;
 
@@ -366,11 +347,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* fan */
 
 namespace thermostat {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
+typedef struct config : app_with_group_config {
     cluster::scenes_management::config_t scenes_management;
-    cluster::groups::config_t groups;
     cluster::thermostat::config_t thermostat;
 } config_t;
 
@@ -381,9 +359,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* thermostat */
 
 namespace air_quality_sensor {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
+typedef struct config : app_base_config {
     cluster::air_quality::config_t air_quality;
 } config_t;
 
@@ -394,9 +370,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* air_quality_sensor */
 
 namespace air_purifier {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
+typedef struct config : app_base_config {
     cluster::fan_control::config_t fan_control;
 } config_t;
 
@@ -407,10 +381,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* air_purifier */
 
 namespace dish_washer {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::operational_state::config_t operational_state;
-} config_t;
+using config_t = app_with_operational_state_config;
 
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
@@ -419,10 +390,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* dish_washer */
 
 namespace laundry_washer {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::operational_state::config_t operational_state;
-} config_t;
+using config_t = app_with_operational_state_config;
+
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
@@ -430,10 +399,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* laundry_washer */
 
 namespace laundry_dryer {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::operational_state::config_t operational_state;
-} config_t;
+using config_t = app_with_operational_state_config;
+
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
@@ -441,9 +408,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* laundry_dryer */
 
 namespace smoke_co_alarm {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
+typedef struct config : app_base_config {
     cluster::smoke_co_alarm::config_t smoke_co_alarm;
 } config_t;
 uint32_t get_device_type_id();
@@ -477,11 +442,8 @@ endpoint_t *resume(node_t *node, config_t *config, uint8_t flags, uint16_t endpo
 } /* bridged_node */
 
 namespace control_bridge {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
-    cluster::binding::config_t binding;
-} config_t;
+
+using config_t = app_client_config;
 
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
@@ -490,9 +452,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* control_bridge */
 
 namespace door_lock {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
+typedef struct config : app_base_config {
     cluster::door_lock::config_t door_lock;
 } config_t;
 
@@ -503,10 +463,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* door_lock */
 
 namespace window_covering_device {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
-    cluster::groups::config_t groups;
+typedef struct config : app_with_group_config {
     cluster::scenes_management::config_t scenes_management;
     cluster::window_covering::config_t window_covering;
     config(uint8_t end_product_type = 0) : window_covering(end_product_type) {}
@@ -519,9 +476,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* window_covering */
 
 namespace temperature_sensor {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
+typedef struct config : app_base_config {
     cluster::temperature_measurement::config_t temperature_measurement;
 } config_t;
 
@@ -532,9 +487,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* temperature_sensor */
 
 namespace humidity_sensor {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
+typedef struct config : app_base_config {
     cluster::relative_humidity_measurement::config_t relative_humidity_measurement;
 } config_t;
 
@@ -545,9 +498,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* humidity_sensor */
 
 namespace occupancy_sensor {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
+typedef struct config : app_base_config {
     cluster::occupancy_sensing::config_t occupancy_sensing;
 } config_t;
 
@@ -558,11 +509,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* occupancy_sensor */
 
 namespace contact_sensor {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
-    cluster::boolean_state::config_t boolean_state;
-} config_t;
+using config_t = app_with_bool_state_config;
 
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
@@ -571,9 +518,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* contact_sensor */
 
 namespace light_sensor {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
+typedef struct config : app_base_config {
     cluster::illuminance_measurement::config_t illuminance_measurement;
 } config_t;
 
@@ -584,9 +529,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* light_sensor */
 
 namespace pressure_sensor {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
+typedef struct config : app_base_config {
     cluster::pressure_measurement::config_t pressure_measurement;
 } config_t;
 
@@ -597,9 +540,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* pressure_sensor */
 
 namespace flow_sensor {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
+typedef struct config : app_base_config {
     cluster::flow_measurement::config_t flow_measurement;
 } config_t;
 
@@ -610,9 +551,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* flow_sensor */
 
 namespace pump{
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
+typedef struct config : app_base_config {
     cluster::on_off::config_t on_off;
     cluster::pump_configuration_and_control::config_t pump_configuration_and_control;
     config(
@@ -629,12 +568,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** pump **/
 
 namespace pump_controller {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
+typedef struct config : app_client_config {
     cluster::on_off::config_t on_off;
     cluster::pump_configuration_and_control::config_t pump_configuration_and_control;
-    cluster::binding::config_t binding;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -656,9 +592,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** mode_select_device **/
 
 namespace room_air_conditioner{
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
+typedef struct config : app_base_config {
     cluster::on_off::config_t on_off;
     cluster::thermostat::config_t thermostat;
 } config_t;
@@ -704,9 +638,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** oven **/
 
 namespace robotic_vacuum_cleaner{
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
+typedef struct config : app_base_config {
     cluster::rvc_run_mode::config_t rvc_run_mode;
     cluster::rvc_operational_state::config_t rvc_operational_state;
 } config_t;
@@ -718,11 +650,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** robotic_vacuum_cleaner **/
 
 namespace water_leak_detector {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
-    cluster::boolean_state::config_t boolean_state;
-} config_t;
+using config_t = app_with_bool_state_config;
 
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
@@ -731,11 +659,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* water_leak_detector */
 
 namespace water_freeze_detector {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
-    cluster::boolean_state::config_t boolean_state;
-} config_t;
+
+using config_t = app_with_bool_state_config;
 
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
@@ -744,11 +669,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* water_freeze_detector */
 
 namespace rain_sensor {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
-    cluster::boolean_state::config_t boolean_state;
-} config_t;
+
+using config_t = app_with_bool_state_config;
 
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
@@ -807,9 +729,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* energy_evse */
 
 namespace microwave_oven {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::operational_state::config_t operational_state;
+typedef struct config : app_with_operational_state_config {
     cluster::microwave_oven_mode::config_t microwave_oven_mode;
     cluster::microwave_oven_control::config_t microwave_oven_control;
 } config_t;
@@ -833,9 +753,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* extractor_hood */
 
 namespace water_valve {
-typedef struct config {
-    cluster::descriptor::config_t descriptor;
-    cluster::identify::config_t identify;
+typedef struct config : app_base_config {
     cluster::valve_configuration_and_control::config_t valve_configuration_and_control;
 } config_t;
 
