@@ -372,3 +372,29 @@ When encountering the above issues, the following possible causes may exist:
       Features: WiFi, BLE
       Crystal is 26MHz
       MAC: 08:3a:8d:49:b3:90
+
+A1.15 Generating Matter Onboarding Codes on the device itself
+-------------------------------------------------------------
+
+The Passcode serves as both proof of possession for the device and the shared secret needed to establish
+the initial secure channel for onboarding.
+
+For best practices in Passcode generation and storage on the device, refer to
+**Section 5.1.7: Generation of the Passcode** in the Core Matter Specification.
+
+Ideally, devices should only store the Spake2p verifier, not the Passcode itself.
+If the Passcode is stored on the device, it must be physically separated from the Spake2p verifier’s location
+and must be accessible only through local interface and must not be accessible to the unit handling the
+Spake2p verifier.
+
+For devices capable of displaying the onboarding payload, the use of a dynamic Passcode is recommended.
+
+The :project_file:`Light Switch <examples/light_switch/README.md>`
+example in the SDK demonstrates the use of a dynamic Passcode.
+It implements a custom Commissionable Data Provider that generates the dynamic Passcode,
+along with the corresponding Spake2p verifier and onboarding payload, directly on the device.
+
+Please check `#1128`_ and `#1126`_ for relevant discussion on Github issue
+
+.. _`#1126`: https://github.com/espressif/esp-matter/issues/1126
+.. _`#1128`: https://github.com/espressif/esp-matter/issues/1128
