@@ -1,7 +1,6 @@
 get_filename_component(MATTER_SDK_PATH ${CMAKE_CURRENT_SOURCE_DIR}/connectedhomeip/connectedhomeip/ REALPATH)
 
 get_filename_component(CHIP_ROOT ${CMAKE_CURRENT_LIST_DIR}/connectedhomeip/connectedhomeip/ REALPATH)
-include(${CMAKE_CURRENT_LIST_DIR}/connectedhomeip/connectedhomeip/config/esp32/components/chip/ota-image.cmake)
 
 set(ESP_COMPONENTS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/components)
 
@@ -27,6 +26,7 @@ endfunction()
 set(SRC_DIRS_LIST "${MATTER_SDK_PATH}/src/access"
                   "${MATTER_SDK_PATH}/src/access/examples"
                   "${MATTER_SDK_PATH}/src/app"
+                  "${MATTER_SDK_PATH}/src/app/data-model"
                   "${MATTER_SDK_PATH}/src/app/MessageDef"
                   "${MATTER_SDK_PATH}/src/app/reporting"
                   "${MATTER_SDK_PATH}/src/app/server"
@@ -54,6 +54,7 @@ set(SRC_DIRS_LIST "${MATTER_SDK_PATH}/src/access"
                   "${MATTER_SDK_PATH}/src/protocols"
                   "${MATTER_SDK_PATH}/src/protocols/bdx"
                   "${MATTER_SDK_PATH}/src/protocols/echo"
+                  "${MATTER_SDK_PATH}/src/protocols/interaction_model"
                   "${MATTER_SDK_PATH}/src/protocols/secure_channel"
                   "${MATTER_SDK_PATH}/src/protocols/user_directed_commissioning"
                   "${MATTER_SDK_PATH}/src/setup_payload"
@@ -111,6 +112,7 @@ set(EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/controller/ExamplePersistentStorag
                       "${MATTER_SDK_PATH}/src/lib/shell/commands/NFC.cpp"
                       "${MATTER_SDK_PATH}/src/platform/DeviceSafeQueue.cpp"
                       "${MATTER_SDK_PATH}/src/platform/SyscallStubs.cpp"
+                      "${MATTER_SDK_PATH}/src/platform/OpenThread/DnssdImpl.cpp"
                       "${MATTER_SDK_PATH}/src/platform/OpenThread/GenericThreadStackManagerImpl_OpenThread_LwIP.cpp"
                       "${MATTER_SDK_PATH}/src/system/SystemLayerImplSelect.cpp"
                       "${MATTER_SDK_PATH}/src/transport/TraceMessage.cpp")
@@ -254,8 +256,7 @@ if((NOT CONFIG_ENABLE_WIFI_STATION) AND (NOT CONFIG_ENABLE_WIFI_AP))
 endif()
 
 if (NOT CONFIG_ENABLE_MATTER_OVER_THREAD)
-    list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/platform/OpenThread/DnssdImpl.cpp"
-                                  "${MATTER_SDK_PATH}/src/platform/OpenThread/GenericNetworkCommissioningThreadDriver.cpp"
+    list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/platform/OpenThread/GenericNetworkCommissioningThreadDriver.cpp"
                                   "${MATTER_SDK_PATH}/src/platform/OpenThread/OpenThreadUtils.cpp"
                                   "${MATTER_SDK_PATH}/src/platform/OpenThread/OpenThreadDnssdImpl.cpp")
 endif()
@@ -272,7 +273,7 @@ else()
     set(CHIP_PROJECT_CONFIG "")
 endif()
 
-if (CONFIG_ENABLE_ESP_INSIGHTS_TRACE)
+if (CONFIG_ENABLE_ESP_INSIGHTS_TRACE AND (NOT "${IDF_TARGET}" STREQUAL "esp32h2"))
     list(APPEND SRC_DIRS_LIST "${MATTER_SDK_PATH}/src/tracing/esp32_trace")
     list(APPEND INCLUDE_DIRS_LIST "${MATTER_SDK_PATH}/src/tracing/esp32_trace/include"
                                   "${MATTER_SDK_PATH}/src/tracing/esp32_trace")
@@ -288,8 +289,14 @@ endif()
 
 if (CONFIG_CHIP_ENABLE_EXTERNAL_PLATFORM)
     # check the source file dir if external platform is enable
-    if ((EXISTS ${CONFIG_CHIP_EXTERNAL_PLATFORM_DIR}/external_platform.cmake))
-        include(${CONFIG_CHIP_EXTERNAL_PLATFORM_DIR}/external_platform.cmake)
+    if (IS_ABSOLUTE ${CONFIG_CHIP_EXTERNAL_PLATFORM_DIR})
+        get_filename_component(EXTERNAL_PLATFORM_DIR ${CONFIG_CHIP_EXTERNAL_PLATFORM_DIR} REALPATH)
+    else()
+        get_filename_component(EXTERNAL_PLATFORM_DIR ${CMAKE_SOURCE_DIR}/${CONFIG_CHIP_EXTERNAL_PLATFORM_DIR} REALPATH)
+    endif()
+    message("EXTERNAL_PLATFORM_DIR: ${EXTERNAL_PLATFORM_DIR}")
+    if ((EXISTS ${EXTERNAL_PLATFORM_DIR}/external_platform.cmake))
+        include(${EXTERNAL_PLATFORM_DIR}/external_platform.cmake)
         list(APPEND SRC_DIRS_LIST ${EXPLANT_SRC_DIRS_LIST})
         list(APPEND INCLUDE_DIRS_LIST ${EXPLANT_INCLUDE_DIRS_LIST})
         list(APPEND EXCLUDE_SRCS_LIST ${EXPLANT_EXCLUDE_SRCS_LIST})
@@ -328,17 +335,15 @@ else()
     if ((CONFIG_BT_ENABLED) AND (CONFIG_ENABLE_CHIPOBLE))
         if (CONFIG_BT_NIMBLE_ENABLED)
             list(APPEND SRC_DIRS_LIST "${MATTER_SDK_PATH}/src/platform/ESP32/nimble")
-            list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/platform/ESP32/bluedroid/BLEManagerImpl.cpp")
-            if(NOT CONFIG_ENABLE_ESP32_BLE_CONTROLLER)
-                list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/platform/ESP32/bluedroid/ChipDeviceScanner.cpp")
+            if (NOT CONFIG_ENABLE_ESP32_BLE_CONTROLLER)
+                list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/platform/ESP32/nimble/ChipDeviceScanner.cpp"
+                                                  "${MATTER_SDK_PATH}/src/platform/ESP32/nimble/misc.c"
+                                                  "${MATTER_SDK_PATH}/src/platform/ESP32/nimble/peer.c")
             endif()
         else()
             list(APPEND SRC_DIRS_LIST "${MATTER_SDK_PATH}/src/platform/ESP32/bluedroid")
-            list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/platform/ESP32/nimble/BLEManagerImpl.cpp")
-            if(NOT CONFIG_ENABLE_ESP32_BLE_CONTROLLER)
-                list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/platform/ESP32/nimble/ChipDeviceScanner.cpp"
-                                              "${MATTER_SDK_PATH}/src/platform/ESP32/nimble/misc.c"
-                                              "${MATTER_SDK_PATH}/src/platform/ESP32/nimble/peer.c")
+            if (NOT CONFIG_ENABLE_ESP32_BLE_CONTROLLER)
+                list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/platform/ESP32/bluedroid/ChipDeviceScanner.cpp")
             endif()
         endif()
     endif()
@@ -362,7 +367,8 @@ else()
     endif()
 
     if (NOT CONFIG_ENABLE_ESP32_DEVICE_INFO_PROVIDER)
-        list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/platform/ESP32/ESP32DeviceInfoProvider.cpp")
+        list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/platform/ESP32/ESP32DeviceInfoProvider.cpp"
+                                      "${MATTER_SDK_PATH}/src/platform/ESP32/StaticESP32DeviceInfoProvider.cpp")
     endif()
 
     if (NOT CONFIG_SEC_CERT_DAC_PROVIDER)
@@ -394,7 +400,8 @@ idf_component_register(SRC_DIRS          ${SRC_DIRS_LIST}
 
 target_compile_options(${COMPONENT_LIB} PUBLIC
                        "-DCHIP_ADDRESS_RESOLVE_IMPL_INCLUDE_HEADER=<lib/address_resolve/AddressResolve_DefaultImpl.h>"
-                       "-DCHIP_CONFIG_SOFTWARE_VERSION_NUMBER=${chip_config_software_version_number}")
+                       "-DCHIP_CONFIG_SOFTWARE_VERSION_NUMBER=${chip_config_software_version_number}"
+                       "-DNDEBUG")
 
 if (CHIP_PROJECT_CONFIG)
     target_compile_options(${COMPONENT_LIB} PUBLIC
@@ -402,9 +409,25 @@ if (CHIP_PROJECT_CONFIG)
                            "-DSYSTEM_PROJECT_CONFIG_INCLUDE=${CHIP_PROJECT_CONFIG}")
 endif()
 
-idf_build_set_property(COMPILE_OPTIONS "-Wno-error=uninitialized;-Wno-error=maybe-uninitialized;-Wno-format-nonliteral;-Wno-missing-field-initializers;" APPEND)
-idf_build_set_property(COMPILE_OPTIONS "-Wno-error=array-bounds" APPEND)
-idf_build_set_property(COMPILE_OPTIONS "-Wno-write-strings" APPEND)
+# compile options from connectedhomeip/build/config/compiler except -Wconversion, -Wshadow, and -Wno-unknown-warning-option
+target_compile_options(${COMPONENT_LIB} PRIVATE "-g2;-fno-common;-fno-unwind-tables;-fno-asynchronous-unwind-tables")
+target_compile_options(${COMPONENT_LIB} PRIVATE "-Wstack-usage=8192;-Wunreachable-code;-Wvla")
+target_compile_options(${COMPONENT_LIB} PRIVATE "-Wformat;-Wformat-nonliteral;-Wformat-security")
+target_compile_options(${COMPONENT_LIB} PRIVATE "-Wno-deprecated-declarations;-Wno-unused")
+target_compile_options(${COMPONENT_LIB} PRIVATE "-Wno-cast-function-type;-Wno-psabi;-Wno-maybe-uninitialized;-fno-strict-aliasing")
+target_compile_options(${COMPONENT_LIB} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-Wnon-virtual-dtor>)
+
+# link options from connectedhomeip/build/config/compiler
+target_link_options(${COMPONENT_LIB} PRIVATE -Wl,-O2 -Wl,--gc-sections -Os -Werror -Wl,--fatal-warnings -fdiagnostics-color)
+
+# compile options from esp-matter/components/
+target_compile_options(${COMPONENT_LIB} PRIVATE "-Wno-error=uninitialized;-Wno-error=maybe-uninitialized;-Wno-missing-field-initializers")
+target_compile_options(${COMPONENT_LIB} PRIVATE "-Wno-error=array-bounds;-Wno-write-strings")
+
+# TODO: remove this when building connectedhomeip/src/controller/CHIPDeviceController.cpp with no format error
+if (CONFIG_ENABLE_CHIP_CONTROLLER_BUILD)
+    target_compile_options(${COMPONENT_LIB} PRIVATE "-Wno-error=format")
+endif()
 
 # For Xtensa chips, uint32_t was defined as 'unsigned' before v5.0, and after IDF v5.0 it is defined
 # as 'unsigned long', same as RISC-V. add this compile option to avoid format errors.
@@ -422,9 +445,13 @@ if (CONFIG_USE_MINIMAL_MDNS)
     target_compile_options(${COMPONENT_LIB} PUBLIC "-DCHIP_MINMDNS_DEFAULT_POLICY=1"
                                                    "-DCHIP_MINMDNS_USE_EPHEMERAL_UNICAST_PORT=0"
                                                    "-DCHIP_MINMDNS_HIGH_VERBOSITY=0"
-                                                   "-DCHIP_DNSSD_DEFAULT_MINIMAL=1")
+                                                   "-DCHIP_DNSSD_DEFAULT_MINIMAL=true"
+                                                   "-DCHIP_DNSSD_DEFAULT_NONE=false"
+                                                   "-DCHIP_DNSSD_DEFAULT_PLATFORM=false")
 else()
-    target_compile_options(${COMPONENT_LIB} PUBLIC "-DCHIP_DNSSD_DEFAULT_PLATFORM=1")
+    target_compile_options(${COMPONENT_LIB} PUBLIC "-DCHIP_DNSSD_DEFAULT_PLATFORM=true"
+                                                   "-DCHIP_DNSSD_DEFAULT_NONE=false"
+                                                   "-DCHIP_DNSSD_DEFAULT_MINIMAL=false")
 endif()
 
 if (NOT CMAKE_BUILD_EARLY_EXPANSION)
@@ -455,9 +482,12 @@ target_link_libraries(${COMPONENT_LIB} INTERFACE -Wl,--start-group
                                                 ${chip_libraries}
                                                 -Wl,--end-group)
 
-# TODO: Build OTA image need a python package, leading a file change and distorying the hash of managed_components.
+cmake_policy(GET CMP0007 policy_status)
+# Set new CMP0007 policy to prevent cmake warning
+cmake_policy(SET CMP0007 NEW)
+include(${CMAKE_CURRENT_LIST_DIR}/connectedhomeip/connectedhomeip/config/esp32/components/chip/ota-image.cmake)
 # Build Matter OTA image
-if (false AND CONFIG_CHIP_OTA_IMAGE_BUILD)
+if (CONFIG_CHIP_OTA_IMAGE_BUILD)
     chip_ota_image(chip-ota-image
         INPUT_FILES ${BUILD_DIR}/${CMAKE_PROJECT_NAME}.bin
         OUTPUT_FILE ${BUILD_DIR}/${CMAKE_PROJECT_NAME}-ota.bin
@@ -465,3 +495,4 @@ if (false AND CONFIG_CHIP_OTA_IMAGE_BUILD)
     # Adding dependecy as app target so that this runs after images are ready
     add_dependencies(chip-ota-image app)
 endif()
+cmake_policy(SET CMP0007 ${policy_status})
