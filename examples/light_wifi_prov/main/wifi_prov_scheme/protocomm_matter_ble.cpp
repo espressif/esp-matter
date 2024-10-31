@@ -402,6 +402,7 @@ static int protocomm_matter_ble_gap_event(struct ble_gap_event *event, void *arg
         break;
     case BLE_GAP_EVENT_DISCONNECT:
         transport_matter_ble_disconnect(event, arg);
+        chip::DeviceLayer::Internal::BLEMgrImpl().RefreshAdv();
         break;
     case BLE_GAP_EVENT_MTU:
         transport_matter_ble_set_mtu(event, arg);
