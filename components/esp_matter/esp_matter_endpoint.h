@@ -162,6 +162,10 @@ typedef struct : app_base_config {
 } app_client_config;
 
 typedef struct : app_with_group_config {
+    cluster::on_off::config_t on_off;
+} on_off_config;
+
+typedef struct : app_with_group_config {
     cluster::scenes_management::config_t scenes_management;
     cluster::on_off::config_t on_off;
 } on_off_with_scenes_management_config;
@@ -232,7 +236,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace on_off_light {
 
-using config_t = on_off_with_scenes_management_config;
+using config_t = on_off_config;
 
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
@@ -316,7 +320,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace on_off_plugin_unit {
 
-using config_t = on_off_with_scenes_management_config;
+using config_t = on_off_config;
 
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();

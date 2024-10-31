@@ -2053,7 +2053,6 @@ command_t *create_stay_active_request(cluster_t *cluster)
 
 namespace scenes_management {
 namespace command {
-
 command_t *create_add_scene(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, ScenesManagement::Commands::AddScene::Id, COMMAND_FLAG_ACCEPTED, NULL);
