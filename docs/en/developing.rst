@@ -1440,6 +1440,11 @@ For ACL attribute of AccessControl cluster, you should use the following JSON st
 
       matter esp controller write-attr <node_id> <endpoint_id> 31 0 "{\"0:ARR-OBJ\":[{\"1:U8\": 5, \"2:U8\": 2, \"3:ARR-U64\": [112233], \"4:NULL\": null}, {\"1:U8\": 4, \"2:U8\": 3, \"3:ARR-U64\": [1], \"4:NULL\": null}]}"
 
+For attributes of type uint64_t or int64_t, if the absolute value is greater than (2^53), you should use string to represent number in JSON structure for precision
+    ::
+
+      matter esp controller write-attr <node_id> <endpoint_id> 42 0 "{\"0:ARR-OBJ\":[{\"1:U64\": \"9007199254740993\", \"2:U8\": 0}]}"
+
 2.10.6 Subscribe commands
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 The ``subscribe_command`` class is used for sending subscribe commands to other end-devices. Its constructor function could accept four callback inputs:
