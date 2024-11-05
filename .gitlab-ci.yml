@@ -328,7 +328,7 @@ build_esp_matter_examples:
     - openssl genrsa -out secure_boot_signing_key.pem 3072
 
     # steps for external platform build for blemesh_bridge app
-    - cd ${ESP_MATTER_PATH}/examples/blemesh_bridge
+    - cd ${ESP_MATTER_PATH}/examples/bridge_apps/blemesh_bridge
     - cp sdkconfig.defaults sdkconfig.defaults.backup
     - cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
 

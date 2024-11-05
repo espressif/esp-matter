@@ -3,7 +3,7 @@
 # Disabling the external platform builds till we fix the build problem
 # due to https://github.com/project-chip/connectedhomeip/pull/30531
 # JIRA tracker: CON-942
-examples/blemesh_bridge:
+examples/bridge_apps/blemesh_bridge:
   enable:
     - if: IDF_TARGET in ["esp32", "esp32c3"]
       temporary: true
@@ -39,7 +39,7 @@ examples/multiple_on_off_plugin_units:
       temporary: true
       reason: the other targets are not tested yet
 
-examples/esp-now_bridge_light:
+examples/bridge_apps/esp-now_bridge_light:
   enable:
     - if: IDF_TARGET in ["esp32c3"]
       temporary: true
@@ -51,7 +51,7 @@ examples/controller:
       temporary: true
       reason: the other targets are not tested yet
 
-examples/zigbee_bridge:
+examples/bridge_apps/zigbee_bridge:
   enable:
     - if: IDF_TARGET in ["esp32s3"]
       temporary: true
@@ -120,5 +120,11 @@ examples/light_wifi_prov:
 examples/thread_border_router:
   enable:
     - if: IDF_TARGET in ["esp32s3"]
+      temporary: true
+      reason: the other targets are not tested yet
+
+examples/bridge_apps/bridge_cli:
+  enable:
+    - if: IDF_TARGET in ["esp32", "esp32c3"]
       temporary: true
       reason: the other targets are not tested yet
