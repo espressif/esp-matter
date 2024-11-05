@@ -186,6 +186,8 @@ public:
         mSecondaryBleSmSc = bleSmSc;
     }
 
+    void RefreshAdv(void);
+
 private:
     chip::Optional<chip::ByteSpan> mScanResponse;
 
