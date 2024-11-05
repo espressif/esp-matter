@@ -81,15 +81,16 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 #if CHIP_CONFIG_ENABLE_ICD_SERVER
     icd_management::create(endpoint, &(config->icd_management), CLUSTER_FLAG_SERVER,
 #if CHIP_CONFIG_ENABLE_ICD_LIT
-                           icd_management::feature::long_idle_time_support::get_id()
+                           icd_management::feature::long_idle_time_support::get_id() |
 #if CHIP_CONFIG_ENABLE_ICD_CIP
-                           | icd_management::feature::check_in_protocol_support::get_id());
+                           icd_management::feature::check_in_protocol_support::get_id() |
 #endif // CHIP_CONFIG_ENABLE_ICD_CIP
-#else
-                            0);
+#if CHIP_CONFIG_ENABLE_ICD_UAT
+                           icd_management::feature::user_active_mode_trigger::get_id() |
+#endif // CHIP_CONFIG_ENABLE_ICD_UAT
 #endif // CHIP_CONFIG_ENABLE_ICD_LIT
+                            0);
 #endif // CHIP_CONFIG_ENABLE_ICD_SERVER
-
     return ESP_OK;
 }
 } /* root_node */

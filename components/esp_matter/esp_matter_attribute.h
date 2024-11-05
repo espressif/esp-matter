@@ -183,6 +183,8 @@ attribute_t *create_max_group_keys_per_fabric(cluster_t *cluster, uint16_t value
 
 namespace icd_management {
 namespace attribute {
+constexpr uint8_t k_user_active_mode_trigger_instruction_length = 128;
+
 attribute_t *create_idle_mode_duration(cluster_t *cluster, uint32_t value);
 attribute_t *create_active_mode_duration(cluster_t *cluster, uint32_t value);
 attribute_t *create_active_mode_threshold(cluster_t *cluster, uint16_t value);
