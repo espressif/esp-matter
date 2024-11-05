@@ -1609,7 +1609,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
     return ESP_OK;
 }
 
-static esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttributeType attribute_type,
+esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttributeType attribute_type,
                                         uint16_t attribute_size, uint8_t *value,
                                         const EmberAfAttributeMetadata * attribute_metadata)
 {

@@ -48,31 +48,31 @@ namespace attribute {
 
 attribute_t *create_device_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, Descriptor::Attributes::DeviceTypeList::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Descriptor::Attributes::DeviceTypeList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_server_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, Descriptor::Attributes::ServerList::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Descriptor::Attributes::ServerList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_client_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, Descriptor::Attributes::ClientList::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Descriptor::Attributes::ClientList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_parts_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, Descriptor::Attributes::PartsList::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Descriptor::Attributes::PartsList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_tag_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, Descriptor::Attributes::TagList::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Descriptor::Attributes::TagList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
@@ -84,13 +84,13 @@ namespace attribute {
 
 attribute_t *create_action_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, Actions::Attributes::ActionList::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Actions::Attributes::ActionList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_endpoint_lists(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, Actions::Attributes::EndpointLists::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Actions::Attributes::EndpointLists::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
@@ -108,7 +108,7 @@ namespace attribute {
 
 attribute_t *create_acl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, AccessControl::Attributes::Acl::Id, ATTRIBUTE_FLAG_WRITABLE,
+    return esp_matter::attribute::create(cluster, AccessControl::Attributes::Acl::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_array(value, length, count));
 }
 
@@ -121,19 +121,19 @@ attribute_t *create_extension(cluster_t *cluster, uint8_t *value, uint16_t lengt
 attribute_t *create_subjects_per_access_control_entry(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, AccessControl::Attributes::SubjectsPerAccessControlEntry::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 attribute_t *create_targets_per_access_control_entry(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, AccessControl::Attributes::TargetsPerAccessControlEntry::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 attribute_t *create_access_control_entries_per_fabric(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, AccessControl::Attributes::AccessControlEntriesPerFabric::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 } /* attribute */
@@ -145,30 +145,30 @@ namespace attribute {
 attribute_t *create_data_model_revision(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, BasicInformation::Attributes::DataModelRevision::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 attribute_t *create_vendor_name(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::VendorName::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::VendorName::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_char_str(value, length));
 }
 
 attribute_t *create_vendor_id(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::VendorID::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::VendorID::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_uint16(value));
 }
 
 attribute_t *create_product_name(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::ProductName::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::ProductName::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_char_str(value, length));
 }
 
 attribute_t *create_product_id(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::ProductID::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::ProductID::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_uint16(value));
 }
 
@@ -186,38 +186,38 @@ attribute_t *create_node_label(cluster_t *cluster, char *value, uint16_t length)
 attribute_t *create_location(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, BasicInformation::Attributes::Location::Id,
-                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
                                          esp_matter_char_str(value, length));
 }
 
 attribute_t *create_hardware_version(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, BasicInformation::Attributes::HardwareVersion::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 attribute_t *create_hardware_version_string(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, BasicInformation::Attributes::HardwareVersionString::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_char_str(value, length));
 }
 
 attribute_t *create_software_version(cluster_t *cluster, uint32_t value)
 {
     return esp_matter::attribute::create(cluster, BasicInformation::Attributes::SoftwareVersion::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint32(value));
 }
 
 attribute_t *create_software_version_string(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, BasicInformation::Attributes::SoftwareVersionString::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_char_str(value, length));
 }
 
 attribute_t *create_capability_minima(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, BasicInformation::Attributes::CapabilityMinima::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_manufacturing_date(cluster_t *cluster, char *value, uint16_t length)
@@ -276,13 +276,13 @@ attribute_t *create_product_appearance(cluster_t *cluster, uint8_t *value, uint1
 
 attribute_t *create_specification_version(cluster_t *cluster, uint32_t value)
 {
-    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::SpecificationVersion::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::SpecificationVersion::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_uint32(value));
 }
 
 attribute_t *create_max_paths_per_invoke(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::MaxPathsPerInvoke::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::MaxPathsPerInvoke::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_uint16(value));
 }
 
@@ -295,7 +295,7 @@ namespace attribute {
 attribute_t *create_binding(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, Binding::Attributes::Binding::Id,
-                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
                                          esp_matter_array(value, length, count));
 }
 
@@ -308,7 +308,7 @@ namespace attribute {
 attribute_t *create_default_ota_providers(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, OtaSoftwareUpdateRequestor::Attributes::DefaultOTAProviders::Id,
-                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
                                          esp_matter_array(value, length, count));
 }
 
@@ -345,25 +345,25 @@ attribute_t *create_breadcrumb(cluster_t *cluster, uint64_t value)
 attribute_t *create_basic_commissioning_info(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, GeneralCommissioning::Attributes::BasicCommissioningInfo::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_regulatory_config(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, GeneralCommissioning::Attributes::RegulatoryConfig::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
 }
 
 attribute_t *create_location_capability(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, GeneralCommissioning::Attributes::LocationCapability::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
 }
 
 attribute_t *create_supports_concurrent_connection(cluster_t *cluster, bool value)
 {
     return esp_matter::attribute::create(cluster, GeneralCommissioning::Attributes::SupportsConcurrentConnection::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bool(value));
 }
 
 } /* attribute */
@@ -375,67 +375,67 @@ namespace attribute {
 attribute_t *create_max_networks(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::MaxNetworks::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
 }
 
 attribute_t *create_networks(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::Networks::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::Networks::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_scan_max_time_seconds(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::ScanMaxTimeSeconds::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
 }
 
 attribute_t *create_connect_max_time_seconds(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::ConnectMaxTimeSeconds::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
 }
 
 attribute_t *create_interface_enabled(cluster_t *cluster, bool value)
 {
     return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::InterfaceEnabled::Id,
-                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_bool(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_bool(value));
 }
 
 attribute_t *create_last_networking_status(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::LastNetworkingStatus::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
 }
 
 attribute_t *create_last_network_id(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::LastNetworkID::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_octet_str(value, length));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_octet_str(value, length));
 }
 
 attribute_t *create_last_connect_error_value(cluster_t *cluster, nullable<int32_t> value)
 {
     return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::LastConnectErrorValue::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int32(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int32(value));
 }
 
 attribute_t *create_supported_wifi_bands(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::SupportedWiFiBands::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_supported_thread_features(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::SupportedThreadFeatures::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 attribute_t *create_thread_version(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::ThreadVersion::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 } /* attribute */
@@ -447,25 +447,25 @@ namespace attribute {
 attribute_t *create_network_interfaces(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, GeneralDiagnostics::Attributes::NetworkInterfaces::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_reboot_count(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, GeneralDiagnostics::Attributes::RebootCount::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint16(value));
 }
 
 attribute_t *create_up_time(cluster_t *cluster, uint64_t value)
 {
     return esp_matter::attribute::create(cluster, GeneralDiagnostics::Attributes::UpTime::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint64(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint64(value));
 }
 
 attribute_t *create_test_event_triggers_enabled(cluster_t *cluster, bool value)
 {
     return esp_matter::attribute::create(cluster, GeneralDiagnostics::Attributes::TestEventTriggersEnabled::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bool(value));
 }
 
 } /* attribute */
@@ -478,7 +478,7 @@ namespace attribute {
 attribute_t *create_current_heap_high_watermark(cluster_t *cluster, uint64_t value)
 {
     return esp_matter::attribute::create(cluster, SoftwareDiagnostics::Attributes::CurrentHeapHighWatermark::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint64(value));
 }
 
 } /* attribute */
@@ -490,19 +490,19 @@ namespace attribute {
 attribute_t *create_window_status(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, AdministratorCommissioning::Attributes::WindowStatus::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
 }
 
 attribute_t *create_admin_fabric_index(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, AdministratorCommissioning::Attributes::AdminFabricIndex::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_uint16(value));
 }
 
 attribute_t *create_admin_vendor_id(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, AdministratorCommissioning::Attributes::AdminVendorId::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_uint16(value));
 }
 
 } /* attribute */
@@ -514,37 +514,37 @@ namespace attribute {
 attribute_t *create_nocs(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, OperationalCredentials::Attributes::NOCs::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_fabrics(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, OperationalCredentials::Attributes::Fabrics::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_supported_fabrics(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, OperationalCredentials::Attributes::SupportedFabrics::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
 }
 
 attribute_t *create_commissioned_fabrics(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, OperationalCredentials::Attributes::CommissionedFabrics::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
 }
 
 attribute_t *create_trusted_root_certificates(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, OperationalCredentials::Attributes::TrustedRootCertificates::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_current_fabric_index(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, OperationalCredentials::Attributes::CurrentFabricIndex::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
 }
 
 } /* attribute */
@@ -556,26 +556,26 @@ namespace attribute {
 attribute_t *create_group_key_map(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, GroupKeyManagement::Attributes::GroupKeyMap::Id,
-                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_group_table(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, GroupKeyManagement::Attributes::GroupTable::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, GroupKeyManagement::Attributes::GroupTable::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_max_groups_per_fabric(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, GroupKeyManagement::Attributes::MaxGroupsPerFabric::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 attribute_t *create_max_group_keys_per_fabric(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, GroupKeyManagement::Attributes::MaxGroupKeysPerFabric::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 } /* attribute */
@@ -586,37 +586,37 @@ namespace attribute {
 attribute_t *create_idle_mode_duration(cluster_t *cluster, uint32_t value)
 {
     return esp_matter::attribute::create(cluster, IcdManagement::Attributes::IdleModeDuration::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint32(value));
 }
 
 attribute_t *create_active_mode_duration(cluster_t *cluster, uint32_t value)
 {
     return esp_matter::attribute::create(cluster, IcdManagement::Attributes::ActiveModeDuration::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint32(value));
 }
 
 attribute_t *create_active_mode_threshold(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, IcdManagement::Attributes::ActiveModeThreshold::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 attribute_t *create_registered_clients(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, IcdManagement::Attributes::RegisteredClients::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value,length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value,length, count));
 }
 
 attribute_t *create_icd_counter(cluster_t *cluster, uint32_t value)
 {
     return esp_matter::attribute::create(cluster, IcdManagement::Attributes::ICDCounter::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint32(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint32(value));
 }
 
 attribute_t *create_clients_supported_per_fabric(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, IcdManagement::Attributes::ClientsSupportedPerFabric::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 attribute_t *create_user_active_mode_trigger_hint(cluster_t *cluster, uint32_t value)
@@ -651,67 +651,67 @@ namespace attribute {
 attribute_t *create_bssid(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::Bssid::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_octet_str(value, length));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_octet_str(value, length));
 }
 
 attribute_t *create_security_type(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::SecurityType::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
 }
 
 attribute_t *create_wifi_version(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::WiFiVersion::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
 }
 
 attribute_t *create_channel_number(cluster_t *cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::ChannelNumber::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
 }
 
 attribute_t *create_rssi(cluster_t *cluster, nullable<int8_t> value)
 {
-    return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::Rssi::Id, ATTRIBUTE_FLAG_NULLABLE,
+    return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::Rssi::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE,
                                          esp_matter_nullable_int8(value));
 }
 
 attribute_t *create_beacon_lost_count(cluster_t *cluster, nullable<uint32_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::BeaconLostCount::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
 }
 
 attribute_t *create_beacon_rx_count(cluster_t *cluster, nullable<uint32_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::BeaconRxCount::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
 }
 
 attribute_t *create_packet_multicast_rx_count(cluster_t *cluster, nullable<uint32_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::PacketMulticastRxCount::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
 }
 
 attribute_t *create_packet_multicast_tx_count(cluster_t *cluster, nullable<uint32_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::PacketMulticastTxCount::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
 }
 
 attribute_t *create_packet_unicast_rx_count(cluster_t *cluster, nullable<uint32_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::PacketUnicastRxCount::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
 }
 
 attribute_t *create_packet_unicast_tx_count(cluster_t *cluster, nullable<uint32_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::PacketUnicastTxCount::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
 }
 
 attribute_t *create_current_max_rate(cluster_t *cluster, nullable<uint64_t> value)
@@ -723,7 +723,7 @@ attribute_t *create_current_max_rate(cluster_t *cluster, nullable<uint64_t> valu
 attribute_t *create_overrun_count(cluster_t *cluster, nullable<uint64_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::OverrunCount::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint64(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint64(value));
 }
 
 } /* attribute */
@@ -735,104 +735,104 @@ namespace attribute {
 attribute_t *create_channel(cluster_t *cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::Channel::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
 }
 
 attribute_t *create_routing_role(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::RoutingRole::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
 }
 
 attribute_t *create_network_name(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::NetworkName::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_char_str(value, length));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_char_str(value, length));
 }
 
 attribute_t *create_pan_id(cluster_t *cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::PanId::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
 }
 
 attribute_t *create_extended_pan_id(cluster_t *cluster, nullable<uint64_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::ExtendedPanId::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint64(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint64(value));
 }
 
 attribute_t *create_mesh_local_prefix(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::MeshLocalPrefix::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_octet_str(value, length));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_octet_str(value, length));
 }
 
 attribute_t *create_neighbor_table(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::NeighborTable::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_route_table(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::RouteTable::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_partition_id(cluster_t *cluster, nullable<uint32_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::PartitionId::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
 }
 
 attribute_t *create_weighting(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::Weighting::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
 }
 
 attribute_t *create_data_version(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::DataVersion::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
 }
 
 attribute_t *create_stable_data_version(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::StableDataVersion::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
 }
 
 attribute_t *create_leader_router_id(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::LeaderRouterId::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
 }
 
 attribute_t *create_security_policy(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::SecurityPolicy::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_channel_page0_mask(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::ChannelPage0Mask::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_octet_str(value, length));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_octet_str(value, length));
 }
 
 attribute_t *create_operational_dataset_components(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster,
                                          ThreadNetworkDiagnostics::Attributes::OperationalDatasetComponents::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::ActiveNetworkFaultsList::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
 }
 
 } /* attribute */
@@ -856,25 +856,25 @@ attribute_t *create_full_duplex(cluster_t *cluster, nullable<bool> value)
 attribute_t *create_packet_rx_count(cluster_t *cluster, uint64_t value)
 {
     return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::PacketRxCount::Id,
-					 ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+					 ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint64(value));
 }
 
 attribute_t *create_packet_tx_count(cluster_t *cluster, uint64_t value)
 {
     return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::PacketTxCount::Id,
-					 ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+					 ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint64(value));
 }
 
 attribute_t *create_collision_count(cluster_t *cluster, uint64_t value)
 {
     return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::CollisionCount::Id,
-					 ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+					 ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint64(value));
 }
 
 attribute_t *create_overrun_count(cluster_t *cluster, uint64_t value)
 {
     return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::OverrunCount::Id,
-					 ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+					 ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint64(value));
 }
 
 attribute_t *create_carrier_detect(cluster_t *cluster, nullable<bool> value)
@@ -2677,13 +2677,13 @@ namespace operational_state {
 namespace attribute {
 attribute_t *create_phase_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, OperationalState::Attributes::PhaseList::Id, ATTRIBUTE_FLAG_NULLABLE,
+    return esp_matter::attribute::create(cluster, OperationalState::Attributes::PhaseList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_current_phase(cluster_t *cluster, nullable<uint8_t> value)
 {
-    return esp_matter::attribute::create(cluster, OperationalState::Attributes::CurrentPhase::Id, ATTRIBUTE_FLAG_NULLABLE,
+    return esp_matter::attribute::create(cluster, OperationalState::Attributes::CurrentPhase::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
 		      			 esp_matter_nullable_uint8(value));
 }
 
@@ -2695,19 +2695,19 @@ attribute_t *create_countdown_time(cluster_t *cluster, nullable<uint32_t> value)
 
 attribute_t *create_operational_state_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, OperationalState::Attributes::OperationalStateList::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, OperationalState::Attributes::OperationalStateList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_operational_state(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, OperationalState::Attributes::OperationalState::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, OperationalState::Attributes::OperationalState::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_enum8(value));
 }
 
 attribute_t *create_operational_error(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, OperationalState::Attributes::OperationalError::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, OperationalState::Attributes::OperationalError::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_enum8(value));
 }
 
@@ -4131,7 +4131,7 @@ namespace attribute {
 
 attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ModeBase::Attributes::SupportedModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+    return esp_matter::attribute::create(cluster, ModeBase::Attributes::SupportedModes::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array((uint8_t*)value, length, count));
 }
 
 attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)

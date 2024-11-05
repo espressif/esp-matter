@@ -76,18 +76,21 @@ typedef enum attribute_flags {
     /** The attribute has bounds */
     ATTRIBUTE_FLAG_MIN_MAX = ATTRIBUTE_MASK_MIN_MAX, /* 0x04 */
     ATTRIBUTE_FLAG_MUST_USE_TIMED_WRITE = ATTRIBUTE_MASK_MUST_USE_TIMED_WRITE, /* 0x08 */
-    /** The attribute uses external storage for its value. If the ESP Matter data model is used, all the attributes
+    /** The attribute uses external storage for its value. If attributes
     have this flag enabled, as all of them are stored in the ESP Matter database. */
     ATTRIBUTE_FLAG_EXTERNAL_STORAGE = ATTRIBUTE_MASK_EXTERNAL_STORAGE, /* 0x10 */
     ATTRIBUTE_FLAG_SINGLETON = ATTRIBUTE_MASK_SINGLETON, /* 0x20 */
     ATTRIBUTE_FLAG_NULLABLE = ATTRIBUTE_MASK_NULLABLE, /* 0x40 */
     /** The attribute read and write are overridden. The attribute value will be fetched from and will be updated using
     the override callback. The value of this attribute is not maintained internally. */
-    ATTRIBUTE_FLAG_OVERRIDE = ATTRIBUTE_FLAG_NULLABLE << 1, /* 0x100 */
+    ATTRIBUTE_FLAG_OVERRIDE = ATTRIBUTE_FLAG_NULLABLE << 1, /* 0x80 */
     /** The attribute is non-volatile but its value will be changed frequently. If an attribute has this flag, its value
      will not be written to flash immediately. A timer will be started and the attribute value will be written after
      timeout. */
-    ATTRIBUTE_FLAG_DEFERRED = ATTRIBUTE_FLAG_NULLABLE << 2, /* 0x200 */
+    ATTRIBUTE_FLAG_DEFERRED = ATTRIBUTE_FLAG_NULLABLE << 2, /* 0x100 */
+    /** The attribute is managed internally and is not stored in the ESP Matter database.
+    If not set, ATTRIBUTE_FLAG_EXTERNAL_STORAGE flag will be enabled. */
+    ATTRIBUTE_FLAG_MANAGED_INTERNALLY = ATTRIBUTE_FLAG_NULLABLE << 3, /* 0x200 */
 } attribute_flags_t;
 
 /** Command flags */

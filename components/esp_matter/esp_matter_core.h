@@ -549,7 +549,7 @@ namespace attribute {
  * @return Attribute handle on success.
  * @return NULL in case of failure.
  */
-attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, esp_matter_attr_val_t val,
+attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, esp_matter_attr_val_t val,
                     uint16_t max_val_size = 0);
 
 /** Get attribute
@@ -613,7 +613,7 @@ uint32_t get_id(attribute_t *attribute);
 
 /** Set attribute val
  *
- * Set/Update the value of the attribute in the database.
+ * Set/Update the value of the attribute (has `ATTRIBUTE_FLAG_EXTERNAL_STORAGE` flag) in the database.
  *
  * @note: Once `esp_matter::start()` is done, `attribute::update()` should be used to update the attribute value.
  *
@@ -627,7 +627,7 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val);
 
 /** Get attribute val
  *
- * Get the value of the attribute from the database.
+ * Get the value of the attribute (has `ATTRIBUTE_FLAG_EXTERNAL_STORAGE` flag) from the database.
  *
  * @param[in] attribute Attribute handle.
  * @param[out] val Pointer to `esp_matter_attr_val_t`. Use appropriate elements as per the value type.
@@ -655,7 +655,7 @@ esp_err_t get_val_raw(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attrib
 
 /** Add attribute bounds
  *
- * Add bounds to the attribute. Bounds cannot be added to string/array type attributes.
+ * Add bounds to the attribute (has `ATTRIBUTE_FLAG_EXTERNAL_STORAGE` flag). Bounds cannot be added to string/array type attributes.
  *
  * @param[in] attribute Attribute handle.
  * @param[in] min Minimum allowed value.
@@ -668,14 +668,15 @@ esp_err_t add_bounds(attribute_t *attribute, esp_matter_attr_val_t min, esp_matt
 
 /** Get attribute bounds
  *
- * Get the bounds which have been added to the attribute.
+ * Get the bounds which have been added to the attribute (has `ATTRIBUTE_FLAG_EXTERNAL_STORAGE` flag).
  *
  * @param[in] attribute Attribute handle.
+ * @param[in] bounds Pointer to `esp_matter_attr_bounds_t`.
  *
- * @return Pointer to the attribute bounds structure.
- * @return NULL in case of failure or if the bounds were not added.
+ * @return ESP_OK on success.
+ * @return error in case of failure.
  */
-esp_matter_attr_bounds_t *get_bounds(attribute_t *attribute);
+esp_err_t get_bounds(attribute_t *attribute, esp_matter_attr_bounds_t *bounds);
 
 /** Get attribute flags
  *
@@ -689,7 +690,7 @@ uint16_t get_flags(attribute_t *attribute);
 
 /** Set attribute override
  *
- * Set the override callback for the attribute. For attribute read and write calls, instead of doing that from the
+ * Set the override callback for the attribute (has `ATTRIBUTE_FLAG_EXTERNAL_STORAGE` flag). For attribute read and write calls, instead of doing that from the
  * common database, this callback will be called.
  *
  * This can be used if the application or some component wants to maintain the attribute's value in the application or
@@ -706,7 +707,7 @@ esp_err_t set_override_callback(attribute_t *attribute, callback_t callback);
 
 /** Get attribute override
  *
- * Get the override callback for the attribute.
+ * Get the override callback for the attribute (has `ATTRIBUTE_FLAG_EXTERNAL_STORAGE` flag).
  *
  * @param[in] attribute Attribute handle.
  *
@@ -714,7 +715,7 @@ esp_err_t set_override_callback(attribute_t *attribute, callback_t callback);
  */
 callback_t get_override_callback(attribute_t *attribute);
 
-/** Set attribute deferred persistence
+/** Set attribute (has `ATTRIBUTE_FLAG_EXTERNAL_STORAGE` flag) deferred persistence
  *
  * Only non-volatile attributes can be set with deferred presistence. If an attribute is configured with deferred
  * presistence, any modifications to it will be enacted in its persistent storage with a specific delay

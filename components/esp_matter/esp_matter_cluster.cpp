@@ -332,13 +332,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_cluster_revision(cluster, cluster_revision);
     }
 
-    /* Commands */
-    command::create_query_image(cluster);
-    command::create_query_image_response(cluster);
-    command::create_apply_update_request(cluster);
-    command::create_apply_update_response(cluster);
-    command::create_notify_update_applied(cluster);
-
     return cluster;
 }
 } /* ota_provider */
@@ -380,9 +373,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     event::create_state_transition(cluster);
     event::create_version_applied(cluster);
 
-    /* Commands */
-    command::create_announce_ota_provider(cluster);
-
     return cluster;
 }
 } /* ota_requestor */
@@ -420,14 +410,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
-
-    /* Commands */
-    command::create_arm_fail_safe(cluster);
-    command::create_arm_fail_safe_response(cluster);
-    command::create_set_regulatory_config(cluster);
-    command::create_set_regulatory_config_response(cluster);
-    command::create_commissioning_complete(cluster);
-    command::create_commissioning_complete_response(cluster);
 
     return cluster;
 }
@@ -473,19 +455,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     /* Commands */
-    command::create_scan_networks(cluster);
-    command::create_scan_networks_response(cluster);
     if (config->feature_map & chip::to_underlying(NetworkCommissioning::Feature::kWiFiNetworkInterface)) {
         command::create_add_or_update_wifi_network(cluster);
     }
     if (config->feature_map & chip::to_underlying(NetworkCommissioning::Feature::kThreadNetworkInterface)) {
         command::create_add_or_update_thread_network(cluster);
     }
-    command::create_remove_network(cluster);
-    command::create_network_config_response(cluster);
-    command::create_connect_network(cluster);
-    command::create_connect_network_response(cluster);
-    command::create_reorder_network(cluster);
 
     return cluster;
 }
@@ -520,10 +495,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     event::create_boot_reason(cluster);
-
-    command::create_test_event_trigger(cluster);
-    command::create_time_snap_shot(cluster);
-    command::create_time_snap_shot_response(cluster);
 
     return cluster;
 }
@@ -562,10 +533,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         feature::basic::add(cluster);
     }
 
-    /* Commands */
-    command::create_open_commissioning_window(cluster);
-    command::create_revoke_commissioning(cluster);
-
     return cluster;
 }
 } /* administrator_commissioning */
@@ -601,20 +568,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_cluster_revision(cluster, cluster_revision);
     }
 
-    /* Commands */
-    command::create_attestation_request(cluster);
-    command::create_attestation_response(cluster);
-    command::create_certificate_chain_request(cluster);
-    command::create_certificate_chain_response(cluster);
-    command::create_csr_request(cluster);
-    command::create_csr_response(cluster);
-    command::create_add_noc(cluster);
-    command::create_update_noc(cluster);
-    command::create_noc_response(cluster);
-    command::create_update_fabric_label(cluster);
-    command::create_remove_fabric(cluster);
-    command::create_add_trusted_root_certificate(cluster);
-
     return cluster;
 }
 } /* operational_credentials */
@@ -645,14 +598,6 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
         attribute::create_max_groups_per_fabric(cluster, 0);
         attribute::create_max_group_keys_per_fabric(cluster, 0);
     }
-
-    /* Commands */
-    command::create_key_set_write(cluster);
-    command::create_key_set_read(cluster);
-    command::create_key_set_read_response(cluster);
-    command::create_key_set_remove(cluster);
-    command::create_key_set_read_all_indices(cluster);
-    command::create_key_set_read_all_indices_response(cluster);
 
     return cluster;
 }
@@ -761,9 +706,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
     }
-
-    /* Commands */
-    command::create_reset_counts(cluster);
 
     return cluster;
 }
@@ -1064,9 +1006,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     uint16_t endpoint_id = endpoint::get_id(endpoint);
     identification::init(endpoint_id, config->identify_type);
 
-    /* Commands */
-    command::create_identify(cluster);
-
     return cluster;
 }
 } /* identify */
@@ -1107,18 +1046,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         server_cluster_count++;
     }
 
-    /* Commands */
-    command::create_add_group(cluster);
-    command::create_view_group(cluster);
-    command::create_get_group_membership(cluster);
-    command::create_remove_group(cluster);
-    command::create_remove_all_groups(cluster);
-    command::create_add_group_if_identifying(cluster);
-    command::create_add_group_response(cluster);
-    command::create_view_group_response(cluster);
-    command::create_get_group_membership_response(cluster);
-    command::create_remove_group_response(cluster);
-
     return cluster;
 }
 } /* groups */
@@ -1156,21 +1083,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
-
-    /* Commands */
-    command::create_add_scene(cluster);
-    command::create_view_scene(cluster);
-    command::create_remove_scene(cluster);
-    command::create_remove_all_scenes(cluster);
-    command::create_store_scene(cluster);
-    command::create_recall_scene(cluster);
-    command::create_get_scene_membership(cluster);
-    command::create_add_scene_response(cluster);
-    command::create_view_scene_response(cluster);
-    command::create_remove_scene_response(cluster);
-    command::create_remove_all_scenes_response(cluster);
-    command::create_store_scene_response(cluster);
-    command::create_get_scene_membership_response(cluster);
 
     return cluster;
 }
@@ -1223,7 +1135,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     }
 
     /* Commands */
-    command::create_off(cluster);
     if (!(features & feature::off_only::get_id())) {
         command::create_on(cluster);
         command::create_toggle(cluster);
@@ -1267,16 +1178,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
-
-    /* Commands */
-    command::create_move_to_level(cluster);
-    command::create_move(cluster);
-    command::create_step(cluster);
-    command::create_stop(cluster);
-    command::create_move_to_level_with_on_off(cluster);
-    command::create_move_with_on_off(cluster);
-    command::create_step_with_on_off(cluster);
-    command::create_stop_with_on_off(cluster);
 
     /* Features */
     if (features & feature::on_off::get_id()) {
@@ -1447,9 +1348,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     if (flags & CLUSTER_FLAG_CLIENT) {
         create_default_binding_cluster(endpoint);
     }
-
-    /* Commands */
-    command::create_setpoint_raise_lower(cluster);
 
     /* Features */
     if (!(features & (feature::heating::get_id() | feature::cooling::get_id()))) {
@@ -2086,10 +1984,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     event::create_lock_operation(cluster);
     event::create_lock_operation_error(cluster);
 
-    /* Commands */
-    command::create_lock_door(cluster);
-    command::create_unlock_door(cluster);
-
     return cluster;
 }
 } /* door_lock */
@@ -2137,11 +2031,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     if (flags & CLUSTER_FLAG_CLIENT) {
         create_default_binding_cluster(endpoint);
     }
-
-    /* Commands */
-    command::create_up_or_open(cluster);
-    command::create_down_or_close(cluster);
-    command::create_stop_motion(cluster);
 
     /* Features */
     if (features & feature::lift::get_id()) {
@@ -2679,9 +2568,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         create_default_binding_cluster(endpoint);
     }
 
-    /* Commands */
-    command::create_change_to_mode(cluster);
-
     /* Features */
     if (features & feature::on_off::get_id()) {
         feature::on_off::add(cluster, &(config->on_off));
@@ -2713,10 +2599,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_CLIENT) {
         create_default_binding_cluster(endpoint);
     }
-
-    /* commands */
-    command::create_retrieve_logs_request(cluster);
-    command::create_retrieve_logs_response(cluster);
 
     return cluster;
 }
@@ -2777,9 +2659,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
     }
-
-    /* Commands */
-    command::create_set_temperature(cluster);
 
     /* Features */
     if (features & feature::temperature_number::get_id()) {
@@ -3014,9 +2893,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         global::attribute::create_cluster_revision(cluster, cluster_revision);
     }
 
-    /* Commands */
-    command::create_set_cooking_parameters(cluster);
-
     if (features & feature::power_as_number::get_id()) {
         feature::power_as_number::add(cluster);
     }
@@ -3091,10 +2967,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
     }
-
-    /* Commands */
-    command::create_send_key(cluster);
-    command::create_send_key_response(cluster);
 
     return cluster;
 }
@@ -3347,10 +3219,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         feature::v2x::add(cluster);
     }
 
-    /* Commands */
-    command::create_disable(cluster);
-    command::create_enable_charging(cluster);
-
     return cluster;
 }
 } /* energy_evse */
@@ -3394,10 +3262,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     if (flags & CLUSTER_FLAG_CLIENT) {
         create_default_binding_cluster(endpoint);
     }
-
-    /* Commands */
-    command::create_open(cluster);
-    command::create_close(cluster);
 
     /* Features */
     if (features & feature::time_sync::get_id()) {
@@ -3591,11 +3455,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
     }
-
-    command::create_get_active_dataset_request(cluster);
-    command::create_get_pending_dataset_request(cluster);
-    command::create_dataset_response(cluster);
-    command::create_set_active_dataset_request(cluster);
 
     if (features & feature::pan_change::get_id()) {
         feature::pan_change::add(cluster);
