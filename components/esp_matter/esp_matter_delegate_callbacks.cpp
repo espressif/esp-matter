@@ -38,6 +38,7 @@
 #include <app/clusters/keypad-input-server/keypad-input-server.h>
 #include <app/clusters/mode-select-server//supported-modes-manager.h>
 #include <app/clusters/thread-border-router-management-server/thread-border-router-management-server.h>
+#include <app/clusters/water-heater-management-server/water-heater-management-server.h>
 
 using namespace chip::app::Clusters;
 namespace esp_matter {
@@ -379,6 +380,20 @@ void ServiceAreaDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     // TODO: This cluster have two delegates we need to update exsiting delegate logic to accomodate multiple delegates.
 }
+
+void WaterHeaterManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    static WaterHeaterManagement::Instance * wHtrInstance = nullptr;
+    WaterHeaterManagement::Delegate *whtr_delegate = static_cast<WaterHeaterManagement::Delegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, WaterHeaterManagement::Id);
+    wHtrInstance = new WaterHeaterManagement::Instance(endpoint_id, *whtr_delegate, chip::BitMask<WaterHeaterManagement::Feature, uint32_t>(feature_map));
+    wHtrInstance->Init();
+}
+
 } // namespace delegate_cb
 
 } // namespace cluster

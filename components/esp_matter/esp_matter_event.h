@@ -223,5 +223,12 @@ event_t *create_resumed(cluster_t *cluster);
 } // namespace event
 } // namespace device_energy_management
 
+namespace water_heater_management {
+namespace event {
+event_t *create_boost_started(cluster_t *cluster);
+event_t *create_boost_ended(cluster_t *cluster);
+} // namespace event
+} // namespace water_heater_management
+
 } // namespace cluster
 } // namespace esp_matter

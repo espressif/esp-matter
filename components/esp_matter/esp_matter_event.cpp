@@ -744,5 +744,20 @@ event_t *create_resumed(cluster_t *cluster)
 } // namespace event
 } // namespace device_energy_management
 
+namespace water_heater_management {
+namespace event {
+event_t *create_boost_started(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, WaterHeaterManagement::Events::BoostStarted::Id);
+}
+
+event_t *create_boost_ended(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, WaterHeaterManagement::Events::BoostEnded::Id);
+}
+
+} // namespace event
+} // namespace water_heater_management
+
 } // namespace cluster
 } // namespace esp_matter

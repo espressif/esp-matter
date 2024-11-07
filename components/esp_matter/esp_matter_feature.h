@@ -2122,5 +2122,36 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* service_area */
 
+namespace water_heater_management {
+namespace feature {
+
+namespace energy_management {
+
+typedef struct config {
+    uint16_t tank_volume;
+    int64_t estimated_heat_required;
+    config(): tank_volume(0), estimated_heat_required(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* energy_management */
+
+namespace tank_percent {
+
+typedef struct config {
+    uint8_t tank_percentage;
+    config(): tank_percentage(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* tank_percent */
+
+} /* feature */
+} /* water_heater_management */
+
 } /* cluster */
 } /* esp_matter */

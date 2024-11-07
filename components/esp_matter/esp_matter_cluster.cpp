@@ -3568,6 +3568,50 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 }
 } /* service_area */
 
+namespace water_heater_management {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, WaterHeaterManagement::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = WaterHeaterManagementDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterWaterHeaterManagementPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
+        /** Attributes not managed internally **/
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+        attribute::create_heater_types(cluster, config->heater_types);
+        attribute::create_heat_demand(cluster, config->heat_demand);
+        attribute::create_tank_volume(cluster, config->tank_volume);
+    }
+
+    if (features & feature::energy_management::get_id()) {
+        feature::energy_management::add(cluster, &(config->energy_management));
+    }
+    if (features & feature::tank_percent::get_id()) {
+        feature::tank_percent::add(cluster, &(config->tank_percent));
+    }
+
+    event::create_boost_started(cluster);
+    event::create_boost_ended(cluster);
+    return cluster;
+}
+
+} /* water_heater_management */
+
 // namespace binary_input_basic {
 //     // ToDo
 // } /* binary_input_basic */

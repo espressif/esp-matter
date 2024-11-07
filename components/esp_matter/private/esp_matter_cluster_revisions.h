@@ -383,6 +383,10 @@ namespace service_area {
 constexpr uint16_t cluster_revision = 1;
 } // namespace service_area
 
+namespace water_heater_management {
+constexpr uint16_t cluster_revision = 2;
+} // namespace water_heater_management
+
 } // namespace cluster
 } // namespace esp_matter
 
