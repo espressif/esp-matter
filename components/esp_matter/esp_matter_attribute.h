@@ -1149,5 +1149,16 @@ attribute_t *create_thread_network_table_size(cluster_t *cluster, uint8_t value)
 } /* attribute */
 } /* thread_network_directory */
 
+namespace service_area {
+namespace attribute {
+attribute_t *create_supported_areas(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_supported_maps(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_selected_areas(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_current_area(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_estimated_end_time(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_progress(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* service_area */
+
 } /* cluster */
 } /* esp_matter */

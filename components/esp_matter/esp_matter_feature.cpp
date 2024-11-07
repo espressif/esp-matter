@@ -4783,5 +4783,72 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* thread_border_router_management */
 
+namespace service_area {
+namespace feature {
+
+namespace select_while_running {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ServiceArea::Feature::kSelectWhileRunning);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* select_while_running */
+
+namespace progress_reporting {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ServiceArea::Feature::kProgressReporting);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_progress(cluster, NULL, 0, 0);
+    return ESP_OK;
+}
+
+} /* progress_reporting */
+
+namespace maps {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ServiceArea::Feature::kMaps);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_supported_maps(cluster, NULL, 0, 0);
+    return ESP_OK;
+}
+
+} /* maps */
+
+} /* feature */
+} /* service_area */
+
 } /* cluster */
 } /* esp_matter */

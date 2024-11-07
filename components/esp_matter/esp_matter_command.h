@@ -457,5 +457,14 @@ command_t *create_operational_dataset_response(cluster_t *cluster);
 } /* command */
 } /* thread_network_directory */
 
+namespace service_area {
+namespace command {
+command_t *create_select_areas(cluster_t *cluster);
+command_t *create_select_areas_response(cluster_t *cluster);
+command_t *create_skip_area(cluster_t *cluster);
+command_t *create_skip_area_response(cluster_t *cluster);
+} /* command */
+} /* service_area */
+
 } /* cluster */
 } /* esp_matter */

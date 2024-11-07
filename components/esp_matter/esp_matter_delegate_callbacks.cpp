@@ -375,6 +375,10 @@ void ThreadBorderRouterManagementDelegateInitCB(void *delegate, uint16_t endpoin
     server_instance->Init();
 }
 
+void ServiceAreaDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    // TODO: This cluster have two delegates we need to update exsiting delegate logic to accomodate multiple delegates.
+}
 } // namespace delegate_cb
 
 } // namespace cluster
