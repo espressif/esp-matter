@@ -23,7 +23,7 @@
 #include <sdkconfig.h>
 
 // User options for plugin Binding Table Library
-#define EMBER_BINDING_TABLE_SIZE CONFIG_ESP_MATTER_BINDING_TABLE_SIZE
+#define MATTER_BINDING_TABLE_SIZE CONFIG_ESP_MATTER_BINDING_TABLE_SIZE
 
 /**** Network Section ****/
 #define EMBER_SUPPORTED_NETWORKS (1)
