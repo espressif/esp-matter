@@ -192,6 +192,14 @@ extern "C" void app_main()
     attribute_t *color_temp_attribute = attribute::get(color_control_cluster, ColorControl::Attributes::ColorTemperatureMireds::Id);
     attribute::set_deferred_persistence(color_temp_attribute);
 
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD && CHIP_DEVICE_CONFIG_ENABLE_WIFI_STATION
+    // Enable secondary network interface
+    secondary_network_interface::config_t secondary_network_interface_config;
+    endpoint = endpoint::secondary_network_interface::create(node, &secondary_network_interface_config, ENDPOINT_FLAG_NONE, nullptr);
+    ABORT_APP_ON_FAILURE(endpoint != nullptr, ESP_LOGE(TAG, "Failed to create secondary network interface endpoint"));
+#endif
+
+
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     /* Set OpenThread platform config */
     esp_openthread_platform_config_t config = {
