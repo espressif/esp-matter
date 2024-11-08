@@ -49,6 +49,7 @@ void ModeSelectDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void ThreadBorderRouterManagementDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void ServiceAreaDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void WaterHeaterManagementDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void EnergyPreferenceDelegateInitCB(void *delegate, uint16_t endpoint_id);
 } // namespace delegate_cb
 
 } // namespace cluster

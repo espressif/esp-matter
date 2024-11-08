@@ -3651,6 +3651,49 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* water_heater_mode */
 
+namespace energy_preference {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, EnergyPreference::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = EnergyPreferenceDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterEnergyPreferencePluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
+        /** Attributes not managed internally **/
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    /* Features */
+    if (features & feature::energy_balance::get_id()) {
+        feature::energy_balance::add(cluster, &(config->energy_balance));
+    }
+    if (features & feature::low_power_mode_sensitivity::get_id()) {
+        feature::low_power_mode_sensitivity::add(cluster, &(config->low_power_mode_sensitivity));
+    }
+
+    return cluster;
+}
+} /* energy_preference */
+
 // namespace binary_input_basic {
 //     // ToDo
 // } /* binary_input_basic */

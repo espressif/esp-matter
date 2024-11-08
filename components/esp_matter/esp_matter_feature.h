@@ -2147,11 +2147,35 @@ typedef struct config {
 
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
-
 } /* tank_percent */
-
 } /* feature */
 } /* water_heater_management */
+
+namespace energy_preference {
+namespace feature {
+
+namespace energy_balance {
+typedef struct config {
+    uint8_t current_energy_balance;
+    config() : current_energy_balance(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* energy_balance */
+
+namespace low_power_mode_sensitivity {
+typedef struct config {
+    uint8_t current_low_power_mode_sensitivity;
+    config() : current_low_power_mode_sensitivity(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* low_power_mode_sensitivity */
+
+} /* feature */
+} /* energy_preference */
 
 } /* cluster */
 } /* esp_matter */
