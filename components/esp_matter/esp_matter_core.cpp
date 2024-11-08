@@ -37,6 +37,7 @@
 #include <esp_matter_providers.h>
 
 #include <esp_matter_nvs.h>
+#include <singly_linked_list.h>
 
 using chip::CommandId;
 using chip::DataVersion;
@@ -276,18 +277,6 @@ static esp_err_t read_min_unused_endpoint_id()
 #endif // defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
 } /* node */
 
-namespace cluster {
-static int get_count(_cluster_t *current)
-{
-    int count = 0;
-    while (current) {
-        current = current->next;
-        count++;
-    }
-    return count;
-}
-} /* cluster */
-
 namespace command {
 #if defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
 command_entry_t *get_cluster_accepted_command_list(uint32_t cluster_id);
@@ -300,31 +289,7 @@ size_t get_cluster_accepted_command_count(uint32_t cluster_id) { return 0; }
 command_entry_t *get_cluster_generated_command_list(uint32_t cluster_id) { return nullptr; }
 size_t get_cluster_generated_command_count(uint32_t cluster_id) {return 0; }
 #endif // defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
-
-static int get_count(_command_t *current, int command_flag)
-{
-    int count = 0;
-    while (current) {
-        if (current->flags & command_flag) {
-            count++;
-        }
-        current = current->next;
-    }
-    return count;
-}
 } /* command */
-
-namespace event {
-static int get_count(_event_t *current)
-{
-    int count = 0;
-    while (current) {
-        count++;
-        current = current->next;
-    }
-    return count;
-}
-}
 
 namespace attribute {
 
@@ -333,16 +298,6 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
 esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttributeType attribute_type,
                                  uint16_t attribute_size, uint8_t *value,
                                  const EmberAfAttributeMetadata * attribute_metadata);
-
-static int get_count(_attribute_base_t *current)
-{
-    int count = 0;
-    while (current) {
-        current = current->next;
-        count++;
-    }
-    return count;
-}
 
 static EmberAfAttributeMetadata *get_external_attribute_metadata(_attribute_t * attribute)
 {
@@ -514,7 +469,7 @@ esp_err_t enable(endpoint_t *endpoint)
 
     /* Clusters */
     _cluster_t *cluster = current_endpoint->cluster_list;
-    int cluster_count = cluster::get_count(cluster);
+    int cluster_count = SinglyLinkedList<_cluster_t>::count(cluster);
     int cluster_index = 0;
 
     DataVersion *data_versions_ptr = (DataVersion *)esp_matter_mem_calloc(1, cluster_count * sizeof(DataVersion));
@@ -563,7 +518,7 @@ esp_err_t enable(endpoint_t *endpoint)
         /* Client Generated Commands */
         command_flag = COMMAND_FLAG_ACCEPTED;
         command = cluster->command_list;
-        command_count = command::get_count(command, command_flag);
+        command_count = SinglyLinkedList<_command_t>::count_with_flag(command, command_flag);
         command_count += command::get_cluster_accepted_command_count(cluster_id);
         if (command_count > 0) {
             command_index = 0;
@@ -591,7 +546,7 @@ esp_err_t enable(endpoint_t *endpoint)
         /* Server Generated Commands */
         command_flag = COMMAND_FLAG_GENERATED;
         command = cluster->command_list;
-        command_count = command::get_count(command, command_flag);
+        command_count = SinglyLinkedList<_command_t>::count_with_flag(command, command_flag);
         command_count += command::get_cluster_generated_command_count(cluster_id);
         if (command_count > 0) {
             command_index = 0;
@@ -618,7 +573,7 @@ esp_err_t enable(endpoint_t *endpoint)
 
         /* Event */
         event = cluster->event_list;
-        event_count = event::get_count(event);
+        event_count = SinglyLinkedList<_event_t>::count(event);
         if (event_count > 0) {
             event_index = 0;
             event_ids = (EventId *)esp_matter_mem_calloc(1, (event_count + 1) * sizeof(EventId));
@@ -1047,18 +1002,7 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, e
     }
 
     /* Add */
-    _attribute_base_t *previous_attribute = NULL;
-    _attribute_base_t *current_attribute = current_cluster->attribute_list;
-    while (current_attribute) {
-        previous_attribute = current_attribute;
-        current_attribute = current_attribute->next;
-    }
-    if (previous_attribute == NULL) {
-        current_cluster->attribute_list = attribute;
-    } else {
-        previous_attribute->next = attribute;
-    }
-
+    SinglyLinkedList<_attribute_base_t>::append(&current_cluster->attribute_list, attribute);
     return (attribute_t *)attribute;
 }
 
@@ -1359,29 +1303,8 @@ command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callba
     command->user_callback = NULL;
 
     /* Add */
-    _command_t *previous_command = NULL;
-    _command_t *current_command = current_cluster->command_list;
-    while (current_command) {
-        previous_command = current_command;
-        current_command = current_command->next;
-    }
-    if (previous_command == NULL) {
-        current_cluster->command_list = command;
-    } else {
-        previous_command->next = command;
-    }
-
+    SinglyLinkedList<_command_t>::append(&current_cluster->command_list, command);
     return (command_t *)command;
-}
-
-static esp_err_t destroy(command_t *command)
-{
-    VerifyOrReturnError(command, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Command cannot be NULL"));
-    _command_t *current_command = (_command_t *)command;
-
-    /* Free */
-    esp_matter_mem_free(current_command);
-    return ESP_OK;
 }
 
 command_t *get(cluster_t *cluster, uint32_t command_id, uint16_t flags)
@@ -1473,29 +1396,8 @@ event_t *create(cluster_t *cluster, uint32_t event_id)
     event->event_id = event_id;
 
     /* Add */
-    _event_t *previous_event = NULL;
-    _event_t *current_event = current_cluster->event_list;
-    while (current_event) {
-        previous_event = current_event;
-        current_event = current_event->next;
-    }
-    if (previous_event == NULL) {
-        current_cluster->event_list = event;
-    } else {
-        previous_event->next = event;
-    }
-
+    SinglyLinkedList<_event_t>::append(&current_cluster->event_list, event);
     return (event_t *)event;
-}
-
-static esp_err_t destroy(event_t *event)
-{
-    VerifyOrReturnError(event, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Event cannot be NULL"));
-    _event_t *current_event = (_event_t *)event;
-
-    /* Free */
-    esp_matter_mem_free(current_event);
-    return ESP_OK;
 }
 
 event_t *get(cluster_t *cluster, uint32_t event_id)
@@ -1603,18 +1505,7 @@ cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags)
     matter_cluster->functions = NULL;
 
     /* Add */
-    _cluster_t *previous_cluster = NULL;
-    _cluster_t *current_cluster = current_endpoint->cluster_list;
-    while (current_cluster) {
-        previous_cluster = current_cluster;
-        current_cluster = current_cluster->next;
-    }
-    if (previous_cluster == NULL) {
-        current_endpoint->cluster_list = cluster;
-    } else {
-        previous_cluster->next = cluster;
-    }
-
+    SinglyLinkedList<_cluster_t>::append(&current_endpoint->cluster_list, cluster);
     return (cluster_t *)cluster;
 }
 
@@ -1624,12 +1515,7 @@ static esp_err_t destroy(cluster_t *cluster)
     _cluster_t *current_cluster = (_cluster_t *)cluster;
 
     /* Parse and delete all commands */
-    _command_t *command = current_cluster->command_list;
-    while (command) {
-        _command_t *next_command = command->next;
-        command::destroy((command_t *)command);
-        command = next_command;
-    }
+    SinglyLinkedList<_command_t>::delete_list(&current_cluster->command_list);
 
     /* Parse and delete all attributes */
     _attribute_base_t *attribute = current_cluster->attribute_list;
@@ -1640,12 +1526,7 @@ static esp_err_t destroy(cluster_t *cluster)
     }
 
     /* Parse and delete all events */
-    _event_t *event = current_cluster->event_list;
-    while (event) {
-        _event_t *next_event = event->next;
-        event::destroy((event_t *)event);
-        event = next_event;
-    }
+    SinglyLinkedList<_event_t>::delete_list(&current_cluster->event_list);
 
     /* Free */
     esp_matter_mem_free(current_cluster);
@@ -1811,18 +1692,7 @@ endpoint_t *create(node_t *node, uint8_t flags, void *priv_data)
 #endif // defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
 
     /* Add */
-    _endpoint_t *previous_endpoint = NULL;
-    _endpoint_t *current_endpoint = current_node->endpoint_list;
-    while (current_endpoint) {
-        previous_endpoint = current_endpoint;
-        current_endpoint = current_endpoint->next;
-    }
-    if (previous_endpoint == NULL) {
-        current_node->endpoint_list = endpoint;
-    } else {
-        previous_endpoint->next = endpoint;
-    }
-
+    SinglyLinkedList<_endpoint_t>::append(&current_node->endpoint_list, endpoint);
     return (endpoint_t *)endpoint;
 }
 
@@ -2001,6 +1871,7 @@ uint16_t get_count(node_t *node)
         endpoint = get_next(endpoint);
     }
     return count;
+
 }
 
 uint16_t get_id(endpoint_t *endpoint)
