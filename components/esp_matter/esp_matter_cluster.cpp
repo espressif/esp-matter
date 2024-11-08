@@ -3612,6 +3612,45 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 
 } /* water_heater_management */
 
+namespace water_heater_mode {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, WaterHeaterMode::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config && config -> delegate != nullptr) {
+            static const auto delegate_init_cb = WaterHeaterModeDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        mode_base::attribute::create_supported_modes(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+        if (config) {
+            mode_base::attribute::create_current_mode(cluster, config->current_mode);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    /* Commands */
+    mode_base::command::create_change_to_mode(cluster);
+
+    return cluster;
+}
+} /* water_heater_mode */
+
 // namespace binary_input_basic {
 //     // ToDo
 // } /* binary_input_basic */

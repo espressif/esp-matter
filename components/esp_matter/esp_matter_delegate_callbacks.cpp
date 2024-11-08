@@ -97,6 +97,11 @@ void RvcCleanModeDelegateInitCB(void *delegate, uint16_t endpoint_id)
     InitModeDelegate(delegate, endpoint_id, RvcCleanMode::Id);
 }
 
+void WaterHeaterModeDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    InitModeDelegate(delegate, endpoint_id, WaterHeaterMode::Id);
+}
+
 void EnergyEvseModeDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     InitModeDelegate(delegate, endpoint_id, EnergyEvseMode::Id);
