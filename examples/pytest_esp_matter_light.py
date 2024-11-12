@@ -250,7 +250,7 @@ def test_matter_commissioning_h2(dut:Tuple[Dut, Dut]) -> None:
     ot_br.write('dataset active -x')
     dataset=ot_br.expect(r'\n(\w{202}\r)', timeout=5)[1].decode()
     print(dataset)
-    ot_br.expect('ot_ext_cli: Got IPv6 event: Interface "sta" address: fdde:ad00:beef:cafe', timeout=30)
+    ot_br.expect('Got IPv6 event: Interface "example_netif_sta" address: fdde:ad00:beef:cafe', timeout=30)
     print("Got unique local ipv6 address")
     # Start commissioning
     time.sleep(2)

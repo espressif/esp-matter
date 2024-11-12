@@ -4,7 +4,7 @@ FROM ghcr.io/project-chip/chip-build:${VERSION} as build
 # Use IDF_CHECKOUT_REF to specify a tag, a branch or a specific commit ID.
 
 ARG IDF_CLONE_URL=https://github.com/espressif/esp-idf.git
-ARG IDF_CHECKOUT_REF=v5.2.1
+ARG IDF_CHECKOUT_REF=v5.2.3
 
 RUN set -x \
     && mkdir -p /tmp/esp-idf \
