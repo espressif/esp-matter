@@ -441,5 +441,21 @@ command_t *create_set_pending_dataset_request(cluster_t *cluster);
 } /* command */
 } /* thread_border_router_management */
 
+namespace wifi_network_management {
+namespace command {
+command_t *create_network_passphrase_request(cluster_t *cluster);
+command_t *create_network_passphrase_response(cluster_t *cluster);
+} /* command */
+} /* wifi_network_management */
+
+namespace thread_network_directory {
+namespace command {
+command_t *create_add_network(cluster_t *cluster);
+command_t *create_remove_network(cluster_t *cluster);
+command_t *create_get_operational_dataset(cluster_t *cluster);
+command_t *create_operational_dataset_response(cluster_t *cluster);
+} /* command */
+} /* thread_network_directory */
+
 } /* cluster */
 } /* esp_matter */
