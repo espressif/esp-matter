@@ -371,6 +371,13 @@ namespace thread_border_router_management {
 constexpr uint16_t cluster_revision = 1;
 } // namespace thread_border_router_management
 
+namespace wifi_network_management {
+constexpr uint16_t cluster_revision = 1;
+} // namespace wifi_network_management
+
+namespace thread_network_directory {
+constexpr uint16_t cluster_revision = 1;
+} // namespace thread_network_directory
 
 } // namespace cluster
 } // namespace esp_matter

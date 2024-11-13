@@ -3161,6 +3161,72 @@ command_t *create_set_pending_dataset_request(cluster_t *cluster)
 } /* command */
 } /* thread_border_router_management */
 
+namespace wifi_network_management {
+namespace command {
+
+constexpr const command_entry_t accepted_command_list[] = {
+    {WiFiNetworkManagement::Commands::NetworkPassphraseRequest::Id, COMMAND_FLAG_ACCEPTED, NULL},
+};
+
+constexpr const command_entry_t generated_command_list[] = {
+    {WiFiNetworkManagement::Commands::NetworkPassphraseResponse::Id, COMMAND_FLAG_GENERATED, NULL},
+};
+
+command_t *create_network_passphrase_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WiFiNetworkManagement::Commands::NetworkPassphraseRequest::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_network_passphrase_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WiFiNetworkManagement::Commands::NetworkPassphraseResponse::Id,
+                                       COMMAND_FLAG_GENERATED, NULL);
+}
+
+} /* command */
+} /* wifi_network_management */
+
+namespace thread_network_directory {
+namespace command {
+
+constexpr const command_entry_t accepted_command_list[] = {
+    {ThreadNetworkDirectory::Commands::AddNetwork::Id, COMMAND_FLAG_ACCEPTED, NULL},
+    {ThreadNetworkDirectory::Commands::RemoveNetwork::Id, COMMAND_FLAG_ACCEPTED, NULL},
+    {ThreadNetworkDirectory::Commands::GetOperationalDataset::Id, COMMAND_FLAG_ACCEPTED, NULL},
+};
+
+constexpr const command_entry_t generated_command_list[] = {
+    {ThreadNetworkDirectory::Commands::OperationalDatasetResponse::Id, COMMAND_FLAG_GENERATED, NULL},
+};
+
+command_t *create_add_network(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ThreadNetworkDirectory::Commands::AddNetwork::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_remove_network(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ThreadNetworkDirectory::Commands::RemoveNetwork::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_get_operational_dataset(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ThreadNetworkDirectory::Commands::GetOperationalDataset::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_operational_dataset_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ThreadNetworkDirectory::Commands::OperationalDatasetResponse::Id,
+                                       COMMAND_FLAG_GENERATED, NULL);
+}
+
+} /* command */
+} /* thread_network_directory */
+
 } /* cluster */
 } /* esp_matter */
 
@@ -3205,6 +3271,8 @@ constexpr const cluster_command_t cluster_command_table[] = {
     {EnergyEvse::Id, GET_COMMAND_COUNT_LIST(cluster::energy_evse)},
     {ValveConfigurationAndControl::Id, GET_COMMAND_COUNT_LIST(cluster::valve_configuration_and_control)},
     {ThreadBorderRouterManagement::Id, GET_COMMAND_COUNT_LIST(cluster::thread_border_router_management)},
+    {WiFiNetworkManagement::Id, GET_COMMAND_COUNT_LIST(cluster::wifi_network_management)},
+    {ThreadNetworkDirectory::Id, GET_COMMAND_COUNT_LIST(cluster::thread_network_directory)},
 };
 
 #if defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)

@@ -887,5 +887,15 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* thread_border_router_management */
 
+namespace wifi_network_management {
+using config_t = common::config_t;
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* wifi_network_management */
+
+namespace thread_network_directory {
+using config_t = common::config_t;
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* thread_network_directory */
+
 } /* cluster */
 } /* esp_matter */

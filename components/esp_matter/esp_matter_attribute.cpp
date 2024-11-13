@@ -4689,5 +4689,45 @@ attribute_t *create_pending_dataset_timestamp(cluster_t *cluster, nullable<uint6
 } /* attribute */
 } /* thread_border_router_management */
 
+namespace wifi_network_management {
+namespace attribute {
+attribute_t *create_ssid(cluster_t *cluster, uint8_t *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, WiFiNetworkManagement::Attributes::Ssid::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_octet_str(value, length));
+}
+
+attribute_t *create_passphrase_surrogate(cluster_t *cluster, nullable<uint64_t> value)
+{
+    return esp_matter::attribute::create(cluster, WiFiNetworkManagement::Attributes::PassphraseSurrogate::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint64(value));
+}
+
+} /* attribute */
+} /* wifi_network_management */
+
+namespace thread_network_directory {
+namespace attribute {
+attribute_t *create_preferred_extended_pan_id(cluster_t *cluster, uint8_t *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDirectory::Attributes::PreferredExtendedPanID::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_octet_str(value, length));
+}
+
+attribute_t *create_thread_networks(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDirectory::Attributes::ThreadNetworks::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_array(value, length, count));
+}
+
+attribute_t *create_thread_network_table_size(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDirectory::Attributes::ThreadNetworkTableSize::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+} /* attribute */
+} /* thread_network_directory */
+
 } /* cluster */
 } /* esp_matter */
