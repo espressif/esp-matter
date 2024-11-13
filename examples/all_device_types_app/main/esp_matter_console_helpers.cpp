@@ -519,6 +519,16 @@ int create(uint8_t device_type_index)
             break;
         }
 #endif
+        case ESP_MATTER_MOUNTED_ON_OFF_CONTROL: {
+            esp_matter::endpoint::mounted_on_off_control::config_t mounted_on_off_control_config;
+            endpoint = esp_matter::endpoint::mounted_on_off_control::create(node, &mounted_on_off_control_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
+        case ESP_MATTER_MOUNTED_DIMMABLE_LOAD_CONTROL: {
+            esp_matter::endpoint::mounted_dimmable_load_control::config_t mounted_dimmable_load_control_config;
+            endpoint = esp_matter::endpoint::mounted_dimmable_load_control::create(node, &mounted_dimmable_load_control_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
         default: {
             ESP_LOGE(TAG, "Please input a valid device type");
             break;

@@ -1945,6 +1945,77 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /* secondary_network_interface */
 
+namespace mounted_on_off_control {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_MOUNTED_ON_OFF_CONTROL_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_MOUNTED_ON_OFF_CONTROL_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
+
+    cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::command::create_trigger_effect(identify_cluster);
+    groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
+    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
+
+    return ESP_OK;
+}
+
+} /* mounted_on_off_control */
+
+namespace mounted_dimmable_load_control {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_MOUNTED_DIMMABLE_LOAD_CONTROL_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_MOUNTED_DIMMABLE_LOAD_CONTROL_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
+
+    cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::command::create_trigger_effect(identify_cluster);
+    groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
+    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
+    level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER,
+                          level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id());
+
+    return ESP_OK;
+}
+} /* mounted_dimmable_load_control */
+
 } /* endpoint */
 
 namespace node {
