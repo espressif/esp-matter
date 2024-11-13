@@ -73,3 +73,22 @@ class ResultsFormatter:
     def format_heap_dump(parsed_logs):
         headers = ["State", "Current Free Memory", "Largest Free Block", "Min. Ever Free Size"]
         return tabulate(parsed_logs, headers=headers, tablefmt="grid")
+
+    @staticmethod
+    def update_cert_test_results_section(description, markdown_content, chunk_id=None):
+        # Use chunk-specific markers
+        marker_id = f" {chunk_id}" if chunk_id else ""
+        marker_start = f"<!-- START: Cert Test Results{marker_id} -->"
+        marker_end = f"<!-- END: Cert Test Results{marker_id} -->"
+        cert_section = f"{marker_start}\n{markdown_content}\n{marker_end}"
+
+        if marker_start in description and marker_end in description:
+            updated_description = re.sub(
+                rf"{re.escape(marker_start)}.*?{re.escape(marker_end)}",
+                cert_section,
+                description,
+                flags=re.DOTALL,
+            )
+        else:
+            updated_description = description.strip() + "\n\n" + cert_section
+        return updated_description

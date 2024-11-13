@@ -5,3 +5,5 @@ pytest-timeout
 netifaces
 esptool>=4.5
 tabulate
+prettytable
+requests

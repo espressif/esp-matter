@@ -11,7 +11,11 @@ from typing import Tuple
 from pytest_embedded import Dut
 import os
 import yaml
+import sys
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../tools/ci')))
+from pytest_cert_helper import *
+from gitlab_api import GitLabAPI
 
 CURRENT_DIR_LIGHT = str(pathlib.Path(__file__).parent)+'/light'
 CHIP_TOOL_EXE = str(pathlib.Path(__file__).parent)+ '/../connectedhomeip/connectedhomeip/out/host/chip-tool'
@@ -20,6 +24,9 @@ OT_DATASET_HEXSTR = '0e08000000000001000035060004001fffe00708fdb824be22185de50c0
 pytest_build_dir = CURRENT_DIR_LIGHT
 pytest_matter_thread_dir = CURRENT_DIR_LIGHT+'|'+OT_BR_EXAMPLE_PATH
 
+gitlab_api = GitLabAPI()
+PYTEST_SSID = gitlab_api.ci_gitlab_pytest_ssid
+PYTEST_PASSPHRASE = gitlab_api.ci_gitlab_pytest_passphrase
 
 @pytest.mark.esp32c3
 @pytest.mark.esp_matter_dut
@@ -37,7 +44,7 @@ def test_matter_commissioning_c3(dut:Dut) -> None:
     light.expect(r'chip\[DL\]\: Configuring CHIPoBLE advertising', timeout=20)
     # Start commissioning
     time.sleep(5)
-    command = CHIP_TOOL_EXE + ' pairing ble-wifi 1 ChipTEH2 chiptest123 20202021 3840'
+    command = CHIP_TOOL_EXE + f" pairing ble-wifi 1 {PYTEST_SSID} {PYTEST_PASSPHRASE} 20202021 3840"
     out_str = subprocess.getoutput(command)
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))
@@ -76,7 +83,7 @@ def test_matter_commissioning_c2(dut:Dut) -> None:
     light.expect(r'chip\[DL\]\: Configuring CHIPoBLE advertising', timeout=20)
     # Start commissioning
     time.sleep(5)
-    command = CHIP_TOOL_EXE + ' pairing ble-wifi 1 ChipTEH2 chiptest123 20202021 3840'
+    command = CHIP_TOOL_EXE + f" pairing ble-wifi 1 {PYTEST_SSID} {PYTEST_PASSPHRASE} 20202021 3840"
     out_str = subprocess.getoutput(command)
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))
@@ -109,13 +116,13 @@ def test_matter_commissioning_c2(dut:Dut) -> None:
 )
 
 # Matter over wifi commissioning
-def test_matter_commissioning_c6(dut:Dut) -> None:
+def test_matter_commissioning_c6(dut:Dut, certification_tests: str) -> None:
     light = dut
     # BLE start advertising
     light.expect(r'chip\[DL\]\: Configuring CHIPoBLE advertising', timeout=20)
     # Start commissioning
     time.sleep(5)
-    command = CHIP_TOOL_EXE + ' pairing ble-wifi 1 ChipTEH2 chiptest123 20202021 3840'
+    command = CHIP_TOOL_EXE + f" pairing ble-wifi 1 {PYTEST_SSID} {PYTEST_PASSPHRASE} 20202021 3840"
     out_str = subprocess.getoutput(command)
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))
@@ -134,6 +141,11 @@ def test_matter_commissioning_c6(dut:Dut) -> None:
     command = CHIP_TOOL_EXE + ' onoff toggle 1 1'
     out_str = subprocess.getoutput(command)
     print(out_str)
+
+    light.write('matter esp factoryreset')
+    time.sleep(10)
+    run_python_certification_tests(light, certification_tests)
+
     result = re.findall(r'Run command failure', str(out_str))
     if len(result) != 0:
       assert False
@@ -244,7 +256,7 @@ def test_matter_commissioning_h2(dut:Tuple[Dut, Dut]) -> None:
     ot_br.expect(r'chip\[DL\]\: Configuring CHIPoBLE advertising', timeout=20)
     # Start commissioning OTBR
     time.sleep(2)
-    command = CHIP_TOOL_EXE + ' pairing ble-wifi 1 ChipTEH2 chiptest123 20202021 3584'
+    command = CHIP_TOOL_EXE + f" pairing ble-wifi 1 {PYTEST_SSID} {PYTEST_PASSPHRASE} 20202021 3584"
     out_str = subprocess.getoutput(command)
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))

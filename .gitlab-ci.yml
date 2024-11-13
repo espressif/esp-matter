@@ -525,9 +525,19 @@ pytest_esp32c6_esp_matter_dut:
     - cd ${ESP_MATTER_PATH}
     - rm -rf connectedhomeip/connectedhomeip
     - ln -s ${CHIP_SUBMODULE_PATH} connectedhomeip/connectedhomeip
+    - cd connectedhomeip/connectedhomeip
+    - source out/py-env/bin/activate
+    - cd ${ESP_MATTER_PATH}
+    - cp ${ESP_MATTER_PATH}/tools/ci/extended_color_light_wifi_pics_code.txt $ESP_MATTER_PATH/connectedhomeip/connectedhomeip/src/python_testing/
     - pip install -r tools/ci/requirements-pytest.txt
-    - pytest examples/ --target esp32c6 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml
+    - python3 -c "import os; os.environ['TEST_CHUNK'] = '$TEST_CHUNK'"
+    - pytest examples/ --target esp32c6 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml --certification-json=$ESP_MATTER_PATH/tools/ci/certification_test_commands.json
   tags: ["esp32c6", "esp_matter_dut"]
+  parallel:
+    matrix:
+      - TEST_CHUNK:
+          - "1"
+          - "2"
 
 pytest_esp32c2_esp_matter_dut:
   stage: target_test
