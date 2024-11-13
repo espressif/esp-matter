@@ -25,7 +25,7 @@ variables:
     IDF_CHECKOUT_REF: "v5.2.1"
     # This variable represents the short hash of the connectedhomeip submodule.
     # Note: Do change this short hash on submodule update MRs.
-    CHIP_SHORT_HASH: "82748b9f0e"
+    CHIP_SHORT_HASH: "735b69f73e"
     DOCKER_IMAGE_NAME: "espressif/chip-idf"
 
 .add_gitlab_ssh_key: &add_gitlab_ssh_key |
@@ -75,7 +75,6 @@ variables:
   # fetch submodules
   - export PYTHONPATH=${IDF_PATH}/tools/ci/python_packages/:${PYTHONPATH}
   - pip install python-gitlab
-  - python tools/ci/ci_fetch_submodule.py
   - cd examples/openthread/ot_rcp
   - idf.py set-target esp32h2
   - idf.py build
@@ -85,7 +84,6 @@ variables:
   - export PYTHONPATH=${IDF_PATH}/tools/ci/python_packages/:${PYTHONPATH}
   - pip install python-gitlab
   - cd ${IDF_PATH}
-  - python tools/ci/ci_fetch_submodule.py
 
 .setup_matter: &setup_matter
    - cd ${ESP_MATTER_PATH}
