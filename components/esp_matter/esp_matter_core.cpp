@@ -59,10 +59,7 @@ using chip::DeviceLayer::ThreadStackMgr;
 
 #define ESP_MATTER_NVS_PART_NAME CONFIG_ESP_MATTER_NVS_PART_NAME
 #define ESP_MATTER_MAX_DEVICE_TYPE_COUNT CONFIG_ESP_MATTER_MAX_DEVICE_TYPE_COUNT
-
-// TODO: replace 4 with CONFIG_MAX_GROUPS_PER_FABRIC_PER_ENDPOINT
-// This will be fixed in https://github.com/project-chip/connectedhomeip/pull/35394
-#define MAX_GROUPS_PER_FABRIC_PER_ENDPOINT 4
+#define MAX_GROUPS_PER_FABRIC_PER_ENDPOINT CONFIG_MAX_GROUPS_PER_FABRIC_PER_ENDPOINT
 
 static const char *TAG = "esp_matter_core";
 static bool esp_matter_started = false;
