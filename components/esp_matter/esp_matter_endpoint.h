@@ -138,6 +138,8 @@
 #define ESP_MATTER_SECONDARY_NETWORK_INTERFACE_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_WATER_HEATER_DEVICE_TYPE_ID 0x050F
 #define ESP_MATTER_WATER_HEATER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_SOLAR_POWER_DEVICE_TYPE_ID 0x0017
+#define ESP_MATTER_SOLAR_POWER_DEVICE_TYPE_VERSION 1
 
 #define ESP_MATTER_THREAD_BORDER_ROUTER_DEVICE_TYPE_ID 0x0091
 #define ESP_MATTER_THREAD_BORDER_ROUTER_DEVICE_TYPE_VERSION 1
@@ -843,6 +845,20 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* water_heater */
+
+namespace solar_power {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    power_source_device::config_t power_source_device;
+    electrical_sensor::config_t electrical_sensor;
+    cluster::electrical_energy_measurement::config_t electrical_energy_measurement;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* solar_power */
 
 } /* endpoint */
 
