@@ -3523,8 +3523,50 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 
     return cluster;
 }
-
 } /* thread_network_directory */
+
+namespace service_area {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, ServiceArea::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = ServiceAreaDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterServiceAreaPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        attribute::create_supported_areas(cluster, nullptr, 0, 0);
+        attribute::create_selected_areas(cluster, nullptr, 0, 0);
+
+        /** Attributes not managed internally **/
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (features & feature::select_while_running::get_id()) {
+        feature::select_while_running::add(cluster);
+    }
+    if (features & feature::progress_reporting::get_id()) {
+        feature::progress_reporting::add(cluster);
+    }
+    if (features & feature::maps::get_id()) {
+        feature::maps::add(cluster);
+    }
+
+    return cluster;
+}
+} /* service_area */
 
 // namespace binary_input_basic {
 //     // ToDo

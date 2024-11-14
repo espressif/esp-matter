@@ -3227,6 +3227,40 @@ command_t *create_operational_dataset_response(cluster_t *cluster)
 } /* command */
 } /* thread_network_directory */
 
+namespace service_area {
+namespace command {
+
+constexpr const command_entry_t accepted_command_list[] = {
+    {ServiceArea::Commands::SelectAreas::Id, COMMAND_FLAG_ACCEPTED, NULL},
+};
+
+constexpr const command_entry_t generated_command_list[] = {
+    {ServiceArea::Commands::SelectAreasResponse::Id, COMMAND_FLAG_GENERATED, NULL},
+};
+
+command_t *create_select_areas(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ServiceArea::Commands::SelectAreas::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_select_areas_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ServiceArea::Commands::SelectAreasResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_skip_area(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ServiceArea::Commands::SkipAreaResponse::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_skip_area_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ServiceArea::Commands::SkipAreaResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+}
+
+} /* command */
+} /* service_area */
+
 } /* cluster */
 } /* esp_matter */
 

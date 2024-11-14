@@ -2095,5 +2095,32 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* thread_border_router_management */
 
+namespace service_area {
+namespace feature {
+
+namespace select_while_running {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* select_while_running */
+
+namespace progress_reporting {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* progress_reporting */
+
+namespace maps {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* maps */
+
+} /* feature */
+} /* service_area */
+
 } /* cluster */
 } /* esp_matter */

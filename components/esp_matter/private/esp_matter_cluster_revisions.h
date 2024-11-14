@@ -379,6 +379,10 @@ namespace thread_network_directory {
 constexpr uint16_t cluster_revision = 1;
 } // namespace thread_network_directory
 
+namespace service_area {
+constexpr uint16_t cluster_revision = 1;
+} // namespace service_area
+
 } // namespace cluster
 } // namespace esp_matter
 
