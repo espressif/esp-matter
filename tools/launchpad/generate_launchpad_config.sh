@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2022-24 Espressif Systems (Shanghai) PTE LTD
+# Copyright 2022-2024 Espressif Systems (Shanghai) PTE LTD
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -80,7 +80,7 @@ do
 
     # TODO: Update the android phone app links when it is available on android play store
     echo "ios_app_url = \"https://apps.apple.com/app/esp-rainmaker/id1497491540\"" >> $OUT_FILE
-    echo "android_app_url = \"\"" >> $OUT_FILE
+    echo "android_app_url = \"https://play.google.com/store/apps/details?id=com.espressif.rainmaker\"" >> $OUT_FILE
     echo "readme.text = \"https://raw.githubusercontent.com/espressif/esp-matter/main/tools/launchpad/qrcode-content.md\"" >> $OUT_FILE
     echo "" >> $OUT_FILE
 
