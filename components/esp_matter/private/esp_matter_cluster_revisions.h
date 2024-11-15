@@ -315,6 +315,10 @@ namespace rvc_clean_mode {
 constexpr uint16_t cluster_revision = 1;
 } // namespace rvc_clean_mode
 
+namespace water_heater_mode {
+constexpr uint16_t cluster_revision = 1;
+} // namespace water_heater_mode
+
 namespace microwave_oven_mode {
 constexpr uint16_t cluster_revision = 1;
 } // namespace microwave_oven_mode

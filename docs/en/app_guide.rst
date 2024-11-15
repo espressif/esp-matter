@@ -63,6 +63,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
               , `Energy Evse Mode`_
               , `Microwave Oven Mode`_
               , `Device Energy Management Mode`_
+              , `Water Heater Mode`_
 
 9.1.2 Energy Evse Cluster
 -------------------------
@@ -243,6 +244,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Energy Evse Mode`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/energy-management-app/energy-management-common/energy-evse/include/energy-evse-modes.h
 .. _`Microwave Oven Mode`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/all-clusters-app/all-clusters-common/include/microwave-oven-mode.h
 .. _`Device Energy Management Mode`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/energy-management-app/energy-management-common/device-energy-management/include/device-energy-management-modes.h
+.. _`Water Heater Mode`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/energy-management-app/energy-management-common/water-heater/include/water-heater-mode.h
 .. _`Energy Evse`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/energy-evse-server/energy-evse-server.h
 .. _`Energy Evse Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/energy-management-app/energy-management-common/energy-evse/include/EnergyEvseDelegateImpl.h
 .. _`Operational State`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/operational-state-server/operational-state-server.h

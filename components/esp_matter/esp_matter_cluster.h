@@ -920,5 +920,15 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* water_heater_management */
 
+namespace water_heater_mode {
+typedef struct config {
+    uint8_t current_mode;
+    void *delegate;
+    config() : current_mode(0), delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* water_heater_mode */
+
 } /* cluster */
 } /* esp_matter */
