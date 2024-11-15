@@ -118,6 +118,8 @@ public:
 
     CHIP_ERROR OnResubscriptionNeeded(ReadClient *apReadClient, CHIP_ERROR aTerminationCause) override;
 
+    uint32_t get_subscription_id() { return m_subscription_id; }
+
 private:
     uint64_t m_node_id;
     uint16_t m_min_interval;
@@ -222,7 +224,28 @@ esp_err_t send_subscribe_attr_command(uint64_t node_id, uint16_t endpoint_id, ui
 esp_err_t send_subscribe_event_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t event_id,
                                        uint16_t min_interval, uint16_t max_interval, bool auto_resubscribe = true);
 
+/** Shut down a subscription for given node id and subscription id
+ *
+ * @param[in] node_id Node id
+ * @param[in] subscription_id Subscription id
+ *
+ * @return ESP_OK on success.
+ * @return ESP_FAIL in case of failure.
+ */
 esp_err_t send_shutdown_subscription(uint64_t node_id, uint32_t subscription_id);
+
+/** Shut down all subscriptions for a given node id
+ *
+ * @param[in] node_id Node id
+ * @return None
+ */
+void send_shutdown_subscriptions(uint64_t node_id);
+
+/** Shut down all subscriptions to all nodes
+ * @param[in] None
+ * @return None
+ */
+void send_shutdown_all_subscriptions();
 
 } // namespace controller
 } // namespace esp_matter

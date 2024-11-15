@@ -294,5 +294,23 @@ esp_err_t send_shutdown_subscription(uint64_t node_id, uint32_t subscription_id)
     return ESP_OK;
 }
 
+void send_shutdown_subscriptions(uint64_t node_id)
+{
+    InteractionModelEngine::GetInstance()->ShutdownSubscriptions(
+#if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+        matter_controller_client::get_instance().get_commissioner()->GetFabricIndex(),
+#else
+        get_fabric_index(),
+#endif
+        node_id);
+    ESP_LOGI(TAG, "Shutdown Subscriptions for node:0x%llx", node_id);
+}
+
+void send_shutdown_all_subscriptions()
+{
+    InteractionModelEngine::GetInstance()->ShutdownAllSubscriptions();
+    ESP_LOGI(TAG, "Shutdown all Subscriptions");
+}
+
 } // namespace controller
 } // namespace esp_matter
