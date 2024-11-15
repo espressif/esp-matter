@@ -4850,5 +4850,57 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* service_area */
 
+namespace water_heater_management {
+namespace feature {
+
+namespace energy_management {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(WaterHeaterManagement::Feature::kEnergyManagement);
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    /* attribute */
+    attribute::create_tank_volume(cluster, config->tank_volume);
+    attribute::create_estimated_heat_required(cluster, config->estimated_heat_required);
+
+    return ESP_OK;
+}
+
+} /* energy_management */
+
+namespace tank_percent {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(WaterHeaterManagement::Feature::kEnergyManagement);
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    /* attribute */
+    attribute::create_tank_percentage(cluster, config->tank_percentage);
+
+    return ESP_OK;
+}
+
+
+} /* tank_percent */
+
+} /* feature */
+} /* water_heater_management */
+
 } /* cluster */
 } /* esp_matter */

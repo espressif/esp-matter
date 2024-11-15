@@ -3261,6 +3261,30 @@ command_t *create_skip_area_response(cluster_t *cluster)
 } /* command */
 } /* service_area */
 
+namespace water_heater_management {
+namespace command {
+constexpr const command_entry_t accepted_command_list[] = {
+    {WaterHeaterManagement::Commands::Boost::Id, COMMAND_FLAG_ACCEPTED, NULL},
+    {WaterHeaterManagement::Commands::CancelBoost::Id, COMMAND_FLAG_ACCEPTED, NULL},
+};
+
+constexpr const command_entry_t generated_command_list[] = {};
+
+command_t *create_boost(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WaterHeaterManagement::Commands::CancelBoost::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_cancel_boost(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WaterHeaterManagement::Commands::CancelBoost::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* water_heater_management */
+
 } /* cluster */
 } /* esp_matter */
 
@@ -3307,6 +3331,7 @@ constexpr const cluster_command_t cluster_command_table[] = {
     {ThreadBorderRouterManagement::Id, GET_COMMAND_COUNT_LIST(cluster::thread_border_router_management)},
     {WiFiNetworkManagement::Id, GET_COMMAND_COUNT_LIST(cluster::wifi_network_management)},
     {ThreadNetworkDirectory::Id, GET_COMMAND_COUNT_LIST(cluster::thread_network_directory)},
+    {WaterHeaterManagement::Id, GET_COMMAND_COUNT_LIST(cluster::water_heater_management)},
 };
 
 #if defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)

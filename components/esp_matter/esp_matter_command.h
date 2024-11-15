@@ -466,5 +466,12 @@ command_t *create_skip_area_response(cluster_t *cluster);
 } /* command */
 } /* service_area */
 
+namespace water_heater_management {
+namespace command {
+command_t *create_boost(cluster_t *cluster);
+command_t *create_cancel_boost(cluster_t *cluster);
+} /* command */
+} /* water_heater_management */
+
 } /* cluster */
 } /* esp_matter */

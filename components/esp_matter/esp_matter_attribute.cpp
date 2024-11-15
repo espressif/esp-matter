@@ -4770,5 +4770,46 @@ attribute_t *create_progress(cluster_t *cluster, uint8_t *value, uint16_t length
 } /* attribute */
 } /* service_area */
 
+namespace water_heater_management {
+namespace attribute {
+attribute_t *create_heater_types(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, WaterHeaterManagement::Attributes::HeaterTypes::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_bitmap8(value));
+}
+
+attribute_t *create_heat_demand(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, WaterHeaterManagement::Attributes::HeatDemand::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_bitmap8(value));
+}
+
+attribute_t *create_tank_volume(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, WaterHeaterManagement::Attributes::TankVolume::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_estimated_heat_required(cluster_t *cluster, int64_t value)
+{
+    return esp_matter::attribute::create(cluster, WaterHeaterManagement::Attributes::EstimatedHeatRequired::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_int64(value));
+}
+
+attribute_t *create_tank_percentage(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, WaterHeaterManagement::Attributes::TankPercentage::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+}
+
+attribute_t *create_boost_state(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, WaterHeaterManagement::Attributes::BoostState::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+} /* attribute */
+} /* water_heater_management */
+
 } /* cluster */
 } /* esp_matter */

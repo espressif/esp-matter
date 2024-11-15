@@ -1160,5 +1160,16 @@ attribute_t *create_progress(cluster_t *cluster, uint8_t *value, uint16_t length
 } /* attribute */
 } /* service_area */
 
+namespace water_heater_management {
+namespace attribute {
+attribute_t *create_heater_types(cluster_t *cluster, uint8_t value);
+attribute_t *create_heat_demand(cluster_t *cluster, uint8_t value);
+attribute_t *create_tank_volume(cluster_t *cluster, uint16_t value);
+attribute_t *create_estimated_heat_required(cluster_t *cluster, int64_t value);
+attribute_t *create_tank_percentage(cluster_t *cluster, uint8_t value);
+attribute_t *create_boost_state(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* water_heater_management */
+
 } /* cluster */
 } /* esp_matter */

@@ -906,5 +906,19 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* service_area */
 
+namespace water_heater_management {
+typedef struct config {
+    uint8_t heater_types;
+    uint8_t heat_demand;
+    uint8_t tank_volume;
+    void *delegate;
+    feature::energy_management::config_t energy_management;
+    feature::tank_percent::config_t tank_percent;
+    config() : heater_types(0), heat_demand(0), tank_volume(0), delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* water_heater_management */
+
 } /* cluster */
 } /* esp_matter */
