@@ -34,6 +34,8 @@ c. Smart Plugs/Outlets
 2. Dimmable Plugin Unit
 3. Pump
 4. Water Valve
+5. Mounted On Off Control
+6. Mounted Dimmable Load Control
 
 d. Generic
 1. Mode Select

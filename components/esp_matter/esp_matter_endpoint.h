@@ -56,6 +56,10 @@
 #define ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_VERSION 3
 #define ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_ID 0x010B
 #define ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_VERSION 4
+#define ESP_MATTER_MOUNTED_ON_OFF_CONTROL_DEVICE_TYPE_ID 0x010F
+#define ESP_MATTER_MOUNTED_ON_OFF_CONTROL_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_MOUNTED_DIMMABLE_LOAD_CONTROL_DEVICE_TYPE_ID 0x0110
+#define ESP_MATTER_MOUNTED_DIMMABLE_LOAD_CONTROL_DEVICE_TYPE_VERSION 1
 
 #define ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID 0x0302
 #define ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_VERSION 2
@@ -805,6 +809,24 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* secondary_network_interface */
+
+namespace mounted_on_off_control {
+using config_t = on_off_config;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /** mounted_on_off_control **/
+
+namespace mounted_dimmable_load_control {
+using config_t = dimmable_light::config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /** mounted_dimmable_load_control **/
 
 } /* endpoint */
 
