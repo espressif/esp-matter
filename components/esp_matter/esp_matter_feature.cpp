@@ -4902,5 +4902,56 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* water_heater_management */
 
+namespace energy_preference {
+namespace feature {
+
+namespace energy_balance {
+
+uint32_t get_id()
+{
+    return (uint32_t)EnergyPreference::Feature::kEnergyBalance;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_energy_balances(cluster, NULL, 0, 0);
+    attribute::create_current_energy_balance(cluster, config->current_energy_balance);
+    attribute::create_energy_priorities(cluster, NULL, 0, 0);
+
+    return ESP_OK;
+}
+} /* energy_balance */
+
+namespace low_power_mode_sensitivity {
+
+uint32_t get_id()
+{
+    return (uint32_t)EnergyPreference::Feature::kLowPowerModeSensitivity;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_low_power_mode_sensitivities(cluster, NULL, 0, 0);
+    attribute::create_current_low_power_mode_sensitivity(cluster, config->current_low_power_mode_sensitivity);
+
+    return ESP_OK;
+}
+} /* low_power_mode_sensitivity */
+
+} /* feature */
+} /* energy_preference */
+
 } /* cluster */
 } /* esp_matter */

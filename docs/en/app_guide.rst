@@ -46,6 +46,7 @@ List of clusters with delegate:
     - Target Navigator Cluster.
     - Mode Select Cluster.
     - Water Heater Management Cluster.
+    - Energy Preference Cluster.
 
 9.1.1 Mode Base Cluster
 -----------------------
@@ -226,6 +227,14 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `Water Heater Management`_, `Water Heater Management Delegate`_
 
+9.1.21 Energy Preference Cluster
+--------------------------------
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Energy Preference`_, `Energy Preference Delegate`_
+
 
 .. note::
     Make sure that after implementing delegate class, you set the delegate class pointer at the time of creating cluster.
@@ -282,3 +291,5 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Mode Select Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/all-clusters-app/all-clusters-common/include/static-supported-modes-manager.h
 .. _`Water Heater Management`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/water-heater-management-server/water-heater-management-server.h
 .. _`Water Heater Management Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/energy-management-app/energy-management-common/water-heater/include/WhmDelegate.h
+.. _`Energy Preference`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/energy-preference-server/energy-preference-server.h
+.. _`Energy Preference Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/all-clusters-app/all-clusters-common/src/energy-preference-delegate.cpp

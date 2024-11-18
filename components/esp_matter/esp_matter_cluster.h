@@ -930,5 +930,16 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* water_heater_mode */
 
+namespace energy_preference {
+typedef struct config {
+    feature::energy_balance::config_t energy_balance;
+    feature::low_power_mode_sensitivity::config_t low_power_mode_sensitivity;
+    void *delegate;
+    config() : delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* energy_preference */
+
 } /* cluster */
 } /* esp_matter */

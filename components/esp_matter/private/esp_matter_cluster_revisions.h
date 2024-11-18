@@ -391,6 +391,10 @@ namespace water_heater_management {
 constexpr uint16_t cluster_revision = 2;
 } // namespace water_heater_management
 
+namespace energy_preference {
+constexpr uint16_t cluster_revision = 1;
+} // namespace energy_preference
+
 } // namespace cluster
 } // namespace esp_matter
 

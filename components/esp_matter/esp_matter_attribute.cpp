@@ -4811,5 +4811,40 @@ attribute_t *create_boost_state(cluster_t *cluster, uint8_t value)
 } /* attribute */
 } /* water_heater_management */
 
+namespace energy_preference {
+namespace attribute {
+attribute_t *create_energy_balances(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, EnergyPreference::Attributes::EnergyBalances::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array(value, length, count));
+}
+
+attribute_t *create_current_energy_balance(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, EnergyPreference::Attributes::CurrentEnergyBalance::Id,
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint8(value));
+}
+
+attribute_t *create_energy_priorities(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, EnergyPreference::Attributes::EnergyPriorities::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array(value, length, count));
+}
+
+attribute_t *create_low_power_mode_sensitivities(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, EnergyPreference::Attributes::LowPowerModeSensitivities::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array(value, length, count));
+}
+
+attribute_t *create_current_low_power_mode_sensitivity(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, EnergyPreference::Attributes::CurrentLowPowerModeSensitivity::Id,
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint8(value));
+}
+
+} /* attribute */
+} /* energy_preference */
+
 } /* cluster */
 } /* esp_matter */
