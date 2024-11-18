@@ -85,6 +85,105 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /* root_node */
 
+namespace ota_requestor{
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_OTA_REQUESTOR_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_OTA_REQUESTOR_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+#ifdef CONFIG_ENABLE_OTA_REQUESTOR
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    add(endpoint, config);
+    return endpoint;
+#else
+    ESP_LOGE(TAG, "Need enable CONFIG_ENABLE_OTA_REQUESTOR to enable ota requestor function");
+    return nullptr;
+#endif
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+#ifdef CONFIG_ENABLE_OTA_REQUESTOR
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
+
+    cluster_t *cluster = descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
+    if (!cluster) {
+        return ESP_ERR_INVALID_STATE;
+    }
+    cluster_t *cluster_p = cluster::ota_provider::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
+    cluster_t *cluster_r = cluster::ota_requestor::create(endpoint, &(config->ota_requestor), CLUSTER_FLAG_SERVER);
+    if (!cluster_p || !cluster_r) {
+        return ESP_FAIL;
+    }
+
+    return ESP_OK;
+#else
+    ESP_LOGE(TAG, "Need enable CONFIG_ENABLE_OTA_REQUESTOR to enable ota requestor function");
+    return ESP_FAIL;
+#endif
+}
+
+} /** ota_requestor **/
+
+namespace ota_provider{
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_OTA_PROVIDER_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_OTA_PROVIDER_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    add(endpoint, config);
+    return endpoint;
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
+
+    cluster_t *cluster = descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
+    if (!cluster) {
+        return ESP_ERR_INVALID_STATE;
+    }
+    cluster = cluster::ota_provider::create(endpoint, &(config->ota_provider), CLUSTER_FLAG_SERVER);
+    if (!cluster) {
+        return ESP_FAIL;
+    }
+
+    return ESP_OK;
+}
+
+} /** ota_provider **/
+
 namespace power_source_device{
 uint32_t get_device_type_id()
 {
