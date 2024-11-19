@@ -2017,6 +2017,39 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /* mounted_dimmable_load_control */
 
+namespace water_heater {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_WATER_HEATER_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_WATER_HEATER_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
+
+    cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER, cluster::thermostat::feature::heating::get_id());
+    water_heater_management::create(endpoint, &(config->water_heater_management), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
+    water_heater_mode::create(endpoint, &(config->water_heater_mode), CLUSTER_FLAG_SERVER);
+
+    return ESP_OK;
+}
+} /* water_heater */
+
 } /* endpoint */
 
 namespace node {
