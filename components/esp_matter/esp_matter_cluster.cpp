@@ -3694,6 +3694,72 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 }
 } /* energy_preference */
 
+namespace commissioner_control {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, CommissionerControl::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = CommissionerControlDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterCommissionerControlPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
+        /** Attributes not managed internally **/
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+        attribute::create_supported_device_categories(cluster, config->supported_device_categories);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+
+    event::create_commissioning_request_result(cluster);
+    return cluster;
+}
+} /* commissioner_control */
+
+namespace ecosystem_information {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, EcosystemInformation::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+    if (flags & CLUSTER_FLAG_SERVER) {
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterEcosystemInformationPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        attribute::create_device_directory(cluster, nullptr, 0, 0);
+        attribute::create_location_directory(cluster, nullptr, 0, 0);
+
+        /** Attributes not managed internally **/
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    return cluster;
+}
+} /* ecosystem_information */
+
 // namespace binary_input_basic {
 //     // ToDo
 // } /* binary_input_basic */
