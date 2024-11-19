@@ -21,6 +21,10 @@
 /* Replace these with IDs from submodule whenever they are implemented */
 #define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID 0x0016
 #define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_OTA_REQUESTOR_DEVICE_TYPE_ID 0x0012
+#define ESP_MATTER_OTA_REQUESTOR_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_OTA_PROVIDER_DEVICE_TYPE_ID 0x0014
+#define ESP_MATTER_OTA_PROVIDER_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_POWER_SOURCE_DEVICE_TYPE_ID 0x0011
 #define ESP_MATTER_POWER_SOURCE_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_AGGREGATOR_DEVICE_TYPE_ID 0x000E
@@ -155,6 +159,30 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* root_node */
+
+namespace ota_requestor{
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::ota_requestor::config_t ota_requestor;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* ota_requestor */
+
+namespace ota_provider{
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::ota_provider::config_t ota_provider;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* ota_provider */
 
 namespace power_source_device{
 typedef struct config {

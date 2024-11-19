@@ -47,7 +47,7 @@ OTAImageProcessorImpl gImageProcessor;
 esp_err_t esp_matter_ota_requestor_init(void)
 {
 #if (CONFIG_ENABLE_OTA_REQUESTOR && (FIXED_ENDPOINT_COUNT == 0))
-    ota_requestor::config_t config;
+    endpoint::ota_requestor::config_t config;
     node_t *root_node = esp_matter::node::get();
     endpoint_t *root_node_endpoint = esp_matter::endpoint::get(root_node, 0);
 
@@ -55,14 +55,7 @@ esp_err_t esp_matter_ota_requestor_init(void)
         return ESP_FAIL;
     }
 
-    cluster_t *cluster_p = ota_provider::create(root_node_endpoint, NULL, CLUSTER_FLAG_CLIENT);
-    cluster_t *cluster_r = ota_requestor::create(root_node_endpoint, &config, CLUSTER_FLAG_SERVER);
-
-    if (!cluster_p || !cluster_r) {
-        return ESP_FAIL;
-    }
-
-    return ESP_OK;
+    return endpoint::ota_requestor::add(root_node_endpoint, &config);
 #else
     return ESP_ERR_NOT_SUPPORTED;
 #endif
