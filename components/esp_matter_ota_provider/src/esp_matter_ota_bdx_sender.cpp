@@ -170,7 +170,6 @@ void OtaBdxSender::HandleTransferSessionOutput(TransferSession::OutputEvent &eve
         break;
     case TransferSession::OutputEventType::kAckEOFReceived: {
         ESP_LOGD(TAG, "Transfer completed, got AckEOF");
-        mStopPolling = true; // Stop polling the TransferSession only after receiving BlockAckEOF
         Reset();
         break;
     }
@@ -205,7 +204,7 @@ void OtaBdxSender::Reset()
 {
     mFabricIndex.ClearValue();
     mNodeId.ClearValue();
-    mTransfer.Reset();
+    ResetTransfer();
     if (mExchangeCtx != nullptr) {
         mExchangeCtx->Close();
         mExchangeCtx = nullptr;
