@@ -57,6 +57,7 @@ enum device_type_enum {
     ESP_MATTER_MOUNTED_DIMMABLE_LOAD_CONTROL,
     ESP_MATTER_WATER_HEATER,
     ESP_MATTER_SOLAR_POWER,
+    ESP_MATTER_BATTERY_STORAGE,
     ESP_MATTER_DEVICE_TYPE_MAX
 };
 
@@ -120,5 +121,6 @@ const device_type_name device_type_list[ESP_MATTER_DEVICE_TYPE_MAX] = {
     {"mounted_dimmable_load_control", ESP_MATTER_MOUNTED_DIMMABLE_LOAD_CONTROL},
     {"water_heater", ESP_MATTER_WATER_HEATER},
     {"solar_power", ESP_MATTER_SOLAR_POWER},
+    {"battery_storage", ESP_MATTER_BATTERY_STORAGE},
 };
 } /* namespace esp_matter */

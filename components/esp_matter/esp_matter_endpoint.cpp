@@ -2083,20 +2083,78 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         
     cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id); 
     power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.wired);
-
     electrical_sensor::add(endpoint, &config->electrical_sensor);
     electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER, electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id());
         
-    cluster_t *ele_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id); 
+    cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id); 
     
     nullable<int64_t> voltage = 0, active_current = 0;
-    electrical_power_measurement::attribute::create_voltage(ele_power_measurement_cluster, voltage);
-    electrical_power_measurement::attribute::create_active_current(ele_power_measurement_cluster, active_current);
+    electrical_power_measurement::attribute::create_voltage(elec_power_measurement_cluster, voltage);
+    electrical_power_measurement::attribute::create_active_current(elec_power_measurement_cluster, active_current);
 
 
     return ESP_OK;
 }
 } /* solar_power */
+
+namespace battery_storage {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_BATTERY_STORAGE_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_BATTERY_STORAGE_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
+
+    cluster_t *descriptor_cluster = cluster::get(endpoint, Descriptor::Id);
+    descriptor::feature::taglist::add(descriptor_cluster);
+    
+    power_source_device::add(endpoint, &config->power_source_device);
+        
+    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id); 
+    power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.wired);
+    power_source::feature::battery::add(power_source_cluster, &config->power_source_device.power_source.battery);
+
+    power_source::attribute::create_bat_voltage(power_source_cluster, config->bat_voltage, 0x00, 0xFFFF);
+    power_source::attribute::create_bat_percent_remaining(power_source_cluster, config->bat_percent_remaining, 0, 200);
+    power_source::attribute::create_bat_time_remaining(power_source_cluster, config->bat_time_remaining, 0x00, 0xFFFF);
+    power_source::attribute::create_active_bat_faults(power_source_cluster, NULL, 0, 0);
+    power_source::attribute::create_bat_capacity(power_source_cluster, config->bat_capacity, 0x00, 0xFFFF);
+    power_source::attribute::create_bat_time_to_full_charge(power_source_cluster, config->bat_time_to_full_charge, 0x00, 0xFFFF);
+    power_source::attribute::create_bat_charging_current(power_source_cluster, config->bat_charging_current, 0x00, 0xFFFF);
+    power_source::attribute::create_active_bat_charge_faults(power_source_cluster, NULL, 0, 0);
+
+    electrical_sensor::add(endpoint, &config->electrical_sensor);
+    electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER, electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id());
+        
+    cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id); 
+    
+    electrical_power_measurement::attribute::create_voltage(elec_power_measurement_cluster, config->voltage);
+    electrical_power_measurement::attribute::create_active_current(elec_power_measurement_cluster, config->active_current);
+
+    device_energy_management::add(endpoint, &config->device_energy_management);
+        
+    cluster_t *device_energy_management_cluster = cluster::get(endpoint, DeviceEnergyManagement::Id); 
+    cluster::device_energy_management::feature::power_adjustment::add(device_energy_management_cluster);
+    return ESP_OK;
+}
+} /* battery_storage */
 
 } /* endpoint */
 
