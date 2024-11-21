@@ -158,9 +158,9 @@ struct _attribute_base_t {
 
 struct _attribute_t : public _attribute_base_t {
     uint32_t cluster_id; // This struct is for attributes not managed internally.
-    uint16_t endpoint_id;
     esp_matter_attr_val_t val;
     attribute::callback_t override_callback;
+    uint16_t endpoint_id;
 };
 
 typedef struct _command {
