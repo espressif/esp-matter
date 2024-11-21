@@ -1,8 +1,6 @@
-# The chip-build image is moved to Ubuntu 24.04 for Matter v1.4 onwards.
-# For Matter v1.3 and earlier, it uses Ubuntu 22.04.
-# Therefore, pinning this to version:54 for building Docker images.
-# TODO: Move to latest when updating submodule
-ARG VERSION=54
+# 67 is the latest tag which updates the docker image for ESP32 platform
+# hence pinning version to 67 for building with v1.4-branch.
+ARG VERSION=67
 FROM ghcr.io/project-chip/chip-build:${VERSION} as build
 
 # Use IDF_CHECKOUT_REF to specify a tag, a branch or a specific commit ID.
