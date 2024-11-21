@@ -145,6 +145,8 @@
 
 #define ESP_MATTER_THREAD_BORDER_ROUTER_DEVICE_TYPE_ID 0x0091
 #define ESP_MATTER_THREAD_BORDER_ROUTER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_HEAT_PUMP_DEVICE_TYPE_ID 0x0309
+#define ESP_MATTER_HEAT_PUMP_DEVICE_TYPE_VERSION 1
 
 namespace esp_matter {
 
@@ -888,6 +890,26 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** battery_storage **/
+
+namespace heat_pump {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    power_source_device::config_t power_source_device;
+    electrical_sensor::config_t electrical_sensor;
+    device_energy_management::config_t device_energy_management;
+    cluster::electrical_energy_measurement::config_t electrical_energy_measurement;
+
+    nullable<int64_t> voltage;
+    nullable<int64_t> active_current;
+
+    config(): voltage(0), active_current(0) {}
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /** heat_pump **/
 
 } /* endpoint */
 
