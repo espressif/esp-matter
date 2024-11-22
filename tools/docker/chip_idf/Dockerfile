@@ -6,6 +6,14 @@ FROM ghcr.io/project-chip/chip-build:${VERSION} as build
 ARG IDF_CLONE_URL=https://github.com/espressif/esp-idf.git
 ARG IDF_CHECKOUT_REF=v5.2.3
 
+# install requirements for pytest
+RUN set -x \
+    && apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -fy --fix-missing --no-install-recommends \
+        dbus \
+        bluez \
+    && : # last line
+
 RUN set -x \
     && mkdir -p /tmp/esp-idf \
     && cd /tmp/esp-idf \

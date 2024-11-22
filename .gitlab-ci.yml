@@ -25,7 +25,7 @@ variables:
     IDF_CHECKOUT_REF: "v5.2.3"
     # This variable represents the short hash of the connectedhomeip submodule.
     # Note: Do change this short hash on submodule update MRs.
-    CHIP_SHORT_HASH: "ce0101d2e2"
+    CHIP_SHORT_HASH: "3c3672992c"
     DOCKER_IMAGE_NAME: "espressif/chip-idf"
 
 .add_gitlab_ssh_key: &add_gitlab_ssh_key |
