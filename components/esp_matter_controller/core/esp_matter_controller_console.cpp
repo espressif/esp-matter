@@ -534,6 +534,25 @@ static esp_err_t controller_shutdown_subscription_handler(int argc, char **argv)
     return controller::send_shutdown_subscription(node_id, subscription_id);
 }
 
+static esp_err_t controller_shutdown_subscriptions_handler(int argc, char **argv)
+{
+    if (argc != 1) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    uint64_t node_id = string_to_uint64(argv[0]);
+    controller::send_shutdown_subscriptions(node_id);
+    return ESP_OK;
+}
+
+static esp_err_t controller_shutdown_all_subscriptions_handler(int argc, char **argv)
+{
+    if (argc != 0) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    controller::send_shutdown_all_subscriptions();
+    return ESP_OK;
+}
+
 static esp_err_t controller_dispatch(int argc, char **argv)
 {
     if (argc == 0) {
@@ -648,9 +667,21 @@ esp_err_t controller_register_commands()
         },
         {
             .name = "shutdown-subs",
-            .description = "Shutdown subscription.\n"
+            .description = "Shutdown subscription for given node id and subscription id.\n"
                            "\tUsage: controller shutdown-subs <node-id> <subscription-id>",
             .handler = controller_shutdown_subscription_handler,
+        },
+        {
+            .name = "shutdown-subss",
+            .description = "Shutdown all subscriptions for a given node.\n"
+                           "\tUsage: controller shutdown-subss <node-id>",
+            .handler = controller_shutdown_subscriptions_handler,
+        },
+        {
+            .name = "shutdown-all-subss",
+            .description = "Shutdown all subscriptions to all nodes.\n"
+                           "\tUsage: controller shutdown-all-subss",
+            .handler = controller_shutdown_all_subscriptions_handler,
         },
     };
 
