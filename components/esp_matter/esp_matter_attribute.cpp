@@ -1997,22 +1997,43 @@ attribute_t *create_ac_capacity_format(cluster_t *cluster, uint8_t value)
 namespace thermostat_user_interface_configuration {
 namespace attribute {
 
-attribute_t *create_temperature_display_mode(cluster_t *cluster, uint8_t value)
+attribute_t *create_temperature_display_mode(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
 {
-    return esp_matter::attribute::create(cluster, ThermostatUserInterfaceConfiguration::Attributes::TemperatureDisplayMode::Id,
-		                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
+    attribute_t *attribute =
+        esp_matter::attribute::create(cluster, ThermostatUserInterfaceConfiguration::Attributes::TemperatureDisplayMode::Id,
+                                    ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(min), esp_matter_uint8(max));
+    return attribute;
 }
 
-attribute_t *create_keypad_lockout(cluster_t *cluster, uint8_t value)
+attribute_t *create_keypad_lockout(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
 {
-    return esp_matter::attribute::create(cluster, ThermostatUserInterfaceConfiguration::Attributes::KeypadLockout::Id,
-		                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
+    attribute_t *attribute =
+        esp_matter::attribute::create(cluster, ThermostatUserInterfaceConfiguration::Attributes::KeypadLockout::Id,
+                                    ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(min), esp_matter_uint8(max));
+    return attribute;
 }
 
-attribute_t *create_schedule_programming_visibility(cluster_t *cluster, uint8_t value)
+attribute_t *create_schedule_programming_visibility(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
 {
-    return esp_matter::attribute::create(cluster, ThermostatUserInterfaceConfiguration::Attributes::ScheduleProgrammingVisibility::Id,
-		                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
+    attribute_t *attribute =
+        esp_matter::attribute::create(cluster, ThermostatUserInterfaceConfiguration::Attributes::ScheduleProgrammingVisibility::Id,
+                                    ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(min), esp_matter_uint8(max));
+    return attribute;
 }
 
 } /* attribute */
