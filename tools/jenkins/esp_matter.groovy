@@ -19,6 +19,7 @@ def setup_environment() {
     git submodule update --init --depth 1
 
     cd ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip
+    rm -rf .environment/
     ./scripts/checkout_submodules.py --platform esp32 linux --shallow
 
     cd ${ESP_MATTER_PATH}
