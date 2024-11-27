@@ -1397,6 +1397,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        set_add_bounds_callback(cluster, thermostat_user_interface_configuration::add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
