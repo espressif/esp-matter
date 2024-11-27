@@ -55,6 +55,7 @@ enum device_type_enum {
     ESP_MATTER_THREAD_BORDER_ROUTER,
     ESP_MATTER_MOUNTED_ON_OFF_CONTROL,
     ESP_MATTER_MOUNTED_DIMMABLE_LOAD_CONTROL,
+    ESP_MATTER_WATER_HEATER,
     ESP_MATTER_DEVICE_TYPE_MAX
 };
 
@@ -116,5 +117,6 @@ const device_type_name device_type_list[ESP_MATTER_DEVICE_TYPE_MAX] = {
     {"thread_border_router", ESP_MATTER_THREAD_BORDER_ROUTER},
     {"mounted_on_off_control", ESP_MATTER_MOUNTED_ON_OFF_CONTROL},
     {"mounted_dimmable_load_control", ESP_MATTER_MOUNTED_DIMMABLE_LOAD_CONTROL},
+    {"water_heater", ESP_MATTER_WATER_HEATER},
 };
 } /* namespace esp_matter */

@@ -82,6 +82,7 @@ i. Appliances
 
 j. Energy
 1. EVSE (Electric Vehicle Supply Equipment)
+2. Water Heater
 
 k. Network Infrastructure
 1. Thread Border Router

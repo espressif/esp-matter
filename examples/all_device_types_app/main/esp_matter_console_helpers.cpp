@@ -529,6 +529,11 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::mounted_dimmable_load_control::create(node, &mounted_dimmable_load_control_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
+        case ESP_MATTER_WATER_HEATER: {
+            esp_matter::endpoint::water_heater::config_t water_heater_config;
+            endpoint = esp_matter::endpoint::water_heater::create(node, &water_heater_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
         default: {
             ESP_LOGE(TAG, "Please input a valid device type");
             break;
