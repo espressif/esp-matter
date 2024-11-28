@@ -941,5 +941,20 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* energy_preference */
 
+namespace commissioner_control {
+typedef struct config {
+    uint32_t supported_device_categories;
+    void *delegate;
+    config() : supported_device_categories(0), delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* commissioner_control */
+
+namespace ecosystem_information {
+using config_t = common::config_t;
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* ecosystem_information */
+
 } /* cluster */
 } /* esp_matter */

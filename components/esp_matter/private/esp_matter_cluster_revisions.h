@@ -395,6 +395,14 @@ namespace energy_preference {
 constexpr uint16_t cluster_revision = 1;
 } // namespace energy_preference
 
+namespace commissioner_control {
+constexpr uint16_t cluster_revision = 1;
+} // namespace commissioner_control
+
+namespace ecosystem_information {
+constexpr uint16_t cluster_revision = 1;
+} // namespace ecosystem_information
+
 } // namespace cluster
 } // namespace esp_matter
 

@@ -230,5 +230,11 @@ event_t *create_boost_ended(cluster_t *cluster);
 } // namespace event
 } // namespace water_heater_management
 
+namespace commissioner_control {
+namespace event {
+event_t *create_commissioning_request_result(cluster_t *cluster);
+} // namespace event
+} // namespace commissioner_control
+
 } // namespace cluster
 } // namespace esp_matter

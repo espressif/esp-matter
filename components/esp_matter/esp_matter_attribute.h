@@ -1181,5 +1181,18 @@ attribute_t *create_current_low_power_mode_sensitivity(cluster_t *cluster, uint8
 } /* attribute */
 } /* energy_preference */
 
+namespace commissioner_control {
+namespace attribute {
+attribute_t *create_supported_device_categories(cluster_t *cluster, uint32_t value);
+} /* attribute */
+} /* commissioner_control */
+
+namespace ecosystem_information {
+namespace attribute {
+attribute_t *create_device_directory(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_location_directory(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* ecosystem_information */
+
 } /* cluster */
 } /* esp_matter */

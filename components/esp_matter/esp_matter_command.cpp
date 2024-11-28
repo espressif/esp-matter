@@ -3280,6 +3280,38 @@ command_t *create_cancel_boost(cluster_t *cluster)
 } /* command */
 } /* water_heater_management */
 
+namespace commissioner_control {
+namespace command {
+constexpr const command_entry_t accepted_command_list[] = {
+    {CommissionerControl::Commands::RequestCommissioningApproval::Id, COMMAND_FLAG_ACCEPTED, NULL},
+    {CommissionerControl::Commands::CommissionNode::Id, COMMAND_FLAG_ACCEPTED, NULL},
+};
+
+constexpr const command_entry_t generated_command_list[] = {
+    {CommissionerControl::Commands::ReverseOpenCommissioningWindow::Id, COMMAND_FLAG_GENERATED, NULL},
+};
+
+command_t *create_request_commissioning_approval(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommissionerControl::Commands::RequestCommissioningApproval::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_commission_node(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommissionerControl::Commands::CommissionNode::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_reverse_open_commissioning_window(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommissionerControl::Commands::ReverseOpenCommissioningWindow::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* commissioner_control */
+
 } /* cluster */
 } /* esp_matter */
 
@@ -3327,6 +3359,7 @@ constexpr const cluster_command_t cluster_command_table[] = {
     {WiFiNetworkManagement::Id, GET_COMMAND_COUNT_LIST(cluster::wifi_network_management)},
     {ThreadNetworkDirectory::Id, GET_COMMAND_COUNT_LIST(cluster::thread_network_directory)},
     {WaterHeaterManagement::Id, GET_COMMAND_COUNT_LIST(cluster::water_heater_management)},
+    {CommissionerControl::Id, GET_COMMAND_COUNT_LIST(cluster::commissioner_control)},
 };
 
 #if defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)

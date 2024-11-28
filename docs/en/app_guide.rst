@@ -47,6 +47,7 @@ List of clusters with delegate:
     - Mode Select Cluster.
     - Water Heater Management Cluster.
     - Energy Preference Cluster.
+    - Commissioner Control Cluster.
 
 9.1.1 Mode Base Cluster
 -----------------------
@@ -227,13 +228,21 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `Water Heater Management`_, `Water Heater Management Delegate`_
 
-9.1.21 Energy Preference Cluster
+9.1.22 Energy Preference Cluster
 --------------------------------
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Energy Preference`_, `Energy Preference Delegate`_
+
+9.1.23 Commissioner Control Cluster
+-----------------------------------
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Commissioner Control`_, `Commissioner Control Delegate`_
 
 
 .. note::
@@ -293,3 +302,5 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Water Heater Management Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/energy-management-app/energy-management-common/water-heater/include/WhmDelegate.h
 .. _`Energy Preference`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/energy-preference-server/energy-preference-server.h
 .. _`Energy Preference Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/all-clusters-app/all-clusters-common/src/energy-preference-delegate.cpp
+.. _`Commissioner Control`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/src/app/clusters/commissioner-control-server/commissioner-control-server.h
+.. _`Commissioner Control Delegate`: https://github.com/espressif/connectedhomeip/blob/ea679d2dc674f576f4d391d1d71af1489010e580/examples/fabric-bridge-app/linux/include/CommissionerControl.h

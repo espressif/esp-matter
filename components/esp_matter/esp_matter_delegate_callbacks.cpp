@@ -40,6 +40,7 @@
 #include <app/clusters/thread-border-router-management-server/thread-border-router-management-server.h>
 #include <app/clusters/water-heater-management-server/water-heater-management-server.h>
 #include <app/clusters/energy-preference-server/energy-preference-server.h>
+#include <app/clusters/commissioner-control-server/commissioner-control-server.h>
 
 using namespace chip::app::Clusters;
 namespace esp_matter {
@@ -345,6 +346,16 @@ void EnergyPreferenceDelegateInitCB(void *delegate, uint16_t endpoint_id)
     }
     EnergyPreference::Delegate *energy_preference_delegate = static_cast<EnergyPreference::Delegate*>(delegate);
     EnergyPreference::SetDelegate(energy_preference_delegate);
+}
+
+void CommissionerControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    if(delegate == nullptr)
+    {
+        return;
+    }
+    CommissionerControl::Delegate *commissioner_control_delegate = static_cast<CommissionerControl::Delegate*>(delegate);
+    CommissionerControl::CommissionerControlServer::Instance().Init(*commissioner_control_delegate);
 }
 
 } // namespace delegate_cb

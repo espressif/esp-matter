@@ -473,5 +473,13 @@ command_t *create_cancel_boost(cluster_t *cluster);
 } /* command */
 } /* water_heater_management */
 
+namespace commissioner_control {
+namespace command {
+command_t *create_request_commissioning_approval(cluster_t *cluster);
+command_t *create_commission_node(cluster_t *cluster);
+command_t *create_reverse_open_commissioning_window(cluster_t *cluster);
+} /* command */
+} /* commissioner_control */
+
 } /* cluster */
 } /* esp_matter */
