@@ -8,4 +8,4 @@ jinja2==3.0.1
 urllib3<2
 
 # mfg_tool
-esp-matter-mfg-tool
+esp-matter-mfg-tool>=1.0.4
