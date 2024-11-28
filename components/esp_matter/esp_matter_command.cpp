@@ -43,15 +43,10 @@ void DispatchSingleClusterCommandCommon(const ConcreteCommandPath &command_path,
     ESP_LOGI(TAG, "Received command 0x%08" PRIX32 " for endpoint 0x%04" PRIX16 "'s cluster 0x%08" PRIX32 "", command_id, endpoint_id, cluster_id);
 
     cluster_t *cluster = cluster::get(endpoint_id, cluster_id);
-    if (!cluster) {
-        return;
-    }
+    VerifyOrReturn(cluster);
     command_t *command = get(cluster, command_id, COMMAND_FLAG_ACCEPTED);
     callback_t standard_callback = get_cluster_accepted_command(cluster_id, command_id);
-    if (!command && !standard_callback) {
-        ESP_LOGE(TAG, "Command 0x%08" PRIX32 " not found", command_id);
-        return;
-    }
+    VerifyOrReturn((command || standard_callback), ESP_LOGE(TAG, "Command 0x%08" PRIX32 " not found", command_id));
     esp_err_t err = ESP_OK;
     TLVReader tlv_reader;
     tlv_reader.Init(tlv_data);
