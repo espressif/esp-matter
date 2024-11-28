@@ -27,10 +27,7 @@ namespace cluster {
 
 static esp_err_t update_feature_map(cluster_t *cluster, uint32_t value)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
 
     /* Get the attribute */
     attribute_t *attribute = attribute::get(cluster, Globals::Attributes::FeatureMap::Id);
@@ -51,7 +48,7 @@ static uint32_t get_feature_map_value(cluster_t *cluster)
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
     attribute_t *attribute = attribute::get(cluster, Globals::Attributes::FeatureMap::Id);
 
-    VerifyOrReturnError(attribute, 0, ESP_LOGE(TAG, "Feature map attribute cannot be null"));
+    VerifyOrReturnValue(attribute, 0, ESP_LOGE(TAG, "Feature map attribute cannot be null"));
 
     attribute::get_val(attribute, &val);
     return val.val.u32;
@@ -68,10 +65,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes managed internally */
@@ -98,10 +92,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes managed internally */
@@ -126,10 +117,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
@@ -149,10 +137,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
@@ -174,11 +159,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t battery_feature_map = feature::battery::get_id();
     if ((get_feature_map_value(cluster) & battery_feature_map) == battery_feature_map) {
 
@@ -206,11 +187,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t battery_feature_map = feature::battery::get_id();
     if ((get_feature_map_value(cluster) & battery_feature_map) == battery_feature_map) {
 
@@ -242,10 +219,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -266,15 +240,9 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t lits_feature_map = feature::long_idle_time_support::get_id();
-    if ((get_feature_map_value(cluster) & lits_feature_map) != lits_feature_map) {
-        ESP_LOGE(TAG, "Long Idle Time Support feature should be added to this cluster");
-        return ESP_ERR_INVALID_STATE;
-    }
+    VerifyOrReturnError((get_feature_map_value(cluster) & lits_feature_map) == lits_feature_map, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Long Idle Time Support feature should be added to this cluster"));
 
     update_feature_map(cluster, get_id());
 
@@ -302,19 +270,9 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-    if (!config) {
-        ESP_LOGE(TAG, "config cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError((cluster && config), ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster and config cannot be NULL"));
     uint32_t lits_feature_map = feature::long_idle_time_support::get_id();
-    if ((get_feature_map_value(cluster) & lits_feature_map) != lits_feature_map) {
-        ESP_LOGE(TAG, "Long Idle Time Support feature should be added to this cluster");
-        return ESP_ERR_INVALID_STATE;
-    }
+    VerifyOrReturnError((get_feature_map_value(cluster) & lits_feature_map) == lits_feature_map, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Long Idle Time Support feature should be added to this cluster"));
 
     update_feature_map(cluster, get_id());
 
@@ -337,10 +295,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
@@ -363,10 +318,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
@@ -394,10 +346,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -414,10 +363,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -438,10 +384,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -458,10 +401,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
@@ -484,10 +424,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
@@ -509,19 +446,13 @@ namespace feature {
 
 static esp_err_t update_color_capability(cluster_t *cluster, uint16_t value)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
 
     /* Get the attribute */
     attribute_t *attribute = esp_matter::attribute::get(cluster, ColorControl::Attributes::ColorCapabilities::Id);
 
     /* Print error log if it does not exist */
-    if (!attribute) {
-        ESP_LOGE(TAG, "The color capability attribute is NULL");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError(attribute, ESP_FAIL, ESP_LOGE(TAG, "The color capability attribute is NULL"));
 
     /* Update the value if the attribute already exists */
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
@@ -541,10 +472,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
     update_color_capability(cluster, get_id());
 
@@ -575,10 +503,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
     update_color_capability(cluster, get_id());
 
@@ -608,10 +533,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
     update_color_capability(cluster, get_id());
 
@@ -638,11 +560,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t hs_feature_map = feature::hue_saturation::get_id();
     if ((get_feature_map_value(cluster) & hs_feature_map) == hs_feature_map) {
         update_feature_map(cluster, get_id());
@@ -673,10 +591,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t eh_feature_map = feature::enhanced_hue::get_id();
     if ((get_feature_map_value(cluster) & eh_feature_map) == eh_feature_map) {
         update_feature_map(cluster, get_id());
@@ -713,11 +628,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_number_of_actuations_lift(cluster, config->number_of_actuations_lift);
@@ -736,10 +647,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_number_of_actuations_tilt(cluster, config->number_of_actuations_tilt);
@@ -758,11 +666,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t lift_feature_map = feature::lift::get_id();
     if ((get_feature_map_value(cluster) & lift_feature_map) == lift_feature_map) {
 
@@ -799,10 +703,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     uint32_t abs_and_pa_lf_and_lf_feature_map = get_id() | feature::position_aware_lift::get_id() | feature::lift::get_id();
@@ -862,11 +763,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t tilt_feature_map = feature::tilt::get_id();
     if ((get_feature_map_value(cluster) & tilt_feature_map) == tilt_feature_map) {
 
@@ -911,10 +808,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes managed internally */
@@ -940,10 +834,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes managed internally */
@@ -973,10 +864,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes managed internally */
@@ -997,10 +885,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes managed internally */
@@ -1028,10 +913,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -1048,10 +930,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -1068,10 +947,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -1088,10 +964,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -1114,10 +987,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
@@ -1139,10 +1009,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_level_value(cluster, config->level_value);
@@ -1161,10 +1028,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -1182,10 +1046,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -1202,10 +1063,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_peak_measured_value(cluster, config->peak_measured_value);
@@ -1225,10 +1083,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_average_measured_value(cluster, config->average_measured_value);
@@ -1254,10 +1109,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
@@ -1279,10 +1131,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_level_value(cluster, config->level_value);
@@ -1301,10 +1150,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -1322,10 +1168,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -1342,10 +1185,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_peak_measured_value(cluster, config->peak_measured_value);
@@ -1365,10 +1205,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_average_measured_value(cluster, config->average_measured_value);
@@ -1394,10 +1231,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
@@ -1419,10 +1253,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_level_value(cluster, config->level_value);
@@ -1441,10 +1272,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -1462,10 +1290,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -1482,10 +1307,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_peak_measured_value(cluster, config->peak_measured_value);
@@ -1505,10 +1327,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_average_measured_value(cluster, config->average_measured_value);
@@ -1534,10 +1353,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
@@ -1559,10 +1375,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_level_value(cluster, config->level_value);
@@ -1581,10 +1394,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -1602,10 +1412,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -1622,10 +1429,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_peak_measured_value(cluster, config->peak_measured_value);
@@ -1645,10 +1449,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_average_measured_value(cluster, config->average_measured_value);
@@ -1674,10 +1475,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
@@ -1699,10 +1497,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_level_value(cluster, config->level_value);
@@ -1721,10 +1516,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -1742,10 +1534,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -1762,10 +1551,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_peak_measured_value(cluster, config->peak_measured_value);
@@ -1785,10 +1571,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_average_measured_value(cluster, config->average_measured_value);
@@ -1814,10 +1597,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
@@ -1839,10 +1619,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_level_value(cluster, config->level_value);
@@ -1861,10 +1638,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -1882,10 +1656,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -1902,10 +1673,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_peak_measured_value(cluster, config->peak_measured_value);
@@ -1925,10 +1693,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_average_measured_value(cluster, config->average_measured_value);
@@ -1954,10 +1719,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
@@ -1979,10 +1741,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_level_value(cluster, config->level_value);
@@ -2001,10 +1760,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -2022,10 +1778,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -2042,10 +1795,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_peak_measured_value(cluster, config->peak_measured_value);
@@ -2065,10 +1815,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_average_measured_value(cluster, config->average_measured_value);
@@ -2094,10 +1841,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
@@ -2119,10 +1863,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_level_value(cluster, config->level_value);
@@ -2141,10 +1882,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -2162,10 +1900,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -2182,10 +1917,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_peak_measured_value(cluster, config->peak_measured_value);
@@ -2205,10 +1937,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_average_measured_value(cluster, config->average_measured_value);
@@ -2234,10 +1963,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
@@ -2259,10 +1985,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_level_value(cluster, config->level_value);
@@ -2281,10 +2004,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -2302,10 +2022,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -2322,10 +2039,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_peak_measured_value(cluster, config->peak_measured_value);
@@ -2345,10 +2059,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_average_measured_value(cluster, config->average_measured_value);
@@ -2374,10 +2085,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_measured_value(cluster, config->measured_value);
@@ -2399,10 +2107,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_level_value(cluster, config->level_value);
@@ -2421,10 +2126,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -2442,10 +2144,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -2462,10 +2161,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_peak_measured_value(cluster, config->peak_measured_value);
@@ -2485,10 +2181,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_average_measured_value(cluster, config->average_measured_value);
@@ -2514,10 +2207,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_condition(cluster, config->condition);
@@ -2537,10 +2227,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -2557,10 +2244,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_replacement_product_list(cluster, NULL, 0, 0);
@@ -2585,10 +2269,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_condition(cluster, config->condition);
@@ -2608,10 +2289,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -2628,10 +2306,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_replacement_product_list(cluster, NULL, 0, 0);
@@ -2656,11 +2331,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_spin_speed_current(cluster, config->spin_speed_current);
@@ -2679,11 +2350,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_number_of_rinses(cluster, config->number_of_rinses);
@@ -2708,11 +2375,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_smoke_state(cluster, 0);
@@ -2736,11 +2399,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_co_state(cluster, 0);
@@ -2768,10 +2427,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_occupied_heating_setpoint(cluster, config->occupied_heating_setpoint);
@@ -2790,11 +2446,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_occupied_cooling_setpoint(cluster, config->occupied_cooling_setpoint);
@@ -2812,10 +2464,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_occupancy(cluster, config->occupancy);
@@ -2852,10 +2501,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_start_of_week(cluster, config->start_of_week);
@@ -2880,10 +2526,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_occupied_setback(cluster, config->occupied_setback);
@@ -2903,10 +2546,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_min_setpoint_dead_band(cluster, config->min_setpoint_dead_band);
@@ -2924,10 +2564,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -2950,10 +2587,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if ((get_feature_map_value(cluster) & feature::momentary_switch::get_id()) == feature::momentary_switch::get_id()) {
-        ESP_LOGE(TAG, "Latching switch is not supported because momentary switch is present");
-        return ESP_ERR_NOT_SUPPORTED;
-    }
+    VerifyOrReturnError((get_feature_map_value(cluster) & feature::momentary_switch::get_id()) != feature::momentary_switch::get_id(), ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Latching switch is not supported because momentary switch is present"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -2972,10 +2606,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if ((get_feature_map_value(cluster) & feature::latching_switch::get_id()) == feature::latching_switch::get_id()) {
-        ESP_LOGE(TAG, "Momentary switch is not supported because latching switch is present");
-        return ESP_ERR_NOT_SUPPORTED;
-    }
+    VerifyOrReturnError((get_feature_map_value(cluster) & feature::latching_switch::get_id()) != feature::latching_switch::get_id(), ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch is not supported because latching switch is present"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -2994,10 +2625,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if ((get_feature_map_value(cluster) & feature::momentary_switch::get_id()) != feature::momentary_switch::get_id()) {
-        ESP_LOGE(TAG, "Momentary switch release is not supported because momentary is absent");
-        return ESP_ERR_NOT_SUPPORTED;
-    }
+    VerifyOrReturnError((get_feature_map_value(cluster) & feature::momentary_switch::get_id()) == feature::momentary_switch::get_id(), ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch release is not supported because momentary is absent"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -3017,10 +2645,7 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     uint32_t momentary_and_momentart_switch_release_feature_map = feature::momentary_switch::get_id() | feature::momentary_switch_release::get_id();
-    if ((get_feature_map_value(cluster) & momentary_and_momentart_switch_release_feature_map) != momentary_and_momentart_switch_release_feature_map) {
-        ESP_LOGE(TAG, "Momentary switch long press is not supported because momentary switch and/or momentary switch release is absent");
-        return ESP_ERR_NOT_SUPPORTED;
-    }
+    VerifyOrReturnError((get_feature_map_value(cluster) & momentary_and_momentart_switch_release_feature_map) == momentary_and_momentart_switch_release_feature_map, ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch long press is not supported because momentary switch and/or momentary switch release is absent"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -3040,10 +2665,7 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     uint32_t momentary_and_momentart_switch_release_feature_map = feature::momentary_switch::get_id() | feature::momentary_switch_release::get_id();
-    if ((get_feature_map_value(cluster) & momentary_and_momentart_switch_release_feature_map) != momentary_and_momentart_switch_release_feature_map) {
-        ESP_LOGE(TAG, "Momentary switch multi press is not supported because momentary switch and/or momentary switch releaseis absent");
-        return ESP_ERR_NOT_SUPPORTED;
-    }
+    VerifyOrReturnError((get_feature_map_value(cluster) & momentary_and_momentart_switch_release_feature_map) == momentary_and_momentart_switch_release_feature_map, ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch multi press is not supported because momentary switch and/or momentary switch releaseis absent"));
     update_feature_map(cluster, get_id());
 
     attribute::create_multi_press_max(cluster, config->multi_press_max);
@@ -3067,10 +2689,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
@@ -3098,10 +2717,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
@@ -3130,10 +2746,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_on_mode(cluster, config->on_mode);
@@ -3159,10 +2772,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes managed internally */
@@ -3189,11 +2799,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t temp_level_feature_map = feature::temperature_level::get_id();
     if ((get_feature_map_value(cluster) & temp_level_feature_map) != temp_level_feature_map) {
         update_feature_map(cluster, get_id());
@@ -3220,11 +2826,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t temp_number_feature_map = feature::temperature_number::get_id();
     if ((get_feature_map_value(cluster) & temp_number_feature_map) != temp_number_feature_map) {
         update_feature_map(cluster, get_id());
@@ -3252,11 +2854,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t temp_number_feature_map = feature::temperature_number::get_id();
     if ((get_feature_map_value(cluster) & temp_number_feature_map) == temp_number_feature_map) {
         update_feature_map(cluster, get_id());
@@ -3287,10 +2885,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_speed_max(cluster, config->speed_max);
@@ -3310,10 +2905,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -3329,10 +2921,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_rock_support(cluster, config->rock_support);
@@ -3351,10 +2940,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_wind_support(cluster, config->wind_support);
@@ -3373,10 +2959,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     command::create_step(cluster);
@@ -3394,10 +2977,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_airflow_direction(cluster, config->airflow_direction);
@@ -3421,10 +3001,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -3440,10 +3017,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -3459,10 +3033,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -3484,10 +3055,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_alarms_active(cluster, config->alarms_active);
@@ -3507,10 +3075,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_alarms_active(cluster, config->alarms_active);
@@ -3530,10 +3095,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t visual_feature_map = feature::visual::get_id();
     uint32_t audible_feature_map = feature::audible::get_id();
     if ((get_feature_map_value(cluster) & visual_feature_map) == visual_feature_map ||
@@ -3560,10 +3122,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_current_sensitivity_level(cluster, 0);
@@ -3587,10 +3146,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -3606,10 +3162,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -3625,10 +3178,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_available_endpoints(cluster, NULL, 0, 0);
@@ -3645,10 +3195,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t set_topology_feature_map = feature::set_topology::get_id();
     if ((get_feature_map_value(cluster) & set_topology_feature_map) == set_topology_feature_map) {
 
@@ -3679,10 +3226,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -3698,10 +3242,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -3717,10 +3258,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t ac_feature_map = feature::alternating_current::get_id();
     if ((get_feature_map_value(cluster) & ac_feature_map) == ac_feature_map) {
 
@@ -3745,10 +3283,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t ac_feature_map = feature::alternating_current::get_id();
     if ((get_feature_map_value(cluster) & ac_feature_map) == ac_feature_map) {
 
@@ -3774,10 +3309,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t ac_feature_map = feature::alternating_current::get_id();
     if ((get_feature_map_value(cluster) & ac_feature_map) == ac_feature_map) {
 
@@ -3809,10 +3341,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -3828,10 +3357,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -3847,11 +3373,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
     uint32_t imported_feature_map = feature::imported_energy::get_id();
     uint32_t exported_feature_map = feature::exported_energy::get_id();
@@ -3876,11 +3398,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
     uint32_t imported_feature_map = feature::imported_energy::get_id();
     uint32_t exported_feature_map = feature::exported_energy::get_id();
@@ -3911,10 +3429,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
@@ -3949,10 +3464,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
@@ -3983,10 +3495,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     uint32_t usr_feature_map = feature::user::get_id();
@@ -4010,10 +3519,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* todo: all attributes for LOG feature not define in the
@@ -4038,10 +3544,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
@@ -4066,10 +3569,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
@@ -4095,10 +3595,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -4115,10 +3612,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
@@ -4141,20 +3635,13 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t pin = feature::pin_credential::get_id();
     uint32_t rid = feature::rfid_credential::get_id();
     uint32_t fgp = feature::finger_credentials::get_id();
     uint32_t face = feature::face_credentials::get_id();
     uint32_t feature = get_feature_map_value(cluster);
-    if ((feature & (pin | rid | fgp | face)) == 0) {
-        ESP_LOGE(TAG, "Should add at least one of PIN, RID, FGP and FACE feature before add USR feature");
-        return ESP_FAIL;
-    }
+    VerifyOrReturnError((feature & (pin | rid | fgp | face)) != 0, ESP_FAIL, ESP_LOGE(TAG, "Should add at least one of PIN, RID, FGP and FACE feature before add USR feature"));
 
     update_feature_map(cluster, get_id());
 
@@ -4192,10 +3679,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -4212,10 +3696,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
@@ -4241,10 +3722,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
@@ -4270,10 +3748,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Commands */
@@ -4298,10 +3773,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes managed internally */
@@ -4329,10 +3801,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes managed internally */
@@ -4353,10 +3822,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes managed internally */
@@ -4376,10 +3842,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     return ESP_OK;
@@ -4396,10 +3859,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes managed internally */
@@ -4429,10 +3889,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t power_in_watts_feature_map = feature::power_in_watts::get_id();
     if ((get_feature_map_value(cluster) & power_in_watts_feature_map) != power_in_watts_feature_map) {
         update_feature_map(cluster, get_id());
@@ -4456,10 +3913,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t power_as_number_feature_map = feature::power_as_number::get_id();
     if ((get_feature_map_value(cluster) & power_as_number_feature_map) != power_as_number_feature_map) {
         update_feature_map(cluster, get_id());
@@ -4484,11 +3938,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t power_as_number_feature_map = feature::power_as_number::get_id();
     if ((get_feature_map_value(cluster) & power_as_number_feature_map) != power_as_number_feature_map) {
         update_feature_map(cluster, get_id());
@@ -4520,10 +3970,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_auto_close_time(cluster, config->auto_close_time);
@@ -4541,10 +3988,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     attribute::create_current_level(cluster, config->current_level);
@@ -4569,10 +4013,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
     attribute::create_power_adjustment_capability(cluster, NULL, 0, 0);
     attribute::create_opt_out_state(cluster, 0);
@@ -4599,10 +4040,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
     attribute::create_forecast(cluster, NULL, 0, 0);
 
@@ -4619,11 +4057,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t power_adjustment_id            = feature::power_adjustment::get_id();
     uint32_t power_forecast_reporting       = feature::power_forecast_reporting::get_id();
     uint32_t start_time_adjustment_id       = feature::start_time_adjustment::get_id();
@@ -4658,10 +4092,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
     attribute::create_opt_out_state(cluster, 0);
 
@@ -4682,10 +4113,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
     attribute::create_opt_out_state(cluster, 0);
 
@@ -4710,10 +4138,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
     attribute::create_opt_out_state(cluster, 0);
 
@@ -4734,10 +4159,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
     attribute::create_opt_out_state(cluster, 0);
 
@@ -4764,10 +4186,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster connot be NULL"));
     update_feature_map(cluster, get_id());
     /* attribute */
     nullable<uint64_t> timestamp;
