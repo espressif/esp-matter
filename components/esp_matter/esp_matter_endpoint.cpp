@@ -131,10 +131,6 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    cluster_t *cluster = descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    if (!cluster) {
-        return ESP_ERR_INVALID_STATE;
-    }
     cluster_t *cluster_p = cluster::ota_provider::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
     cluster_t *cluster_r = cluster::ota_requestor::create(endpoint, &(config->ota_requestor), CLUSTER_FLAG_SERVER);
     if (!cluster_p || !cluster_r) {
@@ -180,11 +176,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    cluster_t *cluster = descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    if (!cluster) {
-        return ESP_ERR_INVALID_STATE;
-    }
-    cluster = cluster::ota_provider::create(endpoint, &(config->ota_provider), CLUSTER_FLAG_SERVER);
+    cluster_t *cluster = cluster::ota_provider::create(endpoint, &(config->ota_provider), CLUSTER_FLAG_SERVER);
     if (!cluster) {
         return ESP_FAIL;
     }

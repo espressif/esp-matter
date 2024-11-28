@@ -152,6 +152,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_cluster_revision(cluster, cluster_revision);
     }
 
+     /* Features */
+    if (config != NULL && config->features & feature::taglist::get_id()) {
+        feature::taglist::add(cluster);
+    }
+
     return cluster;
 }
 } /* descriptor */
