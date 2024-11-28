@@ -534,6 +534,11 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::water_heater::create(node, &water_heater_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
+        case ESP_MATTER_SOLAR_POWER: {
+            esp_matter::endpoint::solar_power::config_t solar_power_config;
+            endpoint = esp_matter::endpoint::solar_power::create(node, &solar_power_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
         default: {
             ESP_LOGE(TAG, "Please input a valid device type");
             break;
