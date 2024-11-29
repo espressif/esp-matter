@@ -40,11 +40,13 @@ class write_command : public WriteClient::Callback {
 public:
     /** Constructor for command with an attribute path**/
     write_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
-                  const char *attribute_val_str)
+                  const char *attribute_val_str,
+                  const chip::Optional<uint16_t> timed_write_timeout_ms = chip::NullOptional)
         : m_node_id(node_id)
         , m_attr_path(endpoint_id, cluster_id, attribute_id)
         , m_chunked_callback(this)
         , m_attr_val(attribute_val_str, custom_encodable_type::interaction_type::k_write_attr)
+        , m_timed_write_timeout_ms(timed_write_timeout_ms)
         , on_device_connected_cb(on_device_connected_fcn, this)
         , on_device_connection_failure_cb(on_device_connection_failure_fcn, this) {}
 
@@ -77,6 +79,7 @@ private:
     AttributePathParams m_attr_path;
     ChunkedWriteCallback m_chunked_callback;
     custom_encodable_type m_attr_val;
+    chip::Optional<uint16_t> m_timed_write_timeout_ms;
 
     static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr,
                                         const SessionHandle &sessionHandle);
@@ -94,12 +97,14 @@ private:
  * @param[in] attribute_id AttributeId
  * @param[in] attr_val_json_str Attribute value string with JSON format
  *            (https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#write-attribute-commands)
+ * @param[in] timed_write_timeout_ms Timeout in millisecond for timed-write attribute
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
 esp_err_t send_write_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
-                                  const char *attr_val_json_str);
+                                  const char *attr_val_json_str,
+                                  chip::Optional<uint16_t> timed_write_timeout_ms = chip::NullOptional);
 
 } // namespace controller
 } // namespace esp_matter

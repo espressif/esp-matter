@@ -47,7 +47,7 @@ void write_command::on_device_connected_fcn(void *context, ExchangeManager &exch
     write_command *cmd = (write_command *)context;
     chip::OperationalDeviceProxy device_proxy(&exchangeMgr, sessionHandle);
     esp_err_t err = interaction::write::send_request(&device_proxy, cmd->m_attr_path, cmd->m_attr_val,
-                                                     cmd->m_chunked_callback, chip::NullOptional);
+                                                     cmd->m_chunked_callback, cmd->m_timed_write_timeout_ms);
     if (err != ESP_OK) {
         chip::Platform::Delete(cmd);
     }
@@ -88,14 +88,14 @@ esp_err_t write_command::send_command()
 }
 
 esp_err_t send_write_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
-                                  const char *attr_val_json_str)
+                                  const char *attr_val_json_str, chip::Optional<uint16_t> timed_write_timeout_ms)
 {
     if (!attr_val_json_str) {
         ESP_LOGE(TAG, "attribute value json string cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    write_command *cmd =
-        chip::Platform::New<write_command>(node_id, endpoint_id, cluster_id, attribute_id, attr_val_json_str);
+    write_command *cmd = chip::Platform::New<write_command>(node_id, endpoint_id, cluster_id, attribute_id,
+                                                            attr_val_json_str, timed_write_timeout_ms);
 
     if (!cmd) {
         ESP_LOGE(TAG, "Failed to alloc memory for cluster_command");
