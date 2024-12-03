@@ -140,6 +140,8 @@
 #define ESP_MATTER_WATER_HEATER_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_SOLAR_POWER_DEVICE_TYPE_ID 0x0017
 #define ESP_MATTER_SOLAR_POWER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_BATTERY_STORAGE_DEVICE_TYPE_ID 0x0018
+#define ESP_MATTER_BATTERY_STORAGE_DEVICE_TYPE_VERSION 1
 
 #define ESP_MATTER_THREAD_BORDER_ROUTER_DEVICE_TYPE_ID 0x0091
 #define ESP_MATTER_THREAD_BORDER_ROUTER_DEVICE_TYPE_VERSION 1
@@ -859,6 +861,33 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* solar_power */
+
+namespace battery_storage {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    power_source_device::config_t power_source_device;
+    electrical_sensor::config_t electrical_sensor;
+    device_energy_management::config_t device_energy_management;
+    cluster::electrical_energy_measurement::config_t electrical_energy_measurement;
+
+    nullable<uint32_t> bat_voltage;
+    nullable<uint8_t> bat_percent_remaining;
+    nullable<uint32_t> bat_time_remaining;
+    uint32_t bat_capacity;
+    nullable<uint32_t> bat_time_to_full_charge;
+    nullable<uint32_t> bat_charging_current;
+
+    nullable<int64_t> voltage;
+    nullable<int64_t> active_current;
+
+    config(): bat_voltage(), bat_percent_remaining(), bat_capacity(0), bat_time_to_full_charge(), bat_charging_current(), voltage(0), active_current(0) {}
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /** battery_storage **/
 
 } /* endpoint */
 

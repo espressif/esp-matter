@@ -84,6 +84,7 @@ j. Energy
 1. EVSE (Electric Vehicle Supply Equipment)
 2. Water Heater
 3. Solar Power
+4. Battery Storage
 
 k. Network Infrastructure
 1. Thread Border Router
