@@ -122,7 +122,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, Descriptor::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Descriptor::Id));
-    
+
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterDescriptorPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
@@ -768,6 +768,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
             attribute::create_status(cluster, config->status);
             attribute::create_order(cluster, config->order, 0x00, 0xFF);
             attribute::create_description(cluster, config->description, strlen(config->description));
+            attribute::create_endpoint_list(cluster, NULL, 0, 0);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }

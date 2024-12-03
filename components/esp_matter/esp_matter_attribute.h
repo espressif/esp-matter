@@ -925,6 +925,7 @@ constexpr uint8_t k_max_fault_count = 8;
 constexpr uint8_t k_max_designation_count = 20;
 constexpr uint8_t k_max_charge_faults_count = 16;
 constexpr uint8_t k_max_bat_replacement_description_length = 60;
+constexpr uint8_t k_max_endpoint_count = 16;
 
 namespace attribute {
 attribute_t *create_status(cluster_t *cluster, uint8_t value);
@@ -958,6 +959,7 @@ attribute_t *create_bat_time_to_full_charge(cluster_t *cluster, nullable<uint32_
 attribute_t *create_bat_functional_while_charging(cluster_t *cluster, bool value);
 attribute_t *create_bat_charging_current(cluster_t *cluster, nullable<uint32_t> value, nullable<uint32_t> min, nullable<uint32_t> max);
 attribute_t *create_active_bat_charge_faults(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_endpoint_list(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 } /* attribute */
 } /* power_source */
 

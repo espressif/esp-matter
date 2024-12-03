@@ -2957,7 +2957,7 @@ attribute_t *create_number_of_credentials_supported_per_user(cluster_t *cluster,
 attribute_t *create_language(cluster_t *cluster, const char * value, uint16_t length)
 {
     VerifyOrReturnValue(length <= k_max_language_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string size out of bound"));
-    
+
     return esp_matter::attribute::create(cluster, DoorLock::Attributes::Language::Id, ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_char_str((char *)value, length), k_max_language_length);
 }
@@ -3943,6 +3943,12 @@ attribute_t *create_active_bat_charge_faults(cluster_t *cluster, uint8_t * value
 {
     VerifyOrReturnValue(count <= k_max_charge_faults_count, NULL, ESP_LOGE(TAG, "Could not create attribute, list out of bound"));
     return esp_matter::attribute::create(cluster, PowerSource::Attributes::ActiveBatChargeFaults::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_endpoint_list(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
+{
+    VerifyOrReturnValue(count <= k_max_endpoint_count, NULL, ESP_LOGE(TAG, "Could not create attribute, list out of bound"));
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::EndpointList::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
 }
 
 } /* attribute */
