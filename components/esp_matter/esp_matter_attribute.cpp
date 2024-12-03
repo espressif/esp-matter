@@ -4217,6 +4217,15 @@ attribute_t *create_active_bat_charge_faults(cluster_t *cluster, uint8_t * value
     return esp_matter::attribute::create(cluster, PowerSource::Attributes::ActiveBatChargeFaults::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
 }
 
+attribute_t *create_endpoint_list(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
+{
+    if (count > k_max_endpoint_count) {
+        ESP_LOGE(TAG, "Could not create attribute, list out of bound");
+        return NULL;
+    }
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::EndpointList::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+}
+
 } /* attribute */
 } /* power_source */
 
