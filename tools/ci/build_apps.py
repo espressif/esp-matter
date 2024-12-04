@@ -47,6 +47,43 @@ MAINFEST_FILES = [
     str(PROJECT_ROOT / 'examples' / '.build-rules.yml'),
 ]
 
+# Exclude list for no-pytest apps in CI on merge request or branch pipelines.
+# The below examples will be built on main branch pipeline.
+NO_PYTEST_REMAINING_APPS = [
+    {"target": "esp32c2", "name": "light_switch"},
+    {"target": "esp32c6", "name": "light_switch"},
+    {"target": "esp32h2", "name": "light_switch"},
+    {"target": "esp32"  , "name": "light_switch"},
+    {"target": "esp32c2", "name": "generic_switch"},
+    {"target": "esp32c6", "name": "generic_switch"},
+    {"target": "esp32h2", "name": "generic_switch"},
+    {"target": "esp32h2", "name": "multiple_on_off_plugin_units"},
+    {"target": "esp32c3", "name": "multiple_on_off_plugin_units"},
+    {"target": "esp32"  , "name": "multiple_on_off_plugin_units"},
+    {"target": "esp32s3", "name": "multiple_on_off_plugin_units"},
+    {"target": "esp32"  , "name": "room_air_conditioner"},
+    {"target": "esp32c3", "name": "room_air_conditioner"},
+    {"target": "esp32c2", "name": "room_air_conditioner"},
+    {"target": "esp32c6", "name": "room_air_conditioner"},
+    {"target": "esp32h2", "name": "room_air_conditioner"},
+    {"target": "esp32"  , "name": "door_lock"},
+    {"target": "esp32c3", "name": "door_lock"},
+    {"target": "esp32c2", "name": "door_lock"},
+    {"target": "esp32c6", "name": "door_lock"},
+    {"target": "esp32h2", "name": "door_lock"},
+    {"target": "esp32s3", "name": "ota_provider"},
+    {"target": "esp32c3", "name": "sensors"},
+    {"target": "esp32"  , "name": "refrigerator"},
+    {"target": "esp32c3", "name": "refrigerator"},
+    {"target": "esp32c2", "name": "refrigerator"},
+    {"target": "esp32c6", "name": "refrigerator"},
+    {"target": "esp32h2", "name": "refrigerator"},
+    {"target": "esp32"  , "name": "demo/badge"},
+]
+MAINFEST_FILES = [
+    str(PROJECT_ROOT / 'examples' / '.build-rules.yml'),
+]
+
 def _is_c6_pytest_app(app: App) -> bool:
     print(app.name, app.target)
     for pytest_app in PYTEST_C6_APPS:
@@ -70,6 +107,13 @@ def _is_c3_pytest_app(app: App) -> bool:
 def _is_c2_pytest_app(app: App) -> bool:
     for pytest_app in PYTEST_C2_APPS:
         if app.name == pytest_app["name"] and app.target == pytest_app["target"]:
+            return True
+    return False
+
+# Function to check for no_pytest excluded list apps.
+def _is_no_pytest_remaining_app(app: App) -> bool:
+    for no_pytest_app in NO_PYTEST_REMAINING_APPS:
+        if app.name == no_pytest_app["name"] and app.target == no_pytest_app["target"]:
             return True
     return False
 
@@ -97,7 +141,7 @@ def main(args: argparse.Namespace) -> None:
     # no_pytest and only_pytest can not be both True
     assert not (args.no_pytest and args.pytest_c6 and args.pytest_h2 and args.pytest_c3 and args.pytest_c2)
     if args.no_pytest:
-        apps_for_build = [app for app in apps if not (_is_c6_pytest_app(app) or _is_h2_pytest_app(app))]
+        apps_for_build = [app for app in apps if not (_is_c6_pytest_app(app) or _is_h2_pytest_app(app) or _is_no_pytest_remaining_app(app))]
     elif args.pytest_c6:
         apps_for_build = [app for app in apps if _is_c6_pytest_app(app)]
     elif args.pytest_h2:
@@ -106,6 +150,8 @@ def main(args: argparse.Namespace) -> None:
         apps_for_build = [app for app in apps if _is_c3_pytest_app(app)]
     elif args.pytest_c2:
         apps_for_build = [app for app in apps if _is_c2_pytest_app(app)]
+    elif args.no_pytest_remaining:
+        apps_for_build = [app for app in apps if _is_no_pytest_remaining_app(app)]
     else:
         apps_for_build = apps[:]
 
@@ -164,7 +210,12 @@ if __name__ == '__main__':
     parser.add_argument(
         '--no_pytest',
         action="store_true",
-        help='Exclude pytest apps, definded in PYTEST_H2_APPS and PYTEST_C6_APPS',
+        help='Exclude pytest apps definded in PYTEST_H2_APPS and PYTEST_C6_APPS and some optional no-pytest apps',
+    )
+    parser.add_argument(
+        '--no_pytest_remaining',
+        action="store_true",
+        help='Build the excluded no-pytest apps using manual trigger.',
     )
     parser.add_argument(
         '--pytest_c6',

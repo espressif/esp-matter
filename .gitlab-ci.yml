@@ -371,6 +371,38 @@ build_esp_matter_examples:
       --parallel-index ${CI_NODE_INDEX:-1}
   parallel: 2
 
+build_nopytest_remaining_examples_manual:
+  extends:
+        - .build_examples_template
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+      when: on_success
+    - if: $CI_COMMIT_BRANCH != "main"
+      when: manual
+      allow_failure: true
+  needs:
+    - job: build_image
+      optional: true
+  artifacts:
+    paths:
+      - "examples/**/build*/size.json"
+      - "examples/**/build*/build_log.txt"
+      - "examples/**/build*/*.bin"
+      - "examples/**/build*/flasher_args.json"
+      - "examples/**/build*/config/sdkconfig.json"
+      - "examples/**/build*/bootloader/*.bin"
+      - "examples/**/build*/partition_table/*.bin"
+    when: always
+    expire_in: 4 days
+  script:
+    - cd ${ESP_MATTER_PATH}
+    - pip install -r tools/ci/requirements-build.txt
+    - python tools/ci/build_apps.py ./examples --no_pytest_remaining
+      --parallel-count ${CI_NODE_TOTAL:-1}
+      --parallel-index ${CI_NODE_INDEX:-1}
+  parallel: 2
+
+
 build_esp_matter_examples_pytest_C3_idf_v4_4:
   extends:
         - .build_examples_template
