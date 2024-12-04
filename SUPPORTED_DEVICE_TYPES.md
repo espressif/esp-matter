@@ -85,6 +85,7 @@ j. Energy
 2. Water Heater
 3. Solar Power
 4. Battery Storage
+5. Heat Pump
 
 k. Network Infrastructure
 1. Thread Border Router

@@ -2156,6 +2156,56 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /* battery_storage */
 
+namespace heat_pump {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_HEAT_PUMP_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_HEAT_PUMP_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
+        return err;
+    }
+
+    cluster_t *descriptor_cluster = cluster::get(endpoint, Descriptor::Id);
+    descriptor::feature::taglist::add(descriptor_cluster);
+    
+    power_source_device::add(endpoint, &config->power_source_device);
+        
+    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id); 
+    power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.wired);
+
+    electrical_sensor::add(endpoint, &config->electrical_sensor);
+    
+    cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id); 
+    
+    electrical_power_measurement::attribute::create_voltage(elec_power_measurement_cluster, config->voltage);
+    electrical_power_measurement::attribute::create_active_current(elec_power_measurement_cluster, config->active_current);
+
+    electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER, electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id());
+
+    device_energy_management::add(endpoint, &config->device_energy_management);
+        
+    cluster_t *device_energy_management_cluster = cluster::get(endpoint, DeviceEnergyManagement::Id); 
+    cluster::device_energy_management::feature::power_adjustment::add(device_energy_management_cluster);
+    return ESP_OK;
+}
+} /* heat_pump */
+
 } /* endpoint */
 
 namespace node {
