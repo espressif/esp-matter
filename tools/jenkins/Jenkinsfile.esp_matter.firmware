@@ -1,4 +1,4 @@
-node('master') {
+node('build') {
     stage('Choose Docker') {
         script {
             checkout scm
@@ -10,6 +10,7 @@ node('master') {
 pipeline {
     agent {
         docker {
+            label 'build'
             image 'espressif/esp-matter'
             alwaysPull true
         }
