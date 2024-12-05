@@ -65,7 +65,10 @@ typedef struct config {
 } /* common */
 
 namespace descriptor {
-using config_t = common::config_t;
+typedef struct config {
+    uint32_t features;
+    config() : features(0) {}
+} config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* descriptor */
 
