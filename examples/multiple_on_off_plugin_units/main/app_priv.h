@@ -28,7 +28,7 @@ struct plugin_endpoint {
 
 gpio_num_t get_gpio(uint16_t endpoint_id);
 
-extern plugin_endpoint s_plugin_unit_list[CONFIG_MAX_CONFIGURABLE_PLUGS];
+extern plugin_endpoint s_plugin_unit_list[CONFIG_NUM_VIRTUAL_PLUGS];
 extern uint16_t s_configure_plugs;
 
 typedef void *app_driver_handle_t;
