@@ -56,6 +56,19 @@ command_t *create_disable_action_with_duration(cluster_t *cluster);
 } /* command */
 } /* actions */
 
+namespace access_control {
+namespace command {
+command_t *create_review_fabric_restrictions(cluster_t *cluster);
+command_t *create_review_fabric_restrictions_response(cluster_t *cluster);
+} /* command */
+} /* access_control */
+
+namespace bridged_device_basic_information {
+namespace command {
+command_t *create_keep_active(cluster_t *cluster);
+} /* command */
+} /* bridged_device_basic_information */
+
 namespace thread_network_diagnostics {
 namespace command {
 command_t *create_reset_counts(cluster_t *cluster);
@@ -114,6 +127,8 @@ command_t *create_commissioning_complete(cluster_t *cluster);
 command_t *create_arm_fail_safe_response(cluster_t *cluster);
 command_t *create_set_regulatory_config_response(cluster_t *cluster);
 command_t *create_commissioning_complete_response(cluster_t *cluster);
+command_t *create_set_tc_acknowledgements(cluster_t *cluster);
+command_t *create_set_tc_acknowledgements_response(cluster_t *cluster);
 } /* command */
 } /* general_commissioning */
 
@@ -279,6 +294,8 @@ command_t *create_set_weekly_schedule(cluster_t *cluster);
 command_t *create_get_weekly_schedule(cluster_t *cluster);
 command_t *create_clear_weekly_schedule(cluster_t *cluster);
 command_t *create_get_weekly_schedule_response(cluster_t *cluster);
+command_t *create_set_active_schedule_request(cluster_t *cluster);
+command_t *create_set_active_preset_request(cluster_t *cluster);
 } /* command */
 } /* thermostat */
 
@@ -315,6 +332,9 @@ command_t *create_set_holiday_schedule(cluster_t *cluster);
 command_t *create_get_holiday_schedule(cluster_t *cluster);
 command_t *create_get_holiday_schedule_response(cluster_t *cluster);
 command_t *create_clear_holiday_schedule(cluster_t *cluster);
+command_t *create_set_user_type(cluster_t *cluster);
+command_t *create_get_user_type(cluster_t *cluster);
+command_t *create_get_user_type_response(cluster_t *cluster);
 command_t *create_set_user(cluster_t *cluster);
 command_t *create_get_user(cluster_t *cluster);
 command_t *create_get_user_response(cluster_t *cluster);
@@ -325,6 +345,8 @@ command_t *create_get_credential_status(cluster_t *cluster);
 command_t *create_get_credential_status_response(cluster_t *cluster);
 command_t *create_clear_credential(cluster_t *cluster);
 command_t *create_unbolt_door(cluster_t *cluster);
+command_t *create_set_aliro_reader_config(cluster_t *cluster);
+command_t *create_clear_aliro_reader_config(cluster_t *cluster);
 } /* command */
 } /* door_lock */
 

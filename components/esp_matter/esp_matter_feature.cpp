@@ -79,10 +79,95 @@ esp_err_t add(cluster_t *cluster)
 }
 }
 
-namespace administrator_commissioning {
-
+namespace access_control {
 namespace feature {
+namespace extension {
 
+uint32_t get_id()
+{
+    return (uint32_t)AccessControl::Feature::kExtension;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes managed internally */
+    attribute::create_extension(cluster, NULL, 0, 0);
+
+    event::create_access_control_extension_changed(cluster);
+
+    return ESP_OK;
+}
+} /* extension */
+
+namespace managed_device {
+
+uint32_t get_id()
+{
+    return (uint32_t)AccessControl::Feature::kManagedDevice;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+#if CHIP_CONFIG_USE_ACCESS_RESTRICTIONS
+    /* Attributes managed internally */
+    attribute::create_commissioning_arl(cluster, NULL, 0, 0);
+    attribute::create_arl(cluster, NULL, 0, 0);
+#endif
+
+    command::create_review_fabric_restrictions(cluster);
+    command::create_review_fabric_restrictions_response(cluster);
+
+    event::create_fabric_restriction_review_update(cluster);
+
+    return ESP_OK;
+}
+} /* managed_device */
+
+}
+} /* access_control */
+
+namespace bridged_device_basic_information {
+namespace feature {
+namespace bridged_icd_support {
+
+uint32_t get_id()
+{
+    return (uint32_t)BridgedDeviceBasicInformation::Feature::kBridgedICDSupport;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    command::create_keep_active(cluster);
+    event::create_active_changed(cluster);
+
+    return ESP_OK;
+}
+
+} /* bridged_icd_support */
+
+} /* feature */
+} /* bridged_device_basic_information */
+
+namespace administrator_commissioning {
+namespace feature {
 namespace basic {
 
 uint32_t get_id()
@@ -100,11 +185,42 @@ esp_err_t add(cluster_t *cluster)
 
     return ESP_OK;
 }
-
 } /* basic */
 
 }
+} /* administrator_commissioning */
+
+namespace general_commissioning {
+namespace feature {
+namespace terms_and_conditions {
+
+uint32_t get_id()
+{
+    return (uint32_t)GeneralCommissioning::Feature::kTermsAndConditions;
 }
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_tc_accepted_version(cluster, config->tc_accepted_version);
+    attribute::create_tc_min_required_version(cluster, config->tc_min_required_version);
+    attribute::create_tc_acknowledgements(cluster, config->tc_acknowledgements);
+    attribute::create_tc_acknowledgements_required(cluster, config->tc_acknowledgements_required);
+    attribute::create_tc_update_deadline(cluster, config->tc_update_deadline);
+
+    command::create_set_tc_acknowledgements(cluster);
+    command::create_set_tc_acknowledgements_response(cluster);
+    return ESP_OK;
+}
+} /* terms_and_conditions */
+
+}
+} /* general_commissioning */
 
 namespace power_source {
 namespace feature {
@@ -118,6 +234,11 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    uint32_t battery_feature_map = feature::battery::get_id();
+    if ((get_feature_map_value(cluster) & battery_feature_map) == battery_feature_map) {
+        ESP_LOGE(TAG, "Cluster already supports Battery feature");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
@@ -138,6 +259,11 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    uint32_t wired_feature_map = feature::wired::get_id();
+    if ((get_feature_map_value(cluster) & wired_feature_map) == wired_feature_map) {
+        ESP_LOGE(TAG, "Cluster already supports Wired feature");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
@@ -2332,6 +2458,7 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+
     update_feature_map(cluster, get_id());
 
     attribute::create_spin_speed_current(cluster, config->spin_speed_current);
@@ -2351,6 +2478,7 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+
     update_feature_map(cluster, get_id());
 
     attribute::create_number_of_rinses(cluster, config->number_of_rinses);
@@ -2570,6 +2698,59 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     return ESP_OK;
 }
 } /* local_temperature_not_exposed */
+
+namespace matter_schedule_configuration {
+
+uint32_t get_id()
+{
+    return (uint32_t)Thermostat::Feature::kMatterScheduleConfiguration;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_schedule_type(cluster, NULL, 0, 0);
+    attribute::create_number_of_schedules(cluster, config->number_of_schedules);
+    attribute::create_number_of_schedule_transitions(cluster, config->number_of_schedule_transitions);
+    attribute::create_number_of_schedule_transition_per_day(cluster, config->number_of_schedule_transition_per_day);
+    attribute::create_active_schedule_handle(cluster, config->active_schedule_handle, sizeof(config->active_schedule_handle));
+    attribute::create_schedules(cluster, NULL, 0, 0);
+
+    command::create_set_active_schedule_request(cluster);
+    return ESP_OK;
+}
+} /* matter_schedule_configuration */
+
+namespace presets {
+
+uint32_t get_id()
+{
+    return (uint32_t)Thermostat::Feature::kPresets;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes managed internally */
+    attribute::create_preset_type(cluster, NULL, 0, 0);
+    attribute::create_number_of_presets(cluster, 0);
+    attribute::create_active_preset_handle(cluster, NULL, 0);
+    attribute::create_presets(cluster, NULL, 0, 0);
+
+    command::create_set_active_preset_request(cluster);
+    return ESP_OK;
+}
+} /* presets */
 
 } /* feature */
 } /* thermostat */
@@ -3759,6 +3940,61 @@ esp_err_t add(cluster_t *cluster)
 
 } /* unbolting */
 
+namespace aliro_provisioning {
+
+uint32_t get_id()
+{
+    return (uint32_t)DoorLock::Feature::kAliroProvisioning;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes managed internally */
+    attribute::create_aliro_reader_verification_key(cluster, NULL, 0);
+    attribute::create_aliro_reader_group_identifier(cluster, NULL, 0);
+    attribute::create_aliro_reader_group_sub_identifier(cluster, NULL, 0);
+    attribute::create_aliro_expedited_transaction_supported_protocol_versions(cluster, NULL, 0, 0);
+    attribute::create_number_of_aliro_credential_issuer_keys_supported(cluster, 0);
+    attribute::create_number_of_aliro_endpoint_keys_supported(cluster, 0);
+
+    /* Commands */
+    command::create_set_aliro_reader_config(cluster);
+    command::create_clear_aliro_reader_config(cluster);
+    return ESP_OK;
+}
+
+} /* aliro_provisioning */
+
+namespace aliro_bleuwb {
+
+uint32_t get_id()
+{
+    return (uint32_t)DoorLock::Feature::kAliroBLEUWB;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes managed internally */
+    attribute::create_aliro_group_resolving_key(cluster, NULL, 0);
+    attribute::create_aliro_supported_bleuwb_protocol_versions(cluster, NULL, 0, 0);
+    attribute::create_aliro_ble_advertising_version(cluster, 0);
+    return ESP_OK;
+}
+
+} /* aliro_bleuwb */
+
 } /* feature */
 } /* door_lock */
 
@@ -4338,7 +4574,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
-
     attribute::create_energy_balances(cluster, NULL, 0, 0);
     attribute::create_current_energy_balance(cluster, config->current_energy_balance);
     attribute::create_energy_priorities(cluster, NULL, 0, 0);
@@ -4372,5 +4607,155 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* energy_preference */
 
+namespace occupancy_sensing {
+namespace feature {
+
+namespace other {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(OccupancySensing::Feature::kOther);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+} /* other */
+
+namespace passive_infrared {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(OccupancySensing::Feature::kPassiveInfrared);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+} /* passive_infrared */
+
+namespace ultrasonic {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(OccupancySensing::Feature::kUltrasonic);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+} /* ultrasonic */
+
+namespace physical_contact {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(OccupancySensing::Feature::kPhysicalContact);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+} /* physical_contact */
+
+namespace active_infrared {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(OccupancySensing::Feature::kActiveInfrared);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+} /* active_infrared */
+
+namespace radar {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(OccupancySensing::Feature::kRadar);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+} /* radar */
+
+namespace rf_sensing {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(OccupancySensing::Feature::kRFSensing);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+} /* rf_sensing */
+
+namespace vision {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(OccupancySensing::Feature::kVision);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+} /* vision */
+
+} /* feature */
+} /* occupancy_sensing */
 } /* cluster */
 } /* esp_matter */
