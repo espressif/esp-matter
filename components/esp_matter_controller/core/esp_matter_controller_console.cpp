@@ -455,7 +455,7 @@ static esp_err_t controller_read_attr_handler(int argc, char **argv)
 
 static esp_err_t controller_write_attr_handler(int argc, char **argv)
 {
-    if (argc != 5) {
+    if (argc < 5) {
         return ESP_ERR_INVALID_ARG;
     }
 
@@ -464,6 +464,14 @@ static esp_err_t controller_write_attr_handler(int argc, char **argv)
     uint32_t cluster_id = string_to_uint32(argv[2]);
     uint32_t attribute_id = string_to_uint32(argv[3]);
     char *attribute_val_str = argv[4];
+
+    if (argc > 5) {
+        uint16_t timed_write_timeout_ms = string_to_uint16(argv[5]);
+        if (timed_write_timeout_ms > 0) {
+            return controller::send_write_attr_command(node_id, endpoint_id, cluster_id, attribute_id,
+                                                       attribute_val_str, chip::MakeOptional(timed_write_timeout_ms));
+        }
+    }
 
     return controller::send_write_attr_command(node_id, endpoint_id, cluster_id, attribute_id, attribute_val_str);
 }
@@ -638,7 +646,7 @@ esp_err_t controller_register_commands()
             .name = "write-attr",
             .description =
                 "Write attributes of the nodes.\n"
-                "\tUsage: controller write-attr <node-id> <endpoint-id> <cluster-id> <attr-id> <attr-value>\n"
+                "\tUsage: controller write-attr <node-id> <endpoint-id> <cluster-id> <attr-id> <attr-value> [timed_write_timeout_ms]\n"
                 "\tNotes: attr-value should be a JSON object that contains the attribute value JSON item."
                 "You can get the format of the attr-value from "
                 "https://docs.espressif.com/projects/esp-matter/en/latest/esp32/"
