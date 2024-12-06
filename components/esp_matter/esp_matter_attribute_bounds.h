@@ -46,5 +46,9 @@ namespace thermostat {
 void add_bounds_cb(cluster_t *cluster);
 } /* thermostat */
 
+namespace thermostat_user_interface_configuration {
+void add_bounds_cb(cluster_t *cluster);
+} /* thermostat_user_interface_configuration */
+
 } /* cluster */
 } /* esp_matter */
