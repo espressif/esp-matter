@@ -1007,6 +1007,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
             attribute::create_status(cluster, config->status);
             attribute::create_order(cluster, config->order, 0x00, 0xFF);
             attribute::create_description(cluster, config->description, strlen(config->description));
+            attribute::create_endpoint_list(cluster, NULL, 0, 0);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -2889,7 +2890,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         }
     }
 
-    
+
     /* Features */
     if (features & feature::visual::get_id()) {
         feature::visual::add(cluster, &(config->visual));
@@ -3728,7 +3729,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
                 feature::dynamic_power_flow::add(cluster);
             }
         }
-    
+
     return cluster;
 }
 } /* power_topology */
@@ -4085,7 +4086,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
             (features & feature::forecast_adjustment::get_id()) ||
             (features & feature::constraint_based_adjustment::get_id())) &&
             !(features & feature::power_forecast_reporting::get_id())) {
-        
+
             feature::state_forecast_reporting::add(cluster);
         }
     }
