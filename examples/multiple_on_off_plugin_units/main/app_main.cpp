@@ -17,6 +17,7 @@
 
 #include <common_macros.h>
 #include <app_priv.h>
+#include <app_reset.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
 #endif
@@ -205,6 +206,10 @@ extern "C" void app_main()
 
     /* Initialize the ESP NVS layer */
     nvs_flash_init();
+
+    /* Initialize driver */
+    app_driver_handle_t button_handle = app_driver_button_init();
+    app_reset_button_register(button_handle);
 
     /* Create a Matter node and add the mandatory Root Node device type on endpoint 0 */
     node::config_t node_config;

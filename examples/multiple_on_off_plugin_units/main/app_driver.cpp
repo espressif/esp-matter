@@ -7,6 +7,7 @@
 */
 
 #include <esp_log.h>
+#include <device.h>
 #include <stdlib.h>
 #include <string.h>
 #include "driver/gpio.h"
@@ -85,4 +86,23 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
     return err;
 }
 
+app_driver_handle_t app_driver_button_init()
+{
+    /* Initialize button */
+#ifdef CONFIG_USER_BUTTON
+    button_config_t config = {
+        .type = BUTTON_TYPE_GPIO,
+        .gpio_button_config = {
+            .gpio_num = CONFIG_USER_BUTTON_GPIO,
+            .active_level = CONFIG_USER_BUTTON_LEVEL,
+        }
+    };
+#else
+    // get dev board's built-in button
+    button_config_t config = button_driver_get_config();
+#endif
+    button_handle_t handle = iot_button_create(&config);
+
+    return (app_driver_handle_t)handle;
+}
 

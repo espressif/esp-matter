@@ -1,4 +1,19 @@
 menu "Plugin manager"
+    config USER_BUTTON
+        bool "Use custom GPIO for factory reset button"
+        default n
+
+    config USER_BUTTON_GPIO
+        int "GPIO pin number for factory reset button"
+        default 0
+        depends on USER_BUTTON
+
+    config USER_BUTTON_LEVEL
+        int "GPIO level when factory reset button is active"
+        default 0
+        range 0 1
+        depends on USER_BUTTON
+    
     config NUM_VIRTUAL_PLUGS
         int "Number of virtual plugs"
         default 3
