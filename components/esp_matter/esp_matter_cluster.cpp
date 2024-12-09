@@ -2021,6 +2021,25 @@ const function_generic_t function_list[] = {
 };
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
+static bool check_feature_map(uint32_t features) {
+    if((features & feature::other::get_id()) == feature::other::get_id()) 
+        return true;
+    if((features & feature::passive_infrared::get_id()) == feature::passive_infrared::get_id()) 
+        return true;
+    if((features & feature::ultrasonic::get_id()) == feature::ultrasonic::get_id()) 
+        return true;
+    if((features & feature::physical_contact::get_id()) == feature::physical_contact::get_id()) 
+        return true;
+    if((features & feature::active_infrared::get_id()) == feature::active_infrared::get_id()) 
+        return true;
+    if((features & feature::radar::get_id()) == feature::radar::get_id()) 
+        return true;
+    if((features & feature::rf_sensing::get_id()) == feature::rf_sensing::get_id()) 
+        return true;
+    if((features & feature::vision::get_id()) == feature::vision::get_id()) 
+        return true;
+    return false;
+}
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, OccupancySensing::Id, flags);
@@ -2049,6 +2068,34 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         create_default_binding_cluster(endpoint);
     }
 
+    if(config != nullptr && check_feature_map(config->features)) {
+        if (config->features & feature::other::get_id()) {
+            feature::other::add(cluster);
+        }
+        if (config->features & feature::passive_infrared::get_id()) {
+            feature::passive_infrared::add(cluster);
+        }
+        if (config->features & feature::ultrasonic::get_id()) {
+            feature::ultrasonic::add(cluster);
+        }
+        if (config->features & feature::physical_contact::get_id()) {
+            feature::physical_contact::add(cluster);
+        }
+        if (config->features & feature::active_infrared::get_id()) {
+            feature::active_infrared::add(cluster);
+        }
+        if (config->features & feature::radar::get_id()) {
+            feature::radar::add(cluster);
+        }
+        if (config->features & feature::rf_sensing::get_id()) {
+            feature::rf_sensing::add(cluster);
+        }
+        if (config->features & feature::vision::get_id()) {
+            feature::vision::add(cluster);
+        }
+    } else {
+        ESP_LOGE(TAG, "Config is NULL or mandatory features are missing.");
+    }
     return cluster;
 }
 } /* occupancy_sensing */
@@ -2324,6 +2371,20 @@ const function_generic_t function_list[] = {
 const int function_flags =
     CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
+static bool check_feature_map(uint32_t features) {
+    if ((features & feature::constant_pressure::get_id()) == feature::constant_pressure::get_id())
+        return true;
+    if ((features & feature::compensated_pressure::get_id()) == feature::compensated_pressure::get_id())
+        return true;
+    if ((features & feature::constant_flow::get_id()) == feature::constant_flow::get_id())
+        return true;
+    if ((features & feature::constant_speed::get_id()) == feature::constant_speed::get_id())
+        return true;
+    if ((features & feature::constant_temperature::get_id()) == feature::constant_temperature::get_id())
+        return true;
+    return false;
+}
+
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, PumpConfigurationAndControl::Id, flags);
@@ -2355,6 +2416,31 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         create_default_binding_cluster(endpoint);
     }
 
+    if(config != nullptr && check_feature_map(config->features)) {
+        if (config->features & feature::constant_pressure::get_id()) {
+            feature::constant_pressure::add(cluster, &config->constant_pressure);
+        }
+        if (config->features & feature::compensated_pressure::get_id()) {
+            feature::compensated_pressure::add(cluster, &config->compensated_pressure);
+        }
+        if (config->features & feature::constant_flow::get_id()) {
+            feature::constant_flow::add(cluster, &config->constant_flow);
+        }
+        if (config->features & feature::constant_speed::get_id()) {
+            feature::constant_speed::add(cluster, &config->constant_speed);
+        }
+        if (config->features & feature::constant_temperature::get_id()) {
+            feature::constant_temperature::add(cluster, &config->constant_temperature);
+        }
+        if (config->features & feature::automatic::get_id()) {
+            feature::automatic::add(cluster);
+        }
+        if (config->features & feature::local_operation::get_id()) {
+            feature::local_operation::add(cluster);
+        }
+    } else {
+        ESP_LOGE(TAG, "Config is NULL or mandatory features are missing.");
+    }
     return cluster;
 }
 } /* pump_configuration_and_control */
@@ -2561,6 +2647,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     /* Commands */
     mode_base::command::create_change_to_mode(cluster);
+    mode_base::command::create_change_to_mode_response(cluster);
 
     return cluster;
 }
@@ -2598,6 +2685,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     /* Commands */
     mode_base::command::create_change_to_mode(cluster);
+    mode_base::command::create_change_to_mode_response(cluster);
 
     return cluster;
 }
@@ -2634,6 +2722,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     /* Commands */
     mode_base::command::create_change_to_mode(cluster);
+    mode_base::command::create_change_to_mode_response(cluster);
 
     return cluster;
 }
@@ -2725,6 +2814,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
+
+        operational_state::attribute::create_phase_list(cluster, NULL, 0, 0);
+        operational_state::attribute::create_current_phase(cluster, 0);
+        operational_state::attribute::create_operational_state_list(cluster, NULL, 0, 0);
+        operational_state::attribute::create_operational_state(cluster, 0);
+        operational_state::attribute::create_operational_error(cluster, 0);
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -2947,6 +3042,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     /* Commands */
     mode_base::command::create_change_to_mode(cluster);
+    mode_base::command::create_change_to_mode_response(cluster);
 
     return cluster;
 }
@@ -3150,6 +3246,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     /* Commands */
+    mode_base::command::create_change_to_mode_response(cluster);
     mode_base::command::create_change_to_mode(cluster);
 
     return cluster;
@@ -3363,7 +3460,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         attribute::create_heater_types(cluster, config->heater_types);
         attribute::create_heat_demand(cluster, config->heat_demand);
-        attribute::create_tank_volume(cluster, config->tank_volume);
+        attribute::create_boost_state(cluster, config->boost_state);
     }
 
     if (features & feature::energy_management::get_id()) {
@@ -3414,6 +3511,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     /* Commands */
     mode_base::command::create_change_to_mode(cluster);
+    mode_base::command::create_change_to_mode_response(cluster);
 
     return cluster;
 }

@@ -2301,5 +2301,89 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* occupancy_sensing */
 
+namespace pump_configuration_and_control {
+namespace feature {
+
+namespace constant_pressure {
+
+typedef struct config {
+    nullable<int16_t> min_const_pressure;
+    nullable<int16_t> max_const_pressure;
+    config() : min_const_pressure(), max_const_pressure() {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* constant_pressure */
+
+namespace compensated_pressure {
+
+typedef struct config {
+    nullable<int16_t> min_comp_pressure;
+    nullable<int16_t> max_comp_pressure;
+    config() : min_comp_pressure(), max_comp_pressure() {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* compensated_pressure */
+
+namespace constant_flow {
+
+typedef struct config {
+    nullable<uint16_t> min_const_flow;
+    nullable<uint16_t> max_const_flow;
+    config() : min_const_flow(), max_const_flow() {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* constant_flow */
+
+namespace constant_speed {
+
+typedef struct config {
+    nullable<uint16_t> min_const_speed;
+    nullable<uint16_t> max_const_speed;
+    config() : min_const_speed(), max_const_speed() {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* constant_speed */
+
+namespace constant_temperature {
+
+typedef struct config {
+    nullable<int16_t> min_const_temp;
+    nullable<int16_t> max_const_temp;
+    config() : min_const_temp(), max_const_temp() {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* constant_temperature */
+
+namespace automatic {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* automatic */
+
+namespace local_operation {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* automatic */
+} /* feature */
+} /* pump_configuration_and_control */
+
 } /* cluster */
 } /* esp_matter */

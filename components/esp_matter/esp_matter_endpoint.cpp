@@ -1415,7 +1415,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    temperature_control::create(endpoint, &(config->temperature_control), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
+    temperature_control::create(endpoint, &(config->temperature_control), CLUSTER_FLAG_SERVER, temperature_control::feature::temperature_number::get_id());
 
     return ESP_OK;
 }

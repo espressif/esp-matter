@@ -395,7 +395,7 @@ command_t *create_reset_condition(cluster_t *cluster);
 namespace mode_base {
 namespace command {
 command_t *create_change_to_mode(cluster_t *cluster);
-command_t *create_change_to_mode_response(cluster_t *cluster, uint16_t command_id);
+command_t *create_change_to_mode_response(cluster_t *cluster);
 } /* command */
 } /* mode_base */
 

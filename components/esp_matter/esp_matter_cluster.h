@@ -592,8 +592,9 @@ typedef struct config {
     uint8_t occupancy;
     uint8_t occupancy_sensor_type;
     uint8_t occupancy_sensor_type_bitmap;
+    uint32_t features;
     config() : occupancy(0), occupancy_sensor_type(0),
-               occupancy_sensor_type_bitmap(0) {}
+               occupancy_sensor_type_bitmap(0), features(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -685,12 +686,18 @@ typedef struct config {
     nullable<int16_t> capacity;
     // Pump Settings Attributes
     uint8_t operation_mode;
+    feature::constant_pressure::config_t constant_pressure;
+    feature::compensated_pressure::config_t compensated_pressure;
+    feature::constant_flow::config_t constant_flow;
+    feature::constant_speed::config_t constant_speed;
+    feature::constant_temperature::config_t constant_temperature;
+    uint32_t features;
     config(
         nullable<int16_t> max_pressure = nullable<int16_t>(),
         nullable<uint16_t> max_speed = nullable<uint16_t>(),
         nullable<uint16_t> max_flow = nullable<uint16_t>()
     ) : max_pressure(max_pressure), max_speed(max_speed), max_flow(max_flow),
-        effective_operation_mode(0), effective_control_mode(0), capacity(), operation_mode(0) {}
+        effective_operation_mode(0), effective_control_mode(0), capacity(), operation_mode(0), features(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -714,7 +721,8 @@ typedef struct config {
     feature::temperature_number::config_t temperature_number;
     feature::temperature_level::config_t temperature_level;
     feature::temperature_step::config_t temperature_step;
-    // Empty config for API consistency
+    uint32_t features;
+    config() : features(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -915,11 +923,11 @@ namespace water_heater_management {
 typedef struct config {
     uint8_t heater_types;
     uint8_t heat_demand;
-    uint8_t tank_volume;
+    uint8_t boost_state;
     void *delegate;
     feature::energy_management::config_t energy_management;
     feature::tank_percent::config_t tank_percent;
-    config() : heater_types(0), heat_demand(0), tank_volume(0), delegate(nullptr) {}
+    config() : heater_types(0), heat_demand(0), boost_state(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
