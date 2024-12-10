@@ -9,6 +9,9 @@ import subprocess
 import netifaces
 from typing import Tuple
 from pytest_embedded import Dut
+import os
+import yaml
+
 
 CURRENT_DIR_LIGHT = str(pathlib.Path(__file__).parent)+'/light'
 CHIP_TOOL_EXE = str(pathlib.Path(__file__).parent)+ '/../connectedhomeip/connectedhomeip/out/host/chip-tool'
@@ -98,9 +101,20 @@ def test_matter_commissioning_c6(dut:Dut) -> None:
 
 # get the host interface name
 def get_host_interface_name() -> str:
-    interfaces = netifaces.interfaces()
-    interface_name = [s for s in interfaces if 'wl' in s][0]
-    return str(interface_name)
+    home_dir = os.path.expanduser("~")
+    config_path = os.path.join(home_dir, "config", "env_config.yml")
+    if os.path.exists(config_path):
+        with open(config_path, 'r') as file:
+            config = yaml.safe_load(file)
+        interface_name = config.get("interface_name")
+        if interface_name:
+            return str(interface_name)
+        else:
+            print("Warning: Configuration file found but 'interface_name' is not defined.")
+  
+    if "eth1" in netifaces.interfaces():
+        return "eth1"
+    raise Exception("No valid network interface found. Please ensure 'eth1' exists or configure 'interface_name' in config/env_config file.")
 
 
 # reset host interface
