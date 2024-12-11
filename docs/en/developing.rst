@@ -311,6 +311,8 @@ Choose IDF target.
 There are a few implementations of Matter commissioners present in the `connectedhomeip <https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/src/controller#implementations>`__ repository.
 
 CHIP Tool is an example implementation of Matter commissioner and used for development purposes.
+An in-depth guide on how to use chip-tool can be found in the
+`CHIP Tool User Guide <https://github.com/project-chip/connectedhomeip/blob/master/docs/development_controllers/chip-tool/chip_tool_guide.md>`__.
 
 Espressif also has an iOS application, `Espressif-Matter <https://apps.apple.com/in/app/espressif-matter/id1604739172>`__, to commission and control the Matter devices. Please follow `profile installation instructions <https://github.com/espressif/connectedhomeip/blob/v1.0.0.2/docs/guides/darwin.md#profile-installation>`__ in order to use the application. Also, make sure to enable Developer Mode on the iOS.
 
