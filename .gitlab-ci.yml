@@ -25,7 +25,7 @@ variables:
     IDF_CHECKOUT_REF: "v5.2.3"
     # This variable represents the short hash of the connectedhomeip submodule.
     # Note: Do change this short hash on submodule update MRs.
-    CHIP_SHORT_HASH: "9b008bc10d"
+    CHIP_SHORT_HASH: "43aa98c2d3"
     DOCKER_IMAGE_NAME: "espressif/chip-idf"
 
 .add_gitlab_ssh_key: &add_gitlab_ssh_key |
@@ -528,7 +528,7 @@ build_docs:
     script:
         - cd docs
         - pip install -r requirements.txt
-        - build-docs -t esp32 esp32s3 esp32c2 esp32c3 esp32c6 esp32h2 -l en
+        - build-docs -t esp32 esp32s3 esp32c2 esp32c3 esp32c6 esp32h2 esp32p4 -l en
 
 .deploy_docs_template:
     stage: docs
