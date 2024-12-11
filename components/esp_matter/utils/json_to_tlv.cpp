@@ -439,11 +439,17 @@ static esp_err_t encode_tlv_element(const cJSON *val, TLV::TLVWriter &writer, co
 esp_err_t json_to_tlv(const char *json_str, chip::TLV::TLVWriter &writer, chip::TLV::Tag tag)
 {
     cJSON *json = cJSON_Parse(json_str);
+    esp_err_t err =  json_to_tlv(json, writer, tag);
+    cJSON_Delete(json);
+    return err;
+}
+
+esp_err_t json_to_tlv(cJSON *json, chip::TLV::TLVWriter &writer, chip::TLV::Tag tag)
+{
     if (!json) {
         return ESP_ERR_INVALID_ARG;
     }
     if (json->type != cJSON_Object) {
-        cJSON_Delete(json);
         return ESP_ERR_INVALID_ARG;
     }
     element_context element_ctx;
@@ -454,7 +460,6 @@ esp_err_t json_to_tlv(const char *json_str, chip::TLV::TLVWriter &writer, chip::
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to encode tlv element");
     }
-    cJSON_Delete(json);
     return err;
 }
 

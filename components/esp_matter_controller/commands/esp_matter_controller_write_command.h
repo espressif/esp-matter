@@ -31,24 +31,48 @@ using chip::app::ConcreteDataAttributePath;
 using chip::app::StatusIB;
 using chip::app::WriteClient;
 using chip::Messaging::ExchangeManager;
+using chip::Platform::ScopedMemoryBufferWithSize;
 using chip::TLV::TLVElementType;
 using esp_matter::client::peer_device_t;
 using esp_matter::client::interaction::custom_encodable_type;
+using esp_matter::client::interaction::multiple_write_encodable_type;
 
 /** Write command class to send a write interaction command to a server **/
 class write_command : public WriteClient::Callback {
 public:
+    /** Constructor for command with multiple paths**/
+    write_command(uint64_t node_id, ScopedMemoryBufferWithSize<AttributePathParams> &&attr_paths,
+                  const char *attribute_val_str,
+                  const chip::Optional<uint16_t> timed_write_timeout_ms = chip::NullOptional)
+        : m_node_id(node_id)
+        , m_attr_paths(std::move(attr_paths))
+        , m_chunked_callback(this)
+        , m_attr_vals(attribute_val_str)
+        , m_timed_write_timeout_ms(timed_write_timeout_ms)
+        , on_device_connected_cb(on_device_connected_fcn, this)
+        , on_device_connection_failure_cb(on_device_connection_failure_fcn, this)
+    {
+    }
+
     /** Constructor for command with an attribute path**/
     write_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
                   const char *attribute_val_str,
                   const chip::Optional<uint16_t> timed_write_timeout_ms = chip::NullOptional)
         : m_node_id(node_id)
-        , m_attr_path(endpoint_id, cluster_id, attribute_id)
         , m_chunked_callback(this)
-        , m_attr_val(attribute_val_str, custom_encodable_type::interaction_type::k_write_attr)
+        , m_attr_vals(attribute_val_str)
         , m_timed_write_timeout_ms(timed_write_timeout_ms)
         , on_device_connected_cb(on_device_connected_fcn, this)
-        , on_device_connection_failure_cb(on_device_connection_failure_fcn, this) {}
+        , on_device_connection_failure_cb(on_device_connection_failure_fcn, this)
+    {
+        m_attr_paths.Alloc(1);
+        if (m_attr_paths.Get()) {
+            m_attr_paths[0] = AttributePathParams(endpoint_id, cluster_id, attribute_id);
+        } else {
+            ChipLogError(DeviceLayer, "Alloc space for attribute path failed!");
+            assert(0);
+        }
+    }
 
     ~write_command() {}
 
@@ -76,9 +100,9 @@ public:
 
 private:
     uint64_t m_node_id;
-    AttributePathParams m_attr_path;
+    ScopedMemoryBufferWithSize<AttributePathParams> m_attr_paths;
     ChunkedWriteCallback m_chunked_callback;
-    custom_encodable_type m_attr_val;
+    multiple_write_encodable_type m_attr_vals;
     chip::Optional<uint16_t> m_timed_write_timeout_ms;
 
     static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr,
@@ -104,6 +128,24 @@ private:
  */
 esp_err_t send_write_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
                                   const char *attr_val_json_str,
+                                  chip::Optional<uint16_t> timed_write_timeout_ms = chip::NullOptional);
+
+/** Send write attribute command to multiple attribute paths
+ *
+ * @param[in] node_id Remote NodeId
+ * @param[in] endpoint_ids EndpointIds
+ * @param[in] cluster_ids ClusterIds
+ * @param[in] attribute_ids AttributeIds
+ * @param[in] attr_val_json_str Attribute value string with JSON format
+ *            (https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#write-attribute-commands)
+ * @param[in] timed_write_timeout_ms Timeout in millisecond for timed-write attributes
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t send_write_attr_command(uint64_t node_id, ScopedMemoryBufferWithSize<uint16_t> &endpoint_ids,
+                                  ScopedMemoryBufferWithSize<uint32_t> &cluster_ids,
+                                  ScopedMemoryBufferWithSize<uint32_t> &attribute_ids, const char *attr_val_json_str,
                                   chip::Optional<uint16_t> timed_write_timeout_ms = chip::NullOptional);
 
 } // namespace controller
