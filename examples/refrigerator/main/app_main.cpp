@@ -113,10 +113,10 @@ extern "C" void app_main()
     temperature_controlled_cabinet::config_t temperature_controlled_cabinet_config;
     endpoint_t *endpoint1 = temperature_controlled_cabinet::create(node, &temperature_controlled_cabinet_config, ENDPOINT_FLAG_NONE, NULL);
     ABORT_APP_ON_FAILURE(endpoint1 != nullptr, ESP_LOGE(TAG, "Failed to create temperature controlled cabinet endpoint"));
-    
+
     esp_matter::cluster_t *cluster = esp_matter::cluster::get(endpoint1, chip::app::Clusters::TemperatureControl::Id);
 
-    // Atlest one of temperature_number and temperature_level feature is mandatory.    
+    // Atlest one of temperature_number and temperature_level feature is mandatory.
     cluster::temperature_control::feature::temperature_number::config_t temperature_number_config;
     cluster::temperature_control::feature::temperature_number::add(cluster, &temperature_number_config);
 
@@ -148,6 +148,7 @@ extern "C" void app_main()
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter::console::diagnostics_register_commands();
     esp_matter::console::wifi_register_commands();
+    esp_matter::console::factoryreset_register_commands();
     esp_matter::console::init();
 #endif
 }
