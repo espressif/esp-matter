@@ -155,5 +155,14 @@ esp_err_t otcli_register_commands();
  */
 esp_err_t udc_register_commands();
 
+/** Add Factory Reset Commands
+ *
+ * Adds the default factory reset commands.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t factoryreset_register_commands();
+
 } // namespace console
 } // namespace esp_matter
