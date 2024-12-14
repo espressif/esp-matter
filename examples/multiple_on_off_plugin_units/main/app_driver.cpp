@@ -6,8 +6,9 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
+#include <bsp/esp-bsp.h>
 #include <esp_log.h>
-#include <device.h>
+#include <iot_button.h>
 #include <stdlib.h>
 #include <string.h>
 #include "driver/gpio.h"
@@ -97,12 +98,16 @@ app_driver_handle_t app_driver_button_init()
             .active_level = CONFIG_USER_BUTTON_LEVEL,
         }
     };
+    return (app_driver_handle_t)iot_button_create(&config);
 #else
-    // get dev board's built-in button
-    button_config_t config = button_driver_get_config();
+    button_handle_t bsp_buttons[BSP_BUTTON_NUM];
+    int btn_cnt = 0;// will contain # of buttons that were created by BSP
+    bsp_iot_button_create(bsp_buttons, &btn_cnt, BSP_BUTTON_NUM);
+    if (btn_cnt < 1) {
+        ESP_LOGE(TAG, "bsp_iot_button_create() didn't return a usable button");
+        return (app_driver_handle_t)NULL;
+    }
+    return (app_driver_handle_t)bsp_buttons[0];// return handle to dev board's 1st built-in button
 #endif
-    button_handle_t handle = iot_button_create(&config);
-
-    return (app_driver_handle_t)handle;
 }
 
