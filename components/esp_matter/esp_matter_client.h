@@ -36,6 +36,7 @@ using chip::app::ReadClient;
 using chip::app::StatusIB;
 using chip::app::WriteClient;
 using chip::Messaging::ExchangeManager;
+using chip::Platform::ScopedMemoryBufferWithSize;
 using chip::System::Clock::Timeout;
 using chip::TLV::TLVReader;
 using client::peer_device_t;
@@ -76,6 +77,39 @@ public:
     }
 private:
     char *m_json_str = NULL;
+};
+
+class multiple_write_encodable_type
+{
+public:
+    multiple_write_encodable_type(const char *json_str)
+    {
+        json = cJSON_Parse(json_str);
+    }
+
+    ~multiple_write_encodable_type() { cJSON_Delete(json); }
+
+    CHIP_ERROR EncodeTo(chip::TLV::TLVWriter &writer, chip::TLV::Tag tag, size_t index)
+    {
+        cJSON *json_at_index = NULL;
+        if (!json) {
+            return CHIP_ERROR_INVALID_ARGUMENT;
+        }
+        if (json->type != cJSON_Array) {
+            json_at_index = json;
+        } else {
+            json_at_index = cJSON_GetArrayItem(json, index);
+        }
+        if (json_to_tlv(json_at_index, writer, tag) != ESP_OK) {
+            return CHIP_ERROR_INTERNAL;
+        }
+        return CHIP_NO_ERROR;
+    }
+
+    size_t GetJsonArraySize() { return static_cast<size_t>(cJSON_GetArraySize(json)); }
+
+private:
+    cJSON *json = NULL;
 };
 
 /** Command invoke APIs
@@ -184,6 +218,10 @@ esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams
 
 esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams &attr_path,
                        const chip::app::DataModel::EncodableToTLV &encodable, WriteClient::Callback &callback,
+                       const chip::Optional<uint16_t> &timeout_ms);
+
+esp_err_t send_request(client::peer_device_t *remote_device, ScopedMemoryBufferWithSize<AttributePathParams> &attr_paths,
+                       multiple_write_encodable_type &json_encodable, WriteClient::Callback &callback,
                        const chip::Optional<uint16_t> &timeout_ms);
 } // namespace write
 

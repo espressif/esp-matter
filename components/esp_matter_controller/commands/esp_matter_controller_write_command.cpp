@@ -46,7 +46,7 @@ void write_command::on_device_connected_fcn(void *context, ExchangeManager &exch
 {
     write_command *cmd = (write_command *)context;
     chip::OperationalDeviceProxy device_proxy(&exchangeMgr, sessionHandle);
-    esp_err_t err = interaction::write::send_request(&device_proxy, cmd->m_attr_path, cmd->m_attr_val,
+    esp_err_t err = interaction::write::send_request(&device_proxy, cmd->m_attr_paths, cmd->m_attr_vals,
                                                      cmd->m_chunked_callback, cmd->m_timed_write_timeout_ms);
     if (err != ESP_OK) {
         chip::Platform::Delete(cmd);
@@ -102,6 +102,38 @@ esp_err_t send_write_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32
         return ESP_ERR_NO_MEM;
     }
 
+    return cmd->send_command();
+}
+
+esp_err_t send_write_attr_command(uint64_t node_id, ScopedMemoryBufferWithSize<uint16_t> &endpoint_ids,
+                                  ScopedMemoryBufferWithSize<uint32_t> &cluster_ids,
+                                  ScopedMemoryBufferWithSize<uint32_t> &attribute_ids, const char *attr_val_json_str,
+                                  chip::Optional<uint16_t> timed_write_timeout_ms)
+{
+    if (endpoint_ids.AllocatedSize() != cluster_ids.AllocatedSize() ||
+        endpoint_ids.AllocatedSize() != attribute_ids.AllocatedSize()) {
+        ESP_LOGE(TAG,
+                 "The endpoint_id array length should be the same as the cluster_ids array length"
+                 "and the attribute_ids array length");
+        return ESP_ERR_INVALID_ARG;
+    }
+    ScopedMemoryBufferWithSize<AttributePathParams> attr_paths;
+    ScopedMemoryBufferWithSize<EventPathParams> event_paths;
+    attr_paths.Alloc(endpoint_ids.AllocatedSize());
+    if (!attr_paths.Get()) {
+        ESP_LOGE(TAG, "Failed to alloc memory for attribute paths");
+        return ESP_ERR_NO_MEM;
+    }
+    for (size_t i = 0; i < attr_paths.AllocatedSize(); ++i) {
+        attr_paths[i] = AttributePathParams(endpoint_ids[i], cluster_ids[i], attribute_ids[i]);
+    }
+
+    write_command *cmd =
+        chip::Platform::New<write_command>(node_id, std::move(attr_paths), attr_val_json_str, timed_write_timeout_ms);
+    if (!cmd) {
+        ESP_LOGE(TAG, "Failed to alloc memory for read_command");
+        return ESP_ERR_NO_MEM;
+    }
     return cmd->send_command();
 }
 

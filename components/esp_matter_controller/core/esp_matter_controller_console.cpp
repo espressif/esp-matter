@@ -460,20 +460,24 @@ static esp_err_t controller_write_attr_handler(int argc, char **argv)
     }
 
     uint64_t node_id = string_to_uint64(argv[0]);
-    uint16_t endpoint_id = string_to_uint16(argv[1]);
-    uint32_t cluster_id = string_to_uint32(argv[2]);
-    uint32_t attribute_id = string_to_uint32(argv[3]);
+    ScopedMemoryBufferWithSize<uint16_t> endpoint_ids;
+    ScopedMemoryBufferWithSize<uint32_t> cluster_ids;
+    ScopedMemoryBufferWithSize<uint32_t> attribute_ids;
+    ESP_RETURN_ON_ERROR(string_to_uint16_array(argv[1], endpoint_ids), TAG, "Failed to parse endpoint IDs");
+    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[2], cluster_ids), TAG, "Failed to parse cluster IDs");
+    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[3], attribute_ids), TAG, "Failed to parse attribute IDs");
+
     char *attribute_val_str = argv[4];
 
     if (argc > 5) {
         uint16_t timed_write_timeout_ms = string_to_uint16(argv[5]);
         if (timed_write_timeout_ms > 0) {
-            return controller::send_write_attr_command(node_id, endpoint_id, cluster_id, attribute_id,
+            return controller::send_write_attr_command(node_id, endpoint_ids, cluster_ids, attribute_ids,
                                                        attribute_val_str, chip::MakeOptional(timed_write_timeout_ms));
         }
     }
 
-    return controller::send_write_attr_command(node_id, endpoint_id, cluster_id, attribute_id, attribute_val_str);
+    return controller::send_write_attr_command(node_id, endpoint_ids, cluster_ids, attribute_ids, attribute_val_str);
 }
 
 static esp_err_t controller_read_event_handler(int argc, char **argv)
@@ -639,14 +643,16 @@ esp_err_t controller_register_commands()
         {
             .name = "read-attr",
             .description = "Read attributes of the nodes.\n"
-                           "\tUsage: controller read-attr <node-id> <endpoint-id> <cluster-id> <attr-id>",
+                           "\tUsage: controller read-attr <node-id> <endpoint-ids> <cluster-ids> <attr-ids>\n"
+                           "\tNotes: endpoint-ids can represent a single or multiple endpoints, e.g. '0' or '0,1'. "
+                           "And the same applies to cluster-ids, attr-ids, and event-ids.",
             .handler = controller_read_attr_handler,
         },
         {
             .name = "write-attr",
             .description =
                 "Write attributes of the nodes.\n"
-                "\tUsage: controller write-attr <node-id> <endpoint-id> <cluster-id> <attr-id> <attr-value> [timed_write_timeout_ms]\n"
+                "\tUsage: controller write-attr <node-id> <endpoint-ids> <cluster-ids> <attr-ids> <attr-value> [timed_write_timeout_ms]\n"
                 "\tNotes: attr-value should be a JSON object that contains the attribute value JSON item."
                 "You can get the format of the attr-value from "
                 "https://docs.espressif.com/projects/esp-matter/en/latest/esp32/"
@@ -656,20 +662,20 @@ esp_err_t controller_register_commands()
         {
             .name = "read-event",
             .description = "Read events of the nodes.\n"
-                           "\tUsage: controller read-event <node-id> <endpoint-id> <cluster-id> <event-id>",
+                           "\tUsage: controller read-event <node-id> <endpoint-ids> <cluster-ids> <event-ids>",
             .handler = controller_read_event_handler,
         },
         {
             .name = "subs-attr",
             .description = "Subscribe attributes of the nodes.\n"
-                           "\tUsage: controller subs-attr <node-id> <endpoint-id> <cluster-id> <attr-id> "
+                           "\tUsage: controller subs-attr <node-id> <endpoint-ids> <cluster-ids> <attr-ids> "
                            "<min-interval> <max-interval>",
             .handler = controller_subscribe_attr_handler,
         },
         {
             .name = "subs-event",
             .description = "Subscribe events of the nodes.\n"
-                           "\tUsage: controller subs-attr <node-id> <endpoint-id> <cluster-id> <event-id> "
+                           "\tUsage: controller subs-event <node-id> <endpoint-ids> <cluster-ids> <event-ids> "
                            "<min-interval> <max-interval>",
             .handler = controller_subscribe_event_handler,
         },

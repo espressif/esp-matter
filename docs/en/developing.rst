@@ -1366,7 +1366,7 @@ Here are some examples of the ``command-data`` format.
 
   ::
 
-     matter esp controller invoke-cmd <node-id> <endpoint-id> 63 0 "{\"0:OBJ\": {\"0:U16\": 42, \"1:U8\": 0, \"2:BS\": \"0NHS09TV1tfY2drb3N3e3w==\", \"3:U64\": 2220000, \"4:NULL\": null, \"5:NULL\": null, \"6:NULL\": null, \"7:NULL\": null}}"
+     matter esp controller invoke-cmd <node-id> <endpoint-id> 63 0 "{\"0:OBJ\": {\"0:U16\": 42, \"1:U8\": 0, \"2:BYT\": \"0NHS09TV1tfY2drb3N3e3w==\", \"3:U64\": 2220000, \"4:NULL\": null, \"5:NULL\": null, \"6:NULL\": null, \"7:NULL\": null}}"
 
 - For AddGroup command in Groups cluster, the ``command-data`` (``{"groupID": 1, "groupName": "grp1"}``) should be:
 
@@ -1392,7 +1392,11 @@ The ``read-attr`` commands are used for sending the commands of reading attribut
 
    ::
 
-      matter esp controller read-attr <node-id> <endpoint-id> <cluster-id> <attribute-id>
+      matter esp controller read-attr <node-id> <endpoint-ids> <cluster-ids> <attribute-ids>
+
+.. note::
+
+    - endpoint-ids can represent a single or multiple endpoints, e.g. '0' or '0,1'. And the same applies to cluster-ids, attribute-ids, and event-ids below.
 
 2.10.4.2 Read event commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1402,7 +1406,7 @@ The ``read-event`` commands are used for sending the commands of reading events 
 
   ::
 
-      matter esp controller read-event <node-id> <endpoint-id> <cluster-id> <event-id>
+      matter esp controller read-event <node-id> <endpoint-ids> <cluster-ids> <event-ids>
 
 2.10.5 Write attribute commands
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1412,7 +1416,7 @@ The ``write-attr`` command is used for sending the commands of writing attribute
 
     ::
 
-      matter esp controller write-attr <node-id> <endpoint-id> <cluster-id> <attribute-id> <attribute-value>
+      matter esp controller write-attr <node-id> <endpoint-id> <cluster-ids> <attribute-ids> <attribute-value>
 
 .. note::
 
@@ -1425,14 +1429,14 @@ For StartUpOnOff attribute of OnOff Cluster, you should use the following JSON s
 
    ::
 
-      matter esp controller write-attr <node_id> <endpoint_id> 6 0x4003 ``"{\"0:U8\": 2}"``
-      matter esp controller write-attr <node_id> <endpoint_id> 6 0x4003 ``"{\"0:NULL\": null}"``
+      matter esp controller write-attr <node_id> <endpoint_id> 6 0x4003 "{\"0:U8\": 2}"
+      matter esp controller write-attr <node_id> <endpoint_id> 6 0x4003 "{\"0:NULL\": null}"
 
 For Binding attribute of Binding cluster, you should use the following JSON structure as the ``attribute_value`` to represent the binding list ``[{"node":1, "endpoint":1, "cluster":6}]``:
 
    ::
 
-      matter esp controller write-attr <node_id> <endpoint_id> 30 0 ``"{\"0:ARR-OBJ\":[{\"1:U64\":1, \"3:U16\":1, \"4:U32\": 6}]}"``
+      matter esp controller write-attr <node_id> <endpoint_id> 30 0 "{\"0:ARR-OBJ\":[{\"1:U64\":1, \"3:U16\":1, \"4:U32\": 6}]}"
 
 For ACL attribute of AccessControl cluster, you should use the following JSON structure as the ``attribute_value`` to represent the AccessControlList ``[{"privilege": 5, "authMode": 2, "subjects": [112233], "targets": null}, {"privilege": 4, "authMode": 3, "subjects": [1], "targets": null}]``:
 
@@ -1440,7 +1444,14 @@ For ACL attribute of AccessControl cluster, you should use the following JSON st
 
       matter esp controller write-attr <node_id> <endpoint_id> 31 0 "{\"0:ARR-OBJ\":[{\"1:U8\": 5, \"2:U8\": 2, \"3:ARR-U64\": [112233], \"4:NULL\": null}, {\"1:U8\": 4, \"2:U8\": 3, \"3:ARR-U64\": [1], \"4:NULL\": null}]}"
 
+To write multiple attributes in one commands, the ``attribute_value`` should be a JSON array. For example, to write the ACL attribute and Binding attribute above, you should use the following JSON structure as the ``attribute_value``:
+
+    ::
+
+      matter esp controller write-attr <node_id> <endpoint_id1>,<endpoint_id2> 31,30 0,0 "[{\"0:ARR-OBJ\":[{\"1:U8\": 5, \"2:U8\": 2, \"3:ARR-U64\": [112233], \"4:NULL\": null}, {\"1:U8\": 4, \"2:U8\": 3, \"3:ARR-U64\": [1], \"4:NULL\": null}]}, {\"0:ARR-OBJ\":[{\"1:U64\":1, \"3:U16\":1, \"4:U32\": 6}]}]"
+
 For attributes of type uint64_t or int64_t, if the absolute value is greater than (2^53), you should use string to represent number in JSON structure for precision
+
     ::
 
       matter esp controller write-attr <node_id> <endpoint_id> 42 0 "{\"0:ARR-OBJ\":[{\"1:U64\": \"9007199254740993\", \"2:U8\": 0}]}"
@@ -1469,7 +1480,7 @@ The ``subs-attr`` commands are used for sending the commands of subscribing attr
 
   ::
 
-     matter esp controller subs-attr <node-id> <endpoint-id> <cluster-id> <attribute-id> <min-interval> <max-interval>
+     matter esp controller subs-attr <node-id> <endpoint-ids> <cluster-ids> <attribute-ids> <min-interval> <max-interval>
 
 2.10.6.2 Subscribe event commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1479,7 +1490,7 @@ The ``subs-event`` commands are used for sending the commands of subscribing eve
 
   ::
 
-     matter esp controller subs-event <node-id> <endpoint-id> <cluster-id> <event-id> <min-interval> <max-interval>
+     matter esp controller subs-event <node-id> <endpoint-ids> <cluster-ids> <event-ids> <min-interval> <max-interval>
 
 2.10.7 Group settings commands
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

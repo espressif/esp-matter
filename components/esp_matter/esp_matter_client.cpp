@@ -531,6 +531,57 @@ esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams
     return send_request(remote_device, attr_path, type, callback, timeout_ms);
 }
 
+esp_err_t send_request(client::peer_device_t *remote_device,
+                       ScopedMemoryBufferWithSize<AttributePathParams> &attr_paths, multiple_write_encodable_type &json_encodable,
+                       WriteClient::Callback &callback, const chip::Optional<uint16_t> &timeout_ms)
+{
+    VerifyOrReturnError(
+        json_encodable.GetJsonArraySize() == attr_paths.AllocatedSize(), ESP_ERR_INVALID_ARG,
+        ESP_LOGE(TAG, "The attr_values array length should be the same as the attr_paths array length"));
+    VerifyOrReturnError(remote_device->GetSecureSession().HasValue() &&
+                            !remote_device->GetSecureSession().Value()->IsGroupSession(),
+                        ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid Session Type"));
+    auto client_deleter_callback = chip::Platform::MakeUnique<client_deleter_write_callback>(callback);
+    VerifyOrReturnError(client_deleter_callback, ESP_ERR_NO_MEM,
+                        ESP_LOGE(TAG, "Failed to allocate memory for client deleter callback"));
+    auto write_client = chip::Platform::MakeUnique<WriteClient>(remote_device->GetExchangeManager(),
+                                                                client_deleter_callback.get(), timeout_ms, false);
+    VerifyOrReturnError(write_client, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "Failed to allocate memory for WriteClient"));
+
+    for (size_t i = 0; i < attr_paths.AllocatedSize(); ++i) {
+        ConcreteDataAttributePath path(attr_paths[i].mEndpointId, attr_paths[i].mClusterId, attr_paths[i].mAttributeId);
+        chip::Platform::ScopedMemoryBuffer<uint8_t> encoded_buf;
+        encoded_buf.Alloc(k_encoded_buf_size);
+        VerifyOrReturnError((encoded_buf.Get()), ESP_ERR_NO_MEM,
+                            ESP_LOGE(TAG, "Failed to alloc memory for encoded_buf"));
+        TLVReader reader;
+        TLVWriter writer;
+        TLVReader attr_val_reader;
+        writer.Init(encoded_buf.Get(), k_encoded_buf_size);
+        VerifyOrReturnError(json_encodable.EncodeTo(writer, chip::TLV::AnonymousTag(), i) == CHIP_NO_ERROR, ESP_FAIL,
+                            ESP_LOGE(TAG, "Failed to encode attribute value"));
+        VerifyOrReturnError(writer.Finalize() == CHIP_NO_ERROR, ESP_FAIL,
+                            ESP_LOGE(TAG, "Failed to finalize TLV writer"));
+        reader.Init(encoded_buf.Get(), writer.GetLengthWritten());
+        VerifyOrReturnError(reader.Next() == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to read next"));
+        VerifyOrReturnError(reader.GetType() == chip::TLV::TLVType::kTLVType_Structure, ESP_ERR_INVALID_ARG,
+                            ESP_LOGE(TAG, "The TLV type must be structure"));
+        VerifyOrReturnError(reader.OpenContainer(attr_val_reader) == CHIP_NO_ERROR, ESP_FAIL,
+                            ESP_LOGE(TAG, "Failed to open container"));
+        VerifyOrReturnError(attr_val_reader.Next() == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to read next"));
+        VerifyOrReturnError(write_client->PutPreencodedAttribute(path, attr_val_reader) == CHIP_NO_ERROR, ESP_FAIL,
+                            ESP_LOGE(TAG, "Failed to put pre-encoded attribute value to WriteClient"));
+    }
+
+    VerifyOrReturnError(write_client->SendWriteRequest(remote_device->GetSecureSession().Value()) == CHIP_NO_ERROR,
+                        ESP_FAIL, ESP_LOGE(TAG, "Failed to Send Write Request"));
+
+    // Release the write_client and client deleter callback as it will be managed by the client deleter callback
+    write_client.release();
+    client_deleter_callback.release();
+    return ESP_OK;
+}
+
 } // namespace write
 } // namespace interaction
 } // namespace client

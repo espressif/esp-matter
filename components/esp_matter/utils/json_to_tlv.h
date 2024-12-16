@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include "cJSON.h"
 #include <esp_err.h>
 #include <lib/core/TLV.h>
 #include <string>
@@ -54,5 +55,16 @@ const char k_floating_point_negative_infinity[] = "-INF";
  * @return error in case of failure
  */
 esp_err_t json_to_tlv(const char *json_str, chip::TLV::TLVWriter &writer, chip::TLV::Tag tag);
+
+/** Convert a JSON object to the given TLVWriter
+ *
+ * @param[in]   json     The JSON object
+ * @param[out]  writer   The TLV output from the JSON object
+ * @param[in]   tag      The TLV tag of the TLV structure
+ *
+ * @return ESP_OK on success
+ * @return error in case of failure
+ */
+esp_err_t json_to_tlv(cJSON *json, chip::TLV::TLVWriter &writer, chip::TLV::Tag tag);
 
 } // namespace esp_matter
