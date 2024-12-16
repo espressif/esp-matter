@@ -446,9 +446,9 @@ attribute_t *create_ac_capacity_format(cluster_t *cluster, uint8_t value);
 
 namespace thermostat_user_interface_configuration {
 namespace attribute {
-attribute_t *create_temperature_display_mode(cluster_t *cluster, uint8_t value);
-attribute_t *create_keypad_lockout(cluster_t *cluster, uint8_t value);
-attribute_t *create_schedule_programming_visibility(cluster_t *cluster, uint8_t value);
+attribute_t *create_temperature_display_mode(cluster_t *cluster, uint8_t value, uint8_t min = 0, uint8_t max = 1);
+attribute_t *create_keypad_lockout(cluster_t *cluster, uint8_t value, uint8_t min = 0, uint8_t max = 5);
+attribute_t *create_schedule_programming_visibility(cluster_t *cluster, uint8_t value, uint8_t min = 0, uint8_t max = 1);
 } /* attribute */
 } /* thermostat_user_interface_configuration */
 
