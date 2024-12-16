@@ -27,31 +27,32 @@ using chip::Messaging::ExchangeManager;
 namespace esp_matter {
 namespace controller {
 
-typedef enum pairing_network_type {
-    NETWORK_TYPE_NONE,
-    NETWORK_TYPE_WIFI,
-    NETWORK_TYPE_THREAD,
-    NETWORK_TYPE_ETHERNET,
-} pairing_network_type_t;
-
-typedef enum pairing_mode {
-    PAIRING_MODE_NONE,
-    PAIRING_MODE_CODE,
-    PAIRING_MODE_BLE,
-    PAIRING_MODE_SOFTAP,
-    PAIRING_MODE_ETHERNET,
-    PAIRING_MODE_ONNETWORK,
-} pairing_mode_t;
+typedef struct {
+    // Callback for the success or failure of PASE session establishment. err will be CHIP_NO_ERROR when the commissioner
+    // establishes PASE session with peer node. Otherwise the commissioner fails to establish PASE session.
+    void (*pase_callback)(CHIP_ERROR err);
+    // Callback for the sussess of commisioning
+    void (*commissioning_success_callback)(ScopedNodeId peer_id);
+    // Callback for the failure of commissioning
+    void (*commissioning_failure_callback)(
+        ScopedNodeId peer_id, CHIP_ERROR error, chip::Controller::CommissioningStage stage,
+        std::optional<chip::Credentials::AttestationVerificationResult> addtional_err_info);
+} pairing_command_callbacks_t;
 
 /** Pairing command class to finish commissioning with Matter end-devices **/
 class pairing_command : public chip::Controller::DevicePairingDelegate,
                         public chip::Controller::DeviceDiscoveryDelegate {
 public:
     /****************** DevicePairingDelegate Interface *****************/
-    void OnStatusUpdate(DevicePairingDelegate::Status status) override;
+    // This function will be called when the PASE session is established or the commisioner fails to establish
+    // PASE session.
     void OnPairingComplete(CHIP_ERROR error) override;
-    void OnPairingDeleted(CHIP_ERROR error) override;
-    void OnCommissioningComplete(NodeId deviceId, CHIP_ERROR error) override;
+    // The two functions are invoked upon the completion of the commissioning process, either successfully or
+    // failed.
+    void OnCommissioningSuccess(chip::PeerId peerId) override;
+    void OnCommissioningFailure(
+        chip::PeerId peerId, CHIP_ERROR error, chip::Controller::CommissioningStage stageFailed,
+        chip::Optional<chip::Credentials::AttestationVerificationResult> additionalErrorInfo) override;
 
     /****************** DeviceDiscoveryDelegate Interface ***************/
     void OnDiscoveredDevice(const chip::Dnssd::CommissionNodeData &nodeData) override;
@@ -62,25 +63,16 @@ public:
         return s_instance;
     }
 
+    void set_callbacks(pairing_command_callbacks_t callbacks) { m_callbacks = callbacks; }
+
     NodeId m_remote_node_id;
     uint32_t m_setup_pincode;
     uint16_t m_discriminator;
-    pairing_network_type_t m_pairing_network_type;
-    pairing_mode_t m_pairing_mode;
+    pairing_command_callbacks_t m_callbacks;
 
 private:
     pairing_command()
-        : mOnDeviceConnectedCallback(OnDeviceConnectedFn, this)
-        , mOnDeviceConnectionFailureCallback(OnDeviceConnectionFailureFn, this)
-    {
-    }
-    CommissioningParameters get_commissioning_params();
-
-    static void OnDeviceConnectedFn(void *context, ExchangeManager &exchangeMgr, const SessionHandle &sessionHandle);
-    static void OnDeviceConnectionFailureFn(void *context, const ScopedNodeId &peerId, CHIP_ERROR error);
-
-    chip::Callback::Callback<chip::OnDeviceConnected> mOnDeviceConnectedCallback;
-    chip::Callback::Callback<chip::OnDeviceConnectionFailure> mOnDeviceConnectionFailureCallback;
+        : m_remote_node_id(0), m_setup_pincode(0), m_discriminator(0), m_callbacks{nullptr, nullptr, nullptr} {}
 };
 
 /**
