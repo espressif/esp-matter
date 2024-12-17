@@ -4757,5 +4757,156 @@ esp_err_t add(cluster_t *cluster)
 
 } /* feature */
 } /* occupancy_sensing */
+
+namespace pump_configuration_and_control {
+namespace feature {
+namespace constant_pressure {
+
+uint32_t get_id()
+{
+    return (uint32_t)PumpConfigurationAndControl::Feature::kConstantPressure;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_min_const_pressure(cluster, config->min_const_pressure);
+    attribute::create_max_const_pressure(cluster, config->max_const_pressure);
+
+    return ESP_OK;
+}
+} /* constant_pressure */
+
+namespace compensated_pressure {
+
+uint32_t get_id()
+{
+    return (uint32_t)PumpConfigurationAndControl::Feature::kCompensatedPressure;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_min_comp_pressure(cluster, config->min_comp_pressure);
+    attribute::create_max_comp_pressure(cluster, config->max_comp_pressure);
+
+    return ESP_OK;
+}
+} /* compensated_pressure */
+
+namespace constant_flow {
+
+uint32_t get_id()
+{
+    return (uint32_t)PumpConfigurationAndControl::Feature::kConstantFlow;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_min_const_flow(cluster, config->min_const_flow);
+    attribute::create_max_const_flow(cluster, config->max_const_flow);
+
+    return ESP_OK;
+}
+} /* constant_flow */
+
+namespace constant_speed {
+
+uint32_t get_id()
+{
+    return (uint32_t)PumpConfigurationAndControl::Feature::kConstantSpeed;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_min_const_speed(cluster, config->min_const_speed);
+    attribute::create_max_const_speed(cluster, config->max_const_speed);
+
+    return ESP_OK;
+}
+} /* constant_speed */
+
+namespace constant_temperature {
+
+uint32_t get_id()
+{
+    return (uint32_t)PumpConfigurationAndControl::Feature::kConstantTemperature;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_min_const_temp(cluster, config->min_const_temp);
+    attribute::create_max_const_temp(cluster, config->max_const_temp);
+
+    return ESP_OK;
+}
+} /* constant_temperature */
+
+namespace automatic {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(PumpConfigurationAndControl::Feature::kAutomatic);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+} /* automatic */
+
+namespace local_operation {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(PumpConfigurationAndControl::Feature::kLocalOperation);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+} /* local_operation */
+
+} /* feature */
+} /* pump_configuration_and_control */
 } /* cluster */
 } /* esp_matter */
