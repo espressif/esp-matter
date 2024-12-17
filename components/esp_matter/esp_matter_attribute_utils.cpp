@@ -1058,6 +1058,11 @@ static esp_matter_val_type_t get_val_type_from_attribute_type(int attribute_type
         break;
 
     case ZCL_OCTET_STRING_ATTRIBUTE_TYPE:
+    case ZCL_IPADR_ATTRIBUTE_TYPE:
+    case ZCL_IPV4ADR_ATTRIBUTE_TYPE:
+    case ZCL_IPV6ADR_ATTRIBUTE_TYPE:
+    case ZCL_IPV6PRE_ATTRIBUTE_TYPE:
+    case ZCL_HWADR_ATTRIBUTE_TYPE:
         return ESP_MATTER_VAL_TYPE_OCTET_STRING;
         break;
 
@@ -1070,34 +1075,75 @@ static esp_matter_val_type_t get_val_type_from_attribute_type(int attribute_type
         break;
 
     case ZCL_INT8U_ATTRIBUTE_TYPE:
+    case ZCL_ACTION_ID_ATTRIBUTE_TYPE:
+    case ZCL_TAG_ATTRIBUTE_TYPE:
+    case ZCL_NAMESPACE_ATTRIBUTE_TYPE:
+    case ZCL_FABRIC_IDX_ATTRIBUTE_TYPE:
+    case ZCL_PERCENT_ATTRIBUTE_TYPE:
         return ESP_MATTER_VAL_TYPE_UINT8;
         break;
 
     case ZCL_INT16S_ATTRIBUTE_TYPE:
+    case ZCL_TEMPERATURE_ATTRIBUTE_TYPE:
         return ESP_MATTER_VAL_TYPE_INT16;
         break;
 
     case ZCL_INT16U_ATTRIBUTE_TYPE:
+    case ZCL_ENTRY_IDX_ATTRIBUTE_TYPE:
+    case ZCL_GROUP_ID_ATTRIBUTE_TYPE:
+    case ZCL_ENDPOINT_NO_ATTRIBUTE_TYPE:
+    case ZCL_VENDOR_ID_ATTRIBUTE_TYPE:
+    case ZCL_PERCENT100THS_ATTRIBUTE_TYPE:
         return ESP_MATTER_VAL_TYPE_UINT16;
         break;
 
     case ZCL_INT32S_ATTRIBUTE_TYPE:
+    case ZCL_INT24S_ATTRIBUTE_TYPE:
         return ESP_MATTER_VAL_TYPE_INT32;
         break;
 
     case ZCL_INT32U_ATTRIBUTE_TYPE:
+    case ZCL_TRANS_ID_ATTRIBUTE_TYPE:
+    case ZCL_CLUSTER_ID_ATTRIBUTE_TYPE:
+    case ZCL_ATTRIB_ID_ATTRIBUTE_TYPE:
+    case ZCL_FIELD_ID_ATTRIBUTE_TYPE:
+    case ZCL_EVENT_ID_ATTRIBUTE_TYPE:
+    case ZCL_COMMAND_ID_ATTRIBUTE_TYPE:
+    case ZCL_EPOCH_S_ATTRIBUTE_TYPE:
+    case ZCL_ELAPSED_S_ATTRIBUTE_TYPE:
+    case ZCL_DATA_VER_ATTRIBUTE_TYPE:
+    case ZCL_DEVTYPE_ID_ATTRIBUTE_TYPE:
+    case ZCL_INT24U_ATTRIBUTE_TYPE:
         return ESP_MATTER_VAL_TYPE_UINT32;
         break;
 
     case ZCL_INT64S_ATTRIBUTE_TYPE:
+    case ZCL_ENERGY_MWH_ATTRIBUTE_TYPE:
+    case ZCL_AMPERAGE_MA_ATTRIBUTE_TYPE:
+    case ZCL_POWER_MW_ATTRIBUTE_TYPE:
+    case ZCL_INT56S_ATTRIBUTE_TYPE:
+    case ZCL_INT48S_ATTRIBUTE_TYPE:
+    case ZCL_INT40S_ATTRIBUTE_TYPE:
         return ESP_MATTER_VAL_TYPE_INT64;
         break;
 
     case ZCL_INT64U_ATTRIBUTE_TYPE:
+    case ZCL_FABRIC_ID_ATTRIBUTE_TYPE:
+    case ZCL_NODE_ID_ATTRIBUTE_TYPE:
+    case ZCL_POSIX_MS_ATTRIBUTE_TYPE:
+    case ZCL_EPOCH_US_ATTRIBUTE_TYPE:
+    case ZCL_SYSTIME_US_ATTRIBUTE_TYPE:
+    case ZCL_SYSTIME_MS_ATTRIBUTE_TYPE:
+    case ZCL_EVENT_NO_ATTRIBUTE_TYPE:
+    case ZCL_INT56U_ATTRIBUTE_TYPE:
+    case ZCL_INT48U_ATTRIBUTE_TYPE:
+    case ZCL_INT40U_ATTRIBUTE_TYPE:
         return ESP_MATTER_VAL_TYPE_UINT64;
         break;
 
     case ZCL_ENUM8_ATTRIBUTE_TYPE:
+    case ZCL_STATUS_ATTRIBUTE_TYPE:
+    case ZCL_PRIORITY_ATTRIBUTE_TYPE:
         return ESP_MATTER_VAL_TYPE_ENUM8;
         break;
 
@@ -1632,7 +1678,12 @@ esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         break;
     }
 
-    case ZCL_OCTET_STRING_ATTRIBUTE_TYPE: {
+    case ZCL_OCTET_STRING_ATTRIBUTE_TYPE:
+    case ZCL_IPADR_ATTRIBUTE_TYPE:
+    case ZCL_IPV4ADR_ATTRIBUTE_TYPE:
+    case ZCL_IPV6ADR_ATTRIBUTE_TYPE:
+    case ZCL_IPV6PRE_ATTRIBUTE_TYPE:
+    case ZCL_HWADR_ATTRIBUTE_TYPE: {
         *val = esp_matter_octet_str(NULL, 0);
         int data_size_len = val->val.a.t - val->val.a.s;
         int data_count = 0;
@@ -1667,6 +1718,10 @@ esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttributeTyp
     }
 
     case ZCL_INT8U_ATTRIBUTE_TYPE:
+    case ZCL_ACTION_ID_ATTRIBUTE_TYPE:
+    case ZCL_TAG_ATTRIBUTE_TYPE:
+    case ZCL_NAMESPACE_ATTRIBUTE_TYPE:
+    case ZCL_FABRIC_IDX_ATTRIBUTE_TYPE:
     case ZCL_PERCENT_ATTRIBUTE_TYPE: {
         using Traits = chip::app::NumericAttributeTraits<uint8_t>;
         Traits::StorageType attribute_value;
@@ -1683,7 +1738,8 @@ esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         break;
     }
 
-    case ZCL_INT16S_ATTRIBUTE_TYPE: {
+    case ZCL_INT16S_ATTRIBUTE_TYPE:
+    case ZCL_TEMPERATURE_ATTRIBUTE_TYPE: {
         using Traits = chip::app::NumericAttributeTraits<int16_t>;
         Traits::StorageType attribute_value;
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
@@ -1700,6 +1756,10 @@ esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttributeTyp
     }
 
     case ZCL_INT16U_ATTRIBUTE_TYPE:
+    case ZCL_ENTRY_IDX_ATTRIBUTE_TYPE:
+    case ZCL_GROUP_ID_ATTRIBUTE_TYPE:
+    case ZCL_ENDPOINT_NO_ATTRIBUTE_TYPE:
+    case ZCL_VENDOR_ID_ATTRIBUTE_TYPE:
     case ZCL_PERCENT100THS_ATTRIBUTE_TYPE: {
         using Traits = chip::app::NumericAttributeTraits<uint16_t>;
         Traits::StorageType attribute_value;
@@ -1716,7 +1776,8 @@ esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         break;
     }
 
-    case ZCL_INT32S_ATTRIBUTE_TYPE: {
+    case ZCL_INT32S_ATTRIBUTE_TYPE:
+    case ZCL_INT24S_ATTRIBUTE_TYPE: {
         using Traits = chip::app::NumericAttributeTraits<int32_t>;
         Traits::StorageType attribute_value;
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
@@ -1732,7 +1793,18 @@ esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         break;
     }
 
-    case ZCL_INT32U_ATTRIBUTE_TYPE: {
+    case ZCL_INT32U_ATTRIBUTE_TYPE:
+    case ZCL_TRANS_ID_ATTRIBUTE_TYPE:
+    case ZCL_CLUSTER_ID_ATTRIBUTE_TYPE:
+    case ZCL_ATTRIB_ID_ATTRIBUTE_TYPE:
+    case ZCL_FIELD_ID_ATTRIBUTE_TYPE:
+    case ZCL_EVENT_ID_ATTRIBUTE_TYPE:
+    case ZCL_COMMAND_ID_ATTRIBUTE_TYPE:
+    case ZCL_EPOCH_S_ATTRIBUTE_TYPE:
+    case ZCL_ELAPSED_S_ATTRIBUTE_TYPE:
+    case ZCL_DATA_VER_ATTRIBUTE_TYPE:
+    case ZCL_DEVTYPE_ID_ATTRIBUTE_TYPE:
+    case ZCL_INT24U_ATTRIBUTE_TYPE: {
         using Traits = chip::app::NumericAttributeTraits<uint32_t>;
         Traits::StorageType attribute_value;
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
@@ -1748,7 +1820,13 @@ esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         break;
     }
 
-    case ZCL_INT64S_ATTRIBUTE_TYPE: {
+    case ZCL_INT64S_ATTRIBUTE_TYPE:
+    case ZCL_ENERGY_MWH_ATTRIBUTE_TYPE:
+    case ZCL_AMPERAGE_MA_ATTRIBUTE_TYPE:
+    case ZCL_POWER_MW_ATTRIBUTE_TYPE:
+    case ZCL_INT56S_ATTRIBUTE_TYPE:
+    case ZCL_INT48S_ATTRIBUTE_TYPE:
+    case ZCL_INT40S_ATTRIBUTE_TYPE: {
         using Traits = chip::app::NumericAttributeTraits<int64_t>;
         Traits::StorageType attribute_value;
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
@@ -1764,7 +1842,17 @@ esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         break;
     }
 
-    case ZCL_INT64U_ATTRIBUTE_TYPE: {
+    case ZCL_INT64U_ATTRIBUTE_TYPE:
+    case ZCL_FABRIC_ID_ATTRIBUTE_TYPE:
+    case ZCL_NODE_ID_ATTRIBUTE_TYPE:
+    case ZCL_POSIX_MS_ATTRIBUTE_TYPE:
+    case ZCL_EPOCH_US_ATTRIBUTE_TYPE:
+    case ZCL_SYSTIME_US_ATTRIBUTE_TYPE:
+    case ZCL_SYSTIME_MS_ATTRIBUTE_TYPE:
+    case ZCL_EVENT_NO_ATTRIBUTE_TYPE:
+    case ZCL_INT56U_ATTRIBUTE_TYPE:
+    case ZCL_INT48U_ATTRIBUTE_TYPE:
+    case ZCL_INT40U_ATTRIBUTE_TYPE: {
         using Traits = chip::app::NumericAttributeTraits<uint64_t>;
         Traits::StorageType attribute_value;
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
@@ -1780,7 +1868,9 @@ esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         break;
     }
 
-    case ZCL_ENUM8_ATTRIBUTE_TYPE: {
+    case ZCL_ENUM8_ATTRIBUTE_TYPE:
+    case ZCL_STATUS_ATTRIBUTE_TYPE:
+    case ZCL_PRIORITY_ATTRIBUTE_TYPE: {
         using Traits = chip::app::NumericAttributeTraits<uint8_t>;
         Traits::StorageType attribute_value;
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
@@ -1840,6 +1930,22 @@ esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             }
         } else {
             *val = esp_matter_bitmap16(attribute_value);
+        }
+        break;
+    }
+
+    case ZCL_BITMAP32_ATTRIBUTE_TYPE: {
+        using Traits = chip::app::NumericAttributeTraits<uint32_t>;
+        Traits::StorageType attribute_value;
+        memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
+        if (attribute_metadata->IsNullable()) {
+            if (Traits::IsNullValue(attribute_value)) {
+                *val = esp_matter_nullable_bitmap32(nullable<uint32_t>());
+            } else {
+                *val = esp_matter_nullable_bitmap32(attribute_value);
+            }
+        } else {
+            *val = esp_matter_bitmap32(attribute_value);
         }
         break;
     }
