@@ -262,6 +262,12 @@ Choose IDF target.
 
       idf.py set-target esp32c6
 
+.. only:: esp32p4
+
+   ::
+
+      idf.py set-target esp32p4
+
 -  If IDF target has not been set explicitly, then ``esp32`` is
    considered as default.
 -  The default device for ``esp32``/``esp32c3`` is
@@ -277,6 +283,20 @@ Choose IDF target.
       etc. are selected based on the device selected.
    -  The configuration of the peripheral components can be found in
       ``$ESP_MATTER_DEVICE_PATH/esp_matter_device.cmake``.
+
+.. only:: esp32p4
+
+    - Setup the slave device for ESP32-P4
+
+        It is possible to use Wi-Fi and BLE connection on ESP32-P4 that does not support native Wi-Fi and BLE peripherals, which requires another ESP target with native Wi-Fi support physically connected to the ESP32-P4.
+        This uses `esp_hosted <https://components.espressif.com/components/espressif/esp_hosted>`__ component, please refer to its documentation for more details.
+        We recommend to use `ESP32-P4 Function_EV_Board <https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/index.html>`__ to build the examples for ESP32-P4. It is composed of an ESP32-P4 and an ESP32-C6.
+        After setting IDF target, the ``esp_hosted`` will be downloaded at managed_components directory, build and flash the slave device for ESP32-C6. Note that you need the `ESP-Prog Board <https://docs.espressif.com/projects/esp-iot-solution/en/latest/hw-reference/ESP-Prog_guide.html>`__ to flash the slave firmware to ESP32-C6.
+
+        ::
+
+            idf.py -C managed_components/espressif__esp_hosted/slave/ -B build_slave set-target esp32c6
+            idf.py -C managed_components/espressif__esp_hosted/slave/ -B build_slave build flash monitor
 
 .. only:: esp32c6
 
@@ -335,7 +355,7 @@ Use ``chip-tool`` in interactive mode to commission the device:
    chip-tool interactive start
 
 
-.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6
+.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6 or esp32p4
 
    ::
 
@@ -362,7 +382,7 @@ Above method commissions the device using setup passcode and discriminator. Devi
 
 To Commission the device using manual pairing code 34970112332
 
-.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6
+.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6 or esp32p4
 
     ::
 
@@ -389,7 +409,7 @@ Above default manual pairing code contains following values:
 
 To commission the device using QR code MT:Y.K9042C00KA0648G00
 
-.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6
+.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6 or esp32p4
 
     ::
 
