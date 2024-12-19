@@ -33,6 +33,8 @@
         .radio_mode = ZB_RADIO_MODE_UART_RCP,              \
         .radio_uart_config = {                             \
             .port = 1,                                     \
+            .rx_pin = CONFIG_PIN_TO_RCP_TX,                \
+            .tx_pin = CONFIG_PIN_TO_RCP_RX,                \
             .uart_config =                                 \
                 {                                          \
                     .baud_rate = 460800,                   \
@@ -43,8 +45,6 @@
                     .rx_flow_ctrl_thresh = 0,              \
                     .source_clk = UART_SCLK_APB,           \
                 },                                         \
-            .rx_pin = CONFIG_PIN_TO_RCP_TX,                \
-            .tx_pin = CONFIG_PIN_TO_RCP_RX,                \
         },                                                 \
     }
 
