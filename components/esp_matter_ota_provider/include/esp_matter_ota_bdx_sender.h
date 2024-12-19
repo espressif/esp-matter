@@ -69,7 +69,7 @@ private:
 
     char mOtaImageUrl[OTA_URL_MAX_LEN];
     uint64_t mOtaImageSize;
-    esp_http_client_handle_t mHttpDownloader;
+    esp_http_client_handle_t mHttpDownloader = nullptr;
 };
 
 } // namespace ota_provider

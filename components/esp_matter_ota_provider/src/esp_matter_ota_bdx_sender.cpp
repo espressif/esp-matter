@@ -125,6 +125,9 @@ void OtaBdxSender::HandleTransferSessionOutput(TransferSession::OutputEvent &eve
             .crt_bundle_attach = esp_crt_bundle_attach,
             .keep_alive_enable = true,
         };
+        if (mHttpDownloader) {
+            http_downloader_abort(mHttpDownloader);
+        }
         if (http_downloader_start(&config, &mHttpDownloader) != ESP_OK) {
             mTransfer.AbortTransfer(StatusCode::kUnknown);
         }
@@ -140,7 +143,8 @@ void OtaBdxSender::HandleTransferSessionOutput(TransferSession::OutputEvent &eve
             return;
         }
         // Read http response
-        int bytes_read = http_downloader_read(mHttpDownloader, reinterpret_cast<char *>(blockBuf->Start()), bytesToRead);
+        int bytes_read =
+            http_downloader_read(mHttpDownloader, reinterpret_cast<char *>(blockBuf->Start()), bytesToRead);
         if (bytes_read < 0) {
             ESP_LOGE(TAG, "http_downloader_read failed");
             mTransfer.AbortTransfer(StatusCode::kUnknown);
@@ -169,25 +173,22 @@ void OtaBdxSender::HandleTransferSessionOutput(TransferSession::OutputEvent &eve
     case TransferSession::OutputEventType::kAckReceived:
         break;
     case TransferSession::OutputEventType::kAckEOFReceived: {
-        ESP_LOGD(TAG, "Transfer completed, got AckEOF");
+        ESP_LOGI(TAG, "Transfer completed, got AckEOF");
         Reset();
         break;
     }
     case TransferSession::OutputEventType::kStatusReceived: {
         ESP_LOGE(TAG, "Got StatusReport %x", static_cast<uint16_t>(event.statusData.statusCode));
-        http_downloader_abort(mHttpDownloader);
         Reset();
         break;
     }
     case TransferSession::OutputEventType::kInternalError: {
         ESP_LOGE(TAG, "InternalError");
-        http_downloader_abort(mHttpDownloader);
         Reset();
         break;
     }
     case TransferSession::OutputEventType::kTransferTimeout: {
         ESP_LOGE(TAG, "TransferTimeout");
-        http_downloader_abort(mHttpDownloader);
         Reset();
         break;
     }
@@ -213,6 +214,10 @@ void OtaBdxSender::Reset()
     mInitialized = false;
     mNumBytesSent = 0;
     mOtaImageSize = 0;
+    if (mHttpDownloader) {
+        // Release current http client
+        http_downloader_abort(mHttpDownloader);
+    }
     mHttpDownloader = nullptr;
     memset(mOtaImageUrl, 0, sizeof(mOtaImageUrl));
 }
