@@ -1503,7 +1503,7 @@ esp_err_t add(cluster_t *cluster);
 
 } /* momentary_switch */
 
-// MomentarySwitchRelease feature is dependent on MomentarySwitch feature, in order to add
+// MomentarySwitchRelease feature has dependency on MomentarySwitch and !ActionSwitch features, in order to add
 // MomentarySwitchRelease feature one must add MomentarySwitch feature first.
 
 namespace momentary_switch_release {
@@ -1513,8 +1513,8 @@ esp_err_t add(cluster_t *cluster);
 
 } /* momentary_switch_release */
 
-// MomentarySwitchRelease feature is dependent on MomentarySwitch and MomentarySwitchRelease feature, in order to add
-// MomentarySwitchRelease feature one must add MomentarySwitch and MomentarySwitchRelease feature first.
+// MomentarySwitchLongPress feature has dependency on MomentarySwitch and (MomentarySwitchRelease or ActionSwitch) features, in order to add
+// MomentarySwitchLongPress feature one must add MomentarySwitch and (MomentarySwitchRelease or ActionSwitch) features first.
 
 namespace momentary_switch_long_press {
 
@@ -1523,8 +1523,8 @@ esp_err_t add(cluster_t *cluster);
 
 } /* momentary_switch_long_press */
 
-// MomentarySwitchRelease feature is dependent on MomentarySwitch and MomentarySwitchRelease feature, in order to add
-// MomentarySwitchRelease feature one must add MomentarySwitch and MomentarySwitchRelease feature first.
+// MomentarySwitchMultiPress feature has dependency on ActionSwitch or (MomentarySwitch and MomentarySwitchRelease) features, in order to add
+// MomentarySwitchMultiPress feature one must add ActionSwitch or (MomentarySwitch and MomentarySwitchRelease) features first.
 
 namespace momentary_switch_multi_press {
 
@@ -1537,6 +1537,9 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* momentary_switch_multi_press */
+
+// ActionSwitch feature has dependency on MomentarySwitch feature, in order to add
+// ActionSwitch feature one must add MomentarySwitch feature first.
 
 namespace action_switch {
 

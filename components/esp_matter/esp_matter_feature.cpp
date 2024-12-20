@@ -2802,7 +2802,6 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    VerifyOrReturnError((get_feature_map_value(cluster) & feature::momentary_switch::get_id()) == feature::momentary_switch::get_id(), ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch release is not supported because momentary is absent"));
     uint32_t as_feature_map = feature::action_switch::get_id();
     uint32_t ms_feature_map = feature::momentary_switch::get_id();
     uint32_t feature_map = get_feature_map_value(cluster);
@@ -2824,8 +2823,6 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    uint32_t momentary_and_momentart_switch_release_feature_map = feature::momentary_switch::get_id() | feature::momentary_switch_release::get_id();
-    VerifyOrReturnError((get_feature_map_value(cluster) & momentary_and_momentart_switch_release_feature_map) == momentary_and_momentart_switch_release_feature_map, ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch long press is not supported because momentary switch and/or momentary switch release is absent"));
     uint32_t msr_feature_map = feature::momentary_switch_release::get_id();
     uint32_t as_feature_map = feature::action_switch::get_id();
     uint32_t ms_feature_map = feature::momentary_switch::get_id();
@@ -2850,10 +2847,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
-    uint32_t momentary_and_momentart_switch_release_feature_map = feature::momentary_switch::get_id() | feature::momentary_switch_release::get_id();
-    VerifyOrReturnError((get_feature_map_value(cluster) & momentary_and_momentart_switch_release_feature_map) == momentary_and_momentart_switch_release_feature_map, ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch multi press is not supported because momentary switch and/or momentary switch releaseis absent"));
     uint32_t as_feature_map = feature::action_switch::get_id();
-    VerifyOrReturnError((get_feature_map_value(cluster) & as_feature_map) != as_feature_map, ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch multi press is not supported because action switch is absent"));
     uint32_t ms_feature_map = feature::momentary_switch::get_id();
     uint32_t msr_feature_map = feature::momentary_switch_release::get_id();
     uint32_t ms_and_msr = ms_feature_map | msr_feature_map;
