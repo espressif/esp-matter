@@ -24,6 +24,9 @@
 #if CONFIG_DYNAMIC_PASSCODE_COMMISSIONABLE_DATA_PROVIDER
 #include <custom_provider/dynamic_commissionable_data_provider.h>
 #endif
+#if CONFIG_ENABLE_SNTP_TIME_SYNC
+#include <app/clusters/time-synchronization-server/DefaultTimeSyncDelegate.h>
+#endif
 
 static const char *TAG = "app_main";
 uint16_t switch_endpoint_id = 0;
@@ -109,6 +112,19 @@ extern "C" void app_main()
     node::config_t node_config;
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
     ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
+#ifdef CONFIG_ENABLE_SNTP_TIME_SYNC
+    endpoint_t *root_node_ep = endpoint::get_first(node);
+    ABORT_APP_ON_FAILURE(root_node_ep != nullptr, ESP_LOGE(TAG, "Failed to find root node endpoint"));
+
+    cluster::time_synchronization::config_t time_sync_cfg;
+    static chip::app::Clusters::TimeSynchronization::DefaultTimeSyncDelegate time_sync_delegate;
+    time_sync_cfg.delegate = &time_sync_delegate;
+    cluster_t *time_sync_cluster = cluster::time_synchronization::create(root_node_ep, &time_sync_cfg, CLUSTER_FLAG_SERVER);
+    ABORT_APP_ON_FAILURE(time_sync_cluster != nullptr, ESP_LOGE(TAG, "Failed to create time_sync_cluster"));
+
+    cluster::time_synchronization::feature::time_zone::config_t tz_cfg;
+    cluster::time_synchronization::feature::time_zone::add(time_sync_cluster, &tz_cfg);
+#endif
 
     on_off_switch::config_t switch_config;
     endpoint_t *endpoint = on_off_switch::create(node, &switch_config, ENDPOINT_FLAG_NONE, switch_handle);

@@ -4947,5 +4947,123 @@ esp_err_t add(cluster_t *cluster)
 
 } /* feature */
 } /* pump_configuration_and_control */
+
+namespace time_synchronization {
+namespace feature {
+
+namespace time_zone {
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(TimeSynchronization::Feature::kTimeZone);
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster || !config) {
+        ESP_LOGE(TAG, "Cluster or config cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    // Attributes managed internally
+    attribute::create_time_zone(cluster, nullptr, 0, 0);
+    attribute::create_dst_offset(cluster, nullptr, 0, 0);
+    attribute::create_local_time(cluster, nullable<uint64_t>());
+    attribute::create_time_zone_list_max_size(cluster, 0);
+    attribute::create_dst_offset_list_max_size(cluster, 0);
+
+    // Attributes not managed internally
+    attribute::create_time_zone_database(cluster, config->time_zone_database);
+
+    // Commands
+    command::create_set_time_zone(cluster);
+    command::create_set_dst_offset(cluster);
+    command::create_set_time_zone_response(cluster);
+
+    // Events
+    event::create_dst_table_empty(cluster);
+    event::create_dst_status(cluster);
+    event::create_time_zone_status(cluster);
+
+    return ESP_OK;
+}
+} /* time_zone */
+
+namespace ntp_client {
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(TimeSynchronization::Feature::kNTPClient);
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster || !config) {
+        ESP_LOGE(TAG, "Cluster or config cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    // Attributes managed internally
+    attribute::create_default_ntp(cluster, nullptr, 0);
+
+    // Attributes not managed internally
+    attribute::create_supports_dns_resolve(cluster, config->supports_dns_resolve);
+
+    // Commands
+    command::create_set_default_ntp(cluster);
+
+    return ESP_OK;
+}
+} /* ntp_client */
+
+namespace ntp_server {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(TimeSynchronization::Feature::kNTPServer);
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster || !config) {
+        ESP_LOGE(TAG, "Cluster or config cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    // Attributes not managed internally
+    attribute::create_ntp_server_available(cluster, config->ntp_server_available);
+
+    return ESP_OK;
+}
+} /* ntp_server */
+
+namespace time_sync_client {
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(TimeSynchronization::Feature::kTimeSyncClient);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    // Attributes managed internally
+    attribute::create_trusted_time_source(cluster, nullptr, 0, 0);
+
+    // Commands
+    command::create_set_trusted_time_source(cluster);
+
+    return ESP_OK;
+}
+} /* time_sync_client */
+
+} /* feature */
+} /* time_synchronization */
+
 } /* cluster */
 } /* esp_matter */

@@ -5028,5 +5028,94 @@ attribute_t *create_location_directory(cluster_t *cluster, uint8_t *value, uint1
 } /* attribute */
 } /* ecosystem_information */
 
+namespace time_synchronization {
+namespace attribute {
+attribute_t *create_utc_time(cluster_t *cluster, nullable<uint64_t> value)
+{
+    return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::UTCTime::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
+                                         esp_matter_nullable_uint64(value));
+}
+
+attribute_t *create_granularity(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::Granularity::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
+}
+
+attribute_t *create_time_source(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::TimeSource::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_trusted_time_source(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::TrustedTimeSource::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_array(value, length, count));
+}
+
+attribute_t *create_default_ntp(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::DefaultNTP::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_char_str(value, length));
+}
+
+attribute_t *create_time_zone(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::TimeZone::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_array(value, length, count));
+}
+
+attribute_t *create_dst_offset(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::DSTOffset::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_array(value, length, count));
+}
+
+attribute_t *create_local_time(cluster_t *cluster, nullable<uint64_t> value)
+{
+    return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::LocalTime::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_nullable_uint64(value));
+}
+
+attribute_t *create_time_zone_database(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::TimeZoneDatabase::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_ntp_server_available(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::NTPServerAvailable::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+}
+
+attribute_t *create_time_zone_list_max_size(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::TimeZoneListMaxSize::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+}
+
+attribute_t *create_dst_offset_list_max_size(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::DSTOffsetListMaxSize::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+}
+
+attribute_t *create_supports_dns_resolve(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::SupportsDNSResolve::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+}
+
+} /* attribute */
+} /* time_synchronization */
+
 } /* cluster */
 } /* esp_matter */
