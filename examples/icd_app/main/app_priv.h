@@ -11,6 +11,10 @@
 #include <esp_err.h>
 #include <esp_matter.h>
 
+typedef void *app_driver_handle_t;
+
+app_driver_handle_t app_driver_button_init();
+
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include "esp_openthread_types.h"
 #endif
