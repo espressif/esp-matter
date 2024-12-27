@@ -1,5 +1,16 @@
 # Changelog for esp_matter component registry
 
+## [1.3.1](https://components.espressif.com/components/espressif/esp_matter/versions/1.3.1)
+
+#### Features
+
+- Work with IDF component management (version >= 2.0) without hash problem
+- External platform path setting: support both absolute path or relative path to top-level CMakeLists
+- More default compile options for the source files
+- Could enable CONFIG_CHIP_OTA_IMAGE_BUILD to generate ota.bin file with IDF component management (version >= 2.0)
+- esp-matter commit: 5a9bc09a640d5cfd4c6b137f7e3b13ce5fa9cca4
+- connectedhomeip commit: 735b69f73e386cb675242371afd0b237a8a78982
+
 ## [1.3.0](https://components.espressif.com/components/espressif/esp_matter/versions/1.3.0)
 
 #### Features
