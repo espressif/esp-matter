@@ -1,0 +1,19 @@
+menu "Example Configuration"
+    config ENABLE_USER_ACTIVE_MODE_TRIGGER_BUTTON
+        bool "Enable User Active Mode Trigger Button"
+        default y
+        help
+            Enable a button to trigger user active mode, after click this button, the device will keep staying
+            active for ActiveModeDuration.
+
+    config USER_ACTIVE_MODE_TRIGGER_BUTTON_PIN
+        int "User Active Mode Trigger Button Pin"
+        range 9 14 if IDF_TARGET_ESP32H2
+        range 0 7 if IDF_TARGET_ESP32C6
+        default 9 if IDF_TARGET_ESP32H2
+        default 7 if IDF_TARGET_ESP32C6
+        help
+            GPIO number of the active mode trigger button. Note that the boot button of ESP32-C6 DevKits is
+            GPIO9 which cannot be used to wake up the chip.
+
+endmenu
