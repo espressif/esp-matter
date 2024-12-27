@@ -1543,8 +1543,151 @@ The controller example offers two options for the Attestation Trust Storage whic
 
   Read the PAA root certificates from the spiffs partition. The PAA der files should be placed in ``paa_cert`` directory so that they can be flashed into the spiffs partition of the controller.
 
+2.11 Custom Cluster
+-------------------
+
+Matter enables users to implement custom clusters for unique features. This section introduces how to add a custom cluster.
+
+2.11.1 Cluster XML Template
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Before adding a custom cluster, you should design the attributes, commands, and events it will include, and create the cluster XML template file based on your design.
+
+Example:
+
+::
+
+    <?xml version="1.0"?>
+    <configurator>
+      <domain name="CHIP"/>
+      <cluster>
+        <domain>General</domain>
+        <name>Sample ESP</name>
+        <!-- The MSB 16 bits of <code> are the VendorID. Replace this with your
+             VendorID. 0x131B is the VendorId of Espressif.
+             The LSB 16 bits of <code> are a self-assigned ClusterID -->
+        <code>0x131BFC20</code>
+        <define>SAMPLE_ESP_CLUSTER</define>
+        <description>The Sample ESP cluster showcases a manufacturer custom cluster</description>
+
+        <!-- Attributes -->
+        <!-- A simple test boolean attribute -->
+        <attribute side="server" code="0x0000" define="SAMPLE_BOOLEAN" type="boolean" writable="true" default="false" optional="false">SampleBoolean</attribute>
+        <attribute side="server" code="0x0001" define="SAMPLE_CHAR_STR" type="char_string" writable="false" optional="false">SampleCharStr</attribute>
+
+        <!-- Commands -->
+        <command source="client" code="0x00" name="CommandwithoutArgs" optional="false">
+          <description>
+            Simple command without any parameters and without a response.
+          </description>
+        </command>
+
+        <command source="client" code="0x01" name="CommandWithArgs" response="CommandWithArgsResponse" optional="false">
+          <description>
+            Command that takes two uint8 arguments.
+          </description>
+          <arg name="Arg1" type="int8u"/>
+          <arg name="Arg2" type="int8u"/>
+        </command>
+
+        <!-- Command Responses -->
+        <command source="server" code="0x02" name="CommandWithArgsResponse" optional="false" disableDefaultResponse="true">
+          <description>
+            Response for CommandwithArgs.
+          </description>
+          <arg name="ResponseArg" type="int8u"/>
+        </command>
+
+        <!-- Events -->
+        <event side="server" code="0x0000" name="TestEvent" priority="info" isFabricSensitive="true" optional="false">
+          <description>
+            Example event with a event data
+          </description>
+          <field id="1" name="EventData" type="int32u"/>
+        </event>
+      </cluster>
+    </configurator>
+
+The example XML file above illustrates a cluster with two attributes, two accepted commands, one generated command(command response), and one event.
+
+After creating the custom cluster XML template file, add the root directory of your template file to the ``xmlRoot`` array and the template file name to the ``xmlFile`` array in both the `zcl configuration file`_ and the `zcl test configuration file`_.
+
+Run ``zap_regen_all.py`` in Matter virtual environment to generate common code and client code for the custom cluster.
+
+  ::
+
+    cd esp_matter/connectedhomeip/connectedhomeip
+    source ./scripts/active.sh
+    ./scripts/tools/zap_regen_all.py
+
+The code generation script will create client code for the custom cluster, supporting Android, Darwin, and Python controllers, as well as the chip-tool. It will also generate app-common code for the new custom cluster.
+The chip-tool can be used to test the custom cluster after recompiling.
+
+2.11.2 Cluster Implementation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The custom cluster should be implemented after the app-common code has been generated.
+
+2.11.2.1 Custom Cluster Attributes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The attributes in a cluster can be managed with the two following methods. A cluster can utilize both the methods to manage its attributes.
+
+- Attribute Accessors
+
+  By default, all the attributes are stored in the ZCL data model and can be managed with the Attribute Accessors generated in the app-common code. You can set/get the attribute values with the Accessors APIs.
+
+- Attribute Access Interface (AAI)
+
+  Matter provides a virtual class, ``AttributeAccessInterface``, which can be inherited by the custom cluster to manage its attributes.
+  Attributes managed by AAI should be added to ``attributeAccessInterfaceAttributes`` array in both the `zcl configuration file`_ and the `zcl test configuration file`_. Then, run the ``zap_regen_all.py`` to regenerate the app-common code.
+  Once the code is regenerated, the Attribute Accessors APIs for attributes managed by AAI will be removed.
+
+  Notes that attributes of complex types(structure or array) cannot be handled by Attribute Accessors and MUST be managed using AAI.
+
+2.11.2.2 Custom Cluster Commands
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The commands in a cluster can be handled with one of the two following methods. A cluster can only choose one method to handle its commands.
+
+- Ember Command callbacks
+
+  By default, all the commands are handled using Ember command callbacks. The ``zap`` tool generates declarations for these callbacks in the app-common code. And the corresponding definitions should be implemented to use the commands within the clusters.
+
+- Command Handler Interface (CHI)
+
+  Matter also provides a virtual class, ``CommandHandlerInterface``, which can be inherited to handle commands within the cluster.
+  If the commands in a cluster are handled by CHI. The cluster should be added to the ``CommandHandlerInterfaceOnlyClusters`` array in the `zap configuration data`_ file.
+  After modifying the `zap configuration data`_, the code should be regenerated, which will remove the Ember command callback declarations.
+
+2.11.2.3 Custom Cluster Events
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+All the events are managed by the `EventLogging <https://github.com/project-chip/connectedhomeip/blob/master/src/app/EventLogging.h>`__.
+If an event is triggered, ``chip::app::LogEvent()`` can be called to record it. The event will then be reported to the subscriber that has subscribed to it.
+
+2.11.2.4 Custom Cluster Functions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A custom cluster might requires special funtions to handle initialization, attribute changes, shutdown, and pre-attribute changes.
+For instance, the AAI and CHI need to be registered so that they can be accessed by the Matter data model. Therefore, the cluster requires an initialization function to register them.
+To enable these functions, the cluster should be added to the appropriate entry in the `zap configuration data`_ file.
+
+2.11.3 Example Usage
+~~~~~~~~~~~~~~~~~~~~
+
+- Zap Example
+
+  If the example uses ``zap`` tool to generate its data model, the custom cluster should be added to the example's zap file. The ``zap`` tool will then generate the data model code, including the custom cluster, during the building process.
+
+- ESP-Matter Example
+
+  If the example uses ESP-Matter APIs to define its data model, the custom data model should be created and added to the data model using the esp-matter APIs, following the instructions in `Adding custom data model fields <./developing.html#adding-custom-data-model-fields>`__
 
 .. _`step by step installation guide`: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/linux-macos-setup.html
 .. _`Prerequisites for ESP-IDF`: https://docs.espressif.com/projects/esp-idf/en/v5.0.1/esp32/get-started/index.html#step-1-install-prerequisites
 .. _`Prerequisites for Matter`: https://github.com/espressif/connectedhomeip/blob/v1.1-branch/docs/guides/BUILDING.md#prerequisites
 .. _`esp-matter-mfg-tool`: https://github.com/espressif/esp-matter-tools/tree/main/mfg_tool
+.. _`zcl configuration file`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/zap-templates/zcl/zcl.json
+.. _`zcl test configuration file`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/zap-templates/zcl/zcl-with-test-extensions.json
+.. _`zap configuration data`: <https://github.com/project-chip/connectedhomeip/blob/master/src/app/common/templates/config-data.yaml>
