@@ -1245,5 +1245,23 @@ attribute_t *create_location_directory(cluster_t *cluster, uint8_t *value, uint1
 } /* attribute */
 } /* ecosystem_information */
 
+namespace time_synchronization {
+namespace attribute {
+attribute_t *create_utc_time(cluster_t *cluster, nullable<uint64_t> value);
+attribute_t *create_granularity(cluster_t *cluster, uint8_t value);
+attribute_t *create_time_source(cluster_t *cluster, uint8_t value);
+attribute_t *create_trusted_time_source(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_default_ntp(cluster_t *cluster, char *value, uint16_t length);
+attribute_t *create_time_zone(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_dst_offset(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_local_time(cluster_t *cluster, nullable<uint64_t> value);
+attribute_t *create_time_zone_database(cluster_t *cluster, uint8_t value);
+attribute_t *create_ntp_server_available(cluster_t *cluster, bool value);
+attribute_t *create_time_zone_list_max_size(cluster_t *cluster, uint8_t value);
+attribute_t *create_dst_offset_list_max_size(cluster_t *cluster, uint8_t value);
+attribute_t *create_supports_dns_resolve(cluster_t *cluster, bool value);
+} /* attribute */
+} /* time_synchronization */
+
 } /* cluster */
 } /* esp_matter */

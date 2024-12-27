@@ -2395,5 +2395,46 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* pump_configuration_and_control */
 
+namespace time_synchronization {
+namespace feature {
+
+namespace time_zone {
+typedef struct config {
+    uint8_t time_zone_database;
+    config() : time_zone_database(2/* None */) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* time_zone */
+
+namespace ntp_client {
+typedef struct config {
+    bool supports_dns_resolve;
+    config() : supports_dns_resolve(false) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* ntp_client */
+
+namespace ntp_server {
+typedef struct config {
+    bool ntp_server_available;
+    config() : ntp_server_available(false) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* ntp_server */
+
+namespace time_sync_client {
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* time_sync_client */
+
+} /* feature */
+} /* time_synchronization */
+
 } /* cluster */
 } /* esp_matter */

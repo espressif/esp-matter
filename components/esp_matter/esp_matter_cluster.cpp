@@ -679,9 +679,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
+        attribute::create_utc_time(cluster, nullable<uint64_t>());
+        attribute::create_granularity(cluster, 0);
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        /* Commands */
+        command::create_set_utc_time(cluster);
     }
 
     event::create_time_failure(cluster);

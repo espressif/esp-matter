@@ -503,5 +503,16 @@ command_t *create_reverse_open_commissioning_window(cluster_t *cluster);
 } /* command */
 } /* commissioner_control */
 
+namespace time_synchronization {
+namespace command {
+command_t *create_set_utc_time(cluster_t *cluster);
+command_t *create_set_trusted_time_source(cluster_t *cluster);
+command_t *create_set_time_zone(cluster_t *cluster);
+command_t *create_set_time_zone_response(cluster_t *cluster);
+command_t *create_set_dst_offset(cluster_t *cluster);
+command_t *create_set_default_ntp(cluster_t *cluster);
+} /* command */
+} /* time_synchronization */
+
 } /* cluster */
 } /* esp_matter */

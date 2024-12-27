@@ -1555,6 +1555,62 @@ static esp_err_t esp_matter_command_callback_close(const ConcreteCommandPath &co
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_set_utc_time(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                          void *opaque_ptr)
+{
+    chip::app::Clusters::TimeSynchronization::Commands::SetUTCTime::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfTimeSynchronizationClusterSetUTCTimeCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_set_trusted_time_source(const ConcreteCommandPath &command_path,
+                                                                     TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::TimeSynchronization::Commands::SetTrustedTimeSource::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfTimeSynchronizationClusterSetTrustedTimeSourceCallback((CommandHandler *)opaque_ptr, command_path,
+                                                                      command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_set_time_zone(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                           void *opaque_ptr)
+{
+    chip::app::Clusters::TimeSynchronization::Commands::SetTimeZone::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfTimeSynchronizationClusterSetTimeZoneCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_set_dst_offset(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                            void *opaque_ptr)
+{
+    chip::app::Clusters::TimeSynchronization::Commands::SetDSTOffset::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfTimeSynchronizationClusterSetDSTOffsetCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_set_default_ntp(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                             void *opaque_ptr)
+{
+    chip::app::Clusters::TimeSynchronization::Commands::SetDefaultNTP::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfTimeSynchronizationClusterSetDefaultNTPCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 namespace esp_matter {
 namespace cluster {
 
@@ -3451,6 +3507,53 @@ command_t *create_reverse_open_commissioning_window(cluster_t *cluster)
 } /* command */
 } /* commissioner_control */
 
+namespace time_synchronization {
+namespace command {
+constexpr const command_entry_t accepted_command_list[] = {
+    {TimeSynchronization::Commands::SetUTCTime::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_set_utc_time},
+};
+
+constexpr const command_entry_t generated_command_list[] = {};
+
+command_t *create_set_utc_time(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TimeSynchronization::Commands::SetUTCTime::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_set_utc_time);
+}
+
+command_t *create_set_trusted_time_source(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TimeSynchronization::Commands::SetTrustedTimeSource::Id,
+                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_set_trusted_time_source);
+}
+
+command_t *create_set_time_zone(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TimeSynchronization::Commands::SetTimeZone::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_set_time_zone);
+}
+
+command_t *create_set_time_zone_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TimeSynchronization::Commands::SetTimeZoneResponse::Id,
+                                       COMMAND_FLAG_GENERATED, nullptr);
+}
+
+command_t *create_set_dst_offset(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TimeSynchronization::Commands::SetDSTOffset::Id,
+                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_set_dst_offset);
+}
+
+command_t *create_set_default_ntp(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TimeSynchronization::Commands::SetDefaultNTP::Id,
+                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_set_default_ntp);
+}
+
+} /* command */
+} /* time_synchronization */
+
 } /* cluster */
 } /* esp_matter */
 
@@ -3499,6 +3602,7 @@ constexpr const cluster_command_t cluster_command_table[] = {
     {ThreadNetworkDirectory::Id, GET_COMMAND_COUNT_LIST(cluster::thread_network_directory)},
     {WaterHeaterManagement::Id, GET_COMMAND_COUNT_LIST(cluster::water_heater_management)},
     {CommissionerControl::Id, GET_COMMAND_COUNT_LIST(cluster::commissioner_control)},
+    {TimeSynchronization::Id, GET_COMMAND_COUNT_LIST(cluster::time_synchronization)},
 };
 
 #if defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
