@@ -1,13 +1,9 @@
 CONFIG_IDF_TARGET="esp32h2"
 
+# Enable DS Peripheral
+CONFIG_ESP_SECURE_CERT_DS_PERIPHERAL=y
+
 # These are required in order to build otherwise, build fails for esp_coex component
 CONFIG_BT_ENABLED=y
 CONFIG_OPENTHREAD_ENABLED=y
 CONFIG_BT_NIMBLE_ENABLED=y
-
-# Enable DS Peripheral
-CONFIG_ESP_SECURE_CERT_DS_PERIPHERAL=y
-
-# Disable STA and AP for ESP32H2
-CONFIG_ENABLE_WIFI_STATION=n
-CONFIG_ENABLE_WIFI_AP=n

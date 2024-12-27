@@ -1,9 +1,3 @@
-# Default to 921600 baud when flashing and monitoring device
-CONFIG_ESPTOOLPY_BAUD_921600B=y
-CONFIG_ESPTOOLPY_BAUD=921600
-CONFIG_ESPTOOLPY_COMPRESSED=y
-CONFIG_ESPTOOLPY_MONITOR_BAUD_115200B=y
-CONFIG_ESPTOOLPY_MONITOR_BAUD=115200
 CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
 
 #enable BT
@@ -35,14 +29,16 @@ CONFIG_BUTTON_LONG_PRESS_TIME_MS=5000
 # disable softap by default
 CONFIG_ESP_WIFI_SOFTAP_SUPPORT=n
 
-# Disable DS Peripheral
-CONFIG_ESP_SECURE_CERT_DS_PERIPHERAL=n
+# Enable OTA Requestor
+CONFIG_ENABLE_OTA_REQUESTOR=y
 
 # Use compact attribute storage mode
 CONFIG_ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE=y
 
 # Enable HKDF in mbedtls
 CONFIG_MBEDTLS_HKDF_C=y
+
+CONFIG_ENABLE_WIFI_AP=n
 
 # Increase LwIP IPv6 address number to 6 (MAX_FABRIC + 1)
 # unique local addresses for fabrics(MAX_FABRIC), a link local address(1)
