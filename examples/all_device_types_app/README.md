@@ -24,7 +24,7 @@ On boot-up esp-idf console starts. In order to create a device user have to use 
 
 -   Use `create --device_type` to list all supported device types.
 -   Use `create --device_type=on_off_light` to create light device.
--   To delete existing device perform `matter device factoryreset`.
+-   To delete existing device perform `matter esp factoryreset`.
 -   To add new device, say fan or any other device type use `create --device_type=fan`.
 
 Setup OTBR for a device

@@ -1,3 +1,8 @@
+# 27-December-2024
+
+Added ``matter esp factoryreset`` command to factory reset a Matter device.
+This command erases the esp-matter and connectedhomeip SDK's non-volatile storage.
+
 # 15-Oct-2024
 
 API Change

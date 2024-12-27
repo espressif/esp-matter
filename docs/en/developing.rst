@@ -521,7 +521,7 @@ The console on the device can be used to run commands for testing. It is configu
 
    ::
 
-      matter device factoryreset
+      matter esp factoryreset
 
 -  On-boarding codes: Dump the on-boarding pairing code payloads:
 
