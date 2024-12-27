@@ -398,3 +398,47 @@ Please check `#1128`_ and `#1126`_ for relevant discussion on Github issue
 
 .. _`#1126`: https://github.com/espressif/esp-matter/issues/1126
 .. _`#1128`: https://github.com/espressif/esp-matter/issues/1128
+
+
+A1.16 Using BLE after Matter commissioning
+------------------------------------------
+
+Most Matter applications do not require BLE after commissioning. By default, BLE is deinitialized after commissioning
+to reclaim RAM and increase the available free heap. Refer to `A1.9 Why does free RAM increase after first commissioning`_
+for more details.
+
+However, if BLE functionality is needed even after commissioning, you can disable the ``CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING``
+option. This ensures that the memory allocated to BLE functionality is retained, allowing BLE to be used for other
+purposes post-commissioning.
+
+After commissioning is complete, Matter will stop advertising, but the application can utilize BLE for other roles or operations.
+e.g. BLE Peripheral, BLE Central, etc.
+
+To learn more, refer to the `bleprph`_ and `blecent`_ examples in ``esp-idf/examples/bluetooth/nimble``. These examples
+demonstrate BLE Peripheral and BLE Central roles. It also provides the step-by-step tutorial for building such devices.
+
+For implementation details on Peripheral and Central roles, refer to the `bleprph_advertise()`_ and `blecent_scan()`_ functions in
+the respective examples.
+
+BLE Central role is disabled by default in the esp-matter SDK's default example configurations.
+Please enable ``CONFIG_BT_NIMBLE_ROLE_CENTRAL`` option if you plan to use BLE Central role.
+
+.. note::
+
+   Above mentioned details apply specifically to the NimBLE host.
+
+
+For more advanced BLE usage, you can use the external platform feature.
+It also serves as a way to integrate custom BLE usage with Matter.
+
+Please refer to the `advance setup`_ section in the programming guide.
+This has been demonstrated in the `blemesh_bridge`_ and `light_wifi_prov`_ examples.
+
+
+.. _bleprph: https://github.com/espressif/esp-idf/tree/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/bleprph
+.. _blecent: https://github.com/espressif/esp-idf/tree/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/blecent
+.. _bleprph_advertise(): https://github.com/espressif/esp-idf/blob/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/bleprph/main/main.c#L146
+.. _blecent_scan(): https://github.com/espressif/esp-idf/blob/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/blecent/main/main.c#L435
+.. _advance setup: https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#advanced-setup
+.. _blemesh_bridge: https://github.com/espressif/esp-matter/tree/main/examples/bridge_apps/blemesh_bridge
+.. _light_wifi_prov: https://github.com/espressif/esp-matter/tree/main/examples/light_wifi_prov#4-external-platform
