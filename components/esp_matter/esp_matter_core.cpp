@@ -1720,8 +1720,6 @@ endpoint_t *resume(node_t *node, uint8_t flags, uint16_t endpoint_id, void *priv
         return NULL;
     }
 
-    ESP_LOGE(TAG, "cluster in endpoint type:%p", endpoint->endpoint_type->cluster);
-
      /* Set */
      endpoint->endpoint_id = endpoint_id;
      endpoint->device_type_count = 0;
@@ -1917,7 +1915,7 @@ esp_err_t set_parent_endpoint(endpoint_t *endpoint, endpoint_t *parent_endpoint)
 void *get_priv_data(uint16_t endpoint_id)
 {
     node_t *node = node::get();
-    /* This is not an error, since the node will not be initialized for application using the data model from zap */ 
+    /* This is not an error, since the node will not be initialized for application using the data model from zap */
     VerifyOrReturnValue(node, NULL, ESP_LOGE(TAG, "Node not found"));
     endpoint_t *endpoint = get(node, endpoint_id);
     VerifyOrReturnValue(endpoint, NULL, ESP_LOGE(TAG, "Endpoint not found"));
