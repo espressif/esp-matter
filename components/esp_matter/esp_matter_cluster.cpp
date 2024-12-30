@@ -1390,8 +1390,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, HepaFilterMonitoring::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, HepaFilterMonitoring::Id));
+    cluster_t *cluster = cluster::create(endpoint, ActivatedCarbonFilterMonitoring::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ActivatedCarbonFilterMonitoring::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
@@ -2029,21 +2029,21 @@ const function_generic_t function_list[] = {
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
 static bool check_feature_map(uint32_t features) {
-    if((features & feature::other::get_id()) == feature::other::get_id()) 
+    if((features & feature::other::get_id()) == feature::other::get_id())
         return true;
-    if((features & feature::passive_infrared::get_id()) == feature::passive_infrared::get_id()) 
+    if((features & feature::passive_infrared::get_id()) == feature::passive_infrared::get_id())
         return true;
-    if((features & feature::ultrasonic::get_id()) == feature::ultrasonic::get_id()) 
+    if((features & feature::ultrasonic::get_id()) == feature::ultrasonic::get_id())
         return true;
-    if((features & feature::physical_contact::get_id()) == feature::physical_contact::get_id()) 
+    if((features & feature::physical_contact::get_id()) == feature::physical_contact::get_id())
         return true;
-    if((features & feature::active_infrared::get_id()) == feature::active_infrared::get_id()) 
+    if((features & feature::active_infrared::get_id()) == feature::active_infrared::get_id())
         return true;
-    if((features & feature::radar::get_id()) == feature::radar::get_id()) 
+    if((features & feature::radar::get_id()) == feature::radar::get_id())
         return true;
-    if((features & feature::rf_sensing::get_id()) == feature::rf_sensing::get_id()) 
+    if((features & feature::rf_sensing::get_id()) == feature::rf_sensing::get_id())
         return true;
-    if((features & feature::vision::get_id()) == feature::vision::get_id()) 
+    if((features & feature::vision::get_id()) == feature::vision::get_id())
         return true;
     return false;
 }
