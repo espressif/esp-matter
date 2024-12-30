@@ -1,5 +1,5 @@
 diff --git a/src/platform/ESP32/BLEManagerImpl.h b/src/platform/ESP32/BLEManagerImpl.h
-index eeed125012..e5480505c5 100644
+index 2a489420a0..ae315e0b90 100644
 --- a/src/platform/ESP32/BLEManagerImpl.h
 +++ b/src/platform/ESP32/BLEManagerImpl.h
 @@ -61,6 +61,9 @@ struct ble_gatt_char_context
@@ -12,7 +12,7 @@ index eeed125012..e5480505c5 100644
  #endif // CONFIG_BT_BLUEDROID_ENABLED
  
  #include <ble/Ble.h>
-@@ -144,6 +147,45 @@ public:
+@@ -143,6 +146,47 @@ public:
      CHIP_ERROR ConfigureScanResponseData(ByteSpan data);
      void ClearScanResponseData(void);
  
@@ -55,10 +55,12 @@ index eeed125012..e5480505c5 100644
 +        mSecondaryBleSmSc = bleSmSc;
 +    }
 +
++    void RefreshAdv(void);
++
  private:
      chip::Optional<chip::ByteSpan> mScanResponse;
- 
-@@ -346,7 +388,7 @@ private:
+     uint8_t scanResponseBuffer[MAX_SCAN_RSP_DATA_LEN];
+@@ -346,7 +390,7 @@ private:
      static void bleprph_host_task(void * param);
      static void bleprph_on_sync(void);
      static void bleprph_on_reset(int);
@@ -67,7 +69,7 @@ index eeed125012..e5480505c5 100644
      static int ble_svr_gap_event(struct ble_gap_event * event, void * arg);
  
      static int gatt_svr_chr_access(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt * ctxt, void * arg);
-@@ -380,6 +422,31 @@ private:
+@@ -380,6 +424,31 @@ private:
  #endif // CONFIG_ENABLE_ESP32_BLE_CONTROLLER
  
      static void DriveBLEState(intptr_t arg);
@@ -100,7 +102,7 @@ index eeed125012..e5480505c5 100644
  
  /**
 diff --git a/src/platform/ESP32/ESP32Utils.cpp b/src/platform/ESP32/ESP32Utils.cpp
-index ffa45ee722..7a7fcad299 100644
+index e66007a0a8..5052535376 100644
 --- a/src/platform/ESP32/ESP32Utils.cpp
 +++ b/src/platform/ESP32/ESP32Utils.cpp
 @@ -311,62 +311,7 @@ CHIP_ERROR ESP32Utils::ClearWiFiStationProvision(void)
@@ -168,14 +170,13 @@ index ffa45ee722..7a7fcad299 100644
  }
  #endif // CHIP_DEVICE_CONFIG_ENABLE_WIFI
 diff --git a/src/platform/ESP32/PlatformManagerImpl.cpp b/src/platform/ESP32/PlatformManagerImpl.cpp
-index 2c73019933..35ff83c2df 100644
+index 2c73019933..7c11f63165 100644
 --- a/src/platform/ESP32/PlatformManagerImpl.cpp
 +++ b/src/platform/ESP32/PlatformManagerImpl.cpp
-@@ -60,7 +60,18 @@ static int app_entropy_source(void * data, unsigned char * output, size_t len, s
+@@ -60,6 +60,17 @@ static int app_entropy_source(void * data, unsigned char * output, size_t len, s
      return 0;
  }
  
--CHIP_ERROR PlatformManagerImpl::_InitChipStack()
 +CHIP_ERROR PlatformManagerImpl::DisableESPEventDispatch()
 +{
 +    esp_err_t err = esp_event_handler_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, PlatformManagerImpl::HandleESPSystemEvent);
@@ -187,11 +188,10 @@ index 2c73019933..35ff83c2df 100644
 +    return Internal::ESP32Utils::MapError(err);
 +}
 +
-+CHIP_ERROR PlatformManagerImpl::_InitChipStack(void)
+ CHIP_ERROR PlatformManagerImpl::_InitChipStack()
  {
      // Arrange for CHIP-encapsulated ESP32 errors to be translated to text
-     Internal::ESP32Utils::RegisterESP32ErrorFormatter();
-@@ -73,6 +84,10 @@ CHIP_ERROR PlatformManagerImpl::_InitChipStack()
+@@ -73,6 +84,11 @@ CHIP_ERROR PlatformManagerImpl::_InitChipStack()
      esp_err_t err = esp_netif_init();
      VerifyOrReturnError(err == ESP_OK, Internal::ESP32Utils::MapError(err));
  
@@ -199,6 +199,7 @@ index 2c73019933..35ff83c2df 100644
 +    err = esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, PlatformManagerImpl::HandleESPSystemEvent, nullptr);
 +    VerifyOrReturnError(err == ESP_OK, Internal::ESP32Utils::MapError(err));
 +#endif
++
      // Arrange for the ESP event loop to deliver events into the CHIP Device layer.
      err = esp_event_handler_register(IP_EVENT, ESP_EVENT_ANY_ID, PlatformManagerImpl::HandleESPSystemEvent, nullptr);
      VerifyOrReturnError(err == ESP_OK, Internal::ESP32Utils::MapError(err));
@@ -215,10 +216,10 @@ index cc2b0eefe9..0d99857ef8 100644
  private:
      // ===== Methods that implement the PlatformManager abstract interface.
 diff --git a/src/platform/ESP32/nimble/BLEManagerImpl.cpp b/src/platform/ESP32/nimble/BLEManagerImpl.cpp
-index d4d90f4536..75328ddb3c 100644
+index 0a2ddb1763..c9c81b4db1 100644
 --- a/src/platform/ESP32/nimble/BLEManagerImpl.cpp
 +++ b/src/platform/ESP32/nimble/BLEManagerImpl.cpp
-@@ -125,39 +125,35 @@ uint8_t own_addr_type = BLE_OWN_ADDR_RANDOM;
+@@ -127,39 +127,36 @@ uint8_t own_addr_type = BLE_OWN_ADDR_RANDOM;
  ChipDeviceScanner & mDeviceScanner = Internal::ChipDeviceScanner::GetInstance();
  #endif
  BLEManagerImpl BLEManagerImpl::sInstance;
@@ -239,6 +240,7 @@ index d4d90f4536..75328ddb3c 100644
 -                  .flags      = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_INDICATE,
 -                  .val_handle = &sInstance.mTXCharCCCDAttrHandle,
 -              },
++
 +const struct ble_gatt_svc_def BLEManagerImpl::CHIPoBLEGATTService = {
 +    .type = BLE_GATT_SVC_TYPE_PRIMARY,
 +    .uuid = (ble_uuid_t *) (&ShortUUID_CHIPoBLEService),
@@ -285,7 +287,7 @@ index d4d90f4536..75328ddb3c 100644
  };
  
  #ifdef CONFIG_ENABLE_ESP32_BLE_CONTROLLER
-@@ -773,6 +769,12 @@ void BLEManagerImpl::DriveBLEState(void)
+@@ -775,6 +772,12 @@ void BLEManagerImpl::DriveBLEState(void)
                      ChipLogError(DeviceLayer, "Configure Adv Data failed: %s", ErrorStr(err));
                      ExitNow();
                  }
@@ -298,7 +300,7 @@ index d4d90f4536..75328ddb3c 100644
              }
  
              // Start advertising.  This is also an asynchronous step.
-@@ -783,6 +785,12 @@ void BLEManagerImpl::DriveBLEState(void)
+@@ -785,6 +788,12 @@ void BLEManagerImpl::DriveBLEState(void)
                  ChipLogError(DeviceLayer, "Start advertising failed: %s", ErrorStr(err));
                  ExitNow();
              }
@@ -311,7 +313,7 @@ index d4d90f4536..75328ddb3c 100644
  
              mFlags.Clear(Flags::kAdvertisingRefreshNeeded);
              // Transition to the Advertising state...
-@@ -808,12 +816,12 @@ void BLEManagerImpl::DriveBLEState(void)
+@@ -810,12 +819,12 @@ void BLEManagerImpl::DriveBLEState(void)
      {
          if (mFlags.Has(Flags::kAdvertising))
          {
@@ -327,7 +329,7 @@ index d4d90f4536..75328ddb3c 100644
                      ExitNow();
                  }
              }
-@@ -939,14 +947,15 @@ CHIP_ERROR BLEManagerImpl::InitESPBleLayer(void)
+@@ -941,14 +950,15 @@ CHIP_ERROR BLEManagerImpl::InitESPBleLayer(void)
          ble_svc_gap_init();
          ble_svc_gatt_init();
  
@@ -345,16 +347,7 @@ index d4d90f4536..75328ddb3c 100644
          if (err != CHIP_NO_ERROR)
          {
              ChipLogError(DeviceLayer, "ble_gatts_add_svcs failed: %s", ErrorStr(err));
-@@ -992,7 +1001,7 @@ void BLEManagerImpl::ClaimBLEMemory(System::Layer *, void *)
- 
- #ifdef CONFIG_IDF_TARGET_ESP32
-         err = esp_bt_mem_release(ESP_BT_MODE_BTDM);
--#elif defined(CONFIG_IDF_TARGET_ESP32C2) || defined(CONFIG_IDF_TARGET_ESP32C3) || defined(CONFIG_IDF_TARGET_ESP32S3) ||            \
-+#elif defined(CONFIG_IDF_TARGET_ESP32C2) || defined(CONFIG_IDF_TARGET_ESP32C3) || defined(CONFIG_IDF_TARGET_ESP32S3) ||          \
-     defined(CONFIG_IDF_TARGET_ESP32H2) || defined(CONFIG_IDF_TARGET_ESP32C6)
-         err = esp_bt_mem_release(ESP_BT_MODE_BLE);
- #endif
-@@ -1024,7 +1033,6 @@ CHIP_ERROR BLEManagerImpl::DeinitBLE()
+@@ -1031,7 +1041,6 @@ extern "C" void ble_transport_ll_deinit(void) {}
  CHIP_ERROR BLEManagerImpl::ConfigureAdvertisingData(void)
  {
      CHIP_ERROR err;
@@ -362,7 +355,7 @@ index d4d90f4536..75328ddb3c 100644
      uint8_t index = 0;
  
      constexpr uint8_t kServiceDataTypeSize = 1;
-@@ -1050,14 +1058,14 @@ CHIP_ERROR BLEManagerImpl::ConfigureAdvertisingData(void)
+@@ -1057,14 +1066,14 @@ CHIP_ERROR BLEManagerImpl::ConfigureAdvertisingData(void)
          ExitNow();
      }
  
@@ -385,7 +378,7 @@ index d4d90f4536..75328ddb3c 100644
  
      err = ConfigurationMgr().GetBLEDeviceIdentificationInfo(deviceIdInfo);
      if (err != CHIP_NO_ERROR)
-@@ -1087,18 +1095,11 @@ CHIP_ERROR BLEManagerImpl::ConfigureAdvertisingData(void)
+@@ -1094,17 +1103,11 @@ CHIP_ERROR BLEManagerImpl::ConfigureAdvertisingData(void)
      }
  #endif
  
@@ -402,12 +395,26 @@ index d4d90f4536..75328ddb3c 100644
 -        ChipLogError(DeviceLayer, "ble_gap_adv_set_data failed: %s %d", ErrorStr(err), discriminator);
 -        ExitNow();
 -    }
--
 +    mAdvDataLen = index;
+ 
  exit:
      return err;
+@@ -1371,6 +1374,14 @@ CHIP_ERROR BLEManagerImpl::HandleGAPConnect(struct ble_gap_event * gapEvent)
+ #endif
  }
-@@ -1651,16 +1652,18 @@ int BLEManagerImpl::gatt_svr_chr_access(uint16_t conn_handle, uint16_t attr_hand
+ 
++void BLEManagerImpl::RefreshAdv(void)
++{
++    mFlags.Set(Flags::kAdvertisingRefreshNeeded);
++    mFlags.Clear(Flags::kAdvertisingConfigured);
++
++    PlatformMgr().ScheduleWork(DriveBLEState, 0);
++}
++
+ CHIP_ERROR BLEManagerImpl::HandleGAPDisconnect(struct ble_gap_event * gapEvent)
+ {
+     ChipLogProgress(DeviceLayer, "BLE GAP connection terminated (con %u reason 0x%02x)", gapEvent->disconnect.conn.conn_handle,
+@@ -1658,16 +1669,18 @@ int BLEManagerImpl::gatt_svr_chr_access(uint16_t conn_handle, uint16_t attr_hand
  CHIP_ERROR BLEManagerImpl::StartAdvertising(void)
  {
      CHIP_ERROR err;
@@ -431,7 +438,7 @@ index d4d90f4536..75328ddb3c 100644
  
      // Advertise in fast mode if it is connectable advertisement and
      // the application has expressly requested fast advertising.
-@@ -1694,48 +1697,187 @@ CHIP_ERROR BLEManagerImpl::StartAdvertising(void)
+@@ -1701,48 +1714,186 @@ CHIP_ERROR BLEManagerImpl::StartAdvertising(void)
                      (((uint32_t) adv_params.itvl_min) * 10) / 16, (connectable) ? "" : "non-");
  
      {
@@ -453,8 +460,7 @@ index d4d90f4536..75328ddb3c 100644
 -        else
 +        err = MapBLEError(ble_gap_ext_adv_configure(kChipAdvInstance, &adv_params, NULL, ble_svr_gap_event, NULL));
 +        if (err != CHIP_NO_ERROR)
-         {
--            err = MapBLEError(ble_hs_pvcy_rpa_config(NIMBLE_HOST_ENABLE_RPA));
++        {
 +            ChipLogError(DeviceLayer, "ble_gap_ext_adv_configure failed: %s", ErrorStr(err));
 +            return err;
 +        }
@@ -494,7 +500,8 @@ index d4d90f4536..75328ddb3c 100644
 +        }
 +
 +        if (mScanResponse.HasValue())
-+        {
+         {
+-            err = MapBLEError(ble_hs_pvcy_rpa_config(NIMBLE_HOST_ENABLE_RPA));
 +            uint16_t resp_size         = static_cast<uint16_t>(mScanResponse.Value().size());
 +            struct os_mbuf * resp_data = os_msys_get_pkthdr(resp_size, 0);
 +            assert(resp_data);
@@ -530,7 +537,6 @@ index d4d90f4536..75328ddb3c 100644
 +    }
 +    return err;
 +}
-+
 +
 +int BLEManagerImpl::secondary_ble_svr_gap_event(struct ble_gap_event * event, void * arg)
 +{

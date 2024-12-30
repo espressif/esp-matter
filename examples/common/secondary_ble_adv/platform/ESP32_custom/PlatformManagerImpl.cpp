@@ -71,7 +71,7 @@ CHIP_ERROR PlatformManagerImpl::DisableESPEventDispatch()
     return Internal::ESP32Utils::MapError(err);
 }
 
-CHIP_ERROR PlatformManagerImpl::_InitChipStack(void)
+CHIP_ERROR PlatformManagerImpl::_InitChipStack()
 {
     // Arrange for CHIP-encapsulated ESP32 errors to be translated to text
     Internal::ESP32Utils::RegisterESP32ErrorFormatter();
@@ -88,6 +88,7 @@ CHIP_ERROR PlatformManagerImpl::_InitChipStack(void)
     err = esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, PlatformManagerImpl::HandleESPSystemEvent, nullptr);
     VerifyOrReturnError(err == ESP_OK, Internal::ESP32Utils::MapError(err));
 #endif
+
     // Arrange for the ESP event loop to deliver events into the CHIP Device layer.
     err = esp_event_handler_register(IP_EVENT, ESP_EVENT_ANY_ID, PlatformManagerImpl::HandleESPSystemEvent, nullptr);
     VerifyOrReturnError(err == ESP_OK, Internal::ESP32Utils::MapError(err));
