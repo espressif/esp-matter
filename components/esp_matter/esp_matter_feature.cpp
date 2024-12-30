@@ -2805,7 +2805,7 @@ esp_err_t add(cluster_t *cluster)
     uint32_t as_feature_map = feature::action_switch::get_id();
     uint32_t ms_feature_map = feature::momentary_switch::get_id();
     uint32_t feature_map = get_feature_map_value(cluster);
-    VerifyOrReturnError(((feature_map & ms_feature_map) != ms_feature_map) || ((feature_map & as_feature_map) == as_feature_map), ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch release is not supported."));
+    VerifyOrReturnError(((feature_map & ms_feature_map) == ms_feature_map) && ((feature_map & as_feature_map) != as_feature_map), ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch release is not supported."));
     update_feature_map(cluster, get_id());
 
     event::create_short_release(cluster);
@@ -2827,8 +2827,8 @@ esp_err_t add(cluster_t *cluster)
     uint32_t as_feature_map = feature::action_switch::get_id();
     uint32_t ms_feature_map = feature::momentary_switch::get_id();
     uint32_t feature_map = get_feature_map_value(cluster);
-    VerifyOrReturnError((feature_map & ms_feature_map) != ms_feature_map, ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch long press is not supported."));
-    VerifyOrReturnError(((feature_map & msr_feature_map) != msr_feature_map) && ((feature_map & as_feature_map) != as_feature_map), ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch long press is not supported."));
+    VerifyOrReturnError((feature_map & ms_feature_map) == ms_feature_map, ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch long press is not supported."));
+    VerifyOrReturnError(((feature_map & msr_feature_map) == msr_feature_map) || ((feature_map & as_feature_map) == as_feature_map), ESP_ERR_NOT_SUPPORTED, ESP_LOGE(TAG, "Momentary switch long press is not supported."));
     update_feature_map(cluster, get_id());
 
     event::create_long_press(cluster);
