@@ -247,7 +247,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kLightOutput);
+    cluster_t *identify_cluster = identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -282,7 +284,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kLightOutput);
+    cluster_t *identify_cluster = identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -318,7 +322,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kLightOutput);
+    cluster_t *identify_cluster = identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -357,7 +363,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kLightOutput);
+    cluster_t *identify_cluster = identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -401,7 +409,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
     on_off::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
 
     return ESP_OK;
@@ -439,7 +449,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
     on_off::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     level_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
 
@@ -479,7 +491,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
     on_off::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     level_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     color_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
@@ -513,7 +527,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     switch_cluster::create(endpoint, &(config->switch_cluster), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -545,7 +561,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    cluster_t *identify_cluster = identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -579,7 +597,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    cluster_t *identify_cluster = identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -615,7 +635,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kActuator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     fan_control::create(endpoint, &(config->fan_control), CLUSTER_FLAG_SERVER);
 
@@ -648,7 +670,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER, cluster::thermostat::feature::cooling::get_id()
                                                                 | cluster::thermostat::feature::heating::get_id());
@@ -717,7 +741,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 	return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
     groups::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
     on_off::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     level_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
@@ -751,7 +777,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 	return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     air_quality::create(endpoint, &(config->air_quality), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -783,7 +811,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 	return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kActuator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     fan_control::create(endpoint, &(config->fan_control), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -908,7 +938,9 @@ esp_err_t add(endpoint_t * endpoint, config_t * config)
 	    return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kAudibleBeep);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     cluster::smoke_co_alarm::create(endpoint, &(config->smoke_co_alarm), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -984,7 +1016,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kAudibleBeep);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     cluster::door_lock::create(endpoint, &(config->door_lock), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -1016,7 +1050,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kActuator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     window_covering::create(endpoint, &(config->window_covering), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
 
@@ -1049,7 +1085,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     temperature_measurement::create(endpoint, &(config->temperature_measurement), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -1081,7 +1119,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     relative_humidity_measurement::create(endpoint, &(config->relative_humidity_measurement), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -1113,7 +1153,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     occupancy_sensing::create(endpoint, &(config->occupancy_sensing), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -1145,7 +1187,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     cluster_t * cluster = boolean_state::create(endpoint, &(config->boolean_state), CLUSTER_FLAG_SERVER);
     boolean_state::event::create_state_change(cluster);
 
@@ -1178,7 +1222,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     illuminance_measurement::create(endpoint, &(config->illuminance_measurement), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -1210,7 +1256,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     pressure_measurement::create(endpoint, &(config->pressure_measurement), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -1242,7 +1290,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     flow_measurement::create(endpoint, &(config->flow_measurement), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -1275,7 +1325,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kActuator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
     pump_configuration_and_control::create(endpoint, &(config->pump_configuration_and_control), CLUSTER_FLAG_SERVER);
 
@@ -1309,7 +1361,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     pump_configuration_and_control::create(endpoint, &(config->pump_configuration_and_control), CLUSTER_FLAG_CLIENT);
     binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
@@ -1379,7 +1433,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kActuator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::dead_front_behavior::get_id());
     cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER, cluster::thermostat::feature::cooling::get_id());
 
@@ -1507,7 +1563,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 	return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kActuator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     rvc_run_mode::create(endpoint, &(config->rvc_run_mode), CLUSTER_FLAG_SERVER);
     rvc_operational_state::create(endpoint, &(config->rvc_operational_state), CLUSTER_FLAG_SERVER);
 
@@ -1540,7 +1598,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     boolean_state::create(endpoint, &(config->boolean_state), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -1572,7 +1632,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     boolean_state::create(endpoint, &(config->boolean_state), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -1604,7 +1666,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     cluster_t *cluster = boolean_state::create(endpoint, &(config->boolean_state), CLUSTER_FLAG_SERVER);
 
     boolean_state::event::create_state_change(cluster);
@@ -1833,7 +1897,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kActuator);
+    identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     valve_configuration_and_control::create(endpoint, &(config->valve_configuration_and_control), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
 
     return ESP_OK;
@@ -1963,7 +2029,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kActuator);
+    cluster_t *identify_cluster = identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -1998,7 +2066,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
         return err;
     }
 
-    cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+
+    identify::config_t identify_config;
+    identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kActuator);
+    cluster_t *identify_cluster = identify::create(endpoint, &identify_config, CLUSTER_FLAG_SERVER);
     identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -2069,16 +2140,16 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     cluster_t *descriptor_cluster = cluster::get(endpoint, Descriptor::Id);
     descriptor::feature::taglist::add(descriptor_cluster);
-    
+
     power_source_device::add(endpoint, &config->power_source_device);
-        
-    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id); 
+
+    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id);
     power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.wired);
     electrical_sensor::add(endpoint, &config->electrical_sensor);
     electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER, electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id());
-        
-    cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id); 
-    
+
+    cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id);
+
     nullable<int64_t> voltage = 0, active_current = 0;
     electrical_power_measurement::attribute::create_voltage(elec_power_measurement_cluster, voltage);
     electrical_power_measurement::attribute::create_active_current(elec_power_measurement_cluster, active_current);
@@ -2115,10 +2186,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     cluster_t *descriptor_cluster = cluster::get(endpoint, Descriptor::Id);
     descriptor::feature::taglist::add(descriptor_cluster);
-    
+
     power_source_device::add(endpoint, &config->power_source_device);
-        
-    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id); 
+
+    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id);
     power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.wired);
     power_source::feature::battery::add(power_source_cluster, &config->power_source_device.power_source.battery);
 
@@ -2133,15 +2204,15 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     electrical_sensor::add(endpoint, &config->electrical_sensor);
     electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER, electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id());
-        
-    cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id); 
-    
+
+    cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id);
+
     electrical_power_measurement::attribute::create_voltage(elec_power_measurement_cluster, config->voltage);
     electrical_power_measurement::attribute::create_active_current(elec_power_measurement_cluster, config->active_current);
 
     device_energy_management::add(endpoint, &config->device_energy_management);
-        
-    cluster_t *device_energy_management_cluster = cluster::get(endpoint, DeviceEnergyManagement::Id); 
+
+    cluster_t *device_energy_management_cluster = cluster::get(endpoint, DeviceEnergyManagement::Id);
     cluster::device_energy_management::feature::power_adjustment::add(device_energy_management_cluster);
     return ESP_OK;
 }
@@ -2174,24 +2245,24 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     cluster_t *descriptor_cluster = cluster::get(endpoint, Descriptor::Id);
     descriptor::feature::taglist::add(descriptor_cluster);
-    
+
     power_source_device::add(endpoint, &config->power_source_device);
-        
-    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id); 
+
+    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id);
     power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.wired);
 
     electrical_sensor::add(endpoint, &config->electrical_sensor);
-    
-    cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id); 
-    
+
+    cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id);
+
     electrical_power_measurement::attribute::create_voltage(elec_power_measurement_cluster, config->voltage);
     electrical_power_measurement::attribute::create_active_current(elec_power_measurement_cluster, config->active_current);
 
     electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER, electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id());
 
     device_energy_management::add(endpoint, &config->device_energy_management);
-        
-    cluster_t *device_energy_management_cluster = cluster::get(endpoint, DeviceEnergyManagement::Id); 
+
+    cluster_t *device_energy_management_cluster = cluster::get(endpoint, DeviceEnergyManagement::Id);
     cluster::device_energy_management::feature::power_adjustment::add(device_energy_management_cluster);
     return ESP_OK;
 }
