@@ -250,6 +250,7 @@ build_esp_matter_examples_pytest_C6_idf_v5_1:
     paths:
       - "examples/**/build*/size.json"
       - "examples/**/build*/build_log.txt"
+      - "examples/**/build*/*.map"
       - "examples/**/build*/*.bin"
       - "examples/**/build*/flasher_args.json"
       - "examples/**/build*/config/sdkconfig.json"
@@ -272,6 +273,7 @@ build_esp_matter_examples_pytest_H2_idf_v5_1:
     paths:
       - "examples/**/build*/size.json"
       - "examples/**/build*/build_log.txt"
+      - "examples/**/build*/*.map"
       - "examples/**/build*/*.bin"
       - "examples/**/build*/flasher_args.json"
       - "examples/**/build*/config/sdkconfig.json"
@@ -306,6 +308,7 @@ build_esp_matter_examples_pytest_C2_idf_v5_1:
     paths:
       - "examples/**/build*/size.json"
       - "examples/**/build*/build_log.txt"
+      - "examples/**/build*/*.map"
       - "examples/**/build*/*.bin"
       - "examples/**/build*/flasher_args.json"
       - "examples/**/build*/config/sdkconfig.json"
@@ -414,6 +417,7 @@ build_esp_matter_examples_pytest_C3_idf_v4_4:
     paths:
       - "examples/**/build*/size.json"
       - "examples/**/build*/build_log.txt"
+      - "examples/**/build*/*.map"
       - "examples/**/build*/*.bin"
       - "examples/**/build*/flasher_args.json"
       - "examples/**/build*/config/sdkconfig.json"
