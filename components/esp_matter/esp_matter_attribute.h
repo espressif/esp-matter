@@ -522,7 +522,7 @@ attribute_t *create_ac_error_code(cluster_t *cluster, uint32_t value);
 attribute_t *create_ac_louver_position(cluster_t *cluster, uint8_t value);
 attribute_t *create_ac_coil_temperature(cluster_t *cluster, nullable<int16_t> value);
 attribute_t *create_ac_capacity_format(cluster_t *cluster, uint8_t value);
-attribute_t *create_preset_type(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_preset_types(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 attribute_t *create_schedule_type(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 attribute_t *create_number_of_presets(cluster_t *cluster, uint8_t value);
 attribute_t *create_number_of_schedules(cluster_t *cluster, uint8_t value);

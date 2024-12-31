@@ -471,12 +471,12 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 namespace wifi_network_diagnostics {
 namespace feature {
 
-namespace packets_counts {
+namespace packet_counts {
 
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 
-} /* packets_counts */
+} /* packet_counts */
 
 namespace error_counts {
 
@@ -525,7 +525,7 @@ esp_err_t add(cluster_t *cluster);
 namespace ethernet_network_diagnostics {
 namespace feature {
 
-namespace packets_counts {
+namespace packet_counts {
 
 typedef struct config {
     uint64_t packet_rx_count;
@@ -536,7 +536,7 @@ typedef struct config {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 
-} /* packets_counts */
+} /* packet_counts */
 
 namespace error_counts {
 
@@ -600,20 +600,6 @@ typedef struct config {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 } /* occupancy */
-
-namespace schedule_configuration {
-
-typedef struct config {
-   uint8_t start_of_week;
-   uint8_t number_of_weekly_transitions;
-   uint8_t number_of_daily_transitions;
-
-   config (): start_of_week(0), number_of_weekly_transitions(0), number_of_daily_transitions(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-} /* schedule_configuration */
 
 namespace setback {
 
@@ -2024,12 +2010,6 @@ namespace year_day_access_schedules {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 } /* year_day_access_schedules */
-
-namespace holiday_schedules {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-} /* holiday_schedules */
 
 namespace holiday_schedules {
 

@@ -925,7 +925,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 namespace wifi_network_diagnostics {
 namespace feature {
 
-namespace packets_counts {
+namespace packet_counts {
 
 uint32_t get_id()
 {
@@ -949,7 +949,7 @@ esp_err_t add(cluster_t *cluster)
     return ESP_OK;
 }
 
-} /* packets_counts */
+} /* packet_counts */
 
 namespace error_counts {
 
@@ -1059,7 +1059,7 @@ esp_err_t add(cluster_t *cluster)
 namespace ethernet_network_diagnostics {
 namespace feature {
 
-namespace packets_counts {
+namespace packet_counts {
 
 uint32_t get_id()
 {
@@ -1078,7 +1078,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     return ESP_OK;
 }
 
-} /* packets_counts */
+} /* packet_counts */
 
 namespace error_counts {
 
@@ -2698,31 +2698,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 }
 } /* occupancy */
 
-namespace schedule_configuration {
-
-uint32_t get_id()
-{
-    return (uint32_t)Thermostat::Feature::kScheduleConfiguration;
-}
-
-esp_err_t add(cluster_t *cluster, config_t *config)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    attribute::create_start_of_week(cluster, config->start_of_week);
-    attribute::create_number_of_weekly_transitions(cluster, config->number_of_weekly_transitions);
-    attribute::create_number_of_daily_transitions(cluster, config->number_of_daily_transitions);
-
-    command::create_set_weekly_schedule(cluster);
-    command::create_get_weekly_schedule(cluster);
-    command::create_clear_weekly_schedule(cluster);
-    command::create_get_weekly_schedule_response(cluster);
-
-    return ESP_OK;
-}
-} /* schedule_configuration */
-
 namespace setback {
 
 uint32_t get_id()
@@ -2811,7 +2786,7 @@ uint32_t get_id()
     return (uint32_t)Thermostat::Feature::kPresets;
 }
 
-esp_err_t add(cluster_t *cluster, config_t *config)
+esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
@@ -2820,7 +2795,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     update_feature_map(cluster, get_id());
 
     /* Attributes managed internally */
-    attribute::create_preset_type(cluster, NULL, 0, 0);
+    attribute::create_preset_types(cluster, NULL, 0, 0);
     attribute::create_number_of_presets(cluster, 0);
     attribute::create_active_preset_handle(cluster, NULL, 0);
     attribute::create_presets(cluster, NULL, 0, 0);
@@ -3834,7 +3809,7 @@ uint32_t get_id()
     return (uint32_t)DoorLock::Feature::kWeekDayAccessSchedules;
 }
 
-esp_err_t add(cluster_t *cluster, config_t *config)
+esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
@@ -3986,7 +3961,7 @@ uint32_t get_id()
     return (uint32_t)DoorLock::Feature::kYearDayAccessSchedules;
 }
 
-esp_err_t add(cluster_t *cluster, config_t *config)
+esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
@@ -4012,7 +3987,7 @@ uint32_t get_id()
     return (uint32_t)DoorLock::Feature::kHolidaySchedules;
 }
 
-esp_err_t add(cluster_t *cluster, config_t *config)
+esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());

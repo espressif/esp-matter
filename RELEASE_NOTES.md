@@ -1,3 +1,10 @@
+# 3-Feb-2024
+
+Cluster structure change.
+  - `feature_flags` are now part of `cluster::config` to configure the features in the application.
+  - moved `features::config` frome `cluster::config` to `cluster::config::features` structure.
+
+
 # 27-December-2024
 
 Added ``matter esp factoryreset`` command to factory reset a Matter device.

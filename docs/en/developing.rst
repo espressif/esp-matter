@@ -796,6 +796,7 @@ Additional clusters can also be added to an endpoint. Examples:
    ::
 
       on_off::config_t on_off_config;
+      on_off_config.feature_flags = on_off::feature::lighting::get_id();
       cluster_t *cluster = on_off::create(endpoint, &on_off_config, CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
 
 -  temperature_measurement:

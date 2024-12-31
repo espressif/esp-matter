@@ -307,7 +307,8 @@ extern "C" void app_main()
 
     on_off_light::config_t light_config;
     light_config.on_off.on_off = DEFAULT_POWER;
-    light_config.on_off.lighting.start_up_on_off = nullptr;
+    light_config.on_off.features.lighting.start_up_on_off = nullptr;
+    light_config.on_off.feature_flags = cluster::on_off::feature::lighting::get_id();
     endpoint_t *endpoint = on_off_light::create(node, &light_config, ENDPOINT_FLAG_NONE, NULL);
     ABORT_APP_ON_FAILURE(endpoint != nullptr, ESP_LOGE(TAG, "Failed to create on off light endpoint"));
 

@@ -1580,7 +1580,12 @@ namespace command {
 command_t *create_review_fabric_restrictions(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, AccessControl::Commands::ReviewFabricRestrictions::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_review_fabric_restrictions);
+#if CHIP_CONFIG_USE_ACCESS_RESTRICTIONS
+                                       esp_matter_command_callback_review_fabric_restrictions
+#else
+                                       NULL
+#endif
+    );
 }
 
 command_t *create_review_fabric_restrictions_response(cluster_t *cluster)
@@ -1596,7 +1601,8 @@ namespace command {
 command_t *create_keep_active(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, BridgedDeviceBasicInformation::Commands::KeepActive::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_keep_active);
+    // Command callback not implemented in connectedhomeip.
+                                       NULL);
 }
 
 } /* command */
@@ -2357,7 +2363,8 @@ command_t *create_stop_with_on_off(cluster_t *cluster)
 command_t *create_move_to_closest_frequency(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, LevelControl::Commands::MoveToClosestFrequency::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_move_to_closest_frequency);
+    // Command callback not implemented in connectedhomeip.
+                                       NULL);
 }
 
 } /* command */
