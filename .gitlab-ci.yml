@@ -446,6 +446,9 @@ build_managed_component_light:
         - cd ${ESP_MATTER_PATH}/examples/managed_component_light
         - idf.py set-target esp32c3
         - idf.py build
+        - rm -rf managed_components # Remove managed_components to prevent hash problem
+        - idf.py set-target esp32h2
+        - idf.py build
 
 build_docs:
     stage: build
