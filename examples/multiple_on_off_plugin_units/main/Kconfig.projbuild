@@ -1,25 +1,174 @@
 menu "Plugin manager"
-    config MAX_CONFIGURABLE_PLUGS
-        int "Maximum virtual configurable plugs"
-        default 5
+    config USER_BUTTON
+        bool "Use custom GPIO for factory reset button"
+        default n
+
+    config USER_BUTTON_GPIO
+        int "GPIO pin number for factory reset button"
+        default 0 if IDF_TARGET_ESP32 || IDF_TARGET_ESP32S3
+        default 9
+        depends on USER_BUTTON
+
+    config USER_BUTTON_LEVEL
+        int "GPIO level when factory reset button is active"
+        default 0
+        range 0 1
+        depends on USER_BUTTON
+    
+    config NUM_VIRTUAL_PLUGS
+        int "Number of virtual plugs"
+        default 3
+        range 1 11 if IDF_TARGET_ESP32C2
+        range 1 12 if IDF_TARGET_ESP32C3
         range 1 16
 
     config GPIO_PLUG_1
         int "GPIO pin number for plug 1"
-        default 3 if IDF_TARGET_ESP32S3
-        default 2 if !IDF_TARGET_ESP32S3
+        default 2
+        depends on (NUM_VIRTUAL_PLUGS >= 1)
         help
             Set GPIO pin value for target chip to create plugin unit
 
     config GPIO_PLUG_2
         int "GPIO pin number for plug 2"
         default 4
+        depends on (NUM_VIRTUAL_PLUGS >= 2)
         help
             Set GPIO pin value for target chip to create plugin unit
     
     config GPIO_PLUG_3
         int "GPIO pin number for plug 3"
         default 5
+        depends on (NUM_VIRTUAL_PLUGS >= 3)
+        help
+            Set GPIO pin value for target chip to create plugin unit
+    
+    config GPIO_PLUG_4
+        int "GPIO pin number for plug 4"
+        default 6 if IDF_TARGET_ESP32C2 || IDF_TARGET_ESP32C3
+        default 12
+        depends on (NUM_VIRTUAL_PLUGS >= 4)
+        help
+            Set GPIO pin value for target chip to create plugin unit
+    
+    config GPIO_PLUG_5
+        int "GPIO pin number for plug 5"
+        default 7 if IDF_TARGET_ESP32C2 || IDF_TARGET_ESP32C3
+        default 13
+        depends on (NUM_VIRTUAL_PLUGS >= 5)
+        help
+            Set GPIO pin value for target chip to create plugin unit
+    
+    config GPIO_PLUG_6
+        int "GPIO pin number for plug 6"
+        default 8 if IDF_TARGET_ESP32C2 || IDF_TARGET_ESP32C3
+        default 15 if IDF_TARGET_ESP32C6
+        default 14
+        depends on (NUM_VIRTUAL_PLUGS >= 6)
+        help
+            Set GPIO pin value for target chip to create plugin unit
+    
+    config GPIO_PLUG_7
+        int "GPIO pin number for plug 7"
+        default 10 if IDF_TARGET_ESP32C2 || IDF_TARGET_ESP32C3
+        default 18 if IDF_TARGET_ESP32C6
+        default 22 if IDF_TARGET_ESP32H2
+        default 15
+        depends on (NUM_VIRTUAL_PLUGS >= 7)
+        help
+            Set GPIO pin value for target chip to create plugin unit
+    
+    config GPIO_PLUG_8
+        int "GPIO pin number for plug 8"
+        default 18 if IDF_TARGET_ESP32C2 || IDF_TARGET_ESP32C3
+        default 19 if IDF_TARGET_ESP32C6
+        default 25 if IDF_TARGET_ESP32H2
+        default 16
+        depends on (NUM_VIRTUAL_PLUGS >= 8)
+        help
+            Set GPIO pin value for target chip to create plugin unit
+    
+    config GPIO_PLUG_9
+        int "GPIO pin number for plug 9"
+        default 0 if IDF_TARGET_ESP32C2
+        default 19 if IDF_TARGET_ESP32C3
+        default 20 if IDF_TARGET_ESP32C6
+        default 26 if IDF_TARGET_ESP32H2
+        default 17
+        depends on (NUM_VIRTUAL_PLUGS >= 9)
+        help
+            Set GPIO pin value for target chip to create plugin unit
+    
+    config GPIO_PLUG_10
+        int "GPIO pin number for plug 10"
+        default 1 if IDF_TARGET_ESP32C2
+        default 0 if IDF_TARGET_ESP32C3
+        default 21 if IDF_TARGET_ESP32C6
+        default 27 if IDF_TARGET_ESP32H2
+        default 18
+        depends on (NUM_VIRTUAL_PLUGS >= 10)
+        help
+            Set GPIO pin value for target chip to create plugin unit
+    
+    config GPIO_PLUG_11
+        int "GPIO pin number for plug 11"
+        default 3 if IDF_TARGET_ESP32C2
+        default 1 if IDF_TARGET_ESP32C3
+        default 22 if IDF_TARGET_ESP32C6
+        default 0 if IDF_TARGET_ESP32H2
+        default 19
+        depends on (NUM_VIRTUAL_PLUGS >= 11)
+        help
+            Set GPIO pin value for target chip to create plugin unit
+    
+    config GPIO_PLUG_12
+        int "GPIO pin number for plug 12"
+        default 3 if IDF_TARGET_ESP32C3
+        default 23 if IDF_TARGET_ESP32C6
+        default 1 if IDF_TARGET_ESP32H2
+        default 20 if IDF_TARGET_ESP32S3
+        default 21
+        depends on (NUM_VIRTUAL_PLUGS >= 12)
+        help
+            Set GPIO pin value for target chip to create plugin unit
+    
+    config GPIO_PLUG_13
+        int "GPIO pin number for plug 13"
+        default 0 if IDF_TARGET_ESP32C6
+        default 3 if IDF_TARGET_ESP32H2
+        default 21 if IDF_TARGET_ESP32S3
+        default 22
+        depends on (NUM_VIRTUAL_PLUGS >= 13)
+        help
+            Set GPIO pin value for target chip to create plugin unit
+    
+    config GPIO_PLUG_14
+        int "GPIO pin number for plug 14"
+        default 1 if IDF_TARGET_ESP32C6
+        default 8 if IDF_TARGET_ESP32H2
+        default 35 if IDF_TARGET_ESP32S3
+        default 23
+        depends on (NUM_VIRTUAL_PLUGS >= 14)
+        help
+            Set GPIO pin value for target chip to create plugin unit
+    
+    config GPIO_PLUG_15
+        int "GPIO pin number for plug 15"
+        default 3 if IDF_TARGET_ESP32C6
+        default 10 if IDF_TARGET_ESP32H2
+        default 36 if IDF_TARGET_ESP32S3
+        default 25
+        depends on (NUM_VIRTUAL_PLUGS >= 15)
+        help
+            Set GPIO pin value for target chip to create plugin unit
+    
+    config GPIO_PLUG_16
+        int "GPIO pin number for plug 16"
+        default 6 if IDF_TARGET_ESP32C6
+        default 11 if IDF_TARGET_ESP32H2
+        default 37 if IDF_TARGET_ESP32S3
+        default 26
+        depends on (NUM_VIRTUAL_PLUGS >= 16)
         help
             Set GPIO pin value for target chip to create plugin unit
 endmenu

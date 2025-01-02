@@ -14,15 +14,22 @@
 #include <esp_matter_console.h>
 #include <esp_matter_ota.h>
 #include "driver/gpio.h"
+#include "soc/gpio_num.h"
 
 #include <common_macros.h>
 #include <app_priv.h>
+#include <app_reset.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
 #endif
 
 #include <app/server/CommissioningWindowManager.h>
 #include <app/server/Server.h>
+
+#define CREATE_PLUG(node, plug_id) \
+    struct gpio_plug plug##plug_id; \
+    plug##plug_id.GPIO_PIN_VALUE = (gpio_num_t) CONFIG_GPIO_PLUG_##plug_id; \
+    create_plug(&plug##plug_id, node);
 
 static const char *TAG = "app_main";
 
@@ -32,8 +39,9 @@ using namespace esp_matter::endpoint;
 using namespace chip::app::Clusters;
 
 constexpr auto k_timeout_seconds = 300;
-uint16_t s_configure_plugs = 0;
-plugin_endpoint s_plugin_unit_list[CONFIG_MAX_CONFIGURABLE_PLUGS];
+uint16_t configure_plugs = 0;
+plugin_endpoint plugin_unit_list[CONFIG_NUM_VIRTUAL_PLUGS];
+static gpio_num_t reset_gpio = gpio_num_t::GPIO_NUM_NC;
 
 #if CONFIG_ENABLE_ENCRYPTED_OTA
 extern const char decryption_key_start[] asm("_binary_esp_image_encryption_key_pem_start");
@@ -155,11 +163,17 @@ static esp_err_t create_plug(gpio_plug* plug, node_t* node)
         return ESP_ERR_INVALID_ARG;
     }
 
+    // Check if plug's IO pin is already used by reset button
+    if ((reset_gpio != gpio_num_t::GPIO_NUM_NC) && (reset_gpio == plug->GPIO_PIN_VALUE)) {
+        ESP_LOGE(TAG, "Reset button already configured for gpio pin : %d", plug->GPIO_PIN_VALUE);
+        return ESP_ERR_INVALID_STATE;
+    }
+
     // Check for plug if already configured.
-    for (int i = 0; i < s_configure_plugs; i++) {
-        if (s_plugin_unit_list[i].plug == plug->GPIO_PIN_VALUE) {
+    for (int i = 0; i < configure_plugs; i++) {
+        if (plugin_unit_list[i].plug == plug->GPIO_PIN_VALUE) {
             ESP_LOGE(TAG, "Plug already configured for gpio pin : %d", plug->GPIO_PIN_VALUE);
-            return ESP_OK;
+            return ESP_ERR_INVALID_STATE;
         }
     }
 
@@ -180,10 +194,10 @@ static esp_err_t create_plug(gpio_plug* plug, node_t* node)
     }
 
     // Check for maximum plugs that can be configured.
-    if (s_configure_plugs < CONFIG_MAX_CONFIGURABLE_PLUGS) {
-        s_plugin_unit_list[s_configure_plugs].plug = plug->GPIO_PIN_VALUE;
-        s_plugin_unit_list[s_configure_plugs].endpoint_id = endpoint::get_id(endpoint);
-        s_configure_plugs++;
+    if (configure_plugs < CONFIG_NUM_VIRTUAL_PLUGS) {
+        plugin_unit_list[configure_plugs].plug = plug->GPIO_PIN_VALUE;
+        plugin_unit_list[configure_plugs].endpoint_id = endpoint::get_id(endpoint);
+        configure_plugs++;
     } else {
         ESP_LOGE(TAG, "Maximum plugs configuration limit exceeded!!!");
         return ESP_FAIL;
@@ -208,17 +222,75 @@ extern "C" void app_main()
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
     ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
 
-    struct gpio_plug plug1;
-    plug1.GPIO_PIN_VALUE = (gpio_num_t) CONFIG_GPIO_PLUG_1;
-    create_plug(&plug1, node);
+#ifdef CONFIG_GPIO_PLUG_1
+    CREATE_PLUG(node, 1)
+#endif
 
-    struct gpio_plug plug2;
-    plug2.GPIO_PIN_VALUE = (gpio_num_t) CONFIG_GPIO_PLUG_2;
-    create_plug(&plug2, node);
+#ifdef CONFIG_GPIO_PLUG_2
+    CREATE_PLUG(node, 2)
+#endif
 
-    struct gpio_plug plug3;
-    plug3.GPIO_PIN_VALUE = (gpio_num_t) CONFIG_GPIO_PLUG_3;
-    create_plug(&plug3, node);
+#ifdef CONFIG_GPIO_PLUG_3
+    CREATE_PLUG(node, 3)
+#endif
+
+#ifdef CONFIG_GPIO_PLUG_4
+    CREATE_PLUG(node, 4)
+#endif
+
+#ifdef CONFIG_GPIO_PLUG_5
+    CREATE_PLUG(node, 5)
+#endif
+
+#ifdef CONFIG_GPIO_PLUG_6
+    CREATE_PLUG(node, 6)
+#endif
+
+#ifdef CONFIG_GPIO_PLUG_7
+    CREATE_PLUG(node, 7)
+#endif
+
+#ifdef CONFIG_GPIO_PLUG_8
+    CREATE_PLUG(node, 8)
+#endif
+
+#ifdef CONFIG_GPIO_PLUG_9
+    CREATE_PLUG(node, 9)
+#endif
+
+#ifdef CONFIG_GPIO_PLUG_10
+    CREATE_PLUG(node, 10)
+#endif
+
+#ifdef CONFIG_GPIO_PLUG_11
+    CREATE_PLUG(node, 11)
+#endif
+
+#ifdef CONFIG_GPIO_PLUG_12
+    CREATE_PLUG(node, 12)
+#endif
+
+#ifdef CONFIG_GPIO_PLUG_13
+    CREATE_PLUG(node, 13)
+#endif
+
+#ifdef CONFIG_GPIO_PLUG_14
+    CREATE_PLUG(node, 14)
+#endif
+
+#ifdef CONFIG_GPIO_PLUG_15
+    CREATE_PLUG(node, 15)
+#endif
+
+#ifdef CONFIG_GPIO_PLUG_16
+    CREATE_PLUG(node, 16)
+#endif
+
+    // Initialize factory reset button
+    app_driver_handle_t button_handle = app_driver_button_init(&reset_gpio);
+    if (button_handle) {
+        app_reset_button_register(button_handle);
+    }
 
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     /* Set OpenThread platform config */
