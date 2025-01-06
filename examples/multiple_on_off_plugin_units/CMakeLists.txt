@@ -19,6 +19,7 @@ include(${ESP_MATTER_PATH}/examples/common/cmake_common/components_include.cmake
 set(EXTRA_COMPONENT_DIRS
     "${MATTER_SDK_PATH}/config/esp32/components"
     "${ESP_MATTER_PATH}/components"
+    "${ESP_MATTER_PATH}/examples/common"
     ${extra_components_dirs_append})
 
 project(multiple_on_off_plugin_units)

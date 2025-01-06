@@ -10,6 +10,7 @@
 
 #include <esp_err.h>
 #include <esp_matter.h>
+#include "soc/gpio_num.h"
 
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include "esp_openthread_types.h"
@@ -28,8 +29,8 @@ struct plugin_endpoint {
 
 gpio_num_t get_gpio(uint16_t endpoint_id);
 
-extern plugin_endpoint s_plugin_unit_list[CONFIG_MAX_CONFIGURABLE_PLUGS];
-extern uint16_t s_configure_plugs;
+extern plugin_endpoint plugin_unit_list[CONFIG_NUM_VIRTUAL_PLUGS];
+extern uint16_t configure_plugs;
 
 typedef void *app_driver_handle_t;
 
@@ -59,6 +60,17 @@ esp_err_t app_driver_plugin_unit_init(const gpio_plug* plug);
  */
 esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_t endpoint_id, uint32_t cluster_id,
                                       uint32_t attribute_id, esp_matter_attr_val_t *val);
+
+/** Initialize the button driver
+ *
+ * This initializes the button driver associated with the selected board.
+ * 
+ * @param[out] reset_gpio GPIO pin # assigned to the reset button
+ *
+ * @return Handle on success.
+ * @return NULL in case of failure.
+ */
+app_driver_handle_t app_driver_button_init(gpio_num_t * reset_gpio);
 
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #define ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG()                                           \
