@@ -17,6 +17,19 @@
 #include "esp_err.h"
 #include "sdkconfig.h"
 
+#include <app/clusters/ota-requestor/ExtendedOTARequestorDriver.h>
+#include <app/clusters/ota-requestor/OTARequestorUserConsentDelegate.h>
+#include <platform/ESP32/OTAImageProcessorImpl.h>
+
+typedef struct {
+    // ota requestor driver
+    chip::DeviceLayer::ExtendedOTARequestorDriver *driver = nullptr;
+    // user consent
+    chip::ota::OTARequestorUserConsentDelegate *user_consent = nullptr;
+    // ota image processor
+    chip::OTAImageProcessorImpl *image_processor = nullptr;
+} esp_matter_ota_requestor_impl_t;
+
 typedef struct {
     /**
      * Timeout (in seconds) for querying default OTA Providers
@@ -29,16 +42,23 @@ typedef struct {
      * Default timeout is 300 seconds
      */
     uint32_t watchdog_timeout;
+    /**
+     * Options to override the default behavior of the OTA requestor
+     * Refer to esp_matter_ota_requestor_impl_t for more details.
+     * If not set, default implementation is used.
+     */
+    const esp_matter_ota_requestor_impl_t *impl = nullptr;
 } esp_matter_ota_config_t;
 
-
-/** Initialize the Matter OTA Requestor
+/**
+ * Initialize the Matter OTA Requestor
  *
+ * Adds the OTA requestor server cluster and ota provider client cluster to root node endpoint.
  */
 esp_err_t esp_matter_ota_requestor_init(void);
 
-/**Start the Matter OTA Requestor
- * 
+/**
+ * Start the Matter OTA Requestor
  */
 void esp_matter_ota_requestor_start(void);
 
@@ -46,7 +66,7 @@ void esp_matter_ota_requestor_start(void);
  * @brief This API initializes the handling of encrypted OTA image
  *
  * @param[in] key  null terminated RSA-3072 key in PEM format.
- *                 The key buffer must remain allocated and should not be freed. 
+ *                 The key buffer must remain allocated and should not be freed.
  * @param[in] size Size of the key, size shall contain the null terminator as well.
  *                 If using `strlen` then please consider adding +1 to the size.
  *
