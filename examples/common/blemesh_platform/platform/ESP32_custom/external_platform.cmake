@@ -53,8 +53,8 @@ if (NOT CONFIG_ENABLE_ETHERNET_TELEMETRY)
                                           "${CMAKE_CURRENT_LIST_DIR}/NetworkCommissioningDriver_Ethernet.cpp")
 endif()
 
-if (NOT CONFIG_ENABLE_MATTER_OVER_THREAD)
-    list(APPEND EXPLANT_EXCLUDE_SRCS_LIST "${CMAKE_CURRENT_LIST_DIR}/OpenthreadLauncher.c"
+if ((NOT CONFIG_OPENTHREAD_ENABLED) OR (NOT CONFIG_ENABLE_MATTER_OVER_THREAD))
+    list(APPEND EXPLANT_EXCLUDE_SRCS_LIST "${CMAKE_CURRENT_LIST_DIR}/OpenthreadLauncher.cpp"
                                           "${CMAKE_CURRENT_LIST_DIR}/ThreadStackManagerImpl.cpp")
 endif()
 
@@ -77,4 +77,10 @@ endif()
 
 if (NOT CONFIG_USE_ESP32_ECDSA_PERIPHERAL)
     list(APPEND EXPLANT_EXCLUDE_SRCS_LIST "${CMAKE_CURRENT_LIST_DIR}/ESP32CHIPCryptoPAL.cpp")
+endif()
+
+if (EXISTS ${CMAKE_CURRENT_LIST_DIR}/generate-include-files.cmake)
+    include(${CMAKE_CURRENT_LIST_DIR}/generate-include-files.cmake)
+else()
+    message(FATAL_ERROR "There should be a generate-include-files.cmake file in CONFIG_CHIP_EXTERNAL_PLATFORM_DIR!")
 endif()
