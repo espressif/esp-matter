@@ -62,12 +62,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     access_control::create(endpoint, &(config->access_control), CLUSTER_FLAG_SERVER);
     basic_information::create(endpoint, &(config->basic_information), CLUSTER_FLAG_SERVER);
@@ -110,9 +106,7 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
 #ifdef CONFIG_ENABLE_OTA_REQUESTOR
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 #else
     ESP_LOGE(TAG, "Need enable CONFIG_ENABLE_OTA_REQUESTOR to enable ota requestor function");
     return nullptr;
@@ -122,15 +116,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
 #ifdef CONFIG_ENABLE_OTA_REQUESTOR
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     cluster_t *cluster_p = cluster::ota_provider::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
     cluster_t *cluster_r = cluster::ota_requestor::create(endpoint, &(config->ota_requestor), CLUSTER_FLAG_SERVER);
@@ -160,22 +147,13 @@ uint8_t get_device_type_version()
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    add(endpoint, config);
-    return endpoint;
+    return common::create<config_t>(node, config, flags, priv_data, add);
 }
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     cluster_t *cluster = cluster::ota_provider::create(endpoint, &(config->ota_provider), CLUSTER_FLAG_SERVER);
     if (!cluster) {
@@ -205,12 +183,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     cluster_t *cluster = power_source::create(endpoint, &(config->power_source), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
     if (!cluster) {
@@ -240,12 +214,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kLightOutput);
@@ -277,12 +247,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kLightOutput);
@@ -315,12 +281,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kLightOutput);
@@ -356,12 +318,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kLightOutput);
@@ -402,12 +360,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -442,12 +396,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -484,12 +434,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -520,12 +466,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -554,12 +496,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -590,12 +528,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -628,12 +562,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kActuator);
@@ -663,12 +593,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -699,12 +625,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed add device type id:%" PRIu32 ", err: %d", get_device_type_id(), err);
-	return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     return ESP_OK;
 }
@@ -734,12 +656,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed add device type id:%" PRIu32 ", err: %d", get_device_type_id(), err);
-	return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -770,12 +688,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ", err: %d", get_device_type_id(), err);
-	return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -804,12 +718,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-	ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ", err: %d", get_device_type_id(), err);
-	return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kActuator);
@@ -838,12 +748,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-	ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ", err: %d", get_device_type_id(), err);
-	return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     operational_state::create(endpoint, &(config->operational_state), CLUSTER_FLAG_SERVER);
 
@@ -869,12 +775,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     operational_state::create(endpoint, &(config->operational_state), CLUSTER_FLAG_SERVER);
 
@@ -900,12 +802,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     operational_state::create(endpoint, &(config->operational_state), CLUSTER_FLAG_SERVER);
 
@@ -931,12 +829,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void * priv_da
 
 esp_err_t add(endpoint_t * endpoint, config_t * config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-	    ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ", err: %d", get_device_type_id(), err);
-	    return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kAudibleBeep);
@@ -966,12 +860,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     bridged_device_basic_information::create(endpoint, &(config->bridged_device_basic_information), CLUSTER_FLAG_SERVER);
 
@@ -1009,12 +899,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kAudibleBeep);
@@ -1043,12 +929,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void * priv_da
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kActuator);
@@ -1078,12 +960,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -1112,12 +990,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -1146,12 +1020,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -1180,12 +1050,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -1215,12 +1081,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -1249,12 +1111,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -1283,12 +1141,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -1318,12 +1172,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kActuator);
@@ -1354,12 +1204,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -1390,12 +1236,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     cluster_t *cluster = mode_select::create(endpoint, &(config->mode_select), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
     if (!cluster) {
@@ -1426,12 +1268,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kActuator);
@@ -1463,12 +1301,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     temperature_control::create(endpoint, &(config->temperature_control), CLUSTER_FLAG_SERVER, temperature_control::feature::temperature_number::get_id());
 
@@ -1495,12 +1329,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     return ESP_OK;
 }
@@ -1525,12 +1355,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     return ESP_OK;
 }
@@ -1556,12 +1382,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-	ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ", err: %d", get_device_type_id(), err);
-	return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kActuator);
@@ -1591,12 +1413,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -1625,12 +1443,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -1659,12 +1473,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kVisibleIndicator);
@@ -1694,12 +1504,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     power_topology::create(endpoint, &(config->power_topology), CLUSTER_FLAG_SERVER,
                             power_topology::feature::set_topology::get_id());
@@ -1729,12 +1535,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     temperature_control::create(endpoint, &(config->temperature_control), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
 
@@ -1760,12 +1562,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::off_only::get_id());
 
@@ -1791,12 +1589,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     cluster::energy_evse::create(endpoint, &(config->energy_evse), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
     energy_evse_mode::create(endpoint, &(config->energy_evse_mode), CLUSTER_FLAG_SERVER);
@@ -1824,12 +1618,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     cluster_t *cluster = operational_state::create(endpoint, &(config->operational_state), CLUSTER_FLAG_SERVER);
     operational_state::attribute::create_countdown_time(cluster, 0);
@@ -1858,12 +1648,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     fan_control::create(endpoint, &(config->fan_control), CLUSTER_FLAG_SERVER);
 
@@ -1890,12 +1676,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kActuator);
@@ -1925,12 +1707,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     cluster::device_energy_management::create(endpoint, &(config->device_energy_management), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
     device_energy_management_mode::create(endpoint, &(config->device_energy_management_mode), CLUSTER_FLAG_SERVER);
@@ -1958,12 +1736,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     thread_network_diagnostics::create(endpoint, &(config->thread_network_diagnostics), CLUSTER_FLAG_SERVER);
     thread_border_router_management::create(endpoint, &(config->thread_border_router_management), CLUSTER_FLAG_SERVER,
@@ -1991,12 +1765,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     network_commissioning::create(endpoint, &(config->network_commissioning), CLUSTER_FLAG_SERVER);
 
@@ -2022,12 +1792,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kActuator);
@@ -2059,13 +1825,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
-
+    VerifyOrReturnError(err == ESP_OK, err);
 
     identify::config_t identify_config;
     identify_config.identify_type = chip::to_underlying(Identify::IdentifyTypeEnum::kActuator);
@@ -2098,12 +1859,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER, cluster::thermostat::feature::heating::get_id());
     water_heater_management::create(endpoint, &(config->water_heater_management), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
@@ -2131,12 +1888,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     cluster_t *descriptor_cluster = cluster::get(endpoint, Descriptor::Id);
     descriptor::feature::taglist::add(descriptor_cluster);
@@ -2177,12 +1930,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     cluster_t *descriptor_cluster = cluster::get(endpoint, Descriptor::Id);
     descriptor::feature::taglist::add(descriptor_cluster);
@@ -2236,12 +1985,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
-    VerifyOrReturnError(endpoint != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add device type id:%" PRIu32 ",err: %d", get_device_type_id(), err);
-        return err;
-    }
+    VerifyOrReturnError(err == ESP_OK, err);
 
     cluster_t *descriptor_cluster = cluster::get(endpoint, Descriptor::Id);
     descriptor::feature::taglist::add(descriptor_cluster);
