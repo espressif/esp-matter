@@ -413,8 +413,6 @@ static int get_next_index()
 
 static esp_err_t disable(endpoint_t *endpoint)
 {
-    VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-
     /* Take lock if not already taken */
     lock::status_t lock_status = lock::chip_stack_lock(portMAX_DELAY);
 
@@ -1914,10 +1912,7 @@ esp_err_t set_parent_endpoint(endpoint_t *endpoint, endpoint_t *parent_endpoint)
 
 void *get_priv_data(uint16_t endpoint_id)
 {
-    node_t *node = node::get();
-    /* This is not an error, since the node will not be initialized for application using the data model from zap */
-    VerifyOrReturnValue(node, NULL, ESP_LOGE(TAG, "Node not found"));
-    endpoint_t *endpoint = get(node, endpoint_id);
+    endpoint_t *endpoint = get(endpoint_id);
     VerifyOrReturnValue(endpoint, NULL, ESP_LOGE(TAG, "Endpoint not found"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     return current_endpoint->priv_data;
@@ -1925,9 +1920,7 @@ void *get_priv_data(uint16_t endpoint_id)
 
 esp_err_t set_priv_data(uint16_t endpoint_id, void *priv_data)
 {
-    node_t *node = node::get();
-    VerifyOrReturnError(node, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Node is not initialized"));
-    endpoint_t *endpoint = get(node, endpoint_id);
+    endpoint_t *endpoint = get(endpoint_id);
     VerifyOrReturnError(endpoint, ESP_ERR_NOT_FOUND, ESP_LOGE(TAG, "Endpoint not found"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     current_endpoint->priv_data = priv_data;
@@ -1936,9 +1929,7 @@ esp_err_t set_priv_data(uint16_t endpoint_id, void *priv_data)
 
 esp_err_t set_identify(uint16_t endpoint_id, void *identify)
 {
-    node_t *node = node::get();
-    VerifyOrReturnError(node, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Node not found"));
-    endpoint_t *endpoint = get(node, endpoint_id);
+    endpoint_t *endpoint = get(endpoint_id);
     VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint not found"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     current_endpoint->identify = (Identify *)identify;
