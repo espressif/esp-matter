@@ -297,6 +297,12 @@ build_esp_matter_examples_pytest_H2_idf_v5_1:
     - cd ${ESP_MATTER_PATH}
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --pytest_h2
+    - |
+      if [ "$CI_PIPELINE_SOURCE" == "merge_request_event" ]; then
+        python tools/ci/post_results.py --chip esp32h2 --job_name "build_esp_matter_examples_pytest_H2_idf_v5_1" --ref_map_file light_mr_base.map --example "light"
+      else
+        echo "Not a Merge Request pipeline. Skipping post_results.py."
+      fi
 
 build_esp_matter_examples_pytest_C2_idf_v5_1:
   extends:
@@ -319,7 +325,14 @@ build_esp_matter_examples_pytest_C2_idf_v5_1:
   script:
     - cd ${ESP_MATTER_PATH}
     - pip install -r tools/ci/requirements-build.txt
+    - echo "${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
     - python tools/ci/build_apps.py ./examples --pytest_c2
+    - |
+      if [ "$CI_PIPELINE_SOURCE" == "merge_request_event" ]; then
+        python tools/ci/post_results.py --chip esp32c2 --job_name "build_esp_matter_examples_pytest_C2_idf_v5_1" --ref_map_file light_mr_base.map --example "light"
+      else
+        echo "Not a Merge Request pipeline. Skipping post_results.py."
+      fi
 
 build_ext_plat_c6_thread_controller_examples:
   extends:
@@ -344,6 +357,7 @@ build_esp_matter_examples:
       - "examples/**/build*/size.json"
       - "examples/**/build*/build_log.txt"
       - "examples/**/build*/*.bin"
+      - "examples/**/build*/*.map"
       - "examples/**/build*/flasher_args.json"
       - "examples/**/build*/config/sdkconfig.json"
       - "examples/**/build*/bootloader/*.bin"
