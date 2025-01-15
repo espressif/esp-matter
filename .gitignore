@@ -11,3 +11,5 @@ out/
 _build/
 tools/chip-tool/
 .zap/
+.idea
+cmake-build-*

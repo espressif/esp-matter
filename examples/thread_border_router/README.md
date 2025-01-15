@@ -9,7 +9,7 @@ See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/de
 
 ### 1.1 Hardware Platform
 
-The [ESP Thread Border Router board](https://github.com/espressif/esp-thread-br?tab=readme-ov-file#esp-thread-border-router-board) which provides an integrated module of an ESP32-S3 and an ESP32-H2 is required for this example.
+The [ESP Thread Border Router board](https://github.com/espressif/esp-thread-br?tab=readme-ov-file#esp-thread-border-router-board) which provides an integrated module of an ESP32-S3 and an ESP32-H2 is required for this example. Alternatively, the ESP32-S3 and ESP32-H2 might be replaced by the ESP32-C6.
 
 ### 1.2 Firmware for RCP
 
