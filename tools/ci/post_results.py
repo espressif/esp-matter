@@ -24,7 +24,7 @@ def fetch_pipeline_for_commit(commit_sha, branch_name="main"):
     response.raise_for_status()
     pipelines = response.json()
     if not pipelines:
-        raise ValueError(f"No pipeline found for commit: {commit_sha} on branch: {branch_name}")
+        raise ValueError(f"No pipeline found for commit: {commit_sha} on branch: {branch_name}.")
     return pipelines[0]['id']
 
 # Fetch the versions for the gitlab MR.
@@ -55,11 +55,11 @@ def download_ref_map_file(chip_name, job_id, output_file):
                 f.write(chunk)
 
 # Locate the map file artifact for the current pipeline.
-def locate_current_map_file(example):
-   pattern = f"examples/{example}/build*/{example}.map"
+def locate_current_map_file(chip, example):
+   pattern = f"examples/{example}/build_{chip}_default/{example}.map"
    artifact_file_paths = glob.glob(pattern, recursive=True)
    if not artifact_file_paths:
-        raise FileNotFoundError("No map file found!")
+        raise FileNotFoundError("No map file found for the example {example} with target chip {chip}")
    return artifact_file_paths[0]
 
 # Execute esp_idf_size diff command to find increase/decrease in firmware size.
@@ -113,8 +113,8 @@ def main():
         if not target_job_id:
             raise ValueError("Target job not found.")
 
+        current_map_file = locate_current_map_file(args.chip, args.example)
         download_ref_map_file(args.chip, target_job_id, args.ref_map_file)
-        current_map_file = locate_current_map_file(args.example)
 
         size_diff_output = execute_idf_size_command(args.ref_map_file, current_map_file)
         post_results_to_gitlab_mr(size_diff_output, args.chip, args.example)

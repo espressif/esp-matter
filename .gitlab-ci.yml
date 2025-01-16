@@ -342,6 +342,7 @@ build_esp_matter_examples_pytest_C2_idf_v5_1:
         echo "Not a Merge Request pipeline. Skipping post_results.py."
       fi
 
+
 build_ext_plat_c6_thread_controller_examples:
   extends:
         - .build_examples_template
@@ -394,6 +395,14 @@ build_esp_matter_examples:
     - python tools/ci/build_apps.py ./examples --no_pytest
       --parallel-count ${CI_NODE_TOTAL:-1}
       --parallel-index ${CI_NODE_INDEX:-1}
+    - |
+      if [ "$CI_PIPELINE_SOURCE" == "merge_request_event" ] && [ "${CI_NODE_INDEX:-1}" -eq 2 ]; then
+        python tools/ci/post_results.py --chip esp32c3 --job_name "build_esp_matter_examples 2/2" --ref_map_file light_mr_base.map --example "light"
+      else
+        echo "Not a Merge Request pipeline. Skipping post_results.py."
+      fi
+
+
   parallel: 2
 
 build_nopytest_remaining_examples_manual:
