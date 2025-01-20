@@ -96,6 +96,9 @@ variables:
 
 .build_matter_examples: &build_matter_examples
     - export MATTER_EXAMPLES_PATH=$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/examples
+    - cd $ESP_MATTER_PATH/connectedhomeip/connectedhomeip
+    # Enter the Matter venv
+    - source scripts/activate.sh
     - cd $MATTER_EXAMPLES_PATH/all-clusters-app/esp32
     - idf.py build
     - cd $MATTER_EXAMPLES_PATH/temperature-measurement-app/esp32
@@ -104,8 +107,7 @@ variables:
     - idf.py build
     - cd $MATTER_EXAMPLES_PATH/pigweed-app/esp32
     - idf.py build
-    - cd $MATTER_EXAMPLES_PATH/persistent-storage/esp32
-    - idf.py build
+    # TODO:Remove persistent-storage example build because of the compilation errors of upstream repo
 
 .build_external_platform_example: &build_external_platform_example
     - rm -rf ${ESP_MATTER_PATH}/../platform
