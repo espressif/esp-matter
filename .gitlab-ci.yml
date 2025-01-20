@@ -63,9 +63,9 @@ variables:
   - ./install.sh
   - . ./export.sh
   # fetch submodules
+  - git submodule update --init --recursive --depth 1
   - export PYTHONPATH=${IDF_PATH}/tools/ci/python_packages/:${PYTHONPATH}
   - pip install python-gitlab
-  - python tools/ci/ci_fetch_submodule.py
 
 .setup_ot_br: &setup_ot_br
   - cd ${CI_PROJECT_DIR}
@@ -82,7 +82,6 @@ variables:
   # fetch submodules
   - export PYTHONPATH=${IDF_PATH}/tools/ci/python_packages/:${PYTHONPATH}
   - pip install python-gitlab
-  - python tools/ci/ci_fetch_submodule.py
   - cd examples/openthread/ot_rcp
   - idf.py set-target esp32h2
   - idf.py build
