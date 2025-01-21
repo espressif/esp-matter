@@ -46,11 +46,12 @@ public:
                       ScopedMemoryBufferWithSize<EventPathParams> &&event_paths, uint16_t min_interval,
                       uint16_t max_interval, bool auto_resubscribe = true, attribute_report_cb_t attribute_cb = nullptr,
                       event_report_cb_t event_cb = nullptr, subscribe_done_cb_t done_cb = nullptr,
-                      subscribe_failure_cb_t connect_failure_cb = nullptr)
+                      subscribe_failure_cb_t connect_failure_cb = nullptr, bool keep_subscription = true)
         : m_node_id(node_id)
         , m_min_interval(min_interval)
         , m_max_interval(max_interval)
         , m_auto_resubscribe(auto_resubscribe)
+        , m_keep_subscription(keep_subscription)
         , m_buffered_read_cb(*this)
         , m_attr_paths(std::move(attr_paths))
         , m_event_paths(std::move(event_paths))
@@ -71,11 +72,12 @@ public:
                       subscribe_command_type_t command_type, uint16_t min_interval, uint16_t max_interval,
                       bool auto_resubscribe = true, attribute_report_cb_t attribute_cb = nullptr,
                       event_report_cb_t event_cb = nullptr, subscribe_done_cb_t done_cb = nullptr,
-                      subscribe_failure_cb_t connect_failure_cb = nullptr)
+                      subscribe_failure_cb_t connect_failure_cb = nullptr, bool keep_subscription = true)
         : m_node_id(node_id)
         , m_min_interval(min_interval)
         , m_max_interval(max_interval)
         , m_auto_resubscribe(auto_resubscribe)
+        , m_keep_subscription(keep_subscription)
         , m_buffered_read_cb(*this)
         , on_device_connected_cb(on_device_connected_fcn, this)
         , on_device_connection_failure_cb(on_device_connection_failure_fcn, this)
@@ -125,6 +127,7 @@ private:
     uint16_t m_min_interval;
     uint16_t m_max_interval;
     bool m_auto_resubscribe;
+    bool m_keep_subscription;
     BufferedReadCallback m_buffered_read_cb;
     uint32_t m_subscription_id = 0;
     uint8_t m_resubscribe_retries = 0;
@@ -155,6 +158,7 @@ private:
  * @param[in] min_interval Minimum interval of the subscription
  * @param[in] max_interval Maximum interval of the subscription
  * @param[in] auto_resubscribe Auto re-subscribe flag
+ * @param[in] keep_subscription Keep subscription flag, terminate existing subscriptions if false
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
@@ -162,7 +166,8 @@ private:
 esp_err_t send_subscribe_attr_command(uint64_t node_id, ScopedMemoryBufferWithSize<uint16_t> &endpoint_ids,
                                       ScopedMemoryBufferWithSize<uint32_t> &cluster_ids,
                                       ScopedMemoryBufferWithSize<uint32_t> &attribute_ids, uint16_t min_interval,
-                                      uint16_t max_interval, bool auto_resubscribe = true);
+                                      uint16_t max_interval, bool auto_resubscribe = true,
+                                      bool keep_subscription = true);
 
 /** Send subscribe command with multiple event paths
  *
@@ -176,6 +181,7 @@ esp_err_t send_subscribe_attr_command(uint64_t node_id, ScopedMemoryBufferWithSi
  * @param[in] min_interval Minimum interval of the subscription
  * @param[in] max_interval Maximum interval of the subscription
  * @param[in] auto_resubscribe Auto re-subscribe flag
+ * @param[in] keep_subscription Keep subscription flag, terminate existing subscriptions if false
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
@@ -183,7 +189,8 @@ esp_err_t send_subscribe_attr_command(uint64_t node_id, ScopedMemoryBufferWithSi
 esp_err_t send_subscribe_event_command(uint64_t node_id, ScopedMemoryBufferWithSize<uint16_t> &endpoint_ids,
                                        ScopedMemoryBufferWithSize<uint32_t> &cluster_ids,
                                        ScopedMemoryBufferWithSize<uint32_t> &event_ids, uint16_t min_interval,
-                                       uint16_t max_interval, bool auto_resubscribe = true);
+                                       uint16_t max_interval, bool auto_resubscribe = true,
+                                       bool keep_subscription = true);
 
 /** Send subscribe command with single attribute path
  *
@@ -197,13 +204,14 @@ esp_err_t send_subscribe_event_command(uint64_t node_id, ScopedMemoryBufferWithS
  * @param[in] min_interval Minimum interval of the subscription
  * @param[in] max_interval Maximum interval of the subscription
  * @param[in] auto_resubscribe Auto re-subscribe flag
+ * @param[in] keep_subscription Keep subscription flag, terminate existing subscriptions if false
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
 esp_err_t send_subscribe_attr_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id,
                                       uint32_t attribute_id, uint16_t min_interval, uint16_t max_interval,
-                                      bool auto_resubscribe = true);
+                                      bool auto_resubscribe = true, bool keep_subscription = true);
 
 /** Send subscribe command with single event path
  *
@@ -217,12 +225,14 @@ esp_err_t send_subscribe_attr_command(uint64_t node_id, uint16_t endpoint_id, ui
  * @param[in] min_interval Minimum interval of the subscription
  * @param[in] max_interval Maximum interval of the subscription
  * @param[in] auto_resubscribe Auto re-subscribe flag
+ * @param[in] keep_subscription Keep subscription flag, terminate existing subscriptions if false
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
 esp_err_t send_subscribe_event_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t event_id,
-                                       uint16_t min_interval, uint16_t max_interval, bool auto_resubscribe = true);
+                                       uint16_t min_interval, uint16_t max_interval, bool auto_resubscribe = true,
+                                       bool keep_subscription = true);
 
 /** Shut down a subscription for given node id and subscription id
  *

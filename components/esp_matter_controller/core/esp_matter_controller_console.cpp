@@ -499,7 +499,7 @@ static esp_err_t controller_read_event_handler(int argc, char **argv)
 
 static esp_err_t controller_subscribe_attr_handler(int argc, char **argv)
 {
-    if (argc != 6) {
+    if (argc < 6) {
         return ESP_ERR_INVALID_ARG;
     }
 
@@ -513,13 +513,23 @@ static esp_err_t controller_subscribe_attr_handler(int argc, char **argv)
     uint16_t min_interval = string_to_uint16(argv[4]);
     uint16_t max_interval = string_to_uint16(argv[5]);
 
+    bool keep_subscription = true;
+    if (argc >= 7) {
+        keep_subscription = string_to_bool(argv[6]);
+    }
+
+    bool auto_resubscribe = true;
+    if (argc >= 8) {
+        auto_resubscribe = string_to_bool(argv[7]);
+    }
+
     return controller::send_subscribe_attr_command(node_id, endpoint_ids, cluster_ids, attribute_ids, min_interval,
-                                                   max_interval);
+                                                   max_interval, keep_subscription, auto_resubscribe);
 }
 
 static esp_err_t controller_subscribe_event_handler(int argc, char **argv)
 {
-    if (argc != 6) {
+    if (argc < 6) {
         return ESP_ERR_INVALID_ARG;
     }
 
@@ -532,8 +542,18 @@ static esp_err_t controller_subscribe_event_handler(int argc, char **argv)
     ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[3], event_ids), TAG, "Failed to parse event IDs");
     uint16_t min_interval = string_to_uint16(argv[4]);
     uint16_t max_interval = string_to_uint16(argv[5]);
+
+    bool keep_subscription = true;
+    if (argc >= 7) {
+        keep_subscription = string_to_bool(argv[6]);
+    }
+
+    bool auto_resubscribe = true;
+    if (argc >= 8) {
+        auto_resubscribe = string_to_bool(argv[7]);
+    }
     return controller::send_subscribe_event_command(node_id, endpoint_ids, cluster_ids, event_ids, min_interval,
-                                                    max_interval);
+                                                    max_interval, keep_subscription, auto_resubscribe);
 }
 
 static esp_err_t controller_shutdown_subscription_handler(int argc, char **argv)
@@ -669,14 +689,17 @@ esp_err_t controller_register_commands()
             .name = "subs-attr",
             .description = "Subscribe attributes of the nodes.\n"
                            "\tUsage: controller subs-attr <node-id> <endpoint-ids> <cluster-ids> <attr-ids> "
-                           "<min-interval> <max-interval>",
+                           "<min-interval> <max-interval> [keep-subscription] [auto-resubscribe]\n"
+                           "\tNotes: If 'keep-subscription' is 'false', existing subscriptions will be terminated for the node. "
+                           "If 'auto-resubscribe' is 'true', controller will auto resubscribe if subscriptions timeout",
             .handler = controller_subscribe_attr_handler,
         },
         {
             .name = "subs-event",
             .description = "Subscribe events of the nodes.\n"
                            "\tUsage: controller subs-event <node-id> <endpoint-ids> <cluster-ids> <event-ids> "
-                           "<min-interval> <max-interval>",
+                           "<min-interval> <max-interval> [keep-subscription] [auto-resubscribe]\n"
+                           "\tNotes: 'keep-subscription' and 'auto-resubscribe' are the same as 'subs-attr' command",
             .handler = controller_subscribe_event_handler,
         },
         {
