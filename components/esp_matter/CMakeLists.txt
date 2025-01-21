@@ -1,14 +1,6 @@
 set(SRC_DIRS_LIST       "."
-                        "private"
                         "utils"
                         "${MATTER_SDK_PATH}/zzz_generated/app-common/app-common/zap-generated/attributes"
-                        "${MATTER_SDK_PATH}/src/app/server"
-                        "${MATTER_SDK_PATH}/src/app/util"
-                        "${MATTER_SDK_PATH}/src/app/util/persistence"
-                        "${MATTER_SDK_PATH}/src/app/reporting"
-                        # TODO Use esp-matter data model and remove ember codes
-                        "${MATTER_SDK_PATH}/src/data-model-providers/codegen"
-                        "${MATTER_SDK_PATH}/src/app/server-cluster"
 )
 
 set(INCLUDE_DIRS_LIST   "."
@@ -20,31 +12,43 @@ set(INCLUDE_DIRS_LIST   "."
 # TODO: This file has compilation errors
 set(EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/closure-control-server/closure-control-server.cpp")
 
-if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
-    include("utils/cluster_select/cluster_dir.cmake")
-    get_supported_cluster_dirs(SUPPORTED_CLUSTER_DIRS)
-    foreach(CLUSTER_DIR ${SUPPORTED_CLUSTER_DIRS})
-        # If the cluster directory has .c/.cpp file, add it to SRC_DIRS_LIST
-        file(GLOB_RECURSE C_CPP_FILES "${CLUSTER_DIR}/*.c" "${CLUSTER_DIR}/*.cpp")
-        if (C_CPP_FILES)
-            list(APPEND SRC_DIRS_LIST "${CLUSTER_DIR}")
-        endif()
-    endforeach()
+if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
+    list(APPEND SRC_DIRS_LIST    "${MATTER_SDK_PATH}/src/app/server"
+                                 "${MATTER_SDK_PATH}/src/app/reporting"
+                                 "${MATTER_SDK_PATH}/src/app/server-cluster"
+                                 # TODO Use esp-matter data model and remove ember codes
+                                 "${MATTER_SDK_PATH}/src/app/util"
+                                 "${MATTER_SDK_PATH}/src/app/util/persistence"
+                                 "${MATTER_SDK_PATH}/src/data-model-providers/codegen")
+    if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
+        include("utils/cluster_select/cluster_dir.cmake")
+        get_supported_cluster_dirs(SUPPORTED_CLUSTER_DIRS)
+        foreach(CLUSTER_DIR ${SUPPORTED_CLUSTER_DIRS})
+            # If the cluster directory has .c/.cpp file, add it to SRC_DIRS_LIST
+            file(GLOB_RECURSE C_CPP_FILES "${CLUSTER_DIR}/*.c" "${CLUSTER_DIR}/*.cpp")
+            if (C_CPP_FILES)
+                list(APPEND SRC_DIRS_LIST "${CLUSTER_DIR}")
+            endif()
+        endforeach()
 
-    list(APPEND SRC_DIRS_LIST "zap_common/app")
-    list(APPEND INCLUDE_DIRS_LIST "zap_common")
+        list(APPEND SRC_DIRS_LIST "zap_common/app"
+                                  "data_model"
+                                  "private")
+        list(APPEND INCLUDE_DIRS_LIST "zap_common"
+                                      "data_model")
+    endif(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
 else()
-    # Do not add all the clusters srcs to esp_matter for examples that don't use ESP-Matter Data Model(such as zap light example)
-    # For those examples, they should include the clusters srcs in their main component
-    list(APPEND EXCLUDE_SRCS_LIST "esp_matter_delegate_callbacks.cpp")
-endif()
+    list(APPEND EXCLUDE_SRCS_LIST "esp_matter_identify.cpp"
+                                  "esp_matter_ota.cpp"
+                                  "esp_matter_attribute_utils.cpp")
+endif(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
 
 set(REQUIRES_LIST       chip bt esp_matter_console nvs_flash app_update esp_secure_cert_mgr mbedtls esp_system openthread json)
 
 idf_component_register( SRC_DIRS        ${SRC_DIRS_LIST}
                         INCLUDE_DIRS    ${INCLUDE_DIRS_LIST}
                         EXCLUDE_SRCS    ${EXCLUDE_SRCS_LIST}
-                        PRIV_INCLUDE_DIRS "private"
+                        PRIV_INCLUDE_DIRS "private" "data_model/private"
                         REQUIRES        ${REQUIRES_LIST})
 
 # This has been added to fix the error and should be removed once fixed:
@@ -53,10 +57,14 @@ idf_component_register( SRC_DIRS        ${SRC_DIRS_LIST}
 idf_build_set_property(COMPILE_OPTIONS "-Wno-error=uninitialized;-Wno-error=maybe-uninitialized;-Wno-missing-field-initializers;" APPEND)
 idf_build_set_property(COMPILE_OPTIONS "-Wno-error=array-bounds" APPEND)
 
-if (NOT CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
-    target_include_directories(${COMPONENT_LIB} PUBLIC "${CMAKE_BINARY_DIR}/gen/__idf_main-codegen/cpp-app"
-                                                       "${CMAKE_BINARY_DIR}/gen/__idf_main-zapgen/zapgen/app-templates")
-endif()
+if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
+    if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
+        target_link_libraries(${COMPONENT_LIB} INTERFACE "-u data_model_utils_impl")
+    else()
+        target_include_directories(${COMPONENT_LIB} PUBLIC "${CMAKE_BINARY_DIR}/gen/__idf_main-codegen/cpp-app"
+                                                           "${CMAKE_BINARY_DIR}/gen/__idf_main-zapgen/zapgen/app-templates")
+    endif(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
+endif(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
 
 target_sources(${COMPONENT_LIB} PRIVATE ${MATTER_SDK_PATH}/src/app/StorageDelegateWrapper.cpp
                                         ${MATTER_SDK_PATH}/src/app/SafeAttributePersistenceProvider.cpp)

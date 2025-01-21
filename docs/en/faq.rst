@@ -170,7 +170,7 @@ A1.8 Why does free RAM increase after first commissioning
 After the first commissioning, you may notice that the free RAM increases. This is because, by default,
 BLE is only used for the commissioning process. Once the commissioning is complete, BLE is deinitialized,
 and all the memory allocated to it is recovered. Here's the link to the
-:project_file:`implementation which frees the BLE memory <components/esp_matter/esp_matter_core.cpp#L859-L891>`.
+:project_file:`implementation which frees the BLE memory <components/esp_matter/esp_matter_core.cpp#L287-L290>`.
 
 However, if you want to continue using the BLE even after the commissioning process, you can disable the
 ``CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING``. This will ensure that the memory allocated to the BLE functionality

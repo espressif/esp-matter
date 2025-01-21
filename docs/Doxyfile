@@ -21,13 +21,14 @@ PROJECT_NAME = "Programming Guide"
 ## and used to include in API reference documentation
 
 INPUT = \
-    $(PROJECT_PATH)/components/esp_matter/esp_matter_endpoint.h     \
-    $(PROJECT_PATH)/components/esp_matter/esp_matter_cluster.h      \
-    $(PROJECT_PATH)/components/esp_matter/esp_matter_attribute.h    \
-    $(PROJECT_PATH)/components/esp_matter/esp_matter_command.h      \
-    $(PROJECT_PATH)/components/esp_matter/esp_matter_core.h         \
-    $(PROJECT_PATH)/components/esp_matter/esp_matter_event.h        \
-    $(PROJECT_PATH)/components/esp_matter/esp_matter_client.h       \
+    $(PROJECT_PATH)/components/esp_matter/data_model/esp_matter_endpoint.h     \
+    $(PROJECT_PATH)/components/esp_matter/data_model/esp_matter_cluster.h      \
+    $(PROJECT_PATH)/components/esp_matter/data_model/esp_matter_attribute.h    \
+    $(PROJECT_PATH)/components/esp_matter/data_model/esp_matter_command.h      \
+    $(PROJECT_PATH)/components/esp_matter/data_model/esp_matter_event.h        \
+    $(PROJECT_PATH)/components/esp_matter/data_model/esp_matter_data_model.h   \
+    $(PROJECT_PATH)/components/esp_matter/esp_matter_core.h                    \
+    $(PROJECT_PATH)/components/esp_matter/esp_matter_client.h                  \
 
 ## Get warnings for functions that have no documentation for their parameters or return value
 ##

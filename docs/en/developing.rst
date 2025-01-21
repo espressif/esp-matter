@@ -648,7 +648,7 @@ for clarity on the terms like endpoints, clusters, etc. that are used in this se
       node_t *node = node::create(&node_config, app_attribute_update_cb, NULL);
 
 -  We will use the ``color_temperature_light`` standard device type in this
-   case. All standard device types are available in :project_file:`esp_matter_endpoint.h <components/esp_matter/esp_matter_endpoint.h>` header file.
+   case. All standard device types are available in :project_file:`esp_matter_endpoint.h <components/esp_matter/data_model/esp_matter_endpoint.h>` header file.
    Each device type has a set of default configuration that can be
    specific as well.
 

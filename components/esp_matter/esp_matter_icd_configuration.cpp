@@ -16,6 +16,9 @@
 #include <esp_err.h>
 #include <esp_matter_core.h>
 #include <esp_matter_icd_configuration.h>
+#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
+#include <esp_matter_data_model.h>
+#endif
 
 #include <app/icd/server/ICDConfigurationData.h>
 #include <lib/core/Optional.h>
@@ -107,21 +110,25 @@ static esp_err_t set_active_threshold(uint32_t active_threshold_ms)
     return chip::Test::ICDConfigurationDataTestAccess::SetActiveThreshold(Milliseconds32(active_threshold_ms));
 }
 
+#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 static bool s_enable_icd_server = true;
 
 bool get_icd_server_enabled()
 {
     return s_enable_icd_server;
 }
+#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 
 esp_err_t set_configuration_data(config_t *config)
 {
     ESP_RETURN_ON_FALSE(config, ESP_ERR_INVALID_ARG, TAG, "config cannot be NULL");
+#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
     if (!config->enable_icd_server) {
-        ESP_RETURN_ON_FALSE(!node::get(), ESP_ERR_INVALID_STATE, TAG,
+        ESP_RETURN_ON_FALSE(!esp_matter::node::get(), ESP_ERR_INVALID_STATE, TAG,
                             "Could not disable ICD server after data model is created");
     }
     s_enable_icd_server = config->enable_icd_server;
+#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
     ESP_RETURN_ON_FALSE(!is_started(), ESP_ERR_INVALID_STATE, TAG,
                         "Could not change ICD configuration data after Matter is started");
     ESP_RETURN_ON_ERROR(set_polling_intervals(config->fast_interval_ms, config->slow_interval_ms), TAG,

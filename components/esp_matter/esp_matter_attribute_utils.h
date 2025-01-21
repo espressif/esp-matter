@@ -450,5 +450,21 @@ esp_err_t report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
  */
 void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val, bool is_read);
 
+/** Get attribute val raw
+ *
+ * Get the value of the attribute in the database, without the attribute handle.
+ *
+ * @param[in] endpoint_id Endpoint ID of the attribute.
+ * @param[in] cluster_id Cluster ID of the attribute.
+ * @param[in] attribute_id Attribute ID of the attribute.
+ * @param[out] value Pointer to an allocated buffer for the attribute value.
+ * @param[in] attribute_size Size of the allocated buffer.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t get_val_raw(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, uint8_t *value,
+                      uint16_t attribute_size);
+
 } /* attribute */
 } /* esp_matter */

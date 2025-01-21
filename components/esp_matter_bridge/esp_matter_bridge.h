@@ -16,7 +16,7 @@
 #include <sdkconfig.h>
 
 #include <esp_err.h>
-#include <esp_matter_core.h>
+#include <esp_matter_data_model.h>
 
 #define MAX_BRIDGED_DEVICE_COUNT \
     CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT - 1 - CONFIG_ESP_MATTER_AGGREGATOR_ENDPOINT_COUNT

@@ -15,7 +15,7 @@
 #pragma once
 
 #include <esp_err.h>
-#include <esp_matter.h>
+#include <esp_matter_data_model.h>
 #include <platform/DeviceControlServer.h>
 
 namespace esp_matter {

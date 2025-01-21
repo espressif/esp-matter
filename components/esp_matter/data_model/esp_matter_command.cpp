@@ -3225,7 +3225,6 @@ constexpr const cluster_command_t cluster_command_table[] = {
     {GroupKeyManagement::Id, GET_COMMAND_COUNT_LIST(cluster::group_key_management)},
 };
 
-#if defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
 const command_entry_t *get_cluster_accepted_command_list(uint32_t cluster_id)
 {
     for (auto const &cluster_command : cluster_command_table) {
@@ -3265,11 +3264,9 @@ size_t get_cluster_generated_command_count(uint32_t cluster_id)
     }
     return 0;
 }
-#endif // defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
 
 static callback_t get_cluster_accepted_command(uint32_t cluster_id, uint32_t command_id)
 {
-#if defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
     for (auto const &cluster_command : cluster_command_table) {
         if (cluster_command.cluster_id == cluster_id) {
             for (size_t index = 0; index < cluster_command.accepted_command_count; ++index){
@@ -3279,7 +3276,6 @@ static callback_t get_cluster_accepted_command(uint32_t cluster_id, uint32_t com
             }
         }
     }
-#endif
     return nullptr;
 }
 
