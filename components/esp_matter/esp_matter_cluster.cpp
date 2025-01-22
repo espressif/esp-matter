@@ -1215,6 +1215,9 @@ const function_generic_t function_list[] = {
 };
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
+static uint8_t server_cluster_count = 0;
+uint8_t get_server_cluster_count() { return server_cluster_count; }
+
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, Groups::Id, flags);
@@ -1243,6 +1246,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+
+        server_cluster_count++;
     }
 
     /* Commands */

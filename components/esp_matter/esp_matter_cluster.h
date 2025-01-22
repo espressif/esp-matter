@@ -306,6 +306,7 @@ typedef struct config {
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+uint8_t get_server_cluster_count();
 } /* groups */
 
 namespace scenes_management {
