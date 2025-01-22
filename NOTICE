@@ -1,6 +1,9 @@
 Espressif’s SDK for Matter is an open source development framework for Matter
 Specification. It is built on top of the open source Matter SDK. It is developed
 and maintained by Espressif Systems and licensed under Apache License 2.0.
+The following content is copied from the Matter SDK NOTICE file.
+If there are any updates, the latest copy can be found at
+https://github.com/project-chip/connectedhomeip/blob/master/NOTICE
 
 The Matter SDK is an open source implementation of the Matter Specification
 (Matter). Matter is developed by members of the Connectivity Standards Alliance
