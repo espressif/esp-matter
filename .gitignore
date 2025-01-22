@@ -13,3 +13,4 @@ tools/chip-tool/
 .zap/
 .idea
 cmake-build-*
+venv
