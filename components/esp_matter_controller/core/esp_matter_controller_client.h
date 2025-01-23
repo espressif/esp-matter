@@ -101,6 +101,14 @@ public:
     esp_err_t setup_controller(chip::MutableByteSpan &ipk);
     MatterDeviceController *get_controller() { return &m_device_controller; }
 #endif
+    chip::FabricIndex get_fabric_index()
+    {
+#ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+        return m_device_commissioner.GetFabricIndex();
+#else
+        return m_device_controller.GetFabricIndex();
+#endif
+    }
 
 private:
     matter_controller_client() {}
