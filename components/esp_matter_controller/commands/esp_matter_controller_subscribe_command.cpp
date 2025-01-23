@@ -280,18 +280,36 @@ esp_err_t send_subscribe_event_command(uint64_t node_id, uint16_t endpoint_id, u
 
 esp_err_t send_shutdown_subscription(uint64_t node_id, uint32_t subscription_id)
 {
-    if (CHIP_NO_ERROR !=
-        InteractionModelEngine::GetInstance()->ShutdownSubscription(
-#if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-            ScopedNodeId(node_id, matter_controller_client::get_instance().get_commissioner()->GetFabricIndex()),
-            subscription_id)) {
+#ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
+    chip::FabricIndex fabric_index = get_fabric_index();
 #else
-            ScopedNodeId(node_id, /* fabric index */ 1), subscription_id)) {
+    chip::FabricIndex fabric_index = matter_controller_client::get_instance().get_fabric_index();
 #endif
+    if (CHIP_NO_ERROR !=
+        InteractionModelEngine::GetInstance()->ShutdownSubscription(ScopedNodeId(node_id, fabric_index),
+                                                                    subscription_id)) {
         ESP_LOGE(TAG, "Shutdown Subscription Failed");
         return ESP_FAIL;
     }
     return ESP_OK;
+}
+
+void send_shutdown_subscriptions(uint64_t node_id)
+{
+#ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
+    chip::FabricIndex fabric_index = get_fabric_index();
+#else
+    chip::FabricIndex fabric_index = matter_controller_client::get_instance().get_fabric_index();
+#endif
+
+    InteractionModelEngine::GetInstance()->ShutdownSubscriptions(fabric_index, node_id);
+    ESP_LOGI(TAG, "Shutdown Subscriptions for node:0x%llx", node_id);
+}
+
+void send_shutdown_all_subscriptions()
+{
+    InteractionModelEngine::GetInstance()->ShutdownAllSubscriptions();
+    ESP_LOGI(TAG, "Shutdown all Subscriptions");
 }
 
 } // namespace controller
