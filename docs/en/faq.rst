@@ -6,18 +6,14 @@ A1.1 Compilation errors
 
 I cannot build the application:
 
--  Make sure you are on the correct esp-idf branch/release. Run ``git submodule
-   update —init —recursive`` to make sure the submodules are at the
-   correct heads
--  Make sure you have the correct ESP_MATTER_PATH (and any other required paths).
--  Delete the build/ directory and also sdkconfig and sdkconfig.old and
+-  Make sure you are on the correct esp-idf branch/release.
+-  Run ``git submodule update —init —recursive`` to make sure the submodules are at the
+   correct heads.
+-  Make sure you have the correct ``ESP_MATTER_PATH`` (and any other required paths).
+-  Delete the ``build/`` directory and also ``sdkconfig`` and ``sdkconfig.old`` and
    then build again.
 -  If you are still facing issues, reproduce it on the default
-   example and then raise it `here <https://github.com/espressif/esp-matter/issues>`__. Please make sure to
-   share these:
-
-   -  The complete device logs taken over UART.
-   -  The esp-matter and esp-idf branch you are using.
+   example and then raise a `Github issue`_.
 
 A1.2 Device commissioning using chip-tool
 -----------------------------------------
@@ -26,18 +22,12 @@ I cannot commission a new device through the chip-tool:
 
 -  If the ``chip-tool pairing ble-wifi`` command is failing,
    make sure the arguments are correct.
+- Please check ``chip-tool pairing ble-wifi --help`` for argument help.
 -  Make sure Bluetooth is turned on, on your client (host).
--  If you are still facing issues, reproduce it on the default
-   example for the device and then raise it `here <https://github.com/espressif/esp-matter/issues>`__. Make sure
-   to share these:
-
-   -  The complete device logs.
-   -  The complete chip-tool logs.
-   -  The esp-matter and esp-idf branch you are using.
 
 Bluetooth/BLE does not work on by device:
 
--  There are some `known issues <https://github.com/project-chip/connectedhomeip/issues/13303>`__ where BLE does not work on MacOS.
+-  There is a known issues `#13303`_ where BLE does not work on MacOS.
 -  In this case, the following can be done:
 
    -  Run the device console command:
@@ -46,12 +36,7 @@ Bluetooth/BLE does not work on by device:
       ``chip-tool pairing onnetwork 0x7283 20202021``.
 
 -  If you are still facing issues, reproduce it on the default
-   example for the device and then raise it `here <https://github.com/espressif/esp-matter/issues>`__. Make sure
-   to share these:
-
-   -  The complete device logs taken over UART.
-   -  The complete chip-tool logs.
-   -  The esp-matter and esp-idf branch you are using.
+   example for the device and then raise a `Github issue`_.
 
 A1.3 Device crashing
 --------------------
@@ -66,30 +51,19 @@ My device is crashing:
 -  Make sure you are on the correct esp-idf branch. Run ``git submodule
    update —init —recursive`` to make sure the submodules are at the
    correct heads.
--  Make sure you have the correct ESP_MATTER_PATH (and any other paths)
+-  Make sure you have the correct ``ESP_MATTER_PATH`` (and any other paths)
    is (are) exported.
--  Delete the build/ directory and also sdkconfig and sdkconfig.old and
+-  Delete the ``build/`` directory and also ``sdkconfig`` and ``sdkconfig.old`` and
    then build and flash again.
 -  If you are still facing issues, reproduce it on the default
-   example for the device and then raise it `here <https://github.com/espressif/esp-matter/issues>`__. Make sure
-   to share these:
+   example for the device and then raise a `Github issue`_. Along with the
+   details mentioned in the issue template, please share the following details:
 
    -  The steps you followed to reproduce the issue.
-
    -  The complete device logs taken over UART.
-
-   -
-
-      .. raw:: html
-
-         <example>
-
-      .elf file from the build/ directory.
-
+   -  The .elf file from the build/ directory.
    -  If you have gdb enabled, run the command ``backtrace`` and share the
       output of gdb too.
-
-   -  The esp-matter and esp-idf branch you are using.
 
 A1.4 Device not crashed but not responding
 ------------------------------------------
@@ -101,27 +75,14 @@ My device is not responding to commands:
 -  Make sure the node_id and the endpoint_id are correct in the command
    from chip-tool.
 -  If you are still facing issues, reproduce it on the default
-   example for the device and then raise it `here <https://github.com/espressif/esp-matter/issues>`__. Make sure
-   to share these:
+   example for the device and then raise a `Github issue`_. Along with the
+   details mentioned in the issue template, please share the following details:
 
    -  The steps you followed to reproduce the issue.
    -  The complete device logs taken over UART.
-   -  The esp-matter and esp-idf branch you are using.
 
-A1.5 QR code not rendering
---------------------------
 
-The QR code on my device console is not rendering properly:
-
--  Check the below lines on your terminal and copy paste the given URL
-   in a browser:
-
-   ::
-
-      If QR code is not visible, copy paste the URL in a browser:
-      https://project-chip.github.io/connectedhomeip/qrcode.html?data=....
-
-A1.6 Onboard LED not working
+A1.5 Onboard LED not working
 ----------------------------
 
 The LED on my devkit is not working:
@@ -131,16 +92,12 @@ The LED on my devkit is not working:
    path.
 -  Check the version of your board, and if it has the LED connected to a
    different pin. If it is different, you can change the
-   led_driver_config_t accordingly in the device.c file.
+   ``led_driver_config_t`` accordingly in the ``device.c`` file.
 -  If you are still facing issues, reproduce it on the default
-   example for the device and then raise it `here <https://github.com/espressif/esp-matter/issues>`__. Make sure
-   to share these:
+   example for the device and then raise a `Github issue`_.
 
-   -  The complete device logs taken over UART.
-   -  The esp-matter and esp-idf branch you are using.
-   -  The devkit and its version that you are using.
 
-A1.7 Using Rotating Device Identifier
+A1.6 Using Rotating Device Identifier
 -------------------------------------
 
 What is Rotating Device Identifier:
@@ -179,25 +136,15 @@ Difference between Rotating ID Unique ID and Unique ID
    -  it SHALL not be identical to the SerialNumber attribute
    -  it SHALL not be printed on the product or delivered with the product
 
-   The value does not need to be human readable.
 
-**Also check the "Appendix FAQs" sections of the respective examples.**
-
--  :project_file:`Light <examples/light/README.md>`
--  :project_file:`Light Switch <examples/light_switch/README.md>`
--  :project_file:`Zap Light <examples/zap_light/README.md>`
--  :project_file:`Zigbee Bridge <examples/bridge_apps/zigbee_bridge/README.md>`
--  :project_file:`BLE Mesh Bridge <examples/bridge_apps/blemesh_bridge/README.md>`
-
-A1.8 ModuleNotFoundError: No module named 'lark'
+A1.7 ModuleNotFoundError: No module named 'lark'
 ------------------------------------------------
 
 Encountering the above error while building the esp-matter example could indicate that the steps outlined in the
-`getting the repository <https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#getting-the-repositories>`__
-section of the documentation were not properly followed.
+`getting the repository`_ section of the documentation were not properly followed.
 
 The esp-matter example relies on several python dependencies that can be found in the
-`requirements.txt <https://github.com/espressif/esp-matter/blob/main/requirements.txt>`__.
+:project_file:`requirements.txt <requirements.txt>`.
 These dependencies must be installed into the python environment of the esp-idf to ensure that the example builds successfully.
 
 One recommended approach to installing these requirements is by running the command
@@ -217,26 +164,26 @@ However, if the error persists, you can try the following steps to resolve it:
         idf.py build
 
 
-A1.9 Why does free RAM increase after first commissioning
+A1.8 Why does free RAM increase after first commissioning
 ---------------------------------------------------------
 
 After the first commissioning, you may notice that the free RAM increases. This is because, by default,
 BLE is only used for the commissioning process. Once the commissioning is complete, BLE is deinitialized,
 and all the memory allocated to it is recovered. Here's the link to the
-`implementation <https://github.com/espressif/esp-matter/blob/c52fa686d1a3be275b0a5c872ee5f1a3c8f2420d/components/esp_matter/esp_matter_core.cpp#L859-L891>`__ which frees the BLE memory.
+:project_file:`implementation which frees the BLE memory <components/esp_matter/esp_matter_core.cpp#L859-L891>`.
 
 However, if you want to continue using the BLE even after the commissioning process, you can disable the
 ``CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING``. This will ensure that the memory allocated to the BLE functionality
 is not released after the commissioning process, and the free RAM won't go up.
 
-A1.10 How to generate Matter Onboarding Codes (QR Code and Manual Pairing Code)
--------------------------------------------------------------------------------
+A1.9 How to generate Matter Onboarding Codes (QR Code and Manual Pairing Code)
+------------------------------------------------------------------------------
 
 When creating a factory partition using ``esp-matter-mfg-tool``, both the QR code and manual pairing codes are generated.
 
 Along with that, there are two more methods for generating Matter onboarding codes:
 
--  Python script: `generate_setup_payload.py <https://github.com/project-chip/connectedhomeip/tree/master/src/setup_payload/python>`__.
+-  Python script: `generate_setup_payload.py`_
 
     ::
 
@@ -263,10 +210,10 @@ Along with that, there are two more methods for generating Matter onboarding cod
                                               --vendor-id 0xFFF1 --product-id 0x8004 \
                                               --version 0 --commissioning-mode 1
 
-To create a QR code image, copy the QR code text and paste it into
-`CHIP: QR Code <https://project-chip.github.io/connectedhomeip/qrcode.html>`__.
+To create a QR code image, copy the QR code text and paste it into `CHIP QR Code`_.
 
-A1.11 Chip stack locking error ... Code is unsafe/racy
+
+A1.10 Chip stack locking error ... Code is unsafe/racy
 ------------------------------------------------------
 
     ::
@@ -304,12 +251,11 @@ To address this, there are two possible approaches:
         chip::DeviceLayer::PlatformMgr().ScheduleWork(WorkHandler, <intptr_t>(nullptr));
 
 
-A1.12 Firmware Version Number
+A1.11 Firmware Version Number
 -----------------------------
 
 Similar to the ESP-IDF's application versioning scheme, the ESP-Matter SDK provides two options for setting the firmware
-version. It depends on `CONFIG_APP_PROJECT_VER_FROM_CONFIG <https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/kconfig.html#config-app-project-ver-from-config>`__
-option and by default option is disabled.
+version. It depends on `CONFIG_APP_PROJECT_VER_FROM_CONFIG`_ option and by default option is disabled.
 
 If the ``CONFIG_APP_PROJECT_VER_FROM_CONFIG`` option is disabled, you need to set the version and version string by
 defining the CMake variables in the project's ``CMakeLists.txt`` file. All the examples use this scheme and have these
@@ -339,7 +285,7 @@ the following configuration options:
       version, even though the binary content may match the previous OTA image.
 
 
-A1.13 Stuck at "Solving dependencies requirements ....."
+A1.12 Stuck at "Solving dependencies requirements ....."
 --------------------------------------------------------
 
 When building an example, if it is stuck at "Solving dependencies requirements..."
@@ -354,12 +300,12 @@ you can resolve this issue by clearing the component manager cache.
         rm -rf ~/Library/Caches/Espressif/ComponentManager
 
 
-A1.14 ESP32-C2 log garbled, unable to perform Matter commissioning and other abnormal issues
+A1.13 ESP32-C2 log garbled, unable to perform Matter commissioning and other abnormal issues
 --------------------------------------------------------------------------------------------
 
 When encountering the above issues, the following possible causes may exist:
-1. Incorrect baud rate settings. See `UART console baud rate <https://docs.espressif.com/projects/esp-idf/en/latest/esp32c2/api-reference/kconfig.html#config-esp-console-uart-baudrate>`__.
-2. Incorrect XTAL crystal frequency settings. The default XTAL crystal frequency in the SDK examples is 26 Mhz, if the ESP32-C2 board used for testing is 40 MHz, please change the configuration as `CONFIG_XTAL_FREQ_40=y`. See `Main XTAL frequency <https://docs.espressif.com/projects/esp-idf/en/latest/esp32c2/api-reference/kconfig.html#main-xtal-config>`__. You can check the XTAL frequency with this command. 
+1. Incorrect baud rate settings. See `UART console baud rate`_
+2. Incorrect XTAL crystal frequency settings. The default XTAL crystal frequency in the SDK examples is 26 Mhz, if the ESP32-C2 board used for testing is 40 MHz, please change the configuration as `CONFIG_XTAL_FREQ_40=y`. See `Main XTAL frequency`_ You can check the XTAL frequency with this command. 
 
    ::
 
@@ -373,7 +319,7 @@ When encountering the above issues, the following possible causes may exist:
       Crystal is 26MHz
       MAC: 08:3a:8d:49:b3:90
 
-A1.15 Generating Matter Onboarding Codes on the device itself
+A1.14 Generating Matter Onboarding Codes on the device itself
 -------------------------------------------------------------
 
 The Passcode serves as both proof of possession for the device and the shared secret needed to establish
@@ -383,7 +329,7 @@ For best practices in Passcode generation and storage on the device, refer to
 **Section 5.1.7: Generation of the Passcode** in the Core Matter Specification.
 
 Ideally, devices should only store the Spake2p verifier, not the Passcode itself.
-If the Passcode is stored on the device, it must be physically separated from the Spake2p verifier’s location
+If the Passcode is stored on the device, it must be physically separated from the Spake2p verifier's location
 and must be accessible only through local interface and must not be accessible to the unit handling the
 Spake2p verifier.
 
@@ -396,15 +342,11 @@ along with the corresponding Spake2p verifier and onboarding payload, directly o
 
 Please check `#1128`_ and `#1126`_ for relevant discussion on Github issue
 
-.. _`#1126`: https://github.com/espressif/esp-matter/issues/1126
-.. _`#1128`: https://github.com/espressif/esp-matter/issues/1128
-
-
-A1.16 Using BLE after Matter commissioning
+A1.15 Using BLE after Matter commissioning
 ------------------------------------------
 
 Most Matter applications do not require BLE after commissioning. By default, BLE is deinitialized after commissioning
-to reclaim RAM and increase the available free heap. Refer to `A1.9 Why does free RAM increase after first commissioning`_
+to reclaim RAM and increase the available free heap. Refer to `A1.8 Why does free RAM increase after first commissioning`_
 for more details.
 
 However, if BLE functionality is needed even after commissioning, you can disable the ``CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING``
@@ -435,6 +377,34 @@ Please refer to the `advance setup`_ section in the programming guide.
 This has been demonstrated in the `blemesh_bridge`_ and `light_wifi_prov`_ examples.
 
 
+A1.16 Moving BSS Segments to PSRAM to Reduce Memory Usage
+---------------------------------------------------------
+
+The BSS section of libesp_matter.a and libCHIP.a can consume significant internal memory.
+For devices with PSRAM, you can move the BSS segments to external memory to significantly
+reduce the internal memory footprint.
+
+To move the BSS segments of libCHIP.a and libesp_matter.a into external RAM:
+
+1. Enable the ``CONFIG_ESP_ALLOW_BSS_SEG_EXTERNAL_MEMORY`` option in menuconfig.
+
+2. Create a ``linker.lf`` file in your project's main component, you can check the the example 
+   :project_file:`linker.lf <examples/all_device_types_app/main/linker.lf>` file.
+
+3. Modify your main component's ``CMakeLists.txt`` to include:
+
+   ::
+
+       set(ldfragments linker.lf)
+       idf_component_register(
+           ...
+           LDFRAGMENTS "${ldfragments}")
+
+This configuration will move the BSS segments to PSRAM when ``CONFIG_ESP_ALLOW_BSS_SEG_EXTERNAL_MEMORY`` is enabled,
+significantly reducing the internal memory usage of your application.
+
+Please check `#1123`_ for relevant discussion on Github issue.
+
 .. _bleprph: https://github.com/espressif/esp-idf/tree/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/bleprph
 .. _blecent: https://github.com/espressif/esp-idf/tree/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/blecent
 .. _bleprph_advertise(): https://github.com/espressif/esp-idf/blob/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/bleprph/main/main.c#L146
@@ -442,3 +412,17 @@ This has been demonstrated in the `blemesh_bridge`_ and `light_wifi_prov`_ examp
 .. _advance setup: https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#advanced-setup
 .. _blemesh_bridge: https://github.com/espressif/esp-matter/tree/main/examples/bridge_apps/blemesh_bridge
 .. _light_wifi_prov: https://github.com/espressif/esp-matter/tree/main/examples/light_wifi_prov#4-external-platform
+.. _getting the repository: https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#getting-the-repository
+.. _requirements.txt: https://github.com/espressif/esp-matter/blob/main/requirements.txt
+.. _implementation which frees the BLE memory: https://github.com/espressif/esp-matter/blob/c52fa686d1a3be275b0a5c872ee5f1a3c8f2420d/components/esp_matter/esp_matter_core.cpp#L859-L891
+.. _generate_setup_payload.py: https://github.com/project-chip/connectedhomeip/tree/master/src/setup_payload/python
+.. _CHIP QR Code: https://project-chip.github.io/connectedhomeip/qrcode.html
+.. _CONFIG_APP_PROJECT_VER_FROM_CONFIG: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/kconfig.html#config-app-project-ver-from-config
+.. _UART console baud rate: https://docs.espressif.com/projects/esp-idf/en/latest/esp32c2/api-reference/kconfig.html#config-esp-console-uart-baudrate
+.. _Main XTAL frequency: https://docs.espressif.com/projects/esp-idf/en/latest/esp32c2/api-reference/kconfig.html#main-xtal-config
+
+.. _Github issue: https://github.com/espressif/esp-matter/issues/new?template=issue-template.md
+.. _`#1123`: https://github.com/espressif/esp-matter/issues/1123
+.. _`#1126`: https://github.com/espressif/esp-matter/issues/1126
+.. _`#1128`: https://github.com/espressif/esp-matter/issues/1128
+.. _`#13303`: https://github.com/project-chip/connectedhomeip/issues/13303
