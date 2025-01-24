@@ -403,12 +403,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         attribute::create_max_networks(cluster, 0);
         attribute::create_networks(cluster, NULL, 0, 0);
-        attribute::create_scan_max_time_seconds(cluster, 0);
-        attribute::create_connect_max_time_seconds(cluster, 0);
         attribute::create_interface_enabled(cluster, 0);
         attribute::create_last_networking_status(cluster, nullable<uint8_t>());
         attribute::create_last_network_id(cluster, NULL, 0);
         attribute::create_last_connect_error_value(cluster, nullable<int32_t>());
+
+        if (config->feature_map & chip::to_underlying(NetworkCommissioning::Feature::kWiFiNetworkInterface) ||
+            config->feature_map & chip::to_underlying(NetworkCommissioning::Feature::kThreadNetworkInterface)) {
+            attribute::create_scan_max_time_seconds(cluster, 0);
+            attribute::create_connect_max_time_seconds(cluster, 0);
+        }
         if (config->feature_map & chip::to_underlying(NetworkCommissioning::Feature::kWiFiNetworkInterface)) {
             attribute::create_supported_wifi_bands(cluster, NULL, 0, 0);
         }
