@@ -26,6 +26,7 @@
 #include <credentials/attestation_verifier/DefaultDeviceAttestationVerifier.h>
 #include <credentials/attestation_verifier/DeviceAttestationVerifier.h>
 #include <crypto/CHIPCryptoPAL.h>
+#include <data-model-providers/codegen/Instance.h>
 #include <lib/core/CHIPError.h>
 #include <lib/core/DataModelTypes.h>
 #include <lib/support/CHIPMem.h>
@@ -69,6 +70,7 @@ esp_err_t matter_controller_client::init(NodeId node_id, FabricId fabric_id, uin
     factory_init_params.opCertStore = &m_operational_cert_store;
     factory_init_params.enableServerInteractions = m_operational_advertising;
     factory_init_params.sessionKeystore = &m_session_key_store;
+    factory_init_params.dataModelProvider = chip::app::CodegenDataModelProviderInstance(&m_default_storage);
     m_controller_node_id = node_id;
     m_controller_fabric_id = fabric_id;
 

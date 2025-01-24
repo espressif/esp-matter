@@ -135,7 +135,6 @@ class BLEManagerImpl final : public BLEManager,
 #endif // CONFIG_ENABLE_ESP32_BLE_CONTROLLER
 {
 public:
-    uint8_t scanResponseBuffer[MAX_SCAN_RSP_DATA_LEN];
     BLEManagerImpl() {}
 #ifdef CONFIG_ENABLE_ESP32_BLE_CONTROLLER
     CHIP_ERROR ConfigureBle(uint32_t aAdapterId, bool aIsCentral);
@@ -190,6 +189,7 @@ public:
 
 private:
     chip::Optional<chip::ByteSpan> mScanResponse;
+    uint8_t scanResponseBuffer[MAX_SCAN_RSP_DATA_LEN];
 
     // Allow the BLEManager interface class to delegate method calls to
     // the implementation methods provided by this class.

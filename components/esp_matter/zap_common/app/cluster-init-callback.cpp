@@ -55,6 +55,12 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
     case app::Clusters::BridgedDeviceBasicInformation::Id:
         emberAfBridgedDeviceBasicInformationClusterInitCallback(endpoint);
         break;
+    case app::Clusters::CameraAvSettingsUserLevelManagement::Id:
+        emberAfCameraAvSettingsUserLevelManagementClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::CameraAvStreamManagement::Id:
+        emberAfCameraAvStreamManagementClusterInitCallback(endpoint);
+        break;
     case app::Clusters::CarbonDioxideConcentrationMeasurement::Id:
         emberAfCarbonDioxideConcentrationMeasurementClusterInitCallback(endpoint);
         break;
@@ -63,6 +69,9 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
         break;
     case app::Clusters::Channel::Id:
         emberAfChannelClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::Chime::Id:
+        emberAfChimeClusterInitCallback(endpoint);
         break;
     case app::Clusters::ColorControl::Id:
         emberAfColorControlClusterInitCallback(endpoint);
@@ -268,6 +277,9 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
     case app::Clusters::PumpConfigurationAndControl::Id:
         emberAfPumpConfigurationAndControlClusterInitCallback(endpoint);
         break;
+    case app::Clusters::PushAvStreamTransport::Id:
+        emberAfPushAvStreamTransportClusterInitCallback(endpoint);
+        break;
     case app::Clusters::RadonConcentrationMeasurement::Id:
         emberAfRadonConcentrationMeasurementClusterInitCallback(endpoint);
         break;
@@ -337,6 +349,9 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
     case app::Clusters::TimeSynchronization::Id:
         emberAfTimeSynchronizationClusterInitCallback(endpoint);
         break;
+    case app::Clusters::TlsCertificateManagement::Id:
+        emberAfTlsCertificateManagementClusterInitCallback(endpoint);
+        break;
     case app::Clusters::TotalVolatileOrganicCompoundsConcentrationMeasurement::Id:
         emberAfTotalVolatileOrganicCompoundsConcentrationMeasurementClusterInitCallback(endpoint);
         break;
@@ -361,6 +376,12 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
     case app::Clusters::WaterHeaterMode::Id:
         emberAfWaterHeaterModeClusterInitCallback(endpoint);
         break;
+    case app::Clusters::WebRTCTransportProvider::Id:
+        emberAfWebRTCTransportProviderClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::WebRTCTransportRequestor::Id:
+        emberAfWebRTCTransportRequestorClusterInitCallback(endpoint);
+        break;
     case app::Clusters::WiFiNetworkDiagnostics::Id:
         emberAfWiFiNetworkDiagnosticsClusterInitCallback(endpoint);
         break;
@@ -369,6 +390,9 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
         break;
     case app::Clusters::WindowCovering::Id:
         emberAfWindowCoveringClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::ZoneManagement::Id:
+        emberAfZoneManagementClusterInitCallback(endpoint);
         break;
     default:
         // Unrecognized cluster ID

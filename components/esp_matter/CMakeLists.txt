@@ -4,7 +4,10 @@ set(SRC_DIRS_LIST       "."
                         "${MATTER_SDK_PATH}/zzz_generated/app-common/app-common/zap-generated/attributes"
                         "${MATTER_SDK_PATH}/src/app/server"
                         "${MATTER_SDK_PATH}/src/app/util"
+                        "${MATTER_SDK_PATH}/src/app/util/persistence"
                         "${MATTER_SDK_PATH}/src/app/reporting"
+                        # TODO Use esp-matter data model and remove ember codes
+                        "${MATTER_SDK_PATH}/src/data-model-providers/codegen"
 )
 
 set(INCLUDE_DIRS_LIST   "."
@@ -48,9 +51,12 @@ idf_build_set_property(COMPILE_OPTIONS "-Wno-error=uninitialized;-Wno-error=mayb
 idf_build_set_property(COMPILE_OPTIONS "-Wno-error=array-bounds" APPEND)
 
 if (NOT CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
-    target_include_directories(${COMPONENT_LIB} PUBLIC "${CMAKE_BINARY_DIR}/gen/app-codegen/cpp-app"
-                                                       "${CMAKE_BINARY_DIR}/gen/app-zapgen/zapgen/app-templates")
+    target_include_directories(${COMPONENT_LIB} PUBLIC "${CMAKE_BINARY_DIR}/gen/__idf_main-codegen/cpp-app"
+                                                       "${CMAKE_BINARY_DIR}/gen/__idf_main-zapgen/zapgen/app-templates")
 endif()
+
+target_sources(${COMPONENT_LIB} PRIVATE ${MATTER_SDK_PATH}/src/app/StorageDelegateWrapper.cpp
+                                        ${MATTER_SDK_PATH}/src/app/SafeAttributePersistenceProvider.cpp)
 
 # For Xtensa chips, uint32_t was defined as 'unsigned' before v5.0, and after IDF v5.0 it is defined
 # as 'unsigned long', same as RISC-V. add this compile option to avoid format errors.
@@ -60,11 +66,6 @@ if (CONFIG_IDF_TARGET_ARCH_XTENSA AND (${IDF_VERSION_MAJOR} LESS 5))
 endif()
 target_compile_options(${COMPONENT_LIB} PUBLIC
                        "-DCHIP_ADDRESS_RESOLVE_IMPL_INCLUDE_HEADER=<lib/address_resolve/AddressResolve_DefaultImpl.h>")
-
-# TODO: remove this option after https://github.com/project-chip/connectedhomeip/pull/32287 merged
-if (${IDF_VERSION_MAJOR} LESS 5)
-idf_build_set_property(COMPILE_OPTIONS "-Wno-error=conversion;-Wno-conversion" APPEND)
-endif()
 
 # Time sync client feature depends on read client, disable it when read client is disabled.
 if (CONFIG_DISABLE_READ_CLIENT)

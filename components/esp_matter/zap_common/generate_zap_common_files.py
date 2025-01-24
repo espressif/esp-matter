@@ -29,7 +29,7 @@ import re
 # These clusters are not implemented in current connectedhomeip repo
 EXCLUDE_CLUSTERS = ['Demand Response Load Control', 'Timer']
 # These words are special when formatting the cluster name
-WORD_FORMAT_LIST = {'Wifi': 'WiFi', 'Pm2.5': 'Pm25'}
+WORD_FORMAT_LIST = {'Wifi': 'WiFi', 'Pm2.5': 'Pm25', 'Webrtc': 'WebRTC'}
 
 if not os.getenv('ESP_MATTER_PATH'):
     logging.error("ESP_MATTER_PATH environment variable is not set")
@@ -193,9 +193,12 @@ def get_attribute_write_privilege(attribute):
 
 
 def get_attribute_name(attribute):
-    for element in attribute:
-        if element.tag == 'description':
-            return element.text
+    try:
+        return attribute.attrib['name']
+    except KeyError:
+        for element in attribute:
+            if element.tag == 'description':
+                return element.text
 
 
 def get_command_invoke_privilege(command):

@@ -27,6 +27,7 @@
 #include <credentials/DeviceAttestationCredsProvider.h>
 #include <credentials/FabricTable.h>
 #include <credentials/GroupDataProviderImpl.h>
+#include <data-model-providers/codegen/Instance.h>
 #include <lib/core/DataModelTypes.h>
 #include <platform/CHIPDeviceLayer.h>
 #include <platform/DeviceInfoProvider.h>
@@ -719,6 +720,7 @@ static void esp_matter_chip_init_task(intptr_t context)
 
     initParams.InitializeStaticResourcesBeforeServerInit();
     initParams.appDelegate = &s_app_delegate;
+    initParams.dataModelProvider = chip::app::CodegenDataModelProviderInstance(initParams.persistentStorageDelegate);
 
 #ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
     // Group data provider injection for dynamic data model
@@ -742,13 +744,24 @@ static void esp_matter_chip_init_task(intptr_t context)
         ESP_LOGE(TAG, "Failed to add fabric delegate, err:%" CHIP_ERROR_FORMAT, ret.Format());
     }
     chip::Server::GetInstance().Init(initParams);
-
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+#ifdef CONFIG_ESP_MATTER_ENABLE_OPENTHREAD
+    VerifyOrReturn(ThreadStackMgr().InitThreadStack() == CHIP_NO_ERROR, ESP_LOGE(TAG, "Failed to initialize Thread stack"));
+#if CHIP_CONFIG_ENABLE_ICD_SERVER
+    VerifyOrReturn(ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_SleepyEndDevice) == CHIP_NO_ERROR, ESP_LOGE(TAG, "Failed to set the Thread device type"));
+
+#elif CHIP_DEVICE_CONFIG_THREAD_FTD
+    VerifyOrReturn(ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_Router) == CHIP_NO_ERROR, ESP_LOGE(TAG, "Failed to set the Thread device type"));
+#else
+    VerifyOrReturn(ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_MinimalEndDevice) == CHIP_NO_ERROR, ESP_LOGE(TAG, "Failed to set the Thread device type"));
+#endif
+    VerifyOrReturn(ThreadStackMgr().StartThreadTask() == CHIP_NO_ERROR, ESP_LOGE(TAG, "Failed to launch Thread task"));
     // If Thread is Provisioned, publish the dns service
     if (chip::DeviceLayer::ConnectivityMgr().IsThreadProvisioned() &&
         (chip::Server::GetInstance().GetFabricTable().FabricCount() != 0)) {
         chip::app::DnssdServer::Instance().StartServer();
     }
+#endif // CONFIG_ESP_MATTER_ENABLE_OPENTHREAD
 #endif
     if (endpoint::enable_all() != ESP_OK) {
         ESP_LOGE(TAG, "Enable all endpoints failure");
@@ -816,21 +829,6 @@ static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
     if(callback) {
        PlatformMgr().AddEventHandler(callback, callback_arg);
     }
-#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-#ifdef CONFIG_ESP_MATTER_ENABLE_OPENTHREAD
-    VerifyOrReturnError(ThreadStackMgr().InitThreadStack() == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to initialize Thread stack"));
-#if CHIP_CONFIG_ENABLE_ICD_SERVER
-    VerifyOrReturnError(ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_SleepyEndDevice) == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to set the Thread device type"));
-
-#elif CHIP_DEVICE_CONFIG_THREAD_FTD
-    VerifyOrReturnError(ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_Router) == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to set the Thread device type"));
-#else
-    VerifyOrReturnError(ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_MinimalEndDevice) == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to set the Thread device type"));
-#endif
-    VerifyOrReturnError(ThreadStackMgr().StartThreadTask() == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to launch Thread task"));
-#endif // CONFIG_ESP_MATTER_ENABLE_OPENTHREAD
-#endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD
-
 #if CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
     // Add bounds to all attributes
     esp_matter::cluster::add_bounds_callback_common();

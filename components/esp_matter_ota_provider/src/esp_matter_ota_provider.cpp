@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <algorithm>
 #include <cstring>
 #include <esp_check.h>
 #include <esp_http_client.h>
@@ -56,7 +57,7 @@ static void GenerateUpdateToken(uint8_t *buf, size_t bufSize)
 static void GetUpdateTokenString(const ByteSpan &token, char *buf, size_t bufSize)
 {
     const uint8_t *tokenData = static_cast<const uint8_t *>(token.data());
-    size_t minLength = chip::min(token.size(), bufSize);
+    size_t minLength = std::min(token.size(), bufSize);
     for (size_t i = 0; i < (minLength / 2) - 1; ++i) {
         snprintf(&buf[i * 2], bufSize, "%02X", tokenData[i]);
     }
