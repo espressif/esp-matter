@@ -8,12 +8,68 @@ import requests
 import glob
 import argparse
 import logging
+import re
 
 # Gitlab Configurations
 gitlab_api_url = os.getenv("CI_API_V4_URL")
 gitlab_token = os.getenv("GITLAB_MR_COMMENT_TOKEN")
 ci_project_id = os.getenv("CI_PROJECT_ID")
 ci_merge_request_iid = os.getenv("CI_MERGE_REQUEST_IID")
+
+
+# Fetch the current GitLab MR description
+def fetch_merge_request_description():
+    url = f"{gitlab_api_url}/projects/{ci_project_id}/merge_requests/{ci_merge_request_iid}"
+    headers = {"PRIVATE-TOKEN": gitlab_token}
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    return response.json().get("description", "")
+
+# Update the GitLab MR description
+def update_merge_request_description(updated_description):
+    url = f"{gitlab_api_url}/projects/{ci_project_id}/merge_requests/{ci_merge_request_iid}"
+    headers = {"PRIVATE-TOKEN": gitlab_token}
+    data = {"description": updated_description}
+    response = requests.put(url, headers=headers, json=data)
+    response.raise_for_status()
+    print("Successfully updated the MR description.")
+
+def update_memory_results_title(description):
+    header_start = "<!-- START: Memory Header -->"
+    header_end = "<!-- END: Memory Header -->"
+    if header_start in description and header_end in description:
+        return description  # Return as is if header already exists
+
+    header_section_content = "#### Gitlab CI Memory Numbers (Do Not Edit) \n"
+    header_section = f"{header_start}\n{header_section_content}{header_end}"
+
+    updated_description = description.strip() + "\n\n" + header_section
+    return updated_description
+
+# Updates the memory results section
+def update_memory_results_section(description, chip_name, example, output):
+    marker_start = f"<!-- START: Memory Results for {chip_name} -->"
+    marker_end = f"<!-- END: Memory Results for {chip_name} -->"
+
+    chip_section_content = (
+        f"<details open><summary><b>Static Memory Footprint for target: {chip_name}, example: {example}</b></summary>\n\n"
+        f"```{output}```\n"
+        f"</details>\n"
+    )
+
+    chip_section = f"{marker_start}\n{chip_section_content}{marker_end}"
+
+    if marker_start in description and marker_end in description:
+        updated_description = re.sub(
+            rf"{re.escape(marker_start)}.*?{re.escape(marker_end)}",
+            chip_section,
+            description,
+            flags=re.DOTALL,
+        )
+    else:
+        updated_description = description.strip() + "\n\n" + chip_section
+
+    return updated_description
 
 # Fetch the id of the pipeline for a branch with the specified commit id (default main branch)
 def fetch_pipeline_for_commit(commit_sha, branch_name="main"):
@@ -75,22 +131,6 @@ def execute_idf_size_command(old_file_path, new_file_path):
     except subprocess.CalledProcessError as e:
         raise
 
-# Post the results to gitlab MR.
-def post_results_to_gitlab_mr(output, chip_name, example):
-    if not all([gitlab_api_url, gitlab_token, ci_project_id, ci_merge_request_iid]):
-        print("Missing required environment variables. Results not posted.")
-        return
-
-    markdown_output = f"<details open><summary><b>Static Memory Footprint for target: {chip_name}, example: {example}</b></summary>\n\n```\n{output}\n```\n</details>"
-    url = f"{gitlab_api_url}/projects/{ci_project_id}/merge_requests/{ci_merge_request_iid}/notes"
-    headers = {"PRIVATE-TOKEN": gitlab_token}
-    data = {"body": markdown_output}
-    response = requests.post(url, headers=headers, json=data)
-    if response.status_code == 201:
-        print("Successfully posted results to GitLab MR.")
-    else:
-        print("Failed to post results to GitLab MR.")
-
 def main():
 
     logging.basicConfig(level=logging.WARNING, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -117,7 +157,15 @@ def main():
         download_ref_map_file(args.chip, target_job_id, args.ref_map_file)
 
         size_diff_output = execute_idf_size_command(args.ref_map_file, current_map_file)
-        post_results_to_gitlab_mr(size_diff_output, args.chip, args.example)
+
+        current_description_without_title = fetch_merge_request_description()
+        updated_title = update_memory_results_title(current_description_without_title)
+        update_merge_request_description(updated_title)
+        current_description = fetch_merge_request_description()
+        updated_description = update_memory_results_section(
+            current_description, args.chip, args.example, size_diff_output
+        )
+        update_merge_request_description(updated_description)
     except FileNotFoundError as e:
         logging.error(f"Error occurred while posting results to GitLab MR: File not found {e}")
     except Exception as e:
