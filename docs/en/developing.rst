@@ -328,13 +328,16 @@ Choose IDF target.
 2.3 Commissioning and Control
 -----------------------------
 
-There are a few implementations of Matter commissioners present in the `connectedhomeip <https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/src/controller#implementations>`__ repository.
+There are a few implementations of Matter commissioners present in the `connectedhomeip`_ repository.
 
 CHIP Tool is an example implementation of Matter commissioner and used for development purposes.
-An in-depth guide on how to use chip-tool can be found in the
-`CHIP Tool User Guide <https://github.com/project-chip/connectedhomeip/blob/master/docs/development_controllers/chip-tool/chip_tool_guide.md>`__.
+An in-depth guide on how to use chip-tool can be found in the `CHIP Tool User Guide`_.
 
-Espressif also has an iOS application, `Espressif-Matter <https://apps.apple.com/in/app/espressif-matter/id1604739172>`__, to commission and control the Matter devices. Please follow `profile installation instructions <https://github.com/espressif/connectedhomeip/blob/v1.0.0.2/docs/guides/darwin.md#profile-installation>`__ in order to use the application. Also, make sure to enable Developer Mode on the iOS.
+Espressif's ESP RainMaker iOS and Android applications support commissioning and control of Matter devices.
+
+- `ESP-RainMaker Android App`_
+- `ESP-RainMaker iOS App`_
+
 
 2.3.1 Test Setup (CHIP Tool)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1691,3 +1694,8 @@ To enable these functions, the cluster should be added to the appropriate entry 
 .. _`zcl configuration file`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/zap-templates/zcl/zcl.json
 .. _`zcl test configuration file`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/zap-templates/zcl/zcl-with-test-extensions.json
 .. _`zap configuration data`: <https://github.com/project-chip/connectedhomeip/blob/master/src/app/common/templates/config-data.yaml>
+.. _`ESP-Rainmaker iOS App`: https://apps.apple.com/app/esp-rainmaker/id1497491540
+.. _`ESP-Rainmaker Android App`: https://play.google.com/store/apps/details?id=com.espressif.rainmaker
+.. _`connectedhomeip`: https://github.com/project-chip/connectedhomeip
+.. _`CHIP Tool User Guide`: https://github.com/project-chip/connectedhomeip/blob/master/docs/development_controllers/chip-tool/chip_tool_guide.md
+.. _`profile installation instructions`: https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/darwin.md#profile-installation
