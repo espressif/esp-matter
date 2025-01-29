@@ -363,8 +363,7 @@ static esp_err_t sign_data_command_callback(const ConcreteCommandPath &command_p
 static esp_err_t custom_cluster_create()
 {
     /* Get the endpoint */
-    node_t *node = node::get();
-    endpoint_t *endpoint = endpoint::get(node, cluster::rainmaker::endpoint_id);
+    endpoint_t *endpoint = endpoint::get(cluster::rainmaker::endpoint_id);
 
     /* Create custom rainmaker cluster */
     cluster_t *cluster = esp_matter::cluster::create(endpoint, cluster::rainmaker::Id, CLUSTER_FLAG_SERVER);

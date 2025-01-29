@@ -2104,10 +2104,7 @@ esp_err_t report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
     VerifyOrReturnError(lock_status != lock::FAILED, ESP_FAIL, ESP_LOGE(TAG, "Could not get task context"));
 
     /* Get attribute */
-    node_t *node = node::get();
-    endpoint_t *endpoint = endpoint::get(node, endpoint_id);
-    cluster_t *cluster = cluster::get(endpoint, cluster_id);
-    attribute_t *attribute = attribute::get(cluster, attribute_id);
+    attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
     if (!attribute) {
         ESP_LOGE(TAG, "Could not find Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32, endpoint_id, cluster_id,
                  attribute_id);
@@ -2183,11 +2180,8 @@ Status emberAfExternalAttributeReadCallback(EndpointId endpoint_id, ClusterId cl
 {
     /* Get value */
     uint32_t attribute_id = matter_attribute->attributeId;
-    node_t *node = node::get();
-    VerifyOrReturnError(node, Status::Failure);
-    endpoint_t *endpoint = endpoint::get(node, endpoint_id);
-    cluster_t *cluster = cluster::get(endpoint, cluster_id);
-    attribute_t *attribute = attribute::get(cluster, attribute_id);
+    attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
+    VerifyOrReturnError(attribute, Status::Failure);
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
 
     int flags = attribute::get_flags(attribute);
@@ -2218,11 +2212,8 @@ Status emberAfExternalAttributeWriteCallback(EndpointId endpoint_id, ClusterId c
 {
     /* Get value */
     uint32_t attribute_id = matter_attribute->attributeId;
-    node_t *node = node::get();
-    VerifyOrReturnError(node, Status::Failure);
-    endpoint_t *endpoint = endpoint::get(node, endpoint_id);
-    cluster_t *cluster = cluster::get(endpoint, cluster_id);
-    attribute_t *attribute = attribute::get(cluster, attribute_id);
+    attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
+    VerifyOrReturnError(attribute, Status::Failure);
 
     /* Get val */
     /* This creates a new variable val, and stores the new attribute value in the new variable.
