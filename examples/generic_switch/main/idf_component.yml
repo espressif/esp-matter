@@ -5,4 +5,4 @@ dependencies:
       - if: "idf_version >=5.0"
       - if: "target in [esp32c2]"
 
-  espressif/button: "=2.5.0"
+  espressif/button: "=3.5.0"
