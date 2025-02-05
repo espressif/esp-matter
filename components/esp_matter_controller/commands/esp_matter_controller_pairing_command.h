@@ -169,5 +169,15 @@ esp_err_t pairing_code_wifi(NodeId node_id, const char *ssid, const char *passwo
 esp_err_t pairing_code_wifi_thread(NodeId node_id, const char *ssid, const char *password, const char *payload,
                                    uint8_t *dataset_buf, uint8_t dataset_len);
 
+/**
+ * Unpair a Matter end-device which will remove the fabric from the remote device
+ *
+ * @param[in] node_id  NodeId of the Matter end-device to be unpaired.
+ *
+ * @return ESP_OK on success
+ * @return error in case of failure
+ */
+esp_err_t unpair_device(NodeId node_id);
+
 } // namespace controller
 } // namespace esp_matter
