@@ -68,7 +68,8 @@ static bool _is_ota_candidate_valid(model_version_t *model, uint32_t current_sof
         model->min_applicable_software_version <= current_software_version;
 }
 
-static int _search_ota_candidate(uint16_t vendor_id, uint16_t product_id, uint32_t software_ver)
+// Search the OTA candidate from the cache, return the index of candidate on success, or return -1 on failure.
+static int _search_ota_candidate_from_cache(uint16_t vendor_id, uint16_t product_id, uint32_t software_ver)
 {
     for (size_t index = 0; index < max_ota_candidate_count; ++index) {
         model_version_t *cur_model = _ota_candidates_cache[index];
@@ -318,7 +319,7 @@ static void _update_all_ota_candidates_cache()
             esp_err_t err = _query_software_version_array(candidate->vendor_id, candidate->product_id,
                                                           &software_version_array, software_version_count);
             if (err == ESP_OK && software_version_array && software_version_count > 0) {
-                std::sort(&software_version_array[0], &software_version_array[software_version_count - 1],
+                std::sort(&software_version_array[0], &software_version_array[software_version_count],
                           std::greater<uint32_t>());
                 for (size_t index = 0;
                      index < software_version_count && software_version_array[index] > candidate->software_version;
@@ -348,9 +349,11 @@ static void _ota_candidate_fetch_handler(ota_candidate_fetch_action_t &action)
 {
     model_version_t *candidate = nullptr;
     assert(action.callback);
-    int candate_index = _search_ota_candidate(action.vendor_id, action.product_id, action.software_version);
-    if (candate_index >= 0 && candate_index < max_ota_candidate_count && _ota_candidates_cache[candate_index]) {
-        candidate = _ota_candidates_cache[candate_index];
+    // Search the ota candidate from cache, if we find a proper candidate return the candidate. Otherwise we will search
+    // a new candidate from DCL.
+    int candidate_index = _search_ota_candidate_from_cache(action.vendor_id, action.product_id, action.software_version);
+    if (candidate_index >= 0 && candidate_index < max_ota_candidate_count && _ota_candidates_cache[candidate_index]) {
+        candidate = _ota_candidates_cache[candidate_index];
         action.callback(EspOtaProvider::OTAQueryStatus::kUpdateAvailable, candidate->ota_url, candidate->ota_file_size,
                         candidate->software_version, candidate->software_version_str, action.callback_args);
         return;
@@ -362,7 +365,7 @@ static void _ota_candidate_fetch_handler(ota_candidate_fetch_action_t &action)
                                                       software_version_count);
         if (err == ESP_OK && software_version_array && software_version_count > 0) {
             // Sort the software version array
-            std::sort(&software_version_array[0], &software_version_array[software_version_count - 1],
+            std::sort(&software_version_array[0], &software_version_array[software_version_count],
                       std::greater<uint32_t>());
             candidate = (model_version_t *)esp_matter_mem_calloc(1, sizeof(model_version_t));
             candidate->vendor_id = action.vendor_id;

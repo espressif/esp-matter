@@ -25,9 +25,17 @@
 #include <app/data-model-provider/MetadataTypes.h>
 #include <app/data-model-provider/OperationTypes.h>
 #include <app/data-model-provider/Provider.h>
+#include <crypto/RandUtils.h>
+#include <lib/core/CHIPError.h>
+#include <lib/core/DataModelTypes.h>
+#include <lib/support/CodeUtils.h>
 #include <lib/support/ReadOnlyBuffer.h>
 #include <optional>
 #include <app/ConcreteEventPath.h>
+
+#ifdef CONFIG_ESP_MATTER_OTA_PROVIDER_ENABLED
+#include <app/clusters/ota-provider/ota-provider-cluster.h>
+#endif
 
 using chip::ClusterId;
 using chip::CommandId;
@@ -59,8 +67,6 @@ namespace esp_matter {
 namespace controller {
 namespace data_model {
 
-// TODO: The client-only controller has no data model, use an empty data model provider for it.
-//       We should finish the functions after enabling dynamic server for the controller.
 class provider : public chip::app::DataModel::Provider {
 public:
     static provider &get_instance()
@@ -73,12 +79,32 @@ public:
 
     ActionReturnStatus ReadAttribute(const ReadAttributeRequest &request, AttributeValueEncoder &encoder) override
     {
-        return CHIP_NO_ERROR;
+#if defined(CONFIG_ESP_MATTER_OTA_PROVIDER_ENABLED) && CHIP_DEVICE_CONFIG_DYNAMIC_SERVER
+        if (request.path.mEndpointId != chip::kRootEndpointId) {
+            return chip::Protocols::InteractionModel::Status::UnsupportedEndpoint;
+        }
+        if (request.path.mClusterId != chip::app::Clusters::OtaSoftwareUpdateProvider::Id) {
+            return chip::Protocols::InteractionModel::Status::UnsupportedCluster;
+        }
+        return mOtaProviderServer.ReadAttribute(request, encoder);
+#else
+        return chip::Protocols::InteractionModel::Status::InvalidAction;
+#endif
     }
 
     ActionReturnStatus WriteAttribute(const WriteAttributeRequest &request, AttributeValueDecoder &decoder) override
     {
-        return CHIP_NO_ERROR;
+#if defined(CONFIG_ESP_MATTER_OTA_PROVIDER_ENABLED) && CHIP_DEVICE_CONFIG_DYNAMIC_SERVER
+        if (request.path.mEndpointId != chip::kRootEndpointId) {
+            return chip::Protocols::InteractionModel::Status::UnsupportedEndpoint;
+        }
+        if (request.path.mClusterId != chip::app::Clusters::OtaSoftwareUpdateProvider::Id) {
+            return chip::Protocols::InteractionModel::Status::UnsupportedCluster;
+        }
+        return chip::Protocols::InteractionModel::Status::UnsupportedWrite;
+#else
+        return chip::Protocols::InteractionModel::Status::InvalidAction;
+#endif
     }
 
     void ListAttributeWriteNotification(const ConcreteAttributePath &aPath, ListWriteOperation opType) override {}
@@ -86,26 +112,74 @@ public:
     std::optional<ActionReturnStatus> InvokeCommand(const InvokeRequest &request, TLVReader &input_arguments,
                                                     CommandHandler *handler) override
     {
-        return std::nullopt;
+#if defined(CONFIG_ESP_MATTER_OTA_PROVIDER_ENABLED) && CHIP_DEVICE_CONFIG_DYNAMIC_SERVER
+        if (request.path.mEndpointId != chip::kRootEndpointId) {
+            return chip::Protocols::InteractionModel::Status::UnsupportedEndpoint;
+        }
+        if (request.path.mClusterId != chip::app::Clusters::OtaSoftwareUpdateProvider::Id) {
+            return chip::Protocols::InteractionModel::Status::UnsupportedCluster;
+        }
+        return mOtaProviderServer.InvokeCommand(request, input_arguments, handler);
+#else
+        return chip::Protocols::InteractionModel::Status::InvalidAction;
+#endif
     }
 
     // ProviderMetadataTree overrides
-    CHIP_ERROR Endpoints(ReadOnlyBufferBuilder<EndpointEntry> &builder) override { return CHIP_NO_ERROR; }
+    CHIP_ERROR Endpoints(ReadOnlyBufferBuilder<EndpointEntry> &builder) override
+    {
+#if defined(CONFIG_ESP_MATTER_OTA_PROVIDER_ENABLED) && CHIP_DEVICE_CONFIG_DYNAMIC_SERVER
+        ReturnErrorOnFailure(builder.EnsureAppendCapacity(1));
+        EndpointEntry entry;
+        entry.id = chip::kRootEndpointId;
+        entry.compositionPattern = chip::app::DataModel::EndpointCompositionPattern::kFullFamily;
+        entry.parentId = chip::kInvalidEndpointId;
+        return builder.Append(entry);
+#else
+        return CHIP_NO_ERROR;
+#endif
+    }
+
     CHIP_ERROR SemanticTags(EndpointId endpointId, ReadOnlyBufferBuilder<SemanticTag> &builder) override
     {
         return CHIP_NO_ERROR;
     }
+
     CHIP_ERROR DeviceTypes(EndpointId endpointId, ReadOnlyBufferBuilder<DeviceTypeEntry> &builder) override
     {
         return CHIP_NO_ERROR;
     }
+
     CHIP_ERROR ClientClusters(EndpointId endpointId, ReadOnlyBufferBuilder<ClusterId> &builder) override
     {
-        return CHIP_NO_ERROR;
+#if defined(CONFIG_ESP_MATTER_OTA_PROVIDER_ENABLED) && CHIP_DEVICE_CONFIG_DYNAMIC_SERVER
+        if (endpointId != chip::kRootEndpointId) {
+            return CHIP_IM_GLOBAL_STATUS(UnsupportedEndpoint);
+        }
+
+        ReturnErrorOnFailure(builder.EnsureAppendCapacity(1));
+        return builder.Append(chip::app::Clusters::OtaSoftwareUpdateRequestor::Id);
+#else
+        return CHIP_IM_GLOBAL_STATUS(UnsupportedEndpoint);
+#endif
     }
+
     CHIP_ERROR ServerClusters(EndpointId endpointId, ReadOnlyBufferBuilder<ServerClusterEntry> &builder) override
     {
-        return CHIP_NO_ERROR;
+#if defined(CONFIG_ESP_MATTER_OTA_PROVIDER_ENABLED) && CHIP_DEVICE_CONFIG_DYNAMIC_SERVER
+        if (endpointId != chip::kRootEndpointId) {
+            return CHIP_IM_GLOBAL_STATUS(UnsupportedEndpoint);
+        }
+
+        ReturnErrorOnFailure(builder.EnsureAppendCapacity(1));
+        ServerClusterEntry entry;
+        entry.clusterId = chip::app::Clusters::OtaSoftwareUpdateProvider::Id;
+        entry.dataVersion = mDataVersion;
+        entry.flags.ClearAll();
+        return builder.Append(entry);
+#else
+        return CHIP_IM_GLOBAL_STATUS(UnsupportedEndpoint);
+#endif
     }
 
     CHIP_ERROR EventInfo(const ConcreteEventPath & path, EventEntry & eventInfo) override
@@ -115,22 +189,70 @@ public:
 
     CHIP_ERROR Attributes(const ConcreteClusterPath &path, ReadOnlyBufferBuilder<AttributeEntry> &builder) override
     {
-        return CHIP_NO_ERROR;
+#if defined(CONFIG_ESP_MATTER_OTA_PROVIDER_ENABLED) && CHIP_DEVICE_CONFIG_DYNAMIC_SERVER
+        if (path.mEndpointId != chip::kRootEndpointId) {
+            return CHIP_IM_GLOBAL_STATUS(UnsupportedEndpoint);
+        }
+        if (path.mClusterId != chip::app::Clusters::OtaSoftwareUpdateProvider::Id) {
+            return CHIP_IM_GLOBAL_STATUS(UnsupportedCluster);
+        }
+        return mOtaProviderServer.Attributes(path, builder);
+#else
+        return CHIP_IM_GLOBAL_STATUS(UnsupportedEndpoint);
+#endif
     }
+
     CHIP_ERROR GeneratedCommands(const ConcreteClusterPath &path, ReadOnlyBufferBuilder<CommandId> &builder) override
     {
-        return CHIP_NO_ERROR;
+#if defined(CONFIG_ESP_MATTER_OTA_PROVIDER_ENABLED) && CHIP_DEVICE_CONFIG_DYNAMIC_SERVER
+        if (path.mEndpointId != chip::kRootEndpointId) {
+            return CHIP_IM_GLOBAL_STATUS(UnsupportedEndpoint);
+        }
+        if (path.mClusterId != chip::app::Clusters::OtaSoftwareUpdateProvider::Id) {
+            return CHIP_IM_GLOBAL_STATUS(UnsupportedCluster);
+        }
+        return mOtaProviderServer.GeneratedCommands(path, builder);
+#else
+        return CHIP_IM_GLOBAL_STATUS(UnsupportedEndpoint);
+#endif
     }
+
     CHIP_ERROR AcceptedCommands(const ConcreteClusterPath &path,
                                 ReadOnlyBufferBuilder<AcceptedCommandEntry> &builder) override
     {
-        return CHIP_NO_ERROR;
+#if defined(CONFIG_ESP_MATTER_OTA_PROVIDER_ENABLED) && CHIP_DEVICE_CONFIG_DYNAMIC_SERVER
+        if (path.mEndpointId != chip::kRootEndpointId) {
+            return CHIP_IM_GLOBAL_STATUS(UnsupportedEndpoint);
+        }
+        if (path.mClusterId != chip::app::Clusters::OtaSoftwareUpdateProvider::Id) {
+            return CHIP_IM_GLOBAL_STATUS(UnsupportedCluster);
+        }
+        return mOtaProviderServer.AcceptedCommands(path, builder);
+#else
+        return CHIP_IM_GLOBAL_STATUS(UnsupportedEndpoint);
+#endif
     }
 
     void Temporary_ReportAttributeChanged(const AttributePathParams &path) override {}
+#if defined(CONFIG_ESP_MATTER_OTA_PROVIDER_ENABLED) && CHIP_DEVICE_CONFIG_DYNAMIC_SERVER
+    void set_ota_provider_delegate(chip::app::Clusters::OTAProviderDelegate * delegate)
+    {
+        mOtaProviderServer.SetDelegate(delegate);
+    }
+#endif
 
 private:
+#if defined(CONFIG_ESP_MATTER_OTA_PROVIDER_ENABLED) && CHIP_DEVICE_CONFIG_DYNAMIC_SERVER
+    chip::app::Clusters::OtaProviderServer mOtaProviderServer;
+    chip::DataVersion mDataVersion;
+    provider()
+        : mOtaProviderServer(chip::kRootEndpointId)
+    {
+        mDataVersion = chip::Crypto::GetRandU32();
+    }
+#else
     provider() = default;
+#endif
     ~provider() = default;
 };
 

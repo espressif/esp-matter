@@ -41,6 +41,7 @@
 #include <platform/PlatformManager.h>
 #include <stdint.h>
 #include <transport/TransportMgr.h>
+#include "support/CodeUtils.h"
 
 #if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
 #include <controller/CommissionerDiscoveryController.h>

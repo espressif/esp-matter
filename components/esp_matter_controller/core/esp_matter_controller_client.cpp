@@ -23,11 +23,11 @@
 #include <app/InteractionModelEngine.h>
 #include <controller/CHIPDeviceControllerFactory.h>
 #include <controller/OperationalCredentialsDelegate.h>
+#include <controller_data_model_provider.h>
 #include <credentials/GroupDataProvider.h>
 #include <credentials/attestation_verifier/DefaultDeviceAttestationVerifier.h>
 #include <credentials/attestation_verifier/DeviceAttestationVerifier.h>
 #include <crypto/CHIPCryptoPAL.h>
-#include <controller_data_model_provider.h>
 #include <lib/core/CHIPError.h>
 #include <lib/core/DataModelTypes.h>
 #include <lib/support/CHIPMem.h>
@@ -42,6 +42,12 @@
 
 #if CONFIG_ENABLE_ESP32_BLE_CONTROLLER
 #include <platform/internal/BLEManager.h>
+#endif
+
+#if CHIP_DEVICE_CONFIG_DYNAMIC_SERVER
+#include <app/clusters/ota-provider/ota-provider-cluster.h>
+#include <app/dynamic_server/AccessControl.h>
+#include <esp_matter_ota_provider.h>
 #endif
 
 #define TAG "MatterController"
@@ -94,6 +100,14 @@ esp_err_t matter_controller_client::init(NodeId node_id, FabricId fabric_id, uin
     ESP_RETURN_ON_FALSE(m_check_in_handler.Init(system_state->ExchangeMgr(), &m_icd_client_storage,
                                                 &m_icd_check_in_delegate, engine) == CHIP_NO_ERROR,
                         ESP_FAIL, TAG, "Failed to initialize Check In handler");
+#if CHIP_DEVICE_CONFIG_DYNAMIC_SERVER
+    auto &ota_provider = ota_provider::EspOtaProvider::GetInstance();
+    ESP_RETURN_ON_ERROR(
+        ota_provider.Init(true, system_state->SystemLayer(), system_state->ExchangeMgr(), system_state->Fabrics()), TAG,
+        "Failed to initialize OTA provider");
+    data_model::provider::get_instance().set_ota_provider_delegate(&ota_provider);
+    chip::app::dynamic_server::InitAccessControl();
+#endif
     return ESP_OK;
 }
 
@@ -171,7 +185,8 @@ esp_err_t matter_controller_client::setup_commissioner()
                         ESP_FAIL, TAG, "Failed to set ipk for commissioner fabric");
 
 #if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
-    get_discovery_controller()->SetUserDirectedCommissioningServer(get_commissioner()->GetUserDirectedCommissioningServer());
+    get_discovery_controller()->SetUserDirectedCommissioningServer(
+        get_commissioner()->GetUserDirectedCommissioningServer());
     get_discovery_controller()->SetCommissionerCallback(&commissioner_callback);
 #endif
 
