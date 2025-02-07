@@ -64,6 +64,34 @@ private:
     spiffs_attestation_trust_store() {}
 };
 
+#if CONFIG_DCL_ATTESTATION_TRUST_STORE
+class dcl_attestation_trust_store : public AttestationTrustStore {
+public:
+    typedef enum {
+        DCL_MAIN_NET,
+        DCL_TEST_NET,
+    } dcl_net_type_t;
+
+    dcl_attestation_trust_store(dcl_attestation_trust_store &other) = delete;
+    void operator=(const dcl_attestation_trust_store &) = delete;
+
+    static dcl_attestation_trust_store &get_instance()
+    {
+        static dcl_attestation_trust_store instance;
+        return instance;
+    }
+
+    CHIP_ERROR GetProductAttestationAuthorityCert(const ByteSpan &skid,
+                                                  MutableByteSpan &outPaaDerBuffer) const override;
+
+    void SetDCLNetType(dcl_net_type_t type) { dcl_net_type = type; }
+
+private:
+    dcl_net_type_t dcl_net_type = DCL_MAIN_NET;
+    dcl_attestation_trust_store() {}
+};
+#endif // CONFIG_DCL_ATTESTATION_TRUST_STORE
+
 const AttestationTrustStore *get_attestation_trust_store();
 
 } // namespace Credentials

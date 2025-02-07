@@ -37,6 +37,11 @@ menu "ESP Matter Controller"
             help
                 Read the PAA root certificates from the spiffs partition
 
+        config DCL_ATTESTATION_TRUST_STORE
+            bool "Attestation Trust Store - DCL"
+            help
+                Read the PAA root certificates from DCL
+
         config CUSTOM_ATTESTATION_TRUST_STORE
             bool "Attestation Trust Store - Custom"
             help
