@@ -20,7 +20,7 @@ pipeline {
     }
     parameters {
         choice(name: 'product', choices: "${product_choices}", description: 'Product choices')
-        choice(name: 'chip', choices:['esp32c3', 'esp32', 'esp32h2', 'esp32c2','esp32c6'], description: 'Chips')
+        choice(name: 'chip', choices:['esp32c3', 'esp32', 'esp32h2', 'esp32c2','esp32c6','esp32s3'], description: 'Chips')
         string(name: 'esp_matter_branch', defaultValue: 'main', description: 'Branch to be used for esp-matter')
     }
     environment {
