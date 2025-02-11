@@ -1876,7 +1876,8 @@ esp_err_t add_device_type(endpoint_t *endpoint, uint32_t device_type_id, uint8_t
 {
     VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
-    VerifyOrReturnError(current_endpoint->device_type_count < ESP_MATTER_MAX_DEVICE_TYPE_COUNT, ESP_FAIL, ESP_LOGE(TAG, "Could not add a new device type to the endpoint"));
+    VerifyOrReturnError(current_endpoint->device_type_count < ESP_MATTER_MAX_DEVICE_TYPE_COUNT, ESP_FAIL,
+                        ESP_LOGE(TAG, "Could not add a new device-type:%" PRIu32 " to the endpoint", device_type_id));
     current_endpoint->device_type_ids[current_endpoint->device_type_count] = device_type_id;
     current_endpoint->device_type_versions[current_endpoint->device_type_count] = device_type_version;
     current_endpoint->device_type_count++;
