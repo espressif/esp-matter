@@ -174,7 +174,7 @@ static bool convert_hex_str_to_bytes(const char *hex_str, uint8_t *bytes, uint8_
 #if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 static esp_err_t controller_pairing_handler(int argc, char **argv)
 {
-    VerifyOrReturnError(argc >= 3 && argc <= 6, ESP_ERR_INVALID_ARG);
+    VerifyOrReturnError(argc >= 2 && argc <= 6, ESP_ERR_INVALID_ARG);
     esp_err_t result = ESP_ERR_INVALID_ARG;
 
     if (strncmp(argv[0], "onnetwork", sizeof("onnetwork")) == 0) {
@@ -260,6 +260,10 @@ static esp_err_t controller_pairing_handler(int argc, char **argv)
 
         result = controller::pairing_code_wifi_thread(nodeId, ssid, password, payload, dataset_tlvs_buf,
                                                       dataset_tlvs_len);
+    } else if (strncmp(argv[0], "unpair", sizeof("unpair")) == 0) {
+        VerifyOrReturnError(argc == 2, ESP_ERR_INVALID_ARG);
+        uint64_t node_id = string_to_uint64(argv[1]);
+        result = controller::unpair_device(node_id);
     }
 
     if (result != ESP_OK) {
@@ -585,7 +589,7 @@ esp_err_t controller_register_commands()
 #if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
         {
             .name = "pairing",
-            .description = "Pairing a node.\n"
+            .description = "Commands for commissioning/unpair nodes.\n"
                            "\tUsage: controller pairing onnetwork <nodeid> <pincode> OR\n"
                            "\tcontroller pairing ble-wifi <nodeid> <ssid> <password> <pincode> <discriminator> OR\n"
                            "\tcontroller pairing ble-thread <nodeid> <dataset> <pincode> <discriminator> OR\n"
@@ -593,7 +597,8 @@ esp_err_t controller_register_commands()
                            "\tcontroller pairing code <nodeid> <payload> OR\n"
                            "\tcontroller pairing code-wifi <nodeid> <ssid> <password> <payload> OR\n"
                            "\tcontroller pairing code-thread <nodeid> <dataset> <payload> OR\n"
-                           "\tcontroller pairing code-wifi-thread <nodeid> <ssid> <password> <dataset> <payload>",
+                           "\tcontroller pairing code-wifi-thread <nodeid> <ssid> <password> <dataset> <payload> OR\n"
+                           "\tcontroller pairing unpair <nodeid>",
             .handler = controller_pairing_handler,
         },
         {

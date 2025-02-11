@@ -191,5 +191,20 @@ esp_err_t pairing_code_wifi_thread(NodeId nodeId, const char *ssid, const char *
     return ESP_OK;
 }
 
+static void remove_fabric_handler(NodeId remote_node, CHIP_ERROR status)
+{
+    if (status == CHIP_NO_ERROR) {
+        ESP_LOGI(TAG, "Succeeded to remove fabric for remote node 0x%" PRIx64, remote_node);
+    } else {
+        ESP_LOGE(TAG, "Failed to remove fabric for remote node 0x%" PRIx64, remote_node);
+    }
+}
+
+esp_err_t unpair_device(NodeId node_id)
+{
+    auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
+    return controller_instance.unpair(node_id, remove_fabric_handler);
+}
+
 } // namespace controller
 } // namespace esp_matter
