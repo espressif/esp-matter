@@ -206,11 +206,7 @@ esp_err_t cluster_command::dispatch_group_command(void *context)
 #ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
     uint8_t fabric_index = get_fabric_index();
 #else
-#ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-    uint8_t fabric_index = matter_controller_client::get_instance().get_commissioner()->GetFabricIndex();
-#else
-    uint8_t fabric_index = matter_controller_client::get_instance().get_controller()->GetFabricIndex();
-#endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+    uint8_t fabric_index = matter_controller_client::get_instance().get_fabric_index();
 #endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
     chip::app::CommandPathParams command_path = {cmd->m_endpoint_id, group_id, cmd->m_cluster_id, cmd->m_command_id,
                                                  chip::app::CommandPathFlags::kGroupIdValid};
