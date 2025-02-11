@@ -71,7 +71,7 @@ void set_custom_device_info_provider(DeviceInfoProvider *provider)
 }
 #endif
 
-static DeviceAttestationCredentialsProvider *get_dac_provider(void)
+DeviceAttestationCredentialsProvider *get_dac_provider(void)
 {
 #if CONFIG_SEC_CERT_DAC_PROVIDER
     static ESP32SecureCertDACProvider instance;

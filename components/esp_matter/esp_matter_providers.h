@@ -58,4 +58,6 @@ void set_custom_device_info_provider(chip::DeviceLayer::DeviceInfoProvider *prov
 #endif
 
 void setup_providers();
+
+chip::Credentials::DeviceAttestationCredentialsProvider *get_dac_provider(void);
 } // namespace esp_matter

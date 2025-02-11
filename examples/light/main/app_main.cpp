@@ -24,6 +24,17 @@
 #include <app/server/CommissioningWindowManager.h>
 #include <app/server/Server.h>
 
+#ifdef CONFIG_ENABLE_SET_CERT_DECLARATION_API
+#include <esp_matter_providers.h>
+#include <lib/support/Span.h>
+#ifdef CONFIG_SEC_CERT_DAC_PROVIDER
+#include <platform/ESP32/ESP32SecureCertDACProvider.h>
+#elif defined(CONFIG_FACTORY_PARTITION_DAC_PROVIDER)
+#include <platform/ESP32/ESP32FactoryDataProvider.h>
+#endif
+using namespace chip::DeviceLayer;
+#endif
+
 static const char *TAG = "app_main";
 uint16_t light_endpoint_id = 0;
 
@@ -33,6 +44,13 @@ using namespace esp_matter::endpoint;
 using namespace chip::app::Clusters;
 
 constexpr auto k_timeout_seconds = 300;
+
+#ifdef CONFIG_ENABLE_SET_CERT_DECLARATION_API
+extern const uint8_t cd_start[] asm("_binary_certification_declaration_der_start");
+extern const uint8_t cd_end[] asm("_binary_certification_declaration_der_end");
+
+const chip::ByteSpan cdSpan(cd_start, static_cast<size_t>(cd_end - cd_start));
+#endif // CONFIG_ENABLE_SET_CERT_DECLARATION_API
 
 #if CONFIG_ENABLE_ENCRYPTED_OTA
 extern const char decryption_key_start[] asm("_binary_esp_image_encryption_key_pem_start");
@@ -207,6 +225,15 @@ extern "C" void app_main()
     };
     set_openthread_platform_config(&config);
 #endif
+
+#ifdef CONFIG_ENABLE_SET_CERT_DECLARATION_API
+    auto * dac_provider = get_dac_provider();
+#ifdef CONFIG_SEC_CERT_DAC_PROVIDER
+    static_cast<ESP32SecureCertDACProvider *>(dac_provider)->SetCertificationDeclaration(cdSpan);
+#elif defined(CONFIG_FACTORY_PARTITION_DAC_PROVIDER)
+    static_cast<ESP32FactoryDataProvider *>(dac_provider)->SetCertificationDeclaration(cdSpan);
+#endif
+#endif // CONFIG_ENABLE_SET_CERT_DECLARATION_API
 
     /* Matter start */
     err = esp_matter::start(app_event_cb);
