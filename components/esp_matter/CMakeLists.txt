@@ -16,9 +16,10 @@ set(INCLUDE_DIRS_LIST   "."
 set(EXCLUDE_SRCS_LIST )
 
 if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
-    # Get the list of cluster directories present in ${MATTER_SDK_PATH}/src/app/clusters
-    file(GLOB CLUSTER_DIR_LIST true ${MATTER_SDK_PATH}/src/app/clusters/*)
-    foreach(CLUSTER_DIR ${CLUSTER_DIR_LIST})
+    include("utils/cluster_select/cluster_dir.cmake")
+    get_supported_cluster_dirs(SUPPORTED_CLUSTER_DIRS)
+    foreach(CLUSTER_DIR ${SUPPORTED_CLUSTER_DIRS})
+        # If the cluster directory has .c/.cpp file, add it to SRC_DIRS_LIST
         file(GLOB_RECURSE C_CPP_FILES "${CLUSTER_DIR}/*.c" "${CLUSTER_DIR}/*.cpp")
         if (C_CPP_FILES)
             list(APPEND SRC_DIRS_LIST "${CLUSTER_DIR}")
