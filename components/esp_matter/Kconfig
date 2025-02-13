@@ -238,4 +238,17 @@ menu "ESP Matter"
             Disable this option to initialize Thread stack and start Thread task with more
             flexibility.
 
+    menu "Select Supported Matter Clusters"
+        visible if ESP_MATTER_ENABLE_DATA_MODEL
+
+    # If the cluster implementation source files use a class derived from another class with virtual functions
+    # and instantiate an object of that class, the linker may include this cluster in the final binary even if
+    # it is unused. To mitigate this and reduce firmware size, we offer a method to exclude those source files
+    # from compilation. If your product's data model does not require a specific cluster, you can deselect it
+    # under this menu to optimize flash usage.
+
+        rsource "utils/cluster_select/Kconfig.in"
+
+    endmenu
+
 endmenu

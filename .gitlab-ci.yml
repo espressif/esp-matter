@@ -183,18 +183,27 @@ build_image:
           validation_error=1
       fi
 
-    # Validate if we have the latest ZAP common files
+    # Validate if we have the latest ZAP common and cluster select files
     # python3 is not installed in dind image, so we need to install it
     - apk add --no-cache python3
     # update the submodule to so that script runs based on that submodule
     - git submodule update --init --depth 1 connectedhomeip/connectedhomeip
     - python3 components/esp_matter/zap_common/generate_zap_common_files.py
+    - python3 components/esp_matter/utils/cluster_select/generate_cluster_select_files.py
     - |
       if git diff --quiet components/esp_matter/zap_common; then
           echo "ZAP common files are up to date."
       else
           echo "ERROR: ZAP common files are not up to date."
           echo "       Please run ./components/esp_matter/zap_common/generate_zap_common_files.py and commit the changes."
+          validation_error=1
+      fi
+    - |
+      if git diff --quiet components/esp_matter/utils/cluster_select; then
+          echo "Cluster select files are up to date."
+      else
+          echo "ERROR: Cluster select files are not up to date."
+          echo "       Please run ./components/esp_matter/utils/cluster_select/generate_cluster_select_files.py and commit the changes."
           validation_error=1
       fi
 
