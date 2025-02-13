@@ -1,5 +1,5 @@
 ## IDF Component Manager Manifest File
-version: 0.0.2
+version: 1.4.0
 description: Espressif's Matter SDK Component
 url: https://github.com/espressif/esp-matter
 files:
@@ -10,8 +10,8 @@ files:
         - "./Kconfig"
         - "./LICENSE"
         - "./generate-include-files.cmake"
-        - "./ota-image.cmake"
         - "./README.md"
+        - "./CHANGELOG.md"
         - "./components/**/*"
         - "./connectedhomeip/connectedhomeip/config/esp32/components/chip/Kconfig"
         - "./connectedhomeip/connectedhomeip/config/esp32/components/chip/ota-image.cmake"
@@ -19,9 +19,14 @@ files:
         - "./connectedhomeip/connectedhomeip/src/access/examples/*.*"
         - "./connectedhomeip/connectedhomeip/src/app/*.*"
         - "./connectedhomeip/connectedhomeip/src/app/app-platform/**/*"
+        - "./connectedhomeip/connectedhomeip/src/app/cluster-building-blocks/**/*"
         - "./connectedhomeip/connectedhomeip/src/app/clusters/**/*"
+        - "./connectedhomeip/connectedhomeip/src/app/codegen-data-model-provider/**/*"
+        - "./connectedhomeip/connectedhomeip/src/app/common/**/*"
         - "./connectedhomeip/connectedhomeip/src/app/data-model/**/*"
+        - "./connectedhomeip/connectedhomeip/src/app/data-model-provider/**/*"
         - "./connectedhomeip/connectedhomeip/src/app/dynamic_server/**/*"
+        - "./connectedhomeip/connectedhomeip/src/app/ember_coupling/**/*"
         - "./connectedhomeip/connectedhomeip/src/app/icd/**/*"
         - "./connectedhomeip/connectedhomeip/src/app/MessageDef/**/*"
         - "./connectedhomeip/connectedhomeip/src/app/reporting/**/*"
@@ -30,6 +35,7 @@ files:
         - "./connectedhomeip/connectedhomeip/src/ble/*.*"
         - "./connectedhomeip/connectedhomeip/src/controller/*.*"
         - "./connectedhomeip/connectedhomeip/src/controller/python/chip/tlv/tlvlist.py"
+        - "./connectedhomeip/connectedhomeip/src/controller/python/chip/tlv/__init__.py"
         - "./connectedhomeip/connectedhomeip/src/credentials/*.*"
         - "./connectedhomeip/connectedhomeip/src/credentials/attestation_verifier/**/*"
         - "./connectedhomeip/connectedhomeip/src/credentials/examples/**/*"
@@ -58,11 +64,15 @@ files:
         - "./connectedhomeip/connectedhomeip/src/tracing/esp32_trace/**/*"
         - "./connectedhomeip/connectedhomeip/src/transport/*.*"
         - "./connectedhomeip/connectedhomeip/src/transport/raw/**/*"
+        - "./connectedhomeip/connectedhomeip/third_party/jsoncpp/repo/include/**/*"
         - "./connectedhomeip/connectedhomeip/third_party/nlassert/repo/include/**/*"
         - "./connectedhomeip/connectedhomeip/third_party/nlfaultinjection/include/**/*"
         - "./connectedhomeip/connectedhomeip/third_party/nlfaultinjection/src/**/*"
         - "./connectedhomeip/connectedhomeip/third_party/nlio/repo/include/**/*"
         - "./connectedhomeip/connectedhomeip/zzz_generated/app-common/**/*"
+        - "./connectedhomeip/connectedhomeip/zzz_generated/chip-tool/zap-generated/cluster/logging/**/*"
+        - "./connectedhomeip/connectedhomeip/examples/chip-tool/commands/clusters/DataModelLogger.h"
+        - "./connectedhomeip/connectedhomeip/examples/chip-tool/commands/common/RemoteDataModelLogger.h"
 dependencies:
     espressif/mdns:
         version: "^1.1.0"
@@ -71,7 +81,7 @@ dependencies:
             - if: "target != esp32h2"
 
     espressif/esp_secure_cert_mgr:
-        version: "^2.3.0"
+        version: "^2.5.0"
         rules:
             - if: "idf_version >=4.3"
 
@@ -82,7 +92,7 @@ dependencies:
             - if: "idf_version >=4.4"
 
     espressif/esp_insights:
-        version: "1.0.1"
+        version: "1.2.2"
         require: public
         # There is an issue with IDF-Component-Manager when ESP Insights is included.
         # Issue: https://github.com/project-chip/connectedhomeip/issues/29125
@@ -92,3 +102,19 @@ dependencies:
 
     espressif/json_parser: "~1.0.0"
     espressif/json_generator: "~1.1.0"
+
+    espressif/esp_rcp_update:
+        version: "1.2.0"
+        rules:
+            - if: "idf_version >=5.0"
+
+    espressif/esp_delta_ota:
+        version: "^1.1.0"
+        require: public
+        rules:
+            - if: "idf_version >=4.3"
+
+    espressif/esp_wifi_remote:
+        version: ">=0.1.12"
+        rules:
+            - if: "target in [esp32p4]"
