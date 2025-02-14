@@ -201,7 +201,7 @@ To add the esp_matter component to your project, run:
 
 ::
 
-   idf.py add-dependency "espressif/esp_matter^0.0.2"
+   idf.py add-dependency "espressif/esp_matter^1.4.0"
 
 An example with esp_matter component is offered:
 
@@ -209,8 +209,9 @@ An example with esp_matter component is offered:
 
 .. note::
 
-    To use this component, the version of IDF component management should be 1.4.*.
-    Use ``compote version`` to show the version. Use ``pip install 'idf-component-manager~=1.4.0'`` to install.
+    To use this component, the version of IDF component management should be ``1.4.*`` or ``>= 2.0``.
+    Use ``compote version`` to show the version. Use ``pip install 'idf-component-manager~=1.4.0'``
+    or ``pip install 'idf-component-manager~=2.0.0'`` to install.
 
 2.2.3 Building Applications
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
