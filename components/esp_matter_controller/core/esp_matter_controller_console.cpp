@@ -21,6 +21,7 @@
 #include <esp_matter_controller_commissioning_window_opener.h>
 #include <esp_matter_controller_console.h>
 #include <esp_matter_controller_group_settings.h>
+#include <esp_matter_controller_icd_client.h>
 #include <esp_matter_controller_pairing_command.h>
 #include <esp_matter_controller_read_command.h>
 #include <esp_matter_controller_subscribe_command.h>
@@ -589,6 +590,15 @@ static esp_err_t controller_shutdown_all_subscriptions_handler(int argc, char **
     return ESP_OK;
 }
 
+static esp_err_t controller_icd_list_handler(int argc, char **argv)
+{
+    if (argc != 1 || strncmp(argv[0], "list", sizeof("list")) != 0) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    controller::list_registered_icd();
+    return ESP_OK;
+}
+
 static esp_err_t controller_dispatch(int argc, char **argv)
 {
     if (argc == 0) {
@@ -626,6 +636,12 @@ esp_err_t controller_register_commands()
             .description = "Managing the groups and keysets of the controller.\n"
                            "\tUsage: controller group-settings <sub-commands>",
             .handler = controller_group_settings_handler,
+        },
+        {
+            .name = "icd",
+            .description = "icd client management.\n"
+                           "\tUsage: controller icd list",
+            .handler = controller_icd_list_handler,
         },
 #if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
         {

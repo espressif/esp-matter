@@ -20,6 +20,7 @@
 #include <esp_matter_controller_credentials_issuer.h>
 #include <esp_matter_controller_pairing_command.h>
 
+#include <app/InteractionModelEngine.h>
 #include <controller/CHIPDeviceControllerFactory.h>
 #include <controller/OperationalCredentialsDelegate.h>
 #include <credentials/GroupDataProvider.h>
@@ -62,8 +63,8 @@ esp_err_t matter_controller_client::init(NodeId node_id, FabricId fabric_id, uin
                         "Failed to initialize operational keystore");
     ESP_RETURN_ON_FALSE(m_operational_cert_store.Init(&m_default_storage) == CHIP_NO_ERROR, ESP_FAIL, TAG,
                         "Failed to initialize operational cert store");
-    //    ESP_RETURN_ON_FALSE(m_icd_client_storage.Init(&m_default_storage, &m_session_key_store) == CHIP_NO_ERROR,
-    //                        ESP_FAIL, TAG, "Failed to initialize ICD client store");
+    ESP_RETURN_ON_FALSE(m_icd_client_storage.Init(&m_default_storage, &m_session_key_store) == CHIP_NO_ERROR, ESP_FAIL,
+                        TAG, "Failed to initialize ICD client store");
     factory_init_params.listenPort = listen_port;
     factory_init_params.fabricIndependentStorage = &m_default_storage;
     factory_init_params.operationalKeystore = &m_operational_keystore;
@@ -84,6 +85,14 @@ esp_err_t matter_controller_client::init(NodeId node_id, FabricId fabric_id, uin
     ESP_RETURN_ON_FALSE(chip::Controller::DeviceControllerFactory::GetInstance().Init(factory_init_params) ==
                             CHIP_NO_ERROR,
                         ESP_FAIL, TAG, "Failed to initialize DeviceControllerFactory");
+    auto *system_state = chip::Controller::DeviceControllerFactory::GetInstance().GetSystemState();
+    auto engine = chip::app::InteractionModelEngine::GetInstance();
+    ESP_RETURN_ON_FALSE(engine, ESP_ERR_INVALID_STATE, TAG, "No interaction model engine");
+    ESP_RETURN_ON_FALSE(m_icd_check_in_delegate.Init(&m_icd_client_storage, engine) == CHIP_NO_ERROR, ESP_FAIL, TAG,
+                        "Failed to initialize check in delegate");
+    ESP_RETURN_ON_FALSE(m_check_in_handler.Init(system_state->ExchangeMgr(), &m_icd_client_storage,
+                                                &m_icd_check_in_delegate, engine) == CHIP_NO_ERROR,
+                        ESP_FAIL, TAG, "Failed to initialize Check In handler");
     return ESP_OK;
 }
 
@@ -145,6 +154,7 @@ esp_err_t matter_controller_client::setup_commissioner()
     // Initialize Group Data, including IPK
     chip::FabricIndex fabric_index = m_device_commissioner.GetFabricIndex();
     ESP_RETURN_ON_FALSE(fabric_index != chip::kUndefinedFabricIndex, ESP_FAIL, TAG, "Invalid Fabric Index");
+    m_icd_client_storage.UpdateFabricList(fabric_index);
     uint8_t compressed_fabric_id[sizeof(uint64_t)] = {0};
     chip::MutableByteSpan compressed_fabric_id_span(compressed_fabric_id);
     ESP_RETURN_ON_FALSE(m_device_commissioner.GetCompressedFabricIdBytes(compressed_fabric_id_span) == CHIP_NO_ERROR,
@@ -158,14 +168,13 @@ esp_err_t matter_controller_client::setup_commissioner()
     ESP_RETURN_ON_FALSE(chip::Credentials::SetSingleIpkEpochKey(group_data_provider, fabric_index, default_ipk,
                                                                 compressed_fabric_id_span) == CHIP_NO_ERROR,
                         ESP_FAIL, TAG, "Failed to set ipk for commissioner fabric");
-    // m_icd_client_storage.UpdateFabricList(fabric_index);
 
 #if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
     get_discovery_controller()->SetUserDirectedCommissioningServer(get_commissioner()->GetUserDirectedCommissioningServer());
     get_discovery_controller()->SetCommissionerCallback(&commissioner_callback);
 #endif
 
-    m_device_commissioner.RegisterPairingDelegate(&controller::pairing_command::get_instance());
+    m_device_commissioner.RegisterPairingDelegate(nullptr);
 
     return ESP_OK;
 }
@@ -220,6 +229,9 @@ esp_err_t matter_controller_client::setup_controller(chip::MutableByteSpan &ipk)
                         "Failed to setup controller");
 
     chip::FabricIndex fabric_index = m_device_controller.GetFabricIndex();
+    if (fabric_index != chip::kUndefinedFabricIndex) {
+        m_icd_client_storage.UpdateFabricList(fabric_index);
+    }
     if (fabric_index != chip::kUndefinedFabricIndex && !ipk.empty()) {
         // If we have created fabric in SetupController and IPK input is not empty, initialize Group Data with IPK.
         // Otherwise we will initialize Group Data with IPK later.

@@ -15,8 +15,9 @@
 #pragma once
 
 #include <controller/CHIPDeviceController.h>
+#include <controller/CommissioningDelegate.h>
 #include <esp_matter.h>
-#include "dnssd/Types.h"
+#include <lib/dnssd/Types.h>
 
 using chip::NodeId;
 using chip::ScopedNodeId;
@@ -28,8 +29,8 @@ namespace esp_matter {
 namespace controller {
 
 typedef struct {
-    // Callback for the success or failure of PASE session establishment. err will be CHIP_NO_ERROR when the commissioner
-    // establishes PASE session with peer node. Otherwise the commissioner fails to establish PASE session.
+    // Callback for the success or failure of PASE session establishment. err will be CHIP_NO_ERROR when the
+    // commissioner establishes PASE session with peer node. Otherwise the commissioner fails to establish PASE session.
     void (*pase_callback)(CHIP_ERROR err);
     // Callback for the sussess of commisioning
     void (*commissioning_success_callback)(ScopedNodeId peer_id);
@@ -53,6 +54,8 @@ public:
     void OnCommissioningFailure(
         chip::PeerId peerId, CHIP_ERROR error, chip::Controller::CommissioningStage stageFailed,
         chip::Optional<chip::Credentials::AttestationVerificationResult> additionalErrorInfo) override;
+    void OnICDRegistrationComplete(chip::ScopedNodeId deviceId, uint32_t icdCounter) override;
+    void OnICDStayActiveComplete(chip::ScopedNodeId deviceId, uint32_t promisedActiveDuration) override;
 
     /****************** DeviceDiscoveryDelegate Interface ***************/
     void OnDiscoveredDevice(const chip::Dnssd::CommissionNodeData &nodeData) override;
@@ -65,119 +68,182 @@ public:
 
     void set_callbacks(pairing_command_callbacks_t callbacks) { m_callbacks = callbacks; }
 
+    void set_icd_registration(bool icd_registration) { m_icd_registration = icd_registration; }
+
+    /**
+     * Pairing a Matter end-device on the same IP network
+     *
+     * @param[in] node_id NodeId assigned to the Matter end-device.
+     * @param[in] pincode Setup PIN code of the Matter end-device.
+     *
+     * @return ESP_OK on success
+     * @return error in case of failure
+     */
+    static esp_err_t pairing_on_network(NodeId node_id, uint32_t pincode);
+#if CONFIG_ENABLE_ESP32_BLE_CONTROLLER
+    /**
+     * Pairing a Matter over Wi-Fi end-device with BLE
+     *
+     * @param[in] node_id NodeId assigned to the Matter end-device.
+     * @param[in] pincode Setup PIN code of the Matter end-device.
+     * @param[in] disc Discriminator of the Matter end-device.
+     * @param[in] ssid SSID of the Wi-Fi AP.
+     * @param[in] pwd Password of the Wi-Fi AP.
+     *
+     * @return ESP_OK on success
+     * @return error in case of failure
+     */
+    static esp_err_t pairing_ble_wifi(NodeId node_id, uint32_t pincode, uint16_t disc, const char *ssid,
+                                      const char *pwd);
+
+    /**
+     * Pairing a Matter over Thread end-device with BLE
+     *
+     * @param[in] node_id NodeId assigned to the Matter end-device.
+     * @param[in] pincode Setup PIN code of the Matter end-device.
+     * @param[in] disc Discriminator of the Matter end-device.
+     * @param[in] dataset_tlvs Dataset TLV string of the Thread network.
+     * @param[in] dataset_len Length of the dataset TLV string.
+     *
+     * @return ESP_OK on success
+     * @return error in case of failure
+     */
+    static esp_err_t pairing_ble_thread(NodeId node_id, uint32_t pincode, uint16_t disc, uint8_t *dataset_tlvs,
+                                        uint8_t dataset_len);
+#endif // CONFIG_ENABLE_ESP32_BLE_CONTROLLER
+
+    /**
+     * Pair a on-network Matter end-device with a pairing code
+     *
+     * @param[in] node_id NodeId assigned to the Matter end-device.
+     * @param[in] payload Pairing code
+     *
+     * @return ESP_OK on success
+     * @return error in case of failure
+     */
+    static esp_err_t pairing_code(NodeId node_id, const char *payload);
+
+    /**
+     * Pair a thread Matter end-device with a pairing code
+     *
+     * @param[in] node_id     NodeId assigned to the Matter end-device.
+     * @param[in] payload     Pairing code
+     * @param[in] dataset_buf Buffer containing the Thread network dataset
+     * @param[in] dataset_len Length of the dataset buffer
+     *
+     * @return ESP_OK on success
+     * @return error in case of failure
+     */
+    static esp_err_t pairing_code_thread(NodeId node_id, const char *payload, uint8_t *dataset_buf,
+                                         uint8_t dataset_len);
+
+    /**
+     * Pair a Wi-Fi Matter end-device with a pairing code
+     *
+     * @param[in] node_id  NodeId assigned to the Matter end-device.
+     * @param[in] ssid     SSID of the Wi-Fi AP.
+     * @param[in] password Password of the Wi-Fi AP.
+     * @param[in] payload  Pairing code
+     *
+     * @return ESP_OK on success
+     * @return error in case of failure
+     */
+    static esp_err_t pairing_code_wifi(NodeId node_id, const char *ssid, const char *password, const char *payload);
+
+    /**
+     * Pair a Matter end-device which supports both Wi-Fi as well as Thread with a pairing code
+     *
+     * @param[in] node_id     NodeId that will be assigned to the Matter end-device.
+     * @param[in] ssid        SSID of the Wi-Fi AP.
+     * @param[in] password    Password of the Wi-Fi AP.
+     * @param[in] payload     Pairing code
+     * @param[in] dataset_buf Buffer containing the Thread network dataset
+     * @param[in] dataset_len Length of the dataset buffer
+     *
+     * @return ESP_OK on success
+     * @return error in case of failure
+     */
+    static esp_err_t pairing_code_wifi_thread(NodeId node_id, const char *ssid, const char *password,
+                                              const char *payload, uint8_t *dataset_buf, uint8_t dataset_len);
+
+    /**
+     * Unpair a Matter end-device which will remove the fabric from the remote device
+     *
+     * @param[in] node_id  NodeId of the Matter end-device to be unpaired.
+     *
+     * @return ESP_OK on success
+     * @return error in case of failure
+     */
+    static esp_err_t unpair_device(NodeId node_id);
+
+private:
     NodeId m_remote_node_id;
     uint32_t m_setup_pincode;
     uint16_t m_discriminator;
     pairing_command_callbacks_t m_callbacks;
+    bool m_icd_registration;
+    chip::Controller::ICDRegistrationStrategy m_icd_registration_strategy;
+    uint8_t m_icd_symmetric_key_buf[chip::Crypto::kAES_CCM128_Key_Length];
+    chip::ByteSpan m_icd_symmetric_key;
+    bool m_device_is_icd;
 
-private:
     pairing_command()
-        : m_remote_node_id(0), m_setup_pincode(0), m_discriminator(0), m_callbacks{nullptr, nullptr, nullptr} {}
+        : m_remote_node_id(0)
+        , m_setup_pincode(0)
+        , m_discriminator(0)
+        , m_callbacks{nullptr, nullptr, nullptr}
+        , m_icd_registration(true)
+        , m_icd_registration_strategy(chip::Controller::ICDRegistrationStrategy::kBeforeComplete)
+    {
+        chip::Crypto::DRBG_get_bytes(m_icd_symmetric_key_buf, sizeof(m_icd_symmetric_key));
+        m_icd_symmetric_key = chip::ByteSpan(m_icd_symmetric_key_buf);
+    }
 };
 
-/**
- * Pairing a Matter end-device on the same IP network
- *
- * @param[in] node_id NodeId assigned to the Matter end-device.
- * @param[in] pincode Setup PIN code of the Matter end-device.
- *
- * @return ESP_OK on success
- * @return error in case of failure
- */
-esp_err_t pairing_on_network(NodeId node_id, uint32_t pincode);
+inline esp_err_t pairing_on_network(NodeId node_id, uint32_t pincode)
+{
+    return pairing_command::pairing_on_network(node_id, pincode);
+}
 #if CONFIG_ENABLE_ESP32_BLE_CONTROLLER
-/**
- * Pairing a Matter over Wi-Fi end-device with BLE
- *
- * @param[in] node_id NodeId assigned to the Matter end-device.
- * @param[in] pincode Setup PIN code of the Matter end-device.
- * @param[in] disc Discriminator of the Matter end-device.
- * @param[in] ssid SSID of the Wi-Fi AP.
- * @param[in] pwd Password of the Wi-Fi AP.
- *
- * @return ESP_OK on success
- * @return error in case of failure
- */
-esp_err_t pairing_ble_wifi(NodeId node_id, uint32_t pincode, uint16_t disc, const char *ssid, const char *pwd);
+inline esp_err_t pairing_ble_wifi(NodeId node_id, uint32_t pincode, uint16_t disc, const char *ssid,
+                                  const char *pwd)
+{
+    return pairing_command::pairing_ble_wifi(node_id, pincode, disc, ssid, pwd);
+}
 
-/**
- * Pairing a Matter over Thread end-device with BLE
- *
- * @param[in] node_id NodeId assigned to the Matter end-device.
- * @param[in] pincode Setup PIN code of the Matter end-device.
- * @param[in] disc Discriminator of the Matter end-device.
- * @param[in] dataset_tlvs Dataset TLV string of the Thread network.
- * @param[in] dataset_len Length of the dataset TLV string.
- *
- * @return ESP_OK on success
- * @return error in case of failure
- */
-esp_err_t pairing_ble_thread(NodeId node_id, uint32_t pincode, uint16_t disc, uint8_t *dataset_tlvs,
-                             uint8_t dataset_len);
+inline esp_err_t pairing_ble_thread(NodeId node_id, uint32_t pincode, uint16_t disc, uint8_t *dataset_tlvs,
+                                    uint8_t dataset_len)
+{
+    return pairing_command::pairing_ble_thread(node_id, pincode, disc, dataset_tlvs, dataset_len);
+}
 #endif // CONFIG_ENABLE_ESP32_BLE_CONTROLLER
 
-/**
- * Pair a on-network Matter end-device with a pairing code
- *
- * @param[in] node_id NodeId assigned to the Matter end-device.
- * @param[in] payload Pairing code
- *
- * @return ESP_OK on success
- * @return error in case of failure
- */
-esp_err_t pairing_code(NodeId node_id, const char *payload);
+inline esp_err_t pairing_code(NodeId node_id, const char *payload)
+{
+    return pairing_command::pairing_code(node_id, payload);
+}
 
-/**
- * Pair a thread Matter end-device with a pairing code
- *
- * @param[in] node_id     NodeId assigned to the Matter end-device.
- * @param[in] payload     Pairing code
- * @param[in] dataset_buf Buffer containing the Thread network dataset
- * @param[in] dataset_len Length of the dataset buffer
- *
- * @return ESP_OK on success
- * @return error in case of failure
- */
-esp_err_t pairing_code_thread(NodeId node_id, const char *payload, uint8_t *dataset_buf, uint8_t dataset_len);
+inline esp_err_t pairing_code_thread(NodeId node_id, const char *payload, uint8_t *dataset_buf,
+                                     uint8_t dataset_len)
+{
+    return pairing_command::pairing_code_thread(node_id, payload, dataset_buf, dataset_len);
+}
 
-/**
- * Pair a Wi-Fi Matter end-device with a pairing code
- *
- * @param[in] node_id  NodeId assigned to the Matter end-device.
- * @param[in] ssid     SSID of the Wi-Fi AP.
- * @param[in] password Password of the Wi-Fi AP.
- * @param[in] payload  Pairing code
- *
- * @return ESP_OK on success
- * @return error in case of failure
- */
-esp_err_t pairing_code_wifi(NodeId node_id, const char *ssid, const char *password, const char *payload);
+inline esp_err_t pairing_code_wifi(NodeId node_id, const char *ssid, const char *password, const char *payload)
+{
+    return pairing_command::pairing_code_wifi(node_id, ssid, password, payload);
+}
 
-/**
- * Pair a Matter end-device which supports both Wi-Fi as well as Thread with a pairing code
- *
- * @param[in] node_id     NodeId that will be assigned to the Matter end-device.
- * @param[in] ssid        SSID of the Wi-Fi AP.
- * @param[in] password    Password of the Wi-Fi AP.
- * @param[in] payload     Pairing code
- * @param[in] dataset_buf Buffer containing the Thread network dataset
- * @param[in] dataset_len Length of the dataset buffer
- *
- * @return ESP_OK on success
- * @return error in case of failure
- */
-esp_err_t pairing_code_wifi_thread(NodeId node_id, const char *ssid, const char *password, const char *payload,
-                                   uint8_t *dataset_buf, uint8_t dataset_len);
+inline esp_err_t pairing_code_wifi_thread(NodeId node_id, const char *ssid, const char *password,
+                                          const char *payload, uint8_t *dataset_buf, uint8_t dataset_len)
+{
+    return pairing_command::pairing_code_wifi_thread(node_id, ssid, password, payload, dataset_buf, dataset_len);
+}
 
-/**
- * Unpair a Matter end-device which will remove the fabric from the remote device
- *
- * @param[in] node_id  NodeId of the Matter end-device to be unpaired.
- *
- * @return ESP_OK on success
- * @return error in case of failure
- */
-esp_err_t unpair_device(NodeId node_id);
+inline esp_err_t unpair_device(NodeId node_id)
+{
+    return pairing_command::unpair_device(node_id);
+}
 
 } // namespace controller
 } // namespace esp_matter
