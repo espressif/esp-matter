@@ -9,12 +9,4 @@ dependencies:
   espressif/led_strip:
     version: "^2.0.0"
   espressif/esp_matter:
-    version: "^0.0.2"
-  # This matches the dependency of esp_insights
-  espressif/esp_diag_data_store:
-        version: "1.0.1"
-        require: public
-        rules:
-            - if: "idf_version >=5.0"
-            - if: "target != esp32h2"
-
+    version: "^1.4.0"
