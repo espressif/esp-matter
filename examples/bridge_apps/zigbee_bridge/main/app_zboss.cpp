@@ -38,18 +38,11 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
     esp_err_t err_status = signal_struct->esp_err_status;
     esp_zb_app_signal_type_t sig_type = *p_sg_p;
     esp_zb_zdo_signal_device_annce_params_t *dev_annce_params = NULL;
-    esp_zb_zdo_signal_macsplit_dev_boot_params_t *rcp_version = NULL;
 
     switch (sig_type) {
     case ESP_ZB_ZDO_SIGNAL_SKIP_STARTUP:
         ESP_LOGI(TAG, "Zigbee stack initialized");
         esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_INITIALIZATION);
-        break;
-
-    case ESP_ZB_MACSPLIT_DEVICE_BOOT:
-        ESP_LOGI(TAG, "Zigbee rcp device booted");
-        rcp_version = (esp_zb_zdo_signal_macsplit_dev_boot_params_t*)esp_zb_app_signal_get_params(p_sg_p);
-        ESP_LOGI(TAG, "Running RCP Version:%s", rcp_version->version_str);
         break;
 
     case ESP_ZB_BDB_SIGNAL_DEVICE_FIRST_START:
