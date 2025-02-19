@@ -98,3 +98,14 @@ I cannot send commands to the light from the controller:
 -   If you are still facing issues, reproduce the issue on the default example for the device and then raise an [issue](https://github.com/espressif/esp-matter/issues). Make sure to share these:
     -   The complete device logs for both the devices taken over UART.
     -   The esp-matter and esp-idf branch you are using.
+
+### A1.3 RAM optimization
+-   The `sdkconfig.defaults.ram_optimization` file is provided for RAM optimization. These configurations enable SPIRAM (CONFIG_SPIRAM=y) and allow the BSS segment to be placed in SPIRAM (CONFIG_SPIRAM_ALLOW_BSS_SEG_EXTERNAL_MEMORY). With these configurations, [linker file](./main/linker.lf) can move move BSS segments of certain main controller libraries to SPIRAM. Build the example with the sdkconfig:
+```
+idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.ram_optimization" set-target esp32s3 build
+```
+-   The OTBR's sdkconfig file `sdkconfig.defaults.otbr` has RAM optimization configurations enabled by default.
+-   If you encounter a crash with error message: "PSRAM chip not found or not supported, or wrong PSRAM line mode", please check whether the module has SPIRAM and if the SPIRAM mode is configured correctly:
+    -   For 2MB SPIRAM, set `CONFIG_SPIRAM_MODE_QUAD=y`
+    -   For SPIRAM larger than 2MB, set `CONFIG_SPIRAM_MODE_OCT=y`
+-   Refer to [linker](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/optimizations.html#configuration-options-to-optimize-ram-and-flash) for other options to optimize RAM and Flash.
