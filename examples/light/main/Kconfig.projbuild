@@ -1,0 +1,11 @@
+menu "Example Configuration"
+
+    config ENABLE_MEMORY_PROFILING
+        bool "Enable Memory Profiling"
+        default n
+        help
+            Enable this option to include memory profiling features in the example.
+            This will allow you to monitor memory usage during runtime.
+
+endmenu
+

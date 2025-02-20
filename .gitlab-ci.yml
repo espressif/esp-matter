@@ -327,14 +327,14 @@ build_esp_matter_examples_pytest_H2_idf_v5_1:
   script:
     - *setup_ot_rcp
     - *setup_ot_br
+    - cd ${ESP_MATTER_PATH}/examples/light
+    - echo "CONFIG_ENABLE_MEMORY_PROFILING=y" >> sdkconfig.defaults
     - cd ${ESP_MATTER_PATH}
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --pytest_h2
     - |
       if [ "$CI_PIPELINE_SOURCE" == "merge_request_event" ]; then
-        python tools/ci/post_results.py --chip esp32h2 --job_name "build_esp_matter_examples_pytest_H2_idf_v5_1" --ref_map_file light_mr_base.map --example "light"
-      else
-        echo "Not a Merge Request pipeline. Skipping post_results.py."
+        python tools/ci/memory_analyzer.py --chip esp32h2 --job_name "build_esp_matter_examples_pytest_H2_idf_v5_1" --ref_map_file light_mr_base.map --example "light"
       fi
 
 build_esp_matter_examples_pytest_C2_idf_v5_1:
@@ -356,15 +356,15 @@ build_esp_matter_examples_pytest_C2_idf_v5_1:
     when: always
     expire_in: 15 days
   script:
+    - cd ${ESP_MATTER_PATH}/examples/light
+    - echo "CONFIG_ENABLE_MEMORY_PROFILING=y" >> sdkconfig.defaults
     - cd ${ESP_MATTER_PATH}
     - pip install -r tools/ci/requirements-build.txt
     - echo "${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
     - python tools/ci/build_apps.py ./examples --pytest_c2
     - |
       if [ "$CI_PIPELINE_SOURCE" == "merge_request_event" ]; then
-        python tools/ci/post_results.py --chip esp32c2 --job_name "build_esp_matter_examples_pytest_C2_idf_v5_1" --ref_map_file light_mr_base.map --example "light"
-      else
-        echo "Not a Merge Request pipeline. Skipping post_results.py."
+        python tools/ci/memory_analyzer.py --chip esp32c2 --job_name "build_esp_matter_examples_pytest_C2_idf_v5_1" --ref_map_file light_mr_base.map --example "light"
       fi
 
 
@@ -403,6 +403,9 @@ build_esp_matter_examples:
     - cd ${ESP_MATTER_PATH}/examples/mfg_test_app
     - openssl genrsa -out secure_boot_signing_key.pem 3072
 
+    - cd ${ESP_MATTER_PATH}/examples/light
+    - echo "CONFIG_ENABLE_MEMORY_PROFILING=y" >> sdkconfig.defaults
+
     # steps for external platform build for blemesh_bridge app
     - cd ${ESP_MATTER_PATH}/examples/bridge_apps/blemesh_bridge
     - cp sdkconfig.defaults sdkconfig.defaults.backup
@@ -415,12 +418,8 @@ build_esp_matter_examples:
       --parallel-index ${CI_NODE_INDEX:-1}
     - |
       if [ "$CI_PIPELINE_SOURCE" == "merge_request_event" ] && [ "${CI_NODE_INDEX:-1}" -eq 2 ]; then
-        python tools/ci/post_results.py --chip esp32c3 --job_name "build_esp_matter_examples 2/2" --ref_map_file light_mr_base.map --example "light"
-      else
-        echo "Not a Merge Request pipeline. Skipping post_results.py."
+        python tools/ci/memory_analyzer.py --chip esp32c3 --job_name "build_esp_matter_examples 2/2" --ref_map_file light_mr_base.map --example "light"
       fi
-
-
   parallel: 2
 
 build_nopytest_remaining_examples_manual:
@@ -527,7 +526,11 @@ pytest_esp32c2_esp_matter_dut:
     - rm -rf connectedhomeip/connectedhomeip
     - ln -s ${CHIP_SUBMODULE_PATH} connectedhomeip/connectedhomeip
     - pip install -r tools/ci/requirements-pytest.txt
-    - pytest examples/ --target esp32c2 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml --baud 74880
+    - pytest examples/ --target esp32c2 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml --baud 74880 | tee pytest_c2.log
+    - |
+      if [ "$CI_PIPELINE_SOURCE" == "merge_request_event" ]; then
+        python tools/ci/memory_analyzer.py --log_file pytest_c2.log --chip esp32c2 --example "light" 
+      fi
   tags: ["esp32c2", "esp_matter_dut"]
 
 pytest_esp32h2_esp_matter_dut:
@@ -542,7 +545,11 @@ pytest_esp32h2_esp_matter_dut:
     - rm -rf connectedhomeip/connectedhomeip
     - ln -s ${CHIP_SUBMODULE_PATH} connectedhomeip/connectedhomeip
     - pip install -r tools/ci/requirements-pytest.txt
-    - pytest examples/ --target esp32h2 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml
+    - pytest examples/ --target esp32h2 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml | tee pytest_h2.log
+    - |
+      if [ "$CI_PIPELINE_SOURCE" == "merge_request_event" ]; then
+        python tools/ci/memory_analyzer.py --log_file pytest_h2.log --chip esp32h2 --example "light" 
+      fi 
   tags: ["esp32h2", "esp_matter_dut"]
 
 build_upstream_examples:
