@@ -7,7 +7,7 @@ set(MATTER_SDK_PATH ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip)
 set(src_dirs_list )
 set(include_dirs_list )
 set(exclude_srcs_list )
-set(requires_list chip esp_matter esp_matter_console spiffs)
+set(requires_list chip esp_matter esp_matter_console spiffs esp_http_client)
 if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
     list(APPEND src_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/core"
                               "${CMAKE_CURRENT_SOURCE_DIR}/commands"
