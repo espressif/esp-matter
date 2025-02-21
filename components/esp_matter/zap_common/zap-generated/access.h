@@ -15,6 +15,7 @@
     0x00000030, /* Cluster: General Commissioning, Attribute: TCMinRequiredVersion, Privilege: administer */ \
     0x00000030, /* Cluster: General Commissioning, Attribute: TCAcknowledgements, Privilege: administer */ \
     0x00000030, /* Cluster: General Commissioning, Attribute: TCAcknowledgementsRequired, Privilege: administer */ \
+    0x00000030, /* Cluster: General Commissioning, Attribute: TCUpdateDeadline, Privilege: administer */ \
     0x00000031, /* Cluster: Network Commissioning, Attribute: MaxNetworks, Privilege: administer */ \
     0x00000031, /* Cluster: Network Commissioning, Attribute: Networks, Privilege: administer */ \
     0x00000031, /* Cluster: Network Commissioning, Attribute: LastNetworkingStatus, Privilege: administer */ \
@@ -47,6 +48,7 @@
     0x00000006, /* Cluster: General Commissioning, Attribute: TCMinRequiredVersion, Privilege: administer */ \
     0x00000007, /* Cluster: General Commissioning, Attribute: TCAcknowledgements, Privilege: administer */ \
     0x00000008, /* Cluster: General Commissioning, Attribute: TCAcknowledgementsRequired, Privilege: administer */ \
+    0x00000009, /* Cluster: General Commissioning, Attribute: TCUpdateDeadline, Privilege: administer */ \
     0x00000000, /* Cluster: Network Commissioning, Attribute: MaxNetworks, Privilege: administer */ \
     0x00000001, /* Cluster: Network Commissioning, Attribute: Networks, Privilege: administer */ \
     0x00000005, /* Cluster: Network Commissioning, Attribute: LastNetworkingStatus, Privilege: administer */ \
@@ -79,6 +81,7 @@
     chip::Access::Privilege::kAdminister, /* Cluster: General Commissioning, Attribute: TCMinRequiredVersion, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: General Commissioning, Attribute: TCAcknowledgements, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: General Commissioning, Attribute: TCAcknowledgementsRequired, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: General Commissioning, Attribute: TCUpdateDeadline, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Network Commissioning, Attribute: MaxNetworks, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Network Commissioning, Attribute: Networks, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Network Commissioning, Attribute: LastNetworkingStatus, Privilege: administer */ \

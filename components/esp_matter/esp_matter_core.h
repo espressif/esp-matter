@@ -53,6 +53,13 @@ typedef handle_t event_t;
 /** TODO: Change this */
 typedef void (*event_callback_t)(const ChipDeviceEvent *event, intptr_t arg);
 
+/** Return whether the Matter is intialized and started
+ *
+ *  @return true if Matter is started
+ *  @return false if Matter is not started
+ */
+bool is_started();
+
 /** ESP Matter Start
  *
  * Initialize and start the matter thread.
