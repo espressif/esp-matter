@@ -63,6 +63,7 @@ variables:
 
 .setup_ot_br: &setup_ot_br
   - cd ${CI_PROJECT_DIR}
+  - apt-get update
   - apt-get install -y openssh-client
   - git clone ${ESP_THREAD_BR_REPO_URL}
   - cd ${BR_PATH}/examples/basic_thread_border_router
