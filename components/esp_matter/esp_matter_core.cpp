@@ -898,7 +898,7 @@ esp_err_t factory_reset()
     }
 
     /* Submodule factory reset. This also restarts after completion. */
-    ConfigurationMgr().InitiateFactoryReset();
+    chip::Server::GetInstance().ScheduleFactoryReset();
     return err;
 }
 
