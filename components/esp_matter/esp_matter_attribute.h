@@ -152,6 +152,11 @@ namespace attribute {
 attribute_t *create_network_interfaces(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_reboot_count(cluster_t *cluster, uint16_t value);
 attribute_t *create_up_time(cluster_t *cluster, uint64_t value);
+attribute_t *create_total_op_hours(cluster_t *cluster, uint32_t value);
+attribute_t *create_boot_reason(cluster_t *cluster, uint8_t value);
+attribute_t *create_active_hardware_faults(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_active_radio_faults(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_test_event_triggers_enabled(cluster_t *cluster, bool value);
 } /* attribute */
 } /* general_diagnostics */
