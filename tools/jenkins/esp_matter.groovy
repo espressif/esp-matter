@@ -157,7 +157,7 @@ def artifacts_save() {
     cd ${REPOS_PATH}
     cp build_details.txt ${PACKAGE_NAME}/
 
-    mkdir ${WORKSPACE}/artifacts
+    mkdir -p ${WORKSPACE}/artifacts
     cp build_details.txt ${WORKSPACE}/artifacts/
     tar -zcvf ${WORKSPACE}/artifacts/${PACKAGE_NAME}.tar.gz ${PACKAGE_NAME}
     '''
