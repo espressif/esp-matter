@@ -505,7 +505,7 @@ attribute_t *create_up_time(cluster_t *cluster, uint64_t value)
                                          ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint64(value));
 }
 
-attribute_t *create_total_op_hours(cluster_t *cluster, uint32_t value)
+attribute_t *create_total_operational_hours(cluster_t *cluster, uint32_t value)
 {
     return esp_matter::attribute::create(cluster, GeneralDiagnostics::Attributes::TotalOperationalHours::Id,
                                          ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint32(value));
