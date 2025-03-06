@@ -16,6 +16,7 @@
 #include <custom_provider/dynamic_commissionable_data_provider.h>
 #include <esp_log.h>
 #include <lib/support/Base64.h>
+#include <lib/support/CodeUtils.h>
 #include <platform/ESP32/ESP32Config.h>
 #include <setup_payload/SetupPayload.h>
 
@@ -64,12 +65,12 @@ static bool is_valid_base64_str(const char *str)
 CHIP_ERROR dynamic_commissionable_data_provider::GetSpake2pSalt(MutableByteSpan &saltBuf)
 {
     const char *saltB64 = CONFIG_DYNAMIC_PASSCODE_PROVIDER_SALT_BASE64;
-    ReturnErrorCodeIf(!is_valid_base64_str(saltB64), CHIP_ERROR_INVALID_ARGUMENT);
+    VerifyOrReturnError(is_valid_base64_str(saltB64), CHIP_ERROR_INVALID_ARGUMENT);
     size_t saltB64Len = strlen(saltB64);
     uint8_t salt[chip::Crypto::kSpake2p_Max_PBKDF_Salt_Length];
     size_t saltLen = chip::Base64Decode32(saltB64, saltB64Len, salt);
-    ReturnErrorCodeIf(saltLen < chip::Crypto::kSpake2p_Min_PBKDF_Salt_Length, CHIP_ERROR_INVALID_ARGUMENT);
-    ReturnErrorCodeIf(saltLen > saltBuf.size(), CHIP_ERROR_BUFFER_TOO_SMALL);
+    VerifyOrReturnError(saltLen >= chip::Crypto::kSpake2p_Min_PBKDF_Salt_Length, CHIP_ERROR_INVALID_ARGUMENT);
+    VerifyOrReturnError(saltLen <= saltBuf.size(), CHIP_ERROR_BUFFER_TOO_SMALL);
 
     memcpy(saltBuf.data(), salt, saltLen);
     saltBuf.reduce_size(saltLen);
