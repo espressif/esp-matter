@@ -64,6 +64,9 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
     case app::Clusters::Channel::Id:
         emberAfChannelClusterInitCallback(endpoint);
         break;
+    case app::Clusters::Chime::Id:
+        emberAfChimeClusterInitCallback(endpoint);
+        break;
     case app::Clusters::ColorControl::Id:
         emberAfColorControlClusterInitCallback(endpoint);
         break;
@@ -360,6 +363,9 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
         break;
     case app::Clusters::WaterHeaterMode::Id:
         emberAfWaterHeaterModeClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::WebRTCTransportProvider::Id:
+        emberAfWebRTCTransportProviderClusterInitCallback(endpoint);
         break;
     case app::Clusters::WiFiNetworkDiagnostics::Id:
         emberAfWiFiNetworkDiagnosticsClusterInitCallback(endpoint);
