@@ -24,6 +24,13 @@
         .radio_mode = RADIO_MODE_NATIVE,      \
     }
 #elif CONFIG_OPENTHREAD_RADIO_SPINEL_UART
+#ifdef CONFIG_IDF_TARGET_ESP32C6
+#define UART_RX_PIN GPIO_NUM_17
+#define UART_TX_PIN GPIO_NUM_16
+#else
+#define UART_RX_PIN GPIO_NUM_17
+#define UART_TX_PIN GPIO_NUM_18
+#endif
 #define ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG()              \
     {                                                      \
         .radio_mode = RADIO_MODE_UART_RCP,                 \
@@ -39,8 +46,8 @@
                     .rx_flow_ctrl_thresh = 0,              \
                     .source_clk = UART_SCLK_DEFAULT,       \
                 },                                         \
-            .rx_pin = GPIO_NUM_17,                         \
-            .tx_pin = GPIO_NUM_18,                         \
+            .rx_pin = UART_RX_PIN,                         \
+            .tx_pin = UART_TX_PIN,                         \
         },                                                 \
     }
 #else
