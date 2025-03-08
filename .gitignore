@@ -11,3 +11,4 @@ out/
 _build/
 tools/chip-tool/
 .zap/
+.DS_Store
