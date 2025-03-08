@@ -414,12 +414,11 @@ Please check `#1123`_ for relevant discussion on Github issue.
 .. _light_wifi_prov: https://github.com/espressif/esp-matter/tree/main/examples/light_wifi_prov#4-external-platform
 .. _getting the repository: https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#getting-the-repository
 .. _requirements.txt: https://github.com/espressif/esp-matter/blob/main/requirements.txt
-.. _implementation which frees the BLE memory: https://github.com/espressif/esp-matter/blob/c52fa686d1a3be275b0a5c872ee5f1a3c8f2420d/components/esp_matter/esp_matter_core.cpp#L859-L891
 .. _generate_setup_payload.py: https://github.com/project-chip/connectedhomeip/tree/master/src/setup_payload/python
 .. _CHIP QR Code: https://project-chip.github.io/connectedhomeip/qrcode.html
-.. _CONFIG_APP_PROJECT_VER_FROM_CONFIG: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/kconfig.html#config-app-project-ver-from-config
-.. _UART console baud rate: https://docs.espressif.com/projects/esp-idf/en/latest/esp32c2/api-reference/kconfig.html#config-esp-console-uart-baudrate
-.. _Main XTAL frequency: https://docs.espressif.com/projects/esp-idf/en/latest/esp32c2/api-reference/kconfig.html#main-xtal-config
+.. _CONFIG_APP_PROJECT_VER_FROM_CONFIG: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/kconfig-reference.html#config-app-project-ver-from-config
+.. _UART console baud rate: https://docs.espressif.com/projects/esp-idf/en/latest/esp32c2/api-reference/kconfig-reference.html#config-esp-console-uart-baudrate
+.. _Main XTAL frequency: https://docs.espressif.com/projects/esp-idf/en/latest/esp32c2/api-reference/kconfig-reference.html#main-xtal-config
 
 .. _Github issue: https://github.com/espressif/esp-matter/issues/new?template=issue-template.md
 .. _`#1123`: https://github.com/espressif/esp-matter/issues/1123

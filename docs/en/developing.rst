@@ -30,8 +30,8 @@ Development on Windows is supported using Windows Subsystem for Linux (WSL). Ple
 - Install Ubuntu 20.04 or 22.04 from the `Windows App Store <https://apps.microsoft.com/store/search/Ubuntu>`__.
 - Start Ubuntu (search into start menu) and run command ``uname -a``, it should report a kernel version of ``5.10.60.1`` or later.
   If not please upgrade the WSL2. To upgrade the kernel, run ``wsl --upgrade`` from Windows Power Shell.
-- Windows does not support exposing COM ports to WSL distros. Install usbipd-win on `Windows <https://github.com/dorssel/usbipd-win>`__
-  and `WSL <https://github.com/espressif/vscode-esp-idf-extension/blob/master/docs/WSL.md#usbipd>`__ (usbipd-win `WSL Support <https://github.com/dorssel/usbipd-win/wiki/WSL-support>`__).
+- Windows does not support exposing COM ports to WSL distros. Install `usbipd-win`_
+  and `WSL`_ (`usbipd-win WSL Support`_).
 - Here onwards process for setting esp-matter and building examples is same as other hosts.
 - Please clone the repositories from inside the WSL environment and not inside a mounted directory.
 
@@ -496,7 +496,7 @@ Use the cluster commands to control the attributes.
 
 chip-tool when used in interactive mode uses CASE resumption as against establishing CASE for cluster control commands. This results into shorter execution times, thereby improving the overall experience.
 
-For more details on chip-tool usage, check https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/examples/chip-tool
+For more details about the commands, please check `chip-tool usage guide`_
 
 2.4 Device console
 ------------------
@@ -1097,7 +1097,7 @@ We need to generate the new CD because it SHALL match the VID, PID in DAC and th
     ninja -C build
 
 Generate the Test CD, please make sure to change the ``-V`` (vendor_id) and ``-p`` (product-id) options based on the ones that are being used.
-For more info about the arguments, please check `here <https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/src/tools/chip-cert#gen-cd>`__.
+For more info about the arguments, please check `chip-cert's gen-cd command`_ in the connectedhomeip repository.
 
 ::
 
@@ -1199,7 +1199,7 @@ Run the following command from host to commission the device.
 
 - Enable the ``CONFIG_ENABLE_OTA_REQUESTOR`` option to enable Matter OTA Requestor functionality.
 
-Please follow the `guide <https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/esp32/ota.md>`__
+Please follow the `OTA guide`_
 in the connectedhomeip repository for generating a Matter OTA image and performing OTA.
 
 2.8.1 Encrypted Matter OTA
@@ -1224,7 +1224,7 @@ Please follow the steps below to enable and use encrypted application images for
     }
 
 
-- Please refer to the `guide <https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/esp32/ota.md#encrypted-ota>`__
+- Please refer to the `encrypted OTA guide`_
   in the connectedhomeip repository for instructions on how to generate a private key, encrypted OTA image, and Matter OTA image.
 
 .. note::
@@ -1695,14 +1695,21 @@ To enable these functions, the cluster should be added to the appropriate entry 
   If the example uses ESP-Matter APIs to define its data model, the custom data model should be created and added to the data model using the esp-matter APIs, following the instructions in `Adding custom data model fields <./developing.html#adding-custom-data-model-fields>`__
 
 .. _`step by step installation guide`: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/linux-macos-setup.html
-.. _`Prerequisites for ESP-IDF`: https://docs.espressif.com/projects/esp-idf/en/v5.0.1/esp32/get-started/index.html#step-1-install-prerequisites
-.. _`Prerequisites for Matter`: https://github.com/espressif/connectedhomeip/blob/v1.1-branch/docs/guides/BUILDING.md#prerequisites
+.. _`Prerequisites for ESP-IDF`: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/index.html#installation
+.. _`Prerequisites for Matter`: https://github.com/project-chip/connectedhomeip/tree/master/docs/guides/BUILDING.md#prerequisites
 .. _`esp-matter-mfg-tool`: https://github.com/espressif/esp-matter-tools/tree/main/mfg_tool
 .. _`zcl configuration file`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/zap-templates/zcl/zcl.json
 .. _`zcl test configuration file`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/zap-templates/zcl/zcl-with-test-extensions.json
-.. _`zap configuration data`: <https://github.com/project-chip/connectedhomeip/blob/master/src/app/common/templates/config-data.yaml>
+.. _`zap configuration data`: https://github.com/project-chip/connectedhomeip/blob/master/src/app/common/templates/config-data.yaml
 .. _`ESP-Rainmaker iOS App`: https://apps.apple.com/app/esp-rainmaker/id1497491540
 .. _`ESP-Rainmaker Android App`: https://play.google.com/store/apps/details?id=com.espressif.rainmaker
 .. _`connectedhomeip`: https://github.com/project-chip/connectedhomeip
 .. _`CHIP Tool User Guide`: https://github.com/project-chip/connectedhomeip/blob/master/docs/development_controllers/chip-tool/chip_tool_guide.md
 .. _`profile installation instructions`: https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/darwin.md#profile-installation
+.. _`OTA guide`: https://github.com/project-chip/connectedhomeip/blob/master/docs/platforms/esp32/ota.md
+.. _`encrypted OTA guide`: https://github.com/project-chip/connectedhomeip/blob/master/docs/platforms/esp32/ota.md#encrypted-ota
+.. _`chip-cert's gen-cd command`: https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/src/tools/chip-cert#gen-cd
+.. _usbipd-win: https://github.com/dorssel/usbipd-win
+.. _WSL: https://docs.espressif.com/projects/vscode-esp-idf-extension/en/latest/additionalfeatures/wsl.html#usbipd-win-in-wsl
+.. _`usbipd-win WSL Support`: https://github.com/dorssel/usbipd-win/wiki/WSL-support
+.. _`chip-tool usage guide`: https://github.com/project-chip/connectedhomeip/blob/master/docs/development_controllers/chip-tool/chip_tool_guide.md
