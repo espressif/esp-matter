@@ -1521,6 +1521,12 @@ static esp_err_t destroy(cluster_t *cluster)
     /* Parse and delete all events */
     SinglyLinkedList<_event_t>::delete_list(&current_cluster->event_list);
 
+    /* Free matter_attributes if allocated */
+    if (current_cluster->matter_attributes) {
+        esp_matter_mem_free(current_cluster->matter_attributes);
+        current_cluster->matter_attributes = NULL;
+    }
+
     /* Free */
     esp_matter_mem_free(current_cluster);
     return ESP_OK;
