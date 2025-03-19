@@ -742,7 +742,7 @@ static void esp_matter_chip_init_task(intptr_t context)
 #ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
     // Group data provider injection for dynamic data model
     {
-        uint8_t groups_server_cluster_count = cluster::groups::get_server_cluster_count();
+        uint8_t groups_server_cluster_count = node::get_server_cluster_endpoint_count(chip::app::Clusters::Groups::Id);
         uint16_t max_groups_per_fabric = groups_server_cluster_count * MAX_GROUPS_PER_FABRIC_PER_ENDPOINT;
 
         // since groupDataProvider is a static variable, it won't be released.
@@ -2027,6 +2027,108 @@ esp_err_t destroy()
     }
 
     return destroy_raw();
+}
+
+// Treat 0xFFFF'FFFF as wildcard cluster
+static inline bool is_wildcard_cluster_id(uint32_t cluster_id)
+{
+    return cluster_id == chip::kInvalidClusterId;
+}
+
+// Treat 0xFFFF as wildcard endpoint
+static inline bool is_wildcard_endpoint_id(uint16_t endpoint_id)
+{
+    return endpoint_id == chip::kInvalidEndpointId;
+}
+
+/**
+ * @brief Get the number of clusters that match the given flags
+ *
+ * @param endpoint_id: The endpoint ID to check, 0xFFFF is treated as wildcard endpoint id
+ * @param cluster_id: The cluster ID to check, 0xFFFF is treated as wildcard cluster id
+ * @param cluster_flags: The flags to check
+ * @return The number of clusters that match the given flags
+ */
+static uint32_t get_cluster_count(uint32_t endpoint_id, uint32_t cluster_id, uint8_t cluster_flags)
+{
+    uint32_t count = 0;
+    node_t *node = get();
+    VerifyOrReturnValue(node, count, ESP_LOGE(TAG, "Node cannot be NULL"));
+
+    // lambda to check if cluster matches flags and return 1 if it does, 0 otherwise
+    auto check_cluster_flags = [cluster_flags](const endpoint_t *endpoint, const cluster_t *cluster) -> uint32_t {
+        if (cluster && endpoint) {
+            const _endpoint_t *_endpoint = (_endpoint_t *)endpoint;
+            const _cluster_t *_cluster = (_cluster_t *)cluster;
+            EmberAfClusterMask flags = _endpoint->endpoint_type->cluster[_cluster->index].mask;
+            return (flags & cluster_flags) ? 1 : 0;
+        }
+        return 0;
+    };
+
+    // lambda to count all matching clusters for an endpoint
+    auto get_count_on_all_clusters = [&check_cluster_flags](endpoint_t *endpoint) -> uint32_t {
+        uint32_t result = 0;
+        if (!endpoint) return result;
+
+        cluster_t *cluster = cluster::get_first(endpoint);
+        while (cluster) {
+            result += check_cluster_flags(endpoint, cluster);
+            cluster = cluster::get_next(cluster);
+        }
+        return result;
+    };
+
+    // lambda to find and count a specific cluster
+    auto get_count_on_specific_cluster = [&check_cluster_flags](const endpoint_t *endpoint, uint32_t cluster_id) -> uint32_t {
+        if (!endpoint) return 0;
+        cluster_t *cluster = cluster::get((endpoint_t *)endpoint, cluster_id);
+        return check_cluster_flags(endpoint, cluster);
+    };
+
+    // Case 1: Wildcard endpoint
+    if (is_wildcard_endpoint_id(endpoint_id)) {
+        endpoint_t *endpoint = endpoint::get_first(node);
+        while (endpoint) {
+            // Case 1.1: Wildcard cluster - count all clusters with matching flags
+            if (is_wildcard_cluster_id(cluster_id)) {
+                count += get_count_on_all_clusters(endpoint);
+            }
+            // Case 1.2: Specific cluster - count if it exists and has matching flags
+            else {
+                count += get_count_on_specific_cluster(endpoint, cluster_id);
+            }
+            endpoint = endpoint::get_next(endpoint);
+        }
+    }
+    // Case 2: Specific endpoint
+    else {
+        endpoint_t *endpoint = endpoint::get(endpoint_id);
+        if (!endpoint) {
+            return count;
+        }
+
+        // Case 2.1: Wildcard cluster - count all clusters with matching flags
+        if (is_wildcard_cluster_id(cluster_id)) {
+            count += get_count_on_all_clusters(endpoint);
+        }
+        // Case 2.2: Specific cluster - count if it exists and has matching flags
+        else {
+            count += get_count_on_specific_cluster(endpoint, cluster_id);
+        }
+    }
+
+    return count;
+}
+
+uint32_t get_server_cluster_endpoint_count(uint32_t cluster_id)
+{
+    return get_cluster_count(chip::kInvalidEndpointId, cluster_id, CLUSTER_FLAG_SERVER);
+}
+
+uint32_t get_client_cluster_endpoint_count(uint32_t cluster_id)
+{
+    return get_cluster_count(chip::kInvalidEndpointId, cluster_id, CLUSTER_FLAG_CLIENT);
 }
 
 } /* node */
