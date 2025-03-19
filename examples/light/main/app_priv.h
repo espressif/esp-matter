@@ -16,9 +16,9 @@
 #endif
 
 /** Standard max values (used for remapping attributes) */
-#define STANDARD_BRIGHTNESS 255
+#define STANDARD_BRIGHTNESS 100
 #define STANDARD_HUE 360
-#define STANDARD_SATURATION 255
+#define STANDARD_SATURATION 100
 #define STANDARD_TEMPERATURE_FACTOR 1000000
 
 /** Matter max values (used for remapping attributes) */
