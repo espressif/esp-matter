@@ -91,6 +91,11 @@ void __attribute__((weak)) emberAfChannelClusterInitCallback(EndpointId endpoint
     // To prevent warning
     (void) endpoint;
 }
+void __attribute__((weak)) emberAfChimeClusterInitCallback(EndpointId endpoint)
+{
+    // To prevent warning
+    (void) endpoint;
+}
 void __attribute__((weak)) emberAfColorControlClusterInitCallback(EndpointId endpoint)
 {
     // To prevent warning
@@ -582,6 +587,11 @@ void __attribute__((weak)) emberAfWaterHeaterManagementClusterInitCallback(Endpo
     (void) endpoint;
 }
 void __attribute__((weak)) emberAfWaterHeaterModeClusterInitCallback(EndpointId endpoint)
+{
+    // To prevent warning
+    (void) endpoint;
+}
+void __attribute__((weak)) emberAfWebRTCTransportProviderClusterInitCallback(EndpointId endpoint)
 {
     // To prevent warning
     (void) endpoint;
