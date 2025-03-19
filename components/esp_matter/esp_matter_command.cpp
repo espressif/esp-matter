@@ -135,53 +135,6 @@ static esp_err_t esp_matter_command_callback_key_set_read_all_indices(const Conc
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_command_callback_arm_fail_safe(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                           void *opaque_ptr)
-{
-    chip::app::Clusters::GeneralCommissioning::Commands::ArmFailSafe::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfGeneralCommissioningClusterArmFailSafeCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_set_regulatory_config(const ConcreteCommandPath &command_path,
-                                                                   TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::GeneralCommissioning::Commands::SetRegulatoryConfig::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfGeneralCommissioningClusterSetRegulatoryConfigCallback((CommandHandler *)opaque_ptr, command_path,
-                                                                      command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_commissioning_complete(const ConcreteCommandPath &command_path,
-                                                                    TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::GeneralCommissioning::Commands::CommissioningComplete::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfGeneralCommissioningClusterCommissioningCompleteCallback((CommandHandler *)opaque_ptr, command_path,
-                                                                        command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_set_tc_acknowledgements(const ConcreteCommandPath &command_path,
-                                                                    TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::GeneralCommissioning::Commands::SetTCAcknowledgements::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfGeneralCommissioningClusterSetTCAcknowledgementsCallback((CommandHandler *)opaque_ptr, command_path,
-                                                                        command_data);
-    }
-    return ESP_OK;
-}
-
 static esp_err_t esp_matter_command_callback_open_commissioning_window(const ConcreteCommandPath &command_path,
                                                                        TLVReader &tlv_data, void *opaque_ptr)
 {
@@ -1877,11 +1830,9 @@ namespace general_commissioning {
 namespace command {
 
 constexpr const command_entry_t accepted_command_list[] = {
-    {GeneralCommissioning::Commands::ArmFailSafe::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_arm_fail_safe},
-    {GeneralCommissioning::Commands::SetRegulatoryConfig::Id, COMMAND_FLAG_ACCEPTED,
-     esp_matter_command_callback_set_regulatory_config},
-    {GeneralCommissioning::Commands::CommissioningComplete::Id, COMMAND_FLAG_ACCEPTED,
-     esp_matter_command_callback_commissioning_complete},
+    {GeneralCommissioning::Commands::ArmFailSafe::Id, COMMAND_FLAG_ACCEPTED, nullptr},
+    {GeneralCommissioning::Commands::SetRegulatoryConfig::Id, COMMAND_FLAG_ACCEPTED, nullptr},
+    {GeneralCommissioning::Commands::CommissioningComplete::Id, COMMAND_FLAG_ACCEPTED, nullptr},
 };
 
 constexpr const command_entry_t generated_command_list[] = {
@@ -1893,19 +1844,19 @@ constexpr const command_entry_t generated_command_list[] = {
 command_t *create_arm_fail_safe(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, GeneralCommissioning::Commands::ArmFailSafe::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_arm_fail_safe);
+                                       nullptr);
 }
 
 command_t *create_set_regulatory_config(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, GeneralCommissioning::Commands::SetRegulatoryConfig::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_set_regulatory_config);
+                                       COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 command_t *create_commissioning_complete(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, GeneralCommissioning::Commands::CommissioningComplete::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_commissioning_complete);
+                                       COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 command_t *create_arm_fail_safe_response(cluster_t *cluster)
@@ -1929,7 +1880,7 @@ command_t *create_commissioning_complete_response(cluster_t *cluster)
 command_t *create_set_tc_acknowledgements(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, GeneralCommissioning::Commands::SetTCAcknowledgements::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_set_tc_acknowledgements);
+                                       COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 command_t *create_set_tc_acknowledgements_response(cluster_t *cluster)
