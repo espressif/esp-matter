@@ -841,6 +841,11 @@ static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
     return ESP_OK;
 }
 
+bool is_started()
+{
+    return esp_matter_started;
+}
+
 esp_err_t start(event_callback_t callback, intptr_t callback_arg)
 {
     VerifyOrReturnError(!esp_matter_started, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "esp_matter has started"));
