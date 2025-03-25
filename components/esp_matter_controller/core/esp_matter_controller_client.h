@@ -18,6 +18,8 @@
 #include <esp_matter_controller_credentials_issuer.h>
 
 #include <app/icd/client/DefaultICDClientStorage.h>
+#include <app/icd/client/DefaultCheckInDelegate.h>
+#include <app/icd/client/CheckInHandler.h>
 #include <controller/AutoCommissioner.h>
 #include <controller/CHIPDeviceController.h>
 #include <controller/CommissionerDiscoveryController.h>
@@ -129,6 +131,7 @@ public:
     }
 
     esp_err_t init(NodeId node_id, FabricId fabric_id, uint16_t listen_port);
+    chip::app::DefaultICDClientStorage &get_icd_client_storage() { return m_icd_client_storage; }
 
 #ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     esp_err_t setup_commissioner();
@@ -166,8 +169,9 @@ private:
     credentials_issuer *m_credentials_issuer;
     NodeId m_controller_node_id;
     FabricId m_controller_fabric_id;
-    // TODO: Enable ICD client from ESP32 platform
-    //  chip::app::DefaultICDClientStorage s_icd_client_storage;
+    chip::app::DefaultICDClientStorage m_icd_client_storage;
+    chip::app::DefaultCheckInDelegate m_icd_check_in_delegate;
+    chip::app::CheckInHandler m_check_in_handler;
 
 #ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     chip::Controller::AutoCommissioner m_auto_commissioner;
