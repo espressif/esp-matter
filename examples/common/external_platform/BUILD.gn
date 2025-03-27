@@ -74,6 +74,11 @@ buildconfig_header("custom_buildconfig") {
     "EXTERNAL_KEYVALUESTOREMANAGERIMPL_HEADER=<platform/ESP32_custom/KeyValueStoreManagerImpl.h>",
     "EXTERNAL_PLATFORMMANAGERIMPL_HEADER=<platform/ESP32_custom/PlatformManagerImpl.h>",
     "EXTERNAL_THREADSTACKMANAGERIMPL_HEADER=<platform/ESP32_custom/ThreadStackManagerImpl.h>",
+    "EXTERNAL_ESP32UTILS_HEADER=<platform/ESP32_custom/ESP32Utils.h>",
+    "EXTERNAL_ESP32OTAIMAGEPROCESSORIMPL_HEADER=<platform/ESP32_custom/OTAImageProcessorImpl.h>",
+    "EXTERNAL_ESP32DEVICEINFOPROVIDER_HEADER=<platform/ESP32_custom/ESP32DeviceInfoProvider.h>",
+    "EXTERNAL_ESP32FACTORYDATAPROVIDER_HEADER=<platform/ESP32_custom/ESP32FactoryDataProvider.h>",
+    "EXTERNAL_ESP32SECURECERTDACPROVIDER_HEADER=<platform/ESP32_custom/ESP32SecureCertDACProvider.h>",
     "CHIP_CONFIG_SOFTWARE_VERSION_NUMBER=${chip_config_software_version_number}",
     "CHIP_DEVICE_CONFIG_MAX_DISCOVERED_IP_ADDRESSES=${chip_max_discovered_ip_addresses}",
   ]

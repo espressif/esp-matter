@@ -19,7 +19,7 @@
 
 #include <app/clusters/ota-requestor/ExtendedOTARequestorDriver.h>
 #include <app/clusters/ota-requestor/OTARequestorUserConsentDelegate.h>
-#include <platform/ESP32/OTAImageProcessorImpl.h>
+#include <platform/OTAImageProcessor.h>
 
 typedef struct {
     // ota requestor driver
@@ -27,7 +27,7 @@ typedef struct {
     // user consent
     chip::ota::OTARequestorUserConsentDelegate *user_consent = nullptr;
     // ota image processor
-    chip::OTAImageProcessorImpl *image_processor = nullptr;
+    chip::OTAImageProcessorInterface *image_processor = nullptr;
 } esp_matter_ota_requestor_impl_t;
 
 typedef struct {
