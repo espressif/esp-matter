@@ -224,5 +224,8 @@ esp_err_t send_subscribe_event_command(uint64_t node_id, uint16_t endpoint_id, u
 
 esp_err_t send_shutdown_subscription(uint64_t node_id, uint32_t subscription_id);
 
+void send_shutdown_subscriptions(uint64_t node_id);
+
+void send_shutdown_all_subscriptions();
 } // namespace controller
 } // namespace esp_matter

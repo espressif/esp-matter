@@ -49,12 +49,7 @@ esp_err_t show_groups()
     ESP_LOGI(TAG, "  | Available Groups :                                                                  |");
     ESP_LOGI(TAG, "  +-------------------------------------------------------------------------------------+");
     ESP_LOGI(TAG, "  | Group Id   |  KeySet Id     |   Group Name                                          |");
-    FabricIndex fabric_index =
-#ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-        esp_matter::controller::matter_controller_client::get_instance().get_commissioner()->GetFabricIndex();
-#else
-        esp_matter::controller::matter_controller_client::get_instance().get_controller()->GetFabricIndex();
-#endif
+    FabricIndex fabric_index = esp_matter::controller::matter_controller_client::get_instance().get_fabric_index();
     GroupDataProvider *group_data_provider = chip::Credentials::GetGroupDataProvider();
     auto iter = group_data_provider->IterateGroupInfo(fabric_index);
     GroupDataProvider::GroupInfo group_info;
@@ -79,12 +74,7 @@ esp_err_t add_group(char *group_name, uint16_t group_id)
         return ESP_ERR_INVALID_ARG;
     }
 
-    FabricIndex fabric_index =
-#ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-        esp_matter::controller::matter_controller_client::get_instance().get_commissioner()->GetFabricIndex();
-#else
-        esp_matter::controller::matter_controller_client::get_instance().get_controller()->GetFabricIndex();
-#endif
+    FabricIndex fabric_index = esp_matter::controller::matter_controller_client::get_instance().get_fabric_index();
     GroupDataProvider *group_data_provider = chip::Credentials::GetGroupDataProvider();
     GroupDataProvider::GroupInfo group_info;
 
@@ -101,12 +91,7 @@ esp_err_t remove_group(uint16_t group_id)
         return ESP_ERR_INVALID_ARG;
     }
 
-    FabricIndex fabric_index =
-#ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-        esp_matter::controller::matter_controller_client::get_instance().get_commissioner()->GetFabricIndex();
-#else
-        esp_matter::controller::matter_controller_client::get_instance().get_controller()->GetFabricIndex();
-#endif
+    FabricIndex fabric_index = esp_matter::controller::matter_controller_client::get_instance().get_fabric_index();
     GroupDataProvider *group_data_provider = chip::Credentials::GetGroupDataProvider();
     ESP_RETURN_ON_FALSE(CHIP_NO_ERROR == group_data_provider->RemoveGroupInfo(fabric_index, group_id), ESP_FAIL, TAG,
                         "Failed to remove the group info");
@@ -115,12 +100,7 @@ esp_err_t remove_group(uint16_t group_id)
 
 esp_err_t show_keysets()
 {
-    FabricIndex fabric_index =
-#ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-        esp_matter::controller::matter_controller_client::get_instance().get_commissioner()->GetFabricIndex();
-#else
-        esp_matter::controller::matter_controller_client::get_instance().get_controller()->GetFabricIndex();
-#endif
+    FabricIndex fabric_index = esp_matter::controller::matter_controller_client::get_instance().get_fabric_index();
     GroupDataProvider *group_data_provider = chip::Credentials::GetGroupDataProvider();
     GroupDataProvider::KeySet keyset;
 
@@ -145,12 +125,7 @@ esp_err_t show_keysets()
 esp_err_t bind_keyset(uint16_t group_id, uint16_t keyset_id)
 {
     size_t current_count = 0;
-    FabricIndex fabric_index =
-#ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-        esp_matter::controller::matter_controller_client::get_instance().get_commissioner()->GetFabricIndex();
-#else
-        esp_matter::controller::matter_controller_client::get_instance().get_controller()->GetFabricIndex();
-#endif
+    FabricIndex fabric_index = esp_matter::controller::matter_controller_client::get_instance().get_fabric_index();
     GroupDataProvider *group_data_provider = chip::Credentials::GetGroupDataProvider();
 
     auto iter = group_data_provider->IterateGroupKeys(fabric_index);
@@ -169,12 +144,7 @@ esp_err_t bind_keyset(uint16_t group_id, uint16_t keyset_id)
 esp_err_t unbind_keyset(uint16_t group_id, uint16_t keyset_id)
 {
     size_t index = 0;
-    FabricIndex fabric_index =
-#ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-        esp_matter::controller::matter_controller_client::get_instance().get_commissioner()->GetFabricIndex();
-#else
-        esp_matter::controller::matter_controller_client::get_instance().get_controller()->GetFabricIndex();
-#endif
+    FabricIndex fabric_index = esp_matter::controller::matter_controller_client::get_instance().get_fabric_index();
     GroupDataProvider *group_data_provider = chip::Credentials::GetGroupDataProvider();
 
     auto iter = group_data_provider->IterateGroupKeys(fabric_index);
@@ -196,12 +166,7 @@ esp_err_t unbind_keyset(uint16_t group_id, uint16_t keyset_id)
 esp_err_t add_keyset(uint16_t keyset_id, uint8_t key_policy, uint64_t validity_time, char *epoch_key_oct_str)
 {
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
-    FabricIndex fabric_index =
-#ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-        controller_instance.get_commissioner()->GetFabricIndex();
-#else
-        controller_instance.get_controller()->GetFabricIndex();
-#endif
+    FabricIndex fabric_index = controller_instance.get_fabric_index();
 
     GroupDataProvider *group_data_provider = chip::Credentials::GetGroupDataProvider();
     uint8_t compressed_fabric_id[sizeof(uint64_t)];
@@ -238,12 +203,7 @@ esp_err_t add_keyset(uint16_t keyset_id, uint8_t key_policy, uint64_t validity_t
 
 esp_err_t remove_keyset(uint16_t keyset_id)
 {
-    FabricIndex fabric_index =
-#ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-        esp_matter::controller::matter_controller_client::get_instance().get_commissioner()->GetFabricIndex();
-#else
-        esp_matter::controller::matter_controller_client::get_instance().get_controller()->GetFabricIndex();
-#endif
+    FabricIndex fabric_index = esp_matter::controller::matter_controller_client::get_instance().get_fabric_index();
     GroupDataProvider *group_data_provider = chip::Credentials::GetGroupDataProvider();
 
     size_t index = 0;
