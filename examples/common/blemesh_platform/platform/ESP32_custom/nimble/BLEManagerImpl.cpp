@@ -1,3 +1,14 @@
+// SPDX-FileCopyrightText: 2020-2021 Project CHIP Authors
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// SPDX-FileContributor: 2024 Espressif Systems (Shanghai) PTE LTD
+//
+// Modified the original code to support blemesh platform on ESP32 SoCs.
+//
+// For original code and license information, please refer to
+// https://github.com/project-chip/connectedhomeip
+
 /*
  *
  *    Copyright (c) 2020-2021 Project CHIP Authors
