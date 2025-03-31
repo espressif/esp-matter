@@ -75,11 +75,11 @@ command_t *create_reset_counts(cluster_t *cluster);
 } /* command */
 } /* thread_network_diagnostics */
 
-namespace wifi_network_diagnotics {
+namespace wifi_network_diagnostics {
 namespace command {
 command_t *create_reset_counts(cluster_t *cluster);
 } /* command */
-} /* wifi_network_diagnotics */
+} /* wifi_network_diagnostics */
 
 namespace ethernet_network_diagnostics {
 namespace command {

@@ -79,9 +79,9 @@ namespace group_key_management {
 constexpr uint16_t cluster_revision = 2;
 } // namespace group_key_management
 
-namespace wifi_network_diagnotics {
+namespace wifi_network_diagnostics {
 constexpr uint16_t cluster_revision = 1;
-} // namespace wifi_network_diagnotics
+} // namespace wifi_network_diagnostics
 
 namespace thread_network_diagnostics {
 constexpr uint16_t cluster_revision = 3;
