@@ -656,26 +656,26 @@ esp_err_t add(cluster_t *cluster);
 
 } /* fair */
 
-namespace mod {
+namespace moderate {
 
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 
-} /* mod */
+} /* moderate */
 
-namespace vpoor {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* vpoor */
-
-namespace xpoor {
+namespace very_poor {
 
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 
-} /* xpoor */
+} /* very_poor */
+
+namespace extremely_poor {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* extremely_poor */
 
 } /* feature */
 } /* air_quality */
