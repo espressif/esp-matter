@@ -2020,13 +2020,15 @@ namespace node {
 node_t *create(config_t *config, attribute::callback_t attribute_callback,
                identification::callback_t identification_callback, void* priv_data)
 {
-    attribute::set_callback(attribute_callback);
-    identification::set_callback(identification_callback);
-
     node_t *node = create_raw();
     VerifyOrReturnValue(node != nullptr, NULL, ESP_LOGE(TAG, "Could not create node"));
-
-    endpoint::root_node::create(node, &(config->root_node), ENDPOINT_FLAG_NONE, priv_data);
+    endpoint_t *endpoint = endpoint::root_node::create(node, &(config->root_node), ENDPOINT_FLAG_NONE, priv_data);
+    if (endpoint == nullptr) {
+        destroy_raw();
+        return NULL;
+    }
+    attribute::set_callback(attribute_callback);
+    identification::set_callback(identification_callback);
     return node;
 }
 
