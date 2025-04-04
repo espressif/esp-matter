@@ -458,8 +458,8 @@ esp_err_t enable(endpoint_t *endpoint)
         return ESP_ERR_NO_MEM;
     }
     for (size_t i = 0; i < current_endpoint->device_type_count; ++i) {
-        device_types_ptr[i].deviceId = current_endpoint->device_type_ids[i];
-        device_types_ptr[i].deviceVersion = current_endpoint->device_type_versions[i];
+        device_types_ptr[i].deviceTypeId = current_endpoint->device_type_ids[i];
+        device_types_ptr[i].deviceTypeRevision = current_endpoint->device_type_versions[i];
     }
     chip::Span<EmberAfDeviceType> device_types(device_types_ptr, current_endpoint->device_type_count);
     current_endpoint->device_types_ptr = device_types_ptr;

@@ -30,7 +30,6 @@ application.
 #include <esp_matter_feature.h>
 #include <esp_matter_identify.h>
 
-#include <app/util/att-storage.h>
 #include <app/server/Dnssd.h>
 #include <platform/CHIPDeviceEvent.h>
 #include <platform/CHIPDeviceLayer.h>
@@ -52,17 +51,17 @@ typedef enum cluster_flags {
     /** No specific flags */
     CLUSTER_FLAG_NONE = 0x00,
     /** The cluster has an init function (function_flag) */
-    CLUSTER_FLAG_INIT_FUNCTION = CLUSTER_MASK_INIT_FUNCTION, /* 0x01 */
+    CLUSTER_FLAG_INIT_FUNCTION = MATTER_CLUSTER_FLAG_INIT_FUNCTION, /* 0x01 */
     /** The cluster has an attribute changed function (function_flag) */
-    CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION = CLUSTER_MASK_ATTRIBUTE_CHANGED_FUNCTION, /* 0x02 */
+    CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION = MATTER_CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION, /* 0x02 */
     /** The cluster has a shutdown function (function_flag) */
-    CLUSTER_FLAG_SHUTDOWN_FUNCTION = CLUSTER_MASK_SHUTDOWN_FUNCTION, /* 0x10 */
+    CLUSTER_FLAG_SHUTDOWN_FUNCTION = MATTER_CLUSTER_FLAG_SHUTDOWN_FUNCTION, /* 0x10 */
     /** The cluster has a pre attribute changed function (function_flag) */
-    CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION = CLUSTER_MASK_PRE_ATTRIBUTE_CHANGED_FUNCTION, /* 0x20 */
+    CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION = MATTER_CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION, /* 0x20 */
     /** The cluster is a server cluster */
-    CLUSTER_FLAG_SERVER = CLUSTER_MASK_SERVER, /* 0x40 */
+    CLUSTER_FLAG_SERVER = MATTER_CLUSTER_FLAG_SERVER, /* 0x40 */
     /** The cluster is a client cluster */
-    CLUSTER_FLAG_CLIENT = CLUSTER_MASK_CLIENT, /* 0x80 */
+    CLUSTER_FLAG_CLIENT = MATTER_CLUSTER_FLAG_CLIENT, /* 0x80 */
 } cluster_flags_t;
 
 /** Attribute flags */
@@ -70,17 +69,17 @@ typedef enum attribute_flags {
     /** No specific flags */
     ATTRIBUTE_FLAG_NONE = 0x00,
     /** The attribute is writable and can be directly changed by clients */
-    ATTRIBUTE_FLAG_WRITABLE = ATTRIBUTE_MASK_WRITABLE, /* 0x01 */
+    ATTRIBUTE_FLAG_WRITABLE = MATTER_ATTRIBUTE_FLAG_WRITABLE, /* 0x01 */
     /** The attribute is non volatile and its value will be stored in NVS */
-    ATTRIBUTE_FLAG_NONVOLATILE = ATTRIBUTE_MASK_NONVOLATILE, /* 0x02 */
+    ATTRIBUTE_FLAG_NONVOLATILE = MATTER_ATTRIBUTE_FLAG_NONVOLATILE, /* 0x02 */
     /** The attribute has bounds */
-    ATTRIBUTE_FLAG_MIN_MAX = ATTRIBUTE_MASK_MIN_MAX, /* 0x04 */
-    ATTRIBUTE_FLAG_MUST_USE_TIMED_WRITE = ATTRIBUTE_MASK_MUST_USE_TIMED_WRITE, /* 0x08 */
+    ATTRIBUTE_FLAG_MIN_MAX = MATTER_ATTRIBUTE_FLAG_MIN_MAX, /* 0x04 */
+    ATTRIBUTE_FLAG_MUST_USE_TIMED_WRITE = MATTER_ATTRIBUTE_FLAG_MUST_USE_TIMED_WRITE, /* 0x08 */
     /** The attribute uses external storage for its value. If attributes
     have this flag enabled, as all of them are stored in the ESP Matter database. */
-    ATTRIBUTE_FLAG_EXTERNAL_STORAGE = ATTRIBUTE_MASK_EXTERNAL_STORAGE, /* 0x10 */
-    ATTRIBUTE_FLAG_SINGLETON = ATTRIBUTE_MASK_SINGLETON, /* 0x20 */
-    ATTRIBUTE_FLAG_NULLABLE = ATTRIBUTE_MASK_NULLABLE, /* 0x40 */
+    ATTRIBUTE_FLAG_EXTERNAL_STORAGE = MATTER_ATTRIBUTE_FLAG_EXTERNAL_STORAGE, /* 0x10 */
+    ATTRIBUTE_FLAG_SINGLETON = MATTER_ATTRIBUTE_FLAG_SINGLETON, /* 0x20 */
+    ATTRIBUTE_FLAG_NULLABLE = MATTER_ATTRIBUTE_FLAG_NULLABLE, /* 0x40 */
     /** The attribute read and write are overridden. The attribute value will be fetched from and will be updated using
     the override callback. The value of this attribute is not maintained internally. */
     ATTRIBUTE_FLAG_OVERRIDE = ATTRIBUTE_FLAG_NULLABLE << 1, /* 0x80 */
