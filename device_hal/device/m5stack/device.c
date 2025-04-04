@@ -13,6 +13,8 @@
 
 #include <esp_log.h>
 #include <iot_button.h>
+#include <button_gpio.h>
+#include <driver/gpio.h>
 #include <led_driver.h>
 
 #define LED_GPIO_PIN 32 /* PIN_NUM_BCKL for M5Stack TFT */
@@ -28,14 +30,11 @@ led_driver_config_t led_driver_get_config()
     return config;
 }
 
-button_config_t button_driver_get_config()
+button_gpio_config_t button_driver_get_config()
 {
-    button_config_t config = {
-        .type = BUTTON_TYPE_GPIO,
-        .gpio_button_config = {
-            .gpio_num = BUTTON_GPIO_PIN,
-            .active_level = 0,
-        }
+    button_gpio_config_t config = {
+        .gpio_num = BUTTON_GPIO_PIN,
+        .active_level = 0,
     };
     return config;
 }
