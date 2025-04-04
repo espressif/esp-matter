@@ -9,11 +9,12 @@
 #include <string.h>
 
 #include "math.h"
-#include "driver/gpio.h"
 #include "esp_err.h"
 #include "esp_timer.h"
-#include "fan_hal_bldc.h"
+#include "driver/gpio.h"
 #include "iot_button.h"
+#include "button_gpio.h"
+#include "fan_hal_bldc.h"
 
 #if CONFIG_IDF_TARGET_ESP32 || CONFIG_IDF_TARGET_ESP32S3
 #define PI 3.14159265f
@@ -67,16 +68,19 @@ static void hal_bldc_timer_cb(void *args)
 
 esp_err_t hal_bldc_button_ctrl_init(gpio_num_t pin)
 {
-    button_config_t cfg = {
-        .type = BUTTON_TYPE_GPIO,
-        .gpio_button_config = {
-            .gpio_num = pin,
-            .active_level = 0,
-        },
+    /* Initialize button */
+    button_handle_t btn = NULL;
+    const button_config_t btn_cfg = {0};
+    const button_gpio_config_t btn_gpio_cfg = {
+        .gpio_num = pin,
+        .active_level = 0,
     };
-    button_handle_t btn = iot_button_create(&cfg);
 
-    if (iot_button_register_cb(btn, BUTTON_PRESS_DOWN, hal_bldc_button_ctrl, &btn) != ESP_OK) {
+    if (iot_button_new_gpio_device(&btn_cfg, &btn_gpio_cfg, &btn) != ESP_OK) {
+        return ESP_FAIL;
+    }
+
+    if (iot_button_register_cb(btn, BUTTON_PRESS_DOWN, NULL, hal_bldc_button_ctrl, &btn) != ESP_OK) {
         return ESP_FAIL;
     }
 

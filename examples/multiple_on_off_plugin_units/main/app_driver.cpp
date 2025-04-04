@@ -14,6 +14,8 @@
 #include <esp_matter.h>
 
 #include <app_priv.h>
+#include <button_gpio.h>
+#include <iot_button.h>
 
 using namespace chip::app::Clusters;
 using namespace esp_matter;
@@ -85,4 +87,56 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
     return err;
 }
 
+app_driver_handle_t app_driver_button_init(gpio_num_t * reset_gpio)
+{
+    VerifyOrReturnValue((reset_gpio), (app_driver_handle_t)NULL, ESP_LOGE(TAG, "reset_gpio cannot be NULL"));
+#ifdef CONFIG_USER_BUTTON
+    *reset_gpio = (gpio_num_t)CONFIG_USER_BUTTON_GPIO;
+#elif CONFIG_BSP_BUTTONS_NUM >= 1
+    *reset_gpio = (gpio_num_t)BSP_BUTTON_1_IO;
+#else
+    *reset_gpio = gpio_num_t::GPIO_NUM_NC;
+    return (app_driver_handle_t)NULL;
+#endif
+    ESP_LOGI(TAG, "Initializing reset button with gpio pin %d ...", (int)*reset_gpio);
+
+    // Make sure button's IO pin isn't assigned to a plug's IO pin
+    for (int i = 0; i < configure_plugs; i++) {
+        if (plugin_unit_list[i].plug == *reset_gpio) {
+            ESP_LOGE(TAG, "Button's gpio pin %d is already configured for plug %d", *reset_gpio, i);
+            *reset_gpio = gpio_num_t::GPIO_NUM_NC;
+            return (app_driver_handle_t)NULL;
+        }
+    }
+
+    /* Initialize button */
+    app_driver_handle_t reset_handle = NULL;
+#ifdef CONFIG_USER_BUTTON
+    const button_config_t btn_cfg = {0};
+    const button_gpio_config_t btn_gpio_cfg = {
+        .gpio_num = CONFIG_USER_BUTTON_GPIO,
+        .active_level = CONFIG_USER_BUTTON_LEVEL,
+    };
+
+    if (iot_button_new_gpio_device(&btn_cfg, &btn_gpio_cfg, &reset_handle) != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to create button device");
+        return NULL;
+    }
+#else
+    button_handle_t bsp_buttons[BSP_BUTTON_NUM];
+    int btn_cnt = 0;// will contain # of buttons that were created by BSP
+    bsp_iot_button_create(bsp_buttons, &btn_cnt, BSP_BUTTON_NUM);
+    if (btn_cnt >= 1) {
+        // return handle to dev board's 1st built-in button
+        reset_handle = (app_driver_handle_t)bsp_buttons[0];
+    } else {
+        ESP_LOGE(TAG, "bsp_iot_button_create() didn't return a usable button count: %d", btn_cnt);
+    }
+#endif
+
+    if (!reset_handle) {
+        *reset_gpio = gpio_num_t::GPIO_NUM_NC;
+    }
+    return reset_handle;
+}
 

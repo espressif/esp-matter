@@ -223,8 +223,8 @@ app_driver_handle_t app_driver_button_init()
     /* Initialize button */
     button_handle_t btns[BSP_BUTTON_NUM];
     ESP_ERROR_CHECK(bsp_iot_button_create(btns, NULL, BSP_BUTTON_NUM));
-    ESP_ERROR_CHECK(iot_button_register_cb(btns[0], BUTTON_PRESS_DOWN, app_driver_button_toggle_cb, NULL));
-    ESP_ERROR_CHECK(iot_button_register_cb(btns[0], BUTTON_LONG_PRESS_HOLD, button_factory_reset_pressed_cb, NULL));
-    ESP_ERROR_CHECK(iot_button_register_cb(btns[0], BUTTON_PRESS_UP, button_factory_reset_released_cb, NULL));
+    ESP_ERROR_CHECK(iot_button_register_cb(btns[0], BUTTON_PRESS_DOWN, NULL, app_driver_button_toggle_cb, NULL));
+    ESP_ERROR_CHECK(iot_button_register_cb(btns[0], BUTTON_LONG_PRESS_HOLD, NULL, button_factory_reset_pressed_cb, NULL));
+    ESP_ERROR_CHECK(iot_button_register_cb(btns[0], BUTTON_PRESS_UP, NULL, button_factory_reset_released_cb, NULL));
     return (app_driver_handle_t)btns[0];
 }

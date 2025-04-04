@@ -1,5 +1,5 @@
 dependencies:
   espressif/esp_bsp_devkit:
-    version: "^1.0.0"
+    version: "^3"
   espressif/led_strip:
     version: "^2.0.0"
