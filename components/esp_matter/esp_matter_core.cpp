@@ -2078,6 +2078,10 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
     }
 
     /* Free */
+    if (current_endpoint->identify != NULL) {
+        chip::Platform::Delete(current_endpoint->identify);
+        current_endpoint->identify = NULL;
+    }
     esp_matter_mem_free(current_endpoint);
     return ESP_OK;
 }
