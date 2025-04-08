@@ -1824,6 +1824,10 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
     }
 
     /* Free */
+    if (current_endpoint->identify != NULL) {
+        chip::Platform::Delete(current_endpoint->identify);
+        current_endpoint->identify = NULL;
+    }
     esp_matter_mem_free(current_endpoint);
     return ESP_OK;
 }
@@ -1982,13 +1986,15 @@ esp_err_t destroy()
     identification::set_callback(nullptr);
 
     endpoint_t *current_endpoint = endpoint::get_first(current_node);
+    endpoint_t *next_endpoint = nullptr;
     while (current_endpoint != nullptr) {
+        next_endpoint = endpoint::get_next(current_endpoint);
         // Endpoints should have destroyable flag set to true before destroying
         ((_endpoint_t *)current_endpoint)->flags |= ENDPOINT_FLAG_DESTROYABLE;
         err = endpoint::destroy((node_t *)current_node, current_endpoint);
         VerifyOrDo(err == ESP_OK, ESP_LOGE(TAG, "Failed to destroy endpoint"));
 
-        current_endpoint = endpoint::get_next(current_endpoint);
+        current_endpoint = next_endpoint;
     }
 
     return destroy_raw();
