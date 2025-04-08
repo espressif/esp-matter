@@ -1530,6 +1530,12 @@ static esp_err_t destroy(cluster_t *cluster)
     /* Parse and delete all events */
     SinglyLinkedList<_event_t>::delete_list(&current_cluster->event_list);
 
+    /* Free matter_attributes if allocated */
+    if (current_cluster->matter_attributes) {
+        esp_matter_mem_free(current_cluster->matter_attributes);
+        current_cluster->matter_attributes = NULL;
+    }
+
     /* Free */
     esp_matter_mem_free(current_cluster);
     return ESP_OK;
@@ -1822,6 +1828,10 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
     }
 
     /* Free */
+    if (current_endpoint->identify != NULL) {
+        chip::Platform::Delete(current_endpoint->identify);
+        current_endpoint->identify = NULL;
+    }
     esp_matter_mem_free(current_endpoint);
     return ESP_OK;
 }
@@ -1962,9 +1972,42 @@ node_t *create_raw()
     return (node_t *)node;
 }
 
+esp_err_t destroy_raw()
+{
+    VerifyOrReturnError(node, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "NULL node cannot be destroyed"));
+    _node_t *current_node = (_node_t *)node;
+    esp_matter_mem_free(current_node);
+    node = NULL;
+    return ESP_OK;
+}
+
 node_t *get()
 {
     return (node_t *)node;
+}
+
+esp_err_t destroy()
+{
+    esp_err_t err = ESP_OK;
+    node_t *current_node = get();
+    VerifyOrReturnError(current_node, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Node cannot be NULL"));
+
+    attribute::set_callback(nullptr);
+    identification::set_callback(nullptr);
+
+    endpoint_t *current_endpoint = endpoint::get_first(current_node);
+    endpoint_t *next_endpoint = nullptr;
+    while (current_endpoint != nullptr) {
+        next_endpoint = endpoint::get_next(current_endpoint);
+        // Endpoints should have destroyable flag set to true before destroying
+        ((_endpoint_t *)current_endpoint)->flags |= ENDPOINT_FLAG_DESTROYABLE;
+        err = endpoint::destroy((node_t *)current_node, current_endpoint);
+        VerifyOrDo(err == ESP_OK, ESP_LOGE(TAG, "Failed to destroy endpoint"));
+
+        current_endpoint = next_endpoint;
+    }
+
+    return destroy_raw();
 }
 
 } /* node */

@@ -127,12 +127,30 @@ namespace node {
  */
 node_t *create_raw();
 
+/** Destroy raw node
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t destroy_raw();
+
 /** Get node
  *
  * @return Node handle on success.
  * @return NULL in case of failure.
  */
 node_t *get();
+
+/** Destroy node
+ *
+ * This will destroy the node and all the endpoints, clusters, attributes, commands and events associated with it.
+ *
+ * @note: Call this function only if matter is not running.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t destroy();
 
 } /* node */
 
