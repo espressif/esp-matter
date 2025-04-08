@@ -573,7 +573,7 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 }
 } /* group_key_management */
 
-namespace wifi_network_diagnotics {
+namespace wifi_network_diagnostics {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
@@ -602,7 +602,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* wifi_network_diagnotics */
+} /* wifi_network_diagnostics */
 
 namespace thread_network_diagnostics {
 const function_generic_t *function_list = NULL;

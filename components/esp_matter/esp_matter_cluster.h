@@ -166,10 +166,10 @@ using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, uint8_t flags);
 } /* group_key_management */
 
-namespace wifi_network_diagnotics {
+namespace wifi_network_diagnostics {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* wifi_network_diagnotics */
+} /* wifi_network_diagnostics */
 
 namespace thread_network_diagnostics {
 using config_t = common::config_t;

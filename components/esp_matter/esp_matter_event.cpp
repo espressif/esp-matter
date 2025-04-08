@@ -150,7 +150,7 @@ event_t *create_boot_reason(cluster_t *cluster)
 } // namespace event
 } // namespace general_diagnostics
 
-namespace wifi_network_diagnotics {
+namespace wifi_network_diagnostics {
 namespace event {
 event_t *create_disconnection(cluster_t *cluster)
 {
@@ -168,7 +168,7 @@ event_t *create_connection_status(cluster_t *cluster)
 }
 
 } // namespace event
-} // namespace wifi_network_diagnotics
+} // namespace wifi_network_diagnostics
 
 namespace thread_network_diagnostics {
 namespace event {
