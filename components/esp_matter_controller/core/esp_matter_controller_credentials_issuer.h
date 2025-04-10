@@ -53,11 +53,13 @@ public:
      * This function is used to Generate NOC Chain for the Controller/Commissioner.
      *
      * @param[in] nodeId   The desired NodeId for the generated NOC Chain - May be optional/unused in some
-     * implementations.
+     *                     implementations.
      * @param[in] fabricId The desired FabricId for the generated NOC Chain - May be optional/unused in some
-     * implementations.
-     * @param[in] keypair  The desired Keypair for the generated NOC Chain - May be optional/unused in some
-     * implementations.
+     *                     implementations.
+     * @param[in,out] keypair The Keypair of the Leaf Certificate in the generated NOC Chain.
+     *                        For commissioner, it is an input value and generated randomly by the commissioner.
+     *                        For controller, it is an output value and it could be an invalid value if you want
+     *                        to initialize the controller's fabric after calling setup_controller().
      * @param[in,out] rcac  Buffer to hold the Root Certificate of the generated NOC Chain.
      * @param[in,out] icac  Buffer to hold the Intermediate Certificate of the generated NOC Chain.
      * @param[in,out] noc   Buffer to hold the Leaf Certificate of the generated NOC Chain.
