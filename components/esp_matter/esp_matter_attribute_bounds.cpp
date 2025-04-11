@@ -570,79 +570,79 @@ void add_bounds_cb(cluster_t *cluster)
             case Thermostat::Attributes::OccupiedSetback::Id: {
                 esp_matter_attr_val_t min_val = esp_matter_invalid(NULL);
                 esp_matter_attr_val_t max_val = esp_matter_invalid(NULL);
-                nullable<uint16_t> min = 0, max = UINT16_MAX;
+                nullable<uint8_t> min = 0, max = 254;
                 if(cluster::get_attribute_value(cluster, Thermostat::Attributes::OccupiedSetbackMin::Id,
                                         &min_val) == ESP_OK)
                 {
-                    min = min_val.val.u16;
+                    min = min_val.val.u8;
                 }
                 if(cluster::get_attribute_value(cluster, Thermostat::Attributes::OccupiedSetbackMax::Id,
                                         &max_val) == ESP_OK)
                 {
-                    max = max_val.val.u16;
+                    max = max_val.val.u8;
                 }
-                esp_matter::attribute::add_bounds(current_attribute, esp_matter_nullable_uint16(min), esp_matter_nullable_uint16(max));
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_nullable_uint8(min), esp_matter_nullable_uint8(max));
                 break;
             }
             case Thermostat::Attributes::OccupiedSetbackMin::Id: {
                 esp_matter_attr_val_t max_val = esp_matter_invalid(NULL);
-                nullable<uint16_t> min = 0, max = UINT16_MAX;
+                nullable<uint8_t> min = 0, max = 254;
                 if(cluster::get_attribute_value(cluster, Thermostat::Attributes::OccupiedSetbackMax::Id,
                                         &max_val) == ESP_OK)
                 {
-                    max = max_val.val.u16;
+                    max = max_val.val.u8;
                 }
-                esp_matter::attribute::add_bounds(current_attribute, esp_matter_nullable_uint16(min), esp_matter_nullable_uint16(max));
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_nullable_uint8(min), esp_matter_nullable_uint8(max));
                 break;
             }
             case Thermostat::Attributes::OccupiedSetbackMax::Id: {
                 esp_matter_attr_val_t min_val = esp_matter_invalid(NULL);
-                nullable<uint16_t> min = 0, max = 2540;
+                nullable<uint8_t> min = 0, max = 254;
                 if(cluster::get_attribute_value(cluster, Thermostat::Attributes::OccupiedSetbackMin::Id,
                                         &min_val) == ESP_OK)
                 {
-                    min = min_val.val.u16;
+                    min = min_val.val.u8;
                 }
-                esp_matter::attribute::add_bounds(current_attribute, esp_matter_nullable_uint16(min), esp_matter_nullable_uint16(max));
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_nullable_uint8(min), esp_matter_nullable_uint8(max));
                 break;
             }
             case Thermostat::Attributes::UnoccupiedSetback::Id: {
                 esp_matter_attr_val_t min_val = esp_matter_invalid(NULL);
                 esp_matter_attr_val_t max_val = esp_matter_invalid(NULL);
-                nullable<uint16_t> min = 0, max = UINT16_MAX;
+                nullable<uint8_t> min = 0, max = 254;
                 if(cluster::get_attribute_value(cluster, Thermostat::Attributes::UnoccupiedSetbackMin::Id,
                                         &min_val) == ESP_OK)
                 {
-                    min = min_val.val.u16;
+                    min = min_val.val.u8;
                 }
                 if(cluster::get_attribute_value(cluster, Thermostat::Attributes::UnoccupiedSetbackMax::Id,
                                         &max_val) == ESP_OK)
                 {
-                    max = max_val.val.u16;
+                    max = max_val.val.u8;
                 }
-                esp_matter::attribute::add_bounds(current_attribute, esp_matter_nullable_uint16(min), esp_matter_nullable_uint16(max));
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_nullable_uint8(min), esp_matter_nullable_uint8(max));
                 break;
             }
             case Thermostat::Attributes::UnoccupiedSetbackMin::Id: {
                 esp_matter_attr_val_t max_val = esp_matter_invalid(NULL);
-                nullable<uint16_t> min = 0, max = UINT16_MAX;
+                nullable<uint8_t> min = 0, max = 254;
                 if(cluster::get_attribute_value(cluster, Thermostat::Attributes::UnoccupiedSetbackMax::Id,
                                         &max_val) == ESP_OK)
                 {
-                    max = max_val.val.u16;
+                    max = max_val.val.u8;
                 }
-                esp_matter::attribute::add_bounds(current_attribute, esp_matter_nullable_uint16(min), esp_matter_nullable_uint16(max));
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_nullable_uint8(min), esp_matter_nullable_uint8(max));
                 break;
             }
             case Thermostat::Attributes::UnoccupiedSetbackMax::Id: {
                 esp_matter_attr_val_t min_val = esp_matter_invalid(NULL);
-                nullable<uint16_t> min = 0, max = 2540;
+                nullable<uint8_t> min = 0, max = 254;
                 if(cluster::get_attribute_value(cluster, Thermostat::Attributes::UnoccupiedSetbackMin::Id,
                                         &min_val) == ESP_OK)
                 {
-                    min = min_val.val.u16;
+                    min = min_val.val.u8;
                 }
-                esp_matter::attribute::add_bounds(current_attribute, esp_matter_nullable_uint16(min), esp_matter_nullable_uint16(max));
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_nullable_uint8(min), esp_matter_nullable_uint8(max));
                 break;
             }
             case Thermostat::Attributes::ACRefrigerantType::Id:
