@@ -54,3 +54,4 @@ esp_err_t protocomm_matter_ble_start(protocomm_t *pc, const protocomm_matter_ble
 
 esp_err_t protocomm_matter_ble_stop(protocomm_t *pc);
 
+int start_secondary_ble_adv();

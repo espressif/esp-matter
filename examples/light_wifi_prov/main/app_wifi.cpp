@@ -25,7 +25,6 @@
 #include <nvs.h>
 #include <nvs_flash.h>
 #include <platform/CHIPDeviceLayer.h>
-#include <platform/ESP32_custom/PlatformManagerImpl.h>
 #include <platform/PlatformManager.h>
 #include <qrcode.h>
 

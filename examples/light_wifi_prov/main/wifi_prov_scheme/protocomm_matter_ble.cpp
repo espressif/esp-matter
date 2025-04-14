@@ -14,6 +14,7 @@
 #include <host/ble_gap.h>
 #include <host/ble_gatt.h>
 #include <host/ble_uuid.h>
+#include <host/util/util.h>
 #include <protocomm.h>
 #include <stdint.h>
 #include <string.h>
@@ -35,7 +36,9 @@ typedef struct {
 } _protocomm_matter_ble_internal_t;
 
 static _protocomm_matter_ble_internal_t *protoble_internal = nullptr;
-struct ble_gatt_svc_def *s_gatt_db = nullptr;
+static struct ble_gatt_svc_def *s_gatt_db = nullptr;
+static ble_hs_adv_fields s_secondary_adv_fields;
+static ble_hs_adv_fields s_secondary_resp_fields;
 
 #define BLE_GATT_UUID_CHAR_DSC 0x2901
 #define TAG "protocomm_matter_ble"
@@ -402,13 +405,84 @@ static int protocomm_matter_ble_gap_event(struct ble_gap_event *event, void *arg
         break;
     case BLE_GAP_EVENT_DISCONNECT:
         transport_matter_ble_disconnect(event, arg);
-        chip::DeviceLayer::Internal::BLEMgrImpl().RefreshAdv();
         break;
     case BLE_GAP_EVENT_MTU:
         transport_matter_ble_set_mtu(event, arg);
         break;
     default:
         break;
+    }
+    return 0;
+}
+
+int start_secondary_ble_adv()
+{
+    if (!ble_hs_is_enabled()) {
+        return 0;
+    }
+    int ret = 0;
+    uint8_t secondary_own_addr_type;
+    ret = ble_hs_util_ensure_addr(0);
+    if (ret != 0) {
+        ESP_LOGE(TAG, "ble_hs_util_ensure_addr() failed");
+        return ret;
+    }
+    ret = ble_hs_id_infer_auto(0, &secondary_own_addr_type);
+    if (ret != 0) {
+        ESP_LOGE(TAG, "ble_hs_id_infer_auto() failed");
+        return ret;
+    }
+    ble_gap_ext_adv_params adv_params;
+    memset(&adv_params, 0, sizeof(adv_params));
+    adv_params.scannable     = 1;
+    adv_params.own_addr_type = secondary_own_addr_type;
+    adv_params.legacy_pdu    = 1;
+    adv_params.connectable = 1;
+    adv_params.itvl_min = 0x100;
+    adv_params.itvl_max = 0x100;
+
+    if (ble_gap_ext_adv_active(1)) {
+        ESP_LOGI(TAG, "Device already advertising, stop active advertisement and restart");
+        ret = ble_gap_ext_adv_stop(1);
+        if (ret != 0) {
+            ESP_LOGE(TAG, "ble_gap_ext_adv_stop() failed, cannot restart");
+            return ret;
+        }
+    }
+
+    ret = ble_gap_ext_adv_configure(1, &adv_params, NULL, protocomm_matter_ble_gap_event, NULL);
+    if (ret != 0) {
+        ESP_LOGE(TAG, "ble_gap_ext_adv_configure() failed");
+        return ret;
+    }
+    struct os_mbuf * data = os_msys_get_pkthdr(BLE_HCI_MAX_ADV_DATA_LEN, 0);
+    assert(data);
+    ret = ble_hs_adv_set_fields_mbuf(&s_secondary_adv_fields, data);
+    if (ret != 0) {
+        ESP_LOGE(TAG, "ble_hs_adv_set_fields_mbuf() failed");
+        return ret;
+    }
+    ret = ble_gap_ext_adv_set_data(1, data);
+    if (ret != 0) {
+        ESP_LOGE(TAG, "ble_gap_ext_adv_set_data()");
+        return ret;
+    }
+    struct os_mbuf * resp_data = os_msys_get_pkthdr(BLE_HCI_MAX_ADV_DATA_LEN, 0);
+    assert(resp_data);
+    ret = ble_hs_adv_set_fields_mbuf(&s_secondary_resp_fields, resp_data);
+    if (ret != 0) {
+        ESP_LOGE(TAG, "ble_hs_adv_set_fields_mbuf() failed");
+        return ret;
+    }
+    ret = ble_gap_ext_adv_rsp_set_data(1, resp_data);
+    if (ret != 0) {
+        ESP_LOGE(TAG, "ble_gap_ext_adv_rsp_set_data() failed");
+        return ret;
+    }
+    ret = ble_gap_ext_adv_start(1, 0, 0);
+    if (ret != 0) {
+        ESP_LOGE(TAG, "ble_gap_ext_adv_start() failed");
+        return ret;
     }
     return 0;
 }
@@ -451,11 +525,22 @@ esp_err_t protocomm_matter_ble_start(protocomm_t *pc, const protocomm_matter_ble
         free_gatt_ble_misc_memory(s_gatt_db);
     }
 
-    chip::DeviceLayer::Internal::BLEMgrImpl().SetSecondaryAdvDeviceName(config->device_name);
-    chip::DeviceLayer::Internal::BLEMgrImpl().SetSecondaryAdvUuid(chip::ByteSpan(config->service_uuid));
-    chip::DeviceLayer::Internal::BLEMgrImpl().SetSecondaryGATTService(s_gatt_db, 0);
-    chip::DeviceLayer::Internal::BLEMgrImpl().SetSecondaryBleSmConfig(config->ble_bonding, config->ble_sm_sc);
-    chip::DeviceLayer::Internal::BLEMgrImpl().SetSecondaryAdvGapEventHandler(protocomm_matter_ble_gap_event);
+    std::vector<struct ble_gatt_svc_def> extGattSvcs;
+    extGattSvcs.push_back(*s_gatt_db);
+    chip::DeviceLayer::Internal::BLEMgrImpl().ConfigureExtraServices(extGattSvcs, false);
+    memset(&s_secondary_adv_fields, 0, sizeof(s_secondary_adv_fields));
+    s_secondary_adv_fields.flags = (BLE_HS_ADV_F_DISC_GEN | BLE_HS_ADV_F_BREDR_UNSUP);
+    s_secondary_adv_fields.num_uuids128 = 1;
+    s_secondary_adv_fields.uuids128_is_complete = 1;
+    static ble_uuid128_t s_secondary_adv_uuid;
+    s_secondary_adv_uuid.u.type = BLE_UUID_TYPE_128;
+    memcpy(s_secondary_adv_uuid.value, config->service_uuid, sizeof(config->service_uuid));
+    s_secondary_adv_fields.uuids128 = &s_secondary_adv_uuid;
+
+    memset(&s_secondary_resp_fields, 0, sizeof(s_secondary_resp_fields));
+    s_secondary_resp_fields.name = (const uint8_t *)config->device_name;
+    s_secondary_resp_fields.name_len = (uint8_t)strlen(config->device_name);
+    s_secondary_resp_fields.name_is_complete = 1;
     return ESP_OK;
 }
 
