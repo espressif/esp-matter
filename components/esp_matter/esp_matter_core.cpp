@@ -599,6 +599,23 @@ esp_err_t enable(endpoint_t *endpoint)
     }
 
     while (cluster) {
+        /* Init identify if exists and not initialized */
+        if (cluster->cluster_id == chip::app::Clusters::Identify::Id && current_endpoint->identify == NULL) {
+            _attribute_t *identify_type_attr = (_attribute_t *)attribute::get(
+                (cluster_t *)cluster, chip::app::Clusters::Identify::Attributes::IdentifyType::Id);
+            if (identify_type_attr) {
+                if (identification::init(current_endpoint->endpoint_id, identify_type_attr->val.val.u8) != ESP_OK) {
+                    ESP_LOGE(TAG, "Failed to init identification");
+                    err = ESP_FAIL;
+                    break;
+                }
+            } else {
+                ESP_LOGE(TAG, "Can't get IdentifyType attribute in Identify cluster");
+                err = ESP_ERR_INVALID_STATE;
+                break;
+            }
+        }
+
         /* Attributes */
         attribute = cluster->attribute_list;
         attribute_count = attribute::get_count(attribute);
