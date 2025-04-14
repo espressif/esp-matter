@@ -55,6 +55,8 @@
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: LocalSnapshotRecordingEnabled, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: StatusLightEnabled, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: StatusLightBrightness, Privilege: manage */ \
+    0x00000553, /* Cluster: WebRTC Transport Provider, Attribute: CurrentSessions, Privilege: manage */ \
+    0x00000554, /* Cluster: WebRTC Transport Requestor, Attribute: CurrentSessions, Privilege: administer */ \
     0x00000750, /* Cluster: Ecosystem Information, Attribute: DeviceDirectory, Privilege: manage */ \
     0x00000750, /* Cluster: Ecosystem Information, Attribute: LocationDirectory, Privilege: manage */ \
     0x00000751, /* Cluster: Commissioner Control, Attribute: SupportedDeviceCategories, Privilege: manage */ \
@@ -108,6 +110,8 @@
     0x00000026, /* Cluster: Camera AV Stream Management, Attribute: LocalSnapshotRecordingEnabled, Privilege: manage */ \
     0x00000027, /* Cluster: Camera AV Stream Management, Attribute: StatusLightEnabled, Privilege: manage */ \
     0x00000028, /* Cluster: Camera AV Stream Management, Attribute: StatusLightBrightness, Privilege: manage */ \
+    0x00000000, /* Cluster: WebRTC Transport Provider, Attribute: CurrentSessions, Privilege: manage */ \
+    0x00000000, /* Cluster: WebRTC Transport Requestor, Attribute: CurrentSessions, Privilege: administer */ \
     0x00000000, /* Cluster: Ecosystem Information, Attribute: DeviceDirectory, Privilege: manage */ \
     0x00000001, /* Cluster: Ecosystem Information, Attribute: LocationDirectory, Privilege: manage */ \
     0x00000000, /* Cluster: Commissioner Control, Attribute: SupportedDeviceCategories, Privilege: manage */ \
@@ -161,6 +165,8 @@
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: LocalSnapshotRecordingEnabled, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: StatusLightEnabled, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: StatusLightBrightness, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: WebRTC Transport Provider, Attribute: CurrentSessions, Privilege: manage */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: WebRTC Transport Requestor, Attribute: CurrentSessions, Privilege: administer */ \
     chip::Access::Privilege::kManage, /* Cluster: Ecosystem Information, Attribute: DeviceDirectory, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Ecosystem Information, Attribute: LocationDirectory, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Commissioner Control, Attribute: SupportedDeviceCategories, Privilege: manage */ \
@@ -583,6 +589,8 @@
     0x0000003E, /* Cluster: Operational Credentials, Command: UpdateFabricLabel, Privilege: administer */ \
     0x0000003E, /* Cluster: Operational Credentials, Command: RemoveFabric, Privilege: administer */ \
     0x0000003E, /* Cluster: Operational Credentials, Command: AddTrustedRootCertificate, Privilege: administer */ \
+    0x0000003E, /* Cluster: Operational Credentials, Command: SetVIDVerificationStatement, Privilege: administer */ \
+    0x0000003E, /* Cluster: Operational Credentials, Command: SignVIDVerificationRequest, Privilege: administer */ \
     0x0000003F, /* Cluster: Group Key Management, Command: KeySetWrite, Privilege: administer */ \
     0x0000003F, /* Cluster: Group Key Management, Command: KeySetRead, Privilege: administer */ \
     0x0000003F, /* Cluster: Group Key Management, Command: KeySetRemove, Privilege: administer */ \
@@ -614,6 +622,7 @@
     0x00000101, /* Cluster: Door Lock, Command: ClearCredential, Privilege: administer */ \
     0x00000101, /* Cluster: Door Lock, Command: SetAliroReaderConfig, Privilege: administer */ \
     0x00000101, /* Cluster: Door Lock, Command: ClearAliroReaderConfig, Privilege: administer */ \
+    0x00000104, /* Cluster: Closure Control, Command: Calibrate, Privilege: manage */ \
     0x00000201, /* Cluster: Thermostat, Command: SetWeeklySchedule, Privilege: manage */ \
     0x00000201, /* Cluster: Thermostat, Command: ClearWeeklySchedule, Privilege: manage */ \
     0x00000201, /* Cluster: Thermostat, Command: AtomicRequest, Privilege: manage */ \
@@ -638,6 +647,7 @@
     0x00000551, /* Cluster: Camera AV Stream Management, Command: VideoStreamModify, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Command: VideoStreamDeallocate, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Command: SnapshotStreamAllocate, Privilege: manage */ \
+    0x00000551, /* Cluster: Camera AV Stream Management, Command: SnapshotStreamModify, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Command: SnapshotStreamDeallocate, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Command: SetStreamPriorities, Privilege: administer */ \
     0x00000555, /* Cluster: Push AV Stream Transport, Command: AllocatePushTransport, Privilege: manage */ \
@@ -651,6 +661,8 @@
     0x00000801, /* Cluster: TLS Certificate Management, Command: TLSClientCSR, Privilege: administer */ \
     0x00000801, /* Cluster: TLS Certificate Management, Command: ProvisionClientCertificate, Privilege: administer */ \
     0x00000801, /* Cluster: TLS Certificate Management, Command: RemoveClientCertificate, Privilege: administer */ \
+    0x00000802, /* Cluster: TLS Client Management, Command: ProvisionEndpoint, Privilege: administer */ \
+    0x00000802, /* Cluster: TLS Client Management, Command: RemoveEndpoint, Privilege: administer */ \
     0xFFF1FC06, /* Cluster: Fault Injection, Command: FailAtFault, Privilege: manage */ \
     0xFFF1FC06, /* Cluster: Fault Injection, Command: FailRandomlyAtFault, Privilege: manage */ \
 }
@@ -696,6 +708,8 @@
     0x00000009, /* Cluster: Operational Credentials, Command: UpdateFabricLabel, Privilege: administer */ \
     0x0000000A, /* Cluster: Operational Credentials, Command: RemoveFabric, Privilege: administer */ \
     0x0000000B, /* Cluster: Operational Credentials, Command: AddTrustedRootCertificate, Privilege: administer */ \
+    0x0000000C, /* Cluster: Operational Credentials, Command: SetVIDVerificationStatement, Privilege: administer */ \
+    0x0000000D, /* Cluster: Operational Credentials, Command: SignVIDVerificationRequest, Privilege: administer */ \
     0x00000000, /* Cluster: Group Key Management, Command: KeySetWrite, Privilege: administer */ \
     0x00000001, /* Cluster: Group Key Management, Command: KeySetRead, Privilege: administer */ \
     0x00000003, /* Cluster: Group Key Management, Command: KeySetRemove, Privilege: administer */ \
@@ -727,6 +741,7 @@
     0x00000026, /* Cluster: Door Lock, Command: ClearCredential, Privilege: administer */ \
     0x00000028, /* Cluster: Door Lock, Command: SetAliroReaderConfig, Privilege: administer */ \
     0x00000029, /* Cluster: Door Lock, Command: ClearAliroReaderConfig, Privilege: administer */ \
+    0x00000002, /* Cluster: Closure Control, Command: Calibrate, Privilege: manage */ \
     0x00000001, /* Cluster: Thermostat, Command: SetWeeklySchedule, Privilege: manage */ \
     0x00000003, /* Cluster: Thermostat, Command: ClearWeeklySchedule, Privilege: manage */ \
     0x000000FE, /* Cluster: Thermostat, Command: AtomicRequest, Privilege: manage */ \
@@ -751,8 +766,9 @@
     0x00000005, /* Cluster: Camera AV Stream Management, Command: VideoStreamModify, Privilege: manage */ \
     0x00000006, /* Cluster: Camera AV Stream Management, Command: VideoStreamDeallocate, Privilege: manage */ \
     0x00000007, /* Cluster: Camera AV Stream Management, Command: SnapshotStreamAllocate, Privilege: manage */ \
-    0x00000009, /* Cluster: Camera AV Stream Management, Command: SnapshotStreamDeallocate, Privilege: manage */ \
-    0x0000000A, /* Cluster: Camera AV Stream Management, Command: SetStreamPriorities, Privilege: administer */ \
+    0x00000009, /* Cluster: Camera AV Stream Management, Command: SnapshotStreamModify, Privilege: manage */ \
+    0x0000000A, /* Cluster: Camera AV Stream Management, Command: SnapshotStreamDeallocate, Privilege: manage */ \
+    0x0000000B, /* Cluster: Camera AV Stream Management, Command: SetStreamPriorities, Privilege: administer */ \
     0x00000000, /* Cluster: Push AV Stream Transport, Command: AllocatePushTransport, Privilege: manage */ \
     0x00000002, /* Cluster: Push AV Stream Transport, Command: DeallocatePushTransport, Privilege: manage */ \
     0x00000003, /* Cluster: Push AV Stream Transport, Command: ModifyPushTransport, Privilege: manage */ \
@@ -763,7 +779,9 @@
     0x00000006, /* Cluster: TLS Certificate Management, Command: RemoveRootCertificate, Privilege: administer */ \
     0x00000007, /* Cluster: TLS Certificate Management, Command: TLSClientCSR, Privilege: administer */ \
     0x00000009, /* Cluster: TLS Certificate Management, Command: ProvisionClientCertificate, Privilege: administer */ \
-    0x0000000F, /* Cluster: TLS Certificate Management, Command: RemoveClientCertificate, Privilege: administer */ \
+    0x0000000E, /* Cluster: TLS Certificate Management, Command: RemoveClientCertificate, Privilege: administer */ \
+    0x00000000, /* Cluster: TLS Client Management, Command: ProvisionEndpoint, Privilege: administer */ \
+    0x00000004, /* Cluster: TLS Client Management, Command: RemoveEndpoint, Privilege: administer */ \
     0x00000000, /* Cluster: Fault Injection, Command: FailAtFault, Privilege: manage */ \
     0x00000001, /* Cluster: Fault Injection, Command: FailRandomlyAtFault, Privilege: manage */ \
 }
@@ -809,6 +827,8 @@
     chip::Access::Privilege::kAdminister, /* Cluster: Operational Credentials, Command: UpdateFabricLabel, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Operational Credentials, Command: RemoveFabric, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Operational Credentials, Command: AddTrustedRootCertificate, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Operational Credentials, Command: SetVIDVerificationStatement, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Operational Credentials, Command: SignVIDVerificationRequest, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Group Key Management, Command: KeySetWrite, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Group Key Management, Command: KeySetRead, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Group Key Management, Command: KeySetRemove, Privilege: administer */ \
@@ -840,6 +860,7 @@
     chip::Access::Privilege::kAdminister, /* Cluster: Door Lock, Command: ClearCredential, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Door Lock, Command: SetAliroReaderConfig, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Door Lock, Command: ClearAliroReaderConfig, Privilege: administer */ \
+    chip::Access::Privilege::kManage, /* Cluster: Closure Control, Command: Calibrate, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Command: SetWeeklySchedule, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Command: ClearWeeklySchedule, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Command: AtomicRequest, Privilege: manage */ \
@@ -864,6 +885,7 @@
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Command: VideoStreamModify, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Command: VideoStreamDeallocate, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Command: SnapshotStreamAllocate, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Command: SnapshotStreamModify, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Command: SnapshotStreamDeallocate, Privilege: manage */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Camera AV Stream Management, Command: SetStreamPriorities, Privilege: administer */ \
     chip::Access::Privilege::kManage, /* Cluster: Push AV Stream Transport, Command: AllocatePushTransport, Privilege: manage */ \
@@ -877,6 +899,8 @@
     chip::Access::Privilege::kAdminister, /* Cluster: TLS Certificate Management, Command: TLSClientCSR, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: TLS Certificate Management, Command: ProvisionClientCertificate, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: TLS Certificate Management, Command: RemoveClientCertificate, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: TLS Client Management, Command: ProvisionEndpoint, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: TLS Client Management, Command: RemoveEndpoint, Privilege: administer */ \
     chip::Access::Privilege::kManage, /* Cluster: Fault Injection, Command: FailAtFault, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Fault Injection, Command: FailRandomlyAtFault, Privilege: manage */ \
 }

@@ -73,11 +73,26 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
     case app::Clusters::Chime::Id:
         emberAfChimeClusterInitCallback(endpoint);
         break;
+    case app::Clusters::ClosureControl::Id:
+        emberAfClosureControlClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::ClosureDimension::Id:
+        emberAfClosureDimensionClusterInitCallback(endpoint);
+        break;
     case app::Clusters::ColorControl::Id:
         emberAfColorControlClusterInitCallback(endpoint);
         break;
     case app::Clusters::CommissionerControl::Id:
         emberAfCommissionerControlClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::CommodityMetering::Id:
+        emberAfCommodityMeteringClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::CommodityPrice::Id:
+        emberAfCommodityPriceClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::CommodityTariff::Id:
+        emberAfCommodityTariffClusterInitCallback(endpoint);
         break;
     case app::Clusters::ContentAppObserver::Id:
         emberAfContentAppObserverClusterInitCallback(endpoint);
@@ -198,6 +213,9 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
         break;
     case app::Clusters::Messages::Id:
         emberAfMessagesClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::MeterIdentification::Id:
+        emberAfMeterIdentificationClusterInitCallback(endpoint);
         break;
     case app::Clusters::MicrowaveOvenControl::Id:
         emberAfMicrowaveOvenControlClusterInitCallback(endpoint);
@@ -351,6 +369,9 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
         break;
     case app::Clusters::TlsCertificateManagement::Id:
         emberAfTlsCertificateManagementClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::TlsClientManagement::Id:
+        emberAfTlsClientManagementClusterInitCallback(endpoint);
         break;
     case app::Clusters::TotalVolatileOrganicCompoundsConcentrationMeasurement::Id:
         emberAfTotalVolatileOrganicCompoundsConcentrationMeasurementClusterInitCallback(endpoint);

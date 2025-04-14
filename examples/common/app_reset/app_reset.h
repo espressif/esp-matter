@@ -14,7 +14,7 @@
  *
  * Register factory reset functionality on a button.
  *
- * @param[in] handle Button handle returned by iot_button_create().
+ * @param[in] handle Button handle returned by iot_button_new_*_device().
  *
  * @return ESP_OK on success.
  * @return error in case of failure.

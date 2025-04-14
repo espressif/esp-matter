@@ -6,19 +6,21 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
-#include <bsp/esp-bsp.h>
-#include <esp_log.h>
-#include <iot_button.h>
 #include <stdlib.h>
 #include <string.h>
-#include "bsp/esp_bsp_devkit.h"
+
 #include "driver/gpio.h"
 #include "soc/gpio_num.h"
+#include <esp_log.h>
+#include <bsp/esp-bsp.h>
+#include "bsp/esp_bsp_devkit.h"
 #include "support/CodeUtils.h"
 
 #include <esp_matter.h>
 
 #include <app_priv.h>
+#include <button_gpio.h>
+#include <iot_button.h>
 
 using namespace chip::app::Clusters;
 using namespace esp_matter;
@@ -115,14 +117,16 @@ app_driver_handle_t app_driver_button_init(gpio_num_t * reset_gpio)
     /* Initialize button */
     app_driver_handle_t reset_handle = NULL;
 #ifdef CONFIG_USER_BUTTON
-    button_config_t config = {
-        .type = BUTTON_TYPE_GPIO,
-        .gpio_button_config = {
-            .gpio_num = CONFIG_USER_BUTTON_GPIO,
-            .active_level = CONFIG_USER_BUTTON_LEVEL,
-        }
+    const button_config_t btn_cfg = {0};
+    const button_gpio_config_t btn_gpio_cfg = {
+        .gpio_num = CONFIG_USER_BUTTON_GPIO,
+        .active_level = CONFIG_USER_BUTTON_LEVEL,
     };
-    reset_handle = (app_driver_handle_t)iot_button_create(&config);
+
+    if (iot_button_new_gpio_device(&btn_cfg, &btn_gpio_cfg, &reset_handle) != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to create button device");
+        return NULL;
+    }
 #else
     button_handle_t bsp_buttons[BSP_BUTTON_NUM];
     int btn_cnt = 0;// will contain # of buttons that were created by BSP

@@ -135,42 +135,6 @@ static esp_err_t esp_matter_command_callback_key_set_read_all_indices(const Conc
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_command_callback_open_commissioning_window(const ConcreteCommandPath &command_path,
-                                                                       TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::AdministratorCommissioning::Commands::OpenCommissioningWindow::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfAdministratorCommissioningClusterOpenCommissioningWindowCallback((CommandHandler *)opaque_ptr,
-                                                                                command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_open_basic_commissioning_window(const ConcreteCommandPath &command_path,
-                                                                             TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::AdministratorCommissioning::Commands::OpenBasicCommissioningWindow::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfAdministratorCommissioningClusterOpenBasicCommissioningWindowCallback((CommandHandler *)opaque_ptr,
-                                                                                     command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_revoke_commissioning(const ConcreteCommandPath &command_path,
-                                                                  TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::AdministratorCommissioning::Commands::RevokeCommissioning::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfAdministratorCommissioningClusterRevokeCommissioningCallback((CommandHandler *)opaque_ptr, command_path,
-                                                                            command_data);
-    }
-    return ESP_OK;
-}
-
 static esp_err_t esp_matter_command_callback_attestation_request(const ConcreteCommandPath &command_path,
                                                                  TLVReader &tlv_data, void *opaque_ptr)
 {
@@ -1143,17 +1107,6 @@ static esp_err_t esp_matter_command_callback_thread_reset_counts(const ConcreteC
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_command_callback_wifi_reset_counts(const ConcreteCommandPath &command_path,
-                                                               TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::WiFiNetworkDiagnostics::Commands::ResetCounts::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfWiFiNetworkDiagnosticsClusterResetCountsCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
 static esp_err_t esp_matter_command_callback_ethernet_reset_counts(const ConcreteCommandPath &command_path,
 								   TLVReader &tlv_data, void *opaque_ptr)
 {
@@ -1173,28 +1126,6 @@ static esp_err_t esp_matter_command_callback_retrieve_logs_request(const Concret
     CHIP_ERROR error = Decode(tlv_data, command_data);
     if (error == CHIP_NO_ERROR) {
         emberAfDiagnosticLogsClusterRetrieveLogsRequestCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_test_event_trigger(const ConcreteCommandPath &command_path,
-                                                                  TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::GeneralDiagnostics::Commands::TestEventTrigger::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfGeneralDiagnosticsClusterTestEventTriggerCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_time_snap_shot(const ConcreteCommandPath &command_path,
-                                                                  TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::GeneralDiagnostics::Commands::TimeSnapshot::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfGeneralDiagnosticsClusterTimeSnapshotCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
     return ESP_OK;
 }
@@ -1688,8 +1619,7 @@ namespace command {
 
 command_t *create_reset_counts(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, WiFiNetworkDiagnostics::Commands::ResetCounts::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_wifi_reset_counts);
+    return esp_matter::command::create(cluster, WiFiNetworkDiagnostics::Commands::ResetCounts::Id, COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 } /* command */
@@ -1729,10 +1659,8 @@ namespace general_diagnostics {
 namespace command {
 
 constexpr const command_entry_t accepted_command_list[] = {
-    {GeneralDiagnostics::Commands::TestEventTrigger::Id, COMMAND_FLAG_ACCEPTED,
-     esp_matter_command_callback_test_event_trigger},
-    {GeneralDiagnostics::Commands::TimeSnapshot::Id, COMMAND_FLAG_ACCEPTED,
-     esp_matter_command_callback_time_snap_shot},
+    {GeneralDiagnostics::Commands::TestEventTrigger::Id, COMMAND_FLAG_ACCEPTED, nullptr},
+    {GeneralDiagnostics::Commands::TimeSnapshot::Id, COMMAND_FLAG_ACCEPTED, nullptr},
 };
 
 constexpr const command_entry_t generated_command_list[] = {
@@ -1741,14 +1669,12 @@ constexpr const command_entry_t generated_command_list[] = {
 
 command_t *create_test_event_trigger(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, GeneralDiagnostics::Commands::TestEventTrigger::Id, COMMAND_FLAG_ACCEPTED,
-                                        esp_matter_command_callback_test_event_trigger);
+    return esp_matter::command::create(cluster, GeneralDiagnostics::Commands::TestEventTrigger::Id, COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 command_t *create_time_snap_shot(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, GeneralDiagnostics::Commands::TimeSnapshot::Id, COMMAND_FLAG_ACCEPTED,
-                                        esp_matter_command_callback_time_snap_shot);
+    return esp_matter::command::create(cluster, GeneralDiagnostics::Commands::TimeSnapshot::Id, COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 command_t *create_time_snap_shot_response(cluster_t *cluster)
@@ -1969,10 +1895,8 @@ namespace administrator_commissioning {
 namespace command {
 
 constexpr const command_entry_t accepted_command_list[] = {
-    {AdministratorCommissioning::Commands::OpenCommissioningWindow::Id, COMMAND_FLAG_ACCEPTED,
-     esp_matter_command_callback_open_commissioning_window},
-    {AdministratorCommissioning::Commands::RevokeCommissioning::Id, COMMAND_FLAG_ACCEPTED,
-     esp_matter_command_callback_revoke_commissioning},
+    {AdministratorCommissioning::Commands::OpenCommissioningWindow::Id, COMMAND_FLAG_ACCEPTED, nullptr},
+    {AdministratorCommissioning::Commands::RevokeCommissioning::Id, COMMAND_FLAG_ACCEPTED, nullptr},
 };
 
 constexpr const command_entry_t generated_command_list[] = {};
@@ -1980,20 +1904,19 @@ constexpr const command_entry_t generated_command_list[] = {};
 command_t *create_open_commissioning_window(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, AdministratorCommissioning::Commands::OpenCommissioningWindow::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_open_commissioning_window);
+                                       COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 command_t *create_open_basic_commissioning_window(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, AdministratorCommissioning::Commands::OpenBasicCommissioningWindow::Id,
-                                       COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_open_basic_commissioning_window);
+                                       COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 command_t *create_revoke_commissioning(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, AdministratorCommissioning::Commands::RevokeCommissioning::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_revoke_commissioning);
+                                       COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 } /* command */

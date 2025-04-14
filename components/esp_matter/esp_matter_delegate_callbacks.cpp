@@ -350,7 +350,7 @@ void CommissionerControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
     CommissionerControl::Delegate *commissioner_control_delegate = static_cast<CommissionerControl::Delegate*>(delegate);
     CommissionerControl::CommissionerControlServer *commissioner_control_instance = nullptr;
     commissioner_control_instance =
-        new CommissionerControl::CommissionerControlServer(commissioner_control_delegate, endpoint_id, CommissionerControl::Id);
+        new CommissionerControl::CommissionerControlServer(commissioner_control_delegate, endpoint_id);
     commissioner_control_instance->Init();
 }
 

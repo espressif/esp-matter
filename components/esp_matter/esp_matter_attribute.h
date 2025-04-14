@@ -385,7 +385,6 @@ attribute_t *create_group_name_support(cluster_t *cluster, uint8_t value);
 
 namespace scenes_management {
 namespace attribute {
-attribute_t *create_last_configured_by(cluster_t *cluster, uint64_t value);
 attribute_t *create_scene_table_size(cluster_t *cluster, uint16_t value);
 attribute_t *create_fabric_scene_info(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count);
 } /* attribute */

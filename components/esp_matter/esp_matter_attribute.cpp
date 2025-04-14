@@ -1448,12 +1448,6 @@ attribute_t *create_group_name_support(cluster_t *cluster, uint8_t value)
 
 namespace scenes_management {
 namespace attribute {
-attribute_t *create_last_configured_by(cluster_t *cluster, uint64_t value)
-{
-    return esp_matter::attribute::create(cluster, ScenesManagement::Attributes::LastConfiguredBy::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint64(value));
-}
-
 attribute_t *create_scene_table_size(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, ScenesManagement::Attributes::SceneTableSize::Id, ATTRIBUTE_FLAG_NONE,
@@ -3703,14 +3697,14 @@ attribute_t *create_end_product_type(cluster_t *cluster, const uint8_t value)
 attribute_t *create_current_position_lift_percent_100ths(cluster_t *cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, WindowCovering::Attributes::CurrentPositionLiftPercent100ths::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_MASK_NONVOLATILE,
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE,
                                          esp_matter_nullable_uint16(value));
 }
 
 attribute_t *create_current_position_tilt_percent_100ths(cluster_t *cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, WindowCovering::Attributes::CurrentPositionTiltPercent100ths::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_MASK_NONVOLATILE,
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE,
                                          esp_matter_nullable_uint16(value));
 }
 
