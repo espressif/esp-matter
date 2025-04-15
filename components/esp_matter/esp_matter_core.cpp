@@ -16,6 +16,7 @@
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_core.h>
+#include <esp_matter_test_event_trigger.h>
 #include <nvs.h>
 
 #include <app/clusters/general-diagnostics-server/general-diagnostics-server.h>
@@ -719,6 +720,7 @@ static void esp_matter_chip_init_task(intptr_t context)
 
     initParams.InitializeStaticResourcesBeforeServerInit();
     initParams.appDelegate = &s_app_delegate;
+    initParams.testEventTriggerDelegate = test_event_trigger::get_delegate();
 
 #ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
     // Group data provider injection for dynamic data model
