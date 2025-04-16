@@ -48,12 +48,6 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 #if CONFIG_OPENTHREAD_BORDER_ROUTER
             static bool sThreadBRInitialized = false;
             if (!sThreadBRInitialized) {
-                // TODO: Remove InitThreadStack() and StartThreadTask() if submodule contains the fix
-                // (https://github.com/project-chip/connectedhomeip/pull/37033)
-                if (chip::DeviceLayer::ThreadStackMgr().InitThreadStack() != CHIP_NO_ERROR ||
-                    chip::DeviceLayer::ThreadStackMgr().StartThreadTask() != CHIP_NO_ERROR) {
-                    break;
-                }
                 esp_openthread_set_backbone_netif(esp_netif_get_handle_from_ifkey("WIFI_STA_DEF"));
                 esp_openthread_lock_acquire(portMAX_DELAY);
                 esp_openthread_border_router_init();
