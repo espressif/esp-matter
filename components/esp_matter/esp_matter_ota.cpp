@@ -19,7 +19,14 @@
 #include <app/clusters/ota-requestor/DefaultOTARequestor.h>
 #include <app/clusters/ota-requestor/ExtendedOTARequestorDriver.h>
 #include <app/clusters/ota-requestor/DefaultOTARequestorStorage.h>
+#ifdef CONFIG_CHIP_ENABLE_EXTERNAL_PLATFORM
+#ifndef EXTERNAL_ESP32OTAIMAGEPROCESSORIMPL_HEADER
+#error "Please define EXTERNAL_ESP32OTAIMAGEPROCESSORIMPL_HEADER in your external platform gn/cmake file"
+#endif // !EXTERNAL_ESP32OTAIMAGEPROCESSORIMPL_HEADER
+#include EXTERNAL_ESP32OTAIMAGEPROCESSORIMPL_HEADER
+#else // CONFIG_CHIP_ENABLE_EXTERNAL_PLATFORM
 #include <platform/ESP32/OTAImageProcessorImpl.h>
+#endif // !CONFIG_CHIP_ENABLE_EXTERNAL_PLATFORM
 
 #include <esp_matter.h>
 #include <esp_matter_ota.h>
@@ -96,7 +103,7 @@ void esp_matter_ota_requestor_start(void)
 
     gRequestorCore.Init(Server::GetInstance(), gRequestorStorage, *s_ota_requestor_impl.driver, gDownloader);
 
-    s_ota_requestor_impl.image_processor->SetOTADownloader(&gDownloader);
+    gImageProcessor.SetOTADownloader(&gDownloader);
 
     gDownloader.SetImageProcessorDelegate(s_ota_requestor_impl.image_processor);
 
@@ -105,7 +112,7 @@ void esp_matter_ota_requestor_start(void)
 #endif
 }
 
-#if CONFIG_ENABLE_ENCRYPTED_OTA
+#ifdef CONFIG_ENABLE_ENCRYPTED_OTA
 esp_err_t esp_matter_ota_requestor_encrypted_init(const char *key, uint16_t size)
 {
     VerifyOrReturnError(key != nullptr, ESP_ERR_INVALID_ARG);

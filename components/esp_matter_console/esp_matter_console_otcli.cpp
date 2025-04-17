@@ -19,7 +19,14 @@
 #include <freertos/FreeRTOS.h>
 #include <lib/shell/Engine.h>
 #include <memory>
+#ifdef CONFIG_CHIP_ENABLE_EXTERNAL_PLATFORM
+#ifndef EXTERNAL_ESP32OPENTHREADLAUNCHER_HEADER
+#error "Please define EXTERNAL_ESP32OPENTHREADLAUNCHER_HEADER in your external platform gn/cmake file"
+#endif // !EXTERNAL_ESP32OPENTHREADLAUNCHER_HEADER
+#include EXTERNAL_ESP32OPENTHREADLAUNCHER_HEADER
+#else // CONFIG_CHIP_ENABLE_EXTERNAL_PLATFORM
 #include <platform/ESP32/OpenthreadLauncher.h>
+#endif // !CONFIG_CHIP_ENABLE_EXTERNAL_PLATFORM
 
 #define CLI_INPUT_BUFF_LENGTH 256u
 namespace esp_matter {

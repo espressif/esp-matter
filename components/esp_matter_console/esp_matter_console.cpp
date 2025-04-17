@@ -19,13 +19,21 @@
 
 #include <esp_matter_console.h>
 #include <lib/shell/Engine.h>
-#include <platform/ESP32/ESP32Utils.h>
+#include <lib/core/CHIPError.h>
 
 namespace esp_matter {
 namespace console {
 
 static const char *TAG = "esp_matter_console";
 static engine base_engine;
+
+CHIP_ERROR map_matter_error(esp_err_t esp_err)
+{
+    if (esp_err == ESP_OK) {
+        return CHIP_NO_ERROR;
+    }
+    return CHIP_ERROR(chip::ChipError::Range::kPlatform, esp_err);
+}
 
 void engine::for_each_command(command_iterator_t *on_command, void *arg)
 {
@@ -105,7 +113,7 @@ static CHIP_ERROR common_handler(int argc, char **argv)
         help_handler(argc, argv);
         return CHIP_NO_ERROR;
     }
-    return chip::DeviceLayer::Internal::ESP32Utils::MapError(base_engine.exec_command(argc, argv));
+    return map_matter_error(base_engine.exec_command(argc, argv));
 }
 
 static esp_err_t register_common_shell_handler()

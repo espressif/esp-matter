@@ -33,7 +33,16 @@
 #include <platform/CHIPDeviceLayer.h>
 #include <platform/DeviceInfoProvider.h>
 #include <platform/DiagnosticDataProvider.h>
+#if CHIP_DEVICE_CONFIG_ENABLE_WIFI
+#ifdef CONFIG_CHIP_ENABLE_EXTERNAL_PLATFORM
+#ifndef EXTERNAL_ESP32UTILS_HEADER
+#error "Please define EXTERNAL_ESP32UTILS_HEADER in your external platform gn/cmake file"
+#endif // !EXTERNAL_ESP32UTILS_HEADER
+#include EXTERNAL_ESP32UTILS_HEADER
+#else
 #include <platform/ESP32/ESP32Utils.h>
+#endif // CONFIG_CHIP_ENABLE_EXTERNAL_PLATFORM
+#endif // CHIP_DEVICE_CONFIG_ENABLE_WIFI
 #include <esp_matter_ota.h>
 #include <esp_matter_mem.h>
 #include <esp_matter_providers.h>
@@ -864,7 +873,7 @@ esp_err_t start(event_callback_t callback, intptr_t callback_arg)
     VerifyOrReturnError((err == ESP_OK || err == ESP_ERR_INVALID_STATE), err, ESP_LOGE(TAG, "Error create default event loop"));
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI
     VerifyOrReturnError(chip::DeviceLayer::Internal::ESP32Utils::InitWiFiStack() == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Error initializing Wi-Fi stack"));
-#endif
+#endif // CHIP_DEVICE_CONFIG_ENABLE_WIFI
     esp_matter_ota_requestor_init();
 
     err = chip_init(callback, callback_arg);

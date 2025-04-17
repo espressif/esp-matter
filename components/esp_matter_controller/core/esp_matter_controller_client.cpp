@@ -41,7 +41,6 @@
 #endif
 
 #if CONFIG_ENABLE_ESP32_BLE_CONTROLLER
-#include <platform/ESP32/BLEManagerImpl.h>
 #include <platform/internal/BLEManager.h>
 #endif
 
