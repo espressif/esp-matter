@@ -236,6 +236,52 @@ private:
     T val;
 };
 
+/** Template specialization for bool */
+template <>
+class nullable<bool>
+{
+    using Traits      = chip::app::NumericAttributeTraits<bool>;
+    using StorageType = typename Traits::StorageType; // Resolves to uint8_t
+
+    static_assert(std::is_same_v<StorageType, uint8_t>,
+                  "nullable<bool> specialization assumes bool StorageType is uint8_t. Revisit if this changes.");
+
+public:
+    /** Constructors */
+    nullable()                               { Traits::SetNull(storage); }
+    nullable(std::nullptr_t)                 { Traits::SetNull(storage); }
+    constexpr nullable(bool v)               : storage(static_cast<StorageType>(v)) {}
+
+    /** Observers */
+    constexpr bool is_null()  const          { return Traits::IsNullValue(storage); }
+
+    /**
+     * @brief Gets the stored bool value.
+     *
+     * Returns the boolean interpretation of the internal storage.
+     * @warning Returns `true` when `is_null()` is true. Check `is_null()` first
+     *          if the distinction between null and `true` is important.
+     *
+     * Example:
+     * ```
+     * nullable<bool> v_true(true);   // v_true.value() == true
+     * nullable<bool> v_false(false); // v_false.value() == false
+     * nullable<bool> v_null;         // v_null.value() == true (because internal null 0xFF is non-zero)
+     * ```
+     * @return `true` if storage is non-zero (includes null state), `false` if storage is zero.
+     */
+    constexpr bool value()  const            { return static_cast<bool>(storage); }
+
+    constexpr bool value_or(bool d)  const   { return is_null() ? d : static_cast<bool>(storage); }
+
+    /** Modifiers */
+    void operator=(std::nullptr_t)           { Traits::SetNull(storage); }
+    void operator=(bool v)                   { storage = static_cast<StorageType>(v); }
+
+private:
+    StorageType storage; // 1‑byte payload holding 0 / 1 / 0xFF
+};
+
 /*** Attribute val APIs ***/
 /** Invalid */
 esp_matter_attr_val_t esp_matter_invalid(void *val);
