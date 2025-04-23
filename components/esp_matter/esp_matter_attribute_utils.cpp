@@ -1272,7 +1272,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             }
             size_t string_len = strnlen((const char *)val->val.a.b, val->val.a.s);
             size_t data_size_len = val->val.a.t - val->val.a.s;
-            if (string_len >= UINT8_MAX || data_size_len != 2) {
+            if (string_len >= UINT16_MAX || data_size_len != 2) {
                 return ESP_ERR_INVALID_ARG;
             }
             uint16_t data_size = string_len;
@@ -1928,12 +1928,19 @@ esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
     /* Get size */
     EmberAfAttributeType attribute_type = 0;
     uint16_t attribute_size = 0;
-    get_data_from_attr_val(val, &attribute_type, &attribute_size, NULL);
+    esp_err_t err = get_data_from_attr_val(val, &attribute_type, &attribute_size, NULL);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error getting data from attribute value: %d", err);
+        if (lock_status == lock::SUCCESS) {
+            lock::chip_stack_unlock();
+        }
+        return err;
+    }
 
     /* Get value */
     uint8_t *value = (uint8_t *)esp_matter_mem_calloc(1, attribute_size);
     if (!value) {
-        ESP_LOGE(TAG, "Could not allocate value buffer");
+        ESP_LOGE(TAG, "Could not allocate value buffer, size: %u", attribute_size);
         if (lock_status == lock::SUCCESS) {
             lock::chip_stack_unlock();
         }
