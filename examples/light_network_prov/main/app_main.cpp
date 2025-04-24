@@ -6,13 +6,12 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
-#include "esp_matter_attribute_utils.h"
-#include "esp_rmaker_user_mapping.h"
 #include <esp_err.h>
 #include <esp_log.h>
 #include <nvs_flash.h>
 
 #include <esp_matter.h>
+#include <esp_matter_attribute_utils.h>
 #include <esp_matter_console.h>
 #include <esp_matter_ota.h>
 
@@ -22,17 +21,18 @@
 #include <esp_rmaker_schedule.h>
 #include <esp_rmaker_standard_devices.h>
 #include <esp_rmaker_standard_params.h>
+#include <esp_rmaker_user_mapping.h>
 
 #include <app_priv.h>
 #include <app_reset.h>
-#include <app_wifi.h>
+#include <app_network.h>
 #include <common_macros.h>
 #include "app-common/zap-generated/ids/Attributes.h"
 #include "app-common/zap-generated/ids/Clusters.h"
-#include "platform/CHIPDeviceEvent.h"
+#include "network_provisioning/manager.h"
 #include "platform/PlatformManager.h"
-#include "wifi_provisioning/manager.h"
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+#include <platform/ThreadStackManager.h>
 #include <platform/ESP32/OpenthreadLauncher.h>
 #endif
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI
@@ -41,7 +41,7 @@
 
 #include <app/server/CommissioningWindowManager.h>
 #include <app/server/Server.h>
-#include <wifi_prov_scheme/protocomm_matter_ble.h>
+#include <network_prov_scheme/protocomm_matter_ble.h>
 
 static const char *TAG = "app_main";
 uint16_t light_endpoint_id = 0;
@@ -269,7 +269,7 @@ extern "C" void app_main()
         ESP_LOGE(TAG, "Error create default event loop");
         return;
     }
-    app_wifi_init();
+    app_network_init();
     esp_rmaker_config_t rainmaker_cfg = {
         .enable_time_sync = false,
     };
@@ -297,17 +297,30 @@ extern "C" void app_main()
 
     esp_rmaker_schedule_enable();
 
-    err = app_wifi_set_custom_mfg_data(MGF_DATA_DEVICE_TYPE_LIGHT, MFG_DATA_DEVICE_SUBTYPE_LIGHT);
+    err = app_network_set_custom_mfg_data(MGF_DATA_DEVICE_TYPE_LIGHT, MFG_DATA_DEVICE_SUBTYPE_LIGHT);
 
-    err = app_wifi_start(POP_TYPE_MAC);
+    err = app_network_start(POP_TYPE_MAC);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Could not start Wifi. Aborting!!!");
         abort();
     }
 
-   /* Matter start */
+    /* Matter start */
     err = esp_matter::start(app_event_cb);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
+
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+    esp_openthread_platform_config_t ot_config = {
+        .radio_config = ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG(),
+        .host_config = ESP_OPENTHREAD_DEFAULT_HOST_CONFIG(),
+        .port_config = ESP_OPENTHREAD_DEFAULT_PORT_CONFIG(),
+    };
+    set_openthread_platform_config(&ot_config);
+    // This will not really initiaize Thread stack as the thread stack has been initialzed in app_network.
+    // We call this function to pass the OpenThread instance to GenericThreadStackManagerImpl_OpenThread
+    // so that it can be used for SRP service registration and network commissioning driver.
+    chip::DeviceLayer::ThreadStackMgr().InitThreadStack();
+#endif
 
     /* Starting driver with default values */
     app_driver_light_set_defaults(light_endpoint_id);
@@ -316,11 +329,14 @@ extern "C" void app_main()
     err = esp_matter_ota_requestor_encrypted_init(s_decryption_key, s_decryption_key_len);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to initialized the encrypted OTA, err: %d", err));
 #endif // CONFIG_ENABLE_ENCRYPTED_OTA
-    // If Wi-Fi is provisioned and RainMaker user node mapping is done, deinitialize the BLE.
-    bool is_wifi_provisioned = false;
-    wifi_prov_mgr_is_provisioned(&is_wifi_provisioned);
-    if (is_wifi_provisioned && esp_rmaker_user_node_mapping_get_state() == ESP_RMAKER_USER_MAPPING_DONE) {
-        chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t){ chip::DeviceLayer::Internal::BLEMgr().Shutdown(); });
+    bool is_network_provisioned = false;
+#ifdef CONFIG_ESP_RMAKER_NETWORK_OVER_WIFI
+    network_prov_mgr_is_wifi_provisioned(&is_network_provisioned);
+#else
+    network_prov_mgr_is_thread_provisioned(&is_network_provisioned);
+#endif
+    if (is_network_provisioned && esp_rmaker_user_node_mapping_get_state() == ESP_RMAKER_USER_MAPPING_DONE) {
+        chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t) { chip::DeviceLayer::Internal::BLEMgr().Shutdown(); });
     }
 
 #if CONFIG_ENABLE_CHIP_SHELL

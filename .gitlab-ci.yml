@@ -380,6 +380,20 @@ build_ext_plat_c6_thread_controller_examples:
     - *build_esp32c6_wifi_thread_example
     - *build_controller_otbr_example
 
+build_zap_light_example:
+  extends:
+        - .build_examples_template
+  needs:
+    - job: build_image
+      optional: true
+  script:
+    - cd ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip
+    - source ./scripts/activate.sh
+
+    - cd ${ESP_MATTER_PATH}/examples/zap_light
+    - idf.py set-target esp32c3 build
+    - idf.py set-target esp32h2 build
+
 build_esp_matter_examples:
   extends:
         - .build_examples_template

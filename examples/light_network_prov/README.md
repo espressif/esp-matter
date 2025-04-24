@@ -8,10 +8,9 @@ See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/de
 
 - ESP32-S3-DevKitM / ESP32-C3-DevKitM
 - chip-tool (For Matter commissioning)
-- Android RainMaker APP of version 3.4.1 or iOS RainMaker APP of version 3.2.0 (For RainMaker Provisioning)
+- Android RainMaker APP of version 3.5.0+ or iOS RainMaker APP of version 3.2.1+ (For RainMaker Network Provisioning)
 - [ESP-IDF](https://github.com/espressif/esp-idf) on tag v5.2.2
-- [ESP RainMaker](https://github.com/espressif/esp-rainmaker/tree/fd781295) on commit fd78129500aa1a8b2eee9e0dcc0720d7b14cd3dc
-- [ESP Secure Cert Manager](https://github.com/espressif/esp_secure_cert_mgr)
+- [RainMaker CLI](https://github.com/espressif/esp-rainmaker-cli) 
 
 ## 2. Additional Environment Setup
 
@@ -19,10 +18,16 @@ See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/de
 
 This example will use [host driven claiming](https://rainmaker.espressif.com/docs/claiming/#host-driven-claiming) via the RainMaker CLI.
 
+Install esp-rainmaker-cli and login your RainMaker account:
+
+```
+python3 -m pip install esp-rainmaker-cli
+esp-rainmaker-cli login
+```
+
 Make sure your device is connected to the host machine, login into the CLI and execute this:
 ```
-$ cd $RMAKER_PATH/cli
-$ ./rainmaker.py claim --matter <port>
+$ esp-rainmaker-cli claim --matter <port>
 ```
 The CLI will fetch the device certificates and flash them into the secure cert partition of your device. The certificates will be used for both the Matter device attestation verification and RainMaker MQTT connection.
 
@@ -62,13 +67,11 @@ $ ./chip-tool pairing ble-wifi <node-id> <ssid> <passcode> <setup-pincode> <disc
 
 **Note**: The `setup-picode` and `discriminator` is generated with the factory partition binary. You can find it in the `out/131b_2/<node-id>/<node-id>-onb_codes.csv`.
 
-## 4. External platform
+## 4. Additional BLE GATT Service and BLE Advertisements
 
-This example uses [external platform](../common/secondary_ble_adv/).
+This example uses the BLEManagerImpl::ConfigureExtraServices() to configure the additional BLE GATT service for RainMaker Provisioning. The function should be called before start Matter stack.
 
-In the external platform, `SetSecondaryXX()` APIs are added in the `BLEManagerImpl` class for setting up the secondary BLE advertisement and services. After you call these APIs of `BLEManagerImpl`, there will be an additional BLE advertisement and corresponding service for wifi_provisioning after you initialize the Matter stack.
-
-There are also some WiFi stack initialization changes to avoid duplicated Wi-Fi stack initialization of wifi_provisioning and Matter stack.
+And you can also configure other BLE advertisements with the ble_gap_ext_adv_XX() APIs after the Matter BLE advertisement is started.
 
 ## 5. RainMaker Provisioning
 

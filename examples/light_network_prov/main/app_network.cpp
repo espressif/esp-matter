@@ -10,16 +10,17 @@
 #include <esp_log.h>
 #include <esp_rmaker_utils.h>
 #include <esp_wifi.h>
+#include <esp_mac.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/event_groups.h>
 #include <freertos/task.h>
 #include <string.h>
 
 #include <esp_netif.h>
-#include <wifi_prov_scheme_matter_ble.h>
-#include <wifi_provisioning/manager.h>
+#include <network_prov_scheme_matter_ble.h>
+#include <network_provisioning/manager.h>
 
-#include <app_wifi.h>
+#include <app_network.h>
 #include <esp_rmaker_core.h>
 #include <esp_timer.h>
 #include <nvs.h>
@@ -28,9 +29,24 @@
 #include <platform/PlatformManager.h>
 #include <qrcode.h>
 
-ESP_EVENT_DEFINE_BASE(APP_WIFI_EVENT);
+#ifdef CONFIG_ESP_RMAKER_NETWORK_OVER_THREAD
+#include <esp_vfs_eventfd.h>
+#include <esp_openthread.h>
+#include <esp_openthread_cli.h>
+#include <esp_openthread_lock.h>
+#include <esp_openthread_netif_glue.h>
+#include <esp_openthread_types.h>
 
-static const char *TAG = "app_wifi";
+#include <openthread/cli.h>
+#include <openthread/instance.h>
+#include <openthread/logging.h>
+#include <openthread/tasklet.h>
+#include <openthread/thread.h>
+#endif
+
+ESP_EVENT_DEFINE_BASE(APP_NETWORK_EVENT);
+
+static const char *TAG = "app_network";
 
 #define PROV_QR_VERSION "v1"
 
@@ -43,9 +59,9 @@ static const char *TAG = "app_wifi";
 #define POP_STR_SIZE 9
 static esp_timer_handle_t prov_stop_timer;
 /* Timeout period in minutes */
-#define APP_WIFI_PROV_TIMEOUT_PERIOD 30
+#define APP_NETWORK_PROV_TIMEOUT_PERIOD 30
 /* Autofetch period in micro-seconds */
-static uint64_t prov_timeout_period = (APP_WIFI_PROV_TIMEOUT_PERIOD * 60 * 1000000LL);
+static uint64_t prov_timeout_period = (APP_NETWORK_PROV_TIMEOUT_PERIOD * 60 * 1000000LL);
 
 #define APP_PROV_STOP_ON_CREDS_MISMATCH
 
@@ -63,7 +79,7 @@ char esp_rainmaker_ascii_art[] =
 static uint8_t *custom_mfg_data = NULL;
 static size_t custom_mfg_data_len = 0;
 
-esp_err_t app_wifi_set_custom_mfg_data(uint16_t device_type, uint8_t device_subtype)
+esp_err_t app_network_set_custom_mfg_data(uint16_t device_type, uint8_t device_subtype)
 {
     int8_t mfg_data[] = {(int8_t)MFG_DATA_HEADER, MGF_DATA_APP_ID, MFG_DATA_VERSION, MFG_DATA_CUSTOMER_ID};
     size_t mfg_data_len = sizeof(mfg_data) + 4; // 4 bytes of device type, subtype, and extra-code
@@ -89,7 +105,7 @@ static esp_err_t qrcode_display(const char *text)
     return esp_qrcode_generate(&cfg, text);
 }
 
-static void app_wifi_print_qr(const char *name, const char *pop, const char *transport)
+static void app_network_print_qr(const char *name, const char *pop, const char *transport)
 {
     if (!name || !transport) {
         ESP_LOGW(TAG, "Cannot generate QR code payload. Data missing.");
@@ -111,7 +127,7 @@ static void app_wifi_print_qr(const char *name, const char *pop, const char *tra
     qrcode_display(payload);
     ESP_LOGI(TAG, "If QR code is not visible, copy paste the below URL in a browser.\n%s?data=%s", QRCODE_BASE_URL,
              payload);
-    esp_event_post(APP_WIFI_EVENT, APP_WIFI_EVENT_QR_DISPLAY, payload, strlen(payload) + 1, portMAX_DELAY);
+    esp_event_post(APP_NETWORK_EVENT, APP_NETWORK_EVENT_QR_DISPLAY, payload, strlen(payload) + 1, portMAX_DELAY);
 }
 
 /* Event handler for catching system events */
@@ -120,12 +136,13 @@ static void event_handler(void *arg, esp_event_base_t event_base, int32_t event_
     static int retries = 0;
     static int failed_cnt = 0;
 
-    if (event_base == WIFI_PROV_EVENT) {
+    if (event_base == NETWORK_PROV_EVENT) {
         switch (event_id) {
-        case WIFI_PROV_START:
+        case NETWORK_PROV_START:
             ESP_LOGI(TAG, "Provisioning started");
             break;
-        case WIFI_PROV_CRED_RECV: {
+#ifdef CONFIG_ESP_RMAKER_NETWORK_OVER_WIFI
+        case NETWORK_PROV_WIFI_CRED_RECV: {
             wifi_sta_config_t *wifi_sta_cfg = (wifi_sta_config_t *)event_data;
             ESP_LOGI(TAG,
                      "Received Wi-Fi credentials"
@@ -133,35 +150,55 @@ static void event_handler(void *arg, esp_event_base_t event_base, int32_t event_
                      (const char *)wifi_sta_cfg->ssid, (const char *)wifi_sta_cfg->password);
             break;
         }
-        case WIFI_PROV_CRED_FAIL: {
-            wifi_prov_sta_fail_reason_t *reason = (wifi_prov_sta_fail_reason_t *)event_data;
+        case NETWORK_PROV_WIFI_CRED_FAIL: {
+            network_prov_wifi_sta_fail_reason_t *reason = (network_prov_wifi_sta_fail_reason_t *)event_data;
             ESP_LOGE(TAG,
                      "Provisioning failed!\n\tReason : %s"
                      "\n\tPlease reset to factory and retry provisioning",
-                     (*reason == WIFI_PROV_STA_AUTH_ERROR) ? "Wi-Fi station authentication failed"
+                     (*reason == NETWORK_PROV_WIFI_STA_AUTH_ERROR) ? "Wi-Fi station authentication failed"
                                                            : "Wi-Fi access-point not found");
             retries++;
             if (retries >= 5) {
                 ESP_LOGI(TAG, "Failed to connect with provisioned AP, reseting provisioned credentials");
-                wifi_prov_mgr_reset_sm_state_on_failure();
-                esp_event_post(APP_WIFI_EVENT, APP_WIFI_EVENT_PROV_RESTART, NULL, 0, portMAX_DELAY);
+                network_prov_mgr_reset_wifi_sm_state_on_failure();
+                esp_event_post(APP_NETWORK_EVENT, APP_NETWORK_EVENT_PROV_RESTART, NULL, 0, portMAX_DELAY);
                 ESP_LOGW(TAG, "Failed to connect with provisioned AP, please reset to provisioning manually");
                 retries = 0;
             }
             break;
         }
-        case WIFI_PROV_CRED_SUCCESS:
+        case NETWORK_PROV_WIFI_CRED_SUCCESS:
             ESP_LOGI(TAG, "Provisioning successful");
             retries = 0;
             break;
-        case WIFI_PROV_END:
+#endif // CONFIG_ESP_RMAKER_NETWORK_OVER_WIFI
+#ifdef CONFIG_ESP_RMAKER_NETWORK_OVER_THREAD
+        case NETWORK_PROV_THREAD_DATASET_RECV: {
+            break;
+        }
+        case NETWORK_PROV_THREAD_DATASET_FAIL: {
+            retries++;
+            if (retries >= 5) {
+                ESP_LOGI(TAG, "Failed to connect with provisioned network, reseting provisioned dataset");
+                network_prov_mgr_reset_thread_sm_state_on_failure();
+                esp_event_post(APP_NETWORK_EVENT, APP_NETWORK_EVENT_PROV_RESTART, NULL, 0, portMAX_DELAY);
+                retries = 0;
+            }
+            break;
+        }
+        case NETWORK_PROV_THREAD_DATASET_SUCCESS:
+            ESP_LOGI(TAG, "Provisioning successful");
+            retries = 0;
+            break;
+#endif
+        case NETWORK_PROV_END:
             if (prov_stop_timer) {
                 esp_timer_stop(prov_stop_timer);
                 esp_timer_delete(prov_stop_timer);
                 prov_stop_timer = NULL;
             }
             /* De-initialize manager once provisioning is finished */
-            wifi_prov_mgr_deinit();
+            network_prov_mgr_deinit();
             break;
         default:
             break;
@@ -178,21 +215,61 @@ static void event_handler(void *arg, esp_event_base_t event_base, int32_t event_
             ESP_LOGE(TAG, "Received incorrect PoP or invalid security params! event: %d", (int)event_id);
             if (++failed_cnt >= 5) {
                 /* stop provisioning for security reasons */
-                wifi_prov_mgr_stop_provisioning();
+                network_prov_mgr_stop_provisioning();
                 ESP_LOGW(TAG,
                          "Max PoP attempts reached! Provisioning disabled for security reasons. Please reboot device "
                          "to restart provisioning");
-                esp_event_post(APP_WIFI_EVENT, APP_WIFI_EVENT_PROV_CRED_MISMATCH, NULL, 0, portMAX_DELAY);
+                esp_event_post(APP_NETWORK_EVENT, APP_NETWORK_EVENT_PROV_CRED_MISMATCH, NULL, 0, portMAX_DELAY);
             }
             break;
         default:
             break;
         }
+#ifdef CONFIG_ESP_RMAKER_NETWORK_OVER_WIFI
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
         ESP_LOGI(TAG, "Disconnected. Connecting to the AP again...");
         esp_wifi_connect();
+#endif // CONFIG_ESP_RMAKER_NETWORK_OVER_WIFI
     }
 }
+#ifdef CONFIG_ESP_RMAKER_NETWORK_OVER_THREAD
+static esp_netif_t* init_openthread_netif(const esp_openthread_platform_config_t* config)
+{
+    esp_netif_config_t cfg = ESP_NETIF_DEFAULT_OPENTHREAD();
+    esp_netif_t* netif = esp_netif_new(&cfg);
+    assert(netif != NULL);
+    ESP_ERROR_CHECK(esp_netif_attach(netif, esp_openthread_netif_glue_init(config)));
+
+    return netif;
+}
+
+static void ot_task_worker(void* aContext)
+{
+    esp_openthread_platform_config_t config = {
+        .radio_config = ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG(),
+        .host_config = ESP_OPENTHREAD_DEFAULT_HOST_CONFIG(),
+        .port_config = ESP_OPENTHREAD_DEFAULT_PORT_CONFIG(),
+    };
+    /* Initialize the OpenThread stack */
+    ESP_ERROR_CHECK(esp_openthread_init(&config));
+#if CONFIG_OPENTHREAD_LOG_LEVEL_DYNAMIC
+    /* The OpenThread log level directly matches ESP log level */
+    (void)otLoggingSetLevel(CONFIG_LOG_DEFAULT_LEVEL);
+#endif
+    esp_netif_t *openthread_netif = init_openthread_netif(&config);
+    /* Initialize the esp_netif bindings */
+    esp_netif_set_default_netif(openthread_netif);
+
+    /* Run the main loop */
+    esp_openthread_launch_mainloop();
+    /* Clean up */
+    esp_netif_destroy(openthread_netif);
+    esp_openthread_netif_glue_deinit();
+
+    esp_vfs_eventfd_unregister();
+    vTaskDelete(NULL);
+}
+#endif // CONFIG_ESP_RMAKER_NETWORK_OVER_THREAD
 
 /* Free random_bytes after use only if function returns ESP_OK */
 static esp_err_t read_random_bytes_from_nvs(uint8_t **random_bytes, size_t *len)
@@ -225,7 +302,7 @@ static esp_err_t read_random_bytes_from_nvs(uint8_t **random_bytes, size_t *len)
 }
 
 static char *custom_pop;
-esp_err_t app_wifi_set_custom_pop(const char *pop)
+esp_err_t app_network_set_custom_pop(const char *pop)
 {
     /* NULL PoP is not allowed here. Use POP_TYPE_NONE instead. */
     if (!pop) {
@@ -251,9 +328,9 @@ static esp_err_t get_device_service_name(char *service_name, size_t max)
     const char *ssid_prefix = "PROV";
     size_t nvs_random_size = 0;
     if ((read_random_bytes_from_nvs(&nvs_random, &nvs_random_size) != ESP_OK) || nvs_random_size < 3) {
-        uint8_t eth_mac[6];
-        esp_wifi_get_mac(WIFI_IF_STA, eth_mac);
-        snprintf(service_name, max, "%s_%02x%02x%02x", ssid_prefix, eth_mac[3], eth_mac[4], eth_mac[5]);
+        uint8_t mac_addr[6];
+        esp_read_mac(mac_addr, ESP_MAC_BASE);
+        snprintf(service_name, max, "%s_%02x%02x%02x", ssid_prefix, mac_addr[3], mac_addr[4], mac_addr[5]);
     } else {
         snprintf(service_name, max, "%s_%02x%02x%02x", ssid_prefix, nvs_random[nvs_random_size - 3],
                  nvs_random[nvs_random_size - 2], nvs_random[nvs_random_size - 1]);
@@ -264,7 +341,7 @@ static esp_err_t get_device_service_name(char *service_name, size_t max)
     return ESP_OK;
 }
 
-static char *get_device_pop(app_wifi_pop_type_t pop_type)
+static char *get_device_pop(app_network_pop_type_t pop_type)
 {
     if (pop_type == POP_TYPE_NONE) {
         return NULL;
@@ -282,10 +359,10 @@ static char *get_device_pop(app_wifi_pop_type_t pop_type)
     }
 
     if (pop_type == POP_TYPE_MAC) {
-        uint8_t eth_mac[6];
-        esp_err_t err = esp_wifi_get_mac(WIFI_IF_STA, eth_mac);
+        uint8_t mac_addr[6];
+        esp_err_t err = esp_read_mac(mac_addr, ESP_MAC_BASE);
         if (err == ESP_OK) {
-            snprintf(pop, POP_STR_SIZE, "%02x%02x%02x%02x", eth_mac[2], eth_mac[3], eth_mac[4], eth_mac[5]);
+            snprintf(pop, POP_STR_SIZE, "%02x%02x%02x%02x", mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
             return pop;
         } else {
             ESP_LOGE(TAG, "Failed to get MAC address to generate PoP.");
@@ -311,8 +388,9 @@ pop_err:
     return NULL;
 }
 
-void app_wifi_init(void)
+void app_network_init(void)
 {
+#ifdef CONFIG_ESP_RMAKER_NETWORK_OVER_WIFI
     wifi_init_config_t cfg;
     esp_err_t err = esp_netif_init();
     if (err != ESP_OK) {
@@ -336,35 +414,47 @@ void app_wifi_init(void)
         ESP_LOGE(TAG, "Failed to initialize esp_wifi");
         return;
     }
+#endif // CONFIG_ESP_RMAKER_NETWORK_OVER_WIFI
+#ifdef CONFIG_ESP_RMAKER_NETWORK_OVER_THREAD
+    /* Initialize TCP/IP */
+    esp_netif_init();
+    esp_vfs_eventfd_config_t eventfd_config = {
+        .max_fds = 3,
+    };
+    ESP_ERROR_CHECK(esp_vfs_eventfd_register(&eventfd_config));
+    xTaskCreate(ot_task_worker, "ot_task", 6144, xTaskGetCurrentTaskHandle(), 5, NULL);
+#endif
     /* Register our event handler for Wi-Fi, IP and Provisioning related events */
-    ESP_ERROR_CHECK(esp_event_handler_register(WIFI_PROV_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
+    ESP_ERROR_CHECK(esp_event_handler_register(NETWORK_PROV_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
 #ifdef APP_PROV_STOP_ON_CREDS_MISMATCH
     ESP_ERROR_CHECK(
         esp_event_handler_register(PROTOCOMM_SECURITY_SESSION_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
 #endif
+#ifdef CONFIG_ESP_RMAKER_NETWORK_OVER_WIFI
     ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL));
+#endif // CONFIG_ESP_RMAKER_NETWORK_OVER_WIFI
 }
 
-static void app_wifi_prov_stop(void *priv)
+static void app_network_prov_stop(void *priv)
 {
     ESP_LOGW(TAG, "Provisioning timed out. Please reboot device to restart provisioning.");
-    wifi_prov_mgr_stop_provisioning();
-    esp_event_post(APP_WIFI_EVENT, APP_WIFI_EVENT_PROV_TIMEOUT, NULL, 0, portMAX_DELAY);
+    network_prov_mgr_stop_provisioning();
+    esp_event_post(APP_NETWORK_EVENT, APP_NETWORK_EVENT_PROV_TIMEOUT, NULL, 0, portMAX_DELAY);
 }
 
-esp_err_t app_wifi_start_timer(void)
+esp_err_t app_network_start_timer(void)
 {
     if (prov_timeout_period == 0) {
         return ESP_OK;
     }
-    esp_timer_create_args_t prov_stop_timer_conf = {.callback = app_wifi_prov_stop,
+    esp_timer_create_args_t prov_stop_timer_conf = {.callback = app_network_prov_stop,
                                                     .arg = NULL,
                                                     .dispatch_method = ESP_TIMER_TASK,
                                                     .name = "app_wifi_prov_stop_tm"};
     if (esp_timer_create(&prov_stop_timer_conf, &prov_stop_timer) == ESP_OK) {
         esp_timer_start_once(prov_stop_timer, prov_timeout_period);
-        ESP_LOGI(TAG, "Provisioning will auto stop after %d minute(s).", APP_WIFI_PROV_TIMEOUT_PERIOD);
+        ESP_LOGI(TAG, "Provisioning will auto stop after %d minute(s).", APP_NETWORK_PROV_TIMEOUT_PERIOD);
         return ESP_OK;
     } else {
         ESP_LOGE(TAG, "Failed to create Provisioning auto stop timer.");
@@ -372,11 +462,11 @@ esp_err_t app_wifi_start_timer(void)
     return ESP_FAIL;
 }
 
-esp_err_t app_wifi_start(app_wifi_pop_type_t pop_type)
+esp_err_t app_network_start(app_network_pop_type_t pop_type)
 {
     /* Configuration for the provisioning manager */
-    wifi_prov_mgr_config_t config = {
-        .scheme = wifi_prov_scheme_matter_ble,
+    network_prov_mgr_config_t config = {
+        .scheme = network_prov_scheme_matter_ble,
 
         /* Any default scheme specific event handler that you would
          * like to choose. Since our example application requires
@@ -386,16 +476,21 @@ esp_err_t app_wifi_start(app_wifi_pop_type_t pop_type)
          * appropriate scheme specific event handler allows the manager
          * to take care of this automatically. This can be set to
          * WIFI_PROV_EVENT_HANDLER_NONE when using wifi_prov_scheme_softap*/
-        .scheme_event_handler = WIFI_PROV_EVENT_HANDLER_NONE,
+        .scheme_event_handler = NETWORK_PROV_EVENT_HANDLER_NONE,
     };
 
     /* Initialize provisioning manager with the
      * configuration parameters set above */
-    ESP_ERROR_CHECK(wifi_prov_mgr_init(config));
+    ESP_ERROR_CHECK(network_prov_mgr_init(config));
 
     bool provisioned = false;
     /* Let's find out if the device is provisioned */
-    wifi_prov_mgr_is_provisioned(&provisioned);
+#ifdef CONFIG_ESP_RMAKER_NETWORK_OVER_WIFI
+    network_prov_mgr_is_wifi_provisioned(&provisioned);
+#endif
+#ifdef CONFIG_ESP_RMAKER_NETWORK_OVER_THREAD
+    network_prov_mgr_is_thread_provisioned(&provisioned);
+#endif
     /* If device is not yet provisioned start provisioning service */
     if (!provisioned) {
         ESP_LOGI(TAG, "Starting provisioning");
@@ -420,7 +515,7 @@ esp_err_t app_wifi_start(app_wifi_pop_type_t pop_type)
          *          using X25519 key exchange and proof of possession (pop) and AES-CTR
          *          for encryption/decryption of messages.
          */
-        wifi_prov_security_t security = WIFI_PROV_SECURITY_1;
+        network_prov_security_t security = NETWORK_PROV_SECURITY_1;
 
         /* Do we want a proof-of-possession (ignored if Security 0 is selected):
          *      - this should be a string with length > 0
@@ -445,13 +540,13 @@ esp_err_t app_wifi_start(app_wifi_pop_type_t pop_type)
             /* 12th and 13th bit will be replaced by internal bits. */
             0xb4, 0xdf, 0x5a, 0x1c, 0x3f, 0x6b, 0xf4, 0xbf, 0xea, 0x4a, 0x82, 0x03, 0x04, 0x90, 0x1a, 0x02,
         };
-        esp_err_t err = wifi_prov_scheme_matter_ble_set_service_uuid(custom_service_uuid, sizeof(custom_service_uuid));
+        esp_err_t err = network_prov_scheme_matter_ble_set_service_uuid(custom_service_uuid, sizeof(custom_service_uuid));
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "wifi_prov_scheme_ble_set_service_uuid failed %d", err);
             return err;
         }
         if (custom_mfg_data) {
-            err = wifi_prov_scheme_matter_ble_set_mfg_data(custom_mfg_data, custom_mfg_data_len);
+            err = network_prov_scheme_matter_ble_set_mfg_data(custom_mfg_data, custom_mfg_data_len);
             if (err != ESP_OK) {
                 ESP_LOGE(TAG, "Failed to set mfg data, err=0x%x", err);
                 return err;
@@ -459,22 +554,31 @@ esp_err_t app_wifi_start(app_wifi_pop_type_t pop_type)
         }
 
         /* Start provisioning service */
-        ESP_ERROR_CHECK(wifi_prov_mgr_start_provisioning(security, pop, service_name, service_key));
+        ESP_ERROR_CHECK(network_prov_mgr_start_provisioning(security, pop, service_name, service_key));
         /* Print QR code for provisioning */
-        app_wifi_print_qr(service_name, pop, PROV_TRANSPORT_BLE);
+        app_network_print_qr(service_name, pop, PROV_TRANSPORT_BLE);
         ESP_LOGI(TAG, "Provisioning Started. Name : %s, POP : %s", service_name, pop ? pop : "<null>");
         if (pop) {
             free(pop);
         }
-        app_wifi_start_timer();
+        app_network_start_timer();
     } else {
         ESP_LOGI(TAG, "Already provisioned, starting Wi-Fi STA");
         /* We don't need the manager as device is already provisioned,
          * so let's release it's resources */
-        wifi_prov_mgr_deinit();
+        network_prov_mgr_deinit();
+#ifdef CONFIG_ESP_RMAKER_NETWORK_OVER_WIFI
         ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
         ESP_ERROR_CHECK(esp_wifi_start());
         esp_wifi_connect();
+#endif // CONFIG_ESP_RMAKER_NETWORK_OVER_WIFI
+#ifdef CONFIG_ESP_RMAKER_NETWORK_OVER_THREAD
+        esp_openthread_lock_acquire(portMAX_DELAY);
+        otInstance* instance = esp_openthread_get_instance();
+        (void)otIp6SetEnabled(instance, true);
+        (void)otThreadSetEnabled(instance, true);
+        esp_openthread_lock_release();
+#endif // CONFIG_ESP_RMAKER_NETWORK_OVER_THREAD
         esp_rmaker_start();
     }
     if (custom_mfg_data) {
