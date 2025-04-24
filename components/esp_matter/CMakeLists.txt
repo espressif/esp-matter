@@ -8,6 +8,7 @@ set(SRC_DIRS_LIST       "."
                         "${MATTER_SDK_PATH}/src/app/reporting"
                         # TODO Use esp-matter data model and remove ember codes
                         "${MATTER_SDK_PATH}/src/data-model-providers/codegen"
+                        "${MATTER_SDK_PATH}/src/app/server-cluster"
 )
 
 set(INCLUDE_DIRS_LIST   "."
@@ -16,7 +17,8 @@ set(INCLUDE_DIRS_LIST   "."
                         "${MATTER_SDK_PATH}/third_party/nlfaultinjection/include"
                         "${MATTER_SDK_PATH}/src")
 
-set(EXCLUDE_SRCS_LIST )
+# TODO: This file has compilation errors
+set(EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/closure-control-server/closure-control-server.cpp")
 
 if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
     include("utils/cluster_select/cluster_dir.cmake")

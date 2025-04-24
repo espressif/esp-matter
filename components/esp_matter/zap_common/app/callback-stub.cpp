@@ -201,6 +201,11 @@ void __attribute__((weak)) emberAfElectricalEnergyMeasurementClusterInitCallback
     // To prevent warning
     (void) endpoint;
 }
+void __attribute__((weak)) emberAfElectricalGridConditionsClusterInitCallback(EndpointId endpoint)
+{
+    // To prevent warning
+    (void) endpoint;
+}
 void __attribute__((weak)) emberAfElectricalPowerMeasurementClusterInitCallback(EndpointId endpoint)
 {
     // To prevent warning
