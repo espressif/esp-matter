@@ -2080,17 +2080,15 @@ namespace node {
 node_t *create(config_t *config, attribute::callback_t attribute_callback,
                identification::callback_t identification_callback)
 {
-    attribute::set_callback(attribute_callback);
-    identification::set_callback(identification_callback);
-
     node_t *node = create_raw();
-    if (!node) {
-        ESP_LOGE(TAG, "Could not create node");
+    VerifyOrReturnValue(node != nullptr, NULL, ESP_LOGE(TAG, "Could not create node"));
+    endpoint_t *endpoint = endpoint::root_node::create(node, &(config->root_node), ENDPOINT_FLAG_NONE, NULL);
+    if (endpoint == nullptr) {
+        destroy_raw();
         return NULL;
     }
-
-    endpoint::root_node::create(node, &(config->root_node), ENDPOINT_FLAG_NONE, NULL);
-
+    attribute::set_callback(attribute_callback);
+    identification::set_callback(identification_callback);
     return node;
 }
 
