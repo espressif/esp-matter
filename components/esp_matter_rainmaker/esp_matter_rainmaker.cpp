@@ -16,6 +16,7 @@
 #include <string.h>
 
 #include <esp_matter.h>
+#include <esp_matter_attribute.h>
 #include <esp_matter_console.h>
 #include <esp_matter_rainmaker.h>
 #include <esp_rmaker_core.h>
@@ -360,6 +361,7 @@ static esp_err_t sign_data_command_callback(const ConcreteCommandPath &command_p
     return sign_and_update_challenge_response(config_value);
 }
 
+// This creates a server cluster
 static esp_err_t custom_cluster_create()
 {
     /* Get the endpoint */
@@ -368,7 +370,12 @@ static esp_err_t custom_cluster_create()
 
     /* Create custom rainmaker cluster */
     cluster_t *cluster = esp_matter::cluster::create(endpoint, cluster::rainmaker::Id, CLUSTER_FLAG_SERVER);
-    attribute::create(cluster, Globals::Attributes::ClusterRevision::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(RAINMAKER_CLUSTER_REVISION));
+    VerifyOrReturnError(cluster != NULL, ESP_FAIL,
+                            ESP_LOGE(TAG, "Failed to create rainmaker cluster, id:0x%x", cluster::rainmaker::Id));
+
+    // global attributes
+    cluster::global::attribute::create_cluster_revision(cluster, RAINMAKER_CLUSTER_REVISION);
+    cluster::global::attribute::create_feature_map(cluster, 0); // There aren't any features for this cluster
 
     /* Create custom status attribute */
     /* Update the value of the attribute after esp_rmaker_node_init() is done */
