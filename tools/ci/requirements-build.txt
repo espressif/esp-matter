@@ -1,3 +1,4 @@
 idf_build_apps
 requests
 argparse
+tabulate
