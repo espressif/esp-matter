@@ -78,8 +78,7 @@ set(INCLUDE_DIRS_LIST "${MATTER_SDK_PATH}/src"
                       "${MATTER_SDK_PATH}/third_party/nlio/repo/include"
                       "${MATTER_SDK_PATH}/zzz_generated/app-common")
 
-set(EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/access/AccessRestrictionProvider.cpp"
-                      "${MATTER_SDK_PATH}/src/app/AttributePathExpandIterator-Checked.cpp"
+set(EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/AttributePathExpandIterator-Checked.cpp"
                       "${MATTER_SDK_PATH}/src/app/AttributePathExpandIterator-DataModel.cpp"
                       "${MATTER_SDK_PATH}/src/app/data-model-provider/StringBuilderAdapters.cpp"
                       "${MATTER_SDK_PATH}/src/controller/ExamplePersistentStorage.cpp"
@@ -135,8 +134,9 @@ set(EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/access/AccessRestrictionProvider.c
 list(APPEND INCLUDE_DIRS_LIST "${CMAKE_CURRENT_BINARY_DIR}")
 
 if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
-    file(GLOB CLUSTER_DIR_LIST true ${MATTER_SDK_PATH}/src/app/clusters/*)
-    foreach(CLUSTER_DIR ${CLUSTER_DIR_LIST})
+    include("${ESP_COMPONENTS_PATH}/esp_matter/utils/cluster_select/cluster_dir.cmake")
+    get_supported_cluster_dirs(SUPPORTED_CLUSTER_DIRS)
+    foreach(CLUSTER_DIR ${SUPPORTED_CLUSTER_DIRS})
         file(GLOB_RECURSE C_CPP_FILES "${CLUSTER_DIR}/*.c" "${CLUSTER_DIR}/*.cpp")
         if (C_CPP_FILES)
             list(APPEND SRC_DIRS_LIST "${CLUSTER_DIR}")
@@ -317,6 +317,10 @@ if (NOT CONFIG_ENABLE_OTA_REQUESTOR)
     list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/lib/shell/commands/Ota.cpp")
 endif()
 
+if (NOT CONFIG_ENABLE_ACCESS_RESTRICTIONS)
+    list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/access/AccessRestrictionProvider.cpp")
+endif()
+
 if (CONFIG_CHIP_ENABLE_EXTERNAL_PLATFORM)
     # check the source file dir if external platform is enable
     if (IS_ABSOLUTE ${CONFIG_CHIP_EXTERNAL_PLATFORM_DIR})
@@ -431,8 +435,7 @@ idf_component_register(SRC_DIRS          ${SRC_DIRS_LIST}
 
 target_compile_options(${COMPONENT_LIB} PUBLIC
                        "-DCHIP_ADDRESS_RESOLVE_IMPL_INCLUDE_HEADER=<lib/address_resolve/AddressResolve_DefaultImpl.h>"
-                       "-DCHIP_CONFIG_SOFTWARE_VERSION_NUMBER=${chip_config_software_version_number}"
-                       "-DNDEBUG")
+                       "-DCHIP_CONFIG_SOFTWARE_VERSION_NUMBER=${chip_config_software_version_number}")
 
 if (CHIP_PROJECT_CONFIG)
     target_compile_options(${COMPONENT_LIB} PUBLIC
@@ -501,7 +504,7 @@ endif()
 
 if (NOT CMAKE_BUILD_EARLY_EXPANSION)
     if (CONFIG_COMPILER_OPTIMIZATION_ASSERTIONS_DISABLE)
-        target_compile_options(${COMPONENT_LIB} PUBLIC "-DLWIP_DEBUG=1")
+        target_compile_options(${COMPONENT_LIB} PRIVATE "-DNDEBUG")
     endif()
 endif()
 
