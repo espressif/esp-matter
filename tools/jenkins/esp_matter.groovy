@@ -69,6 +69,7 @@ def firmware_build() {
     echo "CONFIG_ENABLE_OTA_REQUESTOR=y" >> sdkconfig.defaults
     echo "CONFIG_ESP_COREDUMP_ENABLE_TO_UART=y" >> sdkconfig.defaults
     echo "CONFIG_FACTORY_DEVICE_INSTANCE_INFO_PROVIDER=y" >> sdkconfig.defaults
+    echo "CONFIG_ENABLE_MEMORY_PROFILING=y" >> sdkconfig.defaults
 
     idf.py set-target ${chip}
     if [ "${FIRMWARE_TYPE}" = "OTA" ]; then

@@ -15,6 +15,8 @@
 #include <esp_matter_ota.h>
 
 #include <common_macros.h>
+#include <log_heap_numbers.h>
+
 #include <app_priv.h>
 #include <app_reset.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
@@ -60,19 +62,6 @@ static const char *s_decryption_key = decryption_key_start;
 static const uint16_t s_decryption_key_len = decryption_key_end - decryption_key_start;
 #endif // CONFIG_ENABLE_ENCRYPTED_OTA
 
-#ifdef CONFIG_ENABLE_MEMORY_PROFILING
-static void memory_profiler_dump_heap_stat(const char *state)
-{
-    ESP_LOGI(TAG,"========== HEAP-DUMP-START ==========\n");
-    ESP_LOGI(TAG,"state: %s\n", state);
-    ESP_LOGI(TAG,"\tDescription\tInternal\n");
-    ESP_LOGI(TAG,"Current Free Memory\t%d\n", heap_caps_get_free_size(MALLOC_CAP_8BIT));
-    ESP_LOGI(TAG,"Largest Free Block\t%d\n", heap_caps_get_largest_free_block(MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL));
-    ESP_LOGI(TAG,"Min. Ever Free Size\t%d\n", heap_caps_get_minimum_free_size(MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL));
-    ESP_LOGI(TAG,"========== HEAP-DUMP-END ==========\n");
-}
-#endif
-
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
     switch (event->Type) {
@@ -82,10 +71,7 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 
     case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
         ESP_LOGI(TAG, "Commissioning complete");
-#ifdef CONFIG_ENABLE_MEMORY_PROFILING
-        memory_profiler_dump_heap_stat("commissioning complete");
-#endif
-
+        MEMORY_PROFILER_DUMP_HEAP_STAT("commissioning complete");
         break;
 
     case chip::DeviceLayer::DeviceEventType::kFailSafeTimerExpired:
@@ -102,10 +88,7 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 
     case chip::DeviceLayer::DeviceEventType::kCommissioningWindowOpened:
         ESP_LOGI(TAG, "Commissioning window opened");
-#ifdef CONFIG_ENABLE_MEMORY_PROFILING
-        memory_profiler_dump_heap_stat("commissioning window opened");
-#endif
-
+        MEMORY_PROFILER_DUMP_HEAP_STAT("commissioning window opened");
         break;
 
     case chip::DeviceLayer::DeviceEventType::kCommissioningWindowClosed:
@@ -149,9 +132,7 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 
     case chip::DeviceLayer::DeviceEventType::kBLEDeinitialized:
         ESP_LOGI(TAG, "BLE deinitialized and memory reclaimed");
-#ifdef CONFIG_ENABLE_MEMORY_PROFILING
-        memory_profiler_dump_heap_stat("BLE deinitialized");
-#endif
+        MEMORY_PROFILER_DUMP_HEAP_STAT("BLE deinitialized");
         break;
 
     default:
@@ -192,9 +173,7 @@ extern "C" void app_main()
     /* Initialize the ESP NVS layer */
     nvs_flash_init();
 
-#ifdef CONFIG_ENABLE_MEMORY_PROFILING
-    memory_profiler_dump_heap_stat("Bootup");
-#endif
+    MEMORY_PROFILER_DUMP_HEAP_STAT("Bootup");
 
     /* Initialize driver */
     app_driver_handle_t light_handle = app_driver_light_init();
@@ -208,9 +187,7 @@ extern "C" void app_main()
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
     ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
 
-#ifdef CONFIG_ENABLE_MEMORY_PROFILING
-    memory_profiler_dump_heap_stat("node created");
-#endif
+    MEMORY_PROFILER_DUMP_HEAP_STAT("node created");
 
     extended_color_light::config_t light_config;
     light_config.on_off.on_off = DEFAULT_POWER;
@@ -275,9 +252,7 @@ extern "C" void app_main()
     err = esp_matter::start(app_event_cb);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
 
-#ifdef CONFIG_ENABLE_MEMORY_PROFILING
-    memory_profiler_dump_heap_stat("matter started");
-#endif
+    MEMORY_PROFILER_DUMP_HEAP_STAT("matter started");
 
     /* Starting driver with default values */
     app_driver_light_set_defaults(light_endpoint_id);
@@ -297,10 +272,8 @@ extern "C" void app_main()
     esp_matter::console::init();
 #endif
 
-#ifdef CONFIG_ENABLE_MEMORY_PROFILING
     while (true) {
-        memory_profiler_dump_heap_stat("Idle");
+        MEMORY_PROFILER_DUMP_HEAP_STAT("Idle");
         vTaskDelay(10000 / portTICK_PERIOD_MS);
     }
-#endif
 }

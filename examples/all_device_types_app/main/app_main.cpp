@@ -18,6 +18,8 @@
 #include <esp_matter_console.h>
 
 #include <common_macros.h>
+#include <log_heap_numbers.h>
+
 #include <app_priv.h>
 #include <app_reset.h>
 
@@ -59,6 +61,7 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 
     case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
         ESP_LOGI(TAG, "Commissioning complete");
+        MEMORY_PROFILER_DUMP_HEAP_STAT("commissioning complete");
         break;
 
     case chip::DeviceLayer::DeviceEventType::kFailSafeTimerExpired:
@@ -75,6 +78,7 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 
     case chip::DeviceLayer::DeviceEventType::kCommissioningWindowOpened:
         ESP_LOGI(TAG, "Commissioning window opened");
+        MEMORY_PROFILER_DUMP_HEAP_STAT("commissioning window opened");
         break;
 
     case chip::DeviceLayer::DeviceEventType::kCommissioningWindowClosed:
@@ -132,6 +136,11 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
         }
         break;
 
+    case chip::DeviceLayer::DeviceEventType::kBLEDeinitialized:
+        ESP_LOGI(TAG, "BLE deinitialized and memory reclaimed");
+        MEMORY_PROFILER_DUMP_HEAP_STAT("BLE deinitialized");
+        break;
+
     default:
         break;
     }
@@ -169,11 +178,15 @@ extern "C" void app_main()
     /* Initialize the ESP NVS layer */
     nvs_flash_init();
 
+    MEMORY_PROFILER_DUMP_HEAP_STAT("Bootup");
+
     /* Create a Matter node and add the mandatory Root Node device type on endpoint 0 */
     node::config_t node_config;
     // node handle can be used to add/modify other endpoints.
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
     ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
+
+    MEMORY_PROFILER_DUMP_HEAP_STAT("node created");
 
     uint8_t device_type_index;
     if (esp_matter::nvs_helpers::get_device_type_from_nvs(&device_type_index) != ESP_OK) {
@@ -213,6 +226,8 @@ extern "C" void app_main()
          ESP_LOGE(TAG, "Matter start failed: %d", err);
      }
 
+    MEMORY_PROFILER_DUMP_HEAP_STAT("matter started");
+
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter::console::diagnostics_register_commands();
     esp_matter::console::wifi_register_commands();
@@ -223,4 +238,9 @@ extern "C" void app_main()
 #endif // CONFIG_OPENTHREAD_BORDER_ROUTER && CONFIG_OPENTHREAD_CLI
 
 #endif
+
+    while (true) {
+        MEMORY_PROFILER_DUMP_HEAP_STAT("Idle");
+        vTaskDelay(10000 / portTICK_PERIOD_MS);
+    }
 }
