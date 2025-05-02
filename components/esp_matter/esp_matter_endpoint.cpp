@@ -1825,13 +1825,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     descriptor::feature::taglist::add(descriptor_cluster);
 
     power_source_device::add(endpoint, &config->power_source_device);
-        
-    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id); 
-<<<<<<< HEAD
+
+    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id);
     power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.features.wired);
-=======
-    power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.wired);
->>>>>>> 1ac31669 (Revert "components/esp-matter: update default identify type value for all devices")
     electrical_sensor::add(endpoint, &config->electrical_sensor);
     electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER, electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id());
 
@@ -1869,10 +1865,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     cluster_t *descriptor_cluster = cluster::get(endpoint, Descriptor::Id);
     descriptor::feature::taglist::add(descriptor_cluster);
-    
+
     power_source_device::add(endpoint, &config->power_source_device);
-        
-    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id); 
+
+    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id);
     power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.features.wired);
     power_source::feature::battery::add(power_source_cluster, &config->power_source_device.power_source.features.battery);
 
