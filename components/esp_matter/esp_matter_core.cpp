@@ -900,7 +900,9 @@ esp_err_t start(event_callback_t callback, intptr_t callback_arg)
     // If Thread is Provisioned, publish the dns service
     if (chip::DeviceLayer::ConnectivityMgr().IsThreadProvisioned() &&
         (chip::Server::GetInstance().GetFabricTable().FabricCount() != 0)) {
-        chip::app::DnssdServer::Instance().StartServer();
+        
+        PlatformMgr().ScheduleWork([](intptr_t){ chip::app::DnssdServer::Instance().StartServer(); },
+                                   reinterpret_cast<intptr_t>(nullptr));
     }
 #endif // CONFIG_ESP_MATTER_ENABLE_OPENTHREAD
 #endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD
