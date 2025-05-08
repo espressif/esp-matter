@@ -47,6 +47,7 @@ led_driver_handle_t led_driver_init(led_driver_config_t *config)
         .timer_sel = LEDC_TIMER_1,
         .duty = 0,
         .hpoint = 0,
+        .flags.output_invert = config->output_invert,
     };
     err = ledc_channel_config(&ledc_channel);
     if (err != ESP_OK) {
