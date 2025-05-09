@@ -1,5 +1,16 @@
 # Changelog for esp_matter component registry
 
+## [1.4.1](https://components.espressif.com/components/espressif/esp_matter/versions/1.4.1)
+
+#### Bug Fixes
+
+- `NDEBUG` flag will be added if `CONFIG_COMPILER_OPTIMIZATION_ASSERTIONS_DISABLE` is set.
+
+#### Features
+
+- esp-matter commit: 725558007ca8d77de8faad2175b04016e90da57c
+- connectedhomeip commit: 19aeeb3ba072250b47c21cd242e657d5949a97d3
+
 ## [1.4.0](https://components.espressif.com/components/espressif/esp_matter/versions/1.4.0)
 
 #### Features

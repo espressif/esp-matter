@@ -145,7 +145,7 @@ attribute_t *create_commissioning_arl(cluster_t *cluster, uint8_t *value, uint16
 
 attribute_t *create_arl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, AccessControl::Attributes::ARL::Id, ATTRIBUTE_FLAG_NONE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
+    return esp_matter::attribute::create(cluster, AccessControl::Attributes::Arl::Id, ATTRIBUTE_FLAG_NONE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
