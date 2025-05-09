@@ -6,7 +6,7 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
-#include "wifi_prov_scheme_matter_ble.h"
+#include "network_prov_scheme_matter_ble.h"
 #include "protocomm_matter_ble.h"
 
 #include <cstdlib>
@@ -17,7 +17,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#define TAG "WIFI_PROV"
+#define TAG "NETWORK_PROV"
 
 static uint8_t custom_service_uuid[BLE_UUID128_VAL_LENGTH];
 static bool custom_service_uuid_set = false;
@@ -62,7 +62,7 @@ static esp_err_t prov_stop(protocomm_t *pc)
     return protocomm_matter_ble_stop(pc);
 }
 
-esp_err_t wifi_prov_scheme_matter_ble_set_service_uuid(uint8_t *uuid, size_t uuid_size)
+esp_err_t network_prov_scheme_matter_ble_set_service_uuid(uint8_t *uuid, size_t uuid_size)
 {
     if (uuid_size != sizeof(custom_service_uuid)) {
         return ESP_ERR_INVALID_ARG;
@@ -72,7 +72,7 @@ esp_err_t wifi_prov_scheme_matter_ble_set_service_uuid(uint8_t *uuid, size_t uui
     return ESP_OK;
 }
 
-esp_err_t wifi_prov_scheme_matter_ble_set_mfg_data(uint8_t *mfg_data, size_t mfg_data_len)
+esp_err_t network_prov_scheme_matter_ble_set_mfg_data(uint8_t *mfg_data, size_t mfg_data_len)
 {
     if (custom_manufacturer_data) {
         free(custom_manufacturer_data);
@@ -180,10 +180,13 @@ static esp_err_t set_config_endpoint(void *config, const char *endpoint_name, ui
     return ESP_OK;
 }
 
-const wifi_prov_scheme_t wifi_prov_scheme_matter_ble = {.prov_start = prov_start,
-                                                        .prov_stop = prov_stop,
-                                                        .new_config = new_config,
-                                                        .delete_config = delete_config,
-                                                        .set_config_service = set_config_service,
-                                                        .set_config_endpoint = set_config_endpoint,
-                                                        .wifi_mode = WIFI_MODE_STA};
+const network_prov_scheme_t network_prov_scheme_matter_ble = {.prov_start = prov_start,
+                                                              .prov_stop = prov_stop,
+                                                              .new_config = new_config,
+                                                              .delete_config = delete_config,
+                                                              .set_config_service = set_config_service,
+                                                              .set_config_endpoint = set_config_endpoint,
+#ifdef CONFIG_ESP_RMAKER_NETWORK_OVER_WIFI
+                                                              .wifi_mode = WIFI_MODE_STA
+#endif
+};

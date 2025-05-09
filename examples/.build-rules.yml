@@ -11,9 +11,9 @@ examples/bridge_apps/blemesh_bridge:
 
 examples/zap_light:
   enable:
-    - if: IDF_TARGET in ["esp32", "esp32h2"]
+    - if: IDF_TARGET in [""]
       temporary: true
-      reason: the other targets are not tested yet
+      reason: this should be compiled in Matter environment, another CI has been added
 
 examples/light_switch:
   enable:
@@ -111,9 +111,9 @@ examples/ota_provider:
       temporary: true
       reason: the other targets are not tested yet
 
-examples/light_wifi_prov:
+examples/light_network_prov:
   enable:
-    - if: IDF_TARGET in ["esp32s3", "esp32c3"]
+    - if: IDF_TARGET in ["esp32s3", "esp32c3", "esp32h2"]
       temporary: true
       reason: the other targets are not tested yet
 

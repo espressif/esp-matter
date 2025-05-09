@@ -374,7 +374,7 @@ For more advanced BLE usage, you can use the external platform feature.
 It also serves as a way to integrate custom BLE usage with Matter.
 
 Please refer to the `advance setup`_ section in the programming guide.
-This has been demonstrated in the `blemesh_bridge`_ and `light_wifi_prov`_ examples.
+This has been demonstrated in the `blemesh_bridge`_ examples.
 
 
 A1.16 Moving BSS Segments to PSRAM to Reduce Memory Usage
@@ -411,7 +411,6 @@ Please check `#1123`_ for relevant discussion on Github issue.
 .. _blecent_scan(): https://github.com/espressif/esp-idf/blob/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/blecent/main/main.c#L435
 .. _advance setup: https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#advanced-setup
 .. _blemesh_bridge: https://github.com/espressif/esp-matter/tree/main/examples/bridge_apps/blemesh_bridge
-.. _light_wifi_prov: https://github.com/espressif/esp-matter/tree/main/examples/light_wifi_prov#4-external-platform
 .. _getting the repository: https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#getting-the-repository
 .. _requirements.txt: https://github.com/espressif/esp-matter/blob/main/requirements.txt
 .. _generate_setup_payload.py: https://github.com/project-chip/connectedhomeip/tree/master/src/setup_payload/python

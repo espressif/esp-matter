@@ -4,6 +4,6 @@ dependencies:
   espressif/led_strip:
     version: "^2.0.0"
   espressif/esp_rainmaker:
-    version: "1.3.0"
+    version: "^1.4.2"
   espressif/qrcode:
     version: "^0.1.0~2"

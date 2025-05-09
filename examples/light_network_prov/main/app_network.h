@@ -24,19 +24,19 @@
 #define MFG_DATA_DEVICE_EXTRA_CODE          0x00
 
 /** ESP RainMaker Event Base */
-ESP_EVENT_DECLARE_BASE(APP_WIFI_EVENT);
+ESP_EVENT_DECLARE_BASE(APP_NETWORK_EVENT);
 
 /** App Wi-Fir Events */
 typedef enum {
     /** QR code available for display. Associated data is the NULL terminated QR payload. */
-    APP_WIFI_EVENT_QR_DISPLAY = 1,
+    APP_NETWORK_EVENT_QR_DISPLAY = 1,
     /** Provisioning timed out */
-    APP_WIFI_EVENT_PROV_TIMEOUT,
+    APP_NETWORK_EVENT_PROV_TIMEOUT,
     /** Provisioning has restarted due to failures (Invalid SSID/Passphrase) */
-    APP_WIFI_EVENT_PROV_RESTART,
+    APP_NETWORK_EVENT_PROV_RESTART,
     /** Provisioning closed due to invalid credentials */
-    APP_WIFI_EVENT_PROV_CRED_MISMATCH,
-} app_wifi_event_t;
+    APP_NETWORK_EVENT_PROV_CRED_MISMATCH,
+} app_network_event_t;
 
 /** Types of Proof of Possession */
 typedef enum {
@@ -52,25 +52,45 @@ typedef enum {
      * Set a custom PoP using app_wifi_set_custom_pop() first.
      */
     POP_TYPE_CUSTOM
-} app_wifi_pop_type_t;
+} app_network_pop_type_t;
 
-/** Initialize Wi-Fi
+#ifdef CONFIG_ESP_RMAKER_NETWORK_OVER_THREAD
+#include <esp_openthread_types.h>
+#define ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG() \
+    {                                         \
+        .radio_mode = RADIO_MODE_NATIVE,      \
+    }
+
+#define ESP_OPENTHREAD_DEFAULT_HOST_CONFIG()               \
+    {                                                      \
+        .host_connection_mode = HOST_CONNECTION_MODE_NONE, \
+    }
+
+#define ESP_OPENTHREAD_DEFAULT_PORT_CONFIG() \
+    {                                        \
+        .storage_partition_name = "nvs",     \
+        .netif_queue_size = 10,              \
+        .task_queue_size = 10,               \
+    }
+#endif // CONFIG_ESP_RMAKER_NETWORK_OVER_THREAD
+
+/** Initialize network
  *
- * This initializes Wi-Fi and the Wi-Fi provisioning manager
+ * This initializes network and the network provisioning manager
  */
-void app_wifi_init();
+void app_network_init();
 
-/** Start Wi-Fi
+/** Start network
  *
- * This will start provisioning if the node is not provisioned and will connect to Wi-Fi
- * if node is provisioned. Function will return successfully only after Wi-Fi is connect
+ * This will start provisioning if the node is not provisioned and will connect to Wi-Fi/Thread
+ * if node is provisioned. Function will return successfully only after Wi-Fi/Thread is connect
  *
  * @param[in] pop_type The type for Proof of Possession (PoP) pin
- * 
- * @return ESP_OK on success (Wi-Fi connected).
+ *
+ * @return ESP_OK on success (Wi-Fi/Thread connected).
  * @return error in case of failure.
  */
-esp_err_t app_wifi_start(app_wifi_pop_type_t pop_type);
+esp_err_t app_network_start(app_network_pop_type_t pop_type);
 
 /** Set custom manufacturing data
  *
@@ -84,7 +104,7 @@ esp_err_t app_wifi_start(app_wifi_pop_type_t pop_type);
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t app_wifi_set_custom_mfg_data(uint16_t device_type, uint8_t device_subtype);
+esp_err_t app_network_set_custom_mfg_data(uint16_t device_type, uint8_t device_subtype);
 
 /** Set custom PoP
  *
@@ -96,4 +116,4 @@ esp_err_t app_wifi_set_custom_mfg_data(uint16_t device_type, uint8_t device_subt
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t app_wifi_set_custom_pop(const char *pop);
+esp_err_t app_network_set_custom_pop(const char *pop);

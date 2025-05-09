@@ -39,6 +39,7 @@ void MatterDishwasherModePluginServerInitCallback();
 void MatterDoorLockPluginServerInitCallback();
 void MatterEcosystemInformationPluginServerInitCallback();
 void MatterElectricalEnergyMeasurementPluginServerInitCallback();
+void MatterElectricalGridConditionsPluginServerInitCallback();
 void MatterElectricalPowerMeasurementPluginServerInitCallback();
 void MatterEnergyEvsePluginServerInitCallback();
 void MatterEnergyEvseModePluginServerInitCallback();
