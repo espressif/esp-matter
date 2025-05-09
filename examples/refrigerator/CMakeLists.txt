@@ -23,7 +23,7 @@ set(EXTRA_COMPONENT_DIRS
     "${ESP_MATTER_PATH}/components"
     ${extra_components_dirs_append})
 
-project(light_switch)
+project(refrigerator)
 if(CONFIG_IDF_TARGET_ESP32C2)
     include(relinker)
 endif()
