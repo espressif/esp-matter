@@ -8,6 +8,7 @@ print_help() {
     echo "  --no-host-tool          Disable installation of host tools"
     echo "  --no-bootstrap          Disable sourcing connectedhomeip's scripts/bootstrap.sh,"
     echo "                          This can be helpful if there's already present connectedhomeip setup"
+    echo "  --build-python          Build Python environment for running Python test scripts"
     echo "  --help                  Display this help message"
 }
 
@@ -19,6 +20,7 @@ echo_log() {
 # Parse command-line arguments
 NO_HOST_TOOL=false
 NO_BOOTSTRAP=false
+BUILD_PYTHON=false
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
@@ -27,6 +29,9 @@ while [[ "$#" -gt 0 ]]; do
             ;;
         --no-bootstrap)
             NO_BOOTSTRAP=true
+            ;;
+        --build-python)
+            BUILD_PYTHON=true
             ;;
         --help)
             print_help
@@ -78,6 +83,17 @@ if [[ $(git -C $IDF_PATH describe) == v4.4* ]]; then
 else
   echo_log "Installing requirements from requirements.txt"
   python3 -m pip install -r ${ESP_MATTER_PATH}/requirements.txt > /dev/null
+fi
+
+
+if [ $BUILD_PYTHON = true ]; then
+  echo_log "Building Python testing environment"
+  cd ${MATTER_PATH}
+  ./scripts/build_python.sh --enable_ble true --chip_detail_logging true -i out/py_env
+  if [ $? -ne 0 ]; then
+    echo_log "Failed to build Python testing environment"
+  fi
+  cd ${ESP_MATTER_PATH}
 fi
 
 echo_log "All done! You can now run:"
