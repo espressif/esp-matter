@@ -2341,9 +2341,8 @@ static uint32_t get_cluster_count(uint32_t endpoint_id, uint32_t cluster_id, uin
     // lambda to check if cluster matches flags and return 1 if it does, 0 otherwise
     auto check_cluster_flags = [cluster_flags](const endpoint_t *endpoint, const cluster_t *cluster) -> uint32_t {
         if (cluster && endpoint) {
-            const _endpoint_t *_endpoint = (_endpoint_t *)endpoint;
             const _cluster_t *_cluster = (_cluster_t *)cluster;
-            EmberAfClusterMask flags = _endpoint->endpoint_type->cluster[_cluster->index].mask;
+            EmberAfClusterMask flags = _cluster->flags;
             return (flags & cluster_flags) ? 1 : 0;
         }
         return 0;
@@ -2386,7 +2385,7 @@ static uint32_t get_cluster_count(uint32_t endpoint_id, uint32_t cluster_id, uin
     }
     // Case 2: Specific endpoint
     else {
-        endpoint_t *endpoint = endpoint::get(endpoint_id);
+        endpoint_t *endpoint = endpoint::get(node, endpoint_id);
         if (!endpoint) {
             return count;
         }
