@@ -167,7 +167,7 @@ typedef struct config {
     } features;
     config() : feature_flags(0) {}
 } config_t;
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* software_diagnostics */
 
 namespace administrator_commissioning {
@@ -175,7 +175,7 @@ typedef struct config {
     uint32_t feature_flags;
     config() : feature_flags(0) {}
 } config_t;
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* administrator_commissioning */
 
 namespace operational_credentials {
@@ -237,7 +237,7 @@ typedef struct config {
     config() : feature_flags(0) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* unit_localization */
 
 namespace bridged_device_basic_information {
@@ -264,8 +264,7 @@ typedef struct config {
     uint32_t feature_flags;
 	config() : status(0), order(0), description{0}, feature_flags(0) {}
 } config_t;
-
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* power_source */
 
 namespace icd_management {
@@ -276,8 +275,7 @@ typedef struct config {
     uint32_t feature_flags;
     config() : feature_flags(0) {}
 } config_t;
-
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* icd_management */
 
 namespace user_label {
@@ -326,7 +324,7 @@ typedef struct config {
     config() : on_off(false), feature_flags(0) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* on_off */
 
 namespace level_control {
@@ -342,7 +340,7 @@ typedef struct config {
     config() : current_level(), on_level(), options(0), feature_flags(0) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* level_control */
 
 namespace color_control {
@@ -364,7 +362,7 @@ typedef struct config {
                color_capabilities(0), number_of_primaries(0), feature_flags(0) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* color_control */
 
 namespace fan_control {
@@ -405,7 +403,7 @@ typedef struct config {
     config() : local_temperature(), control_sequence_of_operation(4), system_mode(1), feature_flags(0) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* thermostat */
 
 namespace thermostat_user_interface_configuration {
@@ -724,7 +722,7 @@ typedef struct config {
     config(uint8_t end_product_type = 0) : type(0), config_status(0), operational_status(0), end_product_type(end_product_type), mode(0), feature_flags(0), delegate(nullptr) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* window_covering */
 
 namespace switch_cluster {
@@ -798,7 +796,7 @@ typedef struct config {
     config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* boolean_state */
 
 namespace localization_configuration {
@@ -820,7 +818,7 @@ typedef struct config {
     config() : hour_format(0), feature_flags(0) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* time_format_localization */
 
 namespace illuminance_measurement {
@@ -900,7 +898,7 @@ typedef struct config {
     config() : mode_select_description{0}, standard_namespace(), current_mode(0), feature_flags(0), delegate(nullptr) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* mode_select */
 
 namespace temperature_control {
@@ -914,7 +912,7 @@ typedef struct config {
     config() : feature_flags(0) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* temperature_control */
 
 namespace refrigerator_alarm {
@@ -975,7 +973,7 @@ typedef struct config {
     config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* microwave_oven_control */
 
 namespace rvc_operational_state {
@@ -1000,7 +998,7 @@ typedef struct config {
     config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* power_topology */
 
 namespace electrical_power_measurement {
@@ -1010,7 +1008,7 @@ typedef struct config {
     config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* electrical_power_measurement */
 
 namespace electrical_energy_measurement {
@@ -1020,7 +1018,7 @@ typedef struct config {
     config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* electrical_energy_measurement */
 
 namespace energy_evse_mode {
@@ -1040,7 +1038,7 @@ typedef struct config {
     config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* energy_evse */
 
 namespace valve_configuration_and_control {
@@ -1058,7 +1056,7 @@ typedef struct config {
     config() : open_duration(), default_open_duration(), current_state(), target_state(), feature_flags(0), delegate(nullptr) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* valve_configuration_and_control */
 
 namespace device_energy_management {
@@ -1068,7 +1066,7 @@ typedef struct config {
     config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* device_energy_management */
 
 namespace device_energy_management_mode {
@@ -1097,7 +1095,7 @@ typedef struct config {
     config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* thread_border_router_management */
 
 namespace wifi_network_management {
@@ -1117,7 +1115,7 @@ typedef struct config {
     config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* service_area */
 
 namespace water_heater_management {
@@ -1134,7 +1132,7 @@ typedef struct config {
     config() : heater_types(0), heat_demand(0), boost_state(0), feature_flags(0), delegate(nullptr) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* water_heater_management */
 
 namespace water_heater_mode {
@@ -1158,7 +1156,7 @@ typedef struct config {
     config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* energy_preference */
 
 namespace commissioner_control {

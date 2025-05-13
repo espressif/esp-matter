@@ -498,7 +498,7 @@ namespace administrator_commissioning {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, AdministratorCommissioning::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, AdministratorCommissioning::Id));
@@ -762,7 +762,7 @@ namespace unit_localization {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, UnitLocalization::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, UnitLocalization::Id));
@@ -828,7 +828,7 @@ namespace power_source {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, PowerSource::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PowerSource::Id));
@@ -879,7 +879,7 @@ namespace icd_management {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, IcdManagement::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, IcdManagement::Id));
@@ -1127,7 +1127,7 @@ const function_generic_t function_list[] = {
 };
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, OnOff::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OnOff::Id));
@@ -1183,7 +1183,7 @@ const function_generic_t function_list[] = {
 };
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, LevelControl::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LevelControl::Id));
@@ -1242,7 +1242,7 @@ const function_generic_t function_list[] = {
 };
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ColorControl::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ColorControl::Id));
@@ -1379,7 +1379,7 @@ const function_generic_t function_list[] = {
 };
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, Thermostat::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Thermostat::Id));
@@ -2037,7 +2037,7 @@ const function_generic_t function_list[] = {
 };
 const int function_flags = CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, LaundryWasherControls::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LaundryWasherControls::Id));
@@ -2332,7 +2332,7 @@ const function_generic_t function_list[] = {
 };
 const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, WindowCovering::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, WindowCovering::Id));
@@ -2644,7 +2644,7 @@ namespace boolean_state_configuration {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, BooleanStateConfiguration::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, BooleanStateConfiguration::Id));
@@ -2730,7 +2730,7 @@ const function_generic_t function_list[] = {
     (function_generic_t)MatterTimeFormatLocalizationClusterServerPreAttributeChangedCallback};
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, TimeFormatLocalization::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, TimeFormatLocalization::Id));
@@ -2959,7 +2959,7 @@ const function_generic_t function_list[] = {
 };
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ModeSelect::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ModeSelect::Id));
@@ -3037,7 +3037,7 @@ namespace software_diagnostics {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, SoftwareDiagnostics::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, SoftwareDiagnostics::Id));
@@ -3066,7 +3066,7 @@ namespace temperature_control {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, TemperatureControl::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, TemperatureControl::Id));
@@ -3285,7 +3285,7 @@ namespace microwave_oven_control {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, MicrowaveOvenControl::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, MicrowaveOvenControl::Id));
@@ -3412,7 +3412,7 @@ namespace power_topology {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, PowerTopology::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PowerTopology::Id));
@@ -3455,7 +3455,7 @@ namespace electrical_power_measurement {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ElectricalPowerMeasurement::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ElectricalPowerMeasurement::Id));
@@ -3513,7 +3513,7 @@ namespace electrical_energy_measurement {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ElectricalEnergyMeasurement::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ElectricalEnergyMeasurement::Id));
@@ -3601,7 +3601,7 @@ namespace energy_evse {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, EnergyEvse::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, EnergyEvse::Id));
@@ -3661,7 +3661,7 @@ namespace valve_configuration_and_control {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ValveConfigurationAndControl::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ValveConfigurationAndControl::Id));
@@ -3716,7 +3716,7 @@ namespace device_energy_management {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, DeviceEnergyManagement::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DeviceEnergyManagement::Id));
@@ -3824,7 +3824,7 @@ namespace application_basic {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ApplicationBasic::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ApplicationBasic::Id));
@@ -3862,7 +3862,7 @@ namespace thread_border_router_management {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ThreadBorderRouterManagement::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster"));
@@ -3907,7 +3907,7 @@ namespace wifi_network_management {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, WiFiNetworkManagement::Id, flags);
     if (!cluster) {
@@ -3941,7 +3941,7 @@ namespace thread_network_directory {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ThreadNetworkDirectory::Id, flags);
     if (!cluster) {
@@ -3977,7 +3977,7 @@ namespace service_area {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ServiceArea::Id, flags);
     if (!cluster) {
@@ -4026,7 +4026,7 @@ namespace water_heater_management {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, WaterHeaterManagement::Id, flags);
     if (!cluster) {
@@ -4116,7 +4116,7 @@ namespace energy_preference {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, EnergyPreference::Id, flags);
     if (!cluster) {
@@ -4161,7 +4161,7 @@ namespace commissioner_control {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, CommissionerControl::Id, flags);
     if (!cluster) {
@@ -4203,7 +4203,7 @@ namespace ecosystem_information {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, EcosystemInformation::Id, flags);
     if (!cluster) {
