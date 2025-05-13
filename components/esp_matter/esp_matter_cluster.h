@@ -56,6 +56,12 @@ void add_bounds_callback_common();
  * If a custom cluster needs to be created, the low level esp_matter::cluster::create() API can be used.
  */
 
+/** Note: Some features might appear to be missing in the cluster configuration because a feature configuration is
+ * only created if there are mandatory attributes managed by Esp-Matter. Since these features do not have any mandatory
+ * attributes, they have not been added to the cluster configuration.
+ * To create such features, you can directly pass their feature IDs in the features_flag of the cluster configuration.
+ */
+
 namespace common {
 
 typedef struct config {
@@ -66,8 +72,8 @@ typedef struct config {
 
 namespace descriptor {
 typedef struct config {
-    uint32_t features;
-    config() : features(0) {}
+    uint32_t feature_flags;
+    config() : feature_flags(0) {}
 } config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* descriptor */
@@ -78,7 +84,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* actions */
 
 namespace access_control {
-using config_t = common::config_t;
+typedef struct config {
+    uint32_t feature_flags;
+    config() : feature_flags(0) {}
+} config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* access_control */
 
@@ -115,7 +124,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace general_commissioning {
 typedef struct config {
     uint64_t breadcrumb;
-    config() : breadcrumb(0) {}
+    struct {
+        feature::terms_and_conditions::config_t terms_and_conditions;
+    } features;
+    uint32_t feature_flags;
+    config() : breadcrumb(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -147,12 +160,21 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* general_diagnostics */
 
 namespace software_diagnostics {
-using config_t = common::config_t;
+typedef struct config {
+    uint32_t feature_flags;
+    struct {
+        feature::watermarks::config_t watermarks;
+    } features;
+    config() : feature_flags(0) {}
+} config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* software_diagnostics */
 
 namespace administrator_commissioning {
-using config_t = common::config_t;
+typedef struct config {
+    uint32_t feature_flags;
+    config() : feature_flags(0) {}
+} config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* administrator_commissioning */
 
@@ -167,7 +189,10 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags);
 } /* group_key_management */
 
 namespace wifi_network_diagnostics {
-using config_t = common::config_t;
+typedef struct config {
+    uint32_t feature_flags;
+    config() : feature_flags(0) {}
+} config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* wifi_network_diagnostics */
 
@@ -177,14 +202,27 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* thread_network_diagnostics */
 
 namespace ethernet_network_diagnostics {
-using config_t = common::config_t;
+typedef struct config {
+    struct {
+        feature::packet_counts::config_t packet_counts;
+        feature::error_counts::config_t error_counts;
+    } features;
+    uint32_t feature_flags;
+    config() : feature_flags(0) {}
+} config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* ethernet_network_diagnostics */
 
 namespace time_synchronization {
 typedef struct config {
+    struct {
+        feature::time_zone::config_t time_zone;
+        feature::ntp_client::config_t ntp_client;
+        feature::ntp_server::config_t ntp_server;
+    } features;
+    uint32_t feature_flags;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -192,8 +230,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace unit_localization {
 typedef struct config {
-    feature::temperature_unit::config_t temperature_unit;
-    // Empty config for API consistency
+    struct {
+        feature::temperature_unit::config_t temperature_unit;
+    } features;
+    uint32_t feature_flags;
+    config() : feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -202,7 +243,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 namespace bridged_device_basic_information {
 typedef struct config {
     bool reachable;
-    config() : reachable(true) {}
+    uint32_t feature_flags;
+    config() : reachable(true), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -213,11 +255,14 @@ typedef struct config {
     uint8_t status;
     uint8_t order;
     char description[k_max_description_length + 1];
-    feature::wired::config_t wired;
-    feature::battery::config_t battery;
-    feature::rechargeable::config_t rechargeable;
-    feature::replaceable::config_t replaceable;
-	config() : status(0), order(0), description{0} {}
+    struct {
+        feature::wired::config_t wired;
+        feature::battery::config_t battery;
+        feature::rechargeable::config_t rechargeable;
+        feature::replaceable::config_t replaceable;
+    } features;
+    uint32_t feature_flags;
+	config() : status(0), order(0), description{0}, feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -225,8 +270,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 
 namespace icd_management {
 typedef struct config {
-    feature::user_active_mode_trigger::config_t user_active_mode_trigger;
-    // Empty config for API consistency
+    struct {
+        feature::user_active_mode_trigger::config_t user_active_mode_trigger;
+    } features;
+    uint32_t feature_flags;
+    config() : feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -261,7 +309,8 @@ uint8_t get_server_cluster_count();
 namespace scenes_management {
 typedef struct config {
     uint16_t scene_table_size;
-    config() : scene_table_size(16) {}
+    uint32_t feature_flags;
+    config() : scene_table_size(16), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -270,8 +319,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace on_off {
 typedef struct config {
     bool on_off;
-    feature::lighting::config_t lighting;
-    config() : on_off(false) {}
+    struct {
+        feature::lighting::config_t lighting;
+    } features;
+    uint32_t feature_flags;
+    config() : on_off(false), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -282,8 +334,12 @@ typedef struct config {
     nullable<uint8_t> current_level;
     nullable<uint8_t> on_level;
     uint8_t options;
-    feature::lighting::config_t lighting;
-    config() : current_level(), on_level(), options(0) {}
+    struct {
+        feature::lighting::config_t lighting;
+        feature::frequency::config_t frequency;
+    } features;
+    uint32_t feature_flags;
+    config() : current_level(), on_level(), options(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -296,13 +352,16 @@ typedef struct config {
     uint8_t enhanced_color_mode;
     uint16_t color_capabilities;
     nullable<uint8_t> number_of_primaries;
-    feature::hue_saturation::config_t hue_saturation;
-    feature::color_temperature::config_t color_temperature;
-    feature::xy::config_t xy;
-    feature::enhanced_hue::config_t enhanced_hue;
-    feature::color_loop::config_t color_loop;
+    struct {
+        feature::hue_saturation::config_t hue_saturation;
+        feature::color_temperature::config_t color_temperature;
+        feature::xy::config_t xy;
+        feature::enhanced_hue::config_t enhanced_hue;
+        feature::color_loop::config_t color_loop;
+    } features;
+    uint32_t feature_flags;
     config() : color_mode(1), color_control_options(0), enhanced_color_mode(1),
-               color_capabilities(0), number_of_primaries(0) {}
+               color_capabilities(0), number_of_primaries(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -314,8 +373,15 @@ typedef struct config {
     uint8_t fan_mode_sequence;
     nullable<uint8_t> percent_setting;
     uint8_t percent_current;
+    struct {
+        feature::multi_speed::config_t multi_speed;
+        feature::rocking::config_t rocking;
+        feature::wind::config_t wind;
+        feature::airflow_direction::config_t airflow_direction;
+    } features;
+    uint32_t feature_flags;
     void *delegate;
-    config() : fan_mode(0), fan_mode_sequence(2), percent_setting(0), percent_current(0), delegate(nullptr) {}
+    config() : fan_mode(0), fan_mode_sequence(2), percent_setting(0), percent_current(0), feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -326,14 +392,17 @@ typedef struct config {
     nullable<int16_t> local_temperature;
     uint8_t control_sequence_of_operation;
     uint8_t system_mode;
-    feature::heating::config_t heating;
-    feature::cooling::config_t cooling;
-    feature::occupancy::config_t occupancy;
-    feature::setback::config_t setback;
-    feature::schedule_configuration::config_t schedule_configuration;
-    feature::auto_mode::config_t auto_mode;
-    feature::local_temperature_not_exposed::config_t local_temperature_not_exposed;
-    config() : local_temperature(), control_sequence_of_operation(4), system_mode(1) {}
+    struct {
+        feature::heating::config_t heating;
+        feature::cooling::config_t cooling;
+        feature::occupancy::config_t occupancy;
+        feature::setback::config_t setback;
+        feature::auto_mode::config_t auto_mode;
+        feature::local_temperature_not_exposed::config_t local_temperature_not_exposed;
+        feature::matter_schedule_configuration::config_t matter_schedule_configuration;
+    } features;
+    uint32_t feature_flags;
+    config() : local_temperature(), control_sequence_of_operation(4), system_mode(1), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -350,14 +419,22 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* thermostat_user_interface_configuration */
 
 namespace air_quality {
-using config_t = common::config_t;
+typedef struct config {
+    uint32_t feature_flags;
+    config() : feature_flags(0) {}
+} config_t;
+
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* air_quality */
 
 namespace hepa_filter_monitoring {
 typedef struct config {
+    struct {
+        feature::condition::config_t condition;
+    } features;
+    uint32_t feature_flags;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -365,8 +442,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace activated_carbon_filter_monitoring {
 typedef struct config {
+    struct {
+        feature::condition::config_t condition;
+    } features;
+    uint32_t feature_flags;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -375,7 +456,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace carbon_monoxide_concentration_measurement {
 typedef struct config {
     uint8_t measurement_medium;
-    config() : measurement_medium(0) {}
+    struct {
+        feature::numeric_measurement::config_t numeric_measurement;
+        feature::level_indication::config_t level_indication;
+        feature::peak_measurement::config_t peak_measurement;
+        feature::average_measurement::config_t average_measurement;
+    } features;
+    uint32_t feature_flags;
+    config() : measurement_medium(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -384,7 +472,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace carbon_dioxide_concentration_measurement {
 typedef struct config {
     uint8_t measurement_medium;
-    config() : measurement_medium(0) {}
+    struct {
+        feature::numeric_measurement::config_t numeric_measurement;
+        feature::level_indication::config_t level_indication;
+        feature::peak_measurement::config_t peak_measurement;
+        feature::average_measurement::config_t average_measurement;
+    } features;
+    uint32_t feature_flags;
+    config() : measurement_medium(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -393,7 +488,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace nitrogen_dioxide_concentration_measurement {
 typedef struct config {
     uint8_t measurement_medium;
-    config() : measurement_medium(0) {}
+    struct {
+        feature::numeric_measurement::config_t numeric_measurement;
+        feature::level_indication::config_t level_indication;
+        feature::peak_measurement::config_t peak_measurement;
+        feature::average_measurement::config_t average_measurement;
+    } features;
+    uint32_t feature_flags;
+    config() : measurement_medium(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -402,7 +504,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace ozone_concentration_measurement {
 typedef struct config {
     uint8_t measurement_medium;
-    config() : measurement_medium(0) {}
+    struct {
+        feature::numeric_measurement::config_t numeric_measurement;
+        feature::level_indication::config_t level_indication;
+        feature::peak_measurement::config_t peak_measurement;
+        feature::average_measurement::config_t average_measurement;
+    } features;
+    uint32_t feature_flags;
+    config() : measurement_medium(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -411,7 +520,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace formaldehyde_concentration_measurement {
 typedef struct config {
     uint8_t measurement_medium;
-    config() : measurement_medium(0) {}
+    struct {
+        feature::numeric_measurement::config_t numeric_measurement;
+        feature::level_indication::config_t level_indication;
+        feature::peak_measurement::config_t peak_measurement;
+        feature::average_measurement::config_t average_measurement;
+    } features;
+    uint32_t feature_flags;
+    config() : measurement_medium(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -420,7 +536,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace pm1_concentration_measurement {
 typedef struct config {
     uint8_t measurement_medium;
-    config() : measurement_medium(0) {}
+    struct {
+        feature::numeric_measurement::config_t numeric_measurement;
+        feature::level_indication::config_t level_indication;
+        feature::peak_measurement::config_t peak_measurement;
+        feature::average_measurement::config_t average_measurement;
+    } features;
+    uint32_t feature_flags;
+    config() : measurement_medium(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -429,7 +552,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace pm25_concentration_measurement {
 typedef struct config {
     uint8_t measurement_medium;
-    config() : measurement_medium(0) {}
+    struct {
+        feature::numeric_measurement::config_t numeric_measurement;
+        feature::level_indication::config_t level_indication;
+        feature::peak_measurement::config_t peak_measurement;
+        feature::average_measurement::config_t average_measurement;
+    } features;
+    uint32_t feature_flags;
+    config() : measurement_medium(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -438,7 +568,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace pm10_concentration_measurement {
 typedef struct config {
     uint8_t measurement_medium;
-    config() : measurement_medium(0) {}
+    struct {
+        feature::numeric_measurement::config_t numeric_measurement;
+        feature::level_indication::config_t level_indication;
+        feature::peak_measurement::config_t peak_measurement;
+        feature::average_measurement::config_t average_measurement;
+    } features;
+    uint32_t feature_flags;
+    config() : measurement_medium(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -447,7 +584,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace radon_concentration_measurement {
 typedef struct config {
     uint8_t measurement_medium;
-    config() : measurement_medium(0) {}
+    struct {
+        feature::numeric_measurement::config_t numeric_measurement;
+        feature::level_indication::config_t level_indication;
+        feature::peak_measurement::config_t peak_measurement;
+        feature::average_measurement::config_t average_measurement;
+    } features;
+    uint32_t feature_flags;
+    config() : measurement_medium(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -456,7 +600,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace total_volatile_organic_compounds_concentration_measurement {
 typedef struct config {
     uint8_t measurement_medium;
-    config() : measurement_medium(0) {}
+    struct {
+        feature::numeric_measurement::config_t numeric_measurement;
+        feature::level_indication::config_t level_indication;
+        feature::peak_measurement::config_t peak_measurement;
+        feature::average_measurement::config_t average_measurement;
+    } features;
+    uint32_t feature_flags;
+    config() : measurement_medium(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -483,10 +634,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace laundry_washer_controls {
 typedef struct config {
-    feature::spin::config_t spin;
-    feature::rinse::config_t rinse;
+    struct {
+        feature::spin::config_t spin;
+        feature::rinse::config_t rinse;
+    } features;
+    uint32_t feature_flags;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -522,7 +676,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* dish_washer_alarm */
 
 namespace smoke_co_alarm {
-using config_t = common::config_t;
+typedef struct config {
+    uint32_t feature_flags;
+    config() : feature_flags(0) {}
+} config_t;
+
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* smoke_co_alarm */
 
@@ -533,8 +691,15 @@ typedef struct config {
     bool actuator_enabled;
     uint8_t operating_mode;
     uint16_t supported_operating_modes;
+    struct {
+        feature::pin_credential::config_t pin_credential;
+        feature::rfid_credential::config_t rfid_credential;
+        feature::credential_over_the_air_access::config_t credential_over_the_air_access;
+        feature::user::config_t user;
+    } features;
+    uint32_t feature_flags;
     void *delegate;
-    config() : lock_state(0), lock_type(0), actuator_enabled(0), operating_mode(0), supported_operating_modes(0xFFF6), delegate(nullptr) {}
+    config() : lock_state(0), lock_type(0), actuator_enabled(0), operating_mode(0), supported_operating_modes(0xFFF6), feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -547,9 +712,16 @@ typedef struct config {
     uint8_t operational_status;
     const uint8_t end_product_type;
     uint8_t mode;
-    feature::lift::config_t lift;
+    struct {
+        feature::lift::config_t lift;
+        feature::tilt::config_t tilt;
+        feature::position_aware_lift::config_t position_aware_lift;
+        feature::absolute_position::config_t absolute_position;
+        feature::position_aware_tilt::config_t position_aware_tilt;
+    } features;
+    uint32_t feature_flags;
     void *delegate;
-    config(uint8_t end_product_type = 0) : type(0), config_status(0), operational_status(0), end_product_type(end_product_type), mode(0), delegate(nullptr) {}
+    config(uint8_t end_product_type = 0) : type(0), config_status(0), operational_status(0), end_product_type(end_product_type), mode(0), feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -559,7 +731,11 @@ namespace switch_cluster {
 typedef struct config {
     uint8_t number_of_positions;
     uint8_t current_position;
-    config() : number_of_positions(2), current_position(0) {}
+    struct {
+        feature::momentary_switch_multi_press::config_t momentary_switch_multi_press;
+    } features;
+    uint32_t feature_flags;
+    config() : number_of_positions(2), current_position(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -592,9 +768,9 @@ typedef struct config {
     uint8_t occupancy;
     uint8_t occupancy_sensor_type;
     uint8_t occupancy_sensor_type_bitmap;
-    uint32_t features;
+    uint32_t feature_flags;
     config() : occupancy(0), occupancy_sensor_type(0),
-               occupancy_sensor_type_bitmap(0), features(0) {}
+               occupancy_sensor_type_bitmap(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -611,12 +787,15 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace boolean_state_configuration {
 typedef struct config {
-    feature::visual::config_t visual;
-    feature::audible::config_t audible;
-    feature::alarm_suppress::config_t alarm_suppress;
-    feature::sensitivity_level::config_t sensitivity_level;
+    struct {
+        feature::visual::config_t visual;
+        feature::audible::config_t audible;
+        feature::alarm_suppress::config_t alarm_suppress;
+        feature::sensitivity_level::config_t sensitivity_level;
+    } features;
+    uint32_t feature_flags;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -634,8 +813,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace time_format_localization {
 typedef struct config {
     uint8_t hour_format;
-    feature::calendar_format::config_t calendar_format;
-    config() : hour_format(0) {}
+    struct {
+        feature::calendar_format::config_t calendar_format;
+    } features;
+    uint32_t feature_flags;
+    config() : hour_format(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -686,18 +868,20 @@ typedef struct config {
     nullable<int16_t> capacity;
     // Pump Settings Attributes
     uint8_t operation_mode;
-    feature::constant_pressure::config_t constant_pressure;
-    feature::compensated_pressure::config_t compensated_pressure;
-    feature::constant_flow::config_t constant_flow;
-    feature::constant_speed::config_t constant_speed;
-    feature::constant_temperature::config_t constant_temperature;
-    uint32_t features;
+    struct {
+        feature::constant_pressure::config_t constant_pressure;
+        feature::compensated_pressure::config_t compensated_pressure;
+        feature::constant_flow::config_t constant_flow;
+        feature::constant_speed::config_t constant_speed;
+        feature::constant_temperature::config_t constant_temperature;
+    } features;
+    uint32_t feature_flags;
     config(
         nullable<int16_t> max_pressure = nullable<int16_t>(),
         nullable<uint16_t> max_speed = nullable<uint16_t>(),
         nullable<uint16_t> max_flow = nullable<uint16_t>()
     ) : max_pressure(max_pressure), max_speed(max_speed), max_flow(max_flow),
-        effective_operation_mode(0), effective_control_mode(0), capacity(), operation_mode(0), features(0) {}
+        effective_operation_mode(0), effective_control_mode(0), capacity(), operation_mode(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -708,9 +892,12 @@ typedef struct config {
     char mode_select_description[k_max_mode_select_description_length + 1];
     const nullable<uint16_t> standard_namespace;
     uint8_t current_mode;
-    feature::on_off::config_t on_off;
+    struct {
+        feature::on_off::config_t on_off;
+    } features;
+    uint32_t feature_flags;
     void *delegate;
-    config() : mode_select_description{0}, standard_namespace(), current_mode(0), delegate(nullptr) {}
+    config() : mode_select_description{0}, standard_namespace(), current_mode(0), feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -718,11 +905,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 
 namespace temperature_control {
 typedef struct config {
-    feature::temperature_number::config_t temperature_number;
-    feature::temperature_level::config_t temperature_level;
-    feature::temperature_step::config_t temperature_step;
-    uint32_t features;
-    config() : features(0) {}
+    struct {
+        feature::temperature_number::config_t temperature_number;
+        feature::temperature_level::config_t temperature_level;
+        feature::temperature_step::config_t temperature_step;
+    } features;
+    uint32_t feature_flags;
+    config() : feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -781,8 +970,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace microwave_oven_control {
 typedef struct config {
+    uint32_t feature_flags;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -795,8 +985,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace keypad_input {
 typedef struct config {
+    uint32_t feature_flags;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -804,8 +995,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace power_topology {
 typedef struct config {
+    uint32_t feature_flags;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -813,8 +1005,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 
 namespace electrical_power_measurement {
 typedef struct config {
+    uint32_t feature_flags;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -822,8 +1015,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 
 namespace electrical_energy_measurement {
 typedef struct config {
+    uint32_t feature_flags;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -841,8 +1035,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace energy_evse {
 typedef struct config {
+    uint32_t feature_flags;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -854,10 +1049,13 @@ typedef struct config {
     nullable<uint32_t> default_open_duration;
     nullable<uint8_t> current_state;
     nullable<uint8_t> target_state;
-    feature::time_sync::config_t time_sync;
-    feature::level::config_t level;
+    struct {
+        feature::time_sync::config_t time_sync;
+        feature::level::config_t level;
+    } features;
+    uint32_t feature_flags;
     void *delegate;
-    config() : open_duration(), default_open_duration(), current_state(), target_state(), delegate(nullptr) {}
+    config() : open_duration(), default_open_duration(), current_state(), target_state(), feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -865,8 +1063,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 
 namespace device_energy_management {
 typedef struct config {
+    uint32_t feature_flags;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -893,8 +1092,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace thread_border_router_management {
 typedef struct config {
+    uint32_t feature_flags;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -912,8 +1112,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace service_area {
 typedef struct config {
+    uint32_t feature_flags;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -924,10 +1125,13 @@ typedef struct config {
     uint8_t heater_types;
     uint8_t heat_demand;
     uint8_t boost_state;
+    struct {
+        feature::energy_management::config_t energy_management;
+        feature::tank_percent::config_t tank_percent;
+    } features;
+    uint32_t feature_flags;
     void *delegate;
-    feature::energy_management::config_t energy_management;
-    feature::tank_percent::config_t tank_percent;
-    config() : heater_types(0), heat_demand(0), boost_state(0), delegate(nullptr) {}
+    config() : heater_types(0), heat_demand(0), boost_state(0), feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -945,10 +1149,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace energy_preference {
 typedef struct config {
-    feature::energy_balance::config_t energy_balance;
-    feature::low_power_mode_sensitivity::config_t low_power_mode_sensitivity;
+    struct {
+        feature::energy_balance::config_t energy_balance;
+        feature::low_power_mode_sensitivity::config_t low_power_mode_sensitivity;
+    } features;
+    uint32_t feature_flags;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);

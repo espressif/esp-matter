@@ -311,7 +311,7 @@ int create(uint8_t device_type_index)
         }
         case ESP_MATTER_OCCUPANCY_SENSOR: {
             esp_matter::endpoint::occupancy_sensor::config_t occupancy_sensor_config;
-            occupancy_sensor_config.occupancy_sensing.features = cluster::occupancy_sensing::feature::other::get_id();
+            occupancy_sensor_config.occupancy_sensing.feature_flags = cluster::occupancy_sensing::feature::other::get_id();
             endpoint = esp_matter::endpoint::occupancy_sensor::create(node, &occupancy_sensor_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
@@ -337,7 +337,7 @@ int create(uint8_t device_type_index)
         }
         case ESP_MATTER_PUMP: {
             esp_matter::endpoint::pump::config_t pump_config;
-            pump_config.pump_configuration_and_control.features = cluster::pump_configuration_and_control::feature::constant_pressure::get_id();
+            pump_config.pump_configuration_and_control.feature_flags = cluster::pump_configuration_and_control::feature::constant_pressure::get_id();
             endpoint = esp_matter::endpoint::pump::create(node, &pump_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }

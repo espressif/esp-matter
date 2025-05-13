@@ -1895,9 +1895,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     descriptor::feature::taglist::add(descriptor_cluster);
 
     power_source_device::add(endpoint, &config->power_source_device);
-
-    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id);
-    power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.wired);
+        
+    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id); 
+    power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.features.wired);
     electrical_sensor::add(endpoint, &config->electrical_sensor);
     electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER, electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id());
 
@@ -1937,10 +1937,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     descriptor::feature::taglist::add(descriptor_cluster);
 
     power_source_device::add(endpoint, &config->power_source_device);
-
-    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id);
-    power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.wired);
-    power_source::feature::battery::add(power_source_cluster, &config->power_source_device.power_source.battery);
+        
+    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id); 
+    power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.features.wired);
+    power_source::feature::battery::add(power_source_cluster, &config->power_source_device.power_source.features.battery);
 
     power_source::attribute::create_bat_voltage(power_source_cluster, config->bat_voltage, 0x00, 0xFFFF);
     power_source::attribute::create_bat_percent_remaining(power_source_cluster, config->bat_percent_remaining, 0, 200);
@@ -1992,9 +1992,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     descriptor::feature::taglist::add(descriptor_cluster);
 
     power_source_device::add(endpoint, &config->power_source_device);
-
-    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id);
-    power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.wired);
+        
+    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id); 
+    power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.features.wired);
 
     electrical_sensor::add(endpoint, &config->electrical_sensor);
 

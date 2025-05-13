@@ -588,6 +588,7 @@ build_managed_component_light:
 build_esp_rainmaker_apps:
     stage: build
     image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
+    # Allow failures to avoid circular dependency with any breaking changes in the Esp-Matter SDK.
     allow_failure: true
 
     tags:

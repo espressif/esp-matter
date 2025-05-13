@@ -2221,6 +2221,12 @@ attribute_t *create_ac_capacity_format(cluster_t *cluster, uint8_t value)
                                          ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint8(value));
 }
 
+attribute_t *create_preset_types(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::PresetTypes::Id, ATTRIBUTE_FLAG_NONE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
+                                         esp_matter_array(value, length, count));
+}
+
 attribute_t *create_schedule_type(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, Thermostat::Attributes::ScheduleTypes::Id, ATTRIBUTE_FLAG_NONE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
