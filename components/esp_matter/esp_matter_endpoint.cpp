@@ -74,21 +74,18 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     administrator_commissioning::create(endpoint, &(config->administrator_commissioning), CLUSTER_FLAG_SERVER);
     operational_credentials::create(endpoint, &(config->operational_credentials), CLUSTER_FLAG_SERVER);
     group_key_management::create(endpoint, CLUSTER_FLAG_SERVER);
-
 #if CHIP_CONFIG_ENABLE_ICD_SERVER
     if (icd::get_icd_server_enabled()) {
-        config->icd_management.feature_flags |=
+    cluster_t *icd_management_cluster = icd_management::create(endpoint, &(config->icd_management), CLUSTER_FLAG_SERVER);
 #if CHIP_CONFIG_ENABLE_ICD_LIT
-                               icd_management::feature::long_idle_time_support::get_id() |
+    icd_management::feature::long_idle_time_support::add(icd_management_cluster);
 #if CHIP_CONFIG_ENABLE_ICD_CIP
-                               icd_management::feature::check_in_protocol_support::get_id() |
+    icd_management::feature::check_in_protocol_support::add(icd_management_cluster);
 #endif // CHIP_CONFIG_ENABLE_ICD_CIP
 #if CHIP_CONFIG_ENABLE_ICD_UAT
-                               icd_management::feature::user_active_mode_trigger::get_id() |
+    icd_management::feature::user_active_mode_trigger::add(icd_management_cluster);
 #endif // CHIP_CONFIG_ENABLE_ICD_UAT
 #endif // CHIP_CONFIG_ENABLE_ICD_LIT
-                            0;
-    icd_management::create(endpoint, &(config->icd_management), CLUSTER_FLAG_SERVER);
     }
 #endif // CHIP_CONFIG_ENABLE_ICD_SERVER
     return ESP_OK;
@@ -223,8 +220,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
-    config->on_off.feature_flags |= on_off::feature::lighting::get_id();
-    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
+    cluster_t *on_off_cluster = on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
+    on_off::feature::lighting::add(on_off_cluster, &(config->on_off_lighting));
+    on_off::command::create_on(on_off_cluster);
+    on_off::command::create_toggle(on_off_cluster);
 
     return ESP_OK;
 }
@@ -255,11 +254,13 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
-    config->on_off.feature_flags |= on_off::feature::lighting::get_id();
-    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
-    // Set the mandatory feature flags in the config structure
-    config->level_control.feature_flags |= level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id();
-    level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER);
+    cluster_t *on_off_cluster = on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
+    on_off::feature::lighting::add(on_off_cluster, &(config->on_off_lighting));
+    on_off::command::create_on(on_off_cluster);
+    on_off::command::create_toggle(on_off_cluster);
+    cluster_t *level_control_cluster = level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER);
+    level_control::feature::on_off::add(level_control_cluster);
+    level_control::feature::lighting::add(level_control_cluster, &(config->level_control_lighting));
 
     return ESP_OK;
 }
@@ -289,14 +290,16 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
-    config->on_off.feature_flags |= on_off::feature::lighting::get_id();
-    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
-    // Set the mandatory feature flags in the config structure
-    config->level_control.feature_flags |= level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id();
-    level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER);
-    // Set the mandatory feature flags in the config structure
-    config->color_control.feature_flags |= color_control::feature::color_temperature::get_id();
-    color_control::create(endpoint, &(config->color_control), CLUSTER_FLAG_SERVER);
+    cluster_t *on_off_cluster = on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
+    on_off::feature::lighting::add(on_off_cluster, &(config->on_off_lighting));
+    on_off::command::create_on(on_off_cluster);
+    on_off::command::create_toggle(on_off_cluster);
+    cluster_t *level_control_cluster = level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER);
+    level_control::feature::on_off::add(level_control_cluster);
+    level_control::feature::lighting::add(level_control_cluster, &(config->level_control_lighting));
+    cluster_t *color_control_cluster = color_control::create(endpoint, &(config->color_control), CLUSTER_FLAG_SERVER);
+    color_control::feature::color_temperature::add(color_control_cluster, &(config->color_control_color_temperature));
+    color_control::attribute::create_remaining_time(color_control_cluster, config->color_control_remaining_time);
 
     return ESP_OK;
 }
@@ -326,14 +329,17 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
-    config->on_off.feature_flags |= on_off::feature::lighting::get_id();
-    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
-    // Set the mandatory feature flags in the config structure
-    config->level_control.feature_flags |= level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id();
-    level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER);
-    // Set the mandatory feature flags in the config structure
-    config->color_control.feature_flags |= color_control::feature::color_temperature::get_id() | color_control::feature::xy::get_id();
-    color_control::create(endpoint, &(config->color_control), CLUSTER_FLAG_SERVER);
+    cluster_t *on_off_cluster = on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
+    on_off::feature::lighting::add(on_off_cluster, &(config->on_off_lighting));
+    on_off::command::create_on(on_off_cluster);
+    on_off::command::create_toggle(on_off_cluster);
+    cluster_t *level_control_cluster = level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER);
+    level_control::feature::on_off::add(level_control_cluster);
+    level_control::feature::lighting::add(level_control_cluster, &(config->level_control_lighting));
+    cluster_t *color_control_cluster = color_control::create(endpoint, &(config->color_control), CLUSTER_FLAG_SERVER);
+    color_control::feature::color_temperature::add(color_control_cluster, &(config->color_control_color_temperature));
+    color_control::feature::xy::add(color_control_cluster, &(config->color_control_xy));
+    color_control::attribute::create_remaining_time(color_control_cluster, config->color_control_remaining_time);
     return ESP_OK;
 }
 } /* extended_color_light */
@@ -496,8 +502,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
-    config->on_off.feature_flags |= on_off::feature::lighting::get_id();
-    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
+    cluster_t *on_off_cluster = on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
+    on_off::feature::lighting::add(on_off_cluster, &(config->on_off_lighting));
+    on_off::command::create_on(on_off_cluster);
+    on_off::command::create_toggle(on_off_cluster);
 
     return ESP_OK;
 }
@@ -527,10 +535,13 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
-    config->on_off.feature_flags |= on_off::feature::lighting::get_id();
-    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
-    config->level_control.feature_flags |= level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id();
-    level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER);
+    cluster_t *on_off_cluster = on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
+    on_off::feature::lighting::add(on_off_cluster, &(config->on_off_lighting));
+    on_off::command::create_on(on_off_cluster);
+    on_off::command::create_toggle(on_off_cluster);
+    cluster_t *level_control_cluster = level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER);
+    level_control::feature::on_off::add(level_control_cluster);
+    level_control::feature::lighting::add(level_control_cluster, &(config->level_control_lighting));
 
     return ESP_OK;
 }
@@ -588,7 +599,6 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
-    config->thermostat.feature_flags |= cluster::thermostat::feature::heating::get_id();
     cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -733,7 +743,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
-    operational_state::create(endpoint, &(config->operational_state), CLUSTER_FLAG_SERVER);
+    cluster_t *operational_state_cluster = operational_state::create(endpoint, &(config->operational_state), CLUSTER_FLAG_SERVER);
+    operational_state::event::create_operation_completion(operational_state_cluster);
 
     return ESP_OK;
 }
@@ -760,7 +771,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
-    operational_state::create(endpoint, &(config->operational_state), CLUSTER_FLAG_SERVER);
+    cluster_t *operational_state_cluster = operational_state::create(endpoint, &(config->operational_state), CLUSTER_FLAG_SERVER);
+    operational_state::event::create_operation_completion(operational_state_cluster);
 
     return ESP_OK;
 }
@@ -787,7 +799,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
-    operational_state::create(endpoint, &(config->operational_state), CLUSTER_FLAG_SERVER);
+    cluster_t *operational_state_cluster = operational_state::create(endpoint, &(config->operational_state), CLUSTER_FLAG_SERVER);
+    operational_state::event::create_operation_completion(operational_state_cluster);
 
     return ESP_OK;
 }
@@ -1115,7 +1128,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /* flow_sensor */
 
-namespace pump{
+namespace pump {
 
 uint32_t get_device_type_id()
 {
@@ -1138,14 +1151,16 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     VerifyOrReturnError(err == ESP_OK, err);
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
-    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
+    cluster_t *on_off_cluster = on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
+    on_off::command::create_on(on_off_cluster);
+    on_off::command::create_toggle(on_off_cluster);
     pump_configuration_and_control::create(endpoint, &(config->pump_configuration_and_control), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
 }
 } /** pump **/
 
-namespace pump_controller{
+namespace pump_controller {
 
 uint32_t get_device_type_id()
 {
@@ -1168,8 +1183,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     VerifyOrReturnError(err == ESP_OK, err);
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
-    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_CLIENT);
-    pump_configuration_and_control::create(endpoint, &(config->pump_configuration_and_control), CLUSTER_FLAG_CLIENT);
+    on_off::create(endpoint, nullptr, CLUSTER_FLAG_CLIENT);
+    pump_configuration_and_control::create(endpoint, nullptr, CLUSTER_FLAG_CLIENT);
     binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -1206,7 +1221,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /** mode_select_device **/
 
-namespace room_air_conditioner{
+namespace room_air_conditioner {
 
 uint32_t get_device_type_id()
 {
@@ -1230,8 +1245,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     VerifyOrReturnError(err == ESP_OK, err);
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
-    config->on_off.feature_flags |= on_off::feature::dead_front_behavior::get_id();
-    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
+    cluster_t *on_off_cluster = on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
+    on_off::feature::dead_front_behavior::add(on_off_cluster);
+    on_off::command::create_on(on_off_cluster);
+    on_off::command::create_toggle(on_off_cluster);
     config->thermostat.feature_flags |= cluster::thermostat::feature::cooling::get_id();
     cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER);
 
@@ -1261,7 +1278,6 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
-    config->temperature_control.feature_flags |= temperature_control::feature::temperature_number::get_id();
     temperature_control::create(endpoint, &(config->temperature_control), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -1321,7 +1337,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
 } /** oven **/
 
-namespace robotic_vacuum_cleaner{
+namespace robotic_vacuum_cleaner {
 
 uint32_t get_device_type_id()
 {
@@ -1345,7 +1361,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     rvc_run_mode::create(endpoint, &(config->rvc_run_mode), CLUSTER_FLAG_SERVER);
-    rvc_operational_state::create(endpoint, &(config->rvc_operational_state), CLUSTER_FLAG_SERVER);
+    cluster_t *rvc_operational_state_cluster = rvc_operational_state::create(endpoint, &(config->rvc_operational_state), CLUSTER_FLAG_SERVER);
+    operational_state::event::create_operation_completion(rvc_operational_state_cluster);
 
     return ESP_OK;
 }
@@ -1373,7 +1390,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     VerifyOrReturnError(err == ESP_OK, err);
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
-    boolean_state::create(endpoint, &(config->boolean_state), CLUSTER_FLAG_SERVER);
+    cluster_t *cluster = boolean_state::create(endpoint, &(config->boolean_state), CLUSTER_FLAG_SERVER);
+    boolean_state::event::create_state_change(cluster);
 
     return ESP_OK;
 }
@@ -1401,7 +1419,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     VerifyOrReturnError(err == ESP_OK, err);
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
-    boolean_state::create(endpoint, &(config->boolean_state), CLUSTER_FLAG_SERVER);
+    cluster_t *cluster = boolean_state::create(endpoint, &(config->boolean_state), CLUSTER_FLAG_SERVER);
+    boolean_state::event::create_state_change(cluster);
 
     return ESP_OK;
 }
@@ -1430,7 +1449,6 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     cluster_t *cluster = boolean_state::create(endpoint, &(config->boolean_state), CLUSTER_FLAG_SERVER);
-
     boolean_state::event::create_state_change(cluster);
     return ESP_OK;
 }
@@ -1457,12 +1475,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
-    // Set the mandatory feature flags in the config structures
-    config->power_topology.feature_flags |= power_topology::feature::set_topology::get_id();
     power_topology::create(endpoint, &(config->power_topology), CLUSTER_FLAG_SERVER);
     
-    config->electrical_power_measurement.feature_flags |= electrical_power_measurement::feature::direct_current::get_id()
-                                                       | electrical_power_measurement::feature::alternating_current::get_id();
     electrical_power_measurement::create(endpoint, &(config->electrical_power_measurement), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -1490,6 +1504,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
+    config->temperature_control.feature_flags = cluster::temperature_control::feature::temperature_level::get_id();
     temperature_control::create(endpoint, &(config->temperature_control), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -1517,8 +1532,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
-    config->on_off.feature_flags |= on_off::feature::off_only::get_id();
-    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
+    cluster_t *cluster = on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
+    on_off::feature::off_only::add(cluster);
 
     return ESP_OK;
 }
@@ -1576,6 +1591,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     cluster_t *cluster = operational_state::create(endpoint, &(config->operational_state), CLUSTER_FLAG_SERVER);
     operational_state::attribute::create_countdown_time(cluster, 0);
+    operational_state::event::create_operation_completion(cluster);
     microwave_oven_mode::create(endpoint, &(config->microwave_oven_mode), CLUSTER_FLAG_SERVER);
     microwave_oven_control::create(endpoint, &(config->microwave_oven_control), CLUSTER_FLAG_SERVER);
 
@@ -1691,7 +1707,6 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     VerifyOrReturnError(err == ESP_OK, err);
 
     thread_network_diagnostics::create(endpoint, &(config->thread_network_diagnostics), CLUSTER_FLAG_SERVER);
-    config->thread_border_router_management.feature_flags |= thread_border_router_management::feature::pan_change::get_id();
     thread_border_router_management::create(endpoint, &(config->thread_border_router_management), CLUSTER_FLAG_SERVER);
     return ESP_OK;
 }
@@ -1749,8 +1764,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
-    config->on_off.feature_flags |= on_off::feature::lighting::get_id();
-    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
+    cluster_t *on_off_cluster = on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
+    on_off::feature::lighting::add(on_off_cluster, &(config->on_off_lighting));
+    on_off::command::create_on(on_off_cluster);
+    on_off::command::create_toggle(on_off_cluster);
 
     return ESP_OK;
 }
@@ -1781,11 +1798,13 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
-    config->on_off.feature_flags |= on_off::feature::lighting::get_id();
-    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
-    // Set the mandatory feature flags in the config structure
-    config->level_control.feature_flags |= level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id();
-    level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER);
+    cluster_t *on_off_cluster = on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
+    on_off::feature::lighting::add(on_off_cluster, &(config->on_off_lighting));
+    on_off::command::create_on(on_off_cluster);
+    on_off::command::create_toggle(on_off_cluster);
+    cluster_t *level_control_cluster = level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER);
+    level_control::feature::lighting::add(level_control_cluster, &(config->level_control_lighting));
+    level_control::feature::on_off::add(level_control_cluster);
 
     return ESP_OK;
 }
@@ -1812,7 +1831,6 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
-    config->thermostat.feature_flags |= cluster::thermostat::feature::heating::get_id();
     cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER);
     water_heater_management::create(endpoint, &(config->water_heater_management), CLUSTER_FLAG_SERVER);
     water_heater_mode::create(endpoint, &(config->water_heater_mode), CLUSTER_FLAG_SERVER);
@@ -1845,13 +1863,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *descriptor_cluster = cluster::get(endpoint, Descriptor::Id);
     descriptor::feature::taglist::add(descriptor_cluster);
 
+    config->power_source_device.power_source.feature_flags = power_source::feature::wired::get_id();
     power_source_device::add(endpoint, &config->power_source_device);
 
-    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id);
-    power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.features.wired);
     electrical_sensor::add(endpoint, &config->electrical_sensor);
-    // Set the mandatory feature flags in the config structure
-    config->electrical_energy_measurement.feature_flags |= electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id();
     electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER);
 
     cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id); 
@@ -1888,11 +1903,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *descriptor_cluster = cluster::get(endpoint, Descriptor::Id);
     descriptor::feature::taglist::add(descriptor_cluster);
 
+    config->power_source_device.power_source.feature_flags = power_source::feature::battery::get_id() | power_source::feature::wired::get_id();
     power_source_device::add(endpoint, &config->power_source_device);
 
     cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id);
-    power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.features.wired);
-    power_source::feature::battery::add(power_source_cluster, &config->power_source_device.power_source.features.battery);
 
     power_source::attribute::create_bat_voltage(power_source_cluster, config->bat_voltage, 0x00, 0xFFFF);
     power_source::attribute::create_bat_percent_remaining(power_source_cluster, config->bat_percent_remaining, 0, 200);
@@ -1904,8 +1918,6 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     power_source::attribute::create_active_bat_charge_faults(power_source_cluster, NULL, 0, 0);
 
     electrical_sensor::add(endpoint, &config->electrical_sensor);
-    // Set the mandatory feature flags in the config structure
-    config->electrical_energy_measurement.feature_flags |= electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id();
     electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER);
 
     cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id);
@@ -1945,11 +1957,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *descriptor_cluster = cluster::get(endpoint, Descriptor::Id);
     descriptor::feature::taglist::add(descriptor_cluster);
 
+    config->power_source_device.power_source.feature_flags = power_source::feature::wired::get_id();
     power_source_device::add(endpoint, &config->power_source_device);
-        
-    cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id); 
-    power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.features.wired);
 
+    config->electrical_sensor.electrical_power_measurement.feature_flags = electrical_power_measurement::feature::alternating_current::get_id();
     electrical_sensor::add(endpoint, &config->electrical_sensor);
 
     cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id);
@@ -1957,8 +1968,6 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     electrical_power_measurement::attribute::create_voltage(elec_power_measurement_cluster, config->voltage);
     electrical_power_measurement::attribute::create_active_current(elec_power_measurement_cluster, config->active_current);
 
-    // Set the mandatory feature flags in the config structure
-    config->electrical_energy_measurement.feature_flags |= electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id();
     electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER);
 
     device_energy_management::add(endpoint, &config->device_energy_management);

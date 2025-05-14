@@ -1572,7 +1572,7 @@ cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags)
     return (cluster_t *)cluster;
 }
 
-static esp_err_t destroy(cluster_t *cluster)
+esp_err_t destroy(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     _cluster_t *current_cluster = (_cluster_t *)cluster;

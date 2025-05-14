@@ -210,6 +210,7 @@ int create(uint8_t device_type_index)
         }
         case ESP_MATTER_GENERIC_SWITCH: {
             esp_matter::endpoint::generic_switch::config_t generic_switch_config;
+            generic_switch_config.switch_cluster.feature_flags = cluster::switch_cluster::feature::latching_switch::get_id();
             endpoint = esp_matter::endpoint::generic_switch::create(node, &generic_switch_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
@@ -257,6 +258,7 @@ int create(uint8_t device_type_index)
         }
         case ESP_MATTER_THERMOSTAT: {
             esp_matter::endpoint::thermostat::config_t thermostat_config;
+            thermostat_config.thermostat.feature_flags = cluster::thermostat::feature::auto_mode::get_id();
             endpoint = esp_matter::endpoint::thermostat::create(node, &thermostat_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
@@ -282,9 +284,9 @@ int create(uint8_t device_type_index)
         }
         case ESP_MATTER_WINDOW_COVERING_DEVICE: {
             esp_matter::endpoint::window_covering_device::config_t window_covering_device_config;
+            window_covering_device_config.window_covering.feature_flags = cluster::window_covering::feature::lift::get_id();
             endpoint = esp_matter::endpoint::window_covering_device::create(node, &window_covering_device_config, ENDPOINT_FLAG_NONE, NULL);
             cluster_t *cluster = cluster::get(endpoint, chip::app::Clusters::WindowCovering::Id);
-            cluster::window_covering::feature::lift::config_t lift;
             cluster::window_covering::feature::position_aware_lift::config_t position_aware_lift;
             cluster::window_covering::feature::absolute_position::config_t absolute_position;
 
@@ -294,7 +296,6 @@ int create(uint8_t device_type_index)
             position_aware_lift.target_position_lift_percent_100ths = percentage_100ths;
             position_aware_lift.current_position_lift_percent_100ths = percentage_100ths;
 
-            cluster::window_covering::feature::lift::add(cluster, &lift);
             cluster::window_covering::feature::position_aware_lift::add(cluster, &position_aware_lift);
             cluster::window_covering::feature::absolute_position::add(cluster, &absolute_position);
             break;
@@ -348,11 +349,13 @@ int create(uint8_t device_type_index)
         }
         case ESP_MATTER_RAC: {
             esp_matter::endpoint::room_air_conditioner::config_t room_air_conditioner_config;
+            room_air_conditioner_config.thermostat.feature_flags = cluster::thermostat::feature::cooling::get_id();
             endpoint = esp_matter::endpoint::room_air_conditioner::create(node, &room_air_conditioner_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
         case ESP_MATTER_TEMP_CTRL_CABINET: {
             esp_matter::endpoint::temperature_controlled_cabinet::config_t temperature_controlled_cabinet_config;
+            temperature_controlled_cabinet_config.temperature_control.feature_flags = cluster::temperature_control::feature::temperature_number::get_id();
             endpoint = esp_matter::endpoint::temperature_controlled_cabinet::create(node, &temperature_controlled_cabinet_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
@@ -361,6 +364,7 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::refrigerator::create(node, &refrigerator_config, ENDPOINT_FLAG_NONE, NULL);
 
             esp_matter::endpoint::temperature_controlled_cabinet::config_t temperature_controlled_cabinet_config;
+            temperature_controlled_cabinet_config.temperature_control.feature_flags = cluster::temperature_control::feature::temperature_number::get_id();
             esp_matter::endpoint_t *tcc_endpoint = esp_matter::endpoint::temperature_controlled_cabinet::create(node, &temperature_controlled_cabinet_config, ENDPOINT_FLAG_NONE, NULL);
 
             if (!tcc_endpoint) {
@@ -368,9 +372,6 @@ int create(uint8_t device_type_index)
                 return 1;
             }
 
-            esp_matter::cluster_t *cluster = esp_matter::cluster::get(tcc_endpoint, chip::app::Clusters::TemperatureControl::Id);
-            cluster::temperature_control::feature::temperature_number::config_t temperature_number_config;
-            cluster::temperature_control::feature::temperature_number::add(cluster, &temperature_number_config);
             break;
         }
         case ESP_MATTER_OVEN: {
@@ -378,16 +379,13 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::oven::create(node, &oven_config, ENDPOINT_FLAG_NONE, NULL);
 
             esp_matter::endpoint::temperature_controlled_cabinet::config_t temperature_controlled_cabinet_config;
+            temperature_controlled_cabinet_config.temperature_control.feature_flags = cluster::temperature_control::feature::temperature_number::get_id();
             esp_matter::endpoint_t *tcc_endpoint = esp_matter::endpoint::temperature_controlled_cabinet::create(node, &temperature_controlled_cabinet_config, ENDPOINT_FLAG_NONE, NULL);
 
             if (!tcc_endpoint) {
                 ESP_LOGE(TAG, "Matter create endpoint failed");
                 return 1;
             }
-
-            esp_matter::cluster_t *cluster = esp_matter::cluster::get(tcc_endpoint, chip::app::Clusters::TemperatureControl::Id);
-            cluster::temperature_control::feature::temperature_number::config_t temperature_number_config;
-            cluster::temperature_control::feature::temperature_number::add(cluster, &temperature_number_config);
             break;
         }
         case ESP_MATTER_AIR_PURIFIER: {
@@ -417,9 +415,11 @@ int create(uint8_t device_type_index)
         }
         case ESP_MATTER_SMOKE_CO_ALARM: {
             esp_matter::endpoint::smoke_co_alarm::config_t smoke_co_alarm_config;
+            smoke_co_alarm_config.smoke_co_alarm.feature_flags = cluster::smoke_co_alarm::feature::smoke_alarm::get_id();
             endpoint = esp_matter::endpoint::smoke_co_alarm::create(node, &smoke_co_alarm_config, ENDPOINT_FLAG_NONE, NULL);
 
             esp_matter::endpoint::power_source_device::config_t power_source_config;
+            power_source_config.power_source.feature_flags = cluster::power_source::feature::wired::get_id();
             esp_matter::endpoint_t *ps_endpoint = esp_matter::endpoint::power_source_device::create(node, &power_source_config, ENDPOINT_FLAG_NONE, NULL);
 
             if (!ps_endpoint) {
@@ -440,6 +440,7 @@ int create(uint8_t device_type_index)
         }
         case ESP_MATTER_POWER_SOURCE: {
             esp_matter::endpoint::power_source_device::config_t power_source_device_config;
+            power_source_device_config.power_source.feature_flags = esp_matter::cluster::power_source::feature::wired::get_id();
             endpoint = esp_matter::endpoint::power_source_device::create(node, &power_source_device_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
@@ -450,6 +451,8 @@ int create(uint8_t device_type_index)
         }
         case ESP_MATTER_ELECTRICAL_SENSOR: {
             esp_matter::endpoint::electrical_sensor::config_t electrical_sensor_config;
+            electrical_sensor_config.power_topology.feature_flags = esp_matter::cluster::power_topology::feature::node_topology::get_id();
+            electrical_sensor_config.electrical_power_measurement.feature_flags = esp_matter::cluster::electrical_power_measurement::feature::direct_current::get_id();
             endpoint = esp_matter::endpoint::electrical_sensor::create(node, &electrical_sensor_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
@@ -533,6 +536,7 @@ int create(uint8_t device_type_index)
         }
         case ESP_MATTER_WATER_HEATER: {
             esp_matter::endpoint::water_heater::config_t water_heater_config;
+            water_heater_config.thermostat.feature_flags = cluster::thermostat::feature::heating::get_id();
             endpoint = esp_matter::endpoint::water_heater::create(node, &water_heater_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }

@@ -796,8 +796,7 @@ Additional clusters can also be added to an endpoint. Examples:
    ::
 
       on_off::config_t on_off_config;
-      on_off_config.feature_flags = on_off::feature::lighting::get_id();
-      cluster_t *cluster = on_off::create(endpoint, &on_off_config, CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
+      cluster_t *cluster = on_off::create(endpoint, &on_off_config, CLUSTER_FLAG_SERVER);
 
 -  temperature_measurement:
 
@@ -811,6 +810,7 @@ Additional clusters can also be added to an endpoint. Examples:
       ::
 
          window_covering::config_t window_covering_config(static_cast<uint8_t>(chip::app::Clusters::WindowCovering::EndProductType::kTiltOnlyInteriorBlind));
+         window_covering_config.feature_flags = window_covering::feature::lift::get_id();
          cluster_t *cluster = window_covering::create(endpoint, &window_covering_config, CLUSTER_FLAG_SERVER);
 
    The ``window_covering`` ``config_t`` structure includes a constructor that allows specifying
@@ -822,6 +822,7 @@ Additional clusters can also be added to an endpoint. Examples:
    ::
 
       pump_configuration_and_control::config_t pump_configuration_and_control_config(1, 10, 20);
+      pump_configuration_and_control_config..feature_flags = pump_configuration_and_control::feature::constant_pressure::get_id();
       cluster_t *cluster = pump_configuration_and_control::create(endpoint, &pump_configuration_and_control_config, CLUSTER_FLAG_SERVER);
 
    The ``pump_configuration_and_control`` ``config_t`` structure includes a constructor that allows specifying
@@ -862,6 +863,28 @@ Examples:
 
 2.5.2.4 Features
 ^^^^^^^^^^^^^^^^^^
+Mandatory features for a device type or endpoint can be configured at endpoint level.
+
+- feature: lighting: On/Off cluster:
+
+  ::
+
+      extended_color_light::config_t light_config;
+      light_config.on_off_lighting.start_up_on_off = nullptr;
+      endpoint_t *endpoint = extended_color_light::create(node, &light_config, ENDPOINT_FLAG_NONE, nullptr);
+
+Few of some mandatory feature for a cluster (i.e. cluster having O.a/O.a+ feature conformance) can be configured at cluster level.
+For example: Thermostat cluster has O.a+ conformance for Heating and Cooling features, that means at least one of them should be present on the thermostat cluster while creating it.
+
+- feature: heating: Thermostat cluster:
+
+  ::
+
+      thermostat::config_t thermostat_config;
+      thermostat_config.features.heating.occupied_heating_setpoint = 2200;
+      thermostat_config.feature_flags = thermostat::feature::heating::get_id();
+      cluster::thermostat::create(endpoint, &(config->thermostat_config), CLUSTER_FLAG_SERVER);
+      
 Optional features which are applicable to a cluster can also be added.
 
 - feature: taglist: Descriptor cluster:

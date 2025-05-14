@@ -1,4 +1,4 @@
-# 13-May-2025
+# 10-June-2025
 
 API Change.
 Removed the `features` parameter from the `cluster::create()` API to make it consistent across all clusters.
@@ -6,6 +6,9 @@ The new API signature is:
 ```
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 ```
+For clusters with `O.a/O.a+` features conformance, the `feature_flags` is available at cluster level.
+For device types with `M` feature conformance of a cluster, the feature config is available at device type level.
+For clusters with `O` feature conformance, feature should be added using `feature_name::add()` API in the application.
 
 # 3-Feb-2024
 

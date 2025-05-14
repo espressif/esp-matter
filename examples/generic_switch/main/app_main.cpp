@@ -134,6 +134,15 @@ static esp_err_t create_button(struct gpio_button* button, node_t* node)
 
     /* Create a new endpoint. */
     generic_switch::config_t switch_config;
+    switch_config.switch_cluster.feature_flags = 
+#if CONFIG_GENERIC_SWITCH_TYPE_LATCHING
+    cluster::switch_cluster::feature::latching_switch::get_id();
+#endif
+
+#if CONFIG_GENERIC_SWITCH_TYPE_MOMENTARY
+    cluster::switch_cluster::feature::momentary_switch::get_id();
+#endif
+
     endpoint_t *endpoint = generic_switch::create(node, &switch_config, ENDPOINT_FLAG_NONE, button_handle);
 
     cluster_t* descriptor = cluster::get(endpoint,Descriptor::Id);
@@ -173,12 +182,7 @@ static esp_err_t create_button(struct gpio_button* button, node_t* node)
     /* Add additional features to the node */
     cluster_t *cluster = cluster::get(endpoint, Switch::Id);
 
-#if CONFIG_GENERIC_SWITCH_TYPE_LATCHING
-    cluster::switch_cluster::feature::latching_switch::add(cluster);
-#endif
-
 #if CONFIG_GENERIC_SWITCH_TYPE_MOMENTARY
-    cluster::switch_cluster::feature::momentary_switch::add(cluster);
     cluster::switch_cluster::feature::action_switch::add(cluster);
     cluster::switch_cluster::feature::momentary_switch_multi_press::config_t msm;
     msm.multi_press_max = 5;
