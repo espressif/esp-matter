@@ -1806,8 +1806,6 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
         VerifyOrReturnError(endpoint_type, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "endpoint %" PRIu16 "'s endpoint_type is NULL", current_endpoint->endpoint_id));
         int cluster_count = endpoint_type->clusterCount;
         for (int cluster_index = 0; cluster_index < cluster_count; cluster_index++) {
-            /* Free attributes */
-            esp_matter_mem_free((void *)endpoint_type->cluster[cluster_index].attributes);
             /* Free commands */
             if (endpoint_type->cluster[cluster_index].acceptedCommandList) {
                 esp_matter_mem_free((void *)endpoint_type->cluster[cluster_index].acceptedCommandList);
