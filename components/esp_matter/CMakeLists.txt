@@ -36,6 +36,10 @@ endif()
 
 set(REQUIRES_LIST       chip bt esp_matter_console nvs_flash app_update esp_secure_cert_mgr mbedtls esp_system openthread json)
 
+if ("${IDF_VERSION_MAJOR}.${IDF_VERSION_MINOR}" VERSION_GREATER_EQUAL "5.0")
+    list(APPEND REQUIRES_LIST esp_rcp_update)
+endif()
+
 idf_component_register( SRC_DIRS        ${SRC_DIRS_LIST}
                         INCLUDE_DIRS    ${INCLUDE_DIRS_LIST}
                         EXCLUDE_SRCS    ${EXCLUDE_SRCS_LIST}
