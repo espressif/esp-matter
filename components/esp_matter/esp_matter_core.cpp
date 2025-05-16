@@ -16,6 +16,7 @@
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_core.h>
+#include <esp_matter_icd_configuration.h>
 #include <esp_matter_test_event_trigger.h>
 #include <nvs.h>
 
@@ -782,6 +783,20 @@ static void esp_matter_chip_init_task(intptr_t context)
     if (GetDiagnosticDataProvider().GetBootReason(bootReason) == CHIP_NO_ERROR) {
         chip::app::Clusters::GeneralDiagnosticsServer::Instance().OnDeviceReboot(bootReason);
     }
+
+#if CHIP_CONFIG_ENABLE_ICD_SERVER
+    if (!icd::get_icd_server_enabled()) {
+        // ICD server has been initialized in chip::Server::GetInstance().Init(). disable it here if
+        // icd_server_enabled is set to false.
+        chip::app::InteractionModelEngine::GetInstance()->SetICDManager(nullptr);
+        chip::app::DnssdServer::Instance().SetICDManager(nullptr);
+        chip::TestEventTriggerDelegate *test_event_trigger = chip::Server::GetInstance().GetTestEventTriggerDelegate();
+        if (test_event_trigger) {
+            test_event_trigger->RemoveHandler(&chip::Server::GetInstance().GetICDManager());
+        }
+        chip::Server::GetInstance().GetICDManager().Shutdown();
+    }
+#endif // CHIP_CONFIG_ENABLE_ICD_SERVER
     PlatformMgr().ScheduleWork(deinit_ble_if_commissioned, reinterpret_cast<intptr_t>(nullptr));
     xTaskNotifyGive(task_to_notify);
 }
@@ -827,8 +842,13 @@ static esp_err_t init_thread_stack_and_start_thread_task()
     VerifyOrReturnError(ThreadStackMgr().InitThreadStack() == CHIP_NO_ERROR, ESP_FAIL,
                         ESP_LOGE(TAG, "Failed to initialize Thread stack"));
 #if CHIP_CONFIG_ENABLE_ICD_SERVER
-    VerifyOrReturnError(ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_SleepyEndDevice) == CHIP_NO_ERROR,
-                        ESP_FAIL, ESP_LOGE(TAG, "Failed to set the Thread device type"));
+    if (icd::get_icd_server_enabled()) {
+        VerifyOrReturnError(ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_SleepyEndDevice) == CHIP_NO_ERROR,
+                            ESP_FAIL, ESP_LOGE(TAG, "Failed to set the Thread device type"));
+    } else {
+        VerifyOrReturnError(ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_MinimalEndDevice) == CHIP_NO_ERROR,
+                            ESP_FAIL, ESP_LOGE(TAG, "Failed to set the Thread device type"));
+    }
 
 #elif CHIP_DEVICE_CONFIG_THREAD_FTD
     VerifyOrReturnError(ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_Router) == CHIP_NO_ERROR,
