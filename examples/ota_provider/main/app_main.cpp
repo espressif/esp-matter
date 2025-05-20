@@ -16,7 +16,8 @@
 
 #include <app_reset.h>
 
-#include <app/clusters/ota-provider/ota-provider.h>
+#include <app/clusters/ota-provider/ota-provider-cluster.h>
+#include <app/clusters/ota-provider/CodegenIntegration.h>
 #include <app/server/Server.h>
 #include <credentials/FabricTable.h>
 

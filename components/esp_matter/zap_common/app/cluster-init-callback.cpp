@@ -187,6 +187,12 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
     case app::Clusters::IlluminanceMeasurement::Id:
         emberAfIlluminanceMeasurementClusterInitCallback(endpoint);
         break;
+    case app::Clusters::JointFabricAdministrator::Id:
+        emberAfJointFabricAdministratorClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::JointFabricDatastore::Id:
+        emberAfJointFabricDatastoreClusterInitCallback(endpoint);
+        break;
     case app::Clusters::KeypadInput::Id:
         emberAfKeypadInputClusterInitCallback(endpoint);
         break;
@@ -336,6 +342,9 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
         break;
     case app::Clusters::SoftwareDiagnostics::Id:
         emberAfSoftwareDiagnosticsClusterInitCallback(endpoint);
+        break;
+    case app::Clusters::SoilMeasurement::Id:
+        emberAfSoilMeasurementClusterInitCallback(endpoint);
         break;
     case app::Clusters::Switch::Id:
         emberAfSwitchClusterInitCallback(endpoint);
