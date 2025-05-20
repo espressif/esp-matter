@@ -623,7 +623,7 @@ namespace auto_mode {
 typedef struct config {
    int8_t min_setpoint_dead_band;
 
-   config (): min_setpoint_dead_band(25) {}
+   config (): min_setpoint_dead_band(2) {}
 } config_t;
 
 uint32_t get_id();
