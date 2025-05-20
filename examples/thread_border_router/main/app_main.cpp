@@ -15,6 +15,7 @@
 
 #include <esp_matter.h>
 #include <esp_matter_console.h>
+#include <esp_matter_feature.h>
 
 #include <app_reset.h>
 #include <esp_ot_config.h>
@@ -81,6 +82,7 @@ extern "C" void app_main()
     }
     thread_border_router::config_t tbr_config;
     tbr_config.thread_border_router_management.delegate = delegate;
+    tbr_config.thread_border_router_management.feature_flags = cluster::thread_border_router_management::feature::pan_change::get_id();
     endpoint_t *tbr_endpoint = thread_border_router::create(node, &tbr_config, ENDPOINT_FLAG_NONE, NULL);
     if (!node || !tbr_endpoint) {
         ESP_LOGE(TAG, "Failed to create data model");
