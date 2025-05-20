@@ -145,6 +145,28 @@ node_t *get();
  */
 esp_err_t destroy();
 
+/** Get the endpoint count for a server cluster
+ *
+ * Get the number of endpoints that have the given cluster ID as a server cluster.
+ *
+ * @param[in] cluster_id Cluster ID.
+ *
+ * @return Endpoint count on success.
+ * @return 0 in case of failure or if not found on any endpoint.
+ */
+
+uint32_t get_server_cluster_endpoint_count(uint32_t cluster_id);
+
+/** Get the endpoint count for a client cluster
+ *
+ * Get the number of endpoints that have the given cluster ID as a client cluster.
+ *
+ * @param[in] cluster_id Cluster ID.
+ *
+ * @return Endpoint count on success.
+ * @return 0 in case of failure or if not found on any endpoint.
+ */
+uint32_t get_client_cluster_endpoint_count(uint32_t cluster_id);
 } /* node */
 
 namespace endpoint {
