@@ -28,13 +28,16 @@
 #include <device_types.h>
 #include <app/clusters/fan-control-server/fan-control-delegate.h>
 #include <app/clusters/fan-control-server/fan-control-server.h>
+#include "electrical_measurement/electrical_measurement.h"
+
+// External variables for electrical sensor initialization
+bool g_electrical_sensor_created = false;
 
 #ifdef CONFIG_OPENTHREAD_BORDER_ROUTER
 #include <platform/KvsPersistentStorageDelegate.h>
 #include <platform/OpenThread/GenericThreadBorderRouterDelegate.h>
 using chip::app::Clusters::ThreadBorderRouterManagement::GenericOpenThreadBorderRouterDelegate;
 #endif // CONFIG_OPENTHREAD_BORDER_ROUTER
-
 
 using namespace esp_matter;
 
@@ -451,8 +454,34 @@ int create(uint8_t device_type_index)
         case ESP_MATTER_ELECTRICAL_SENSOR: {
             esp_matter::endpoint::electrical_sensor::config_t electrical_sensor_config;
             endpoint = esp_matter::endpoint::electrical_sensor::create(node, &electrical_sensor_config, ENDPOINT_FLAG_NONE, NULL);
+
+            if (endpoint) {
+                // Add the ElectricalEnergyMeasurement cluster with both imported and exported energy features
+                esp_matter::cluster_t *energy_cluster = esp_matter::cluster::electrical_energy_measurement::create( endpoint, NULL,
+                    CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
+
+                if (!energy_cluster) {
+                    ESP_LOGE(TAG, "Failed to create electrical energy measurement cluster");
+                } else {
+                    esp_matter::cluster::electrical_energy_measurement::feature::imported_energy::add(energy_cluster);
+                    esp_matter::cluster::electrical_energy_measurement::feature::exported_energy::add(energy_cluster);
+                    esp_matter::cluster::electrical_energy_measurement::feature::cumulative_energy::add(energy_cluster);
+                    esp_matter::cluster::electrical_energy_measurement::feature::periodic_energy::add(energy_cluster);
+                }
+                esp_matter::cluster_t *power_cluster = esp_matter::cluster::get(endpoint, chip::app::Clusters::ElectricalPowerMeasurement::Id);
+                if (power_cluster) {
+                    esp_matter::cluster::electrical_power_measurement::attribute::create_voltage(power_cluster, NULL);
+                    esp_matter::cluster::electrical_power_measurement::attribute::create_active_current(power_cluster, NULL);
+                    esp_matter::cluster::electrical_power_measurement::feature::direct_current::add(power_cluster);
+                    esp_matter::cluster::electrical_power_measurement::feature::alternating_current::add(power_cluster);
+                }
+                if (power_cluster && energy_cluster) {
+                    g_electrical_sensor_created = true;
+                    app_endpoint_id = endpoint::get_id(endpoint);
+                }
+            }
             break;
-        }
+        } 
         case ESP_MATTER_COOKTOP: {
             esp_matter::endpoint::cooktop::config_t cooktop_config;
             endpoint = esp_matter::endpoint::cooktop::create(node, &cooktop_config, ENDPOINT_FLAG_NONE, NULL);

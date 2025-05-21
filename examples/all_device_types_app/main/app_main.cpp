@@ -16,6 +16,7 @@
 
 #include <esp_matter.h>
 #include <esp_matter_console.h>
+#include "electrical_measurement/electrical_measurement.h"
 
 #include <common_macros.h>
 #include <log_heap_numbers.h>
@@ -36,6 +37,12 @@
 #include <esp_openthread_border_router.h>
 #include <esp_openthread_lock.h>
 #endif
+
+#include <lib/support/CHIPMem.h>
+#include <platform/CHIPDeviceLayer.h>
+
+// External variables for electrical sensor initialization
+extern bool g_electrical_sensor_created;
 
 static const char *TAG = "app_main";
 
@@ -171,6 +178,16 @@ static esp_err_t app_attribute_update_cb(attribute::callback_type_t type, uint16
     return err;
 }
 
+// Handler function for scheduled electrical measurement work
+static void ElectricalMeasurementWorkHandler(intptr_t context)
+{
+    uint16_t endpoint_id = app_endpoint_id;
+    esp_err_t err = electrical_measurement_example(endpoint_id);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to initialize electrical measurement clusters: %d", err);
+    }
+}
+
 extern "C" void app_main()
 {
     esp_err_t err = ESP_OK;
@@ -220,13 +237,18 @@ extern "C" void app_main()
 #endif
 
     /* Matter start */
-     err = esp_matter::start(app_event_cb);
-     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
-     if (err != ESP_OK) {
-         ESP_LOGE(TAG, "Matter start failed: %d", err);
-     }
+    err = esp_matter::start(app_event_cb);
+    ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Matter start failed: %d", err);
+    }
 
     MEMORY_PROFILER_DUMP_HEAP_STAT("matter started");
+    // Initialize electrical measurement clusters if electrical sensor was created
+    if (g_electrical_sensor_created) {
+        ESP_LOGI(TAG, "Initializing electrical measurement clusters for endpoint %d", app_endpoint_id);
+        chip::DeviceLayer::PlatformMgr().ScheduleWork(ElectricalMeasurementWorkHandler, reinterpret_cast<intptr_t>(nullptr));
+    }
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter::console::diagnostics_register_commands();
