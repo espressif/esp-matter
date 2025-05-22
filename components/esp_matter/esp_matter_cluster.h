@@ -79,7 +79,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* descriptor */
 
 namespace actions {
-using config_t = common::config_t;
+typedef struct config {
+    void *delegate;
+    config() : delegate(nullptr) {}
+} config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* actions */
 
@@ -106,7 +109,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* binding */
 
 namespace ota_provider {
-using config_t = common::config_t;
+typedef struct config {
+    void *delegate;
+    config() : delegate(nullptr) {}
+} config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* ota_provider */
 
@@ -150,7 +156,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* network_commissioning */
 
 namespace diagnostic_logs {
-using config_t = common::config_t;
+typedef struct config {
+    void *delegate;
+    config() : delegate(nullptr) {}
+} config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* diagnostic_logs */
 
@@ -392,6 +401,7 @@ typedef struct config {
     nullable<int16_t> local_temperature;
     uint8_t control_sequence_of_operation;
     uint8_t system_mode;
+    void *delegate;
     struct {
         feature::heating::config_t heating;
         feature::cooling::config_t cooling;
@@ -402,7 +412,7 @@ typedef struct config {
         feature::matter_schedule_configuration::config_t matter_schedule_configuration;
     } features;
     uint32_t feature_flags;
-    config() : local_temperature(), control_sequence_of_operation(4), system_mode(1), feature_flags(0) {}
+    config() : local_temperature(), control_sequence_of_operation(4), system_mode(1), delegate(nullptr), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);

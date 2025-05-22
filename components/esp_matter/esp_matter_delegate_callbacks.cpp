@@ -41,6 +41,11 @@
 #include <app/clusters/water-heater-management-server/water-heater-management-server.h>
 #include <app/clusters/energy-preference-server/energy-preference-server.h>
 #include <app/clusters/commissioner-control-server/commissioner-control-server.h>
+#include <app/clusters/actions-server/actions-server.h>
+#include <app/clusters/thermostat-server/thermostat-server.h>
+#include <app/clusters/ota-provider/ota-provider-cluster.h>
+#include <app/clusters/ota-provider/CodegenIntegration.h>
+#include <app/clusters/diagnostic-logs-server/diagnostic-logs-server.h>
 
 using namespace chip::app::Clusters;
 namespace esp_matter {
@@ -352,6 +357,36 @@ void CommissionerControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
     commissioner_control_instance =
         new CommissionerControl::CommissionerControlServer(commissioner_control_delegate, endpoint_id);
     commissioner_control_instance->Init();
+}
+
+void ActionsDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    static Actions::ActionsServer *actionsServer = nullptr;
+    Actions::Delegate *actions_delegate = static_cast<Actions::Delegate*>(delegate);
+    actionsServer = new Actions::ActionsServer(endpoint_id, *actions_delegate);
+    actionsServer->Init();
+}
+
+
+void ThermostatDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    Thermostat::Delegate *thermostat_delegate = static_cast<Thermostat::Delegate*>(delegate);
+    Thermostat::SetDefaultDelegate(endpoint_id, thermostat_delegate);
+}
+
+void OtaProviderDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    chip::app::Clusters::OTAProvider::SetDelegate(endpoint_id, static_cast<chip::app::Clusters::OTAProviderDelegate *>(delegate));
+}
+
+void DiagnosticLogsDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    DiagnosticLogs::DiagnosticLogsProviderDelegate *diagnostic_logs_delegate = static_cast<DiagnosticLogs::DiagnosticLogsProviderDelegate*>(delegate);
+    DiagnosticLogs::DiagnosticLogsServer::Instance().SetDiagnosticLogsProviderDelegate(endpoint_id, diagnostic_logs_delegate);
 }
 
 } // namespace delegate_cb

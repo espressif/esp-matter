@@ -159,6 +159,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Actions::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = ActionsDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
         set_plugin_server_init_callback(cluster, NULL);
         add_function_list(cluster, function_list, function_flags);
 
@@ -308,6 +312,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OtaSoftwareUpdateProvider::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = OtaProviderDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
         static const auto plugin_server_init_cb = CALL_ONCE(MatterOtaSoftwareUpdateProviderPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
@@ -1385,6 +1393,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Thermostat::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = ThermostatDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
         static const auto plugin_server_init_cb = CALL_ONCE(MatterThermostatPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         set_add_bounds_callback(cluster, thermostat::add_bounds_cb);
@@ -3010,6 +3022,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     cluster_t *cluster = cluster::create(endpoint, DiagnosticLogs::Id, flags);
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        if (config -> delegate != nullptr) {
+            static const auto delegate_init_cb = DiagnosticLogsDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
         static const auto plugin_server_init_cb = CALL_ONCE(MatterDiagnosticLogsPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
