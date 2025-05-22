@@ -27,7 +27,7 @@ on:
 
 env:
   DOCKERHUB_REPO: ${{ github.repository }}
-  REQUIRED_IDF_VERSION: v5.2.3
+  REQUIRED_IDF_VERSION: v5.4.1
 
 jobs:
   build:
