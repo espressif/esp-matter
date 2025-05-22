@@ -370,7 +370,7 @@ static esp_err_t custom_cluster_create()
     /* Create custom rainmaker cluster */
     cluster_t *cluster = esp_matter::cluster::create(endpoint, cluster::rainmaker::Id, CLUSTER_FLAG_SERVER);
     VerifyOrReturnError(cluster != NULL, ESP_FAIL,
-                            ESP_LOGE(TAG, "Failed to create rainmaker cluster, id:0x%x", cluster::rainmaker::Id));
+                            ESP_LOGE(TAG, "Failed to create rainmaker cluster, id:0x%" PRIX32, cluster::rainmaker::Id));
 
     // global attributes
     cluster::global::attribute::create_cluster_revision(cluster, RAINMAKER_CLUSTER_REVISION);
