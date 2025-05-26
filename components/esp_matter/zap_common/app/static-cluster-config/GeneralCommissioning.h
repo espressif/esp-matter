@@ -1,4 +1,4 @@
-// Application configuration for OTA Software Update Provider based on EMBER configuration
+// Application configuration for General Commissioning based on EMBER configuration
 #pragma once
 
 #include <app-common/zap-generated/cluster-enums.h>
@@ -9,7 +9,7 @@
 namespace chip {
 namespace app {
 namespace Clusters {
-namespace OtaSoftwareUpdateProvider {
+namespace GeneralCommissioning {
 namespace StaticApplicationConfig {
 
 using FeatureBitmapType = Clusters::StaticApplicationConfig::NoFeatureFlagsDefined;
@@ -17,7 +17,7 @@ using FeatureBitmapType = Clusters::StaticApplicationConfig::NoFeatureFlagsDefin
 inline constexpr std::array<Clusters::StaticApplicationConfig::ClusterConfiguration<FeatureBitmapType>, 0> kFixedClusterConfig = { };
 
 } // namespace StaticApplicationConfig
-} // namespace OtaSoftwareUpdateProvider
+} // namespace GeneralCommissioning
 } // namespace Clusters
 } // namespace app
 } // namespace chip
