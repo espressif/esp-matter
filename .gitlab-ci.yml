@@ -61,16 +61,6 @@ variables:
       time rsync -a ~/.espressif/dist/ ${MATTER_CACHE_DIR}/espressif_dist/ || true
     fi
 
-.setup_ot_br: &setup_ot_br
-  - cd ${CI_PROJECT_DIR}
-  - apt-get update
-  - apt-get install -y openssh-client
-  - git clone ${ESP_THREAD_BR_REPO_URL}
-  - cd ${BR_PATH}/examples/basic_thread_border_router
-  - git checkout v1.1
-  - idf.py set-target esp32s3
-  - idf.py build
-
 .setup_ot_rcp: &setup_ot_rcp
   - cd ${IDF_PATH}
   - ./install.sh
@@ -317,16 +307,15 @@ build_esp_matter_examples_pytest_H2_idf_v5_1:
       - "${IDF_PATH}/examples/openthread/ot_rcp/build/bootloader/*.bin"
       - "${IDF_PATH}/examples/openthread/ot_rcp/build/config/sdkconfig.json"
       - "${IDF_PATH}/examples/openthread/ot_rcp/build/flasher_args.json"
-      - "${BR_PATH}/examples/basic_thread_border_router/build/*.bin"
-      - "${BR_PATH}/examples/basic_thread_border_router/build/partition_table/*.bin"
-      - "${BR_PATH}/examples/basic_thread_border_router/build/bootloader/*.bin"
-      - "${BR_PATH}/examples/basic_thread_border_router/build/config/sdkconfig.json"
-      - "${BR_PATH}/examples/basic_thread_border_router/build/flasher_args.json"
     when: always
     expire_in: 15 days
   script:
     - *setup_ot_rcp
-    - *setup_ot_br
+    - cd ${ESP_MATTER_PATH}/examples/thread_border_router
+    - touch main/MatterProjConfig.h
+    # Use different discriminators for TBR and light examples
+    - echo "#define CHIP_DEVICE_CONFIG_USE_TEST_SETUP_DISCRIMINATOR 0xE00" >> main/MatterProjConfig.h
+    - echo "CONFIG_CHIP_PROJECT_CONFIG=\"main/MatterProjConfig.h\"" >> sdkconfig.defaults
     - cd ${ESP_MATTER_PATH}/examples/light
     - echo "CONFIG_ENABLE_MEMORY_PROFILING=y" >> sdkconfig.defaults
     - cd ${ESP_MATTER_PATH}
