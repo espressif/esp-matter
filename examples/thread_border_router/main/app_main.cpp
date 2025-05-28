@@ -72,15 +72,11 @@ extern "C" void app_main()
     static chip::KvsPersistentStorageDelegate tbr_storage_delegate;
     chip::DeviceLayer::PersistedStorage::KeyValueStoreManager & kvsManager = chip::DeviceLayer::PersistedStorage::KeyValueStoreMgr();
     tbr_storage_delegate.Init(&kvsManager);
-    GenericOpenThreadBorderRouterDelegate *delegate = chip::Platform::New<GenericOpenThreadBorderRouterDelegate>(&tbr_storage_delegate);
+    static GenericOpenThreadBorderRouterDelegate delegate(&tbr_storage_delegate);
     char threadBRName[] = "Espressif-ThreadBR";
-    delegate->SetThreadBorderRouterName(chip::CharSpan(threadBRName));
-    if (!delegate) {
-        ESP_LOGE(TAG, "Failed to create thread_border_router delegate");
-        return;
-    }
+    delegate.SetThreadBorderRouterName(chip::CharSpan(threadBRName));
     thread_border_router::config_t tbr_config;
-    tbr_config.thread_border_router_management.delegate = delegate;
+    tbr_config.thread_border_router_management.delegate = &delegate;
     endpoint_t *tbr_endpoint = thread_border_router::create(node, &tbr_config, ENDPOINT_FLAG_NONE, NULL);
     if (!node || !tbr_endpoint) {
         ESP_LOGE(TAG, "Failed to create data model");
