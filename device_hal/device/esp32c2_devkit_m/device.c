@@ -28,6 +28,7 @@ led_driver_config_t led_driver_get_config()
     led_driver_config_t config = {
         .gpio = LED_GPIO_PIN,
         .channel = LED_CHANNEL,
+        .output_invert = 1,
     };
     return config;
 }

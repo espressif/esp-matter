@@ -23,6 +23,7 @@ extern "C" {
 typedef struct {
     int gpio;
     int channel;
+    bool output_invert;
 } led_driver_config_t;
 
 typedef void *led_driver_handle_t;
