@@ -15,6 +15,7 @@
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_endpoint.h>
+#include <esp_matter_icd_configuration.h>
 
 static const char *TAG = "esp_matter_endpoint";
 
@@ -76,17 +77,19 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     group_key_management::create(endpoint, CLUSTER_FLAG_SERVER);
 
 #if CHIP_CONFIG_ENABLE_ICD_SERVER
-    icd_management::create(endpoint, &(config->icd_management), CLUSTER_FLAG_SERVER,
+    if (icd::get_icd_server_enabled()) {
+        icd_management::create(endpoint, &(config->icd_management), CLUSTER_FLAG_SERVER,
 #if CHIP_CONFIG_ENABLE_ICD_LIT
-                           icd_management::feature::long_idle_time_support::get_id() |
+                               icd_management::feature::long_idle_time_support::get_id() |
 #if CHIP_CONFIG_ENABLE_ICD_CIP
-                           icd_management::feature::check_in_protocol_support::get_id() |
+                               icd_management::feature::check_in_protocol_support::get_id() |
 #endif // CHIP_CONFIG_ENABLE_ICD_CIP
 #if CHIP_CONFIG_ENABLE_ICD_UAT
-                           icd_management::feature::user_active_mode_trigger::get_id() |
+                               icd_management::feature::user_active_mode_trigger::get_id() |
 #endif // CHIP_CONFIG_ENABLE_ICD_UAT
 #endif // CHIP_CONFIG_ENABLE_ICD_LIT
                             0);
+    }
 #endif // CHIP_CONFIG_ENABLE_ICD_SERVER
     return ESP_OK;
 }
