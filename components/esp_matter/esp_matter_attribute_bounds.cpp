@@ -526,8 +526,8 @@ void add_bounds_cb(cluster_t *cluster)
                 break;
             }
             case Thermostat::Attributes::MinSetpointDeadBand::Id: {
-                int16_t min = 0, max = 1270;
-                esp_matter::attribute::add_bounds(current_attribute, esp_matter_int16(min), esp_matter_int16(max));
+                int8_t min = 0, max = 127;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_int8(min), esp_matter_int8(max));
                 break;
             }
             case Thermostat::Attributes::ControlSequenceOfOperation::Id: {
