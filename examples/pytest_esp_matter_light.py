@@ -15,7 +15,8 @@ import yaml
 
 CURRENT_DIR_LIGHT = str(pathlib.Path(__file__).parent)+'/light'
 CHIP_TOOL_EXE = str(pathlib.Path(__file__).parent)+ '/../connectedhomeip/connectedhomeip/out/host/chip-tool'
-OT_BR_EXAMPLE_PATH = str(pathlib.Path(__file__).parent)+'/../esp-thread-br/examples/basic_thread_border_router'
+OT_BR_EXAMPLE_PATH = str(pathlib.Path(__file__).parent)+'/thread_border_router'
+OT_DATASET_HEXSTR = '0e08000000000001000035060004001fffe00708fdb824be22185de50c0402a0f7f8051020112014020519772011201402051977030d41706f6c6c6f6e54687265616404101fefc90ee1637d47ca75f87ec24f9403000300000f0208201120140205197701022201'
 pytest_build_dir = CURRENT_DIR_LIGHT
 pytest_matter_thread_dir = CURRENT_DIR_LIGHT+'|'+OT_BR_EXAMPLE_PATH
 
@@ -227,7 +228,7 @@ def fixture_Init_interface() -> bool:
 @pytest.mark.esp_matter_dut
 @pytest.mark.parametrize(
     'count, app_path, target, erase_all', [
-        ( 2, pytest_matter_thread_dir, 'esp32h2|esp32s3', 'y|n'),
+        ( 2, pytest_matter_thread_dir, 'esp32h2|esp32s3', 'y|y'),
     ],
     indirect=True,
 )
@@ -240,35 +241,40 @@ def test_matter_commissioning_h2(dut:Tuple[Dut, Dut]) -> None:
     fixture_Init_interface()
     # BLE start advertising
     light.expect(r'chip\[DL\]\: Configuring CHIPoBLE advertising', timeout=20)
-    # flash ot_br
-    ot_br.expect('OpenThread attached to netif', timeout=30)
+    ot_br.expect(r'chip\[DL\]\: Configuring CHIPoBLE advertising', timeout=20)
+    # Start commissioning OTBR
     time.sleep(2)
-    ot_br.write('factoryreset')
-    ot_br.expect('OpenThread attached to netif', timeout=30)
+    command = CHIP_TOOL_EXE + ' pairing ble-wifi 1 ChipTEH2 chiptest123 20202021 3584'
+    out_str = subprocess.getoutput(command)
+    print(out_str)
+    result = re.findall(r'Run command failure', str(out_str))
+    if len(result) != 0:
+      assert False
+    # Set the active dataset and start Thread network
     time.sleep(2)
-    ot_br.write('log level 3')
-    ot_br.expect('Done', timeout=5)
+    command = CHIP_TOOL_EXE + ' generalcommissioning arm-fail-safe 180 1 1 0'
+    out_str = subprocess.getoutput(command)
+    print(out_str)
+    result = re.findall(r'Run command failure', str(out_str))
+    if len(result) != 0:
+      assert False
     time.sleep(2)
-    # wifi connect -s ChipTEH2 -p chiptest123
-    ot_br.write('wifi connect -s ChipTEH2 -p chiptest123')
-    ot_br.expect('wifi sta is connected successfully', timeout=5)
+    command = CHIP_TOOL_EXE + ' threadborderroutermanagement set-active-dataset-request hex:' + OT_DATASET_HEXSTR + ' 1 1'
+    out_str = subprocess.getoutput(command)
+    print(out_str)
+    result = re.findall(r'Run command failure', str(out_str))
+    if len(result) != 0:
+      assert False
     time.sleep(2)
-    # start an ot network
-    ot_br.write('ifconfig up')
-    ot_br.expect('netif up', timeout=5)
+    command = CHIP_TOOL_EXE + ' generalcommissioning commissioning-complete 1 0'
+    out_str = subprocess.getoutput(command)
+    print(out_str)
+    result = re.findall(r'Run command failure', str(out_str))
+    if len(result) != 0:
+      assert False
+    # Start commissioning Light
     time.sleep(2)
-    ot_br.write('thread start')
-    ot_br.expect('Role detached -> leader', timeout=20)
-    time.sleep(2)
-   # get dataset
-    ot_br.write('dataset active -x')
-    dataset=ot_br.expect(r'\n(\w{202}\r)', timeout=5)[1].decode()
-    print(dataset)
-    ot_br.expect('Got IPv6 event: Interface "example_netif_sta" address: fdde:ad00:beef:cafe', timeout=30)
-    print("Got unique local ipv6 address")
-    # Start commissioning
-    time.sleep(2)
-    command = CHIP_TOOL_EXE + " pairing ble-thread 1 hex:{} ".format(dataset.strip())+"20202021 3840"
+    command = CHIP_TOOL_EXE + ' pairing ble-thread 2 hex:' + OT_DATASET_HEXSTR +' 20202021 3840'
     out_str = subprocess.getoutput(command)
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))
@@ -276,7 +282,7 @@ def test_matter_commissioning_h2(dut:Tuple[Dut, Dut]) -> None:
       assert False
     # Use toggle command to turn-off the light
     time.sleep(2)
-    command = CHIP_TOOL_EXE + ' onoff toggle 1 1'
+    command = CHIP_TOOL_EXE + ' onoff toggle 2 1'
     out_str = subprocess.getoutput(command)
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))
@@ -284,7 +290,7 @@ def test_matter_commissioning_h2(dut:Tuple[Dut, Dut]) -> None:
       assert False
     # Use toggle command to turn-on the light
     time.sleep(2)
-    command = CHIP_TOOL_EXE + ' onoff toggle 1 1'
+    command = CHIP_TOOL_EXE + ' onoff toggle 2 1'
     out_str = subprocess.getoutput(command)
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))

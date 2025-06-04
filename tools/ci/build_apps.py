@@ -28,6 +28,7 @@ MAINFEST_FILES = [
 
 PYTEST_H2_APPS = [
     {"target": "esp32h2", "name": "light"},
+    {"target": "esp32s3", "name": "thread_border_router"},
 ]
 MAINFEST_FILES = [
     str(PROJECT_ROOT / 'examples' / '.build-rules.yml'),
