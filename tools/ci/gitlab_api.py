@@ -12,8 +12,10 @@ class GitLabAPI:
         self.gitlab_token = os.getenv("GITLAB_MR_COMMENT_TOKEN")
         self.ci_project_id = os.getenv("CI_PROJECT_ID")
         self.ci_merge_request_iid = os.getenv("CI_MERGE_REQUEST_IID")
+        self.ci_pipeline_id = os.getenv("CI_PIPELINE_ID")
+        self.ci_commit_ref_name = os.getenv("CI_COMMIT_REF_NAME")
         
-        if not all([self.gitlab_api_url, self.gitlab_token, self.ci_project_id, self.ci_merge_request_iid]):
+        if not all([self.gitlab_api_url, self.gitlab_token, self.ci_project_id, self.ci_pipeline_id]):
             raise ValueError("Required GitLab environment variables are not set")
 
     def fetch_merge_request_description(self):
@@ -64,3 +66,13 @@ class GitLabAPI:
             with open(output_file, 'wb') as f:
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk) 
+
+    def cancel_pipeline(self, pipeline_id):
+        url = f"{self.gitlab_api_url}/projects/{self.ci_project_id}/pipelines/{pipeline_id}/cancel"
+        headers = {"PRIVATE-TOKEN": self.gitlab_token}
+        response = requests.post(url, headers=headers)
+
+        if response.status_code == 200:
+            print(f"Successfully cancelled Pipeline ID: {pipeline_id}")
+        else:
+            print(f"Failed to cancel Pipeline ID: {pipeline_id}, Status Code: {response.status_code}")
