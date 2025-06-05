@@ -23,6 +23,10 @@ using namespace esp_matter;
 static const char *TAG = "app_driver";
 extern uint16_t light_endpoint_id;
 
+// Global variables to store current XY color coordinates
+static uint16_t current_x = 0;
+static uint16_t current_y = 0;
+
 /* Do any conversions/remapping for the actual value here */
 static esp_err_t app_driver_light_set_power(led_driver_handle_t handle, esp_matter_attr_val_t *val)
 {
@@ -51,6 +55,11 @@ static esp_err_t app_driver_light_set_temperature(led_driver_handle_t handle, es
 {
     uint32_t value = REMAP_TO_RANGE_INVERSE(val->val.u16, STANDARD_TEMPERATURE_FACTOR);
     return led_driver_set_temperature(handle, value);
+}
+
+static esp_err_t app_driver_light_set_xy(led_driver_handle_t handle, uint16_t x, uint16_t y)
+{
+    return led_driver_set_xy(handle, x, y);
 }
 
 static void app_driver_button_toggle_cb(void *arg, void *data)
@@ -89,6 +98,12 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
                 err = app_driver_light_set_saturation(handle, val);
             } else if (attribute_id == ColorControl::Attributes::ColorTemperatureMireds::Id) {
                 err = app_driver_light_set_temperature(handle, val);
+            } else if (attribute_id == ColorControl::Attributes::CurrentX::Id) {
+                current_x = val->val.u16;
+                err = app_driver_light_set_xy(handle, current_x, current_y);
+            } else if (attribute_id == ColorControl::Attributes::CurrentY::Id) {
+                current_y = val->val.u16;
+                err = app_driver_light_set_xy(handle, current_x, current_y);
             }
         }
     }
@@ -124,6 +139,15 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
         attribute = attribute::get(endpoint_id, ColorControl::Id, ColorControl::Attributes::ColorTemperatureMireds::Id);
         attribute::get_val(attribute, &val);
         err |= app_driver_light_set_temperature(handle, &val);
+    } else if (val.val.u8 == (uint8_t)ColorControl::ColorMode::kCurrentXAndCurrentY) {
+        /* Setting XY coordinates */
+        attribute = attribute::get(endpoint_id, ColorControl::Id, ColorControl::Attributes::CurrentX::Id);
+        attribute::get_val(attribute, &val);
+        current_x = val.val.u16;
+        attribute = attribute::get(endpoint_id, ColorControl::Id, ColorControl::Attributes::CurrentY::Id);
+        attribute::get_val(attribute, &val);
+        current_y = val.val.u16;
+        err |= app_driver_light_set_xy(handle, current_x, current_y);
     } else {
         ESP_LOGE(TAG, "Color mode not supported");
     }

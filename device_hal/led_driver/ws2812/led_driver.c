@@ -114,3 +114,11 @@ esp_err_t led_driver_set_temperature(led_driver_handle_t handle, uint32_t temper
     hsv_to_rgb(current_HS, brightness, &mRGB);
     return led_driver_set_RGB(handle);
 }
+
+esp_err_t led_driver_set_xy(led_driver_handle_t handle, uint16_t x, uint16_t y)
+{
+    uint8_t brightness = current_power ? current_brightness : 0;
+    XY_color_t xy_color = {x, y};
+    xy_to_rgb(xy_color, brightness, &mRGB);
+    return led_driver_set_RGB(handle);
+}

@@ -64,3 +64,11 @@ esp_err_t led_driver_set_temperature(led_driver_handle_t handle, uint32_t temper
 
     return ESP_OK;
 }
+
+esp_err_t led_driver_set_xy(led_driver_handle_t handle, uint16_t x, uint16_t y)
+{
+    ESP_LOGI(TAG, "Setting XY to: x=%d, y=%d", x, y);
+    /* Set the XY color coordinates here */
+
+    return ESP_OK;
+}

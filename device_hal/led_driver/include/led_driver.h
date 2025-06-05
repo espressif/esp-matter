@@ -33,6 +33,7 @@ esp_err_t led_driver_set_brightness(led_driver_handle_t handle, uint8_t brightne
 esp_err_t led_driver_set_hue(led_driver_handle_t handle, uint16_t hue);
 esp_err_t led_driver_set_saturation(led_driver_handle_t handle, uint8_t saturation);
 esp_err_t led_driver_set_temperature(led_driver_handle_t handle, uint32_t temperature);
+esp_err_t led_driver_set_xy(led_driver_handle_t handle, uint16_t x, uint16_t y);
 
 #ifdef __cplusplus
 }
