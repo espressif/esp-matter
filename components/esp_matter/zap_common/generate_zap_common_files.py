@@ -339,6 +339,36 @@ def generate_access_h(xml_files, output_dir):
         header_file.write('// clang-format on\n')
 
 
+def generate_static_cluster_config_headers(xml_files, output_dir):
+    static_config_dir = os.path.join(output_dir, 'app/static-cluster-config')
+    os.makedirs(static_config_dir, exist_ok=True)
+    clusters = get_clusters_from_xml_files(xml_files)
+    for cluster in clusters:
+        cluster_name = get_cluster_name(cluster)
+        formatted_name = format_cluster_name(cluster_name)
+        header_path = os.path.join(static_config_dir, f'{formatted_name}.h')
+        with open(header_path, 'w') as header_file:
+            header_file.writelines([
+                f'// Application configuration for {cluster_name} based on EMBER configuration\n',
+                '#pragma once\n\n',
+                '#include <app-common/zap-generated/cluster-enums.h>\n',
+                '#include <app/util/cluster-config.h>\n\n',
+                '#include <array>\n\n',
+                'namespace chip {\n',
+                'namespace app {\n',
+                'namespace Clusters {\n',
+                f'namespace {formatted_name} {{\n',
+                'namespace StaticApplicationConfig {\n\n',
+                'using FeatureBitmapType = Clusters::StaticApplicationConfig::NoFeatureFlagsDefined;\n\n',
+                'inline constexpr std::array<Clusters::StaticApplicationConfig::ClusterConfiguration<FeatureBitmapType>, 0> kFixedClusterConfig = { };\n\n',
+                '} // namespace StaticApplicationConfig\n',
+                f'}} // namespace {formatted_name}\n',
+                '} // namespace Clusters\n',
+                '} // namespace app\n',
+                '} // namespace chip\n',
+            ])
+
+
 def main():
     logging.basicConfig(
         format='[%(asctime)s] [%(levelname)7s] - %(message)s', level=logging.INFO)
@@ -348,6 +378,7 @@ def main():
     generate_callback_stub_cpp(xml_files, args.output_dir)
     generate_cluster_init_callback_cpp(xml_files, args.output_dir)
     generate_access_h(xml_files, args.output_dir)
+    generate_static_cluster_config_headers(xml_files, args.output_dir)
 
 
 if __name__ == "__main__":

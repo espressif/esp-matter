@@ -229,41 +229,32 @@ static esp_err_t esp_matter_command_callback_add_trusted_root_certificate(const 
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_command_callback_query_image(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                         void *opaque_ptr)
+
+static esp_err_t esp_matter_command_callback_set_vid_verification_statement(const ConcreteCommandPath &command_path,
+                                                                          TLVReader &tlv_data, void *opaque_ptr)
 {
-    chip::app::Clusters::OtaSoftwareUpdateProvider::Commands::QueryImage::DecodableType command_data;
+    chip::app::Clusters::OperationalCredentials::Commands::SetVIDVerificationStatement::DecodableType command_data;
     CHIP_ERROR error = Decode(tlv_data, command_data);
     if (error == CHIP_NO_ERROR) {
-        emberAfOtaSoftwareUpdateProviderClusterQueryImageCallback((CommandHandler *)opaque_ptr, command_path,
-                                                                  command_data);
+        emberAfOperationalCredentialsClusterSetVIDVerificationStatementCallback((CommandHandler *)opaque_ptr,
+                                                                              command_path, command_data);
     }
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_command_callback_apply_update_request(const ConcreteCommandPath &command_path,
-                                                                  TLVReader &tlv_data, void *opaque_ptr)
+
+static esp_err_t esp_matter_command_callback_sign_vid_verification_request(const ConcreteCommandPath &command_path,
+                                                                          TLVReader &tlv_data, void *opaque_ptr)
 {
-    chip::app::Clusters::OtaSoftwareUpdateProvider::Commands::ApplyUpdateRequest::DecodableType command_data;
+    chip::app::Clusters::OperationalCredentials::Commands::SignVIDVerificationRequest::DecodableType command_data;
     CHIP_ERROR error = Decode(tlv_data, command_data);
     if (error == CHIP_NO_ERROR) {
-        emberAfOtaSoftwareUpdateProviderClusterApplyUpdateRequestCallback((CommandHandler *)opaque_ptr, command_path,
-                                                                          command_data);
+        emberAfOperationalCredentialsClusterSignVIDVerificationRequestCallback((CommandHandler *)opaque_ptr,
+                                                                              command_path, command_data);
     }
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_command_callback_notify_update_applied(const ConcreteCommandPath &command_path,
-                                                                   TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::OtaSoftwareUpdateProvider::Commands::NotifyUpdateApplied::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfOtaSoftwareUpdateProviderClusterNotifyUpdateAppliedCallback((CommandHandler *)opaque_ptr, command_path,
-                                                                           command_data);
-    }
-    return ESP_OK;
-}
 
 static esp_err_t esp_matter_command_callback_announce_ota_provider(const ConcreteCommandPath &command_path,
                                                                    TLVReader &tlv_data, void *opaque_ptr)
@@ -1940,6 +1931,8 @@ constexpr const command_entry_t accepted_command_list[] = {
     {OperationalCredentials::Commands::UpdateFabricLabel::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_update_fabric_label},
     {OperationalCredentials::Commands::RemoveFabric::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_remove_fabric},
     {OperationalCredentials::Commands::AddTrustedRootCertificate::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_add_trusted_root_certificate},
+    {OperationalCredentials::Commands::SetVIDVerificationStatement::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_set_vid_verification_statement},
+    {OperationalCredentials::Commands::SignVIDVerificationRequest::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_sign_vid_verification_request},
 };
 
 constexpr const command_entry_t generated_command_list[] = {
@@ -1947,6 +1940,7 @@ constexpr const command_entry_t generated_command_list[] = {
     {OperationalCredentials::Commands::CertificateChainResponse::Id, COMMAND_FLAG_GENERATED, NULL},
     {OperationalCredentials::Commands::CSRResponse::Id, COMMAND_FLAG_GENERATED, NULL},
     {OperationalCredentials::Commands::NOCResponse::Id, COMMAND_FLAG_GENERATED, NULL},
+    {OperationalCredentials::Commands::SignVIDVerificationResponse::Id, COMMAND_FLAG_GENERATED, NULL},
 };
 
 command_t *create_attestation_request(cluster_t *cluster)
@@ -2021,6 +2015,24 @@ command_t *create_noc_response(cluster_t *cluster)
                                        COMMAND_FLAG_GENERATED, NULL);
 }
 
+command_t *create_set_vid_verification_statement(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, OperationalCredentials::Commands::SetVIDVerificationStatement::Id,
+                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_set_vid_verification_statement);
+}
+
+command_t *create_sign_vid_verification_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, OperationalCredentials::Commands::SignVIDVerificationRequest::Id,
+                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_sign_vid_verification_request);
+}
+
+command_t *create_sign_vid_verification_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, OperationalCredentials::Commands::SignVIDVerificationResponse::Id,
+                                       COMMAND_FLAG_GENERATED, NULL);
+}
+
 } /* command */
 } /* operational_credentials */
 
@@ -2030,19 +2042,19 @@ namespace command {
 command_t *create_query_image(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, OtaSoftwareUpdateProvider::Commands::QueryImage::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_query_image);
+                                       COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 command_t *create_apply_update_request(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, OtaSoftwareUpdateProvider::Commands::ApplyUpdateRequest::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_apply_update_request);
+                                       COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 command_t *create_notify_update_applied(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, OtaSoftwareUpdateProvider::Commands::NotifyUpdateApplied::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_notify_update_applied);
+                                       COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 command_t *create_query_image_response(cluster_t *cluster)

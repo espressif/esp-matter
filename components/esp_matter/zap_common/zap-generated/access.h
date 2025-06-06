@@ -60,6 +60,21 @@
     0x00000750, /* Cluster: Ecosystem Information, Attribute: DeviceDirectory, Privilege: manage */ \
     0x00000750, /* Cluster: Ecosystem Information, Attribute: LocationDirectory, Privilege: manage */ \
     0x00000751, /* Cluster: Commissioner Control, Attribute: SupportedDeviceCategories, Privilege: manage */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Attribute: AnchorRootCA, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Attribute: AnchorNodeID, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Attribute: AnchorVendorID, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Attribute: FriendlyName, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Attribute: GroupKeySetList, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Attribute: GroupList, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Attribute: NodeList, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Attribute: AdminList, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Attribute: Status, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Attribute: EndpointGroupIDList, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Attribute: EndpointBindingList, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Attribute: NodeKeySetList, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Attribute: NodeACLList, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Attribute: NodeEndpointList, Privilege: administer */ \
+    0x00000753, /* Cluster: Joint Fabric Administrator, Attribute: AdministratorFabricIndex, Privilege: administer */ \
 }
 
 // Parallel array data (cluster, *attribute*, privilege) for read attribute
@@ -115,6 +130,21 @@
     0x00000000, /* Cluster: Ecosystem Information, Attribute: DeviceDirectory, Privilege: manage */ \
     0x00000001, /* Cluster: Ecosystem Information, Attribute: LocationDirectory, Privilege: manage */ \
     0x00000000, /* Cluster: Commissioner Control, Attribute: SupportedDeviceCategories, Privilege: manage */ \
+    0x00000000, /* Cluster: Joint Fabric Datastore, Attribute: AnchorRootCA, Privilege: administer */ \
+    0x00000001, /* Cluster: Joint Fabric Datastore, Attribute: AnchorNodeID, Privilege: administer */ \
+    0x00000002, /* Cluster: Joint Fabric Datastore, Attribute: AnchorVendorID, Privilege: administer */ \
+    0x00000003, /* Cluster: Joint Fabric Datastore, Attribute: FriendlyName, Privilege: administer */ \
+    0x00000004, /* Cluster: Joint Fabric Datastore, Attribute: GroupKeySetList, Privilege: administer */ \
+    0x00000005, /* Cluster: Joint Fabric Datastore, Attribute: GroupList, Privilege: administer */ \
+    0x00000006, /* Cluster: Joint Fabric Datastore, Attribute: NodeList, Privilege: administer */ \
+    0x00000007, /* Cluster: Joint Fabric Datastore, Attribute: AdminList, Privilege: administer */ \
+    0x00000008, /* Cluster: Joint Fabric Datastore, Attribute: Status, Privilege: administer */ \
+    0x00000009, /* Cluster: Joint Fabric Datastore, Attribute: EndpointGroupIDList, Privilege: administer */ \
+    0x0000000A, /* Cluster: Joint Fabric Datastore, Attribute: EndpointBindingList, Privilege: administer */ \
+    0x0000000B, /* Cluster: Joint Fabric Datastore, Attribute: NodeKeySetList, Privilege: administer */ \
+    0x0000000C, /* Cluster: Joint Fabric Datastore, Attribute: NodeACLList, Privilege: administer */ \
+    0x0000000D, /* Cluster: Joint Fabric Datastore, Attribute: NodeEndpointList, Privilege: administer */ \
+    0x00000000, /* Cluster: Joint Fabric Administrator, Attribute: AdministratorFabricIndex, Privilege: administer */ \
 }
 
 // Parallel array data (cluster, attribute, *privilege*) for read attribute
@@ -170,6 +200,21 @@
     chip::Access::Privilege::kManage, /* Cluster: Ecosystem Information, Attribute: DeviceDirectory, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Ecosystem Information, Attribute: LocationDirectory, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Commissioner Control, Attribute: SupportedDeviceCategories, Privilege: manage */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Attribute: AnchorRootCA, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Attribute: AnchorNodeID, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Attribute: AnchorVendorID, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Attribute: FriendlyName, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Attribute: GroupKeySetList, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Attribute: GroupList, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Attribute: NodeList, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Attribute: AdminList, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Attribute: Status, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Attribute: EndpointGroupIDList, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Attribute: EndpointBindingList, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Attribute: NodeKeySetList, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Attribute: NodeACLList, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Attribute: NodeEndpointList, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Administrator, Attribute: AdministratorFabricIndex, Privilege: administer */ \
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -659,6 +704,32 @@
     0x00000555, /* Cluster: Push AV Stream Transport, Command: SetTransportStatus, Privilege: manage */ \
     0x00000751, /* Cluster: Commissioner Control, Command: RequestCommissioningApproval, Privilege: manage */ \
     0x00000751, /* Cluster: Commissioner Control, Command: CommissionNode, Privilege: manage */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: AddKeySet, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: UpdateKeySet, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: RemoveKeySet, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: AddGroup, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: UpdateGroup, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: RemoveGroup, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: AddAdmin, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: UpdateAdmin, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: RemoveAdmin, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: AddPendingNode, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: RefreshNode, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: UpdateNode, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: RemoveNode, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: UpdateEndpointForNode, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: AddGroupIDToEndpointForNode, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: RemoveGroupIDFromEndpointForNode, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: AddBindingToEndpointForNode, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: RemoveBindingFromEndpointForNode, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: AddACLToNode, Privilege: administer */ \
+    0x00000752, /* Cluster: Joint Fabric Datastore, Command: RemoveACLFromNode, Privilege: administer */ \
+    0x00000753, /* Cluster: Joint Fabric Administrator, Command: ICACCSRRequest, Privilege: administer */ \
+    0x00000753, /* Cluster: Joint Fabric Administrator, Command: AddICAC, Privilege: administer */ \
+    0x00000753, /* Cluster: Joint Fabric Administrator, Command: OpenJointCommissioningWindow, Privilege: administer */ \
+    0x00000753, /* Cluster: Joint Fabric Administrator, Command: TransferAnchorRequest, Privilege: administer */ \
+    0x00000753, /* Cluster: Joint Fabric Administrator, Command: TransferAnchorComplete, Privilege: administer */ \
+    0x00000753, /* Cluster: Joint Fabric Administrator, Command: AnnounceJointFabricAdministrator, Privilege: administer */ \
     0x00000801, /* Cluster: TLS Certificate Management, Command: ProvisionRootCertificate, Privilege: administer */ \
     0x00000801, /* Cluster: TLS Certificate Management, Command: RemoveRootCertificate, Privilege: administer */ \
     0x00000801, /* Cluster: TLS Certificate Management, Command: TLSClientCSR, Privilege: administer */ \
@@ -778,6 +849,32 @@
     0x00000004, /* Cluster: Push AV Stream Transport, Command: SetTransportStatus, Privilege: manage */ \
     0x00000000, /* Cluster: Commissioner Control, Command: RequestCommissioningApproval, Privilege: manage */ \
     0x00000001, /* Cluster: Commissioner Control, Command: CommissionNode, Privilege: manage */ \
+    0x00000000, /* Cluster: Joint Fabric Datastore, Command: AddKeySet, Privilege: administer */ \
+    0x00000001, /* Cluster: Joint Fabric Datastore, Command: UpdateKeySet, Privilege: administer */ \
+    0x00000002, /* Cluster: Joint Fabric Datastore, Command: RemoveKeySet, Privilege: administer */ \
+    0x00000003, /* Cluster: Joint Fabric Datastore, Command: AddGroup, Privilege: administer */ \
+    0x00000004, /* Cluster: Joint Fabric Datastore, Command: UpdateGroup, Privilege: administer */ \
+    0x00000005, /* Cluster: Joint Fabric Datastore, Command: RemoveGroup, Privilege: administer */ \
+    0x00000006, /* Cluster: Joint Fabric Datastore, Command: AddAdmin, Privilege: administer */ \
+    0x00000007, /* Cluster: Joint Fabric Datastore, Command: UpdateAdmin, Privilege: administer */ \
+    0x00000008, /* Cluster: Joint Fabric Datastore, Command: RemoveAdmin, Privilege: administer */ \
+    0x00000009, /* Cluster: Joint Fabric Datastore, Command: AddPendingNode, Privilege: administer */ \
+    0x0000000A, /* Cluster: Joint Fabric Datastore, Command: RefreshNode, Privilege: administer */ \
+    0x0000000B, /* Cluster: Joint Fabric Datastore, Command: UpdateNode, Privilege: administer */ \
+    0x0000000C, /* Cluster: Joint Fabric Datastore, Command: RemoveNode, Privilege: administer */ \
+    0x0000000D, /* Cluster: Joint Fabric Datastore, Command: UpdateEndpointForNode, Privilege: administer */ \
+    0x0000000E, /* Cluster: Joint Fabric Datastore, Command: AddGroupIDToEndpointForNode, Privilege: administer */ \
+    0x0000000F, /* Cluster: Joint Fabric Datastore, Command: RemoveGroupIDFromEndpointForNode, Privilege: administer */ \
+    0x00000010, /* Cluster: Joint Fabric Datastore, Command: AddBindingToEndpointForNode, Privilege: administer */ \
+    0x00000011, /* Cluster: Joint Fabric Datastore, Command: RemoveBindingFromEndpointForNode, Privilege: administer */ \
+    0x00000012, /* Cluster: Joint Fabric Datastore, Command: AddACLToNode, Privilege: administer */ \
+    0x00000013, /* Cluster: Joint Fabric Datastore, Command: RemoveACLFromNode, Privilege: administer */ \
+    0x00000000, /* Cluster: Joint Fabric Administrator, Command: ICACCSRRequest, Privilege: administer */ \
+    0x00000002, /* Cluster: Joint Fabric Administrator, Command: AddICAC, Privilege: administer */ \
+    0x00000004, /* Cluster: Joint Fabric Administrator, Command: OpenJointCommissioningWindow, Privilege: administer */ \
+    0x00000005, /* Cluster: Joint Fabric Administrator, Command: TransferAnchorRequest, Privilege: administer */ \
+    0x00000007, /* Cluster: Joint Fabric Administrator, Command: TransferAnchorComplete, Privilege: administer */ \
+    0x00000008, /* Cluster: Joint Fabric Administrator, Command: AnnounceJointFabricAdministrator, Privilege: administer */ \
     0x00000000, /* Cluster: TLS Certificate Management, Command: ProvisionRootCertificate, Privilege: administer */ \
     0x00000006, /* Cluster: TLS Certificate Management, Command: RemoveRootCertificate, Privilege: administer */ \
     0x00000007, /* Cluster: TLS Certificate Management, Command: TLSClientCSR, Privilege: administer */ \
@@ -897,6 +994,32 @@
     chip::Access::Privilege::kManage, /* Cluster: Push AV Stream Transport, Command: SetTransportStatus, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Commissioner Control, Command: RequestCommissioningApproval, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Commissioner Control, Command: CommissionNode, Privilege: manage */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: AddKeySet, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: UpdateKeySet, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: RemoveKeySet, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: AddGroup, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: UpdateGroup, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: RemoveGroup, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: AddAdmin, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: UpdateAdmin, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: RemoveAdmin, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: AddPendingNode, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: RefreshNode, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: UpdateNode, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: RemoveNode, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: UpdateEndpointForNode, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: AddGroupIDToEndpointForNode, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: RemoveGroupIDFromEndpointForNode, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: AddBindingToEndpointForNode, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: RemoveBindingFromEndpointForNode, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: AddACLToNode, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Command: RemoveACLFromNode, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Administrator, Command: ICACCSRRequest, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Administrator, Command: AddICAC, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Administrator, Command: OpenJointCommissioningWindow, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Administrator, Command: TransferAnchorRequest, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Administrator, Command: TransferAnchorComplete, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Administrator, Command: AnnounceJointFabricAdministrator, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: TLS Certificate Management, Command: ProvisionRootCertificate, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: TLS Certificate Management, Command: RemoveRootCertificate, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: TLS Certificate Management, Command: TLSClientCSR, Privilege: administer */ \

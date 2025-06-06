@@ -20,7 +20,7 @@ namespace esp_matter {
 namespace cluster {
 
 namespace descriptor {
-constexpr uint16_t cluster_revision = 2;
+constexpr uint16_t cluster_revision = 3;
 } // namespace descriptor
 
 namespace actions {
@@ -32,7 +32,7 @@ constexpr uint16_t cluster_revision = 2;
 } // namespace access_control
 
 namespace basic_information {
-constexpr uint16_t cluster_revision = 4;
+constexpr uint16_t cluster_revision = 5;
 } // namespace basic_information
 
 namespace binding {
@@ -72,7 +72,7 @@ constexpr uint16_t cluster_revision = 1;
 } // namespace administrator_commissioning
 
 namespace operational_credentials {
-constexpr uint16_t cluster_revision = 1;
+constexpr uint16_t cluster_revision = 2;
 } // namespace operational_credentials
 
 namespace group_key_management {
