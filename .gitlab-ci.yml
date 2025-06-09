@@ -22,7 +22,7 @@ variables:
     MATTER_CACHE_DIR: /cache/matter_build
     # This variable represents the latest idf version supported for the target branch.
     # Note: Do change this variable in case of idf version change MR.
-    IDF_CHECKOUT_REF: "v5.2.3"
+    IDF_CHECKOUT_REF: "v5.4.1"
     # This variable represents the short hash of the connectedhomeip submodule.
     # Note: Do change this short hash on submodule update MRs.
     CHIP_SHORT_HASH: "19aeeb3ba0"
@@ -209,7 +209,7 @@ build_image:
       # Change the idf version here in case of idf version change MR.
       - IDF_VERSION:
           - "v4.4.3"
-          - "v5.2.3"
+          - "v5.4.1"
 
 .build_examples_template:
   stage: build
@@ -247,7 +247,7 @@ build_image:
     - *add_gitlab_ssh_key
     - *get_build_caches
     - *setup_idf
-    - pip install 'idf-component-manager~=1.4.0'
+    - pip install 'idf-component-manager~=2.1.2'
     - cd ${ESP_MATTER_PATH}
     - mkdir -p ${REPOS_PATH}
     - *update_build_caches

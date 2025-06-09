@@ -15,6 +15,7 @@
 
 #include <app_priv.h>
 #include <iot_button.h>
+#include <button_gpio.h>
 
 #if CONFIG_IDF_TARGET_ESP32 || CONFIG_IDF_TARGET_ESP32S3
 #define BUTTON_GPIO_PIN GPIO_NUM_0
@@ -157,30 +158,40 @@ static void app_driver_button_multipress_complete(void *arg, void *data)
 
 app_driver_handle_t app_driver_button_init(gpio_button * button)
 {
-    button_config_t config = {
-        .type = BUTTON_TYPE_GPIO,
-        .gpio_button_config = {
-            .gpio_num = BUTTON_GPIO_PIN,
-            .active_level = 0,
-        }
-    };
+    /* Initialize button */
+    button_handle_t handle = NULL;
+    const button_config_t btn_cfg = {0};
 
     if (button != NULL) {
-        config.type =  button_type_t::BUTTON_TYPE_GPIO;
-        config.gpio_button_config.gpio_num = button->GPIO_PIN_VALUE;
+        const button_gpio_config_t btn_gpio_cfg = {
+            .gpio_num = button->GPIO_PIN_VALUE,
+            .active_level = 0,
+        };
+        if (iot_button_new_gpio_device(&btn_cfg, &btn_gpio_cfg, &handle) != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to create button device");
+            return NULL;
+        }
+    } else {
+        const button_gpio_config_t btn_gpio_cfg = {
+            .gpio_num = BUTTON_GPIO_PIN,
+            .active_level = 0,
+        };
+        if (iot_button_new_gpio_device(&btn_cfg, &btn_gpio_cfg, &handle) != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to create button device");
+            return NULL;
+        }
     }
-    button_handle_t handle = iot_button_create(&config);
 
 
 #if CONFIG_GENERIC_SWITCH_TYPE_LATCHING
-    iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_switch_latched, button);
+    iot_button_register_cb(handle, BUTTON_PRESS_DOWN, NULL, app_driver_button_switch_latched, button);
 #endif
 
 #if CONFIG_GENERIC_SWITCH_TYPE_MOMENTARY
-    iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_initial_pressed, button);
-    iot_button_register_cb(handle, BUTTON_PRESS_UP, app_driver_button_release, button);
-    iot_button_register_cb(handle, BUTTON_PRESS_REPEAT, app_driver_button_multipress_ongoing, button);
-    iot_button_register_cb(handle, BUTTON_PRESS_REPEAT_DONE, app_driver_button_multipress_complete, button);
+    iot_button_register_cb(handle, BUTTON_PRESS_DOWN, NULL, app_driver_button_initial_pressed, button);
+    iot_button_register_cb(handle, BUTTON_PRESS_UP, NULL, app_driver_button_release, button);
+    iot_button_register_cb(handle, BUTTON_PRESS_REPEAT, NULL, app_driver_button_multipress_ongoing, button);
+    iot_button_register_cb(handle, BUTTON_PRESS_REPEAT_DONE, NULL, app_driver_button_multipress_complete, button);
 #endif
     return (app_driver_handle_t)handle;
 }

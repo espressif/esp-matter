@@ -1,3 +1,7 @@
+# 03-June-2025
+- Updated the esp-idf version to v5.4.1.
+- Updated the button component to use the latest version(>=4.0.0).
+
 # 27-December-2024
 
 Added ``matter esp factoryreset`` command to factory reset a Matter device.
