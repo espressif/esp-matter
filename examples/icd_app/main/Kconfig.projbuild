@@ -12,6 +12,7 @@ menu "Example Configuration"
         range 0 7 if IDF_TARGET_ESP32C6
         default 9 if IDF_TARGET_ESP32H2
         default 7 if IDF_TARGET_ESP32C6
+        default 28 if IDF_TARGET_ESP32C5
         help
             GPIO number of the active mode trigger button. Note that the boot button of ESP32-C6 DevKits is
             GPIO9 which cannot be used to wake up the chip.
