@@ -29,9 +29,16 @@ typedef struct {
     uint8_t blue;
 } RGB_color_t;
 
+typedef struct {
+    uint16_t x;
+    uint16_t y;
+} XY_color_t;
+
 void temp_to_hs(uint32_t temperature, HS_color_t *HS);
 
 void hsv_to_rgb(HS_color_t HS, uint8_t brightness, RGB_color_t *RGB);
+
+void xy_to_rgb(XY_color_t XY, uint8_t brightness, RGB_color_t *RGB);
 
 #ifdef __cplusplus
 }

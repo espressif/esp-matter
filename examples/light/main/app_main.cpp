@@ -201,7 +201,7 @@ extern "C" void app_main()
 
     light_config.on_off.feature_flags = cluster::on_off::feature::lighting::get_id();
     light_config.level_control.feature_flags = cluster::level_control::feature::lighting::get_id();
-    light_config.color_control.feature_flags = cluster::color_control::feature::color_temperature::get_id();
+    light_config.color_control.feature_flags = cluster::color_control::feature::color_temperature::get_id() | cluster::color_control::feature::xy::get_id();
 
     // endpoint handles can be used to add/modify clusters.
     endpoint_t *endpoint = extended_color_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
