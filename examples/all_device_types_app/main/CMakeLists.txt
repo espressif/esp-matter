@@ -3,6 +3,10 @@ set(INCLUDE_DIRS_LIST ".")
 set(ldfragments linker.lf)
 # set(PRIV_REQUIRES_LIST device esp_matter esp_matter_console esp_matter_thread_br app_reset console fatfs hal)
 
+# Add the electrical measurement directory to source and include paths
+list(APPEND SRC_DIRS_LIST "electrical_measurement")
+list(APPEND INCLUDE_DIRS_LIST "electrical_measurement")
+
 if(CONFIG_IDF_TARGET_ESP32 OR CONFIG_IDF_TARGET_ESP32S3)
     list(APPEND SRC_DIRS_LIST "driver/fan")
     list(APPEND INCLUDE_DIRS_LIST "driver/fan/include")
