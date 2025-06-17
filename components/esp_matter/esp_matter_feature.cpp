@@ -234,9 +234,9 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    uint32_t battery_feature_map = feature::battery::get_id();
-    if ((get_feature_map_value(cluster) & battery_feature_map) == battery_feature_map) {
-        ESP_LOGE(TAG, "Cluster already supports Battery feature");
+    uint32_t wired_feature_map = feature::wired::get_id();
+    if ((get_feature_map_value(cluster) & wired_feature_map) == wired_feature_map) {
+        ESP_LOGE(TAG, "Cluster already supports Wired feature");
         return ESP_ERR_NOT_SUPPORTED;
     }
     update_feature_map(cluster, get_id());
@@ -259,9 +259,9 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    uint32_t wired_feature_map = feature::wired::get_id();
-    if ((get_feature_map_value(cluster) & wired_feature_map) == wired_feature_map) {
-        ESP_LOGE(TAG, "Cluster already supports Wired feature");
+    uint32_t battery_feature_map = feature::battery::get_id();
+    if ((get_feature_map_value(cluster) & battery_feature_map) == battery_feature_map) {
+        ESP_LOGE(TAG, "Cluster already supports Battery feature");
         return ESP_ERR_NOT_SUPPORTED;
     }
     update_feature_map(cluster, get_id());
