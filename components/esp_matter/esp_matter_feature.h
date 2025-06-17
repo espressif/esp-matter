@@ -323,7 +323,7 @@ typedef struct config {
     uint16_t color_temp_physical_max_mireds;
     uint16_t couple_color_temp_to_level_min_mireds;
     nullable<uint16_t> startup_color_temperature_mireds;
-    config() : color_temperature_mireds(0x00fa), color_temp_physical_min_mireds(0),
+    config() : color_temperature_mireds(0x00fa), color_temp_physical_min_mireds(1),
                color_temp_physical_max_mireds(0xfeff), couple_color_temp_to_level_min_mireds(1),
                startup_color_temperature_mireds(0x00fa) {}
 } config_t;
