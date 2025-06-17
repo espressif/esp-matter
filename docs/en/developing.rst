@@ -15,7 +15,7 @@ This section talks about setting up ESP-IDF.
 You should install drivers and support packages for your development
 host. Linux and Mac OS-X are the supported development hosts in Matter, the recommended host versions:
 
-- Ubuntu 20.04 or 22.04 LTS
+- Ubuntu 20.04 or 22.04 or 24.04 LTS
 - macOS 10.15 or later
 
 Additionally, we also support developing on Windows Host using WSL.
@@ -52,20 +52,36 @@ The Prerequisites for ESP-IDF:
 
 - Please get the `Prerequisites for ESP-IDF`_. For beginners, please check `step by step installation guide`_ for esp-idf.
 
+.. only:: esp32c5
+
+    - For ``ESP32C5``, the IDF version should be `98cd765953 <https://github.com/espressif/esp-idf/commit/98cd765953dfe0e7bb1c5df8367e1b54bd966cce>`__ or newer.
+
 .. note::
 
     ``git clone`` command accepts the optional argument ``--jobs N``, which can significantly speed up the
     process by parallelizing submodule cloning. Consider using this option when cloning repositories.
 
-Cloning esp-idf:
+.. only:: not esp32c5
 
-   ::
+   Cloning esp-idf:
 
-      git clone --recursive https://github.com/espressif/esp-idf.git
-      cd esp-idf; git checkout v5.4.1; git submodule update --init --recursive;
-      ./install.sh
-      cd ..
+      ::
 
+         git clone --recursive https://github.com/espressif/esp-idf.git
+         cd esp-idf; git checkout v5.4.1; git submodule update --init --recursive;
+         ./install.sh
+         cd ..
+
+.. only:: esp32c5
+
+   Cloning esp-idf:
+
+      ::
+
+         git clone --recursive https://github.com/espressif/esp-idf.git
+         cd esp-idf; git checkout 98cd765953; git submodule update --init --recursive;
+         ./install.sh
+         cd ..
 
 2.1.3 Configuring the Environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -263,6 +279,12 @@ Choose IDF target.
 
       idf.py set-target esp32c6
 
+.. only:: esp32c5
+
+   ::
+
+      idf.py --preview set-target esp32c5
+
 .. only:: esp32p4
 
    ::
@@ -299,9 +321,9 @@ Choose IDF target.
             idf.py -C managed_components/espressif__esp_hosted/slave/ -B build_slave set-target esp32c6
             idf.py -C managed_components/espressif__esp_hosted/slave/ -B build_slave build flash monitor
 
-.. only:: esp32c6
+.. only:: esp32c5 or esp32c6
 
-    -  ESP32-C6 supports both the Wi-Fi and IEEE 802.15.4 radio, so you can run Wi-Fi or Thread matter example on it.
+    -  {IDF_TARGET_NAME} supports both the Wi-Fi and IEEE 802.15.4 radio, so you can run Wi-Fi or Thread matter example on it.
 
         -  To enable Thread, you should change the menuconfig options to ``CONFIG_OPENTHREAD_ENABLED=y``, ``CONFIG_ENABLE_WIFI_STATION=n``, and  ``CONFIG_USE_MINIMAL_MDNS=n``.
         -  To enable Wi-Fi. you should change the menuconfig options to ``CONFIG_OPENTHREAD_ENABLED=n``, ``CONFIG_ENABLE_WIFI_STATION=y``, and ``CONFIG_USE_MINIMAL_MDNS=y``.
@@ -359,7 +381,7 @@ Use ``chip-tool`` in interactive mode to commission the device:
    chip-tool interactive start
 
 
-.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6 or esp32p4
+.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6 or esp32p4 or esp32c5
 
    ::
 
@@ -369,7 +391,7 @@ Use ``chip-tool`` in interactive mode to commission the device:
 
     or
 
-.. only:: esp32h2 or esp32c6
+.. only:: esp32h2 or esp32c6 or esp32c5
 
    ::
 
@@ -386,7 +408,7 @@ Above method commissions the device using setup passcode and discriminator. Devi
 
 To Commission the device using manual pairing code 34970112332
 
-.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6 or esp32p4
+.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6 or esp32p4 or esp32c5
 
     ::
 
@@ -396,7 +418,7 @@ To Commission the device using manual pairing code 34970112332
 
     or
 
-.. only:: esp32h2 or esp32c6
+.. only:: esp32h2 or esp32c6 or esp32c5
 
     ::
 
@@ -413,7 +435,7 @@ Above default manual pairing code contains following values:
 
 To commission the device using QR code MT:Y.K9042C00KA0648G00
 
-.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6 or esp32p4
+.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6 or esp32p4 or esp32c5
 
     ::
 
@@ -423,7 +445,7 @@ To commission the device using QR code MT:Y.K9042C00KA0648G00
 
     or
 
-.. only:: esp32h2 or esp32c6
+.. only:: esp32h2 or esp32c6 or esp32c5
 
     ::
 
@@ -571,7 +593,7 @@ Additional Matter specific commands:
 
       matter esp wifi connect <ssid> <password>
 
-.. only:: esp32h2 or esp32c6
+.. only:: esp32h2 or esp32c6 or esp32c5
 
    -  OpenThread command line:
 

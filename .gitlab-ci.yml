@@ -632,7 +632,7 @@ build_esp_rainmaker_apps:
 
 build_docs:
     stage: build
-    image: $CI_DOCKER_REGISTRY/esp-idf-doc-env-v5.1:1-1
+    image: $CI_DOCKER_REGISTRY/esp-idf-doc-env-v5.5:3-1
     rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
     tags:
@@ -648,13 +648,13 @@ build_docs:
     script:
         - cd docs
         - pip install -r requirements.txt
-        - build-docs -t esp32 esp32s3 esp32c2 esp32c3 esp32c6 esp32h2 esp32p4 -l en
+        - build-docs -t esp32 esp32s3 esp32c2 esp32c3 esp32c6 esp32h2 esp32p4 esp32c5 -l en
         # disable link checks for now, as it is failing due to some links taking longer time to respond
         # - build-docs -t esp32 -l en linkcheck
 
 .deploy_docs_template:
     stage: docs
-    image: $CI_DOCKER_REGISTRY/esp-idf-doc-env-v5.1:1-1
+    image: $CI_DOCKER_REGISTRY/esp-idf-doc-env-v5.5:3-1
     tags:
         - docs
     needs:
