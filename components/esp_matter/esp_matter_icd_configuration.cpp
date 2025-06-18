@@ -107,17 +107,31 @@ static esp_err_t set_active_threshold(uint32_t active_threshold_ms)
     return chip::Test::ICDConfigurationDataTestAccess::SetActiveThreshold(Milliseconds32(active_threshold_ms));
 }
 
+static bool s_enable_icd_server = true;
+
+bool get_icd_server_enabled()
+{
+    return s_enable_icd_server;
+}
+
 esp_err_t set_configuration_data(config_t *config)
 {
+    ESP_RETURN_ON_FALSE(config, ESP_ERR_INVALID_ARG, TAG, "config cannot be NULL");
+    if (!config->enable_icd_server) {
+        ESP_RETURN_ON_FALSE(!node::get(), ESP_ERR_INVALID_STATE, TAG,
+                            "Could not disable ICD server after data model is created");
+    }
+    s_enable_icd_server = config->enable_icd_server;
     ESP_RETURN_ON_FALSE(!is_started(), ESP_ERR_INVALID_STATE, TAG,
                         "Could not change ICD configuration data after Matter is started");
-    ESP_RETURN_ON_FALSE(config, ESP_ERR_INVALID_ARG, TAG, "config cannot be NULL");
     ESP_RETURN_ON_ERROR(set_polling_intervals(config->fast_interval_ms, config->slow_interval_ms), TAG,
                         "Failed to set polling intervals");
     ESP_RETURN_ON_ERROR(set_mode_durations(config->active_mode_duration_ms, config->idle_mode_duration_s), TAG,
                         "Failed to set mode durations");
-    ESP_RETURN_ON_ERROR(set_active_threshold(config->active_threshold_ms.value()), TAG,
-                        "Failed to set active threshold");
+    if (config->active_threshold_ms.has_value()) {
+        ESP_RETURN_ON_ERROR(set_active_threshold(config->active_threshold_ms.value()), TAG,
+                            "Failed to set active threshold");
+    }
     return ESP_OK;
 }
 

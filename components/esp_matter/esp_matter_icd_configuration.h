@@ -19,6 +19,7 @@ namespace esp_matter {
 namespace icd {
 
 typedef struct config {
+    bool enable_icd_server;
     std::optional<uint32_t> fast_interval_ms;
     std::optional<uint32_t> slow_interval_ms;
     std::optional<uint32_t> active_mode_duration_ms;
@@ -26,6 +27,14 @@ typedef struct config {
     std::optional<uint32_t> active_threshold_ms;
 } config_t;
 
+/** Get whether ICD server is enabled for Matter end-device
+ */
+bool get_icd_server_enabled();
+
+/** Set ICD configuration data
+ * 
+ * This function allows the user to enable or disable the ICD server and configure its settings at runtime, before creating the Matter data model.
+ */
 esp_err_t set_configuration_data(config_t *config);
 
 } // namespace icd
