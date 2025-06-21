@@ -2744,7 +2744,7 @@ attribute_t *create_level_value(cluster_t *cluster, uint8_t value)
 } /* attribute */
 } /* radon_concentration_measurement */
 
-namespace total_volatile_organic_compound_concentration_measurement {
+namespace total_volatile_organic_compounds_concentration_measurement {
 namespace attribute {
 attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value)
 {
@@ -2813,7 +2813,7 @@ attribute_t *create_level_value(cluster_t *cluster, uint8_t value)
 }
 
 } /* attribute */
-} /* total_volatile_organic_compound_concentration_measurement */
+} /* total_volatile_organic_compounds_concentration_measurement */
 
 namespace operational_state {
 namespace attribute {
