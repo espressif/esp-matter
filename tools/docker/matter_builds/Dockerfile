@@ -48,7 +48,9 @@ RUN set -x \
     && cd ./connectedhomeip/connectedhomeip \
     && ./scripts/checkout_submodules.py --platform esp32 linux --shallow \
     && cd ../.. \
-    && . $IDF_PATH/export.sh \
+    && cd $IDF_PATH \
+    && . ./export.sh \
+    && cd $ESP_MATTER_PATH \
     && ./install.sh \
     && : # last line
 
