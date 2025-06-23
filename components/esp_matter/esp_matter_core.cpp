@@ -797,6 +797,10 @@ static void esp_matter_chip_init_task(intptr_t context)
         chip::Server::GetInstance().GetICDManager().Shutdown();
     }
 #endif // CHIP_CONFIG_ENABLE_ICD_SERVER
+    
+    // Initialise clusters which have delegate implemented
+    esp_matter::cluster::delegate_init_callback_common();
+
     PlatformMgr().ScheduleWork(deinit_ble_if_commissioned, reinterpret_cast<intptr_t>(nullptr));
     xTaskNotifyGive(task_to_notify);
 }
@@ -888,8 +892,6 @@ static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
     PlatformMgr().ScheduleWork(esp_matter_chip_init_task, reinterpret_cast<intptr_t>(xTaskGetCurrentTaskHandle()));
     // Wait for the matter stack to be initialized
     xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);
-    // Initialise clusters which have delegate implemented
-    esp_matter::cluster::delegate_init_callback_common();
 #endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 
     return ESP_OK;
