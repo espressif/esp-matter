@@ -131,7 +131,6 @@ void add_bounds_cb(cluster_t *cluster)
                 break;
             }
             case LevelControl::Attributes::MinLevel::Id: {
-                esp_matter_attr_val_t max_val = esp_matter_invalid(NULL);
                 uint8_t min = 1, max = 254;
                 esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint8(min), esp_matter_uint8(max));
                 break;
