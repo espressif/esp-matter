@@ -423,6 +423,46 @@ static int get_next_index()
     return 0xFFFF;
 }
 
+#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
+// global instance so that we can reset it when needed.
+// We may need to reset it when new endpoint is added or existing endpoint is removed.
+// This is specifically for bridged device.
+static chip::Credentials::GroupDataProviderImpl *s_group_data_provider = nullptr;
+static uint16_t s_groups_server_cluster_count = 0;
+
+static void resize_group_data_provider()
+{
+    // don't do anything if the count is the same
+    uint16_t groups_server_cluster_count = node::get_server_cluster_endpoint_count(chip::app::Clusters::Groups::Id);
+    if (s_groups_server_cluster_count == groups_server_cluster_count) {
+        return;
+    }
+
+    s_groups_server_cluster_count = groups_server_cluster_count;
+    uint16_t max_groups_per_fabric = s_groups_server_cluster_count * MAX_GROUPS_PER_FABRIC_PER_ENDPOINT;
+    auto group_data_provider = new (std::nothrow) chip::Credentials::GroupDataProviderImpl(max_groups_per_fabric, CHIP_CONFIG_MAX_GROUP_KEYS_PER_FABRIC);
+    if (!group_data_provider) {
+        ESP_LOGE(TAG, "Failed to allocate memory for group data provider");
+        return;
+    }
+
+    group_data_provider->SetStorageDelegate(&chip::Server::GetInstance().GetPersistentStorage());
+    group_data_provider->SetSessionKeystore(chip::Server::GetInstance().GetSessionKeystore());
+
+    // As we are re-using the persistent storage instance from the Server class instance,
+    // which has all the data from the previous endpoints, so no harm in re-sizing.
+    group_data_provider->Init();
+
+    // delete the old one if it exists
+    if (s_group_data_provider) {
+        delete s_group_data_provider;
+    }
+
+    s_group_data_provider = group_data_provider;
+    chip::Credentials::SetGroupDataProvider(s_group_data_provider);
+}
+#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
+
 static esp_err_t disable(endpoint_t *endpoint)
 {
     /* Take lock if not already taken */
@@ -661,6 +701,12 @@ esp_err_t enable(endpoint_t *endpoint)
         lock::chip_stack_unlock();
     }
     ESP_LOGI(TAG, "Dynamic endpoint %" PRIu16 " added", current_endpoint->endpoint_id);
+
+#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
+    // resize the group data provider to match the new endpoint count
+    resize_group_data_provider();
+#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
+
     return err;
 
 cleanup:
@@ -748,22 +794,6 @@ static void esp_matter_chip_init_task(intptr_t context)
     initParams.appDelegate = &s_app_delegate;
     initParams.testEventTriggerDelegate = test_event_trigger::get_delegate();
     initParams.dataModelProvider = chip::app::CodegenDataModelProviderInstance(initParams.persistentStorageDelegate);
-
-#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
-    // Group data provider injection for dynamic data model
-    {
-        uint8_t groups_server_cluster_count = node::get_server_cluster_endpoint_count(chip::app::Clusters::Groups::Id);
-        uint16_t max_groups_per_fabric = groups_server_cluster_count * MAX_GROUPS_PER_FABRIC_PER_ENDPOINT;
-
-        // since groupDataProvider is a static variable, it won't be released.
-        static chip::Credentials::GroupDataProviderImpl groupDataProvider(max_groups_per_fabric, CHIP_CONFIG_MAX_GROUP_KEYS_PER_FABRIC);
-
-        groupDataProvider.SetStorageDelegate(initParams.persistentStorageDelegate);
-        groupDataProvider.SetSessionKeystore(initParams.sessionKeystore);
-        groupDataProvider.Init();
-        initParams.groupDataProvider = &groupDataProvider;
-    }
-#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 
     CHIP_ERROR ret = chip::Server::GetInstance().GetFabricTable().AddFabricDelegate(&s_fabric_delegate);
     if (ret != CHIP_NO_ERROR)
@@ -920,7 +950,7 @@ esp_err_t start(event_callback_t callback, intptr_t callback_arg)
     // If Thread is Provisioned, publish the dns service
     if (chip::DeviceLayer::ConnectivityMgr().IsThreadProvisioned() &&
         (chip::Server::GetInstance().GetFabricTable().FabricCount() != 0)) {
-        
+
         PlatformMgr().ScheduleWork([](intptr_t){ chip::app::DnssdServer::Instance().StartServer(); },
                                    reinterpret_cast<intptr_t>(nullptr));
     }
@@ -1892,6 +1922,12 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
         current_endpoint->identify = NULL;
     }
     esp_matter_mem_free(current_endpoint);
+
+#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
+    // resize the group data provider to match the new endpoint count
+    resize_group_data_provider();
+#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
+
     return ESP_OK;
 }
 
