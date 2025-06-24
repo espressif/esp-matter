@@ -51,3 +51,32 @@ chip-tool interactive start
 > relativehumiditymeasurement subscribe measured-value 3 10 1 2
 > occupancysensing subscribe occupancy 3 10 1 3
 ```
+
+## 🛠️ Troubleshooting
+
+If you encounter the following runtime error:
+
+`
+i2c: CONFLICT! driver_ng is not allowed to be used with this old driver
+`
+
+This error occurs due to a conflict between the legacy I2C driver and the newer driver model (`driver_ng`).
+
+### ✅ Solution
+
+Enable the following option via `idf.py menuconfig`:
+
+`CONFIG_I2C_SKIP_LEGACY_CONFLICT_CHECK=y`
+
+
+**Important**: This option is only available in the **latest ESP-IDF release branches**:
+
+Pull the latest code from release branches.
+
+- `release/v5.2`
+- `release/v5.3`
+- `release/v5.4`
+- `release/v5.5`
+- `master`
+
+- If you're using an older ESP-IDF version, you can apply this [commit as a patch](https://github.com/espressif/esp-idf/commit/466328cd7e4c90c749a406d2bcee73f782ac0016) to add support manually.
