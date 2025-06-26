@@ -3190,7 +3190,7 @@ attribute_t *create_spin_speed_current(cluster_t *cluster, nullable<uint8_t> val
 
 attribute_t *create_number_of_rinses(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, LaundryWasherControls::Attributes::NumberOfRinses::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, LaundryWasherControls::Attributes::NumberOfRinses::Id, ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_enum8(value));
 }
 
@@ -3937,8 +3937,8 @@ namespace boolean_state_configuration {
 namespace attribute {
 attribute_t *create_current_sensitivity_level(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, BooleanStateConfiguration::Attributes::CurrentSensitivityLevel::Id, ATTRIBUTE_FLAG_NONVOLATILE,
-                                         esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, BooleanStateConfiguration::Attributes::CurrentSensitivityLevel::Id,
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint8(value));
 }
 
 attribute_t *create_supported_sensitivity_levels(cluster_t *cluster, const uint8_t value)
@@ -4844,12 +4844,12 @@ attribute_t *create_maximum_discharge_current(cluster_t *cluster, int64_t value)
 
 attribute_t *create_user_maximum_charge_current(cluster_t *cluster, int64_t value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::UserMaximumChargeCurrent::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int64(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::UserMaximumChargeCurrent::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_int64(value));
 }
 
 attribute_t *create_randomization_delay_window(cluster_t *cluster, uint32_t value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::RandomizationDelayWindow::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint32(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::RandomizationDelayWindow::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint32(value));
 }
 
 attribute_t *create_next_charge_start_time(cluster_t *cluster, nullable<uint32_t> value)
@@ -4874,7 +4874,7 @@ attribute_t *create_next_charge_target_soc(cluster_t *cluster, nullable<uint8_t>
 
 attribute_t *create_approximate_ev_efficiency(cluster_t *cluster, nullable<uint16_t> value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::ApproximateEVEfficiency::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint16(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::ApproximateEVEfficiency::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_nullable_uint16(value));
 }
 
 attribute_t *create_state_of_charge(cluster_t *cluster, nullable<uint8_t> value)
