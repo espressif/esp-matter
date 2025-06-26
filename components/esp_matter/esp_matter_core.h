@@ -429,6 +429,18 @@ typedef void (*function_generic_t)();
  */
 cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags);
 
+/** Destroy cluster
+ *
+ * This will destroy the cluster which has been created and added to the endpoint. It also destroys the associated
+ * attributes, commands and events.
+ *
+ * @param[in] cluster Cluster handle.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t destroy(cluster_t *cluster);
+
 /** Get cluster
  *
  * Get the cluster present on the endpoint.

@@ -82,12 +82,13 @@ extern "C" void app_main()
     }
     thread_border_router::config_t tbr_config;
     tbr_config.thread_border_router_management.delegate = delegate;
-    tbr_config.thread_border_router_management.feature_flags = cluster::thread_border_router_management::feature::pan_change::get_id();
     endpoint_t *tbr_endpoint = thread_border_router::create(node, &tbr_config, ENDPOINT_FLAG_NONE, NULL);
     if (!node || !tbr_endpoint) {
         ESP_LOGE(TAG, "Failed to create data model");
         return;
     }
+    cluster_t *tbr_cluster = cluster::get(tbr_endpoint, ThreadBorderRouterManagement::Id);
+    cluster::thread_border_router_management::feature::pan_change::add(tbr_cluster);
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #if defined(CONFIG_OPENTHREAD_BORDER_ROUTER) && defined(CONFIG_AUTO_UPDATE_RCP)
     esp_vfs_spiffs_conf_t rcp_fw_conf = {

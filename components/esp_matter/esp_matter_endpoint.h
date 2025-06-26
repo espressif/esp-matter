@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <esp_matter_feature.h>
 #include <esp_matter_cluster.h>
 #include <esp_matter_core.h>
 #include <esp_matter_identify.h>
@@ -175,6 +176,7 @@ typedef struct : app_base_config {
 
 typedef struct : app_with_group_config {
     cluster::on_off::config_t on_off;
+    cluster::on_off::feature::lighting::config_t on_off_lighting;
 } on_off_config;
 
 typedef struct : app_with_group_config {
@@ -264,6 +266,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace dimmable_light {
 typedef struct config : on_off_light::config_t {
     cluster::level_control::config_t level_control;
+    cluster::level_control::feature::lighting::config_t level_control_lighting;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -275,6 +278,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace color_temperature_light {
 typedef struct config : dimmable_light::config_t {
     cluster::color_control::config_t color_control;
+    cluster::color_control::feature::color_temperature::config_t color_control_color_temperature;
+    uint16_t color_control_remaining_time;
+    config() : color_control_remaining_time(0) {}
 } config_t;
 
 uint32_t get_device_type_id();
@@ -286,6 +292,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace extended_color_light {
 typedef struct config : dimmable_light::config_t {
     cluster::color_control::config_t color_control;
+    cluster::color_control::feature::color_temperature::config_t color_control_color_temperature;
+    cluster::color_control::feature::xy::config_t color_control_xy;
+    uint16_t color_control_remaining_time;
+    config() : color_control_remaining_time(0) {}
 } config_t;
 
 uint32_t get_device_type_id();
@@ -367,6 +377,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace dimmable_plugin_unit {
 typedef struct config : on_off_plugin_unit::config_t {
     cluster::level_control::config_t level_control;
+    cluster::level_control::feature::lighting::config_t level_control_lighting;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -633,7 +644,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* flow_sensor */
 
-namespace pump{
+namespace pump {
 typedef struct config : app_base_config {
     cluster::on_off::config_t on_off;
     cluster::pump_configuration_and_control::config_t pump_configuration_and_control;
@@ -657,8 +668,6 @@ typedef struct config : app_client_config {
     config() {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
     }
-    cluster::on_off::config_t on_off;
-    cluster::pump_configuration_and_control::config_t pump_configuration_and_control;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -679,7 +688,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** mode_select_device **/
 
-namespace room_air_conditioner{
+namespace room_air_conditioner {
 typedef struct config : app_base_config {
     config() {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
@@ -694,7 +703,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** room air conditioner **/
 
-namespace temperature_controlled_cabinet{
+namespace temperature_controlled_cabinet {
 typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::temperature_control::config_t temperature_control;
@@ -706,7 +715,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** temperature_controlled_cabinet **/
 
-namespace refrigerator{
+namespace refrigerator {
 typedef struct config {
     cluster::descriptor::config_t descriptor;
 } config_t;
@@ -728,7 +737,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** oven **/
 
-namespace robotic_vacuum_cleaner{
+namespace robotic_vacuum_cleaner {
 typedef struct config : app_base_config {
     config() {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
@@ -913,7 +922,6 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* secondary_network_interface */
 
 namespace mounted_on_off_control {
-
 typedef struct config : on_off_config {
     config() {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
