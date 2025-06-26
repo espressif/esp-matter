@@ -73,9 +73,9 @@ esp_err_t esp_matter_ota_requestor_init(void)
 #endif
 }
 
+#if CONFIG_ENABLE_OTA_REQUESTOR
 static esp_err_t esp_matter_ota_override_impl(const esp_matter_ota_requestor_impl_t *impl)
 {
-#if CONFIG_ENABLE_OTA_REQUESTOR
     VerifyOrReturnError(impl != nullptr, ESP_ERR_INVALID_ARG);
 
     if (impl->driver != nullptr) {
@@ -88,10 +88,8 @@ static esp_err_t esp_matter_ota_override_impl(const esp_matter_ota_requestor_imp
     s_ota_requestor_impl.user_consent = impl->user_consent;
 
     return ESP_OK;
-#else
-    return ESP_ERR_NOT_SUPPORTED;
-#endif // CONFIG_ENABLE_OTA_REQUESTOR
 }
+#endif // CONFIG_ENABLE_OTA_REQUESTOR
 
 void esp_matter_ota_requestor_start(void)
 {

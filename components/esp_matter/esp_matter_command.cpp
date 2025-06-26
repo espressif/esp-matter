@@ -550,17 +550,6 @@ static esp_err_t esp_matter_command_callback_stop_with_on_off(const ConcreteComm
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_command_callback_move_to_closest_frequency(const ConcreteCommandPath &command_path,
-                                                                       TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::LevelControl::Commands::MoveToClosestFrequency::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfLevelControlClusterMoveToClosestFrequencyCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
 static esp_err_t esp_matter_command_callback_move_to_hue(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                          void *opaque_ptr)
 {
@@ -1360,6 +1349,7 @@ static esp_err_t esp_matter_command_callback_disable_action_with_duration(const 
     return ESP_OK;
 }
 
+#if CHIP_CONFIG_USE_ACCESS_RESTRICTIONS
 static esp_err_t esp_matter_command_callback_review_fabric_restrictions(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
 {
     chip::app::Clusters::AccessControl::Commands::ReviewFabricRestrictions::DecodableType command_data;
@@ -1369,16 +1359,7 @@ static esp_err_t esp_matter_command_callback_review_fabric_restrictions(const Co
     }
     return ESP_OK;
 }
-
-static esp_err_t esp_matter_command_callback_keep_active(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::BridgedDeviceBasicInformation::Commands::KeepActive::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfBridgedDeviceBasicInformationClusterKeepActiveCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
+#endif // CHIP_CONFIG_USE_ACCESS_RESTRICTIONS
 
 static esp_err_t esp_matter_command_callback_send_key(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
 {
