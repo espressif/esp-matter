@@ -43,9 +43,9 @@ extern const char insights_auth_key_end[] asm("_binary_insights_auth_key_txt_end
 namespace {
 // Please refer to https://github.com/CHIP-Specifications/connectedhomeip-spec/blob/master/src/namespaces
 constexpr const uint8_t kNamespaceSwitches = 0x43;
-// Common Number Namespace: 7, tag 0 (Zero)
+// Switches Namespace: 0x43, tag 0 (On)
 constexpr const uint8_t kTagSwitchOn = 0;
-// Common Number Namespace: 7, tag 1 (One)
+// Switches Namespace: 0x43, tag 1 (Off)
 constexpr const uint8_t kTagSwitchOff = 1;
 
 constexpr const uint8_t kNamespacePosition = 8;
