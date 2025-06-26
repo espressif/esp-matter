@@ -189,7 +189,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
-    cluster_t *cluster = power_source::create(endpoint, &(config->power_source), CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
+    cluster_t *cluster = power_source::create(endpoint, &(config->power_source), CLUSTER_FLAG_SERVER, config->descriptor.features);
     if (!cluster) {
         return ESP_ERR_INVALID_STATE;
     }
