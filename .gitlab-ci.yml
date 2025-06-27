@@ -240,7 +240,7 @@ build_image:
     - build
     # runner: `sudo mkdir -p /cache/matter_build/`
     # gitlab-runner config: `volumes = ["/cache:/cache:rw"]`
-    - matter_cache
+    - brew
   before_script:
     - *add_gitlab_ssh_key
     - *get_build_caches
@@ -262,7 +262,7 @@ build_image:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" ||  $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
   tags:
     - build
-    - matter_cache
+    - brew
   before_script:
     - *add_gitlab_ssh_key
     - *get_build_caches
