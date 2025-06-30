@@ -83,7 +83,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     icd_management::feature::check_in_protocol_support::add(icd_management_cluster);
 #endif // CHIP_CONFIG_ENABLE_ICD_CIP
 #if CHIP_CONFIG_ENABLE_ICD_UAT
-    icd_management::feature::user_active_mode_trigger::add(icd_management_cluster);
+    icd_management::feature::user_active_mode_trigger::add(icd_management_cluster, &(config->icd_user_active_mode_trigger));
 #endif // CHIP_CONFIG_ENABLE_ICD_UAT
 #endif // CHIP_CONFIG_ENABLE_ICD_LIT
     }

@@ -455,28 +455,29 @@ int create(uint8_t device_type_index)
         case ESP_MATTER_ELECTRICAL_SENSOR: {
             esp_matter::endpoint::electrical_sensor::config_t electrical_sensor_config;
             electrical_sensor_config.power_topology.feature_flags = esp_matter::cluster::power_topology::feature::node_topology::get_id();
-            electrical_sensor_config.electrical_power_measurement.feature_flags = esp_matter::cluster::electrical_power_measurement::feature::direct_current::get_id();
+            electrical_sensor_config.electrical_power_measurement.feature_flags =
+            esp_matter::cluster::electrical_power_measurement::feature::direct_current::get_id() |
+            esp_matter::cluster::electrical_power_measurement::feature::alternating_current::get_id();
             endpoint = esp_matter::endpoint::electrical_sensor::create(node, &electrical_sensor_config, ENDPOINT_FLAG_NONE, NULL);
 
             if (endpoint) {
                 // Add the ElectricalEnergyMeasurement cluster with both imported and exported energy features
-                esp_matter::cluster_t *energy_cluster = esp_matter::cluster::electrical_energy_measurement::create( endpoint, NULL,
-                    CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
+                esp_matter::cluster::electrical_energy_measurement::config_t electrical_energy_measurement;
+                electrical_energy_measurement.feature_flags =
+                esp_matter::cluster::electrical_energy_measurement::feature::imported_energy::get_id() |
+                esp_matter::cluster::electrical_energy_measurement::feature::exported_energy::get_id() |
+                esp_matter::cluster::electrical_energy_measurement::feature::cumulative_energy::get_id() |
+                esp_matter::cluster::electrical_energy_measurement::feature::periodic_energy::get_id();
+                esp_matter::cluster_t *energy_cluster = esp_matter::cluster::electrical_energy_measurement::create(endpoint, NULL,
+                    CLUSTER_FLAG_SERVER);
 
                 if (!energy_cluster) {
                     ESP_LOGE(TAG, "Failed to create electrical energy measurement cluster");
-                } else {
-                    esp_matter::cluster::electrical_energy_measurement::feature::imported_energy::add(energy_cluster);
-                    esp_matter::cluster::electrical_energy_measurement::feature::exported_energy::add(energy_cluster);
-                    esp_matter::cluster::electrical_energy_measurement::feature::cumulative_energy::add(energy_cluster);
-                    esp_matter::cluster::electrical_energy_measurement::feature::periodic_energy::add(energy_cluster);
                 }
                 esp_matter::cluster_t *power_cluster = esp_matter::cluster::get(endpoint, chip::app::Clusters::ElectricalPowerMeasurement::Id);
                 if (power_cluster) {
                     esp_matter::cluster::electrical_power_measurement::attribute::create_voltage(power_cluster, NULL);
                     esp_matter::cluster::electrical_power_measurement::attribute::create_active_current(power_cluster, NULL);
-                    esp_matter::cluster::electrical_power_measurement::feature::direct_current::add(power_cluster);
-                    esp_matter::cluster::electrical_power_measurement::feature::alternating_current::add(power_cluster);
                 }
                 if (power_cluster && energy_cluster) {
                     g_electrical_sensor_created = true;
