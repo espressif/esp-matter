@@ -204,6 +204,7 @@ typedef struct config {
     cluster::administrator_commissioning::config_t administrator_commissioning;
     cluster::operational_credentials::config_t operational_credentials;
     cluster::icd_management::config_t icd_management;
+    cluster::icd_management::feature::user_active_mode_trigger::config_t icd_user_active_mode_trigger;
 } config_t;
 
 uint32_t get_device_type_id();
