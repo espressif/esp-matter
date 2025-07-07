@@ -1,15 +1,17 @@
 # Changelog for esp_matter component registry
 
-## [1.4.1](https://components.espressif.com/components/espressif/esp_matter/versions/1.4.1)
+## [1.4.0~1](https://components.espressif.com/components/espressif/esp_matter/versions/1.4.0~1)
 
 #### Bug Fixes
 
+- fix compiling error for `to_underlying` when using c++23
 - `NDEBUG` flag will be added if `CONFIG_COMPILER_OPTIMIZATION_ASSERTIONS_DISABLE` is set.
 
 #### Features
 
-- esp-matter commit: 725558007ca8d77de8faad2175b04016e90da57c
-- connectedhomeip commit: 19aeeb3ba072250b47c21cd242e657d5949a97d3
+- Use v1.4.0~N based on Matter v1.4.0, remove component v1.4.1
+- esp-matter commit: bea837ee556c82571537791c774d2e2aa219fa33
+- connectedhomeip commit: 87cf8e5030284e3357cfdff5e0b83eb9d5ff73c9
 
 ## [1.4.0](https://components.espressif.com/components/espressif/esp_matter/versions/1.4.0)
 
