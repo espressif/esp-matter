@@ -644,11 +644,12 @@ build_docs:
         paths:
             - docs/_build/*/*/*.txt
             - docs/_build/*/*/html/*
+            - docs/_build/*/*/latex/*
         expire_in: 1 days
     script:
         - cd docs
         - pip install -r requirements.txt
-        - build-docs -t esp32 esp32s3 esp32c2 esp32c3 esp32c6 esp32h2 esp32p4 esp32c5 -l en
+        - build-docs -bs html latex -t esp32 esp32s3 esp32c2 esp32c3 esp32c6 esp32h2 esp32p4 esp32c5 -l en
         # disable link checks for now, as it is failing due to some links taking longer time to respond
         # - build-docs -t esp32 -l en linkcheck
 
