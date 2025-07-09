@@ -113,63 +113,18 @@ def generate_plugin_application_callbacks_h(xml_files, output_dir):
             header_file.write('void Matter{}PluginServerInitCallback();\n'.format(
                 format_cluster_name(get_cluster_name(cluster))))
 
-        header_file.writelines(
-            ['\n',
-             '#include <esp_matter_cluster.h>\n',
-             '\n',
-             '#define MATTER_PLUGINS_INIT esp_matter::cluster::plugin_init_callback_common();\n'])
-
-
-def generate_callback_stub_cpp(xml_files, output_dir):
-    with open(os.path.join(output_dir, 'app/callback-stub.cpp'), 'w') as src_file:
-        src_file.writelines(
-            ['#include <app-common/zap-generated/callback.h>\n',
-             '\n',
-             'using namespace chip;\n'])
+def generate_cluster_callbacks_h(xml_files, output_dir):
+    with open(os.path.join(output_dir, 'app/ClusterCallbacks.h'), 'w') as header_file:
+        header_file.write('#pragma once\n\n')
+        header_file.write('#include <lib/core/DataModelTypes.h>\n\n')
+        header_file.write('using chip::EndpointId;\n\n')
         clusters = get_clusters_from_xml_files(xml_files)
         clusters.sort(key=get_formatted_cluster_name)
         for cluster in clusters:
-            src_file.write('void __attribute__((weak)) emberAf{}ClusterInitCallback(EndpointId endpoint)\n'.format(
+            header_file.write('void ESPMatter{}ClusterServerInitCallback(EndpointId endpoint);\n'.format(
                 format_cluster_name(get_cluster_name(cluster))))
-            src_file.writelines(
-                ['{\n',
-                 '    // To prevent warning\n',
-                 '    (void) endpoint;\n'
-                 '}\n'])
-
-
-def generate_cluster_init_callback_cpp(xml_files, output_dir):
-    with open(os.path.join(output_dir, 'app/cluster-init-callback.cpp'), 'w') as src_file:
-        src_file.writelines(
-            ['#include <app-common/zap-generated/callback.h>\n',
-             '#include <app-common/zap-generated/ids/Clusters.h>\n',
-             '#include <lib/support/Span.h>\n',
-             '#include <protocols/interaction_model/Constants.h>\n',
-             '\n',
-             'using namespace chip;\n',
-             '\n',
-             '// Cluster Init Functions\n',
-             'void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)\n',
-             '{\n',
-             '    switch (clusterId)\n',
-             '    {\n'])
-        clusters = get_clusters_from_xml_files(xml_files)
-        clusters.sort(key=get_formatted_cluster_name)
-        for cluster in clusters:
-            formatted_cluster_name = format_cluster_name(
-                get_cluster_name(cluster))
-            src_file.writelines(
-                ['    case app::Clusters::{}::Id:\n'.format(formatted_cluster_name),
-                 '        emberAf{}ClusterInitCallback(endpoint);\n'.format(
-                     formatted_cluster_name),
-                 '        break;\n'])
-
-        src_file.writelines(
-            ['    default:\n',
-             '        // Unrecognized cluster ID\n',
-             '        break;\n',
-             '    }\n',
-             '}\n'])
+            header_file.write('void ESPMatter{}ClusterServerShutdownCallback(EndpointId endpoint);\n\n'.format(
+                format_cluster_name(get_cluster_name(cluster))))
 
 
 def get_attribute_read_privilege(attribute):
@@ -274,8 +229,6 @@ def get_privileges(clusters):
     return attribute_read_privileges, attribute_write_privileges, command_invoke_privileges, event_read_privileges
 
 
-
-
 def get_privileges_array(privileges, array_type, interaction_type, object_type):
     if array_type == 'cluster':
         array = '// Parallel array data (*cluster*, {}, privilege) for {} {}\n'.format(
@@ -345,8 +298,7 @@ def main():
     args = get_args()
     xml_files = glob.glob(os.path.join(args.xml_dir, '*.xml'))
     generate_plugin_application_callbacks_h(xml_files, args.output_dir)
-    generate_callback_stub_cpp(xml_files, args.output_dir)
-    generate_cluster_init_callback_cpp(xml_files, args.output_dir)
+    generate_cluster_callbacks_h(xml_files, args.output_dir)
     generate_access_h(xml_files, args.output_dir)
 
 

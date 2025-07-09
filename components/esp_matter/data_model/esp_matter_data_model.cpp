@@ -12,25 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cstdint>
+#include <cstring>
 #include <esp_check.h>
+#include <esp_err.h>
 #include <esp_log.h>
 #include <esp_matter.h>
+#include <esp_matter_attribute_utils.h>
 #include <esp_matter_core.h>
 #include <esp_matter_data_model.h>
 #include <esp_matter_data_model_priv.h>
 #include <esp_matter_mem.h>
 #include <esp_matter_nvs.h>
+#include <esp_random.h>
 #include <nvs_flash.h>
 #include <singly_linked_list.h>
 
-#include <app/util/attribute-storage.h>
-#include <lib/core/DataModelTypes.h>
 #include <app/clusters/identify-server/identify-server.h>
+#include <app/data-model-provider/MetadataTypes.h>
+#include <app/data-model-provider/Provider.h>
+#include <app/server/Server.h>
+#include <app/util/attribute-storage.h>
 #include <app/util/endpoint-config-api.h>
-#include "app/server/Server.h"
-#include "credentials/GroupDataProviderImpl.h"
+#include <credentials/GroupDataProviderImpl.h>
+#include <lib/core/DataModelTypes.h>
 
 #define ESP_MATTER_MAX_DEVICE_TYPE_COUNT CONFIG_ESP_MATTER_MAX_DEVICE_TYPE_COUNT
+#define ESP_MATTER_MAX_SEMANTIC_TAG_COUNT 3
 
 static const char *TAG = "data_model";
 
@@ -38,23 +46,25 @@ using chip::CommandId;
 using chip::DataVersion;
 using chip::EventId;
 using chip::kInvalidAttributeId;
-using chip::kInvalidCommandId;
 using chip::kInvalidClusterId;
+using chip::kInvalidCommandId;
 using chip::kInvalidEndpointId;
+using chip::app::DataModel::EndpointCompositionPattern;
 
 namespace esp_matter {
+
 struct _attribute_base_t {
     uint16_t flags; // This struct is for attributes managed internally.
-    uint16_t index;
     uint32_t attribute_id;
     struct _attribute_base_t *next;
 };
 
 struct _attribute_t : public _attribute_base_t {
-    uint32_t cluster_id; // This struct is for attributes not managed internally.
     esp_matter_attr_val_t val;
-    attribute::callback_t override_callback;
+    esp_matter_attr_bounds_t *bounds;
     uint16_t endpoint_id;
+    uint32_t cluster_id;
+    attribute::callback_t override_callback;
 };
 
 typedef struct _command {
@@ -71,34 +81,42 @@ typedef struct _event {
 } _event_t;
 
 typedef struct _cluster {
-    uint8_t index;
+    uint32_t cluster_id;
     uint16_t endpoint_id;
+    uint8_t flags;
+    const cluster::function_generic_t *functions;
     cluster::plugin_server_init_callback_t plugin_server_init_callback;
     cluster::delegate_init_callback_t delegate_init_callback;
-    void * delegate_pointer;
+    void *delegate_pointer;
     cluster::add_bounds_callback_t add_bounds_callback;
-    _attribute_base_t *attribute_list; /* If attribute is managed internally, the actual pointer type is _internal_attribute_t.
-                                     When operating attribute_list, do check the flags first! */
-    EmberAfAttributeMetadata *matter_attributes;
+    cluster::initialization_callback_t init_callback;
+    cluster::shutdown_callback_t shutdown_callback;
+    chip::DataVersion data_version;
+    _attribute_base_t *attribute_list; /* If attribute is managed internally, the actual pointer type is
+                                     _internal_attribute_t. When operating attribute_list, do check the flags first! */
     _command_t *command_list;
     _event_t *event_list;
     struct _cluster *next;
 } _cluster_t;
 
+typedef struct device_type {
+    uint8_t version;
+    uint32_t id;
+} device_type_t;
+
 typedef struct _endpoint {
     uint16_t endpoint_id;
+    bool enabled;
     uint8_t device_type_count;
-    uint8_t cluster_count;
-    uint8_t device_type_versions[ESP_MATTER_MAX_DEVICE_TYPE_COUNT];
-    uint32_t device_type_ids[ESP_MATTER_MAX_DEVICE_TYPE_COUNT];
+    device_type_t device_types[ESP_MATTER_MAX_DEVICE_TYPE_COUNT];
     uint16_t flags;
     uint16_t parent_endpoint_id;
-    _cluster_t *cluster_list;
-    EmberAfEndpointType *endpoint_type;
-    chip::DataVersion *data_versions_ptr;
-    EmberAfDeviceType *device_types_ptr;
     void *priv_data;
     Identify *identify;
+    EndpointCompositionPattern composition_pattern;
+    uint8_t semantic_tag_count;
+    chip::app::DataModel::Provider::SemanticTag semantic_tags[ESP_MATTER_MAX_SEMANTIC_TAG_COUNT];
+    _cluster_t *cluster_list;
     struct _endpoint *next;
 } _endpoint_t;
 
@@ -107,6 +125,21 @@ typedef struct _node {
     uint16_t min_unused_endpoint_id;
 } _node_t;
 
+namespace {
+// Treat 0xFFFF'FFFF as wildcard cluster
+inline bool is_wildcard_cluster_id(uint32_t cluster_id)
+{
+    return cluster_id == chip::kInvalidClusterId;
+}
+
+// Treat 0xFFFF as wildcard endpoint
+inline bool is_wildcard_endpoint_id(uint16_t endpoint_id)
+{
+    return endpoint_id == chip::kInvalidEndpointId;
+}
+
+} // namespace
+
 namespace node {
 
 static _node_t *node = NULL;
@@ -114,10 +147,10 @@ static _node_t *node = NULL;
 // If Matter server or ESP-Matter data model is not enabled. we will never use minimum unused endpoint id.
 esp_err_t store_min_unused_endpoint_id()
 {
-    VerifyOrReturnError((node && esp_matter::is_started()), ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Node does not exist or esp_matter does not start"));
+    VerifyOrReturnError((node && esp_matter::is_started()), ESP_ERR_INVALID_STATE,
+                        ESP_LOGE(TAG, "Node does not exist or esp_matter does not start"));
     nvs_handle_t handle;
-    esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, ESP_MATTER_KVS_NAMESPACE,
-                                            NVS_READWRITE, &handle);
+    esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, ESP_MATTER_KVS_NAMESPACE, NVS_READWRITE, &handle);
 
     VerifyOrReturnError(err == ESP_OK, err, ESP_LOGE(TAG, "Failed to open the node nvs_namespace"));
     err = nvs_set_u16(handle, "min_uu_ep_id", node->min_unused_endpoint_id);
@@ -128,11 +161,11 @@ esp_err_t store_min_unused_endpoint_id()
 
 esp_err_t read_min_unused_endpoint_id()
 {
-    VerifyOrReturnError((node && esp_matter::is_started()), ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Node does not exist or esp_matter does not start"));
+    VerifyOrReturnError((node && esp_matter::is_started()), ESP_ERR_INVALID_STATE,
+                        ESP_LOGE(TAG, "Node does not exist or esp_matter does not start"));
 
     nvs_handle_t handle;
-    esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, ESP_MATTER_KVS_NAMESPACE,
-                                            NVS_READONLY, &handle);
+    esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, ESP_MATTER_KVS_NAMESPACE, NVS_READONLY, &handle);
     if (err == ESP_OK) {
         err = nvs_get_u16(handle, "min_uu_ep_id", &node->min_unused_endpoint_id);
         nvs_close(handle);
@@ -164,161 +197,39 @@ esp_err_t read_min_unused_endpoint_id()
     return err;
 }
 
-} /* node */
-
-namespace command {
-command_entry_t *get_cluster_accepted_command_list(uint32_t cluster_id);
-size_t get_cluster_accepted_command_count(uint32_t cluster_id);
-command_entry_t *get_cluster_generated_command_list(uint32_t cluster_id);
-size_t get_cluster_generated_command_count(uint32_t cluster_id);
-} /* command */
-
-namespace attribute {
-
-static EmberAfAttributeMetadata *get_external_attribute_metadata(_attribute_t * attribute)
-{
-    if (NULL == attribute || (attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY)) {
-        return NULL;
-    }
-    _cluster_t *cluster = (_cluster_t *)cluster::get(attribute->endpoint_id, attribute->cluster_id);
-    if (NULL == cluster) {
-        return NULL;
-    }
-    return &cluster->matter_attributes[attribute->index];
-}
-
-static esp_err_t free_default_value(attribute_t *attribute)
-{
-    VerifyOrReturnError(attribute, ESP_FAIL, ESP_LOGE(TAG, "Attribute cannot be NULL"));
-    _attribute_t *current_attribute = (_attribute_t *)attribute;
-    EmberAfAttributeMetadata *matter_attribute = get_external_attribute_metadata(current_attribute);
-    if (!matter_attribute) {
-        ESP_LOGE(TAG, "Attribute Metadata is not found");
-        return ESP_ERR_NOT_FOUND;
-    }
-
-    /* Free value if data is more than 2 bytes or if it is min max attribute */
-    if (current_attribute->flags & ATTRIBUTE_FLAG_MIN_MAX) {
-        if (matter_attribute->size > 2) {
-            esp_matter_mem_free((void *)matter_attribute->defaultValue.ptrToMinMaxValue->defaultValue.ptrToDefaultValue);
-            esp_matter_mem_free((void *)matter_attribute->defaultValue.ptrToMinMaxValue->minValue.ptrToDefaultValue);
-            esp_matter_mem_free((void *)matter_attribute->defaultValue.ptrToMinMaxValue->maxValue.ptrToDefaultValue);
-        }
-        esp_matter_mem_free((void *)matter_attribute->defaultValue.ptrToMinMaxValue);
-    } else if (matter_attribute->size > 2) {
-        esp_matter_mem_free((void *)matter_attribute->defaultValue.ptrToDefaultValue);
-    }
-    return ESP_OK;
-}
-
-static EmberAfDefaultAttributeValue get_default_value_from_data(esp_matter_attr_val_t *val,
-                                                                EmberAfAttributeType attribute_type,
-                                                                uint16_t attribute_size)
-{
-    EmberAfDefaultAttributeValue default_value = (uint16_t)0;
-    uint8_t *value = (uint8_t *)esp_matter_mem_calloc(1, attribute_size);
-    VerifyOrReturnValue(value, default_value, ESP_LOGE(TAG, "Could not allocate value buffer for default value"));
-    get_data_from_attr_val(val, &attribute_type, &attribute_size, value);
-
-    if (attribute_size > 2) {
-        /* Directly set the pointer */
-        default_value = value;
-    } else {
-        /* This data is 2 bytes or less. This should be represented as uint16. Copy the bytes appropriately
-        for 0 or 1 or 2 bytes to be converted to uint16. Then free the allocated buffer. */
-        uint16_t int_value = 0;
-        if (attribute_size == 2) {
-            memcpy(&int_value, value, attribute_size);
-        } else if (attribute_size == 1) {
-            int_value = (uint16_t)*value;
-        }
-        default_value = int_value;
-        esp_matter_mem_free(value);
-    }
-    return default_value;
-}
-
-static esp_err_t set_default_value_from_current_val(attribute_t *attribute, esp_matter_attr_val_t *min, esp_matter_attr_val_t *max)
-{
-    VerifyOrReturnError(attribute, ESP_FAIL, ESP_LOGE(TAG, "Attribute cannot be NULL"));
-    _attribute_t *current_attribute = (_attribute_t *)attribute;
-
-    EmberAfAttributeMetadata *matter_attribute = get_external_attribute_metadata(current_attribute);
-    if (!matter_attribute) {
-        ESP_LOGE(TAG, "Attribute Metadata is not found");
-        return ESP_ERR_NOT_FOUND;
-    }
-
-    esp_matter_attr_val_t *val = &current_attribute->val;
-
-    /* Get size */
-    EmberAfAttributeType attribute_type = 0;
-    uint16_t attribute_size = 0;
-    get_data_from_attr_val(val, &attribute_type, &attribute_size, NULL);
-
-    /* Get and set value */
-    if (current_attribute->flags & ATTRIBUTE_FLAG_MIN_MAX) {
-        EmberAfAttributeMinMaxValue *temp_value = (EmberAfAttributeMinMaxValue *)esp_matter_mem_calloc(1,
-                                                                                sizeof(EmberAfAttributeMinMaxValue));
-        VerifyOrReturnError(temp_value, ESP_FAIL, ESP_LOGE(TAG, "Could not allocate ptrToMinMaxValue for default value"));
-        temp_value->defaultValue = get_default_value_from_data(val, attribute_type, attribute_size);
-        temp_value->minValue = get_default_value_from_data(min, attribute_type, attribute_size);
-        temp_value->maxValue = get_default_value_from_data(max, attribute_type, attribute_size);
-        matter_attribute->defaultValue.ptrToMinMaxValue = temp_value;
-    } else if (attribute_size > 2) {
-        EmberAfDefaultAttributeValue temp_value = get_default_value_from_data(val, attribute_type, attribute_size);
-        matter_attribute->defaultValue.ptrToDefaultValue = temp_value.ptrToDefaultValue;
-    } else {
-        EmberAfDefaultAttributeValue temp_value = get_default_value_from_data(val, attribute_type, attribute_size);
-        matter_attribute->defaultValue.defaultValue = temp_value.defaultValue;
-    }
-    return ESP_OK;
-}
-} /* attribute */
+} // namespace node
 
 namespace endpoint {
 
-static int get_next_index()
+esp_err_t disable(endpoint_t *endpoint)
 {
-    uint16_t endpoint_id = 0;
-    for (int index = 0; index < MAX_ENDPOINT_COUNT; index++) {
-        endpoint_id = emberAfEndpointFromIndex(index);
-        if (endpoint_id == kInvalidEndpointId) {
-            return index;
-        }
-    }
-    return 0xFFFF;
+    VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    current_endpoint->enabled = false;
+    return ESP_OK;
 }
 
-static esp_err_t disable(endpoint_t *endpoint)
+static esp_err_t init_identification(endpoint_t *endpoint)
 {
-    /* Take lock if not already taken */
-    lock::status_t lock_status = lock::chip_stack_lock(portMAX_DELAY);
-
-    VerifyOrReturnError(lock_status != lock::FAILED, ESP_FAIL, ESP_LOGE(TAG, "Could not get task context"));
-
-    /* Remove endpoint */
+    VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
-    int endpoint_index = emberAfGetDynamicIndexFromEndpoint(current_endpoint->endpoint_id);
-    if (endpoint_index == 0xFFFF) {
-        ESP_LOGE(TAG, "Could not find endpoint index");
-        if (lock_status == lock::SUCCESS) {
-            lock::chip_stack_unlock();
+    _cluster_t *cluster = current_endpoint->cluster_list;
+    while (cluster) {
+        uint32_t cluster_id = cluster::get_id((cluster_t *)cluster);
+        /* Init identify if exists and not initialized */
+        if (cluster_id == chip::app::Clusters::Identify::Id && current_endpoint->identify == NULL) {
+            _attribute_t *identify_type_attr = (_attribute_t *)attribute::get(
+                current_endpoint->endpoint_id, cluster_id, chip::app::Clusters::Identify::Attributes::IdentifyType::Id);
+            if (identify_type_attr) {
+                return identification::init(current_endpoint->endpoint_id, identify_type_attr->val.val.u8);
+            } else {
+                ESP_LOGE(TAG, "Can't get IdentifyType attribute in Identify cluster");
+                return ESP_ERR_INVALID_STATE;
+            }
         }
-        return ESP_FAIL;
+        cluster = cluster->next;
     }
-    emberAfClearDynamicEndpoint(endpoint_index);
-
-    if (lock_status == lock::SUCCESS) {
-        lock::chip_stack_unlock();
-    }
-
-    /* Delete identify */
-    if (current_endpoint->identify) {
-        chip::Platform::Delete(current_endpoint->identify);
-        current_endpoint->identify = NULL;
-    }
-
+    // Return ESP_OK when identify cluster is not on the endpoint.
     return ESP_OK;
 }
 
@@ -326,232 +237,9 @@ esp_err_t enable(endpoint_t *endpoint)
 {
     VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
-
-    /* Device types */
-    EmberAfDeviceType *device_types_ptr = (EmberAfDeviceType *)esp_matter_mem_calloc(current_endpoint->device_type_count, sizeof(EmberAfDeviceType));
-    if (!device_types_ptr) {
-        ESP_LOGE(TAG, "Couldn't allocate device_types");
-        /* goto cleanup is not used here to avoid 'crosses initialization' of device_types below */
-        return ESP_ERR_NO_MEM;
-    }
-    for (size_t i = 0; i < current_endpoint->device_type_count; ++i) {
-        device_types_ptr[i].deviceTypeId = current_endpoint->device_type_ids[i];
-        device_types_ptr[i].deviceTypeRevision = current_endpoint->device_type_versions[i];
-    }
-    chip::Span<EmberAfDeviceType> device_types(device_types_ptr, current_endpoint->device_type_count);
-    current_endpoint->device_types_ptr = device_types_ptr;
-
-    /* Clusters */
-    _cluster_t *cluster = current_endpoint->cluster_list;
-    int cluster_count = SinglyLinkedList<_cluster_t>::count(cluster);
-    int cluster_index = 0;
-
-    DataVersion *data_versions_ptr = (DataVersion *)esp_matter_mem_calloc(1, cluster_count * sizeof(DataVersion));
-    if (!data_versions_ptr) {
-        ESP_LOGE(TAG, "Couldn't allocate data_versions");
-        esp_matter_mem_free(device_types_ptr);
-        current_endpoint->device_types_ptr = NULL;
-        /* goto cleanup is not used here to avoid 'crosses initialization' of data_versions below */
-        return ESP_ERR_NO_MEM;
-    }
-    chip::Span<chip::DataVersion> data_versions(data_versions_ptr, cluster_count);
-    current_endpoint->data_versions_ptr = data_versions_ptr;
-
-    /* Variables */
-    /* This is needed to avoid 'crosses initialization' errors because of goto */
-    esp_err_t err = ESP_OK;
-    lock::status_t lock_status = lock::FAILED;
-    CHIP_ERROR status = CHIP_NO_ERROR;
-    CommandId *accepted_command_ids = NULL;
-    CommandId *generated_command_ids = NULL;
-    _command_t *command = NULL;
-    command_entry_t *command_list = NULL;
-    uint32_t cluster_id = kInvalidClusterId;
-    int command_count = 0;
-    int command_index = 0;
-    int command_flag = COMMAND_FLAG_NONE;
-    EventId *event_ids = NULL;
-    _event_t *event = NULL;
-    int event_count = 0;
-    int event_index = 0;
-    int endpoint_index = 0;
-
-    while (cluster) {
-        /* Attributes */
-        /* Handled in attribute::create() */
-
-        /* Commands */
-        command = NULL;
-        command_count = 0;
-        command_index = 0;
-        command_flag = COMMAND_FLAG_NONE;
-        accepted_command_ids = NULL;
-        generated_command_ids = NULL;
-        cluster_id = cluster::get_id((cluster_t*)cluster);
-
-        /* Init identify if exists and not initialized */
-        if (cluster_id == chip::app::Clusters::Identify::Id && current_endpoint->identify == NULL) {
-            _attribute_t *identify_type_attr = (_attribute_t *)attribute::get(
-                current_endpoint->endpoint_id, cluster_id, chip::app::Clusters::Identify::Attributes::IdentifyType::Id);
-            if (identify_type_attr) {
-                if (identification::init(current_endpoint->endpoint_id, identify_type_attr->val.val.u8) != ESP_OK) {
-                    ESP_LOGE(TAG, "Failed to init identification");
-                    err = ESP_FAIL;
-                    break;
-                }
-            } else {
-                ESP_LOGE(TAG, "Can't get IdentifyType attribute in Identify cluster");
-                err = ESP_ERR_INVALID_STATE;
-                break;
-            }
-        }
-
-        /* Client Generated Commands */
-        command_flag = COMMAND_FLAG_ACCEPTED;
-        command = cluster->command_list;
-        command_count = SinglyLinkedList<_command_t>::count_with_flag(command, command_flag);
-        command_count += command::get_cluster_accepted_command_count(cluster_id);
-        if (command_count > 0) {
-            command_index = 0;
-            accepted_command_ids = (CommandId *)esp_matter_mem_calloc(1, (command_count + 1) * sizeof(CommandId));
-            if (!accepted_command_ids) {
-                ESP_LOGE(TAG, "Couldn't allocate accepted_command_ids");
-                err = ESP_ERR_NO_MEM;
-                break;
-            }
-            while (command) {
-                if (command->flags & command_flag) {
-                    accepted_command_ids[command_index] = command->command_id;
-                    command_index++;
-                }
-                command = command->next;
-            }
-            command_list = command::get_cluster_accepted_command_list(cluster_id);
-            for(size_t index = 0; command_index < command_count && command_list; index++) {
-                accepted_command_ids[command_index] = command_list[index].command_id;
-                command_index++;
-            }
-            accepted_command_ids[command_index] = kInvalidCommandId;
-        }
-
-        /* Server Generated Commands */
-        command_flag = COMMAND_FLAG_GENERATED;
-        command = cluster->command_list;
-        command_count = SinglyLinkedList<_command_t>::count_with_flag(command, command_flag);
-        command_count += command::get_cluster_generated_command_count(cluster_id);
-        if (command_count > 0) {
-            command_index = 0;
-            generated_command_ids = (CommandId *)esp_matter_mem_calloc(1, (command_count + 1) * sizeof(CommandId));
-            if (!generated_command_ids) {
-                ESP_LOGE(TAG, "Couldn't allocate generated_command_ids");
-                err = ESP_ERR_NO_MEM;
-                break;
-            }
-            while (command) {
-                if (command->flags & command_flag) {
-                    generated_command_ids[command_index] = command->command_id;
-                    command_index++;
-                }
-                command = command->next;
-            }
-            command_list = command::get_cluster_generated_command_list(cluster_id);
-            for(size_t index = 0; command_index < command_count && command_list; index++) {
-                generated_command_ids[command_index] = command_list[index].command_id;
-                command_index++;
-            }
-            generated_command_ids[command_index] = kInvalidCommandId;
-        }
-
-        /* Event */
-        event = cluster->event_list;
-        event_count = SinglyLinkedList<_event_t>::count(event);
-        if (event_count > 0) {
-            event_index = 0;
-            event_ids = (EventId *)esp_matter_mem_calloc(1, (event_count + 1) * sizeof(EventId));
-            if (!event_ids) {
-                ESP_LOGE(TAG, "Couldn't allocate event_ids");
-                err = ESP_ERR_NO_MEM;
-                break;
-            }
-            while (event) {
-                event_ids[event_index] = event->event_id;
-                event_index++;
-                event = event->next;
-            }
-            event_ids[event_index] = chip::kInvalidEventId;
-        }
-
-        /* Fill up the cluster */
-        EmberAfCluster *matter_clusters = (EmberAfCluster *)(&current_endpoint->endpoint_type->cluster[cluster_index]);
-        matter_clusters->attributes = cluster->matter_attributes;
-        matter_clusters->acceptedCommandList = accepted_command_ids;
-        matter_clusters->generatedCommandList = generated_command_ids;
-        matter_clusters->eventList = event_ids;
-        matter_clusters->eventCount = event_count;
-
-        /* Get next cluster */
-        current_endpoint->endpoint_type->endpointSize += matter_clusters->clusterSize;
-        cluster = cluster->next;
-        cluster_index++;
-
-        /* This is to avoid double free in case of errors */
-        accepted_command_ids = NULL;
-        generated_command_ids = NULL;
-        event_ids = NULL;
-    }
-    if (err != ESP_OK) {
-        goto cleanup;
-    }
-
-    current_endpoint->endpoint_type->clusterCount = cluster_count;
-
-    /* Take lock if not already taken */
-    lock_status = lock::chip_stack_lock(portMAX_DELAY);
-    if (lock_status == lock::FAILED) {
-        ESP_LOGE(TAG, "Could not get task context");
-        goto cleanup;
-    }
-
-    /* Add Endpoint */
-    endpoint_index = endpoint::get_next_index();
-    status = emberAfSetDynamicEndpoint(endpoint_index, current_endpoint->endpoint_id, current_endpoint->endpoint_type, data_versions,
-                                       device_types, current_endpoint->parent_endpoint_id);
-    if (status != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Error adding dynamic endpoint %" PRIu16 ": %" CHIP_ERROR_FORMAT, current_endpoint->endpoint_id, status.Format());
-        err = ESP_FAIL;
-        if (lock_status == lock::SUCCESS) {
-            lock::chip_stack_unlock();
-        }
-        goto cleanup;
-    }
-    if (lock_status == lock::SUCCESS) {
-        lock::chip_stack_unlock();
-    }
-    ESP_LOGI(TAG, "Dynamic endpoint %" PRIu16 " added", current_endpoint->endpoint_id);
-
-    return err;
-
-cleanup:
-    esp_matter_mem_free(generated_command_ids);
-    esp_matter_mem_free(accepted_command_ids);
-    esp_matter_mem_free(event_ids);
-    if (current_endpoint->endpoint_type->cluster) {
-        for (int cluster_index = 0; cluster_index < cluster_count; cluster_index++) {
-            /* Free attributes */
-            esp_matter_mem_free((void *)current_endpoint->endpoint_type->cluster[cluster_index].attributes);
-            /* Free commands */
-            esp_matter_mem_free((void *)current_endpoint->endpoint_type->cluster[cluster_index].acceptedCommandList);
-            esp_matter_mem_free((void *)current_endpoint->endpoint_type->cluster[cluster_index].generatedCommandList);
-            /* Free events */
-esp_matter_mem_free((void *)current_endpoint->endpoint_type->cluster[cluster_index].eventList);
-        }
-
-    }
-    esp_matter_mem_free(data_versions_ptr);
-    current_endpoint->data_versions_ptr = NULL;
-    esp_matter_mem_free(device_types_ptr);
-    current_endpoint->device_types_ptr = NULL;
-    return err;
+    current_endpoint->enabled = true;
+    init_identification(endpoint);
+    return ESP_OK;
 }
 
 esp_err_t enable_all()
@@ -579,9 +267,218 @@ bool is_command_enabled(uint16_t endpoint_id, uint32_t cluster_id, uint32_t comm
     command_t *cmd = command::get(endpoint_id, cluster_id, command_id);
     return (cmd != nullptr);
 }
+
+bool is_enabled(endpoint_t *endpoint)
+{
+    VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    return current_endpoint->enabled;
+}
 } /* endpoint */
 
 namespace attribute {
+
+static callback_t attribute_callback = NULL;
+esp_err_t set_callback(callback_t callback)
+{
+    attribute_callback = callback;
+    return ESP_OK;
+}
+
+static esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
+                                  uint32_t attribute_id, esp_matter_attr_val_t *val)
+{
+    if (attribute_callback) {
+#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
+        void *priv_data = endpoint::get_priv_data(endpoint_id);
+#else
+        void *priv_data = nullptr;
+#endif
+        return attribute_callback(type, endpoint_id, cluster_id, attribute_id, val, priv_data);
+    }
+    return ESP_OK;
+}
+
+/**
+ * Check whether the attribute value is in the range of attribute bounds
+ *
+ * @param[in] val Attribute value.
+ * @param[in] bounds Attribute bounds.
+ *
+ * @return 0 if val is in the range of attribute bounds.
+ * @return 1 if val is more than bounds.max
+ * @return -1 if val is less than bounds.min
+ * @return -2 if val type is wrong
+ */
+static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_attr_bounds_t bounds)
+{
+    switch (val.type) {
+    case ESP_MATTER_VAL_TYPE_UINT8:
+    case ESP_MATTER_VAL_TYPE_ENUM8:
+    case ESP_MATTER_VAL_TYPE_BITMAP8:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT8:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8: {
+        using Traits = chip::app::NumericAttributeTraits<uint8_t>;
+        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.u8)) {
+            return 0;
+        }
+        if (val.val.u8 < bounds.min.val.u8) {
+            return -1;
+        } else if (val.val.u8 > bounds.max.val.u8) {
+            return 1;
+        } else {
+            return 0;
+        }
+        break;
+    }
+    case ESP_MATTER_VAL_TYPE_UINT16:
+    case ESP_MATTER_VAL_TYPE_ENUM16:
+    case ESP_MATTER_VAL_TYPE_BITMAP16:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT16:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16: {
+        using Traits = chip::app::NumericAttributeTraits<uint16_t>;
+        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.u16)) {
+            return 0;
+        }
+        if (val.val.u16 < bounds.min.val.u16) {
+            return -1;
+        } else if (val.val.u16 > bounds.max.val.u16) {
+            return 1;
+        } else {
+            return 0;
+        }
+        break;
+    }
+    case ESP_MATTER_VAL_TYPE_UINT32:
+    case ESP_MATTER_VAL_TYPE_BITMAP32:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT32:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32: {
+        using Traits = chip::app::NumericAttributeTraits<uint32_t>;
+        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.u32)) {
+            return 0;
+        }
+        if (val.val.u32 < bounds.min.val.u32) {
+            return -1;
+        } else if (val.val.u32 > bounds.max.val.u32) {
+            return 1;
+        } else {
+            return 0;
+        }
+        break;
+    }
+    case ESP_MATTER_VAL_TYPE_UINT64:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT64: {
+        using Traits = chip::app::NumericAttributeTraits<uint64_t>;
+        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.u64)) {
+            return 0;
+        }
+        if (val.val.u64 < bounds.min.val.u64) {
+            return -1;
+        } else if (val.val.u64 > bounds.max.val.u64) {
+            return 1;
+        } else {
+            return 0;
+        }
+        break;
+    }
+    case ESP_MATTER_VAL_TYPE_INT8:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_INT8: {
+        using Traits = chip::app::NumericAttributeTraits<int8_t>;
+        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.i8)) {
+            return 0;
+        }
+        if (val.val.i8 < bounds.min.val.i8) {
+            return -1;
+        } else if (val.val.i8 > bounds.max.val.i8) {
+            return 1;
+        } else {
+            return 0;
+        }
+        break;
+    }
+    case ESP_MATTER_VAL_TYPE_INT16:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_INT16: {
+        using Traits = chip::app::NumericAttributeTraits<int16_t>;
+        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.i16)) {
+            return 0;
+        }
+        if (val.val.i16 < bounds.min.val.i16) {
+            return -1;
+        } else if (val.val.i16 > bounds.max.val.i16) {
+            return 1;
+        } else {
+            return 0;
+        }
+        break;
+    }
+    case ESP_MATTER_VAL_TYPE_INT32:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_INT32: {
+        using Traits = chip::app::NumericAttributeTraits<int32_t>;
+        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.i32)) {
+            return 0;
+        }
+        if (val.val.i32 < bounds.min.val.i32) {
+            return -1;
+        } else if (val.val.i32 > bounds.max.val.i32) {
+            return 1;
+        } else {
+            return 0;
+        }
+        break;
+    }
+    case ESP_MATTER_VAL_TYPE_INT64:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_INT64: {
+        using Traits = chip::app::NumericAttributeTraits<int64_t>;
+        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.i64)) {
+            return 0;
+        }
+        if (val.val.i64 < bounds.min.val.i64) {
+            return -1;
+        } else if (val.val.i64 > bounds.max.val.i64) {
+            return 1;
+        } else {
+            return 0;
+        }
+        break;
+    }
+    case ESP_MATTER_VAL_TYPE_FLOAT:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT: {
+        using Traits = chip::app::NumericAttributeTraits<float>;
+        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.f)) {
+            return 0;
+        }
+        if (val.val.f < bounds.min.val.f) {
+            return -1;
+        } else if (val.val.f > bounds.max.val.f) {
+            return 1;
+        } else {
+            return 0;
+        }
+        break;
+    }
+    default:
+        ESP_LOGE(TAG, "Failed to compare_attr_val_with_bounds as the attribute value type is wrong");
+        break;
+    }
+    return -2;
+}
+
+static esp_err_t bound_attribute_val(attribute_t *attribute)
+{
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
+    int compare_result = compare_attr_val_with_bounds(current_attribute->val, *current_attribute->bounds);
+    if (compare_result == 1) {
+        current_attribute->val = current_attribute->bounds->max;
+    } else if (compare_result == -1) {
+        current_attribute->val = current_attribute->bounds->min;
+    } else if (compare_result != 0) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    return ESP_OK;
+}
+
 attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, esp_matter_attr_val_t val,
                     uint16_t max_val_size)
 {
@@ -590,73 +487,45 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, e
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     attribute_t *existing_attribute = get(cluster, attribute_id);
     if (existing_attribute) {
-        ESP_LOGW(TAG, "Attribute 0x%08" PRIX32 " on cluster 0x%08" PRIX32 " already exists. Not creating again.", attribute_id,
-                 cluster::get_id(cluster));
+        ESP_LOGW(TAG, "Attribute 0x%08" PRIX32 " on cluster 0x%08" PRIX32 " already exists. Not creating again.",
+                 attribute_id, cluster::get_id(cluster));
         return existing_attribute;
     }
-
-    endpoint_t *endpoint = endpoint::get(current_cluster->endpoint_id);
-    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
-
-    /* Matter attributes */
-    EmberAfCluster *matter_clusters = (EmberAfCluster *)(&current_endpoint->endpoint_type->cluster[current_cluster->index]);
-    matter_clusters->attributeCount++;
-    int attribute_count = matter_clusters->attributeCount;
-
-    if (current_cluster->matter_attributes) {
-        current_cluster->matter_attributes = (EmberAfAttributeMetadata *)esp_matter_mem_realloc(current_cluster->matter_attributes, attribute_count * sizeof(EmberAfAttributeMetadata));
-    } else {
-        current_cluster->matter_attributes = (EmberAfAttributeMetadata *)esp_matter_mem_calloc(1, attribute_count * sizeof(EmberAfAttributeMetadata));
-    }
-    if (!current_cluster->matter_attributes) {
-        ESP_LOGE(TAG, "Couldn't allocate matter_attributes");
-        return NULL;
-    }
-
-    /* Set */
-    EmberAfAttributeMetadata *matter_attribute = &current_cluster->matter_attributes[attribute_count - 1];
-    matter_attribute->attributeId = attribute_id;
-
-    /* esp-matter uses uint16_t as the flags for the extras, EmberAfAttributeMetadata uses uint8_t as the mask.
-       The conversion from uint16 to uint8 is as expected for that the extra flags are only used in esp-matter. */
-    matter_attribute->mask = static_cast<uint8_t>(flags);
-    if (!(flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY)) {
-        matter_attribute->mask |= ATTRIBUTE_FLAG_EXTERNAL_STORAGE;
-    }
-    matter_attribute->attributeType = 0;
-    matter_attribute->size = 0;
     _attribute_t *attribute = NULL;
-    if (!(flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY)) {
-        /* Allocate */
+
+    if (flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY) {
+        /* Create */
+        attribute = (_attribute_t *)esp_matter_mem_calloc(1, sizeof(_attribute_base_t));
+        if (!attribute) {
+            return nullptr;
+        }
+
+        /* Set */
+        attribute->flags = flags;
+        attribute->attribute_id = attribute_id;
+    } else {
         attribute = (_attribute_t *)esp_matter_mem_calloc(1, sizeof(_attribute_t));
         if (!attribute) {
-            ESP_LOGE(TAG, "Couldn't allocate _attribute_t");
-            return NULL;
+            return nullptr;
         }
-        attribute->index = attribute_count - 1;
-        attribute->attribute_id = attribute_id;
-        attribute->cluster_id = matter_clusters->clusterId;
-        attribute->endpoint_id = current_cluster->endpoint_id;
+
+        /* Set */
         attribute->flags = flags;
-        attribute->flags |= ATTRIBUTE_FLAG_EXTERNAL_STORAGE;
-
-        // After reboot, string and array are treated as Invalid. So need to store val.type and size of attribute value.
+        attribute->attribute_id = attribute_id;
+        attribute->override_callback = nullptr;
+        attribute->cluster_id = current_cluster->cluster_id;
+        attribute->endpoint_id = current_cluster->endpoint_id;
         attribute->val.type = val.type;
-        if (val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
-            val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
-            val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
-            val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
-            val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
-            attribute->val.val.a.s = val.val.a.s;
-            attribute->val.val.a.n = val.val.a.n;
-            attribute->val.val.a.t = val.val.a.t;
+        if (val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING || val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
+            val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING || val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING) {
+            attribute->val.val.a.max = max_val_size;
+            val.val.a.max = max_val_size;
         }
-
         bool attribute_updated = false;
         if (flags & ATTRIBUTE_FLAG_NONVOLATILE) {
             // Lets directly read into attribute->val so that we don't have to set the attribute value again.
-            esp_err_t err = get_val_from_nvs(attribute->endpoint_id, attribute->cluster_id, attribute_id,
-                                             attribute->val);
+            esp_err_t err =
+                get_val_from_nvs(attribute->endpoint_id, attribute->cluster_id, attribute_id, attribute->val);
             if (err == ESP_OK) {
                 attribute_updated = true;
             }
@@ -664,22 +533,6 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, e
         if (!attribute_updated) {
             set_val((attribute_t *)attribute, &val);
         }
-
-        set_default_value_from_current_val((attribute_t *)attribute, NULL, NULL);
-
-        attribute::get_data_from_attr_val(&attribute->val, &matter_attribute->attributeType,
-                                        &matter_attribute->size, NULL);
-        if (attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
-            attribute->val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING) {
-            uint16_t size_for_storing_str_len = attribute->val.val.a.t - attribute->val.val.a.s;
-            matter_attribute->size = max_val_size + size_for_storing_str_len;
-        }
-        matter_clusters->clusterSize += matter_attribute->size;
-    } else {
-        attribute = (_attribute_t *)esp_matter_mem_calloc(1, sizeof(_attribute_base_t));
-        attribute->attribute_id = attribute_id;
-        attribute->index = attribute_count - 1;
-        attribute->flags = flags;
     }
 
     /* Add */
@@ -698,9 +551,6 @@ static esp_err_t destroy(attribute_t *attribute)
         return ESP_OK;
     }
 
-    /* Default value needs to be deleted first since it uses the current val. */
-    free_default_value(attribute);
-
     /* Delete val here, if required */
     if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
@@ -713,7 +563,8 @@ static esp_err_t destroy(attribute_t *attribute)
 
     /* Erase the persistent data */
     if (attribute::get_flags(attribute) & ATTRIBUTE_FLAG_NONVOLATILE) {
-        erase_val_in_nvs(current_attribute->endpoint_id, current_attribute->cluster_id, current_attribute->attribute_id);
+        erase_val_in_nvs(current_attribute->endpoint_id, current_attribute->cluster_id,
+                         current_attribute->attribute_id);
     }
 
     /* Free */
@@ -774,29 +625,58 @@ static void deferred_attribute_write(chip::System::Layer *layer, void *attribute
                      current_attribute->val);
 }
 
-esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
+esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_callbacks)
 {
-    VerifyOrReturnError(attribute, ESP_FAIL, ESP_LOGE(TAG, "Attribute cannot be NULL"));
+    VerifyOrReturnError(attribute && val, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Attribute and val cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
 
     ESP_RETURN_ON_FALSE(!(current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY), ESP_ERR_NOT_SUPPORTED, TAG,
                         "Attribute is not managed by esp matter data model");
+    VerifyOrReturnError(current_attribute->val.type == val->type, ESP_ERR_INVALID_ARG,
+                        ESP_LOGE(TAG, "Different value type"));
 
+    if ((current_attribute->flags & ATTRIBUTE_FLAG_MIN_MAX) && current_attribute->bounds) {
+        if (compare_attr_val_with_bounds(*val, *current_attribute->bounds) != 0) {
+            return ESP_ERR_INVALID_ARG;
+        }
+    }
+    if (val_compare(val, &current_attribute->val)) {
+        // If the value is not changed, return ESP_ERR_NOT_FINISHED directly.
+        return ESP_ERR_NOT_FINISHED;
+    }
+    /* Callback to application */
+    if (call_callbacks) {
+        ESP_RETURN_ON_ERROR(execute_callback(attribute::PRE_UPDATE, current_attribute->endpoint_id,
+                                         current_attribute->cluster_id, current_attribute->attribute_id, val),
+                            TAG, "Failed to execute pre update callback");
+    }
+    // TODO: call pre attribute change function is the cluster has the flag
     if (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING || val->type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
-        val->type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING || val->type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
-        val->type == ESP_MATTER_VAL_TYPE_ARRAY) {
-        /* Free old buf */
-        esp_matter_mem_free(current_attribute->val.val.a.b);
-        current_attribute->val.val.a.b = NULL;
+        val->type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING || val->type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING) {
+        uint16_t null_len =
+            (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING || val->type == ESP_MATTER_VAL_TYPE_OCTET_STRING)
+            ? UINT8_MAX
+            : UINT16_MAX;
         if (val->val.a.s > 0) {
-            /* Alloc new buf */
-            uint8_t *new_buf = (uint8_t *)esp_matter_mem_calloc(1, val->val.a.s);
-            VerifyOrReturnError(new_buf, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "Could not allocate new buffer"));
-            /* Copy to new buf and assign */
-            memcpy(new_buf, val->val.a.b, val->val.a.s);
+            uint8_t *new_buf = nullptr;
+            if (val->val.a.s != null_len) {
+                if (val->val.a.s > current_attribute->val.val.a.max) {
+                    return ESP_ERR_NO_MEM;
+                }
+                /* Free old buf */
+                esp_matter_mem_free(current_attribute->val.val.a.b);
+                current_attribute->val.val.a.b = nullptr;
+
+                bool null_reserve =
+                    val->type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING || val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING;
+                /* Alloc new buf */
+                new_buf = (uint8_t *)esp_matter_mem_calloc(1, val->val.a.s + (null_reserve ? 1 : 0));
+                VerifyOrReturnError(new_buf, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "Could not allocate new buffer"));
+                /* Copy to new buf and assign */
+                memcpy(new_buf, val->val.a.b, val->val.a.s);
+            }
             current_attribute->val.val.a.b = new_buf;
             current_attribute->val.val.a.s = val->val.a.s;
-            current_attribute->val.val.a.n = val->val.a.n;
             current_attribute->val.val.a.t = val->val.a.t;
         } else {
             ESP_LOGD(TAG, "Set val called with string with size 0");
@@ -804,11 +684,24 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
     } else {
         memcpy((void *)&current_attribute->val, (void *)val, sizeof(esp_matter_attr_val_t));
     }
+    /* Callback to application */
+    if (call_callbacks) {
+        execute_callback(attribute::POST_UPDATE, current_attribute->endpoint_id, current_attribute->cluster_id,
+                         current_attribute->attribute_id, val);
 
+        cluster_t *cluster = cluster::get(current_attribute->endpoint_id, current_attribute->cluster_id);
+        cluster::function_attribute_change_t attr_change_function =
+            (cluster::function_attribute_change_t)cluster::get_function(cluster, CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION);
+
+        if (attr_change_function) {
+            attr_change_function(chip::app::ConcreteAttributePath(
+                current_attribute->endpoint_id, current_attribute->cluster_id, current_attribute->attribute_id));
+        }
+    }
     if (current_attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE) {
         if (current_attribute->flags & ATTRIBUTE_FLAG_DEFERRED) {
             if (!chip::DeviceLayer::SystemLayer().IsTimerActive(deferred_attribute_write, current_attribute)) {
-                auto & system_layer = chip::DeviceLayer::SystemLayer();
+                auto &system_layer = chip::DeviceLayer::SystemLayer();
                 system_layer.StartTimer(chip::System::Clock::Milliseconds16(k_deferred_attribute_persistence_time_ms),
                                         deferred_attribute_write, current_attribute);
             }
@@ -817,6 +710,7 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
                              current_attribute->attribute_id, current_attribute->val);
         }
     }
+
     return ESP_OK;
 }
 
@@ -844,24 +738,24 @@ esp_err_t add_bounds(attribute_t *attribute, esp_matter_attr_val_t min, esp_matt
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
-        current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
-        ESP_LOGE(TAG, "Bounds cannot be set for string/array type attributes");
+        current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY ||
+        current_attribute->val.type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
+        ESP_LOGE(TAG, "Bounds cannot be set for string/array/boolean type attributes");
         return ESP_ERR_INVALID_ARG;
     }
-    VerifyOrReturnError(((current_attribute->val.type == min.type) && (current_attribute->val.type == max.type)), ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cannot set bounds because of val type mismatch: expected: %d, min: %d, max: %d",
-                 current_attribute->val.type, min.type, max.type));
-
-    EmberAfAttributeMetadata *matter_attribute= get_external_attribute_metadata(current_attribute);
-    if (!matter_attribute) {
-        ESP_LOGE(TAG, "Attribute Metadata is not found");
-        return ESP_ERR_NOT_FOUND;
+    VerifyOrReturnError(((current_attribute->val.type == min.type) && (current_attribute->val.type == max.type)),
+                        ESP_ERR_INVALID_ARG,
+                        ESP_LOGE(TAG, "Cannot set bounds because of val type mismatch: expected: %d, min: %d, max: %d",
+                                 current_attribute->val.type, min.type, max.type));
+    current_attribute->bounds = (esp_matter_attr_bounds_t *)esp_matter_mem_calloc(1, sizeof(esp_matter_attr_bounds_t));
+    if (!current_attribute->bounds) {
+        ESP_LOGE(TAG, "Failed to allocate bounds for attribute");
+        return ESP_ERR_NO_MEM;
     }
-    matter_attribute->mask |= ATTRIBUTE_FLAG_MIN_MAX;
     current_attribute->flags |= ATTRIBUTE_FLAG_MIN_MAX;
-
-    /* Set the default value again after setting the bounds and the flag */
-    set_default_value_from_current_val(attribute, &min, &max);
-    return ESP_OK;
+    current_attribute->bounds->min = min;
+    current_attribute->bounds->max = max;
+    return bound_attribute_val(attribute);
 }
 
 esp_err_t get_bounds(attribute_t *attribute, esp_matter_attr_bounds_t *bounds)
@@ -871,31 +765,18 @@ esp_err_t get_bounds(attribute_t *attribute, esp_matter_attr_bounds_t *bounds)
         return ESP_ERR_INVALID_ARG;
     }
     _attribute_t *current_attribute = (_attribute_t *)attribute;
-
-    EmberAfAttributeMetadata *matter_attribute= get_external_attribute_metadata(current_attribute);
-    if (!matter_attribute) {
-        ESP_LOGE(TAG, "Attribute Metadata is not found");
-        return ESP_ERR_NOT_FOUND;
-    }
-
-    if (!(matter_attribute->mask & ATTRIBUTE_FLAG_MIN_MAX)) {
-        ESP_LOGW(TAG, "Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " has not set bounds",
-                 current_attribute->endpoint_id, current_attribute->cluster_id, matter_attribute->attributeId);
+    if (current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY) {
+        ESP_LOGE(TAG, "Cannot get bounds for attribute managed internally");
         return ESP_ERR_INVALID_ARG;
     }
 
-    if (matter_attribute->size > 2) {
-        get_attr_val_from_data(&bounds->min, matter_attribute->attributeType, matter_attribute->size, (uint8_t *)matter_attribute->defaultValue.ptrToMinMaxValue->minValue.ptrToDefaultValue, matter_attribute);
-        get_attr_val_from_data(&bounds->max, matter_attribute->attributeType, matter_attribute->size, (uint8_t *)matter_attribute->defaultValue.ptrToMinMaxValue->maxValue.ptrToDefaultValue, matter_attribute);
-    } else {
-        uint8_t value[2];
-        uint16_t min_value = matter_attribute->defaultValue.ptrToMinMaxValue->minValue.defaultValue;
-        memcpy(value, &min_value, matter_attribute->size);
-        get_attr_val_from_data(&bounds->min, matter_attribute->attributeType, matter_attribute->size, value, matter_attribute);
-        uint16_t max_value = matter_attribute->defaultValue.ptrToMinMaxValue->maxValue.defaultValue;
-        memcpy(value, &max_value, matter_attribute->size);
-        get_attr_val_from_data(&bounds->max, matter_attribute->attributeType, matter_attribute->size, value, matter_attribute);
+    if (!(current_attribute->flags & ATTRIBUTE_FLAG_MIN_MAX)) {
+        ESP_LOGW(TAG,
+                 "Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " has not set bounds",
+                 current_attribute->endpoint_id, current_attribute->cluster_id, current_attribute->attribute_id);
+        return ESP_ERR_INVALID_ARG;
     }
+    *bounds = *current_attribute->bounds;
     return ESP_OK;
 }
 
@@ -914,8 +795,6 @@ esp_err_t set_override_callback(attribute_t *attribute, callback_t callback)
     ESP_RETURN_ON_FALSE(!(current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY), ESP_ERR_NOT_SUPPORTED, TAG,
                         "Attribute is not managed by esp matter data model");
 
-    cluster_t *cluster = cluster::get(current_attribute->endpoint_id, current_attribute->cluster_id);
-
     if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY ||
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
@@ -923,8 +802,7 @@ esp_err_t set_override_callback(attribute_t *attribute, callback_t callback)
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING) {
         // The override callback might allocate memory and we have no way to free the memory
         // TODO: Add memory-safe override callback for these attribute types
-        ESP_LOGE(TAG, "Cannot set override callback for attribute 0x%" PRIX32 " on cluster 0x%" PRIX32,
-                 current_attribute->attribute_id, cluster::get_id(cluster));
+        ESP_LOGE(TAG, "Cannot set override callback for attribute 0x%" PRIX32, current_attribute->attribute_id);
         return ESP_ERR_NOT_SUPPORTED;
     }
     current_attribute->override_callback = callback;
@@ -937,7 +815,8 @@ callback_t get_override_callback(attribute_t *attribute)
     VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Attribute cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
 
-    VerifyOrReturnValue(!(current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY), NULL, ESP_LOGE(TAG, "Attribute is not managed by esp matter data model"));
+    VerifyOrReturnValue(!(current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY), NULL,
+                        ESP_LOGE(TAG, "Attribute is not managed by esp matter data model"));
 
     return current_attribute->override_callback;
 }
@@ -958,7 +837,7 @@ esp_err_t set_deferred_persistence(attribute_t *attribute)
     return ESP_OK;
 }
 
-} /* attribute */
+} // namespace attribute
 
 namespace command {
 command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callback_t callback)
@@ -968,8 +847,8 @@ command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callba
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     command_t *existing_command = get(cluster, command_id, flags);
     if (existing_command) {
-        ESP_LOGW(TAG, "Command 0x%08" PRIX32 " on cluster 0x%08" PRIX32 " already exists. Not creating again.", command_id,
-                 cluster::get_id(cluster));
+        ESP_LOGW(TAG, "Command 0x%08" PRIX32 " on cluster 0x%08" PRIX32 " already exists. Not creating again.",
+                 command_id, cluster::get_id(cluster));
         return existing_command;
     }
 
@@ -1068,7 +947,7 @@ uint16_t get_flags(command_t *command)
     return current_command->flags;
 }
 
-} /* command */
+} // namespace command
 
 namespace event {
 
@@ -1131,8 +1010,7 @@ uint32_t get_id(event_t *event)
     return current_event->event_id;
 }
 
-} /* event */
-
+} // namespace event
 
 namespace cluster {
 
@@ -1140,31 +1018,13 @@ cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags)
 {
     /* Find */
     VerifyOrReturnValue(endpoint, NULL, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    VerifyOrReturnValue(((flags & CLUSTER_FLAG_SERVER) || (flags & CLUSTER_FLAG_CLIENT)), NULL, ESP_LOGE(TAG, "Server or client cluster flag not set"));
+    VerifyOrReturnValue(((flags & CLUSTER_FLAG_SERVER) || (flags & CLUSTER_FLAG_CLIENT)), NULL,
+                        ESP_LOGE(TAG, "Server or client cluster flag not set"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     cluster_t *existing_cluster = get(endpoint, cluster_id);
     if (existing_cluster) {
-        /* If a server already exists, do not create it again */
         _cluster_t *_existing_cluster = (_cluster_t *)existing_cluster;
-        // The member EmberAfCluster * in EmberAfEndpointType is const, do a non-const cast to change the mask.
-        EmberAfClusterMask *cluster_flags = (EmberAfClusterMask *)&current_endpoint->endpoint_type->cluster[_existing_cluster->index].mask;
-        if ((*cluster_flags & CLUSTER_FLAG_SERVER) && (flags & CLUSTER_FLAG_SERVER)) {
-            ESP_LOGW(TAG, "Server Cluster 0x%08" PRIX32 " on endpoint 0x%04" PRIx16 " already exists. Not creating again.", cluster_id,
-                     current_endpoint->endpoint_id);
-            return existing_cluster;
-        }
-
-        /* If a client already exists, do not create it again */
-        if ((*cluster_flags & CLUSTER_FLAG_CLIENT) && (flags & CLUSTER_FLAG_CLIENT)) {
-            ESP_LOGW(TAG, "Client Cluster 0x%08" PRIX32 " on endpoint 0x%04" PRIx16 " already exists. Not creating again.", cluster_id,
-                     current_endpoint->endpoint_id);
-            return existing_cluster;
-        }
-
-        /* The cluster already exists, but is of a different type. Just update the 'Set' part from below. */
-        ESP_LOGI(TAG, "Cluster 0x%08" PRIX32 " on endpoint 0x%04" PRIx16 " already exists. Updating values.", cluster_id,
-                 current_endpoint->endpoint_id);
-        *cluster_flags |= flags;
+        _existing_cluster->flags |= flags;
         return existing_cluster;
     }
 
@@ -1175,30 +1035,18 @@ cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags)
         return NULL;
     }
 
-    /* Matter clusters */
-    EmberAfCluster *matter_clusters = (EmberAfCluster *)current_endpoint->endpoint_type->cluster;
-    current_endpoint->cluster_count++;
-    cluster->index = current_endpoint->cluster_count - 1;
-    if (matter_clusters) {
-        matter_clusters = (EmberAfCluster *)esp_matter_mem_realloc(matter_clusters, current_endpoint->cluster_count * sizeof(EmberAfCluster));
-    } else {
-        matter_clusters = (EmberAfCluster *)esp_matter_mem_calloc(1, current_endpoint->cluster_count * sizeof(EmberAfCluster));
-    }
-    if (!matter_clusters) {
-        ESP_LOGE(TAG, "Couldn't allocate EmberAfCluster");
-        return NULL;
-    }
-    current_endpoint->endpoint_type->cluster = matter_clusters;
-
     /* Set */
-    EmberAfCluster *matter_cluster = (EmberAfCluster *)&current_endpoint->endpoint_type->cluster[cluster->index];
+    cluster->cluster_id = cluster_id;
     cluster->endpoint_id = current_endpoint->endpoint_id;
-
-    matter_cluster->clusterId = cluster_id;
-    matter_cluster->mask = flags;
-    matter_cluster->clusterSize = 0;
-    matter_cluster->attributeCount = 0;
-    matter_cluster->functions = NULL;
+    cluster->flags = flags;
+    cluster->add_bounds_callback = nullptr;
+    cluster->attribute_list = nullptr;
+    cluster->delegate_init_callback = nullptr;
+    cluster->data_version = esp_random(); // Generate a random 32-bit number
+    cluster->functions = nullptr;
+    cluster->plugin_server_init_callback = nullptr;
+    cluster->init_callback = nullptr;
+    cluster->shutdown_callback = nullptr;
 
     /* Add */
     SinglyLinkedList<_cluster_t>::append(&current_endpoint->cluster_list, cluster);
@@ -1224,12 +1072,6 @@ esp_err_t destroy(cluster_t *cluster)
     /* Parse and delete all events */
     SinglyLinkedList<_event_t>::delete_list(&current_cluster->event_list);
 
-    /* Free matter_attributes if allocated */
-    if (current_cluster->matter_attributes) {
-        esp_matter_mem_free(current_cluster->matter_attributes);
-        current_cluster->matter_attributes = NULL;
-    }
-
     /* Free */
     esp_matter_mem_free(current_cluster);
     return ESP_OK;
@@ -1241,19 +1083,8 @@ cluster_t *get(endpoint_t *endpoint, uint32_t cluster_id)
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     _cluster_t *current_cluster = (_cluster_t *)current_endpoint->cluster_list;
 
-    uint8_t cluster_index = 0;
-    for (cluster_index = 0; cluster_index < current_endpoint->cluster_count; cluster_index++) {
-        if (current_endpoint->endpoint_type->cluster[cluster_index].clusterId == cluster_id) {
-            break;
-        }
-    }
-    if (cluster_index == current_endpoint->cluster_count) {
-        ESP_LOGD(TAG, "Cluster not found");
-        return NULL;
-    }
-
     while (current_cluster) {
-        if (current_cluster->index == cluster_index) {
+        if (current_cluster->cluster_id == cluster_id) {
             break;
         }
         current_cluster = current_cluster->next;
@@ -1285,9 +1116,30 @@ uint32_t get_id(cluster_t *cluster)
 {
     VerifyOrReturnValue(cluster, kInvalidClusterId, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
-    endpoint_t *endpoint = endpoint::get(current_cluster->endpoint_id);
-    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
-    return current_endpoint->endpoint_type->cluster[current_cluster->index].clusterId;
+    return current_cluster->cluster_id;
+}
+
+uint8_t get_flags(cluster_t *cluster)
+{
+    VerifyOrReturnValue(cluster, 0, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    return current_cluster->flags;
+}
+
+esp_err_t get_data_version(cluster_t *cluster, chip::DataVersion &data_version)
+{
+    VerifyOrReturnValue(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    data_version = current_cluster->data_version;
+    return ESP_OK;
+}
+
+esp_err_t increase_data_version(cluster_t *cluster)
+{
+    VerifyOrReturnValue(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    current_cluster->data_version++;
+    return ESP_OK;
 }
 
 void *get_delegate_impl(cluster_t *cluster)
@@ -1347,16 +1199,54 @@ esp_err_t add_function_list(cluster_t *cluster, const function_generic_t *functi
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     _cluster_t *current_cluster = (_cluster_t *)cluster;
-
-    endpoint_t *endpoint = endpoint::get(current_cluster->endpoint_id);
-    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
-    EmberAfCluster *matter_clusters = (EmberAfCluster *)current_endpoint->endpoint_type->cluster;
-    matter_clusters[current_cluster->index].mask |= function_flags;
-    matter_clusters[current_cluster->index].functions = (const EmberAfGenericClusterFunction *)function_list;
+    current_cluster->flags |= function_flags;
+    current_cluster->functions = function_list;
     return ESP_OK;
 }
 
-} /* cluster */
+function_generic_t get_function(cluster_t *cluster, uint8_t function_flag)
+{
+    VerifyOrReturnValue(cluster, nullptr, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    if ((current_cluster->flags & function_flag) == 0) {
+        return nullptr;
+    }
+    uint8_t flag = 0x01;
+    uint8_t index = 0;
+    while (flag < function_flag) {
+        if ((current_cluster->flags & flag) != 0) {
+            index++;
+        }
+        flag = flag << 1;
+    }
+    return current_cluster->functions[index];
+}
+
+esp_err_t set_init_and_shutdown_callbacks(cluster_t *cluster, initialization_callback_t init_callback,
+                                          shutdown_callback_t shutdown_callback)
+{
+    VerifyOrReturnValue(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    current_cluster->init_callback = init_callback;
+    current_cluster->shutdown_callback = shutdown_callback;
+    return ESP_OK;
+}
+
+initialization_callback_t get_init_callback(cluster_t *cluster)
+{
+    VerifyOrReturnValue(cluster, nullptr, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    return current_cluster->init_callback;
+}
+
+shutdown_callback_t get_shutdown_callback(cluster_t *cluster)
+{
+    VerifyOrReturnValue(cluster, nullptr, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    return current_cluster->shutdown_callback;
+}
+
+} // namespace cluster
 
 namespace endpoint {
 
@@ -1366,19 +1256,14 @@ endpoint_t *create(node_t *node, uint8_t flags, void *priv_data)
     VerifyOrReturnValue(node, NULL, ESP_LOGE(TAG, "Node cannot be NULL"));
     _node_t *current_node = (_node_t *)node;
 
-    VerifyOrReturnValue(get_count(node) < CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT, NULL, ESP_LOGE(TAG, "Dynamic endpoint count cannot be greater than CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT:%u",
-                CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT));
+    VerifyOrReturnValue(
+        get_count(node) < CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT, NULL,
+        ESP_LOGE(TAG, "Dynamic endpoint count cannot be greater than CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT:%u",
+                 CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT));
 
     /* Allocate */
     _endpoint_t *endpoint = (_endpoint_t *)esp_matter_mem_calloc(1, sizeof(_endpoint_t));
     VerifyOrReturnValue(endpoint, NULL, ESP_LOGE(TAG, "Couldn't allocate _endpoint_t"));
-
-    endpoint->endpoint_type = (EmberAfEndpointType *)esp_matter_mem_calloc(1, sizeof(EmberAfEndpointType));
-    if (!endpoint->endpoint_type) {
-        ESP_LOGE(TAG, "Couldn't allocate EmberAfEndpointType");
-        esp_matter_mem_free(endpoint);
-        return NULL;
-    }
 
     /* Set */
     endpoint->endpoint_id = current_node->min_unused_endpoint_id++;
@@ -1386,6 +1271,9 @@ endpoint_t *create(node_t *node, uint8_t flags, void *priv_data)
     endpoint->parent_endpoint_id = chip::kInvalidEndpointId;
     endpoint->flags = flags;
     endpoint->priv_data = priv_data;
+    endpoint->composition_pattern = EndpointCompositionPattern::kFullFamily;
+    endpoint->semantic_tag_count = 0;
+    endpoint->enabled = true;
     /* Store */
     if (esp_matter::is_started()) {
         node::store_min_unused_endpoint_id();
@@ -1393,6 +1281,7 @@ endpoint_t *create(node_t *node, uint8_t flags, void *priv_data)
 
     /* Add */
     SinglyLinkedList<_endpoint_t>::append(&current_node->endpoint_list, endpoint);
+
     return (endpoint_t *)endpoint;
 }
 
@@ -1404,32 +1293,28 @@ endpoint_t *resume(node_t *node, uint8_t flags, uint16_t endpoint_id, void *priv
     _endpoint_t *previous_endpoint = NULL;
     _endpoint_t *current_endpoint = current_node->endpoint_list;
     while (current_endpoint) {
-        VerifyOrReturnValue(current_endpoint->endpoint_id != endpoint_id, NULL, ESP_LOGE(TAG, "Could not resume an endpoint that has been added to the node"));
+        VerifyOrReturnValue(current_endpoint->endpoint_id != endpoint_id, NULL,
+                            ESP_LOGE(TAG, "Could not resume an endpoint that has been added to the node"));
         previous_endpoint = current_endpoint;
         current_endpoint = current_endpoint->next;
     }
 
     /* Check */
-    VerifyOrReturnError(endpoint_id < current_node->min_unused_endpoint_id, NULL, ESP_LOGE(TAG, "The endpoint_id of the resumed endpoint should have been used"));
+    VerifyOrReturnError(endpoint_id < current_node->min_unused_endpoint_id, NULL,
+                        ESP_LOGE(TAG, "The endpoint_id of the resumed endpoint should have been used"));
 
-     /* Allocate */
-     _endpoint_t *endpoint = (_endpoint_t *)esp_matter_mem_calloc(1, sizeof(_endpoint_t));
-     VerifyOrReturnValue(endpoint, NULL, ESP_LOGE(TAG, "Couldn't allocate _endpoint_t"));
+    /* Allocate */
+    _endpoint_t *endpoint = (_endpoint_t *)esp_matter_mem_calloc(1, sizeof(_endpoint_t));
+    VerifyOrReturnValue(endpoint, NULL, ESP_LOGE(TAG, "Couldn't allocate _endpoint_t"));
 
-     endpoint->endpoint_type = (EmberAfEndpointType *)esp_matter_mem_calloc(1, sizeof(EmberAfEndpointType));
-    if (!endpoint->endpoint_type) {
-        ESP_LOGE(TAG, "Couldn't allocate EmberAfEndpointType");
-        esp_matter_mem_free(endpoint);
-        return NULL;
-    }
+    /* Set */
+    endpoint->endpoint_id = endpoint_id;
+    endpoint->device_type_count = 0;
+    endpoint->flags = flags;
+    endpoint->priv_data = priv_data;
+    endpoint->composition_pattern = EndpointCompositionPattern::kFullFamily;
 
-     /* Set */
-     endpoint->endpoint_id = endpoint_id;
-     endpoint->device_type_count = 0;
-     endpoint->flags = flags;
-     endpoint->priv_data = priv_data;
-
-     /* Add */
+    /* Add */
     if (previous_endpoint == NULL) {
         current_node->endpoint_list = endpoint;
     } else {
@@ -1445,7 +1330,9 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
     _node_t *current_node = (_node_t *)node;
     _endpoint_t *_endpoint = (_endpoint_t *)endpoint;
 
-    VerifyOrReturnError((_endpoint->flags & ENDPOINT_FLAG_DESTROYABLE), ESP_FAIL, ESP_LOGE(TAG, "This endpoint cannot be deleted since the ENDPOINT_FLAG_DESTROYABLE is not set"));
+    VerifyOrReturnError(
+        (_endpoint->flags & ENDPOINT_FLAG_DESTROYABLE), ESP_FAIL,
+        ESP_LOGE(TAG, "This endpoint cannot be deleted since the ENDPOINT_FLAG_DESTROYABLE is not set"));
 
     /* Disable */
     disable(endpoint);
@@ -1470,44 +1357,6 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
         cluster = next_cluster;
         /* Move cluster_list to find the remain cluster */
         current_endpoint->cluster_list = cluster;
-    }
-
-    /* Free endpoint_type after freeing cluster_list */
-    {
-        /* Free all clusters in endpoint_type */
-        EmberAfEndpointType *endpoint_type = current_endpoint->endpoint_type;
-        VerifyOrReturnError(endpoint_type, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "endpoint %" PRIu16 "'s endpoint_type is NULL", current_endpoint->endpoint_id));
-        int cluster_count = endpoint_type->clusterCount;
-        for (int cluster_index = 0; cluster_index < cluster_count; cluster_index++) {
-            /* Free commands */
-            if (endpoint_type->cluster[cluster_index].acceptedCommandList) {
-                esp_matter_mem_free((void *)endpoint_type->cluster[cluster_index].acceptedCommandList);
-            }
-            if (endpoint_type->cluster[cluster_index].generatedCommandList) {
-                esp_matter_mem_free((void *)endpoint_type->cluster[cluster_index].generatedCommandList);
-            }
-            /* Free events */
-            if (endpoint_type->cluster[cluster_index].eventList) {
-                esp_matter_mem_free((void *)endpoint_type->cluster[cluster_index].eventList);
-            }
-        }
-        esp_matter_mem_free((void *)endpoint_type->cluster);
-
-        /* Free data versions */
-        if (current_endpoint->data_versions_ptr) {
-            esp_matter_mem_free(current_endpoint->data_versions_ptr);
-            current_endpoint->data_versions_ptr = NULL;
-        }
-
-        /* Free device types */
-        if (current_endpoint->device_types_ptr) {
-            esp_matter_mem_free(current_endpoint->device_types_ptr);
-            current_endpoint->device_types_ptr = NULL;
-        }
-
-        /* Free endpoint type */
-        esp_matter_mem_free(endpoint_type);
-        current_endpoint->endpoint_type = NULL;
     }
 
     /* Remove from list */
@@ -1547,7 +1396,6 @@ endpoint_t *get(uint16_t endpoint_id)
     return get(node, endpoint_id);
 }
 
-
 endpoint_t *get_first(node_t *node)
 {
     VerifyOrReturnValue(node, NULL, ESP_LOGE(TAG, "Node cannot be NULL"));
@@ -1572,7 +1420,6 @@ uint16_t get_count(node_t *node)
         endpoint = get_next(endpoint);
     }
     return count;
-
 }
 
 uint16_t get_id(endpoint_t *endpoint)
@@ -1588,35 +1435,170 @@ esp_err_t add_device_type(endpoint_t *endpoint, uint32_t device_type_id, uint8_t
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     VerifyOrReturnError(current_endpoint->device_type_count < ESP_MATTER_MAX_DEVICE_TYPE_COUNT, ESP_FAIL,
                         ESP_LOGE(TAG, "Could not add a new device-type:%" PRIu32 " to the endpoint", device_type_id));
-    current_endpoint->device_type_ids[current_endpoint->device_type_count] = device_type_id;
-    current_endpoint->device_type_versions[current_endpoint->device_type_count] = device_type_version;
+    current_endpoint->device_types[current_endpoint->device_type_count].id = device_type_id;
+    current_endpoint->device_types[current_endpoint->device_type_count].version = device_type_version;
     current_endpoint->device_type_count++;
     return ESP_OK;
 }
 
-uint32_t *get_device_type_ids(endpoint_t *endpoint, uint8_t *device_type_count_ptr)
+size_t get_device_type_count(endpoint_t *endpoint)
 {
-    VerifyOrReturnValue((endpoint && device_type_count_ptr), NULL, ESP_LOGE(TAG, "Endpoint and device type count pointer cannot be NULL"));
+    VerifyOrReturnValue(endpoint, 0, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
-    *device_type_count_ptr = current_endpoint->device_type_count;
-    return current_endpoint->device_type_ids;
+    return current_endpoint->device_type_count;
 }
 
-uint8_t *get_device_type_versions(endpoint_t *endpoint, uint8_t *device_type_count_ptr)
+esp_err_t get_device_type_at_index(endpoint_t *endpoint, size_t index, uint32_t &out_device_type_id,
+                                   uint8_t &out_device_type_version)
 {
-    VerifyOrReturnValue((endpoint && device_type_count_ptr), NULL, ESP_LOGE(TAG, "Endpoint and device type count pointer cannot be NULL"));
+    VerifyOrReturnValue(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
-    *device_type_count_ptr = current_endpoint->device_type_count;
-    return current_endpoint->device_type_versions;
+    VerifyOrReturnValue(index < current_endpoint->device_type_count, ESP_ERR_INVALID_ARG,
+                        ESP_LOGE(TAG, "Index should be less than device_type_count"));
+    out_device_type_id = current_endpoint->device_types[index].id;
+    out_device_type_version = current_endpoint->device_types[index].version;
+    return ESP_OK;
 }
 
 esp_err_t set_parent_endpoint(endpoint_t *endpoint, endpoint_t *parent_endpoint)
 {
-    VerifyOrReturnError((endpoint && parent_endpoint), ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint or parent_endpoint cannot be NULL"));
+    VerifyOrReturnError((endpoint && parent_endpoint), ESP_ERR_INVALID_ARG,
+                        ESP_LOGE(TAG, "Endpoint or parent_endpoint cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     _endpoint_t *current_parent_endpoint = (_endpoint_t *)parent_endpoint;
     current_endpoint->parent_endpoint_id = current_parent_endpoint->endpoint_id;
     return ESP_OK;
+}
+
+uint16_t get_parent_endpoint_id(endpoint_t *endpoint)
+{
+    VerifyOrReturnValue(endpoint, 0xFFFF, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    return current_endpoint->parent_endpoint_id;
+}
+
+EndpointCompositionPattern get_composition_pattern(endpoint_t *endpoint)
+{
+    VerifyOrReturnValue(endpoint, EndpointCompositionPattern::kFullFamily, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    return current_endpoint->composition_pattern;
+}
+
+esp_err_t set_semantic_tags(endpoint_t *endpoint, chip::app::DataModel::Provider::SemanticTag *tags, size_t tag_count)
+{
+    VerifyOrReturnValue(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
+    VerifyOrReturnValue(tag_count <= ESP_MATTER_MAX_SEMANTIC_TAG_COUNT, ESP_ERR_INVALID_ARG,
+                        ESP_LOGE(TAG, "Tag count should be no more than %d", ESP_MATTER_MAX_SEMANTIC_TAG_COUNT));
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    if (tags != nullptr) {
+        for (size_t i = 0; i < tag_count; ++i) {
+            current_endpoint->semantic_tags[i] = tags[i];
+        }
+    }
+    current_endpoint->semantic_tag_count = tags ? tag_count : 0;
+    return ESP_OK;
+}
+
+int get_semantic_tag_count(endpoint_t *endpoint)
+{
+    VerifyOrReturnValue(endpoint, -1, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    return current_endpoint->semantic_tag_count;
+}
+
+esp_err_t get_semantic_tag_at_index(endpoint_t *endpoint, size_t index,
+                                    chip::app::DataModel::Provider::SemanticTag &tag)
+{
+    VerifyOrReturnValue(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    if (index >= current_endpoint->semantic_tag_count) {
+        return ESP_ERR_NOT_FOUND;
+    }
+    tag = current_endpoint->semantic_tags[index];
+    return ESP_OK;
+}
+
+/**
+ * @brief Get the number of clusters that match the given flags
+ *
+ * @param endpoint_id: The endpoint ID to check, 0xFFFF is treated as wildcard endpoint id
+ * @param cluster_id: The cluster ID to check, 0xFFFF is treated as wildcard cluster id
+ * @param cluster_flags: The flags to check
+ * @return The number of clusters that match the given flags
+ */
+uint32_t get_cluster_count(uint32_t endpoint_id, uint32_t cluster_id, uint8_t cluster_flags)
+{
+    uint32_t count = 0;
+    node_t *node = node::get();
+    VerifyOrReturnValue(node, count, ESP_LOGE(TAG, "Node cannot be NULL"));
+
+    // lambda to check if cluster matches flags and return 1 if it does, 0 otherwise
+    auto check_cluster_flags = [cluster_flags](const cluster_t *cluster) -> uint32_t {
+        if (cluster) {
+            const _cluster_t *_cluster = (_cluster_t *)cluster;
+            return (_cluster->flags & cluster_flags) ? 1 : 0;
+        }
+        return 0;
+    };
+
+    // lambda to count all matching clusters for an endpoint
+    auto get_count_on_all_clusters = [&check_cluster_flags](endpoint_t *endpoint) -> uint32_t {
+        uint32_t result = 0;
+        if (!endpoint)
+            return result;
+
+        cluster_t *cluster = cluster::get_first(endpoint);
+        while (cluster) {
+            result += check_cluster_flags(cluster);
+            cluster = cluster::get_next(cluster);
+        }
+        return result;
+    };
+
+    // lambda to find and count a specific cluster
+    auto get_count_on_specific_cluster = [&check_cluster_flags](const endpoint_t *endpoint,
+                                                                uint32_t cluster_id) -> uint32_t {
+        if (!endpoint)
+            return 0;
+        cluster_t *cluster = cluster::get((endpoint_t *)endpoint, cluster_id);
+        return check_cluster_flags(cluster);
+    };
+
+    // Case 1: Wildcard endpoint
+    if (is_wildcard_endpoint_id(endpoint_id)) {
+        endpoint_t *endpoint = endpoint::get_first(node);
+        while (endpoint) {
+            if (endpoint::is_enabled(endpoint)) {
+                // Case 1.1: Wildcard cluster - count all clusters with matching flags
+                if (is_wildcard_cluster_id(cluster_id)) {
+                    count += get_count_on_all_clusters(endpoint);
+                }
+                // Case 1.2: Specific cluster - count if it exists and has matching flags
+                else {
+                    count += get_count_on_specific_cluster(endpoint, cluster_id);
+                }
+            }
+            endpoint = endpoint::get_next(endpoint);
+        }
+    }
+    // Case 2: Specific endpoint
+    else {
+        endpoint_t *endpoint = endpoint::get(endpoint_id);
+        if (!endpoint || !endpoint::is_enabled(endpoint)) {
+            return count;
+        }
+
+        // Case 2.1: Wildcard cluster - count all clusters with matching flags
+        if (is_wildcard_cluster_id(cluster_id)) {
+            count += get_count_on_all_clusters(endpoint);
+        }
+        // Case 2.2: Specific cluster - count if it exists and has matching flags
+        else {
+            count += get_count_on_specific_cluster(endpoint, cluster_id);
+        }
+    }
+
+    return count;
 }
 
 void *get_priv_data(uint16_t endpoint_id)
@@ -1645,13 +1627,13 @@ esp_err_t set_identify(uint16_t endpoint_id, void *identify)
     return ESP_OK;
 }
 
-} /* endpoint */
+} // namespace endpoint
 
 namespace node {
 
 node_t *create_raw()
 {
-    VerifyOrReturnValue(!node, (node_t*) node, ESP_LOGE(TAG, "Node already exists"));
+    VerifyOrReturnValue(!node, (node_t *)node, ESP_LOGE(TAG, "Node already exists"));
     node = (_node_t *)esp_matter_mem_calloc(1, sizeof(_node_t));
     VerifyOrReturnValue(node, NULL, ESP_LOGE(TAG, "Couldn't allocate _node_t"));
     return (node_t *)node;
@@ -1695,107 +1677,15 @@ esp_err_t destroy()
     return destroy_raw();
 }
 
-// Treat 0xFFFF'FFFF as wildcard cluster
-static inline bool is_wildcard_cluster_id(uint32_t cluster_id)
-{
-    return cluster_id == chip::kInvalidClusterId;
-}
-
-// Treat 0xFFFF as wildcard endpoint
-static inline bool is_wildcard_endpoint_id(uint16_t endpoint_id)
-{
-    return endpoint_id == chip::kInvalidEndpointId;
-}
-
-/**
- * @brief Get the number of clusters that match the given flags
- *
- * @param endpoint_id: The endpoint ID to check, 0xFFFF is treated as wildcard endpoint id
- * @param cluster_id: The cluster ID to check, 0xFFFF is treated as wildcard cluster id
- * @param cluster_flags: The flags to check
- * @return The number of clusters that match the given flags
- */
-static uint32_t get_cluster_count(uint32_t endpoint_id, uint32_t cluster_id, uint8_t cluster_flags)
-{
-    uint32_t count = 0;
-    node_t *node = get();
-    VerifyOrReturnValue(node, count, ESP_LOGE(TAG, "Node cannot be NULL"));
-
-    // lambda to check if cluster matches flags and return 1 if it does, 0 otherwise
-    auto check_cluster_flags = [cluster_flags](const endpoint_t *endpoint, const cluster_t *cluster) -> uint32_t {
-        if (cluster && endpoint) {
-            const _endpoint_t *_endpoint = (_endpoint_t *)endpoint;
-            const _cluster_t *_cluster = (_cluster_t *)cluster;
-            EmberAfClusterMask flags = _endpoint->endpoint_type->cluster[_cluster->index].mask;
-            return (flags & cluster_flags) ? 1 : 0;
-        }
-        return 0;
-    };
-
-    // lambda to count all matching clusters for an endpoint
-    auto get_count_on_all_clusters = [&check_cluster_flags](endpoint_t *endpoint) -> uint32_t {
-        uint32_t result = 0;
-        if (!endpoint) return result;
-
-        cluster_t *cluster = cluster::get_first(endpoint);
-        while (cluster) {
-            result += check_cluster_flags(endpoint, cluster);
-            cluster = cluster::get_next(cluster);
-        }
-        return result;
-    };
-
-    // lambda to find and count a specific cluster
-    auto get_count_on_specific_cluster = [&check_cluster_flags](const endpoint_t *endpoint, uint32_t cluster_id) -> uint32_t {
-        if (!endpoint) return 0;
-        cluster_t *cluster = cluster::get((endpoint_t *)endpoint, cluster_id);
-        return check_cluster_flags(endpoint, cluster);
-    };
-
-    // Case 1: Wildcard endpoint
-    if (is_wildcard_endpoint_id(endpoint_id)) {
-        endpoint_t *endpoint = endpoint::get_first(node);
-        while (endpoint) {
-            // Case 1.1: Wildcard cluster - count all clusters with matching flags
-            if (is_wildcard_cluster_id(cluster_id)) {
-                count += get_count_on_all_clusters(endpoint);
-            }
-            // Case 1.2: Specific cluster - count if it exists and has matching flags
-            else {
-                count += get_count_on_specific_cluster(endpoint, cluster_id);
-            }
-            endpoint = endpoint::get_next(endpoint);
-        }
-    }
-    // Case 2: Specific endpoint
-    else {
-        endpoint_t *endpoint = endpoint::get(endpoint_id);
-        if (!endpoint) {
-            return count;
-        }
-
-        // Case 2.1: Wildcard cluster - count all clusters with matching flags
-        if (is_wildcard_cluster_id(cluster_id)) {
-            count += get_count_on_all_clusters(endpoint);
-        }
-        // Case 2.2: Specific cluster - count if it exists and has matching flags
-        else {
-            count += get_count_on_specific_cluster(endpoint, cluster_id);
-        }
-    }
-
-    return count;
-}
-
 uint32_t get_server_cluster_endpoint_count(uint32_t cluster_id)
 {
-    return get_cluster_count(chip::kInvalidEndpointId, cluster_id, CLUSTER_FLAG_SERVER);
+    return endpoint::get_cluster_count(chip::kInvalidEndpointId, cluster_id, CLUSTER_FLAG_SERVER);
 }
 
 uint32_t get_client_cluster_endpoint_count(uint32_t cluster_id)
 {
-    return get_cluster_count(chip::kInvalidEndpointId, cluster_id, CLUSTER_FLAG_CLIENT);
+    return endpoint::get_cluster_count(chip::kInvalidEndpointId, cluster_id, CLUSTER_FLAG_CLIENT);
 }
 
-} /* node */
-} /* esp_matter */
+} // namespace node
+} // namespace esp_matter

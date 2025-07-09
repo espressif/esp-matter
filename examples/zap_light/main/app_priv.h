@@ -55,13 +55,15 @@ app_driver_handle_t app_driver_button_init();
  * @param[in] endpoint_id Endpoint ID of the attribute.
  * @param[in] cluster_id Cluster ID of the attribute.
  * @param[in] attribute_id Attribute ID of the attribute.
- * @param[in] val Pointer to `esp_matter_attr_val_t`. Use appropriate elements as per the value type.
+ * @param[in] type Attribute value type.
+ * @param[in] val_raw Attribute value raw buffer.
+ * @param[in] val_raw_size Attribute value raw buffer size.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
 esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_t endpoint_id, uint32_t cluster_id,
-                                      uint32_t attribute_id, esp_matter_attr_val_t *val);
+                                      uint32_t attribute_id, uint8_t type,  uint8_t *val_raw, uint16_t val_raw_size);
 
 /** Set defaults for light driver
  *
@@ -75,6 +77,8 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
  * @return error in case of failure.
  */
 esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id);
+
+void init_network_driver();
 
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #define ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG()                                           \

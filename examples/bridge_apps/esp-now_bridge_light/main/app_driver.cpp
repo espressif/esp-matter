@@ -18,6 +18,7 @@
 #include <app/server/Server.h>
 #include "app/CommandPathParams.h"
 #include <device.h>
+#include <common_macros.h>
 
 using namespace chip::app::Clusters;
 using namespace esp_matter;

@@ -20,23 +20,22 @@
 #include <esp_matter_test_event_trigger.h>
 #include <nvs.h>
 
-#include <app/clusters/general-diagnostics-server/general-diagnostics-server.h>
-#include <app/clusters/identify-server/identify-server.h>
 #include <app/server/Dnssd.h>
 #ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
-#include <app/clusters/general-diagnostics-server/general-diagnostics-server.h>
 #include <app/server/Server.h>
 #include <esp_matter_ota.h>
-#include <esp_matter_nvs.h>
 #ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
+#include <esp_matter_nvs.h>
+#include <data_model_provider/esp_matter_data_model_provider.h>
 #include <esp_matter_data_model_priv.h>
+#else
+#include <data-model-providers/codegen/Instance.h>
 #endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 #endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 #include <access/Privilege.h>
 #include <credentials/DeviceAttestationCredsProvider.h>
 #include <credentials/FabricTable.h>
 #include <credentials/GroupDataProviderImpl.h>
-#include <data-model-providers/codegen/Instance.h>
 #include <lib/core/DataModelTypes.h>
 #include <platform/CHIPDeviceLayer.h>
 #include <platform/DeviceInfoProvider.h>
@@ -228,7 +227,11 @@ static void esp_matter_chip_init_task(intptr_t context)
         initParams.testEventTriggerDelegate = test_event_trigger::get_delegate();
     }
     if (!initParams.dataModelProvider) {
+#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
+        initParams.dataModelProvider = &esp_matter::data_model::provider::get_instance();
+#else
         initParams.dataModelProvider = chip::app::CodegenDataModelProviderInstance(initParams.persistentStorageDelegate);
+#endif
     }
 
 #ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
@@ -251,20 +254,10 @@ static void esp_matter_chip_init_task(intptr_t context)
         ESP_LOGE(TAG, "Failed to add fabric delegate, err:%" CHIP_ERROR_FORMAT, ret.Format());
     }
     chip::Server::GetInstance().Init(initParams);
-    network_commissioning_instance_init();
 
 #ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
     if (endpoint::enable_all() != ESP_OK) {
         ESP_LOGE(TAG, "Enable all endpoints failure");
-    }
-    // The following two events can't be recorded when we start the server because the endpoints are not enabled.
-    // TODO: Find a better way to record the events which should be recorded in matter server init
-    // Record start up event in basic information cluster.
-    PlatformMgr().HandleServerStarted();
-    // Record boot reason event in general diagnostics cluster.
-    chip::app::Clusters::GeneralDiagnostics::BootReasonEnum bootReason;
-    if (GetDiagnosticDataProvider().GetBootReason(bootReason) == CHIP_NO_ERROR) {
-        chip::app::Clusters::GeneralDiagnosticsServer::Instance().OnDeviceReboot(bootReason);
     }
     // Initialise clusters which have delegate implemented
     esp_matter::cluster::delegate_init_callback_common();

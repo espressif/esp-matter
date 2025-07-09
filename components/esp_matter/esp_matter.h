@@ -22,6 +22,7 @@ application.
 #ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 #ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 #include <esp_matter_attribute.h>
+#include <esp_matter_attribute_utils.h>
 #include <esp_matter_cluster.h>
 #include <esp_matter_command.h>
 #include <esp_matter_endpoint.h>
@@ -30,7 +31,6 @@ application.
 #include <esp_matter_data_model.h>
 #endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 #include <app/server/Dnssd.h>
-#include <esp_matter_attribute_utils.h>
 #include <esp_matter_identify.h>
 #endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 #include <esp_matter_client.h>

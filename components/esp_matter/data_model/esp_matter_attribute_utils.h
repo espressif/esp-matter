@@ -20,21 +20,6 @@
 
 #include <app/data-model/Nullable.h>
 
-/** Remap attribute values
- *
- * This can be used to remap attribute values to different ranges.
- * Example: To convert the brightness value (0-255) into brightness percentage (0-100) and vice-versa.
- */
-#define REMAP_TO_RANGE(value, from, to) ((value * to) / from)
-
-/** Remap attribute values with inverse dependency
- *
- * This can be used to remap attribute values with inverse dependency to different ranges.
- * Example: To convert the temperature mireds into temperature kelvin and vice-versa where the relation between them
- * is: Mireds = 1,000,000/Kelvin.
- */
-#define REMAP_TO_RANGE_INVERSE(value, factor) (factor / (value ? value : 1))
-
 /* Nullable base for nullable attribute */
 #define ESP_MATTER_VAL_NULLABLE_BASE 0x80
 
@@ -134,8 +119,8 @@ typedef union {
         uint8_t *b;
         /** Data size */
         uint16_t s;
-        /** Data count */
-        uint16_t n;
+        /** Data max size */
+        uint16_t max;
         /** Total size */
         uint16_t t;
     } a;
@@ -431,7 +416,6 @@ esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
  * @param[in] endpoint_id Endpoint ID of the attribute.
  * @param[in] cluster_id Cluster ID of the attribute.
  * @param[in] attribute_id Attribute ID of the attribute.
- * @param[in] val Pointer to new value to report, of type `esp_matter_attr_val_t`. Appropriate elements should be used as per the value type.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
@@ -450,21 +434,17 @@ esp_err_t report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
  */
 void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val, bool is_read);
 
-/** Get attribute val raw
+/** Attribute value compare
  *
- * Get the value of the attribute in the database, without the attribute handle.
+ * This API compares the two attribute values.
  *
- * @param[in] endpoint_id Endpoint ID of the attribute.
- * @param[in] cluster_id Cluster ID of the attribute.
- * @param[in] attribute_id Attribute ID of the attribute.
- * @param[out] value Pointer to an allocated buffer for the attribute value.
- * @param[in] attribute_size Size of the allocated buffer.
+ * @param[in] val1 Pointer to the first attribute value.
+ * @param[in] val2 Pointer to the second attribute value.
  *
- * @return ESP_OK on success.
- * @return error in case of failure.
+ * @return true if the two values are the same.
+ * @return false if the two values are different.
  */
-esp_err_t get_val_raw(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, uint8_t *value,
-                      uint16_t attribute_size);
+bool val_compare(const esp_matter_attr_val_t *val1, const esp_matter_attr_val_t *val2);
 
 } /* attribute */
 } /* esp_matter */

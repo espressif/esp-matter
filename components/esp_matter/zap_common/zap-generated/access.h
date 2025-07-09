@@ -75,6 +75,7 @@
     0x00000752, /* Cluster: Joint Fabric Datastore, Attribute: NodeACLList, Privilege: administer */ \
     0x00000752, /* Cluster: Joint Fabric Datastore, Attribute: NodeEndpointList, Privilege: administer */ \
     0x00000753, /* Cluster: Joint Fabric Administrator, Attribute: AdministratorFabricIndex, Privilege: administer */ \
+    0xFFF1FC05, /* Cluster: Unit Testing, Attribute: UnsupportedAttributeRequiringAdminPrivilege, Privilege: administer */ \
 }
 
 // Parallel array data (cluster, *attribute*, privilege) for read attribute
@@ -145,6 +146,7 @@
     0x0000000C, /* Cluster: Joint Fabric Datastore, Attribute: NodeACLList, Privilege: administer */ \
     0x0000000D, /* Cluster: Joint Fabric Datastore, Attribute: NodeEndpointList, Privilege: administer */ \
     0x00000000, /* Cluster: Joint Fabric Administrator, Attribute: AdministratorFabricIndex, Privilege: administer */ \
+    0x000000FE, /* Cluster: Unit Testing, Attribute: UnsupportedAttributeRequiringAdminPrivilege, Privilege: administer */ \
 }
 
 // Parallel array data (cluster, attribute, *privilege*) for read attribute
@@ -215,6 +217,7 @@
     chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Attribute: NodeACLList, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Datastore, Attribute: NodeEndpointList, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Administrator, Attribute: AdministratorFabricIndex, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Unit Testing, Attribute: UnsupportedAttributeRequiringAdminPrivilege, Privilege: administer */ \
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -293,17 +296,6 @@
     0x00000201, /* Cluster: Thermostat, Attribute: Schedules, Privilege: manage */ \
     0x00000204, /* Cluster: Thermostat User Interface Configuration, Attribute: KeypadLockout, Privilege: manage */ \
     0x00000204, /* Cluster: Thermostat User Interface Configuration, Attribute: ScheduleProgrammingVisibility, Privilege: manage */ \
-    0x00000300, /* Cluster: Color Control, Attribute: WhitePointX, Privilege: manage */ \
-    0x00000300, /* Cluster: Color Control, Attribute: WhitePointY, Privilege: manage */ \
-    0x00000300, /* Cluster: Color Control, Attribute: ColorPointRX, Privilege: manage */ \
-    0x00000300, /* Cluster: Color Control, Attribute: ColorPointRY, Privilege: manage */ \
-    0x00000300, /* Cluster: Color Control, Attribute: ColorPointRIntensity, Privilege: manage */ \
-    0x00000300, /* Cluster: Color Control, Attribute: ColorPointGX, Privilege: manage */ \
-    0x00000300, /* Cluster: Color Control, Attribute: ColorPointGY, Privilege: manage */ \
-    0x00000300, /* Cluster: Color Control, Attribute: ColorPointGIntensity, Privilege: manage */ \
-    0x00000300, /* Cluster: Color Control, Attribute: ColorPointBX, Privilege: manage */ \
-    0x00000300, /* Cluster: Color Control, Attribute: ColorPointBY, Privilege: manage */ \
-    0x00000300, /* Cluster: Color Control, Attribute: ColorPointBIntensity, Privilege: manage */ \
     0x00000300, /* Cluster: Color Control, Attribute: StartUpColorTemperatureMireds, Privilege: manage */ \
     0x00000301, /* Cluster: Ballast Configuration, Attribute: MinLevel, Privilege: manage */ \
     0x00000301, /* Cluster: Ballast Configuration, Attribute: MaxLevel, Privilege: manage */ \
@@ -342,6 +334,7 @@
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: LocalSnapshotRecordingEnabled, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: StatusLightEnabled, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: StatusLightBrightness, Privilege: manage */ \
+    0xFFF1FC05, /* Cluster: Unit Testing, Attribute: UnsupportedAttributeRequiringAdminPrivilege, Privilege: administer */ \
 }
 
 // Parallel array data (cluster, *attribute*, privilege) for write attribute
@@ -418,17 +411,6 @@
     0x00000051, /* Cluster: Thermostat, Attribute: Schedules, Privilege: manage */ \
     0x00000001, /* Cluster: Thermostat User Interface Configuration, Attribute: KeypadLockout, Privilege: manage */ \
     0x00000002, /* Cluster: Thermostat User Interface Configuration, Attribute: ScheduleProgrammingVisibility, Privilege: manage */ \
-    0x00000030, /* Cluster: Color Control, Attribute: WhitePointX, Privilege: manage */ \
-    0x00000031, /* Cluster: Color Control, Attribute: WhitePointY, Privilege: manage */ \
-    0x00000032, /* Cluster: Color Control, Attribute: ColorPointRX, Privilege: manage */ \
-    0x00000033, /* Cluster: Color Control, Attribute: ColorPointRY, Privilege: manage */ \
-    0x00000034, /* Cluster: Color Control, Attribute: ColorPointRIntensity, Privilege: manage */ \
-    0x00000036, /* Cluster: Color Control, Attribute: ColorPointGX, Privilege: manage */ \
-    0x00000037, /* Cluster: Color Control, Attribute: ColorPointGY, Privilege: manage */ \
-    0x00000038, /* Cluster: Color Control, Attribute: ColorPointGIntensity, Privilege: manage */ \
-    0x0000003A, /* Cluster: Color Control, Attribute: ColorPointBX, Privilege: manage */ \
-    0x0000003B, /* Cluster: Color Control, Attribute: ColorPointBY, Privilege: manage */ \
-    0x0000003C, /* Cluster: Color Control, Attribute: ColorPointBIntensity, Privilege: manage */ \
     0x00004010, /* Cluster: Color Control, Attribute: StartUpColorTemperatureMireds, Privilege: manage */ \
     0x00000010, /* Cluster: Ballast Configuration, Attribute: MinLevel, Privilege: manage */ \
     0x00000011, /* Cluster: Ballast Configuration, Attribute: MaxLevel, Privilege: manage */ \
@@ -467,6 +449,7 @@
     0x00000026, /* Cluster: Camera AV Stream Management, Attribute: LocalSnapshotRecordingEnabled, Privilege: manage */ \
     0x00000027, /* Cluster: Camera AV Stream Management, Attribute: StatusLightEnabled, Privilege: manage */ \
     0x00000028, /* Cluster: Camera AV Stream Management, Attribute: StatusLightBrightness, Privilege: manage */ \
+    0x000000FE, /* Cluster: Unit Testing, Attribute: UnsupportedAttributeRequiringAdminPrivilege, Privilege: administer */ \
 }
 
 // Parallel array data (cluster, attribute, *privilege*) for write attribute
@@ -543,17 +526,6 @@
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Attribute: Schedules, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat User Interface Configuration, Attribute: KeypadLockout, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat User Interface Configuration, Attribute: ScheduleProgrammingVisibility, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: Color Control, Attribute: WhitePointX, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: Color Control, Attribute: WhitePointY, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: Color Control, Attribute: ColorPointRX, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: Color Control, Attribute: ColorPointRY, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: Color Control, Attribute: ColorPointRIntensity, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: Color Control, Attribute: ColorPointGX, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: Color Control, Attribute: ColorPointGY, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: Color Control, Attribute: ColorPointGIntensity, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: Color Control, Attribute: ColorPointBX, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: Color Control, Attribute: ColorPointBY, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: Color Control, Attribute: ColorPointBIntensity, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Color Control, Attribute: StartUpColorTemperatureMireds, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Ballast Configuration, Attribute: MinLevel, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Ballast Configuration, Attribute: MaxLevel, Privilege: manage */ \
@@ -592,6 +564,7 @@
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: LocalSnapshotRecordingEnabled, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: StatusLightEnabled, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: StatusLightBrightness, Privilege: manage */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Unit Testing, Attribute: UnsupportedAttributeRequiringAdminPrivilege, Privilege: administer */ \
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -605,6 +578,7 @@
     0x00000004, /* Cluster: Groups, Command: RemoveAllGroups, Privilege: manage */ \
     0x00000004, /* Cluster: Groups, Command: AddGroupIfIdentifying, Privilege: manage */ \
     0x0000001F, /* Cluster: Access Control, Command: ReviewFabricRestrictions, Privilege: administer */ \
+    0x0000002A, /* Cluster: OTA Software Update Requestor, Command: AnnounceOTAProvider, Privilege: administer */ \
     0x00000030, /* Cluster: General Commissioning, Command: ArmFailSafe, Privilege: administer */ \
     0x00000030, /* Cluster: General Commissioning, Command: SetRegulatoryConfig, Privilege: administer */ \
     0x00000030, /* Cluster: General Commissioning, Command: CommissioningComplete, Privilege: administer */ \
@@ -673,6 +647,8 @@
     0x00000104, /* Cluster: Closure Control, Command: Calibrate, Privilege: manage */ \
     0x00000201, /* Cluster: Thermostat, Command: SetWeeklySchedule, Privilege: manage */ \
     0x00000201, /* Cluster: Thermostat, Command: ClearWeeklySchedule, Privilege: manage */ \
+    0x00000201, /* Cluster: Thermostat, Command: AddThermostatSuggestion, Privilege: manage */ \
+    0x00000201, /* Cluster: Thermostat, Command: RemoveThermostatSuggestion, Privilege: manage */ \
     0x00000201, /* Cluster: Thermostat, Command: AtomicRequest, Privilege: manage */ \
     0x00000451, /* Cluster: Wi-Fi Network Management, Command: NetworkPassphraseRequest, Privilege: manage */ \
     0x00000452, /* Cluster: Thread Border Router Management, Command: GetActiveDatasetRequest, Privilege: manage */ \
@@ -752,6 +728,7 @@
     0x00000004, /* Cluster: Groups, Command: RemoveAllGroups, Privilege: manage */ \
     0x00000005, /* Cluster: Groups, Command: AddGroupIfIdentifying, Privilege: manage */ \
     0x00000000, /* Cluster: Access Control, Command: ReviewFabricRestrictions, Privilege: administer */ \
+    0x00000000, /* Cluster: OTA Software Update Requestor, Command: AnnounceOTAProvider, Privilege: administer */ \
     0x00000000, /* Cluster: General Commissioning, Command: ArmFailSafe, Privilege: administer */ \
     0x00000002, /* Cluster: General Commissioning, Command: SetRegulatoryConfig, Privilege: administer */ \
     0x00000004, /* Cluster: General Commissioning, Command: CommissioningComplete, Privilege: administer */ \
@@ -820,6 +797,8 @@
     0x00000002, /* Cluster: Closure Control, Command: Calibrate, Privilege: manage */ \
     0x00000001, /* Cluster: Thermostat, Command: SetWeeklySchedule, Privilege: manage */ \
     0x00000003, /* Cluster: Thermostat, Command: ClearWeeklySchedule, Privilege: manage */ \
+    0x00000007, /* Cluster: Thermostat, Command: AddThermostatSuggestion, Privilege: manage */ \
+    0x00000008, /* Cluster: Thermostat, Command: RemoveThermostatSuggestion, Privilege: manage */ \
     0x000000FE, /* Cluster: Thermostat, Command: AtomicRequest, Privilege: manage */ \
     0x00000000, /* Cluster: Wi-Fi Network Management, Command: NetworkPassphraseRequest, Privilege: manage */ \
     0x00000000, /* Cluster: Thread Border Router Management, Command: GetActiveDatasetRequest, Privilege: manage */ \
@@ -899,6 +878,7 @@
     chip::Access::Privilege::kManage, /* Cluster: Groups, Command: RemoveAllGroups, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Groups, Command: AddGroupIfIdentifying, Privilege: manage */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Access Control, Command: ReviewFabricRestrictions, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: OTA Software Update Requestor, Command: AnnounceOTAProvider, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: General Commissioning, Command: ArmFailSafe, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: General Commissioning, Command: SetRegulatoryConfig, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: General Commissioning, Command: CommissioningComplete, Privilege: administer */ \
@@ -967,6 +947,8 @@
     chip::Access::Privilege::kManage, /* Cluster: Closure Control, Command: Calibrate, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Command: SetWeeklySchedule, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Command: ClearWeeklySchedule, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Thermostat, Command: AddThermostatSuggestion, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Thermostat, Command: RemoveThermostatSuggestion, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Command: AtomicRequest, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Wi-Fi Network Management, Command: NetworkPassphraseRequest, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thread Border Router Management, Command: GetActiveDatasetRequest, Privilege: manage */ \

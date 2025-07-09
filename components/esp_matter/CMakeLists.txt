@@ -5,22 +5,21 @@ set(SRC_DIRS_LIST       "."
 
 set(INCLUDE_DIRS_LIST   "."
                         "utils"
+                        "data_model_provider"
                         "${MATTER_SDK_PATH}/zzz_generated/app-common"
                         "${MATTER_SDK_PATH}/third_party/nlfaultinjection/include"
                         "${MATTER_SDK_PATH}/src")
 
-# TODO: This file has compilation errors
-set(EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/closure-control-server/closure-control-server.cpp")
-list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/general-commissioning-server/TemporaryTestCoupling.cpp")
+# TODO: These files have compilation errors
+set(EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/closure-control-server/closure-control-server.cpp"
+                      "${MATTER_SDK_PATH}/src/app/clusters/commodity-tariff-server/commodity-tariff-server.cpp"
+                      "${MATTER_SDK_PATH}/src/app/clusters/commodity-tariff-server/CommodityTariffAttrsDataMgmt.cpp")
+set(PRIV_INCLUDE_DIRS_LIST )
 
 if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
     list(APPEND SRC_DIRS_LIST    "${MATTER_SDK_PATH}/src/app/server"
                                  "${MATTER_SDK_PATH}/src/app/reporting"
-                                 "${MATTER_SDK_PATH}/src/app/server-cluster"
-                                 # TODO Use esp-matter data model and remove ember codes
-                                 "${MATTER_SDK_PATH}/src/app/util"
-                                 "${MATTER_SDK_PATH}/src/app/util/persistence"
-                                 "${MATTER_SDK_PATH}/src/data-model-providers/codegen")
+                                 "${MATTER_SDK_PATH}/src/app/server-cluster")
     if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
         include("utils/cluster_select/cluster_dir.cmake")
         get_supported_cluster_dirs(SUPPORTED_CLUSTER_DIRS)
@@ -30,26 +29,25 @@ if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
             if (C_CPP_FILES)
                 list(APPEND SRC_DIRS_LIST "${CLUSTER_DIR}")
             endif()
+            file(GLOB_RECURSE CODEGEN_INTEGRATION_FILE "${CLUSTER_DIR}/CodegenIntegration.cpp")
+            if (CODEGEN_INTEGRATION_FILE)
+                list(APPEND EXCLUDE_SRCS_LIST "${CLUSTER_DIR}/CodegenIntegration.cpp")
+            endif()
         endforeach()
 
-        list(APPEND SRC_DIRS_LIST "zap_common/app"
-                                  "data_model"
-                                  "private")
+        list(APPEND SRC_DIRS_LIST "data_model"
+                                  "data_model_provider"
+                                  "data_model_provider/clusters"
+                                  "data_model/private")
         list(APPEND INCLUDE_DIRS_LIST "zap_common"
                                       "data_model")
-        list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/software-diagnostics-server/CodegenIntegration.cpp")
-        list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/administrator-commissioning-server/CodegenIntegration.cpp")
-        list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/ota-provider/CodegenIntegration.cpp")
-   
-        if(NOT CONFIG_SUPPORT_SOFTWARE_DIAGNOSTICS_CLUSTER)
-              list(APPEND EXCLUDE_SRCS_LIST "data_model/software_diagnostics_codegen_integration.cpp")
-        endif()
-
+        list(APPEND PRIV_INCLUDE_DIRS_LIST "data_model/private")
+        list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/network-commissioning/CodegenInstance.cpp"
+                                      "${MATTER_SDK_PATH}/src/app/clusters/general-commissioning-server/TemporaryTestCoupling.cpp")
     endif(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
 else()
     list(APPEND EXCLUDE_SRCS_LIST "esp_matter_identify.cpp"
-                                  "esp_matter_ota.cpp"
-                                  "esp_matter_attribute_utils.cpp")
+                                  "esp_matter_ota.cpp")
 endif(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
 
 
@@ -59,7 +57,7 @@ set(REQUIRES_LIST       chip bt esp_matter_console nvs_flash app_update esp_secu
 idf_component_register( SRC_DIRS        ${SRC_DIRS_LIST}
                         INCLUDE_DIRS    ${INCLUDE_DIRS_LIST}
                         EXCLUDE_SRCS    ${EXCLUDE_SRCS_LIST}
-                        PRIV_INCLUDE_DIRS "private" "data_model/private"
+                        PRIV_INCLUDE_DIRS ${PRIV_INCLUDE_DIRS_LIST}
                         REQUIRES        ${REQUIRES_LIST})
 
 # This has been added to fix the error and should be removed once fixed:

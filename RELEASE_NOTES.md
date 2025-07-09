@@ -1,3 +1,10 @@
+# 2-Sep-2025
+
+API change.
+
+Move the macros `REMAP_TO_RANGE()` and `REMAP_TO_RANGE_INVERSE()` to from the `esp_matter_attribute_utils.h` to `common_macros.h`
+in `examples/common/utils` directory.
+
 # 10-June-2025
 
 API Change.
@@ -14,7 +21,7 @@ For clusters with `O` feature conformance, feature should be added using `featur
 
 Cluster structure change.
   - `feature_flags` are now part of `cluster::config` to configure the features in the application.
-  - moved `features::config` frome `cluster::config` to `cluster::config::features` structure.
+  - moved `features::config` from `cluster::config` to `cluster::config::features` structure.
 
 # 27-December-2024
 
@@ -38,7 +45,7 @@ esp_err_t get_bounds(attribute_t *attribute, esp_matter_attr_bounds_t *bounds);
 
 # 08-July-2024
 - Changed diagnostic cluster namespaces as per the matter specifications
-  - diagnostics_network_wifi -> wifi_network_diagnotics  
+  - diagnostics_network_wifi -> wifi_network_diagnostics  
   - diagnostics_network_thread -> thread_network_diagnostics  
   - diagnostics_network_ethernet -> ethernet_network_diagnostics
 

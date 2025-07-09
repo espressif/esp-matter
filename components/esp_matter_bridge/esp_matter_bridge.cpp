@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "esp_matter_endpoint.h"
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <nvs.h>
@@ -271,14 +272,12 @@ static bool parent_endpoint_is_valid(node_t *node, uint16_t parent_endpoint_id)
         ESP_LOGE(TAG, "Parent endpoint cannot be NULL");
         return false;
     }
-    uint8_t device_type_count = 0;
-    uint32_t *device_type_ids_ptr = get_device_type_ids(parent_endpoint, &device_type_count);
-    if (device_type_ids_ptr == NULL || device_type_count == 0) {
-        ESP_LOGE(TAG, "Device type id array cannot be NULL");
-        return false;
-    }
+    uint8_t device_type_count = get_device_type_count(parent_endpoint);
     for (uint8_t i = 0; i < device_type_count; ++i) {
-        if (device_type_ids_ptr[i] == esp_matter::endpoint::aggregator::get_device_type_id()) {
+        uint32_t dev_type_id;
+        uint8_t dev_type_ver;
+        if ((ESP_OK == get_device_type_at_index(parent_endpoint, i, dev_type_id, dev_type_ver)) &&
+            (dev_type_id == endpoint::aggregator::get_device_type_id())) {
             return true;
         }
     }

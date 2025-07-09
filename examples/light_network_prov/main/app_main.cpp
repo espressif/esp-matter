@@ -232,9 +232,8 @@ static esp_err_t bulk_write_cb(const esp_rmaker_device_t *device, const esp_rmak
     if (ctx) {
         ESP_LOGI(TAG, "Received write request via : %s", esp_rmaker_device_cb_src_to_str(ctx->src));
     }
-    ESP_LOGI(TAG, "Light received %d params in write", count);
     app_driver_handle_t light_handle = (app_driver_handle_t)priv_data;
-    esp_matter_attr_val_t matter_val;
+    ESP_LOGI(TAG, "Light received %d params in write", count);
     for (int i = 0; i < count; i++) {
         const esp_rmaker_param_t *param = write_req[i].param;
         esp_rmaker_param_val_t val = write_req[i].val;

@@ -14,15 +14,15 @@
 #include <esp_matter_console.h>
 #include <esp_matter_identify.h>
 
-#include <common_macros.h>
 #include <app_priv.h>
 #include <app_reset.h>
+#include <common_macros.h>
+#include "platform/PlatformManager.h"
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
 #endif
 
 using namespace esp_matter;
-using namespace esp_matter::attribute;
 
 static const char *TAG = "app_main";
 uint16_t light_endpoint_id = 0;
@@ -67,18 +67,13 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 // This callback is called for every attribute update. The callback implementation shall
 // handle the desired attributes and return an appropriate error code. If the attribute
 // is not of your interest, please do not return an error code and strictly return ESP_OK.
-static esp_err_t app_attribute_update_cb(callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
-                                         uint32_t attribute_id, esp_matter_attr_val_t *val, void *priv_data)
+
+chip::Protocols::InteractionModel::Status MatterPreAttributeChangeCallback(
+    const chip::app::ConcreteAttributePath &attributePath, uint8_t type, uint16_t size, uint8_t *value)
 {
-    esp_err_t err = ESP_OK;
-
-    if (type == PRE_UPDATE) {
-        /* Driver update */
-        app_driver_handle_t driver_handle = light_handle;
-        err = app_driver_attribute_update(driver_handle, endpoint_id, cluster_id, attribute_id, val);
-    }
-
-    return err;
+    esp_err_t err = app_driver_attribute_update(light_handle, attributePath.mEndpointId, attributePath.mClusterId,
+                                                attributePath.mAttributeId, type, value, size);
+    return err == ESP_OK ? chip::Protocols::InteractionModel::Status::Success : chip::Protocols::InteractionModel::Status::Failure;
 }
 
 extern "C" void app_main()
@@ -94,7 +89,6 @@ extern "C" void app_main()
     app_reset_button_register(button_handle);
 
     /* Initialize matter callback */
-    attribute::set_callback(app_attribute_update_cb);
     light_endpoint_id = 1; /* This is from zap-generated/endpoint_config.h */
 
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
@@ -111,11 +105,15 @@ extern "C" void app_main()
     err = esp_matter::start(app_event_cb);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
 
+    init_network_driver();
+
     esp_matter::identification::init(1, 0);
     esp_matter::identification::set_callback(nullptr);
 
     /* Starting driver with default values */
-    app_driver_light_set_defaults(light_endpoint_id);
+    chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t arg){
+        app_driver_light_set_defaults(light_endpoint_id);
+    });
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter::console::diagnostics_register_commands();
