@@ -1145,7 +1145,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
 
         /* Attributes managed internally */
-        attribute::create_remaining_time(cluster, 0);
         for (uint8_t idx = 1; idx <= config->number_of_primaries.value_or(0); ++idx) {
             attribute::create_primary_n_x(cluster, 0, idx);
             attribute::create_primary_n_y(cluster, 0, idx);
