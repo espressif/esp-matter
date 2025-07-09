@@ -1437,6 +1437,17 @@ uint32_t get_id(command_t *command)
     return current_command->command_id;
 }
 
+esp_err_t set_callback(command_t *command, callback_t callback)
+{
+    if (!command) {
+        ESP_LOGE(TAG, "Command cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _command_t *current_command = (_command_t *)command;
+    current_command->callback = callback;
+    return ESP_OK;
+}
+
 callback_t get_callback(command_t *command)
 {
     VerifyOrReturnValue(command, NULL, ESP_LOGE(TAG, "Command cannot be NULL"));
