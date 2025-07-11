@@ -1673,7 +1673,7 @@ Run ``zap_regen_all.py`` in Matter virtual environment to generate common code a
   ::
 
     cd esp_matter/connectedhomeip/connectedhomeip
-    source ./scripts/active.sh
+    source ./scripts/activate.sh
     ./scripts/tools/zap_regen_all.py
 
 The code generation script will create client code for the custom cluster, supporting Android, Darwin, and Python controllers, as well as the chip-tool. It will also generate app-common code for the new custom cluster.
