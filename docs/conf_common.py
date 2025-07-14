@@ -60,4 +60,10 @@ project_slug = 'esp-matter'
 versions_url = '_static/esp_sdk_matter_version.js'
 
 # Final PDF filename will contains target and version
-pdf_file_prefix = u'esp-docs'
+pdf_file_prefix = u'esp-matter'
+
+# Disable index in LaTeX output, as it's not rendered correctly
+latex_elements = {
+    'printindex': '',
+    'makeindex': '',
+}
