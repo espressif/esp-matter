@@ -380,6 +380,29 @@ esp_err_t set_identify(uint16_t endpoint_id, void *identify);
  */
 esp_err_t enable(endpoint_t *endpoint);
 
+/** Check if attribute is enabled
+ *
+ * Check if the attribute of a cluster is enabled on an endpoint.
+ *
+ * @param[in] endpoint_id Endpoint id.
+ * @param[in] cluster_id Cluster id.
+ * @param[in] attribute_id Attribute id.
+ *
+ * @return true if an attribute is enabled otherwise false.
+ */
+bool is_attribute_enabled(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id);
+
+/** Check if command is enabled
+ *
+ * Check if the command of a cluster is enabled on an endpoint.
+ *
+ * @param[in] endpoint_id Endpoint id.
+ * @param[in] cluster_id Cluster id.
+ * @param[in] command_id Command id.
+ *
+ * @return true if a command is enabled otherwise false.
+ */
+bool is_command_enabled(uint16_t endpoint_id, uint32_t cluster_id, uint32_t command_id);
 } /* endpoint */
 
 namespace cluster {

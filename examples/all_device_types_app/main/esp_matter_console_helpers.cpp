@@ -168,6 +168,7 @@ static void initialize_console(void)
 
 namespace esp_matter {
 
+static chip::app::Clusters::PowerTopology::PowerTopologyDelegate powerTopologyDelegate;
 namespace data_model {
 
 int create(uint8_t device_type_index)
@@ -454,7 +455,8 @@ int create(uint8_t device_type_index)
         }
         case ESP_MATTER_ELECTRICAL_SENSOR: {
             esp_matter::endpoint::electrical_sensor::config_t electrical_sensor_config;
-            electrical_sensor_config.power_topology.feature_flags = esp_matter::cluster::power_topology::feature::node_topology::get_id();
+            electrical_sensor_config.power_topology.feature_flags = esp_matter::cluster::power_topology::feature::set_topology::get_id();
+            electrical_sensor_config.power_topology.delegate = &powerTopologyDelegate;
             electrical_sensor_config.electrical_power_measurement.feature_flags =
             esp_matter::cluster::electrical_power_measurement::feature::direct_current::get_id() |
             esp_matter::cluster::electrical_power_measurement::feature::alternating_current::get_id();

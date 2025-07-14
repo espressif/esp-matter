@@ -45,6 +45,33 @@ esp_err_t send_energy_measurement_events(uint16_t endpoint_id);
 }
 #endif
 
+#include <app/clusters/power-topology-server/power-topology-server.h>
+
+using namespace chip;
+using namespace chip::app::Clusters;
+using namespace chip::app::Clusters::PowerTopology;
+
+namespace chip {
+namespace app {
+namespace Clusters {
+namespace PowerTopology {
+
+class PowerTopologyDelegate : public Delegate
+{
+public:
+    ~PowerTopologyDelegate() = default;
+
+    CHIP_ERROR GetAvailableEndpointAtIndex(size_t index, EndpointId & endpointId) override;
+    CHIP_ERROR GetActiveEndpointAtIndex(size_t index, EndpointId & endpointId) override;
+};
+
+
+
+} // namespace PowerTopology
+} // namespace Clusters
+} // namespace app
+} // namespace chip
+
 /**
  * Electrical Power Measurement Delegate implementation
  */

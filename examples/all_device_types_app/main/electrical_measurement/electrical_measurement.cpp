@@ -39,6 +39,15 @@ static std::unique_ptr<ElectricalPowerMeasurementDelegate> gEPMDelegate;
 // Global pointer to our ElectricalPowerMeasurementInstance
 static std::unique_ptr<ElectricalPowerMeasurementInstance> gEPMInstance;
 
+CHIP_ERROR PowerTopology::PowerTopologyDelegate::GetAvailableEndpointAtIndex(size_t index, EndpointId & endpointId)
+{
+    return CHIP_ERROR_PROVIDER_LIST_EXHAUSTED;
+}
+
+CHIP_ERROR PowerTopology::PowerTopologyDelegate::GetActiveEndpointAtIndex(size_t index, EndpointId & endpointId)
+{
+    return CHIP_ERROR_PROVIDER_LIST_EXHAUSTED;
+}
 // Example of how to create and send energy measurement events
 esp_err_t send_energy_measurement_events(uint16_t endpoint_id)
 {
