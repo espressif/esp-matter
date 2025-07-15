@@ -120,6 +120,17 @@ def build_dir(app_path: str, target: Optional[str], config: Optional[str]) -> st
         f'no build dir valid. Please build the binary via "idf.py -B {recommend_place} build" and run pytest again'
     )
 
+def pytest_addoption(parser):
+    parser.addoption(
+        "--certification-json",
+        action="store",
+        default="certification_test_commands.json",
+        help="Path to the certification test commands JSON file",
+    )
+
+@pytest.fixture(scope="session")
+def certification_tests(request):
+    return request.config.getoption("--certification-json")
 
 @pytest.fixture(autouse=True)
 @multi_dut_fixture
@@ -207,7 +218,7 @@ class IdfPytestEmbedded:
         # set default timeout 10 minutes for each case
         for item in items:
             if 'timeout' not in item.keywords:
-                item.add_marker(pytest.mark.timeout(10 * 60))
+                item.add_marker(pytest.mark.timeout(40 * 60))
 
         # filter all the test cases with "--target"
         if self.target:

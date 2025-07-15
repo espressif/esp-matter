@@ -1,0 +1,138 @@
+{
+  "common_args": "-m ble-wifi --wifi-ssid {WIFI_SSID} --wifi-passphrase {WIFI_PASSPHRASE} --discriminator 3840 --passcode 20202021 --int-arg use_pase_only:0",
+  "test_cases": {
+    "TC_LVL_2_3": {
+      "script": "TC_LVL_2_3.py",
+      "args": "--endpoint 1 --PICS extended_color_light_wifi_pics_code.txt"
+    },
+    "TC_ACE_1_2": {
+      "script": "TC_ACE_1_2.py",
+      "args": "--timeout 300"
+    },
+    "TC_ACE_1_3": {
+      "script": "TC_ACE_1_3.py",
+      "args": ""
+    },
+    "TC_ACE_1_5": {
+      "script": "TC_ACE_1_5.py",
+      "args": "--timeout 300"
+    },
+    "TC_ACE_2_1": {
+      "script": "TC_AccessChecker.py",
+      "test_case": "test_TC_ACE_2_1",
+      "args": "--timeout 300"
+    },
+    "TC_ACE_2_2": {
+      "script": "TC_AccessChecker.py",
+      "test_case": "test_TC_ACE_2_2",
+      "args": "--timeout 300"
+    },
+    "TC_CGEN_2_4": {
+      "script": "TC_CGEN_2_4.py",
+      "args": "--timeout 300"
+    },
+    "TC_CNET_1_4": {
+      "script": "TC_CNET_1_4.py",
+      "args": "--timeout 300"
+    },
+    "TC_CNET_4_4": {
+      "script": "TC_CNET_4_4.py",
+      "args": "--timeout 300"
+    },
+    "TC_DESC_2_2": {
+      "script": "TC_DeviceBasicComposition.py",
+      "test_case": "test_TC_DESC_2_2",
+      "args": "--timeout 300"
+    },
+    "TC_DGGEN_2_4": {
+      "script": "TC_DGGEN_2_4.py",
+      "args": "--timeout 300"
+    },
+    "TC_DGGEN_3_2": {
+      "script": "TC_DGGEN_3_2.py",
+      "args": ""
+    },
+    "TC_DT_1_1": {
+      "script": "TC_DeviceBasicComposition.py",
+      "test_case": "test_TC_DT_1_1",
+      "args": "--timeout 300"
+    },
+    "TC_OPCREDS_3_1": {
+      "script": "TC_OPCREDS_3_1.py",
+      "args": "--timeout 300"
+    },
+    "TC_OPCREDS_3_2": {
+      "script": "TC_OPCREDS_3_2.py",
+      "args": "--timeout 300"
+    },
+    "TC_SM_1_1": {
+      "script": "TC_DeviceBasicComposition.py",
+      "test_case": "test_TC_SM_1_1",
+      "args": "--timeout 300"
+    },
+    "TC_SM_1_2": {
+      "script": "TC_DeviceBasicComposition.py",
+      "test_case": "test_TC_SM_1_2",
+      "args": "--timeout 300"
+    },
+    "TC_ACE_1_4": {
+      "script": "TC_ACE_1_4.py",
+      "args": "--int-arg PIXIT.ACE.APPENDPOINT:1 PIXIT.ACE.APPDEVTYPEID:269 use_pase_only:0 --string-arg PIXIT.ACE.APPCLUSTER:OnOff PIXIT.ACE.APPATTRIBUTE:OnOff"
+    },
+    "TC_IDM_4_2": {
+      "script": "TC_IDM_4_2.py",
+      "args": ""
+    },
+    "TC_IDM_12_1": {
+      "script": "TC_DeviceBasicComposition.py",
+      "test_case": "test_TC_IDM_12_1",
+      "args": ""
+    },
+    "TC_IDM_11_1": {
+      "script": "TC_DeviceBasicComposition.py",
+      "test_case": "test_TC_IDM_11_1",
+      "args": ""
+    },
+    "TC_IDM_10_5": {
+      "script": "TC_DeviceConformance.py",
+      "test_case": "test_TC_IDM_10_5",
+      "args": ""
+    },
+    "TC_IDM_10_3": {
+      "script": "TC_DeviceConformance.py",
+      "test_case": "test_TC_IDM_10_3",
+      "args": ""
+    },
+    "TC_IDM_10_2": {
+      "script": "TC_DeviceConformance.py",
+      "test_case": "test_TC_IDM_10_2",
+      "args": "--bool-arg allow_provisional:true"
+    },
+    "TC_IDM_10_1": {
+      "script": "TC_DeviceBasicComposition.py",
+      "test_case": "test_TC_IDM_10_1",
+      "args": ""
+    },
+    "TC_IDM_1_4": {
+      "script": "TC_IDM_1_4.py",
+      "args": "--hex-arg PIXIT.DGGEN.TEST_EVENT_TRIGGER_KEY:000102030405060708090a0b0c0d0e0f"
+    },
+    "TC_IDM_1_2": {
+      "script": "TC_IDM_1_2.py",
+      "args": "--PICS extended_color_light_wifi_pics_code.txt"
+    },
+    "TC_RR_1_1": {
+      "script": "TC_RR_1_1.py",
+      "args": "--timeout 100000"
+    },
+    "TC_SC_3_6": {
+      "script": "TC_SC_3_6.py",
+      "args": "--PICS extended_color_light_wifi_pics_code.txt"
+    },
+    "TC_SC_3_6_post": {
+      "script": "TC_SC_3_6.py",
+      "args": "--PICS extended_color_light_wifi_pics_code.txt --bool-arg: post_cert_test:true"
+    }
+  }
+}
+

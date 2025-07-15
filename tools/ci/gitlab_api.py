@@ -14,6 +14,8 @@ class GitLabAPI:
         self.ci_merge_request_iid = os.getenv("CI_MERGE_REQUEST_IID")
         self.ci_pipeline_id = os.getenv("CI_PIPELINE_ID")
         self.ci_commit_ref_name = os.getenv("CI_COMMIT_REF_NAME")
+        self.ci_gitlab_pytest_ssid = os.getenv("CI_GITLAB_PYTEST_SSID")
+        self.ci_gitlab_pytest_passphrase = os.getenv("CI_GITLAB_PYTEST_PASSPHRASE")
         
         if not all([self.gitlab_api_url, self.gitlab_token, self.ci_project_id, self.ci_pipeline_id]):
             raise ValueError("Required GitLab environment variables are not set")
