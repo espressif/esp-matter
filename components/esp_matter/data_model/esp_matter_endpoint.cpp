@@ -1497,6 +1497,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
+    config->power_topology.feature_flags |= power_topology::feature::node_topology::get_id();
     power_topology::create(endpoint, &(config->power_topology), CLUSTER_FLAG_SERVER);
     
     electrical_power_measurement::create(endpoint, &(config->electrical_power_measurement), CLUSTER_FLAG_SERVER);
@@ -1894,6 +1895,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     config->power_source_device.power_source.feature_flags = power_source::feature::wired::get_id();
     power_source_device::add(endpoint, &config->power_source_device);
 
+    config->electrical_energy_measurement.feature_flags = electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id();
+    config->electrical_sensor.electrical_power_measurement.feature_flags |= electrical_power_measurement::feature::alternating_current::get_id();
     electrical_sensor::add(endpoint, &config->electrical_sensor);
     electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER);
 
@@ -1945,11 +1948,12 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     power_source::attribute::create_bat_charging_current(power_source_cluster, config->bat_charging_current, 0x00, 0xFFFF);
     power_source::attribute::create_active_bat_charge_faults(power_source_cluster, NULL, 0, 0);
 
+    config->electrical_energy_measurement.feature_flags = electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id();
+    config->electrical_sensor.electrical_power_measurement.feature_flags = electrical_power_measurement::feature::alternating_current::get_id();
     electrical_sensor::add(endpoint, &config->electrical_sensor);
     electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER);
 
     cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id);
-
     electrical_power_measurement::attribute::create_voltage(elec_power_measurement_cluster, config->voltage);
     electrical_power_measurement::attribute::create_active_current(elec_power_measurement_cluster, config->active_current);
 

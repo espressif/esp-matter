@@ -1866,6 +1866,35 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* mode_select */
 
+
+namespace pressure_measurement {
+namespace feature {
+
+namespace extended {
+
+uint32_t get_id()
+{
+    return (uint32_t)PressureMeasurement::Feature::kExtended;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+
+    attribute::create_pressure_scaled_value(cluster, config->pressure_scaled_value);
+    attribute::create_pressure_min_scaled_value(cluster, config->pressure_min_scaled_value);
+    attribute::create_pressure_max_scaled_value(cluster, config->pressure_max_scaled_value);
+    attribute::create_pressure_scale(cluster, config->pressure_scale);
+
+    return ESP_OK;
+}
+
+} /* extended */
+
+} /* feature */
+} /* pressure_measurement */
+
 namespace software_diagnostics {
 namespace feature {
 

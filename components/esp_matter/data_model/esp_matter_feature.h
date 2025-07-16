@@ -1647,6 +1647,26 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* feature */
 } /* energy_preference */
 
+namespace pressure_measurement {
+namespace feature {
+
+namespace extended {
+
+typedef struct config {
+   nullable<int16_t> pressure_scaled_value;
+   nullable<int16_t> pressure_min_scaled_value;
+   nullable<int16_t> pressure_max_scaled_value;
+   uint8_t pressure_scale;
+   config() : pressure_scaled_value(), pressure_min_scaled_value(), pressure_max_scaled_value(), pressure_scale(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* extended */
+
+} /* feature */
+} /* pressure_measurement */
+
 namespace occupancy_sensing {
 namespace feature {
 

@@ -846,6 +846,7 @@ attribute_t *create_supported_calendar_types(cluster_t *cluster, uint8_t *value,
 } /* attribute */
 } /* time_format_localization */
 
+// Note: Attribute name for the below cluster deviates from Matter spec
 namespace illuminance_measurement {
 namespace attribute {
 attribute_t *create_illuminance_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max);
@@ -856,6 +857,7 @@ attribute_t *create_illuminance_light_sensor_type(cluster_t *cluster, nullable<u
 } /* attribute */
 } /* illuminance_measurement */
 
+// Note: Attribute name for the below cluster deviates from Matter spec
 namespace pressure_measurement {
 namespace attribute {
 attribute_t *create_pressure_measured_value(cluster_t *cluster, nullable<int16_t> value);
@@ -870,6 +872,7 @@ attribute_t *create_pressure_scale(cluster_t *cluster, int8_t value);
 } /* attribute */
 } /* pressure_measurement */
 
+// Note: Attribute name for the below cluster deviates from Matter spec
 namespace flow_measurement {
 namespace attribute {
 attribute_t *create_flow_measured_value(cluster_t *cluster, nullable<uint16_t> value);
