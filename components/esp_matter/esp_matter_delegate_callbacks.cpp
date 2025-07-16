@@ -46,10 +46,14 @@
 #include <app/clusters/ota-provider/ota-provider-cluster.h>
 #include <app/clusters/ota-provider/CodegenIntegration.h>
 #include <app/clusters/diagnostic-logs-server/diagnostic-logs-server.h>
+#include <unordered_map>
 
 using namespace chip::app::Clusters;
 namespace esp_matter {
 namespace cluster {
+
+static std::unordered_map<chip::EndpointId, ModeBase::Instance*> s_microwave_oven_mode_instances;
+static std::unordered_map<chip::EndpointId, OperationalState::Instance*> s_operational_state_instances;
 
 static uint32_t get_feature_map_value(uint16_t endpoint_id, uint32_t cluster_id)
 {
@@ -110,7 +114,19 @@ void EnergyEvseModeDelegateInitCB(void *delegate, uint16_t endpoint_id)
 
 void MicrowaveOvenModeDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    InitModeDelegate(delegate, endpoint_id, MicrowaveOvenMode::Id);
+    VerifyOrReturn(delegate != nullptr);
+    ModeBase::Delegate *mode_delegate = static_cast<ModeBase::Delegate*>(delegate);
+    ModeBase::Instance * modeInstance = nullptr;
+    // Create new instance of MicrowaveOvenMode if not found in the map, otherwise use existing instance.
+    if(s_microwave_oven_mode_instances.find(endpoint_id) == s_microwave_oven_mode_instances.end())
+    {
+        uint32_t feature_map = get_feature_map_value(endpoint_id, MicrowaveOvenMode::Id);
+        modeInstance = new ModeBase::Instance(mode_delegate, endpoint_id, MicrowaveOvenMode::Id, feature_map);
+        s_microwave_oven_mode_instances[endpoint_id] = modeInstance;
+    } else {
+        modeInstance = s_microwave_oven_mode_instances[endpoint_id];
+    }
+    modeInstance->Init();
 }
 
 void DeviceEnergyManagementModeDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -137,17 +153,32 @@ void MicrowaveOvenControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
     cluster = cluster::get(endpoint_id, OperationalState::Id);
     OperationalState::Delegate *operational_state_delegate = static_cast<OperationalState::Delegate*>(get_delegate_impl(cluster));
     VerifyOrReturn(delegate != nullptr && microwave_oven_mode_delegate != nullptr && operational_state_delegate != nullptr);
-    // Create instances of clusters.
-    static ModeBase::Instance * microwaveOvenModeInstance = nullptr;
-    static OperationalState::Instance * operationalStateInstance = nullptr;
+    ModeBase::Instance* microwaveOvenModeInstance = nullptr;
+    OperationalState::Instance* operationalStateInstance = nullptr;
+    
+    // Create new instance of MicrowaveOvenMode if not found in the map, otherwise use existing instance.
+    if(s_microwave_oven_mode_instances.find(endpoint_id) == s_microwave_oven_mode_instances.end())
+    {
+        uint32_t feature_map = get_feature_map_value(endpoint_id, MicrowaveOvenMode::Id);
+        microwaveOvenModeInstance = new ModeBase::Instance(microwave_oven_mode_delegate, endpoint_id, MicrowaveOvenMode::Id, feature_map);
+        s_microwave_oven_mode_instances[endpoint_id] = microwaveOvenModeInstance;
+    } else {
+        microwaveOvenModeInstance = s_microwave_oven_mode_instances[endpoint_id];
+    }
+    
+    // Create new instance of OperationalState if not found in the map, otherwise use existing instance.
+    if(s_operational_state_instances.find(endpoint_id) == s_operational_state_instances.end())
+    {
+        operationalStateInstance = new OperationalState::Instance(operational_state_delegate, endpoint_id);
+        s_operational_state_instances[endpoint_id] = operationalStateInstance;
+    } else {
+        operationalStateInstance = s_operational_state_instances[endpoint_id];
+    }
+    
+    // Create MicrowaveOvenControl instance
     static MicrowaveOvenControl::Instance * microwaveOvenControlInstance = nullptr;
     MicrowaveOvenControl::Delegate *microwave_oven_control_delegate = static_cast<MicrowaveOvenControl::Delegate*>(delegate);
-    uint32_t feature_map = get_feature_map_value(endpoint_id, MicrowaveOvenMode::Id);
-
-    microwaveOvenModeInstance = new ModeBase::Instance(microwave_oven_mode_delegate, endpoint_id, MicrowaveOvenMode::Id, feature_map);
-    operationalStateInstance = new OperationalState::Instance(operational_state_delegate, endpoint_id);
-
-    feature_map = get_feature_map_value(endpoint_id, MicrowaveOvenControl::Id);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, MicrowaveOvenControl::Id);
     microwaveOvenControlInstance = new MicrowaveOvenControl::Instance(microwave_oven_control_delegate, endpoint_id, MicrowaveOvenControl::Id, feature_map,
                                         *operationalStateInstance, *microwaveOvenModeInstance);
     microwaveOvenControlInstance->Init();
@@ -158,7 +189,14 @@ void OperationalStateDelegateInitCB(void *delegate, uint16_t endpoint_id)
     VerifyOrReturn(delegate != nullptr);
     static OperationalState::Instance * operationalStateInstance = nullptr;
     OperationalState::Delegate *operational_state_delegate = static_cast<OperationalState::Delegate*>(delegate);
-    operationalStateInstance = new OperationalState::Instance(operational_state_delegate, endpoint_id);
+    // Create new instance of OperationalState if not found in the map, otherwise use existing instance.
+    if(s_operational_state_instances.find(endpoint_id) == s_operational_state_instances.end())
+    {
+        operationalStateInstance = new OperationalState::Instance(operational_state_delegate, endpoint_id);
+        s_operational_state_instances[endpoint_id] = operationalStateInstance;
+    } else {
+        operationalStateInstance = s_operational_state_instances[endpoint_id];
+    }
     operationalStateInstance->Init();
 }
 
