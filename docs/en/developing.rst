@@ -1134,6 +1134,14 @@ Build the firmware with below configuration options
     CONFIG_FACTORY_DEVICE_INSTANCE_INFO_PROVIDER=y
 
 
+.. only:: esp32h2 or esp32p4 or esp32c5
+
+    .. note::
+
+      ``{IDF_TARGET_NAME}`` supports ECDSA peripheral. If you want to use ECDSA peripheral,
+      you need to enable the ``CONFIG_ESP_SECURE_CERT_DS_PERIPHERAL=y`` option.
+
+
 2.7.2 Certification Declaration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
