@@ -29,6 +29,8 @@
 #include <common_macros.h>
 #include "app-common/zap-generated/ids/Attributes.h"
 #include "app-common/zap-generated/ids/Clusters.h"
+#include "platform/CHIPDeviceEvent.h"
+#include "platform/PlatformManager.h"
 #include "wifi_provisioning/manager.h"
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
@@ -39,6 +41,7 @@
 
 #include <app/server/CommissioningWindowManager.h>
 #include <app/server/Server.h>
+#include <wifi_prov_scheme/protocomm_matter_ble.h>
 
 static const char *TAG = "app_main";
 uint16_t light_endpoint_id = 0;
@@ -62,6 +65,9 @@ static esp_rmaker_device_t *light_device;
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
+    if (!event) {
+        return;
+    }
     switch (event->Type) {
     case chip::DeviceLayer::DeviceEventType::kInterfaceIpAddressChanged:
         ESP_LOGI(TAG, "Interface IP Address changed");
@@ -126,6 +132,11 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
     case chip::DeviceLayer::DeviceEventType::kBLEDeinitialized:
         ESP_LOGI(TAG, "BLE deinitialized and memory reclaimed");
         break;
+
+    case chip::DeviceLayer::DeviceEventType::kCHIPoBLEAdvertisingChange:
+        if (event->CHIPoBLEAdvertisingChange.Result == chip::DeviceLayer::kActivity_Started) {
+            start_secondary_ble_adv();
+        }
 
     default:
         break;
@@ -296,7 +307,7 @@ extern "C" void app_main()
         abort();
     }
 
-    /* Matter start */
+   /* Matter start */
     err = esp_matter::start(app_event_cb);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
 
@@ -311,7 +322,7 @@ extern "C" void app_main()
     bool is_wifi_provisioned = false;
     wifi_prov_mgr_is_provisioned(&is_wifi_provisioned);
     if (is_wifi_provisioned && esp_rmaker_user_node_mapping_get_state() == ESP_RMAKER_USER_MAPPING_DONE) {
-        chip::DeviceLayer::Internal::BLEMgr().Shutdown();
+        chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t){ chip::DeviceLayer::Internal::BLEMgr().Shutdown(); });
     }
 
 #if CONFIG_ENABLE_CHIP_SHELL
