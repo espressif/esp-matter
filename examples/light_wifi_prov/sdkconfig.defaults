@@ -60,11 +60,6 @@ CONFIG_MBEDTLS_ERROR_STRINGS=n
 # Fix for Timer Overflows
 CONFIG_FREERTOS_TIMER_TASK_STACK_DEPTH=3120
 
-# External Platform
-CONFIG_CHIP_ENABLE_EXTERNAL_PLATFORM=y
-CONFIG_CHIP_EXTERNAL_PLATFORM_DIR="../../../../examples/common/secondary_ble_adv/platform/ESP32_custom"
-CONFIG_CHIP_EXTERNAL_PLATFORM_INCLUDE_DIR="../../../../examples/common/secondary_ble_adv"
-
 # Additional configurations
 CONFIG_ESP_RMAKER_USER_ID_CHECK=y
 CONFIG_ESP_RMAKER_NO_CLAIM=y
