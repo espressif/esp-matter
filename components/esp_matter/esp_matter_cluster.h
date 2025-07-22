@@ -352,25 +352,25 @@ using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* air_quality */
 
-namespace hepa_filter_monitoring {
+namespace resource_monitoring {
 typedef struct config {
     void *delegate;
     config() : delegate(nullptr) {}
 } config_t;
 
+} /* resource_monitoring */
+
+namespace hepa_filter_monitoring {
+using config_t = resource_monitoring::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* hepa_filter_monitoring */
 
 namespace activated_carbon_filter_monitoring {
-typedef struct config {
-    void *delegate;
-    config() : delegate(nullptr) {}
-} config_t;
-
+using config_t = resource_monitoring::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* activated_carbon_filter_monitoring */
 
-namespace carbon_monoxide_concentration_measurement {
+namespace concentration_measurement {
 typedef struct config {
     uint8_t measurement_medium;
     struct {
@@ -378,135 +378,58 @@ typedef struct config {
         feature::level_indication::config_t level_indication;
     } features;
     uint32_t feature_flags;
+    void *delegate;
     config() : measurement_medium(0), feature_flags(0) {}
 } config_t;
+} /* concentration_measurement */
 
+namespace carbon_monoxide_concentration_measurement {
+using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* carbon_monoxide_concentration_measurement */
 
 namespace carbon_dioxide_concentration_measurement {
-typedef struct config {
-    uint8_t measurement_medium;
-    struct {
-        feature::numeric_measurement::config_t numeric_measurement;
-        feature::level_indication::config_t level_indication;
-    } features;
-    uint32_t feature_flags;
-    config() : measurement_medium(0), feature_flags(0) {}
-} config_t;
-
+using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* carbon_dioxide_concentration_measurement */
 
 namespace nitrogen_dioxide_concentration_measurement {
-typedef struct config {
-    uint8_t measurement_medium;
-    struct {
-        feature::numeric_measurement::config_t numeric_measurement;
-        feature::level_indication::config_t level_indication;
-    } features;
-    uint32_t feature_flags;
-    config() : measurement_medium(0), feature_flags(0) {}
-} config_t;
-
+using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* nitrogen_dioxide_concentration_measurement */
 
 namespace ozone_concentration_measurement {
-typedef struct config {
-    uint8_t measurement_medium;
-    struct {
-        feature::numeric_measurement::config_t numeric_measurement;
-        feature::level_indication::config_t level_indication;
-    } features;
-    uint32_t feature_flags;
-    config() : measurement_medium(0), feature_flags(0) {}
-} config_t;
-
+using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* ozone_concentration_measurement */
 
 namespace formaldehyde_concentration_measurement {
-typedef struct config {
-    uint8_t measurement_medium;
-    struct {
-        feature::numeric_measurement::config_t numeric_measurement;
-        feature::level_indication::config_t level_indication;
-    } features;
-    uint32_t feature_flags;
-    config() : measurement_medium(0), feature_flags(0) {}
-} config_t;
-
+using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* formaldehyde_concentration_measurement */
 
 namespace pm1_concentration_measurement {
-typedef struct config {
-    uint8_t measurement_medium;
-    struct {
-        feature::numeric_measurement::config_t numeric_measurement;
-        feature::level_indication::config_t level_indication;
-    } features;
-    uint32_t feature_flags;
-    config() : measurement_medium(0), feature_flags(0) {}
-} config_t;
-
+using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* pm1_concentration_measurement */
 
 namespace pm25_concentration_measurement {
-typedef struct config {
-    uint8_t measurement_medium;
-    struct {
-        feature::numeric_measurement::config_t numeric_measurement;
-        feature::level_indication::config_t level_indication;
-    } features;
-    uint32_t feature_flags;
-    config() : measurement_medium(0), feature_flags(0) {}
-} config_t;
-
+using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* pm25_concentration_measurement */
 
 namespace pm10_concentration_measurement {
-typedef struct config {
-    uint8_t measurement_medium;
-    struct {
-        feature::numeric_measurement::config_t numeric_measurement;
-        feature::level_indication::config_t level_indication;
-    } features;
-    uint32_t feature_flags;
-    config() : measurement_medium(0), feature_flags(0) {}
-} config_t;
-
+using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* pm10_concentration_measurement */
 
 namespace radon_concentration_measurement {
-typedef struct config {
-    uint8_t measurement_medium;
-    struct {
-        feature::numeric_measurement::config_t numeric_measurement;
-        feature::level_indication::config_t level_indication;
-    } features;
-    uint32_t feature_flags;
-    config() : measurement_medium(0), feature_flags(0) {}
-} config_t;
-
+using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* radon_concentration_measurement */
 
 namespace total_volatile_organic_compounds_concentration_measurement {
-typedef struct config {
-    uint8_t measurement_medium;
-    struct {
-        feature::numeric_measurement::config_t numeric_measurement;
-        feature::level_indication::config_t level_indication;
-    } features;
-    uint32_t feature_flags;
-    config() : measurement_medium(0), feature_flags(0) {}
-} config_t;
-
+using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* total_volatile_organic_compounds_concentration_measurement */
 
