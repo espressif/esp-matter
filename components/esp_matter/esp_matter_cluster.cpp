@@ -1333,18 +1333,20 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* air_quality */
 
-namespace hepa_filter_monitoring {
-const function_generic_t *function_list = NULL;
-const int function_flags = CLUSTER_FLAG_NONE;
+namespace resource_monitoring {
+typedef void (*delegate_init_cb_t)(void *, uint16_t);
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+template <typename T, delegate_init_cb_t delegate_init_cb = nullptr>
+static cluster_t *create(endpoint_t *endpoint, T *config, uint8_t flags, uint32_t cluster_id,
+                         uint32_t cluster_revision,
+                         const function_generic_t *function_list = nullptr,
+                         const int function_flags = CLUSTER_FLAG_NONE)
 {
-    cluster_t *cluster = cluster::create(endpoint, HepaFilterMonitoring::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, HepaFilterMonitoring::Id));
+    cluster_t *cluster = cluster::create(endpoint, cluster_id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster, id: 0x%08" PRIX32, cluster_id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
-            static const auto delegate_init_cb = HepaFilterMonitoringDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
         add_function_list(cluster, function_list, function_flags);
@@ -1361,41 +1363,21 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_CLIENT) {
         create_default_binding_cluster(endpoint);
     }
-
     return cluster;
+}
+} /* resource_monitoring */
+
+namespace hepa_filter_monitoring {
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    return resource_monitoring::create<config_t, HepaFilterMonitoringDelegateInitCB>(endpoint, config, flags,HepaFilterMonitoring::Id, cluster_revision);
 }
 } /* hepa_filter_monitoring */
 
 namespace activated_carbon_filter_monitoring {
-const function_generic_t *function_list = NULL;
-const int function_flags = CLUSTER_FLAG_NONE;
-
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ActivatedCarbonFilterMonitoring::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ActivatedCarbonFilterMonitoring::Id));
-
-    if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
-            static const auto delegate_init_cb = ActivatedCarbonFilterMonitoringDelegateInitCB;
-            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
-        }
-        add_function_list(cluster, function_list, function_flags);
-
-        /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, 0);
-
-        attribute::create_change_indication(cluster, 0);
-
-        /* Attributes not managed internally */
-        global::attribute::create_cluster_revision(cluster, cluster_revision);
-    }
-
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        create_default_binding_cluster(endpoint);
-    }
-
-    return cluster;
+    return resource_monitoring::create<config_t, ActivatedCarbonFilterMonitoringDelegateInitCB>(endpoint, config, flags,ActivatedCarbonFilterMonitoring::Id, cluster_revision);
 }
 } /* activated_carbon_filter_monitoring */
 
@@ -1406,7 +1388,7 @@ static cluster_t *create(endpoint_t *endpoint, T *config, uint8_t flags, uint32_
                          const function_generic_t *function_list=NULL, const int function_flags=CLUSTER_FLAG_NONE)
 {
     cluster_t *cluster = cluster::create(endpoint, cluster_id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster, id: %lu", cluster_id));
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster, id: 0x%08" PRIX32, cluster_id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
@@ -1416,10 +1398,29 @@ static cluster_t *create(endpoint_t *endpoint, T *config, uint8_t flags, uint32_
 
         // For all concentration measurement cluster Attribute Id of measurement medium is 0x09
         // Hence, using the hard coded value
-        attribute::create(cluster, 0x09, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(config->measurement_medium));
+        attribute::create_measurement_medium(cluster, config->measurement_medium);
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        if(config) {
+            if(config->feature_flags & feature::numeric_measurement::get_id() && config->feature_flags & feature::level_indication::get_id()) {
+                feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
+                feature::level_indication::add(cluster, &(config->features.level_indication));
+            }
+            else if(config->feature_flags & feature::numeric_measurement::get_id()) {
+                feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
+            }
+            else if(config->feature_flags & feature::level_indication::get_id()) {
+                feature::level_indication::add(cluster, &(config->features.level_indication));
+            }
+            else {
+                ESP_LOGE(TAG, "No feature found for carbon monoxide concentration measurement cluster");
+                cluster::destroy(cluster);
+                assert(false);
+                return NULL;
+            }
+        }
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -1435,27 +1436,8 @@ namespace carbon_monoxide_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = concentration_measurement::create<config_t>(endpoint, config, flags,
+    return concentration_measurement::create<config_t>(endpoint, config, flags,
                                                        CarbonMonoxideConcentrationMeasurement::Id, cluster_revision);
-    if(config) {
-        if(config->feature_flags & feature::numeric_measurement::get_id() && config->feature_flags & feature::level_indication::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else if(config->feature_flags & feature::numeric_measurement::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-        }
-        else if(config->feature_flags & feature::level_indication::get_id()) {
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else {
-            ESP_LOGE(TAG, "No feature found for carbon monoxide concentration measurement cluster");
-            cluster::destroy(cluster);
-            assert(false);
-            return NULL;
-        }
-    }
-    return cluster;
 }
 
 } /* carbon_monoxide_concentration_measurement */
@@ -1464,27 +1446,8 @@ namespace carbon_dioxide_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = concentration_measurement::create<config_t>(endpoint, config, flags,
+    return concentration_measurement::create<config_t>(endpoint, config, flags,
                                                        CarbonDioxideConcentrationMeasurement::Id, cluster_revision);
-    if(config) {
-        if(config->feature_flags & feature::numeric_measurement::get_id() && config->feature_flags & feature::level_indication::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else if(config->feature_flags & feature::numeric_measurement::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-        }
-        else if(config->feature_flags & feature::level_indication::get_id()) {
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else {
-            ESP_LOGE(TAG, "No feature found for carbon dioxide concentration measurement cluster");
-            cluster::destroy(cluster);
-            assert(false);
-            return NULL;
-        }
-    }
-    return cluster;
 }
 
 } /* carbon_dioxide_concentration_measurement */
@@ -1493,27 +1456,8 @@ namespace nitrogen_dioxide_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = concentration_measurement::create<config_t>(endpoint, config, flags,
+    return concentration_measurement::create<config_t>(endpoint, config, flags,
                                                        NitrogenDioxideConcentrationMeasurement::Id, cluster_revision);
-    if(config) {
-        if(config->feature_flags & feature::numeric_measurement::get_id() && config->feature_flags & feature::level_indication::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else if(config->feature_flags & feature::numeric_measurement::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-        }
-        else if(config->feature_flags & feature::level_indication::get_id()) {
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else {
-            ESP_LOGE(TAG, "No feature found for nitrogen dioxide concentration measurement cluster");
-            cluster::destroy(cluster);
-            assert(false);
-            return NULL;
-        }
-    }
-    return cluster;
 }
 
 } /* nitrogen_dioxide_concentration_measurement */
@@ -1522,27 +1466,8 @@ namespace ozone_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = concentration_measurement::create<config_t>(endpoint, config, flags,
+    return concentration_measurement::create<config_t>(endpoint, config, flags,
                                                        OzoneConcentrationMeasurement::Id, cluster_revision);
-    if(config) {
-        if(config->feature_flags & feature::numeric_measurement::get_id() && config->feature_flags & feature::level_indication::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else if(config->feature_flags & feature::numeric_measurement::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-        }
-        else if(config->feature_flags & feature::level_indication::get_id()) {
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else {
-            ESP_LOGE(TAG, "No feature found for ozone concentration measurement cluster");
-            cluster::destroy(cluster);
-            assert(false);
-            return NULL;
-        }
-    }
-    return cluster;
 }
 
 } /* ozone_concentration_measurement */
@@ -1551,27 +1476,8 @@ namespace formaldehyde_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = concentration_measurement::create<config_t>(endpoint, config, flags,
+    return concentration_measurement::create<config_t>(endpoint, config, flags,
                                                        FormaldehydeConcentrationMeasurement::Id, cluster_revision);
-    if(config) {
-        if(config->feature_flags & feature::numeric_measurement::get_id() && config->feature_flags & feature::level_indication::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else if(config->feature_flags & feature::numeric_measurement::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-        }
-        else if(config->feature_flags & feature::level_indication::get_id()) {
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else {
-            ESP_LOGE(TAG, "No feature found for formaldehyde concentration measurement cluster");
-            cluster::destroy(cluster);
-            assert(false);
-            return NULL;
-        }
-    }
-    return cluster;
 }
 
 } /* formaldehyde_concentration_measurement */
@@ -1580,27 +1486,8 @@ namespace pm1_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = concentration_measurement::create<config_t>(endpoint, config, flags,
+    return concentration_measurement::create<config_t>(endpoint, config, flags,
                                                        Pm1ConcentrationMeasurement::Id, cluster_revision);
-    if(config) {
-        if(config->feature_flags & feature::numeric_measurement::get_id() && config->feature_flags & feature::level_indication::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else if(config->feature_flags & feature::numeric_measurement::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-        }
-        else if(config->feature_flags & feature::level_indication::get_id()) {
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else {
-            ESP_LOGE(TAG, "No feature found for pm1 concentration measurement cluster");
-            cluster::destroy(cluster);
-            assert(false);
-            return NULL;
-        }
-    }
-    return cluster;
 }
 
 } /* pm1_concentration_measurement */
@@ -1609,27 +1496,8 @@ namespace pm25_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = concentration_measurement::create<config_t>(endpoint, config, flags,
+    return concentration_measurement::create<config_t>(endpoint, config, flags,
                                                        Pm25ConcentrationMeasurement::Id, cluster_revision);
-    if(config) {
-        if(config->feature_flags & feature::numeric_measurement::get_id() && config->feature_flags & feature::level_indication::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else if(config->feature_flags & feature::numeric_measurement::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-        }
-        else if(config->feature_flags & feature::level_indication::get_id()) {
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else {
-            ESP_LOGE(TAG, "No feature found for pm25 concentration measurement cluster");
-            cluster::destroy(cluster);
-            assert(false);
-            return NULL;
-        }
-    }
-    return cluster;
 }
 
 } /* pm25_concentration_measurement */
@@ -1638,27 +1506,8 @@ namespace pm10_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = concentration_measurement::create<config_t>(endpoint, config, flags,
+    return concentration_measurement::create<config_t>(endpoint, config, flags,
                                                        Pm10ConcentrationMeasurement::Id, cluster_revision);
-    if(config) {
-        if(config->feature_flags & feature::numeric_measurement::get_id() && config->feature_flags & feature::level_indication::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else if(config->feature_flags & feature::numeric_measurement::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-        }
-        else if(config->feature_flags & feature::level_indication::get_id()) {
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else {
-            ESP_LOGE(TAG, "No feature found for pm10 concentration measurement cluster");
-            cluster::destroy(cluster);
-            assert(false);
-            return NULL;
-        }
-    }
-    return cluster;
 }
 
 } /* pm10_concentration_measurement */
@@ -1667,27 +1516,8 @@ namespace radon_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = concentration_measurement::create<config_t>(endpoint, config, flags,
+    return concentration_measurement::create<config_t>(endpoint, config, flags,
                                                        RadonConcentrationMeasurement::Id, cluster_revision);
-    if(config) {
-        if(config->feature_flags & feature::numeric_measurement::get_id() && config->feature_flags & feature::level_indication::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else if(config->feature_flags & feature::numeric_measurement::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-        }
-        else if(config->feature_flags & feature::level_indication::get_id()) {
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else {
-            ESP_LOGE(TAG, "No feature found for radon concentration measurement cluster");
-            cluster::destroy(cluster);
-            assert(false);
-            return NULL;
-        }
-    }
-    return cluster;
 }
 
 } /* radon_concentration_measurement */
@@ -1696,28 +1526,8 @@ namespace total_volatile_organic_compounds_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = concentration_measurement::create<config_t>(endpoint, config, flags, TotalVolatileOrganicCompoundsConcentrationMeasurement::Id, cluster_revision);
-    if(config) {
-        if(config->feature_flags & feature::numeric_measurement::get_id() && config->feature_flags & feature::level_indication::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else if(config->feature_flags & feature::numeric_measurement::get_id()) {
-            feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
-        }
-        else if(config->feature_flags & feature::level_indication::get_id()) {
-            feature::level_indication::add(cluster, &(config->features.level_indication));
-        }
-        else {
-            ESP_LOGE(TAG, "No feature found for total volatile organic compounds concentration measurement cluster");
-            cluster::destroy(cluster);
-            assert(false);
-            return NULL;
-        }
-    }
-    return cluster;
+    return concentration_measurement::create<config_t>(endpoint, config, flags, TotalVolatileOrganicCompoundsConcentrationMeasurement::Id, cluster_revision);
 }
-
 } /* total_volatile_organic_compounds_concentration_measurement */
 
 

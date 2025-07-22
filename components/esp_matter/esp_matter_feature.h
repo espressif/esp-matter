@@ -679,7 +679,7 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* air_quality */
 
-namespace carbon_monoxide_concentration_measurement {
+namespace concentration_measurement {
 namespace feature {
 
 namespace numeric_measurement {
@@ -746,630 +746,49 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* average_measurement */
 
 } /* feature */
+} /* concentration_measurement */
+
+namespace carbon_monoxide_concentration_measurement {
+namespace feature = concentration_measurement::feature;
 } /* carbon_monoxide_concentration_measurement */
 
 namespace carbon_dioxide_concentration_measurement {
-namespace feature {
-
-namespace numeric_measurement {
-typedef struct config {
-    nullable<float> measured_value;
-    nullable<float> min_measured_value;
-    nullable<float> max_measured_value;
-    uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* numeric_measurement */
-
-namespace level_indication {
-typedef struct config {
-    uint8_t level_value;
-    config() : level_value(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* level_indication */
-
-namespace medium_level {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* medium_level */
-
-namespace critical_level {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* critical_level */
-
-namespace peak_measurement {
-typedef struct config {
-    nullable<float> peak_measured_value;
-    uint32_t peak_measured_value_window;
-    config() : peak_measured_value(), peak_measured_value_window(1) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* peak_measurement */
-
-namespace average_measurement {
-typedef struct config {
-    nullable<float> average_measured_value;
-    uint32_t average_measured_value_window;
-    config() : average_measured_value(), average_measured_value_window(1) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* average_measurement */
-
-} /* feature */
+namespace feature = concentration_measurement::feature;
 } /* carbon_dioxide_concentration_measurement */
 
 namespace nitrogen_dioxide_concentration_measurement {
-namespace feature {
-
-namespace numeric_measurement {
-typedef struct config {
-    nullable<float> measured_value;
-    nullable<float> min_measured_value;
-    nullable<float> max_measured_value;
-    uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* numeric_measurement */
-
-namespace level_indication {
-typedef struct config {
-    uint8_t level_value;
-   config() : level_value(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* level_indication */
-
-namespace medium_level {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* medium_level */
-
-namespace critical_level {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* critical_level */
-
-namespace peak_measurement {
-typedef struct config {
-    nullable<float> peak_measured_value;
-    uint32_t peak_measured_value_window;
-    config() : peak_measured_value(), peak_measured_value_window(1) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* peak_measurement */
-
-namespace average_measurement {
-typedef struct config {
-    nullable<float> average_measured_value;
-    uint32_t average_measured_value_window;
-    config() : average_measured_value(), average_measured_value_window(1) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* average_measurement */
-
-} /* feature */
+namespace feature = concentration_measurement::feature;
 } /* nitrogen_dioxide_concentration_measurement */
 
 namespace ozone_concentration_measurement {
-namespace feature {
-
-namespace numeric_measurement {
-typedef struct config {
-    nullable<float> measured_value;
-    nullable<float> min_measured_value;
-    nullable<float> max_measured_value;
-    uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* numeric_measurement */
-
-namespace level_indication {
-typedef struct config {
-    uint8_t level_value;
-   config() : level_value(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* level_indication */
-
-namespace medium_level {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* medium_level */
-
-namespace critical_level {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* critical_level */
-
-namespace peak_measurement {
-typedef struct config {
-    nullable<float> peak_measured_value;
-    uint32_t peak_measured_value_window;
-    config() : peak_measured_value(), peak_measured_value_window(1) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* peak_measurement */
-
-namespace average_measurement {
-typedef struct config {
-    nullable<float> average_measured_value;
-    uint32_t average_measured_value_window;
-    config() : average_measured_value(), average_measured_value_window(1) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* average_measurement */
-
-} /* feature */
+namespace feature = concentration_measurement::feature;
 } /* ozone_concentration_measurement */
 
 namespace formaldehyde_concentration_measurement {
-namespace feature {
-
-namespace numeric_measurement {
-typedef struct config {
-    nullable<float> measured_value;
-    nullable<float> min_measured_value;
-    nullable<float> max_measured_value;
-    uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* numeric_measurement */
-
-namespace level_indication {
-typedef struct config {
-    uint8_t level_value;
-   config() : level_value(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* level_indication */
-
-namespace medium_level {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* medium_level */
-
-namespace critical_level {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* critical_level */
-
-namespace peak_measurement {
-typedef struct config {
-    nullable<float> peak_measured_value;
-    uint32_t peak_measured_value_window;
-    config() : peak_measured_value(), peak_measured_value_window(1) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* peak_measurement */
-
-namespace average_measurement {
-typedef struct config {
-    nullable<float> average_measured_value;
-    uint32_t average_measured_value_window;
-    config() : average_measured_value(), average_measured_value_window(1) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* average_measurement */
-
-} /* feature */
+namespace feature = concentration_measurement::feature;
 } /* formaldehyde_concentration_measurement */
 
 namespace pm1_concentration_measurement {
-namespace feature {
-
-namespace numeric_measurement {
-typedef struct config {
-    nullable<float> measured_value;
-    nullable<float> min_measured_value;
-    nullable<float> max_measured_value;
-    uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* numeric_measurement */
-
-namespace level_indication {
-typedef struct config {
-    uint8_t level_value;
-   config() : level_value(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* level_indication */
-
-namespace medium_level {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* medium_level */
-
-namespace critical_level {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* critical_level */
-
-namespace peak_measurement {
-typedef struct config {
-    nullable<float> peak_measured_value;
-    uint32_t peak_measured_value_window;
-    config() : peak_measured_value(), peak_measured_value_window(1) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* peak_measurement */
-
-namespace average_measurement {
-typedef struct config {
-    nullable<float> average_measured_value;
-    uint32_t average_measured_value_window;
-    config() : average_measured_value(), average_measured_value_window(1) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* average_measurement */
-
-} /* feature */
+namespace feature = concentration_measurement::feature;
 } /* pm1_concentration_measurement */
 
 namespace pm25_concentration_measurement {
-namespace feature {
-
-namespace numeric_measurement {
-typedef struct config {
-    nullable<float> measured_value;
-    nullable<float> min_measured_value;
-    nullable<float> max_measured_value;
-    uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* numeric_measurement */
-
-namespace level_indication {
-typedef struct config {
-    uint8_t level_value;
-   config() : level_value(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* level_indication */
-
-namespace medium_level {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* medium_level */
-
-namespace critical_level {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* critical_level */
-
-namespace peak_measurement {
-typedef struct config {
-    nullable<float> peak_measured_value;
-    uint32_t peak_measured_value_window;
-    config() : peak_measured_value(), peak_measured_value_window(1) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* peak_measurement */
-
-namespace average_measurement {
-typedef struct config {
-    nullable<float> average_measured_value;
-    uint32_t average_measured_value_window;
-    config() : average_measured_value(), average_measured_value_window(1) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* average_measurement */
-
-} /* feature */
+namespace feature = concentration_measurement::feature;
 } /* pm25_concentration_measurement */
 
 namespace pm10_concentration_measurement {
-namespace feature {
-
-namespace numeric_measurement {
-typedef struct config {
-    nullable<float> measured_value;
-    nullable<float> min_measured_value;
-    nullable<float> max_measured_value;
-    uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* numeric_measurement */
-
-namespace level_indication {
-typedef struct config {
-    uint8_t level_value;
-   config() : level_value(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* level_indication */
-
-namespace medium_level {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* medium_level */
-
-namespace critical_level {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* critical_level */
-
-namespace peak_measurement {
-typedef struct config {
-    nullable<float> peak_measured_value;
-    uint32_t peak_measured_value_window;
-    config() : peak_measured_value(), peak_measured_value_window(1) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* peak_measurement */
-
-namespace average_measurement {
-typedef struct config {
-    nullable<float> average_measured_value;
-    uint32_t average_measured_value_window;
-    config() : average_measured_value(), average_measured_value_window(1) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* average_measurement */
-
-} /* feature */
+namespace feature = concentration_measurement::feature;
 } /* pm10_concentration_measurement */
 
 namespace radon_concentration_measurement {
-namespace feature {
-
-namespace numeric_measurement {
-typedef struct config {
-    nullable<float> measured_value;
-    nullable<float> min_measured_value;
-    nullable<float> max_measured_value;
-    uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* numeric_measurement */
-
-namespace level_indication {
-typedef struct config {
-    uint8_t level_value;
-   config() : level_value(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* level_indication */
-
-namespace medium_level {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* medium_level */
-
-namespace critical_level {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* critical_level */
-
-namespace peak_measurement {
-typedef struct config {
-    nullable<float> peak_measured_value;
-    uint32_t peak_measured_value_window;
-    config() : peak_measured_value(), peak_measured_value_window(1) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* peak_measurement */
-
-namespace average_measurement {
-typedef struct config {
-    nullable<float> average_measured_value;
-    uint32_t average_measured_value_window;
-    config() : average_measured_value(), average_measured_value_window(1) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* average_measurement */
-
-} /* feature */
+namespace feature = concentration_measurement::feature;
 } /* radon_concentration_measurement */
 
 namespace total_volatile_organic_compounds_concentration_measurement {
-namespace feature {
-
-namespace numeric_measurement {
-typedef struct config {
-    nullable<float> measured_value;
-    nullable<float> min_measured_value;
-    nullable<float> max_measured_value;
-    uint8_t measurement_unit;
-    config() : measured_value(), min_measured_value(), max_measured_value(), measurement_unit(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* numeric_measurement */
-
-namespace level_indication {
-typedef struct config {
-    uint8_t level_value;
-   config() : level_value(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* level_indication */
-
-namespace medium_level {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* medium_level */
-
-namespace critical_level {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* critical_level */
-
-namespace peak_measurement {
-typedef struct config {
-    nullable<float> peak_measured_value;
-    uint32_t peak_measured_value_window;
-    config() : peak_measured_value(), peak_measured_value_window(1) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* peak_measurement */
-
-namespace average_measurement {
-typedef struct config {
-    nullable<float> average_measured_value;
-    uint32_t average_measured_value_window;
-    config() : average_measured_value(), average_measured_value_window(1) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* average_measurement */
-
-} /* feature */
+namespace feature = concentration_measurement::feature;
 } /* total_volatile_organic_compounds_concentration_measurement */
 
-namespace hepa_filter_monitoring {
+namespace resource_monitoring {
 namespace feature {
 
 namespace condition {
@@ -1399,38 +818,14 @@ esp_err_t add(cluster_t *cluster);
 } /* replacement_product_list */
 
 } /* feature */
+} /* resource_monitoring */
+
+namespace hepa_filter_monitoring {
+namespace feature = resource_monitoring::feature;
 } /* hepa_filter_monitoring */
 
 namespace activated_carbon_filter_monitoring {
-namespace feature {
-
-namespace condition {
-typedef struct config {
-    uint8_t condition;
-    uint8_t degradation_direction;
-    config() : condition(0), degradation_direction(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* condition */
-
-namespace warning {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* warning */
-
-namespace replacement_product_list {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* replacement_product_list */
-
-} /* feature */
+namespace feature = resource_monitoring::feature;
 } /* activated_carbon_filter_monitoring */
 
 namespace laundry_washer_controls {
