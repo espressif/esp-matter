@@ -1,5 +1,5 @@
-set(SRC_DIRS_LIST ".")
-set(INCLUDE_DIRS_LIST ".")
+set(SRC_DIRS_LIST "." "mock_delegates")
+set(INCLUDE_DIRS_LIST "." "mock_delegates")
 set(ldfragments linker.lf)
 # set(PRIV_REQUIRES_LIST device esp_matter esp_matter_console esp_matter_thread_br app_reset console fatfs hal)
 
