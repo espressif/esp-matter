@@ -371,6 +371,12 @@ A host-based chip-tool can be used as a commissioner to commission and control a
 
    ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/out/host
 
+.. note::
+   **macOS Users**: To use chip-tool with BLE commissioning on macOS, you must install the Bluetooth Central
+   Matter Client Developer Mode Profile. It enables Matter commissioning, and may require periodic re-installation.
+
+   Instructions to download the profile can be found in the `profile installation section`_
+
 2.3.1.1 Commissioning
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -1128,6 +1134,14 @@ Build the firmware with below configuration options
     CONFIG_FACTORY_DEVICE_INSTANCE_INFO_PROVIDER=y
 
 
+.. only:: esp32h2 or esp32p4 or esp32c5
+
+    .. note::
+
+      ``{IDF_TARGET_NAME}`` supports ECDSA peripheral. If you want to use ECDSA peripheral,
+      you need to enable the ``CONFIG_ESP_SECURE_CERT_DS_PERIPHERAL=y`` option.
+
+
 2.7.2 Certification Declaration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1751,7 +1765,7 @@ To enable these functions, the cluster should be added to the appropriate entry 
 .. _`ESP-Rainmaker Android App`: https://play.google.com/store/apps/details?id=com.espressif.rainmaker
 .. _`connectedhomeip`: https://github.com/project-chip/connectedhomeip
 .. _`CHIP Tool User Guide`: https://github.com/project-chip/connectedhomeip/blob/master/docs/development_controllers/chip-tool/chip_tool_guide.md
-.. _`profile installation instructions`: https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/darwin.md#profile-installation
+.. _`profile installation section`: https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/darwin.md#profile-installation
 .. _`OTA guide`: https://github.com/project-chip/connectedhomeip/blob/master/docs/platforms/esp32/ota.md
 .. _`encrypted OTA guide`: https://github.com/project-chip/connectedhomeip/blob/master/docs/platforms/esp32/ota.md#encrypted-ota
 .. _`chip-cert's gen-cd command`: https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/src/tools/chip-cert#gen-cd
