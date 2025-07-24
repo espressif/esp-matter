@@ -461,6 +461,7 @@ target_link_options(${COMPONENT_LIB} PRIVATE -Wl,-O2 -Wl,--gc-sections -Os -Werr
 # compile options from esp-matter/components/
 target_compile_options(${COMPONENT_LIB} PRIVATE "-Wno-error=uninitialized;-Wno-error=maybe-uninitialized;-Wno-missing-field-initializers")
 target_compile_options(${COMPONENT_LIB} PRIVATE "-Wno-error=array-bounds;-Wno-write-strings")
+target_compile_options(${COMPONENT_LIB} PUBLIC "-DCHIP_HAVE_CONFIG_H")
 
 # TODO: remove this when building connectedhomeip/src/controller/CHIPDeviceController.cpp with no format error
 if (CONFIG_ENABLE_CHIP_CONTROLLER_BUILD)
@@ -539,11 +540,18 @@ cmake_policy(SET CMP0007 NEW)
 include(${CMAKE_CURRENT_LIST_DIR}/connectedhomeip/connectedhomeip/config/esp32/components/chip/ota-image.cmake)
 # Build Matter OTA image
 if (CONFIG_CHIP_OTA_IMAGE_BUILD)
-    chip_ota_image(chip-ota-image
-        INPUT_FILES ${BUILD_DIR}/${CMAKE_PROJECT_NAME}.bin
-        OUTPUT_FILE ${BUILD_DIR}/${CMAKE_PROJECT_NAME}-ota.bin
-    )
-    # Adding dependecy as app target so that this runs after images are ready
-    add_dependencies(chip-ota-image app)
+    if (CONFIG_OPENTHREAD_BORDER_ROUTER AND CONFIG_AUTO_UPDATE_RCP)
+        chip_ota_image(chip-ota-image
+            INPUT_FILES ${BUILD_DIR}/ota_with_rcp_image
+            OUTPUT_FILE ${BUILD_DIR}/ota_with_rcp_image-ota.bin
+        )
+        add_dependencies(chip-ota-image gen_ota_image)
+    else()
+        chip_ota_image(chip-ota-image
+            INPUT_FILES ${BUILD_DIR}/${CMAKE_PROJECT_NAME}.bin
+            OUTPUT_FILE ${BUILD_DIR}/${CMAKE_PROJECT_NAME}-ota.bin
+        )
+        add_dependencies(chip-ota-image app)
+    endif()
 endif()
 cmake_policy(SET CMP0007 ${policy_status})
