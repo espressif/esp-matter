@@ -873,6 +873,18 @@ command_t *get_next(command_t *command);
  */
 uint32_t get_id(command_t *command);
 
+/** Set command callback
+ *
+ * Set the command callback for the command.
+ *
+ * @param[in] command Command handle.
+ * @param[in] callback Command callback.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t set_callback(command_t *command, callback_t callback);
+
 /** Get command callback
  *
  * Get the command callback for the command.
