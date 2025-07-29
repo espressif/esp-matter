@@ -19,7 +19,9 @@ namespace esp_matter {
 namespace icd {
 
 typedef struct config {
+#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
     bool enable_icd_server;
+#endif
     std::optional<uint32_t> fast_interval_ms;
     std::optional<uint32_t> slow_interval_ms;
     std::optional<uint32_t> active_mode_duration_ms;
@@ -27,9 +29,11 @@ typedef struct config {
     std::optional<uint32_t> active_threshold_ms;
 } config_t;
 
+#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 /** Get whether ICD server is enabled for Matter end-device
  */
 bool get_icd_server_enabled();
+#endif
 
 /** Set ICD configuration data
  * 

@@ -40,8 +40,6 @@ using chip::Server;
 using chip::DeviceLayer::ExtendedOTARequestorDriver;
 
 using namespace esp_matter;
-using namespace esp_matter::endpoint;
-using namespace esp_matter::cluster;
 
 #if CONFIG_ENABLE_OTA_REQUESTOR
 DefaultOTARequestor gRequestorCore;

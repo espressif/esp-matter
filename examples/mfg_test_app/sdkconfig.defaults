@@ -27,3 +27,6 @@ CONFIG_DEVICE_VENDOR_ID=0x131B
 # Disable STA and AP
 CONFIG_ENABLE_WIFI_STATION=n
 CONFIG_ENABLE_WIFI_AP=n
+
+# Disable Matter server as the test app doesn't start Matter server
+CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER=n

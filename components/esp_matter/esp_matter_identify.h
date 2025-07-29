@@ -15,6 +15,7 @@
 #pragma once
 
 #include <esp_err.h>
+#include <app-common/zap-generated/cluster-enums.h>
 
 namespace esp_matter {
 namespace identification {

@@ -4,6 +4,7 @@
 .. toctree::
    :maxdepth: 1
 
+   esp_matter_data_model.rst
    esp_matter_endpoint.rst
    esp_matter_cluster.rst
    esp_matter_attribute.rst

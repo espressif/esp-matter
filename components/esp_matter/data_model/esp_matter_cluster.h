@@ -14,13 +14,14 @@
 
 #pragma once
 
-#include <esp_matter_core.h>
 #include <esp_matter_attribute.h>
 #include <esp_matter_feature.h>
+#include <esp_matter_data_model.h>
 #include <stdint.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
 #include <lib/support/TypeTraits.h>
+#include <platform/ESP32/CHIPDevicePlatformConfig.h>
 
 namespace esp_matter {
 namespace cluster {

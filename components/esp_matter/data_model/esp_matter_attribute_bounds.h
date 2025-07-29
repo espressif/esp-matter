@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #pragma once
-#include <esp_matter_core.h>
+#include <esp_matter_data_model.h>
 
 namespace esp_matter {
 namespace cluster {

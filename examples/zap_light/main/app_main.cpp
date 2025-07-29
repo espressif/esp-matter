@@ -12,6 +12,7 @@
 
 #include <esp_matter.h>
 #include <esp_matter_console.h>
+#include <esp_matter_identify.h>
 
 #include <common_macros.h>
 #include <app_priv.h>
@@ -109,6 +110,9 @@ extern "C" void app_main()
     /* Matter start */
     err = esp_matter::start(app_event_cb);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
+
+    esp_matter::identification::init(1, 0);
+    esp_matter::identification::set_callback(nullptr);
 
     /* Starting driver with default values */
     app_driver_light_set_defaults(light_endpoint_id);

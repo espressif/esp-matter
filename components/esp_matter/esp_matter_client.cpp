@@ -25,10 +25,12 @@
 #include <app/MessageDef/StatusIB.h>
 #include <app/ReadClient.h>
 #include <app/ReadPrepareParams.h>
-#include <app/clusters/bindings/BindingManager.h>
 #include <core/Optional.h>
 #include <core/TLVReader.h>
 #include <core/TLVWriter.h>
+#ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
+#include <app/clusters/bindings/BindingManager.h>
+#endif
 
 #include "app/CommandPathParams.h"
 #include "app/CommandSender.h"
@@ -87,11 +89,12 @@ void esp_matter_connection_failure_callback(void *context, const ScopedNodeId &p
 esp_err_t connect(case_session_mgr_t *case_session_mgr, uint8_t fabric_index, uint64_t node_id,
                   request_handle_t *req_handle)
 {
+    VerifyOrReturnError(req_handle, ESP_ERR_INVALID_ARG);
     VerifyOrReturnError(case_session_mgr, ESP_ERR_INVALID_ARG);
     static Callback<chip::OnDeviceConnected> success_callback(esp_matter_connection_success_callback, NULL);
     static Callback<chip::OnDeviceConnectionFailure> failure_callback(esp_matter_connection_failure_callback, NULL);
 
-    request_handle_t *context = chip::Platform::New<request_handle_t>(req_handle);
+    request_handle_t *context = chip::Platform::New<request_handle_t>(*req_handle);
     VerifyOrReturnError(context, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "failed to alloc memory for the command handle"));
     success_callback.mContext = static_cast<void *>(context);
     failure_callback.mContext = static_cast<void *>(context);
@@ -109,6 +112,7 @@ esp_err_t group_request_send(uint8_t fabric_index, request_handle_t *req_handle)
     return ESP_OK;
 }
 
+#ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 static void esp_matter_command_client_binding_callback(const EmberBindingTableEntry &binding,
                                                        OperationalDeviceProxy *peer_device, void *context)
 {
@@ -151,7 +155,8 @@ static void esp_matter_binding_context_release(void *context)
 
 esp_err_t cluster_update(uint16_t local_endpoint_id, request_handle_t *req_handle)
 {
-    request_handle_t *context = chip::Platform::New<request_handle_t>(req_handle);
+    VerifyOrReturnError(req_handle, ESP_ERR_INVALID_ARG);
+    request_handle_t *context = chip::Platform::New<request_handle_t>(*req_handle);
     VerifyOrReturnError(context, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "failed to alloc memory for the request handle"));
     chip::ClusterId notified_cluster_id = chip::kInvalidClusterId;
     if (req_handle->type == INVOKE_CMD) {
@@ -199,6 +204,7 @@ void binding_init()
 {
     initialize_binding_manager = true;
 }
+#endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 
 namespace interaction {
 using chip::app::DataModel::EncodableToTLV;

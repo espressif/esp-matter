@@ -23,7 +23,6 @@
 #include <esp_spiffs.h>
 #include <platform/ESP32/OpenthreadLauncher.h>
 #endif // CONFIG_OPENTHREAD_BORDER_ROUTER
-#include <app_reset.h>
 #include <common_macros.h>
 
 #include <app/server/Server.h>
@@ -31,10 +30,6 @@
 
 static const char *TAG = "app_main";
 uint16_t switch_endpoint_id = 0;
-
-using namespace esp_matter;
-using namespace esp_matter::attribute;
-using namespace esp_matter::endpoint;
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {

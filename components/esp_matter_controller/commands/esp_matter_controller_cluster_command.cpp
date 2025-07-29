@@ -29,7 +29,6 @@
 #include <setup_payload/SetupPayload.h>
 
 using namespace chip::app::Clusters;
-using namespace esp_matter::cluster;
 using namespace esp_matter::client;
 static const char *TAG = "cluster_command";
 

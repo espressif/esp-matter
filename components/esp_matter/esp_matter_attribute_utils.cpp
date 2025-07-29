@@ -1012,24 +1012,12 @@ static esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, ui
                                   uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
     if (attribute_callback) {
+#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
         void *priv_data = endpoint::get_priv_data(endpoint_id);
+#else
+        void *priv_data = nullptr;
+#endif
         return attribute_callback(type, endpoint_id, cluster_id, attribute_id, val, priv_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t execute_override_callback(attribute_t *attribute, callback_type_t type, uint16_t endpoint_id,
-                                           uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val)
-{
-    callback_t override_callback = attribute::get_override_callback(attribute);
-    void *priv_data = endpoint::get_priv_data(endpoint_id);
-    if (override_callback) {
-        return override_callback(type, endpoint_id, cluster_id, attribute_id, val, priv_data);
-    } else {
-        ESP_LOGI(TAG, "Attribute override callback not set for Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 ", calling the common callback",
-                 endpoint_id, cluster_id, attribute_id);
-        if (attribute_callback)
-            return attribute_callback(type, endpoint_id, cluster_id, attribute_id, val, priv_data);
     }
     return ESP_OK;
 }
@@ -2110,6 +2098,7 @@ esp_err_t report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
     lock::status_t lock_status = lock::chip_stack_lock(portMAX_DELAY);
     VerifyOrReturnError(lock_status != lock::FAILED, ESP_FAIL, ESP_LOGE(TAG, "Could not get task context"));
 
+#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
     /* Get attribute */
     attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
     if (!attribute) {
@@ -2133,7 +2122,7 @@ esp_err_t report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
         return ESP_FAIL;
     }
     attribute::set_val(attribute, val);
-
+#endif
     /* Report attribute */
     MatterReportingAttributeChangeCallback(endpoint_id, cluster_id, attribute_id);
 
@@ -2179,65 +2168,4 @@ void MatterPostAttributeChangeCallback(const chip::app::ConcreteAttributePath &p
 
     /* Callback to application */
     execute_callback(attribute::POST_UPDATE, endpoint_id, cluster_id, attribute_id, &val);
-}
-
-Status emberAfExternalAttributeReadCallback(EndpointId endpoint_id, ClusterId cluster_id,
-                                                   const EmberAfAttributeMetadata *matter_attribute, uint8_t *buffer,
-                                                   uint16_t max_read_length)
-{
-    /* Get value */
-    uint32_t attribute_id = matter_attribute->attributeId;
-    attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
-    VerifyOrReturnError(attribute, Status::Failure);
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-
-    int flags = attribute::get_flags(attribute);
-    if (flags & ATTRIBUTE_FLAG_OVERRIDE) {
-        esp_err_t err = execute_override_callback(attribute, attribute::READ, endpoint_id, cluster_id, attribute_id,
-                                                  &val);
-        VerifyOrReturnValue(err == ESP_OK, Status::Failure);
-    } else {
-        attribute::get_val(attribute, &val);
-    }
-
-    /* Here, the val_print function gets called on attribute read. */
-    attribute::val_print(endpoint_id, cluster_id, attribute_id, &val, true);
-
-    /* Get size */
-    uint16_t attribute_size = 0;
-    attribute::get_data_from_attr_val(&val, NULL, &attribute_size, NULL);
-    VerifyOrReturnValue(attribute_size <= max_read_length, Status::ResourceExhausted, ESP_LOGE(TAG, "Insufficient space for reading Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32
-                ": required: %" PRIu16 ", max: %" PRIu16 "", endpoint_id, cluster_id, attribute_id, attribute_size, max_read_length));
-
-    /* Assign value */
-    attribute::get_data_from_attr_val(&val, NULL, &attribute_size, buffer);
-    return Status::Success;
-}
-
-Status emberAfExternalAttributeWriteCallback(EndpointId endpoint_id, ClusterId cluster_id,
-                                                    const EmberAfAttributeMetadata *matter_attribute, uint8_t *buffer)
-{
-    /* Get value */
-    uint32_t attribute_id = matter_attribute->attributeId;
-    attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
-    VerifyOrReturnError(attribute, Status::Failure);
-
-    /* Get val */
-    /* This creates a new variable val, and stores the new attribute value in the new variable.
-    The value in esp-matter data model is updated only when attribute::set_val() is called */
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-    attribute::get_attr_val_from_data(&val, matter_attribute->attributeType, matter_attribute->size, buffer, matter_attribute);
-
-    int flags = attribute::get_flags(attribute);
-    if (flags & ATTRIBUTE_FLAG_OVERRIDE) {
-        esp_err_t err = execute_override_callback(attribute, attribute::WRITE, endpoint_id, cluster_id, attribute_id,
-                                                  &val);
-        Status status = (err == ESP_OK) ? Status::Success : Status::Failure;
-        return status;
-    }
-
-    /* Update val */
-    VerifyOrReturnValue(val.type != ESP_MATTER_VAL_TYPE_INVALID, Status::Failure);
-    attribute::set_val(attribute, &val);
-    return Status::Success;
 }

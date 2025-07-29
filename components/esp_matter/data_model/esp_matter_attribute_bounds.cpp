@@ -15,6 +15,8 @@
 #include <esp_log.h>
 #include <esp_matter_attribute_bounds.h>
 
+#include <app-common/zap-generated/ids/Attributes.h>
+
 static const char *TAG = "esp_matter_cluster";
 
 using namespace chip::app::Clusters;

@@ -212,6 +212,7 @@ menu "ESP Matter"
 
     config ESP_MATTER_ENABLE_DATA_MODEL
         bool "Use ESP-Matter data model"
+        depends on ESP_MATTER_ENABLE_MATTER_SERVER
         default y
         help
             This option should be disable for zap examples

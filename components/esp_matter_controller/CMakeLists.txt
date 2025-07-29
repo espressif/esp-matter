@@ -16,7 +16,8 @@ if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
     list(APPEND include_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/core"
                                   "${CMAKE_CURRENT_SOURCE_DIR}/commands"
                                   "${MATTER_SDK_PATH}/zzz_generated/chip-tool"
-                                  "${MATTER_SDK_PATH}/examples/chip-tool/")
+                                  "${MATTER_SDK_PATH}/examples/chip-tool/"
+                                  "${CMAKE_CURRENT_SOURCE_DIR}/data_model_provider")
 
     if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
         list(APPEND exclude_srcs_list "${CMAKE_CURRENT_SOURCE_DIR}/core/esp_matter_controller_client.cpp"

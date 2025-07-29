@@ -18,93 +18,25 @@
 This is a common include file which includes all the other esp_matter component files which would be required by the
 application.
 */
-
+#include <sdkconfig.h>
+#ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
+#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 #include <esp_matter_attribute.h>
-#include <esp_matter_attribute_utils.h>
-#include <esp_matter_client.h>
 #include <esp_matter_cluster.h>
 #include <esp_matter_command.h>
-#include <esp_matter_core.h>
 #include <esp_matter_endpoint.h>
 #include <esp_matter_event.h>
 #include <esp_matter_feature.h>
-#include <esp_matter_identify.h>
-
+#include <esp_matter_data_model.h>
+#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 #include <app/server/Dnssd.h>
+#include <esp_matter_attribute_utils.h>
+#include <esp_matter_identify.h>
+#endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
+#include <esp_matter_client.h>
+#include <esp_matter_core.h>
 #include <platform/CHIPDeviceEvent.h>
 #include <platform/CHIPDeviceLayer.h>
-
-namespace esp_matter {
-
-/** Endpoint flags */
-typedef enum endpoint_flags {
-    /** No specific flags */
-    ENDPOINT_FLAG_NONE = 0x00,
-    /** The endpoint can be destroyed using `endpoint::destroy()` */
-    ENDPOINT_FLAG_DESTROYABLE = 0x01,
-    /** The endpoint is a bridged node */
-    ENDPOINT_FLAG_BRIDGE = 0x02,
-} endpoint_flags_t;
-
-/** Cluster flags */
-typedef enum cluster_flags {
-    /** No specific flags */
-    CLUSTER_FLAG_NONE = 0x00,
-    /** The cluster has an init function (function_flag) */
-    CLUSTER_FLAG_INIT_FUNCTION = MATTER_CLUSTER_FLAG_INIT_FUNCTION, /* 0x01 */
-    /** The cluster has an attribute changed function (function_flag) */
-    CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION = MATTER_CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION, /* 0x02 */
-    /** The cluster has a shutdown function (function_flag) */
-    CLUSTER_FLAG_SHUTDOWN_FUNCTION = MATTER_CLUSTER_FLAG_SHUTDOWN_FUNCTION, /* 0x10 */
-    /** The cluster has a pre attribute changed function (function_flag) */
-    CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION = MATTER_CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION, /* 0x20 */
-    /** The cluster is a server cluster */
-    CLUSTER_FLAG_SERVER = MATTER_CLUSTER_FLAG_SERVER, /* 0x40 */
-    /** The cluster is a client cluster */
-    CLUSTER_FLAG_CLIENT = MATTER_CLUSTER_FLAG_CLIENT, /* 0x80 */
-} cluster_flags_t;
-
-/** Attribute flags */
-typedef enum attribute_flags {
-    /** No specific flags */
-    ATTRIBUTE_FLAG_NONE = 0x00,
-    /** The attribute is writable and can be directly changed by clients */
-    ATTRIBUTE_FLAG_WRITABLE = MATTER_ATTRIBUTE_FLAG_WRITABLE, /* 0x01 */
-    /** The attribute is non volatile and its value will be stored in NVS */
-    ATTRIBUTE_FLAG_NONVOLATILE = MATTER_ATTRIBUTE_FLAG_NONVOLATILE, /* 0x02 */
-    /** The attribute has bounds */
-    ATTRIBUTE_FLAG_MIN_MAX = MATTER_ATTRIBUTE_FLAG_MIN_MAX, /* 0x04 */
-    ATTRIBUTE_FLAG_MUST_USE_TIMED_WRITE = MATTER_ATTRIBUTE_FLAG_MUST_USE_TIMED_WRITE, /* 0x08 */
-    /** The attribute uses external storage for its value. If attributes
-    have this flag enabled, as all of them are stored in the ESP Matter database. */
-    ATTRIBUTE_FLAG_EXTERNAL_STORAGE = MATTER_ATTRIBUTE_FLAG_EXTERNAL_STORAGE, /* 0x10 */
-    ATTRIBUTE_FLAG_SINGLETON = MATTER_ATTRIBUTE_FLAG_SINGLETON, /* 0x20 */
-    ATTRIBUTE_FLAG_NULLABLE = MATTER_ATTRIBUTE_FLAG_NULLABLE, /* 0x40 */
-    /** The attribute read and write are overridden. The attribute value will be fetched from and will be updated using
-    the override callback. The value of this attribute is not maintained internally. */
-    ATTRIBUTE_FLAG_OVERRIDE = ATTRIBUTE_FLAG_NULLABLE << 1, /* 0x80 */
-    /** The attribute is non-volatile but its value will be changed frequently. If an attribute has this flag, its value
-     will not be written to flash immediately. A timer will be started and the attribute value will be written after
-     timeout. */
-    ATTRIBUTE_FLAG_DEFERRED = ATTRIBUTE_FLAG_NULLABLE << 2, /* 0x100 */
-    /** The attribute is managed internally and is not stored in the ESP Matter database.
-    If not set, ATTRIBUTE_FLAG_EXTERNAL_STORAGE flag will be enabled. */
-    ATTRIBUTE_FLAG_MANAGED_INTERNALLY = ATTRIBUTE_FLAG_NULLABLE << 3, /* 0x200 */
-} attribute_flags_t;
-
-/** Command flags */
-typedef enum command_flags {
-    /** No specific flags */
-    COMMAND_FLAG_NONE = 0x00,
-    /** The command is not a standard command */
-    COMMAND_FLAG_CUSTOM = 0x01,
-    /** The command is client generated */
-    COMMAND_FLAG_ACCEPTED = 0x02,
-    /** The command is server generated */
-    COMMAND_FLAG_GENERATED = 0x04,
-} command_flags_t;
-
-} /* esp_matter */
 
 namespace chip {
 namespace DeviceLayer {
