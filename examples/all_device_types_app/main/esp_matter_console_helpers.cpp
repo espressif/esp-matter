@@ -468,7 +468,7 @@ int create(uint8_t device_type_index)
                 esp_matter::cluster::electrical_energy_measurement::feature::exported_energy::get_id() |
                 esp_matter::cluster::electrical_energy_measurement::feature::cumulative_energy::get_id() |
                 esp_matter::cluster::electrical_energy_measurement::feature::periodic_energy::get_id();
-                esp_matter::cluster_t *energy_cluster = esp_matter::cluster::electrical_energy_measurement::create(endpoint, NULL,
+                esp_matter::cluster_t *energy_cluster = esp_matter::cluster::electrical_energy_measurement::create(endpoint, &electrical_energy_measurement,
                     CLUSTER_FLAG_SERVER);
 
                 if (!energy_cluster) {
