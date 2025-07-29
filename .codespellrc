@@ -1,0 +1,3 @@
+[codespell]
+ignore-regex = _
+ignore-words-list = ot, bootup, requestor, pase

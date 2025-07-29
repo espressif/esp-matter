@@ -1,4 +1,5 @@
 stages:
+    - check_typos
     - cleanup
     - docker_build
     - build
@@ -240,6 +241,10 @@ build_image:
   image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" ||  $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
+  needs:
+    - job: build_image
+      optional: true
+    - job: check_typos
   tags:
     - build
     # runner: `sudo mkdir -p /cache/matter_build/`
@@ -282,9 +287,6 @@ build_image:
 build_esp_matter_examples_pytest_C6_idf_v5_1:
   extends:
         - .build_examples_template
-  needs:
-    - job: build_image
-      optional: true
   artifacts:
     paths:
       - "examples/**/build*/size.json"
@@ -305,9 +307,6 @@ build_esp_matter_examples_pytest_C6_idf_v5_1:
 build_esp_matter_examples_pytest_H2_idf_v5_1:
   extends:
         - .build_examples_template
-  needs:
-    - job: build_image
-      optional: true
   artifacts:
     paths:
       - "examples/**/build*/size.json"
@@ -345,9 +344,6 @@ build_esp_matter_examples_pytest_H2_idf_v5_1:
 build_esp_matter_examples_pytest_C2_idf_v5_1:
   extends:
         - .build_examples_template
-  needs:
-    - job: build_image
-      optional: true
   artifacts:
     paths:
       - "examples/**/build*/size.json"
@@ -376,9 +372,6 @@ build_esp_matter_examples_pytest_C2_idf_v5_1:
 build_override_sdkconfig_examples:
   extends:
         - .build_examples_template
-  needs:
-    - job: build_image
-      optional: true
   script:
     - *build_external_platform_example
     - *build_esp32c6_thread_example
@@ -389,9 +382,6 @@ build_override_sdkconfig_examples:
 build_zap_light_example:
   extends:
         - .build_examples_template
-  needs:
-    - job: build_image
-      optional: true
   script:
     - cd ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip
     - source ./scripts/activate.sh
@@ -403,9 +393,6 @@ build_zap_light_example:
 build_esp_matter_examples:
   extends:
         - .build_examples_template
-  needs:
-    - job: build_image
-      optional: true
   artifacts:
     paths:
       - "examples/**/build*/size.json"
@@ -451,9 +438,6 @@ build_nopytest_remaining_examples_manual:
     - if: $CI_COMMIT_BRANCH != "main"
       when: manual
       allow_failure: true
-  needs:
-    - job: build_image
-      optional: true
   artifacts:
     paths:
       - "examples/**/build*/size.json"
@@ -478,9 +462,6 @@ build_esp_matter_examples_pytest_C3_idf_v4_4:
   extends:
         - .build_examples_template
   image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
-  needs:
-    - job: build_image
-      optional: true
   artifacts:
     paths:
       - "examples/**/build*/size.json"
@@ -595,6 +576,7 @@ build_managed_component_light:
     needs:
       - job: build_image
         optional: true
+      - job: check_typos
     script:
         - cd ${ESP_MATTER_PATH}/examples/managed_component_light
         - idf.py set-target esp32c3
@@ -613,6 +595,7 @@ build_esp_rainmaker_apps:
     needs:
       - job: build_image
         optional: true
+      - job: check_typos
 
     artifacts:
         paths:
@@ -652,6 +635,8 @@ build_docs:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
     tags:
         - build
+    needs:
+      - job: check_typos
     variables:
         ESP_DOCS_LATEST_BRANCH_NAME: "main"
     artifacts:
@@ -713,3 +698,18 @@ deploy_docs_production:
         DOCS_DEPLOY_SERVER_USER: "$DOCS_PROD_SERVER_USER"
         DOCS_DEPLOY_PATH: "$DOCS_PROD_PATH"
         DOCS_DEPLOY_URL_BASE: "https://$DOCS_PROD_SERVER/$DOCS_PROD_PATH"
+
+check_typos:
+  image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
+  stage: check_typos
+  script:
+    - pip install codespell
+    - git fetch origin main
+    - |
+      FILES=$(git diff --name-only origin/main...HEAD)
+      echo "change files: $FILES"
+      if [ -n "$FILES" ]; then
+        ./tools/check_typos.sh $FILES
+      fi
+  tags:
+    - build
