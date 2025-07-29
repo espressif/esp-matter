@@ -18,10 +18,19 @@ For more optimizations, we've also listed the reference links to esp-idf's optim
 
 All numbers mentioned below are collected in the following environment:
 
-- esp-idf `v5.1.2`_
-- esp-matter `cb3bc9d`_
-- Example: `light`_
-- SoC: ESP32-C3
+.. only:: esp32h2
+
+    - esp-idf `v5.4.1`_
+    - esp-matter `6a77422`_
+    - Example: `light`_
+    - SoC: ESP32-H2
+
+.. only:: not esp32h2
+
+    - esp-idf `v5.4.1`_
+    - esp-matter `6a77422`_
+    - Example: `light`_
+    - SoC: ESP32-C3
 
 .. note::
 
@@ -38,17 +47,33 @@ All numbers mentioned below are collected in the following environment:
 
 We have used the default light example here, and below listed are the static and dynamic sizes.
 
-.. csv-table:: Static memory stats
-  :header: "", "Size", "Decreased by"
+.. only:: esp32h2
 
-  Used D/IRAM,169042,--
-  Used Flash,1370786,--
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
 
-.. csv-table:: Dynamic memory stats
-  :header: "", "Free Heap", "Increased by"
+      Used D/IRAM,179487,--
+      Used Flash,1576436,--
 
-  On Bootup, 64824, --
-  Post Commissioning, 126808, --
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 44256, --
+      Post Commissioning, 77976, --
+
+.. only:: not esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,195080,--
+      Used Flash,1476960,--
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 35976, --
+      Post Commissioning, 101580, --
 
 
 6.2.3 Disable the chip-shell
@@ -61,50 +86,83 @@ production. Disabling the shell can save space. Disable the below configuration 
 
     CONFIG_ENABLE_CHIP_SHELL=n
 
-.. csv-table:: Static memory stats
-  :header: "", "Size", "Decreased by"
+.. only:: esp32h2
 
-  Used D/IRAM,165480,3562
-  Used Flash,1311926,58860
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
 
-.. csv-table:: Dynamic memory stats
-  :header: "", "Free Heap", "Increased by"
+      Used D/IRAM,178695,792
+      Used Flash,1521816,54620
 
-  On Bootup, 76344, 11520
-  Post Commissioning, 137696, 10888
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 54136, 9880
+      Post Commissioning, 87592, 9616
+
+.. only:: not esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,192892,2188
+      Used Flash,1410424,66536
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 46476, 10500
+      Post Commissioning, 112340, 10760
 
 
 6.2.4 Adjust the dynamic endpoint count
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The default dynamic endpoint count is 16, which may be excessive for a normal application creating only 2 endpoints.
+The default dynamic endpoint count and default device type count is 16, which may be excessive for a normal application creating only 2 endpoints.
 eg: light, only has two endpoints, one for root endpoint and one for actual light.
 Adjusting this to a lower value, corresponding to the actual number of endpoints the application will create, can save DRAM.
 
-Here, we have set the dynamic endpoint count to 4. Increase in the DRAM per endpoint is ~275 bytes.
+Here, we have set the dynamic endpoint count and device type count to 2. Increase in the DRAM per endpoint/count is ~550 bytes.
 
 ::
 
-    CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT=4
+    CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT=2
+    CONFIG_ESP_MATTER_MAX_DEVICE_TYPE_COUNT=2
 
-.. csv-table:: Static memory stats
-  :header: "", "Size", "Decreased by"
+.. only:: esp32h2
 
-  Used D/IRAM,162136,3344
-  Used Flash,1311914,12
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
 
-.. csv-table:: Dynamic memory stats
-  :header: "", "Free Heap", "Increased by"
+      Used D/IRAM,172859,6628
+      Used Flash,1576048,388
 
-  On Bootup, 79688, 3344
-  Post Commissioning, 141204, 3508
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 51020, 6764
+      Post Commissioning, 84208, 6232
+
+.. only:: not esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,188452,6628
+      Used Flash,1476850,110
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 41932, 5956
+      Post Commissioning, 107984, 6404
 
 
 6.2.5 Use the newlib nano formatting
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This optimization saves approximately 25-50K of flash, depending on the target. In our case, it results in a flash
-reduction of 61.5 KB.
+reduction of 47 KB.
 
 Additionally, it lowers the high watermark of task stack for functions that call printf() or other string formatting
 functions. Fore more details please take a look at esp-idf's `newlib nano formatting guide`_.
@@ -113,26 +171,43 @@ functions. Fore more details please take a look at esp-idf's `newlib nano format
 
     CONFIG_NEWLIB_NANO_FORMAT=y
 
-.. csv-table:: Static memory stats
-  :header: "", "Size", "Decreased by"
+.. only:: esp32h2
 
-  Used D/IRAM,162136,0
-  Used Flash,1281354,30560
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
 
-.. csv-table:: Dynamic memory stats
-  :header: "", "Free Heap", "Increased by"
+      Used D/IRAM,179487,0
+      Used Flash,1529228,47208
 
-  On Bootup, 82748, 3060
-  Post Commissioning, 143956, 2752
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 46164, 1908
+      Post Commissioning, 79616, 1640
+
+.. only:: not esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,195080,0
+      Used Flash,1429916,47044
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 38404, 2428
+      Post Commissioning, 103500, 1920
 
 
-6.2.6 Few BLE Optimizations
+6.2.6 BLE Optimizations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Since most devices will primarily operate as BLE peripherals and typically won't need more than one connection
 (especially if it's just a Matter app), we can optimize by reducing the maximum allowed connections, thereby
 saving DRAM. Additionally, given the peripheral nature of these devices, we can disable the central and
 observer roles, for further optimization.
+In current implementation, BLE is disabled once commissioning succeeds, so these optimizations do not contribute to free heap post-commissioning.
 
 Below are the configuration options that can be set to achieve these optimizations.
 
@@ -140,20 +215,52 @@ Below are the configuration options that can be set to achieve these optimizatio
 
     CONFIG_NIMBLE_MAX_CONNECTIONS=1
     CONFIG_BTDM_CTRL_BLE_MAX_CONN=1
+    CONFIG_BT_NIMBLE_MAX_CONNECTIONS=1
     CONFIG_BT_NIMBLE_ROLE_CENTRAL=n
     CONFIG_BT_NIMBLE_ROLE_OBSERVER=n
+    CONFIG_BT_NIMBLE_MAX_BONDS=2
+    CONFIG_BT_NIMBLE_MAX_CCCDS=2
+    CONFIG_BT_NIMBLE_SECURITY_ENABLE=n
+    CONFIG_BT_NIMBLE_50_FEATURE_SUPPORT=n
+    CONFIG_BT_NIMBLE_WHITELIST_SIZE=1
+    CONFIG_BT_NIMBLE_GATT_MAX_PROCS=1
+    CONFIG_BT_NIMBLE_MSYS_1_BLOCK_COUNT=10
+    CONFIG_BT_NIMBLE_MSYS_1_BLOCK_SIZE=100
+    CONFIG_BT_NIMBLE_MSYS_2_BLOCK_COUNT=4
+    CONFIG_BT_NIMBLE_MSYS_2_BLOCK_SIZE=320
+    CONFIG_BT_NIMBLE_ACL_BUF_COUNT=5
+    CONFIG_BT_NIMBLE_HCI_EVT_HI_BUF_COUNT=5
+    CONFIG_BT_NIMBLE_HCI_EVT_LO_BUF_COUNT=3
+    CONFIG_BT_NIMBLE_ENABLE_CONN_REATTEMPT=n
 
-.. csv-table:: Static memory stats
-  :header: "", "Size", "Decreased by"
+.. only:: esp32h2
 
-  Used D/IRAM,161682,454
-  Used Flash,1275860,5494
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
 
-.. csv-table:: Dynamic memory stats
-  :header: "", "Free Heap", "Increased by"
+      Used D/IRAM,177753,1734
+      Used Flash,1552372,24064
 
-  On Bootup, 83220, 472
-  Post Commissioning, 143804, -152
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 54096, 9840
+      Post Commissioning, 77728, -248
+
+.. only:: not esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,192920,2160
+      Used Flash,1454332,22628
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 55048, 19072
+      Post Commissioning, 101176, -404
+
 
 6.2.7 Configuring logging event buffer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -162,26 +269,316 @@ Matter events serve as a historical record, stored in chronological order in the
 By reducing the buffer size we can potentially save the DRAM. However, it's important to note that this reduction
 could lead to the omission of events.
 
-For instance, reducing the critical log buffer from 4K to 1K could save 3K DRAM, but it comes with the trade-off of
+For instance, reducing the critical log buffer from 4K to 256 bytes could save 3K+ DRAM, but it comes with the trade-off of
 potentially missing critical events.
 
 ::
 
-    CONFIG_EVENT_LOGGING_CRIT_BUFFER_SIZE=1024
+    CONFIG_EVENT_LOGGING_CRIT_BUFFER_SIZE=256
+    CONFIG_EVENT_LOGGING_INFO_BUFFER_SIZE=256
+    CONFIG_EVENT_LOGGING_DEBUG_BUFFER_SIZE=256
+    CONFIG_MAX_EVENT_QUEUE_SIZE=20
 
-.. csv-table:: Static memory stats
-  :header: "", "Size", "Decreased by"
+Reduce ESP system event queue size and event task stack size can increase free heap size.
 
-  Used D/IRAM,158610,3072
-  Used Flash,1275860,0
+::
 
-6.2.8 Excluding Unused Matter Clusters
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    CONFIG_ESP_SYSTEM_EVENT_QUEUE_SIZE=16
+    CONFIG_ESP_SYSTEM_EVENT_TASK_STACK_SIZE=2048
+    CONFIG_MAX_EVENT_QUEUE_SIZE=20
+
+Reduce the chip device event queue size can reduce IRAM size usage, lead to free heap increase.
+
+::
+
+    CONFIG_MAX_EVENT_QUEUE_SIZE=20
+
+.. only:: esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,174111,5376
+      Used Flash,1576434,0
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 51288, 7032
+      Post Commissioning, 84868, 6892
+
+.. only:: not esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,189704,5376
+      Used Flash,1477100,-140
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 42504, 6528
+      Post Commissioning, 108184, 6604
+
+
+6.2.8 Relocate certain code from IRAM to flash memory
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Relocating certain code from IRAM to flash can reduce IRAM usage, so increase available heap size. However, this may increase execution time.
+
+.. note::
+
+    The options in this section may impact performance. Please perform thorough testing before using them in production.
+
+6.2.8.1 Reduce BLE IRAM usage
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Move most IRAM into flash. This will increase the usage of flash and reduce ble performance.
+Because the code is moved to the flash, the execution speed of the code is reduced. To have
+a small impact on performance, you need to enable flash suspend (SPI_FLASH_AUTO_SUSPEND).
+
+::
+
+    CONFIG_BT_CTRL_RUN_IN_FLASH_ONLY=y
+
+.. only:: esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,159553,19934
+      Used Flash,1589720,-13284
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 64044, 19788
+      Post Commissioning, 97608, 19632
+
+.. only:: not esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,175718,19362
+      Used Flash,1619786,-142826
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 59056, 23080
+      Post Commissioning, 119608, 18028
+
+
+6.2.8.2 Place FreeRTOS functions into Flash
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When enabled the selected Non-ISR FreeRTOS functions will be placed into Flash memory instead of IRAM.
+This saves up to 8KB of IRAM depending on which functions are used.
+
+::
+
+    CONFIG_FREERTOS_PLACE_FUNCTIONS_INTO_FLASH=y
+
+.. only:: esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,170409,9078
+      Used Flash,1585754,-9318
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 53344, 9088
+      Post Commissioning, 86780, 8804
+
+.. only:: not esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,184754,10326
+      Used Flash,1487608,-10648
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 45432, 9456
+      Post Commissioning, 111020, 9440
+
+
+6.2.8.3 Place non-ISR ringbuf functions into flash
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Place non-ISR ringbuf functions (like xRingbufferCreate/xRingbufferSend) into flash.
+This frees up IRAM, but the functions can no longer be called when the cache is disabled.
+
+::
+
+    CONFIG_RINGBUF_PLACE_FUNCTIONS_INTO_FLASH=y
+
+.. only:: esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,174741,4746
+      Used Flash,1581604,-5168
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 48860, 4604
+      Post Commissioning, 82444, 4468
+
+.. only:: not esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,190334,4746
+      Used Flash,1482260,-5300
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 39928, 3952
+      Post Commissioning, 105652, 4072
+
+
+6.2.8.4 Use esp_flash implementation in ROM
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Enable this flag to use new SPI flash driver functions from ROM instead of ESP-IDF.
+After enable CONFIG_SPI_FLASH_ROM_IMPL, will increase free IRAM.
+But may miss out on some flash features and support for new flash chips.
+
+::
+
+    CONFIG_SPI_FLASH_ROM_IMPL=y
+    CONFIG_SPI_MASTER_ISR_IN_IRAM=n
+    CONFIG_SPI_SLAVE_ISR_IN_IRAM=n
+
+.. only:: esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,166798,12689
+      Used Flash,1573452,2984
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 56900, 12644
+      Post Commissioning, 90204, 12228
+
+.. only:: not esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,185590,9490
+      Used Flash,1474292,2668
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 44316, 8340
+      Post Commissioning, 110512, 8932
+
+
+6.2.8.5 Force the entire heap component to be placed in flash memory
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Enable this flag to save up RAM space by placing the heap component in the flash memory
+Note that it is only safe to enable this configuration if no functions from esp_heap_caps.h or
+esp_heap_trace.h are called from IRAM ISR which runs when cache is disabled.
+
+::
+
+    CONFIG_HEAP_PLACE_FUNCTION_INTO_FLASH=y
+
+.. only:: esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,179487,0
+      Used Flash,1576436,0
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 44124, -132
+      Post Commissioning, 77564, -412
+
+.. only:: not esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,187936,7144
+      Used Flash,1441086,-7218
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 42500, 6524
+      Post Commissioning, 108192, 6612
+
+
+6.2.9 Reduce Task Stack Size
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Reduce some task stack size can increase free heap size.
+
+::
+
+    CONFIG_ESP_MAIN_TASK_STACK_SIZE=3072
+    CONFIG_ESP_TIMER_TASK_STACK_SIZE=2048
+    CONFIG_CHIP_TASK_STACK_SIZE=6144
+
+.. only:: esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,179487,0
+      Used Flash,1576448,0
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 48204, 3948
+      Post Commissioning, 81660, 3684
+
+.. only:: not esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,195080,0
+      Used Flash,1477114,-154
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 39304, 3328
+      Post Commissioning, 104828, 3248
+
+
+6.2.10 Excluding Unused Matter Clusters
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If the cluster implementation source files use a class derived from another class with virtual functions and instantiate
 a global object of this class, the linker may keep all the related symbols that may be used for this class in the vtable.
 To eliminate these symbols, you can deselect the unused Matter clusters under ``→ Component config`` → ``ESP Matter`` →
 ``Select Supported Matter Clusters``. Excluding unused clusters will help reduce flash and memory usage.
+The default configuration disables all unused clusters.
 
 ::
 
@@ -277,8 +674,14 @@ To eliminate these symbols, you can deselect the unused Matter clusters under ``
 .. csv-table:: Static memory stats
   :header: "", "Size", "Decreased by"
 
-  Used D/IRAM,167706,1336
-  Used Flash,1348790,21996
+  Used D/IRAM,179487,3736
+  Used Flash,1576436,36938
+
+.. csv-table:: Dynamic memory stats
+  :header: "", "Free Heap", "Increased by"
+
+  On Bootup, 44256, 3876
+  Post Commissioning, 77976, 4164
 
 6.3 References for futher optimizations
 ---------------------------------------
@@ -291,9 +694,9 @@ To eliminate these symbols, you can deselect the unused Matter clusters under ``
   functions from IRAM to flash may result in increased execution time
 
 
-.. _`v5.1.2`: https://github.com/espressif/esp-idf/tree/v5.1.2
-.. _`cb3bc9d`: https://github.com/espressif/esp-matter/tree/cb3bc9d
-.. _`light`: https://github.com/espressif/esp-matter/tree/cb3bc9d/examples/light
+.. _`v5.4.1`: https://github.com/espressif/esp-idf/tree/v5.4.1
+.. _`6a77422`: https://github.com/espressif/esp-matter/tree/6a77422
+.. _`light`: https://github.com/espressif/esp-matter/tree/6a77422/examples/light
 .. _`newlib nano formatting guide`: https://docs.espressif.com/projects/esp-idf/en/latest/esp32c3/api-guides/performance/size.html#newlib-nano-formatting
 .. _`RAM optimization`: https://docs.espressif.com/projects/esp-idf/en/latest/esp32c3/api-guides/performance/ram-usage.html
 .. _`Binary size optimization`: https://docs.espressif.com/projects/esp-idf/en/latest/esp32c3/api-guides/performance/size.html
