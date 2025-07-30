@@ -1017,6 +1017,21 @@ command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callba
     return (command_t *)command;
 }
 
+command_t *get(uint16_t endpoint_id, uint32_t cluster_id, uint32_t command_id)
+{
+    _cluster_t *current_cluster = (_cluster_t *)cluster::get(endpoint_id, cluster_id);
+    VerifyOrReturnValue(current_cluster, NULL);
+    _command_t *command = (_command_t *)current_cluster->command_list;
+
+    while (command) {
+        if (command->command_id == command_id) {
+            break;
+        }
+        command = command->next;
+    }
+    return (command_t *)command;
+}
+
 command_t *get(cluster_t *cluster, uint32_t command_id, uint16_t flags)
 {
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Cluster cannot be NULL."));

@@ -806,6 +806,19 @@ command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callba
 
 /** Get command
  *
+ * Get opaque command handle for concrete command path
+ *
+ * @param[in] endpoint_id Endpoint id for the command.
+ * @param[in] cluster_id Cluster id for the command.
+ * @param[in] command_id Command id for the command.
+ *
+ * @return Opaque command handle on success.
+ * @return NULL in case of failure.
+ */
+command_t *get(uint16_t endpoint_id, uint32_t cluster_id, uint32_t command_id);
+
+/** Get command
+ *
  * Get the command present on the cluster.
  *
  * @param[in] cluster Cluster handle.
