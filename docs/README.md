@@ -14,4 +14,20 @@ The above URL is for the main branch latest version. Click the drop-down in the 
 
 # Building Documentation
 
-The documentation is built using the python package `esp-docs`, which can be installed by running `pip install esp-docs`. Running `build-docs --help` will give a summary of available options. For more information see the `esp-docs` documentation at https://github.com/espressif/esp-docs/blob/master/README.md
+This project uses [esp-docs](https://docs.espressif.com/projects/esp-docs/en/latest/index.html) to build the documentation.
+
+- Install dependencies
+```
+pip install -r requirements.txt
+```
+
+- Build documentation
+```
+build-docs -bs html latex -t esp32 -l en
+```
+NOTE: Above command only builds for the `esp32` target, you can add more targets to `-t` argument.
+
+- For more available options run:
+```
+build-docs --help
+```
