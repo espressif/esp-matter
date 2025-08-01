@@ -31,6 +31,15 @@ $ idf.py set-target esp32h2 build
 
 After flashing the Thread Border Router firmware to ESP32-S3, it will flash the RCP firmware to ESP32-H2 automatically.
 
+### 1.3 Firmware for Host SoC
+
+The default setting flash size is 8MB, set target and build as below:
+
+```
+$ idf.py set-target esp32s3
+$ idf.py build
+```
+
 ## 2. Post Commissioning Setup
 
 After commissioning the Border Router with chip-tool, you can set up the Thread network with ThreadBorderRouterManagement cluster.
