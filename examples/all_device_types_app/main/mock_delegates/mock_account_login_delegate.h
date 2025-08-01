@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include <app-common/zap-generated/cluster-objects.h>
-
 #include <app/clusters/account-login-server/account-login-delegate.h>
 
 /*
@@ -17,9 +15,9 @@
  * This file provides a mock implementation of the AccountLogin::Delegate interface
  * that returns success for all methods.
  * For more details, take a look at the delegate interface in the Matter SDK.
- * 1. Delegate Interface: https://github.com/project-chip/connectedhomeip/blob/master/src/app/clusters/account-login-server/account-login-delegate.h
- * 2. Delegate Implementation: https://github.com/project-chip/connectedhomeip/blob/master/examples/tv-app/android/include/account-login/AccountLoginManager.h and
- *    https://github.com/project-chip/connectedhomeip/blob/master/examples/tv-app/android/include/account-login/AccountLoginManager.cpp
+ * 1. Delegate Interface: https://github.com/project-chip/connectedhomeip/blob/d144bbb/src/app/clusters/account-login-server/account-login-delegate.h
+ * 2. Delegate Implementation: https://github.com/project-chip/connectedhomeip/blob/d144bbb/examples/tv-app/android/include/account-login/AccountLoginManager.h and
+ *    https://github.com/project-chip/connectedhomeip/blob/d144bbb/examples/tv-app/android/include/account-login/AccountLoginManager.cpp
  */
 
 namespace chip {
