@@ -280,7 +280,7 @@ uint16_t get_count(node_t *node);
  */
 uint16_t get_id(endpoint_t *endpoint);
 
-/** Add device type ID and verision
+/** Add device type ID and version
  *
  * Add the device type ID and version for the endpoint.
  *
@@ -753,11 +753,11 @@ callback_t get_override_callback(attribute_t *attribute);
 
 /** Set attribute (has `ATTRIBUTE_FLAG_EXTERNAL_STORAGE` flag) deferred persistence
  *
- * Only non-volatile attributes can be set with deferred presistence. If an attribute is configured with deferred
- * presistence, any modifications to it will be enacted in its persistent storage with a specific delay
+ * Only non-volatile attributes can be set with deferred persistence. If an attribute is configured with deferred
+ * persistence, any modifications to it will be enacted in its persistent storage with a specific delay
  * (CONFIG_ESP_MATTER_DEFERRED_ATTR_PERSISTENCE_TIME_MS)
  *
- * It could be used for the non-volatile attribues which might be changed rapidly, such as CurrentLevel in LevelControl
+ * It could be used for the non-volatile attributes which might be changed rapidly, such as CurrentLevel in LevelControl
  * cluster.
  *
  * @param[in] attribute Attribute handle.
@@ -803,6 +803,19 @@ typedef esp_err_t (*callback_t)(const ConcreteCommandPath &command_path, TLVRead
  * @return NULL in case of failure.
  */
 command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callback_t callback);
+
+/** Get command
+ *
+ * Get opaque command handle for concrete command path
+ *
+ * @param[in] endpoint_id Endpoint id for the command.
+ * @param[in] cluster_id Cluster id for the command.
+ * @param[in] command_id Command id for the command.
+ *
+ * @return Opaque command handle on success.
+ * @return NULL in case of failure.
+ */
+command_t *get(uint16_t endpoint_id, uint32_t cluster_id, uint32_t command_id);
 
 /** Get command
  *
