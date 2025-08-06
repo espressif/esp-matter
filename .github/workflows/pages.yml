@@ -53,6 +53,12 @@ jobs:
           - {example: light, target: esp32c6, prefix: thread_matter, sdkconfig: sdkconfig.defaults.c6_thread}
           - {example: light, target: esp32h2, prefix: thread_matter}
           - {example: light_switch, target: esp32c3, prefix: wifi_matter}
+          - {example: generic_switch, target: esp32c3, prefix: wifi_matter}
+          - {example: icd_app, target: esp32c6, prefix: thread_matter}
+          - {example: icd_app, target: esp32h2, prefix: thread_matter}
+          - {example: door_lock, target: esp32c2, prefix: wifi_matter}
+          - {example: door_lock, target: esp32h2, prefix: thread_matter}
+
 
     steps:
       - run: mkdir -p images
@@ -102,6 +108,8 @@ jobs:
       matrix:
         targets:
           - {example: matter_light, target: esp32c3, prefix: wifi_rainmaker}
+          - {example: matter_light, target: esp32h2, prefix: thread_rainmaker}
+          - {example: matter_light, target: esp32c2, prefix: wifi_rainmaker}
 
     steps:
       - run: mkdir -p images
