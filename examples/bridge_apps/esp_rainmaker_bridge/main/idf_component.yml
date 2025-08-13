@@ -1,0 +1,7 @@
+dependencies:
+  espressif/esp_rainmaker:
+    version: "^1.4.2"
+  espressif/qrcode:
+    version: "*"
+  espressif/button:
+    version: "^4"
