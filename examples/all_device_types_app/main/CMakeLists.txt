@@ -18,7 +18,6 @@ idf_component_register(SRC_DIRS          ${SRC_DIRS_LIST}
                       INCLUDE_DIRS       ${INCLUDE_DIRS_LIST}
                       LDFRAGMENTS        "${ldfragments}")
 
-set_property(TARGET ${COMPONENT_LIB} PROPERTY CXX_STANDARD 17)
 target_compile_options(${COMPONENT_LIB} PRIVATE "-DCHIP_HAVE_CONFIG_H")
 
 if(CONFIG_IDF_TARGET_ESP32 OR CONFIG_IDF_TARGET_ESP32S3)
