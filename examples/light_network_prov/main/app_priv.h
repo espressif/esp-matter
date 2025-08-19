@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "led_indicator.h"
 #include <esp_err.h>
 #include <esp_matter.h>
 
@@ -16,9 +17,9 @@
 #endif
 
 /** Standard max values (used for remapping attributes) */
-#define STANDARD_BRIGHTNESS 255
+#define STANDARD_BRIGHTNESS 100
 #define STANDARD_HUE 360
-#define STANDARD_SATURATION 255
+#define STANDARD_SATURATION 100
 #define STANDARD_TEMPERATURE_FACTOR 1000000
 
 /** Matter max values (used for remapping attributes) */
@@ -79,6 +80,16 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
  * @return error in case of failure.
  */
 esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id);
+
+esp_err_t app_driver_light_set_power(led_indicator_handle_t handle, bool val);
+
+esp_err_t app_driver_light_set_brightness(led_indicator_handle_t handle, int val);
+
+esp_err_t app_driver_light_set_hue(led_indicator_handle_t handle, int val);
+
+esp_err_t app_driver_light_set_saturation(led_indicator_handle_t handle, int val);
+
+esp_err_t app_driver_light_set_temperature(led_indicator_handle_t handle, int val);
 
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #define ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG()                                           \

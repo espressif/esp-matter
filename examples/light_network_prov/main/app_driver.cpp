@@ -23,68 +23,64 @@ static const char *TAG = "app_driver";
 extern uint16_t light_endpoint_id;
 
 /* Do any conversions/remapping for the actual value here */
-static esp_err_t app_driver_light_set_power(led_indicator_handle_t handle, esp_matter_attr_val_t *val)
+esp_err_t app_driver_light_set_power(led_indicator_handle_t handle, bool val)
 {
 #if CONFIG_BSP_LEDS_NUM > 0
     esp_err_t err = ESP_OK;
-    if (val->val.b) {
+    if (val) {
         err = led_indicator_start(handle, BSP_LED_ON);
     } else {
         err = led_indicator_start(handle, BSP_LED_OFF);
     }
     return err;
 #else
-    ESP_LOGI(TAG, "LED set power: %d", val->val.b);
+    ESP_LOGI(TAG, "LED set power: %d", val);
     return ESP_OK;
 #endif
 }
 
-static esp_err_t app_driver_light_set_brightness(led_indicator_handle_t handle, esp_matter_attr_val_t *val)
+esp_err_t app_driver_light_set_brightness(led_indicator_handle_t handle, int val)
 {
-    int value = REMAP_TO_RANGE(val->val.u8, MATTER_BRIGHTNESS, STANDARD_BRIGHTNESS);
 #if CONFIG_BSP_LEDS_NUM > 0
-    return led_indicator_set_brightness(handle, value);
+    return led_indicator_set_brightness(handle, val);
 #else
-    ESP_LOGI(TAG, "LED set brightness: %d", value);
+    ESP_LOGI(TAG, "LED set brightness: %d", val);
     return ESP_OK;
 #endif
 }
 
-static esp_err_t app_driver_light_set_hue(led_indicator_handle_t handle, esp_matter_attr_val_t *val)
+esp_err_t app_driver_light_set_hue(led_indicator_handle_t handle, int val)
 {
-    int value = REMAP_TO_RANGE(val->val.u8, MATTER_HUE, STANDARD_HUE);
 #if CONFIG_BSP_LEDS_NUM > 0
     led_indicator_ihsv_t hsv;
     hsv.value = led_indicator_get_hsv(handle);
-    hsv.h = value;
+    hsv.h = val;
     return led_indicator_set_hsv(handle, hsv.value);
 #else
-    ESP_LOGI(TAG, "LED set hue: %d", value);
+    ESP_LOGI(TAG, "LED set hue: %d", val);
     return ESP_OK;
 #endif
 }
 
-static esp_err_t app_driver_light_set_saturation(led_indicator_handle_t handle, esp_matter_attr_val_t *val)
+esp_err_t app_driver_light_set_saturation(led_indicator_handle_t handle, int val)
 {
-    int value = REMAP_TO_RANGE(val->val.u8, MATTER_SATURATION, STANDARD_SATURATION);
 #if CONFIG_BSP_LEDS_NUM > 0
     led_indicator_ihsv_t hsv;
     hsv.value = led_indicator_get_hsv(handle);
-    hsv.s = value;
+    hsv.s = val;
     return led_indicator_set_hsv(handle, hsv.value);
 #else
-    ESP_LOGI(TAG, "LED set saturation: %d", value);
+    ESP_LOGI(TAG, "LED set saturation: %d", val);
     return ESP_OK;
 #endif
 }
 
-static esp_err_t app_driver_light_set_temperature(led_indicator_handle_t handle, esp_matter_attr_val_t *val)
+esp_err_t app_driver_light_set_temperature(led_indicator_handle_t handle, int val)
 {
-    uint32_t value = REMAP_TO_RANGE_INVERSE(val->val.u16, STANDARD_TEMPERATURE_FACTOR);
 #if CONFIG_BSP_LEDS_NUM > 0
-    return led_indicator_set_color_temperature(handle, value);
+    return led_indicator_set_color_temperature(handle, val);
 #else
-    ESP_LOGI(TAG, "LED set temperature: %ld", value);
+    ESP_LOGI(TAG, "LED set temperature: %ld", val);
     return ESP_OK;
 #endif
 }
@@ -112,19 +108,19 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
         led_indicator_handle_t handle = (led_indicator_handle_t)driver_handle;
         if (cluster_id == OnOff::Id) {
             if (attribute_id == OnOff::Attributes::OnOff::Id) {
-                err = app_driver_light_set_power(handle, val);
+                err = app_driver_light_set_power(handle, val->val.b);
             }
         } else if (cluster_id == LevelControl::Id) {
             if (attribute_id == LevelControl::Attributes::CurrentLevel::Id) {
-                err = app_driver_light_set_brightness(handle, val);
+                err = app_driver_light_set_brightness(handle, val->val.u8);
             }
         } else if (cluster_id == ColorControl::Id) {
             if (attribute_id == ColorControl::Attributes::CurrentHue::Id) {
-                err = app_driver_light_set_hue(handle, val);
+                err = app_driver_light_set_hue(handle, val->val.u16);
             } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
-                err = app_driver_light_set_saturation(handle, val);
+                err = app_driver_light_set_saturation(handle, val->val.u16);
             } else if (attribute_id == ColorControl::Attributes::ColorTemperatureMireds::Id) {
-                err = app_driver_light_set_temperature(handle, val);
+                err = app_driver_light_set_temperature(handle, val->val.u16);
             }
         }
     }
@@ -142,7 +138,7 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
     /* Setting brightness */
     attribute = attribute::get(endpoint_id, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id);
     attribute::get_val(attribute, &val);
-    err |= app_driver_light_set_brightness(handle, &val);
+    err |= app_driver_light_set_brightness(handle, val.val.u8);
 
     /* Setting color */
     attribute = attribute::get(endpoint_id, ColorControl::Id, ColorControl::Attributes::ColorMode::Id);
@@ -151,16 +147,16 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
         /* Setting hue */
         attribute = attribute::get(endpoint_id, ColorControl::Id, ColorControl::Attributes::CurrentHue::Id);
         attribute::get_val(attribute, &val);
-        err |= app_driver_light_set_hue(handle, &val);
+        err |= app_driver_light_set_hue(handle, val.val.u16);
         /* Setting saturation */
         attribute = attribute::get(endpoint_id, ColorControl::Id, ColorControl::Attributes::CurrentSaturation::Id);
         attribute::get_val(attribute, &val);
-        err |= app_driver_light_set_saturation(handle, &val);
+        err |= app_driver_light_set_saturation(handle, val.val.u16);
     } else if (val.val.u8 == (uint8_t)ColorControl::ColorMode::kColorTemperature) {
         /* Setting temperature */
         attribute = attribute::get(endpoint_id, ColorControl::Id, ColorControl::Attributes::ColorTemperatureMireds::Id);
         attribute::get_val(attribute, &val);
-        err |= app_driver_light_set_temperature(handle, &val);
+        err |= app_driver_light_set_temperature(handle, val.val.u16);
     } else {
         ESP_LOGE(TAG, "Color mode not supported");
     }
@@ -168,7 +164,7 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
     /* Setting power */
     attribute = attribute::get(endpoint_id, OnOff::Id, OnOff::Attributes::OnOff::Id);
     attribute::get_val(attribute, &val);
-    err |= app_driver_light_set_power(handle, &val);
+    err |= app_driver_light_set_power(handle, val.val.b);
 
     return err;
 }

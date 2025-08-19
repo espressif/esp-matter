@@ -21,6 +21,7 @@
 #include <esp_rmaker_schedule.h>
 #include <esp_rmaker_standard_devices.h>
 #include <esp_rmaker_standard_params.h>
+#include <esp_rmaker_standard_types.h>
 #include <esp_rmaker_user_mapping.h>
 
 #include <app_priv.h>
@@ -30,7 +31,9 @@
 #include "app-common/zap-generated/ids/Attributes.h"
 #include "app-common/zap-generated/ids/Clusters.h"
 #include "network_provisioning/manager.h"
+#include "platform/CHIPDeviceEvent.h"
 #include "platform/PlatformManager.h"
+#include "support/CodeUtils.h"
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ThreadStackManager.h>
 #include <platform/ESP32/OpenthreadLauncher.h>
@@ -62,6 +65,7 @@ static const uint16_t s_decryption_key_len = decryption_key_end - decryption_key
 #endif // CONFIG_ENABLE_ENCRYPTED_OTA
 
 static esp_rmaker_device_t *light_device;
+static bool rmaker_init_done = false;
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
@@ -117,6 +121,16 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
         break;
     }
 
+    case chip::DeviceLayer::DeviceEventType::kThreadConnectivityChange: {
+        // When Thread is attached with network provisioning, try to start DNS-SD server to advertise Matter
+        // commissionable service
+        if (event->ThreadConnectivityChange.Result == chip::DeviceLayer::kConnectivity_Established) {
+            chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t){ chip::app::DnssdServer::Instance().StartServer(); },
+                                                          reinterpret_cast<intptr_t>(nullptr));
+        }
+        break;
+    }
+
     case chip::DeviceLayer::DeviceEventType::kFabricWillBeRemoved:
         ESP_LOGI(TAG, "Fabric will be removed");
         break;
@@ -143,6 +157,75 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
     }
 }
 
+static esp_err_t app_matter_report_power(bool val)
+{
+    esp_matter_attr_val_t value = esp_matter_bool(val);
+    return attribute::report(light_endpoint_id, OnOff::Id, OnOff::Attributes::OnOff::Id, &value);
+}
+
+static esp_err_t app_matter_report_hue(int val)
+{
+    esp_matter_attr_val_t value = esp_matter_uint8(REMAP_TO_RANGE(val, STANDARD_HUE, MATTER_HUE));
+    return attribute::report(light_endpoint_id, ColorControl::Id, ColorControl::Attributes::CurrentHue::Id, &value);
+}
+
+static esp_err_t app_matter_report_saturation(int val)
+{
+    esp_matter_attr_val_t value = esp_matter_uint8(REMAP_TO_RANGE(val, STANDARD_SATURATION, MATTER_SATURATION));
+    return attribute::report(light_endpoint_id, ColorControl::Id, ColorControl::Attributes::CurrentSaturation::Id, &value);
+}
+
+static esp_err_t app_matter_report_brightness(int val)
+{
+    esp_matter_attr_val_t value = esp_matter_nullable_uint8(REMAP_TO_RANGE(val, STANDARD_BRIGHTNESS, MATTER_BRIGHTNESS));
+    return attribute::report(light_endpoint_id, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id, &value);
+}
+
+static const char *app_matter_get_rmaker_param_name_from_id(uint32_t cluster_id, uint32_t attribute_id)
+{
+    if (cluster_id == OnOff::Id) {
+        if (attribute_id == OnOff::Attributes::OnOff::Id) {
+            return ESP_RMAKER_DEF_POWER_NAME;
+        }
+    } else if (cluster_id == LevelControl::Id) {
+        if (attribute_id == LevelControl::Attributes::CurrentLevel::Id) {
+            return ESP_RMAKER_DEF_BRIGHTNESS_NAME;
+        }
+    } else if (cluster_id == ColorControl::Id) {
+        if (attribute_id == ColorControl::Attributes::CurrentHue::Id) {
+            return ESP_RMAKER_DEF_HUE_NAME;
+        } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
+            return ESP_RMAKER_DEF_SATURATION_NAME;
+        }
+    }
+    return NULL;
+}
+
+static esp_rmaker_param_val_t app_matter_get_rmaker_val(esp_matter_attr_val_t *val, uint32_t cluster_id,
+                                                           uint32_t attribute_id)
+{
+    /* Attributes which need to be remapped */
+    if (cluster_id == LevelControl::Id) {
+        if (attribute_id == LevelControl::Attributes::CurrentLevel::Id) {
+            int value = REMAP_TO_RANGE(val->val.u8, MATTER_BRIGHTNESS, STANDARD_BRIGHTNESS);
+            return esp_rmaker_int(value);
+        }
+    } else if (cluster_id == ColorControl::Id) {
+        if (attribute_id == ColorControl::Attributes::CurrentHue::Id) {
+            int value = REMAP_TO_RANGE(val->val.u8, MATTER_HUE, STANDARD_HUE);
+            return esp_rmaker_int(value);
+        } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
+            int value = REMAP_TO_RANGE(val->val.u8, MATTER_SATURATION, STANDARD_SATURATION);
+            return esp_rmaker_int(value);
+        }
+    } else if (cluster_id == OnOff::Id) {
+        if (attribute_id == OnOff::Attributes::OnOff::Id) {
+            return esp_rmaker_bool(val->val.b);
+        }
+    }
+    return esp_rmaker_int(0);
+}
+
 static esp_err_t bulk_write_cb(const esp_rmaker_device_t *device, const esp_rmaker_param_write_req_t write_req[],
                                uint8_t count, void *priv_data, esp_rmaker_write_ctx_t *ctx)
 {
@@ -159,28 +242,20 @@ static esp_err_t bulk_write_cb(const esp_rmaker_device_t *device, const esp_rmak
         const char *param_name = esp_rmaker_param_get_name(param);
         if (strcmp(param_name, ESP_RMAKER_DEF_POWER_NAME) == 0) {
             ESP_LOGI(TAG, "Received value = %s for %s - %s", val.val.b ? "true" : "false", device_name, param_name);
-            matter_val.type = ESP_MATTER_VAL_TYPE_BOOLEAN;
-            matter_val.val.b = val.val.b;
-            app_driver_attribute_update(light_handle, light_endpoint_id, OnOff::Id, OnOff::Attributes::OnOff::Id,
-                                        &matter_val);
+            app_driver_light_set_power(light_handle, val.val.b);
+            app_matter_report_power(val.val.b);
         } else if (strcmp(param_name, ESP_RMAKER_DEF_BRIGHTNESS_NAME) == 0) {
             ESP_LOGI(TAG, "Received value = %d for %s - %s", val.val.i, device_name, param_name);
-            matter_val.type = ESP_MATTER_VAL_TYPE_UINT8;
-            matter_val.val.u8 = (uint8_t)(val.val.i * 254 / 100);
-            app_driver_attribute_update(light_handle, light_endpoint_id, LevelControl::Id,
-                                        LevelControl::Attributes::CurrentLevel::Id, &matter_val);
+            app_driver_light_set_brightness(light_handle, val.val.i);
+            app_matter_report_brightness(val.val.i);
         } else if (strcmp(param_name, ESP_RMAKER_DEF_HUE_NAME) == 0) {
             ESP_LOGI(TAG, "Received value = %d for %s - %s", val.val.i, device_name, param_name);
-            matter_val.type = ESP_MATTER_VAL_TYPE_UINT16;
-            matter_val.val.u16 = (uint16_t)(val.val.i * 254 / 360);
-            app_driver_attribute_update(light_handle, light_endpoint_id, ColorControl::Id,
-                                        ColorControl::Attributes::CurrentHue::Id, &matter_val);
+            app_driver_light_set_hue(light_handle, val.val.i);
+            app_matter_report_hue(val.val.i);
         } else if (strcmp(param_name, ESP_RMAKER_DEF_SATURATION_NAME) == 0) {
             ESP_LOGI(TAG, "Received value = %d for %s - %s", val.val.i, device_name, param_name);
-            matter_val.type = ESP_MATTER_VAL_TYPE_UINT16;
-            matter_val.val.u16 = (uint16_t)(val.val.i * 254 / 100);
-            app_driver_attribute_update(light_handle, light_endpoint_id, ColorControl::Id,
-                                        ColorControl::Attributes::CurrentSaturation::Id, &matter_val);
+            app_driver_light_set_saturation(light_handle, val.val.i);
+            app_matter_report_saturation(val.val.i);
         } else {
             ESP_LOGI(TAG, "Updating for %s", param_name);
         }
@@ -210,6 +285,30 @@ static esp_err_t app_attribute_update_cb(attribute::callback_type_t type, uint16
         /* Driver update */
         app_driver_handle_t driver_handle = (app_driver_handle_t)priv_data;
         err = app_driver_attribute_update(driver_handle, endpoint_id, cluster_id, attribute_id, val);
+    } else if (type == POST_UPDATE) {
+        if (!rmaker_init_done) {
+            ESP_LOGI(TAG, "RainMaker init not done. Not processing attribute update");
+            return ESP_OK;
+        }
+
+        /* RainMaker update */
+        const char *device_name = "Light";
+        const char *param_name = app_matter_get_rmaker_param_name_from_id(cluster_id, attribute_id);
+        if (!param_name) {
+            ESP_LOGD(TAG, "param name not handled");
+            return ESP_FAIL;
+        }
+
+        const esp_rmaker_node_t *node = esp_rmaker_get_node();
+        esp_rmaker_device_t *device = esp_rmaker_node_get_device_by_name(node, device_name);
+        esp_rmaker_param_t *param = esp_rmaker_device_get_param_by_name(device, param_name);
+        if (!param) {
+            ESP_LOGE(TAG, "Param %s not found", param_name);
+            return ESP_FAIL;
+        }
+
+        esp_rmaker_param_val_t rmaker_val = app_matter_get_rmaker_val(val, cluster_id, attribute_id);
+        return esp_rmaker_param_update_and_report(param, rmaker_val);
     }
 
     return err;
@@ -316,10 +415,15 @@ extern "C" void app_main()
         .port_config = ESP_OPENTHREAD_DEFAULT_PORT_CONFIG(),
     };
     set_openthread_platform_config(&ot_config);
-    // This will not really initiaize Thread stack as the thread stack has been initialzed in app_network.
+    // This will not really initialize Thread stack as the thread stack has been initialized in app_network.
     // We call this function to pass the OpenThread instance to GenericThreadStackManagerImpl_OpenThread
     // so that it can be used for SRP service registration and network commissioning driver.
     chip::DeviceLayer::ThreadStackMgr().InitThreadStack();
+    // Then try to start DNS-SD advertisement if Thread is provisioned.
+    if (chip::DeviceLayer::ConnectivityMgr().IsThreadProvisioned()) {
+        chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t){ chip::app::DnssdServer::Instance().StartServer(); },
+                                                      reinterpret_cast<intptr_t>(nullptr));
+    }
 #endif
 
     /* Starting driver with default values */
@@ -338,6 +442,7 @@ extern "C" void app_main()
     if (is_network_provisioned && esp_rmaker_user_node_mapping_get_state() == ESP_RMAKER_USER_MAPPING_DONE) {
         chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t) { chip::DeviceLayer::Internal::BLEMgr().Shutdown(); });
     }
+    rmaker_init_done = true;
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter::console::diagnostics_register_commands();
