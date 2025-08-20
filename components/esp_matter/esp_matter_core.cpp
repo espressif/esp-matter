@@ -66,6 +66,7 @@ using chip::DeviceLayer::ThreadStackMgr;
 
 static const char *TAG = "esp_matter_core";
 static bool esp_matter_started = false;
+static chip::CommonCaseDeviceServerInitParams *s_server_init_params = nullptr;
 
 #ifndef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 // If Matter Server is disabled, these functions are required by InteractionModelEngine but not linked
@@ -734,11 +735,18 @@ static void deinit_ble_if_commissioned(intptr_t unused)
 static void esp_matter_chip_init_task(intptr_t context)
 {
     TaskHandle_t task_to_notify = reinterpret_cast<TaskHandle_t>(context);
-    static chip::CommonCaseDeviceServerInitParams initParams;
+    static chip::CommonCaseDeviceServerInitParams defaultInitParams;
+
+    chip::CommonCaseDeviceServerInitParams &initParams =
+        s_server_init_params ? *s_server_init_params : defaultInitParams;
 
     initParams.InitializeStaticResourcesBeforeServerInit();
-    initParams.appDelegate = &s_app_delegate;
-    initParams.testEventTriggerDelegate = test_event_trigger::get_delegate();
+    if (!initParams.appDelegate) {
+        initParams.appDelegate = &s_app_delegate;
+    }
+    if (!initParams.testEventTriggerDelegate) {
+        initParams.testEventTriggerDelegate = test_event_trigger::get_delegate();
+    }
 
 #ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
     // Group data provider injection for dynamic data model
@@ -889,6 +897,13 @@ static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
 bool is_started()
 {
     return esp_matter_started;
+}
+
+esp_err_t set_server_init_params(chip::CommonCaseDeviceServerInitParams *server_init_params)
+{
+    VerifyOrReturnError(!esp_matter_started, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "esp_matter has started"));
+    s_server_init_params = server_init_params;
+    return ESP_OK;
 }
 
 esp_err_t start(event_callback_t callback, intptr_t callback_arg)
