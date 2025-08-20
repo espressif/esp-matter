@@ -609,6 +609,18 @@ esp_err_t enable_all()
     }
     return ESP_OK;
 }
+
+bool is_attribute_enabled(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id)
+{
+    attribute_t *attr = attribute::get(endpoint_id, cluster_id, attribute_id);
+    return (attr != nullptr);
+}
+
+bool is_command_enabled(uint16_t endpoint_id, uint32_t cluster_id, uint32_t command_id)
+{
+    command_t *cmd = command::get(endpoint_id, cluster_id, command_id);
+    return (cmd != nullptr);
+}
 } /* endpoint */
 
 namespace attribute {

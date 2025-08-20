@@ -36,7 +36,7 @@
 #include <app/clusters/window-covering-server/window-covering-server.h>
 #include <app/clusters/dishwasher-alarm-server/dishwasher-alarm-server.h>
 #include <app/clusters/keypad-input-server/keypad-input-server.h>
-#include <app/clusters/mode-select-server//supported-modes-manager.h>
+#include <app/clusters/mode-select-server/supported-modes-manager.h>
 #include <app/clusters/thread-border-router-management-server/thread-border-router-management-server.h>
 #include <app/clusters/water-heater-management-server/water-heater-management-server.h>
 #include <app/clusters/energy-preference-server/energy-preference-server.h>
@@ -60,9 +60,116 @@ static uint32_t get_feature_map_value(uint16_t endpoint_id, uint32_t cluster_id)
     uint32_t attribute_id = Globals::Attributes::FeatureMap::Id;
     attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
 
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
     attribute::get_val(attribute, &val);
     return val.val.u32;
+}
+
+// Cluster-specific optional attributes handlers
+chip::BitMask<EnergyEvse::OptionalAttributes> get_energy_evse_enabled_optional_attributes(uint16_t endpoint_id)
+{
+    chip::BitMask<EnergyEvse::OptionalAttributes> optional_attrs = 0;
+    
+    if (endpoint::is_attribute_enabled(endpoint_id, EnergyEvse::Id, EnergyEvse::Attributes::UserMaximumChargeCurrent::Id)) {
+        optional_attrs.Set(EnergyEvse::OptionalAttributes::kSupportsUserMaximumChargingCurrent);
+    }
+    
+    if (endpoint::is_attribute_enabled(endpoint_id, EnergyEvse::Id, EnergyEvse::Attributes::RandomizationDelayWindow::Id)) {
+        optional_attrs.Set(EnergyEvse::OptionalAttributes::kSupportsRandomizationWindow);
+    }
+    
+    if (endpoint::is_attribute_enabled(endpoint_id, EnergyEvse::Id, EnergyEvse::Attributes::ApproximateEVEfficiency::Id)) {
+        optional_attrs.Set(EnergyEvse::OptionalAttributes::kSupportsApproximateEvEfficiency);
+    }
+    
+    return optional_attrs;
+}
+
+chip::BitMask<PowerTopology::OptionalAttributes> get_power_topology_enabled_optional_attributes(uint16_t endpoint_id)
+{
+    chip::BitMask<PowerTopology::OptionalAttributes> optional_attrs = 0;
+    
+    if (endpoint::is_attribute_enabled(endpoint_id, PowerTopology::Id, PowerTopology::Attributes::AvailableEndpoints::Id)) {
+        optional_attrs.Set(PowerTopology::OptionalAttributes::kOptionalAttributeAvailableEndpoints);
+    }
+    
+    if (endpoint::is_attribute_enabled(endpoint_id, PowerTopology::Id, PowerTopology::Attributes::ActiveEndpoints::Id)) {
+        optional_attrs.Set(PowerTopology::OptionalAttributes::kOptionalAttributeActiveEndpoints);
+    }
+    
+    return optional_attrs;
+}
+
+chip::BitMask<ElectricalPowerMeasurement::OptionalAttributes> get_electrical_power_measurement_enabled_optional_attributes(uint16_t endpoint_id)
+{
+    chip::BitMask<ElectricalPowerMeasurement::OptionalAttributes> optional_attrs = 0;
+    
+    // Check for various optional attributes
+    if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::Ranges::Id)) {
+        optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeRanges);
+    }
+    
+    if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::Voltage::Id)) {
+        optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeVoltage);
+    }
+    
+    if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::ActiveCurrent::Id)) {
+        optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeActiveCurrent);
+    }
+    
+    if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::ReactiveCurrent::Id)) {
+        optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeReactiveCurrent);
+    }
+    
+    if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::ApparentCurrent::Id)) {
+        optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeApparentCurrent);
+    }
+    
+    if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::ReactivePower::Id)) {
+        optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeReactivePower);
+    }
+    
+    if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::ApparentPower::Id)) {
+        optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeApparentPower);
+    }
+    
+    if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::RMSVoltage::Id)) {
+        optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeRMSVoltage);
+    }
+    
+    if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::RMSCurrent::Id)) {
+        optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeRMSCurrent);
+    }
+    
+    if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::RMSPower::Id)) {
+        optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeRMSPower);
+    }
+    
+    if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::Frequency::Id)) {
+        optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeFrequency);
+    }
+    
+    if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::PowerFactor::Id)) {
+        optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributePowerFactor);
+    }
+    
+    if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::NeutralCurrent::Id)) {
+        optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeNeutralCurrent);
+    }
+    
+    return optional_attrs;
+}
+
+// Cluster-specific optional commands handlers
+chip::BitMask<EnergyEvse::OptionalCommands> get_energy_evse_enabled_optional_commands(uint16_t endpoint_id)
+{
+    chip::BitMask<EnergyEvse::OptionalCommands> optional_cmds = 0;
+    
+    if (endpoint::is_command_enabled(endpoint_id, EnergyEvse::Id, EnergyEvse::Commands::StartDiagnostics::Id)) {
+        optional_cmds.Set(EnergyEvse::OptionalCommands::kSupportsStartDiagnostics);
+    }
+    
+    return optional_cmds;
 }
 
 namespace delegate_cb {
@@ -140,8 +247,10 @@ void EnergyEvseDelegateInitCB(void *delegate, uint16_t endpoint_id)
     static EnergyEvse::Instance * energyEvseInstance = nullptr;
     EnergyEvse::Delegate *energy_evse_delegate = static_cast<EnergyEvse::Delegate*>(delegate);
     uint32_t feature_map = get_feature_map_value(endpoint_id, EnergyEvse::Id);
+    chip::BitMask<EnergyEvse::OptionalAttributes> optional_attrs = get_energy_evse_enabled_optional_attributes(endpoint_id);
+    chip::BitMask<EnergyEvse::OptionalCommands> optional_cmds = get_energy_evse_enabled_optional_commands(endpoint_id);
     energyEvseInstance = new EnergyEvse::Instance(endpoint_id, *energy_evse_delegate, chip::BitMask<EnergyEvse::Feature, uint32_t>(feature_map),
-                            chip::BitMask<EnergyEvse::OptionalAttributes, uint32_t>(), chip::BitMask<EnergyEvse::OptionalCommands, uint32_t>());
+                            optional_attrs, optional_cmds);
     energyEvseInstance->Init();
 }
 
@@ -287,8 +396,9 @@ void PowerTopologyDelegateInitCB(void *delegate, uint16_t endpoint_id)
     static PowerTopology::Instance * powerTopologyInstance = nullptr;
     PowerTopology::Delegate *power_topology_delegate = static_cast<PowerTopology::Delegate*>(delegate);
     uint32_t feature_map = get_feature_map_value(endpoint_id, PowerTopology::Id);
+    chip::BitMask<PowerTopology::OptionalAttributes> optional_attrs = get_power_topology_enabled_optional_attributes(endpoint_id);
     powerTopologyInstance = new PowerTopology::Instance(endpoint_id, *power_topology_delegate, chip::BitMask<PowerTopology::Feature,
-                            uint32_t>(feature_map), chip::BitMask<PowerTopology::OptionalAttributes, uint32_t>(0));
+                            uint32_t>(feature_map), optional_attrs);
     powerTopologyInstance->Init();
 }
 
@@ -298,9 +408,9 @@ void ElectricalPowerMeasurementDelegateInitCB(void *delegate, uint16_t endpoint_
     static ElectricalPowerMeasurement::Instance * electricalPowerMeasurementInstance = nullptr;
     ElectricalPowerMeasurement::Delegate *electrical_power_measurement_delegate = static_cast<ElectricalPowerMeasurement::Delegate*>(delegate);
     uint32_t feature_map = get_feature_map_value(endpoint_id, ElectricalPowerMeasurement::Id);
+    chip::BitMask<ElectricalPowerMeasurement::OptionalAttributes> optional_attrs = get_electrical_power_measurement_enabled_optional_attributes(endpoint_id);
     electricalPowerMeasurementInstance = new ElectricalPowerMeasurement::Instance(endpoint_id, *electrical_power_measurement_delegate,
-                            chip::BitMask<ElectricalPowerMeasurement::Feature, uint32_t>(feature_map),
-                            chip::BitMask<ElectricalPowerMeasurement::OptionalAttributes, uint32_t>(0));
+                            chip::BitMask<ElectricalPowerMeasurement::Feature, uint32_t>(feature_map), optional_attrs);
     electricalPowerMeasurementInstance->Init();
 }
 
@@ -346,7 +456,7 @@ void ThreadBorderRouterManagementDelegateInitCB(void *delegate, uint16_t endpoin
     attribute_t *attribute = attribute::get(endpoint_id, ThreadBorderRouterManagement::Id, Globals::Attributes::FeatureMap::Id);
     assert(attribute != nullptr);
     /* Update the value if the attribute already exists */
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
     attribute::get_val(attribute, &val);
     bool pan_change_supported = (val.val.u32 & thread_border_router_management::feature::pan_change::get_id()) ? true : false;
     ThreadBorderRouterManagement::Delegate *thread_br_delegate = static_cast<ThreadBorderRouterManagement::Delegate *>(delegate);
@@ -358,7 +468,7 @@ void ThreadBorderRouterManagementDelegateInitCB(void *delegate, uint16_t endpoin
 
 void ServiceAreaDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    // TODO: This cluster have two delegates we need to update exsiting delegate logic to accomodate multiple delegates.
+    // TODO: This cluster has two delegates. We need to update existing delegate logic to accommodate multiple delegates.
 }
 
 void WaterHeaterManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
