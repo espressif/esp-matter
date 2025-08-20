@@ -358,9 +358,6 @@ static esp_err_t disable(endpoint_t *endpoint)
         current_endpoint->identify = NULL;
     }
 
-    // resize the group data provider to match the new endpoint count
-    resize_group_data_provider();
-
     return ESP_OK;
 }
 
@@ -570,6 +567,10 @@ esp_err_t enable(endpoint_t *endpoint)
         lock::chip_stack_unlock();
     }
     ESP_LOGI(TAG, "Dynamic endpoint %" PRIu16 " added", current_endpoint->endpoint_id);
+
+    // resize the group data provider to match the new endpoint count
+    resize_group_data_provider();
+
     return err;
 
 cleanup:
