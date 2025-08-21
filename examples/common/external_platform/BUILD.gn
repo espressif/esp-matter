@@ -39,7 +39,6 @@ declare_args() {
   chip_config_software_version_number = 0
   chip_enable_chipoble = false
   chip_enable_ble_controller = false
-  chip_enable_ethernet = false
   chip_bt_nimble_enabled = false
   chip_bt_bluedroid_enabled = false
   chip_max_discovered_ip_addresses = 5
