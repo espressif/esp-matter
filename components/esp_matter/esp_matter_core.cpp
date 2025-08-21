@@ -20,6 +20,8 @@
 #include <esp_matter_test_event_trigger.h>
 #include <nvs.h>
 
+#include <app/clusters/general-diagnostics-server/general-diagnostics-server.h>
+#include <app/clusters/identify-server/identify-server.h>
 #include <app/server/Dnssd.h>
 #ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 #include <app/clusters/general-diagnostics-server/general-diagnostics-server.h>
@@ -223,6 +225,8 @@ static void esp_matter_chip_init_task(intptr_t context)
         ESP_LOGE(TAG, "Failed to add fabric delegate, err:%" CHIP_ERROR_FORMAT, ret.Format());
     }
     chip::Server::GetInstance().Init(initParams);
+    network_commissioning_instance_init();
+
 #ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
     if (endpoint::enable_all() != ESP_OK) {
         ESP_LOGE(TAG, "Enable all endpoints failure");
@@ -231,7 +235,7 @@ static void esp_matter_chip_init_task(intptr_t context)
     // TODO: Find a better way to record the events which should be recorded in matter server init
     // Record start up event in basic information cluster.
     PlatformMgr().HandleServerStarted();
-    // Record boot reason evnet in general diagnostics cluster.
+    // Record boot reason event in general diagnostics cluster.
     chip::app::Clusters::GeneralDiagnostics::BootReasonEnum bootReason;
     if (GetDiagnosticDataProvider().GetBootReason(bootReason) == CHIP_NO_ERROR) {
         chip::app::Clusters::GeneralDiagnosticsServer::Instance().OnDeviceReboot(bootReason);

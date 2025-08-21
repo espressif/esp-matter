@@ -111,8 +111,8 @@
 #define ESP_MATTER_PUMP_CONTROLLER_DEVICE_TYPE_VERSION 4
 #define ESP_MATTER_MODE_SELECT_DEVICE_TYPE_ID 0x0027
 #define ESP_MATTER_MODE_SELECT_DEVICE_TYPE_VERSION 1
-#define ESP_MATTER_ROBOTIC_VACCUM_CLEANER_DEVICE_TYPE_ID 0x0074
-#define ESP_MATTER_ROBOTIC_VACCUM_CLEANER_DEVICE_TYPE_VERSION 3
+#define ESP_MATTER_ROBOTIC_VACUUM_CLEANER_DEVICE_TYPE_ID 0x0074
+#define ESP_MATTER_ROBOTIC_VACUUM_CLEANER_DEVICE_TYPE_VERSION 3
 #define ESP_MATTER_WATER_LEAK_DETECTOR_DEVICE_TYPE_ID 0x0043
 #define ESP_MATTER_WATER_LEAK_DETECTOR_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_RAIN_SENSOR_DEVICE_TYPE_ID 0x0044
@@ -293,9 +293,11 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace extended_color_light {
 typedef struct config : dimmable_light::config_t {
     cluster::color_control::config_t color_control;
+    cluster::scenes_management::config_t scenes_management;
     cluster::color_control::feature::color_temperature::config_t color_control_color_temperature;
     cluster::color_control::feature::xy::config_t color_control_xy;
     uint16_t color_control_remaining_time;
+
     config() : color_control_remaining_time(0) {}
 } config_t;
 

@@ -38,7 +38,7 @@ namespace esp_matter {
 /** TODO: Change this */
 typedef void (*event_callback_t)(const ChipDeviceEvent *event, intptr_t arg);
 
-/** Return whether the Matter is intialized and started
+/** Return whether the Matter is initialized and started
  *
  *  @return true if Matter is started
  *  @return false if Matter is not started
@@ -57,7 +57,7 @@ bool is_started();
  */
 esp_err_t start(event_callback_t callback, intptr_t callback_arg = static_cast<intptr_t>(NULL));
 
-/** Return whether the Matter is intialized and started
+/** Return whether the Matter is initialized and started
  *
  *  @return true if Matter is started
  *  @return false if Matter is not started
@@ -72,6 +72,15 @@ bool is_started();
  * @return error in case of failure.
  */
 esp_err_t factory_reset();
+
+#ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
+/**
+ *
+ * Initialize WiFi, Ethernet, and Thread network commissioning instances.
+ * This function is called internally during Matter initialization.
+ */
+void network_commissioning_instance_init();
+#endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 
 namespace lock {
 

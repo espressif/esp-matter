@@ -330,6 +330,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
+    scenes_management::create(endpoint, &(config->scenes_management), CLUSTER_FLAG_SERVER);
     cluster_t *on_off_cluster = on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
     on_off::feature::lighting::add(on_off_cluster, &(config->on_off_lighting));
     on_off::command::create_on(on_off_cluster);
@@ -1343,12 +1344,12 @@ namespace robotic_vacuum_cleaner {
 
 uint32_t get_device_type_id()
 {
-    return ESP_MATTER_ROBOTIC_VACCUM_CLEANER_DEVICE_TYPE_ID;
+    return ESP_MATTER_ROBOTIC_VACUUM_CLEANER_DEVICE_TYPE_ID;
 }
 
 uint8_t get_device_type_version()
 {
-    return ESP_MATTER_ROBOTIC_VACCUM_CLEANER_DEVICE_TYPE_VERSION;
+    return ESP_MATTER_ROBOTIC_VACUUM_CLEANER_DEVICE_TYPE_VERSION;
 }
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
