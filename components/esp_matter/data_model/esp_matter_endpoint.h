@@ -54,13 +54,13 @@
 #define ESP_MATTER_GENERIC_SWITCH_DEVICE_TYPE_VERSION 3
 
 #define ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_ID 0x010A
-#define ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_VERSION 3
+#define ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_VERSION 4
 #define ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_ID 0x010B
-#define ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_VERSION 4
+#define ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_VERSION 5
 #define ESP_MATTER_MOUNTED_ON_OFF_CONTROL_DEVICE_TYPE_ID 0x010F
-#define ESP_MATTER_MOUNTED_ON_OFF_CONTROL_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_MOUNTED_ON_OFF_CONTROL_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_MOUNTED_DIMMABLE_LOAD_CONTROL_DEVICE_TYPE_ID 0x0110
-#define ESP_MATTER_MOUNTED_DIMMABLE_LOAD_CONTROL_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_MOUNTED_DIMMABLE_LOAD_CONTROL_DEVICE_TYPE_VERSION 2
 
 #define ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID 0x0302
 #define ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_VERSION 2
@@ -77,21 +77,21 @@
 #define ESP_MATTER_HUMIDITY_SENSOR_DEVICE_TYPE_ID 0x0307
 #define ESP_MATTER_HUMIDITY_SENSOR_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_ROOM_AIR_CONDITIONER_DEVICE_TYPE_ID 0x0072
-#define ESP_MATTER_ROOM_AIR_CONDITIONER_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_ROOM_AIR_CONDITIONER_DEVICE_TYPE_VERSION 3
 #define ESP_MATTER_REFRIGERATOR_DEVICE_TYPE_ID 0x0070
 #define ESP_MATTER_REFRIGERATOR_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_TEMPERATURE_CONTROLLED_CABINET_DEVICE_TYPE_ID 0x0071
-#define ESP_MATTER_TEMPERATURE_CONTROLLED_CABINET_DEVICE_TYPE_VERSION 3
+#define ESP_MATTER_TEMPERATURE_CONTROLLED_CABINET_DEVICE_TYPE_VERSION 5
 #define ESP_MATTER_LAUNDRY_WASHER_DEVICE_TYPE_ID 0x0073
-#define ESP_MATTER_LAUNDRY_WASHER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_LAUNDRY_WASHER_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_DISH_WASHER_DEVICE_TYPE_ID 0x0075
-#define ESP_MATTER_DISH_WASHER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_DISH_WASHER_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_MICROWAVE_OVEN_DEVICE_TYPE_ID 0x0079
-#define ESP_MATTER_MICROWAVE_OVEN_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_MICROWAVE_OVEN_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_SMOKE_CO_ALARM_DEVICE_TYPE_ID 0x0076
 #define ESP_MATTER_SMOKE_CO_ALARM_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_LAUNDRY_DRYER_DEVICE_TYPE_ID 0x007C
-#define ESP_MATTER_LAUNDRY_DRYER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_LAUNDRY_DRYER_DEVICE_TYPE_VERSION 2
 
 #define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
 #define ESP_MATTER_FAN_DEVICE_TYPE_VERSION 3
@@ -104,7 +104,7 @@
 #define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID 0x000A
 #define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_VERSION 3
 #define ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_ID 0x0202
-#define ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_VERSION 3
+#define ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_VERSION 4
 #define ESP_MATTER_PUMP_DEVICE_TYPE_ID 0x0303
 #define ESP_MATTER_PUMP_DEVICE_TYPE_VERSION 3
 #define ESP_MATTER_PUMP_CONTROLLER_DEVICE_TYPE_ID 0x0304
@@ -118,13 +118,13 @@
 #define ESP_MATTER_RAIN_SENSOR_DEVICE_TYPE_ID 0x0044
 #define ESP_MATTER_RAIN_SENSOR_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_COOK_SURFACE_DEVICE_TYPE_ID 0x0077
-#define ESP_MATTER_COOK_SURFACE_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_COOK_SURFACE_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_COOKTOP_DEVICE_TYPE_ID 0x0078
 #define ESP_MATTER_COOKTOP_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_ELECTRICAL_SENSOR_DEVICE_TYPE_ID 0x0510
 #define ESP_MATTER_ELECTRICAL_SENSOR_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_OVEN_DEVICE_TYPE_ID 0x007B
-#define ESP_MATTER_OVEN_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_OVEN_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_WATER_FREEZE_DETECTOR_DEVICE_TYPE_ID 0x0041
 #define ESP_MATTER_WATER_FREEZE_DETECTOR_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_ENERGY_EVSE_DEVICE_TYPE_ID 0x050C
@@ -142,10 +142,10 @@
 #define ESP_MATTER_SOLAR_POWER_DEVICE_TYPE_ID 0x0017
 #define ESP_MATTER_SOLAR_POWER_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_BATTERY_STORAGE_DEVICE_TYPE_ID 0x0018
-#define ESP_MATTER_BATTERY_STORAGE_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_BATTERY_STORAGE_DEVICE_TYPE_VERSION 2
 
 #define ESP_MATTER_THREAD_BORDER_ROUTER_DEVICE_TYPE_ID 0x0091
-#define ESP_MATTER_THREAD_BORDER_ROUTER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_THREAD_BORDER_ROUTER_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_HEAT_PUMP_DEVICE_TYPE_ID 0x0309
 #define ESP_MATTER_HEAT_PUMP_DEVICE_TYPE_VERSION 1
 
@@ -177,12 +177,13 @@ typedef struct : app_base_config {
 typedef struct : app_with_group_config {
     cluster::on_off::config_t on_off;
     cluster::on_off::feature::lighting::config_t on_off_lighting;
-} on_off_config;
+    cluster::scenes_management::config_t scenes_management;
+} on_off_with_lighting_config;
 
 typedef struct : app_with_group_config {
     cluster::scenes_management::config_t scenes_management;
     cluster::on_off::config_t on_off;
-} on_off_with_scenes_management_config;
+} on_off_config;
 
 typedef struct : app_base_config {
     cluster::boolean_state::config_t boolean_state;
@@ -251,7 +252,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace on_off_light {
 
-typedef struct config : on_off_config {
+typedef struct config : on_off_with_lighting_config {
     config() {
         /* For lighting product, the default identify type should be 0x01: LightOutput*/
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kLightOutput);
@@ -293,7 +294,6 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace extended_color_light {
 typedef struct config : dimmable_light::config_t {
     cluster::color_control::config_t color_control;
-    cluster::scenes_management::config_t scenes_management;
     cluster::color_control::feature::color_temperature::config_t color_control_color_temperature;
     cluster::color_control::feature::xy::config_t color_control_xy;
     uint16_t color_control_remaining_time;
@@ -365,7 +365,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace on_off_plugin_unit {
 
-typedef struct config : on_off_config {
+typedef struct config : on_off_with_lighting_config {
    config() {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
    } 
@@ -536,7 +536,6 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace window_covering_device {
 typedef struct config : app_with_group_config {
-    cluster::scenes_management::config_t scenes_management;
     cluster::window_covering::config_t window_covering;
     config(uint8_t end_product_type = 0) : window_covering(end_product_type) {
        identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
@@ -925,7 +924,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* secondary_network_interface */
 
 namespace mounted_on_off_control {
-typedef struct config : on_off_config {
+typedef struct config : on_off_with_lighting_config {
     config() {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
     }
