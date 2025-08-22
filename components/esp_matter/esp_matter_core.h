@@ -23,6 +23,7 @@
 #include <app/AttributePathParams.h>
 #include <app/CommandPathParams.h>
 #include <app/EventPathParams.h>
+#include <app/server/Server.h>
 
 using chip::app::ConcreteCommandPath;
 using chip::DeviceLayer::ChipDeviceEvent;
@@ -44,6 +45,30 @@ typedef void (*event_callback_t)(const ChipDeviceEvent *event, intptr_t arg);
  *  @return false if Matter is not started
  */
 bool is_started();
+
+/**
+ * @brief Set the server initialization parameters for Matter.
+ *
+ * This function must be called before Matter is started. `esp_matter::start()`
+ * Calling it after Matter has started will have no effect and will return an error.
+ *
+ * @note Starting Matter without valid initialization parameters may lead to undefined behavior or startup failure.
+ *
+ * @note The provided pointer is stored internally and used later during Matter initialization.
+ * It is not copied, so the caller must ensure that the memory pointed to by `server_init_params`
+ * remains valid and unmodified until Matter is started.
+ *
+ * @note If this function is called with a `nullptr`, it will still return ESP_OK. The system
+ * will proceed with default initialization behavior.
+ *
+ * @param[in] server_init_params Pointer to the server initialization parameters. May be nullptr.
+ *
+ * @return ESP_OK Successfully set the server initialization parameters.
+ * @return ESP_ERR_INVALID_STATE If called after Matter has already started.
+ * @return error in case of failure.
+ */
+
+esp_err_t set_server_init_params(chip::CommonCaseDeviceServerInitParams *server_init_params);
 
 /** ESP Matter Start
  *
