@@ -225,6 +225,8 @@ typedef struct config {
     struct {
         feature::wired::config_t wired;
         feature::battery::config_t battery;
+        feature::rechargeable::config_t rechargeable;
+        feature::replaceable::config_t replaceable;
     } features;
     uint32_t feature_flags;
 	config() : status(0), order(0), description{0}, feature_flags(0) {}
@@ -329,6 +331,10 @@ typedef struct config {
         feature::heating::config_t heating;
         feature::cooling::config_t cooling;
         feature::auto_mode::config_t auto_mode;
+        feature::occupancy::config_t occupancy;
+        feature::setback::config_t setback;
+        feature::local_temperature_not_exposed::config_t local_temperature_not_exposed;
+        feature::matter_schedule_configuration::config_t matter_schedule_configuration;
     } features;
     uint32_t feature_flags;
     config() : local_temperature(), control_sequence_of_operation(4), system_mode(1), delegate(nullptr), feature_flags(0) {}
@@ -377,6 +383,8 @@ typedef struct config {
     struct {
         feature::numeric_measurement::config_t numeric_measurement;
         feature::level_indication::config_t level_indication;
+        feature::peak_measurement::config_t peak_measurement;
+        feature::average_measurement::config_t average_measurement;
     } features;
     uint32_t feature_flags;
     void *delegate;
@@ -529,6 +537,9 @@ typedef struct config {
     struct {
         feature::lift::config_t lift;
         feature::tilt::config_t tilt;
+        feature::position_aware_lift::config_t position_aware_lift;
+        feature::absolute_position::config_t absolute_position;
+        feature::position_aware_tilt::config_t position_aware_tilt;
     } features;
     uint32_t feature_flags;
     void *delegate;
@@ -542,6 +553,9 @@ namespace switch_cluster {
 typedef struct config {
     uint8_t number_of_positions;
     uint8_t current_position;
+    struct {
+        feature::momentary_switch_multi_press::config_t momentary_switch_multi_press;
+    } features;
     uint32_t feature_flags;
     config() : number_of_positions(2), current_position(0), feature_flags(0) {}
 } config_t;
@@ -701,6 +715,7 @@ typedef struct config {
     struct {
         feature::temperature_number::config_t temperature_number;
         feature::temperature_level::config_t temperature_level;
+        feature::temperature_step::config_t temperature_step;
     } features;
     uint32_t feature_flags;
     config() : feature_flags(0) {}

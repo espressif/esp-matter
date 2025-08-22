@@ -1233,8 +1233,10 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
+    bool has_level_indication = get_feature_map_value(cluster) & feature::level_indication::get_id();
+    VerifyOrReturnError(has_level_indication, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Level indication feature is not supported."));
 
+    update_feature_map(cluster, get_id());
     return ESP_OK;
 }
 
@@ -1251,8 +1253,10 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
+    bool has_level_indication = get_feature_map_value(cluster) & feature::level_indication::get_id();
+    VerifyOrReturnError(has_level_indication, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Level indication feature is not supported."));
 
+    update_feature_map(cluster, get_id());
     return ESP_OK;
 }
 
@@ -1268,6 +1272,10 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+
+    bool has_numeric_measurement = get_feature_map_value(cluster) & feature::numeric_measurement::get_id();
+    VerifyOrReturnError(has_numeric_measurement, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Numeric measurement feature is not supported."));
+
     update_feature_map(cluster, get_id());
 
     attribute::create_peak_measured_value(cluster, config->peak_measured_value);
@@ -1288,6 +1296,9 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    bool has_numeric_measurement = get_feature_map_value(cluster) & feature::numeric_measurement::get_id();
+    VerifyOrReturnError(has_numeric_measurement, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Numeric measurement feature is not supported."));
+
     update_feature_map(cluster, get_id());
 
     attribute::create_average_measured_value(cluster, config->average_measured_value);
