@@ -405,6 +405,25 @@ significantly reducing the internal memory usage of your application.
 
 Please check `#1123`_ for relevant discussion on Github issue.
 
+A1.17 Updating attribute marked as ATTRIBUTE_FLAG_MANAGED_INTERNALLY
+----------------------------------------------------------------------
+
+When an attribute is marked with the flag ``ATTRIBUTE_FLAG_MANAGED_INTERNALLY``, application can not directly modify
+the attribute's value using ``esp_matter::attribute::update``. To update such attributes, retrieve the corresponding
+delegate or instance within the cluster implementation and perform the update through it.
+For example, to update ``DefaultOTAProviders`` attribute in ``OTASoftwareUpdateRequestor`` cluster, use the following code:
+
+   ::
+
+      chip::OTARequestorInterface * request = chip::GetRequestorInstance();
+      if (request) {
+          chip::OTARequestorInterface::ProviderLocationType provider;
+          provider.providerNodeID = 123;
+          provider.endpoint = 0;
+          provider.fabricIndex = 1;
+          request->AddDefaultOtaProvider(provider);
+      }
+
 .. _bleprph: https://github.com/espressif/esp-idf/tree/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/bleprph
 .. _blecent: https://github.com/espressif/esp-idf/tree/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/blecent
 .. _bleprph_advertise(): https://github.com/espressif/esp-idf/blob/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/bleprph/main/main.c#L146

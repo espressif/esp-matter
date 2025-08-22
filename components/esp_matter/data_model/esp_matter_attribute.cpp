@@ -114,7 +114,7 @@ attribute_t *create_acl(cluster_t *cluster, uint8_t *value, uint16_t length, uin
 
 attribute_t *create_extension(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, AccessControl::Attributes::Extension::Id, ATTRIBUTE_FLAG_WRITABLE,
+    return esp_matter::attribute::create(cluster, AccessControl::Attributes::Extension::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
@@ -139,13 +139,13 @@ attribute_t *create_access_control_entries_per_fabric(cluster_t *cluster, uint16
 #if CHIP_CONFIG_USE_ACCESS_RESTRICTIONS
 attribute_t *create_commissioning_arl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, AccessControl::Attributes::CommissioningARL::Id, ATTRIBUTE_FLAG_NONE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
+    return esp_matter::attribute::create(cluster, AccessControl::Attributes::CommissioningARL::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_arl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, AccessControl::Attributes::Arl::Id, ATTRIBUTE_FLAG_NONE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
+    return esp_matter::attribute::create(cluster, AccessControl::Attributes::Arl::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
@@ -234,30 +234,30 @@ attribute_t *create_capability_minima(cluster_t *cluster, uint8_t *value, uint16
 attribute_t *create_manufacturing_date(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, BasicInformation::Attributes::ManufacturingDate::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_char_str(value, length));
 }
 
 attribute_t *create_part_number(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::PartNumber::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::PartNumber::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_char_str(value, length));
 }
 
 attribute_t *create_product_url(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::ProductURL::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::ProductURL::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_char_str(value, length));
 }
 
 attribute_t *create_product_label(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::ProductLabel::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::ProductLabel::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_char_str(value, length));
 }
 
 attribute_t *create_serial_number(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::SerialNumber::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::SerialNumber::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_char_str(value, length));
 }
 
@@ -275,14 +275,14 @@ attribute_t *create_reachable(cluster_t *cluster, bool value)
 
 attribute_t *create_unique_id(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::UniqueID::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::UniqueID::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_char_str(value, length));
 }
 
 attribute_t *create_product_appearance(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, BasicInformation::Attributes::ProductAppearance::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_specification_version(cluster_t *cluster, uint32_t value)
@@ -387,32 +387,32 @@ attribute_t *create_supports_concurrent_connection(cluster_t *cluster, bool valu
 attribute_t *create_tc_accepted_version(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, GeneralCommissioning::Attributes::TCAcceptedVersion::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 attribute_t *create_tc_min_required_version(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, GeneralCommissioning::Attributes::TCMinRequiredVersion::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 attribute_t *create_tc_acknowledgements(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, GeneralCommissioning::Attributes::TCAcknowledgements::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_bitmap16(value));
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bitmap16(value));
 }
 
 attribute_t *create_tc_acknowledgements_required(cluster_t *cluster, bool value)
 {
     return esp_matter::attribute::create(cluster, GeneralCommissioning::Attributes::TCAcknowledgementsRequired::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_bool(value));
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bool(value));
 }
 
 attribute_t *create_tc_update_deadline(cluster_t *cluster, nullable<uint32_t> value)
 {
     // Current CHIP submodule don't have this attribute
     //return esp_matter::attribute::create(cluster, GeneralCommissioning::Attributes::TCUpdateDeadline::Id,
-    //                                     ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+    //                                     ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint32(value));
     return NULL;
 }
 
@@ -509,37 +509,37 @@ attribute_t *create_reboot_count(cluster_t *cluster, uint16_t value)
 attribute_t *create_up_time(cluster_t *cluster, uint64_t value)
 {
     return esp_matter::attribute::create(cluster, GeneralDiagnostics::Attributes::UpTime::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint64(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint64(value));
 }
 
 attribute_t *create_total_operational_hours(cluster_t *cluster, uint32_t value)
 {
     return esp_matter::attribute::create(cluster, GeneralDiagnostics::Attributes::TotalOperationalHours::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint32(value));
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint32(value));
 }
 
 attribute_t *create_boot_reason(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, GeneralDiagnostics::Attributes::BootReason::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
 }
 
 attribute_t *create_active_hardware_faults(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, GeneralDiagnostics::Attributes::ActiveHardwareFaults::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_active_radio_faults(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, GeneralDiagnostics::Attributes::ActiveRadioFaults::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, GeneralDiagnostics::Attributes::ActiveNetworkFaults::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_test_event_triggers_enabled(cluster_t *cluster, bool value)
@@ -737,7 +737,7 @@ attribute_t *create_user_active_mode_trigger_instruction(cluster_t *cluster, cha
 attribute_t *create_operating_mode(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, IcdManagement::Attributes::OperatingMode::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
 }
 
 } /* attribute */
@@ -815,7 +815,7 @@ attribute_t *create_packet_unicast_tx_count(cluster_t *cluster, nullable<uint32_
 attribute_t *create_current_max_rate(cluster_t *cluster, nullable<uint64_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::CurrentMaxRate::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint64(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint64(value));
 }
 
 attribute_t *create_overrun_count(cluster_t *cluster, nullable<uint64_t> value)
@@ -1240,13 +1240,13 @@ namespace attribute {
 attribute_t *create_phy_rate(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::PHYRate::Id,
-					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
+					 ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
 }
 
 attribute_t *create_full_duplex(cluster_t *cluster, nullable<bool> value)
 {
     return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::FullDuplex::Id,
-					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_bool(value));
+					 ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_bool(value));
 }
 
 attribute_t *create_packet_rx_count(cluster_t *cluster, uint64_t value)
@@ -1276,13 +1276,13 @@ attribute_t *create_overrun_count(cluster_t *cluster, uint64_t value)
 attribute_t *create_carrier_detect(cluster_t *cluster, nullable<bool> value)
 {
     return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::CarrierDetect::Id,
-					 ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_bool(value));
+					ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_bool(value));
 }
 
 attribute_t *create_time_since_reset(cluster_t *cluster, uint64_t value)
 {
     return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::TimeSinceReset::Id,
-					 ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+					 ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint64(value));
 }
 
 } /* attribute */
@@ -1410,7 +1410,7 @@ namespace attribute {
 attribute_t *create_label_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, UserLabel::Attributes::LabelList::Id,
-                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
@@ -1422,7 +1422,7 @@ namespace attribute {
 
 attribute_t *create_label_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, FixedLabel::Attributes::LabelList::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+    return esp_matter::attribute::create(cluster, FixedLabel::Attributes::LabelList::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
@@ -1469,7 +1469,7 @@ attribute_t *create_scene_table_size(cluster_t *cluster, uint16_t value)
 
 attribute_t *create_fabric_scene_info(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ScenesManagement::Attributes::FabricSceneInfo::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, ScenesManagement::Attributes::FabricSceneInfo::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array((uint8_t*)value, length, count));
 }
 
@@ -1939,7 +1939,7 @@ namespace attribute {
 
 attribute_t *create_local_temperature(cluster_t *cluster, nullable<int16_t> value)
 {
-    return esp_matter::attribute::create(cluster, Thermostat::Attributes::LocalTemperature::Id, ATTRIBUTE_FLAG_NULLABLE,
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::LocalTemperature::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_nullable_int16(value));
 }
 
@@ -2060,7 +2060,7 @@ attribute_t *create_min_setpoint_dead_band(cluster_t *cluster, int8_t value)
 attribute_t *create_remote_sensing(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, Thermostat::Attributes::RemoteSensing::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_bitmap8(value));
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bitmap8(value));
 }
 
 attribute_t *create_control_sequence_of_operation(cluster_t *cluster, uint8_t value)
@@ -2236,20 +2236,20 @@ attribute_t *create_ac_capacity_format(cluster_t *cluster, uint8_t value)
 
 attribute_t *create_preset_types(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, Thermostat::Attributes::PresetTypes::Id, ATTRIBUTE_FLAG_NONE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::PresetTypes::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_schedule_type(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, Thermostat::Attributes::ScheduleTypes::Id, ATTRIBUTE_FLAG_NONE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::ScheduleTypes::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_number_of_presets(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, Thermostat::Attributes::NumberOfPresets::Id,
-                                         ATTRIBUTE_FLAG_NONE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
 }
 
 attribute_t *create_number_of_schedules(cluster_t *cluster, uint8_t value)
@@ -2293,7 +2293,7 @@ attribute_t *create_active_schedule_handle(cluster_t *cluster, uint8_t *value, u
 attribute_t *create_presets(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, Thermostat::Attributes::Presets::Id, ATTRIBUTE_FLAG_NONVOLATILE |
-                                        ATTRIBUTE_FLAG_WRITABLE, esp_matter_array(value, length, count));
+                                        ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_schedules(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
@@ -2340,7 +2340,7 @@ namespace attribute {
 
 attribute_t *create_air_quality(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, AirQuality::Attributes::AirQuality::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, AirQuality::Attributes::AirQuality::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_enum8(value));
 }
 
@@ -2352,38 +2352,38 @@ namespace attribute {
 
 attribute_t *create_condition(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::Condition::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::Condition::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_uint8(value));
 }
 
 attribute_t *create_degradation_direction(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::DegradationDirection::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::DegradationDirection::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_enum8(value));
 }
 
 attribute_t *create_change_indication(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::ChangeIndication::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::ChangeIndication::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_enum8(value));
 }
 
 attribute_t *create_in_place_indicator(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::InPlaceIndicator::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::InPlaceIndicator::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
 		                         esp_matter_bool(value));
 }
 
 attribute_t *create_last_change_time(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::LastChangedTime::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE,
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
 		      			 esp_matter_nullable_uint8(value));
 }
 
 attribute_t *create_replacement_product_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::ReplacementProductList::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, HepaFilterMonitoring::Attributes::ReplacementProductList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
@@ -2477,7 +2477,7 @@ attribute_t *create_current_phase(cluster_t *cluster, nullable<uint8_t> value)
 
 attribute_t *create_countdown_time(cluster_t *cluster, nullable<uint32_t> value)
 {
-    return esp_matter::attribute::create(cluster, OperationalState::Attributes::CountdownTime::Id, ATTRIBUTE_FLAG_NULLABLE,
+    return esp_matter::attribute::create(cluster, OperationalState::Attributes::CountdownTime::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_nullable_uint32(value));
 }
 
@@ -2507,7 +2507,7 @@ namespace attribute {
 
 attribute_t *create_spin_speeds(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, LaundryWasherControls::Attributes::SpinSpeeds::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, LaundryWasherControls::Attributes::SpinSpeeds::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
@@ -2527,7 +2527,7 @@ attribute_t *create_number_of_rinses(cluster_t *cluster, uint8_t value)
 
 attribute_t *create_supported_rinses(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, LaundryWasherControls::Attributes::SupportedRinses::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, LaundryWasherControls::Attributes::SupportedRinses::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 } /* attribute */
@@ -2538,7 +2538,7 @@ namespace attribute {
 attribute_t *create_supported_dryness_levels(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, LaundryDryerControls::Attributes::SupportedDrynessLevels::Id,
-            ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+            ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_selected_dryness_level(cluster_t *cluster, nullable<uint8_t> value)
@@ -2873,7 +2873,7 @@ attribute_t *create_aliro_reader_verification_key(cluster_t *cluster, uint8_t * 
         ESP_LOGE(TAG, "Could not create attribute, string size out of bound");
         return NULL;
     }
-    return esp_matter::attribute::create(cluster, DoorLock::Attributes::AliroReaderVerificationKey::Id, ATTRIBUTE_FLAG_NONE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::AliroReaderVerificationKey::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_octet_str(value, length), k_max_aliro_reader_verification_key);
 }
 
@@ -2883,7 +2883,7 @@ attribute_t *create_aliro_reader_group_identifier(cluster_t *cluster, uint8_t * 
         ESP_LOGE(TAG, "Could not create attribute, string size out of bound");
         return NULL;
     }
-    return esp_matter::attribute::create(cluster, DoorLock::Attributes::AliroReaderGroupIdentifier::Id, ATTRIBUTE_FLAG_NONE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::AliroReaderGroupIdentifier::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_octet_str(value, length), k_max_aliro_reader_group_identifier);
 }
 
@@ -2893,14 +2893,14 @@ attribute_t *create_aliro_reader_group_sub_identifier(cluster_t *cluster, uint8_
         ESP_LOGE(TAG, "Could not create attribute, string size out of bound");
         return NULL;
     }
-    return esp_matter::attribute::create(cluster, DoorLock::Attributes::AliroReaderGroupSubIdentifier::Id, ATTRIBUTE_FLAG_NONE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::AliroReaderGroupSubIdentifier::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_octet_str(value, length), k_max_aliro_reader_group_sub_identifier);
 }
 
 attribute_t *create_aliro_expedited_transaction_supported_protocol_versions(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, DoorLock::Attributes::AliroExpeditedTransactionSupportedProtocolVersions::Id,
-                                         ATTRIBUTE_FLAG_NONE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_aliro_group_resolving_key(cluster_t *cluster, uint8_t * value, uint16_t length)
@@ -2916,25 +2916,25 @@ attribute_t *create_aliro_group_resolving_key(cluster_t *cluster, uint8_t * valu
 attribute_t *create_aliro_supported_bleuwb_protocol_versions(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, DoorLock::Attributes::AliroSupportedBLEUWBProtocolVersions::Id,
-                                         ATTRIBUTE_FLAG_NONE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_aliro_ble_advertising_version(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, DoorLock::Attributes::AliroBLEAdvertisingVersion::Id,
-                                         ATTRIBUTE_FLAG_NONE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
 }
 
 attribute_t *create_number_of_aliro_credential_issuer_keys_supported(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, DoorLock::Attributes::NumberOfAliroCredentialIssuerKeysSupported::Id,
-                                         ATTRIBUTE_FLAG_NONE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 attribute_t *create_number_of_aliro_endpoint_keys_supported(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, DoorLock::Attributes::NumberOfAliroEndpointKeysSupported::Id,
-                                         ATTRIBUTE_FLAG_NONE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 } /* attribute */
@@ -3192,13 +3192,13 @@ attribute_t *create_hold_time(cluster_t *cluster, uint16_t value)
 attribute_t *create_hold_time_limits(cluster_t *cluster, uint8_t* value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, OccupancySensing::Attributes::HoldTimeLimits::Id,
-                                         ATTRIBUTE_FLAG_NONE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_pir_occupied_to_unoccupied_delay(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, OccupancySensing::Attributes::PIROccupiedToUnoccupiedDelay::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE , esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 attribute_t *create_pir_unoccupied_to_occupied_delay(cluster_t *cluster, uint16_t value)
@@ -3216,7 +3216,7 @@ attribute_t *create_pir_unoccupied_to_occupied_threshold(cluster_t *cluster, uin
 attribute_t *create_ultrasonic_occupied_to_unoccupied_delay(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, OccupancySensing::Attributes::UltrasonicOccupiedToUnoccupiedDelay::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE , esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 attribute_t *create_ultrasonic_unoccupied_to_occupied_delay(cluster_t *cluster, uint16_t value)
@@ -3234,7 +3234,7 @@ attribute_t *create_ultrasonic_unoccupied_to_occupied_threshold(cluster_t *clust
 attribute_t *create_physical_contact_occupied_to_unoccupied_delay(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, OccupancySensing::Attributes::PhysicalContactOccupiedToUnoccupiedDelay::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE , esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 attribute_t *create_physical_contact_unoccupied_to_occupied_delay(cluster_t *cluster, uint16_t value)
@@ -3269,7 +3269,7 @@ namespace attribute {
 attribute_t *create_current_sensitivity_level(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, BooleanStateConfiguration::Attributes::CurrentSensitivityLevel::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
 }
 
 attribute_t *create_supported_sensitivity_levels(cluster_t *cluster, const uint8_t value)
@@ -3331,7 +3331,7 @@ attribute_t *create_active_locale(cluster_t *cluster, char *value, uint16_t leng
 attribute_t *create_supported_locales(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, LocalizationConfiguration::Attributes::SupportedLocales::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 } /* attribute */
@@ -3343,7 +3343,7 @@ namespace attribute {
 attribute_t *create_temperature_unit(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, UnitLocalization::Attributes::TemperatureUnit::Id,
-                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_enum8(value));
 }
 
@@ -3376,7 +3376,7 @@ attribute_t *create_active_calendar_type(cluster_t *cluster, uint8_t value)
 attribute_t *create_supported_calendar_types(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, TimeFormatLocalization::Attributes::SupportedCalendarTypes::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 } /* attribute */
@@ -3651,7 +3651,7 @@ attribute_t *create_standard_namespace(cluster_t *cluster, const nullable<uint16
 
 attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ModeSelect::Attributes::SupportedModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+    return esp_matter::attribute::create(cluster, ModeSelect::Attributes::SupportedModes::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array((uint8_t*)value, length, count));
 }
 
 attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
@@ -3798,7 +3798,7 @@ attribute_t *create_bat_present(cluster_t *cluster, bool value)
 attribute_t *create_active_bat_faults(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
 {
     VerifyOrReturnValue(count <= k_max_fault_count, NULL, ESP_LOGE(TAG, "Could not create attribute, list out of bound"));
-    return esp_matter::attribute::create(cluster, PowerSource::Attributes::ActiveBatFaults::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::ActiveBatFaults::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_bat_replacement_description(cluster_t *cluster, const char * value, uint16_t length)
@@ -3888,7 +3888,7 @@ attribute_t *create_active_bat_charge_faults(cluster_t *cluster, uint8_t * value
 attribute_t *create_endpoint_list(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
 {
     VerifyOrReturnValue(count <= k_max_endpoint_count, NULL, ESP_LOGE(TAG, "Could not create attribute, list out of bound"));
-    return esp_matter::attribute::create(cluster, PowerSource::Attributes::EndpointList::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, PowerSource::Attributes::EndpointList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 } /* attribute */
@@ -3924,7 +3924,7 @@ attribute_t *create_selected_temperature_level(cluster_t *cluster, uint8_t value
 attribute_t *create_supported_temperature_levels(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
 {
     VerifyOrReturnValue(count <= k_max_temp_level_count, NULL, ESP_LOGE(TAG, "Could not create attribute, list out of bound"));
-    return esp_matter::attribute::create(cluster, TemperatureControl::Attributes::SupportedTemperatureLevels::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+    return esp_matter::attribute::create(cluster, TemperatureControl::Attributes::SupportedTemperatureLevels::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array((uint8_t*)value, length, count));
 }
 
 } /* attribute */
@@ -3960,17 +3960,17 @@ attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, u
 
 attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ModeBase::Attributes::CurrentMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, ModeBase::Attributes::CurrentMode::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
 }
 
 attribute_t *create_start_up_mode(cluster_t *cluster, nullable<uint8_t> value)
 {
-    return esp_matter::attribute::create(cluster, ModeBase::Attributes::StartUpMode::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint8(value));
+    return esp_matter::attribute::create(cluster, ModeBase::Attributes::StartUpMode::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint8(value));
 }
 
 attribute_t *create_on_mode(cluster_t *cluster, nullable<uint8_t> value)
 {
-    return esp_matter::attribute::create(cluster, ModeBase::Attributes::OnMode::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint8(value));
+    return esp_matter::attribute::create(cluster, ModeBase::Attributes::OnMode::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint8(value));
 }
 } /* attribute */
 } /* mode_base */
@@ -3980,12 +3980,12 @@ namespace attribute {
 
 attribute_t *create_available_endpoints(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, PowerTopology::Attributes::AvailableEndpoints::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+    return esp_matter::attribute::create(cluster, PowerTopology::Attributes::AvailableEndpoints::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array((uint8_t*)value, length, count));
 }
 
 attribute_t *create_active_endpoints(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, PowerTopology::Attributes::ActiveEndpoints::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array((uint8_t*)value, length, count));
+    return esp_matter::attribute::create(cluster, PowerTopology::Attributes::ActiveEndpoints::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array((uint8_t*)value, length, count));
 }
 
 } /* attribute */
@@ -3995,97 +3995,97 @@ namespace electrical_power_measurement {
 namespace attribute {
 attribute_t *create_power_mode(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::PowerMode::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::PowerMode::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
 }
 
 attribute_t *create_number_of_measurement_types(cluster_t *cluster, const uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::NumberOfMeasurementTypes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::NumberOfMeasurementTypes::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
 }
 
 attribute_t *create_accuracy(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::Accuracy::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::Accuracy::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array((uint8_t*)value, length, count));
 }
 
 attribute_t *create_ranges(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::Ranges::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::Ranges::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array((uint8_t*)value, length, count));
 }
 
 attribute_t *create_voltage(cluster_t *cluster, nullable<int64_t> value)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::Voltage::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::Voltage::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_int64(value));
 }
 
 attribute_t *create_active_current(cluster_t *cluster, nullable<int64_t> value)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::ActiveCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::ActiveCurrent::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_int64(value));
 }
 
 attribute_t *create_reactive_current(cluster_t *cluster, nullable<int64_t> value)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::ReactiveCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::ReactiveCurrent::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_int64(value));
 }
 
 attribute_t *create_apparent_current(cluster_t *cluster, nullable<int64_t> value)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::ApparentCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::ApparentCurrent::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_int64(value));
 }
 
 attribute_t *create_active_power(cluster_t *cluster, nullable<int64_t> value)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::ActivePower::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::ActivePower::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_int64(value));
 }
 
 attribute_t *create_reactive_power(cluster_t *cluster, nullable<int64_t> value)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::ReactivePower::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::ReactivePower::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_int64(value));
 }
 
 attribute_t *create_apparent_power(cluster_t *cluster, nullable<int64_t> value)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::ApparentPower::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::ApparentPower::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_int64(value));
 }
 
 attribute_t *create_rms_voltage(cluster_t *cluster, nullable<int64_t> value)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::RMSVoltage::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::RMSVoltage::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_int64(value));
 }
 
 attribute_t *create_rms_current(cluster_t *cluster, nullable<int64_t> value)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::RMSCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::RMSCurrent::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_int64(value));
 }
 
 attribute_t *create_rms_power(cluster_t *cluster, nullable<int64_t> value)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::RMSPower::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::RMSPower::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_int64(value));
 }
 
 attribute_t *create_frequency(cluster_t *cluster, nullable<int64_t> value)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::Frequency::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::Frequency::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_int64(value));
 }
 
 attribute_t *create_harmonic_currents(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::HarmonicCurrents::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_array((uint8_t*)value, length, count));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::HarmonicCurrents::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array((uint8_t*)value, length, count));
 }
 
 attribute_t *create_harmonic_phases(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::HarmonicPhases::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_array((uint8_t*)value, length, count));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::HarmonicPhases::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array((uint8_t*)value, length, count));
 }
 
 attribute_t *create_power_factor(cluster_t *cluster, nullable<int64_t> value)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::PowerFactor::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::PowerFactor::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_int64(value));
 }
 
 attribute_t *create_neutral_current(cluster_t *cluster, nullable<int64_t> value)
 {
-    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::NeutralCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+    return esp_matter::attribute::create(cluster, ElectricalPowerMeasurement::Attributes::NeutralCurrent::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_int64(value));
 }
 
 } /* attribute */
@@ -4096,37 +4096,37 @@ namespace attribute {
 attribute_t *create_accuracy(cluster_t *cluster, const uint8_t* value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, ElectricalEnergyMeasurement::Attributes::Accuracy::Id,
-            ATTRIBUTE_FLAG_NONE, esp_matter_array((uint8_t*)value, length, count));
+            ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array((uint8_t*)value, length, count));
 }
 
 attribute_t *create_cumulative_energy_imported(cluster_t *cluster, const uint8_t* value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, ElectricalEnergyMeasurement::Attributes::
-        CumulativeEnergyImported::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_array((uint8_t*)value, length, count));
+        CumulativeEnergyImported::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array((uint8_t*)value, length, count));
 }
 
 attribute_t *create_cumulative_energy_exported(cluster_t *cluster, const uint8_t* value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, ElectricalEnergyMeasurement::Attributes::
-        CumulativeEnergyExported::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_array((uint8_t*)value, length, count));
+        CumulativeEnergyExported::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array((uint8_t*)value, length, count));
 }
 
 attribute_t *create_periodic_energy_imported(cluster_t *cluster, const uint8_t* value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, ElectricalEnergyMeasurement::Attributes::
-        PeriodicEnergyImported::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_array((uint8_t*)value, length, count));
+        PeriodicEnergyImported::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array((uint8_t*)value, length, count));
 }
 
 attribute_t *create_periodic_energy_exported(cluster_t *cluster, const uint8_t* value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, ElectricalEnergyMeasurement::Attributes::
-        PeriodicEnergyExported::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_array((uint8_t*)value, length, count));
+        PeriodicEnergyExported::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array((uint8_t*)value, length, count));
 }
 
 attribute_t *create_cumulative_energy_reset(cluster_t *cluster, const uint8_t* value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, ElectricalEnergyMeasurement::Attributes::
-        CumulativeEnergyReset::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_array((uint8_t*)value, length, count));
+        CumulativeEnergyReset::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array((uint8_t*)value, length, count));
 }
 
 } /* attribute */
@@ -4137,118 +4137,118 @@ namespace attribute {
 
 attribute_t *create_state(cluster_t *cluster, nullable<uint8_t> value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::State::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::State::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_enum8(value));
 }
 
 attribute_t *create_supply_state(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::SupplyState::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::SupplyState::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
 }
 
 attribute_t *create_fault_state(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::FaultState::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::FaultState::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
 }
 
 attribute_t *create_charging_enabled_until(cluster_t *cluster, nullable<uint32_t> value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::ChargingEnabledUntil::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint32(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::ChargingEnabledUntil::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint32(value));
 }
 
 attribute_t *create_discharging_enabled_until(cluster_t *cluster, nullable<uint32_t> value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::DischargingEnabledUntil::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint32(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::DischargingEnabledUntil::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint32(value));
 }
 
 attribute_t *create_circuit_capacity(cluster_t *cluster, int64_t value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::CircuitCapacity::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int64(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::CircuitCapacity::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_int64(value));
 }
 
 attribute_t *create_minimum_charge_current(cluster_t *cluster, int64_t value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::MinimumChargeCurrent::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int64(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::MinimumChargeCurrent::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_int64(value));
 }
 
 attribute_t *create_maximum_charge_current(cluster_t *cluster, int64_t value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::MaximumChargeCurrent::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int64(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::MaximumChargeCurrent::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_int64(value));
 }
 
 attribute_t *create_maximum_discharge_current(cluster_t *cluster, int64_t value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::MaximumDischargeCurrent::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int64(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::MaximumDischargeCurrent::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_int64(value));
 }
 
 attribute_t *create_user_maximum_charge_current(cluster_t *cluster, int64_t value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::UserMaximumChargeCurrent::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_int64(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::UserMaximumChargeCurrent::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_int64(value));
 }
 
 attribute_t *create_randomization_delay_window(cluster_t *cluster, uint32_t value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::RandomizationDelayWindow::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint32(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::RandomizationDelayWindow::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint32(value));
 }
 
 attribute_t *create_next_charge_start_time(cluster_t *cluster, nullable<uint32_t> value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::NextChargeStartTime::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::NextChargeStartTime::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint32(value));
 }
 
 attribute_t *create_next_charge_target_time(cluster_t *cluster, nullable<uint32_t> value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::NextChargeTargetTime::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::NextChargeTargetTime::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint32(value));
 }
 
 attribute_t *create_next_charge_required_energy(cluster_t *cluster, nullable<int64_t> value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::NextChargeRequiredEnergy::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::NextChargeRequiredEnergy::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_int64(value));
 }
 
 attribute_t *create_next_charge_target_soc(cluster_t *cluster, nullable<uint8_t> value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::NextChargeTargetSoC::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::NextChargeTargetSoC::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint8(value));
 }
 
 attribute_t *create_approximate_ev_efficiency(cluster_t *cluster, nullable<uint16_t> value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::ApproximateEVEfficiency::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_nullable_uint16(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::ApproximateEVEfficiency::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint16(value));
 }
 
 attribute_t *create_state_of_charge(cluster_t *cluster, nullable<uint8_t> value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::StateOfCharge::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::StateOfCharge::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint8(value));
 }
 
 attribute_t *create_battery_capacity(cluster_t *cluster, nullable<int64_t> value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::BatteryCapacity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::BatteryCapacity::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_int64(value));
 }
 
 attribute_t *create_vehicle_id(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::VehicleID::Id, ATTRIBUTE_FLAG_NULLABLE,
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::VehicleID::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_char_str(value, length), k_max_vehicle_id_length);
 }
 
 attribute_t *create_session_id(cluster_t *cluster, nullable<uint32_t> value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::SessionID::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint32(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::SessionID::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint32(value));
 }
 
 attribute_t *create_session_duration(cluster_t *cluster, nullable<uint32_t> value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::SessionDuration::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint32(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::SessionDuration::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint32(value));
 }
 
 attribute_t *create_session_energy_charged(cluster_t *cluster, nullable<int64_t> value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::SessionEnergyCharged::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_int64(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::SessionEnergyCharged::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_int64(value));
 }
 
 attribute_t *create_session_energy_discharged(cluster_t *cluster, nullable<int64_t> value)
 {
-    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::SessionEnergyDischarged::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_int64(value));
+    return esp_matter::attribute::create(cluster, EnergyEvse::Attributes::SessionEnergyDischarged::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_int64(value));
 }
 
 } /* attribute */
@@ -4258,47 +4258,47 @@ namespace microwave_oven_control {
 namespace attribute {
 attribute_t *create_cook_time(cluster_t *cluster, uint32_t value)
 {
-    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::CookTime::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::CookTime::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint32(value));
 }
 
 attribute_t *create_max_cook_time(cluster_t *cluster, uint32_t value)
 {
-    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::MaxCookTime::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::MaxCookTime::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint32(value));
 }
 
 attribute_t *create_power_setting(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::PowerSetting::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::PowerSetting::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
 }
 
 attribute_t *create_min_power(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::MinPower::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::MinPower::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
 }
 
 attribute_t *create_max_power(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::MaxPower::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::MaxPower::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
 }
 
 attribute_t *create_power_step(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::PowerStep::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::PowerStep::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
 }
 
 attribute_t *create_supported_watts(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::SupportedWatts::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::SupportedWatts::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_selected_watt_index(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::SelectedWattIndex::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::SelectedWattIndex::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
 }
 
 attribute_t *create_watt_rating(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::WattRating::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::WattRating::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 } /* attribute */
@@ -4323,7 +4323,7 @@ attribute_t *create_auto_close_time(cluster_t *cluster, nullable<uint64_t> value
 
 attribute_t *create_remaining_duration(cluster_t *cluster, nullable<uint32_t> value)
 {
-    return esp_matter::attribute::create(cluster, ValveConfigurationAndControl::Attributes::RemainingDuration::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+    return esp_matter::attribute::create(cluster, ValveConfigurationAndControl::Attributes::RemainingDuration::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint32(value));
 }
 
 attribute_t *create_current_state(cluster_t *cluster, nullable<uint8_t> value)
@@ -4368,42 +4368,42 @@ namespace device_energy_management {
 namespace attribute {
 attribute_t *create_esa_type(cluster_t *cluster, const uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::ESAType::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::ESAType::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
 }
 
 attribute_t *create_esa_can_generate(cluster_t *cluster, const bool value)
 {
-    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::ESACanGenerate::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::ESACanGenerate::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bool(value));
 }
 
 attribute_t *create_esa_state(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::ESAState::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::ESAState::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
 }
 
 attribute_t *create_abs_min_power(cluster_t *cluster, int64_t value)
 {
-    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::AbsMinPower::Id, ATTRIBUTE_FLAG_NONE, esp_matter_int64(value));
+    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::AbsMinPower::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_int64(value));
 }
 
 attribute_t *create_abs_max_power(cluster_t *cluster, int64_t value)
 {
-    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::AbsMaxPower::Id, ATTRIBUTE_FLAG_NONE, esp_matter_int64(value));
+    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::AbsMaxPower::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_int64(value));
 }
 
 attribute_t *create_power_adjustment_capability(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::PowerAdjustmentCapability::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::PowerAdjustmentCapability::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_forecast(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::Forecast::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_array((uint8_t*)value, length, count));
+    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::Forecast::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array((uint8_t*)value, length, count));
 }
 
 attribute_t *create_opt_out_state(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::OptOutState::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, DeviceEnergyManagement::Attributes::OptOutState::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
 }
 
 } /* attribute */
@@ -4414,37 +4414,37 @@ namespace attribute {
 attribute_t *create_vendor_name(cluster_t *cluster, char *value, uint16_t length)
 {
     VerifyOrReturnValue(length <= k_max_vendor_name_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
-    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::VendorName::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::VendorName::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_char_str(value, length), k_max_vendor_name_length);
 }
 
 attribute_t *create_vendor_id(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::VendorID::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::VendorID::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_uint16(value));
 }
 
 attribute_t *create_application_name(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::ApplicationName::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::ApplicationName::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_char_str(value, length));
 }
 
 attribute_t *create_product_id(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::ProductID::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::ProductID::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_uint16(value));
 }
 
 attribute_t *create_application(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::Application::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::Application::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_status(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::Status::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::Status::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_enum8(value));
 }
 
@@ -4452,13 +4452,13 @@ attribute_t *create_application_version(cluster_t *cluster, char *value, uint16_
 {
     VerifyOrReturnValue(length <= k_max_application_version_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
     return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::ApplicationVersion::Id,
-                                        ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length),
+                                        ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_char_str(value, length),
                                         k_max_application_version_length);
 }
 
 attribute_t *create_allowed_vendor_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::AllowedVendorList::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, ApplicationBasic::Attributes::AllowedVendorList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
@@ -4471,37 +4471,37 @@ namespace attribute {
 attribute_t *create_border_router_name(cluster_t *cluster, char *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, ThreadBorderRouterManagement::Attributes::BorderRouterName::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_char_str(value, length));
 }
 
 attribute_t *create_border_agent_id(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, ThreadBorderRouterManagement::Attributes::BorderAgentID::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_octet_str(value, length));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_octet_str(value, length));
 }
 
 attribute_t *create_thread_version(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, ThreadBorderRouterManagement::Attributes::ThreadVersion::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 attribute_t *create_interface_enabled(cluster_t *cluster, bool value)
 {
     return esp_matter::attribute::create(cluster, ThreadBorderRouterManagement::Attributes::InterfaceEnabled::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bool(value));
 }
 
 attribute_t *create_active_dataset_timestamp(cluster_t *cluster, nullable<uint64_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadBorderRouterManagement::Attributes::ActiveDatasetTimestamp::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_nullable_uint64(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint64(value));
 }
 
 attribute_t *create_pending_dataset_timestamp(cluster_t *cluster, nullable<uint64_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadBorderRouterManagement::Attributes::PendingDatasetTimestamp::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_nullable_uint64(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint64(value));
 }
 
 } /* attribute */
@@ -4512,13 +4512,13 @@ namespace attribute {
 attribute_t *create_ssid(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkManagement::Attributes::Ssid::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_octet_str(value, length));
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_octet_str(value, length));
 }
 
 attribute_t *create_passphrase_surrogate(cluster_t *cluster, nullable<uint64_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkManagement::Attributes::PassphraseSurrogate::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint64(value));
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint64(value));
 }
 
 } /* attribute */
@@ -4529,18 +4529,18 @@ namespace attribute {
 attribute_t *create_preferred_extended_pan_id(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDirectory::Attributes::PreferredExtendedPanID::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_octet_str(value, length));
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_octet_str(value, length));
 }
 
 attribute_t *create_thread_networks(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ThreadNetworkDirectory::Attributes::ThreadNetworks::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+    return esp_matter::attribute::create(cluster, ThreadNetworkDirectory::Attributes::ThreadNetworks::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_thread_network_table_size(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ThreadNetworkDirectory::Attributes::ThreadNetworkTableSize::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, ThreadNetworkDirectory::Attributes::ThreadNetworkTableSize::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_uint8(value));
 }
 
@@ -4551,37 +4551,37 @@ namespace service_area {
 namespace attribute {
 attribute_t *create_supported_areas(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ServiceArea::Attributes::SupportedAreas::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, ServiceArea::Attributes::SupportedAreas::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_supported_maps(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ServiceArea::Attributes::SupportedMaps::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, ServiceArea::Attributes::SupportedMaps::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_selected_areas(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ServiceArea::Attributes::SelectedAreas::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, ServiceArea::Attributes::SelectedAreas::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_current_area(cluster_t *cluster, nullable<uint32_t> value)
 {
     return esp_matter::attribute::create(cluster, ServiceArea::Attributes::CurrentArea::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint32(value));
 }
 
 attribute_t *create_estimated_end_time(cluster_t *cluster, nullable<uint32_t> value)
 {
     return esp_matter::attribute::create(cluster, ServiceArea::Attributes::EstimatedEndTime::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint32(value));
 }
 
 attribute_t *create_progress(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ServiceArea::Attributes::Progress::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, ServiceArea::Attributes::Progress::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
@@ -4593,37 +4593,37 @@ namespace attribute {
 attribute_t *create_heater_types(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, WaterHeaterManagement::Attributes::HeaterTypes::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_bitmap8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bitmap8(value));
 }
 
 attribute_t *create_heat_demand(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, WaterHeaterManagement::Attributes::HeatDemand::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_bitmap8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bitmap8(value));
 }
 
 attribute_t *create_tank_volume(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, WaterHeaterManagement::Attributes::TankVolume::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
 attribute_t *create_estimated_heat_required(cluster_t *cluster, int64_t value)
 {
     return esp_matter::attribute::create(cluster, WaterHeaterManagement::Attributes::EstimatedHeatRequired::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_int64(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_int64(value));
 }
 
 attribute_t *create_tank_percentage(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, WaterHeaterManagement::Attributes::TankPercentage::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
 }
 
 attribute_t *create_boost_state(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, WaterHeaterManagement::Attributes::BoostState::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
 }
 
 } /* attribute */
@@ -4633,7 +4633,7 @@ namespace energy_preference {
 namespace attribute {
 attribute_t *create_energy_balances(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, EnergyPreference::Attributes::EnergyBalances::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, EnergyPreference::Attributes::EnergyBalances::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
@@ -4645,13 +4645,13 @@ attribute_t *create_current_energy_balance(cluster_t *cluster, uint8_t value)
 
 attribute_t *create_energy_priorities(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, EnergyPreference::Attributes::EnergyPriorities::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, EnergyPreference::Attributes::EnergyPriorities::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_low_power_mode_sensitivities(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, EnergyPreference::Attributes::LowPowerModeSensitivities::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, EnergyPreference::Attributes::LowPowerModeSensitivities::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
@@ -4679,13 +4679,13 @@ namespace ecosystem_information {
 namespace attribute {
 attribute_t *create_device_directory(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, EcosystemInformation::Attributes::DeviceDirectory::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+    return esp_matter::attribute::create(cluster, EcosystemInformation::Attributes::DeviceDirectory::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_location_directory(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, EcosystemInformation::Attributes::LocationDirectory::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+    return esp_matter::attribute::create(cluster, EcosystemInformation::Attributes::LocationDirectory::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
 }
 
