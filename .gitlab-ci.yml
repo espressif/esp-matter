@@ -112,7 +112,9 @@ variables:
     - rm -rf ${ESP_MATTER_PATH}/../platform
     - mkdir -p ${ESP_MATTER_PATH}/../platform
     - cp -r ${CHIP_SUBMODULE_PATH}/src/platform/ESP32 $ESP_MATTER_PATH/../platform/ESP32_custom
-    - cp ${ESP_MATTER_PATH}/examples/common/external_platform/BUILD.gn $ESP_MATTER_PATH/../platform/ESP32_custom
+    # We have modified the ESP32SecureCertDataProvider.h file to include the ESP32FactoryDataProvider.h
+    # So copying all files from the external_platform directory.
+    - cp ${ESP_MATTER_PATH}/examples/common/external_platform/* $ESP_MATTER_PATH/../platform/ESP32_custom/
     - cd ${ESP_MATTER_PATH}/examples/light
     - cp sdkconfig.defaults sdkconfig.defaults.backup
     - cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
