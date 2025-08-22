@@ -297,6 +297,13 @@ attribute_t *create_max_paths_per_invoke(cluster_t *cluster, uint16_t value)
                                          esp_matter_uint16(value));
 }
 
+attribute_t *create_configuration_version(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::ConfigurationVersion::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint32(value));
+}
+
+
 } /* attribute */
 } /* basic_information */
 
@@ -958,7 +965,7 @@ attribute_t *create_detached_role_count(cluster_t *cluster, uint16_t value)
                                          ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
 }
 
-attribute_t *create_chlid_role_count(cluster_t *cluster, uint16_t value)
+attribute_t *create_child_role_count(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::ChildRoleCount::Id,
                                          ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
@@ -1386,6 +1393,12 @@ attribute_t *create_product_appearance(cluster_t *cluster, uint8_t *value, uint1
 {
     return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::ProductAppearance::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_configuration_version(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::ConfigurationVersion::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint32(value));
 }
 
 } /* attribute */
@@ -2758,7 +2771,7 @@ attribute_t *create_auto_relock_time(cluster_t *cluster, uint32_t value)
                                          esp_matter_uint32(value));
 }
 
-attribute_t *create_sound_valume(cluster_t *cluster, uint8_t value)
+attribute_t *create_sound_volume(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, DoorLock::Attributes::SoundVolume::Id, ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_enum8(value));
@@ -3333,6 +3346,13 @@ attribute_t *create_temperature_unit(cluster_t *cluster, uint8_t value)
                                          ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
                                          esp_matter_enum8(value));
 }
+
+attribute_t *create_supported_temperature_units(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, UnitLocalization::Attributes::SupportedTemperatureUnits::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
+                                         esp_matter_array(value, length, count));
+}
+
 } /* attribute */
 } /* unit_localization */
 

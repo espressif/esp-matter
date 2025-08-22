@@ -271,7 +271,7 @@ def test_matter_commissioning_h2(dut:Tuple[Dut, Dut]) -> None:
     if len(result) != 0:
       assert False
     time.sleep(2)
-    command = CHIP_TOOL_EXE + ' threadborderroutermanagement set-active-dataset-request hex:' + OT_DATASET_HEXSTR + ' 1 1'
+    command = CHIP_TOOL_EXE + ' threadborderroutermanagement set-active-dataset-request hex:' + OT_DATASET_HEXSTR + ' 1 1 --timedInteractionTimeoutMs 2000'
     out_str = subprocess.getoutput(command)
     print(out_str)
     result = re.findall(r'Run command failure', str(out_str))

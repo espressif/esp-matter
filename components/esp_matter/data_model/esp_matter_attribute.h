@@ -86,6 +86,7 @@ attribute_t *create_unique_id(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_capability_minima(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_specification_version(cluster_t *cluster, uint32_t value);
 attribute_t *create_max_paths_per_invoke(cluster_t *cluster, uint16_t value);
+attribute_t *create_configuration_version(cluster_t *cluster, uint32_t value);
 
 /** These attributes are optional for the cluster, but when added to this cluster, the value is maintained internally.
   * If the attributes are added in some other cluster, then the value is not maintained internally.
@@ -259,7 +260,7 @@ attribute_t *create_ext_address(cluster_t *cluster, nullable<uint64_t> value);
 attribute_t *create_rloc16(cluster_t *cluster, nullable<uint16_t> value);
 attribute_t *create_overrun_count(cluster_t *cluster, uint64_t value);
 attribute_t *create_detached_role_count(cluster_t *cluster, uint16_t value);
-attribute_t *create_chlid_role_count(cluster_t *cluster, uint16_t value);
+attribute_t *create_child_role_count(cluster_t *cluster, uint16_t value);
 attribute_t *create_router_role_count(cluster_t *cluster, uint16_t value);
 attribute_t *create_leader_role_count(cluster_t *cluster, uint16_t value);
 attribute_t *create_attach_attempt_count(cluster_t *cluster, uint16_t value);
@@ -355,6 +356,8 @@ attribute_t *create_serial_number(cluster_t *cluster, char *value, uint16_t leng
 attribute_t *create_reachable(cluster_t *cluster, bool value);
 attribute_t *create_unique_id(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_product_appearance(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_configuration_version(cluster_t *cluster, uint32_t *value);
+
 } /* attribute */
 } /* bridged_device_basic_information */
 
@@ -667,7 +670,7 @@ attribute_t *create_number_of_credentials_supported_per_user(cluster_t *cluster,
 attribute_t *create_language(cluster_t *cluster, const char * value, uint16_t length);
 attribute_t *create_led_settings(cluster_t *cluster, uint8_t value);
 attribute_t *create_auto_relock_time(cluster_t *cluster, uint32_t value);
-attribute_t *create_sound_valume(cluster_t *cluster, uint8_t value);
+attribute_t *create_sound_volume(cluster_t *cluster, uint8_t value);
 attribute_t *create_operating_mode(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
 attribute_t *create_supported_operating_modes(cluster_t *cluster, const uint16_t value);
 attribute_t *create_default_configuration_register(cluster_t *cluster, uint16_t value);
@@ -830,6 +833,8 @@ attribute_t *create_supported_locales(cluster_t *cluster, uint8_t *value, uint16
 namespace unit_localization {
 namespace attribute {
 attribute_t *create_temperature_unit(cluster_t *cluster, uint8_t value);
+attribute_t *create_supported_temperature_units(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+
 } /* attribute */
 } /* unit_localization */
 

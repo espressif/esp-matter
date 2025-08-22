@@ -369,8 +369,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    uint32_t lits_feature_map = feature::long_idle_time_support::get_id();
-    VerifyOrReturnError((get_feature_map_value(cluster) & lits_feature_map) == lits_feature_map, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Long Idle Time Support feature should be added to this cluster"));
+    uint32_t long_idle_time_support_feature_map = feature::long_idle_time_support::get_id();
+    VerifyOrReturnError((get_feature_map_value(cluster) & long_idle_time_support_feature_map) == long_idle_time_support_feature_map, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Long Idle Time Support feature should be added to this cluster"));
 
     update_feature_map(cluster, get_id());
 
@@ -399,8 +399,8 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError((cluster && config), ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster and config cannot be NULL"));
-    uint32_t lits_feature_map = feature::long_idle_time_support::get_id();
-    VerifyOrReturnError((get_feature_map_value(cluster) & lits_feature_map) == lits_feature_map, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Long Idle Time Support feature should be added to this cluster"));
+    uint32_t long_idle_time_support_feature_map = feature::long_idle_time_support::get_id();
+    VerifyOrReturnError((get_feature_map_value(cluster) & long_idle_time_support_feature_map) == long_idle_time_support_feature_map, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Long Idle Time Support feature should be added to this cluster"));
 
     update_feature_map(cluster, get_id());
 
@@ -1801,6 +1801,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
     /* Attributes not managed internally */
     attribute::create_temperature_unit(cluster, config->temperature_unit);
+    attribute::create_supported_temperature_units(cluster, NULL, 0, 0);
 
     return ESP_OK;
 }
@@ -3348,7 +3349,7 @@ uint32_t get_id()
 
 esp_err_t add(cluster_t *cluster)
 {
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster connot be NULL"));
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
     /* attribute */
     nullable<uint64_t> timestamp;

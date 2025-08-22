@@ -11,6 +11,7 @@ set(INCLUDE_DIRS_LIST   "."
 
 # TODO: This file has compilation errors
 set(EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/closure-control-server/closure-control-server.cpp")
+list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/general-commissioning-server/TemporaryTestCoupling.cpp")
 
 if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
     list(APPEND SRC_DIRS_LIST    "${MATTER_SDK_PATH}/src/app/server"
@@ -36,12 +37,22 @@ if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
                                   "private")
         list(APPEND INCLUDE_DIRS_LIST "zap_common"
                                       "data_model")
+        list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/software-diagnostics-server/CodegenIntegration.cpp")
+        list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/administrator-commissioning-server/CodegenIntegration.cpp")
+        list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/ota-provider/CodegenIntegration.cpp")
+   
+        if(NOT CONFIG_SUPPORT_SOFTWARE_DIAGNOSTICS_CLUSTER)
+              list(APPEND EXCLUDE_SRCS_LIST "data_model/software_diagnostics_codegen_integration.cpp")
+        endif()
+
     endif(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
 else()
     list(APPEND EXCLUDE_SRCS_LIST "esp_matter_identify.cpp"
                                   "esp_matter_ota.cpp"
                                   "esp_matter_attribute_utils.cpp")
 endif(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
+
+
 
 set(REQUIRES_LIST       chip bt esp_matter_console nvs_flash app_update esp_secure_cert_mgr mbedtls esp_system openthread json)
 

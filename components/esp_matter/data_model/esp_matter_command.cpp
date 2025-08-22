@@ -94,7 +94,9 @@ static esp_err_t esp_matter_command_callback_key_set_write(const ConcreteCommand
                                                            void *opaque_ptr)
 {
     chip::app::Clusters::GroupKeyManagement::Commands::KeySetWrite::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
+    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
+    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
+
     if (error == CHIP_NO_ERROR) {
         emberAfGroupKeyManagementClusterKeySetWriteCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
@@ -105,7 +107,9 @@ static esp_err_t esp_matter_command_callback_key_set_read(const ConcreteCommandP
                                                           void *opaque_ptr)
 {
     chip::app::Clusters::GroupKeyManagement::Commands::KeySetRead::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
+    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
+    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
+
     if (error == CHIP_NO_ERROR) {
         emberAfGroupKeyManagementClusterKeySetReadCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
@@ -116,7 +120,9 @@ static esp_err_t esp_matter_command_callback_key_set_remove(const ConcreteComman
                                                             TLVReader &tlv_data, void *opaque_ptr)
 {
     chip::app::Clusters::GroupKeyManagement::Commands::KeySetRemove::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
+    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
+    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
+
     if (error == CHIP_NO_ERROR) {
         emberAfGroupKeyManagementClusterKeySetRemoveCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
@@ -127,7 +133,9 @@ static esp_err_t esp_matter_command_callback_key_set_read_all_indices(const Conc
                                                                       TLVReader &tlv_data, void *opaque_ptr)
 {
     chip::app::Clusters::GroupKeyManagement::Commands::KeySetReadAllIndices::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
+    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
+    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
+
     if (error == CHIP_NO_ERROR) {
         emberAfGroupKeyManagementClusterKeySetReadAllIndicesCallback((CommandHandler *)opaque_ptr, command_path,
                                                                      command_data);
@@ -186,7 +194,9 @@ static esp_err_t esp_matter_command_callback_update_noc(const ConcreteCommandPat
                                                         void *opaque_ptr)
 {
     chip::app::Clusters::OperationalCredentials::Commands::UpdateNOC::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
+    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
+    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
+
     if (error == CHIP_NO_ERROR) {
         emberAfOperationalCredentialsClusterUpdateNOCCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
@@ -197,7 +207,9 @@ static esp_err_t esp_matter_command_callback_update_fabric_label(const ConcreteC
                                                                  TLVReader &tlv_data, void *opaque_ptr)
 {
     chip::app::Clusters::OperationalCredentials::Commands::UpdateFabricLabel::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
+    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
+    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
+
     if (error == CHIP_NO_ERROR) {
         emberAfOperationalCredentialsClusterUpdateFabricLabelCallback((CommandHandler *)opaque_ptr, command_path,
                                                                       command_data);
@@ -234,7 +246,9 @@ static esp_err_t esp_matter_command_callback_set_vid_verification_statement(cons
                                                                           TLVReader &tlv_data, void *opaque_ptr)
 {
     chip::app::Clusters::OperationalCredentials::Commands::SetVIDVerificationStatement::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
+    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
+    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
+
     if (error == CHIP_NO_ERROR) {
         emberAfOperationalCredentialsClusterSetVIDVerificationStatementCallback((CommandHandler *)opaque_ptr,
                                                                               command_path, command_data);
@@ -294,7 +308,9 @@ static esp_err_t esp_matter_command_callback_add_group(const ConcreteCommandPath
                                                        void *opaque_ptr)
 {
     chip::app::Clusters::Groups::Commands::AddGroup::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
+    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
+    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
+
     if (error == CHIP_NO_ERROR) {
         emberAfGroupsClusterAddGroupCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
@@ -305,7 +321,9 @@ static esp_err_t esp_matter_command_callback_view_group(const ConcreteCommandPat
                                                         void *opaque_ptr)
 {
     chip::app::Clusters::Groups::Commands::ViewGroup::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
+    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
+    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
+
     if (error == CHIP_NO_ERROR) {
         emberAfGroupsClusterViewGroupCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
@@ -316,7 +334,9 @@ static esp_err_t esp_matter_command_callback_get_group_membership(const Concrete
                                                                   TLVReader &tlv_data, void *opaque_ptr)
 {
     chip::app::Clusters::Groups::Commands::GetGroupMembership::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
+    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
+    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
+
     if (error == CHIP_NO_ERROR) {
         emberAfGroupsClusterGetGroupMembershipCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
@@ -327,7 +347,9 @@ static esp_err_t esp_matter_command_callback_remove_group(const ConcreteCommandP
                                                           void *opaque_ptr)
 {
     chip::app::Clusters::Groups::Commands::RemoveGroup::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
+    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
+    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
+
     if (error == CHIP_NO_ERROR) {
         emberAfGroupsClusterRemoveGroupCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
@@ -338,7 +360,9 @@ static esp_err_t esp_matter_command_callback_remove_all_groups(const ConcreteCom
                                                                TLVReader &tlv_data, void *opaque_ptr)
 {
     chip::app::Clusters::Groups::Commands::RemoveAllGroups::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
+    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
+    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
+
     if (error == CHIP_NO_ERROR) {
         emberAfGroupsClusterRemoveAllGroupsCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
@@ -349,7 +373,9 @@ static esp_err_t esp_matter_command_callback_add_group_if_identifying(const Conc
                                                                       TLVReader &tlv_data, void *opaque_ptr)
 {
     chip::app::Clusters::Groups::Commands::AddGroupIfIdentifying::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
+    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
+    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
+
     if (error == CHIP_NO_ERROR) {
         emberAfGroupsClusterAddGroupIfIdentifyingCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
@@ -360,7 +386,9 @@ static esp_err_t esp_matter_command_callback_register_client(const ConcreteComma
                                                              TLVReader &tlv_data, void *opaque_ptr)
 {
     chip::app::Clusters::IcdManagement::Commands::RegisterClient::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
+    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
+    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
+
     if (error == CHIP_NO_ERROR) {
 #if CONFIG_ENABLE_ICD_SERVER
         emberAfIcdManagementClusterRegisterClientCallback((CommandHandler *)opaque_ptr, command_path, command_data);
@@ -373,7 +401,9 @@ static esp_err_t esp_matter_command_callback_unregister_client(const ConcreteCom
                                                                TLVReader &tlv_data, void *opaque_ptr)
 {
     chip::app::Clusters::IcdManagement::Commands::UnregisterClient::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
+    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
+    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
+
     if (error == CHIP_NO_ERROR) {
 #if CONFIG_ENABLE_ICD_SERVER
         emberAfIcdManagementClusterUnregisterClientCallback((CommandHandler *)opaque_ptr, command_path, command_data);
@@ -1426,7 +1456,9 @@ static esp_err_t esp_matter_command_callback_set_trusted_time_source(const Concr
                                                                      TLVReader &tlv_data, void *opaque_ptr)
 {
     chip::app::Clusters::TimeSynchronization::Commands::SetTrustedTimeSource::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
+    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
+    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
+
     if (error == CHIP_NO_ERROR) {
         emberAfTimeSynchronizationClusterSetTrustedTimeSourceCallback((CommandHandler *)opaque_ptr, command_path,
                                                                       command_data);
@@ -2836,7 +2868,7 @@ command_t *create_reset_condition(cluster_t *cluster)
 namespace mode_base {
 namespace command {
 
-// command response is null because of InvokeCommandHandler is overriden in srs/app/clusters/mode-base
+// command response is null because of InvokeCommandHandler is overridden in srs/app/clusters/mode-base
 command_t *create_change_to_mode(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, ModeBase::Commands::ChangeToMode::Id, COMMAND_FLAG_ACCEPTED, NULL);

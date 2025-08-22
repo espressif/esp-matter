@@ -20,6 +20,7 @@
 #include <app/ConcreteAttributePath.h>
 #include <app/ConcreteClusterPath.h>
 #include <app/ConcreteCommandPath.h>
+#include <app/ConcreteEventPath.h>
 #include <app/data-model-provider/ActionReturnStatus.h>
 #include <app/data-model-provider/MetadataTypes.h>
 #include <app/data-model-provider/OperationTypes.h>
@@ -38,12 +39,14 @@ using chip::app::CommandHandler;
 using chip::app::ConcreteAttributePath;
 using chip::app::ConcreteClusterPath;
 using chip::app::ConcreteCommandPath;
+using chip::app::ConcreteEventPath;
 using chip::app::DataModel::AcceptedCommandEntry;
 using chip::app::DataModel::ActionReturnStatus;
 using chip::app::DataModel::AttributeEntry;
 using chip::app::DataModel::ClusterInfo;
 using chip::app::DataModel::DeviceTypeEntry;
 using chip::app::DataModel::EndpointEntry;
+using chip::app::DataModel::EventEntry;
 using chip::app::DataModel::InvokeRequest;
 using chip::app::DataModel::ListWriteOperation;
 using chip::app::DataModel::ReadAttributeRequest;
@@ -118,6 +121,10 @@ public:
         return CHIP_NO_ERROR;
     }
 
+    CHIP_ERROR EventInfo(const ConcreteEventPath & path, EventEntry & eventInfo) override
+    {
+        return CHIP_NO_ERROR;
+    }
     void Temporary_ReportAttributeChanged(const AttributePathParams &path) override {}
 
 private:

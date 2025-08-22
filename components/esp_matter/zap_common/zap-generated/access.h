@@ -16,6 +16,8 @@
     0x00000030, /* Cluster: General Commissioning, Attribute: TCAcknowledgements, Privilege: administer */ \
     0x00000030, /* Cluster: General Commissioning, Attribute: TCAcknowledgementsRequired, Privilege: administer */ \
     0x00000030, /* Cluster: General Commissioning, Attribute: TCUpdateDeadline, Privilege: administer */ \
+    0x00000030, /* Cluster: General Commissioning, Attribute: RecoveryIdentifier, Privilege: manage */ \
+    0x00000030, /* Cluster: General Commissioning, Attribute: NetworkRecoveryReason, Privilege: manage */ \
     0x00000031, /* Cluster: Network Commissioning, Attribute: MaxNetworks, Privilege: administer */ \
     0x00000031, /* Cluster: Network Commissioning, Attribute: Networks, Privilege: administer */ \
     0x00000031, /* Cluster: Network Commissioning, Attribute: LastNetworkingStatus, Privilege: administer */ \
@@ -32,8 +34,6 @@
     0x00000101, /* Cluster: Door Lock, Attribute: AliroSupportedBLEUWBProtocolVersions, Privilege: administer */ \
     0x00000101, /* Cluster: Door Lock, Attribute: AliroBLEAdvertisingVersion, Privilege: administer */ \
     0x00000451, /* Cluster: Wi-Fi Network Management, Attribute: PassphraseSurrogate, Privilege: manage */ \
-    0x00000453, /* Cluster: Thread Network Directory, Attribute: PreferredExtendedPanID, Privilege: manage */ \
-    0x00000453, /* Cluster: Thread Network Directory, Attribute: ThreadNetworks, Privilege: operate */ \
     0x0000050D, /* Cluster: Application Basic, Attribute: AllowedVendorList, Privilege: administer */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: HDRModeEnabled, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: NightVision, Privilege: manage */ \
@@ -86,6 +86,8 @@
     0x00000007, /* Cluster: General Commissioning, Attribute: TCAcknowledgements, Privilege: administer */ \
     0x00000008, /* Cluster: General Commissioning, Attribute: TCAcknowledgementsRequired, Privilege: administer */ \
     0x00000009, /* Cluster: General Commissioning, Attribute: TCUpdateDeadline, Privilege: administer */ \
+    0x0000000A, /* Cluster: General Commissioning, Attribute: RecoveryIdentifier, Privilege: manage */ \
+    0x0000000B, /* Cluster: General Commissioning, Attribute: NetworkRecoveryReason, Privilege: manage */ \
     0x00000000, /* Cluster: Network Commissioning, Attribute: MaxNetworks, Privilege: administer */ \
     0x00000001, /* Cluster: Network Commissioning, Attribute: Networks, Privilege: administer */ \
     0x00000005, /* Cluster: Network Commissioning, Attribute: LastNetworkingStatus, Privilege: administer */ \
@@ -102,8 +104,6 @@
     0x00000085, /* Cluster: Door Lock, Attribute: AliroSupportedBLEUWBProtocolVersions, Privilege: administer */ \
     0x00000086, /* Cluster: Door Lock, Attribute: AliroBLEAdvertisingVersion, Privilege: administer */ \
     0x00000001, /* Cluster: Wi-Fi Network Management, Attribute: PassphraseSurrogate, Privilege: manage */ \
-    0x00000000, /* Cluster: Thread Network Directory, Attribute: PreferredExtendedPanID, Privilege: manage */ \
-    0x00000001, /* Cluster: Thread Network Directory, Attribute: ThreadNetworks, Privilege: operate */ \
     0x00000007, /* Cluster: Application Basic, Attribute: AllowedVendorList, Privilege: administer */ \
     0x0000000D, /* Cluster: Camera AV Stream Management, Attribute: HDRModeEnabled, Privilege: manage */ \
     0x00000016, /* Cluster: Camera AV Stream Management, Attribute: NightVision, Privilege: manage */ \
@@ -156,6 +156,8 @@
     chip::Access::Privilege::kAdminister, /* Cluster: General Commissioning, Attribute: TCAcknowledgements, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: General Commissioning, Attribute: TCAcknowledgementsRequired, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: General Commissioning, Attribute: TCUpdateDeadline, Privilege: administer */ \
+    chip::Access::Privilege::kManage, /* Cluster: General Commissioning, Attribute: RecoveryIdentifier, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: General Commissioning, Attribute: NetworkRecoveryReason, Privilege: manage */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Network Commissioning, Attribute: MaxNetworks, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Network Commissioning, Attribute: Networks, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Network Commissioning, Attribute: LastNetworkingStatus, Privilege: administer */ \
@@ -172,8 +174,6 @@
     chip::Access::Privilege::kAdminister, /* Cluster: Door Lock, Attribute: AliroSupportedBLEUWBProtocolVersions, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Door Lock, Attribute: AliroBLEAdvertisingVersion, Privilege: administer */ \
     chip::Access::Privilege::kManage, /* Cluster: Wi-Fi Network Management, Attribute: PassphraseSurrogate, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: Thread Network Directory, Attribute: PreferredExtendedPanID, Privilege: manage */ \
-    chip::Access::Privilege::kOperate, /* Cluster: Thread Network Directory, Attribute: ThreadNetworks, Privilege: operate */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Application Basic, Attribute: AllowedVendorList, Privilege: administer */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: HDRModeEnabled, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: NightVision, Privilege: manage */ \
@@ -681,14 +681,16 @@
     0x00000452, /* Cluster: Thread Border Router Management, Command: SetPendingDatasetRequest, Privilege: manage */ \
     0x00000453, /* Cluster: Thread Network Directory, Command: AddNetwork, Privilege: manage */ \
     0x00000453, /* Cluster: Thread Network Directory, Command: RemoveNetwork, Privilege: manage */ \
+    0x00000453, /* Cluster: Thread Network Directory, Command: GetOperationalDataset, Privilege: manage */ \
     0x00000507, /* Cluster: Media Input, Command: RenameInput, Privilege: manage */ \
     0x0000050B, /* Cluster: Audio Output, Command: RenameOutput, Privilege: manage */ \
     0x0000050E, /* Cluster: Account Login, Command: GetSetupPIN, Privilege: administer */ \
     0x0000050E, /* Cluster: Account Login, Command: Login, Privilege: administer */ \
     0x00000550, /* Cluster: Zone Management, Command: CreateTwoDCartesianZone, Privilege: manage */ \
     0x00000550, /* Cluster: Zone Management, Command: UpdateTwoDCartesianZone, Privilege: manage */ \
-    0x00000550, /* Cluster: Zone Management, Command: GetTwoDCartesianZone, Privilege: manage */ \
     0x00000550, /* Cluster: Zone Management, Command: RemoveZone, Privilege: manage */ \
+    0x00000550, /* Cluster: Zone Management, Command: CreateOrUpdateTrigger, Privilege: manage */ \
+    0x00000550, /* Cluster: Zone Management, Command: RemoveTrigger, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Command: AudioStreamAllocate, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Command: AudioStreamDeallocate, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Command: VideoStreamAllocate, Privilege: manage */ \
@@ -826,14 +828,16 @@
     0x00000004, /* Cluster: Thread Border Router Management, Command: SetPendingDatasetRequest, Privilege: manage */ \
     0x00000000, /* Cluster: Thread Network Directory, Command: AddNetwork, Privilege: manage */ \
     0x00000001, /* Cluster: Thread Network Directory, Command: RemoveNetwork, Privilege: manage */ \
+    0x00000002, /* Cluster: Thread Network Directory, Command: GetOperationalDataset, Privilege: manage */ \
     0x00000003, /* Cluster: Media Input, Command: RenameInput, Privilege: manage */ \
     0x00000001, /* Cluster: Audio Output, Command: RenameOutput, Privilege: manage */ \
     0x00000000, /* Cluster: Account Login, Command: GetSetupPIN, Privilege: administer */ \
     0x00000002, /* Cluster: Account Login, Command: Login, Privilege: administer */ \
     0x00000000, /* Cluster: Zone Management, Command: CreateTwoDCartesianZone, Privilege: manage */ \
     0x00000002, /* Cluster: Zone Management, Command: UpdateTwoDCartesianZone, Privilege: manage */ \
-    0x00000003, /* Cluster: Zone Management, Command: GetTwoDCartesianZone, Privilege: manage */ \
-    0x00000005, /* Cluster: Zone Management, Command: RemoveZone, Privilege: manage */ \
+    0x00000003, /* Cluster: Zone Management, Command: RemoveZone, Privilege: manage */ \
+    0x00000004, /* Cluster: Zone Management, Command: CreateOrUpdateTrigger, Privilege: manage */ \
+    0x00000005, /* Cluster: Zone Management, Command: RemoveTrigger, Privilege: manage */ \
     0x00000000, /* Cluster: Camera AV Stream Management, Command: AudioStreamAllocate, Privilege: manage */ \
     0x00000002, /* Cluster: Camera AV Stream Management, Command: AudioStreamDeallocate, Privilege: manage */ \
     0x00000003, /* Cluster: Camera AV Stream Management, Command: VideoStreamAllocate, Privilege: manage */ \
@@ -971,14 +975,16 @@
     chip::Access::Privilege::kManage, /* Cluster: Thread Border Router Management, Command: SetPendingDatasetRequest, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thread Network Directory, Command: AddNetwork, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thread Network Directory, Command: RemoveNetwork, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Thread Network Directory, Command: GetOperationalDataset, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Media Input, Command: RenameInput, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Audio Output, Command: RenameOutput, Privilege: manage */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Account Login, Command: GetSetupPIN, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Account Login, Command: Login, Privilege: administer */ \
     chip::Access::Privilege::kManage, /* Cluster: Zone Management, Command: CreateTwoDCartesianZone, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Zone Management, Command: UpdateTwoDCartesianZone, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: Zone Management, Command: GetTwoDCartesianZone, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Zone Management, Command: RemoveZone, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Zone Management, Command: CreateOrUpdateTrigger, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Zone Management, Command: RemoveTrigger, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Command: AudioStreamAllocate, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Command: AudioStreamDeallocate, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Command: VideoStreamAllocate, Privilege: manage */ \
