@@ -17,9 +17,9 @@
 #include <esp_log.h>
 #include <esp_matter_controller_credentials_issuer.h>
 
-#include <app/icd/client/DefaultICDClientStorage.h>
-#include <app/icd/client/DefaultCheckInDelegate.h>
 #include <app/icd/client/CheckInHandler.h>
+#include <app/icd/client/DefaultCheckInDelegate.h>
+#include <app/icd/client/DefaultICDClientStorage.h>
 #include <controller/AutoCommissioner.h>
 #include <controller/CHIPDeviceController.h>
 #include <controller/CommissionerDiscoveryController.h>
@@ -51,19 +51,17 @@ namespace controller {
 #ifndef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 typedef void (*remove_fabric_callback)(chip::NodeId remoteNodeId, CHIP_ERROR status);
 
-class auto_fabric_remover : private chip::Controller::CurrentFabricRemover
-{
+class auto_fabric_remover : private chip::Controller::CurrentFabricRemover {
 public:
     static esp_err_t remove_fabric(chip::Controller::DeviceController *controller, chip::NodeId remote_node,
                                    remove_fabric_callback callback)
     {
-        auto * remover = chip::Platform::New<auto_fabric_remover>(controller, callback);
+        auto *remover = chip::Platform::New<auto_fabric_remover>(controller, callback);
         if (remover == nullptr) {
             return ESP_ERR_NO_MEM;
         }
         CHIP_ERROR err = remover->CurrentFabricRemover::RemoveCurrentFabric(remote_node, &remover->m_matter_callback);
-        if (err != CHIP_NO_ERROR)
-        {
+        if (err != CHIP_NO_ERROR) {
             // If failing to call RemoveCurrentFabric(), delete the remover here. Otherwise the remover will be deleted
             // in on_remove_current_fabric().
             chip::Platform::Delete(remover);
@@ -71,11 +69,13 @@ public:
         return err == CHIP_NO_ERROR ? ESP_OK : ESP_FAIL;
     }
 
-    auto_fabric_remover(chip::Controller::DeviceController *controller, remove_fabric_callback callback) :
-        chip::Controller::CurrentFabricRemover(controller), m_matter_callback(on_remove_current_fabric, this),
-        m_remove_fabric_callback(callback) {}
+    auto_fabric_remover(chip::Controller::DeviceController *controller, remove_fabric_callback callback)
+        : chip::Controller::CurrentFabricRemover(controller)
+        , m_matter_callback(on_remove_current_fabric, this)
+        , m_remove_fabric_callback(callback) {}
+
 private:
-    static void on_remove_current_fabric(void * context, chip::NodeId remote_node, CHIP_ERROR status)
+    static void on_remove_current_fabric(void *context, chip::NodeId remote_node, CHIP_ERROR status)
     {
         auto *self = static_cast<auto_fabric_remover *>(context);
         if (self && self->m_remove_fabric_callback) {
@@ -157,6 +157,59 @@ public:
     }
 
 private:
+    class GroupDataProviderListener final : public chip::Credentials::GroupDataProvider::GroupListener {
+    public:
+        GroupDataProviderListener() {}
+
+        CHIP_ERROR Init(chip::Controller::DeviceControllerSystemState *systemState)
+        {
+            VerifyOrReturnError(systemState != nullptr, CHIP_ERROR_INVALID_ARGUMENT);
+
+            mSystemState = systemState;
+            return CHIP_NO_ERROR;
+        };
+
+        void OnGroupAdded(chip::FabricIndex fabric_index,
+                          const chip::Credentials::GroupDataProvider::GroupInfo &new_group) override
+        {
+            auto *fabricTable = mSystemState->Fabrics();
+            if (!fabricTable) {
+                return;
+            }
+            const chip::FabricInfo *fabric = fabricTable->FindFabricWithIndex(fabric_index);
+            if (fabric == nullptr) {
+                ChipLogError(AppServer, "Group added to nonexistent fabric?");
+                return;
+            }
+
+            if (mSystemState->TransportMgr()->MulticastGroupJoinLeave(
+                    chip::Transport::PeerAddress::Multicast(fabric->GetFabricId(), new_group.group_id), true) !=
+                CHIP_NO_ERROR) {
+                ChipLogError(AppServer, "Unable to listen to group");
+            }
+        };
+
+        void OnGroupRemoved(chip::FabricIndex fabric_index,
+                            const chip::Credentials::GroupDataProvider::GroupInfo &old_group) override
+        {
+            auto *fabricTable = mSystemState->Fabrics();
+            if (!fabricTable) {
+                return;
+            }
+            const chip::FabricInfo *fabric = fabricTable->FindFabricWithIndex(fabric_index);
+            if (fabric == nullptr) {
+                ChipLogError(AppServer, "Group removed from nonexistent fabric?");
+                return;
+            }
+
+            mSystemState->TransportMgr()->MulticastGroupJoinLeave(
+                chip::Transport::PeerAddress::Multicast(fabric->GetFabricId(), old_group.group_id), false);
+        };
+
+    private:
+        chip::Controller::DeviceControllerSystemState *mSystemState;
+    };
+
     matter_controller_client() {}
 
     bool m_operational_advertising = true;
@@ -166,6 +219,7 @@ private:
     chip::Crypto::RawKeySessionKeystore m_session_key_store;
     chip::Credentials::GroupDataProviderImpl m_group_data_provider{k_max_groups_per_fabric,
                                                                    k_max_group_keys_per_fabric};
+    GroupDataProviderListener m_group_data_provider_listener;
     credentials_issuer *m_credentials_issuer;
     NodeId m_controller_node_id;
     FabricId m_controller_fabric_id;
@@ -191,7 +245,9 @@ class ESPCommissionerCallback : public CommissionerCallback {
     {
         NodeId gRemoteId = chip::kTestDeviceNodeId;
         chip::RendezvousParameters params = chip::RendezvousParameters()
-            .SetSetupPINCode(pincode).SetDiscriminator(longDiscriminator).SetPeerAddress(peerAddress);
+                                                .SetSetupPINCode(pincode)
+                                                .SetDiscriminator(longDiscriminator)
+                                                .SetPeerAddress(peerAddress);
         do {
             chip::Crypto::DRBG_get_bytes(reinterpret_cast<uint8_t *>(&gRemoteId), sizeof(gRemoteId));
         } while (!chip::IsOperationalNodeId(gRemoteId));

@@ -76,6 +76,7 @@ esp_err_t matter_controller_client::init(NodeId node_id, FabricId fabric_id, uin
 
     m_group_data_provider.SetStorageDelegate(&m_default_storage);
     m_group_data_provider.SetSessionKeystore(factory_init_params.sessionKeystore);
+    m_group_data_provider.SetListener(&m_group_data_provider_listener);
     ESP_RETURN_ON_FALSE(m_group_data_provider.Init() == CHIP_NO_ERROR, ESP_FAIL, TAG,
                         "Failed to initialize group data provider");
     factory_init_params.groupDataProvider =
@@ -102,7 +103,7 @@ esp_err_t matter_controller_client::setup_commissioner()
     CHIP_ERROR err = chip::DeviceLayer::Internal::BLEMgr().Init();
     // This function will return CHIP_ERROR_INCORRECT_STATE if BLE Manager is already initialized.
     ESP_RETURN_ON_FALSE(err == CHIP_NO_ERROR || err == CHIP_ERROR_INCORRECT_STATE, ESP_FAIL, TAG,
-                        "Failed to initialze the BLE manager");
+                        "Failed to initialize the BLE manager");
     ESP_RETURN_ON_FALSE(chip::DeviceLayer::Internal::BLEMgrImpl().ConfigureBle(0, true) == CHIP_NO_ERROR, ESP_FAIL, TAG,
                         "Failed to configure BLEManager");
 #endif
