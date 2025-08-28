@@ -65,6 +65,8 @@ using chip::DeviceLayer::GetDiagnosticDataProvider;
 using chip::DeviceLayer::ThreadStackMgr;
 #endif
 
+#define MAX_GROUPS_PER_FABRIC_PER_ENDPOINT CONFIG_MAX_GROUPS_PER_FABRIC_PER_ENDPOINT
+
 static const char *TAG = "esp_matter_core";
 static bool esp_matter_started = false;
 
@@ -218,6 +220,20 @@ static void esp_matter_chip_init_task(intptr_t context)
     initParams.appDelegate = &s_app_delegate;
     initParams.testEventTriggerDelegate = test_event_trigger::get_delegate();
     initParams.dataModelProvider = chip::app::CodegenDataModelProviderInstance(initParams.persistentStorageDelegate);
+
+#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
+    {
+        // We should reserve one endpoint for root node endpoint
+        uint8_t max_groups_server_cluster_count = CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT - 1;
+        uint16_t max_groups_per_fabric = max_groups_server_cluster_count * MAX_GROUPS_PER_FABRIC_PER_ENDPOINT;
+        static chip::Credentials::GroupDataProviderImpl groupDataProvider(max_groups_per_fabric,
+                CHIP_CONFIG_MAX_GROUP_KEYS_PER_FABRIC);
+        groupDataProvider.SetStorageDelegate(initParams.persistentStorageDelegate);
+        groupDataProvider.SetSessionKeystore(initParams.sessionKeystore);
+        groupDataProvider.Init();
+        initParams.groupDataProvider = &groupDataProvider;
+    }
+#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 
     CHIP_ERROR ret = chip::Server::GetInstance().GetFabricTable().AddFabricDelegate(&s_fabric_delegate);
     if (ret != CHIP_NO_ERROR)
