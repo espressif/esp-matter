@@ -12,8 +12,13 @@ if(CONFIG_IDF_TARGET_ESP32 OR CONFIG_IDF_TARGET_ESP32S3)
     list(APPEND INCLUDE_DIRS_LIST "driver/fan/include")
 endif()
 
+if (CONFIG_ENABLE_ESP_DIAGNOSTICS_TRACE)
+    list(APPEND PRIV_INCLUDE_DIRS_LIST "${MATTER_SDK_PATH}/examples/platform/esp32/diagnostics")
+    list(APPEND SRC_DIRS_LIST "${MATTER_SDK_PATH}/examples/platform/esp32/diagnostics")
+endif (CONFIG_ENABLE_ESP_DIAGNOSTICS_TRACE)
+
 idf_component_register(SRC_DIRS          ${SRC_DIRS_LIST}
-                      PRIV_INCLUDE_DIRS  "." "${ESP_MATTER_PATH}/examples/common/utils"
+                      PRIV_INCLUDE_DIRS  "." "${ESP_MATTER_PATH}/examples/common/utils" ${PRIV_INCLUDE_DIRS_LIST}
                     #   PRIV_REQUIRES      ${PRIV_REQUIRES_LIST}
                       INCLUDE_DIRS       ${INCLUDE_DIRS_LIST}
                       LDFRAGMENTS        "${ldfragments}")

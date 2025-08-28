@@ -44,6 +44,22 @@
 // External variables for electrical sensor initialization
 extern bool g_electrical_sensor_created;
 
+#ifdef CONFIG_ENABLE_ESP_DIAGNOSTICS_TRACE
+#include <app/clusters/diagnostic-logs-server/diagnostic-logs-server.h>
+#include <diagnostic-logs-provider-delegate-impl.h>
+#include <tracing/esp32_diagnostic_trace/DiagnosticTracing.h>
+static uint8_t endUserBuffer[CONFIG_END_USER_BUFFER_SIZE]; // Global static buffer used to store diagnostics
+static uint8_t retrievalBuffer[CONFIG_RETRIEVAL_BUFFER_SIZE]; // Global static buffer used to retrieve diagnostics
+
+using namespace chip;
+using namespace chip::Tracing;
+using namespace chip::Tracing::Diagnostics;
+using namespace chip::app::Clusters::DiagnosticLogs;
+CircularDiagnosticBuffer diagnosticStorage(endUserBuffer, CONFIG_END_USER_BUFFER_SIZE);
+auto & logProvider = LogProvider::GetInstance();
+constexpr uint16_t kRootNodeEndpointId = 0;
+#endif // CONFIG_ENABLE_ESP_DIAGNOSTICS_TRACE
+
 static const char *TAG = "app_main";
 
 uint16_t app_endpoint_id = 0;
@@ -188,6 +204,23 @@ static void ElectricalMeasurementWorkHandler(intptr_t context)
     }
 }
 
+#ifdef CONFIG_ENABLE_ESP_DIAGNOSTICS_TRACE
+void diagnostic_init()
+{
+    lock::status_t lock_status = lock::chip_stack_lock(portMAX_DELAY);
+    LogProvider::LogProviderInit providerInit = {
+        .endUserBuffer = endUserBuffer,
+        .endUserBufferSize = CONFIG_END_USER_BUFFER_SIZE,
+        .retrievalBuffer = retrievalBuffer,
+        .retrievalBufferSize = CONFIG_RETRIEVAL_BUFFER_SIZE,
+    };
+    logProvider.Init(providerInit);
+    if (lock_status == lock::SUCCESS) {
+        lock::chip_stack_unlock();
+    }
+}
+#endif // CONFIG_ENABLE_ESP_DIAGNOSTICS_TRACE
+
 extern "C" void app_main()
 {
     esp_err_t err = ESP_OK;
@@ -202,7 +235,13 @@ extern "C" void app_main()
     // node handle can be used to add/modify other endpoints.
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
     ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
-
+    
+#ifdef CONFIG_ENABLE_ESP_DIAGNOSTICS_TRACE
+    endpoint_t *root_node_endpoint = endpoint::get(node, kRootNodeEndpointId);
+    esp_matter::cluster::diagnostic_logs::config_t diagnostic_logs_config;
+    diagnostic_logs_config.delegate = &logProvider;
+    diagnostic_logs::create(root_node_endpoint, &diagnostic_logs_config, CLUSTER_FLAG_SERVER);
+#endif // CONFIG_ENABLE_ESP_DIAGNOSTICS_TRACE
     MEMORY_PROFILER_DUMP_HEAP_STAT("node created");
 
     uint8_t device_type_index;
@@ -242,6 +281,10 @@ extern "C" void app_main()
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Matter start failed: %d", err);
     }
+
+#ifdef CONFIG_ENABLE_ESP_DIAGNOSTICS_TRACE
+    diagnostic_init();
+#endif // CONFIG_ENABLE_ESP_DIAGNOSTICS_TRACE
 
     MEMORY_PROFILER_DUMP_HEAP_STAT("matter started");
     // Initialize electrical measurement clusters if electrical sensor was created

@@ -14,7 +14,60 @@ No additional setup is required.
 
 ## 2. Usage
 
--  To build the app with a specific PROJECT_VER and PROJECT_VER_NUMBER for OTA firmware, use the following command from the command line:
+#### To use diagnostic tracing
+
+Enable Diagnostics trace and BDX protocol for diagnostic logs transfer from menuconfig
+
+```
+idf.py menuconfig
+CONFIG_ENABLE_ESP_DIAGNOSTICS_TRACE
+CONFIG_CHIP_ENABLE_BDX_LOG_TRANSFER
+```
+
+Set diagnostic storage buffer size from `Platform Diagnostics` menu
+
+-   End user buffer default size 4096
+-   Retrieval buffer default size 4096
+
+#### To retrieve the diagnostic via diagnostic logs cluster
+
+```
+# Commission the app
+chip-tool pairing ble-wifi 1 SSID PASSPHRASE 20202021 3840
+
+# Read end user support logs using response payload protocol
+chip-tool diagnosticlogs retrieve-logs-request 0 0 1 0
+
+# Read end user diagnostic using BDX protocol
+chip-tool interactive start
+> diagnosticlogs retrieve-logs-request 0 1 1 0 --TransferFileDesignator enduser-diag.log
+
+# Retrieve crash summary over BDX
+> diagnosticlogs retrieve-logs-request 2 1 1 0 --TransferFileDesignator crash-summary.bin
+```
+
+esp-idf supports storing and retrieving
+[core dump in flash](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/core_dump.html#core-dump-to-flash).
+
+To support that, application needs to add core dump partition's entry in
+[partitions.csv](partitions.csv#7) and we need to enable few extra menuconfig options along with above diagnostic tracing options.
+
+```
+CONFIG_ESP32_ENABLE_COREDUMP_TO_FLASH=y
+CONFIG_ESP32_COREDUMP_DATA_FORMAT_ELF=y
+```
+
+This example's partition table and sdkconfig.default are already modified
+
+-   Retrieve the core dump using diagnostic logs cluster
+
+    ```
+    # Read crash summary over BDX
+    chip-tool interactive start
+    > diagnosticlogs retrieve-logs-request 2 1 1 0 --TransferFileDesignator crash-summary.bin
+    ```
+
+#### To build the app with a specific PROJECT_VER and PROJECT_VER_NUMBER for OTA firmware, use the following command from the command line:
 
    For e.g.:
 
@@ -29,7 +82,7 @@ On boot-up esp-idf console starts. In order to create a device user have to use 
 
 Setup OTBR for a device
 
--   Please use the [OTBR board](https://github.com/espressif/esp-thread-br#hardware-platforms) as the harware platform running this example.
+-   Please use the [OTBR board](https://github.com/espressif/esp-thread-br#hardware-platforms) as the hardware platform running this example.
 -   The sdkconfig file `sdkconfig.defaults.otbr` is provided to enable the OTBR feature on the device. Build and flash the example with the sdkconfig file 'sdkconfig.defaults.otbr'
 ```
 idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults.otbr" set-target esp32s3 build
