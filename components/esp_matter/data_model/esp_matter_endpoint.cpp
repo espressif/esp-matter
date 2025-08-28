@@ -224,6 +224,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     on_off::feature::lighting::add(on_off_cluster, &(config->on_off_lighting));
     on_off::command::create_on(on_off_cluster);
     on_off::command::create_toggle(on_off_cluster);
+    cluster_t *scenes_management_cluster = scenes_management::create(endpoint, &(config->scenes_management), CLUSTER_FLAG_SERVER);
+    scenes_management::command::create_copy_scene(scenes_management_cluster);
+    scenes_management::command::create_copy_scene_response(scenes_management_cluster);
 
     return ESP_OK;
 }
@@ -261,6 +264,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *level_control_cluster = level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER);
     level_control::feature::on_off::add(level_control_cluster);
     level_control::feature::lighting::add(level_control_cluster, &(config->level_control_lighting));
+    cluster_t *scenes_management_cluster = scenes_management::create(endpoint, &(config->scenes_management), CLUSTER_FLAG_SERVER);
+    scenes_management::command::create_copy_scene(scenes_management_cluster);
+    scenes_management::command::create_copy_scene_response(scenes_management_cluster);
 
     return ESP_OK;
 }
@@ -301,6 +307,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     color_control::feature::color_temperature::add(color_control_cluster, &(config->color_control_color_temperature));
     color_control::attribute::create_remaining_time(color_control_cluster, config->color_control_remaining_time);
     color_control::command::create_stop_move_step(color_control_cluster);
+    cluster_t *scenes_management_cluster = scenes_management::create(endpoint, &(config->scenes_management), CLUSTER_FLAG_SERVER);
+    scenes_management::command::create_copy_scene(scenes_management_cluster);
+    scenes_management::command::create_copy_scene_response(scenes_management_cluster);
 
     return ESP_OK;
 }
@@ -343,6 +352,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     color_control::feature::xy::add(color_control_cluster, &(config->color_control_xy));
     color_control::attribute::create_remaining_time(color_control_cluster, config->color_control_remaining_time);
     color_control::command::create_stop_move_step(color_control_cluster);
+    cluster_t *scenes_management_cluster = scenes_management::create(endpoint, &(config->scenes_management), CLUSTER_FLAG_SERVER);
+    scenes_management::command::create_copy_scene(scenes_management_cluster);
+    scenes_management::command::create_copy_scene_response(scenes_management_cluster);
+
     return ESP_OK;
 }
 } /* extended_color_light */
@@ -509,6 +522,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     on_off::feature::lighting::add(on_off_cluster, &(config->on_off_lighting));
     on_off::command::create_on(on_off_cluster);
     on_off::command::create_toggle(on_off_cluster);
+    cluster_t *scenes_management_cluster = scenes_management::create(endpoint, &(config->scenes_management), CLUSTER_FLAG_SERVER);
+    scenes_management::command::create_copy_scene(scenes_management_cluster);
+    scenes_management::command::create_copy_scene_response(scenes_management_cluster);
 
     return ESP_OK;
 }
@@ -545,6 +561,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *level_control_cluster = level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER);
     level_control::feature::on_off::add(level_control_cluster);
     level_control::feature::lighting::add(level_control_cluster, &(config->level_control_lighting));
+    cluster_t *scenes_management_cluster = scenes_management::create(endpoint, &(config->scenes_management), CLUSTER_FLAG_SERVER);
+    scenes_management::command::create_copy_scene(scenes_management_cluster);
+    scenes_management::command::create_copy_scene_response(scenes_management_cluster);
 
     return ESP_OK;
 }
@@ -1771,6 +1790,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     on_off::feature::lighting::add(on_off_cluster, &(config->on_off_lighting));
     on_off::command::create_on(on_off_cluster);
     on_off::command::create_toggle(on_off_cluster);
+    cluster_t *scenes_management_cluster = scenes_management::create(endpoint, &(config->scenes_management), CLUSTER_FLAG_SERVER);
+    scenes_management::command::create_copy_scene(scenes_management_cluster);
+    scenes_management::command::create_copy_scene_response(scenes_management_cluster);
 
     return ESP_OK;
 }
@@ -1808,6 +1830,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *level_control_cluster = level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER);
     level_control::feature::lighting::add(level_control_cluster, &(config->level_control_lighting));
     level_control::feature::on_off::add(level_control_cluster);
+    cluster_t *scenes_management_cluster = scenes_management::create(endpoint, &(config->scenes_management), CLUSTER_FLAG_SERVER);
+    scenes_management::command::create_copy_scene(scenes_management_cluster);
+    scenes_management::command::create_copy_scene_response(scenes_management_cluster);
 
     return ESP_OK;
 }
