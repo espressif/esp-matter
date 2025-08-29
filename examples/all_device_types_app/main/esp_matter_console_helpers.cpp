@@ -587,6 +587,11 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::heat_pump::create(node, &heat_pump_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
+        case ESP_MATTER_THERMOSTAT_CONTROLLER: {
+            esp_matter::endpoint::thermostat_controller::config_t thermostat_controller_config;
+            endpoint = esp_matter::endpoint::thermostat_controller::create(node, &thermostat_controller_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
         default: {
             ESP_LOGE(TAG, "Please input a valid device type");
             break;
