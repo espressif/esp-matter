@@ -1095,6 +1095,17 @@ static esp_err_t esp_matter_command_callback_set_active_schedule_request(const C
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_thermostat_atomic_request(const ConcreteCommandPath &command_path,
+                                                                  TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::Thermostat::Commands::AtomicRequest::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfThermostatClusterAtomicRequestCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 static esp_err_t esp_matter_command_callback_set_active_preset_request(const ConcreteCommandPath &command_path,
                                                                   TLVReader &tlv_data, void *opaque_ptr)
 {
@@ -2558,6 +2569,17 @@ command_t *create_set_active_preset_request(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, Thermostat::Commands::SetActivePresetRequest::Id, COMMAND_FLAG_ACCEPTED,
                                        esp_matter_command_callback_set_active_preset_request);
+}
+
+command_t *create_atomic_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Thermostat::Commands::AtomicRequest::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_thermostat_atomic_request);
+}
+
+command_t *create_atomic_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Thermostat::Commands::AtomicResponse::Id, COMMAND_FLAG_GENERATED, NULL);
 }
 
 } /* command */

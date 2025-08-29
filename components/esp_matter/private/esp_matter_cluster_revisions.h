@@ -148,7 +148,7 @@ constexpr uint16_t cluster_revision = 4;
 } // namespace fan_control
 
 namespace thermostat {
-constexpr uint16_t cluster_revision = 8;
+constexpr uint16_t cluster_revision = 9;
 } // namespace thermostat
 
 namespace thermostat_user_interface_configuration {

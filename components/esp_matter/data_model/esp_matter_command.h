@@ -299,6 +299,8 @@ command_t *create_clear_weekly_schedule(cluster_t *cluster);
 command_t *create_get_weekly_schedule_response(cluster_t *cluster);
 command_t *create_set_active_schedule_request(cluster_t *cluster);
 command_t *create_set_active_preset_request(cluster_t *cluster);
+command_t *create_atomic_request(cluster_t *cluster);
+command_t *create_atomic_response(cluster_t *cluster);
 } /* command */
 } /* thermostat */
 
