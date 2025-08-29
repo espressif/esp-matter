@@ -18,6 +18,9 @@ CONFIG_PARTITION_TABLE_OFFSET=0xC000
 # Enable chip shell
 CONFIG_ENABLE_CHIP_SHELL=y
 
+# This example only use 3 dynamic endpoints
+CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT=3
+
 # Endpoint count for temperature control cluster
 CONFIG_ESP_MATTER_TEMPERATURE_CONTROL_CLUSTER_ENDPOINT_COUNT=1
 
