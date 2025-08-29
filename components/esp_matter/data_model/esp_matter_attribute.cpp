@@ -76,6 +76,13 @@ attribute_t *create_tag_list(cluster_t *cluster, uint8_t *value, uint16_t length
                                          esp_matter_array(value, length, count));
 }
 
+#if CHIP_CONFIG_USE_ENDPOINT_UNIQUE_ID
+attribute_t *create_endpoint_unique_id(cluster_t *cluster, uint8_t *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, Descriptor::Attributes::EndpointUniqueID::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
+                                         esp_matter_char_str(value, length));
+}
+#endif
 } /* attribute */
 } /* descriptor */
 

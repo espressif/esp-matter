@@ -2006,6 +2006,37 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /* heat_pump */
 
+namespace thermostat_controller {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_THERMOSTAT_CONTROLLER_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_THERMOSTAT_CONTROLLER_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t * endpoint = common::create<config_t>(node, config, flags, priv_data, add);
+    VerifyOrReturnError(endpoint != nullptr, NULL);
+
+    cluster_t *binding_cluster = binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
+    VerifyOrReturnValue(binding_cluster != nullptr, NULL, ESP_LOGE(TAG, "Failed to create binding cluster"));
+
+    return endpoint;
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+    cluster::thermostat::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
+
+    return ESP_OK;
+}
+} /* thermostat_controller */
 } /* endpoint */
 
 namespace node {

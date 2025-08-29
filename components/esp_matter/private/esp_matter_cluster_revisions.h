@@ -144,11 +144,11 @@ constexpr uint16_t cluster_revision = 7;
 } // namespace color_control
 
 namespace fan_control {
-constexpr uint16_t cluster_revision = 4;
+constexpr uint16_t cluster_revision = 5;
 } // namespace fan_control
 
 namespace thermostat {
-constexpr uint16_t cluster_revision = 8;
+constexpr uint16_t cluster_revision = 9;
 } // namespace thermostat
 
 namespace thermostat_user_interface_configuration {
@@ -236,7 +236,7 @@ constexpr uint16_t cluster_revision = 1;
 } // namespace smoke_co_alarm
 
 namespace door_lock {
-constexpr uint16_t cluster_revision = 8;
+constexpr uint16_t cluster_revision = 9;
 } // namespace door_lock
 
 namespace window_covering {
@@ -312,7 +312,7 @@ constexpr uint16_t cluster_revision = 3;
 } // namespace rvc_run_mode
 
 namespace rvc_clean_mode {
-constexpr uint16_t cluster_revision = 3;
+constexpr uint16_t cluster_revision = 4;
 } // namespace rvc_clean_mode
 
 namespace water_heater_mode {
@@ -328,7 +328,7 @@ constexpr uint16_t cluster_revision = 1;
 } // namespace microwave_oven_control
 
 namespace rvc_operational_state {
-constexpr uint16_t cluster_revision = 2;
+constexpr uint16_t cluster_revision = 3;
 } // namespace rvc_operational_state
 
 namespace keypad_input {
@@ -340,7 +340,7 @@ constexpr uint16_t cluster_revision = 1;
 } // namespace power_topology
 
 namespace electrical_power_measurement {
-constexpr uint16_t cluster_revision = 1;
+constexpr uint16_t cluster_revision = 3;
 } // namespace electrical_power_measurement
 
 namespace electrical_energy_measurement {
@@ -384,7 +384,7 @@ constexpr uint16_t cluster_revision = 1;
 } // namespace thread_network_directory
 
 namespace service_area {
-constexpr uint16_t cluster_revision = 1;
+constexpr uint16_t cluster_revision = 2;
 } // namespace service_area
 
 namespace water_heater_management {
