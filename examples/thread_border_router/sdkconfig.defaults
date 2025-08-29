@@ -61,6 +61,9 @@ CONFIG_ENABLE_OTA_REQUESTOR=y
 # Use platform mDNS
 CONFIG_USE_MINIMAL_MDNS=n
 
+# This example only use 2 dynamic endpoints
+CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT=2
+
 # Use SPIRAM and external alloc
 CONFIG_SPIRAM=y
 CONFIG_SPIRAM_SPEED_80M=y

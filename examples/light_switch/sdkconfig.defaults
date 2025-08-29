@@ -18,6 +18,9 @@ CONFIG_PARTITION_TABLE_OFFSET=0xC000
 # Enable chip shell
 CONFIG_ENABLE_CHIP_SHELL=y
 
+# This example only use 2 dynamic endpoints
+CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT=2
+
 CONFIG_ENABLE_WIFI_AP=n
 
 #enable lwIP route hooks

@@ -25,6 +25,9 @@ CONFIG_LWIP_IPV6_AUTOCONFIG=n
 CONFIG_PARTITION_TABLE_CUSTOM=y
 CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
 
+# This example use 3 dynamic endpoints: RootNode, light, and secondary network commissioning
+CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT=3
+
 # LwIP config for OpenThread
 CONFIG_LWIP_IPV6_NUM_ADDRESSES=8
 CONFIG_LWIP_MULTICAST_PING=y
