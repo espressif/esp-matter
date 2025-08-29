@@ -296,6 +296,11 @@ device_t *create_device(node_t *node, uint16_t parent_endpoint_id, uint32_t devi
 
     // Create bridged device
     device_t *dev = (device_t *)esp_matter_mem_calloc(1, sizeof(device_t));
+    if (!dev) {
+        ESP_LOGE(TAG, "Failed to allocate memory for bridged device");
+        return NULL;
+    }
+
     dev->node = node;
     dev->persistent_info.parent_endpoint_id = parent_endpoint_id;
     bridged_node::config_t bridged_node_config;
@@ -358,6 +363,11 @@ device_t *resume_device(node_t *node, uint16_t device_endpoint_id, void *priv_da
         return NULL;
     }
     device_t *dev = (device_t *)esp_matter_mem_calloc(1, sizeof(device_t));
+    if (!dev) {
+        ESP_LOGE(TAG, "Failed to allocate memory for bridged device");
+        return NULL;
+    }
+
     dev->node = node;
     dev->persistent_info = persistent_info;
     bridged_node::config_t bridged_node_config;
