@@ -1071,40 +1071,71 @@ Different implementations of the four providers can be chosen in meuconfig:
 
 - ``Commissionable Data Provider options`` in ``→ Component config → ESP Matter``
 
-  When selecting ``Commissionable Data - Test``, the device will use the hardcoded Commissionable Data. This uses the legacy commissionable data
-  provider and provides the test values. These test values are enclosed in ``CONFIG_ENABLE_TEST_SETUP_PARAMS`` option and enabled by default.
+    - ``Commissionable Data - Test``, the device will use the hardcoded Commissionable Data.
+      This uses the legacy commissionable data provider and provides the test values.
+      These test values are enclosed in ``CONFIG_ENABLE_TEST_SETUP_PARAMS`` option and enabled by default.
 
-  When selecting ``Commissionable Data - Factory``, the device will use commissionable data information from the factory partition. This option is visable only when ``CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`` is selected.
+    - ``Commissionable Data - Factory``, the device will use commissionable data information from the factory
+      partition.This option is visible only when ``CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`` is selected.
 
-  When selecting ``Commissionable Data - Custom``, the device will use the custom defined commissionable data provider to obtain commissionable data information. ``esp_matter::set_custom_commissionable_data_provider()`` should be called before ``esp_matter::start()`` to set the custom provider.
+    - ``Commissionable Data - Secure Cert``, the device will use commissionable data information from the secure cert
+      partition. This option is only visible when ``CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`` and
+      ``CONFIG_SEC_CERT_DAC_PROVIDER`` is enabled.
 
-  If you are using ``Factory`` or ``Custom`` commissionable data provides, then disable the ``CONFIG_ENABLE_TEST_SETUP_PARAMS`` option.
+    - ``Commissionable Data - Custom``, the device will use the custom defined commissionable data provider to obtain
+      commissionable data information. ``esp_matter::set_custom_commissionable_data_provider()`` should be called
+      before ``esp_matter::start()`` to set the custom provider.
+
+.. note::
+
+    If you are using ``Factory``, ``Secure Cert`` or ``Custom`` commissionable data provides, then disable the ``CONFIG_ENABLE_TEST_SETUP_PARAMS`` option.
 
 - ``DAC Provider options`` in ``→ Component config → ESP Matter``
 
-  When selecting ``Attestation - Test``, the device will use the hardcoded Device Attestation Credentials.
+    - ``Attestation - Test``, the device will use the hardcoded Device Attestation Credentials.
 
-  When selecting ``Attestation - Factory``, the device will use the Device Attestation Credentials in the factory partition binary. This option is visable only when ``CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`` is selected.
+    - ``Attestation - Factory``, the device will use the Device Attestation Credentials in the factory partition
+      binary. This option is visible only when ``CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`` is selected.
 
-  When selecting ``Attestation - Secure Cert``, the device will use the Device Attestation Credentials in the secure cert partition. This option is for the `Pre-Provisioned Modules <./production.html#pre-provisioned-modules>`__. And the original vendor ID and product ID should be added to the CD file for the Pre-Provisioned Modules. Please contact your Espressif contact person for more information.
+    - ``Attestation - Secure Cert``, the device will use the Device Attestation Credentials in the secure cert
+      partition. This option is for the `Pre-Provisioned Modules <./production.html#pre-provisioned-modules>`__.
+      And the original vendor ID and product ID should be added to the CD file for the Pre-Provisioned Modules.
+      Please contact your Espressif contact person for more information.
 
-  When selecting ``Attestation - Custom``, the device will use the custom defined DAC provider to obtain the Device Attestation Credentials. ``esp_matter::set_custom_dac_provider()`` should be called before ``esp_matter::start()`` to set the custom provider.
+    - ``Attestation - Custom``, the device will use the custom defined DAC provider to obtain the Device Attestation
+      Credentials. ``esp_matter::set_custom_dac_provider()`` should be called before ``esp_matter::start()`` to set the
+      custom provider.
+
 
 - ``Device Instance Info Provider options`` in ``→ Component config → ESP Matter``
 
-  When selecting ``Device Instance Info - Test``, the device will use the hardcoded Device Instance Information.
+    - ``Device Instance Info - Test``, the device will use the hardcoded Device Instance Information.
 
-  When selecting ``Device Instance Info - Factory``, the device will use device instance information from the factory partition. This option is visable only when ``CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`` and ``ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER`` is selected.
+    - ``Device Instance Info - Factory``, the device will use device instance information from the factory partition.
+      This option is visable only when ``CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`` and
+      ``ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER`` is selected.
 
-  When selecting ``Device Instance Info - Custom``, the device will use custom defined Device Instance Info Provider to obtain the Device Instance Information. ``esp_matter::set_custom_device_instance_info_provider`` should be called before ``esp_matter::start()`` to set the custom provider.
+    - ``Device Instance Info - Secure Cert``, the device will use the unique identifier for generating the rotating
+      device identifier from the secure cert partition and all other details will be read from the factory partition.
+      This option is only visible when ``CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`` and
+      ``CONFIG_SEC_CERT_DAC_PROVIDER`` is enabled.
+
+    - ``Device Instance Info - Custom``, the device will use custom defined Device Instance Info Provider to obtain the
+      Device Instance Information. ``esp_matter::set_custom_device_instance_info_provider`` should be called before
+      ``esp_matter::start()`` to set the custom provider.
 
 - ``Device Info Provider options`` in ``→ Component config → ESP Matter``
 
-  When selecting ``Device Info - None``, the device will not use any device information provider. It should be selected when there are not related clusters on the device.
+    - ``Device Info - None``, the device will not use any device information provider. It should be selected when there
+      are not related clusters on the device.
 
-  When selecting ``Device Info - Factory``, the device will use device information from the factory partition. This option is visable only when ``CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`` and ``ENABLE_ESP32_DEVICE_INFO_PROVIDER`` is selected.
+    - ``Device Info - Factory``, the device will use device information from the factory partition. This option is
+      visable only when ``CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`` and ``ENABLE_ESP32_DEVICE_INFO_PROVIDER`` is
+      selected.
 
-  When selecting ``Device Info - Custom``, the device will use custom defined Device Info Provider to obtain the Device Information. ``esp_matter::set_custom_device_info_provider`` should be called before ``esp_matter::start()`` to set the custom provider.
+    - ``Device Info - Custom``, the device will use custom defined Device Info Provider to obtain the Device
+      Information. ``esp_matter::set_custom_device_info_provider`` should be called before ``esp_matter::start()``
+      to set the custom provider.
 
 2.6.3 Custom Providers
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -1175,7 +1206,7 @@ Factory partition contains basic information like VID, PID, etc.
 
 By default, the CD(Certification Declaration) is stored in the factory partition and we need to add the ``-cd`` option when generating the factory partition.
 
-Alternatively, if you’d like to embed the CD in the firmware, you can enable the
+Alternatively, if you'd like to embed the CD in the firmware, you can enable the
 ``CONFIG_ENABLE_SET_CERT_DECLARATION_API`` option and use the ``SetCertificationDeclaration()`` API to set the CD.
 You can refer to the reference implementation in :project_file: `light example <https://github.com/espressif/esp-matter/tree/main/examples/light>`__.
 

@@ -176,3 +176,39 @@ This is the example to generate factory images after pre-provisioning:
 
 .. _`esp-matter-mfg-tool`: https://github.com/espressif/esp-matter-tools/tree/main/mfg_tool
 .. _`ESP RainMaker OTA`: https://rainmaker.espressif.com/docs/ota.html
+
+4.3.4 Recommended Providers to Use
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. note::
+
+   WARNING: These options are not recommended for devices that are already in field
+   or modules that reads data from the factory partition or some other source.
+
+We recommend using the following providers:
+
+- Commissionable data provider: secure cert
+- Device attestation data provider: secure cert
+- Device instance info provider: secure cert
+
+Below are the configuration options that should be enabled.
+These can be appended to ``sdkconfig.defaults``.
+
+In the following example, we demonstrate a different approach that places the configurations in a separate file,
+which is then used with the ``idf.py build`` command.
+
+.. code-block:: bash
+
+    cat > sdkconfig.defaults.prod <<EOF
+    # Enable the implementations in the connectedhomeip repo
+    CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER=y
+    CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER=y
+
+    # Set the appropriate providers
+    CONFIG_SEC_CERT_DAC_PROVIDER=y
+    CONFIG_SEC_CERT_COMMISSIONABLE_DATA_PROVIDER=y
+    CONFIG_SEC_CERT_DEVICE_INSTANCE_INFO_PROVIDER=y
+    CONFIG_NONE_DEVICE_INFO_PROVIDER=y
+    EOF
+
+    idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults.prod" set-target esp32c3 build
