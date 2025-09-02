@@ -8,6 +8,11 @@ if ("${IDF_VERSION_MAJOR}.${IDF_VERSION_MINOR}" VERSION_GREATER_EQUAL "5.0")
     list(APPEND priv_req esp_rcp_update)
 endif()
 
+if (NOT CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
+    list(APPEND exclude_srcs_list "esp_matter_console_attribute.cpp")
+endif()
+
 idf_component_register(SRC_DIRS ${src_dirs}
                     INCLUDE_DIRS .
+                    EXCLUDE_SRCS ${exclude_srcs_list}
                     PRIV_REQUIRES ${priv_req})

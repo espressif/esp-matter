@@ -14,6 +14,7 @@
 #include "bsp/esp-bsp.h"
 
 #include <app_priv.h>
+#include <common_macros.h>
 
 using namespace chip::app::Clusters;
 using namespace esp_matter;

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "esp_matter_cluster.h"
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_endpoint.h>
@@ -355,7 +356,6 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *scenes_management_cluster = scenes_management::create(endpoint, &(config->scenes_management), CLUSTER_FLAG_SERVER);
     scenes_management::command::create_copy_scene(scenes_management_cluster);
     scenes_management::command::create_copy_scene_response(scenes_management_cluster);
-
     return ESP_OK;
 }
 } /* extended_color_light */

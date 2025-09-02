@@ -26,16 +26,12 @@ using chip::app::CommandHandler;
 using chip::app::DataModel::Decode;
 using chip::TLV::TLVReader;
 
-#if (FIXED_ENDPOINT_COUNT == 0)
-
 static const char *TAG = "esp_matter_command";
 
 namespace esp_matter {
 namespace command {
 
-static callback_t get_cluster_accepted_command(uint32_t cluster_id, uint32_t command_id);
-
-void DispatchSingleClusterCommandCommon(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
+void dispatch_single_cluster_command(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
 {
     uint16_t endpoint_id = command_path.mEndpointId;
     uint32_t cluster_id = command_path.mClusterId;
@@ -45,14 +41,10 @@ void DispatchSingleClusterCommandCommon(const ConcreteCommandPath &command_path,
     cluster_t *cluster = cluster::get(endpoint_id, cluster_id);
     VerifyOrReturn(cluster);
     command_t *command = get(cluster, command_id, COMMAND_FLAG_ACCEPTED);
-    callback_t standard_callback = get_cluster_accepted_command(cluster_id, command_id);
-    VerifyOrReturn((command || standard_callback), ESP_LOGE(TAG, "Command 0x%08" PRIX32 " not found", command_id));
+    VerifyOrReturn(command, ESP_LOGE(TAG, "Command 0x%08" PRIX32 " not found", command_id));
     esp_err_t err = ESP_OK;
     TLVReader tlv_reader;
     tlv_reader.Init(tlv_data);
-    if (standard_callback) {
-        standard_callback(command_path, tlv_data, opaque_ptr);
-    }
     if (command) {
         callback_t callback = get_user_callback(command);
         if (callback) {
@@ -77,18 +69,6 @@ void DispatchSingleClusterCommandCommon(const ConcreteCommandPath &command_path,
 
 } /* command */
 } /* esp_matter */
-
-namespace chip {
-namespace app {
-
-void DispatchSingleClusterCommand(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                  CommandHandler *command_obj)
-{
-    esp_matter::command::DispatchSingleClusterCommandCommon(command_path, tlv_data, command_obj);
-}
-
-} /* namespace app */
-} /* namespace chip */
 
 static esp_err_t esp_matter_command_callback_key_set_write(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                            void *opaque_ptr)
@@ -1679,15 +1659,6 @@ command_t *create_retrieve_logs_response(cluster_t *cluster)
 namespace general_diagnostics {
 namespace command {
 
-constexpr const command_entry_t accepted_command_list[] = {
-    {GeneralDiagnostics::Commands::TestEventTrigger::Id, COMMAND_FLAG_ACCEPTED, nullptr},
-    {GeneralDiagnostics::Commands::TimeSnapshot::Id, COMMAND_FLAG_ACCEPTED, nullptr},
-};
-
-constexpr const command_entry_t generated_command_list[] = {
-    {GeneralDiagnostics::Commands::TimeSnapshotResponse::Id, COMMAND_FLAG_GENERATED, NULL},
-};
-
 command_t *create_test_event_trigger(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, GeneralDiagnostics::Commands::TestEventTrigger::Id, COMMAND_FLAG_ACCEPTED, nullptr);
@@ -1721,18 +1692,6 @@ command_t *create_reset_watermarks(cluster_t *cluster)
 
 namespace group_key_management {
 namespace command {
-
-constexpr const command_entry_t accepted_command_list[] = {
-    {GroupKeyManagement::Commands::KeySetWrite::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_key_set_write},
-    {GroupKeyManagement::Commands::KeySetRead::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_key_set_read},
-    {GroupKeyManagement::Commands::KeySetRemove::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_key_set_remove},
-    {GroupKeyManagement::Commands::KeySetReadAllIndices::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_key_set_read_all_indices},
-};
-
-constexpr const command_entry_t generated_command_list[] = {
-    {GroupKeyManagement::Commands::KeySetReadResponse::Id, COMMAND_FLAG_GENERATED, NULL},
-    {GroupKeyManagement::Commands::KeySetReadAllIndicesResponse::Id, COMMAND_FLAG_GENERATED, NULL},
-};
 
 command_t *create_key_set_write(cluster_t *cluster)
 {
@@ -1775,18 +1734,6 @@ command_t *create_key_set_read_all_indices_response(cluster_t *cluster)
 
 namespace general_commissioning {
 namespace command {
-
-constexpr const command_entry_t accepted_command_list[] = {
-    {GeneralCommissioning::Commands::ArmFailSafe::Id, COMMAND_FLAG_ACCEPTED, nullptr},
-    {GeneralCommissioning::Commands::SetRegulatoryConfig::Id, COMMAND_FLAG_ACCEPTED, nullptr},
-    {GeneralCommissioning::Commands::CommissioningComplete::Id, COMMAND_FLAG_ACCEPTED, nullptr},
-};
-
-constexpr const command_entry_t generated_command_list[] = {
-    {GeneralCommissioning::Commands::ArmFailSafeResponse::Id, COMMAND_FLAG_GENERATED, NULL},
-    {GeneralCommissioning::Commands::SetRegulatoryConfigResponse::Id, COMMAND_FLAG_GENERATED, NULL},
-    {GeneralCommissioning::Commands::CommissioningCompleteResponse::Id, COMMAND_FLAG_GENERATED, NULL},
-};
 
 command_t *create_arm_fail_safe(cluster_t *cluster)
 {
@@ -1841,19 +1788,6 @@ command_t *create_set_tc_acknowledgements_response(cluster_t *cluster)
 
 namespace network_commissioning {
 namespace command {
-
-constexpr const command_entry_t accepted_command_list[] = {
-    {NetworkCommissioning::Commands::ScanNetworks::Id, COMMAND_FLAG_ACCEPTED, NULL},
-    {NetworkCommissioning::Commands::RemoveNetwork::Id, COMMAND_FLAG_ACCEPTED, NULL},
-    {NetworkCommissioning::Commands::ConnectNetwork::Id, COMMAND_FLAG_ACCEPTED, NULL},
-    {NetworkCommissioning::Commands::ReorderNetwork::Id, COMMAND_FLAG_ACCEPTED, NULL},
-};
-
-constexpr const command_entry_t generated_command_list[] = {
-    {NetworkCommissioning::Commands::ScanNetworksResponse::Id, COMMAND_FLAG_GENERATED, NULL},
-    {NetworkCommissioning::Commands::NetworkConfigResponse::Id, COMMAND_FLAG_GENERATED, NULL},
-    {NetworkCommissioning::Commands::ConnectNetworkResponse::Id, COMMAND_FLAG_GENERATED, NULL},
-};
 
 command_t *create_scan_networks(cluster_t *cluster)
 {
@@ -1915,13 +1849,6 @@ command_t *create_connect_network_response(cluster_t *cluster)
 namespace administrator_commissioning {
 namespace command {
 
-constexpr const command_entry_t accepted_command_list[] = {
-    {AdministratorCommissioning::Commands::OpenCommissioningWindow::Id, COMMAND_FLAG_ACCEPTED, nullptr},
-    {AdministratorCommissioning::Commands::RevokeCommissioning::Id, COMMAND_FLAG_ACCEPTED, nullptr},
-};
-
-constexpr const command_entry_t generated_command_list[] = {};
-
 command_t *create_open_commissioning_window(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, AdministratorCommissioning::Commands::OpenCommissioningWindow::Id,
@@ -1945,27 +1872,6 @@ command_t *create_revoke_commissioning(cluster_t *cluster)
 
 namespace operational_credentials {
 namespace command {
-
-constexpr const command_entry_t accepted_command_list[] = {
-    {OperationalCredentials::Commands::AttestationRequest::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_attestation_request},
-    {OperationalCredentials::Commands::CertificateChainRequest::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_certificate_chain_request},
-    {OperationalCredentials::Commands::CSRRequest::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_csr_request},
-    {OperationalCredentials::Commands::AddNOC::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_add_noc},
-    {OperationalCredentials::Commands::UpdateNOC::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_update_noc},
-    {OperationalCredentials::Commands::UpdateFabricLabel::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_update_fabric_label},
-    {OperationalCredentials::Commands::RemoveFabric::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_remove_fabric},
-    {OperationalCredentials::Commands::AddTrustedRootCertificate::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_add_trusted_root_certificate},
-    {OperationalCredentials::Commands::SetVIDVerificationStatement::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_set_vid_verification_statement},
-    {OperationalCredentials::Commands::SignVIDVerificationRequest::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_sign_vid_verification_request},
-};
-
-constexpr const command_entry_t generated_command_list[] = {
-    {OperationalCredentials::Commands::AttestationResponse::Id, COMMAND_FLAG_GENERATED, NULL},
-    {OperationalCredentials::Commands::CertificateChainResponse::Id, COMMAND_FLAG_GENERATED, NULL},
-    {OperationalCredentials::Commands::CSRResponse::Id, COMMAND_FLAG_GENERATED, NULL},
-    {OperationalCredentials::Commands::NOCResponse::Id, COMMAND_FLAG_GENERATED, NULL},
-    {OperationalCredentials::Commands::SignVIDVerificationResponse::Id, COMMAND_FLAG_GENERATED, NULL},
-};
 
 command_t *create_attestation_request(cluster_t *cluster)
 {
@@ -3254,86 +3160,3 @@ command_t *create_set_default_ntp(cluster_t *cluster)
 
 } /* cluster */
 } /* esp_matter */
-
-namespace esp_matter {
-namespace command {
-#define GET_ACCEPTED_COMMAND_COUNT(cluster) sizeof(cluster::command::accepted_command_list) / sizeof(command_entry_t)
-#define GET_ACCEPTED_COMMAND_LIST(cluster) \
-    static_cast<const command_entry_t *>(&cluster::command::accepted_command_list[0])
-
-#define GET_GENERATED_COMMAND_COUNT(cluster) sizeof(cluster::command::generated_command_list) / sizeof(command_entry_t)
-#define GET_GENERATED_COMMAND_LIST(cluster) \
-    static_cast<const command_entry_t *>(&cluster::command::generated_command_list[0])
-
-#define GET_COMMAND_COUNT_LIST(cluster)                                                                            \
-    GET_ACCEPTED_COMMAND_COUNT(cluster), GET_GENERATED_COMMAND_COUNT(cluster), GET_ACCEPTED_COMMAND_LIST(cluster), \
-        GET_GENERATED_COMMAND_LIST(cluster)
-
-/* Instead of adding the standard commands dynamically, place them in the .rodata section to save RAM. */
-constexpr const cluster_command_t cluster_command_table[] = {
-    {GeneralCommissioning::Id, GET_COMMAND_COUNT_LIST(cluster::general_commissioning)},
-    {NetworkCommissioning::Id, GET_COMMAND_COUNT_LIST(cluster::network_commissioning)},
-    {GeneralDiagnostics::Id, GET_COMMAND_COUNT_LIST(cluster::general_diagnostics)},
-    {AdministratorCommissioning::Id, GET_COMMAND_COUNT_LIST(cluster::administrator_commissioning)},
-    {OperationalCredentials::Id, GET_COMMAND_COUNT_LIST(cluster::operational_credentials)},
-    {GroupKeyManagement::Id, GET_COMMAND_COUNT_LIST(cluster::group_key_management)},
-};
-
-const command_entry_t *get_cluster_accepted_command_list(uint32_t cluster_id)
-{
-    for (auto const &cluster_command : cluster_command_table) {
-        if (cluster_command.cluster_id == cluster_id) {
-            return cluster_command.accepted_command_list;
-        }
-    }
-    return nullptr;
-}
-
-size_t get_cluster_accepted_command_count(uint32_t cluster_id)
-{
-    for (auto const &cluster_command : cluster_command_table) {
-        if (cluster_command.cluster_id == cluster_id) {
-            return cluster_command.accepted_command_count;
-        }
-    }
-    return 0;
-}
-
-const command_entry_t *get_cluster_generated_command_list(uint32_t cluster_id)
-{
-    for (auto const &cluster_command : cluster_command_table) {
-        if (cluster_command.cluster_id == cluster_id) {
-            return cluster_command.generated_command_list;
-        }
-    }
-    return nullptr;
-}
-
-size_t get_cluster_generated_command_count(uint32_t cluster_id)
-{
-    for (auto const &cluster_command : cluster_command_table) {
-        if (cluster_command.cluster_id == cluster_id) {
-            return cluster_command.generated_command_count;
-        }
-    }
-    return 0;
-}
-
-static callback_t get_cluster_accepted_command(uint32_t cluster_id, uint32_t command_id)
-{
-    for (auto const &cluster_command : cluster_command_table) {
-        if (cluster_command.cluster_id == cluster_id) {
-            for (size_t index = 0; index < cluster_command.accepted_command_count; ++index){
-                if (cluster_command.accepted_command_list[index].command_id == command_id) {
-                    return cluster_command.accepted_command_list[index].callback;
-                }
-            }
-        }
-    }
-    return nullptr;
-}
-
-} /* command */
-} /* esp_matter */
-
-#endif /* FIXED_ENDPOINT_COUNT */

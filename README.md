@@ -11,14 +11,15 @@ Espressif's SDK for Matter is the official Matter development framework for ESP3
 
 ## Supported Matter specification versions
 
-| Matter Specification Version |                              Supported Branch                             |
-|:----------------------------:|:-------------------------------------------------------------------------:|
-|             v1.0             | [release/v1.0](https://github.com/espressif/esp-matter/tree/release/v1.0) |
-|             v1.1             | [release/v1.1](https://github.com/espressif/esp-matter/tree/release/v1.1) |
-|             v1.2             | [release/v1.2](https://github.com/espressif/esp-matter/tree/release/v1.2) |
-|             v1.3             | [release/v1.3](https://github.com/espressif/esp-matter/tree/release/v1.3) |
-|             v1.4             | [release/v1.4](https://github.com/espressif/esp-matter/tree/release/v1.4) |
-|     v1.5 (Ongoing effort)    |         [main](https://github.com/espressif/esp-matter/tree/main)         |
+| Matter Specification Version |                              Supported Branch                                 |
+|:----------------------------:|:-----------------------------------------------------------------------------:|
+|             v1.0             | [release/v1.0](https://github.com/espressif/esp-matter/tree/release/v1.0)     |
+|             v1.1             | [release/v1.1](https://github.com/espressif/esp-matter/tree/release/v1.1)     |
+|             v1.2             | [release/v1.2](https://github.com/espressif/esp-matter/tree/release/v1.2)     |
+|             v1.3             | [release/v1.3](https://github.com/espressif/esp-matter/tree/release/v1.3)     |
+|             v1.4             | [release/v1.4](https://github.com/espressif/esp-matter/tree/release/v1.4)     |
+|            v1.4.2            | [release/v1.4.2](https://github.com/espressif/esp-matter/tree/release/v1.4.2) |
+|     v1.5 (Ongoing effort)    |         [main](https://github.com/espressif/esp-matter/tree/main)             |
 
 ## Getting the repositories
 
@@ -28,7 +29,7 @@ section in the ESP-Matter Programming Guide.
 
 ## Supported ESP-IDF and connectedhomeip versions
 
-- This SDK currently works with commit [320b9a6f6c] (https://github.com/project-chip/connectedhomeip/tree/320b9a6f66) of connectedhomeip.
+- This SDK currently works with commit [bdc38cd772] (https://github.com/project-chip/connectedhomeip/tree/bdc38cd772) of connectedhomeip.
 - For Matter projects development with this SDK, it is recommended to utilize ESP-IDF [v5.4.1](https://github.com/espressif/esp-idf/tree/v5.4.1).
 - For ESP32C5, it is recommended to utilize ESP-IDF [98cd765953](https://github.com/espressif/esp-idf/commit/98cd765953dfe0e7bb1c5df8367e1b54bd966cce).
 

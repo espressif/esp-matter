@@ -23,57 +23,9 @@
 #include <lib/core/CHIPConfig.h>
 #include <sdkconfig.h>
 
-#define GENERATED_ATTRIBUTES                                                   \
-  {}
-
-#define GENERATED_CLUSTERS                                                     \
-  {}
-
-#define GENERATED_ENDPOINT_TYPES                                               \
-  {}
-
-#define ZAP_FIXED_ENDPOINT_DATA_VERSION_COUNT 0
-
-// Largest attribute size is needed for various buffers
-#define ATTRIBUTE_LARGEST CONFIG_ESP_MATTER_ATTRIBUTE_BUFFER_LARGEST
-
-static_assert(ATTRIBUTE_LARGEST <= CHIP_CONFIG_MAX_ATTRIBUTE_STORE_ELEMENT_SIZE, "ATTRIBUTE_LARGEST larger than expected");
-
-// Total size of attribute storage
-#define ATTRIBUTE_MAX_SIZE (0)
-
 // Number of fixed endpoints
 #define FIXED_ENDPOINT_COUNT (0)
 #ifdef CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT
 #undef CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT
 #endif
 #define CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT
-
-// Array of endpoints that are supported, the data inside
-// the array is the endpoint number.
-#define FIXED_ENDPOINT_ARRAY                                                   \
-  {0}
-
-// Array of profile ids
-#define FIXED_PROFILE_IDS                                                      \
-  {0}
-
-// Array of device types
-#define FIXED_DEVICE_TYPES                                                     \
-  {0}
-
-// Array of device type offsets
-#define FIXED_DEVICE_TYPE_OFFSETS                                              \
-  {0}
-
-// Array of device type lengths
-#define FIXED_DEVICE_TYPE_LENGTHS                                              \
-  {0}
-
-// Array of endpoint types supported on each endpoint
-#define FIXED_ENDPOINT_TYPES                                                   \
-  {0}
-
-// Array of networks supported on each endpoint
-#define FIXED_NETWORKS                                                         \
-  {0}

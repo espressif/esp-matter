@@ -138,7 +138,3 @@ void MatterWiFiNetworkDiagnosticsPluginServerInitCallback();
 void MatterWiFiNetworkManagementPluginServerInitCallback();
 void MatterWindowCoveringPluginServerInitCallback();
 void MatterZoneManagementPluginServerInitCallback();
-
-#include <esp_matter_cluster.h>
-
-#define MATTER_PLUGINS_INIT esp_matter::cluster::plugin_init_callback_common();

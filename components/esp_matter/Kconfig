@@ -180,13 +180,6 @@ menu "ESP Matter"
         help
             Size of the binding table.
 
-    config ESP_MATTER_UNICAST_MESSAGE_COUNT
-        int "Unicast message count"
-        range 1 255
-        default 10
-        help
-            APS unicast message count.
-
     choice ESP_MATTER_MEM_ALLOC_MODE
         prompt "Memory allocation strategy"
         default ESP_MATTER_MEM_ALLOC_MODE_INTERNAL

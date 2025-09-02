@@ -66,12 +66,12 @@ static esp_err_t nvs_get_val(const char *nvs_namespace, const char *attribute_ke
             // This function will only be called when recovering the non-volatile attributes during reboot
             // Add we should not decrease the size of the attribute value
             len = std::max(len, static_cast<size_t>(val.val.a.s));
-            uint8_t *buffer = (uint8_t *)esp_matter_mem_calloc(1, len);
+            bool null_reserve = (val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING) || (val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING);
+            uint8_t *buffer = (uint8_t *)esp_matter_mem_calloc(1, len + (null_reserve ? 1 : 0));
             if (!buffer) {
                 err = ESP_ERR_NO_MEM;
             } else {
                 val.val.a.b = buffer;
-                val.val.a.n = len;
                 val.val.a.t = len + (val.val.a.t - val.val.a.s);
                 val.val.a.s = len;
                 err = nvs_get_blob(handle, attribute_key, buffer, &len);

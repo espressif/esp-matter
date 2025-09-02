@@ -27,6 +27,7 @@
 #include <app/data-model-provider/Provider.h>
 #include <lib/support/ReadOnlyBuffer.h>
 #include <optional>
+#include <app/ConcreteEventPath.h>
 
 using chip::ClusterId;
 using chip::CommandId;
@@ -107,6 +108,11 @@ public:
         return CHIP_NO_ERROR;
     }
 
+    CHIP_ERROR EventInfo(const ConcreteEventPath & path, EventEntry & eventInfo) override
+    {
+        return CHIP_NO_ERROR;
+    }
+
     CHIP_ERROR Attributes(const ConcreteClusterPath &path, ReadOnlyBufferBuilder<AttributeEntry> &builder) override
     {
         return CHIP_NO_ERROR;
@@ -121,10 +127,6 @@ public:
         return CHIP_NO_ERROR;
     }
 
-    CHIP_ERROR EventInfo(const ConcreteEventPath & path, EventEntry & eventInfo) override
-    {
-        return CHIP_NO_ERROR;
-    }
     void Temporary_ReportAttributeChanged(const AttributePathParams &path) override {}
 
 private:

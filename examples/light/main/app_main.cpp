@@ -262,6 +262,7 @@ extern "C" void app_main()
     esp_matter::console::diagnostics_register_commands();
     esp_matter::console::wifi_register_commands();
     esp_matter::console::factoryreset_register_commands();
+    esp_matter::console::attribute_register_commands();
 #if CONFIG_OPENTHREAD_CLI
     esp_matter::console::otcli_register_commands();
 #endif

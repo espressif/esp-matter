@@ -17,7 +17,9 @@
 #include <esp_matter.h>
 #include <esp_matter_attribute.h>
 #include <esp_matter_cluster.h>
+#include <esp_matter_command.h>
 #include <esp_matter_core.h>
+#include <esp_matter_data_model.h>
 #include <esp_matter_delegate_callbacks.h>
 #include <esp_matter_cluster_revisions.h>
 #include <esp_matter_attribute_bounds.h>
@@ -25,6 +27,7 @@
 #include <app-common/zap-generated/callback.h>
 #include <app-common/zap-generated/cluster-enums.h>
 #include <app/PluginApplicationCallbacks.h>
+#include <app/ClusterCallbacks.h>
 #include <lib/support/TypeTraits.h>
 #include <lib/support/CodeUtils.h>
 
@@ -378,6 +381,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterOtaSoftwareUpdateProviderClusterServerInitCallback,
+                                                 ESPMatterOtaSoftwareUpdateProviderClusterServerShutdownCallback);
     }
 
     /* Commands */
@@ -461,6 +466,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+
+        /* Commands */
+        command::create_arm_fail_safe(cluster);
+        command::create_arm_fail_safe_response(cluster);
+        command::create_set_regulatory_config(cluster);
+        command::create_set_regulatory_config_response(cluster);
+        command::create_commissioning_complete(cluster);
+        command::create_commissioning_complete_response(cluster);
     }
 
     return cluster;
@@ -505,6 +518,18 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        /* Commands */
+        command::create_scan_networks(cluster);
+        command::create_remove_network(cluster);
+        command::create_connect_network(cluster);
+        command::create_reorder_network(cluster);
+        command::create_scan_networks_response(cluster);
+        command::create_network_config_response(cluster);
+        command::create_connect_network_response(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterNetworkCommissioningClusterServerInitCallback,
+                                                 ESPMatterNetworkCommissioningClusterServerShutdownCallback);
     }
 
     /* Commands */
@@ -542,6 +567,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        /* Commands */
+        command::create_test_event_trigger(cluster);
+        command::create_time_snap_shot(cluster);
+        command::create_time_snap_shot_response(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterGeneralDiagnosticsClusterServerInitCallback,
+                                                 ESPMatterGeneralDiagnosticsClusterServerShutdownCallback);
     }
 
     event::create_boot_reason(cluster);
@@ -573,6 +606,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        /* Commands */
+        command::create_open_commissioning_window(cluster);
+        command::create_revoke_commissioning(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterAdministratorCommissioningClusterServerInitCallback,
+                                                 ESPMatterAdministratorCommissioningClusterServerShutdownCallback);
     }
 
     return cluster;
@@ -605,6 +645,23 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        /* Commands */
+        command::create_attestation_request(cluster);
+        command::create_attestation_response(cluster);
+        command::create_certificate_chain_request(cluster);
+        command::create_certificate_chain_response(cluster);
+        command::create_csr_request(cluster);
+        command::create_csr_response(cluster);
+        command::create_add_noc(cluster);
+        command::create_update_noc(cluster);
+        command::create_noc_response(cluster);
+        command::create_update_fabric_label(cluster);
+        command::create_remove_fabric(cluster);
+        command::create_add_trusted_root_certificate(cluster);
+        command::create_set_vid_verification_statement(cluster);
+        command::create_sign_vid_verification_request(cluster);
+        command::create_sign_vid_verification_response(cluster);
     }
 
     return cluster;
@@ -633,6 +690,13 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
         attribute::create_group_table(cluster, NULL, 0, 0);
         attribute::create_max_groups_per_fabric(cluster, 0);
         attribute::create_max_group_keys_per_fabric(cluster, 0);
+
+        command::create_key_set_write(cluster);
+        command::create_key_set_read(cluster);
+        command::create_key_set_remove(cluster);
+        command::create_key_set_read_all_indices(cluster);
+        command::create_key_set_read_response(cluster);
+        command::create_key_set_read_all_indices_response(cluster);
     }
 
     return cluster;
@@ -2649,6 +2713,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterSoftwareDiagnosticsClusterServerInitCallback,
+                                                 ESPMatterSoftwareDiagnosticsClusterServerShutdownCallback);
     }
 
     return cluster;
@@ -3446,6 +3512,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterWiFiNetworkDiagnosticsClusterServerInitCallback,
+                                                 ESPMatterWiFiNetworkDiagnosticsClusterServerShutdownCallback);
     }
 
     /* Commands */

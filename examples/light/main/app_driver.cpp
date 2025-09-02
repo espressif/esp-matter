@@ -12,6 +12,7 @@
 
 #include <esp_matter.h>
 #include <app_priv.h>
+#include <common_macros.h>
 
 #include <device.h>
 #include <led_driver.h>

@@ -17,8 +17,14 @@
 #include <esp_err.h>
 #include <esp_matter_attribute_utils.h>
 #include <app/util/attribute-storage.h>
+#include <app/ConcreteCommandPath.h>
 
 namespace esp_matter {
+namespace command {
+void dispatch_single_cluster_command(const chip::app::ConcreteCommandPath &command_path, chip::TLV::TLVReader &tlv_data,
+                                     void *opaque_ptr);
+} // command
+
 namespace node {
 
 esp_err_t store_min_unused_endpoint_id();
@@ -30,14 +36,5 @@ namespace endpoint {
 
 esp_err_t enable_all();
 
-}
-
-namespace attribute {
-esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeType *attribute_type,
-                                 uint16_t *attribute_size, uint8_t *value);
-
-esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttributeType attribute_type,
-                                 uint16_t attribute_size, uint8_t *value,
-                                 const EmberAfAttributeMetadata * attribute_metadata);
 }
 } // namespace esp_matter

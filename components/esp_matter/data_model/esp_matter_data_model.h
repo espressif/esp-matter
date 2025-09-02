@@ -15,9 +15,12 @@
 #pragma once
 #include <esp_err.h>
 #include <esp_matter_attribute_utils.h>
+#include <app/data-model-provider/Provider.h>
 #include "app/ConcreteCommandPath.h"
 #include "app/util/af-types.h"
+#include "lib/core/DataModelTypes.h"
 #include "lib/core/TLVReader.h"
+#include "protocols/interaction_model/StatusCode.h"
 
 #define ESP_MATTER_NVS_PART_NAME CONFIG_ESP_MATTER_NVS_PART_NAME
 
@@ -84,7 +87,7 @@ typedef enum attribute_flags {
     /** The attribute uses external storage for its value. If attributes
     have this flag enabled, as all of them are stored in the ESP Matter database. */
     ATTRIBUTE_FLAG_EXTERNAL_STORAGE = MATTER_ATTRIBUTE_FLAG_EXTERNAL_STORAGE, /* 0x10 */
-    ATTRIBUTE_FLAG_SINGLETON = MATTER_ATTRIBUTE_FLAG_SINGLETON, /* 0x20 */
+    ATTRIBUTE_FLAG_READABLE = MATTER_ATTRIBUTE_FLAG_READABLE, /* 0x20 */
     ATTRIBUTE_FLAG_NULLABLE = MATTER_ATTRIBUTE_FLAG_NULLABLE, /* 0x40 */
     /** The attribute read and write are overridden. The attribute value will be fetched from and will be updated using
     the override callback. The value of this attribute is not maintained internally. */
@@ -293,29 +296,29 @@ uint16_t get_id(endpoint_t *endpoint);
  */
 esp_err_t add_device_type(endpoint_t *endpoint, uint32_t device_type_id, uint8_t device_type_version);
 
-/** Get device type ID array
- *
- * Get the device type ID array for the endpoint. This array is aligned with the device type version array.
+/** Get device type count
  *
  * @param[in] endpoint Endpoint handle.
- * @param[out] device_type_count_ptr the pointer of device type ID array length.
  *
- * @return device type ID array on success.
- * @return NULL when the endpoint or the device_type_count_ptr is NULL.
+ * @return device type count on success
+ * @return 0 on failure
  */
-uint32_t *get_device_type_ids(endpoint_t *endpoint, uint8_t *device_type_count_ptr);
+size_t get_device_type_count(endpoint_t *endpoint);
 
-/** Get device type version array
+/** Get device type at index
  *
- * Get the device type version array for the endpoint. This array is aligned with the device type ID array.
+ * Get the device type ID and version for the endpoint at index.
  *
  * @param[in] endpoint Endpoint handle.
- * @param[out] device_type_count_ptr the pointer of device type version array length.
+ * @param[in] index Index of got device type ID and version.
+ * @param[out] out_device_type_id Device type ID at index.
+ * @param[out] out_device_type_version Device type version at index.
  *
- * @return device type version array on success.
- * @return NULL when the endpoint or the device_type_count_ptr is NULL.
+ * @return ESP_OK on success.
+ * @return error in case of failure.
  */
-uint8_t *get_device_type_versions(endpoint_t *endpoint, uint8_t *device_type_count_ptr);
+esp_err_t get_device_type_at_index(endpoint_t *endpoint, size_t index, uint32_t &out_device_type_id,
+                                   uint8_t &out_device_type_version);
 
 /** Set parent endpoint
  *
@@ -329,6 +332,67 @@ uint8_t *get_device_type_versions(endpoint_t *endpoint, uint8_t *device_type_cou
  * @return error in case of failure.
  */
 esp_err_t set_parent_endpoint(endpoint_t *endpoint, endpoint_t *parent_endpoint);
+
+/** Get parent endpoint id
+ *
+ * @param[in] endpoint Endpoint handle.
+ *
+ * @return parent_endpoint id on success
+ * @return 0xFFFF in case of failure or the endpoint handle is root node endpoint
+ */
+uint16_t get_parent_endpoint_id(endpoint_t *endpoint);
+
+/** Get CompositionPattern for endpoint
+ *
+ * @param[in] endpoint Endpoint handle.
+ *
+ * @return CompositionPattern of the endpoint
+ */
+chip::app::DataModel::EndpointCompositionPattern get_composition_pattern(endpoint_t *endpoint);
+
+/** Set SemanticTags for endpoint
+ *
+ * Note: The label buffer should not be released after this function.
+ *
+ * @param[in] endpoint Endpoint handle.
+ * @param[in] tags Tags array.
+ * @param[in] tag_count Tag count.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t set_semantic_tags(endpoint_t *endpoint, chip::app::DataModel::Provider::SemanticTag *tags, size_t tag_count);
+
+/** Get SemanticTag count
+ *
+ * @param[in] endpoint Endpoint handle.
+ *
+ * @return SemanticTag count on success
+ * @return -1 on failure
+ */
+int get_semantic_tag_count(endpoint_t *endpoint);
+
+/** Get SemanticTag for endpoint at index
+ *
+ * @param[in] endpoint Endpoint handle.
+ * @param[in] index Tag index.
+ * @param[out] tag Tag output.
+ *
+ * @return ESP_OK on success.
+ * @return ESP_ERR_NOT_FOUND if index is more than or equal to tag count.
+ * @return other error in case of failure.
+ */
+esp_err_t get_semantic_tag_at_index(endpoint_t *endpoint, size_t index, chip::app::DataModel::Provider::SemanticTag &tag);
+
+/**
+ * @brief Get the number of clusters that match the given flags
+ *
+ * @param endpoint_id: The endpoint ID to check, 0xFFFF is treated as wildcard endpoint id
+ * @param cluster_id: The cluster ID to check, 0xFFFF is treated as wildcard cluster id
+ * @param cluster_flags: The flags to check
+ * @return The number of clusters that match the given flags
+ */
+uint32_t get_cluster_count(uint32_t endpoint_id, uint32_t cluster_id, uint8_t cluster_flags);
 
 /** Get private data
  *
@@ -370,15 +434,13 @@ esp_err_t set_identify(uint16_t endpoint_id, void *identify);
  *
  * Enable the endpoint which has been previously created.
  *
- * @note: This API only needs to be called for endpoints created after calling esp_matter::start(). It should be
- * called after all the clusters, attributes and commands have been added to the created endpoint.
- *
  * @param[in] endpoint Endpoint handle.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
 esp_err_t enable(endpoint_t *endpoint);
+
 
 /** Check if attribute is enabled
  *
@@ -403,6 +465,27 @@ bool is_attribute_enabled(uint16_t endpoint_id, uint32_t cluster_id, uint32_t at
  * @return true if a command is enabled otherwise false.
  */
 bool is_command_enabled(uint16_t endpoint_id, uint32_t cluster_id, uint32_t command_id);
+
+/** Disable endpoint
+ *
+ * Disable the endpoint which has been previously created.
+ *
+ * @param[in] endpoint Endpoint handle.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t disable(endpoint_t *endpoint);
+
+/** Get whether an endpoint is enabled
+ *
+ * @param[in] endpoint Endpoint handle.
+ *
+ * @return true if the endpoint is enabled.
+ * @return false if the endpoint is disable or Endpoint handle is invalid.
+ */
+bool is_enabled(endpoint_t *endpoint);
+
 } /* endpoint */
 
 namespace cluster {
@@ -431,6 +514,43 @@ typedef void (*add_bounds_callback_t)(cluster_t *cluster);
  * This can be used to add additional functions based on `cluster_flags_t`.
  */
 typedef void (*function_generic_t)();
+
+/** Cluster initialization function
+ *
+ * This will be called when data model is initialized.
+ */
+typedef void (*function_cluster_init_t)(uint16_t endpoint_id);
+
+/** Cluster shutdown function
+ *
+ * This will be called when data model is shutdown.
+ */
+typedef void (*function_cluster_shutdown_t)(uint16_t endpoint_id);
+
+/** Attribute change function
+ *
+ * This will be called when attributes are change for the cluster.
+ */
+typedef void (*function_attribute_change_t)(const chip::app::ConcreteAttributePath & attributePath);
+
+/** Pre attribute change function
+ *
+ * This function is called before an attribute changes.
+ */
+typedef chip::Protocols::InteractionModel::Status (*function_pre_attribute_change_t)(
+    const chip::app::ConcreteAttributePath & attributePath, EmberAfAttributeType attributeType, uint16_t size, uint8_t * value);
+
+/** Initialization callback
+ *
+ * This callback will be called when the data model is initialized.
+ */
+typedef void (*initialization_callback_t)(uint16_t endpoint_id);
+
+/** Shutdown callback
+ *
+ * This callback will be called when the data model is shutdown.
+ */
+typedef void (*shutdown_callback_t)(uint16_t endpoint_id);
 
 /** Create cluster
  *
@@ -513,6 +633,40 @@ cluster_t *get_next(cluster_t *cluster);
  * @return Invalid CLuster ID (0xFFFF'FFFF) in case of failure.
  */
 uint32_t get_id(cluster_t *cluster);
+
+/** Get cluster flags
+ *
+ * Get the cluster flags for the cluster.
+ *
+ * @param[in] cluster Cluster handle.
+ *
+ * @return cluster flags on success.
+ * @return 0 in case of failure.
+ */
+uint8_t get_flags(cluster_t *cluster);
+
+/** Get cluster data version
+ *
+ * Get the cluster data version for the cluster.
+ *
+ * @param[in] cluster Cluster handle.
+ * @param[out] data_version Cluster data version.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t get_data_version(cluster_t *cluster, chip::DataVersion &data_version);
+
+/** Increase cluster data version
+ *
+ * Increase the cluster data version for the cluster.
+ *
+ * @param[in] cluster Cluster handle.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t increase_data_version(cluster_t *cluster);
 
 /** Get delegate pointer
  *
@@ -605,6 +759,50 @@ add_bounds_callback_t get_add_bounds_callback(cluster_t *cluster);
  */
 esp_err_t add_function_list(cluster_t *cluster, const function_generic_t *function_list, int function_flags);
 
+/** Get function from cluster function list
+ *
+ * This API can be used to get additional cluster function based on cluster flags. This is to get upstream's
+ * `Matter<cluster_name>Server<function_type>Callback` or `emberAf<cluster_name>Server<function_type>Callback` API,
+ * The function_flag should have only one of the function bits set.
+ *
+ * @param[in] cluster Cluster handle.
+ * @param[in] function_flag Bitmap of cluster flag corresponding to the function_list.
+ *
+ * @return the function on success
+ * @return null in case of failure
+ */
+function_generic_t get_function(cluster_t *cluster, uint8_t function_flag);
+
+/** Set initialization and shutdown callback for the cluster
+ *
+ * @param[in] cluster Cluster handle.
+ * @param[in] init_callback Initialization callback.
+ * @param[in] shutdown_callback Shutdown callback.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t set_init_and_shutdown_callbacks(cluster_t *cluster, initialization_callback_t init_callback,
+                                          shutdown_callback_t shutdown_callback);
+
+/** Get initialization callback for the cluster
+ *
+ * @param[in] cluster Cluster handle.
+ *
+ * @return initialization callback on success.
+ * @return NULL in case of failure or not set.
+ */
+initialization_callback_t get_init_callback(cluster_t *cluster);
+
+/** Get shutdown callback for the cluster
+ *
+ * @param[in] cluster Cluster handle.
+ *
+ * @return shutdown callback on success.
+ * @return NULL in case of failure or not set.
+ */
+shutdown_callback_t get_shutdown_callback(cluster_t *cluster);
+
 } /* cluster */
 
 namespace attribute {
@@ -694,11 +892,13 @@ uint32_t get_id(attribute_t *attribute);
  *
  * @param[in] attribute Attribute handle.
  * @param[in] val Pointer to `esp_matter_attr_val_t`. Use appropriate elements as per the value type.
+ * @param[in] call_callbacks Whether to call attribute change pre/post callbacks.
  *
  * @return ESP_OK on success.
+ * @return ESP_ERR_NOT_FINISHED if the value is not changed.
  * @return error in case of failure.
  */
-esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val);
+esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_callbacks = true);
 
 /** Get attribute val
  *
