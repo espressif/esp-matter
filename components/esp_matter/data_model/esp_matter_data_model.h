@@ -361,7 +361,7 @@ chip::app::DataModel::EndpointCompositionPattern get_composition_pattern(endpoin
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t set_semantic_tags(endpoint_t *endpoint, chip::app::DataModel::Provider::SemanticTag *tags, size_t tag_count);
+esp_err_t set_semantic_tags(endpoint_t *endpoint, const chip::app::DataModel::Provider::SemanticTag *tags, size_t tag_count);
 
 /** Get SemanticTag count
  *

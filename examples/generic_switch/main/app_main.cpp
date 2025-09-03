@@ -243,8 +243,10 @@ extern "C" void app_main()
     enable_insights(insights_auth_key_start);
 #endif
 
-    SetTagList(1, chip::Span<const Descriptor::Structs::SemanticTagStruct::Type>(gEp1TagList));
-    SetTagList(2, chip::Span<const Descriptor::Structs::SemanticTagStruct::Type>(gEp2TagList));
+    endpoint_t *ep1 = endpoint::get(1);
+    endpoint::set_semantic_tags(ep1, gEp1TagList, 2);
+    endpoint_t *ep2 = endpoint::get(2);
+    endpoint::set_semantic_tags(ep2, gEp2TagList, 2);
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter::console::diagnostics_register_commands();
