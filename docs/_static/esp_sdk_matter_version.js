@@ -4,6 +4,13 @@ var DOCUMENTATION_VERSIONS = {
             },
   VERSIONS: [
     { name: "latest", has_targets: true, supported_targets: [ "esp32", "esp32c2", "esp32c3", "esp32c5", "esp32c6", "esp32s3", "esp32h2", "esp32p4" ] },
+    { name: "release-v1.4.2", old: false, end_of_life: false, has_targets: true, supported_targets: [ "esp32", "esp32c2", "esp32c3", "esp32c5", "esp32c6", "esp32s3", "esp32h2", "esp32p4" ]},
+    { name: "release-v1.4", old: false, end_of_life: false, has_targets: true, supported_targets: [ "esp32", "esp32c2", "esp32c3", "esp32c6", "esp32s3", "esp32h2", "esp32p4" ]},
+    { name: "release-v1.3", old: false, end_of_life: false, has_targets: true, supported_targets: [ "esp32", "esp32c2", "esp32c3", "esp32c6", "esp32h2", "esp32s3" ]},
+    { name: "release-v1.2", old: false, end_of_life: false, has_targets: true, supported_targets: [ "esp32", "esp32c2", "esp32c3", "esp32c6", "esp32h2", "esp32s3" ]},
+    { name: "release-v1.1", old: true, end_of_life: true, has_targets: true, supported_targets: [ "esp32", "esp32c2", "esp32c3", "esp32c6", "esp32h2", "esp32s3" ]},
+    { name: "release-v1.0", old: true, end_of_life: true, has_targets: true, supported_targets: [ "esp32", "esp32c3", "esp32h2", "esp32s3" ]},
+
   ],
   IDF_TARGETS: [
      { text: "ESP32", value: "esp32" },
