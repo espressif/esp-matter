@@ -86,6 +86,7 @@ esp_err_t matter_controller_client::init(NodeId node_id, FabricId fabric_id, uin
                             CHIP_NO_ERROR,
                         ESP_FAIL, TAG, "Failed to initialize DeviceControllerFactory");
     auto *system_state = chip::Controller::DeviceControllerFactory::GetInstance().GetSystemState();
+    m_group_data_provider_listener.Init(system_state);
     auto engine = chip::app::InteractionModelEngine::GetInstance();
     ESP_RETURN_ON_FALSE(engine, ESP_ERR_INVALID_STATE, TAG, "No interaction model engine");
     ESP_RETURN_ON_FALSE(m_icd_check_in_delegate.Init(&m_icd_client_storage, engine) == CHIP_NO_ERROR, ESP_FAIL, TAG,
