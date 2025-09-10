@@ -14,4 +14,3 @@ urllib3<2
 # esp-secure-cert-tool (dependency of esp-matter-mfg-tool) requires construct>=2.10.70
 # but ESP-IDF v4.4 hard pins construct==2.10.54, creating an unsolvable conflict
 # esp-matter-mfg-tool>=1.0.4
-construct==2.10.54
