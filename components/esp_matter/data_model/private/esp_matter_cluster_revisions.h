@@ -167,45 +167,9 @@ namespace activated_carbon_filter_monitoring {
 constexpr uint16_t cluster_revision = 1;
 } // namespace activated_carbon_filter_monitoring
 
-namespace carbon_monoxide_concentration_measurement {
+namespace concentration_measurement {
 constexpr uint16_t cluster_revision = 3;
-} // namespace carbon_monoxide_concentration_measurement
-
-namespace carbon_dioxide_concentration_measurement {
-constexpr uint16_t cluster_revision = 3;
-} // namespace carbon_dioxide_concentration_measurement
-
-namespace nitrogen_dioxide_concentration_measurement {
-constexpr uint16_t cluster_revision = 3;
-} // namespace nitrogen_dioxide_concentration_measurement
-
-namespace ozone_concentration_measurement {
-constexpr uint16_t cluster_revision = 3;
-} // namespace ozone_concentration_measurement
-
-namespace formaldehyde_concentration_measurement {
-constexpr uint16_t cluster_revision = 3;
-} // namespace formaldehyde_concentration_measurement
-
-namespace pm1_concentration_measurement {
-constexpr uint16_t cluster_revision = 3;
-} // namespace pm1_concentration_measurement
-
-namespace pm25_concentration_measurement {
-constexpr uint16_t cluster_revision = 3;
-} // namespace pm25_concentration_measurement
-
-namespace pm10_concentration_measurement {
-constexpr uint16_t cluster_revision = 3;
-} // namespace pm10_concentration_measurement
-
-namespace radon_concentration_measurement {
-constexpr uint16_t cluster_revision = 3;
-} // namespace radon_concentration_measurement
-
-namespace total_volatile_organic_compounds_concentration_measurement {
-constexpr uint16_t cluster_revision = 3;
-} // namespace total_volatile_organic_compounds_concentration_measurement
+} // namespace concentration_measurement
 
 namespace operational_state {
 constexpr uint16_t cluster_revision = 2;
