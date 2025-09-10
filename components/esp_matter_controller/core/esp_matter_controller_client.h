@@ -161,7 +161,7 @@ private:
     public:
         GroupDataProviderListener() {}
 
-        CHIP_ERROR Init(chip::Controller::DeviceControllerSystemState *systemState)
+        CHIP_ERROR Init(const chip::Controller::DeviceControllerSystemState *systemState)
         {
             VerifyOrReturnError(systemState != nullptr, CHIP_ERROR_INVALID_ARGUMENT);
 
@@ -172,6 +172,7 @@ private:
         void OnGroupAdded(chip::FabricIndex fabric_index,
                           const chip::Credentials::GroupDataProvider::GroupInfo &new_group) override
         {
+            VerifyOrReturn(mSystemState);
             auto *fabricTable = mSystemState->Fabrics();
             if (!fabricTable) {
                 return;
@@ -192,6 +193,7 @@ private:
         void OnGroupRemoved(chip::FabricIndex fabric_index,
                             const chip::Credentials::GroupDataProvider::GroupInfo &old_group) override
         {
+            VerifyOrReturn(mSystemState);
             auto *fabricTable = mSystemState->Fabrics();
             if (!fabricTable) {
                 return;
@@ -207,7 +209,7 @@ private:
         };
 
     private:
-        chip::Controller::DeviceControllerSystemState *mSystemState;
+        const chip::Controller::DeviceControllerSystemState *mSystemState;
     };
 
     matter_controller_client() {}
