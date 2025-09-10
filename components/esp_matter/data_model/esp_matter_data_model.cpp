@@ -1484,7 +1484,7 @@ EndpointCompositionPattern get_composition_pattern(endpoint_t *endpoint)
     return current_endpoint->composition_pattern;
 }
 
-esp_err_t set_semantic_tags(endpoint_t *endpoint, chip::app::DataModel::Provider::SemanticTag *tags, size_t tag_count)
+esp_err_t set_semantic_tags(endpoint_t *endpoint, const chip::app::DataModel::Provider::SemanticTag *tags, size_t tag_count)
 {
     VerifyOrReturnValue(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     VerifyOrReturnValue(tag_count <= ESP_MATTER_MAX_SEMANTIC_TAG_COUNT, ESP_ERR_INVALID_ARG,
