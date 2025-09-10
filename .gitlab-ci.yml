@@ -481,6 +481,13 @@ build_esp_matter_examples_pytest_C3_idf_v4_4:
     # idf v4.4 requires jinja < 3.1 so lets install the dependencies for idf v4.4
     - pip install -r requirements_idf_v4.4.txt
     - pip install -r tools/ci/requirements-build.txt
+    # hack the construct==2.10.54 to make it work with idf-v4.4, Python3.12
+    # imp is not present in Python3.12 so remove it
+    - wget https://files.pythonhosted.org/packages/30/2f/e2e6bad1b80f744cf5c2a6d622e3dee698b43e6c040f980ae0ac0edd5e54/construct-2.10.54.tar.gz
+    - tar -xvzf construct-2.10.54.tar.gz
+    - sed -i 's/, imp$//g' construct-2.10.54/construct/core.py
+    - python3 -m pip install ./construct-2.10.54
+    - rm -rf construct-2.10.54*
     - python tools/ci/build_apps.py ./examples --pytest_c3
   variables:
     IDF_CHECKOUT_REF: "v4.4.3"
