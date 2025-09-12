@@ -235,7 +235,7 @@ extern "C" void app_main()
     // node handle can be used to add/modify other endpoints.
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
     ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
-    
+
 #ifdef CONFIG_ENABLE_ESP_DIAGNOSTICS_TRACE
     endpoint_t *root_node_endpoint = endpoint::get(node, kRootNodeEndpointId);
     esp_matter::cluster::diagnostic_logs::config_t diagnostic_logs_config;

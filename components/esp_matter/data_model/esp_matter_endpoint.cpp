@@ -1499,7 +1499,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     config->power_topology.feature_flags |= power_topology::feature::node_topology::get_id();
     power_topology::create(endpoint, &(config->power_topology), CLUSTER_FLAG_SERVER);
-    
+
     electrical_power_measurement::create(endpoint, &(config->electrical_power_measurement), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
@@ -1900,7 +1900,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     electrical_sensor::add(endpoint, &config->electrical_sensor);
     electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER);
 
-    cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id); 
+    cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id);
 
     nullable<int64_t> voltage = 0, active_current = 0;
     electrical_power_measurement::attribute::create_voltage(elec_power_measurement_cluster, voltage);
@@ -1959,7 +1959,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     device_energy_management::add(endpoint, &config->device_energy_management);
 
-    cluster_t *device_energy_management_cluster = cluster::get(endpoint, DeviceEnergyManagement::Id); 
+    cluster_t *device_energy_management_cluster = cluster::get(endpoint, DeviceEnergyManagement::Id);
     cluster::device_energy_management::feature::power_adjustment::add(device_energy_management_cluster);
     return ESP_OK;
 }
@@ -2003,8 +2003,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER);
 
     device_energy_management::add(endpoint, &config->device_energy_management);
-        
-    cluster_t *device_energy_management_cluster = cluster::get(endpoint, DeviceEnergyManagement::Id); 
+
+    cluster_t *device_energy_management_cluster = cluster::get(endpoint, DeviceEnergyManagement::Id);
     cluster::device_energy_management::feature::power_adjustment::add(device_energy_management_cluster);
     return ESP_OK;
 }
@@ -2049,6 +2049,8 @@ node_t *create(config_t *config, attribute::callback_t attribute_callback,
                identification::callback_t identification_callback, void* priv_data)
 {
     node_t *node = create_raw();
+    /* Initialize esp-matter nvs partition */
+    VerifyOrReturnValue(esp_matter_nvs_init() == ESP_OK, NULL, ESP_LOGE(TAG, "Failed to init esp-matter nvs partition"));
     VerifyOrReturnValue(node != nullptr, NULL, ESP_LOGE(TAG, "Could not create node"));
     endpoint_t *endpoint = endpoint::root_node::create(node, &(config->root_node), ENDPOINT_FLAG_NONE, priv_data);
     if (endpoint == nullptr) {
