@@ -33,17 +33,15 @@ endif()
 if ((CONFIG_BT_ENABLED) AND (CONFIG_ENABLE_CHIPOBLE))
     if (CONFIG_BT_NIMBLE_ENABLED)
         list(APPEND EXPLANT_SRC_DIRS_LIST "${CMAKE_CURRENT_LIST_DIR}/nimble")
-        list(APPEND EXPLANT_EXCLUDE_SRCS_LIST "${CMAKE_CURRENT_LIST_DIR}/bluedroid/BLEManagerImpl.cpp")
-        if(NOT CONFIG_ENABLE_ESP32_BLE_CONTROLLER)
-            list(APPEND EXPLANT_EXCLUDE_SRCS_LIST "${CMAKE_CURRENT_LIST_DIR}/bluedroid/ChipDeviceScanner.cpp")
-        endif()
-    else()
-        list(APPEND EXPLANT_SRC_DIRS_LIST "${CMAKE_CURRENT_LIST_DIR}/bluedroid")
-        list(APPEND EXPLANT_EXCLUDE_SRCS_LIST "${CMAKE_CURRENT_LIST_DIR}/nimble/BLEManagerImpl.cpp")
         if(NOT CONFIG_ENABLE_ESP32_BLE_CONTROLLER)
             list(APPEND EXPLANT_EXCLUDE_SRCS_LIST "${CMAKE_CURRENT_LIST_DIR}/nimble/ChipDeviceScanner.cpp"
                                                   "${CMAKE_CURRENT_LIST_DIR}/nimble/misc.c"
                                                   "${CMAKE_CURRENT_LIST_DIR}/nimble/peer.c")
+        endif()
+    else()
+        list(APPEND EXPLANT_SRC_DIRS_LIST "${CMAKE_CURRENT_LIST_DIR}/bluedroid")
+        if(NOT CONFIG_ENABLE_ESP32_BLE_CONTROLLER)
+            list(APPEND EXPLANT_EXCLUDE_SRCS_LIST "${CMAKE_CURRENT_LIST_DIR}/bluedroid/ChipDeviceScanner.cpp")
         endif()
     endif()
 endif()
@@ -53,8 +51,8 @@ if (NOT CONFIG_ENABLE_ETHERNET_TELEMETRY)
                                           "${CMAKE_CURRENT_LIST_DIR}/NetworkCommissioningDriver_Ethernet.cpp")
 endif()
 
-if (NOT CONFIG_ENABLE_MATTER_OVER_THREAD)
-    list(APPEND EXPLANT_EXCLUDE_SRCS_LIST "${CMAKE_CURRENT_LIST_DIR}/OpenthreadLauncher.c"
+if ((NOT CONFIG_OPENTHREAD_ENABLED) OR (NOT CONFIG_ENABLE_MATTER_OVER_THREAD))
+    list(APPEND EXPLANT_EXCLUDE_SRCS_LIST "${CMAKE_CURRENT_LIST_DIR}/OpenthreadLauncher.cpp"
                                           "${CMAKE_CURRENT_LIST_DIR}/ThreadStackManagerImpl.cpp")
 endif()
 
@@ -77,4 +75,21 @@ endif()
 
 if (NOT CONFIG_USE_ESP32_ECDSA_PERIPHERAL)
     list(APPEND EXPLANT_EXCLUDE_SRCS_LIST "${CMAKE_CURRENT_LIST_DIR}/ESP32CHIPCryptoPAL.cpp")
+endif()
+
+if(CONFIG_CHIP_MEM_ALLOC_MODE_INTERNAL)
+    list(APPEND EXCLUDE_SRCS_LIST "${CMAKE_CURRENT_LIST_DIR}/src/platform/ESP32/CHIPMem-PlatformExternal.cpp"
+                                  "${CMAKE_CURRENT_LIST_DIR}/src/platform/ESP32/CHIPMem-PlatformDefault.cpp")
+elseif(CONFIG_CHIP_MEM_ALLOC_MODE_EXTERNAL)
+    list(APPEND EXCLUDE_SRCS_LIST "${CMAKE_CURRENT_LIST_DIR}/src/platform/ESP32/CHIPMem-PlatformInternal.cpp"
+                                  "${CMAKE_CURRENT_LIST_DIR}/src/platform/ESP32/CHIPMem-PlatformDefault.cpp")
+elseif(CONFIG_CHIP_MEM_ALLOC_MODE_DEFAULT)
+    list(APPEND EXCLUDE_SRCS_LIST "${CMAKE_CURRENT_LIST_DIR}/src/platform/ESP32/CHIPMem-PlatformInternal.cpp"
+                                  "${CMAKE_CURRENT_LIST_DIR}/src/platform/ESP32/CHIPMem-PlatformExternal.cpp")
+endif()
+
+if (EXISTS ${CMAKE_CURRENT_LIST_DIR}/generate-include-files.cmake)
+    include(${CMAKE_CURRENT_LIST_DIR}/generate-include-files.cmake)
+else()
+    message(FATAL_ERROR "There should be a generate-include-files.cmake file in CONFIG_CHIP_EXTERNAL_PLATFORM_DIR!")
 endif()
