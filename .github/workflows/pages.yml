@@ -155,7 +155,7 @@ jobs:
 
   deploy:
     # Disable the job in forks
-    if: ${{ github.repository_owner == 'espressif' }}
+    if: ${{ github.repository_owner == 'espressif' && always() && needs.Build-Matter.result == 'success' }}
 
     needs:
       - Build-Matter
@@ -169,12 +169,18 @@ jobs:
       image: espressif/esp-matter:latest
 
     steps:
+      - name: Check build status
+        run: |
+          echo "Build-Matter status: ${{ needs.Build-Matter.result }}"
+          echo "Build-Rainmaker status: ${{ needs.Build-Rainmaker.result }}"
+          
       - name: Download builds
         uses: actions/download-artifact@v4
         with:
           pattern: build-images-*
           path: images/
           merge-multiple: true
+        continue-on-error: true
 
       - name: generate launchpad config
         run: |
@@ -183,10 +189,10 @@ jobs:
 
           # Put together the commit ids used when building the firmwares
           echo "#### Build Config" >> build_cfg.md
-          cat .esp-idf >> build_cfg.md
-          cat .esp-matter >> build_cfg.md
-          cat .chip >> build_cfg.md
-          cat .esp-rainmaker >> build_cfg.md
+          [ -f .esp-idf ] && cat .esp-idf >> build_cfg.md
+          [ -f .esp-matter ] && cat .esp-matter >> build_cfg.md
+          [ -f .chip ] && cat .chip >> build_cfg.md
+          [ -f .esp-rainmaker ] && cat .esp-rainmaker >> build_cfg.md
 
           tree -H '.' -L 1 --noreport -T 'ESP Matter Launchpad Artifacts' -shi --charset utf-8 -I "index.html" -o index.html
 
