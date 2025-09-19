@@ -30,3 +30,13 @@ CONFIG_ENABLE_WIFI_AP=n
 
 # Disable Matter server as the test app doesn't start Matter server
 CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER=n
+
+CONFIG_MBEDTLS_HKDF_C=y
+
+# enable base provider implementation
+CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER=y
+CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER=y
+
+# use providers which reads commissionable and unique data from esp-secure-cert partition
+CONFIG_SEC_CERT_COMMISSIONABLE_DATA_PROVIDER=y
+CONFIG_SEC_CERT_DEVICE_INSTANCE_INFO_PROVIDER=y
