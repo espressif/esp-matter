@@ -683,6 +683,22 @@ The default configuration disables all unused clusters.
   On Bootup, 44256, 3876
   Post Commissioning, 77976, 4164
 
+
+.. only:: esp32c2 or esp32c3 or esp32c5 or esp32c6 or esp32h2
+
+    6.2.11 Link Time Optimization (LTO)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    Link Time Optimization (LTO) helps further optimize both binary size and runtime performance.
+    You can read more about LTO in `GCC's LTO documentation`_.
+
+    For details on enabling LTO in ESP-IDF, along with its effects and known
+    limitations, please refer to `ESP-IoT-Solution's LTO documentation`_.
+
+    As demonstrated in the `example`_ listed in `ESP-IoT-Solution's LTO documentation`_,
+    enabling LTO can result in around ~90 KB of flash savings, though it also increases stack usage by ~1700 bytes.
+
+
 6.3 References for futher optimizations
 ---------------------------------------
 
@@ -703,3 +719,6 @@ The default configuration disables all unused clusters.
 .. _`Speed Optimization`: https://docs.espressif.com/projects/esp-idf/en/latest/esp32c3/api-guides/performance/speed.html
 .. _`ESP32 Memory Analysis — Case Study`: https://blog.espressif.com/esp32-memory-analysis-case-study-eacc75fe5431
 .. _`Optimizing IRAM`: https://docs.espressif.com/projects/esp-idf/en/latest/esp32c3/api-guides/performance/ram-usage.html#optimizing-iram-usage
+.. _`GCC's LTO documentation`: https://gcc.gnu.org/onlinedocs/gccint/LTO.html
+.. _`ESP-IoT-Solution's LTO documentation`: https://github.com/espressif/esp-iot-solution/blob/master/tools/cmake_utilities/docs/gcc.md
+.. _`example`: https://github.com/espressif/esp-iot-solution/blob/master/tools/cmake_utilities/docs/gcc.md#example
