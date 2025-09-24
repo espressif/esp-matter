@@ -23,7 +23,7 @@ project_slug = 'esp-matter'
 
 # Contains info used for constructing target and version selector
 # Can also be hosted externally, see esp-idf for example
-versions_url = '_static/esp_sdk_matter_version.js'
+versions_url = 'https://docs.espressif.com/projects/esp-matter/en/latest/esp32/_static/esp_sdk_matter_version.js'
 
 # Final PDF filename will contains target and version
 pdf_file_prefix = u'esp-docs'
