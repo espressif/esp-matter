@@ -134,7 +134,7 @@ static esp_err_t create_button(struct gpio_button* button, node_t* node)
 
     /* Create a new endpoint. */
     generic_switch::config_t switch_config;
-    switch_config.switch_cluster.feature_flags = 
+    switch_config.switch_cluster.feature_flags =
 #if CONFIG_GENERIC_SWITCH_TYPE_LATCHING
     cluster::switch_cluster::feature::latching_switch::get_id();
 #endif

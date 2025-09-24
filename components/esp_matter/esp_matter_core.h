@@ -90,6 +90,13 @@ esp_err_t start(event_callback_t callback, intptr_t callback_arg = static_cast<i
  */
 esp_err_t factory_reset();
 
+/** Initialize esp-matter nvs partition CONFIG_ESP_MATTER_NVS_PART_NAME
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t esp_matter_nvs_init();
+
 namespace lock {
 
 /** Lock status */

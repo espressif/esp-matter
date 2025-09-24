@@ -19,6 +19,7 @@
 #include <esp_matter_icd_configuration.h>
 #include <esp_matter_test_event_trigger.h>
 #include <nvs.h>
+#include <nvs_flash.h>
 
 #include <app/server/Dnssd.h>
 #ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
@@ -452,6 +453,23 @@ esp_err_t factory_reset()
     ConfigurationMgr().InitiateFactoryReset();
 #endif // !CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
     return err;
+}
+
+esp_err_t esp_matter_nvs_init()
+{
+#ifdef CONFIG_NVS_ENCRYPTION
+    nvs_sec_cfg_t cfg = {};
+    const esp_partition_t * key_part = esp_partition_find_first(ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_DATA_NVS_KEYS, NULL);
+    VerifyOrReturnError(key_part != NULL, ESP_ERR_NOT_FOUND,
+                        ESP_LOGE(TAG, "NVS encrypt is enabled, but no nvs_keys partition found"));
+
+    VerifyOrReturnError(nvs_flash_read_security_cfg(key_part, &cfg) == ESP_OK, ESP_FAIL,
+                        ESP_LOGE(TAG, "Failed to read NVS security cfg"));
+
+    return nvs_flash_secure_init_partition(CONFIG_ESP_MATTER_NVS_PART_NAME, &cfg);
+#else
+    return nvs_flash_init_partition(CONFIG_ESP_MATTER_NVS_PART_NAME);
+#endif
 }
 
 } /* esp_matter */
