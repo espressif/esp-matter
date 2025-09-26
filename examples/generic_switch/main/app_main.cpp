@@ -146,7 +146,7 @@ static esp_err_t create_button(struct gpio_button* button, node_t* node)
     endpoint_t *endpoint = generic_switch::create(node, &switch_config, ENDPOINT_FLAG_NONE, button_handle);
 
     cluster_t* descriptor = cluster::get(endpoint,Descriptor::Id);
-    descriptor::feature::taglist::add(descriptor);
+    descriptor::feature::tag_list::add(descriptor);
 
     /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
     if (!node || !endpoint)

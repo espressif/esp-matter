@@ -1966,7 +1966,7 @@ command_t *create_sign_vid_verification_response(cluster_t *cluster)
 } /* command */
 } /* operational_credentials */
 
-namespace ota_provider {
+namespace ota_software_update_provider {
 namespace command {
 
 command_t *create_query_image(cluster_t *cluster)
@@ -2000,9 +2000,9 @@ command_t *create_apply_update_response(cluster_t *cluster)
 }
 
 } /* command */
-} /* ota_provider */
+} /* ota_software_update_provider */
 
-namespace ota_requestor {
+namespace ota_software_update_requestor {
 namespace command {
 
 command_t *create_announce_ota_provider(cluster_t *cluster)
@@ -2012,7 +2012,7 @@ command_t *create_announce_ota_provider(cluster_t *cluster)
 }
 
 } /* command */
-} /* ota_requestor */
+} /* ota_software_update_requestor */
 
 namespace identify {
 namespace command {

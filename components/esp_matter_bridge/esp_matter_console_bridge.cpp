@@ -52,9 +52,9 @@ struct device_type_handler {
 const device_type_handler device_handlers[] = {
     {"on_off_light", ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID, ADD_DEVICE_FUN(on_off_light)},
     {"dimmable_light", ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID, ADD_DEVICE_FUN(dimmable_light)},
-    {"on_off_switch", ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID, ADD_DEVICE_FUN(on_off_switch)},
+    {"on_off_light_switch", ESP_MATTER_ON_OFF_LIGHT_SWITCH_DEVICE_TYPE_ID, ADD_DEVICE_FUN(on_off_light_switch)},
     {"occupancy_sensor", ESP_MATTER_OCCUPANCY_SENSOR_DEVICE_TYPE_ID, ADD_DEVICE_FUN(occupancy_sensor)},
-    {"on_off_plugin_unit", ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_ID, ADD_DEVICE_FUN(on_off_plugin_unit)},
+    {"on_off_plug_in_unit", ESP_MATTER_ON_OFF_PLUG_IN_UNIT_DEVICE_TYPE_ID, ADD_DEVICE_FUN(on_off_plug_in_unit)},
     {"color_temperature_light", ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_ID, ADD_DEVICE_FUN(color_temperature_light)},
     {"extended_color_light", ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_ID, ADD_DEVICE_FUN(extended_color_light)},
     {"thermostat", ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID, ADD_DEVICE_FUN(thermostat)},

@@ -103,15 +103,15 @@ using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* binding */
 
-namespace ota_provider {
+namespace ota_software_update_provider {
 typedef struct config {
     void *delegate;
     config() : delegate(nullptr) {}
 } config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* ota_provider */
+} /* ota_software_update_provider */
 
-namespace ota_requestor {
+namespace ota_software_update_requestor {
 typedef struct config {
     bool update_possible;
     uint8_t update_state;
@@ -120,7 +120,7 @@ typedef struct config {
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* ota_requestor */
+} /* ota_software_update_requestor */
 
 namespace general_commissioning {
 typedef struct config {

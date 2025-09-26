@@ -104,9 +104,9 @@ esp_err_t create_bridge_devices(esp_matter::endpoint_t *ep, uint32_t device_type
         err = extended_color_light::add(ep, &extended_color_light_conf);
         break;
     }
-    case ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID: {
-        on_off_switch::config_t switch_config;
-        err = on_off_switch::add(ep, &switch_config);
+    case ESP_MATTER_ON_OFF_LIGHT_SWITCH_DEVICE_TYPE_ID: {
+        on_off_light_switch::config_t switch_config;
+        err = on_off_light_switch::add(ep, &switch_config);
         break;
     }
     default: {

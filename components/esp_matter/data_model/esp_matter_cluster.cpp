@@ -358,7 +358,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* binding */
 
-namespace ota_provider {
+namespace ota_software_update_provider {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
@@ -369,7 +369,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config -> delegate != nullptr) {
-            static const auto delegate_init_cb = OtaProviderDelegateInitCB;
+            static const auto delegate_init_cb = OtaSoftwareUpdateProviderDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
         static const auto plugin_server_init_cb = CALL_ONCE(MatterOtaSoftwareUpdateProviderPluginServerInitCallback);
@@ -394,9 +394,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* ota_provider */
+} /* ota_software_update_provider */
 
-namespace ota_requestor {
+namespace ota_software_update_requestor {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
@@ -435,7 +435,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* ota_requestor */
+} /* ota_software_update_requestor */
 
 namespace general_commissioning {
 const function_generic_t *function_list = NULL;

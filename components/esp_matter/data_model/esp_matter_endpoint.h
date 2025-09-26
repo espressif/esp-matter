@@ -44,8 +44,8 @@
 #define ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_ID 0x010D
 #define ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_VERSION 4
 
-#define ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID 0x0103
-#define ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_VERSION 3
+#define ESP_MATTER_ON_OFF_LIGHT_SWITCH_DEVICE_TYPE_ID 0x0103
+#define ESP_MATTER_ON_OFF_LIGHT_SWITCH_DEVICE_TYPE_VERSION 3
 #define ESP_MATTER_DIMMER_SWITCH_DEVICE_TYPE_ID 0x0104
 #define ESP_MATTER_DIMMER_SWITCH_DEVICE_TYPE_VERSION 3
 #define ESP_MATTER_COLOR_DIMMER_SWITCH_DEVICE_TYPE_ID 0x0105
@@ -53,10 +53,10 @@
 #define ESP_MATTER_GENERIC_SWITCH_DEVICE_TYPE_ID 0x000F
 #define ESP_MATTER_GENERIC_SWITCH_DEVICE_TYPE_VERSION 3
 
-#define ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_ID 0x010A
-#define ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_VERSION 4
-#define ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_ID 0x010B
-#define ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_VERSION 5
+#define ESP_MATTER_ON_OFF_PLUG_IN_UNIT_DEVICE_TYPE_ID 0x010A
+#define ESP_MATTER_ON_OFF_PLUG_IN_UNIT_DEVICE_TYPE_VERSION 4
+#define ESP_MATTER_DIMMABLE_PLUG_IN_UNIT_DEVICE_TYPE_ID 0x010B
+#define ESP_MATTER_DIMMABLE_PLUG_IN_UNIT_DEVICE_TYPE_VERSION 5
 #define ESP_MATTER_MOUNTED_ON_OFF_CONTROL_DEVICE_TYPE_ID 0x010F
 #define ESP_MATTER_MOUNTED_ON_OFF_CONTROL_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_MOUNTED_DIMMABLE_LOAD_CONTROL_DEVICE_TYPE_ID 0x0110
@@ -216,31 +216,31 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* root_node */
 
-namespace ota_requestor{
+namespace ota_software_update_requestor{
 typedef struct config {
     cluster::descriptor::config_t descriptor;
-    cluster::ota_requestor::config_t ota_requestor;
+    cluster::ota_software_update_requestor::config_t ota_software_update_requestor;
 } config_t;
 
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
-} /* ota_requestor */
+} /* ota_software_update_requestor */
 
-namespace ota_provider{
+namespace ota_software_update_provider{
 typedef struct config {
     cluster::descriptor::config_t descriptor;
-    cluster::ota_provider::config_t ota_provider;
+    cluster::ota_software_update_provider::config_t ota_software_update_provider;
 } config_t;
 
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
-} /* ota_provider */
+} /* ota_software_update_provider */
 
-namespace power_source_device{
+namespace power_source{
 typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::power_source::config_t power_source;
@@ -250,7 +250,7 @@ uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
-} /* power_source_device */
+} /* power_source */
 
 namespace on_off_light {
 
@@ -309,7 +309,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* extended_color_light */
 
-namespace on_off_switch {
+namespace on_off_light_switch {
 
 typedef struct config : app_client_config {
     config() {
@@ -321,7 +321,7 @@ uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
-} /* on_off_switch */
+} /* on_off_light_switch */
 
 namespace dimmer_switch {
 
@@ -365,7 +365,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* generic_switch */
 
-namespace on_off_plugin_unit {
+namespace on_off_plug_in_unit {
 
 typedef struct config : on_off_with_lighting_config {
    config() {
@@ -377,10 +377,10 @@ uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
-} /* on_off_plugin_unit */
+} /* on_off_plug_in_unit */
 
-namespace dimmable_plugin_unit {
-typedef struct config : on_off_plugin_unit::config_t {
+namespace dimmable_plug_in_unit {
+typedef struct config : on_off_plug_in_unit::config_t {
     cluster::level_control::config_t level_control;
     cluster::level_control::feature::lighting::config_t level_control_lighting;
 } config_t;
@@ -389,7 +389,7 @@ uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
-} /* dimmable_plugin_unit */
+} /* dimmable_plug_in_unit */
 
 namespace fan {
 typedef struct config : app_with_group_config {
@@ -536,7 +536,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* door_lock */
 
-namespace window_covering_device {
+namespace window_covering {
 typedef struct config : app_with_group_config {
     cluster::window_covering::config_t window_covering;
     config(uint8_t end_product_type = 0) : window_covering(end_product_type) {
@@ -680,7 +680,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** pump_controller **/
 
-namespace mode_select_device {
+namespace mode_select {
 typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::mode_select::config_t mode_select;
@@ -690,7 +690,7 @@ uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
-} /** mode_select_device **/
+} /** mode_select **/
 
 namespace room_air_conditioner {
 typedef struct config : app_base_config {
@@ -964,7 +964,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace solar_power {
 typedef struct config {
     cluster::descriptor::config_t descriptor;
-    power_source_device::config_t power_source_device;
+    endpoint::power_source::config_t power_source_device;
     electrical_sensor::config_t electrical_sensor;
     cluster::electrical_energy_measurement::config_t electrical_energy_measurement;
 } config_t;
@@ -978,7 +978,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace battery_storage {
 typedef struct config {
     cluster::descriptor::config_t descriptor;
-    power_source_device::config_t power_source_device;
+    endpoint::power_source::config_t power_source_device;
     electrical_sensor::config_t electrical_sensor;
     device_energy_management::config_t device_energy_management;
     cluster::electrical_energy_measurement::config_t electrical_energy_measurement;
@@ -1005,7 +1005,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace heat_pump {
 typedef struct config {
     cluster::descriptor::config_t descriptor;
-    power_source_device::config_t power_source_device;
+    endpoint::power_source::config_t power_source_device;
     electrical_sensor::config_t electrical_sensor;
     device_energy_management::config_t device_energy_management;
     cluster::electrical_energy_measurement::config_t electrical_energy_measurement;

@@ -165,7 +165,6 @@ static void initialize_console(void)
 #endif
 }
 
-
 namespace esp_matter {
 
 static chip::app::Clusters::PowerTopology::PowerTopologyDelegate powerTopologyDelegate;
@@ -197,9 +196,9 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::extended_color_light::create(node, &extended_color_light_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
-        case ESP_MATTER_ON_OFF_SWITCH: {
-            esp_matter::endpoint::on_off_switch::config_t on_off_switch_config;
-            endpoint = esp_matter::endpoint::on_off_switch::create(node, &on_off_switch_config, ENDPOINT_FLAG_NONE, NULL);
+        case ESP_MATTER_ON_OFF_LIGHT_SWITCH: {
+            esp_matter::endpoint::on_off_light_switch::config_t on_off_light_switch_config;
+            endpoint = esp_matter::endpoint::on_off_light_switch::create(node, &on_off_light_switch_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
         case ESP_MATTER_DIMMER_SWITCH: {
@@ -218,14 +217,14 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::generic_switch::create(node, &generic_switch_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
-        case ESP_MATTER_ON_OFF_PLUGIN_UNIT: {
-            esp_matter::endpoint::on_off_plugin_unit::config_t on_off_plugin_unit_config;
-            endpoint = esp_matter::endpoint::on_off_plugin_unit::create(node, &on_off_plugin_unit_config, ENDPOINT_FLAG_NONE, NULL);
+        case ESP_MATTER_ON_OFF_PLUG_IN_UNIT: {
+            esp_matter::endpoint::on_off_plug_in_unit::config_t on_off_plug_in_unit_config;
+            endpoint = esp_matter::endpoint::on_off_plug_in_unit::create(node, &on_off_plug_in_unit_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
-        case ESP_MATTER_DIMMABLE_PLUGIN_UNIT: {
-            esp_matter::endpoint::dimmable_plugin_unit::config_t dimmable_plugin_unit_config;
-            endpoint = esp_matter::endpoint::dimmable_plugin_unit::create(node, &dimmable_plugin_unit_config, ENDPOINT_FLAG_NONE, NULL);
+        case ESP_MATTER_DIMMABLE_PLUG_IN_UNIT: {
+            esp_matter::endpoint::dimmable_plug_in_unit::config_t dimmable_plug_in_unit_config;
+            endpoint = esp_matter::endpoint::dimmable_plug_in_unit::create(node, &dimmable_plug_in_unit_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
         case ESP_MATTER_FAN: {
@@ -287,9 +286,9 @@ int create(uint8_t device_type_index)
             break;
         }
         case ESP_MATTER_WINDOW_COVERING_DEVICE: {
-            esp_matter::endpoint::window_covering_device::config_t window_covering_device_config;
-            window_covering_device_config.window_covering.feature_flags = cluster::window_covering::feature::lift::get_id();
-            endpoint = esp_matter::endpoint::window_covering_device::create(node, &window_covering_device_config, ENDPOINT_FLAG_NONE, NULL);
+            esp_matter::endpoint::window_covering::config_t window_covering_config;
+            window_covering_config.window_covering.feature_flags = cluster::window_covering::feature::lift::get_id();
+            endpoint = esp_matter::endpoint::window_covering::create(node, &window_covering_config, ENDPOINT_FLAG_NONE, NULL);
             cluster_t *cluster = cluster::get(endpoint, chip::app::Clusters::WindowCovering::Id);
             cluster::window_covering::feature::position_aware_lift::config_t position_aware_lift;
             cluster::window_covering::feature::absolute_position::config_t absolute_position;
@@ -347,8 +346,8 @@ int create(uint8_t device_type_index)
             break;
         }
         case ESP_MATTER_MODE_SELECT_DEVICE: {
-            esp_matter::endpoint::mode_select_device::config_t mode_select_device_config;
-            endpoint = esp_matter::endpoint::mode_select_device::create(node, &mode_select_device_config, ENDPOINT_FLAG_NONE, NULL);
+            esp_matter::endpoint::mode_select::config_t mode_select_config;
+            endpoint = esp_matter::endpoint::mode_select::create(node, &mode_select_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
         case ESP_MATTER_RAC: {
@@ -422,9 +421,9 @@ int create(uint8_t device_type_index)
             smoke_co_alarm_config.smoke_co_alarm.feature_flags = cluster::smoke_co_alarm::feature::smoke_alarm::get_id();
             endpoint = esp_matter::endpoint::smoke_co_alarm::create(node, &smoke_co_alarm_config, ENDPOINT_FLAG_NONE, NULL);
 
-            esp_matter::endpoint::power_source_device::config_t power_source_config;
+            esp_matter::endpoint::power_source::config_t power_source_config;
             power_source_config.power_source.feature_flags = cluster::power_source::feature::wired::get_id();
-            esp_matter::endpoint_t *ps_endpoint = esp_matter::endpoint::power_source_device::create(node, &power_source_config, ENDPOINT_FLAG_NONE, NULL);
+            esp_matter::endpoint_t *ps_endpoint = esp_matter::endpoint::power_source::create(node, &power_source_config, ENDPOINT_FLAG_NONE, NULL);
 
             if (!ps_endpoint) {
                 ESP_LOGE(TAG, "Matter create endpoint failed");
@@ -443,9 +442,9 @@ int create(uint8_t device_type_index)
             break;
         }
         case ESP_MATTER_POWER_SOURCE: {
-            esp_matter::endpoint::power_source_device::config_t power_source_device_config;
-            power_source_device_config.power_source.feature_flags = esp_matter::cluster::power_source::feature::wired::get_id();
-            endpoint = esp_matter::endpoint::power_source_device::create(node, &power_source_device_config, ENDPOINT_FLAG_NONE, NULL);
+            esp_matter::endpoint::power_source::config_t power_source_config;
+            power_source_config.power_source.feature_flags = esp_matter::cluster::power_source::feature::wired::get_id();
+            endpoint = esp_matter::endpoint::power_source::create(node, &power_source_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
         case ESP_MATTER_RAIN_SENSOR: {
@@ -497,8 +496,8 @@ int create(uint8_t device_type_index)
             esp_matter::endpoint::energy_evse::config_t energy_evse_config;
             endpoint = esp_matter::endpoint::energy_evse::create(node, &energy_evse_config, ENDPOINT_FLAG_NONE, NULL);
 
-            esp_matter::endpoint::power_source_device::config_t power_source_config;
-            esp_matter::endpoint_t *ps_endpoint = esp_matter::endpoint::power_source_device::create(node, &power_source_config, ENDPOINT_FLAG_NONE, NULL);
+            esp_matter::endpoint::power_source::config_t power_source_config;
+            esp_matter::endpoint_t *ps_endpoint = esp_matter::endpoint::power_source::create(node, &power_source_config, ENDPOINT_FLAG_NONE, NULL);
             esp_matter::endpoint::electrical_sensor::config_t electrical_sensor_config;
             esp_matter::endpoint::electrical_sensor::add(ps_endpoint, &electrical_sensor_config);
 

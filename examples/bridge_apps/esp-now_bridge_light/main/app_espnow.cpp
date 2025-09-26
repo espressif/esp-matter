@@ -109,8 +109,8 @@ static void espnow_event_handler(void* handler_args, esp_event_base_t base, int3
         case ESP_EVENT_ESPNOW_CTRL_BIND: {
             espnow_ctrl_bind_info_t *info = (espnow_ctrl_bind_info_t *)event_data;
             ESP_LOGI(TAG, "bind, uuid: " MACSTR ", initiator_type: %d", MAC2STR(info->mac), info->initiator_attribute);
-            ESP_LOGI(TAG, "Create bridged switch type: 0x%04x", ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID);
-            espnow_bridge_match_bridged_switch(info->mac, info->initiator_attribute, ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID);
+            ESP_LOGI(TAG, "Create bridged switch type: 0x%04x", ESP_MATTER_ON_OFF_LIGHT_SWITCH_DEVICE_TYPE_ID);
+            espnow_bridge_match_bridged_switch(info->mac, info->initiator_attribute, ESP_MATTER_ON_OFF_LIGHT_SWITCH_DEVICE_TYPE_ID);
             attribute::get_val(attribute, &val);
             val.val.b = !val.val.b;
             attribute::update(endpoint_id, cluster_id, attribute_id, &val);

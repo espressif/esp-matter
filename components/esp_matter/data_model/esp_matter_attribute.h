@@ -109,14 +109,14 @@ attribute_t *create_binding(cluster_t *cluster, uint8_t *value, uint16_t length,
 } /* attribute */
 } /* binding */
 
-namespace ota_requestor {
+namespace ota_software_update_requestor {
 namespace attribute {
 attribute_t *create_default_ota_providers(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_update_possible(cluster_t *cluster, bool value);
 attribute_t *create_update_state(cluster_t *cluster, uint8_t value);
 attribute_t *create_update_state_progress(cluster_t *cluster, nullable<uint8_t> value);
 } /* attribute */
-} /* ota_requestor */
+} /* ota_software_update_requestor */
 
 namespace general_commissioning {
 namespace attribute {
@@ -438,7 +438,7 @@ attribute_t *create_color_temperature_mireds(cluster_t *cluster, uint16_t value)
 attribute_t *create_color_temp_physical_min_mireds(cluster_t *cluster, uint16_t value);
 attribute_t *create_color_temp_physical_max_mireds(cluster_t *cluster, uint16_t value);
 attribute_t *create_couple_color_temp_to_level_min_mireds(cluster_t *cluster, uint16_t value);
-attribute_t *create_startup_color_temperature_mireds(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_start_up_color_temperature_mireds(cluster_t *cluster, nullable<uint16_t> value);
 attribute_t *create_current_x(cluster_t *cluster, uint16_t value);
 attribute_t *create_current_y(cluster_t *cluster, uint16_t value);
 attribute_t *create_drift_compensation(cluster_t *cluster, uint8_t value);

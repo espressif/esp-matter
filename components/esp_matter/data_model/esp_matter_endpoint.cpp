@@ -93,7 +93,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /* root_node */
 
-namespace ota_requestor{
+namespace ota_software_update_requestor{
 uint32_t get_device_type_id()
 {
     return ESP_MATTER_OTA_REQUESTOR_DEVICE_TYPE_ID;
@@ -120,8 +120,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
-    cluster_t *cluster_p = cluster::ota_provider::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
-    cluster_t *cluster_r = cluster::ota_requestor::create(endpoint, &(config->ota_requestor), CLUSTER_FLAG_SERVER);
+    cluster_t *cluster_p = cluster::ota_software_update_provider::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
+    cluster_t *cluster_r = cluster::ota_software_update_requestor::create(endpoint, &(config->ota_software_update_requestor), CLUSTER_FLAG_SERVER);
     if (!cluster_p || !cluster_r) {
         return ESP_FAIL;
     }
@@ -133,9 +133,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 #endif
 }
 
-} /** ota_requestor **/
+} /** ota_software_update_requestor **/
 
-namespace ota_provider{
+namespace ota_software_update_provider{
 uint32_t get_device_type_id()
 {
     return ESP_MATTER_OTA_PROVIDER_DEVICE_TYPE_ID;
@@ -156,7 +156,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
-    cluster_t *cluster = cluster::ota_provider::create(endpoint, &(config->ota_provider), CLUSTER_FLAG_SERVER);
+    cluster_t *cluster = cluster::ota_software_update_provider::create(endpoint, &(config->ota_software_update_provider), CLUSTER_FLAG_SERVER);
     if (!cluster) {
         return ESP_FAIL;
     }
@@ -164,9 +164,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     return ESP_OK;
 }
 
-} /** ota_provider **/
+} /** ota_software_update_provider **/
 
-namespace power_source_device{
+namespace power_source{
 uint32_t get_device_type_id()
 {
     return ESP_MATTER_POWER_SOURCE_DEVICE_TYPE_ID;
@@ -187,7 +187,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
-    cluster_t *cluster = power_source::create(endpoint, &(config->power_source), CLUSTER_FLAG_SERVER);
+    cluster_t *cluster = cluster::power_source::create(endpoint, &(config->power_source), CLUSTER_FLAG_SERVER);
     if (!cluster) {
         return ESP_ERR_INVALID_STATE;
     }
@@ -195,7 +195,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     return ESP_OK;
 }
 
-} /** power_source_device **/
+} /** power_source **/
 
 namespace on_off_light {
 uint32_t get_device_type_id()
@@ -360,15 +360,15 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /* extended_color_light */
 
-namespace on_off_switch {
+namespace on_off_light_switch {
 uint32_t get_device_type_id()
 {
-    return ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID;
+    return ESP_MATTER_ON_OFF_LIGHT_SWITCH_DEVICE_TYPE_ID;
 }
 
 uint8_t get_device_type_version()
 {
-    return ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_VERSION;
+    return ESP_MATTER_ON_OFF_LIGHT_SWITCH_DEVICE_TYPE_VERSION;
 }
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
@@ -392,7 +392,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     return ESP_OK;
 }
-} /* on_off_switch */
+} /* on_off_light_switch */
 
 namespace dimmer_switch {
 uint32_t get_device_type_id()
@@ -494,15 +494,15 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /* generic_switch */
 
-namespace on_off_plugin_unit {
+namespace on_off_plug_in_unit {
 uint32_t get_device_type_id()
 {
-    return ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_ID;
+    return ESP_MATTER_ON_OFF_PLUG_IN_UNIT_DEVICE_TYPE_ID;
 }
 
 uint8_t get_device_type_version()
 {
-    return ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_VERSION;
+    return ESP_MATTER_ON_OFF_PLUG_IN_UNIT_DEVICE_TYPE_VERSION;
 }
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
@@ -528,17 +528,17 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     return ESP_OK;
 }
-} /* on_off_plugin_unit */
+} /* on_off_plug_in_unit */
 
-namespace dimmable_plugin_unit {
+namespace dimmable_plug_in_unit {
 uint32_t get_device_type_id()
 {
-    return ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_ID;
+    return ESP_MATTER_DIMMABLE_PLUG_IN_UNIT_DEVICE_TYPE_ID;
 }
 
 uint8_t get_device_type_version()
 {
-    return ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_VERSION;
+    return ESP_MATTER_DIMMABLE_PLUG_IN_UNIT_DEVICE_TYPE_VERSION;
 }
 
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
@@ -567,7 +567,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     return ESP_OK;
 }
-} /* dimmable_plugin_unit */
+} /* dimmable_plug_in_unit */
 
 namespace fan {
 uint32_t get_device_type_id()
@@ -924,7 +924,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /* door_lock */
 
-namespace window_covering_device {
+namespace window_covering {
 uint32_t get_device_type_id()
 {
     return ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_ID;
@@ -947,7 +947,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
-    window_covering::create(endpoint, &(config->window_covering), CLUSTER_FLAG_SERVER);
+    cluster::window_covering::create(endpoint, &(config->window_covering), CLUSTER_FLAG_SERVER);
 
     return ESP_OK;
 }
@@ -1213,7 +1213,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /** pump_controller **/
 
-namespace mode_select_device {
+namespace mode_select {
 uint32_t get_device_type_id()
 {
     return ESP_MATTER_MODE_SELECT_DEVICE_TYPE_ID;
@@ -1234,14 +1234,14 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
-    cluster_t *cluster = mode_select::create(endpoint, &(config->mode_select), CLUSTER_FLAG_SERVER);
+    cluster_t *cluster = cluster::mode_select::create(endpoint, &(config->mode_select), CLUSTER_FLAG_SERVER);
     if (!cluster) {
         return ESP_ERR_INVALID_STATE;
     }
 
     return ESP_OK;
 }
-} /** mode_select_device **/
+} /** mode_select **/
 
 namespace room_air_conditioner {
 
@@ -1890,10 +1890,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     VerifyOrReturnError(err == ESP_OK, err);
 
     cluster_t *descriptor_cluster = cluster::get(endpoint, Descriptor::Id);
-    descriptor::feature::taglist::add(descriptor_cluster);
+    descriptor::feature::tag_list::add(descriptor_cluster);
 
-    config->power_source_device.power_source.feature_flags = power_source::feature::wired::get_id();
-    power_source_device::add(endpoint, &config->power_source_device);
+    config->power_source_device.power_source.feature_flags = cluster::power_source::feature::wired::get_id();
+    endpoint::power_source::add(endpoint, &config->power_source_device);
 
     config->electrical_energy_measurement.feature_flags = electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id();
     config->electrical_sensor.electrical_power_measurement.feature_flags |= electrical_power_measurement::feature::alternating_current::get_id();
@@ -1932,21 +1932,21 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     VerifyOrReturnError(err == ESP_OK, err);
 
     cluster_t *descriptor_cluster = cluster::get(endpoint, Descriptor::Id);
-    descriptor::feature::taglist::add(descriptor_cluster);
+    descriptor::feature::tag_list::add(descriptor_cluster);
 
-    config->power_source_device.power_source.feature_flags = power_source::feature::battery::get_id() | power_source::feature::wired::get_id();
-    power_source_device::add(endpoint, &config->power_source_device);
+    config->power_source_device.power_source.feature_flags = cluster::power_source::feature::battery::get_id() | cluster::power_source::feature::wired::get_id();
+    endpoint::power_source::add(endpoint, &config->power_source_device);
 
     cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id);
 
-    power_source::attribute::create_bat_voltage(power_source_cluster, config->bat_voltage, 0x00, 0xFFFF);
-    power_source::attribute::create_bat_percent_remaining(power_source_cluster, config->bat_percent_remaining, 0, 200);
-    power_source::attribute::create_bat_time_remaining(power_source_cluster, config->bat_time_remaining, 0x00, 0xFFFF);
-    power_source::attribute::create_active_bat_faults(power_source_cluster, NULL, 0, 0);
-    power_source::attribute::create_bat_capacity(power_source_cluster, config->bat_capacity, 0x00, 0xFFFF);
-    power_source::attribute::create_bat_time_to_full_charge(power_source_cluster, config->bat_time_to_full_charge, 0x00, 0xFFFF);
-    power_source::attribute::create_bat_charging_current(power_source_cluster, config->bat_charging_current, 0x00, 0xFFFF);
-    power_source::attribute::create_active_bat_charge_faults(power_source_cluster, NULL, 0, 0);
+    cluster::power_source::attribute::create_bat_voltage(power_source_cluster, config->bat_voltage, 0x00, 0xFFFF);
+    cluster::power_source::attribute::create_bat_percent_remaining(power_source_cluster, config->bat_percent_remaining, 0, 200);
+    cluster::power_source::attribute::create_bat_time_remaining(power_source_cluster, config->bat_time_remaining, 0x00, 0xFFFF);
+    cluster::power_source::attribute::create_active_bat_faults(power_source_cluster, NULL, 0, 0);
+    cluster::power_source::attribute::create_bat_capacity(power_source_cluster, config->bat_capacity, 0x00, 0xFFFF);
+    cluster::power_source::attribute::create_bat_time_to_full_charge(power_source_cluster, config->bat_time_to_full_charge, 0x00, 0xFFFF);
+    cluster::power_source::attribute::create_bat_charging_current(power_source_cluster, config->bat_charging_current, 0x00, 0xFFFF);
+    cluster::power_source::attribute::create_active_bat_charge_faults(power_source_cluster, NULL, 0, 0);
 
     config->electrical_energy_measurement.feature_flags = electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id();
     config->electrical_sensor.electrical_power_measurement.feature_flags = electrical_power_measurement::feature::alternating_current::get_id();
@@ -1987,10 +1987,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     VerifyOrReturnError(err == ESP_OK, err);
 
     cluster_t *descriptor_cluster = cluster::get(endpoint, Descriptor::Id);
-    descriptor::feature::taglist::add(descriptor_cluster);
+    descriptor::feature::tag_list::add(descriptor_cluster);
 
-    config->power_source_device.power_source.feature_flags = power_source::feature::wired::get_id();
-    power_source_device::add(endpoint, &config->power_source_device);
+    config->power_source_device.power_source.feature_flags = cluster::power_source::feature::wired::get_id();
+    endpoint::power_source::add(endpoint, &config->power_source_device);
 
     config->electrical_sensor.electrical_power_measurement.feature_flags = electrical_power_measurement::feature::alternating_current::get_id();
     electrical_sensor::add(endpoint, &config->electrical_sensor);
