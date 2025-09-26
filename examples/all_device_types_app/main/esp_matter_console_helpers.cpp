@@ -293,9 +293,7 @@ int create(uint8_t device_type_index)
             cluster::window_covering::feature::position_aware_lift::config_t position_aware_lift;
             cluster::window_covering::feature::absolute_position::config_t absolute_position;
 
-            nullable<uint8_t> percentage = nullable<uint8_t>(0);
             nullable<uint16_t> percentage_100ths = nullable<uint16_t>(0);
-            position_aware_lift.current_position_lift_percentage = percentage;
             position_aware_lift.target_position_lift_percent_100ths = percentage_100ths;
             position_aware_lift.current_position_lift_percent_100ths = percentage_100ths;
 

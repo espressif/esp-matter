@@ -1,3 +1,11 @@
+## 31-Oct-2025
+### API Changes: `feature::add()` Function
+The following APIs have been updated — the config parameter has been removed, as the corresponding attributes are optional.
+```
+window_covering::feature::lift::add(cluster_t *cluster);
+window_covering::feature::tilt::add(cluster_t *cluster);
+```
+
 ## 21-Oct-2025
 ### API Changes: `feature::add()` Function
 The following APIs have been updated — the config parameter has been removed, as the corresponding attributes are internally managed and not user-configurable:

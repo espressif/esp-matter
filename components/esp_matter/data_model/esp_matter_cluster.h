@@ -537,8 +537,6 @@ typedef struct config {
     const uint8_t end_product_type;
     uint8_t mode;
     struct {
-        feature::lift::config_t lift;
-        feature::tilt::config_t tilt;
         feature::position_aware_lift::config_t position_aware_lift;
         feature::absolute_position::config_t absolute_position;
         feature::position_aware_tilt::config_t position_aware_tilt;
