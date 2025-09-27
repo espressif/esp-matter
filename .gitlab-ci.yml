@@ -188,6 +188,7 @@ build_image:
     - cd ${ESP_MATTER_PATH}
     - mkdir -p ${REPOS_PATH}
     - *setup_matter
+    - pip uninstall cryptography -y && pip install cryptography==41.0.7
     # update caches only when setup succeed
     - *update_build_caches
   variables:
@@ -363,6 +364,7 @@ build_esp_matter_examples_pytest_C3_idf_v4_4:
   script:
     - cd ${ESP_MATTER_PATH}
     - pip install -r tools/ci/requirements-build.txt
+    - pip install construct==2.10.54
     - python tools/ci/build_apps.py ./examples --pytest_c3
   variables:
     IDF_CHECKOUT_REF: "v4.4.3"
