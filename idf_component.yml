@@ -1,5 +1,5 @@
 ## IDF Component Manager Manifest File
-version: 0.0.2
+version: 1.4.2
 description: Espressif's Matter SDK Component
 url: https://github.com/espressif/esp-matter
 files:
@@ -9,9 +9,9 @@ files:
         - "./CMakeLists.txt"
         - "./Kconfig"
         - "./LICENSE"
-        - "./generate-include-files.cmake"
-        - "./ota-image.cmake"
+        - "./managed_component_include/**/*"
         - "./README.md"
+        - "./CHANGELOG.md"
         - "./components/**/*"
         - "./connectedhomeip/connectedhomeip/config/esp32/components/chip/Kconfig"
         - "./connectedhomeip/connectedhomeip/config/esp32/components/chip/ota-image.cmake"
@@ -19,22 +19,30 @@ files:
         - "./connectedhomeip/connectedhomeip/src/access/examples/*.*"
         - "./connectedhomeip/connectedhomeip/src/app/*.*"
         - "./connectedhomeip/connectedhomeip/src/app/app-platform/**/*"
+        - "./connectedhomeip/connectedhomeip/src/app/cluster-building-blocks/*.*"
         - "./connectedhomeip/connectedhomeip/src/app/clusters/**/*"
-        - "./connectedhomeip/connectedhomeip/src/app/data-model/**/*"
+        - "./connectedhomeip/connectedhomeip/src/app/common/*.*"
+        - "./connectedhomeip/connectedhomeip/src/app/data-model/*.*"
+        - "./connectedhomeip/connectedhomeip/src/app/data-model-provider/*.*"
         - "./connectedhomeip/connectedhomeip/src/app/dynamic_server/**/*"
         - "./connectedhomeip/connectedhomeip/src/app/icd/**/*"
-        - "./connectedhomeip/connectedhomeip/src/app/MessageDef/**/*"
-        - "./connectedhomeip/connectedhomeip/src/app/reporting/**/*"
-        - "./connectedhomeip/connectedhomeip/src/app/server/**/*"
+        - "./connectedhomeip/connectedhomeip/src/app/MessageDef/*.*"
+        - "./connectedhomeip/connectedhomeip/src/app/reporting/*.*"
+        - "./connectedhomeip/connectedhomeip/src/app/server/*.*"
+        - "./connectedhomeip/connectedhomeip/src/app/server-cluster/*.*"
+        - "./connectedhomeip/connectedhomeip/src/app/storage/*.*"
         - "./connectedhomeip/connectedhomeip/src/app/util/**/*"
         - "./connectedhomeip/connectedhomeip/src/ble/*.*"
         - "./connectedhomeip/connectedhomeip/src/controller/*.*"
         - "./connectedhomeip/connectedhomeip/src/controller/python/chip/tlv/tlvlist.py"
+        - "./connectedhomeip/connectedhomeip/src/controller/python/chip/tlv/__init__.py"
         - "./connectedhomeip/connectedhomeip/src/credentials/*.*"
-        - "./connectedhomeip/connectedhomeip/src/credentials/attestation_verifier/**/*"
-        - "./connectedhomeip/connectedhomeip/src/credentials/examples/**/*"
+        - "./connectedhomeip/connectedhomeip/src/credentials/attestation_verifier/*.*"
+        - "./connectedhomeip/connectedhomeip/src/credentials/examples/*.*"
         - "./connectedhomeip/connectedhomeip/src/credentials/tests/CHIPAttCert_test_vectors.*"
         - "./connectedhomeip/connectedhomeip/src/crypto/*.*"
+        - "./connectedhomeip/connectedhomeip/src/data-model-providers/codegen/*.*"
+        - "./connectedhomeip/connectedhomeip/src/data-model-providers/endpoint/*.*"
         - "./connectedhomeip/connectedhomeip/src/include/**/*"
         - "./connectedhomeip/connectedhomeip/src/inet/*.*"
         - "./connectedhomeip/connectedhomeip/src/lib/address_resolve/*.*"
@@ -51,38 +59,49 @@ files:
         - "./connectedhomeip/connectedhomeip/src/platform/ESP32/**/*"
         - "./connectedhomeip/connectedhomeip/src/platform/logging/*.*"
         - "./connectedhomeip/connectedhomeip/src/platform/OpenThread/**/*"
-        - "./connectedhomeip/connectedhomeip/src/protocols/**/*"
+        - "./connectedhomeip/connectedhomeip/src/protocols/*.*"
+        - "./connectedhomeip/connectedhomeip/src/protocols/bdx/*.*"
+        - "./connectedhomeip/connectedhomeip/src/protocols/echo/*.*"
+        - "./connectedhomeip/connectedhomeip/src/protocols/interaction_model/*.*"
+        - "./connectedhomeip/connectedhomeip/src/protocols/secure_channel/*.*"
+        - "./connectedhomeip/connectedhomeip/src/protocols/user_directed_commissioning/*.*"
         - "./connectedhomeip/connectedhomeip/src/setup_payload/*.*"
         - "./connectedhomeip/connectedhomeip/src/system/*.*"
         - "./connectedhomeip/connectedhomeip/src/tracing/*.*"
+        - "./connectedhomeip/connectedhomeip/src/tracing/esp32_diagnostic_trace/**/*"
         - "./connectedhomeip/connectedhomeip/src/tracing/esp32_trace/**/*"
         - "./connectedhomeip/connectedhomeip/src/transport/*.*"
-        - "./connectedhomeip/connectedhomeip/src/transport/raw/**/*"
+        - "./connectedhomeip/connectedhomeip/src/transport/raw/*.*"
+        - "./connectedhomeip/connectedhomeip/src/transport/retransmit/*.*"
+        - "./connectedhomeip/connectedhomeip/src/wifipaf/*.*"
+        - "./connectedhomeip/connectedhomeip/third_party/jsoncpp/repo/include/**/*"
         - "./connectedhomeip/connectedhomeip/third_party/nlassert/repo/include/**/*"
         - "./connectedhomeip/connectedhomeip/third_party/nlfaultinjection/include/**/*"
         - "./connectedhomeip/connectedhomeip/third_party/nlfaultinjection/src/**/*"
         - "./connectedhomeip/connectedhomeip/third_party/nlio/repo/include/**/*"
         - "./connectedhomeip/connectedhomeip/zzz_generated/app-common/**/*"
+        - "./connectedhomeip/connectedhomeip/zzz_generated/chip-tool/zap-generated/cluster/logging/**/*"
+        - "./connectedhomeip/connectedhomeip/examples/chip-tool/commands/clusters/DataModelLogger.h"
+        - "./connectedhomeip/connectedhomeip/examples/chip-tool/commands/common/RemoteDataModelLogger.h"
 dependencies:
     espressif/mdns:
         version: "^1.1.0"
         rules:
             - if: "idf_version >=5.0"
-            - if: "target != esp32h2"
 
     espressif/esp_secure_cert_mgr:
-        version: "^2.3.0"
+        version: "^2.5.0"
         rules:
             - if: "idf_version >=4.3"
 
     espressif/esp_encrypted_img:
-        version: "2.1.0"
+        version: "2.3.0"
         require: public
         rules:
             - if: "idf_version >=4.4"
 
     espressif/esp_insights:
-        version: "1.0.1"
+        version: "^1.2.4"
         require: public
         # There is an issue with IDF-Component-Manager when ESP Insights is included.
         # Issue: https://github.com/project-chip/connectedhomeip/issues/29125
@@ -92,3 +111,19 @@ dependencies:
 
     espressif/json_parser: "~1.0.0"
     espressif/json_generator: "~1.1.0"
+
+    espressif/esp_rcp_update:
+        version: "~1.3.0"
+        rules:
+            - if: "idf_version >=5.0"
+
+    espressif/esp_delta_ota:
+        version: "^1.1.0"
+        require: public
+        rules:
+            - if: "idf_version >=4.3"
+
+    espressif/esp_wifi_remote:
+        version: "^0.7.0"
+        rules:
+            - if: "target in [esp32p4]"
