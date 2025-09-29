@@ -6,3 +6,5 @@ dependencies:
       - if: "target in [esp32c2]"
   esp_bsp_generic:
     version: "^1.1.0"
+  espressif/esp_lvgl_port:
+    version: "2.6.0"
