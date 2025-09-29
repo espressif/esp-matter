@@ -164,13 +164,13 @@ extern "C" void app_main()
 
     extended_color_light::config_t light_config;
     light_config.on_off.on_off = DEFAULT_POWER;
-    //light_config.on_off_lighting.start_up_on_off = nullptr;
+    light_config.on_off_lighting.start_up_on_off = nullptr;
     light_config.level_control.current_level = DEFAULT_BRIGHTNESS;
     light_config.level_control.on_level = DEFAULT_BRIGHTNESS;
-    //light_config.level_control_lighting.start_up_current_level = DEFAULT_BRIGHTNESS;
+    light_config.level_control_lighting.start_up_current_level = DEFAULT_BRIGHTNESS;
     light_config.color_control.color_mode = (uint8_t)ColorControl::ColorMode::kColorTemperature;
     light_config.color_control.enhanced_color_mode = (uint8_t)ColorControl::ColorMode::kColorTemperature;
-    light_config.color_control.color_temperature.startup_color_temperature_mireds = nullptr;
+    light_config.color_control_color_temperature.startup_color_temperature_mireds = nullptr;
 
     // endpoint handles can be used to add/modify clusters.
     endpoint_t *endpoint = extended_color_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
