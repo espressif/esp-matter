@@ -20,14 +20,15 @@ Table of Contents
 
    1. Introduction <introduction>
    2. Developing with the SDK <developing>
-   3. Matter Certification <certification>
-   4. Production Considerations <production>
-   5. Security Considerations <security>
-   6. RAM and Flash Optimizations <optimizations>
-   7. API Reference <api-reference/index>
-   8. Integration with esp-insights <insights>
-   9. Application User Guide <app_guide>
-   10. Copyrights and Licenses<COPYRIGHT>
+   3. Matter Controller <controller>
+   4. Matter Certification <certification>
+   5. Production Considerations <production>
+   6. Security Considerations <security>
+   7. RAM and Flash Optimizations <optimizations>
+   8. API Reference <api-reference/index>
+   9. Integration with esp-insights <insights>
+   10. Application User Guide <app_guide>
+   11. Copyrights and Licenses<COPYRIGHT>
    A1 Appendix FAQs <faq>
 
 .. _Matter: https://csa-iot.org/all-solutions/matter/

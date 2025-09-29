@@ -1,8 +1,8 @@
-9. Application User Guide
-<<<<<<<<<<<<<<<<<<<<<<<<<
+Application User Guide
+======================
 
-9.1. Delegate Implementation
-============================
+1. Delegate Implementation
+--------------------------
 
 As per the implementation in the connectedhomeip repository, some of the clusters
 require an application defined delegate to consume specific data and actions.
@@ -49,8 +49,8 @@ List of clusters with delegate:
     - Energy Preference Cluster.
     - Commissioner Control Cluster.
 
-9.1.1 Mode Base Cluster
------------------------
+1.1 Mode Base Cluster
+~~~~~~~~~~~~~~~~~~~~~
 
 It is a base cluster for ModeEVSE, ModeOven, ModeRVSRun, ModeRVSClean, ModeDishwasher,
 ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
@@ -67,48 +67,48 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
               , `Device Energy Management Mode`_
               , `Water Heater Mode`_
 
-9.1.2 Energy Evse Cluster
--------------------------
+1.2 Energy Evse Cluster
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Energy Evse`_, `Energy Evse Delegate`_
 
-9.1.3 Operational State Cluster
--------------------------------
+1.3 Operational State Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Operational State`_, `Operational State Delegate`_
 
-9.1.4 Microwave Oven Control Cluster
-------------------------------------
+1.4 Microwave Oven Control Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Microwave Oven Control`_, `Microwave Oven Control Delegate`_
 
-9.1.5 Fan Control Cluster
--------------------------
+1.5 Fan Control Cluster
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Fan Control`_, `Fan Control Delegate`_
 
-9.1.6 Resource Monitoring Cluster
----------------------------------
+1.6 Resource Monitoring Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Resource Monitoring`_, `Resource Monitoring Delegate`_
 
-9.1.7 Laundry Dryer Controls Cluster
-------------------------------------
+1.7 Laundry Dryer Controls Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
@@ -116,128 +116,128 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
   `Laundry Dryer Controls`_, `Laundry Dryer Controls Delegate`_
 
 
-9.1.8 Valve Configuration And Control Cluster
----------------------------------------------
+1.8 Valve Configuration And Control Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Valve Configuration And Control`_, `Valve Configuration And Control Delegate`_
 
-9.1.9 Device Energy Management Cluster
---------------------------------------
+1.9 Device Energy Management Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Device Energy Management`_, `Device Energy Management Delegate`_
 
-9.1.10 Door Lock Cluster
-------------------------
+1.10 Door Lock Cluster
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Door Lock`_, None
 
-9.1.11 Boolean State Configuration Cluster
-------------------------------------------
+1.11 Boolean State Configuration Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Boolean State Configuration`_, None
 
-9.1.12 Time Synchronization Cluster
------------------------------------
+1.12 Time Synchronization Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Time Synchronization`_, `Time Synchronization Delegate`_
 
-9.1.13 Application Basic Cluster
---------------------------------
+1.13 Application Basic Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Application Basic`_, None
 
-9.1.14 Power Topology Cluster
------------------------------
+1.14 Power Topology Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Power Topology`_, `Power Topology Delegate`_
 
-9.1.15 Electrical Power Measurement Cluster
--------------------------------------------
+1.15 Electrical Power Measurement Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Electrical Power Measurement`_, `Electrical Power Measurement Delegate`_
 
-9.1.16 Laundry Washer Controls Cluster
---------------------------------------
+1.16 Laundry Washer Controls Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Laundry Washer Controls`_, `Laundry Washer Controls Delegate`_
 
-9.1.17 Window Covering Cluster
-------------------------------
+1.17 Window Covering Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Window Covering`_, `Window Covering Delegate`_
 
-9.1.18 Dishwasher Alarm Cluster
--------------------------------
+1.18 Dishwasher Alarm Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Dishwasher Alarm`_, `Dishwasher Alarm Delegate`_
 
-9.1.19 Keypad Input Cluster
----------------------------
+1.19 Keypad Input Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Keypad Input`_, `Keypad Input Delegate`_
 
-9.1.20 Mode Select Cluster
---------------------------
+1.20 Mode Select Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Mode Select`_, `Mode Select Delegate`_
 
-9.1.21 Water Heater Management Cluster
---------------------------------------
+1.21 Water Heater Management Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Water Heater Management`_, `Water Heater Management Delegate`_
 
-9.1.22 Energy Preference Cluster
---------------------------------
+1.22 Energy Preference Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Energy Preference`_, `Energy Preference Delegate`_
 
-9.1.23 Commissioner Control Cluster
------------------------------------
+1.23 Commissioner Control Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"

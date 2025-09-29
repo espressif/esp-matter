@@ -1,8 +1,8 @@
-6. Configuration options to optimize RAM and Flash
-==================================================
+Configuration options to optimize RAM and Flash
+===============================================
 
-6.1 Overview
-------------
+1 Overview
+----------
 
 There are several configuration options available to optimize Flash and RAM storage.
 The following list highlights key options that significantly increase the free DRAM, heap, and reduce the flash
@@ -10,11 +10,11 @@ footprint.
 
 For more optimizations, we've also listed the reference links to esp-idf's optimization guide.
 
-6.2 Configurations
-------------------
+2 Configurations
+----------------
 
-6.2.1 Test Environment setup
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.1 Test Environment setup
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 All numbers mentioned below are collected in the following environment:
 
@@ -42,8 +42,8 @@ All numbers mentioned below are collected in the following environment:
       allocated as heap. Therefore, a direct increase in the free DRAM will reflect as an increase in free heap.
 
 
-6.2.2 Default Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.2 Default Configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 We have used the default light example here, and below listed are the static and dynamic sizes.
 
@@ -76,8 +76,8 @@ We have used the default light example here, and below listed are the static and
       Post Commissioning, 101580, --
 
 
-6.2.3 Disable the chip-shell
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.3 Disable the chip-shell
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Console shell is helpful when developing/debugging the application, but may not be necessary in
 production. Disabling the shell can save space. Disable the below configuration option.
@@ -115,8 +115,8 @@ production. Disabling the shell can save space. Disable the below configuration 
       Post Commissioning, 112340, 10760
 
 
-6.2.4 Adjust the dynamic endpoint count
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.4 Adjust the dynamic endpoint count
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The default dynamic endpoint count and default device type count is 16, which may be excessive for a normal application creating only 2 endpoints.
 eg: light, only has two endpoints, one for root endpoint and one for actual light.
@@ -158,8 +158,8 @@ Here, we have set the dynamic endpoint count and device type count to 2. Increas
       Post Commissioning, 107984, 6404
 
 
-6.2.5 Use the newlib nano formatting
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.5 Use the newlib nano formatting
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This optimization saves approximately 25-50K of flash, depending on the target. In our case, it results in a flash
 reduction of 47 KB.
@@ -200,8 +200,8 @@ functions. Fore more details please take a look at esp-idf's `newlib nano format
       Post Commissioning, 103500, 1920
 
 
-6.2.6 BLE Optimizations
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.6 BLE Optimizations
+~~~~~~~~~~~~~~~~~~~~~
 
 Since most devices will primarily operate as BLE peripherals and typically won't need more than one connection
 (especially if it's just a Matter app), we can optimize by reducing the maximum allowed connections, thereby
@@ -262,8 +262,8 @@ Below are the configuration options that can be set to achieve these optimizatio
       Post Commissioning, 101176, -404
 
 
-6.2.7 Configuring logging event buffer
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.7 Configuring logging event buffer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Matter events serve as a historical record, stored in chronological order in the logging event buffer.
 By reducing the buffer size we can potentially save the DRAM. However, it's important to note that this reduction
@@ -322,8 +322,8 @@ Reduce the chip device event queue size can reduce IRAM size usage, lead to free
       Post Commissioning, 108184, 6604
 
 
-6.2.8 Relocate certain code from IRAM to flash memory
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.8 Relocate certain code from IRAM to flash memory
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Relocating certain code from IRAM to flash can reduce IRAM usage, so increase available heap size. However, this may increase execution time.
 
@@ -331,8 +331,8 @@ Relocating certain code from IRAM to flash can reduce IRAM usage, so increase av
 
     The options in this section may impact performance. Please perform thorough testing before using them in production.
 
-6.2.8.1 Reduce BLE IRAM usage
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.8.1 Reduce BLE IRAM usage
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Move most IRAM into flash. This will increase the usage of flash and reduce ble performance.
 Because the code is moved to the flash, the execution speed of the code is reduced. To have
@@ -371,8 +371,8 @@ a small impact on performance, you need to enable flash suspend (SPI_FLASH_AUTO_
       Post Commissioning, 119608, 18028
 
 
-6.2.8.2 Place FreeRTOS functions into Flash
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.8.2 Place FreeRTOS functions into Flash
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When enabled the selected Non-ISR FreeRTOS functions will be placed into Flash memory instead of IRAM.
 This saves up to 8KB of IRAM depending on which functions are used.
@@ -410,8 +410,8 @@ This saves up to 8KB of IRAM depending on which functions are used.
       Post Commissioning, 111020, 9440
 
 
-6.2.8.3 Place non-ISR ringbuf functions into flash
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.8.3 Place non-ISR ringbuf functions into flash
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Place non-ISR ringbuf functions (like xRingbufferCreate/xRingbufferSend) into flash.
 This frees up IRAM, but the functions can no longer be called when the cache is disabled.
@@ -449,8 +449,8 @@ This frees up IRAM, but the functions can no longer be called when the cache is 
       Post Commissioning, 105652, 4072
 
 
-6.2.8.4 Use esp_flash implementation in ROM
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.8.4 Use esp_flash implementation in ROM
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Enable this flag to use new SPI flash driver functions from ROM instead of ESP-IDF.
 After enable CONFIG_SPI_FLASH_ROM_IMPL, will increase free IRAM.
@@ -491,8 +491,8 @@ But may miss out on some flash features and support for new flash chips.
       Post Commissioning, 110512, 8932
 
 
-6.2.8.5 Force the entire heap component to be placed in flash memory
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.8.5 Force the entire heap component to be placed in flash memory
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Enable this flag to save up RAM space by placing the heap component in the flash memory
 Note that it is only safe to enable this configuration if no functions from esp_heap_caps.h or
@@ -531,8 +531,8 @@ esp_heap_trace.h are called from IRAM ISR which runs when cache is disabled.
       Post Commissioning, 108192, 6612
 
 
-6.2.9 Reduce Task Stack Size
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.9 Reduce Task Stack Size
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Reduce some task stack size can increase free heap size.
 
@@ -571,8 +571,8 @@ Reduce some task stack size can increase free heap size.
       Post Commissioning, 104828, 3248
 
 
-6.2.10 Excluding Unused Matter Clusters
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.10 Excluding Unused Matter Clusters
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If the cluster implementation source files use a class derived from another class with virtual functions and instantiate
 a global object of this class, the linker may keep all the related symbols that may be used for this class in the vtable.
@@ -686,7 +686,7 @@ The default configuration disables all unused clusters.
 
 .. only:: esp32c2 or esp32c3 or esp32c5 or esp32c6 or esp32h2
 
-    6.2.11 Link Time Optimization (LTO)
+    2.11 Link Time Optimization (LTO)
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Link Time Optimization (LTO) helps further optimize both binary size and runtime performance.
@@ -699,8 +699,8 @@ The default configuration disables all unused clusters.
     enabling LTO can result in around ~90 KB of flash savings, though it also increases stack usage by ~1700 bytes.
 
 
-6.3 References for futher optimizations
----------------------------------------
+3 References for futher optimizations
+-------------------------------------
 
 - `RAM optimization`_
 - `Binary size optimization`_

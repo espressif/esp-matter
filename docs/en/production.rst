@@ -1,13 +1,13 @@
-4. Production Considerations
-============================
+Production Considerations
+=========================
 
-4.1 Prerequisites
------------------
+1 Prerequisites
+---------------
 
 All Matter examples use certain test or evaluation values that enables you to quickly build and test Matter. As you get ready to go to production, these must be replaced with the actual values. These values are typically a part of the manufacturing partition in your device.
 
-4.1.1 Vendor ID and Product ID
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1.1 Vendor ID and Product ID
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A **Vendor Identifier (VID)** is a 16-bit number that uniquely identifies a particular
 product manufacturer or a vendor. It is allocated by the Connectivity Standards
@@ -18,8 +18,8 @@ of a vendor. It is assigned by the vendor (you).
 
 A VID-PID combination uniquely identifies a Matter product.
 
-4.1.2 Certificates
-~~~~~~~~~~~~~~~~~~
+1.2 Certificates
+~~~~~~~~~~~~~~~~
 
 A **Device Attestation Certificate (DAC)** proves the authenticity of the device
 manufacturer and the certification status of the device's hardware and software.
@@ -32,16 +32,16 @@ The PAA certificate is an implicitly trusted self-signed root certificate.
 Please reach out to your Espressif representative for the details about how to
 procure the DAC.
 
-4.1.3 Certification Declaration (CD)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1.3 Certification Declaration (CD)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A **Certification Declaration (CD)** is a cryptographic document that allows a Matter
 device to assert its protocol compliance. Once your product is certified, the CSA
 creates a CD for that device. The CD should then be included in the device firmware
 by the device manufacturer.
 
-4.1.4 Setup Passcode, Discriminator and Onboarding Payload
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1.4 Setup Passcode, Discriminator and Onboarding Payload
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The unique **setup passcode** serves as the proof of possession and is also used to compute
 the shared secret during commissioning. The corresponding SPAKE2+ verifier of the
@@ -56,8 +56,8 @@ The QR code and/or the manual pairing code are generally printed on the packagin
 device.
 
 
-4.1.5 Manufacturing Partition
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1.5 Manufacturing Partition
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Espressif's SDK for Matter uses a separate manufacturing partition to store all the information
 mentioned above. Because the DACs are unique to every device, the manufacturing partition
@@ -73,8 +73,8 @@ images before shipping the modules and provides a manifest (CSV file) along with
 bundle.
 
 
-4.2 Over-the-Air (OTA) Updates
-------------------------------
+2 Over-the-Air (OTA) Updates
+----------------------------
 
 Matter devices must support OTA firmware updates, either by using Matter-based OTA
 or vendor specific means.
@@ -89,11 +89,11 @@ on the devices remotely. As opposed to the Matter OTA, ESP RainMaker OTA allows 
 the flexibility of delivering the OTA upgrades incrementally or to groups of devices.
 
 
-4.3 Manufacturing
------------------
+3 Manufacturing
+---------------
 
-4.3.1 Mass Manufacturing Utility
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3.1 Mass Manufacturing Utility
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For commissioning a device into the Matter Fabric, the device requires the following information:
 
@@ -109,8 +109,8 @@ When using the utility, by default, the above details will be included in the ge
 
 Details about using the mass manufacturing utility can be found here: `esp-matter-mfg-tool`_
 
-4.3.2 Pre-Provisioned Modules
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3.2 Pre-Provisioned Modules
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 {IDF_TARGET_NAME} modules can be pre-flashed with the manufacturing partition images
 during module manufacturing itself and then be shipped to you.
@@ -120,8 +120,8 @@ programming the partition into the device at your end.
 
 Please contact your Espressif contact person for more information.
 
-4.3.3 The esp-matter-mfg-tool Example
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3.3 The esp-matter-mfg-tool Example
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In Espressif Matter Prep-provisioning modules, the DAC key pair, DAC and PAI certificates are pre-flashed by default.
 

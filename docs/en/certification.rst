@@ -1,24 +1,24 @@
-3. Matter Certification
-=======================
+Matter Certification
+====================
 
 The Matter Certification denotes compliance to a Connectivity Standards Alliance (CSA) specification for the product and allow the use of Certified Product logos and listing of the product on the Alliance website for verification.
 
 You need to `become a member <https://csa-iot.org/become-member/>`__ of CSA and request a Vendor ID code from CSA Certification before you apply for a Matter Certification. Then you need to choose an `authorized test provider <https://csa-iot.org/certification/testing-providers/>`__ (must be validated for Matter testing) and submit your product for testing. Here are some tips for the Matter Certification Test.
 
-3.1 Introduction to Test Harness (TH)
--------------------------------------
+1 Introduction to Test Harness (TH)
+-----------------------------------
 
 Test Harness on RaspberryPi is used for Matter Certification Test. You can fetch the TH RaspberryPi image from `here <https://groups.csa-iot.org/wg/matter-csg/document/27406>`__ and install the image to a micro SD card with the `Raspberry Pi Imager <https://www.raspberrypi.com/software/>`__.
 
 Test cases can be verified with TH by 4 methods including UI-Automated, UI-SemiAutomated, UI-Manual, and Verification Steps Document. A website UI is used for the first three methods. You can follow the instructions in `TH User Guide <https://groups.csa-iot.org/wg/matter-csg/document/24838>`__ to use the website UI. For the last method, you should use the chip-tool in path ``~/apps`` of the TH and execute the commands in the `Verification Steps Document <https://groups.csa-iot.org/wg/matter-csg/document/26925>`__ step by step.
 
-3.2 Matter Factory Partition Binary
------------------------------------
+2 Matter Factory Partition Binary
+---------------------------------
 
 Matter factory partition binary files contains the commissionable information (discriminator, salt, iteration count, and spake2+ verifier) and device attestation information (Certification Declaration (CD), Product Attestation Intermediate (PAI) certificate, Device Attestation Certificate (DAC), and DAC private key), device instance information(vendor ID, vendor name, product ID, product name, etc.), and device information (fixed label, supported locales, etc.). These informations are used to identify the product and ensure the security of commissioning.
 
-3.2.1 Certification Declaration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.1 Certification Declaration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A Certification Declaration (CD) is a cryptographic document that allows a Matter device to assert its protocol compliance. It can be generated with following steps. We need to generate the CD which matches the vendor id and product id in DAC and the ones in basic information cluster.
 
@@ -43,15 +43,15 @@ A test CD signed by the test CD signing keys in `connectedhomeip <https://github
     - The options ``--vendor_id`` (vendor_id) should be the Vendor ID (VID) that the vendor receives from CSA, and ``--product_id`` (product_id) could be the Product ID (PID) choosed by the vendor. They should be the same as the attributes' value in basic information cluster.
     - If the product uses the DACs and PAI certifications provided by a trusted third-party certification authority, the VID and PID in DAC are different from the ones in basic information cluster. Then the ``--dac-origin-vendor-id`` and ``--dac-origin-product-id`` options should be added in the command generating the test CD file.
 
-3.2.2 Certificates and Keys
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.2 Certificates and Keys
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For Matter Certification Test, vendors should generate their own test Product Attestation Authority (PAA) certificate, Product Attestation Intermediate (PAI) certificate, and Device Attestation Certificate (DAC), but not use the default test PAA certificate in `connectedhomeip <https://github.com/espressif/connectedhomeip/tree/master/credentials/test/attestation>`__ SDK repository. So you need to generate a PAA certificate, and use it to sign and attest PAI certificates which will be used to sign and attest the DACs. The PAI certificate, DAC, and DAC's private key should be stored in the product you submit to test.
 
 Here are the steps to generate the certificates and keys using `chip-cert`_ and `esp-matter-mfg-tool`_.
 
-3.2.2.1 Generating PAA Certificate
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.2.1 Generating PAA Certificate
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Vendor scoped PAA certificate is suggested for the Matter Certificate Test. It can be generated with the help of blow mentioned steps.
 
@@ -65,8 +65,8 @@ Generate the vendor scoped PAA certificate and key, please make sure to change t
                              --out-key /path/to/PAA_key \
                              --out /path/to/PAA_certificate
 
-3.2.2.2 Generating Factory Partition Binary Files
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.2.2 Generating Factory Partition Binary Files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 After getting the PAA certificate and key, the factory partition binary files with PAI certificate, DAC, and DAC keys can be generated using esp-matter-mfg-tool.
 
@@ -92,8 +92,8 @@ After getting the PAA certificate and key, the factory partition binary files wi
 
 The option ``-n`` (count) is the number of generated binaries. In the above command, esp-matter-mfg-tool will generate PAI certificate and key and then use them to generate ``count`` different DACs and keys. It will use the generated certificates and keys to generate ``count`` factory partition binaries with different DACs, discriminators, and setup pincodes. Flash the factory binary to the device's NVS partition. Then the device will send the vendor's PAI certificate and DAC to the commissioner during commissioning.
 
-3.2.2.3 Using Vendor's PAA in Test Harness(TH)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.2.3 Using Vendor's PAA in Test Harness(TH)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - Manual Tests (Verified by UI-Manual and Verification Steps Document)
 
@@ -146,20 +146,20 @@ Make sure  to copy your PAA certificates in DER format to the default path ``/va
 
 Run automated chip-tool tests and verify that the pairing commands are using the ``--paa-trust-store-path`` option.
 
-3.2.3 Menuconfig Options
-~~~~~~~~~~~~~~~~~~~~~~~~
+2.3 Menuconfig Options
+~~~~~~~~~~~~~~~~~~~~~~
 
 Please consult the `factory data providers <./developing.html#factory-data-providers>`__ and adjust the menucofig options accordingly for the certification test.
 
-3.3 Matter OTA Image Generation
--------------------------------
+3 Matter OTA Image Generation
+-----------------------------
 
 If the product supports OTA Requestor features of Matter, the test cases of OTA Software Update should be tested. So you need to provide the image for OTA test and also the way to downgrade.
 
 Here are two ways to generate the OTA image.
 
-3.3.1 Using menuconfig option
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3.1 Using menuconfig option
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Enable ``Generate Matter OTA image`` in ``→ Component config → CHIP Device Layer → Matter OTA Image``, set ``Device Vendor Id`` and ``Device Product Id`` in ``→ Component config → CHIP Device Layer → Device Identification Options``, and edit the ``PROJECT_VER`` and the ``PROJECT_VER_NUMBER`` in the project's CMakelists. Build the example and the OTA image will be generated in the build path with the app binary file.
 
@@ -167,8 +167,8 @@ Enable ``Generate Matter OTA image`` in ``→ Component config → CHIP Device L
 
    The ``PROJECT_VER_NUMBER`` must always be incremental. It must be higher than the version number of firmware to be updated.
 
-3.3.2 Using ota_image_tool script
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3.2 Using ota_image_tool script
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 We should also edit the ``PROJECT_VER`` and the ``PROJECT_VER_NUMBER`` in the project's CMakelists when using the script to generate the OTA image.
 
@@ -186,8 +186,8 @@ We should also edit the ``PROJECT_VER`` and the ``PROJECT_VER_NUMBER`` in the pr
 
     The ``-vn`` (version-number) and ``-vs`` (version-string) should match the values in the project's CMakelists.
 
-3.4 PICS files
---------------
+4 PICS files
+------------
 
 The PICS files define the Matter features for the product. The authorized test provider will determine the test cases to be tested in Matter Certification Test according to the PICS files submitted.
 
@@ -197,15 +197,15 @@ A `PICS-generator tool <https://github.com/espressif/connectedhomeip/tree/master
 
 Open the reference PICS files that include all the clusters of the product, and select the features supported by the product. Clicking the button ``Validate All``, the PICS Tool will validate all the XML files and generate a list of test cases to be tested in Matter Certification Test.
 
-3.5 Route Information Option (RIO) notes
-----------------------------------------
+5 Route Information Option (RIO) notes
+--------------------------------------
 
 For Wi-Fi products using LwIP, TC-SC-4.9 should be tested in order to verify that the product can receive Router Advertisement (RA) message with RIO and add route table that indicates whether the prefix can be reached by way of the router. It can be tested with a Thread Border Router (BR) which sends RA message periodically and a Thread End Device that is used to verify the Wi-Fi product can reach the Thread network via Thread BR. Some Wi-Fi Routers might have the issue that they cannot forward RA message sent by the Thread BR, so please use a Wi-Fi Router that can forward RA message when you are testing TC-SC-4.9.
 
 Here are the steps to set up the Thread BR and Thread End Device. You should prepare 2 Radio Co-Processors (RCP) to set up the `ot-br-posix <https://github.com/openthread/ot-br-posix>`__ and `ot-cli-posix <https://github.com/openthread/openthread/tree/main/examples/apps/cli>`__. The `RCP on ESP32-H2 <https://github.com/espressif/esp-idf/tree/master/examples/openthread/ot_rcp>`__ is suggested to be used here. And you can also use other platforms (such as nrf52840, efr32, etc.) as the RCPs.
 
-3.5.1 Setup Thread BR
-~~~~~~~~~~~~~~~~~~~~~
+5.1 Setup Thread BR
+~~~~~~~~~~~~~~~~~~~
 
 The otbr-posix can be run on RaspberryPi or Ubuntu machine. Connecting an RCP to the host, the port ``RCP_PORT1`` for it will be ``/dev/ttyUSBX`` or ``/dev/ttyACMX``.
 
@@ -244,8 +244,8 @@ The otbr-posix is running on the host now. Open another terminal, start console 
 
 Please record the dataset you get with the last command, it will be used by otcli-posix to join the BR’s network in the next step.
 
-3.5.2 Setup Thread End Device
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+5.2 Setup Thread End Device
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 We use the Posix Thread Command-Line Interface (CLI) as the Thread End Device. Connect another RCP to the host and get the port `RCP_PORT2` for it.
 
@@ -296,8 +296,8 @@ Ping the IP address of the Wi-Fi device.
 
 The ping command should be successful.
 
-3.6 FW/SDK configuration notes
-------------------------------
+6 FW/SDK configuration notes
+----------------------------
 
 - ``Enable OTA Requestor`` in ``→ Component config → CHIP Core → System Options``
 
@@ -315,8 +315,8 @@ The ping command should be successful.
 
   It is suggested to set log level to ``No output`` for passing the test cases of OnOff, LevelControl, and ColorControl clusters. Here is `related issue <https://github.com/CHIP-Specifications/chip-test-plans/issues/2332>`__.
 
-3.7 Appendix FAQs
------------------
+7 Appendix FAQs
+---------------
 
 Here are some issues that you might meet in Matter Certification Test and quick solutions for them.
 
