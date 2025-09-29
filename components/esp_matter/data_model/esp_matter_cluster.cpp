@@ -1532,9 +1532,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 namespace concentration_measurement {
 
-template <typename T>
-static cluster_t *create(endpoint_t *endpoint, T *config, uint8_t flags, uint32_t cluster_id, uint32_t cluster_revision,
-                         const function_generic_t *function_list=NULL, const int function_flags=CLUSTER_FLAG_NONE)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t cluster_id)
 {
     cluster_t *cluster = cluster::create(endpoint, cluster_id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster, id: 0x%08" PRIX32, cluster_id));
@@ -1542,7 +1540,7 @@ static cluster_t *create(endpoint_t *endpoint, T *config, uint8_t flags, uint32_
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
 
-        add_function_list(cluster, function_list, function_flags);
+        add_function_list(cluster, NULL, CLUSTER_FLAG_NONE);
 
         // For all concentration measurement cluster Attribute Id of measurement medium is 0x09
         // Hence, using the hard coded value
@@ -1591,8 +1589,7 @@ namespace carbon_monoxide_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    return concentration_measurement::create<config_t>(endpoint, config, flags,
-                                                       CarbonMonoxideConcentrationMeasurement::Id, cluster_revision);
+    return concentration_measurement::create(endpoint, config, flags, CarbonMonoxideConcentrationMeasurement::Id);
 }
 
 } /* carbon_monoxide_concentration_measurement */
@@ -1601,8 +1598,7 @@ namespace carbon_dioxide_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    return concentration_measurement::create<config_t>(endpoint, config, flags,
-                                                       CarbonDioxideConcentrationMeasurement::Id, cluster_revision);
+    return concentration_measurement::create(endpoint, config, flags, CarbonDioxideConcentrationMeasurement::Id);
 }
 
 } /* carbon_dioxide_concentration_measurement */
@@ -1611,8 +1607,7 @@ namespace nitrogen_dioxide_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    return concentration_measurement::create<config_t>(endpoint, config, flags,
-                                                       NitrogenDioxideConcentrationMeasurement::Id, cluster_revision);
+    return concentration_measurement::create(endpoint, config, flags, NitrogenDioxideConcentrationMeasurement::Id);
 }
 
 } /* nitrogen_dioxide_concentration_measurement */
@@ -1621,8 +1616,7 @@ namespace ozone_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    return concentration_measurement::create<config_t>(endpoint, config, flags,
-                                                       OzoneConcentrationMeasurement::Id, cluster_revision);
+    return concentration_measurement::create(endpoint, config, flags, OzoneConcentrationMeasurement::Id);
 }
 
 } /* ozone_concentration_measurement */
@@ -1631,8 +1625,7 @@ namespace formaldehyde_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    return concentration_measurement::create<config_t>(endpoint, config, flags,
-                                                       FormaldehydeConcentrationMeasurement::Id, cluster_revision);
+    return concentration_measurement::create(endpoint, config, flags, FormaldehydeConcentrationMeasurement::Id);
 }
 
 } /* formaldehyde_concentration_measurement */
@@ -1641,8 +1634,7 @@ namespace pm1_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    return concentration_measurement::create<config_t>(endpoint, config, flags,
-                                                       Pm1ConcentrationMeasurement::Id, cluster_revision);
+    return concentration_measurement::create(endpoint, config, flags, Pm1ConcentrationMeasurement::Id);
 }
 
 } /* pm1_concentration_measurement */
@@ -1651,8 +1643,7 @@ namespace pm25_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    return concentration_measurement::create<config_t>(endpoint, config, flags,
-                                                       Pm25ConcentrationMeasurement::Id, cluster_revision);
+    return concentration_measurement::create(endpoint, config, flags, Pm25ConcentrationMeasurement::Id);
 }
 
 } /* pm25_concentration_measurement */
@@ -1661,8 +1652,7 @@ namespace pm10_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    return concentration_measurement::create<config_t>(endpoint, config, flags,
-                                                       Pm10ConcentrationMeasurement::Id, cluster_revision);
+    return concentration_measurement::create(endpoint, config, flags, Pm10ConcentrationMeasurement::Id);
 }
 
 } /* pm10_concentration_measurement */
@@ -1671,8 +1661,7 @@ namespace radon_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    return concentration_measurement::create<config_t>(endpoint, config, flags,
-                                                       RadonConcentrationMeasurement::Id, cluster_revision);
+    return concentration_measurement::create(endpoint, config, flags, RadonConcentrationMeasurement::Id);
 }
 
 } /* radon_concentration_measurement */
@@ -1681,7 +1670,7 @@ namespace total_volatile_organic_compounds_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    return concentration_measurement::create<config_t>(endpoint, config, flags, TotalVolatileOrganicCompoundsConcentrationMeasurement::Id, cluster_revision);
+    return concentration_measurement::create(endpoint, config, flags, TotalVolatileOrganicCompoundsConcentrationMeasurement::Id);
 }
 } /* total_volatile_organic_compounds_concentration_measurement */
 

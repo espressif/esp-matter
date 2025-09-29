@@ -390,6 +390,8 @@ typedef struct config {
     void *delegate;
     config() : measurement_medium(0), feature_flags(0) {}
 } config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t cluster_id);
 } /* concentration_measurement */
 
 namespace carbon_monoxide_concentration_measurement {
