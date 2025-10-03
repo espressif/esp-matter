@@ -524,7 +524,7 @@ void ThermostatDelegateInitCB(void *delegate, uint16_t endpoint_id)
     Thermostat::SetDefaultDelegate(endpoint_id, thermostat_delegate);
 }
 
-void OtaProviderDelegateInitCB(void *delegate, uint16_t endpoint_id)
+void OtaSoftwareUpdateProviderDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     VerifyOrReturn(delegate != nullptr);
     chip::app::Clusters::OTAProvider::SetDelegate(endpoint_id, static_cast<chip::app::Clusters::OTAProviderDelegate *>(delegate));

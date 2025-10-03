@@ -117,9 +117,9 @@ esp_err_t create_bridge_devices(esp_matter::endpoint_t *ep, uint32_t device_type
         err = extended_color_light::add(ep, &extended_color_light_conf);
         break;
     }
-    case ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID: {
-        on_off_switch::config_t switch_config;
-        err = on_off_switch::add(ep, &switch_config);
+    case ESP_MATTER_ON_OFF_LIGHT_SWITCH_DEVICE_TYPE_ID: {
+        on_off_light_switch::config_t switch_config;
+        err = on_off_light_switch::add(ep, &switch_config);
         break;
     }
     default: {
@@ -155,7 +155,7 @@ extern "C" void app_main()
     light_config.level_control_lighting.start_up_current_level = DEFAULT_BRIGHTNESS;
     light_config.color_control.color_mode = (uint8_t)ColorControl::ColorMode::kColorTemperature;
     light_config.color_control.enhanced_color_mode = (uint8_t)ColorControl::ColorMode::kColorTemperature;
-    light_config.color_control_color_temperature.startup_color_temperature_mireds = nullptr;
+    light_config.color_control_color_temperature.start_up_color_temperature_mireds = nullptr;
 
     // endpoint handles can be used to add/modify clusters.
     endpoint_t *endpoint = color_temperature_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);

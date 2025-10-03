@@ -58,7 +58,7 @@ static uint32_t get_feature_map_value(cluster_t *cluster)
 
 namespace descriptor {
 namespace feature {
-namespace taglist {
+namespace tag_list {
 
 uint32_t get_id()
 {
@@ -76,7 +76,7 @@ esp_err_t add(cluster_t *cluster)
     return ESP_OK;
 }
 
-} /* taglist */
+} /* tag_list */
 
 }
 }
@@ -640,7 +640,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     attribute::create_color_temp_physical_min_mireds(cluster, config->color_temp_physical_min_mireds);
     attribute::create_color_temp_physical_max_mireds(cluster, config->color_temp_physical_max_mireds);
     attribute::create_couple_color_temp_to_level_min_mireds(cluster, config->couple_color_temp_to_level_min_mireds);
-    attribute::create_startup_color_temperature_mireds(cluster, config->startup_color_temperature_mireds);
+    attribute::create_start_up_color_temperature_mireds(cluster, config->start_up_color_temperature_mireds);
 
     /* Commands */
     command::create_move_to_color_temperature(cluster);

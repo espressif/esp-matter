@@ -56,13 +56,13 @@ event_t *create_reachable_changed(cluster_t *cluster);
 } // namespace event
 } // namespace basic_information
 
-namespace ota_requestor {
+namespace ota_software_update_requestor {
 namespace event {
 event_t *create_state_transition(cluster_t *cluster);
 event_t *create_version_applied(cluster_t *cluster);
 event_t *create_download_error(cluster_t *cluster);
 } // namespace event
-} // namespace ota_requestor
+} // namespace ota_software_update_requestor
 
 namespace general_diagnostics {
 namespace event {

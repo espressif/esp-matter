@@ -39,13 +39,13 @@ namespace binding {
 constexpr uint16_t cluster_revision = 1;
 } // namespace binding
 
-namespace ota_provider {
+namespace ota_software_update_provider {
 constexpr uint16_t cluster_revision = 1;
-} // namespace ota_provider
+} // namespace ota_software_update_provider
 
-namespace ota_requestor {
+namespace ota_software_update_requestor {
 constexpr uint16_t cluster_revision = 1;
-} // namespace ota_requestor
+} // namespace ota_software_update_requestor
 
 namespace general_commissioning {
 constexpr uint16_t cluster_revision = 2;
