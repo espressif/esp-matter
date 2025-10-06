@@ -173,8 +173,8 @@ extern "C" void app_main()
     cluster::time_synchronization::feature::time_zone::add(time_sync_cluster, &tz_cfg);
 #endif
 
-    on_off_switch::config_t switch_config;
-    endpoint_t *endpoint = on_off_switch::create(node, &switch_config, ENDPOINT_FLAG_NONE, switch_handle);
+    on_off_light_switch::config_t switch_config;
+    endpoint_t *endpoint = on_off_light_switch::create(node, &switch_config, ENDPOINT_FLAG_NONE, switch_handle);
     ABORT_APP_ON_FAILURE(endpoint != nullptr, ESP_LOGE(TAG, "Failed to create on off switch endpoint"));
 
     /* Add group cluster to the switch endpoint */

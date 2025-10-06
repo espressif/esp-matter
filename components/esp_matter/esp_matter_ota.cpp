@@ -57,7 +57,7 @@ static esp_matter_ota_requestor_impl_t s_ota_requestor_impl = {
 esp_err_t esp_matter_ota_requestor_init(void)
 {
 #if (CONFIG_ENABLE_OTA_REQUESTOR && (FIXED_ENDPOINT_COUNT == 0))
-    endpoint::ota_software_update_requestor::config_t config;
+    endpoint::ota_requestor::config_t config;
     node_t *root_node = esp_matter::node::get();
     endpoint_t *root_node_endpoint = esp_matter::endpoint::get(root_node, 0);
 
@@ -65,7 +65,7 @@ esp_err_t esp_matter_ota_requestor_init(void)
         return ESP_FAIL;
     }
 
-    return endpoint::ota_software_update_requestor::add(root_node_endpoint, &config);
+    return endpoint::ota_requestor::add(root_node_endpoint, &config);
 #else
     return ESP_ERR_NOT_SUPPORTED;
 #endif

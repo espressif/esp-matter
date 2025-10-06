@@ -216,7 +216,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* root_node */
 
-namespace ota_software_update_requestor{
+namespace ota_requestor {
 typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::ota_software_update_requestor::config_t ota_software_update_requestor;
@@ -226,9 +226,9 @@ uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
-} /* ota_software_update_requestor */
+} /* ota_requestor */
 
-namespace ota_software_update_provider{
+namespace ota_provider {
 typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::ota_software_update_provider::config_t ota_software_update_provider;
@@ -238,7 +238,7 @@ uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
-} /* ota_software_update_provider */
+} /* ota_provider */
 
 namespace power_source{
 typedef struct config {

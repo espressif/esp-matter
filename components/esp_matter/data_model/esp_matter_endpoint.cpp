@@ -93,7 +93,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /* root_node */
 
-namespace ota_software_update_requestor{
+namespace ota_requestor {
 uint32_t get_device_type_id()
 {
     return ESP_MATTER_OTA_REQUESTOR_DEVICE_TYPE_ID;
@@ -133,9 +133,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 #endif
 }
 
-} /** ota_software_update_requestor **/
+} /** ota_requestor **/
 
-namespace ota_software_update_provider{
+namespace ota_provider {
 uint32_t get_device_type_id()
 {
     return ESP_MATTER_OTA_PROVIDER_DEVICE_TYPE_ID;
@@ -164,7 +164,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     return ESP_OK;
 }
 
-} /** ota_software_update_provider **/
+} /** ota_provider **/
 
 namespace power_source{
 uint32_t get_device_type_id()

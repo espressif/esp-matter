@@ -791,14 +791,14 @@ creating in the *app_main.cpp* of the example. Examples:
       door_lock::config_t door_lock_config;
       endpoint_t *endpoint = door_lock::create(node, &door_lock_config, ENDPOINT_FLAG_NONE);
 
--  window_covering_device:
+-  window_covering:
 
    ::
 
-      window_covering_device::config_t window_covering_device_config(static_cast<uint8_t>(chip::app::Clusters::WindowCovering::EndProductType::kTiltOnlyInteriorBlind));
-      endpoint_t *endpoint = window_covering_device::create(node, &window_covering_config, ENDPOINT_FLAG_NONE);
+      window_covering::config_t window_covering_config(static_cast<uint8_t>(chip::app::Clusters::WindowCovering::EndProductType::kTiltOnlyInteriorBlind));
+      endpoint_t *endpoint = endpoint::window_covering::create(node, &window_covering_config, ENDPOINT_FLAG_NONE);
 
-   The ``window_covering_device`` ``config_t`` structure includes a constructor that allows specifying
+   The ``window_covering`` ``config_t`` structure includes a constructor that allows specifying
    an end product type different than the default one, which is "Roller shade".
    Once a ``config_t`` instance has been instantiated, its end product type cannot be modified.
 
@@ -915,12 +915,12 @@ For example: Thermostat cluster has O.a+ conformance for Heating and Cooling fea
       
 Optional features which are applicable to a cluster can also be added.
 
-- feature: taglist: Descriptor cluster:
+- feature: tag_list: Descriptor cluster:
 
   ::
 
       cluster_t* cluster = cluster::get(endpoint, Descriptor::Id);
-      descriptor::feature::taglist::add(cluster);
+      descriptor::feature::tag_list::add(cluster);
 
 2.5.3 Adding custom data model fields
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
