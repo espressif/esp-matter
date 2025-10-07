@@ -177,9 +177,9 @@ static esp_err_t create_plug(gpio_plug* plug, node_t* node)
         }
     }
 
-    on_off_plugin_unit::config_t plugin_unit_config;
+    on_off_plug_in_unit::config_t plugin_unit_config;
     plugin_unit_config.on_off.on_off = false;
-    endpoint_t *endpoint = on_off_plugin_unit::create(node, &plugin_unit_config, ENDPOINT_FLAG_NONE, plug);
+    endpoint_t *endpoint = on_off_plug_in_unit::create(node, &plugin_unit_config, ENDPOINT_FLAG_NONE, plug);
 
     if (!endpoint) {
         ESP_LOGE(TAG, "Matter endpoint creation failed");

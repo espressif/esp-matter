@@ -27,9 +27,9 @@ uint16_t switch_endpoint_id = 0;
 using namespace esp_matter;
 using namespace esp_matter::attribute;
 using namespace esp_matter::endpoint;
-using namespace esp_matter::ota_software_update_provider;
+using namespace esp_matter::ota_provider;
 using namespace chip::app::Clusters;
-using chip::app::Clusters::OtaSoftwareUpdateProviderDelegate;
+using chip::app::Clusters::OTAProviderDelegate;
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
@@ -54,8 +54,8 @@ extern "C" void app_main()
     node_t *node = node::create(&node_config, NULL, NULL);
     endpoint_t *root_node_endpoint = endpoint::get(node, 0);
     cluster::ota_software_update_provider::config_t config;
-    EspOtaSoftwareUpdateProvider::GetInstance().Init(true);
-    config.delegate = &EspOtaSoftwareUpdateProvider::GetInstance();
+    EspOtaProvider::GetInstance().Init(true);
+    config.delegate = &EspOtaProvider::GetInstance();
     cluster_t *ota_provider_cluster = cluster::ota_software_update_provider::create(root_node_endpoint, &config, CLUSTER_FLAG_SERVER);
     if (!node || !root_node_endpoint || !ota_provider_cluster) {
         ESP_LOGE(TAG, "Failed to create data model");

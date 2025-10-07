@@ -1,9 +1,44 @@
+## 30-Sep-2025
+
+### Namespace Changes to Align with Matter Specifications
+
+#### Cluster namespace changes
+- `ota_requestor` → `ota_software_update_requestor`
+- `ota_provider` → `ota_software_update_provider`
+
+#### Device type namespace changes
+- `on_off_switch` → `on_off_light_switch`
+- `power_source_device` → `power_source`
+- `window_covering_device` → `window_covering`
+- `mode_select_device` → `mode_select`
+
+### Namespace Changes for Consistency
+
+- `on_off_plugin_unit` → `on_off_plug_in_unit`
+- `dimmable_plugin_unit` -> `dimmable_plug_in_unit`
+- `descriptor::feature::taglist` → `descriptor::feature::tag_list`
+- `color_temperature_light::color_temperature::startup_color_temperature_mireds` → `color_temperature_light::color_temperature::start_up_color_temperature_mireds`
+
+### Note
+
+The following namespaces exist in both the `cluster` and `device_type` namespaces:
+
+- `window_covering`
+- `power_source`
+- `mode_select`
+
+To avoid ambiguity, please reference them explicitly depending on context. For example:
+
+- Use `endpoint::window_covering::create()` to create the **endpoint**
+- Use `cluster::window_covering::create()` to create the **cluster**
+
 # 2-Sep-2025
 
 API change.
 
 Move the macros `REMAP_TO_RANGE()` and `REMAP_TO_RANGE_INVERSE()` to from the `esp_matter_attribute_utils.h` to `common_macros.h`
 in `examples/common/utils` directory.
+
 
 # 10-June-2025
 
