@@ -633,7 +633,7 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_
     ESP_RETURN_ON_FALSE(!(current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY), ESP_ERR_NOT_SUPPORTED, TAG,
                         "Attribute is not managed by esp matter data model");
     VerifyOrReturnError(current_attribute->val.type == val->type, ESP_ERR_INVALID_ARG,
-                        ESP_LOGE(TAG, "Different value type"));
+                        ESP_LOGE(TAG, "Different value type : Expected Type : %u Attempted Type: %u", current_attribute->val.type, val->type));
 
     if ((current_attribute->flags & ATTRIBUTE_FLAG_MIN_MAX) && current_attribute->bounds) {
         if (compare_attr_val_with_bounds(*val, *current_attribute->bounds) != 0) {
