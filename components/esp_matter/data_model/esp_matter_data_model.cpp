@@ -27,8 +27,6 @@
 #include <lib/core/DataModelTypes.h>
 #include <app/clusters/identify-server/identify-server.h>
 #include <app/util/endpoint-config-api.h>
-#include "app/server/Server.h"
-#include "credentials/GroupDataProviderImpl.h"
 
 #define ESP_MATTER_MAX_DEVICE_TYPE_COUNT CONFIG_ESP_MATTER_MAX_DEVICE_TYPE_COUNT
 
@@ -41,6 +39,13 @@ using chip::kInvalidAttributeId;
 using chip::kInvalidCommandId;
 using chip::kInvalidClusterId;
 using chip::kInvalidEndpointId;
+
+// This is the hack to preserve and defer setting the temperature unit in the endpoint::enable()
+// we have an exception for this in attribute::create() to cache for later use in endpoint::enable()
+#ifdef CONFIG_SUPPORT_UNIT_LOCALIZATION_CLUSTER
+#include <app/clusters/unit-localization-server/unit-localization-server.h>
+uint8_t g_temperature_unit = 0;
+#endif // CONFIG_SUPPORT_UNIT_LOCALIZATION_CLUSTER
 
 namespace esp_matter {
 struct _attribute_base_t {
@@ -529,6 +534,24 @@ esp_err_t enable(endpoint_t *endpoint)
     }
     ESP_LOGI(TAG, "Dynamic endpoint %" PRIu16 " added", current_endpoint->endpoint_id);
 
+
+#ifdef CONFIG_SUPPORT_UNIT_LOCALIZATION_CLUSTER
+// set the temperature unit from unit localization cluster
+{
+    using namespace ::chip::app::Clusters;
+    attribute_t *temperature_unit_attr = attribute::get(current_endpoint->endpoint_id,
+                                                        UnitLocalization::Id,
+                                                        UnitLocalization::Attributes::TemperatureUnit::Id);
+    if (temperature_unit_attr) {
+        auto temp_unit = static_cast<UnitLocalization::TempUnitEnum>(g_temperature_unit);
+        CHIP_ERROR chip_err = UnitLocalization::UnitLocalizationServer::Instance().SetTemperatureUnit(temp_unit);
+        if (chip_err != CHIP_NO_ERROR) {
+            ESP_LOGW(TAG, "Failed to set temperature unit, err:%" CHIP_ERROR_FORMAT, chip_err.Format());
+        }
+    }
+}
+#endif // CONFIG_SUPPORT_UNIT_LOCALIZATION_CLUSTER
+
     return err;
 
 cleanup:
@@ -684,6 +707,15 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, e
 
     /* Add */
     SinglyLinkedList<_attribute_base_t>::append(&current_cluster->attribute_list, attribute);
+
+    // this is an exception to keep the sdk experience same as before v1.4.2 release
+#ifdef CONFIG_SUPPORT_UNIT_LOCALIZATION_CLUSTER
+    if (cluster::get_id(cluster) == chip::app::Clusters::UnitLocalization::Id &&
+        attribute_id == chip::app::Clusters::UnitLocalization::Attributes::TemperatureUnit::Id) {
+        g_temperature_unit = val.val.u8;
+    }
+#endif // CONFIG_SUPPORT_UNIT_LOCALIZATION_CLUSTER
+
     return (attribute_t *)attribute;
 }
 
@@ -774,10 +806,130 @@ static void deferred_attribute_write(chip::System::Layer *layer, void *attribute
                      current_attribute->val);
 }
 
+// This is pure hack to not-break the sdk experience with v1.4.2 release
+// Some attributes were moved from external storage to internal storage and the set_val/get_val APIs
+// silently broke the application layer. This is a hack to not-break the sdk experience with v1.4.2 release
+namespace {
+
+using namespace ::chip::app::Clusters;
+using namespace ::chip::app::Clusters::UnitLocalization;
+
+// Helper function to find the cluster_id and attribute_id for internally managed attributes
+esp_err_t find_cluster_and_endpoint_id_for_internally_managed_attribute(_attribute_base_t *attribute_base,
+                                                                 uint16_t *endpoint_id, uint32_t *cluster_id)
+{
+    _node_t *node = (_node_t *)node::get();
+    if (!node) {
+        return ESP_ERR_INVALID_STATE;
+    }
+
+    for (_endpoint_t *endpoint = node->endpoint_list; endpoint != nullptr; endpoint = endpoint->next) {
+        for (_cluster_t *cluster = endpoint->cluster_list; cluster != nullptr; cluster = cluster->next) {
+            for (_attribute_base_t *attr = cluster->attribute_list; attr != nullptr; attr = attr->next) {
+                if (attr == attribute_base) {
+                    *endpoint_id = endpoint->endpoint_id;
+                    *cluster_id = cluster::get_id((cluster_t *)cluster);
+                    return ESP_OK;
+                }
+            }
+        }
+    }
+
+    return ESP_ERR_NOT_FOUND;
+}
+
+std::optional<esp_err_t> get_val_with_compatibility_exceptions(_attribute_t *attribute,
+                                                                esp_matter_attr_val_t *val)
+{
+    uint32_t cluster_id = kInvalidClusterId;
+    uint16_t endpoint_id = kInvalidEndpointId;
+
+    if (!(attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY)) {
+        // For non-internally-managed attributes, we can get cluster_id and endpoint_id directly
+        cluster_id = attribute->cluster_id;
+        endpoint_id = attribute->endpoint_id;
+    } else {
+        esp_err_t err = find_cluster_and_endpoint_id_for_internally_managed_attribute(attribute, &endpoint_id, &cluster_id);
+        VerifyOrReturnError(err == ESP_OK, err,
+            ESP_LOGE(TAG, "Failed to find cluster_id and endpoint_id for internally managed attribute"));
+    }
+
+    switch (cluster_id) {
+#ifdef CONFIG_SUPPORT_UNIT_LOCALIZATION_CLUSTER
+        case UnitLocalization::Id: {
+            switch (attribute->attribute_id) {
+                case Attributes::TemperatureUnit::Id: {
+                    lock::status_t lock_status = lock::chip_stack_lock(portMAX_DELAY);
+                    if (lock_status != lock::SUCCESS) {
+                        return ESP_ERR_INVALID_STATE;
+                    }
+                    auto temperature_unit = UnitLocalizationServer::Instance().GetTemperatureUnit();
+                    lock::chip_stack_unlock();
+                    esp_matter_attr_val_t read_val = esp_matter_enum8(static_cast<uint8_t>(temperature_unit));
+                    *val = read_val;
+                    return ESP_OK;
+                }
+            }
+        }
+#endif // CONFIG_SUPPORT_UNIT_LOCALIZATION_CLUSTER
+    }
+
+    return std::nullopt;
+}
+
+std::optional<esp_err_t> set_val_with_compatibility_exceptions(_attribute_t *attribute,
+                                                                esp_matter_attr_val_t *val)
+{
+    uint32_t cluster_id = kInvalidClusterId;
+    uint16_t endpoint_id = kInvalidEndpointId;
+
+    if (!(attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY)) {
+        // For non-internally-managed attributes, we can get cluster_id and endpoint_id directly
+        cluster_id = attribute->cluster_id;
+        endpoint_id = attribute->endpoint_id;
+    } else {
+        esp_err_t err = find_cluster_and_endpoint_id_for_internally_managed_attribute(attribute, &endpoint_id, &cluster_id);
+        VerifyOrReturnError(err == ESP_OK, err,
+            ESP_LOGE(TAG, "Failed to find cluster_id and endpoint_id for internally managed attribute"));
+    }
+
+    switch (cluster_id) {
+#ifdef CONFIG_SUPPORT_UNIT_LOCALIZATION_CLUSTER
+
+        case UnitLocalization::Id: {
+            switch (attribute->attribute_id) {
+                case Attributes::TemperatureUnit::Id: {
+                    auto temp_unit = static_cast<TempUnitEnum>(val->val.u8);
+                    lock::status_t lock_status = lock::chip_stack_lock(portMAX_DELAY);
+                    if (lock_status != lock::SUCCESS) {
+                        return ESP_ERR_INVALID_STATE;
+                    }
+                    CHIP_ERROR chip_err = UnitLocalizationServer::Instance().SetTemperatureUnit(temp_unit);
+                    lock::chip_stack_unlock();
+                    if (chip_err != CHIP_NO_ERROR) {
+                        ESP_LOGE(TAG, "Failed to set temperature unit, err:%" CHIP_ERROR_FORMAT, chip_err.Format());
+                        return ESP_FAIL;
+                    }
+                    return ESP_OK;
+                }
+            }
+        }
+#endif // CONFIG_SUPPORT_UNIT_LOCALIZATION_CLUSTER
+    }
+
+    return std::nullopt;
+}
+} // anonymous namespace
+
 esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
 {
     VerifyOrReturnError(attribute, ESP_FAIL, ESP_LOGE(TAG, "Attribute cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
+
+    auto err = set_val_with_compatibility_exceptions(current_attribute, val);
+    if (err.has_value()) {
+        return err.value();
+    }
 
     ESP_RETURN_ON_FALSE(!(current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY), ESP_ERR_NOT_SUPPORTED, TAG,
                         "Attribute is not managed by esp matter data model");
@@ -824,6 +976,11 @@ esp_err_t get_val(attribute_t *attribute, esp_matter_attr_val_t *val)
 {
     VerifyOrReturnError(attribute, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Attribute cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
+
+    auto err = get_val_with_compatibility_exceptions(current_attribute, val);
+    if (err.has_value()) {
+        return err.value();
+    }
 
     ESP_RETURN_ON_FALSE(!(current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY), ESP_ERR_NOT_SUPPORTED, TAG,
                         "Attribute is not managed by esp matter data model");

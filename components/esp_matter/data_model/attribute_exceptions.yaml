@@ -1,0 +1,12 @@
+# List of attributes where we did not add the ATTRIBUTE_FLAG_MANAGED_INTERNALLY.
+# These are mostly the cases where AAI is not registered for the cluster and
+# attribute is of primitive type.
+AttributesWithOverridenManagedInternallyFlag:
+  AirQuality:
+    - AirQuality
+
+# List of attributes that have get_val/set_val extentions which reads the attributes
+# using the connectedhomeip APIs and populate the esp_matter_attr_val_t.
+AttributesWithSetterGetterAPIExceptions:
+  UnitLocalization:
+    - TemperatureUnit
