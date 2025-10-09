@@ -1403,7 +1403,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
-        attribute::create_air_quality(cluster, 0);
+        attribute::create_air_quality(cluster, config->air_quality);
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);

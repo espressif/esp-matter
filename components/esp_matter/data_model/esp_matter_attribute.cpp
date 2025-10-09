@@ -2347,7 +2347,13 @@ namespace attribute {
 
 attribute_t *create_air_quality(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, AirQuality::Attributes::AirQuality::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
+    // Storage of this attribute was moved from esp-matter to connectedhomeip during the v1.4.2 release by
+    // implementing the AAI in connectedhomeip.
+    // For most clusters, AAI registration occurs in the cluster-init callback, but for this cluster,
+    // it is delegated to the application layer. So, in the esp-matter's workflow, no one registers the AAI.
+    // And, as this attribute is of primitive type, we can discard the ATTRIBUTE_FLAG_MANAGED_INTERNALLY flag
+    // and storage can be managed by esp-matter.
+    return esp_matter::attribute::create(cluster, AirQuality::Attributes::AirQuality::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_enum8(value));
 }
 
