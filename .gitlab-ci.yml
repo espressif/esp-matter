@@ -255,7 +255,7 @@ build_image:
     REPOS_PATH: "$CI_PROJECT_DIR/repos"
     IDF_CCACHE_ENABLE: 1
 
-build_esp_matter_examples_pytest_C6_idf_v5_1:
+build_esp_matter_examples_pytest_C6:
   extends:
         - .build_examples_template
   needs:
@@ -277,7 +277,7 @@ build_esp_matter_examples_pytest_C6_idf_v5_1:
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --pytest_c6
 
-build_esp_matter_examples_pytest_H2_idf_v5_1:
+build_esp_matter_examples_pytest_H2:
   extends:
         - .build_examples_template
   needs:
@@ -312,7 +312,7 @@ build_esp_matter_examples_pytest_H2_idf_v5_1:
     - pip install -r tools/ci/requirements-build.txt
     - python tools/ci/build_apps.py ./examples --pytest_h2
 
-build_esp_matter_examples_pytest_C2_idf_v5_1:
+build_esp_matter_examples_pytest_C2:
   extends:
         - .build_examples_template
   needs:
@@ -412,7 +412,7 @@ build_nopytest_remaining_examples_manual:
   parallel: 2
 
 
-build_esp_matter_examples_pytest_C3_idf_v4_4:
+build_esp_matter_examples_idf_v4_4:
   extends:
         - .build_examples_template
   image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
@@ -434,7 +434,6 @@ build_esp_matter_examples_pytest_C3_idf_v4_4:
     - cd ${ESP_MATTER_PATH}
     # idf v4.4 requires jinja < 3.1 so lets install the dependencies for idf v4.4
     - pip install -r requirements_idf_v4.4.txt
-    - pip install -r tools/ci/requirements-build.txt
     # hack the construct==2.10.54 to make it work with idf-v4.4, Python3.12
     # imp is not present in Python3.12 so remove it
     - wget https://files.pythonhosted.org/packages/30/2f/e2e6bad1b80f744cf5c2a6d622e3dee698b43e6c040f980ae0ac0edd5e54/construct-2.10.54.tar.gz
@@ -442,9 +441,34 @@ build_esp_matter_examples_pytest_C3_idf_v4_4:
     - sed -i 's/, imp$//g' construct-2.10.54/construct/core.py
     - python3 -m pip install ./construct-2.10.54
     - rm -rf construct-2.10.54*
-    - python tools/ci/build_apps.py ./examples --pytest_c3
+    - cd ${ESP_MATTER_PATH}/examples/light
+    - idf.py set-target esp32c3
+    - idf.py build
   variables:
     IDF_CHECKOUT_REF: "v4.4.3"
+
+
+build_esp_matter_examples_pytest_C3:
+  extends:
+        - .build_examples_template
+  image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
+  artifacts:
+    paths:
+      - "examples/**/build*/size.json"
+      - "examples/**/build*/build_log.txt"
+      - "examples/**/build*/*.map"
+      - "examples/**/build*/*.bin"
+      - "examples/**/build*/flasher_args.json"
+      - "examples/**/build*/config/sdkconfig.json"
+      - "examples/**/build*/bootloader/*.bin"
+      - "examples/**/build*/partition_table/*.bin"
+    when: always
+    expire_in: 4 days
+  script:
+    - cd ${ESP_MATTER_PATH}
+    - pip install -r tools/ci/requirements-build.txt
+    - python tools/ci/build_apps.py ./examples --pytest_c3
+
 
 pytest_esp32c3_esp_matter_dut:
   stage: target_test
@@ -452,7 +476,7 @@ pytest_esp32c3_esp_matter_dut:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
   needs:
-    - build_esp_matter_examples_pytest_C3_idf_v4_4
+    - build_esp_matter_examples_pytest_C3
   script:
     - cd ${ESP_MATTER_PATH}
     - rm -rf connectedhomeip/connectedhomeip
@@ -460,8 +484,6 @@ pytest_esp32c3_esp_matter_dut:
     - pip install -r tools/ci/requirements-pytest.txt
     - pytest examples/ --target esp32c3 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml
   tags: ["esp32c3", "esp_matter_dut"]
-  variables:
-    IDF_CHECKOUT_REF: "v4.4.3"
 
 pytest_esp32c6_esp_matter_dut:
   stage: target_test
@@ -469,7 +491,7 @@ pytest_esp32c6_esp_matter_dut:
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event' ||  $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
   needs:
-    - build_esp_matter_examples_pytest_C6_idf_v5_1
+    - build_esp_matter_examples_pytest_C6
   script:
     - cd ${ESP_MATTER_PATH}
     - rm -rf connectedhomeip/connectedhomeip
@@ -484,7 +506,7 @@ pytest_esp32c2_esp_matter_dut:
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event' ||  $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
   needs:
-    - build_esp_matter_examples_pytest_C2_idf_v5_1
+    - build_esp_matter_examples_pytest_C2
   script:
     - cd ${ESP_MATTER_PATH}
     - rm -rf connectedhomeip/connectedhomeip
@@ -499,7 +521,7 @@ pytest_esp32h2_esp_matter_dut:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
   needs:
-    - build_esp_matter_examples_pytest_H2_idf_v5_1
+    - build_esp_matter_examples_pytest_H2
   script:
     - cd ${ESP_MATTER_PATH}
     - rm -rf connectedhomeip/connectedhomeip
