@@ -340,7 +340,6 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
-    scenes_management::create(endpoint, &(config->scenes_management), CLUSTER_FLAG_SERVER);
     cluster_t *on_off_cluster = on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
     on_off::feature::lighting::add(on_off_cluster, &(config->on_off_lighting));
     on_off::command::create_on(on_off_cluster);
