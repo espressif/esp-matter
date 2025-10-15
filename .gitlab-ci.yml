@@ -247,7 +247,6 @@ build_image:
     - *add_gitlab_ssh_key
     - *get_build_caches
     - *setup_idf
-    - pip install 'idf-component-manager~=2.1.2'
     - cd ${ESP_MATTER_PATH}
     - mkdir -p ${REPOS_PATH}
     - *update_build_caches
