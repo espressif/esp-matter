@@ -651,7 +651,7 @@ for clarity on the terms like endpoints, clusters, etc. that are used in this se
    ::
 
       node::config_t node_config;
-      node_t *node = node::create(&node_config, app_attribute_update_cb, NULL);
+      node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb, NULL /* optional priv data */);
 
 -  We will use the ``color_temperature_light`` standard device type in this
    case. All standard device types are available in :project_file:`esp_matter_endpoint.h <components/esp_matter/data_model/esp_matter_endpoint.h>` header file.
@@ -663,7 +663,7 @@ for clarity on the terms like endpoints, clusters, etc. that are used in this se
       color_temperature_light::config_t light_config;
       light_config.on_off.on_off = DEFAULT_POWER;
       light_config.level_control.current_level = DEFAULT_BRIGHTNESS;
-      endpoint_t *endpoint = color_temperature_light::create(node, &light_config, ENDPOINT_FLAG_NONE);
+      endpoint_t *endpoint = color_temperature_light::create(node, &light_config, ENDPOINT_FLAG_NONE, NULL /* priv data */);
 
    In this case, we create the light using the ``color_temperature_light::create()`` function. Similarly, multiple
    endpoints can be created on the same node. Check the following
@@ -697,7 +697,21 @@ for clarity on the terms like endpoints, clusters, etc. that are used in this se
           return err;
       }
 
-2.5.1.3 Device Drivers
+2.5.1.3 Identify  Callback
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+- This callback is invoked when clients interact with the Identify Cluster. In the callback implementation,
+  an endpoint can identify itself. (e.g., by flashing an LED or light).
+
+   ::
+
+      esp_err_t app_identification_cb(identification::callback_type_t type, uint16_t endpoint_id, uint8_t effect_id,
+                                             uint8_t effect_variant, void *priv_data)
+      {
+          ESP_LOGI(TAG, "Identification callback: type: %u, effect: %u, variant: %u", type, effect_id, effect_variant);
+          return ESP_OK;
+      }
+
+2.5.1.4 Device Drivers
 ^^^^^^^^^^^^^^^^^^^^^^
 
 -  The drivers, depending on the device, are typically initialized and
@@ -774,14 +788,14 @@ creating in the *app_main.cpp* of the example. Examples:
    ::
 
       on_off_light::config_t light_config;
-      endpoint_t *endpoint = on_off_light::create(node, &light_config, ENDPOINT_FLAG_NONE);
+      endpoint_t *endpoint = on_off_light::create(node, &light_config, ENDPOINT_FLAG_NONE, NULL /* priv data */);
 
 -  fan:
 
    ::
 
       fan::config_t fan_config;
-      endpoint_t *endpoint = fan::create(node, &fan_config, ENDPOINT_FLAG_NONE);
+      endpoint_t *endpoint = fan::create(node, &fan_config, ENDPOINT_FLAG_NONE, NULL /* priv data */);
 
 
 -  door_lock:
@@ -789,14 +803,14 @@ creating in the *app_main.cpp* of the example. Examples:
    ::
 
       door_lock::config_t door_lock_config;
-      endpoint_t *endpoint = door_lock::create(node, &door_lock_config, ENDPOINT_FLAG_NONE);
+      endpoint_t *endpoint = door_lock::create(node, &door_lock_config, ENDPOINT_FLAG_NONE, NULL /* priv data */);
 
 -  window_covering:
 
    ::
 
       window_covering::config_t window_covering_config(static_cast<uint8_t>(chip::app::Clusters::WindowCovering::EndProductType::kTiltOnlyInteriorBlind));
-      endpoint_t *endpoint = endpoint::window_covering::create(node, &window_covering_config, ENDPOINT_FLAG_NONE);
+      endpoint_t *endpoint = window_covering_device::create(node, &window_covering_config, ENDPOINT_FLAG_NONE, NULL /* priv data */);
 
    The ``window_covering`` ``config_t`` structure includes a constructor that allows specifying
    an end product type different than the default one, which is "Roller shade".
@@ -807,7 +821,7 @@ creating in the *app_main.cpp* of the example. Examples:
    ::
 
       pump::config_t pump_config(1, 10, 20);
-      endpoint_t *endpoint = pump::create(node, &pump_config, ENDPOINT_FLAG_NONE);
+      endpoint_t *endpoint = pump::create(node, &pump_config, ENDPOINT_FLAG_NONE, NULL /* priv data */);
 
    The ``pump`` ``config_t`` structure includes a constructor that allows specifying
    maximum pressure, maximum speed and maximum flow values. If they aren't set, they will be set to null by default.
@@ -867,27 +881,14 @@ Examples:
 
    ::
 
-      bool default_on_off = true;
-      attribute_t *attribute = on_off::attribute::create_on_off(cluster, default_on_off);
-
--  attribute: cluster_revision:
-
-   ::
-
-      uint16_t default_cluster_revision = 1;
-      attribute_t *attribute = global::attribute::create_cluster_revision(cluster, default_cluster_revision);
+      bool default_global_scene_control = true;
+      attribute_t *attribute = on_off::attribute::create_global_scene_control(cluster, default_global_scene_control);
 
 -  command: toggle:
 
    ::
 
       command_t *command = on_off::command::create_toggle(cluster);
-
--  command: move_to_level:
-
-   ::
-
-      command_t *command = level_control::command::create_move_to_level(cluster);
 
 2.5.2.4 Features
 ^^^^^^^^^^^^^^^^^^
@@ -899,7 +900,7 @@ Mandatory features for a device type or endpoint can be configured at endpoint l
 
       extended_color_light::config_t light_config;
       light_config.on_off_lighting.start_up_on_off = nullptr;
-      endpoint_t *endpoint = extended_color_light::create(node, &light_config, ENDPOINT_FLAG_NONE, nullptr);
+      endpoint_t *endpoint = extended_color_light::create(node, &light_config, ENDPOINT_FLAG_NONE, nullptr /* priv data */);
 
 Few of some mandatory feature for a cluster (i.e. cluster having O.a/O.a+ feature conformance) can be configured at cluster level.
 For example: Thermostat cluster has O.a+ conformance for Heating and Cooling features, that means at least one of them should be present on the thermostat cluster while creating it.
@@ -1374,10 +1375,10 @@ For example we want to use mode_select cluster in light example.
 
     #include <static-supported-modes-manager.h>
 
-    ModeSelect::StaticSupportedModesManager sStaticSupportedModesManager;
+    static ModeSelect::StaticSupportedModesManager sStaticSupportedModesManager;
     {
         cluster::mode_select::config_t ms_config;
-        cluster_t *ms_cluster = cluster::mode_select::create(endpoint, &ms_config, CLUSTER_FLAG_SERVER, ESP_MATTER_NONE_FEATURE_ID);
+        cluster_t *ms_cluster = cluster::mode_select::create(endpoint, &ms_config, CLUSTER_FLAG_SERVER);
 
         sStaticSupportedModesManager.InitEndpointArray(get_count(node));
         ModeSelect::setSupportedModesManager(&sStaticSupportedModesManager);
