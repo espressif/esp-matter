@@ -59,7 +59,7 @@ DAC private needs to be protected from remote as well as physical attacks in the
 
 Recommended ways for DAC private key protection:
 
-.. only:: esp32h2 or esp32c5
+.. only:: esp32h2 or esp32c5 or esp32c61
 
   - {IDF_TARGET_NAME} supports ECDSA hardware peripheral with the ECDSA key programmed in the eFuse. This key is software read protected (in default mode). This peripheral can help to protect the identity of the DAC private key on the device.
 

@@ -52,16 +52,16 @@ The Prerequisites for ESP-IDF:
 
 - Please get the `Prerequisites for ESP-IDF`_. For beginners, please check `step by step installation guide`_ for esp-idf.
 
-.. only:: esp32c5
+.. only:: esp32c5 or esp32c61
 
-    - For ``ESP32C5``, the IDF version should be `98cd765953 <https://github.com/espressif/esp-idf/commit/98cd765953dfe0e7bb1c5df8367e1b54bd966cce>`__ or newer.
+    - For ``ESP32C5`` and ``ESP32C61``, the IDF version should be `v5.5.1 <https://github.com/espressif/esp-idf/tree/v5.5.1>`__ or newer.
 
 .. note::
 
     ``git clone`` command accepts the optional argument ``--jobs N``, which can significantly speed up the
     process by parallelizing submodule cloning. Consider using this option when cloning repositories.
 
-.. only:: not esp32c5
+.. only:: not esp32c5 and not esp32c61
 
    Cloning esp-idf:
 
@@ -72,14 +72,14 @@ The Prerequisites for ESP-IDF:
          ./install.sh
          cd ..
 
-.. only:: esp32c5
+.. only:: esp32c5 or esp32c61
 
    Cloning esp-idf:
 
       ::
 
          git clone --recursive https://github.com/espressif/esp-idf.git
-         cd esp-idf; git checkout 98cd765953; git submodule update --init --recursive;
+         cd esp-idf; git checkout v5.5.1; git submodule update --init --recursive;
          ./install.sh
          cd ..
 
@@ -283,7 +283,13 @@ Choose IDF target.
 
    ::
 
-      idf.py --preview set-target esp32c5
+      idf.py set-target esp32c5
+
+.. only:: esp32c61
+
+   ::
+
+      idf.py set-target esp32c61
 
 .. only:: esp32p4
 
@@ -387,7 +393,7 @@ Use ``chip-tool`` in interactive mode to commission the device:
    chip-tool interactive start
 
 
-.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6 or esp32p4 or esp32c5
+.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6 or esp32p4 or esp32c5 or esp32c61
 
    ::
 
@@ -414,7 +420,7 @@ Above method commissions the device using setup passcode and discriminator. Devi
 
 To Commission the device using manual pairing code 34970112332
 
-.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6 or esp32p4 or esp32c5
+.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6 or esp32p4 or esp32c5 or esp32c61
 
     ::
 
@@ -441,7 +447,7 @@ Above default manual pairing code contains following values:
 
 To commission the device using QR code MT:Y.K9042C00KA0648G00
 
-.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6 or esp32p4 or esp32c5
+.. only:: esp32 or esp32s3 or esp32c3 or esp32c2 or esp32c6 or esp32p4 or esp32c5 or esp32c61
 
     ::
 
@@ -913,7 +919,7 @@ For example: Thermostat cluster has O.a+ conformance for Heating and Cooling fea
       thermostat_config.features.heating.occupied_heating_setpoint = 2200;
       thermostat_config.feature_flags = thermostat::feature::heating::get_id();
       cluster::thermostat::create(endpoint, &(config->thermostat_config), CLUSTER_FLAG_SERVER);
-      
+
 Optional features which are applicable to a cluster can also be added.
 
 - feature: tag_list: Descriptor cluster:
