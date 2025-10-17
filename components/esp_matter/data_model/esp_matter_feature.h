@@ -265,18 +265,6 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* lighting */
 
-namespace frequency {
-
-typedef struct config {
-    uint16_t current_frequency;
-    uint16_t min_frequency;
-    uint16_t max_frequency;
-    config() : current_frequency(0), min_frequency(0), max_frequency(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-} /* frequency */
 } /* feature */
 } /* level_control */
 
@@ -406,28 +394,6 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* position_aware_lift */
-
-// Attributes of AbsolutePosition feature may have dependency on LF, TL, PA_LF, PA_TL
-// feature, one must add features according to the usecase first.
-
-namespace absolute_position {
-
-typedef struct config {
-    uint16_t physical_closed_limit_lift;
-    nullable<uint16_t> current_position_lift;
-    uint16_t installed_open_limit_lift;
-    uint16_t installed_closed_limit_lift;
-    uint16_t physical_closed_limit_tilt;
-    nullable<uint16_t> current_position_tilt;
-    uint16_t installed_open_limit_tilt;
-    uint16_t installed_closed_limit_tilt;
-    config() : physical_closed_limit_lift(0), current_position_lift(), installed_open_limit_lift(0), installed_closed_limit_lift(65534), physical_closed_limit_tilt(0), current_position_tilt(), installed_open_limit_tilt(0), installed_closed_limit_tilt(65534) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* absolute_position */
 
 // PositionAwareTilt feature is dependent on Tilt feature, in order to add
 // PositionAwareTilt feature one must add Tilt feature first.
@@ -1333,12 +1299,6 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 } /* rfid_credential */
 
-namespace finger_credentials {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-} /* finger_credentials */
-
 namespace weekday_access_schedules {
 
 uint32_t get_id();
@@ -1350,12 +1310,6 @@ namespace door_position_sensor {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 } /* door_position_sensor */
-
-namespace face_credentials {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-} /* face_credentials */
 
 namespace credential_over_the_air_access {
 typedef struct config {
@@ -1422,33 +1376,12 @@ esp_err_t add(cluster_t *cluster);
 
 } /* charging_preferences */
 
-namespace soc_reporting {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* soc_reporting */
-
-namespace plug_and_charge {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* plug_and_charge */
-
 namespace rfid {
 
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 
 } /* rfid */
-
-namespace v2x {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
-} /* v2x */
 
 } /* feature */
 } /* energy_evse */
@@ -1461,12 +1394,6 @@ namespace power_as_number {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 } /* power_as_number */
-
-namespace power_in_watts {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-} /* power_in_watts */
 
 namespace power_number_limits {
 

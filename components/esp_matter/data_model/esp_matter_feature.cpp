@@ -543,29 +543,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
 } /* lighting */
 
-namespace frequency {
-
-uint32_t get_id()
-{
-    return (uint32_t)LevelControl::Feature::kFrequency;
-}
-
-esp_err_t add(cluster_t *cluster, config_t *config)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    /* Attributes not managed internally */
-    attribute::create_current_frequency(cluster, config->current_frequency);
-    attribute::create_min_frequency(cluster, config->min_frequency);
-    attribute::create_max_frequency(cluster, config->max_frequency);
-
-    /* Commands */
-    command::create_move_to_closest_frequency(cluster);
-
-    return ESP_OK;
-}
-} /* frequency */
 } /* feature */
 } /* level_control */
 
@@ -821,66 +798,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     return ESP_OK;
 }
 } /* position_aware_lift */
-
-namespace absolute_position {
-
-uint32_t get_id()
-{
-    return (uint32_t)WindowCovering::Feature::kAbsolutePosition;
-}
-
-esp_err_t add(cluster_t *cluster, config_t *config)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    uint32_t abs_and_pa_lf_and_lf_feature_map = get_id() | feature::position_aware_lift::get_id() | feature::lift::get_id();
-    uint32_t abs_and_pa_tl_and_tl_feature_map = get_id() | feature::position_aware_tilt::get_id() | feature::tilt::get_id();
-    uint32_t abs_and_lift_feature_map = get_id() | feature::lift::get_id();
-    uint32_t abs_and_tilt_feature_map = get_id() | feature::tilt::get_id();
-    if (
-        (get_feature_map_value(cluster) & abs_and_pa_lf_and_lf_feature_map) != abs_and_pa_lf_and_lf_feature_map
-        && (get_feature_map_value(cluster) & abs_and_pa_tl_and_tl_feature_map) != abs_and_pa_tl_and_tl_feature_map
-        && (get_feature_map_value(cluster) & abs_and_lift_feature_map) != abs_and_lift_feature_map
-        && (get_feature_map_value(cluster) & abs_and_tilt_feature_map) != abs_and_tilt_feature_map
-    ) {
-        ESP_LOGE(TAG, "Cluster shall support Lift (and optionally Position_Aware_Lift) and/or Tilt (and optionally Position_Aware_Tilt) features");
-        return ESP_ERR_NOT_SUPPORTED;
-    }
-    if ((get_feature_map_value(cluster) & abs_and_pa_lf_and_lf_feature_map) == abs_and_pa_lf_and_lf_feature_map) {
-        attribute::create_physical_closed_limit_lift(cluster, config->physical_closed_limit_lift);
-        attribute::create_current_position_lift(cluster, config->current_position_lift);
-        attribute::create_installed_open_limit_lift(cluster, config->installed_open_limit_lift);
-        attribute::create_installed_closed_limit_lift(cluster, config->installed_closed_limit_lift);
-    } else {
-        ESP_LOGW(TAG, "Lift related attributes were not created because cluster does not support Position_Aware_Lift feature");
-    }
-
-    if ((get_feature_map_value(cluster) & abs_and_pa_tl_and_tl_feature_map) == abs_and_pa_tl_and_tl_feature_map) {
-        attribute::create_physical_closed_limit_tilt(cluster, config->physical_closed_limit_tilt);
-        attribute::create_current_position_tilt(cluster, config->current_position_tilt);
-        attribute::create_installed_open_limit_tilt(cluster, config->installed_open_limit_tilt);
-        attribute::create_installed_closed_limit_tilt(cluster, config->installed_closed_limit_tilt);
-    } else {
-        ESP_LOGW(TAG, "Tilt related attributes were not created because cluster does not support Position_Aware_Tilt feature");
-    }
-
-    if ((get_feature_map_value(cluster) & abs_and_lift_feature_map) == abs_and_lift_feature_map) {
-        command::create_go_to_lift_value(cluster);
-    } else {
-        ESP_LOGW(TAG, "Lift commands were not created because cluster does not support Lift feature");
-    }
-
-    if ((get_feature_map_value(cluster) & abs_and_tilt_feature_map) == abs_and_tilt_feature_map) {
-        command::create_go_to_tilt_value(cluster);
-    } else {
-        ESP_LOGW(TAG, "Tilt commands were not created because cluster does not support Tilt feature");
-    }
-
-    return ESP_OK;
-}
-
-} /* absolute_position */
 
 namespace position_aware_tilt {
 
@@ -2634,30 +2551,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
 } /* rfid_credential */
 
-namespace finger_credentials {
-
-uint32_t get_id()
-{
-    return (uint32_t)DoorLock::Feature::kFingerCredentials;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    uint32_t usr_feature_map = feature::user::get_id();
-    if (!(get_feature_map_value(cluster) & usr_feature_map)) {
-        /* todo: some commands for !USR & FGP feature not define in the
-        connectedhomeip/connectedhomeip/zzz_generated/app-common/app-common/zap-generated/ids/Commands.h
-        will update when added*/
-    }
-
-    return ESP_OK;
-}
-
-} /* finger_credentials */
-
 namespace logging {
 
 uint32_t get_id()
@@ -2734,23 +2627,6 @@ esp_err_t add(cluster_t *cluster)
 
 } /* door_position_sensor */
 
-namespace face_credentials {
-
-uint32_t get_id()
-{
-    return (uint32_t)DoorLock::Feature::kFaceCredentials;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    return ESP_OK;
-}
-
-} /* face_credentials */
-
 namespace credential_over_the_air_access {
 
 uint32_t get_id()
@@ -2786,10 +2662,8 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t pin = feature::pin_credential::get_id();
     uint32_t rid = feature::rfid_credential::get_id();
-    uint32_t fgp = feature::finger_credentials::get_id();
-    uint32_t face = feature::face_credentials::get_id();
     uint32_t feature = get_feature_map_value(cluster);
-    VerifyOrReturnError((feature & (pin | rid | fgp | face)) != 0, ESP_FAIL, ESP_LOGE(TAG, "Should add at least one of PIN, RID, FGP and FACE feature before add USR feature"));
+    VerifyOrReturnError((feature & (pin | rid)) != 0, ESP_FAIL, ESP_LOGE(TAG, "Should add at least one of PIN, RID feature before add USR feature"));
 
     update_feature_map(cluster, get_id());
 
@@ -2995,46 +2869,6 @@ esp_err_t add(cluster_t *cluster)
 
 } /* charging_preferences */
 
-namespace soc_reporting {
-
-uint32_t get_id()
-{
-    return (uint32_t)EnergyEvse::Feature::kSoCReporting;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    /* Attributes managed internally */
-    attribute::create_state_of_charge(cluster, 0);
-    attribute::create_battery_capacity(cluster, 0);
-
-    return ESP_OK;
-}
-
-} /* soc_reporting */
-
-namespace plug_and_charge {
-
-uint32_t get_id()
-{
-    return (uint32_t)EnergyEvse::Feature::kPlugAndCharge;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    /* Attributes managed internally */
-    attribute::create_vehicle_id(cluster, NULL, 0);
-
-    return ESP_OK;
-}
-
-} /* plug_and_charge */
 
 namespace rfid {
 
@@ -3053,30 +2887,6 @@ esp_err_t add(cluster_t *cluster)
 
 } /* rfid */
 
-namespace v2x {
-
-uint32_t get_id()
-{
-    return (uint32_t)EnergyEvse::Feature::kV2x;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    /* Attributes managed internally */
-    attribute::create_discharging_enabled_until(cluster, 0);
-    attribute::create_maximum_discharge_current(cluster, 0);
-    attribute::create_session_energy_discharged(cluster, 0);
-
-    /* Commands */
-    command::create_enable_discharging(cluster);
-    return ESP_OK;
-}
-
-} /* v2x*/
-
 } /* feature */
 } /* energy_evse */
 
@@ -3093,44 +2903,13 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    uint32_t power_in_watts_feature_map = feature::power_in_watts::get_id();
-    if ((get_feature_map_value(cluster) & power_in_watts_feature_map) != power_in_watts_feature_map) {
-        update_feature_map(cluster, get_id());
-        /* Attributes managed internally */
-        attribute::create_power_setting(cluster, 0);
-    } else {
-        ESP_LOGE(TAG, "Cluster shall support either PowerAsNumber or PowerInWatts feature");
-        return ESP_ERR_NOT_SUPPORTED;
-    }
+    update_feature_map(cluster, get_id());
+    /* Attributes managed internally */
+    attribute::create_power_setting(cluster, 0);
 
     return ESP_OK;
 }
 } /* power_as_number */
-
-namespace power_in_watts {
-
-uint32_t get_id()
-{
-    return (uint32_t)MicrowaveOvenControl::Feature::kPowerInWatts;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    uint32_t power_as_number_feature_map = feature::power_as_number::get_id();
-    if ((get_feature_map_value(cluster) & power_as_number_feature_map) != power_as_number_feature_map) {
-        update_feature_map(cluster, get_id());
-        /* Attributes managed internally */
-        attribute::create_supported_watts(cluster, NULL, 0, 0);
-        attribute::create_selected_watt_index(cluster, 0);
-    } else {
-        ESP_LOGE(TAG, "Cluster shall support either PowerInWatts or PowerAsNumber feature");
-        return ESP_ERR_NOT_SUPPORTED;
-    }
-
-    return ESP_OK;
-}
-} /* power_in_watts */
 
 namespace power_number_limits {
 

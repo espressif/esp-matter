@@ -2011,10 +2011,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
                 feature::position_aware_tilt::add(cluster, &(config->features.position_aware_tilt));
             }
         }
-        // optional if absolute position is supported
-        if (has(feature::absolute_position::get_id())) {
-            feature::absolute_position::add(cluster, &(config->features.absolute_position));
-        }
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -2902,23 +2898,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
         /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, config->feature_flags);
-
-        // check against O.a feature conformance for microwave oven control
-        VALIDATE_FEATURES_EXACT_ONE("PowerAsNumber,PowerInWatts",
-                                   feature::power_as_number::get_id(), feature::power_in_watts::get_id());
-
-        if (has(feature::power_as_number::get_id())) {
-            feature::power_as_number::add(cluster);
-
-            // power number limits optionally depends on power as number
-            if (has(feature::power_number_limits::get_id())) {
-                feature::power_number_limits::add(cluster);
-            }
-        }
-        if (has(feature::power_in_watts::get_id())) {
-            feature::power_in_watts::add(cluster);
-        }
+        global::attribute::create_feature_map(cluster, 0);
     } // if (flags & CLUSTER_FLAG_SERVER)
 
     /* Commands */
