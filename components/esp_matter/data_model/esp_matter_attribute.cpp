@@ -747,6 +747,12 @@ attribute_t *create_operating_mode(cluster_t *cluster, uint8_t value)
                                          ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
 }
 
+attribute_t *create_maximum_check_in_backoff(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, IcdManagement::Attributes::MaximumCheckInBackOff::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint32(value));
+}
+
 } /* attribute */
 } /* icd_management */
 
