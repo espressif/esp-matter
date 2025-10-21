@@ -682,7 +682,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, TimeSynchronization::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = TimeSynchronizationDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -1235,7 +1235,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, FanControl::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = FanControlDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -1410,7 +1410,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, HepaFilterMonitoring::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = HepaFilterMonitoringDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -1443,7 +1443,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ActivatedCarbonFilterMonitoring::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = ActivatedCarbonFilterMonitoringDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -1608,7 +1608,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OperationalState::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = OperationalStateDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -1647,7 +1647,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LaundryWasherMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config && config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = LaundryWasherModeDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -1686,7 +1686,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LaundryWasherControls::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config && config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = LaundryWasherControlsDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -1726,7 +1726,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LaundryDryerControls::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = LaundryDryerControlsDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -1765,7 +1765,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
 
-        if (config && config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = DishWasherModeDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -1799,7 +1799,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DishwasherAlarm::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config && config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = DishwasherAlarmDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -1878,7 +1878,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DoorLock::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config && config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = DoorLockDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -1932,7 +1932,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterWindowCoveringPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
-        if (config && config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = WindowCoveringDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -2209,7 +2209,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, BooleanStateConfiguration::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config && config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = BooleanStateConfigurationDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -2521,7 +2521,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     cluster_t *cluster = cluster::create(endpoint, ModeSelect::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ModeSelect::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = ModeSelectDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -2700,7 +2700,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RefrigeratorAndTemperatureControlledCabinetMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config && config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = RefrigeratorAndTCCModeDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -2738,7 +2738,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RvcRunMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config && config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = RvcRunModeDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -2776,7 +2776,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RvcCleanMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config && config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = RvcCleanModeDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -2813,7 +2813,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, MicrowaveOvenMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = MicrowaveOvenModeDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -2846,7 +2846,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, MicrowaveOvenControl::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = MicrowaveOvenControlDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -2925,7 +2925,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config && config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = KeypadInputDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -2957,7 +2957,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PowerTopology::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = PowerTopologyDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -2998,7 +2998,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ElectricalPowerMeasurement::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = ElectricalPowerMeasurementDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -3103,7 +3103,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, EnergyEvseMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = EnergyEvseModeDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -3140,7 +3140,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, EnergyEvse::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = EnergyEvseDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -3197,7 +3197,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     cluster_t *cluster = cluster::create(endpoint, ValveConfigurationAndControl::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ValveConfigurationAndControl::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = ValveConfigurationAndControlDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -3250,7 +3250,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     cluster_t *cluster = cluster::create(endpoint, DeviceEnergyManagement::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DeviceEnergyManagement::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = DeviceEnergyManagementDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -3316,7 +3316,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DeviceEnergyManagementMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = DeviceEnergyManagementModeDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -3352,7 +3352,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     cluster_t *cluster = cluster::create(endpoint, ApplicationBasic::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ApplicationBasic::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = ApplicationBasicDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -3390,7 +3390,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     cluster_t *cluster = cluster::create(endpoint, ThreadBorderRouterManagement::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster"));
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = ThreadBorderRouterManagementDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -3508,7 +3508,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         return NULL;
     }
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = ServiceAreaDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -3555,7 +3555,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         return NULL;
     }
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = WaterHeaterManagementDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -3604,7 +3604,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config && config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = WaterHeaterModeDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -3643,7 +3643,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         return NULL;
     }
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = EnergyPreferenceDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -3686,7 +3686,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         return NULL;
     }
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config -> delegate != nullptr) {
+        if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = CommissionerControlDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
