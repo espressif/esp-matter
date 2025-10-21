@@ -201,7 +201,7 @@ uint32_t get_id()
     return (uint32_t)GeneralCommissioning::Feature::kTermsAndConditions;
 }
 
-esp_err_t add(cluster_t *cluster, config_t *config)
+esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
@@ -209,11 +209,11 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     }
     update_feature_map(cluster, get_id());
 
-    attribute::create_tc_accepted_version(cluster, config->tc_accepted_version);
-    attribute::create_tc_min_required_version(cluster, config->tc_min_required_version);
-    attribute::create_tc_acknowledgements(cluster, config->tc_acknowledgements);
-    attribute::create_tc_acknowledgements_required(cluster, config->tc_acknowledgements_required);
-    attribute::create_tc_update_deadline(cluster, config->tc_update_deadline);
+    attribute::create_tc_accepted_version(cluster, 0);
+    attribute::create_tc_min_required_version(cluster, 0);
+    attribute::create_tc_acknowledgements(cluster, 0);
+    attribute::create_tc_acknowledgements_required(cluster, true);
+    attribute::create_tc_update_deadline(cluster, 0);
 
     command::create_set_tc_acknowledgements(cluster);
     command::create_set_tc_acknowledgements_response(cluster);
@@ -1067,7 +1067,7 @@ uint32_t get_id()
     return (uint32_t)EthernetNetworkDiagnostics::Feature::kPacketCounts;
 }
 
-esp_err_t add(cluster_t *cluster, config_t *config)
+esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
@@ -1088,15 +1088,15 @@ uint32_t get_id()
     return (uint32_t)EthernetNetworkDiagnostics::Feature::kErrorCounts;
 }
 
-esp_err_t add(cluster_t *cluster, config_t *config)
+esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes managed internally */
-    attribute::create_tx_error_count(cluster, config->tx_error_count);
-    attribute::create_collision_count(cluster, config->collision_count);
-    attribute::create_overrun_count(cluster, config->overrun_count);
+    attribute::create_tx_error_count(cluster, 0);
+    attribute::create_collision_count(cluster, 0);
+    attribute::create_overrun_count(cluster, 0);
 
     return ESP_OK;
 }
@@ -1806,13 +1806,13 @@ uint32_t get_id()
     return (uint32_t)UnitLocalization::Feature::kTemperatureUnit;
 }
 
-esp_err_t add(cluster_t *cluster, config_t *config)
+esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
-    attribute::create_temperature_unit(cluster, config->temperature_unit);
+    attribute::create_temperature_unit(cluster, 0);
     attribute::create_supported_temperature_units(cluster, NULL, 0, 0);
 
     return ESP_OK;
@@ -3491,8 +3491,8 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     }
     update_feature_map(cluster, get_id());
     /* attribute */
-    attribute::create_tank_volume(cluster, config->tank_volume);
-    attribute::create_estimated_heat_required(cluster, config->estimated_heat_required);
+    attribute::create_tank_volume(cluster, 0);
+    attribute::create_estimated_heat_required(cluster, 0);
 
     return ESP_OK;
 }
@@ -3506,7 +3506,7 @@ uint32_t get_id()
     return static_cast<uint32_t>(WaterHeaterManagement::Feature::kEnergyManagement);
 }
 
-esp_err_t add(cluster_t *cluster, config_t *config)
+esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
@@ -3514,7 +3514,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     }
     update_feature_map(cluster, get_id());
     /* attribute */
-    attribute::create_tank_percentage(cluster, config->tank_percentage);
+    attribute::create_tank_percentage(cluster, 0);
 
     return ESP_OK;
 }
