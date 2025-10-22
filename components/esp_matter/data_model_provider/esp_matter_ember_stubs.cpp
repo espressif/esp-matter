@@ -1265,7 +1265,7 @@ bool emberAfContainsAttribute(chip::EndpointId endpoint, chip::ClusterId cluster
 bool emberAfContainsClient(chip::EndpointId endpoint, chip::ClusterId clusterId)
 {
     esp_matter::cluster_t *cluster = esp_matter::cluster::get(endpoint, clusterId);
-    if (cluster && (esp_matter::cluster::get_flags(cluster) & esp_matter::CLUSTER_FLAG_SERVER)) {
+    if (cluster && (esp_matter::cluster::get_flags(cluster) & esp_matter::CLUSTER_FLAG_CLIENT)) {
         return true;
     }
     return false;
