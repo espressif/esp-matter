@@ -538,7 +538,6 @@ typedef struct config {
         feature::lift::config_t lift;
         feature::tilt::config_t tilt;
         feature::position_aware_lift::config_t position_aware_lift;
-        feature::absolute_position::config_t absolute_position;
         feature::position_aware_tilt::config_t position_aware_tilt;
     } features;
     uint32_t feature_flags;
@@ -777,9 +776,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace microwave_oven_control {
 typedef struct config {
-    uint32_t feature_flags;
     void *delegate;
-    config() : feature_flags(0), delegate(nullptr) {}
+    config() : delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
