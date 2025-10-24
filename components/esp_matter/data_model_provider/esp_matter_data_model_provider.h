@@ -67,7 +67,7 @@ public:
     // access to the typed global singleton of this class.
     static provider &get_instance();
 
-    chip::app::ServerClusterInterfaceRegistry &registry() { return m_registry; }
+    chip::app::ServerClusterInterfaceRegistry &registry() { return mRegistry; }
 
     /// Generic model implementations
     CHIP_ERROR Startup(InteractionModelContext context) override;
@@ -104,7 +104,8 @@ private:
     Status CheckDataModelPath(const ConcreteEventPath &path);
     Status CheckDataModelPath(const chip::app::ConcreteCommandPath path);
 
-    chip::app::ServerClusterInterfaceRegistry m_registry;
+    chip::app::ServerClusterInterfaceRegistry mRegistry;
+    std::optional<chip::app::DataModel::InteractionModelContext> mContext;
 };
 
 } // namespace data_model

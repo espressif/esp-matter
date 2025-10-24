@@ -72,17 +72,22 @@ bool IsClusterEnabled(EndpointId endpointId, ClusterId clusterId)
 void ESPMatterGeneralDiagnosticsClusterServerInitCallback(EndpointId endpointId)
 {
     VerifyOrDie(endpointId == kRootEndpointId);
-    GeneralDiagnosticsEnabledAttributes enabledAttributes{
-        .enableTotalOperationalHours =
-            IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::TotalOperationalHours::Id),
-        .enableBootReason = IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::BootReason::Id),
-        .enableActiveHardwareFaults =
-            IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::ActiveHardwareFaults::Id),
-        .enableActiveRadioFaults =
-            IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::ActiveRadioFaults::Id),
-        .enableActiveNetworkFaults =
-            IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::ActiveNetworkFaults::Id),
-    };
+    GeneralDiagnosticsCluster::OptionalAttributeSet attrSet;
+    if (IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::TotalOperationalHours::Id)) {
+        attrSet.Set<GeneralDiagnostics::Attributes::TotalOperationalHours::Id>();
+    }
+    if (IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::BootReason::Id)) {
+        attrSet.Set<GeneralDiagnostics::Attributes::BootReason::Id>();
+    }
+    if (IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::ActiveHardwareFaults::Id)) {
+        attrSet.Set<GeneralDiagnostics::Attributes::ActiveHardwareFaults::Id>();
+    }
+    if (IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::ActiveRadioFaults::Id)) {
+        attrSet.Set<GeneralDiagnostics::Attributes::ActiveRadioFaults::Id>();
+    }
+    if (IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::ActiveNetworkFaults::Id)) {
+        attrSet.Set<GeneralDiagnostics::Attributes::ActiveNetworkFaults::Id>();
+    }
 
     CHIP_ERROR err = CHIP_NO_ERROR;
     if (IsCommandEnabled(endpointId, GeneralDiagnostics::Commands::PayloadTestRequest::Id, COMMAND_FLAG_ACCEPTED) ||
@@ -97,16 +102,15 @@ void ESPMatterGeneralDiagnosticsClusterServerInitCallback(EndpointId endpointId)
             IsCommandEnabled(endpointId, GeneralDiagnostics::Commands::PayloadTestRequest::Id, COMMAND_FLAG_ACCEPTED),
         };
 
-        gServer.fullConfigurableServer.Create(enabledAttributes, functionsConfig);
+        gServer.fullConfigurableServer.Create(attrSet, functionsConfig);
         err = esp_matter::data_model::provider::get_instance().registry().Register(
             gServer.fullConfigurableServer.Registration());
     } else {
-        gServer.server.Create(enabledAttributes);
+        gServer.server.Create(attrSet);
         err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.server.Registration());
     }
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to register GeneralDiagnostics on endpoint %u: %" CHIP_ERROR_FORMAT, endpointId,
-                     err.Format());
+        ChipLogError(AppServer, "Failed to register GeneralDiagnostics - Error: %" CHIP_ERROR_FORMAT, err.Format());
     }
 }
 
@@ -123,18 +127,13 @@ void ESPMatterGeneralDiagnosticsClusterServerShutdownCallback(EndpointId endpoin
         gServer.server.Destroy();
     }
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to unregister GeneralDiagnostics on endpoint %u: %" CHIP_ERROR_FORMAT,
-                     endpointId, err.Format());
+        ChipLogError(AppServer, "Failed to unregister GeneralDiagnostics - Error: %" CHIP_ERROR_FORMAT, err.Format());
     }
 }
 
-void MatterGeneralDiagnosticsPluginServerInitCallback()
-{
-}
+void MatterGeneralDiagnosticsPluginServerInitCallback() {}
 
-void MatterGeneralDiagnosticsPluginServerShutdownCallback()
-{
-}
+void MatterGeneralDiagnosticsPluginServerShutdownCallback() {}
 
 namespace chip::app::Clusters::GeneralDiagnostics {
 void GlobalNotifyDeviceReboot(GeneralDiagnostics::BootReasonEnum bootReason)

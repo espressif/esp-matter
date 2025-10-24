@@ -16,7 +16,6 @@
 // Cluster init functions that don't have a cluster implementation to define
 // them in.
 void MatterBallastConfigurationPluginServerInitCallback() {}
-void MatterBooleanStatePluginServerInitCallback() {}
 void MatterRelativeHumidityMeasurementPluginServerInitCallback() {}
 void MatterIlluminanceMeasurementPluginServerInitCallback() {}
 void MatterBinaryInputBasicPluginServerInitCallback() {}

@@ -39,7 +39,7 @@ def load_test_commands(certification_tests: str):
 
         if "test_case" in test_config:
             test_param = f"--tests {test_config['test_case']}"
-            storage_path = f"--storage-path logs/{test_param}.json"
+            storage_path = f"--storage-path logs/{test_config['test_case']}.json"
             command = f"python3 {script} {common_args} {storage_path} {test_param} {args}".strip()
         else:
             storage_path = f"--storage-path logs/{test_case_name}.json"
@@ -64,7 +64,20 @@ def execute_test_command(full_command, dut:Dut, retry_attempts=2):
         print(f"Attempt {attempt + 1} for command: {full_command}")
         test_out_str = subprocess.getoutput(full_command)
         print(f"Test output: {test_out_str}")
-        if "INFO:root:Final result: PASS !" in test_out_str:
+        results = {}
+        pattern = re.compile(
+            r"Test results:\s*"
+            r"Error\s+(?P<Error>\d+),\s*"
+            r"Executed\s+(?P<Executed>\d+),\s*"
+            r"Failed\s+(?P<Failed>\d+),\s*"
+            r"Passed\s+(?P<Passed>\d+),\s*"
+            r"Requested\s+(?P<Requested>\d+),\s*"
+            r"Skipped\s+(?P<Skipped>\d+)"
+        )
+        match = pattern.search(test_out_str)
+        if match:
+            results = {k: int(v) for k, v in match.groupdict().items()}
+        if ("Executed" in results) and ("Passed" in results) and (results["Executed"] == results["Passed"]):
             print(f"Test passed on attempt {attempt + 1}.")
             clean_environment()
             time.sleep(5)

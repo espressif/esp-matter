@@ -166,6 +166,9 @@ void ESPMatterGeneralDiagnosticsClusterServerShutdownCallback(EndpointId endpoin
 void ESPMatterGroupKeyManagementClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterGroupKeyManagementClusterServerShutdownCallback(EndpointId endpoint);
 
+void ESPMatterGroupcastClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterGroupcastClusterServerShutdownCallback(EndpointId endpoint);
+
 void ESPMatterGroupsClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterGroupsClusterServerShutdownCallback(EndpointId endpoint);
 

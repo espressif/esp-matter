@@ -53,6 +53,7 @@ void MatterFormaldehydeConcentrationMeasurementPluginServerInitCallback();
 void MatterGeneralCommissioningPluginServerInitCallback();
 void MatterGeneralDiagnosticsPluginServerInitCallback();
 void MatterGroupKeyManagementPluginServerInitCallback();
+void MatterGroupcastPluginServerInitCallback();
 void MatterGroupsPluginServerInitCallback();
 void MatterHepaFilterMonitoringPluginServerInitCallback();
 void MatterIcdManagementPluginServerInitCallback();

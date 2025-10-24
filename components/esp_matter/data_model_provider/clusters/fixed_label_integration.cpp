@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <app/ClusterCallbacks.h>
-#include <app/clusters/ota-provider/ota-provider-cluster.h>
+#include <app/clusters/fixed-label-server/fixed-label-cluster.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
 #include <unordered_map>
 
@@ -22,10 +22,11 @@ using namespace chip::app;
 using namespace chip::app::Clusters;
 
 namespace {
-std::unordered_map<EndpointId, LazyRegisteredServerCluster<OtaProviderServer>> gServers;
+std::unordered_map<EndpointId, LazyRegisteredServerCluster<FixedLabelCluster>> gServers;
+
 } // namespace
 
-void ESPMatterOtaSoftwareUpdateProviderClusterServerInitCallback(EndpointId endpointId)
+void ESPMatterFixedLabelClusterServerInitCallback(EndpointId endpointId)
 {
     if (gServers[endpointId].IsConstructed()) {
         return;
@@ -35,37 +36,20 @@ void ESPMatterOtaSoftwareUpdateProviderClusterServerInitCallback(EndpointId endp
     CHIP_ERROR err =
         esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to register OTA on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
+        ChipLogError(AppServer, "Failed to register FixedLabel on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
                      err.Format());
     }
 }
 
-void ESPMatterOtaSoftwareUpdateProviderClusterServerShutdownCallback(EndpointId endpointId)
+void ESPMatterFixedLabelClusterServerShutdownCallback(EndpointId endpointId)
 {
     CHIP_ERROR err =
         esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[endpointId].Cluster());
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to unregister OTA on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
-                     err.Format());
+        ChipLogError(AppServer, "Failed to unregister FixedLabel on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
+                     endpointId, err.Format());
     }
     gServers[endpointId].Destroy();
 }
 
-void MatterOtaSoftwareUpdateProviderPluginServerInitCallback() {}
-
-void MatterOtaSoftwareUpdateProviderPluginServerShutdownCallback() {}
-
-namespace chip {
-namespace app {
-namespace Clusters {
-namespace OTAProvider {
-
-void SetDelegate(EndpointId endpointId, OTAProviderDelegate *delegate)
-{
-    gServers[endpointId].Cluster().SetDelegate(delegate);
-}
-
-} // namespace OTAProvider
-} // namespace Clusters
-} // namespace app
-} // namespace chip
+void MatterFixedLabelPluginServerInitCallback() {}

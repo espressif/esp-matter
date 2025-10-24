@@ -53,7 +53,6 @@ namespace client {
 static request_callback_t client_request_callback = NULL;
 static group_request_callback_t client_group_request_callback = NULL;
 static void *request_callback_priv_data;
-static bool initialize_binding_manager = false;
 
 esp_err_t set_request_callback(request_callback_t callback, group_request_callback_t g_callback, void *priv_data)
 {
@@ -194,15 +193,11 @@ static void __binding_manager_init(intptr_t arg)
 
 void binding_manager_init()
 {
-    if (initialize_binding_manager) {
+#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
+    if (endpoint::get_cluster_count(chip::kInvalidEndpointId, Binding::Id, CLUSTER_FLAG_SERVER) > 0) {
         chip::DeviceLayer::PlatformMgr().ScheduleWork(__binding_manager_init);
-        initialize_binding_manager = false;
     }
-}
-
-void binding_init()
-{
-    initialize_binding_manager = true;
+#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 }
 #endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 

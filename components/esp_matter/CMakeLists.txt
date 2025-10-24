@@ -19,6 +19,7 @@ set(PRIV_INCLUDE_DIRS_LIST )
 if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
     list(APPEND SRC_DIRS_LIST    "${MATTER_SDK_PATH}/src/app/server"
                                  "${MATTER_SDK_PATH}/src/app/reporting"
+                                 "${MATTER_SDK_PATH}/src/app/persistence"
                                  "${MATTER_SDK_PATH}/src/app/server-cluster")
     if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
         include("utils/cluster_select/cluster_dir.cmake")
