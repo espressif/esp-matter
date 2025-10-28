@@ -1356,14 +1356,24 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 
 namespace year_day_access_schedules {
 
+typedef struct config {
+    uint8_t number_of_year_day_schedules_supported_per_user;
+    config() : number_of_year_day_schedules_supported_per_user(1) {}
+} config_t;
+
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* year_day_access_schedules */
 
 namespace holiday_schedules {
 
+typedef struct config {
+    uint8_t number_of_holiday_schedules_supported;
+    config() : number_of_holiday_schedules_supported(1) {}
+} config_t;
+
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* holiday_schedules */
 
 namespace unbolting {

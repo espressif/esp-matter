@@ -2843,13 +2843,13 @@ uint32_t get_id()
     return (uint32_t)DoorLock::Feature::kYearDayAccessSchedules;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
-    attribute::create_number_of_year_day_schedules_supported_per_user(cluster, 1);
+    attribute::create_number_of_year_day_schedules_supported_per_user(cluster, config->number_of_year_day_schedules_supported_per_user);
 
     /* Commands */
     command::create_set_year_day_schedule(cluster);
@@ -2869,13 +2869,13 @@ uint32_t get_id()
     return (uint32_t)DoorLock::Feature::kHolidaySchedules;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
-    attribute::create_number_of_holiday_schedules_supported(cluster, 1);
+    attribute::create_number_of_holiday_schedules_supported(cluster, config->number_of_holiday_schedules_supported);
 
     /* Commands */
     command::create_set_holiday_schedule(cluster);
