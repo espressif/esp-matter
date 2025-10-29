@@ -2,11 +2,20 @@
 # These are mostly the cases where AAI is not registered for the cluster and
 # attribute is of primitive type.
 AttributesWithOverridenManagedInternallyFlag:
-  AirQuality:
-    - AirQuality
+  0x005B:
+    name: AirQuality
+    attributes:
+      0x0000: AirQuality
+  0x0201:
+    name: Thermostat
+    attributes:
+      0x0000: LocalTemperature
+      0x001A: RemoteSensing
 
 # List of attributes that have get_val/set_val extentions which reads the attributes
 # using the connectedhomeip APIs and populate the esp_matter_attr_val_t.
 AttributesWithSetterGetterAPIExceptions:
-  UnitLocalization:
-    - TemperatureUnit
+  0x002D:
+    name: UnitLocalization
+    attributes:
+      0x0000: TemperatureUnit
