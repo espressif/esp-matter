@@ -1946,7 +1946,7 @@ namespace attribute {
 
 attribute_t *create_local_temperature(cluster_t *cluster, nullable<int16_t> value)
 {
-    return esp_matter::attribute::create(cluster, Thermostat::Attributes::LocalTemperature::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::LocalTemperature::Id, ATTRIBUTE_FLAG_NULLABLE,
                                          esp_matter_nullable_int16(value));
 }
 
@@ -2067,7 +2067,7 @@ attribute_t *create_min_setpoint_dead_band(cluster_t *cluster, int8_t value)
 attribute_t *create_remote_sensing(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, Thermostat::Attributes::RemoteSensing::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bitmap8(value));
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_bitmap8(value));
 }
 
 attribute_t *create_control_sequence_of_operation(cluster_t *cluster, uint8_t value)
