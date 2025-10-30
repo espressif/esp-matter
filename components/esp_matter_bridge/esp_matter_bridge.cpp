@@ -247,7 +247,7 @@ static esp_err_t plugin_init_callback_endpoint(endpoint_t *endpoint)
 
 static bridge_device_type_callback_t device_type_callback;
 
-esp_err_t set_device_type(device_t *bridged_device, uint32_t device_type_id, void *priv_data)
+esp_err_t set_device_type(device_t *bridged_device, uint32_t device_type_id, void *priv_data, void* callback_data)
 {
     esp_err_t err;
 
@@ -255,7 +255,7 @@ esp_err_t set_device_type(device_t *bridged_device, uint32_t device_type_id, voi
         ESP_LOGE(TAG, "bridged_device cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    err = device_type_callback(bridged_device->endpoint, device_type_id, priv_data);
+    err = device_type_callback(bridged_device->endpoint, device_type_id, priv_data, callback_data);
     if (err != ESP_OK)
         return err;
     return plugin_init_callback_endpoint(bridged_device->endpoint);
@@ -285,7 +285,8 @@ static bool parent_endpoint_is_valid(node_t *node, uint16_t parent_endpoint_id)
     return false;
 }
 
-device_t *create_device(node_t *node, uint16_t parent_endpoint_id, uint32_t device_type_id, void *priv_data)
+device_t *create_device(node_t *node, uint16_t parent_endpoint_id, uint32_t device_type_id,
+                        void *priv_data, void* callback_data)
 {
     // Check whether the parent endpoint is valid
     if (!parent_endpoint_is_valid(node, parent_endpoint_id)) {
@@ -310,7 +311,7 @@ device_t *create_device(node_t *node, uint16_t parent_endpoint_id, uint32_t devi
         esp_matter_mem_free(dev);
         return NULL;
     }
-    if (set_device_type(dev, device_type_id, priv_data) != ESP_OK) {
+    if (set_device_type(dev, device_type_id, priv_data, callback_data) != ESP_OK) {
         ESP_LOGE(TAG, "Failed to add the device type for the bridged device");
         remove_device(dev);
         return NULL;
@@ -348,7 +349,7 @@ device_t *create_device(node_t *node, uint16_t parent_endpoint_id, uint32_t devi
     return dev;
 }
 
-device_t *resume_device(node_t *node, uint16_t device_endpoint_id, void *priv_data)
+device_t *resume_device(node_t *node, uint16_t device_endpoint_id, void *priv_data, void* callback_data)
 {
     esp_err_t err = ESP_OK;
     device_persistent_info_t persistent_info;
@@ -378,7 +379,7 @@ device_t *resume_device(node_t *node, uint16_t device_endpoint_id, void *priv_da
         erase_bridged_device_info(device_endpoint_id);
         return NULL;
     }
-    if (set_device_type(dev, persistent_info.device_type_id, priv_data) != ESP_OK) {
+    if (set_device_type(dev, persistent_info.device_type_id, priv_data, callback_data) != ESP_OK) {
         ESP_LOGE(TAG, "Failed to add the device type for the bridged device");
         remove_device(dev);
         return NULL;
