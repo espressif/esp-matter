@@ -172,7 +172,6 @@ esp_err_t add(cluster_t *cluster);
 namespace icd_management {
 namespace feature {
 namespace check_in_protocol_support {
-
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 
@@ -360,25 +359,15 @@ namespace feature {
 
 namespace lift {
 
-typedef struct config {
-    uint16_t number_of_actuations_lift;
-    config() : number_of_actuations_lift(0) {}
-} config_t;
-
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
+esp_err_t add(cluster_t *cluster);
 
 } /* lift */
 
 namespace tilt {
 
-typedef struct config {
-    uint16_t number_of_actuations_tilt;
-    config() : number_of_actuations_tilt(0) {}
-} config_t;
-
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
+esp_err_t add(cluster_t *cluster);
 
 } /* tilt */
 
@@ -388,10 +377,9 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 namespace position_aware_lift {
 
 typedef struct config {
-    nullable<uint8_t> current_position_lift_percentage;
     nullable<uint16_t> target_position_lift_percent_100ths;
     nullable<uint16_t> current_position_lift_percent_100ths;
-    config() : current_position_lift_percentage(), target_position_lift_percent_100ths(), current_position_lift_percent_100ths() {}
+    config() : target_position_lift_percent_100ths(), current_position_lift_percent_100ths() {}
 } config_t;
 
 uint32_t get_id();
@@ -405,15 +393,11 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 namespace absolute_position {
 
 typedef struct config {
-    uint16_t physical_closed_limit_lift;
-    nullable<uint16_t> current_position_lift;
     uint16_t installed_open_limit_lift;
     uint16_t installed_closed_limit_lift;
-    uint16_t physical_closed_limit_tilt;
-    nullable<uint16_t> current_position_tilt;
     uint16_t installed_open_limit_tilt;
     uint16_t installed_closed_limit_tilt;
-    config() : physical_closed_limit_lift(0), current_position_lift(), installed_open_limit_lift(0), installed_closed_limit_lift(65534), physical_closed_limit_tilt(0), current_position_tilt(), installed_open_limit_tilt(0), installed_closed_limit_tilt(65534) {}
+    config() : installed_open_limit_lift(0), installed_closed_limit_lift(65534), installed_open_limit_tilt(0), installed_closed_limit_tilt(65534) {}
 } config_t;
 
 uint32_t get_id();
@@ -427,10 +411,9 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 namespace position_aware_tilt {
 
 typedef struct config {
-    nullable<uint8_t> current_position_tilt_percentage;
     nullable<uint16_t> target_position_tilt_percent_100ths;
     nullable<uint16_t> current_position_tilt_percent_100ths;
-    config() : current_position_tilt_percentage(), target_position_tilt_percent_100ths(), current_position_tilt_percent_100ths() {}
+    config() : target_position_tilt_percent_100ths(), current_position_tilt_percent_100ths() {}
 } config_t;
 
 uint32_t get_id();
@@ -1344,10 +1327,9 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 namespace user {
 typedef struct config {
     uint16_t number_of_total_user_supported;
-    uint16_t expiring_user_timeout;
     uint8_t credential_rules_supported;
     uint8_t number_of_credentials_supported_per_user;
-    config() : number_of_total_user_supported(5), expiring_user_timeout(5), credential_rules_supported(0), number_of_credentials_supported_per_user(3) {}
+    config() : number_of_total_user_supported(5), credential_rules_supported(0), number_of_credentials_supported_per_user(3) {}
 } config_t;
 
 uint32_t get_id();

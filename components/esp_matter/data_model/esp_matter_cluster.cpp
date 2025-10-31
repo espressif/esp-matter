@@ -2052,14 +2052,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
                                       feature::lift::get_id(), feature::tilt::get_id());
 
         if (has(feature::lift::get_id())) {
-            feature::lift::add(cluster, &(config->features.lift));
+            feature::lift::add(cluster);
             // optional if lift is supported
             if (has(feature::position_aware_lift::get_id())) {
                 feature::position_aware_lift::add(cluster, &(config->features.position_aware_lift));
             }
         }
         if (has(feature::tilt::get_id())) {
-            feature::tilt::add(cluster, &(config->features.tilt));
+            feature::tilt::add(cluster);
             // optional if tilt is supported
             if (has(feature::position_aware_tilt::get_id())) {
                 feature::position_aware_tilt::add(cluster, &(config->features.position_aware_tilt));

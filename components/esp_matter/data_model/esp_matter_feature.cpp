@@ -535,8 +535,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
     /* Attributes not managed internally */
     attribute::create_remaining_time(cluster, config->remaining_time);
-    attribute::create_min_level(cluster, config->min_level);
-    attribute::create_max_level(cluster, config->max_level);
     attribute::create_start_up_current_level(cluster, config->start_up_current_level);
 
     return ESP_OK;
@@ -755,12 +753,10 @@ uint32_t get_id()
     return (uint32_t)WindowCovering::Feature::kLift;
 }
 
-esp_err_t add(cluster_t *cluster, config_t *config)
+esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
-
-    attribute::create_number_of_actuations_lift(cluster, config->number_of_actuations_lift);
 
     return ESP_OK;
 }
@@ -774,12 +770,10 @@ uint32_t get_id()
     return (uint32_t)WindowCovering::Feature::kTilt;
 }
 
-esp_err_t add(cluster_t *cluster, config_t *config)
+esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
-
-    attribute::create_number_of_actuations_tilt(cluster, config->number_of_actuations_tilt);
 
     return ESP_OK;
 }
@@ -798,10 +792,8 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t lift_feature_map = feature::lift::get_id();
     if ((get_feature_map_value(cluster) & lift_feature_map) == lift_feature_map) {
-
         update_feature_map(cluster, get_id());
 
-        attribute::create_current_position_lift_percentage(cluster, config->current_position_lift_percentage);
         attribute::create_target_position_lift_percent_100ths(cluster, config->target_position_lift_percent_100ths);
         attribute::create_current_position_lift_percent_100ths(cluster, config->current_position_lift_percent_100ths);
 
@@ -849,8 +841,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         return ESP_ERR_NOT_SUPPORTED;
     }
     if ((get_feature_map_value(cluster) & abs_and_pa_lf_and_lf_feature_map) == abs_and_pa_lf_and_lf_feature_map) {
-        attribute::create_physical_closed_limit_lift(cluster, config->physical_closed_limit_lift);
-        attribute::create_current_position_lift(cluster, config->current_position_lift);
         attribute::create_installed_open_limit_lift(cluster, config->installed_open_limit_lift);
         attribute::create_installed_closed_limit_lift(cluster, config->installed_closed_limit_lift);
     } else {
@@ -858,8 +848,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     }
 
     if ((get_feature_map_value(cluster) & abs_and_pa_tl_and_tl_feature_map) == abs_and_pa_tl_and_tl_feature_map) {
-        attribute::create_physical_closed_limit_tilt(cluster, config->physical_closed_limit_tilt);
-        attribute::create_current_position_tilt(cluster, config->current_position_tilt);
         attribute::create_installed_open_limit_tilt(cluster, config->installed_open_limit_tilt);
         attribute::create_installed_closed_limit_tilt(cluster, config->installed_closed_limit_tilt);
     } else {
@@ -898,7 +886,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
         update_feature_map(cluster, get_id());
 
-        attribute::create_current_position_tilt_percentage(cluster, config->current_position_tilt_percentage);
         attribute::create_target_position_tilt_percent_100ths(cluster, config->target_position_tilt_percent_100ths);
         attribute::create_current_position_tilt_percent_100ths(cluster, config->current_position_tilt_percent_100ths);
 
@@ -1391,6 +1378,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
     update_feature_map(cluster, get_id());
 
+    attribute::create_spin_speeds(cluster, NULL, 0, 0);
     attribute::create_spin_speed_current(cluster, config->spin_speed_current);
 
     return ESP_OK;
@@ -1412,6 +1400,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     update_feature_map(cluster, get_id());
 
     attribute::create_number_of_rinses(cluster, config->number_of_rinses);
+    attribute::create_supported_rinses(cluster, NULL, 0, 0);
 
     return ESP_OK;
 }
@@ -1437,8 +1426,6 @@ esp_err_t add(cluster_t *cluster)
     update_feature_map(cluster, get_id());
 
     attribute::create_smoke_state(cluster, 0);
-    attribute::create_contamination_state(cluster, 0);
-    attribute::create_smoke_sensitivity_level(cluster, 0);
 
     event::create_smoke_alarm(cluster);
     event::create_interconnect_smoke_alarm(cluster);
@@ -2723,9 +2710,6 @@ esp_err_t add(cluster_t *cluster)
 
     /* Attributes not managed internally */
     attribute::create_door_state(cluster, 0);
-    attribute::create_door_open_events(cluster, 0);
-    attribute::create_door_close_events(cluster, 0);
-    attribute::create_open_period(cluster, 0);
 
     /* events */
     event::create_door_state_change(cluster);
@@ -2798,7 +2782,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     attribute::create_number_of_total_users_supported(cluster, config->number_of_total_user_supported);
     attribute::create_credential_rules_support(cluster, config->credential_rules_supported);
     attribute::create_number_of_credentials_supported_per_user(cluster, config->number_of_credentials_supported_per_user);
-    attribute::create_expiring_user_timeout(cluster, config->expiring_user_timeout);
 
     /* Commands */
     command::create_set_user(cluster);
