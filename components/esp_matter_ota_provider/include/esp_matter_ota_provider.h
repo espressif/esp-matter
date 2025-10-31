@@ -19,6 +19,7 @@
 #include <app/CommandHandler.h>
 #include <app/clusters/ota-provider/OTAProviderUserConsentDelegate.h>
 #include <app/clusters/ota-provider/ota-provider-delegate.h>
+#include <credentials/FabricTable.h>
 #include <cstdint>
 #include <esp_matter_ota_bdx_sender.h>
 #include <freertos/FreeRTOS.h>
@@ -72,7 +73,8 @@ public:
         static EspOtaProvider instance;
         return instance;
     }
-    void Init(bool otaAllowedDefault);
+    esp_err_t Init(bool otaAllowedDefault, chip::System::Layer *system_layer,
+                   chip::Messaging::ExchangeManager *exchange_mgr, chip::FabricTable *fabric_table);
     void SetApplyUpdateAction(OTAApplyUpdateAction action) { mUpdateAction = action; }
     void SetDelayedQueryActionTimeSec(uint32_t time) { mDelayedQueryActionTimeSec = time; }
     void SetDelayedApplyActionTimeSec(uint32_t time) { mDelayedApplyActionTimeSec = time; }
@@ -102,6 +104,8 @@ private:
     esp_err_t CreateOtaRequestorEntry(const chip::ScopedNodeId &nodeId);
 
     OtaBdxSender mOtaBdxSender;
+    chip::System::Layer *mSystemLayer;
+    chip::FabricTable *mFabricTable;
     uint32_t mDelayedQueryActionTimeSec;
     OTAApplyUpdateAction mUpdateAction;
     uint32_t mDelayedApplyActionTimeSec;

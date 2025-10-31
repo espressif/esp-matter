@@ -7,7 +7,7 @@ set(MATTER_SDK_PATH ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip)
 set(src_dirs_list )
 set(include_dirs_list )
 set(exclude_srcs_list )
-set(requires_list chip esp_matter esp_matter_console spiffs esp_http_client)
+set(requires_list chip esp_matter esp_matter_console spiffs esp_matter_ota_provider esp_http_client)
 if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
     list(APPEND src_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/core"
                               "${CMAKE_CURRENT_SOURCE_DIR}/commands"
@@ -31,6 +31,12 @@ if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
         list(APPEND include_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/attestation_store")
     else()
         list(APPEND exclude_srcs_list "${CMAKE_CURRENT_SOURCE_DIR}/commands/esp_matter_controller_pairing_command.cpp")
+    endif()
+
+    if (CONFIG_CHIP_DEVICE_ENABLE_DYNAMIC_SERVER AND CONFIG_ESP_MATTER_OTA_PROVIDER_ENABLED)
+        list(APPEND src_dirs_list "${MATTER_SDK_PATH}/src/app/clusters/ota-provider"
+                                  "${MATTER_SDK_PATH}/src/app/server-cluster")
+        list(APPEND exclude_srcs_list "${MATTER_SDK_PATH}/src/app/clusters/ota-provider/CodegenIntegration.cpp")
     endif()
 endif()
 

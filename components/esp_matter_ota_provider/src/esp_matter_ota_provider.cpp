@@ -63,8 +63,14 @@ static void GetUpdateTokenString(const ByteSpan &token, char *buf, size_t bufSiz
     }
 }
 
-void EspOtaProvider::Init(bool otaAllowedDefault)
+esp_err_t EspOtaProvider::Init(bool otaAllowedDefault, chip::System::Layer *system_layer,
+                               chip::Messaging::ExchangeManager *exchange_mgr, FabricTable *fabric_table)
 {
+    if (!system_layer || !exchange_mgr || !fabric_table) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    mSystemLayer = system_layer;
+    mFabricTable = fabric_table;
     mDelayedQueryActionTimeSec = 0;
     mUpdateAction = OTAApplyUpdateAction::kProceed;
     mDelayedApplyActionTimeSec = 0;
@@ -72,8 +78,10 @@ void EspOtaProvider::Init(bool otaAllowedDefault)
     mOtaRequestorList = nullptr;
     mOtaAllowedDefault = otaAllowedDefault;
     init_ota_candidates();
-    chip::Server::GetInstance().GetExchangeManager().RegisterUnsolicitedMessageHandlerForProtocol(
-        chip::Protocols::BDX::Id, &mOtaBdxSender);
+    return exchange_mgr->RegisterUnsolicitedMessageHandlerForProtocol(chip::Protocols::BDX::Id, &mOtaBdxSender) ==
+            CHIP_NO_ERROR
+        ? ESP_OK
+        : ESP_FAIL;
 }
 
 void EspOtaProvider::SendQueryImageResponse(OTAQueryStatus status)
@@ -102,7 +110,7 @@ void EspOtaProvider::SendQueryImageResponse(OTAQueryStatus status)
     // Set fields specific for an available status response
     if (status == OTAQueryStatus::kUpdateAvailable) {
         FabricIndex fabricIndex = mSubjectDescriptor.fabricIndex;
-        const FabricInfo *fabricInfo = Server::GetInstance().GetFabricTable().FindFabricWithIndex(fabricIndex);
+        const FabricInfo *fabricInfo = mFabricTable->FindFabricWithIndex(fabricIndex);
         NodeId providerNodeId = fabricInfo->GetPeerId().GetNodeId();
 
         // Generate the ImageURI
@@ -118,15 +126,15 @@ void EspOtaProvider::SendQueryImageResponse(OTAQueryStatus status)
             ESP_LOGD(TAG, "Generated URI: %s", requestor->mImageUri);
         }
 
-        // Initialize the transfer session in prepartion for a BDX transfer
+        // Initialize the transfer session in preparation for a BDX transfer
         BitFlags<TransferControlFlags> bdxFlags;
         bdxFlags.Set(TransferControlFlags::kReceiverDrive);
         if (mOtaBdxSender.InitializeTransfer(mSubjectDescriptor.fabricIndex, mSubjectDescriptor.subject) == ESP_OK) {
             mOtaBdxSender.SetOtaImageUrl(requestor->mOtaImageUrl);
             ESP_LOGI(TAG, "Bdx Sender will query the OTA image from %s", requestor->mOtaImageUrl);
-            CHIP_ERROR error = mOtaBdxSender.PrepareForTransfer(
-                &chip::DeviceLayer::SystemLayer(), chip::bdx::TransferRole::kSender, bdxFlags, kMaxBdxBlockSize,
-                kBdxTimeout, chip::System::Clock::Milliseconds32(mPollInterval));
+            CHIP_ERROR error = mOtaBdxSender.PrepareForTransfer(mSystemLayer, chip::bdx::TransferRole::kSender,
+                                                                bdxFlags, kMaxBdxBlockSize, kBdxTimeout,
+                                                                chip::System::Clock::Milliseconds32(mPollInterval));
             if (error != CHIP_NO_ERROR) {
                 ESP_LOGE(TAG, "Cannot prepare for transfer: %" CHIP_ERROR_FORMAT, error.Format());
                 commandHandle->AddStatus(mPath, Status::Failure);

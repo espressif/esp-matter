@@ -16,10 +16,11 @@
 
 #include <app_reset.h>
 
-#include <app/clusters/ota-provider/ota-provider-cluster.h>
 #include <app/clusters/ota-provider/CodegenIntegration.h>
+#include <app/clusters/ota-provider/ota-provider-cluster.h>
 #include <app/server/Server.h>
 #include <credentials/FabricTable.h>
+#include <platform/CHIPDeviceLayer.h>
 
 static const char *TAG = "app_main";
 uint16_t switch_endpoint_id = 0;
@@ -54,7 +55,6 @@ extern "C" void app_main()
     node_t *node = node::create(&node_config, NULL, NULL);
     endpoint_t *root_node_endpoint = endpoint::get(node, 0);
     cluster::ota_software_update_provider::config_t config;
-    EspOtaProvider::GetInstance().Init(true);
     config.delegate = &EspOtaProvider::GetInstance();
     cluster_t *ota_provider_cluster = cluster::ota_software_update_provider::create(root_node_endpoint, &config, CLUSTER_FLAG_SERVER);
     if (!node || !root_node_endpoint || !ota_provider_cluster) {
@@ -66,6 +66,10 @@ extern "C" void app_main()
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Matter start failed: %d", err);
     }
+
+    EspOtaProvider::GetInstance().Init(true, &chip::DeviceLayer::SystemLayer(),
+                                       &chip::Server::GetInstance().GetExchangeManager(),
+                                       &chip::Server::GetInstance().GetFabricTable());
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter::console::diagnostics_register_commands();
     esp_matter::console::wifi_register_commands();
