@@ -378,6 +378,7 @@ esp_err_t add(cluster_t *cluster)
     attribute::create_registered_clients(cluster, NULL, 0, 0);
     attribute::create_icd_counter(cluster, 0);
     attribute::create_clients_supported_per_fabric(cluster, 0);
+    attribute::create_maximum_check_in_backoff(cluster, 0);
 
     /* Commands */
     command::create_register_client(cluster);
