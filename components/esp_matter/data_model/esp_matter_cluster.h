@@ -354,7 +354,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* thermostat_user_interface_configuration */
 
 namespace air_quality {
-using config_t = common::config_t;
+typedef struct config {
+    uint8_t air_quality;
+    config() : air_quality(0) {}
+} config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* air_quality */

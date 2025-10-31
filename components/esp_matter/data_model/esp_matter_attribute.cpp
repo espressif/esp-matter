@@ -1946,7 +1946,7 @@ namespace attribute {
 
 attribute_t *create_local_temperature(cluster_t *cluster, nullable<int16_t> value)
 {
-    return esp_matter::attribute::create(cluster, Thermostat::Attributes::LocalTemperature::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::LocalTemperature::Id, ATTRIBUTE_FLAG_NULLABLE,
                                          esp_matter_nullable_int16(value));
 }
 
@@ -2067,7 +2067,7 @@ attribute_t *create_min_setpoint_dead_band(cluster_t *cluster, int8_t value)
 attribute_t *create_remote_sensing(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, Thermostat::Attributes::RemoteSensing::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bitmap8(value));
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_bitmap8(value));
 }
 
 attribute_t *create_control_sequence_of_operation(cluster_t *cluster, uint8_t value)
@@ -2347,7 +2347,13 @@ namespace attribute {
 
 attribute_t *create_air_quality(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, AirQuality::Attributes::AirQuality::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
+    // Storage of this attribute was moved from esp-matter to connectedhomeip during the v1.4.2 release by
+    // implementing the AAI in connectedhomeip.
+    // For most clusters, AAI registration occurs in the cluster-init callback, but for this cluster,
+    // it is delegated to the application layer. So, in the esp-matter's workflow, no one registers the AAI.
+    // And, as this attribute is of primitive type, we can discard the ATTRIBUTE_FLAG_MANAGED_INTERNALLY flag
+    // and storage can be managed by esp-matter.
+    return esp_matter::attribute::create(cluster, AirQuality::Attributes::AirQuality::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_enum8(value));
 }
 
