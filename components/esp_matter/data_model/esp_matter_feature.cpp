@@ -3392,9 +3392,6 @@ esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
-    /* attribute */
-    nullable<uint64_t> timestamp;
-    attribute::create_pending_dataset_timestamp(cluster, timestamp);
 
     /* command */
     command::create_set_pending_dataset_request(cluster);
