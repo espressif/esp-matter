@@ -1274,6 +1274,12 @@ attribute_t *create_packet_tx_count(cluster_t *cluster, uint64_t value)
 					 ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint64(value));
 }
 
+attribute_t *create_tx_error_count(cluster_t *cluster, uint64_t value)
+{
+    return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::TxErrCount::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint64(value));
+}
+
 attribute_t *create_collision_count(cluster_t *cluster, uint64_t value)
 {
     return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::CollisionCount::Id,
