@@ -19,10 +19,12 @@
 #include <lib/support/Span.h>
 #include <lib/core/CHIPError.h>
 #include <lib/support/logging/CHIPLogging.h>
+#include <platform/ESP32/ESP32SecureCertDataProvider.h>
 
 using namespace chip;
 using namespace chip::Crypto;
 using namespace chip::Credentials;
+using namespace chip::DeviceLayer;
 
 namespace {
 const char *TAG = "MFG-TEST-APP";
@@ -40,6 +42,8 @@ MutableByteSpan dac_span;
 
 uint8_t s_garbage_buffer[128];
 
+// This reads the certificates DAC and PAI from the esp-secure-cert partition into global buffers.
+// It also stores the PAA certificate provided by the user in the global buffer.
 CHIP_ERROR read_certs_in_spans()
 {
     // DAC Provider implementation
@@ -64,6 +68,12 @@ CHIP_ERROR read_certs_in_spans()
     return CHIP_NO_ERROR;
 }
 
+// This function prints following details from the certificate:
+// - Vendor ID
+// - Product ID
+// - Public key as hex string
+// - AKID as hex string
+// - SKID as hex string
 CHIP_ERROR dump_cert_details(const char *type, ByteSpan cert_span)
 {
     ESP_LOGI(TAG, "---------- %s ----------", type);
@@ -131,6 +141,8 @@ CHIP_ERROR dump_cert_details(const char *type, ByteSpan cert_span)
     return CHIP_NO_ERROR;
 }
 
+// Validates the DAC by signing a message with the DAC key and
+// verifying the signature with the public key in the DAC certificate.
 CHIP_ERROR test_dac(ByteSpan dac)
 {
     // DAC Provider implementation
@@ -205,6 +217,8 @@ AttestationVerificationResult MapError(CertificateChainValidationResult certific
     }
 }
 
+// Verifies DAC->PAI->PAA Certificate chain
+// Validates VID/PID per Matter spec
 bool test_cert_chain(ByteSpan paa, ByteSpan pai, ByteSpan dac)
 {
     AttestationVerificationResult err = AttestationVerificationResult::kSuccess;
@@ -266,15 +280,94 @@ exit:
     return true;
 }
 
+// Verifies if the flash encryption and secure boot are enabled in release mode
 void test_security_bits()
 {
     if (esp_flash_encryption_cfg_verify_release_mode()) {
         ESP_LOGI(TAG, "Flash encryption in release mode: OK");
     }
-
     if (esp_secure_boot_cfg_verify_release_mode()) {
         ESP_LOGI(TAG, "Secure Boot in release mode: OK");
     }
+}
+
+// reads the commissionable data and unique id for rotating device id from the esp-secure-cert partition
+// and prints them
+void read_and_print_matter_unique_data_from_secure_cert_partition()
+{
+#if defined(CONFIG_SEC_CERT_COMMISSIONABLE_DATA_PROVIDER) && defined(CONFIG_SEC_CERT_DEVICE_INSTANCE_INFO_PROVIDER)
+
+    uint16_t setup_discriminator;
+    CHIP_ERROR err = GetCommissionableDataProvider()->GetSetupDiscriminator(setup_discriminator);
+    VerifyOrReturn(err == CHIP_NO_ERROR,
+        ESP_LOGE(TAG, "ERROR: Failed to get setup discriminator, error: %" CHIP_ERROR_FORMAT, err.Format()));
+    ESP_LOGI(TAG, "Setup discriminator: %d", setup_discriminator);
+
+    uint32_t spake2p_iteration_count;
+    err = GetCommissionableDataProvider()->GetSpake2pIterationCount(spake2p_iteration_count);
+    VerifyOrReturn(err == CHIP_NO_ERROR,
+        ESP_LOGE(TAG, "ERROR: Failed to get spake2p iteration count, error: %" CHIP_ERROR_FORMAT, err.Format()));
+    ESP_LOGI(TAG, "Spake2p iteration count: %d", spake2p_iteration_count);
+
+    uint8_t spake2p_salt[kSpake2p_Max_PBKDF_Salt_Length];
+    MutableByteSpan spake2p_salt_span(spake2p_salt);
+    err = GetCommissionableDataProvider()->GetSpake2pSalt(spake2p_salt_span);
+    VerifyOrReturn(err == CHIP_NO_ERROR,
+        ESP_LOGE(TAG, "ERROR: Failed to get spake2p salt, error: %" CHIP_ERROR_FORMAT, err.Format()));
+    printf("Spake2p salt: ");
+    for (uint8_t i = 0; i < spake2p_salt_span.size(); i++) {
+        printf("%02x", spake2p_salt_span.data()[i]);
+    }
+    printf("\n");
+
+    uint8_t spake2p_verifier[kSpake2p_VerifierSerialized_Length];
+    MutableByteSpan spake2p_verifier_span(spake2p_verifier);
+    size_t spake2p_verifier_len = 0;
+    err = GetCommissionableDataProvider()->GetSpake2pVerifier(spake2p_verifier_span, spake2p_verifier_len);
+    VerifyOrReturn(err == CHIP_NO_ERROR,
+        ESP_LOGE(TAG, "ERROR: Failed to get spake2p verifier, error: %" CHIP_ERROR_FORMAT, err.Format()));
+    printf("Spake2p verifier: ");
+    for (uint8_t i = 0; i < spake2p_verifier_span.size(); i++) {
+        printf("%02x", spake2p_verifier_span.data()[i]);
+    }
+    printf("\n");
+
+#if CHIP_DEVICE_CONFIG_ENABLE_DEVICE_INSTANCE_INFO_PROVIDER && CHIP_ENABLE_ROTATING_DEVICE_ID
+    uint8_t unique_id_for_rotating_device_id[ConfigurationManager::kRotatingDeviceIDUniqueIDLength];
+    MutableByteSpan unique_id_for_rotating_device_id_span(unique_id_for_rotating_device_id);
+    err = GetDeviceInstanceInfoProvider()->GetRotatingDeviceIdUniqueId(unique_id_for_rotating_device_id_span);
+    VerifyOrReturn(err == CHIP_NO_ERROR,
+        ESP_LOGE(TAG, "ERROR: Failed to get unique id for rotating device id, error: %" CHIP_ERROR_FORMAT, err.Format()));
+    printf("Unique id for rotating device id: ");
+    for (uint8_t i = 0; i < unique_id_for_rotating_device_id_span.size(); i++) {
+        printf("%02x", unique_id_for_rotating_device_id_span.data()[i]);
+    }
+    printf("\n");
+#endif // CHIP_DEVICE_CONFIG_ENABLE_DEVICE_INSTANCE_INFO_PROVIDER && CHIP_ENABLE_ROTATING_DEVICE_ID
+
+    uint8_t fixed_random1[ESP32SecureCertDataProvider::kFixedRandomValueLength];
+    MutableByteSpan fixed_random1_span(fixed_random1);
+    err = ESP32SecureCertDataProvider::GetFixedRandom1(fixed_random1_span);
+    VerifyOrReturn(err == CHIP_NO_ERROR,
+        ESP_LOGE(TAG, "ERROR: Failed to get fixed random 1, error: %" CHIP_ERROR_FORMAT, err.Format()));
+    printf("Fixed random 1: ");
+    for (uint8_t i = 0; i < fixed_random1_span.size(); i++) {
+        printf("%02x", fixed_random1_span.data()[i]);
+    }
+    printf("\n");
+
+    uint8_t fixed_random2[ESP32SecureCertDataProvider::kFixedRandomValueLength];
+    MutableByteSpan fixed_random2_span(fixed_random2);
+    err = ESP32SecureCertDataProvider::GetFixedRandom2(fixed_random2_span);
+    VerifyOrReturn(err == CHIP_NO_ERROR,
+        ESP_LOGE(TAG, "ERROR: Failed to get fixed random 2, error: %" CHIP_ERROR_FORMAT, err.Format()));
+    printf("Fixed random 2: ");
+    for (uint8_t i = 0; i < fixed_random2_span.size(); i++) {
+        printf("%02x", fixed_random2_span.data()[i]);
+    }
+    printf("\n");
+
+#endif // defined(CONFIG_SEC_CERT_COMMISSIONABLE_DATA_PROVIDER) && defined(CONFIG_SEC_CERT_DEVICE_INSTANCE_INFO_PROVIDER)
 }
 
 }
@@ -286,23 +379,29 @@ extern "C" void app_main()
 
     // read PAA, PAI, and DAC in spans
     CHIP_ERROR err = read_certs_in_spans();
-    VerifyOrReturn(err == CHIP_NO_ERROR, ESP_LOGE(TAG, "ERROR: Reading certificates failed, error: %" CHIP_ERROR_FORMAT, err.Format()));
+    VerifyOrReturn(err == CHIP_NO_ERROR,
+        ESP_LOGE(TAG, "ERROR: Reading certificates failed, error: %" CHIP_ERROR_FORMAT, err.Format()));
 
     // Dump PAI details
     err = dump_cert_details("PAI", pai_span);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ESP_LOGE(TAG, "ERROR: Failed to dump PAI certificate details, error: %" CHIP_ERROR_FORMAT, err.Format()));
+    VerifyOrReturn(err == CHIP_NO_ERROR,
+        ESP_LOGE(TAG, "ERROR: Failed to dump PAI certificate details, error: %" CHIP_ERROR_FORMAT, err.Format()));
 
     // Dump DAC details
     err = dump_cert_details("DAC", dac_span);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ESP_LOGE(TAG, "ERROR: Failed to dump DAC certificate details, error: %" CHIP_ERROR_FORMAT, err.Format()));
+    VerifyOrReturn(err == CHIP_NO_ERROR,
+        ESP_LOGE(TAG, "ERROR: Failed to dump DAC certificate details, error: %" CHIP_ERROR_FORMAT, err.Format()));
 
     // Sign the message with DAC key and verify with public key in DAC certificate
     err = test_dac(dac_span);
-    VerifyOrReturn(err == CHIP_NO_ERROR, ESP_LOGE(TAG, "ERROR: Failed to Sign and Verify using DAC keypair, error: %" CHIP_ERROR_FORMAT, err.Format()));
+    VerifyOrReturn(err == CHIP_NO_ERROR,
+        ESP_LOGE(TAG, "ERROR: Failed to Sign and Verify using DAC keypair, error: %" CHIP_ERROR_FORMAT, err.Format()));
 
     // Test DAC -> PAI -> PAA chain validation
     bool status = test_cert_chain(paa_span, pai_span, dac_span);
-    VerifyOrReturn(status, ESP_LOGE(TAG, "ERROR: Failed to validate attestation cert chain (DAC -> PAI -> PAA)"));
+    VerifyOrReturn(status,
+        ESP_LOGE(TAG, "ERROR: Failed to validate attestation cert chain (DAC -> PAI -> PAA)"));
 
     test_security_bits();
+    read_and_print_matter_unique_data_from_secure_cert_partition();
 }
