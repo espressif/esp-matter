@@ -632,12 +632,6 @@ esp_err_t controller_register_commands()
             .handler = controller_pairing_handler,
         },
         {
-            .name = "group-settings",
-            .description = "Managing the groups and keysets of the controller.\n"
-                           "\tUsage: controller group-settings <sub-commands>",
-            .handler = controller_group_settings_handler,
-        },
-        {
             .name = "icd",
             .description = "icd client management.\n"
                            "\tUsage: controller icd list",
@@ -654,6 +648,14 @@ esp_err_t controller_register_commands()
         },
 #endif
 #endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+#ifndef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
+        {
+            .name = "group-settings",
+            .description = "Managing the groups and keysets of the controller.\n"
+                           "\tUsage: controller group-settings <sub-commands>",
+            .handler = controller_group_settings_handler,
+        },
+#endif // !CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
         {
             .name = "open-commissioning-window",
             .description =

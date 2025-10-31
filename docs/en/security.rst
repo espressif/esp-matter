@@ -1,10 +1,10 @@
-5. Security Considerations
-==========================
+Security Considerations
+=======================
 
 {IDF_TARGET_RELEASE:default="v5.4.1"}
 
-5.1 Overview
-------------
+1 Overview
+----------
 
 This guide provides an overview of the overall security features that should be considered while designing the products with Matter framework on ESP32 SoCs.
 
@@ -14,11 +14,11 @@ High level security goals are as follows:
 #. Securing device identity (e.g., Matter DAC Private Key)
 #. Secure storage for confidential data
 
-5.2 Platform Security
----------------------
+2 Platform Security
+-------------------
 
-5.2.1 Secure Boot
-~~~~~~~~~~~~~~~~~
+2.1 Secure Boot
+~~~~~~~~~~~~~~~
 
 The Secure Boot feature ensures that only authenticated software can execute on the device. The Secure Boot process forms a chain of trust by verifying all **mutable** software entities involved in the boot-up process. Signature verification happens during both boot-up as well as in OTA updates.
 
@@ -30,20 +30,20 @@ Please refer to `Secure Boot V2`_ guide for detailed documentation about this fe
 
 .. _flash_enc-guide:
 
-5.2.2 Flash Encryption
-~~~~~~~~~~~~~~~~~~~~~~
+2.2 Flash Encryption
+~~~~~~~~~~~~~~~~~~~~
 
 The Flash Encryption feature helps to encrypt the contents on the off-chip flash memory and thus provides the confidentiality aspect to the software or data stored in the flash memory.
 
 Please refer to `Flash Encryption`_ guide for detailed documentation about this feature in {IDF_TARGET_NAME}.
 
-5.3 Product Security
---------------------
+3 Product Security
+------------------
 
 .. _secure_storage-guide:
 
-5.3.1 Secure Storage
-~~~~~~~~~~~~~~~~~~~~
+3.1 Secure Storage
+~~~~~~~~~~~~~~~~~~
 
 Secure storage refers to the application-specific data that can be stored in a secure manner on the device, i.e., off-chip flash memory. This is typically a read-write flash partition and holds device specific configuration data, e.g., Wi-Fi credentials.
 
@@ -51,8 +51,8 @@ ESP-IDF provides the **NVS (Non-volatile Storage)** management component which a
 
 Please refer to the `NVS Encryption`_ for detailed documentation on the working and instructions to enable this feature in {IDF_TARGET_NAME}.
 
-5.3.2 Device Identity
-~~~~~~~~~~~~~~~~~~~~~
+3.2 Device Identity
+~~~~~~~~~~~~~~~~~~~
 
 Matter specification requires a unique Device Attestation Key (DAC) per device. This is a private ECDSA (secp256r1 curve) key that establishes the device identity to the Matter Ecosystem.
 DAC private needs to be protected from remote as well as physical attacks in the best possible way.
@@ -81,24 +81,24 @@ Recommended ways for DAC private key protection:
 
    Espressif provides pre-provisioning service to build Matter-Compatible devices. This service also ensures the security of the DAC private key and configuration data. Please contact Espressif Sales for more information.
 
-5.4 More Security Considerations
---------------------------------
+4 More Security Considerations
+------------------------------
 
 Please refer to the overall ESP-IDF `Security Guide`_ for more considerations related to the debug interfaces, network, transport and OTA updates related security.
 
-5.5 Security Policy
--------------------
+5 Security Policy
+-----------------
 
 The ESP-Matter GitHub repository has attached `Security Policy Brief`_.
 
-5.5.1 Advisories
-~~~~~~~~~~~~~~~~
+5.1 Advisories
+~~~~~~~~~~~~~~
 
 - Espressif publishes critical `Security Advisories`_, which includes security advisories regarding both hardware and software.
 - The specific advisories of the ESP-Matter software components shall be published through the `GitHub repository`_.
 
-5.5.2 Software Updates
-~~~~~~~~~~~~~~~~~~~~~~
+5.2 Software Updates
+~~~~~~~~~~~~~~~~~~~~
 
 Critical security issues in the ESP-Matter components, ESP-IDF components and dependant third-party libraries are fixed as and when we find them or when they are reported to us. Gradually, we make the fixes available in all applicable release branches in ESP-Matter.
 

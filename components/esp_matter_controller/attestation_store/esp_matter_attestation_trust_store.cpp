@@ -307,6 +307,13 @@ cleanup:
 }
 #endif // CONFIG_DCL_ATTESTATION_TRUST_STORE
 
+static AttestationTrustStore *s_custom_store = nullptr;
+
+void set_custom_attestation_trust_store(AttestationTrustStore *custom_store)
+{
+    s_custom_store = custom_store;
+}
+
 const AttestationTrustStore *get_attestation_trust_store()
 {
 #if CONFIG_TEST_ATTESTATION_TRUST_STORE
@@ -316,6 +323,8 @@ const AttestationTrustStore *get_attestation_trust_store()
     return &spiffs_attestation_trust_store::get_instance();
 #elif CONFIG_DCL_ATTESTATION_TRUST_STORE
     return &dcl_attestation_trust_store::get_instance();
+#elif CONFIG_CUSTOM_ATTESTATION_TRUST_STORE
+    return s_custom_store;
 #endif
 }
 

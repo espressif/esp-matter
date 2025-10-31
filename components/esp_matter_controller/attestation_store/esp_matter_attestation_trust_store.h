@@ -92,6 +92,8 @@ private:
 };
 #endif // CONFIG_DCL_ATTESTATION_TRUST_STORE
 
+void set_custom_attestation_trust_store(AttestationTrustStore *custom_store);
+
 const AttestationTrustStore *get_attestation_trust_store();
 
 } // namespace Credentials
