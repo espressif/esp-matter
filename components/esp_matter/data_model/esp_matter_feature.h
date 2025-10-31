@@ -92,17 +92,9 @@ esp_err_t add(cluster_t *cluster);
 namespace general_commissioning {
 namespace feature {
 namespace terms_and_conditions {
-typedef struct config {
-    uint16_t tc_accepted_version;
-    uint16_t tc_min_required_version;
-    uint16_t tc_acknowledgements;
-    bool tc_acknowledgements_required;
-    nullable<uint32_t> tc_update_deadline;
-    config(): tc_accepted_version(0), tc_min_required_version(0), tc_acknowledgements(0), tc_acknowledgements_required(true), tc_update_deadline(0) {}
-} config_t;
 
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
+esp_err_t add(cluster_t *cluster);
 
 } /* terms_and_conditions */
 } /* feature */
@@ -507,28 +499,15 @@ namespace feature {
 
 namespace packet_counts {
 
-typedef struct config {
-    uint64_t packet_rx_count;
-    uint64_t packet_tx_count;
-    config() : packet_rx_count(0), packet_tx_count(0) {}
-} config_t;
-
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
+esp_err_t add(cluster_t *cluster);
 
 } /* packet_counts */
 
 namespace error_counts {
 
-typedef struct config {
-    uint64_t tx_error_count;
-    uint64_t collision_count;
-    uint64_t overrun_count;
-    config() : tx_error_count(0), collision_count(0), overrun_count(0) {}
-} config_t;
-
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
+esp_err_t add(cluster_t *cluster);
 
 } /* error_counts */
 
@@ -950,13 +929,8 @@ namespace feature {
 
 namespace temperature_unit {
 
-typedef struct config {
-    uint8_t temperature_unit;
-    config() : temperature_unit(0) {}
-} config_t;
-
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
+esp_err_t add(cluster_t *cluster);
 
 } /* temperature_unit */
 
@@ -1382,14 +1356,24 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 
 namespace year_day_access_schedules {
 
+typedef struct config {
+    uint8_t number_of_year_day_schedules_supported_per_user;
+    config() : number_of_year_day_schedules_supported_per_user(1) {}
+} config_t;
+
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* year_day_access_schedules */
 
 namespace holiday_schedules {
 
+typedef struct config {
+    uint8_t number_of_holiday_schedules_supported;
+    config() : number_of_holiday_schedules_supported(1) {}
+} config_t;
+
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* holiday_schedules */
 
 namespace unbolting {
@@ -1597,26 +1581,15 @@ namespace feature {
 
 namespace energy_management {
 
-typedef struct config {
-    uint16_t tank_volume;
-    int64_t estimated_heat_required;
-    config(): tank_volume(0), estimated_heat_required(0) {}
-} config_t;
-
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
+esp_err_t add(cluster_t *cluster);
 
 } /* energy_management */
 
 namespace tank_percent {
 
-typedef struct config {
-    uint8_t tank_percentage;
-    config(): tank_percentage(0) {}
-} config_t;
-
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
+esp_err_t add(cluster_t *cluster);
 } /* tank_percent */
 } /* feature */
 } /* water_heater_management */

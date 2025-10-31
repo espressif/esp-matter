@@ -1,3 +1,17 @@
+## 21-Oct-2025
+### API Changes: `feature::add()` Function
+The following APIs have been updated — the config parameter has been removed, as the corresponding attributes are internally managed and not user-configurable:
+
+```
+general_commissioning::feature::terms_and_conditions::add(cluster_t *cluster);
+ethernet_network_diagnostics::feature::packet_counts::add(cluster_t *cluster);
+ethernet_network_diagnostics::feature::error_counts::add(cluster_t *cluster);
+unit_localization::feature::temperature_unit::add(cluster_t *cluster);
+water_heater_management::feature::energy_management::add(cluster_t *cluster);
+water_heater_management::feature::tank_percentage::add(cluster_t *cluster);
+
+```
+
 ## 30-Sep-2025
 
 ### Namespace Changes to Align with Matter Specifications
