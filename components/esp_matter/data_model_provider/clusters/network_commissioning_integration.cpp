@@ -82,18 +82,21 @@ void ESPMatterNetworkCommissioningClusterServerInitCallback(EndpointId endpointI
     if (endpointId == CONFIG_THREAD_NETWORK_ENDPOINT_ID) {
         static DeviceLayer::NetworkCommissioning::GenericThreadDriver sThreadDriver;
         gServers[index].Create(endpointId, &sThreadDriver);
+        gServers[index].Cluster().Init();
         (void)esp_matter::data_model::provider::get_instance().registry().Register(gServers[index].Registration());
     }
 #endif
 #ifdef CONFIG_WIFI_NETWORK_COMMISSIONING_DRIVER
     if (endpointId == CONFIG_WIFI_NETWORK_ENDPOINT_ID) {
         gServers[index].Create(endpointId, &(DeviceLayer::NetworkCommissioning::ESPWiFiDriver::GetInstance()));
+        gServers[index].Cluster().Init();
         (void)esp_matter::data_model::provider::get_instance().registry().Register(gServers[index].Registration());
     }
 #endif
 #ifdef CONFIG_ETHERNET_NETWORK_COMMISSIONING_DRIVER
     if (endpointId == CONFIG_ETHERNET_NETWORK_ENDPOINT_ID) {
         gServers[index].Create(endpointId, &(DeviceLayer::NetworkCommissioning::ESPEthernetDriver::GetInstance()));
+        gServers[index].Cluster().Init();
         (void)esp_matter::data_model::provider::get_instance().registry().Register(gServers[index].Registration());
     }
 #endif
@@ -106,16 +109,19 @@ void ESPMatterNetworkCommissioningClusterServerShutdownCallback(EndpointId endpo
 #ifdef CONFIG_THREAD_NETWORK_COMMISSIONING_DRIVER
     if (endpointId == CONFIG_THREAD_NETWORK_ENDPOINT_ID) {
         (void)esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[index].Cluster());
+        gServers[index].Cluster().Deinit();
     }
 #endif
 #ifdef CONFIG_WIFI_NETWORK_COMMISSIONING_DRIVER
     if (endpointId == CONFIG_WIFI_NETWORK_ENDPOINT_ID) {
         (void)esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[index].Cluster());
+        gServers[index].Cluster().Deinit();
     }
 #endif
 #ifdef CONFIG_ETHERNET_NETWORK_COMMISSIONING_DRIVER
     if (endpointId == CONFIG_ETHERNET_NETWORK_ENDPOINT_ID) {
         (void)esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[index].Cluster());
+        gServers[index].Cluster().Deinit();
     }
 #endif
 }
