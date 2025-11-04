@@ -22,11 +22,22 @@
 #include <app_network.h>
 #include <common_macros.h>
 #include <rainmaker_bridge.h>
+#include <mdns.h>
+#if CONFIG_OPENTHREAD_BORDER_ROUTER
 #include <app_thread_config.h>
 #include <esp_rmaker_thread_br.h>
+#include <platform/ESP32/OpenthreadLauncher.h>
+#ifdef CONFIG_AUTO_UPDATE_RCP
+#include <esp_rcp_update.h>
+#include <esp_spiffs.h>
+#endif
+#endif
+
+#define INVALID_MATTER_DEVICE_TYPE 0xFFFF
 
 static const char *TAG = "rainmaker_bridge";
 
+using namespace chip;
 using namespace chip::app::Clusters;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
@@ -106,7 +117,9 @@ static esp_err_t get_attribute_value_from_rainmaker_device(uint16_t endpoint_id,
     if (node_name[0] != 0) {
         if (json_obj_get_object(&jctx, node_name) == 0) {
             if (json_obj_get_int(&jctx, "Brightness", &attribute_value) == 0) {
-                attribute_update(endpoint_id, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id, attribute_value);
+                if (attribute_value > 0) {
+                    attribute_update(endpoint_id, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id, attribute_value);
+                }
             }
 
             if (json_obj_get_int(&jctx, "Hue", &attribute_value) == 0) {
@@ -147,10 +160,10 @@ static uint32_t matter_get_device_type_from_rainmaker_device(const char *input_b
     int device_count;
     char type[32];
     char param_type[32];
-    uint32_t matter_device_type_id = 0xFFFF;
+    uint32_t matter_device_type_id = INVALID_MATTER_DEVICE_TYPE;
 
     if (json_parse_start(&jctx, input_buf, buf_length) != 0) {
-        return 0xFFFF;
+        return INVALID_MATTER_DEVICE_TYPE;
     }
 
     if (json_obj_get_array(&jctx, "devices", &device_count) == 0) {
@@ -247,7 +260,7 @@ static esp_err_t rainmaker_bridge_get_param_from_device(const char* node_id, uin
     case ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID:
     case ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID:
         {
-            get_attribute_value_from_rainmaker_device(endpoint_id ,node_id, app_bridge_get_rainmaker_node_name_by_matter_endpointid(endpoint_id));
+            get_attribute_value_from_rainmaker_device(endpoint_id, node_id, app_bridge_get_rainmaker_node_name_by_matter_endpointid(endpoint_id));
         }
         break;
     /* Todo: add other device types */
@@ -290,7 +303,7 @@ static esp_err_t rainmaker_bridge_add_new_device(const char *node_id)
             return ESP_FAIL;
         }
         matter_device_type = matter_get_device_type_from_rainmaker_device(receive_buffer, strlen(receive_buffer), node_name);
-        if ((matter_device_type != 0xFFFF) && (node_name[0] != 0)) {
+        if ((matter_device_type != INVALID_MATTER_DEVICE_TYPE) && (node_name[0] != 0)) {
             rainmaker_bridge_match_device(node_id, node_name, matter_device_type);
         } else {
             ESP_LOGW(TAG, "Node %s device type 0x%lx is invalid\n", node_id, matter_device_type);
@@ -308,6 +321,7 @@ static esp_err_t rainmaker_bridge_delete_device(uint16_t endpoint_id)
 
     if (node_id == NULL) {
         ESP_LOGI(TAG, "Can't find rainmaker device from ep: %d", endpoint_id);
+        return ESP_FAIL;
     }
 
     app_bridged_device_t *bridged_device = app_bridge_get_device_by_rainmaker_node_id(node_id);
@@ -327,7 +341,7 @@ static void matter_check_and_remove_not_exist_device()
     esp_matter_bridge::get_bridged_endpoint_ids(matter_endpoint_id_array);
 
     for (int i = 0; i < MAX_BRIDGED_DEVICE_COUNT; i++) {
-        if (matter_endpoint_id_array[i] != 0xFFFF) {
+        if (matter_endpoint_id_array[i] != chip::kInvalidEndpointId) {
             const char *node_id = app_bridge_get_rainmaker_node_id_by_matter_endpointid(matter_endpoint_id_array[i]);
             if (node_id != NULL) {
                 char *buffer = esp_rainmaker_api_get_node_params(node_id);
@@ -372,7 +386,6 @@ static esp_err_t rainmaker_sync_nodes(char *out_buf, size_t out_buf_len)
         json_obj_leave_array(&jctx);
     } else {
         ESP_LOGE(TAG, "No node found in json ");
-        json_obj_leave_array(&jctx);
     }
 
     json_parse_end(&jctx);
@@ -464,6 +477,25 @@ static esp_err_t write_cb(const esp_rmaker_device_t *device, const esp_rmaker_pa
     return ESP_OK;
 }
 
+#ifdef CONFIG_AUTO_UPDATE_RCP
+static esp_err_t init_spiffs()
+{
+    esp_err_t err = ESP_OK;
+    esp_vfs_spiffs_conf_t rcp_fw_conf = {.base_path = "/" CONFIG_RCP_PARTITION_NAME,
+                                         .partition_label = CONFIG_RCP_PARTITION_NAME,
+                                         .max_files = 10, .format_if_mount_failed = false};
+    err = esp_vfs_spiffs_register(&rcp_fw_conf);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to mount rcp firmware storage");
+    }
+    return err;
+}
+#endif // CONFIG_AUTO_UPDATE_RCP
+
+/**
+ * @brief Initialize the Rainmaker bridge
+ *
+ */
 void rainmaker_init()
 {
     /* Network Init */
@@ -483,36 +515,30 @@ void rainmaker_init()
     }
 
     esp_rmaker_device_t *device = esp_rmaker_device_create("Rainmaker Controller", ESP_RMAKER_DEVICE_CONTROLLER, NULL);
-
     esp_rmaker_device_add_param(device, esp_rmaker_name_param_create(ESP_RMAKER_DEF_NAME_PARAM, "RainmakerController"));
-
     esp_rmaker_node_add_device(node, device);
-
     esp_rmaker_node_add_device(node, rainmaker_controller_service_create("RainmakerCTL", write_cb, NULL, NULL));
 
-    esp_rmaker_device_t *thread_br_device = esp_rmaker_device_create("ThreadBR", ESP_RMAKER_DEVICE_THREAD_BR, NULL);
-    esp_rmaker_device_add_param(thread_br_device,
-                                esp_rmaker_name_param_create(ESP_RMAKER_DEF_NAME_PARAM, "ESP-ThreadBR"));
-    esp_rmaker_node_add_device(node, thread_br_device);
-
+#if CONFIG_OPENTHREAD_BORDER_ROUTER
     esp_openthread_platform_config_t thread_cfg = {
         .radio_config = ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG(),
         .host_config = ESP_OPENTHREAD_DEFAULT_HOST_CONFIG(),
         .port_config = ESP_OPENTHREAD_DEFAULT_PORT_CONFIG()
     };
-
 #ifdef CONFIG_AUTO_UPDATE_RCP
+    ESP_ERROR_CHECK(init_spiffs());
     esp_rcp_update_config_t rcp_update_cfg = ESP_OPENTHREAD_RCP_UPDATE_CONFIG();
     esp_rmaker_thread_br_enable(&thread_cfg, &rcp_update_cfg);
 #else
     esp_rmaker_thread_br_enable(&thread_cfg, NULL);
-#endif
+#endif // CONFIG_AUTO_UPDATE_RCP
+#endif // CONFIG_OPENTHREAD_BORDER_ROUTER
 
     esp_rmaker_start();
 
     app_network_start(POP_TYPE_RANDOM);
 
     /* create task to get node and params from rainmaker side */
-    xTaskCreate(rainmaker_bridge_task, "rainmaker_main", 10240, xTaskGetCurrentTaskHandle(), 5, NULL);
+    xTaskCreate(rainmaker_bridge_task, "rainmaker_main", CONFIG_RAINMAKER_TASK_STACK_SIZE, xTaskGetCurrentTaskHandle(), 5, NULL);
 }
 

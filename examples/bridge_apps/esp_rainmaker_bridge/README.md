@@ -1,8 +1,8 @@
 # Rainmaker Bridge
 
-This example demonstrates a Matter-Rainmaker Bridge that bridges Rainmaker devices to Matter fabric.
+This example demonstrates a Matter-Rainmaker Bridge that bridges Rainmaker devices to the Matter fabric.
 
-The Matter Bridge device is running on ESP32-S3.
+The Matter Bridge device runs on ESP32-S3.
 
 See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
 
@@ -12,11 +12,11 @@ See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/de
 
 ### 1.1 Hardware connection
 
-This example run on ESP32S3 devkit by default.
+This example runs on ESP32-S3 devkit by default.
 
 ### 1.2 Build and flash the Bridge (ESP32-S3)
 
-For Standalone DevKit boards:
+For Standalone DevKit boards without Thread Border Router:
 
 ```
 cd ${ESP_MATTER_PATH}/examples/bridge_apps/esp_rainmaker_bridge
@@ -24,11 +24,21 @@ idf.py set-target esp32s3
 idf.py -p <port> build flash
 ```
 
+For ***ESP Thread Border Router/Zigbee Gateway Board*** with Thread Border Router:
+
+```
+cd ${ESP_MATTER_PATH}/examples/bridge_apps/esp_rainmaker_bridge
+idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.otbr" set-target esp32s3
+idf.py -p <port> build flash
+```
+
 ## 2. Commissioning Setup
 
-### 2.1 Use Rainmaker App pairing Bridge
+### 2.1 Set up Rainmaker Bridge using Rainmaker App
 
-Use Rainmaker App scan the qrcode print in device log to pairing the bridge
+#### 2.1.1 Pair the bridge using Rainmaker App
+
+Use the Rainmaker App to scan the QR code printed in the device log to pair the bridge.
 
 ```
 I (16104) NimBLE: GAP procedure initiated: advertise;
@@ -67,13 +77,25 @@ I (16364) app_network: Provisioning will auto stop after 30 minute(s).
 
 ```
 
-### 2.2 Use Rainmaker App pairing rainmaker end device
+#### 2.1.2 Update Rainmaker Controller Params
 
-Follow this [guide](https://github.com/espressif/esp-rainmaker/blob/master/README.md) to setup Rainmaker device
+After successful Bridge pairing, it is necessary to use the parameter update function to grant the Bridge the Rainmaker controller permission. This enables the Bridge to have the authority to control other Rainmaker devices.
 
-### 2.3 Use chip-tool pairing bridge through onnetwork method
+![main](./docs/1_setup.png)
 
-Use below command to pairing bridge
+#### 2.1.3 Update Thread Dataset
+
+If you need to bridge a Rainmaker over Thread device, you must update the Thread Border Router dataset after the Bridge is successfully paired.
+
+![main](./docs/1_setup.png)  ![main](./docs/3_dataset.png)
+
+### 2.2 Pair Rainmaker end devices using Rainmaker App
+
+Follow this [guide](https://github.com/espressif/esp-rainmaker/blob/master/README.md) to set up a Rainmaker device.
+
+### 2.3 Pair the bridge using chip-tool through onnetwork method
+
+Use the command below to pair the bridge.
 
 ```
 ./chip-tool pairing onnetwork 0x1234 20202021
@@ -81,7 +103,7 @@ Use below command to pairing bridge
 
 ### 2.4 Control the bulb with chip-tool
 
-Now you can control the Rainmaker device using the chip tool.
+Now you can control the Rainmaker device using chip-tool.
 
 ```
 ./chip-tool onoff toggle 0x1234 0x2
@@ -90,6 +112,8 @@ Now you can control the Rainmaker device using the chip tool.
 ## 3. Device Performance
 
 ### 3.1 Memory usage
+
+**Config: Enable SPIRAM(2MB), 8MB flash, enable Thread Border Router**
 
 The following is the Memory and Flash Usage.
 
@@ -102,14 +126,15 @@ The following is the Memory and Flash Usage.
 -   device used: ESP32-S3-DevKitC-1
 -   tested on:
     [d0faa92c](https://github.com/espressif/esp-matter/commit/d0faa92c9336205de21a4b325c956893736c4d64)
-    (2025-09-29)
+    (2025-12-11)
 -   IDF: v5.4.1 [4c2820d3](https://github.com/espressif/esp-idf/tree/v5.4.1)
 
 |                         | Bootup | After Rainmaker Commissioning | After Matter Commissioning | After Adding a Bridged device |
 |:-                       |:-:     |:-:                            |:-:                         |:-:                            |
-|**Free Internal Memory** |162KB   |118KB                          |118KB                       |106KB                          |
+|**Free Internal Memory** |165KB   |168KB                          |170KB                       |170KB                          |
+|**Free SPIRAM Memory** |1886KB   |1823KB                          |1858KB                       |1853KB                          |
 
-**Flash Usage**: Firmware binary size: 1.65MB
+**Flash Usage**: Firmware binary size: 1.98MB
 
 This should give you a good idea about the amount of free memory that is
 available for you to run your application's code.

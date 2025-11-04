@@ -90,16 +90,19 @@ esp_err_t create_bridge_devices(esp_matter::endpoint_t *ep, uint32_t device_type
     }
     case ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID: {
         dimmable_light::config_t dimmable_light_conf;
+        dimmable_light_conf.level_control_lighting.start_up_current_level = nullptr;
         err = dimmable_light::add(ep, &dimmable_light_conf);
         break;
     }
     case ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_ID: {
         color_temperature_light::config_t color_temperature_light_conf;
+        color_temperature_light_conf.level_control_lighting.start_up_current_level = nullptr;
         err = color_temperature_light::add(ep, &color_temperature_light_conf);
         break;
     }
     case ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_ID: {
         extended_color_light::config_t extended_color_light_conf;
+        extended_color_light_conf.level_control_lighting.start_up_current_level = nullptr;
         err = extended_color_light::add(ep, &extended_color_light_conf);
         cluster_t *color_cluster = cluster::get(ep, chip::app::Clusters::ColorControl::Id);
         cluster::color_control::feature::hue_saturation::config_t hs_config;
@@ -137,12 +140,6 @@ extern "C" void app_main()
 
     aggregator_endpoint_id = endpoint::get_id(aggregator);
 
-#if CONFIG_ENABLE_CHIP_SHELL
-    esp_matter::console::diagnostics_register_commands();
-    esp_matter::console::wifi_register_commands();
-    esp_matter::console::factoryreset_register_commands();
-    esp_matter::console::init();
-#endif
     rainmaker_init();
 
     /* Matter start */
@@ -151,4 +148,11 @@ extern "C" void app_main()
 
     err = app_bridge_initialize(node, create_bridge_devices);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to resume the bridged endpoints: %d", err));
+
+#if CONFIG_ENABLE_CHIP_SHELL
+    esp_matter::console::diagnostics_register_commands();
+    esp_matter::console::wifi_register_commands();
+    esp_matter::console::factoryreset_register_commands();
+    esp_matter::console::init();
+#endif
 }

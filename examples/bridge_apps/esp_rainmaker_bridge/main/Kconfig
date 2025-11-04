@@ -7,6 +7,13 @@ menu "Rainmaker Bridge"
         help
             Set the period to get rainmaker devices params in rainmaker bridge.
 
+    config RAINMAKER_TASK_STACK_SIZE
+        int
+        default 10240
+        range 1024 65536
+        help
+            Set the stack size for the rainmaker task.
+
 endmenu
 
 menu "Thread BR Example"

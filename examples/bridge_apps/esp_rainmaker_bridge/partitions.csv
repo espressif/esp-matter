@@ -7,4 +7,5 @@ ota_0,            app,  ota_0,     0x20000,   0x250000,
 ota_1,            app,  ota_1,     0x270000,  0x250000,
 fctry,            data, nvs,       0x4C0000,  0x6000,
 phy_init,         data, phy,       0x4C6000,  0x1000,
-otadata,          data, ota,       0x4C7000,  0x2000
+otadata,          data, ota,       0x4C7000,  0x2000,
+rcp_fw,           data, spiffs,    0x4C9000,  0x9A000,
