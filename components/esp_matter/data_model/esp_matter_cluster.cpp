@@ -3387,8 +3387,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_border_agent_id(cluster, nullptr, 0);
         attribute::create_thread_version(cluster, 0);
         attribute::create_interface_enabled(cluster, false);
-        nullable<uint64_t> timestamp;
-        attribute::create_active_dataset_timestamp(cluster, timestamp);
+        nullable<uint64_t> active_dataset_timestamp, pending_dataset_timestamp;
+        attribute::create_active_dataset_timestamp(cluster, active_dataset_timestamp);
+        attribute::create_pending_dataset_timestamp(cluster, pending_dataset_timestamp);
 
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
