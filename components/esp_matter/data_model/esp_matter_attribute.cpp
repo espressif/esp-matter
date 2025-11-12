@@ -1411,7 +1411,7 @@ attribute_t *create_unique_id(cluster_t *cluster, char *value, uint16_t length)
 attribute_t *create_product_appearance(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::ProductAppearance::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_configuration_version(cluster_t *cluster, uint32_t value)
