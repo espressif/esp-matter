@@ -2606,8 +2606,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 namespace mode_select {
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfModeSelectClusterServerInitCallback,
+    (function_generic_t)MatterModeSelectClusterServerPreAttributeChangedCallback,
 };
-const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
