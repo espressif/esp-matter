@@ -282,10 +282,6 @@ command_t *create_color_loop_set(cluster_t *cluster);
 namespace thermostat {
 namespace command {
 command_t *create_setpoint_raise_lower(cluster_t *cluster);
-command_t *create_set_weekly_schedule(cluster_t *cluster);
-command_t *create_get_weekly_schedule(cluster_t *cluster);
-command_t *create_clear_weekly_schedule(cluster_t *cluster);
-command_t *create_get_weekly_schedule_response(cluster_t *cluster);
 command_t *create_set_active_schedule_request(cluster_t *cluster);
 command_t *create_set_active_preset_request(cluster_t *cluster);
 command_t *create_atomic_request(cluster_t *cluster);
@@ -349,9 +345,7 @@ namespace command {
 command_t *create_up_or_open(cluster_t *cluster);
 command_t *create_down_or_close(cluster_t *cluster);
 command_t *create_stop_motion(cluster_t *cluster);
-command_t *create_go_to_lift_value(cluster_t *cluster);
 command_t *create_go_to_lift_percentage(cluster_t *cluster);
-command_t *create_go_to_tilt_value(cluster_t *cluster);
 command_t *create_go_to_tilt_percentage(cluster_t *cluster);
 } /* command */
 } /* window_covering */

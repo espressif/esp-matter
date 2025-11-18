@@ -829,39 +829,6 @@ static esp_err_t esp_matter_command_callback_setpoint_raise_lower(const Concrete
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_command_callback_set_weekly_schedule(const ConcreteCommandPath &command_path,
-                                                                  TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::Thermostat::Commands::SetWeeklySchedule::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfThermostatClusterSetWeeklyScheduleCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_get_weekly_schedule(const ConcreteCommandPath &command_path,
-                                                                  TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::Thermostat::Commands::GetWeeklySchedule::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfThermostatClusterGetWeeklyScheduleCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_clear_weekly_schedule(const ConcreteCommandPath &command_path,
-                                                                  TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::Thermostat::Commands::ClearWeeklySchedule::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfThermostatClusterClearWeeklyScheduleCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
 static esp_err_t esp_matter_command_callback_set_active_schedule_request(const ConcreteCommandPath &command_path,
                                                                   TLVReader &tlv_data, void *opaque_ptr)
 {
@@ -939,17 +906,6 @@ static esp_err_t esp_matter_command_callback_stop_motion(const ConcreteCommandPa
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_command_callback_go_to_lift_value(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                       void *opaque_ptr)
-{
-    chip::app::Clusters::WindowCovering::Commands::GoToLiftValue::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfWindowCoveringClusterGoToLiftValueCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
 static esp_err_t esp_matter_command_callback_go_to_lift_percentage(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                        void *opaque_ptr)
 {
@@ -957,17 +913,6 @@ static esp_err_t esp_matter_command_callback_go_to_lift_percentage(const Concret
     CHIP_ERROR error = Decode(tlv_data, command_data);
     if (error == CHIP_NO_ERROR) {
         emberAfWindowCoveringClusterGoToLiftPercentageCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_go_to_tilt_value(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                       void *opaque_ptr)
-{
-    chip::app::Clusters::WindowCovering::Commands::GoToTiltValue::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfWindowCoveringClusterGoToTiltValueCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
     return ESP_OK;
 }
@@ -2229,30 +2174,6 @@ command_t *create_setpoint_raise_lower(cluster_t *cluster)
                                        esp_matter_command_callback_setpoint_raise_lower);
 }
 
-command_t *create_set_weekly_schedule(cluster_t *cluster)
-{
-    return esp_matter::command::create(cluster, Thermostat::Commands::SetWeeklySchedule::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_set_weekly_schedule);
-}
-
-command_t *create_get_weekly_schedule(cluster_t *cluster)
-{
-    return esp_matter::command::create(cluster, Thermostat::Commands::GetWeeklySchedule::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_get_weekly_schedule);
-}
-
-command_t *create_clear_weekly_schedule(cluster_t *cluster)
-{
-    return esp_matter::command::create(cluster, Thermostat::Commands::ClearWeeklySchedule::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_clear_weekly_schedule);
-}
-
-command_t *create_get_weekly_schedule_response(cluster_t *cluster)
-{
-    return esp_matter::command::create(cluster, Thermostat::Commands::GetWeeklyScheduleResponse::Id, COMMAND_FLAG_ACCEPTED,
-                                       NULL);
-}
-
 command_t *create_set_active_schedule_request(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, Thermostat::Commands::SetActiveScheduleRequest::Id, COMMAND_FLAG_ACCEPTED,
@@ -2510,22 +2431,10 @@ command_t *create_stop_motion(cluster_t *cluster)
                                        esp_matter_command_callback_stop_motion);
 }
 
-command_t *create_go_to_lift_value(cluster_t *cluster)
-{
-    return esp_matter::command::create(cluster, WindowCovering::Commands::GoToLiftValue::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_go_to_lift_value);
-}
-
 command_t *create_go_to_lift_percentage(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, WindowCovering::Commands::GoToLiftPercentage::Id, COMMAND_FLAG_ACCEPTED,
                                        esp_matter_command_callback_go_to_lift_percentage);
-}
-
-command_t *create_go_to_tilt_value(cluster_t *cluster)
-{
-    return esp_matter::command::create(cluster, WindowCovering::Commands::GoToTiltValue::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_go_to_tilt_value);
 }
 
 command_t *create_go_to_tilt_percentage(cluster_t *cluster)

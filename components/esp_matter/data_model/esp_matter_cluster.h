@@ -538,7 +538,6 @@ typedef struct config {
     uint8_t mode;
     struct {
         feature::position_aware_lift::config_t position_aware_lift;
-        feature::absolute_position::config_t absolute_position;
         feature::position_aware_tilt::config_t position_aware_tilt;
     } features;
     uint32_t feature_flags;
