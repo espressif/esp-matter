@@ -262,18 +262,6 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* lighting */
 
-namespace frequency {
-
-typedef struct config {
-    uint16_t current_frequency;
-    uint16_t min_frequency;
-    uint16_t max_frequency;
-    config() : current_frequency(0), min_frequency(0), max_frequency(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-} /* frequency */
 } /* feature */
 } /* level_control */
 
@@ -1290,12 +1278,6 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 } /* rfid_credential */
 
-namespace finger_credentials {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-} /* finger_credentials */
-
 namespace weekday_access_schedules {
 
 uint32_t get_id();
@@ -1307,12 +1289,6 @@ namespace door_position_sensor {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 } /* door_position_sensor */
-
-namespace face_credentials {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-} /* face_credentials */
 
 namespace credential_over_the_air_access {
 typedef struct config {
@@ -1427,12 +1403,6 @@ namespace power_as_number {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 } /* power_as_number */
-
-namespace power_in_watts {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-} /* power_in_watts */
 
 namespace power_number_limits {
 

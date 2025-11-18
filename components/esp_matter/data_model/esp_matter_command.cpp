@@ -2035,13 +2035,6 @@ command_t *create_stop_with_on_off(cluster_t *cluster)
                                        esp_matter_command_callback_stop_with_on_off);
 }
 
-command_t *create_move_to_closest_frequency(cluster_t *cluster)
-{
-    return esp_matter::command::create(cluster, LevelControl::Commands::MoveToClosestFrequency::Id, COMMAND_FLAG_ACCEPTED,
-    // Command callback not implemented in connectedhomeip.
-                                       NULL);
-}
-
 } /* command */
 } /* level_control */
 

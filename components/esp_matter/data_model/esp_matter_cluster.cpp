@@ -322,7 +322,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_capability_minima(cluster, NULL, 0, 0);
         attribute::create_specification_version(cluster, 0);
         attribute::create_max_paths_per_invoke(cluster, 0);
-        attribute::create_configuration_version(cluster, 0);
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -2991,8 +2990,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_feature_map(cluster, config->feature_flags);
 
         // check against O.a feature conformance for microwave oven control
-        VALIDATE_FEATURES_EXACT_ONE("PowerAsNumber,PowerInWatts",
-                                   feature::power_as_number::get_id(), feature::power_in_watts::get_id());
+        VALIDATE_FEATURES_EXACT_ONE("PowerAsNumber",
+                                   feature::power_as_number::get_id());
 
         if (has(feature::power_as_number::get_id())) {
             feature::power_as_number::add(cluster);
@@ -3001,9 +3000,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             if (has(feature::power_number_limits::get_id())) {
                 feature::power_number_limits::add(cluster);
             }
-        }
-        if (has(feature::power_in_watts::get_id())) {
-            feature::power_in_watts::add(cluster);
         }
     } // if (flags & CLUSTER_FLAG_SERVER)
 

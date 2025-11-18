@@ -304,13 +304,6 @@ attribute_t *create_max_paths_per_invoke(cluster_t *cluster, uint16_t value)
                                          esp_matter_uint16(value));
 }
 
-attribute_t *create_configuration_version(cluster_t *cluster, uint32_t value)
-{
-    return esp_matter::attribute::create(cluster, BasicInformation::Attributes::ConfigurationVersion::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint32(value));
-}
-
-
 } /* attribute */
 } /* basic_information */
 
@@ -946,26 +939,6 @@ attribute_t *create_active_network_faults_list(cluster_t *cluster, uint8_t *valu
                                          ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
-attribute_t *create_ext_address(cluster_t *cluster, nullable<uint64_t> value)
-{
-    // Current CHIP submodule don't have this attribute
-    // TODO: https://jira.espressif.com:8443/browse/CON-1438
-    // return esp_matter::attribute::create(cluster,
-    //                                     ThreadNetworkDiagnostics::Attributes::ExtAddress::Id,
-    //                                     ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint64(value));
-    return NULL;
-}
-
-attribute_t *create_rloc16(cluster_t *cluster, nullable<uint16_t> value)
-{
-    // Current CHIP submodule don't have this attribute
-    // TODO: https://jira.espressif.com:8443/browse/CON-1438
-    // return esp_matter::attribute::create(cluster,
-    //                                     ThreadNetworkDiagnostics::Attributes::Rloc16::Id,
-    //                                     ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_nullable_uint16(value));
-    return NULL;
-}
-
 attribute_t *create_overrun_count(cluster_t *cluster, uint64_t value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::OverrunCount::Id,
@@ -1414,12 +1387,6 @@ attribute_t *create_product_appearance(cluster_t *cluster, uint8_t *value, uint1
                                          ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
 }
 
-attribute_t *create_configuration_version(cluster_t *cluster, uint32_t value)
-{
-    return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::ConfigurationVersion::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint32(value));
-}
-
 } /* attribute */
 } /* bridged_device_basic_information */
 
@@ -1573,24 +1540,6 @@ attribute_t *create_max_level(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, LevelControl::Attributes::MaxLevel::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint8(value));
-}
-
-attribute_t *create_current_frequency(cluster_t *cluster, uint16_t value)
-{
-    return esp_matter::attribute::create(cluster, LevelControl::Attributes::CurrentFrequency::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint16(value));
-}
-
-attribute_t *create_min_frequency(cluster_t *cluster, uint16_t value)
-{
-    return esp_matter::attribute::create(cluster, LevelControl::Attributes::MinFrequency::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint16(value));
-}
-
-attribute_t *create_max_frequency(cluster_t *cluster, uint16_t value)
-{
-    return esp_matter::attribute::create(cluster, LevelControl::Attributes::MaxFrequency::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint16(value));
 }
 
 attribute_t *create_on_off_transition_time(cluster_t *cluster, uint16_t value)
@@ -4236,16 +4185,6 @@ attribute_t *create_max_power(cluster_t *cluster, uint8_t value)
 attribute_t *create_power_step(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::PowerStep::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
-}
-
-attribute_t *create_supported_watts(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
-{
-    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::SupportedWatts::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
-}
-
-attribute_t *create_selected_watt_index(cluster_t *cluster, uint8_t value)
-{
-    return esp_matter::attribute::create(cluster, MicrowaveOvenControl::Attributes::SelectedWattIndex::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
 }
 
 attribute_t *create_watt_rating(cluster_t *cluster, uint16_t value)

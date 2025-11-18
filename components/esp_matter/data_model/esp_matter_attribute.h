@@ -87,7 +87,6 @@ attribute_t *create_unique_id(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_capability_minima(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_specification_version(cluster_t *cluster, uint32_t value);
 attribute_t *create_max_paths_per_invoke(cluster_t *cluster, uint16_t value);
-attribute_t *create_configuration_version(cluster_t *cluster, uint32_t value);
 
 /** These attributes are optional for the cluster, but when added to this cluster, the value is maintained internally.
   * If the attributes are added in some other cluster, then the value is not maintained internally.
@@ -258,8 +257,6 @@ attribute_t *create_security_policy(cluster_t *cluster, uint8_t *value, uint16_t
 attribute_t *create_channel_page0_mask(cluster_t *cluster, uint8_t *value, uint16_t length);
 attribute_t *create_operational_dataset_components(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_active_network_faults_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
-attribute_t *create_ext_address(cluster_t *cluster, nullable<uint64_t> value);
-attribute_t *create_rloc16(cluster_t *cluster, nullable<uint16_t> value);
 attribute_t *create_overrun_count(cluster_t *cluster, uint64_t value);
 attribute_t *create_detached_role_count(cluster_t *cluster, uint16_t value);
 attribute_t *create_child_role_count(cluster_t *cluster, uint16_t value);
@@ -358,7 +355,6 @@ attribute_t *create_serial_number(cluster_t *cluster, char *value, uint16_t leng
 attribute_t *create_reachable(cluster_t *cluster, bool value);
 attribute_t *create_unique_id(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_product_appearance(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
-attribute_t *create_configuration_version(cluster_t *cluster, uint32_t *value);
 
 } /* attribute */
 } /* bridged_device_basic_information */
@@ -413,9 +409,6 @@ attribute_t *create_options(cluster_t *cluster, uint8_t value);
 attribute_t *create_remaining_time(cluster_t *cluster, uint16_t value);
 attribute_t *create_min_level(cluster_t *cluster, uint8_t value);
 attribute_t *create_max_level(cluster_t *cluster, uint8_t value);
-attribute_t *create_current_frequency(cluster_t *cluster, uint16_t value);
-attribute_t *create_min_frequency(cluster_t *cluster, uint16_t value);
-attribute_t *create_max_frequency(cluster_t *cluster, uint16_t value);
 attribute_t *create_on_off_transition_time(cluster_t *cluster, uint16_t value);
 attribute_t *create_on_transition_time(cluster_t* cluster, nullable<uint16_t> value);
 attribute_t *create_off_transition_time(cluster_t* cluster, nullable<uint16_t> value);
@@ -1069,8 +1062,6 @@ attribute_t *create_power_setting(cluster_t *cluster, uint8_t value);
 attribute_t *create_min_power(cluster_t *cluster, uint8_t value);
 attribute_t *create_max_power(cluster_t *cluster, uint8_t value);
 attribute_t *create_power_step(cluster_t *cluster, uint8_t value);
-attribute_t *create_supported_watts(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
-attribute_t *create_selected_watt_index(cluster_t *cluster, uint8_t value);
 attribute_t *create_watt_rating(cluster_t *cluster, uint16_t value);
 } /* attribute */
 } /* microwave_oven_control */
