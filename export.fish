@@ -11,16 +11,20 @@ function esp_matter_export_main
 
         set -gx ESP_MATTER_PATH "$script_dir"
         echo "Setting ESP_MATTER_PATH to '$ESP_MATTER_PATH'"
+    else
+        echo "ESP_MATTER_PATH already set to '$ESP_MATTER_PATH'"
     end
 
     # PATH for gn
     fish_add_path -g "$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/.environment/cipd/packages/pigweed/"
 
     # PATH for host tools
-    fish_ad_path -h "$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/out/host"
+    fish_add_path -g "$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/out/host"
 
     # export zap-cli path
     set -gx ZAP_INSTALL_PATH "$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/.environment/cipd/packages/zap"
+
+    echo "Done! You can now compile ESP_MATTER projects."
 end
 
 esp_matter_export_main

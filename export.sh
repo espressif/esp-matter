@@ -45,6 +45,8 @@ esp_matter_export_main() {
         fi
         export ESP_MATTER_PATH="${script_dir}"
         echo "Setting ESP_MATTER_PATH to '${ESP_MATTER_PATH}'"
+    else
+        echo "ESP_MATTER_PATH already set to '$ESP_MATTER_PATH'"
     fi
 
     # PATH for gn
@@ -55,6 +57,8 @@ esp_matter_export_main() {
 
     # export zap-cli path
     export ZAP_INSTALL_PATH=${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/.environment/cipd/packages/zap
+
+    echo "Done! You can now compile ESP_MATTER projects."
 }
 
 esp_matter_export_main
