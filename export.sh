@@ -44,21 +44,27 @@ esp_matter_export_main() {
             script_dir="$(dirname "${script_name}")"
         fi
         export ESP_MATTER_PATH="${script_dir}"
-        echo "Setting ESP_MATTER_PATH to '${ESP_MATTER_PATH}'"
+        echo " * Setting ESP_MATTER_PATH to '${ESP_MATTER_PATH}'"
     else
-        echo "ESP_MATTER_PATH already set to '$ESP_MATTER_PATH'"
+        echo " * ESP_MATTER_PATH already set to '$ESP_MATTER_PATH'"
     fi
 
     # PATH for gn
+    echo " * Adding to path: $ESP_MATTER_PATH/connectedhomeip/connectedhomeip/.environment/cipd/packages/pigweed/ "
     export PATH=${PATH}:${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/.environment/cipd/packages/pigweed/
 
     # PATH for host tools
+    echo " * Adding to path: '$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/out/host'"
     export PATH=${PATH}:${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/out/host
 
     # export zap-cli path
+    echo " * Setting ZAP_INSTALL_PATH to '$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/.environment/cipd/packages/zap'"
     export ZAP_INSTALL_PATH=${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/.environment/cipd/packages/zap
 
-    echo "Done! You can now compile ESP_MATTER projects."
+    echo 
+    echo "Done! You can now compile ESP-MATTER projects."
 }
+
+echo "Setting Up ESP-MATTER"
 
 esp_matter_export_main
