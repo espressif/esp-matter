@@ -429,10 +429,31 @@ esp_err_t add(cluster_t *cluster)
 
     /* Attributes not managed internally */
     attribute::create_operating_mode(cluster, 0);
+
+    /* commands */
+    command::create_stay_active_request(cluster);
+    command::create_stay_active_response(cluster);
     return ESP_OK;
 }
 
 } /* long_idle_time_support */
+
+namespace dynamic_sit_lit_support {
+
+uint32_t get_id()
+{
+    return (uint32_t)IcdManagement::Feature::kDynamicSitLitSupport;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* dynamic_sit_lit_support */
 } /* feature */
 } /* icd_management */
 
@@ -1092,6 +1113,7 @@ esp_err_t add(cluster_t *cluster)
 
 } /* feature */
 } /* ethernet_network_diagnostics */
+
 
 namespace air_quality {
 namespace feature {
@@ -1894,6 +1916,27 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* pressure_measurement */
 
+namespace general_diagnostics {
+namespace feature {
+
+namespace data_model_test {
+
+uint32_t get_id()
+{
+    return (uint32_t)GeneralDiagnostics::Feature::kDataModelTest;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    update_feature_map(cluster, get_id());
+    command::create_payload_test_request(cluster);
+    command::create_payload_test_response(cluster);
+    return ESP_OK;
+}
+} /* data_model_test */
+} /* feature */
+} /* general diagnostics */
 namespace software_diagnostics {
 namespace feature {
 
@@ -2197,7 +2240,9 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     attribute::create_alarms_active(cluster, config->alarms_active);
     attribute::create_alarms_supported(cluster, config->alarms_supported);
 
-    command::create_enable_disable_alarm(cluster);;
+    command::create_enable_disable_alarm(cluster);
+
+    event::create_alarms_state_changed(cluster);
     return ESP_OK;
 }
 } /* visual */
@@ -2217,7 +2262,9 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     attribute::create_alarms_active(cluster, config->alarms_active);
     attribute::create_alarms_supported(cluster, config->alarms_supported);
 
-    command::create_enable_disable_alarm(cluster);;
+    command::create_enable_disable_alarm(cluster);
+
+    event::create_alarms_state_changed(cluster);
     return ESP_OK;
 }
 } /* audible */
@@ -3832,6 +3879,7 @@ esp_err_t add(cluster_t *cluster)
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
+
     return ESP_OK;
 }
 } /* automatic */
@@ -3966,6 +4014,9 @@ esp_err_t add(cluster_t *cluster)
 
     // Commands
     command::create_set_trusted_time_source(cluster);
+
+    // Events
+    event::create_missing_trusted_time_source(cluster);
 
     return ESP_OK;
 }

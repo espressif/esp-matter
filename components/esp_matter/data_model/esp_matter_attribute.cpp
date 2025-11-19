@@ -3148,6 +3148,13 @@ attribute_t *create_max_measured_value(cluster_t *cluster, nullable<int16_t> val
                                          ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
 }
 
+attribute_t *create_tolerance(cluster_t *cluster, uint16_t value)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, TemperatureMeasurement::Attributes::Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(0), esp_matter_uint16(2048));
+    return attribute;
+}
+
 } /* attribute */
 } /* temperature_measurement */
 
