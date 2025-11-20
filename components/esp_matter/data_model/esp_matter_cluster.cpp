@@ -760,9 +760,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_neighbor_table(cluster, NULL, 0, 0);
         attribute::create_route_table(cluster, NULL, 0, 0);
         attribute::create_partition_id(cluster, nullable<uint32_t>(0));
-        attribute::create_weighting(cluster, nullable<uint8_t>(0));
-        attribute::create_data_version(cluster, nullable<uint8_t>(0));
-        attribute::create_stable_data_version(cluster, nullable<uint8_t>(0));
+        attribute::create_weighting(cluster, nullable<uint16_t>(0));
+        attribute::create_data_version(cluster, nullable<uint16_t>(0));
+        attribute::create_stable_data_version(cluster, nullable<uint16_t>(0));
         attribute::create_leader_router_id(cluster, nullable<uint8_t>(0));
         attribute::create_security_policy(cluster, NULL, 0, 0);
         attribute::create_channel_page0_mask(cluster, NULL, 0);
@@ -1697,7 +1697,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_current_phase(cluster, 0);
         attribute::create_operational_state_list(cluster, NULL, 0, 0);
         attribute::create_operational_state(cluster, 0);
-        attribute::create_operational_error(cluster, 0);
+        attribute::create_operational_error(cluster, NULL, 0, 0);
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -3004,7 +3004,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         operational_state::attribute::create_current_phase(cluster, 0);
         operational_state::attribute::create_operational_state_list(cluster, NULL, 0, 0);
         operational_state::attribute::create_operational_state(cluster, 0);
-        operational_state::attribute::create_operational_error(cluster, 0);
+        operational_state::attribute::create_operational_error(cluster, NULL, 0, 0);
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
