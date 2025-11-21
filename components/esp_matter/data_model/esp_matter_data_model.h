@@ -900,9 +900,28 @@ uint32_t get_id(attribute_t *attribute);
  */
 esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_callbacks = true);
 
-/** Get attribute val
+/** Get attribute value
  *
- * Get the value of the attribute (has `ATTRIBUTE_FLAG_EXTERNAL_STORAGE` flag) from the database.
+ * Get the value of the attribute from the database.
+ * Right now, only simple i.e. primitive types are supported.
+ * Complex types like arrays, structs, etc. are not supported yet.
+ * Please use the cluster specific get value API for complex types.
+ * TODO: Support complex types.
+ *
+ * This API uses the DataModelProvider::ReadAttribute API to get the value of the attribute,
+ * tries to read value from the supported storages, and then populates the value in esp_matter_attr_val_t.
+ *
+ * @param[in] endpoint_id Endpoint id.
+ * @param[in] cluster_id Cluster id.
+ * @param[in] attribute_id Attribute id.
+ * @param[out] val Pointer to `esp_matter_attr_val_t`. Use appropriate elements as per the value type.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t get_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val);
+
+/** Get attribute value, similar to get_val but with attribute handle
  *
  * @param[in] attribute Attribute handle.
  * @param[out] val Pointer to `esp_matter_attr_val_t`. Use appropriate elements as per the value type.
