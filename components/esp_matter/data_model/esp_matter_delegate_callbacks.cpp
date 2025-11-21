@@ -17,6 +17,7 @@
 #include <esp_matter_delegate_callbacks.h>
 #include <esp_matter_core.h>
 #include <esp_matter_feature.h>
+#include <esp_matter_data_model_priv.h>
 #include <app/clusters/mode-base-server/mode-base-server.h>
 #include <app/clusters/energy-evse-server/energy-evse-server.h>
 #include <app/clusters/microwave-oven-control-server/microwave-oven-control-server.h>
@@ -59,9 +60,10 @@ static uint32_t get_feature_map_value(uint16_t endpoint_id, uint32_t cluster_id)
 {
     uint32_t attribute_id = Globals::Attributes::FeatureMap::Id;
     attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
+    VerifyOrReturnError(attribute, 0);
 
     esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
-    attribute::get_val(attribute, &val);
+    VerifyOrReturnError(attribute::get_val_internal(attribute, &val) == ESP_OK, 0);
     return val.val.u32;
 }
 

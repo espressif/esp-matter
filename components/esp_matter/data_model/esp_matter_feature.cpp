@@ -17,6 +17,7 @@
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_feature.h>
+#include <esp_matter_data_model_priv.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
 
@@ -38,7 +39,7 @@ static esp_err_t update_feature_map(cluster_t *cluster, uint32_t value)
 
     /* Update the value if the attribute already exists */
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-    attribute::get_val(attribute, &val);
+    VerifyOrReturnError(attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
     val.val.u32 |= value;
     /* Here we can't call attribute::update() since the chip stack would not have started yet, since we are
     still creating the data model. So, we are directly using attribute::set_val(). */
@@ -52,7 +53,7 @@ static uint32_t get_feature_map_value(cluster_t *cluster)
 
     VerifyOrReturnValue(attribute, 0, ESP_LOGE(TAG, "Feature map attribute cannot be null"));
 
-    attribute::get_val(attribute, &val);
+    VerifyOrReturnValue(attribute::get_val_internal(attribute, &val) == ESP_OK, 0);
     return val.val.u32;
 }
 
@@ -583,7 +584,7 @@ static esp_err_t update_color_capability(cluster_t *cluster, uint16_t value)
 
     /* Update the value if the attribute already exists */
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-    esp_matter::attribute::get_val(attribute, &val);
+    VerifyOrReturnError(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
     val.val.u16 |= value;
     /* Here we can't call attribute::update() since the chip stack would not have started yet, since we are
     still creating the data model. So, we are directly using attribute::set_val(). */
@@ -803,15 +804,13 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         uint8_t set_third_bit = 1 << 3;
         attribute_t *attribute = esp_matter::attribute::get(cluster, WindowCovering::Attributes::ConfigStatus::Id);
         esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-        esp_matter::attribute::get_val(attribute, &val);
+        VerifyOrReturnError(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
         val.val.u8 = val.val.u8 | set_third_bit;
-        esp_matter::attribute::set_val(attribute, &val);
-    } else {
-        ESP_LOGE(TAG, "Cluster shall support Lift feature");
-        return ESP_ERR_NOT_SUPPORTED;
+        return esp_matter::attribute::set_val(attribute, &val);
     }
 
-    return ESP_OK;
+    ESP_LOGE(TAG, "Cluster shall support Lift feature");
+    return ESP_ERR_NOT_SUPPORTED;
 }
 } /* position_aware_lift */
 
@@ -895,15 +894,13 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         uint8_t set_fourth_bit = 1 << 4;
         attribute_t *attribute = esp_matter::attribute::get(cluster, WindowCovering::Attributes::ConfigStatus::Id);
         esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-        esp_matter::attribute::get_val(attribute, &val);
+        VerifyOrReturnError(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
         val.val.u8 = val.val.u8 | set_fourth_bit;
-        esp_matter::attribute::set_val(attribute, &val);
-    } else {
-        ESP_LOGE(TAG, "Cluster shall support Tilt feature");
-        return ESP_ERR_NOT_SUPPORTED;
+        return esp_matter::attribute::set_val(attribute, &val);
     }
 
-    return ESP_OK;
+    ESP_LOGE(TAG, "Cluster shall support Tilt feature");
+    return ESP_ERR_NOT_SUPPORTED;
 }
 
 } /* position_aware_tilt */
