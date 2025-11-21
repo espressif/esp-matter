@@ -199,7 +199,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
-        attribute::create_device_list(cluster, NULL, 0, 0);
+        attribute::create_device_type_list(cluster, NULL, 0, 0);
         attribute::create_server_list(cluster, NULL, 0, 0);
         attribute::create_client_list(cluster, NULL, 0, 0);
         attribute::create_parts_list(cluster, NULL, 0, 0);
@@ -767,7 +767,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_security_policy(cluster, NULL, 0, 0);
         attribute::create_channel_page0_mask(cluster, NULL, 0);
         attribute::create_operational_dataset_components(cluster, NULL, 0, 0);
-        attribute::create_active_network_faults(cluster, NULL, 0, 0);
+        attribute::create_active_network_faults_list(cluster, NULL, 0, 0);
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -1086,7 +1086,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         if (config) {
-            attribute::create_group_name_support(cluster, chip::to_underlying(Groups::NameSupportBitmap::kGroupNames));
+            attribute::create_name_support(cluster, chip::to_underlying(Groups::NameSupportBitmap::kGroupNames));
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -2167,9 +2167,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         if (config) {
-            attribute::create_temperature_measured_value(cluster, config->measured_value);
-            attribute::create_temperature_min_measured_value(cluster, config->min_measured_value);
-            attribute::create_temperature_max_measured_value(cluster, config->max_measured_value);
+            attribute::create_measured_value(cluster, config->measured_value);
+            attribute::create_min_measured_value(cluster, config->min_measured_value);
+            attribute::create_max_measured_value(cluster, config->max_measured_value);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -2203,9 +2203,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         if (config) {
-            attribute::create_relative_humidity_measured_value(cluster, config->measured_value);
-            attribute::create_relative_humidity_min_measured_value(cluster, config->min_measured_value);
-            attribute::create_relative_humidity_max_measured_value(cluster, config->max_measured_value);
+            attribute::create_measured_value(cluster, config->measured_value);
+            attribute::create_min_measured_value(cluster, config->min_measured_value);
+            attribute::create_max_measured_value(cluster, config->max_measured_value);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -2444,10 +2444,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         if (config) {
-            attribute::create_illuminance_measured_value(cluster, config->illuminance_measured_value, 0x0000, 0xFFFF);
-            attribute::create_illuminance_min_measured_value(cluster, config->illuminance_min_measured_value, 0x0001,
+            attribute::create_measured_value(cluster, config->measured_value, 0x0000, 0xFFFF);
+            attribute::create_min_measured_value(cluster, config->min_measured_value, 0x0001,
                                                              0xFFFD);
-            attribute::create_illuminance_max_measured_value(cluster, config->illuminance_max_measured_value, 0x0002,
+            attribute::create_max_measured_value(cluster, config->max_measured_value, 0x0002,
                                                              0xFFFE);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
@@ -2481,9 +2481,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         if (config) {
-            attribute::create_pressure_measured_value(cluster, config->pressure_measured_value);
-            attribute::create_pressure_min_measured_value(cluster, config->pressure_min_measured_value);
-            attribute::create_pressure_max_measured_value(cluster, config->pressure_max_measured_value);
+            attribute::create_measured_value(cluster, config->measured_value);
+            attribute::create_min_measured_value(cluster, config->min_measured_value);
+            attribute::create_max_measured_value(cluster, config->max_measured_value);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -2516,9 +2516,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         if (config) {
-            attribute::create_flow_measured_value(cluster, config->flow_measured_value);
-            attribute::create_flow_min_measured_value(cluster, config->flow_min_measured_value);
-            attribute::create_flow_max_measured_value(cluster, config->flow_max_measured_value);
+            attribute::create_measured_value(cluster, config->measured_value);
+            attribute::create_min_measured_value(cluster, config->min_measured_value);
+            attribute::create_max_measured_value(cluster, config->max_measured_value);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -2630,7 +2630,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         if (config) {
-            attribute::create_mode_select_description(cluster, config->mode_select_description, strlen(config->mode_select_description));
+            attribute::create_description(cluster, config->description, strlen(config->description));
             attribute::create_standard_namespace(cluster, config->standard_namespace);
             attribute::create_current_mode(cluster, config->current_mode);
         } else {
