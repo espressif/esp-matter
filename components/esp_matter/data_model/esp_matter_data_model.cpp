@@ -737,6 +737,18 @@ esp_err_t get_val(attribute_t *attribute, esp_matter_attr_val_t *val)
     return ESP_OK;
 }
 
+esp_matter_val_type_t get_val_type(attribute_t *attribute)
+{
+    VerifyOrReturnValue(attribute, ESP_MATTER_VAL_TYPE_INVALID, ESP_LOGE(TAG, "Attribute cannot be NULL"));
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
+    return current_attribute->attribute_val_type;
+}
+
+esp_matter_val_type_t get_val_type(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id)
+{
+    return get_val_type(get(endpoint_id, cluster_id, attribute_id));
+}
+
 esp_err_t add_bounds(attribute_t *attribute, esp_matter_attr_val_t min, esp_matter_attr_val_t max)
 {
     VerifyOrReturnError(attribute, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Attribute cannot be NULL"));

@@ -912,6 +912,26 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_
  */
 esp_err_t get_val(attribute_t *attribute, esp_matter_attr_val_t *val);
 
+/** Get the attribute value type for the given attribute handle.
+ *
+ * @param[in] attribute Attribute handle.
+ *
+ * @return Attribute value type on success.
+ * @return ESP_MATTER_VAL_TYPE_INVALID, i.e. 0, in case of failure.
+ */
+esp_matter_val_type_t get_val_type(attribute_t *attribute);
+
+/** Get the attribute value type for the given endpoint, cluster and attribute id.
+ *
+ * @param[in] endpoint_id Endpoint id.
+ * @param[in] cluster_id Cluster id.
+ * @param[in] attribute_id Attribute id.
+ *
+ * @return Attribute value type on success.
+ * @return ESP_MATTER_VAL_TYPE_INVALID, i.e. 0, in case of failure.
+ */
+esp_matter_val_type_t get_val_type(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id);
+
 /** Add attribute bounds
  *
  * Add bounds to the attribute (has `ATTRIBUTE_FLAG_EXTERNAL_STORAGE` flag). Bounds cannot be added to string/array type attributes.
