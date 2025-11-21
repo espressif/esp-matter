@@ -133,6 +133,7 @@ void MatterValveConfigurationAndControlPluginServerInitCallback();
 void MatterWakeOnLanPluginServerInitCallback();
 void MatterWaterHeaterManagementPluginServerInitCallback();
 void MatterWaterHeaterModePluginServerInitCallback();
+void MatterWaterTankLevelMonitoringPluginServerInitCallback();
 void MatterWebRTCTransportProviderPluginServerInitCallback();
 void MatterWebRTCTransportRequestorPluginServerInitCallback();
 void MatterWiFiNetworkDiagnosticsPluginServerInitCallback();

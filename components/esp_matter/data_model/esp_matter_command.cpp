@@ -82,28 +82,6 @@ static esp_err_t esp_matter_command_callback_announce_ota_provider(const Concret
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_command_callback_identify(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                      void *opaque_ptr)
-{
-    chip::app::Clusters::Identify::Commands::Identify::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfIdentifyClusterIdentifyCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_trigger_effect(const ConcreteCommandPath &command_path,
-                                                            TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::Identify::Commands::TriggerEffect::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfIdentifyClusterTriggerEffectCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
 static esp_err_t esp_matter_command_callback_add_group(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                        void *opaque_ptr)
 {
@@ -1817,13 +1795,13 @@ namespace command {
 command_t *create_identify(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, Identify::Commands::Identify::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_identify);
+                                       nullptr);
 }
 
 command_t *create_trigger_effect(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, Identify::Commands::TriggerEffect::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_trigger_effect);
+                                       nullptr);
 }
 
 } /* command */

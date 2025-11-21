@@ -23,7 +23,6 @@
 #include <app-common/zap-generated/attribute-type.h>
 #include <app/AttributePathParams.h>
 #include <app/InteractionModelEngine.h>
-#include <app/util/AttributesChangedListener.h>
 #include <app/util/MarkAttributeDirty.h>
 #include <app/util/attribute-storage.h>
 #include <app/util/attribute-table.h>
@@ -730,18 +729,6 @@ EmberAfDefaultAttributeValue get_default_attr_value_from_val(esp_matter_attr_val
     }
     return EmberAfDefaultAttributeValue(nullptr);
 }
-
-class GlobalInteractionModelEngineChangedpathListener : public chip::app::AttributesChangedListener {
-public:
-    ~GlobalInteractionModelEngineChangedpathListener() = default;
-
-    void MarkDirty(const chip::app::AttributePathParams &path) override
-    {
-        chip::app::InteractionModelEngine::GetInstance()->GetReportingEngine().SetDirty(path);
-    }
-};
-
-static GlobalInteractionModelEngineChangedpathListener gListener;
 } // namespace
 
 namespace chip {
@@ -781,6 +768,7 @@ void EnabledEndpointsWithServerCluster::EnsureMatchingEndpoint()
 namespace Compatibility {
 namespace Internal {
 
+// Remove AttributeBaseType() when scenes management cluster is decoupled from ember.
 EmberAfAttributeType AttributeBaseType(EmberAfAttributeType type)
 {
     switch (type) {
@@ -1006,27 +994,6 @@ bool emberAfContainsAttribute(chip::EndpointId endpoint, chip::ClusterId cluster
     return esp_matter::attribute::get(endpoint, clusterId, attributeId);
 }
 
-// TODO: Remove the emberAfContainsClient function when binding cluster is decoupled from ember
-bool emberAfContainsClient(chip::EndpointId endpoint, chip::ClusterId clusterId)
-{
-    esp_matter::cluster_t *cluster = esp_matter::cluster::get(endpoint, clusterId);
-    if (cluster && (esp_matter::cluster::get_flags(cluster) & esp_matter::CLUSTER_FLAG_CLIENT)) {
-        return true;
-    }
-    return false;
-}
-
-// TODO: Remove the GetSemanticTagForEndpointAtIndex function when descriptor cluster is decoupled from ember
-CHIP_ERROR GetSemanticTagForEndpointAtIndex(chip::EndpointId endpoint, size_t index,
-                                            chip::app::Clusters::Descriptor::Structs::SemanticTagStruct::Type &tag)
-{
-    esp_matter::endpoint_t *ep = esp_matter::endpoint::get(endpoint);
-    if (!ep || (esp_matter::endpoint::get_semantic_tag_at_index(ep, index, tag) != ESP_OK)) {
-        return CHIP_ERROR_NOT_FOUND;
-    }
-    return CHIP_NO_ERROR;
-}
-
 // TODO: Remove the emberAfRead/Write functions when all the clusters are decoupled from ember.
 chip::Protocols::InteractionModel::Status emberAfReadAttribute(chip::EndpointId endpointId, chip::ClusterId clusterId,
                                                                chip::AttributeId attributeId, uint8_t *dataPtr,
@@ -1055,7 +1022,8 @@ Status emberAfWriteAttribute(chip::EndpointId endpointId, chip::ClusterId cluste
                              uint8_t *value, EmberAfAttributeType dataType)
 {
     return emberAfWriteAttribute(chip::app::ConcreteAttributePath(endpointId, clusterId, attributeId),
-                                 EmberAfWriteDataInput(value, dataType).SetChangeListener(&gListener));
+                                 EmberAfWriteDataInput(value, dataType).SetChangeListener(
+                                     &chip::app::InteractionModelEngine::GetInstance()->GetReportingEngine()));
 }
 
 Status emberAfWriteAttribute(const chip::app::ConcreteAttributePath &path, const EmberAfWriteDataInput &input)
@@ -1090,7 +1058,7 @@ Status emberAfWriteAttribute(const chip::app::ConcreteAttributePath &path, const
                 input.changeListener->MarkDirty(
                     chip::app::AttributePathParams(path.mEndpointId, path.mClusterId, path.mAttributeId));
             } else {
-                gListener.MarkDirty(
+                chip::app::InteractionModelEngine::GetInstance()->GetReportingEngine().MarkDirty(
                     chip::app::AttributePathParams(path.mEndpointId, path.mClusterId, path.mAttributeId));
             }
         }

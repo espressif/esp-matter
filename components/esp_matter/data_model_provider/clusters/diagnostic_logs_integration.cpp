@@ -14,19 +14,21 @@
 
 #include <app/ClusterCallbacks.h>
 #include <app/clusters/diagnostic-logs-server/DiagnosticLogsCluster.h>
+#include <app/server-cluster/ServerClusterInterfaceRegistry.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
 
 using namespace chip;
 using namespace chip::app;
 using namespace chip::app::Clusters;
 
+LazyRegisteredServerCluster<DiagnosticLogsCluster> gServer;
+
 void ESPMatterDiagnosticLogsClusterServerInitCallback(EndpointId endpoint)
 {
     // We implement the cluster as a singleton on the root endpoint.
-    VerifyOrReturn(endpoint == kRootEndpointId);
-    static ServerClusterRegistration sRegistration(DiagnosticLogsCluster::Instance());
-
-    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(sRegistration);
+    VerifyOrReturn(endpoint == kRootEndpointId && !gServer.IsConstructed());
+    gServer.Create();
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register DiagnosticLogs on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
                      endpoint, err.Format());
@@ -36,13 +38,14 @@ void ESPMatterDiagnosticLogsClusterServerInitCallback(EndpointId endpoint)
 void ESPMatterDiagnosticLogsClusterServerShutdownCallback(EndpointId endpointId)
 {
     // We implement the cluster as a singleton on the root endpoint.
-    VerifyOrReturn(endpointId == kRootEndpointId);
+    VerifyOrReturn(endpointId == kRootEndpointId && gServer.IsConstructed());
     CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Unregister(&DiagnosticLogsCluster::Instance());
+        esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister DiagnosticLogs on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
                      endpointId, err.Format());
     }
+    gServer.Destroy();
 }
 
 void MatterDiagnosticLogsPluginServerInitCallback() {}

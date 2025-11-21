@@ -24,11 +24,11 @@
 #include <app/clusters/resource-monitoring-server/resource-monitoring-server.h>
 #include <app/clusters/fan-control-server/fan-control-server.h>
 #include <app/clusters/laundry-dryer-controls-server/laundry-dryer-controls-server.h>
-#include <app/clusters/valve-configuration-and-control-server/valve-configuration-and-control-server.h>
+#include <app/clusters/valve-configuration-and-control-server/valve-configuration-and-control-cluster.h>
 #include <app/clusters/device-energy-management-server/device-energy-management-server.h>
 #include <app/clusters/door-lock-server/door-lock-server.h>
 #include <app/clusters/boolean-state-configuration-server/boolean-state-configuration-server.h>
-#include <app/clusters/time-synchronization-server/time-synchronization-server.h>
+#include <app/clusters/time-synchronization-server/time-synchronization-cluster.h>
 #include <app/clusters/application-basic-server/application-basic-server.h>
 #include <app/clusters/power-topology-server/power-topology-server.h>
 #include <app/clusters/electrical-power-measurement-server/electrical-power-measurement-server.h>

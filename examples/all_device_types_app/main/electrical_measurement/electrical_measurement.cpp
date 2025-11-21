@@ -11,7 +11,7 @@
 #include <app-common/zap-generated/ids/Attributes.h>
 #include <app-common/zap-generated/ids/Clusters.h>
 #include <app-common/zap-generated/ids/Events.h>
-#include <app/clusters/electrical-energy-measurement-server/electrical-energy-measurement-server.h>
+#include <app/clusters/electrical-energy-measurement-server/ElectricalEnergyMeasurementCluster.h>
 #include <app/clusters/electrical-power-measurement-server/electrical-power-measurement-server.h>
 #include <app/reporting/reporting.h>
 #include <app/data-model/Nullable.h>

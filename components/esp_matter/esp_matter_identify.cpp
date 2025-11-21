@@ -64,21 +64,24 @@ static esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, ui
 static void start_cb(Identify *identify)
 {
     ESP_LOGI(TAG, "Start callback");
-    execute_callback(START, identify->mEndpoint, static_cast<uint8_t>(identify->mCurrentEffectIdentifier),
+    execute_callback(START, identify->mCluster.Cluster().GetPaths()[0].mEndpointId,
+                     static_cast<uint8_t>(identify->mCurrentEffectIdentifier),
                      static_cast<uint8_t>(identify->mEffectVariant));
 }
 
 static void stop_cb(Identify *identify)
 {
     ESP_LOGI(TAG, "Stop callback");
-    execute_callback(STOP, identify->mEndpoint, static_cast<uint8_t>(identify->mCurrentEffectIdentifier),
+    execute_callback(STOP, identify->mCluster.Cluster().GetPaths()[0].mEndpointId,
+                     static_cast<uint8_t>(identify->mCurrentEffectIdentifier),
                      static_cast<uint8_t>(identify->mEffectVariant));
 }
 
 static void effect_cb(Identify *identify)
 {
     ESP_LOGI(TAG, "Effect callback");
-    execute_callback(EFFECT, identify->mEndpoint, static_cast<uint8_t>(identify->mCurrentEffectIdentifier),
+    execute_callback(EFFECT, identify->mCluster.Cluster().GetPaths()[0].mEndpointId,
+                     static_cast<uint8_t>(identify->mCurrentEffectIdentifier),
                      static_cast<uint8_t>(identify->mEffectVariant));
 }
 

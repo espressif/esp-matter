@@ -341,10 +341,11 @@ ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request
     return Protocols::InteractionModel::Status::Success;
 }
 
-void provider::ListAttributeWriteNotification(const ConcreteAttributePath &aPath, ListWriteOperation opType)
+void provider::ListAttributeWriteNotification(const ConcreteAttributePath &aPath, ListWriteOperation opType,
+                                              FabricIndex accessFabric)
 {
     if (auto *cluster = mRegistry.Get(aPath); cluster != nullptr) {
-        return cluster->ListAttributeWriteNotification(aPath, opType);
+        return cluster->ListAttributeWriteNotification(aPath, opType, accessFabric);
     }
     AttributeAccessInterface *aai =
         AttributeAccessInterfaceRegistry::Instance().Get(aPath.mEndpointId, aPath.mClusterId);
@@ -406,23 +407,6 @@ CHIP_ERROR provider::Endpoints(ReadOnlyBufferBuilder<EndpointEntry> &builder)
             ReturnErrorOnFailure(builder.Append(entry));
         }
         ep = endpoint::get_next(ep);
-    }
-    return CHIP_NO_ERROR;
-}
-
-CHIP_ERROR provider::SemanticTags(EndpointId endpointId, ReadOnlyBufferBuilder<SemanticTag> &builder)
-{
-    Status status = CheckDataModelPath(endpointId);
-    VerifyOrReturnValue(status == Protocols::InteractionModel::Status::Success,
-                        CHIP_ERROR_IM_GLOBAL_STATUS_VALUE(status));
-    endpoint_t *ep = endpoint::get(endpointId);
-    int count = endpoint::get_semantic_tag_count(ep);
-    ReturnErrorOnFailure(builder.EnsureAppendCapacity(count));
-    for (size_t idx = 0; idx < count; idx++) {
-        DataModel::Provider::SemanticTag semanticTag;
-        VerifyOrReturnError(endpoint::get_semantic_tag_at_index(ep, idx, semanticTag) == ESP_OK, CHIP_ERROR_INTERNAL,
-                            ESP_LOGE(TAG, "Failed to get SemanticTag at %d", idx));
-        ReturnErrorOnFailure(builder.Append(semanticTag));
     }
     return CHIP_NO_ERROR;
 }

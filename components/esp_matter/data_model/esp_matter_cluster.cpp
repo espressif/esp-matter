@@ -208,6 +208,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_feature_map(cluster, 0);
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterDescriptorClusterServerInitCallback,
+                                                 ESPMatterDescriptorClusterServerShutdownCallback);
     }
 
     return cluster;
@@ -1003,6 +1005,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterUserLabelClusterServerInitCallback,
+                                                 ESPMatterUserLabelClusterServerShutdownCallback);
     }
 
     return cluster;
@@ -1039,11 +1043,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 } /* fixed_label */
 
 namespace identify {
-const function_generic_t function_list[] = {
-    (function_generic_t)emberAfIdentifyClusterServerInitCallback,
-    (function_generic_t)MatterIdentifyClusterServerAttributeChangedCallback,
-};
-const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION;
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -1067,6 +1068,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterIdentifyClusterServerInitCallback,
+                                                 ESPMatterIdentifyClusterServerShutdownCallback);
     }
 
     /* Commands */
@@ -2398,6 +2401,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterLocalizationConfigurationClusterServerInitCallback,
+                                                 ESPMatterLocalizationConfigurationClusterServerShutdownCallback);
     }
 
     return cluster;

@@ -406,6 +406,9 @@ void ESPMatterWaterHeaterManagementClusterServerShutdownCallback(EndpointId endp
 void ESPMatterWaterHeaterModeClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterWaterHeaterModeClusterServerShutdownCallback(EndpointId endpoint);
 
+void ESPMatterWaterTankLevelMonitoringClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterWaterTankLevelMonitoringClusterServerShutdownCallback(EndpointId endpoint);
+
 void ESPMatterWebRTCTransportProviderClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterWebRTCTransportProviderClusterServerShutdownCallback(EndpointId endpoint);
 

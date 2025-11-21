@@ -39,6 +39,7 @@ namespace data_model {
 using chip::ClusterId;
 using chip::CommandId;
 using chip::EndpointId;
+using chip::FabricIndex;
 using chip::MutableCharSpan;
 using chip::ReadOnlyBufferBuilder;
 using chip::app::AttributePathParams;
@@ -76,13 +77,13 @@ public:
     ActionReturnStatus ReadAttribute(const ReadAttributeRequest &request, AttributeValueEncoder &encoder) override;
     ActionReturnStatus WriteAttribute(const WriteAttributeRequest &request, AttributeValueDecoder &decoder) override;
 
-    void ListAttributeWriteNotification(const ConcreteAttributePath &aPath, ListWriteOperation opType) override;
+    void ListAttributeWriteNotification(const ConcreteAttributePath &aPath, ListWriteOperation opType,
+                                        FabricIndex accessingFabric) override;
     std::optional<ActionReturnStatus> InvokeCommand(const InvokeRequest &request, chip::TLV::TLVReader &input_arguments,
                                                     CommandHandler *handler) override;
 
     /// attribute tree iteration
     CHIP_ERROR Endpoints(ReadOnlyBufferBuilder<EndpointEntry> &out) override;
-    CHIP_ERROR SemanticTags(EndpointId endpointId, ReadOnlyBufferBuilder<SemanticTag> &builder) override;
     CHIP_ERROR DeviceTypes(EndpointId endpointId, ReadOnlyBufferBuilder<DeviceTypeEntry> &builder) override;
     CHIP_ERROR ClientClusters(EndpointId endpointId, ReadOnlyBufferBuilder<ClusterId> &builder) override;
     CHIP_ERROR ServerClusters(EndpointId endpointId, ReadOnlyBufferBuilder<ServerClusterEntry> &builder) override;

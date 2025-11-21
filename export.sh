@@ -55,6 +55,9 @@ esp_matter_export_main() {
 
     # export zap-cli path
     export ZAP_INSTALL_PATH=${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/.environment/cipd/packages/zap
+
+    # export PW environment path
+    export _PW_ACTUAL_ENVIRONMENT_ROOT=${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/.environment
 }
 
 esp_matter_export_main

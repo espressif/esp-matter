@@ -58,7 +58,7 @@ void ESPMatterWiFiNetworkDiagnosticsClusterServerInitCallback(EndpointId endpoin
     if (!IsClusterEnabled(endpointId) && gServers[endpointId].IsConstructed()) {
       return;
     }
-    WiFiDiagnosticsServerLogic::OptionalAttributeSet attrSet;
+    WiFiDiagnosticsServerCluster::OptionalAttributeSet attrSet;
     if (IsAttributeEnabled(endpointId, WiFiNetworkDiagnostics::Attributes::CurrentMaxRate::Id)) {
         attrSet.Set<WiFiNetworkDiagnostics::Attributes::CurrentMaxRate::Id>();
     }
