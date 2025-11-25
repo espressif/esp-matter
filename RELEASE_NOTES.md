@@ -1,3 +1,18 @@
+# 27-Nov-2025
+### Feature: attribute::get_val() and attribute::set_val() APIs
+
+- `attribute::get_val()`
+  - API now supports getting the value of internally managed attributes of primitive data types.
+  - Complex types are not supported yet, eg: (Array, Struct, List, etc.)
+
+- `attribute::set_val()`
+  - API now supports setting the value of internally managed attributes which are writable and of data type primitive.
+  - Attributes which are not writable but managed internally are not supported yet
+  - Complex types are not supported yet, eg: (Array, Struct, List, etc.)
+
+- For unsupported attributes, the APIs will return `ESP_ERR_NOT_SUPPORTED`,
+  please use the cluster-specific setter APIs.
+
 ## 21-Nov-2025
 ### API Changes: Attribute Creation Function Names
 

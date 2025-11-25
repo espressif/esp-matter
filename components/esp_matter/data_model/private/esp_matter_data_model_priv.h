@@ -52,6 +52,17 @@ namespace attribute {
  */
 esp_err_t get_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val);
 
+/** Set the attribute value in the esp-matter storage
+ *
+ * @param[in] attribute Attribute handle.
+ * @param[in] val Pointer to `esp_matter_attr_val_t`. Use appropriate elements as per the value type.
+ * @param[in] call_callbacks Whether to call attribute change pre/post callbacks.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t set_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_callbacks = true);
+
 } // namespace attribute
 
 } // namespace esp_matter

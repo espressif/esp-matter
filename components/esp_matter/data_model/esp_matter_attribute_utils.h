@@ -412,6 +412,7 @@ esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
  * This API reports the attribute value.
  * After this API is called, the application doesn't gets the attribute update callback with `PRE_UPDATE` or `POST_UPDATE`, the
  * attribute is updated in the database.
+ * This also marks the attribute as dirty, so that it can be reported in the next subscription report.
  *
  * @param[in] endpoint_id Endpoint ID of the attribute.
  * @param[in] cluster_id Cluster ID of the attribute.

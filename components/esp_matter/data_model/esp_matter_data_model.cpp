@@ -147,6 +147,7 @@ inline bool is_wildcard_endpoint_id(uint16_t endpoint_id)
 // We allocate this large scoped buffer to read the attribute as the TLV data
 // This is enough to store the TLV encoded buffer for a primitive type of data
 const uint32_t k_max_tlv_size_to_read_attribute_value = 512;
+const uint32_t k_max_tlv_size_to_write_attribute_value = 512;
 
 } // namespace
 
@@ -544,7 +545,7 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, e
             }
         }
         if (!attribute_updated) {
-            set_val((attribute_t *)attribute, &val);
+            set_val_internal((attribute_t *)attribute, &val, false);
         }
     }
 
@@ -638,13 +639,14 @@ static void deferred_attribute_write(chip::System::Layer *layer, void *attribute
                      {current_attribute->attribute_val_type, current_attribute->attribute_val});
 }
 
-esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_callbacks)
+esp_err_t set_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_callbacks)
 {
-    VerifyOrReturnError(attribute && val, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Attribute and val cannot be NULL"));
+    VerifyOrReturnError(attribute && val, ESP_ERR_INVALID_ARG);
     _attribute_t *current_attribute = (_attribute_t *)attribute;
 
     ESP_RETURN_ON_FALSE(!(current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY), ESP_ERR_NOT_SUPPORTED, TAG,
                         "Attribute is not managed by esp matter data model");
+
     VerifyOrReturnError(current_attribute->attribute_val_type == val->type, ESP_ERR_INVALID_ARG,
                         ESP_LOGE(TAG, "Different value type : Expected Type : %u Attempted Type: %u",
                             current_attribute->attribute_val_type, val->type));
@@ -817,7 +819,7 @@ static esp_err_t get_val_from_tlv_data(const uint8_t *tlv_data, uint32_t tlv_len
 }
 
 // Helper function to find the cluster_id and attribute_id for internally managed attributes
-static esp_err_t find_cluster_and_endpoint_id_for_internally_managed_attribute(_attribute_base_t *attribute_base,
+static esp_err_t find_cluster_and_endpoint_id_for_internally_managed_attribute(const _attribute_base_t *attribute_base,
                                                                                 uint16_t &out_endpoint_id,
                                                                                 uint32_t &out_cluster_id)
 {
@@ -883,31 +885,32 @@ esp_err_t get_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_
     return get_val_from_tlv_data(scoped_buf.Get(), writer.GetLengthWritten(), val);
 }
 
+static esp_err_t get_path_from_attribute_handle(const _attribute_t *attribute, uint16_t &endpoint_id,
+                                                    uint32_t &cluster_id, uint32_t &attribute_id)
+{
+    attribute_id = attribute->attribute_id;
+    if (attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY) {
+        // for connectedhomeip managed attributes, we need to find the cluster and endpoint id
+        return find_cluster_and_endpoint_id_for_internally_managed_attribute(attribute, endpoint_id, cluster_id);
+    }
+
+    // in case of esp-matter managed attributes, we can directly use the endpoint and cluster id
+    endpoint_id = attribute->endpoint_id;
+    cluster_id = attribute->cluster_id;
+    return ESP_OK;
+}
+
 esp_err_t get_val(attribute_t *attribute, esp_matter_attr_val_t *val)
 {
     VerifyOrReturnError(attribute && val, ESP_ERR_INVALID_ARG);
     _attribute_t *current_attribute = (_attribute_t *)attribute;
 
-    uint32_t attribute_id = current_attribute->attribute_id;
-    uint32_t cluster_id = chip::kInvalidClusterId;
     uint16_t endpoint_id = chip::kInvalidEndpointId;
+    uint32_t cluster_id = chip::kInvalidClusterId;
+    uint32_t attribute_id = chip::kInvalidAttributeId;
 
-    if (current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY) {
-        // for internally managed attributes, we need to find the cluster and endpoint id
-        esp_err_t err = find_cluster_and_endpoint_id_for_internally_managed_attribute(current_attribute,
-                                                                                        endpoint_id, cluster_id);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Failed to get cluster and ep id for attribute, err: %d", err);
-            return err;
-        }
-
-        cluster_id = cluster_id;
-        attribute_id = attribute_id;
-    } else {
-        // in case of externally managed attributes, we can directly use the endpoint and cluster id
-        endpoint_id = current_attribute->endpoint_id;
-        cluster_id = current_attribute->cluster_id;
-    }
+    esp_err_t err = get_path_from_attribute_handle(current_attribute, endpoint_id, cluster_id, attribute_id);
+    VerifyOrReturnError(err == ESP_OK, err);
 
     return get_val(endpoint_id, cluster_id, attribute_id, val);
 }
@@ -934,6 +937,101 @@ esp_matter_val_type_t get_val_type(attribute_t *attribute)
 esp_matter_val_type_t get_val_type(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id)
 {
     return get_val_type(get(endpoint_id, cluster_id, attribute_id));
+}
+
+// Helper function: Set value via WriteAttribute with kInternal flag (for SCI/AAI writable attributes)
+static esp_err_t set_val_via_write_attribute(uint16_t endpoint_id, uint32_t cluster_id,
+                                              uint32_t attribute_id, esp_matter_attr_val_t *val)
+{
+    chip::Platform::ScopedMemoryBuffer<uint8_t> tlv_buffer;
+    tlv_buffer.Calloc(k_max_tlv_size_to_write_attribute_value);
+    VerifyOrReturnError(!tlv_buffer.IsNull(), ESP_ERR_NO_MEM);
+
+    chip::TLV::TLVWriter writer;
+    writer.Init(tlv_buffer.Get(), k_max_tlv_size_to_write_attribute_value);
+
+    // Encoding is within a structure:
+    //   - BEGIN_STRUCT
+    //     - 1: <encoded value>
+    //   - END_STRUCT
+    chip::TLV::TLVType outerContainer;
+    VerifyOrReturnError(writer.StartContainer(chip::TLV::AnonymousTag(), chip::TLV::kTLVType_Structure, outerContainer) == CHIP_NO_ERROR, ESP_FAIL);
+    data_model::attribute_data_encode_buffer encode_buffer(*val);
+    VerifyOrReturnError(encode_buffer.Encode(writer, chip::TLV::ContextTag(1)) == CHIP_NO_ERROR, ESP_FAIL);
+    VerifyOrReturnError(writer.EndContainer(outerContainer) == CHIP_NO_ERROR, ESP_FAIL);
+    VerifyOrReturnError(writer.Finalize() == CHIP_NO_ERROR, ESP_FAIL);
+
+    // position the reader inside the buffer, on the encoded value
+    chip::TLV::TLVReader reader;
+    reader.Init(tlv_buffer.Get(), writer.GetLengthWritten());
+    VerifyOrReturnError(reader.Next() == CHIP_NO_ERROR, ESP_FAIL);
+    VerifyOrReturnError(reader.EnterContainer(outerContainer) == CHIP_NO_ERROR, ESP_FAIL);
+    VerifyOrReturnError(reader.Next() == CHIP_NO_ERROR, ESP_FAIL);
+
+    // create write request and call WriteAttribute through the provider
+    chip::app::DataModel::WriteAttributeRequest request;
+    request.path = chip::app::ConcreteDataAttributePath(endpoint_id, cluster_id, attribute_id);
+    request.operationFlags.Set(chip::app::DataModel::OperationFlags::kInternal);
+
+    chip::Access::SubjectDescriptor subjectDescriptor;
+    chip::app::AttributeValueDecoder decoder(reader, subjectDescriptor);
+
+    // we need to ensure locks are in place to avoid assertion errors
+    esp_matter::lock::chip_stack_lock(portMAX_DELAY);
+
+    chip::app::DataModel::ActionReturnStatus status =
+        esp_matter::data_model::provider::get_instance().WriteAttribute(request, decoder);
+
+    esp_matter::lock::chip_stack_unlock();
+
+    if (status.IsError()) {
+        chip::app::DataModel::ActionReturnStatus::StringStorage storage;
+        ESP_LOGE(TAG, "WriteAttribute failed with status: %s", status.c_str(storage));
+        return ESP_FAIL;
+    }
+
+    return ESP_OK;
+}
+
+esp_err_t set_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val, bool call_callbacks)
+{
+    VerifyOrReturnError(val && val->type != ESP_MATTER_VAL_TYPE_INVALID, ESP_ERR_INVALID_ARG);
+    VerifyOrReturnError(val->type != ESP_MATTER_VAL_TYPE_ARRAY, ESP_ERR_NOT_SUPPORTED);
+
+    attribute_t *attr = get(endpoint_id, cluster_id, attribute_id);
+    VerifyOrReturnError(attr, ESP_ERR_NOT_FOUND);
+    VerifyOrReturnError(get_val_type(attr) == val->type, ESP_ERR_INVALID_ARG);
+
+    uint16_t flags = get_flags(attr);
+
+    if (!(flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY)) {
+        // this updates the value of attribute in the esp-matter storage
+        return attribute::set_val_internal(attr, val, call_callbacks);
+    }
+
+    // we can use DataModelProvider::WriteAttribute API for writable attributes
+    if (flags & ATTRIBUTE_FLAG_WRITABLE) {
+        return set_val_via_write_attribute(endpoint_id, cluster_id, attribute_id, val);
+    }
+
+    // TODO: If not writable, we could use the cluster-specific setter API to update the value
+    //       with the code-driven effort, we can get the cluster object and call the setter API
+    return ESP_ERR_NOT_SUPPORTED;
+}
+
+esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_callbacks)
+{
+    VerifyOrReturnError(attribute && val, ESP_ERR_INVALID_ARG);
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
+
+    uint16_t endpoint_id = chip::kInvalidEndpointId;
+    uint32_t cluster_id = chip::kInvalidClusterId;
+    uint32_t attribute_id = chip::kInvalidAttributeId;
+
+    esp_err_t err = get_path_from_attribute_handle(current_attribute, endpoint_id, cluster_id, attribute_id);
+    VerifyOrReturnError(err == ESP_OK, err);
+
+    return set_val(endpoint_id, cluster_id, attribute_id, val, call_callbacks);
 }
 
 esp_err_t add_bounds(attribute_t *attribute, esp_matter_attr_val_t min, esp_matter_attr_val_t max)
