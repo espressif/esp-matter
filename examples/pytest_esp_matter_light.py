@@ -119,7 +119,7 @@ def test_matter_commissioning_c2(dut:Dut) -> None:
 def test_matter_commissioning_c6(dut:Dut, certification_tests: str) -> None:
     light = dut
     # BLE start advertising
-    light.expect(r'chip\[DL\]\: Configuring CHIPoBLE advertising', timeout=20)
+    light.expect(r'Configuring CHIPoBLE advertising', timeout=20)
     # Start commissioning
     time.sleep(5)
     command = CHIP_TOOL_EXE + f" pairing ble-wifi 1 {PYTEST_SSID} {PYTEST_PASSPHRASE} 20202021 3840"
