@@ -70,186 +70,6 @@ void dispatch_single_cluster_command(const ConcreteCommandPath &command_path, TL
 } /* command */
 } /* esp_matter */
 
-static esp_err_t esp_matter_command_callback_key_set_write(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                           void *opaque_ptr)
-{
-    chip::app::Clusters::GroupKeyManagement::Commands::KeySetWrite::DecodableType command_data;
-    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
-    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
-
-    if (error == CHIP_NO_ERROR) {
-        emberAfGroupKeyManagementClusterKeySetWriteCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_key_set_read(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                          void *opaque_ptr)
-{
-    chip::app::Clusters::GroupKeyManagement::Commands::KeySetRead::DecodableType command_data;
-    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
-    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
-
-    if (error == CHIP_NO_ERROR) {
-        emberAfGroupKeyManagementClusterKeySetReadCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_key_set_remove(const ConcreteCommandPath &command_path,
-                                                            TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::GroupKeyManagement::Commands::KeySetRemove::DecodableType command_data;
-    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
-    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
-
-    if (error == CHIP_NO_ERROR) {
-        emberAfGroupKeyManagementClusterKeySetRemoveCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_key_set_read_all_indices(const ConcreteCommandPath &command_path,
-                                                                      TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::GroupKeyManagement::Commands::KeySetReadAllIndices::DecodableType command_data;
-    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
-    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
-
-    if (error == CHIP_NO_ERROR) {
-        emberAfGroupKeyManagementClusterKeySetReadAllIndicesCallback((CommandHandler *)opaque_ptr, command_path,
-                                                                     command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_attestation_request(const ConcreteCommandPath &command_path,
-                                                                 TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::OperationalCredentials::Commands::AttestationRequest::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfOperationalCredentialsClusterAttestationRequestCallback((CommandHandler *)opaque_ptr, command_path,
-                                                                       command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_certificate_chain_request(const ConcreteCommandPath &command_path,
-                                                                       TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::OperationalCredentials::Commands::CertificateChainRequest::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfOperationalCredentialsClusterCertificateChainRequestCallback((CommandHandler *)opaque_ptr, command_path,
-                                                                            command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_csr_request(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                         void *opaque_ptr)
-{
-    chip::app::Clusters::OperationalCredentials::Commands::CSRRequest::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfOperationalCredentialsClusterCSRRequestCallback((CommandHandler *)opaque_ptr, command_path,
-                                                               command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_add_noc(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                     void *opaque_ptr)
-{
-    chip::app::Clusters::OperationalCredentials::Commands::AddNOC::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfOperationalCredentialsClusterAddNOCCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_update_noc(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                        void *opaque_ptr)
-{
-    chip::app::Clusters::OperationalCredentials::Commands::UpdateNOC::DecodableType command_data;
-    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
-    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
-
-    if (error == CHIP_NO_ERROR) {
-        emberAfOperationalCredentialsClusterUpdateNOCCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_update_fabric_label(const ConcreteCommandPath &command_path,
-                                                                 TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::OperationalCredentials::Commands::UpdateFabricLabel::DecodableType command_data;
-    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
-    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
-
-    if (error == CHIP_NO_ERROR) {
-        emberAfOperationalCredentialsClusterUpdateFabricLabelCallback((CommandHandler *)opaque_ptr, command_path,
-                                                                      command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_remove_fabric(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                           void *opaque_ptr)
-{
-    chip::app::Clusters::OperationalCredentials::Commands::RemoveFabric::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfOperationalCredentialsClusterRemoveFabricCallback((CommandHandler *)opaque_ptr, command_path,
-                                                                 command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_add_trusted_root_certificate(const ConcreteCommandPath &command_path,
-                                                                          TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::OperationalCredentials::Commands::AddTrustedRootCertificate::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfOperationalCredentialsClusterAddTrustedRootCertificateCallback((CommandHandler *)opaque_ptr,
-                                                                              command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-
-static esp_err_t esp_matter_command_callback_set_vid_verification_statement(const ConcreteCommandPath &command_path,
-                                                                          TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::OperationalCredentials::Commands::SetVIDVerificationStatement::DecodableType command_data;
-    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
-    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
-
-    if (error == CHIP_NO_ERROR) {
-        emberAfOperationalCredentialsClusterSetVIDVerificationStatementCallback((CommandHandler *)opaque_ptr,
-                                                                              command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-
-static esp_err_t esp_matter_command_callback_sign_vid_verification_request(const ConcreteCommandPath &command_path,
-                                                                          TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::OperationalCredentials::Commands::SignVIDVerificationRequest::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfOperationalCredentialsClusterSignVIDVerificationRequestCallback((CommandHandler *)opaque_ptr,
-                                                                              command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-
 static esp_err_t esp_matter_command_callback_announce_ota_provider(const ConcreteCommandPath &command_path,
                                                                    TLVReader &tlv_data, void *opaque_ptr)
 {
@@ -258,28 +78,6 @@ static esp_err_t esp_matter_command_callback_announce_ota_provider(const Concret
     if (error == CHIP_NO_ERROR) {
         emberAfOtaSoftwareUpdateRequestorClusterAnnounceOTAProviderCallback((CommandHandler *)opaque_ptr, command_path,
                                                                             command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_identify(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                      void *opaque_ptr)
-{
-    chip::app::Clusters::Identify::Commands::Identify::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfIdentifyClusterIdentifyCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_trigger_effect(const ConcreteCommandPath &command_path,
-                                                            TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::Identify::Commands::TriggerEffect::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfIdentifyClusterTriggerEffectCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
     return ESP_OK;
 }
@@ -1108,29 +906,6 @@ static esp_err_t esp_matter_command_callback_thread_reset_counts(const ConcreteC
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_command_callback_ethernet_reset_counts(const ConcreteCommandPath &command_path,
-								   TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::EthernetNetworkDiagnostics::Commands::ResetCounts::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-	emberAfEthernetNetworkDiagnosticsClusterResetCountsCallback((CommandHandler *)opaque_ptr, command_path,
-								    command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_retrieve_logs_request(const ConcreteCommandPath &command_path,
-                                                                    TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::DiagnosticLogs::Commands::RetrieveLogsRequest::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfDiagnosticLogsClusterRetrieveLogsRequestCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
 static esp_err_t esp_matter_command_callback_up_or_open(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                        void *opaque_ptr)
 {
@@ -1632,7 +1407,7 @@ namespace command {
 command_t *create_reset_counts(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, EthernetNetworkDiagnostics::Commands::ResetCounts::Id, COMMAND_FLAG_ACCEPTED,
-				       esp_matter_command_callback_ethernet_reset_counts);
+				                       NULL);
 }
 
 } /* command */
@@ -1644,7 +1419,7 @@ namespace command {
 command_t *create_retrieve_logs_request(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, DiagnosticLogs::Commands::RetrieveLogsRequest::Id, COMMAND_FLAG_ACCEPTED,
-                                        esp_matter_command_callback_retrieve_logs_request);
+                                       NULL);
 }
 
 command_t *create_retrieve_logs_response(cluster_t *cluster)
@@ -1696,25 +1471,25 @@ namespace command {
 command_t *create_key_set_write(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, GroupKeyManagement::Commands::KeySetWrite::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_key_set_write);
+                                       NULL);
 }
 
 command_t *create_key_set_read(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, GroupKeyManagement::Commands::KeySetRead::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_key_set_read);
+                                       NULL);
 }
 
 command_t *create_key_set_remove(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, GroupKeyManagement::Commands::KeySetRemove::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_key_set_remove);
+                                       NULL);
 }
 
 command_t *create_key_set_read_all_indices(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, GroupKeyManagement::Commands::KeySetReadAllIndices::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_key_set_read_all_indices);
+                                       COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_key_set_read_response(cluster_t *cluster)
@@ -1876,49 +1651,49 @@ namespace command {
 command_t *create_attestation_request(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, OperationalCredentials::Commands::AttestationRequest::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_attestation_request);
+                                       COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_certificate_chain_request(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, OperationalCredentials::Commands::CertificateChainRequest::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_certificate_chain_request);
+                                       COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_csr_request(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, OperationalCredentials::Commands::CSRRequest::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_csr_request);
+                                       NULL);
 }
 
 command_t *create_add_noc(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, OperationalCredentials::Commands::AddNOC::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_add_noc);
+                                       NULL);
 }
 
 command_t *create_update_noc(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, OperationalCredentials::Commands::UpdateNOC::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_update_noc);
+                                       NULL);
 }
 
 command_t *create_update_fabric_label(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, OperationalCredentials::Commands::UpdateFabricLabel::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_update_fabric_label);
+                                       COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_remove_fabric(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, OperationalCredentials::Commands::RemoveFabric::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_remove_fabric);
+                                       COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_add_trusted_root_certificate(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, OperationalCredentials::Commands::AddTrustedRootCertificate::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_add_trusted_root_certificate);
+                                       COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_attestation_response(cluster_t *cluster)
@@ -1948,13 +1723,13 @@ command_t *create_noc_response(cluster_t *cluster)
 command_t *create_set_vid_verification_statement(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, OperationalCredentials::Commands::SetVIDVerificationStatement::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_set_vid_verification_statement);
+                                       COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_sign_vid_verification_request(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, OperationalCredentials::Commands::SignVIDVerificationRequest::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_sign_vid_verification_request);
+                                       COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_sign_vid_verification_response(cluster_t *cluster)
@@ -2020,13 +1795,13 @@ namespace command {
 command_t *create_identify(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, Identify::Commands::Identify::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_identify);
+                                       nullptr);
 }
 
 command_t *create_trigger_effect(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, Identify::Commands::TriggerEffect::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_trigger_effect);
+                                       nullptr);
 }
 
 } /* command */

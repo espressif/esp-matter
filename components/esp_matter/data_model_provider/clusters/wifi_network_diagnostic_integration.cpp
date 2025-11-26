@@ -58,20 +58,21 @@ void ESPMatterWiFiNetworkDiagnosticsClusterServerInitCallback(EndpointId endpoin
     if (!IsClusterEnabled(endpointId) && gServers[endpointId].IsConstructed()) {
       return;
     }
-    WiFiNetworkDiagnosticsEnabledAttributes enabledAttributes{
-        .enableCurrentMaxRate = IsAttributeEnabled(endpointId, WiFiNetworkDiagnostics::Attributes::CurrentMaxRate::Id),
-    };
+    WiFiDiagnosticsServerCluster::OptionalAttributeSet attrSet;
+    if (IsAttributeEnabled(endpointId, WiFiNetworkDiagnostics::Attributes::CurrentMaxRate::Id)) {
+        attrSet.Set<WiFiNetworkDiagnostics::Attributes::CurrentMaxRate::Id>();
+    }
 
     // NOTE: Currently, diagnostics only support a single provider (DeviceLayer::GetDiagnosticDataProvider())
     // and do not properly support secondary network interfaces or per-endpoint diagnostics.
     // See issue:#40317
-    gServers[endpointId].Create(endpointId, DeviceLayer::GetDiagnosticDataProvider(), enabledAttributes,
+    gServers[endpointId].Create(endpointId, DeviceLayer::GetDiagnosticDataProvider(), attrSet,
                                 BitFlags<WiFiNetworkDiagnostics::Feature>(GetFeatureMap(endpointId)));
 
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR)
     {
-        ChipLogError(AppServer, "Failed to register WiFiNetworkDiagnostics on endpoint %u: %" CHIP_ERROR_FORMAT, endpointId,
+        ChipLogError(AppServer, "Failed to register WiFiNetworkDiagnostics on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
                      err.Format());
     }
 }
@@ -83,7 +84,7 @@ void ESPMatterWiFiNetworkDiagnosticsClusterServerShutdownCallback(EndpointId end
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[endpointId].Cluster());
     if (err != CHIP_NO_ERROR)
     {
-        ChipLogError(AppServer, "Failed to unregister WiFiNetworkDiagnostics on endpoint %u: %" CHIP_ERROR_FORMAT, endpointId,
+        ChipLogError(AppServer, "Failed to unregister WiFiNetworkDiagnostics on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
                      err.Format());
     }
 

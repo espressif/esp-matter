@@ -166,6 +166,9 @@ void ESPMatterGeneralDiagnosticsClusterServerShutdownCallback(EndpointId endpoin
 void ESPMatterGroupKeyManagementClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterGroupKeyManagementClusterServerShutdownCallback(EndpointId endpoint);
 
+void ESPMatterGroupcastClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterGroupcastClusterServerShutdownCallback(EndpointId endpoint);
+
 void ESPMatterGroupsClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterGroupsClusterServerShutdownCallback(EndpointId endpoint);
 
@@ -402,6 +405,9 @@ void ESPMatterWaterHeaterManagementClusterServerShutdownCallback(EndpointId endp
 
 void ESPMatterWaterHeaterModeClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterWaterHeaterModeClusterServerShutdownCallback(EndpointId endpoint);
+
+void ESPMatterWaterTankLevelMonitoringClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterWaterTankLevelMonitoringClusterServerShutdownCallback(EndpointId endpoint);
 
 void ESPMatterWebRTCTransportProviderClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterWebRTCTransportProviderClusterServerShutdownCallback(EndpointId endpoint);

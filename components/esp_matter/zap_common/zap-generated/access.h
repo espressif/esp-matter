@@ -11,6 +11,7 @@
 #define GENERATED_ACCESS_READ_ATTRIBUTE__CLUSTER { \
     0x0000001F, /* Cluster: Access Control, Attribute: ACL, Privilege: administer */ \
     0x0000001F, /* Cluster: Access Control, Attribute: Extension, Privilege: administer */ \
+    0x0000001F, /* Cluster: Access Control, Attribute: AuxiliaryACL, Privilege: administer */ \
     0x00000030, /* Cluster: General Commissioning, Attribute: TCAcceptedVersion, Privilege: administer */ \
     0x00000030, /* Cluster: General Commissioning, Attribute: TCMinRequiredVersion, Privilege: administer */ \
     0x00000030, /* Cluster: General Commissioning, Attribute: TCAcknowledgements, Privilege: administer */ \
@@ -82,6 +83,7 @@
 #define GENERATED_ACCESS_READ_ATTRIBUTE__ATTRIBUTE { \
     0x00000000, /* Cluster: Access Control, Attribute: ACL, Privilege: administer */ \
     0x00000001, /* Cluster: Access Control, Attribute: Extension, Privilege: administer */ \
+    0x00000007, /* Cluster: Access Control, Attribute: AuxiliaryACL, Privilege: administer */ \
     0x00000005, /* Cluster: General Commissioning, Attribute: TCAcceptedVersion, Privilege: administer */ \
     0x00000006, /* Cluster: General Commissioning, Attribute: TCMinRequiredVersion, Privilege: administer */ \
     0x00000007, /* Cluster: General Commissioning, Attribute: TCAcknowledgements, Privilege: administer */ \
@@ -153,6 +155,7 @@
 #define GENERATED_ACCESS_READ_ATTRIBUTE__PRIVILEGE { \
     chip::Access::Privilege::kAdminister, /* Cluster: Access Control, Attribute: ACL, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Access Control, Attribute: Extension, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Access Control, Attribute: AuxiliaryACL, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: General Commissioning, Attribute: TCAcceptedVersion, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: General Commissioning, Attribute: TCMinRequiredVersion, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: General Commissioning, Attribute: TCAcknowledgements, Privilege: administer */ \
@@ -619,12 +622,16 @@
     0x0000003F, /* Cluster: Group Key Management, Command: KeySetReadAllIndices, Privilege: administer */ \
     0x00000046, /* Cluster: ICD Management, Command: RegisterClient, Privilege: manage */ \
     0x00000046, /* Cluster: ICD Management, Command: UnregisterClient, Privilege: manage */ \
-    0x00000046, /* Cluster: ICD Management, Command: StayActiveRequest, Privilege: manage */ \
     0x00000062, /* Cluster: Scenes Management, Command: AddScene, Privilege: manage */ \
     0x00000062, /* Cluster: Scenes Management, Command: RemoveScene, Privilege: manage */ \
     0x00000062, /* Cluster: Scenes Management, Command: RemoveAllScenes, Privilege: manage */ \
     0x00000062, /* Cluster: Scenes Management, Command: StoreScene, Privilege: manage */ \
     0x00000062, /* Cluster: Scenes Management, Command: CopyScene, Privilege: manage */ \
+    0x00000065, /* Cluster: Groupcast, Command: JoinGroup, Privilege: manage */ \
+    0x00000065, /* Cluster: Groupcast, Command: LeaveGroup, Privilege: manage */ \
+    0x00000065, /* Cluster: Groupcast, Command: UpdateGroupKey, Privilege: manage */ \
+    0x00000065, /* Cluster: Groupcast, Command: ExpireGracePeriod, Privilege: manage */ \
+    0x00000065, /* Cluster: Groupcast, Command: ConfigureAuxiliaryACL, Privilege: administer */ \
     0x00000094, /* Cluster: Water Heater Management, Command: Boost, Privilege: manage */ \
     0x00000094, /* Cluster: Water Heater Management, Command: CancelBoost, Privilege: manage */ \
     0x00000101, /* Cluster: Door Lock, Command: SetWeekDaySchedule, Privilege: administer */ \
@@ -662,6 +669,21 @@
     0x0000050B, /* Cluster: Audio Output, Command: RenameOutput, Privilege: manage */ \
     0x0000050E, /* Cluster: Account Login, Command: GetSetupPIN, Privilege: administer */ \
     0x0000050E, /* Cluster: Account Login, Command: Login, Privilege: administer */ \
+    0x0000050F, /* Cluster: Content Control, Command: UpdatePIN, Privilege: manage */ \
+    0x0000050F, /* Cluster: Content Control, Command: ResetPIN, Privilege: administer */ \
+    0x0000050F, /* Cluster: Content Control, Command: Enable, Privilege: manage */ \
+    0x0000050F, /* Cluster: Content Control, Command: Disable, Privilege: manage */ \
+    0x0000050F, /* Cluster: Content Control, Command: SetScreenDailyTime, Privilege: manage */ \
+    0x0000050F, /* Cluster: Content Control, Command: BlockUnratedContent, Privilege: manage */ \
+    0x0000050F, /* Cluster: Content Control, Command: UnblockUnratedContent, Privilege: manage */ \
+    0x0000050F, /* Cluster: Content Control, Command: SetOnDemandRatingThreshold, Privilege: manage */ \
+    0x0000050F, /* Cluster: Content Control, Command: SetScheduledContentRatingThreshold, Privilege: manage */ \
+    0x0000050F, /* Cluster: Content Control, Command: AddBlockChannels, Privilege: manage */ \
+    0x0000050F, /* Cluster: Content Control, Command: RemoveBlockChannels, Privilege: manage */ \
+    0x0000050F, /* Cluster: Content Control, Command: AddBlockApplications, Privilege: manage */ \
+    0x0000050F, /* Cluster: Content Control, Command: RemoveBlockApplications, Privilege: manage */ \
+    0x0000050F, /* Cluster: Content Control, Command: SetBlockContentTimeWindow, Privilege: manage */ \
+    0x0000050F, /* Cluster: Content Control, Command: RemoveBlockContentTimeWindow, Privilege: manage */ \
     0x00000550, /* Cluster: Zone Management, Command: CreateTwoDCartesianZone, Privilege: manage */ \
     0x00000550, /* Cluster: Zone Management, Command: UpdateTwoDCartesianZone, Privilege: manage */ \
     0x00000550, /* Cluster: Zone Management, Command: RemoveZone, Privilege: manage */ \
@@ -710,7 +732,7 @@
     0x00000753, /* Cluster: Joint Fabric Administrator, Command: AnnounceJointFabricAdministrator, Privilege: administer */ \
     0x00000801, /* Cluster: TLS Certificate Management, Command: ProvisionRootCertificate, Privilege: administer */ \
     0x00000801, /* Cluster: TLS Certificate Management, Command: RemoveRootCertificate, Privilege: administer */ \
-    0x00000801, /* Cluster: TLS Certificate Management, Command: TLSClientCSR, Privilege: administer */ \
+    0x00000801, /* Cluster: TLS Certificate Management, Command: ClientCSR, Privilege: administer */ \
     0x00000801, /* Cluster: TLS Certificate Management, Command: ProvisionClientCertificate, Privilege: administer */ \
     0x00000801, /* Cluster: TLS Certificate Management, Command: RemoveClientCertificate, Privilege: administer */ \
     0x00000802, /* Cluster: TLS Client Management, Command: ProvisionEndpoint, Privilege: administer */ \
@@ -769,12 +791,16 @@
     0x00000004, /* Cluster: Group Key Management, Command: KeySetReadAllIndices, Privilege: administer */ \
     0x00000000, /* Cluster: ICD Management, Command: RegisterClient, Privilege: manage */ \
     0x00000002, /* Cluster: ICD Management, Command: UnregisterClient, Privilege: manage */ \
-    0x00000003, /* Cluster: ICD Management, Command: StayActiveRequest, Privilege: manage */ \
     0x00000000, /* Cluster: Scenes Management, Command: AddScene, Privilege: manage */ \
     0x00000002, /* Cluster: Scenes Management, Command: RemoveScene, Privilege: manage */ \
     0x00000003, /* Cluster: Scenes Management, Command: RemoveAllScenes, Privilege: manage */ \
     0x00000004, /* Cluster: Scenes Management, Command: StoreScene, Privilege: manage */ \
     0x00000040, /* Cluster: Scenes Management, Command: CopyScene, Privilege: manage */ \
+    0x00000000, /* Cluster: Groupcast, Command: JoinGroup, Privilege: manage */ \
+    0x00000001, /* Cluster: Groupcast, Command: LeaveGroup, Privilege: manage */ \
+    0x00000003, /* Cluster: Groupcast, Command: UpdateGroupKey, Privilege: manage */ \
+    0x00000004, /* Cluster: Groupcast, Command: ExpireGracePeriod, Privilege: manage */ \
+    0x00000005, /* Cluster: Groupcast, Command: ConfigureAuxiliaryACL, Privilege: administer */ \
     0x00000000, /* Cluster: Water Heater Management, Command: Boost, Privilege: manage */ \
     0x00000001, /* Cluster: Water Heater Management, Command: CancelBoost, Privilege: manage */ \
     0x0000000B, /* Cluster: Door Lock, Command: SetWeekDaySchedule, Privilege: administer */ \
@@ -812,6 +838,21 @@
     0x00000001, /* Cluster: Audio Output, Command: RenameOutput, Privilege: manage */ \
     0x00000000, /* Cluster: Account Login, Command: GetSetupPIN, Privilege: administer */ \
     0x00000002, /* Cluster: Account Login, Command: Login, Privilege: administer */ \
+    0x00000000, /* Cluster: Content Control, Command: UpdatePIN, Privilege: manage */ \
+    0x00000001, /* Cluster: Content Control, Command: ResetPIN, Privilege: administer */ \
+    0x00000003, /* Cluster: Content Control, Command: Enable, Privilege: manage */ \
+    0x00000004, /* Cluster: Content Control, Command: Disable, Privilege: manage */ \
+    0x00000006, /* Cluster: Content Control, Command: SetScreenDailyTime, Privilege: manage */ \
+    0x00000007, /* Cluster: Content Control, Command: BlockUnratedContent, Privilege: manage */ \
+    0x00000008, /* Cluster: Content Control, Command: UnblockUnratedContent, Privilege: manage */ \
+    0x00000009, /* Cluster: Content Control, Command: SetOnDemandRatingThreshold, Privilege: manage */ \
+    0x0000000A, /* Cluster: Content Control, Command: SetScheduledContentRatingThreshold, Privilege: manage */ \
+    0x0000000B, /* Cluster: Content Control, Command: AddBlockChannels, Privilege: manage */ \
+    0x0000000C, /* Cluster: Content Control, Command: RemoveBlockChannels, Privilege: manage */ \
+    0x0000000D, /* Cluster: Content Control, Command: AddBlockApplications, Privilege: manage */ \
+    0x0000000E, /* Cluster: Content Control, Command: RemoveBlockApplications, Privilege: manage */ \
+    0x0000000F, /* Cluster: Content Control, Command: SetBlockContentTimeWindow, Privilege: manage */ \
+    0x00000010, /* Cluster: Content Control, Command: RemoveBlockContentTimeWindow, Privilege: manage */ \
     0x00000000, /* Cluster: Zone Management, Command: CreateTwoDCartesianZone, Privilege: manage */ \
     0x00000002, /* Cluster: Zone Management, Command: UpdateTwoDCartesianZone, Privilege: manage */ \
     0x00000003, /* Cluster: Zone Management, Command: RemoveZone, Privilege: manage */ \
@@ -860,7 +901,7 @@
     0x00000008, /* Cluster: Joint Fabric Administrator, Command: AnnounceJointFabricAdministrator, Privilege: administer */ \
     0x00000000, /* Cluster: TLS Certificate Management, Command: ProvisionRootCertificate, Privilege: administer */ \
     0x00000006, /* Cluster: TLS Certificate Management, Command: RemoveRootCertificate, Privilege: administer */ \
-    0x00000007, /* Cluster: TLS Certificate Management, Command: TLSClientCSR, Privilege: administer */ \
+    0x00000007, /* Cluster: TLS Certificate Management, Command: ClientCSR, Privilege: administer */ \
     0x00000009, /* Cluster: TLS Certificate Management, Command: ProvisionClientCertificate, Privilege: administer */ \
     0x0000000E, /* Cluster: TLS Certificate Management, Command: RemoveClientCertificate, Privilege: administer */ \
     0x00000000, /* Cluster: TLS Client Management, Command: ProvisionEndpoint, Privilege: administer */ \
@@ -919,12 +960,16 @@
     chip::Access::Privilege::kAdminister, /* Cluster: Group Key Management, Command: KeySetReadAllIndices, Privilege: administer */ \
     chip::Access::Privilege::kManage, /* Cluster: ICD Management, Command: RegisterClient, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: ICD Management, Command: UnregisterClient, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: ICD Management, Command: StayActiveRequest, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Scenes Management, Command: AddScene, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Scenes Management, Command: RemoveScene, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Scenes Management, Command: RemoveAllScenes, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Scenes Management, Command: StoreScene, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Scenes Management, Command: CopyScene, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Groupcast, Command: JoinGroup, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Groupcast, Command: LeaveGroup, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Groupcast, Command: UpdateGroupKey, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Groupcast, Command: ExpireGracePeriod, Privilege: manage */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Groupcast, Command: ConfigureAuxiliaryACL, Privilege: administer */ \
     chip::Access::Privilege::kManage, /* Cluster: Water Heater Management, Command: Boost, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Water Heater Management, Command: CancelBoost, Privilege: manage */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Door Lock, Command: SetWeekDaySchedule, Privilege: administer */ \
@@ -962,6 +1007,21 @@
     chip::Access::Privilege::kManage, /* Cluster: Audio Output, Command: RenameOutput, Privilege: manage */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Account Login, Command: GetSetupPIN, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Account Login, Command: Login, Privilege: administer */ \
+    chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: UpdatePIN, Privilege: manage */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Content Control, Command: ResetPIN, Privilege: administer */ \
+    chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: Enable, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: Disable, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: SetScreenDailyTime, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: BlockUnratedContent, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: UnblockUnratedContent, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: SetOnDemandRatingThreshold, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: SetScheduledContentRatingThreshold, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: AddBlockChannels, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: RemoveBlockChannels, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: AddBlockApplications, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: RemoveBlockApplications, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: SetBlockContentTimeWindow, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: RemoveBlockContentTimeWindow, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Zone Management, Command: CreateTwoDCartesianZone, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Zone Management, Command: UpdateTwoDCartesianZone, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Zone Management, Command: RemoveZone, Privilege: manage */ \
@@ -1010,7 +1070,7 @@
     chip::Access::Privilege::kAdminister, /* Cluster: Joint Fabric Administrator, Command: AnnounceJointFabricAdministrator, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: TLS Certificate Management, Command: ProvisionRootCertificate, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: TLS Certificate Management, Command: RemoveRootCertificate, Privilege: administer */ \
-    chip::Access::Privilege::kAdminister, /* Cluster: TLS Certificate Management, Command: TLSClientCSR, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: TLS Certificate Management, Command: ClientCSR, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: TLS Certificate Management, Command: ProvisionClientCertificate, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: TLS Certificate Management, Command: RemoveClientCertificate, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: TLS Client Management, Command: ProvisionEndpoint, Privilege: administer */ \
@@ -1026,6 +1086,7 @@
     0x0000001F, /* Cluster: Access Control, Event: AccessControlEntryChanged, Privilege: administer */ \
     0x0000001F, /* Cluster: Access Control, Event: AccessControlExtensionChanged, Privilege: administer */ \
     0x0000001F, /* Cluster: Access Control, Event: FabricRestrictionReviewUpdate, Privilege: administer */ \
+    0x0000001F, /* Cluster: Access Control, Event: AuxiliaryAccessUpdated, Privilege: administer */ \
     0x0000050E, /* Cluster: Account Login, Event: LoggedOut, Privilege: administer */ \
     0x00000751, /* Cluster: Commissioner Control, Event: CommissioningRequestResult, Privilege: manage */ \
 }
@@ -1035,6 +1096,7 @@
     0x00000000, /* Cluster: Access Control, Event: AccessControlEntryChanged, Privilege: administer */ \
     0x00000001, /* Cluster: Access Control, Event: AccessControlExtensionChanged, Privilege: administer */ \
     0x00000002, /* Cluster: Access Control, Event: FabricRestrictionReviewUpdate, Privilege: administer */ \
+    0x00000003, /* Cluster: Access Control, Event: AuxiliaryAccessUpdated, Privilege: administer */ \
     0x00000000, /* Cluster: Account Login, Event: LoggedOut, Privilege: administer */ \
     0x00000000, /* Cluster: Commissioner Control, Event: CommissioningRequestResult, Privilege: manage */ \
 }
@@ -1044,6 +1106,7 @@
     chip::Access::Privilege::kAdminister, /* Cluster: Access Control, Event: AccessControlEntryChanged, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Access Control, Event: AccessControlExtensionChanged, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Access Control, Event: FabricRestrictionReviewUpdate, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Access Control, Event: AuxiliaryAccessUpdated, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Account Login, Event: LoggedOut, Privilege: administer */ \
     chip::Access::Privilege::kManage, /* Cluster: Commissioner Control, Event: CommissioningRequestResult, Privilege: manage */ \
 }

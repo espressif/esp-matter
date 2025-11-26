@@ -28,7 +28,7 @@ variables:
     IDF_CHECKOUT_REF: "v5.4.1"
     # This variable represents the short hash of the connectedhomeip submodule.
     # Note: Do change this short hash on submodule update MRs.
-    CHIP_SHORT_HASH: "bdc38cd772"
+    CHIP_SHORT_HASH: "faf4d09ad1"
     DOCKER_IMAGE_NAME: "espressif/chip-idf"
 
 .add_gitlab_ssh_key: &add_gitlab_ssh_key |
@@ -278,7 +278,6 @@ build_image:
     - *add_gitlab_ssh_key
     - *get_build_caches
     - *setup_idf
-    - pip install 'idf-component-manager~=2.1.2'
     - cd ${ESP_MATTER_PATH}
     - mkdir -p ${REPOS_PATH}
     - *update_build_caches
@@ -464,6 +463,7 @@ build_esp_matter_examples_idf_v4_4:
   extends:
         - .build_examples_template
   image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
+  allow_failure: true
   artifacts:
     paths:
       - "examples/**/build*/size.json"

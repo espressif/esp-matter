@@ -37,7 +37,7 @@
     },
     "TC_CNET_4_4": {
       "script": "TC_CNET_4_4.py",
-      "args": "--timeout 300"
+      "args": "--timeout 300 --endpoint 0"
     },
     "TC_DESC_2_2": {
       "script": "TC_DeviceBasicComposition.py",
@@ -131,7 +131,7 @@
     },
     "TC_SC_3_6_post": {
       "script": "TC_SC_3_6.py",
-      "args": "--PICS extended_color_light_wifi_pics_code.txt --bool-arg: post_cert_test:true"
+      "args": "--PICS extended_color_light_wifi_pics_code.txt --bool-arg post_cert_test:true"
     }
   }
 }

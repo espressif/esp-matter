@@ -1,8 +1,6 @@
 idf_component_register(SRC_DIRS          "."
                                          "${MATTER_SDK_PATH}/src/app/util"
                                          "${MATTER_SDK_PATH}/zzz_generated/app-common/app-common/zap-generated/attributes"
-                                         # TODO Remove this from source as the zap doesn't use binding cluster
-                                         "${MATTER_SDK_PATH}/src/app/clusters/bindings"
                        PRIV_INCLUDE_DIRS  "." "${ESP_MATTER_PATH}/examples/common/utils")
 
 # We must set CHIP_ROOT to include chip_data_model.cmake

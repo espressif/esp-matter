@@ -97,19 +97,24 @@ typedef void (*request_callback_t)(peer_device_t *peer_device, request_handle_t 
 typedef void (*group_request_callback_t)(uint8_t fabric_index, request_handle_t *req_handle, void *priv_data);
 
 #ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
-/** Initialize binding
- *
- * This should be called if the Binding cluster has been created. It just sets a flag for the binding manager to be
- * initialized.
- * If the cluster::binding::create() is being used, this is called internally.
- */
-void binding_init();
-
 /** Initialize binding manager
  *
  * This initializes the binding manager. It is called after the matter thread has been started.
  */
 void binding_manager_init();
+
+/** Cluster update
+ *
+ * For an already binded device, this API can be used to get the request send callback, and the send_request APIs can
+ * then be called from the callback.
+ *
+ * @param[in] local_endpoint_id The ID of the local endpoint with a binding cluster.
+ * @param[in] req_handle Request information to notify the bound cluster changed.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t cluster_update(uint16_t local_endpoint_id, request_handle_t *req_handle);
 #endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 
 /** Connect
@@ -154,19 +159,6 @@ esp_err_t group_request_send(uint8_t fabric_index, request_handle_t *req_handle)
  * @return error in case of failure.
  */
 esp_err_t set_request_callback(request_callback_t callback, group_request_callback_t g_callback, void *priv_data);
-
-/** Cluster update
- *
- * For an already binded device, this API can be used to get the request send callback, and the send_request APIs can
- * then be called from the callback.
- *
- * @param[in] local_endpoint_id The ID of the local endpoint with a binding cluster.
- * @param[in] req_handle Request information to notify the bound cluster changed.
- *
- * @return ESP_OK on success.
- * @return error in case of failure.
- */
-esp_err_t cluster_update(uint16_t local_endpoint_id, request_handle_t *req_handle);
 
 namespace interaction {
 

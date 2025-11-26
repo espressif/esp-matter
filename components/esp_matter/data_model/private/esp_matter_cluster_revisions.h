@@ -140,7 +140,7 @@ constexpr uint16_t cluster_revision = 6;
 } // namespace level_control
 
 namespace color_control {
-constexpr uint16_t cluster_revision = 7;
+constexpr uint16_t cluster_revision = 8;
 } // namespace color_control
 
 namespace fan_control {

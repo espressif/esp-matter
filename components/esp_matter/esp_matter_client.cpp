@@ -53,7 +53,6 @@ namespace client {
 static request_callback_t client_request_callback = NULL;
 static group_request_callback_t client_group_request_callback = NULL;
 static void *request_callback_priv_data;
-static bool initialize_binding_manager = false;
 
 esp_err_t set_request_callback(request_callback_t callback, group_request_callback_t g_callback, void *priv_data)
 {
@@ -113,12 +112,12 @@ esp_err_t group_request_send(uint8_t fabric_index, request_handle_t *req_handle)
 }
 
 #ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
-static void esp_matter_command_client_binding_callback(const EmberBindingTableEntry &binding,
+static void esp_matter_command_client_binding_callback(const chip::app::Clusters::Binding::TableEntry &binding,
                                                        OperationalDeviceProxy *peer_device, void *context)
 {
     request_handle_t *req_handle = static_cast<request_handle_t *>(context);
     VerifyOrReturn(req_handle, ESP_LOGE(TAG, "Failed to call the binding callback since command handle is NULL"));
-    if (binding.type == MATTER_UNICAST_BINDING && peer_device) {
+    if (binding.type == chip::app::Clusters::Binding::MATTER_UNICAST_BINDING && peer_device) {
         if (client_request_callback) {
             if (req_handle->type == INVOKE_CMD) {
                 req_handle->command_path.mFlags.Set(chip::app::CommandPathFlags::kEndpointIdValid);
@@ -132,7 +131,7 @@ static void esp_matter_command_client_binding_callback(const EmberBindingTableEn
             }
             client_request_callback(peer_device, req_handle, request_callback_priv_data);
         }
-    } else if (binding.type == MATTER_MULTICAST_BINDING && !peer_device) {
+    } else if (binding.type == chip::app::Clusters::Binding::MATTER_MULTICAST_BINDING && !peer_device) {
         if (client_group_request_callback) {
             if (req_handle->type == INVOKE_CMD) {
                 req_handle->command_path.mFlags.Set(chip::app::CommandPathFlags::kGroupIdValid);
@@ -168,7 +167,7 @@ esp_err_t cluster_update(uint16_t local_endpoint_id, request_handle_t *req_handl
     }
     VerifyOrReturnError(notified_cluster_id != chip::kInvalidClusterId, ESP_ERR_INVALID_ARG);
     if (CHIP_NO_ERROR !=
-        chip::BindingManager::GetInstance().NotifyBoundClusterChanged(local_endpoint_id, notified_cluster_id,
+        chip::app::Clusters::Binding::Manager::GetInstance().NotifyBoundClusterChanged(local_endpoint_id, notified_cluster_id,
                                                                       static_cast<void *>(context))) {
         chip::Platform::Delete(context);
         ESP_LOGE(TAG, "failed to notify the bound cluster changed");
@@ -181,28 +180,24 @@ esp_err_t cluster_update(uint16_t local_endpoint_id, request_handle_t *req_handl
 static void __binding_manager_init(intptr_t arg)
 {
     auto &server = chip::Server::GetInstance();
-    struct chip::BindingManagerInitParams binding_init_params = {
+    struct chip::app::Clusters::Binding::ManagerInitParams binding_init_params = {
         .mFabricTable = &server.GetFabricTable(),
         .mCASESessionManager = server.GetCASESessionManager(),
         .mStorage = &server.GetPersistentStorage(),
     };
 
-    chip::BindingManager::GetInstance().Init(binding_init_params);
-    chip::BindingManager::GetInstance().RegisterBoundDeviceChangedHandler(esp_matter_command_client_binding_callback);
-    chip::BindingManager::GetInstance().RegisterBoundDeviceContextReleaseHandler(esp_matter_binding_context_release);
+    chip::app::Clusters::Binding::Manager::GetInstance().Init(binding_init_params);
+    chip::app::Clusters::Binding::Manager::GetInstance().RegisterBoundDeviceChangedHandler(esp_matter_command_client_binding_callback);
+    chip::app::Clusters::Binding::Manager::GetInstance().RegisterBoundDeviceContextReleaseHandler(esp_matter_binding_context_release);
 }
 
 void binding_manager_init()
 {
-    if (initialize_binding_manager) {
+#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
+    if (endpoint::get_cluster_count(chip::kInvalidEndpointId, Binding::Id, CLUSTER_FLAG_SERVER) > 0) {
         chip::DeviceLayer::PlatformMgr().ScheduleWork(__binding_manager_init);
-        initialize_binding_manager = false;
     }
-}
-
-void binding_init()
-{
-    initialize_binding_manager = true;
+#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 }
 #endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 

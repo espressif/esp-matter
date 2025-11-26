@@ -212,22 +212,18 @@ esp_err_t disable(endpoint_t *endpoint)
 static esp_err_t init_identification(endpoint_t *endpoint)
 {
     VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
+    cluster_t *identify_cluster = cluster::get(endpoint, chip::app::Clusters::Identify::Id);
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
-    _cluster_t *cluster = current_endpoint->cluster_list;
-    while (cluster) {
-        uint32_t cluster_id = cluster::get_id((cluster_t *)cluster);
-        /* Init identify if exists and not initialized */
-        if (cluster_id == chip::app::Clusters::Identify::Id && current_endpoint->identify == NULL) {
-            _attribute_t *identify_type_attr = (_attribute_t *)attribute::get(
-                current_endpoint->endpoint_id, cluster_id, chip::app::Clusters::Identify::Attributes::IdentifyType::Id);
-            if (identify_type_attr) {
-                return identification::init(current_endpoint->endpoint_id, identify_type_attr->val.val.u8);
-            } else {
-                ESP_LOGE(TAG, "Can't get IdentifyType attribute in Identify cluster");
-                return ESP_ERR_INVALID_STATE;
-            }
+    /* Init identify if exists and not initialized */
+    if (identify_cluster != nullptr && current_endpoint->identify == NULL) {
+        _attribute_t *identify_type_attr = (_attribute_t *)attribute::get(
+            identify_cluster, chip::app::Clusters::Identify::Attributes::IdentifyType::Id);
+        if (identify_type_attr) {
+            return identification::init(current_endpoint->endpoint_id, identify_type_attr->val.val.u8);
+        } else {
+            ESP_LOGE(TAG, "Can't get IdentifyType attribute in Identify cluster");
+            return ESP_ERR_INVALID_STATE;
         }
-        cluster = cluster->next;
     }
     // Return ESP_OK when identify cluster is not on the endpoint.
     return ESP_OK;

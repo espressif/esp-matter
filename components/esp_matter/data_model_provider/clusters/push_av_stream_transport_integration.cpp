@@ -56,7 +56,8 @@ void ESPMatterPushAvStreamTransportClusterServerInitCallback(EndpointId endpoint
     gServers[endpointId].Create(endpointId, BitFlags<PushAvStreamTransport::Feature>(rawFeatureMap));
     CHIP_ERROR err = data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to register Push AV Stream Transport on endpoint %u: %" CHIP_ERROR_FORMAT,
+        ChipLogError(AppServer,
+                     "Failed to register Push AV Stream Transport on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
                      endpointId, err.Format());
     }
 }
@@ -69,10 +70,10 @@ void ESPMatterPushAvStreamTransportClusterServerShutdownCallback(EndpointId endp
 
     CHIP_ERROR err = data_model::provider::get_instance().registry().Unregister(&gServers[endpointId].Cluster());
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to unregister Push AV Stream Transport on endpoint %u: %" CHIP_ERROR_FORMAT,
+        ChipLogError(AppServer,
+                     "Failed to unregister Push AV Stream Transport on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
                      endpointId, err.Format());
     }
-    gServers[endpointId].Cluster().Deinit();
     gServers[endpointId].Destroy();
 }
 
@@ -87,7 +88,7 @@ namespace PushAvStreamTransport {
 
 void SetDelegate(EndpointId endpointId, PushAvStreamTransportDelegate *delegate)
 {
-    gServers[endpointId].Cluster().SetDelegate(endpointId, delegate);
+    gServers[endpointId].Cluster().SetDelegate(delegate);
     gServers[endpointId].Cluster().Init();
 }
 
