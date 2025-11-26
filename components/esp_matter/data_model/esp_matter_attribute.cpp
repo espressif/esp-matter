@@ -46,7 +46,7 @@ attribute_t *create_feature_map(cluster_t *cluster, uint32_t value)
 namespace descriptor {
 namespace attribute {
 
-attribute_t *create_device_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+attribute_t *create_device_type_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, Descriptor::Attributes::DeviceTypeList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
@@ -940,7 +940,7 @@ attribute_t *create_operational_dataset_components(cluster_t *cluster, uint8_t *
                                          ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
 }
 
-attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+attribute_t *create_active_network_faults_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::ActiveNetworkFaultsList::Id,
                                          ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
@@ -1274,7 +1274,7 @@ attribute_t *create_packet_tx_count(cluster_t *cluster, uint64_t value)
 					 ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint64(value));
 }
 
-attribute_t *create_tx_error_count(cluster_t *cluster, uint64_t value)
+attribute_t *create_tx_err_count(cluster_t *cluster, uint64_t value)
 {
     return esp_matter::attribute::create(cluster, EthernetNetworkDiagnostics::Attributes::TxErrCount::Id,
                                          ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint64(value));
@@ -1469,7 +1469,7 @@ attribute_t *create_identify_type(cluster_t *cluster, uint8_t value)
 namespace groups {
 namespace attribute {
 
-attribute_t *create_group_name_support(cluster_t *cluster, uint8_t value)
+attribute_t *create_name_support(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, Groups::Attributes::NameSupport::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_bitmap8(value));
@@ -2259,7 +2259,7 @@ attribute_t *create_preset_types(cluster_t *cluster, uint8_t * value, uint16_t l
                                          esp_matter_array(value, length, count));
 }
 
-attribute_t *create_schedule_type(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
+attribute_t *create_schedule_types(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, Thermostat::Attributes::ScheduleTypes::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
                                          esp_matter_array(value, length, count));
@@ -2686,7 +2686,7 @@ attribute_t *create_door_open_events(cluster_t *cluster, uint32_t value)
                                          esp_matter_uint32(value));
 }
 
-attribute_t *create_door_close_events(cluster_t *cluster, uint32_t value)
+attribute_t *create_door_closed_events(cluster_t *cluster, uint32_t value)
 {
     return esp_matter::attribute::create(cluster, DoorLock::Attributes::DoorClosedEvents::Id, ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_uint32(value));
@@ -3130,19 +3130,19 @@ attribute_t *create_multi_press_max(cluster_t *cluster, uint8_t value)
 namespace temperature_measurement {
 namespace attribute {
 
-attribute_t *create_temperature_measured_value(cluster_t *cluster, nullable<int16_t> value)
+attribute_t *create_measured_value(cluster_t *cluster, nullable<int16_t> value)
 {
     return esp_matter::attribute::create(cluster, TemperatureMeasurement::Attributes::MeasuredValue::Id,
                                          ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
 }
 
-attribute_t *create_temperature_min_measured_value(cluster_t *cluster, nullable<int16_t> value)
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<int16_t> value)
 {
     return esp_matter::attribute::create(cluster, TemperatureMeasurement::Attributes::MinMeasuredValue::Id,
                                          ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
 }
 
-attribute_t *create_temperature_max_measured_value(cluster_t *cluster, nullable<int16_t> value)
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<int16_t> value)
 {
     return esp_matter::attribute::create(cluster, TemperatureMeasurement::Attributes::MaxMeasuredValue::Id,
                                          ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
@@ -3154,25 +3154,25 @@ attribute_t *create_temperature_max_measured_value(cluster_t *cluster, nullable<
 namespace relative_humidity_measurement {
 namespace attribute {
 
-attribute_t *create_relative_humidity_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, RelativeHumidityMeasurement::Attributes::MeasuredValue::Id,
                                          ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
 }
 
-attribute_t *create_relative_humidity_min_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, RelativeHumidityMeasurement::Attributes::MinMeasuredValue::Id,
                                          ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
 }
 
-attribute_t *create_relative_humidity_max_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, RelativeHumidityMeasurement::Attributes::MaxMeasuredValue::Id,
                                          ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
 }
 
-attribute_t *create_relative_humidity_tolerance(cluster_t *cluster, nullable<uint16_t> value)
+attribute_t *create_tolerance(cluster_t *cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, RelativeHumidityMeasurement::Attributes::Tolerance::Id,
                                          ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
@@ -3404,7 +3404,7 @@ attribute_t *create_supported_calendar_types(cluster_t *cluster, uint8_t *value,
 namespace illuminance_measurement {
 namespace attribute {
 
-attribute_t *create_illuminance_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max)
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, IlluminanceMeasurement::Attributes::MeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
     VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), IlluminanceMeasurement::Attributes::MeasuredValue::Id));
@@ -3412,7 +3412,7 @@ attribute_t *create_illuminance_measured_value(cluster_t *cluster, nullable<uint
     return attribute;
 }
 
-attribute_t *create_illuminance_min_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max)
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, IlluminanceMeasurement::Attributes::MinMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
     VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), IlluminanceMeasurement::Attributes::MinMeasuredValue::Id));
@@ -3420,7 +3420,7 @@ attribute_t *create_illuminance_min_measured_value(cluster_t *cluster, nullable<
     return attribute;
 }
 
-attribute_t *create_illuminance_max_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max)
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, IlluminanceMeasurement::Attributes::MaxMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
     VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), IlluminanceMeasurement::Attributes::MaxMeasuredValue::Id));
@@ -3428,7 +3428,7 @@ attribute_t *create_illuminance_max_measured_value(cluster_t *cluster, nullable<
     return attribute;
 }
 
-attribute_t *create_illuminance_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+attribute_t *create_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, IlluminanceMeasurement::Attributes::Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), IlluminanceMeasurement::Attributes::Tolerance::Id));
@@ -3436,7 +3436,7 @@ attribute_t *create_illuminance_tolerance(cluster_t *cluster, uint16_t value, ui
    return attribute;
 }
 
-attribute_t *create_illuminance_light_sensor_type(cluster_t *cluster, nullable<uint8_t> value, nullable<uint8_t> min, nullable<uint8_t> max)
+attribute_t *create_light_sensor_type(cluster_t *cluster, nullable<uint8_t> value, nullable<uint8_t> min, nullable<uint8_t> max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, IlluminanceMeasurement::Attributes::LightSensorType::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
     VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), IlluminanceMeasurement::Attributes::LightSensorType::Id));
@@ -3450,22 +3450,22 @@ attribute_t *create_illuminance_light_sensor_type(cluster_t *cluster, nullable<u
 namespace pressure_measurement {
 namespace attribute {
 
-attribute_t *create_pressure_measured_value(cluster_t *cluster, nullable<int16_t> value)
+attribute_t *create_measured_value(cluster_t *cluster, nullable<int16_t> value)
 {
 	return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::MeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
 }
 
-attribute_t *create_pressure_min_measured_value(cluster_t *cluster, nullable<int16_t> value)
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<int16_t> value)
 {
 	return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::MinMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
 }
 
-attribute_t *create_pressure_max_measured_value(cluster_t *cluster, nullable<int16_t> value)
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<int16_t> value)
 {
     return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::MaxMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
 }
 
-attribute_t *create_pressure_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+attribute_t *create_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
     VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PressureMeasurement::Attributes::Tolerance::Id));
@@ -3473,22 +3473,22 @@ attribute_t *create_pressure_tolerance(cluster_t *cluster, uint16_t value, uint1
     return attribute;
 }
 
-attribute_t *create_pressure_scaled_value(cluster_t *cluster, nullable<int16_t> value)
+attribute_t *create_scaled_value(cluster_t *cluster, nullable<int16_t> value)
 {
     return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::ScaledValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
 }
 
-attribute_t *create_pressure_min_scaled_value(cluster_t *cluster, nullable<int16_t> value)
+attribute_t *create_min_scaled_value(cluster_t *cluster, nullable<int16_t> value)
 {
     return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::MinScaledValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
 }
 
-attribute_t *create_pressure_max_scaled_value(cluster_t *cluster, nullable<int16_t> value)
+attribute_t *create_max_scaled_value(cluster_t *cluster, nullable<int16_t> value)
 {
     return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::MaxScaledValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
 }
 
-attribute_t *create_pressure_scaled_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+attribute_t *create_scaled_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::ScaledTolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
     VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), PressureMeasurement::Attributes::ScaledTolerance::Id));
@@ -3496,7 +3496,7 @@ attribute_t *create_pressure_scaled_tolerance(cluster_t *cluster, uint16_t value
     return attribute;
 }
 
-attribute_t *create_pressure_scale(cluster_t *cluster, int8_t value)
+attribute_t *create_scale(cluster_t *cluster, int8_t value)
 {
     return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::Scale::Id, ATTRIBUTE_FLAG_NONE, esp_matter_int8(value));
 }
@@ -3507,22 +3507,22 @@ attribute_t *create_pressure_scale(cluster_t *cluster, int8_t value)
 namespace flow_measurement {
 namespace attribute {
 
-attribute_t *create_flow_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, FlowMeasurement::Attributes::MeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
 }
 
-attribute_t *create_flow_min_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, FlowMeasurement::Attributes::MinMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
 }
 
-attribute_t *create_flow_max_measured_value(cluster_t *cluster, nullable<uint16_t> value)
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, FlowMeasurement::Attributes::MaxMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
 }
 
-attribute_t *create_flow_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+attribute_t *create_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, FlowMeasurement::Attributes::Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
     VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32 , cluster::get_id(cluster), FlowMeasurement::Attributes::Tolerance::Id));
@@ -3630,7 +3630,7 @@ attribute_t *create_lifetime_running_hours(cluster_t *cluster, nullable<uint32_t
     return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::LifetimeRunningHours::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint32(value));
 }
 
-attribute_t *create_pump_power(cluster_t *cluster, nullable<uint32_t> value)
+attribute_t *create_power(cluster_t *cluster, nullable<uint32_t> value)
 {
     return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::Power::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
 }
@@ -3655,12 +3655,12 @@ attribute_t *create_control_mode(cluster_t *cluster, uint8_t value)
 namespace mode_select {
 namespace attribute {
 
-attribute_t *create_mode_select_description(cluster_t *cluster, const char * value, uint16_t length)
+attribute_t *create_description(cluster_t *cluster, const char * value, uint16_t length)
 {
-    VerifyOrReturnValue(length <= k_max_mode_select_description_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_description_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
     return esp_matter::attribute::create(cluster, ModeSelect::Attributes::Description::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_char_str((char *)value, length),
-                                         k_max_mode_select_description_length);
+                                         k_max_description_length);
 }
 
 attribute_t *create_standard_namespace(cluster_t *cluster, const nullable<uint16_t> value)

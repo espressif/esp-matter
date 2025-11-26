@@ -446,12 +446,12 @@ esp_err_t add(cluster_t *cluster);
 namespace thread_network_diagnostics {
 namespace feature {
 
-namespace packets_counts {
+namespace packet_counts {
 
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 
-} /* packets_counts */
+} /* packet_counts */
 
 namespace error_counts {
 
@@ -1608,11 +1608,11 @@ namespace feature {
 namespace extended {
 
 typedef struct config {
-   nullable<int16_t> pressure_scaled_value;
-   nullable<int16_t> pressure_min_scaled_value;
-   nullable<int16_t> pressure_max_scaled_value;
-   uint8_t pressure_scale;
-   config() : pressure_scaled_value(), pressure_min_scaled_value(), pressure_max_scaled_value(), pressure_scale(0) {}
+   nullable<int16_t> scaled_value;
+   nullable<int16_t> min_scaled_value;
+   nullable<int16_t> max_scaled_value;
+   uint8_t scale;
+   config() : scaled_value(), min_scaled_value(), max_scaled_value(), scale(0) {}
 } config_t;
 
 uint32_t get_id();

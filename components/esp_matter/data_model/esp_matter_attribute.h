@@ -34,7 +34,7 @@ attribute_t *create_feature_map(cluster_t *cluster, uint32_t value);
 
 namespace descriptor {
 namespace attribute {
-attribute_t *create_device_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_device_type_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_server_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_client_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_parts_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
@@ -257,7 +257,7 @@ attribute_t *create_leader_router_id(cluster_t *cluster, nullable<uint8_t> value
 attribute_t *create_security_policy(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_channel_page0_mask(cluster_t *cluster, uint8_t *value, uint16_t length);
 attribute_t *create_operational_dataset_components(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
-attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_active_network_faults_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_ext_address(cluster_t *cluster, nullable<uint64_t> value);
 attribute_t *create_rloc16(cluster_t *cluster, nullable<uint16_t> value);
 attribute_t *create_overrun_count(cluster_t *cluster, uint64_t value);
@@ -315,7 +315,7 @@ attribute_t *create_phy_rate(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_full_duplex(cluster_t *cluster, nullable<bool> value);
 attribute_t *create_packet_rx_count(cluster_t *cluster, uint64_t value);
 attribute_t *create_packet_tx_count(cluster_t *cluster, uint64_t value);
-attribute_t *create_tx_error_count(cluster_t *cluster, uint64_t value);
+attribute_t *create_tx_err_count(cluster_t *cluster, uint64_t value);
 attribute_t *create_collision_count(cluster_t *cluster, uint64_t value);
 attribute_t *create_overrun_count(cluster_t *cluster, uint64_t value);
 attribute_t *create_carrier_detect(cluster_t *cluster, nullable<bool> value);
@@ -384,7 +384,7 @@ attribute_t *create_identify_type(cluster_t *cluster, uint8_t value);
 
 namespace groups {
 namespace attribute {
-attribute_t *create_group_name_support(cluster_t *cluster, uint8_t value);
+attribute_t *create_name_support(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* groups */
 
@@ -528,7 +528,7 @@ attribute_t *create_ac_louver_position(cluster_t *cluster, uint8_t value);
 attribute_t *create_ac_coil_temperature(cluster_t *cluster, nullable<int16_t> value);
 attribute_t *create_ac_capacity_format(cluster_t *cluster, uint8_t value);
 attribute_t *create_preset_types(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
-attribute_t *create_schedule_type(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_schedule_types(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 attribute_t *create_number_of_presets(cluster_t *cluster, uint8_t value);
 attribute_t *create_number_of_schedules(cluster_t *cluster, uint8_t value);
 attribute_t *create_number_of_schedule_transitions(cluster_t *cluster, uint8_t value);
@@ -655,7 +655,7 @@ attribute_t *create_lock_type(cluster_t *cluster, uint8_t value);
 attribute_t *create_actuator_enabled(cluster_t *cluster, bool value);
 attribute_t *create_door_state(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_door_open_events(cluster_t *cluster, uint32_t value);
-attribute_t *create_door_close_events(cluster_t *cluster, uint32_t value);
+attribute_t *create_door_closed_events(cluster_t *cluster, uint32_t value);
 attribute_t *create_open_period(cluster_t *cluster, uint16_t value);
 attribute_t *create_number_of_total_users_supported(cluster_t *cluster, const uint16_t value);
 attribute_t *create_number_of_pin_users_supported(cluster_t *cluster, const uint16_t value);
@@ -769,18 +769,18 @@ attribute_t *create_multi_press_max(cluster_t *cluster, uint8_t value);
 
 namespace temperature_measurement {
 namespace attribute {
-attribute_t *create_temperature_measured_value(cluster_t *cluster, nullable<int16_t> value);
-attribute_t *create_temperature_min_measured_value(cluster_t *cluster, nullable<int16_t> value);
-attribute_t *create_temperature_max_measured_value(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_measured_value(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<int16_t> value);
 } /* attribute */
 } /* temperature_measurement */
 
 namespace relative_humidity_measurement {
 namespace attribute {
-attribute_t *create_relative_humidity_measured_value(cluster_t *cluster, nullable<uint16_t> value);
-attribute_t *create_relative_humidity_min_measured_value(cluster_t *cluster, nullable<uint16_t> value);
-attribute_t *create_relative_humidity_max_measured_value(cluster_t *cluster, nullable<uint16_t> value);
-attribute_t *create_relative_humidity_tolerance(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_tolerance(cluster_t *cluster, nullable<uint16_t> value);
 } /* attribute */
 } /* relative_humidity_measurement */
 
@@ -851,36 +851,36 @@ attribute_t *create_supported_calendar_types(cluster_t *cluster, uint8_t *value,
 // Note: Attribute name for the below cluster deviates from Matter spec
 namespace illuminance_measurement {
 namespace attribute {
-attribute_t *create_illuminance_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max);
-attribute_t *create_illuminance_min_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max);
-attribute_t *create_illuminance_max_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max);
-attribute_t *create_illuminance_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
-attribute_t *create_illuminance_light_sensor_type(cluster_t *cluster, nullable<uint8_t> value, nullable<uint8_t> min, nullable<uint8_t> max);
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max);
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max);
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max);
+attribute_t *create_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
+attribute_t *create_light_sensor_type(cluster_t *cluster, nullable<uint8_t> value, nullable<uint8_t> min, nullable<uint8_t> max);
 } /* attribute */
 } /* illuminance_measurement */
 
 // Note: Attribute name for the below cluster deviates from Matter spec
 namespace pressure_measurement {
 namespace attribute {
-attribute_t *create_pressure_measured_value(cluster_t *cluster, nullable<int16_t> value);
-attribute_t *create_pressure_min_measured_value(cluster_t *cluster, nullable<int16_t> value);
-attribute_t *create_pressure_max_measured_value(cluster_t *cluster, nullable<int16_t> value);
-attribute_t *create_pressure_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
-attribute_t *create_pressure_scaled_value(cluster_t *cluster, nullable<int16_t> value);
-attribute_t *create_pressure_min_scaled_value(cluster_t *cluster, nullable<int16_t> value);
-attribute_t *create_pressure_max_scaled_value(cluster_t *cluster, nullable<int16_t> value);
-attribute_t *create_pressure_scaled_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
-attribute_t *create_pressure_scale(cluster_t *cluster, int8_t value);
+attribute_t *create_measured_value(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
+attribute_t *create_scaled_value(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_min_scaled_value(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_max_scaled_value(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_scaled_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
+attribute_t *create_scale(cluster_t *cluster, int8_t value);
 } /* attribute */
 } /* pressure_measurement */
 
 // Note: Attribute name for the below cluster deviates from Matter spec
 namespace flow_measurement {
 namespace attribute {
-attribute_t *create_flow_measured_value(cluster_t *cluster, nullable<uint16_t> value);
-attribute_t *create_flow_min_measured_value(cluster_t *cluster, nullable<uint16_t> value);
-attribute_t *create_flow_max_measured_value(cluster_t *cluster, nullable<uint16_t> value);
-attribute_t *create_flow_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
+attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
 } /* attribute */
 } /* flow_measurement */
 
@@ -905,7 +905,7 @@ attribute_t *create_effective_control_mode(cluster_t *cluster, uint8_t value);
 attribute_t *create_capacity(cluster_t *cluster, nullable<int16_t> value);
 attribute_t *create_speed(cluster_t *cluster, nullable<uint16_t> value);
 attribute_t *create_lifetime_running_hours(cluster_t *cluster, nullable<uint32_t> value);
-attribute_t *create_pump_power(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_power(cluster_t *cluster, nullable<uint32_t> value);
 attribute_t *create_lifetime_energy_consumed(cluster_t *cluster, nullable<uint32_t> value);
 attribute_t *create_operation_mode(cluster_t *cluster, uint8_t value);
 attribute_t *create_control_mode(cluster_t *cluster, uint8_t value);
@@ -913,10 +913,10 @@ attribute_t *create_control_mode(cluster_t *cluster, uint8_t value);
 } /* pump_configuration_and_control */
 
 namespace mode_select {
-constexpr uint8_t k_max_mode_select_description_length = 64;
+constexpr uint8_t k_max_description_length = 64;
 
 namespace attribute {
-attribute_t *create_mode_select_description(cluster_t *cluster, const char * value, uint16_t length);
+attribute_t *create_description(cluster_t *cluster, const char * value, uint16_t length);
 attribute_t *create_standard_namespace(cluster_t *cluster, const nullable<uint16_t> value);
 attribute_t *create_supported_modes(cluster_t *cluster, const uint8_t * value, uint16_t length, uint16_t count);
 attribute_t *create_current_mode(cluster_t *cluster, uint8_t value);

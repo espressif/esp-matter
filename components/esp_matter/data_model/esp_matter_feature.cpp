@@ -971,7 +971,7 @@ esp_err_t add(cluster_t *cluster)
 namespace thread_network_diagnostics {
 namespace feature {
 
-namespace packets_counts {
+namespace packet_counts {
 
 uint32_t get_id()
 {
@@ -985,7 +985,7 @@ esp_err_t add(cluster_t *cluster)
     return ESP_OK;
 }
 
-} /* packets_counts */
+} /* packet_counts */
 
 namespace error_counts {
 
@@ -1081,7 +1081,7 @@ esp_err_t add(cluster_t *cluster)
     update_feature_map(cluster, get_id());
 
     /* Attributes managed internally */
-    attribute::create_tx_error_count(cluster, 0);
+    attribute::create_tx_err_count(cluster, 0);
     attribute::create_collision_count(cluster, 0);
     attribute::create_overrun_count(cluster, 0);
 
@@ -1606,7 +1606,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     }
     update_feature_map(cluster, get_id());
 
-    attribute::create_schedule_type(cluster, NULL, 0, 0);
+    attribute::create_schedule_types(cluster, NULL, 0, 0);
     attribute::create_number_of_schedules(cluster, config->number_of_schedules);
     attribute::create_number_of_schedule_transitions(cluster, config->number_of_schedule_transitions);
     attribute::create_number_of_schedule_transition_per_day(cluster, config->number_of_schedule_transition_per_day);
@@ -1881,10 +1881,10 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
-    attribute::create_pressure_scaled_value(cluster, config->pressure_scaled_value);
-    attribute::create_pressure_min_scaled_value(cluster, config->pressure_min_scaled_value);
-    attribute::create_pressure_max_scaled_value(cluster, config->pressure_max_scaled_value);
-    attribute::create_pressure_scale(cluster, config->pressure_scale);
+    attribute::create_scaled_value(cluster, config->scaled_value);
+    attribute::create_min_scaled_value(cluster, config->min_scaled_value);
+    attribute::create_max_scaled_value(cluster, config->max_scaled_value);
+    attribute::create_scale(cluster, config->scale);
 
     return ESP_OK;
 }

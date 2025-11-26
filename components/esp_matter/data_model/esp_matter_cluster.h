@@ -636,10 +636,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace illuminance_measurement {
 typedef struct config {
-    nullable<uint16_t> illuminance_measured_value;
-    nullable<uint16_t> illuminance_min_measured_value;
-    nullable<uint16_t> illuminance_max_measured_value;
-    config() : illuminance_measured_value(0), illuminance_min_measured_value(), illuminance_max_measured_value() {}
+    nullable<uint16_t> measured_value;
+    nullable<uint16_t> min_measured_value;
+    nullable<uint16_t> max_measured_value;
+    config() : measured_value(0), min_measured_value(), max_measured_value() {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -647,10 +647,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace pressure_measurement {
 typedef struct config {
-    nullable<int16_t> pressure_measured_value;
-    nullable<int16_t> pressure_min_measured_value;
-    nullable<int16_t> pressure_max_measured_value;
-    config() : pressure_measured_value(), pressure_min_measured_value(), pressure_max_measured_value() {}
+    nullable<int16_t> measured_value;
+    nullable<int16_t> min_measured_value;
+    nullable<int16_t> max_measured_value;
+    config() : measured_value(), min_measured_value(), max_measured_value() {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -658,10 +658,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace flow_measurement {
 typedef struct config {
-    nullable<uint16_t> flow_measured_value;
-    nullable<uint16_t> flow_min_measured_value;
-    nullable<uint16_t> flow_max_measured_value;
-    config() : flow_measured_value(), flow_min_measured_value(), flow_max_measured_value() {}
+    nullable<uint16_t> measured_value;
+    nullable<uint16_t> min_measured_value;
+    nullable<uint16_t> max_measured_value;
+    config() : measured_value(), min_measured_value(), max_measured_value() {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -700,11 +700,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace mode_select {
 typedef struct config {
-    char mode_select_description[k_max_mode_select_description_length + 1];
+    char description[k_max_description_length + 1];
     const nullable<uint16_t> standard_namespace;
     uint8_t current_mode;
     void *delegate;
-    config() : mode_select_description{0}, standard_namespace(), current_mode(0), delegate(nullptr) {}
+    config() : description{0}, standard_namespace(), current_mode(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

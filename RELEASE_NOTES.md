@@ -1,3 +1,105 @@
+## 21-Nov-2025
+### API Changes: Attribute Creation Function Names
+
+The following attribute creation APIs have been renamed to remove inconsistencies and align with Matter specifications:
+
+#### Descriptor Cluster
+```
+create_device_list() → create_device_type_list()
+```
+
+#### Thread Network Diagnostics Cluster
+```
+create_active_network_faults() → create_active_network_faults_list()
+```
+
+#### Ethernet Network Diagnostics Cluster
+```
+create_tx_error_count() → create_tx_err_count()
+```
+
+#### Groups Cluster
+```
+create_group_name_support() → create_name_support()
+```
+
+#### Thermostat Cluster
+```
+create_schedule_type() → create_schedule_types()
+```
+
+#### Door Lock Cluster
+```
+create_door_close_events() → create_door_closed_events()
+```
+
+#### Temperature Measurement Cluster
+Removed `temperature_` prefix from attribute names:
+```
+create_temperature_measured_value() → create_measured_value()
+create_temperature_min_measured_value() → create_min_measured_value()
+create_temperature_max_measured_value() → create_max_measured_value()
+```
+
+#### Relative Humidity Measurement Cluster
+Removed `relative_humidity_` prefix from attribute names:
+```
+create_relative_humidity_measured_value() → create_measured_value()
+create_relative_humidity_min_measured_value() → create_min_measured_value()
+create_relative_humidity_max_measured_value() → create_max_measured_value()
+create_relative_humidity_tolerance() → create_tolerance()
+```
+
+#### Illuminance Measurement Cluster
+Removed `illuminance_` prefix from attribute names:
+```
+create_illuminance_measured_value() → create_measured_value()
+create_illuminance_min_measured_value() → create_min_measured_value()
+create_illuminance_max_measured_value() → create_max_measured_value()
+create_illuminance_tolerance() → create_tolerance()
+create_illuminance_light_sensor_type() → create_light_sensor_type()
+```
+
+#### Pressure Measurement Cluster
+Removed `pressure_` prefix from attribute names:
+```
+create_pressure_measured_value() → create_measured_value()
+create_pressure_min_measured_value() → create_min_measured_value()
+create_pressure_max_measured_value() → create_max_measured_value()
+create_pressure_tolerance() → create_tolerance()
+create_pressure_scaled_value() → create_scaled_value()
+create_pressure_min_scaled_value() → create_min_scaled_value()
+create_pressure_max_scaled_value() → create_max_scaled_value()
+create_pressure_scaled_tolerance() → create_scaled_tolerance()
+create_pressure_scale() → create_scale()
+```
+
+#### Flow Measurement Cluster
+Removed `flow_` prefix from attribute names:
+```
+create_flow_measured_value() → create_measured_value()
+create_flow_min_measured_value() → create_min_measured_value()
+create_flow_max_measured_value() → create_max_measured_value()
+create_flow_tolerance() → create_tolerance()
+```
+
+#### Pump Configuration and Control Cluster
+```
+create_pump_power() → create_power()
+```
+
+#### Mode Select Cluster
+```
+create_mode_select_description() → create_description()
+```
+
+### Namespace Changes
+
+#### Thread Network Diagnostics Cluster
+```
+feature::packets_counts → feature::packet_counts
+```
+
 ## 31-Oct-2025
 ### API Changes: `feature::add()` Function
 The following APIs have been updated — the config parameter has been removed, as the corresponding attributes are optional.
