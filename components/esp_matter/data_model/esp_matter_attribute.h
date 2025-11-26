@@ -250,9 +250,9 @@ attribute_t *create_mesh_local_prefix(cluster_t *cluster, uint8_t *value, uint16
 attribute_t *create_neighbor_table(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_route_table(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_partition_id(cluster_t *cluster, nullable<uint32_t> value);
-attribute_t *create_weighting(cluster_t *cluster, nullable<uint8_t> value);
-attribute_t *create_data_version(cluster_t *cluster, nullable<uint8_t> value);
-attribute_t *create_stable_data_version(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_weighting(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_data_version(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_stable_data_version(cluster_t *cluster, nullable<uint16_t> value);
 attribute_t *create_leader_router_id(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_security_policy(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_channel_page0_mask(cluster_t *cluster, uint8_t *value, uint16_t length);
@@ -511,7 +511,7 @@ attribute_t *create_thermostat_programming_operation_mode(cluster_t *cluster, ui
 attribute_t *create_thermostat_running_state(cluster_t *cluster, uint16_t value);
 attribute_t *create_setpoint_change_source(cluster_t *cluster, uint8_t value);
 attribute_t *create_setpoint_change_amount(cluster_t *cluster, nullable<int16_t> value);
-attribute_t *create_setpoint_change_source_timestamp(cluster_t *cluster, uint16_t value);
+attribute_t *create_setpoint_change_source_timestamp(cluster_t *cluster, uint32_t value);
 attribute_t *create_occupied_setback(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_occupied_setback_min(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_occupied_setback_max(cluster_t *cluster, nullable<uint8_t> value);
@@ -638,7 +638,7 @@ attribute_t *create_current_phase(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_countdown_time(cluster_t *cluster, nullable<uint32_t> value);
 attribute_t *create_operational_state_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_operational_state(cluster_t *cluster, uint8_t value);
-attribute_t *create_operational_error(cluster_t *cluster, uint8_t value);
+attribute_t *create_operational_error(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 } /* attribute */
 } /* operational_state */
 
