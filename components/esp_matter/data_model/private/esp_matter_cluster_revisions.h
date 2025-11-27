@@ -367,6 +367,18 @@ namespace ecosystem_information {
 constexpr uint16_t cluster_revision = 1;
 } // namespace ecosystem_information
 
+namespace camera_av_stream_management {
+constexpr uint16_t cluster_revision = 1;
+} // namespace camera_av_stream_management
+
+namespace webrtc_transport_provider {
+constexpr uint16_t cluster_revision = 1;
+} // namespace webrtc_transport_provider
+
+namespace webrtc_transport_requestor {
+constexpr uint16_t cluster_revision = 1;
+} // namespace webrtc_transport_requestor
+
 } // namespace cluster
 } // namespace esp_matter
 

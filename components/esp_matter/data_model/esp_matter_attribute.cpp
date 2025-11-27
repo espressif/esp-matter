@@ -4807,5 +4807,193 @@ attribute_t *create_supports_dns_resolve(cluster_t *cluster, bool value)
 } /* attribute */
 } /* time_synchronization */
 
+namespace camera_av_stream_management {
+namespace attribute {
+attribute_t *create_max_concurrent_encoders(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::MaxConcurrentEncoders::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+}
+attribute_t *create_max_encoded_pixel_rate(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::MaxEncodedPixelRate::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint32(value));
+}
+attribute_t *create_video_sensor_params(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::VideoSensorParams::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+}
+attribute_t *create_night_vision_uses_infrared(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::NightVisionUsesInfrared::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bool(value));
+}
+attribute_t *create_min_viewport_resolution(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::MinViewportResolution::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+}
+attribute_t *create_rate_distortion_trade_off_points(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::RateDistortionTradeOffPoints::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+}
+attribute_t *create_max_content_buffer_size(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::MaxContentBufferSize::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint32(value));
+}
+attribute_t *create_microphone_capabilities(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::MicrophoneCapabilities::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+}
+attribute_t *create_speaker_capabilities(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::SpeakerCapabilities::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+}
+attribute_t *create_two_way_talk_support(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::TwoWayTalkSupport::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
+}
+attribute_t *create_snapshot_capabilities(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::SnapshotCapabilities::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+}
+attribute_t *create_max_network_bandwidth(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::MaxNetworkBandwidth::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint32(value));
+}
+attribute_t *create_current_frame_rate(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::CurrentFrameRate::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
+}
+attribute_t *create_hdr_mode_enabled(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::HDRModeEnabled::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_bool(value));
+}
+attribute_t *create_supported_stream_usages(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::SupportedStreamUsages::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+}
+attribute_t *create_allocated_video_streams(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::AllocatedVideoStreams::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+}
+attribute_t *create_allocated_audio_streams(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::AllocatedAudioStreams::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+}
+attribute_t *create_allocated_snapshot_streams(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::AllocatedSnapshotStreams::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+}
+attribute_t *create_stream_usage_priorities(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::StreamUsagePriorities::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+}
+attribute_t *create_soft_recording_privacy_mode_enabled(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::SoftRecordingPrivacyModeEnabled::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_bool(value));
+}
+attribute_t *create_soft_livestream_privacy_mode_enabled(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::SoftLivestreamPrivacyModeEnabled::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_bool(value));
+}
+attribute_t *create_hard_privacy_mode_on(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::HardPrivacyModeOn::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bool(value));
+}
+attribute_t *create_night_vision(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::NightVision::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
+}
+attribute_t *create_night_vision_illum(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::NightVisionIllum::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
+}
+attribute_t *create_viewport(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::Viewport::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+}
+attribute_t *create_speaker_muted(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::SpeakerMuted::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_bool(value));
+}
+attribute_t *create_speaker_volume_level(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::SpeakerVolumeLevel::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+}
+attribute_t *create_speaker_max_level(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::SpeakerMaxLevel::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+}
+attribute_t *create_speaker_min_level(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::SpeakerMinLevel::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+}
+attribute_t *create_microphone_muted(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::MicrophoneMuted::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_bool(value));
+}
+attribute_t *create_microphone_volume_level(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::MicrophoneVolumeLevel::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+}
+attribute_t *create_microphone_max_level(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::MicrophoneMaxLevel::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+}
+attribute_t *create_microphone_min_level(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::MicrophoneMinLevel::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+}
+attribute_t *create_microphone_agc_enabled(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::MicrophoneAGCEnabled::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_bool(value));
+}
+attribute_t *create_image_rotation(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::ImageRotation::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint16(value));
+}
+attribute_t *create_image_flip_horizontal(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::ImageFlipHorizontal::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_bool(value));
+}
+attribute_t *create_image_flip_vertical(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::ImageFlipVertical::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_bool(value));
+}
+attribute_t *create_local_video_recording_enabled(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::LocalVideoRecordingEnabled::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_bool(value));
+}
+attribute_t *create_local_snapshot_recording_enabled(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::LocalSnapshotRecordingEnabled::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_bool(value));
+}
+attribute_t *create_status_light_enabled(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::StatusLightEnabled::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_bool(value));
+}
+attribute_t *create_status_light_brightness(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvStreamManagement::Attributes::StatusLightBrightness::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+}
+} /* attribute */
+} /*Camera Av Stream management*/
+
+namespace webrtc_transport_provider {
+namespace attribute {
+attribute_t *create_current_sessions(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, WebRTCTransportProvider::Attributes::CurrentSessions::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+}
+} /* attribute */
+}/*webrtc transport provider*/
+
+namespace webrtc_transport_requestor {
+namespace attribute {
+attribute_t *create_current_sessions(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, WebRTCTransportRequestor::Attributes::CurrentSessions::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+}
+} /* attribute */
+}/*webrtc transport requestor*/
+
+
 } /* cluster */
 } /* esp_matter */

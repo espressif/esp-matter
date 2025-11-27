@@ -511,5 +511,46 @@ command_t *create_set_default_ntp(cluster_t *cluster);
 } /* command */
 } /* time_synchronization */
 
+namespace camera_av_stream_management {
+namespace command {
+command_t *create_audio_stream_allocate(cluster_t *cluster);
+command_t *create_audio_stream_allocate_response(cluster_t *cluster);
+command_t *create_audio_stream_deallocate(cluster_t *cluster);
+command_t *create_video_stream_allocate(cluster_t *cluster);
+command_t *create_video_stream_allocate_response(cluster_t *cluster);
+command_t *create_video_stream_modify(cluster_t *cluster);
+command_t *create_video_stream_deallocate(cluster_t *cluster);
+command_t *create_snapshot_stream_allocate(cluster_t *cluster);
+command_t *create_snapshot_stream_allocate_response(cluster_t *cluster);
+command_t *create_snapshot_stream_modify(cluster_t *cluster);
+command_t *create_snapshot_stream_deallocate(cluster_t *cluster);
+command_t *create_set_stream_priorities(cluster_t *cluster);
+command_t *create_capture_snapshot(cluster_t *cluster);
+command_t *create_capture_snapshot_response(cluster_t *cluster);
+} /* command */
+} /*camera av stream transport*/
+
+namespace webrtc_transport_provider {
+namespace command {
+command_t *create_solicit_offer(cluster_t *cluster);
+command_t *create_solicit_offer_response(cluster_t *cluster);
+command_t *create_provide_offer(cluster_t *cluster);
+command_t *create_provide_offer_response(cluster_t *cluster);
+command_t *create_provide_answer(cluster_t *cluster);
+command_t *create_provide_ice_candidates(cluster_t *cluster);
+command_t *create_end_session(cluster_t *cluster);
+} /* command */
+}/*webrtc transport provider*/
+
+namespace webrtc_transport_requestor {
+namespace command {
+command_t *create_offer(cluster_t *cluster);
+command_t *create_answer(cluster_t *cluster);
+command_t *create_ice_candidates(cluster_t *cluster);
+command_t *create_end(cluster_t *cluster);
+} /* command */
+}/*webrtc transport requestor*/
+
+
 } /* cluster */
 } /* esp_matter */

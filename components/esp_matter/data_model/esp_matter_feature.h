@@ -1818,5 +1818,97 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* time_synchronization */
 
+namespace camera_av_stream_management {
+
+namespace feature {
+namespace audio {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* audio */
+
+namespace video {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* video */
+
+namespace snapshot {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* snapshot */
+
+namespace privacy {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* privacy */
+
+namespace speaker {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* speaker */
+
+namespace image_control {
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* image_control */
+
+namespace watermark {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* watermark */
+
+namespace on_screen_display {
+typedef struct config {
+    config()  {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* on_screen_display */
+
+namespace local_storage {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* local_storage */
+
+namespace high_dynamic_range {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* high_dynamic_range */
+
+namespace night_vision {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* night_vision */
+
+} /* feature */
+}/*camera av stream management*/
+
+namespace webrtc_transport_provider {
+}/*webrtc_transport_provider*/
+
+namespace webrtc_transport_requestor {
+}/*webrtc_transport_requestor*/
+
+
 } /* cluster */
 } /* esp_matter */

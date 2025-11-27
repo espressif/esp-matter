@@ -4022,5 +4022,253 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* time_synchronization */
 
+namespace camera_av_stream_management {
+
+namespace feature {
+namespace audio {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kAudio);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+
+    attribute::create_microphone_capabilities(cluster, NULL, 0, 0);
+    attribute::create_allocated_audio_streams(cluster, NULL, 0, 0);
+    attribute::create_microphone_muted(cluster, 0);
+    attribute::create_microphone_volume_level(cluster, 0);
+    attribute::create_microphone_max_level(cluster, 0);
+    attribute::create_microphone_min_level(cluster, 0);
+
+    command::create_audio_stream_allocate(cluster);
+    command::create_audio_stream_allocate_response(cluster);
+    command::create_audio_stream_deallocate(cluster);
+
+    return ESP_OK;
+}
+
+} /* audio */
+
+namespace video {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kVideo);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+    attribute::create_max_concurrent_encoders(cluster, 0);
+    attribute::create_max_encoded_pixel_rate(cluster, 0);
+    attribute::create_video_sensor_params(cluster, NULL, 0, 0);
+    attribute::create_min_viewport_resolution(cluster, NULL, 0, 0);
+    attribute::create_rate_distortion_trade_off_points(cluster, NULL, 0, 0);
+    attribute::create_current_frame_rate(cluster, 0);
+    attribute::create_allocated_video_streams(cluster, NULL, 0, 0);
+
+    attribute::create_viewport(cluster, NULL, 0, 0);
+
+    command::create_video_stream_allocate(cluster);
+    command::create_video_stream_allocate_response(cluster);
+    command::create_video_stream_deallocate(cluster);
+
+    return ESP_OK;
+}
+
+} /* video */
+
+namespace snapshot {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kSnapshot);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+
+    attribute::create_snapshot_capabilities(cluster, NULL, 0, 0);
+    attribute::create_allocated_snapshot_streams(cluster, NULL, 0, 0);
+    attribute::create_local_snapshot_recording_enabled(cluster, 0);
+
+    command::create_snapshot_stream_allocate(cluster);
+    command::create_snapshot_stream_allocate_response(cluster);
+    command::create_snapshot_stream_deallocate(cluster);
+    command::create_capture_snapshot(cluster);
+    command::create_capture_snapshot_response(cluster);
+
+    return ESP_OK;
+}
+
+} /* snapshot */
+
+namespace privacy {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kPrivacy);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+    attribute::create_soft_recording_privacy_mode_enabled(cluster, 0);
+    attribute::create_soft_livestream_privacy_mode_enabled(cluster, 0);
+
+
+    return ESP_OK;
+}
+
+} /* privacy */
+
+namespace speaker {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kSpeaker);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+    attribute::create_speaker_capabilities(cluster, NULL, 0, 0);
+    attribute::create_two_way_talk_support(cluster, 0);
+    attribute::create_speaker_muted(cluster, 0);
+    attribute::create_speaker_volume_level(cluster, 0);
+    attribute::create_speaker_max_level(cluster, 0);
+    attribute::create_speaker_min_level(cluster, 0);
+
+
+    return ESP_OK;
+}
+
+} /* speaker */
+
+namespace image_control {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kImageControl);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* image_control */
+
+namespace watermark {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kWatermark);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+    command::create_video_stream_modify(cluster);
+
+    return ESP_OK;
+}
+
+} /* watermark */
+
+namespace on_screen_display {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kOnScreenDisplay);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+    command::create_video_stream_modify(cluster);
+    return ESP_OK;
+}
+} /* on_screen_display */
+
+namespace local_storage {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kLocalStorage);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+    attribute::create_local_video_recording_enabled(cluster, 0);
+    attribute::create_local_snapshot_recording_enabled(cluster, 0);
+
+
+    return ESP_OK;
+}
+
+} /* local_storage */
+
+namespace high_dynamic_range {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kHighDynamicRange);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+    attribute::create_hdr_mode_enabled(cluster, 0);
+
+    return ESP_OK;
+}
+} /* high_dynamic_range */
+
+namespace night_vision {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kNightVision);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+    attribute::create_night_vision_uses_infrared(cluster, 0);
+    attribute::create_night_vision(cluster, 0);
+
+    return ESP_OK;
+}
+
+} /* night_vision */
+
+} /* feature */
+} /* Camera AV Stream Management*/
+
+namespace webrtc_transport_provider {
+}/*webrtc_transport_provider*/
+
+namespace webrtc_transport_requestor {
+}/*webrtc_transport_requestor*/
+
+
 } /* cluster */
 } /* esp_matter */
