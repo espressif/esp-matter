@@ -14,6 +14,7 @@
 
 #include <esp_log.h>
 #include <esp_matter_attribute_bounds.h>
+#include <esp_matter_data_model_priv.h>
 
 #include <app-common/zap-generated/ids/Attributes.h>
 
@@ -26,12 +27,8 @@ namespace cluster {
 
 esp_err_t get_attribute_value(cluster_t *cluster, uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
-    attribute_t *attribute = esp_matter::attribute::get(cluster, attribute_id);
-    esp_err_t err = ESP_ERR_INVALID_ARG;
-    if(attribute) {
-        err = esp_matter::attribute::get_val(attribute, val);
-    }
-    return err;
+    // This deals with only internally managed attributes, so optimize using the internal API
+    return attribute::get_val_internal(attribute::get(cluster, attribute_id), val);
 }
 
 namespace identify {

@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <esp_matter_data_model_priv.h>
+
 #include <app/ClusterCallbacks.h>
 #include <app/clusters/wifi-network-diagnostics-server/wifi-network-diagnostics-cluster.h>
 #include <app/server-cluster/ServerClusterInterfaceRegistry.h>
@@ -42,12 +44,11 @@ bool IsAttributeEnabled(EndpointId endpointId, AttributeId attributeId)
 uint32_t GetFeatureMap(EndpointId endpointId)
 {
     attribute_t *attribute = attribute::get(endpointId, WiFiNetworkDiagnostics::Id, Globals::Attributes::FeatureMap::Id);
-
-    VerifyOrReturnError(attribute, ESP_ERR_INVALID_STATE);
+    VerifyOrReturnValue(attribute, 0);
 
     /* Update the value if the attribute already exists */
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-    attribute::get_val(attribute, &val);
+    VerifyOrReturnValue(attribute::get_val_internal(attribute, &val) == ESP_OK, 0);
     return val.val.u32;
 }
 

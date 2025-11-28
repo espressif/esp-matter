@@ -292,7 +292,7 @@ ActionReturnStatus provider::ReadAttribute(const ReadAttributeRequest &request, 
     VerifyOrReturnError(!aai_result.has_value(), *aai_result);
 
     esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
-    attribute::get_val(attribute, &val);
+    VerifyOrReturnValue(attribute::get_val_internal(attribute, &val) == ESP_OK, Protocols::InteractionModel::Status::Failure);
     attribute_data_encode_buffer data_buffer(val);
     return encoder.Encode(data_buffer);
 }
@@ -328,7 +328,7 @@ ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request
     }
 
     esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
-    attribute::get_val(attribute, &val);
+    VerifyOrReturnValue(attribute::get_val_internal(attribute, &val) == ESP_OK, Protocols::InteractionModel::Status::Failure);
     attribute_data_decode_buffer data_buffer(val.type);
     ReturnErrorOnFailure(decoder.Decode(data_buffer));
     esp_err_t err =

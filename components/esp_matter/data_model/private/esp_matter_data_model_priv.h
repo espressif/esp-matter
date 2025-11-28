@@ -19,6 +19,8 @@
 #include <app/util/attribute-storage.h>
 #include <app/ConcreteCommandPath.h>
 
+#include <esp_matter_data_model.h>
+
 namespace esp_matter {
 namespace command {
 void dispatch_single_cluster_command(const chip::app::ConcreteCommandPath &command_path, chip::TLV::TLVReader &tlv_data,
@@ -37,4 +39,19 @@ namespace endpoint {
 esp_err_t enable_all();
 
 }
+
+namespace attribute {
+
+/** Get the attribute value from the esp-matter storage
+ *
+ * @param[in] attribute Attribute handle.
+ * @param[out] val Pointer to `esp_matter_attr_val_t`. Use appropriate elements as per the value type.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t get_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val);
+
+} // namespace attribute
+
 } // namespace esp_matter

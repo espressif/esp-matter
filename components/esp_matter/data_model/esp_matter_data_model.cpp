@@ -22,12 +22,15 @@
 #include <esp_matter_core.h>
 #include <esp_matter_data_model.h>
 #include <esp_matter_data_model_priv.h>
+#include <esp_matter_data_model_provider.h>
+#include <esp_matter_attr_data_buffer.h>
 #include <esp_matter_mem.h>
 #include <esp_matter_nvs.h>
 #include <esp_random.h>
 #include <nvs_flash.h>
 #include <singly_linked_list.h>
 
+#include <access/SubjectDescriptor.h>
 #include <app/clusters/identify-server/identify-server.h>
 #include <app/data-model-provider/MetadataTypes.h>
 #include <app/data-model-provider/Provider.h>
@@ -36,6 +39,8 @@
 #include <app/util/endpoint-config-api.h>
 #include <credentials/GroupDataProviderImpl.h>
 #include <lib/core/DataModelTypes.h>
+#include <lib/core/TLV.h>
+#include <lib/support/ScopedBuffer.h>
 
 #define ESP_MATTER_MAX_DEVICE_TYPE_COUNT CONFIG_ESP_MATTER_MAX_DEVICE_TYPE_COUNT
 #define ESP_MATTER_MAX_SEMANTIC_TAG_COUNT 3
@@ -55,12 +60,13 @@ namespace esp_matter {
 
 struct _attribute_base_t {
     uint16_t flags; // This struct is for attributes managed internally.
+    esp_matter_val_type_t attribute_val_type;
     uint32_t attribute_id;
     struct _attribute_base_t *next;
 };
 
 struct _attribute_t : public _attribute_base_t {
-    esp_matter_attr_val_t val;
+    esp_matter_val_t attribute_val;
     esp_matter_attr_bounds_t *bounds;
     uint16_t endpoint_id;
     uint32_t cluster_id;
@@ -137,6 +143,10 @@ inline bool is_wildcard_endpoint_id(uint16_t endpoint_id)
 {
     return endpoint_id == chip::kInvalidEndpointId;
 }
+
+// We allocate this large scoped buffer to read the attribute as the TLV data
+// This is enough to store the TLV encoded buffer for a primitive type of data
+const uint32_t k_max_tlv_size_to_read_attribute_value = 512;
 
 } // namespace
 
@@ -219,7 +229,7 @@ static esp_err_t init_identification(endpoint_t *endpoint)
         _attribute_t *identify_type_attr = (_attribute_t *)attribute::get(
             identify_cluster, chip::app::Clusters::Identify::Attributes::IdentifyType::Id);
         if (identify_type_attr) {
-            return identification::init(current_endpoint->endpoint_id, identify_type_attr->val.val.u8);
+            return identification::init(current_endpoint->endpoint_id, identify_type_attr->attribute_val.u8);
         } else {
             ESP_LOGE(TAG, "Can't get IdentifyType attribute in Identify cluster");
             return ESP_ERR_INVALID_STATE;
@@ -464,11 +474,14 @@ static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_at
 static esp_err_t bound_attribute_val(attribute_t *attribute)
 {
     _attribute_t *current_attribute = (_attribute_t *)attribute;
-    int compare_result = compare_attr_val_with_bounds(current_attribute->val, *current_attribute->bounds);
+    esp_matter_attr_val_t temp_val;
+    temp_val.type = current_attribute->attribute_val_type;
+    temp_val.val = current_attribute->attribute_val;
+    int compare_result = compare_attr_val_with_bounds(temp_val, *current_attribute->bounds);
     if (compare_result == 1) {
-        current_attribute->val = current_attribute->bounds->max;
+        current_attribute->attribute_val = current_attribute->bounds->max.val;
     } else if (compare_result == -1) {
-        current_attribute->val = current_attribute->bounds->min;
+        current_attribute->attribute_val = current_attribute->bounds->min.val;
     } else if (compare_result != 0) {
         return ESP_ERR_INVALID_ARG;
     }
@@ -498,6 +511,7 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, e
 
         /* Set */
         attribute->flags = flags;
+        attribute->attribute_val_type = val.type;
         attribute->attribute_id = attribute_id;
     } else {
         attribute = (_attribute_t *)esp_matter_mem_calloc(1, sizeof(_attribute_t));
@@ -511,18 +525,21 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, e
         attribute->override_callback = nullptr;
         attribute->cluster_id = current_cluster->cluster_id;
         attribute->endpoint_id = current_cluster->endpoint_id;
-        attribute->val.type = val.type;
+        attribute->attribute_val_type = val.type;
         if (val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING || val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
             val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING || val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING) {
-            attribute->val.val.a.max = max_val_size;
+            attribute->attribute_val.a.max = max_val_size;
             val.val.a.max = max_val_size;
         }
         bool attribute_updated = false;
         if (flags & ATTRIBUTE_FLAG_NONVOLATILE) {
-            // Lets directly read into attribute->val so that we don't have to set the attribute value again.
+            // read from the NVS and store in the attribute's storage
+            esp_matter_attr_val_t temp_val;
+            temp_val.type = attribute->attribute_val_type;
             esp_err_t err =
-                get_val_from_nvs(attribute->endpoint_id, attribute->cluster_id, attribute_id, attribute->val);
+                get_val_from_nvs(attribute->endpoint_id, attribute->cluster_id, attribute_id, temp_val);
             if (err == ESP_OK) {
+                attribute->attribute_val = temp_val.val;
                 attribute_updated = true;
             }
         }
@@ -548,13 +565,13 @@ static esp_err_t destroy(attribute_t *attribute)
     }
 
     /* Delete val here, if required */
-    if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
-        current_attribute->val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
-        current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
-        current_attribute->val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
-        current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
+    if (current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
+        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
+        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
+        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_ARRAY) {
         /* Free buf */
-        esp_matter_mem_free(current_attribute->val.val.a.b);
+        esp_matter_mem_free(current_attribute->attribute_val.a.b);
     }
 
     /* Erase the persistent data */
@@ -618,7 +635,7 @@ static void deferred_attribute_write(chip::System::Layer *layer, void *attribute
     ESP_LOGI(TAG, "Store the deferred attribute 0x%" PRIx32 " of cluster 0x%" PRIX32 " on endpoint 0x%" PRIx16,
              current_attribute->attribute_id, current_attribute->cluster_id, current_attribute->endpoint_id);
     store_val_in_nvs(current_attribute->endpoint_id, current_attribute->cluster_id, current_attribute->attribute_id,
-                     current_attribute->val);
+                     {current_attribute->attribute_val_type, current_attribute->attribute_val});
 }
 
 esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_callbacks)
@@ -628,15 +645,19 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_
 
     ESP_RETURN_ON_FALSE(!(current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY), ESP_ERR_NOT_SUPPORTED, TAG,
                         "Attribute is not managed by esp matter data model");
-    VerifyOrReturnError(current_attribute->val.type == val->type, ESP_ERR_INVALID_ARG,
-                        ESP_LOGE(TAG, "Different value type : Expected Type : %u Attempted Type: %u", current_attribute->val.type, val->type));
+    VerifyOrReturnError(current_attribute->attribute_val_type == val->type, ESP_ERR_INVALID_ARG,
+                        ESP_LOGE(TAG, "Different value type : Expected Type : %u Attempted Type: %u",
+                            current_attribute->attribute_val_type, val->type));
 
     if ((current_attribute->flags & ATTRIBUTE_FLAG_MIN_MAX) && current_attribute->bounds) {
         if (compare_attr_val_with_bounds(*val, *current_attribute->bounds) != 0) {
             return ESP_ERR_INVALID_ARG;
         }
     }
-    if (val_compare(val, &current_attribute->val)) {
+    esp_matter_attr_val_t temp_val;
+    temp_val.type = current_attribute->attribute_val_type;
+    temp_val.val = current_attribute->attribute_val;
+    if (val_compare(val, &temp_val)) {
         // If the value is not changed, return ESP_ERR_NOT_FINISHED directly.
         return ESP_ERR_NOT_FINISHED;
     }
@@ -656,12 +677,12 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_
         if (val->val.a.s > 0) {
             uint8_t *new_buf = nullptr;
             if (val->val.a.s != null_len) {
-                if (val->val.a.s > current_attribute->val.val.a.max) {
+                if (val->val.a.s > current_attribute->attribute_val.a.max) {
                     return ESP_ERR_NO_MEM;
                 }
                 /* Free old buf */
-                esp_matter_mem_free(current_attribute->val.val.a.b);
-                current_attribute->val.val.a.b = nullptr;
+                esp_matter_mem_free(current_attribute->attribute_val.a.b);
+                current_attribute->attribute_val.a.b = nullptr;
 
                 bool null_reserve =
                     val->type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING || val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING;
@@ -671,14 +692,14 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_
                 /* Copy to new buf and assign */
                 memcpy(new_buf, val->val.a.b, val->val.a.s);
             }
-            current_attribute->val.val.a.b = new_buf;
-            current_attribute->val.val.a.s = val->val.a.s;
-            current_attribute->val.val.a.t = val->val.a.t;
+            current_attribute->attribute_val.a.b = new_buf;
+            current_attribute->attribute_val.a.s = val->val.a.s;
+            current_attribute->attribute_val.a.t = val->val.a.t;
         } else {
             ESP_LOGD(TAG, "Set val called with string with size 0");
         }
     } else {
-        memcpy((void *)&current_attribute->val, (void *)val, sizeof(esp_matter_attr_val_t));
+        memcpy((void *)&current_attribute->attribute_val, (void *)&val->val, sizeof(esp_matter_val_t));
     }
     /* Callback to application */
     if (call_callbacks) {
@@ -702,23 +723,217 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_
                                         deferred_attribute_write, current_attribute);
             }
         } else {
+            esp_matter_attr_val_t temp_val;
+            temp_val.type = current_attribute->attribute_val_type;
+            temp_val.val = current_attribute->attribute_val;
             store_val_in_nvs(current_attribute->endpoint_id, current_attribute->cluster_id,
-                             current_attribute->attribute_id, current_attribute->val);
+                             current_attribute->attribute_id, temp_val);
         }
     }
 
     return ESP_OK;
 }
 
+// parsing the following structure into esp_matter_attr_val_t
+// Array
+//   Structure
+//     Structure(ContextTag:1)
+//       Structure(ContextTag:0)
+//       Structure(ContextTag:1)
+//       Structure(ContextTag:2) -> Actual data value that we are interested in
+//     End of Structure
+//   End of Structure
+// End of Array
+
+// this function drills down on the reader and moves the reader to the point where the actual data value is present
+static CHIP_ERROR move_tlv_reader_to_attribute_data(chip::TLV::TLVReader &reader)
+{
+    // Navigate: Array (Anonymous)
+    ReturnErrorOnFailure(reader.Next(chip::TLV::kTLVType_Array, chip::TLV::AnonymousTag()));
+
+    chip::TLV::TLVType outerContainer;
+    ReturnErrorOnFailure(reader.EnterContainer(outerContainer));
+
+    // Navigate: Structure (Anonymous) - AttributeReportIB
+    ReturnErrorOnFailure(reader.Next(chip::TLV::kTLVType_Structure, chip::TLV::AnonymousTag()));
+
+    chip::TLV::TLVType reportContainer;
+    ReturnErrorOnFailure(reader.EnterContainer(reportContainer));
+
+    // Navigate: Structure(ContextTag:1)
+    ReturnErrorOnFailure(reader.Next(chip::TLV::kTLVType_Structure, chip::TLV::ContextTag(1)));
+
+    chip::TLV::TLVType dataContainer;
+    ReturnErrorOnFailure(reader.EnterContainer(dataContainer));
+
+    // we know that there are 3 elements so avoid having while(true), just trying to handle infinite loop scenario
+    for (uint8_t i = 0; i < 3; i++) {
+        ReturnErrorOnFailure(reader.Next());
+
+        if (reader.GetTag() == chip::TLV::ContextTag(2)) {
+            ESP_LOGD(TAG, "Found context tag 2");
+            break;
+        }
+    }
+
+    return CHIP_NO_ERROR;
+}
+
+static esp_err_t get_val_from_tlv_data(const uint8_t *tlv_data, uint32_t tlv_len, esp_matter_attr_val_t *val)
+{
+    chip::TLV::TLVReader reader;
+    reader.Init(tlv_data, tlv_len);
+
+    VerifyOrReturnError(move_tlv_reader_to_attribute_data(reader) == CHIP_NO_ERROR, ESP_FAIL,
+                        ESP_LOGE(TAG, "Failed to get TLV reader for attribute data"));
+
+    esp_matter::data_model::attribute_data_decode_buffer data_buffer(val->type);
+    VerifyOrReturnError(data_buffer.Decode(reader) == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to decode TLV data"));
+
+    *val = data_buffer.get_attr_val();
+
+    // attribute_data_decode_buffer's destructor frees the buffer so we need to copy the buffer to a new buffer
+    // and pass on to the user. This is only required for string and octet string types
+
+    bool is_type_string = (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING
+                            || val->type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING);
+    bool is_type_octet_string = (val->type == ESP_MATTER_VAL_TYPE_OCTET_STRING
+                                    || val->type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING);
+
+    if (is_type_string || is_type_octet_string) {
+        // for empty strings, we need to copy at least null terminator
+        uint32_t bytes_to_copy = (is_type_string ? val->val.a.s + 1 : val->val.a.s);
+
+        if (val->val.a.b && bytes_to_copy > 0) {
+            uint8_t *new_buf = (uint8_t *)esp_matter_mem_calloc(sizeof(uint8_t), bytes_to_copy);
+            VerifyOrReturnError(new_buf != nullptr, ESP_ERR_NO_MEM);
+            memcpy(new_buf, val->val.a.b, bytes_to_copy);
+            val->val.a.b = new_buf; // new buffer is now owned by the caller
+        }
+        // else it's of type nullable string, so we don't need to do anything
+    }
+
+    return ESP_OK;
+}
+
+// Helper function to find the cluster_id and attribute_id for internally managed attributes
+static esp_err_t find_cluster_and_endpoint_id_for_internally_managed_attribute(_attribute_base_t *attribute_base,
+                                                                                uint16_t &out_endpoint_id,
+                                                                                uint32_t &out_cluster_id)
+{
+    VerifyOrReturnError(attribute_base, ESP_ERR_INVALID_ARG);
+    _node_t *node = (_node_t *)node::get();
+    VerifyOrReturnError(node, ESP_ERR_INVALID_STATE);
+
+    // This is a linear search and it's not efficient, but we don't have a better way to do it right now.
+    for (_endpoint_t *endpoint = node->endpoint_list; endpoint != nullptr; endpoint = endpoint->next) {
+        for (_cluster_t *cluster = endpoint->cluster_list; cluster != nullptr; cluster = cluster->next) {
+            for (_attribute_base_t *attr = cluster->attribute_list; attr != nullptr; attr = attr->next) {
+                if (attr == attribute_base) {
+                    out_endpoint_id = endpoint->endpoint_id;
+                    out_cluster_id = cluster::get_id((cluster_t *)cluster);
+                    return ESP_OK;
+                }
+            }
+        }
+    }
+    return ESP_ERR_NOT_FOUND;
+}
+
+esp_err_t get_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val)
+{
+    VerifyOrReturnError(val, ESP_ERR_INVALID_ARG);
+    esp_matter_val_type_t val_type = get_val_type(endpoint_id, cluster_id, attribute_id);
+    VerifyOrReturnError(val_type != ESP_MATTER_VAL_TYPE_INVALID, ESP_ERR_INVALID_ARG);
+    VerifyOrReturnError(val_type != ESP_MATTER_VAL_TYPE_ARRAY, ESP_ERR_NOT_SUPPORTED);
+
+    chip::Platform::ScopedMemoryBuffer<uint8_t> scoped_buf;
+    scoped_buf.Calloc(k_max_tlv_size_to_read_attribute_value);
+    if (scoped_buf.IsNull()) {
+        ESP_LOGE(TAG, "Failed to allocate memory for scoped buffer");
+        return ESP_ERR_NO_MEM;
+    }
+
+    chip::TLV::TLVWriter writer;
+    writer.Init(scoped_buf.Get(), k_max_tlv_size_to_read_attribute_value);
+
+    chip::app::AttributeReportIBs::Builder reportBuilder = chip::app::AttributeReportIBs::Builder();
+    reportBuilder.Init(&writer);
+
+    chip::Access::SubjectDescriptor subjectDescriptor;
+    auto concrete_path = chip::app::ConcreteAttributePath(endpoint_id, cluster_id, attribute_id);
+    chip::DataVersion version = chip::DataVersion();
+    chip::app::AttributeValueEncoder encoder(reportBuilder, subjectDescriptor, concrete_path, version);
+
+    chip::app::DataModel::ReadAttributeRequest request;
+    request.path = concrete_path;
+    request.readFlags = chip::app::DataModel::ReadFlags::kFabricFiltered;
+
+    chip::app::DataModel::ActionReturnStatus action_return_status = esp_matter::data_model::provider::get_instance().ReadAttribute(request, encoder);
+
+    if (action_return_status.IsError()) {
+        chip::app::DataModel::ActionReturnStatus::StringStorage storage;
+        ESP_LOGE(TAG, "ReadAttribute failed with error:%s", action_return_status.c_str(storage));
+        return ESP_FAIL;
+    }
+
+    ESP_LOG_BUFFER_HEX_LEVEL("TLV data", scoped_buf.Get(), writer.GetLengthWritten(), ESP_LOG_DEBUG);
+
+    val->type = val_type;
+    return get_val_from_tlv_data(scoped_buf.Get(), writer.GetLengthWritten(), val);
+}
+
 esp_err_t get_val(attribute_t *attribute, esp_matter_attr_val_t *val)
 {
-    VerifyOrReturnError(attribute, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Attribute cannot be NULL"));
+    VerifyOrReturnError(attribute && val, ESP_ERR_INVALID_ARG);
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
+
+    uint32_t attribute_id = current_attribute->attribute_id;
+    uint32_t cluster_id = chip::kInvalidClusterId;
+    uint16_t endpoint_id = chip::kInvalidEndpointId;
+
+    if (current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY) {
+        // for internally managed attributes, we need to find the cluster and endpoint id
+        esp_err_t err = find_cluster_and_endpoint_id_for_internally_managed_attribute(current_attribute,
+                                                                                        endpoint_id, cluster_id);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to get cluster and ep id for attribute, err: %d", err);
+            return err;
+        }
+
+        cluster_id = cluster_id;
+        attribute_id = attribute_id;
+    } else {
+        // in case of externally managed attributes, we can directly use the endpoint and cluster id
+        endpoint_id = current_attribute->endpoint_id;
+        cluster_id = current_attribute->cluster_id;
+    }
+
+    return get_val(endpoint_id, cluster_id, attribute_id, val);
+}
+
+esp_err_t get_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val)
+{
+    VerifyOrReturnError(attribute && val, ESP_ERR_INVALID_ARG);
     _attribute_t *current_attribute = (_attribute_t *)attribute;
 
     ESP_RETURN_ON_FALSE(!(current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY), ESP_ERR_NOT_SUPPORTED, TAG,
                         "Attribute is not managed by esp matter data model");
-    memcpy((void *)val, (void *)&current_attribute->val, sizeof(esp_matter_attr_val_t));
+    memcpy((void *)&val->type, (void *)&current_attribute->attribute_val_type, sizeof(esp_matter_val_type_t));
+    memcpy((void *)&val->val, (void *)&current_attribute->attribute_val, sizeof(esp_matter_val_t));
     return ESP_OK;
+}
+
+esp_matter_val_type_t get_val_type(attribute_t *attribute)
+{
+    VerifyOrReturnValue(attribute, ESP_MATTER_VAL_TYPE_INVALID, ESP_LOGE(TAG, "Attribute cannot be NULL"));
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
+    return current_attribute->attribute_val_type;
+}
+
+esp_matter_val_type_t get_val_type(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id)
+{
+    return get_val_type(get(endpoint_id, cluster_id, attribute_id));
 }
 
 esp_err_t add_bounds(attribute_t *attribute, esp_matter_attr_val_t min, esp_matter_attr_val_t max)
@@ -730,19 +945,19 @@ esp_err_t add_bounds(attribute_t *attribute, esp_matter_attr_val_t min, esp_matt
                         "Attribute is not managed by esp matter data model");
 
     /* Check if bounds can be set */
-    if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
-        current_attribute->val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
-        current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
-        current_attribute->val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
-        current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY ||
-        current_attribute->val.type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
+    if (current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
+        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
+        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
+        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_ARRAY ||
+        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
         ESP_LOGE(TAG, "Bounds cannot be set for string/array/boolean type attributes");
         return ESP_ERR_INVALID_ARG;
     }
-    VerifyOrReturnError(((current_attribute->val.type == min.type) && (current_attribute->val.type == max.type)),
+    VerifyOrReturnError(((current_attribute->attribute_val_type == min.type) && (current_attribute->attribute_val_type == max.type)),
                         ESP_ERR_INVALID_ARG,
                         ESP_LOGE(TAG, "Cannot set bounds because of val type mismatch: expected: %d, min: %d, max: %d",
-                                 current_attribute->val.type, min.type, max.type));
+                                 current_attribute->attribute_val_type, min.type, max.type));
     current_attribute->bounds = (esp_matter_attr_bounds_t *)esp_matter_mem_calloc(1, sizeof(esp_matter_attr_bounds_t));
     if (!current_attribute->bounds) {
         ESP_LOGE(TAG, "Failed to allocate bounds for attribute");
@@ -791,11 +1006,11 @@ esp_err_t set_override_callback(attribute_t *attribute, callback_t callback)
     ESP_RETURN_ON_FALSE(!(current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY), ESP_ERR_NOT_SUPPORTED, TAG,
                         "Attribute is not managed by esp matter data model");
 
-    if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY ||
-        current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
-        current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
-        current_attribute->val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
-        current_attribute->val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING) {
+    if (current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_ARRAY ||
+        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
+        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
+        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING) {
         // The override callback might allocate memory and we have no way to free the memory
         // TODO: Add memory-safe override callback for these attribute types
         ESP_LOGE(TAG, "Cannot set override callback for attribute 0x%" PRIX32, current_attribute->attribute_id);

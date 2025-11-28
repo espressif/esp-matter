@@ -19,6 +19,7 @@
 
 #include <esp_matter_attribute_utils.h>
 #include <esp_matter_data_model.h>
+#include <esp_matter_data_model_priv.h>
 
 #include <app-common/zap-generated/attribute-type.h>
 #include <app/AttributePathParams.h>
@@ -1012,7 +1013,7 @@ chip::Protocols::InteractionModel::Status emberAfReadAttribute(chip::EndpointId 
         return chip::Protocols::InteractionModel::Status::UnsupportedAttribute;
     }
     esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
-    if (esp_matter::attribute::get_val(attribute, &val) != ESP_OK) {
+    if (esp_matter::attribute::get_val_internal(attribute, &val) != ESP_OK) {
         return chip::Protocols::InteractionModel::Status::Failure;
     }
     return get_raw_data_buffer_from_attr_val(val, dataPtr, readLength);
@@ -1081,7 +1082,7 @@ const EmberAfAttributeMetadata *emberAfLocateAttributeMetadata(chip::EndpointId 
     esp_matter::attribute_t *attribute = esp_matter::attribute::get(endpointId, clusterId, attributeId);
     if (attribute) {
         esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
-        if (esp_matter::attribute::get_val(attribute, &val) == ESP_OK) {
+        if (esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK) {
             s_metadata.attributeId = attributeId;
             s_metadata.attributeType = get_ember_attr_type_from_val_type(val.type);
             s_metadata.mask = esp_matter::attribute::get_flags(attribute) & 0xFF;
