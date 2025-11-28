@@ -3153,5 +3153,34 @@ command_t *create_find_transport_response(cluster_t *cluster)
 } /* command */
 } /* push_av_stream_transport */
 
+namespace commodity_tariff {
+namespace command {
+command_t *create_get_tariff_component(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommodityTariff::Commands::GetTariffComponent::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_get_tariff_component_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommodityTariff::Commands::GetTariffComponentResponse::Id,
+                                        COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_get_day_entry(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommodityTariff::Commands::GetDayEntry::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_get_day_entry_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommodityTariff::Commands::GetDayEntryResponse::Id,
+                                        COMMAND_FLAG_GENERATED, NULL);
+}
+
+} /* command */
+} /* commodity_tariff */
+
 } /* cluster */
 } /* esp_matter */
