@@ -34,30 +34,6 @@ esp_err_t get_attribute_value(cluster_t *cluster, uint32_t attribute_id, esp_mat
     return err;
 }
 
-namespace identify {
-
-void add_bounds_cb(cluster_t *cluster)
-{
-    VerifyOrReturn(cluster != nullptr, ESP_LOGE(TAG, "Cluster is NULL. Add bounds Failed!!"));
-    attribute_t *current_attribute = esp_matter::attribute::get_first(cluster);
-    VerifyOrReturn(current_attribute != nullptr, ESP_LOGE(TAG, "Attribute is NULL."));
-    while(current_attribute) {
-        switch(esp_matter::attribute::get_id(current_attribute)) {
-
-            case Identify::Attributes::IdentifyType::Id: {
-                uint8_t min = 0, max = 6;
-                esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint8(min), esp_matter_uint8(max));
-                break;
-            }
-            default:
-                break;
-        }
-        current_attribute = esp_matter::attribute::get_next(current_attribute);
-    }
-}
-
-} /* identify */
-
 namespace scenes_management {
 
 void add_bounds_cb(cluster_t *cluster)

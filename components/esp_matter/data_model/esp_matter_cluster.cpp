@@ -1056,7 +1056,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterIdentifyPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
-        set_add_bounds_callback(cluster, identify::add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
