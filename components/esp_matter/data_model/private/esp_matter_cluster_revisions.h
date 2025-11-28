@@ -414,6 +414,10 @@ constexpr uint16_t cluster_revision = 1;
 namespace electrical_grid_conditions {
 constexpr uint16_t cluster_revision = 1;
 } // namespace electrical_grid_conditions
+
+namespace meter_identification {
+constexpr uint16_t cluster_revision = 1;
+} // namespace meter_identification
 } // namespace cluster
 } // namespace esp_matter
 
