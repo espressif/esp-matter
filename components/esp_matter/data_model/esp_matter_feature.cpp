@@ -4687,5 +4687,28 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* electrical_grid_conditions */
 
+namespace meter_identification {
+namespace feature {
+namespace power_threshold {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(MeterIdentification::Feature::kPowerThreshold);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_power_threshold(cluster, NULL, 0, 0);
+    return ESP_OK;
+}
+
+} /* power_threshold */
+
+} /* feature */
+} /* meter_identification */
+
 } /* cluster */
 } /* esp_matter */

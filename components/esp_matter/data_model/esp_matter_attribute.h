@@ -1376,5 +1376,16 @@ attribute_t *create_forecast_conditions(cluster_t *cluster, uint8_t * value, uin
 } /* attribute */
 } /* electrical_grid_conditions */
 
+namespace meter_identification {
+namespace attribute {
+
+attribute_t *create_meter_type(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_point_of_delivery(cluster_t *cluster, char * value, uint16_t length);
+attribute_t *create_meter_serial_number(cluster_t *cluster, char * value, uint16_t length);
+attribute_t *create_protocol_version(cluster_t *cluster, char * value, uint16_t length);
+attribute_t *create_power_threshold(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* meter_identification */
+
 } /* cluster */
 } /* esp_matter */
