@@ -5268,5 +5268,34 @@ attribute_t *create_default_randomization_type(cluster_t *cluster, nullable<uint
 } /* attribute */
 } /* commodity_tariff */
 
+namespace commodity_price {
+namespace attribute {
+attribute_t *create_tariff_unit(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CommodityPrice::Attributes::TariffUnit::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
+}
+
+attribute_t *create_currency(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityPrice::Attributes::Currency::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_current_price(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityPrice::Attributes::CurrentPrice::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_price_forecast(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityPrice::Attributes::PriceForecast::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+} /* commodity_price */
+
 } /* cluster */
 } /* esp_matter */

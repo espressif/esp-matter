@@ -601,5 +601,14 @@ command_t *create_get_day_entry_response(cluster_t *cluster);
 } /* command */
 } /* commodity_tariff */
 
+namespace commodity_price {
+namespace command {
+command_t *create_get_detailed_price_request(cluster_t *cluster);
+command_t *create_get_detailed_price_response(cluster_t *cluster);
+command_t *create_get_detailed_forecast_request(cluster_t *cluster);
+command_t *create_get_detailed_forecast_response(cluster_t *cluster);
+} /* command */
+} /* commodity_price */
+
 } /* cluster */
 } /* esp_matter */
