@@ -2898,7 +2898,7 @@ command_t *create_commission_node(cluster_t *cluster)
 command_t *create_reverse_open_commissioning_window(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, CommissionerControl::Commands::ReverseOpenCommissioningWindow::Id,
-                                       COMMAND_FLAG_ACCEPTED, NULL);
+                                       COMMAND_FLAG_GENERATED, NULL);
 }
 
 } /* command */
