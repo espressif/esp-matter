@@ -4537,5 +4537,109 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* push_av_stream_transport */
 
+namespace commodity_tariff {
+namespace feature {
+namespace pricing {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityTariff::Feature::kPricing);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* pricing */
+
+namespace friendly_credit {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityTariff::Feature::kFriendlyCredit);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* friendly_credit */
+
+namespace auxiliary_load {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityTariff::Feature::kAuxiliaryLoad);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* auxiliary_load */
+
+namespace peak_period {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityTariff::Feature::kPeakPeriod);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* peak_period */
+
+namespace power_threshold {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityTariff::Feature::kPowerThreshold);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* power_threshold */
+
+namespace randomization {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityTariff::Feature::kRandomization);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_default_randomization_offset(cluster, 0);
+    attribute::create_default_randomization_type(cluster, 0);
+    return ESP_OK;
+}
+
+} /* randomization */
+
+} /* feature */
+} /* commodity_tariff */
+
 } /* cluster */
 } /* esp_matter */

@@ -1324,5 +1324,29 @@ attribute_t *create_current_connections(cluster_t *cluster, uint8_t * value, uin
 } /* attribute */
 } /* push_av_stream_transport */
 
+namespace commodity_tariff {
+namespace attribute {
+attribute_t *create_tariff_info(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_tariff_unit(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_start_date(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_day_entries(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_day_patterns(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_calendar_periods(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_individual_days(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_current_day(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_next_day(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_current_day_entry(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_current_day_entry_date(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_next_day_entry(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_next_day_entry_date(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_tariff_components(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_tariff_periods(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_current_tariff_components(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_next_tariff_components(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_default_randomization_offset(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_default_randomization_type(cluster_t *cluster, nullable<uint8_t> value);
+} /* attribute */
+} /* commodity_tariff */
+
 } /* cluster */
 } /* esp_matter */

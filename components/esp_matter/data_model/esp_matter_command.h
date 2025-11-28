@@ -591,5 +591,14 @@ command_t *create_find_transport_response(cluster_t *cluster);
 } /* command */
 } /* push_av_stream_transport */
 
+namespace commodity_tariff {
+namespace command {
+command_t *create_get_tariff_component(cluster_t *cluster);
+command_t *create_get_tariff_component_response(cluster_t *cluster);
+command_t *create_get_day_entry(cluster_t *cluster);
+command_t *create_get_day_entry_response(cluster_t *cluster);
+} /* command */
+} /* commodity_tariff */
+
 } /* cluster */
 } /* esp_matter */

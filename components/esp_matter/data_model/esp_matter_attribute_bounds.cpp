@@ -675,5 +675,32 @@ void add_bounds_cb(cluster_t *cluster)
     }
 }
 } /* camera_av_settings_user_level_management */
+
+namespace commodity_tariff {
+
+void add_bounds_cb(cluster_t *cluster)
+{
+    VerifyOrReturn(cluster != nullptr, ESP_LOGE(TAG, "Cluster is NULL. Add bounds Failed!!"));
+    attribute_t *current_attribute = esp_matter::attribute::get_first(cluster);
+    VerifyOrReturn(current_attribute != nullptr, ESP_LOGE(TAG, "Attribute is NULL."));
+    while(current_attribute) {
+        switch(esp_matter::attribute::get_id(current_attribute)) {
+            case CommodityTariff::Attributes::TariffUnit::Id: {
+                uint8_t min = 0, max = 1;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_enum8(min), esp_matter_enum8(max));
+                break;
+            }
+            case CommodityTariff::Attributes::DefaultRandomizationType::Id: {
+                uint8_t min = 0, max = 4;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_enum8(min), esp_matter_enum8(max));
+                break;
+            }
+            default:
+                break;
+        }
+        current_attribute = esp_matter::attribute::get_next(current_attribute);
+    }
+}
+} /* commodity_tariff */
 } /* cluster */
 } /* esp_matter */

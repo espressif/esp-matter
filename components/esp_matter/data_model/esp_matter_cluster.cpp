@@ -4336,5 +4336,85 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 } /* push_av_stream_transport */
 
+namespace commodity_tariff {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, CommodityTariff::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CommodityTariff::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config && config->delegate != nullptr) {
+            static const auto delegate_init_cb = CommodityTariffDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterCommodityTariffPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        set_add_bounds_callback(cluster, commodity_tariff::add_bounds_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, config->feature_flags);
+        attribute::create_tariff_info(cluster, NULL, 0, 0);
+        attribute::create_tariff_unit(cluster, 0);
+        attribute::create_start_date(cluster, 0);
+        attribute::create_day_entries(cluster, NULL, 0, 0);
+        attribute::create_day_patterns(cluster, NULL, 0, 0);
+        attribute::create_calendar_periods(cluster, NULL, 0, 0);
+        attribute::create_individual_days(cluster, NULL, 0, 0);
+        attribute::create_current_day(cluster, NULL, 0, 0);
+        attribute::create_next_day(cluster, NULL, 0, 0);
+        attribute::create_current_day_entry(cluster, NULL, 0, 0);
+        attribute::create_current_day_entry_date(cluster, 0);
+        attribute::create_next_day_entry(cluster, NULL, 0, 0);
+        attribute::create_next_day_entry_date(cluster, 0);
+        attribute::create_tariff_components(cluster, NULL, 0, 0);
+        attribute::create_tariff_periods(cluster, NULL, 0, 0);
+        attribute::create_current_tariff_components(cluster, NULL, 0, 0);
+        attribute::create_next_tariff_components(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        // check against O.a+ feature conformance
+        VALIDATE_FEATURES_AT_LEAST_ONE("Pricing,FriendlyCredit,AuxiliaryLoad",
+                                      feature::pricing::get_id(), feature::friendly_credit::get_id(), feature::auxiliary_load::get_id());
+        if (has(feature::pricing::get_id())) {
+            VerifyOrReturnValue(feature::pricing::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::friendly_credit::get_id())) {
+            VerifyOrReturnValue(feature::friendly_credit::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::auxiliary_load::get_id())) {
+            VerifyOrReturnValue(feature::auxiliary_load::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::power_threshold::get_id())) {
+            VerifyOrReturnValue(feature::power_threshold::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::randomization::get_id())) {
+            VerifyOrReturnValue(feature::randomization::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::peak_period::get_id())) {
+            VerifyOrReturnValue(feature::peak_period::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+
+        command::create_get_tariff_component(cluster);
+        command::create_get_tariff_component_response(cluster);
+        command::create_get_day_entry(cluster);
+        command::create_get_day_entry_response(cluster);
+
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+
+} /* commodity_tariff */
+
 } /* cluster */
 } /* esp_matter */
