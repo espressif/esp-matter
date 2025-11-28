@@ -43,14 +43,24 @@ event_t *create_fabric_restriction_review_update(cluster_t *cluster)
 } // namespace event
 } // namespace access_control
 
-namespace bridged_device_basic_information {
+namespace power_source {
 namespace event {
-event_t *create_active_changed(cluster_t *cluster)
+event_t *create_wired_fault_change(cluster_t *cluster)
 {
-    return esp_matter::event::create(cluster, BridgedDeviceBasicInformation::Events::ActiveChanged::Id);
+    return esp_matter::event::create(cluster, PowerSource::Events::WiredFaultChange::Id);
 }
-} // namespace event
-} // namespace bridged_device_basic_information
+
+event_t *create_bat_fault_change(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, PowerSource::Events::BatFaultChange::Id);
+}
+
+event_t *create_bat_charge_fault_change(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, PowerSource::Events::BatChargeFaultChange::Id);
+}
+}
+}
 
 namespace actions {
 namespace event {
@@ -245,6 +255,11 @@ event_t *create_leave(cluster_t *cluster)
 event_t *create_reachable_changed(cluster_t *cluster)
 {
     return esp_matter::event::create(cluster, BridgedDeviceBasicInformation::Events::ReachableChanged::Id);
+}
+
+event_t *create_active_changed(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, BridgedDeviceBasicInformation::Events::ActiveChanged::Id);
 }
 
 } // namespace event
@@ -717,6 +732,41 @@ event_t *create_periodic_energy_measured(cluster_t *cluster)
 }
 } // namespace event
 } // namespace electrical_energy_measurement
+
+namespace energy_evse {
+namespace event {
+event_t *create_ev_connected(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, EnergyEvse::Events::EVConnected::Id);
+}
+
+event_t *create_ev_not_detected(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, EnergyEvse::Events::EVNotDetected::Id);
+}
+
+event_t *create_energy_transfer_started(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, EnergyEvse::Events::EnergyTransferStarted::Id);
+}
+
+event_t *create_energy_transfer_stopped(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, EnergyEvse::Events::EnergyTransferStopped::Id);
+}
+
+event_t *create_fault(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, EnergyEvse::Events::Fault::Id);
+}
+
+event_t *create_rfid(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, EnergyEvse::Events::Rfid::Id);
+}
+
+} /* event */
+} /* energy_evse */
 
 namespace valve_configuration_and_control {
 namespace event {

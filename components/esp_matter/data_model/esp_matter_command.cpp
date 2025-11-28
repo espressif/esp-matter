@@ -1449,6 +1449,14 @@ command_t *create_time_snap_shot_response(cluster_t *cluster)
     return esp_matter::command::create(cluster, GeneralDiagnostics::Commands::TimeSnapshotResponse::Id, COMMAND_FLAG_GENERATED,
                                         NULL);
 }
+command_t *create_payload_test_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, GeneralDiagnostics::Commands::PayloadTestRequest::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+command_t *create_payload_test_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, GeneralDiagnostics::Commands::PayloadTestResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+}
 
 } /* command */
 } /* general_diagnostics */
@@ -1895,6 +1903,11 @@ command_t *create_stay_active_request(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, IcdManagement::Commands::StayActiveRequest::Id, COMMAND_FLAG_ACCEPTED,
                                        esp_matter_command_callback_stay_active_request);
+}
+command_t *create_stay_active_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, IcdManagement::Commands::StayActiveResponse::Id,
+                                        COMMAND_FLAG_GENERATED, NULL);
 }
 
 } /* command */

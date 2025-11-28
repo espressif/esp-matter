@@ -40,13 +40,6 @@ event_t *create_state_changed(cluster_t *cluster);
 event_t *create_action_failed(cluster_t *cluster);
 } // namespace event
 } // namespace actions
-
-namespace bridged_device_basic_information {
-namespace event {
-event_t *create_active_changed(cluster_t *cluster);
-} // namespace event
-} // namespace bridged_device_basic_information
-
 namespace basic_information {
 namespace event {
 event_t *create_start_up(cluster_t *cluster);
@@ -106,12 +99,22 @@ event_t *create_missing_trusted_time_source(cluster_t *cluster);
 
 namespace bridged_device_basic_information {
 namespace event {
+event_t *create_active_changed(cluster_t *cluster);
 event_t *create_start_up(cluster_t *cluster);
 event_t *create_shut_down(cluster_t *cluster);
 event_t *create_leave(cluster_t *cluster);
 event_t *create_reachable_changed(cluster_t *cluster);
 } // namespace event
 } // namespace bridged_device_basic_information
+
+
+namespace power_source {
+namespace event {
+event_t *create_wired_fault_change(cluster_t *cluster);
+event_t *create_bat_fault_change(cluster_t *cluster);
+event_t *create_bat_charge_fault_change(cluster_t *cluster);
+}
+}
 
 namespace smoke_co_alarm {
 namespace event {
@@ -213,6 +216,17 @@ event_t *create_cumulative_energy_measured(cluster_t *cluster);
 event_t *create_periodic_energy_measured(cluster_t *cluster);
 } // namespace event
 } // namespace electrical_energy_measurement
+
+namespace energy_evse {
+namespace event {
+event_t *create_ev_connected(cluster_t *cluster);
+event_t *create_ev_not_detected(cluster_t *cluster);
+event_t *create_energy_transfer_started(cluster_t *cluster);
+event_t *create_energy_transfer_stopped(cluster_t *cluster);
+event_t *create_fault(cluster_t *cluster);
+event_t *create_rfid(cluster_t *cluster);
+} /* event */
+} /* energy_evse */
 
 namespace valve_configuration_and_control {
 namespace event {

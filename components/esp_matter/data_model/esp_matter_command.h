@@ -85,6 +85,8 @@ namespace command {
 command_t *create_test_event_trigger(cluster_t *cluster);
 command_t *create_time_snap_shot(cluster_t *cluster);
 command_t *create_time_snap_shot_response(cluster_t *cluster);
+command_t *create_payload_test_request(cluster_t *cluster);
+command_t *create_payload_test_response(cluster_t *cluster);
 } /* command */
 } /* general_diagnostics */
 
@@ -204,6 +206,7 @@ command_t *create_register_client(cluster_t *cluster);
 command_t *create_register_client_response(cluster_t *cluster);
 command_t *create_unregister_client(cluster_t *cluster);
 command_t *create_stay_active_request(cluster_t *cluster);
+command_t *create_stay_active_response(cluster_t *cluster);
 } /* command */
 } /* icd_management */
 

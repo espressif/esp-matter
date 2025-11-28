@@ -196,6 +196,12 @@ esp_err_t add(cluster_t *cluster);
 
 } /* long_idle_time_support */
 
+namespace dynamic_sit_lit_support {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} // namespace dynamic_sit_lit_support
+
 } /* feature */
 } /* icd_management */
 
@@ -956,6 +962,17 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* feature */
 } /* mode_select */
 
+namespace general_diagnostics {
+namespace feature {
+namespace data_model_test {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* data_model_test */
+} /* feature */
+} /* general diagnostics */
+
 namespace software_diagnostics {
 namespace feature {
 
@@ -1158,6 +1175,7 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* feature */
 } /* boolean_state_configuration */
+
 
 namespace power_topology {
 namespace feature {
