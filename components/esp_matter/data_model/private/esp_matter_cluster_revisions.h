@@ -402,6 +402,10 @@ constexpr uint16_t cluster_revision = 1;
 namespace commodity_tariff {
 constexpr uint16_t cluster_revision = 1;
 } // namespace commodity_tariff
+
+namespace commodity_price {
+constexpr uint16_t cluster_revision = 4;
+} // namespace commodity_price
 } // namespace cluster
 } // namespace esp_matter
 

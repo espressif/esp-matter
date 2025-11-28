@@ -1348,5 +1348,14 @@ attribute_t *create_default_randomization_type(cluster_t *cluster, nullable<uint
 } /* attribute */
 } /* commodity_tariff */
 
+namespace commodity_price {
+namespace attribute {
+attribute_t *create_tariff_unit(cluster_t *cluster, uint8_t value);
+attribute_t *create_currency(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_current_price(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_price_forecast(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* commodity_price */
+
 } /* cluster */
 } /* esp_matter */

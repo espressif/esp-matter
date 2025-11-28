@@ -3175,5 +3175,34 @@ command_t *create_get_day_entry_response(cluster_t *cluster)
 } /* command */
 } /* commodity_tariff */
 
+namespace commodity_price {
+namespace command {
+command_t *create_get_detailed_price_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommodityPrice::Commands::GetDetailedPriceRequest::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_get_detailed_price_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommodityPrice::Commands::GetDetailedPriceResponse::Id,
+                                        COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_get_detailed_forecast_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommodityPrice::Commands::GetDetailedForecastRequest::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_get_detailed_forecast_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommodityPrice::Commands::GetDetailedForecastResponse::Id,
+                                        COMMAND_FLAG_GENERATED, NULL);
+}
+
+} /* command */
+} /* commodity_price */
+
 } /* cluster */
 } /* esp_matter */
