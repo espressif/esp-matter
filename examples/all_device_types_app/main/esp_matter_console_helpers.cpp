@@ -230,7 +230,7 @@ int create(uint8_t device_type_index)
         case ESP_MATTER_FAN: {
             esp_matter::endpoint::fan::config_t fan_config;
             #if CONFIG_IDF_TARGET_ESP32 || CONFIG_IDF_TARGET_ESP32S3
-            static FanDelegateImpl fan_delegate(app_endpoint_id);
+            static FanDelegateImpl fan_delegate;
             fan_config.fan_control.delegate = &fan_delegate;
             #endif
             endpoint = esp_matter::endpoint::fan::create(node, &fan_config, ENDPOINT_FLAG_NONE, NULL);

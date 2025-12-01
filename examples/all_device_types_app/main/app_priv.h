@@ -141,7 +141,9 @@ esp_err_t app_driver_init();
 class FanDelegateImpl:public chip::app::Clusters::FanControl::Delegate
 {
 public:
-    FanDelegateImpl(uint16_t aEndpoint):Delegate(aEndpoint){}
+    // Constructor to match the base class design, however endpoint_id set here is not being using at all.
+    // FanControlDelegateInitCB sets the delegate on correct endpoint while initialization.
+    FanDelegateImpl():Delegate(chip::kInvalidEndpointId) {}
 
     chip::Protocols::InteractionModel::Status HandleStep(chip::app::Clusters::FanControl::StepDirectionEnum aDirection, bool aWrap, bool aLowestOff);
 };
