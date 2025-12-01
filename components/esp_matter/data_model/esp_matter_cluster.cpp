@@ -2082,10 +2082,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
                 feature::position_aware_tilt::add(cluster, &(config->features.position_aware_tilt));
             }
         }
-        // optional if absolute position is supported
-        if (has(feature::absolute_position::get_id())) {
-            feature::absolute_position::add(cluster, &(config->features.absolute_position));
-        }
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {

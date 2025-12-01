@@ -291,14 +291,12 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::window_covering::create(node, &window_covering_config, ENDPOINT_FLAG_NONE, NULL);
             cluster_t *cluster = cluster::get(endpoint, chip::app::Clusters::WindowCovering::Id);
             cluster::window_covering::feature::position_aware_lift::config_t position_aware_lift;
-            cluster::window_covering::feature::absolute_position::config_t absolute_position;
 
             nullable<uint16_t> percentage_100ths = nullable<uint16_t>(0);
             position_aware_lift.target_position_lift_percent_100ths = percentage_100ths;
             position_aware_lift.current_position_lift_percent_100ths = percentage_100ths;
 
             cluster::window_covering::feature::position_aware_lift::add(cluster, &position_aware_lift);
-            cluster::window_covering::feature::absolute_position::add(cluster, &absolute_position);
             break;
         }
         case ESP_MATTER_TEMP_SENSOR: {
