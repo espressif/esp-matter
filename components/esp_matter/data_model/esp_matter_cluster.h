@@ -1057,5 +1057,10 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* commodity_price */
 
+namespace commodity_metering {
+using config_t = common::config_t;
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* commodity_metering */
+
 } /* cluster */
 } /* esp_matter */
