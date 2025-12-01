@@ -387,6 +387,10 @@ namespace closure_control {
 constexpr uint16_t cluster_revision = 1;
 } // namespace closure_control
 
+namespace closure_dimension {
+constexpr uint16_t cluster_revision = 1;
+} // namespace closure_dimension
+
 } // namespace cluster
 } // namespace esp_matter
 

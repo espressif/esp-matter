@@ -4987,5 +4987,83 @@ attribute_t *create_latch_control_modes(cluster_t *cluster, uint8_t value)
 
 } /* closure_control */
 
+namespace closure_dimension {
+namespace attribute {
+attribute_t *create_current_state(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::CurrentState::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_target_state(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::TargetState::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_resolution(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::Resolution::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
+}
+
+attribute_t *create_step_value(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::StepValue::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
+}
+
+attribute_t *create_unit(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::Unit::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
+}
+
+attribute_t *create_unit_range(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::UnitRange::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_limit_range(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::LimitRange::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_translation_direction(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::TranslationDirection::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
+}
+
+attribute_t *create_rotation_axis(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::RotationAxis::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
+}
+
+attribute_t *create_overflow(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::Overflow::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
+}
+
+attribute_t *create_modulation_type(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::ModulationType::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
+}
+
+attribute_t *create_latch_control_modes(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::LatchControlModes::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bitmap8(value));
+}
+
+} /* attribute */
+
+} /* closure_dimension */
+
 } /* cluster */
 } /* esp_matter */
