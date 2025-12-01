@@ -2010,12 +2010,6 @@ attribute_t *create_pi_heating_demand(cluster_t *cluster, uint8_t value)
                                          esp_matter_uint8(value));
 }
 
-attribute_t *create_hvac_system_type_config(cluster_t *cluster, uint8_t value)
-{
-    return esp_matter::attribute::create(cluster, Thermostat::Attributes::HVACSystemTypeConfiguration::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_bitmap8(value));
-}
-
 attribute_t *create_local_temperature_calibration(cluster_t *cluster, int8_t value)
 {
     return esp_matter::attribute::create(cluster, Thermostat::Attributes::LocalTemperatureCalibration::Id,
@@ -2097,24 +2091,6 @@ attribute_t *create_system_mode(cluster_t *cluster, uint8_t value)
 attribute_t *create_thermostat_running_mode(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, Thermostat::Attributes::ThermostatRunningMode::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
-}
-
-attribute_t *create_start_of_week(cluster_t *cluster, uint8_t value)
-{
-    return esp_matter::attribute::create(cluster, Thermostat::Attributes::StartOfWeek::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_enum8(value));
-}
-
-attribute_t *create_number_of_weekly_transitions(cluster_t *cluster, uint8_t value)
-{
-    return esp_matter::attribute::create(cluster, Thermostat::Attributes::NumberOfWeeklyTransitions::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
-}
-
-attribute_t *create_number_of_daily_transitions(cluster_t *cluster, uint8_t value)
-{
-    return esp_matter::attribute::create(cluster, Thermostat::Attributes::NumberOfDailyTransitions::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
 }
 
@@ -2968,32 +2944,6 @@ attribute_t *create_type(cluster_t *cluster, uint8_t value)
                                          esp_matter_enum8(value));
 }
 
-attribute_t *create_physical_closed_limit_lift(cluster_t *cluster, uint16_t value)
-{
-    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::PhysicalClosedLimitLift::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-}
-
-attribute_t *create_physical_closed_limit_tilt(cluster_t *cluster, uint16_t value)
-{
-    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::PhysicalClosedLimitTilt::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-}
-
-attribute_t *create_current_position_lift(cluster_t *cluster, nullable<uint16_t> value)
-{
-    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::CurrentPositionLift::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE,
-                                         esp_matter_nullable_uint16(value));
-}
-
-attribute_t *create_current_position_tilt(cluster_t *cluster, nullable<uint16_t> value)
-{
-    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::CurrentPositionTilt::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE,
-                                         esp_matter_nullable_uint16(value));
-}
-
 attribute_t *create_number_of_actuations_lift(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, WindowCovering::Attributes::NumberOfActuationsLift::Id,
@@ -3062,30 +3012,6 @@ attribute_t *create_current_position_tilt_percent_100ths(cluster_t *cluster, nul
     return esp_matter::attribute::create(cluster, WindowCovering::Attributes::CurrentPositionTiltPercent100ths::Id,
                                          ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE,
                                          esp_matter_nullable_uint16(value));
-}
-
-attribute_t *create_installed_open_limit_lift(cluster_t *cluster, uint16_t value)
-{
-    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::InstalledOpenLimitLift::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint16(value));
-}
-
-attribute_t *create_installed_closed_limit_lift(cluster_t *cluster, uint16_t value)
-{
-    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::InstalledClosedLimitLift::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint16(value));
-}
-
-attribute_t *create_installed_open_limit_tilt(cluster_t *cluster, uint16_t value)
-{
-    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::InstalledOpenLimitTilt::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint16(value));
-}
-
-attribute_t *create_installed_closed_limit_tilt(cluster_t *cluster, uint16_t value)
-{
-    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::InstalledClosedLimitTilt::Id,
-                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint16(value));
 }
 
 attribute_t *create_mode(cluster_t *cluster, uint8_t value)

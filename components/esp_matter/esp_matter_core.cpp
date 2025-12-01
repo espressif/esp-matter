@@ -326,11 +326,6 @@ static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
     }
     init_thread_stack_and_start_thread_task();
 #if CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
-#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
-    // Add bounds to all attributes
-    esp_matter::cluster::add_bounds_callback_common();
-#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
-
     PlatformMgr().ScheduleWork(esp_matter_chip_init_task, reinterpret_cast<intptr_t>(xTaskGetCurrentTaskHandle()));
     // Wait for the matter stack to be initialized
     xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);

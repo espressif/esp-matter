@@ -835,62 +835,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 }
 } /* position_aware_lift */
 
-namespace absolute_position {
-
-uint32_t get_id()
-{
-    return (uint32_t)WindowCovering::Feature::kAbsolutePosition;
-}
-
-esp_err_t add(cluster_t *cluster, config_t *config)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    uint32_t abs_and_pa_lf_and_lf_feature_map = get_id() | feature::position_aware_lift::get_id() | feature::lift::get_id();
-    uint32_t abs_and_pa_tl_and_tl_feature_map = get_id() | feature::position_aware_tilt::get_id() | feature::tilt::get_id();
-    uint32_t abs_and_lift_feature_map = get_id() | feature::lift::get_id();
-    uint32_t abs_and_tilt_feature_map = get_id() | feature::tilt::get_id();
-    if (
-        (get_feature_map_value(cluster) & abs_and_pa_lf_and_lf_feature_map) != abs_and_pa_lf_and_lf_feature_map
-        && (get_feature_map_value(cluster) & abs_and_pa_tl_and_tl_feature_map) != abs_and_pa_tl_and_tl_feature_map
-        && (get_feature_map_value(cluster) & abs_and_lift_feature_map) != abs_and_lift_feature_map
-        && (get_feature_map_value(cluster) & abs_and_tilt_feature_map) != abs_and_tilt_feature_map
-    ) {
-        ESP_LOGE(TAG, "Cluster shall support Lift (and optionally Position_Aware_Lift) and/or Tilt (and optionally Position_Aware_Tilt) features");
-        return ESP_ERR_NOT_SUPPORTED;
-    }
-    if ((get_feature_map_value(cluster) & abs_and_pa_lf_and_lf_feature_map) == abs_and_pa_lf_and_lf_feature_map) {
-        attribute::create_installed_open_limit_lift(cluster, config->installed_open_limit_lift);
-        attribute::create_installed_closed_limit_lift(cluster, config->installed_closed_limit_lift);
-    } else {
-        ESP_LOGW(TAG, "Lift related attributes were not created because cluster does not support Position_Aware_Lift feature");
-    }
-
-    if ((get_feature_map_value(cluster) & abs_and_pa_tl_and_tl_feature_map) == abs_and_pa_tl_and_tl_feature_map) {
-        attribute::create_installed_open_limit_tilt(cluster, config->installed_open_limit_tilt);
-        attribute::create_installed_closed_limit_tilt(cluster, config->installed_closed_limit_tilt);
-    } else {
-        ESP_LOGW(TAG, "Tilt related attributes were not created because cluster does not support Position_Aware_Tilt feature");
-    }
-
-    if ((get_feature_map_value(cluster) & abs_and_lift_feature_map) == abs_and_lift_feature_map) {
-        command::create_go_to_lift_value(cluster);
-    } else {
-        ESP_LOGW(TAG, "Lift commands were not created because cluster does not support Lift feature");
-    }
-
-    if ((get_feature_map_value(cluster) & abs_and_tilt_feature_map) == abs_and_tilt_feature_map) {
-        command::create_go_to_tilt_value(cluster);
-    } else {
-        ESP_LOGW(TAG, "Tilt commands were not created because cluster does not support Tilt feature");
-    }
-
-    return ESP_OK;
-}
-
-} /* absolute_position */
-
 namespace position_aware_tilt {
 
 uint32_t get_id()
@@ -1447,7 +1391,6 @@ esp_err_t add(cluster_t *cluster)
     attribute::create_smoke_state(cluster, 0);
 
     event::create_smoke_alarm(cluster);
-    event::create_interconnect_smoke_alarm(cluster);
 
     return ESP_OK;
 }
@@ -1469,7 +1412,6 @@ esp_err_t add(cluster_t *cluster)
     attribute::create_co_state(cluster, 0);
 
     event::create_co_alarm(cluster);
-    event::create_interconnect_co_alarm(cluster);
 
     return ESP_OK;
 }

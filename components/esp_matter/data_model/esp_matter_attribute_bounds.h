@@ -18,10 +18,6 @@
 namespace esp_matter {
 namespace cluster {
 
-namespace identify {
-void add_bounds_cb(cluster_t *cluster);
-} /* identify */
-
 namespace scenes_management {
 void add_bounds_cb(cluster_t *cluster);
 } /* scenes_management */

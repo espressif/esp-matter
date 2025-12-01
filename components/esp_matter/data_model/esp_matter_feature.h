@@ -393,24 +393,6 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* position_aware_lift */
 
-// Attributes of AbsolutePosition feature may have dependency on LF, TL, PA_LF, PA_TL
-// feature, one must add features according to the usecase first.
-
-namespace absolute_position {
-
-typedef struct config {
-    uint16_t installed_open_limit_lift;
-    uint16_t installed_closed_limit_lift;
-    uint16_t installed_open_limit_tilt;
-    uint16_t installed_closed_limit_tilt;
-    config() : installed_open_limit_lift(0), installed_closed_limit_lift(65534), installed_open_limit_tilt(0), installed_closed_limit_tilt(65534) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* absolute_position */
-
 // PositionAwareTilt feature is dependent on Tilt feature, in order to add
 // PositionAwareTilt feature one must add Tilt feature first.
 
