@@ -57,5 +57,9 @@ void add_bounds_cb(cluster_t *cluster);
 namespace commodity_price {
 void add_bounds_cb(cluster_t *cluster);
 } /* commodity_price */
+
+namespace commodity_metering {
+void add_bounds_cb(cluster_t *cluster);
+} /* commodity_metering */
 } /* cluster */
 } /* esp_matter */
