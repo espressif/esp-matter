@@ -24,6 +24,7 @@
 #include <esp_matter_console.h>
 #include <esp_matter_core.h>
 #include <esp_matter_mem.h>
+#include <esp_matter_data_model_priv.h>
 #include <string.h>
 
 #include <app/util/attribute-storage.h>
@@ -641,7 +642,7 @@ esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
     /* Here, the val_print function gets called on attribute write.*/
     attribute::val_print(endpoint_id, cluster_id, attribute_id, val, false);
 
-    esp_err_t err = attribute::set_val(attr, val);
+    esp_err_t err = attribute::set_val_internal(attr, val);
     if (err == ESP_OK) {
         data_model::provider::get_instance().Temporary_ReportAttributeChanged(
             chip::app::AttributePathParams(endpoint_id, cluster_id, attribute_id));
@@ -667,7 +668,7 @@ esp_err_t report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
     /* Here, the val_print function gets called on attribute write.*/
     attribute::val_print(endpoint_id, cluster_id, attribute_id, val, false);
 
-    esp_err_t err = attribute::set_val(attr, val, false);
+    esp_err_t err = attribute::set_val_internal(attr, val, false);
     if (err == ESP_OK) {
         /* Report attribute */
         MatterReportingAttributeChangeCallback(endpoint_id, cluster_id, attribute_id);
