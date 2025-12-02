@@ -884,11 +884,37 @@ attribute_t *get_next(attribute_t *attribute);
  */
 uint32_t get_id(attribute_t *attribute);
 
-/** Set attribute val
+/** Set attribute value
  *
- * Set/Update the value of the attribute (has `ATTRIBUTE_FLAG_EXTERNAL_STORAGE` flag) in the database.
+ * This API is a unified API that works across all storage types.
+ * It supports writing attributes whose value storage is managed by esp matter data model
+ * as well as writable attributes that are not managed by esp matter data model.
+ * Right now this only works for primitive types and strings.
+ *
+ * TODO: support writing complex types (arrays, structs, lists)
+ * TODO: support remaining attributes by using cluster-specific setter APIs
+ *
+ * This API uses the DataModelProvider::WriteAttribute API to write the value of the attribute,
+ * tries to write value to the supported storages.
+ *
+ * @note: For unsupported cases, this API will return ESP_ERR_NOT_SUPPORTED, please use
+ *        cluster-specific setter APIs for complex types (arrays, structs, lists) and remaining attributes.
  *
  * @note: Once `esp_matter::start()` is done, `attribute::update()` should be used to update the attribute value.
+ *
+ * @param[in] endpoint_id Endpoint id.
+ * @param[in] cluster_id Cluster id.
+ * @param[in] attribute_id Attribute id.
+ * @param[in] val Pointer to `esp_matter_attr_val_t` containing the new value.
+ * @param[in] call_callbacks Whether to call attribute change pre/post callbacks.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t set_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
+                    esp_matter_attr_val_t *val, bool call_callbacks = true);
+
+/** Set attribute val, similar to set_val but with attribute handle
  *
  * @param[in] attribute Attribute handle.
  * @param[in] val Pointer to `esp_matter_attr_val_t`. Use appropriate elements as per the value type.

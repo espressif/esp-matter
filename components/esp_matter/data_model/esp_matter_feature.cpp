@@ -42,8 +42,8 @@ static esp_err_t update_feature_map(cluster_t *cluster, uint32_t value)
     VerifyOrReturnError(attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
     val.val.u32 |= value;
     /* Here we can't call attribute::update() since the chip stack would not have started yet, since we are
-    still creating the data model. So, we are directly using attribute::set_val(). */
-    return attribute::set_val(attribute, &val);
+    still creating the data model. So, we are directly using attribute::set_val_internal(). */
+    return attribute::set_val_internal(attribute, &val, false);
 }
 
 static uint32_t get_feature_map_value(cluster_t *cluster)
@@ -608,8 +608,8 @@ static esp_err_t update_color_capability(cluster_t *cluster, uint16_t value)
     VerifyOrReturnError(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
     val.val.u16 |= value;
     /* Here we can't call attribute::update() since the chip stack would not have started yet, since we are
-    still creating the data model. So, we are directly using attribute::set_val(). */
-    return esp_matter::attribute::set_val(attribute, &val);
+    still creating the data model. So, we are directly using attribute::set_val_internal(). */
+    return esp_matter::attribute::set_val_internal(attribute, &val, false);
 }
 
 namespace hue_saturation {
@@ -827,7 +827,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         esp_matter_attr_val_t val = esp_matter_invalid(NULL);
         VerifyOrReturnError(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
         val.val.u8 = val.val.u8 | set_third_bit;
-        return esp_matter::attribute::set_val(attribute, &val);
+        return esp_matter::attribute::set_val_internal(attribute, &val, false);
     }
 
     ESP_LOGE(TAG, "Cluster shall support Lift feature");
@@ -861,7 +861,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         esp_matter_attr_val_t val = esp_matter_invalid(NULL);
         VerifyOrReturnError(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
         val.val.u8 = val.val.u8 | set_fourth_bit;
-        return esp_matter::attribute::set_val(attribute, &val);
+        return esp_matter::attribute::set_val_internal(attribute, &val, false);
     }
 
     ESP_LOGE(TAG, "Cluster shall support Tilt feature");

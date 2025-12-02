@@ -1048,7 +1048,7 @@ Status emberAfWriteAttribute(const chip::app::ConcreteAttributePath &path, const
     if (status != Status::Success) {
         return status;
     }
-    esp_err_t err = esp_matter::attribute::set_val(attribute, &val);
+    esp_err_t err = esp_matter::attribute::set_val_internal(attribute, &val);
     if (err != ESP_OK && err != ESP_ERR_NOT_FINISHED) {
         status = Status::Failure;
     }
