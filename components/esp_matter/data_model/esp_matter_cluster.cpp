@@ -3810,6 +3810,174 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* ecosystem_information */
 
+namespace camera_av_stream_management {
+
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, CameraAvStreamManagement::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CameraAvStreamManagement::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        // The server creation api is complex and cannot be called directly from esp_matter_delegate_callbacks.cpp
+        // if (config->delegate != nullptr) {
+        //     static const auto delegate_init_cb = CameraAvStreamManagementDelegateInitCB;
+        //     set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        // }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterCameraAvStreamManagementPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, config->feature_flags);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, 1);
+
+        attribute::create_max_content_buffer_size(cluster, config->max_content_buffer_size);
+        attribute::create_max_network_bandwidth(cluster, config->max_network_bandwidth);
+        attribute::create_supported_stream_usages(cluster, NULL, 0, 0);
+        attribute::create_stream_usage_priorities(cluster, NULL, 0, 0);
+
+
+        // check against at least one feature conformance
+        VALIDATE_FEATURES_AT_LEAST_ONE("Audio,Video,Snapshot",
+                                        feature::audio::get_id(), feature::video::get_id(), feature::snapshot::get_id());
+        if (has(feature::audio::get_id())) {
+            VerifyOrReturnValue(feature::audio::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            if (has(feature::speaker::get_id())) {
+                VerifyOrReturnValue(feature::speaker::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+        }
+        if (has(feature::video::get_id())) {
+            VerifyOrReturnValue(feature::video::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::snapshot::get_id())) {
+            VerifyOrReturnValue(feature::snapshot::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        // Add features based on feature map
+        if (has(feature::local_storage::get_id())) {
+            VerifyOrReturnValue(feature::local_storage::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+
+        if (has(feature::video::get_id())|| has(feature::snapshot::get_id())) {
+            if (has(feature::image_control::get_id())) {
+                VerifyOrReturnValue(feature::image_control::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+            if (has(feature::watermark::get_id())) {
+                VerifyOrReturnValue(feature::watermark::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+            if (has(feature::on_screen_display::get_id())) {
+                VerifyOrReturnValue(feature::on_screen_display::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+            if (has(feature::high_dynamic_range::get_id())) {
+                VerifyOrReturnValue(feature::high_dynamic_range::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+            if (has(feature::night_vision::get_id())) {
+                VerifyOrReturnValue(feature::night_vision::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+        }
+        if (has(feature::privacy::get_id())) {
+            VerifyOrReturnValue(feature::privacy::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        command::create_set_stream_priorities(cluster);
+
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+} /*camera av stream management*/
+
+namespace webrtc_transport_provider {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, WebRTCTransportProvider::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, WebRTCTransportProvider::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        // The server creation api is complex and cannot be called directly from esp_matter_delegate_callbacks.cpp
+        // if (config->delegate != nullptr) {
+        //     static const auto delegate_init_cb = WebrtcTransportProviderDelegateInitCB;
+        //     set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        // }
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, 1);
+
+        attribute::create_current_sessions(cluster, NULL, 0, 0);
+
+
+        command::create_solicit_offer(cluster);
+        command::create_solicit_offer_response(cluster);
+        command::create_provide_offer(cluster);
+        command::create_provide_offer_response(cluster);
+        command::create_provide_answer(cluster);
+        command::create_provide_ice_candidates(cluster);
+        command::create_end_session(cluster);
+
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+} /*webrtc transport provider*/
+
+namespace webrtc_transport_requestor {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, WebRTCTransportRequestor::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, WebRTCTransportRequestor::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        // The server creation api is complex and cannot be called directly from esp_matter_delegate_callbacks.cpp
+        // if (config->delegate != nullptr) {
+        //     static const auto delegate_init_cb = WebrtcTransportRequestorDelegateInitCB;
+        //     set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        // }
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, 1);
+
+        attribute::create_current_sessions(cluster, NULL, 0, 0);
+
+
+        command::create_offer(cluster);
+        command::create_answer(cluster);
+        command::create_ice_candidates(cluster);
+        command::create_end(cluster);
+
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+} /*webrtc transport requestor*/
+
+
 // namespace binary_input_basic {
 //     // ToDo
 // } /* binary_input_basic */

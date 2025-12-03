@@ -2009,6 +2009,51 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /* heat_pump */
 
+namespace camera {
+
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_CAMERA_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_CAMERA_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = esp_matter::endpoint::add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+    cluster_t *camera_av_stream_management_cluster = cluster::camera_av_stream_management::create(
+        endpoint,
+        &(config->camera_av_stream_management),
+        CLUSTER_FLAG_SERVER
+    );
+    camera_av_stream_management::feature::video::add(camera_av_stream_management_cluster);
+    camera_av_stream_management::feature::audio::add(camera_av_stream_management_cluster);
+    camera_av_stream_management::feature::snapshot::add(camera_av_stream_management_cluster);
+    cluster::webrtc_transport_provider::create(
+        endpoint,
+        &(config->webrtc_transport_provider),
+        CLUSTER_FLAG_SERVER
+    );
+    cluster::webrtc_transport_requestor::create(
+        endpoint,
+        &(config->webrtc_transport_requestor),
+        CLUSTER_FLAG_CLIENT
+    );
+    return ESP_OK;
+}
+
+} /* camera */
+
+
 namespace thermostat_controller {
 uint32_t get_device_type_id()
 {
