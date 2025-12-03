@@ -28,7 +28,7 @@ variables:
     IDF_CHECKOUT_REF: "v5.4.1"
     # This variable represents the short hash of the connectedhomeip submodule.
     # Note: Do change this short hash on submodule update MRs.
-    CHIP_SHORT_HASH: "320b9a6f6c"
+    CHIP_SHORT_HASH: "bc661692ad"
     DOCKER_IMAGE_NAME: "espressif/chip-idf"
 
 .add_gitlab_ssh_key: &add_gitlab_ssh_key |
@@ -112,9 +112,7 @@ variables:
     - rm -rf ${ESP_MATTER_PATH}/../platform
     - mkdir -p ${ESP_MATTER_PATH}/../platform
     - cp -r ${CHIP_SUBMODULE_PATH}/src/platform/ESP32 $ESP_MATTER_PATH/../platform/ESP32_custom
-    # We have modified the ESP32SecureCertDataProvider.h file to include the ESP32FactoryDataProvider.h
-    # So copying all files from the external_platform directory.
-    - cp ${ESP_MATTER_PATH}/examples/common/external_platform/* $ESP_MATTER_PATH/../platform/ESP32_custom/
+    - cp ${ESP_MATTER_PATH}/examples/common/external_platform/BUILD.gn $ESP_MATTER_PATH/../platform/ESP32_custom
     - cd ${ESP_MATTER_PATH}/examples/light
     - cp sdkconfig.defaults sdkconfig.defaults.backup
     - cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
@@ -278,7 +276,7 @@ build_image:
     - *add_gitlab_ssh_key
     - *get_build_caches
     - *setup_idf
-    - pip install 'idf-component-manager~=2.1.2'
+    - pip install 'idf-component-manager~=2.2'
     - cd ${ESP_MATTER_PATH}
     - mkdir -p ${REPOS_PATH}
     - *update_build_caches
