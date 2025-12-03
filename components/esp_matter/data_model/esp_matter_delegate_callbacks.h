@@ -55,6 +55,7 @@ void ActionsDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void ThermostatDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void OtaSoftwareUpdateProviderDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void DiagnosticLogsDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void ChimeDelegateInitCB(void *delegate, uint16_t endpoint_id);
 } // namespace delegate_cb
 
 } // namespace cluster

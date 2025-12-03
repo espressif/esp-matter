@@ -998,5 +998,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 }/*webrtc transport requestor*/
 
 
+namespace chime {
+typedef struct config {
+    void *delegate;
+    config() : delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* chime */
+
 } /* cluster */
 } /* esp_matter */
