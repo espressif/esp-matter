@@ -52,7 +52,7 @@ void pairing_command::OnCommissioningSuccess(chip::PeerId peerId)
     if (m_callbacks.commissioning_success_callback) {
         auto fabric = controller_instance.get_commissioner()->GetFabricTable()->FindFabricWithCompressedId(
             peerId.GetCompressedFabricId());
-        m_callbacks.commissioning_success_callback(ScopedNodeId(fabric->GetFabricIndex(), peerId.GetNodeId()));
+        m_callbacks.commissioning_success_callback(ScopedNodeId(peerId.GetNodeId(), fabric->GetFabricIndex()));
     }
 }
 
@@ -68,7 +68,7 @@ void pairing_command::OnCommissioningFailure(
         auto fabric = controller_instance.get_commissioner()->GetFabricTable()->FindFabricWithCompressedId(
             peerId.GetCompressedFabricId());
         m_callbacks.commissioning_failure_callback(
-            ScopedNodeId(fabric->GetFabricIndex(), peerId.GetNodeId()), error, stageFailed,
+            ScopedNodeId(peerId.GetNodeId(), fabric->GetFabricIndex()), error, stageFailed,
             additionalErrorInfo.HasValue() ? std::make_optional(additionalErrorInfo.Value()) : std::nullopt);
     }
     if (m_device_is_icd) {
@@ -106,7 +106,7 @@ void pairing_command::OnICDStayActiveComplete(ScopedNodeId deviceId, uint32_t pr
 void pairing_command::OnDiscoveredDevice(const Dnssd::CommissionNodeData &nodeData)
 {
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
-    // Ignore nodes with closed comissioning window
+    // Ignore nodes with closed commissioning window
     VerifyOrReturn(nodeData.commissioningMode != 0);
     const uint16_t port = nodeData.port;
     char buf[Inet::IPAddress::kMaxStringLength];
