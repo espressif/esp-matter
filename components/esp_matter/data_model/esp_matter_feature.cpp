@@ -4212,5 +4212,159 @@ namespace webrtc_transport_requestor {
 }/*webrtc_transport_requestor*/
 
 
+namespace closure_control {
+namespace feature {
+namespace positioning {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureControl::Feature::kPositioning);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* positioning */
+
+namespace motion_latching {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureControl::Feature::kMotionLatching);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    /* Attributes managed internally */
+    attribute::create_latch_control_modes(cluster, 0);
+    return ESP_OK;
+}
+
+} /* motion_latching */
+
+namespace instantaneous {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureControl::Feature::kInstantaneous);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* instantaneous */
+
+namespace speed {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureControl::Feature::kSpeed);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* speed */
+
+namespace ventilation {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureControl::Feature::kVentilation);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* ventilation */
+
+namespace pedestrian {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureControl::Feature::kPedestrian);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* pedestrian */
+
+namespace calibration {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureControl::Feature::kCalibration);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    command::create_calibrate(cluster);
+    return ESP_OK;
+}
+
+} /* calibration */
+
+namespace protection {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureControl::Feature::kProtection);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* protection */
+
+namespace manually_operable {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureControl::Feature::kManuallyOperable);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Events
+    event::create_engage_state_changed(cluster);
+    return ESP_OK;
+}
+
+} /* manually_operable */
+
+} /* feature */
+} /* closure_control */
+
 } /* cluster */
 } /* esp_matter */

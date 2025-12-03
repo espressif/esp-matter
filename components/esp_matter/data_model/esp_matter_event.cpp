@@ -842,5 +842,30 @@ event_t *create_occupancy_changed(cluster_t *cluster)
 } // namespace event
 } // namespace occupancy_sensing
 
+namespace closure_control {
+namespace event {
+event_t *create_operational_error(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, ClosureControl::Events::OperationalError::Id);
+}
+
+event_t *create_movement_completed(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, ClosureControl::Events::MovementCompleted::Id);
+}
+
+event_t *create_engage_state_changed(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, ClosureControl::Events::EngageStateChanged::Id);
+}
+
+event_t *create_secure_state_changed(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, ClosureControl::Events::SecureStateChanged::Id);
+}
+
+} // namespace event
+} // namespace closure_control
+
 } // namespace cluster
 } // namespace esp_matter

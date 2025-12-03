@@ -48,6 +48,7 @@
 #include <app/clusters/ota-provider/CodegenIntegration.h>
 #include <app/clusters/diagnostic-logs-server/diagnostic-logs-server.h>
 #include <app/clusters/chime-server/chime-server.h>
+#include <app/clusters/closure-control-server/closure-control-server.h>
 #include <unordered_map>
 
 using namespace chip::app::Clusters;
@@ -546,6 +547,16 @@ void ChimeDelegateInitCB(void *delegate, uint16_t endpoint_id)
     ChimeDelegate *chime_delegate = static_cast<ChimeDelegate*>(delegate);
     ChimeServer *chime_server = new ChimeServer(endpoint_id, *chime_delegate);
     chime_server->Init();
+}
+
+void ClosureControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    ClosureControl::DelegateBase *closure_control_delegate = static_cast<ClosureControl::DelegateBase*>(delegate);
+    ClosureControl::MatterContext *matter_context = new ClosureControl::MatterContext(endpoint_id);
+    ClosureControl::ClusterLogic *cluster_logic = new ClosureControl::ClusterLogic(*closure_control_delegate, *matter_context);
+    ClosureControl::Interface *server_interface = new ClosureControl::Interface(endpoint_id, *cluster_logic);
+    server_interface->Init();
 }
 
 } // namespace delegate_cb

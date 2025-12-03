@@ -1892,5 +1892,65 @@ namespace webrtc_transport_requestor {
 }/*webrtc_transport_requestor*/
 
 
+namespace closure_control {
+namespace feature {
+
+namespace positioning {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* positioning */
+
+namespace motion_latching {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* motion_latching */
+
+namespace instantaneous {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* instantaneous */
+
+namespace speed {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* speed */
+
+namespace ventilation {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* ventilation */
+
+namespace pedestrian {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* pedestrian */
+
+namespace calibration {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* calibration */
+
+namespace protection {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* protection */
+
+namespace manually_operable {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* manually_operable */
+
+} /* feature */
+} /* closure_control */
+
 } /* cluster */
 } /* esp_matter */

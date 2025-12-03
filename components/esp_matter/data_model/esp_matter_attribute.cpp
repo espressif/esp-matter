@@ -4945,5 +4945,47 @@ attribute_t *create_enabled(cluster_t *cluster, bool value)
 
 } /* chime */
 
+namespace closure_control {
+namespace attribute {
+attribute_t *create_countdown_time(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, ClosureControl::Attributes::CountdownTime::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_main_state(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ClosureControl::Attributes::MainState::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
+}
+
+attribute_t *create_current_error_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ClosureControl::Attributes::CurrentErrorList::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_overall_current_state(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ClosureControl::Attributes::OverallCurrentState::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_overall_target_state(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ClosureControl::Attributes::OverallTargetState::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_latch_control_modes(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ClosureControl::Attributes::LatchControlModes::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bitmap8(value));
+}
+
+} /* attribute */
+
+} /* closure_control */
+
 } /* cluster */
 } /* esp_matter */
