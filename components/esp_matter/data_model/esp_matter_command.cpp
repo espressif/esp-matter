@@ -3053,5 +3053,52 @@ command_t *create_step(cluster_t *cluster)
 } /* command */
 } /* closure_dimension */
 
+namespace camera_av_settings_user_level_management {
+namespace command {
+command_t *create_mptz_set_position(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvSettingsUserLevelManagement::Commands::MPTZSetPosition::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_mptz_relative_move(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvSettingsUserLevelManagement::Commands::MPTZRelativeMove::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_mptz_move_to_preset(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvSettingsUserLevelManagement::Commands::MPTZMoveToPreset::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_mptz_save_preset(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvSettingsUserLevelManagement::Commands::MPTZSavePreset::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_mptz_remove_preset(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvSettingsUserLevelManagement::Commands::MPTZRemovePreset::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_dptz_set_viewport(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvSettingsUserLevelManagement::Commands::DPTZSetViewport::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_dptz_relative_move(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvSettingsUserLevelManagement::Commands::DPTZRelativeMove::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* camera_av_settings_user_level_management */
+
 } /* cluster */
 } /* esp_matter */

@@ -4518,5 +4518,124 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* closure_dimension */
 
+namespace camera_av_settings_user_level_management {
+namespace feature {
+namespace digital_ptz {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvSettingsUserLevelManagement::Feature::kDigitalPTZ);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_dptz_streams(cluster, NULL, 0, 0);
+    // Commands
+    command::create_dptz_set_viewport(cluster);
+    return ESP_OK;
+}
+
+} /* digital_ptz */
+
+namespace mechanical_pan {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvSettingsUserLevelManagement::Feature::kMechanicalPan);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_mptz_position(cluster, NULL, 0, 0);
+    attribute::create_pan_min(cluster, 0);
+    attribute::create_pan_max(cluster, 0);
+    attribute::create_movement_state(cluster, 0);
+    // Commands
+    command::create_mptz_set_position(cluster);
+    command::create_mptz_relative_move(cluster);
+    return ESP_OK;
+}
+
+} /* mechanical_pan */
+
+namespace mechanical_tilt {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvSettingsUserLevelManagement::Feature::kMechanicalTilt);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_mptz_position(cluster, NULL, 0, 0);
+    attribute::create_tilt_min(cluster, 0);
+    attribute::create_tilt_max(cluster, 0);
+    attribute::create_movement_state(cluster, 0);
+    // Commands
+    command::create_mptz_set_position(cluster);
+    command::create_mptz_relative_move(cluster);
+    return ESP_OK;
+}
+
+} /* mechanical_tilt */
+
+namespace mechanical_zoom {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvSettingsUserLevelManagement::Feature::kMechanicalZoom);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_mptz_position(cluster, NULL, 0, 0);
+    attribute::create_zoom_max(cluster, 0);
+    attribute::create_movement_state(cluster, 0);
+    // Commands
+    command::create_mptz_set_position(cluster);
+    command::create_mptz_relative_move(cluster);
+    return ESP_OK;
+}
+
+} /* mechanical_zoom */
+
+namespace mechanical_presets {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvSettingsUserLevelManagement::Feature::kMechanicalPresets);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_max_presets(cluster, 0);
+    attribute::create_mptz_presets(cluster, NULL, 0, 0);
+    // Commands
+    command::create_mptz_move_to_preset(cluster);
+    command::create_mptz_save_preset(cluster);
+    command::create_mptz_remove_preset(cluster);
+    return ESP_OK;
+}
+
+} /* mechanical_presets */
+
+} /* feature */
+} /* camera_av_settings_user_level_management */
+
 } /* cluster */
 } /* esp_matter */

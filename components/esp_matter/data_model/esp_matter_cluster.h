@@ -971,7 +971,6 @@ namespace camera_av_stream_management {
 typedef struct config {
     uint32_t max_content_buffer_size;
     uint32_t max_network_bandwidth;
-    void* delegate;
     uint32_t feature_flags;
     config()  : max_content_buffer_size(0), max_network_bandwidth(0), feature_flags(0) {}
 } config_t;
@@ -980,19 +979,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 }/*camera av stream management*/
 
 namespace webrtc_transport_provider {
-    typedef struct config {
-    void* delegate;
-    config()  {}
-} config_t;
+using config_t = common::config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 }/*webrtc transport provider*/
 
 namespace webrtc_transport_requestor {
-    typedef struct config {
-    void* delegate;
-    config()  {}
-} config_t;
+using config_t = common::config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 }/*webrtc transport requestor*/
@@ -1026,6 +1019,15 @@ typedef struct config {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* closure_dimension */
+
+namespace camera_av_settings_user_level_management {
+typedef struct config {
+    uint32_t feature_flags;
+    config() : feature_flags(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* camera_av_settings_user_level_management */
 
 } /* cluster */
 } /* esp_matter */

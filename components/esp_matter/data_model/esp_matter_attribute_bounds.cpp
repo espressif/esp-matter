@@ -673,5 +673,46 @@ void add_bounds_cb(cluster_t *cluster)
 
 } /* thermostat_user_interface_configuration */
 
+namespace camera_av_settings_user_level_management {
+
+void add_bounds_cb(cluster_t *cluster)
+{
+    VerifyOrReturn(cluster != nullptr, ESP_LOGE(TAG, "Cluster is NULL. Add bounds Failed!!"));
+    attribute_t *current_attribute = esp_matter::attribute::get_first(cluster);
+    VerifyOrReturn(current_attribute != nullptr, ESP_LOGE(TAG, "Attribute is NULL."));
+    while(current_attribute) {
+        switch(esp_matter::attribute::get_id(current_attribute)) {
+            case CameraAvSettingsUserLevelManagement::Attributes::ZoomMax::Id: {
+                uint8_t min = 2, max = 100;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint8(min), esp_matter_uint8(max));
+                break;
+            }
+            case CameraAvSettingsUserLevelManagement::Attributes::TiltMin::Id: {
+                int16_t min = -180, max = 179;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_int16(min), esp_matter_int16(max));
+                break;
+            }
+            case CameraAvSettingsUserLevelManagement::Attributes::TiltMax::Id: {
+                int16_t min = -179, max = 180;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_int16(min), esp_matter_int16(max));
+                break;
+            }
+            case CameraAvSettingsUserLevelManagement::Attributes::PanMin::Id: {
+                int16_t min = -180, max = 179;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_int16(min), esp_matter_int16(max));
+                break;
+            }
+            case CameraAvSettingsUserLevelManagement::Attributes::PanMax::Id: {
+                int16_t min = -179, max = 180;
+                esp_matter::attribute::add_bounds(current_attribute, esp_matter_int16(min), esp_matter_int16(max));
+                break;
+            }
+            default:
+                break;
+        }
+        current_attribute = esp_matter::attribute::get_next(current_attribute);
+    }
+}
+} /* camera_av_settings_user_level_management */
 } /* cluster */
 } /* esp_matter */
