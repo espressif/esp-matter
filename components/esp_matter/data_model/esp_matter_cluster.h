@@ -802,7 +802,7 @@ namespace power_topology {
 typedef struct config {
     uint32_t feature_flags;
     void *delegate;
-    config() : feature_flags(0), delegate(nullptr) {} 
+    config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -966,6 +966,37 @@ namespace ecosystem_information {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* ecosystem_information */
+
+namespace camera_av_stream_management {
+typedef struct config {
+    uint32_t max_content_buffer_size;
+    uint32_t max_network_bandwidth;
+    void* delegate;
+    uint32_t feature_flags;
+    config()  : max_content_buffer_size(0), max_network_bandwidth(0), feature_flags(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+}/*camera av stream management*/
+
+namespace webrtc_transport_provider {
+    typedef struct config {
+    void* delegate;
+    config()  {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+}/*webrtc transport provider*/
+
+namespace webrtc_transport_requestor {
+    typedef struct config {
+    void* delegate;
+    config()  {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+}/*webrtc transport requestor*/
+
 
 } /* cluster */
 } /* esp_matter */

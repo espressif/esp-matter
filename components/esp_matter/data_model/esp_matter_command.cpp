@@ -2855,5 +2855,152 @@ command_t *create_set_default_ntp(cluster_t *cluster)
 } /* command */
 } /* time_synchronization */
 
+namespace camera_av_stream_management {
+namespace command {
+
+command_t *create_audio_stream_allocate(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvStreamManagement::Commands::AudioStreamAllocate::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_audio_stream_allocate_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvStreamManagement::Commands::AudioStreamAllocateResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_audio_stream_deallocate(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvStreamManagement::Commands::AudioStreamDeallocate::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_video_stream_allocate(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvStreamManagement::Commands::VideoStreamAllocate::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_video_stream_allocate_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvStreamManagement::Commands::VideoStreamAllocateResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_video_stream_modify(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvStreamManagement::Commands::VideoStreamModify::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_video_stream_deallocate(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvStreamManagement::Commands::VideoStreamDeallocate::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_snapshot_stream_allocate(cluster_t *cluster)
+
+{
+    return esp_matter::command::create(cluster, CameraAvStreamManagement::Commands::SnapshotStreamAllocate::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_snapshot_stream_allocate_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvStreamManagement::Commands::SnapshotStreamAllocateResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_snapshot_stream_modify(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvStreamManagement::Commands::SnapshotStreamModify::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_snapshot_stream_deallocate(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvStreamManagement::Commands::SnapshotStreamDeallocate::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_set_stream_priorities(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvStreamManagement::Commands::SetStreamPriorities::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_capture_snapshot(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvStreamManagement::Commands::CaptureSnapshot::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_capture_snapshot_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvStreamManagement::Commands::CaptureSnapshotResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+}
+
+} /* command */
+} /*camera av stream management*/
+
+
+
+namespace webrtc_transport_provider {
+namespace command {
+
+command_t *create_solicit_offer(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WebRTCTransportProvider::Commands::SolicitOffer::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_solicit_offer_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WebRTCTransportProvider::Commands::SolicitOfferResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_provide_offer(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WebRTCTransportProvider::Commands::ProvideOffer::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_provide_offer_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WebRTCTransportProvider::Commands::ProvideOfferResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_provide_answer(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WebRTCTransportProvider::Commands::ProvideAnswer::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_provide_ice_candidates(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WebRTCTransportProvider::Commands::ProvideICECandidates::Id, COMMAND_FLAG_ACCEPTED,NULL);
+}
+
+command_t *create_end_session(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WebRTCTransportProvider::Commands::EndSession::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+}/*webrtc_transport_provider*/
+
+namespace webrtc_transport_requestor {
+    namespace command {
+
+    command_t *create_offer(cluster_t *cluster)
+    {
+        return esp_matter::command::create(cluster, WebRTCTransportRequestor::Commands::Offer::Id, COMMAND_FLAG_ACCEPTED, NULL);
+    }
+
+    command_t *create_answer(cluster_t *cluster)
+    {
+        return esp_matter::command::create(cluster, WebRTCTransportRequestor::Commands::Answer::Id, COMMAND_FLAG_ACCEPTED, NULL);
+    }
+
+    command_t *create_ice_candidates(cluster_t *cluster)
+    {
+        return esp_matter::command::create(cluster, WebRTCTransportRequestor::Commands::ICECandidates::Id, COMMAND_FLAG_ACCEPTED, NULL);
+    }
+
+    command_t *create_end(cluster_t *cluster)
+    {
+        return esp_matter::command::create(cluster, WebRTCTransportRequestor::Commands::End::Id, COMMAND_FLAG_ACCEPTED, NULL);
+    }
+
+} /* command */
+}/*webrtc_transport_requestor*/
+
+
 } /* cluster */
 } /* esp_matter */
