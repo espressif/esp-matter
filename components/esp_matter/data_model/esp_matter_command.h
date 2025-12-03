@@ -566,5 +566,17 @@ command_t *create_step(cluster_t *cluster);
 } /* command */
 } /* closure_dimension */
 
+namespace camera_av_settings_user_level_management {
+namespace command {
+command_t *create_mptz_set_position(cluster_t *cluster);
+command_t *create_mptz_relative_move(cluster_t *cluster);
+command_t *create_mptz_move_to_preset(cluster_t *cluster);
+command_t *create_mptz_save_preset(cluster_t *cluster);
+command_t *create_mptz_remove_preset(cluster_t *cluster);
+command_t *create_dptz_set_viewport(cluster_t *cluster);
+command_t *create_dptz_relative_move(cluster_t *cluster);
+} /* command */
+} /* camera_av_settings_user_level_management */
+
 } /* cluster */
 } /* esp_matter */

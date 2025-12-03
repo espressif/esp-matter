@@ -3826,11 +3826,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     cluster_t *cluster = esp_matter::cluster::create(endpoint, CameraAvStreamManagement::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CameraAvStreamManagement::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
-        // The server creation api is complex and cannot be called directly from esp_matter_delegate_callbacks.cpp
-        // if (config->delegate != nullptr) {
-        //     static const auto delegate_init_cb = CameraAvStreamManagementDelegateInitCB;
-        //     set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
-        // }
+        // TODO: Add a delegate initialization callback.
+        // The current esp_matter initialization flow makes this hard to implement cleanly.
+
         static const auto plugin_server_init_cb = CALL_ONCE(MatterCameraAvStreamManagementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
@@ -3840,7 +3838,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_feature_map(cluster, config->feature_flags);
 
         /* Attributes not managed internally */
-        global::attribute::create_cluster_revision(cluster, 1);
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
 
         attribute::create_max_content_buffer_size(cluster, config->max_content_buffer_size);
         attribute::create_max_network_bandwidth(cluster, config->max_network_bandwidth);
@@ -3909,18 +3907,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     cluster_t *cluster = esp_matter::cluster::create(endpoint, WebRTCTransportProvider::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, WebRTCTransportProvider::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
-        // The server creation api is complex and cannot be called directly from esp_matter_delegate_callbacks.cpp
-        // if (config->delegate != nullptr) {
-        //     static const auto delegate_init_cb = WebrtcTransportProviderDelegateInitCB;
-        //     set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
-        // }
+        // TODO: Add a delegate initialization callback.
+        // The current esp_matter initialization flow makes this hard to implement cleanly.
+
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
         /* Attributes not managed internally */
-        global::attribute::create_cluster_revision(cluster, 1);
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
 
         attribute::create_current_sessions(cluster, NULL, 0, 0);
 
@@ -3952,18 +3948,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     cluster_t *cluster = esp_matter::cluster::create(endpoint, WebRTCTransportRequestor::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, WebRTCTransportRequestor::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
-        // The server creation api is complex and cannot be called directly from esp_matter_delegate_callbacks.cpp
-        // if (config->delegate != nullptr) {
-        //     static const auto delegate_init_cb = WebrtcTransportRequestorDelegateInitCB;
-        //     set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
-        // }
+        // TODO: Add a delegate initialization callback.
+        // The current esp_matter initialization flow makes this hard to implement cleanly.
+
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
         /* Attributes not managed internally */
-        global::attribute::create_cluster_revision(cluster, 1);
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
 
         attribute::create_current_sessions(cluster, NULL, 0, 0);
 
@@ -4236,6 +4230,61 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 
 } /* closure_dimension */
+
+namespace camera_av_settings_user_level_management {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, CameraAvSettingsUserLevelManagement::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CameraAvSettingsUserLevelManagement::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        // TODO: Add a delegate initialization callback.
+        // The current esp_matter initialization flow makes this hard to implement cleanly.
+
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterCameraAvSettingsUserLevelManagementPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        set_add_bounds_callback(cluster, camera_av_settings_user_level_management::add_bounds_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, config->feature_flags);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        // check against O.a+ feature conformance
+        VALIDATE_FEATURES_AT_LEAST_ONE("DigitalPTZ,MechanicalPan,MechanicalTilt,MechanicalZoom",
+                                      feature::digital_ptz::get_id(), feature::mechanical_pan::get_id(), feature::mechanical_tilt::get_id(), feature::mechanical_zoom::get_id());
+        if (has(feature::digital_ptz::get_id())) {
+            VerifyOrReturnValue(feature::digital_ptz::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::mechanical_pan::get_id())) {
+            VerifyOrReturnValue(feature::mechanical_pan::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::mechanical_tilt::get_id())) {
+            VerifyOrReturnValue(feature::mechanical_tilt::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::mechanical_zoom::get_id())) {
+            VerifyOrReturnValue(feature::mechanical_zoom::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::mechanical_presets::get_id())) {
+            if (has(feature::mechanical_pan::get_id()) || has(feature::mechanical_tilt::get_id()) || has(feature::mechanical_zoom::get_id())) {
+                VerifyOrReturnValue(feature::mechanical_presets::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+        }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+
+} /* camera_av_settings_user_level_management */
 
 } /* cluster */
 } /* esp_matter */
