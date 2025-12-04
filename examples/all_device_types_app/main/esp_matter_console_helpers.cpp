@@ -29,6 +29,7 @@
 #include <app/clusters/fan-control-server/fan-control-delegate.h>
 #include <app/clusters/fan-control-server/fan-control-server.h>
 #include "electrical_measurement/electrical_measurement.h"
+#include "mock_delegates/mock_chime_delegate.h"
 
 // External variables for electrical sensor initialization
 bool g_electrical_sensor_created = false;
@@ -168,6 +169,8 @@ static void initialize_console(void)
 namespace esp_matter {
 
 static chip::app::Clusters::PowerTopology::PowerTopologyDelegate powerTopologyDelegate;
+static chip::app::Clusters::Chime::MockChimeDelegate chimeDelegate;
+
 namespace data_model {
 
 int create(uint8_t device_type_index)
@@ -580,6 +583,12 @@ int create(uint8_t device_type_index)
         case ESP_MATTER_HEAT_PUMP: {
             esp_matter::endpoint::heat_pump::config_t heat_pump_config;
             endpoint = esp_matter::endpoint::heat_pump::create(node, &heat_pump_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
+        case ESP_MATTER_CHIME: {
+            esp_matter::endpoint::chime::config_t chime_config;
+            chime_config.chime.delegate = &chimeDelegate;
+            endpoint = esp_matter::endpoint::chime::create(node, &chime_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
         case ESP_MATTER_THERMOSTAT_CONTROLLER: {

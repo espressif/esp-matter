@@ -4057,10 +4057,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     cluster_t *cluster = esp_matter::cluster::create(endpoint, Chime::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Chime::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config->delegate != nullptr) {
-            static const auto delegate_init_cb = ChimeDelegateInitCB;
-            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
-        }
+        VerifyOrReturnValue(config != NULL && config->delegate != nullptr, NULL, ESP_LOGE(TAG, "Delegate cannot be nullptr"));
+        static const auto delegate_init_cb = ChimeDelegateInitCB;
+        set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         static const auto plugin_server_init_cb = CALL_ONCE(MatterChimePluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
@@ -4075,7 +4074,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
         command::create_play_chime_sound(cluster);
-
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
