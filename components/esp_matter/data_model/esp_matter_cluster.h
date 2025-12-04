@@ -1007,5 +1007,15 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* chime */
 
+namespace closure_control {
+typedef struct config {
+    void *delegate;
+    uint32_t feature_flags;
+    config() : delegate(nullptr), feature_flags(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* closure_control */
+
 } /* cluster */
 } /* esp_matter */

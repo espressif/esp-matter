@@ -3013,5 +3013,28 @@ command_t *create_play_chime_sound(cluster_t *cluster)
 } /* command */
 } /* chime */
 
+namespace closure_control {
+namespace command {
+command_t *create_stop(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ClosureControl::Commands::Stop::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_move_to(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ClosureControl::Commands::MoveTo::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_calibrate(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ClosureControl::Commands::Calibrate::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* closure_control */
+
 } /* cluster */
 } /* esp_matter */

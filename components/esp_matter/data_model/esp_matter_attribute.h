@@ -1279,5 +1279,17 @@ attribute_t *create_enabled(cluster_t *cluster, bool value);
 } /* attribute */
 } /* chime */
 
+namespace closure_control {
+namespace attribute {
+
+attribute_t *create_countdown_time(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_main_state(cluster_t *cluster, uint8_t value);
+attribute_t *create_current_error_list(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_overall_current_state(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_overall_target_state(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_latch_control_modes(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* closure_control */
+
 } /* cluster */
 } /* esp_matter */

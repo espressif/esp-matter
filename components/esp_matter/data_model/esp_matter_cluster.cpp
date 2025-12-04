@@ -4081,5 +4081,88 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 } /* chime */
 
+namespace closure_control {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, ClosureControl::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ClosureControl::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config->delegate != nullptr) {
+            static const auto delegate_init_cb = ClosureControlDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterClosureControlPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, config->feature_flags);
+        attribute::create_main_state(cluster, 0);
+        attribute::create_current_error_list(cluster, NULL, 0, 0);
+        attribute::create_overall_current_state(cluster, NULL, 0, 0);
+        attribute::create_overall_target_state(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        // check against O.a+ feature conformance
+        VALIDATE_FEATURES_AT_LEAST_ONE("Positioning,MotionLatching",
+                                      feature::positioning::get_id(), feature::motion_latching::get_id());
+        if (has(feature::positioning::get_id())) {
+            VerifyOrReturnValue(feature::positioning::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            if (has(feature::ventilation::get_id())) {
+                VerifyOrReturnValue(feature::ventilation::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+            if (has(feature::pedestrian::get_id())) {
+                VerifyOrReturnValue(feature::pedestrian::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+            if (has(feature::calibration::get_id())) {
+                VerifyOrReturnValue(feature::calibration::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+        }
+        if (has(feature::motion_latching::get_id())) {
+            VerifyOrReturnValue(feature::motion_latching::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::manually_operable::get_id())) {
+            VerifyOrReturnValue(feature::manually_operable::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::instantaneous::get_id())) {
+            VerifyOrReturnValue(feature::instantaneous::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::speed::get_id())) {
+            if (has(feature::positioning::get_id()) && !has(feature::instantaneous::get_id())) {
+                VerifyOrReturnValue(feature::speed::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+        }
+        if (has(feature::protection::get_id())) {
+            VerifyOrReturnValue(feature::protection::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+
+        command::create_move_to(cluster);
+        if (!has(feature::instantaneous::get_id())) {
+            command::create_stop(cluster);
+        }
+
+        /* Events */
+        event::create_operational_error(cluster);
+        event::create_secure_state_changed(cluster);
+        if (!has(feature::instantaneous::get_id())) {
+            event::create_movement_completed(cluster);
+        }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+
+} /* closure_control */
+
 } /* cluster */
 } /* esp_matter */
