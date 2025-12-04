@@ -383,6 +383,10 @@ namespace chime {
 constexpr uint16_t cluster_revision = 1;
 } // namespace chime
 
+namespace closure_control {
+constexpr uint16_t cluster_revision = 1;
+} // namespace closure_control
+
 } // namespace cluster
 } // namespace esp_matter
 
