@@ -293,10 +293,15 @@ static void remove_fabric_handler(NodeId remote_node, CHIP_ERROR status)
     }
 }
 
-esp_err_t pairing_command::unpair_device(NodeId node_id)
+esp_err_t pairing_command::unpair_device(NodeId node_id, remove_fabric_callback callback)
 {
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
-    return controller_instance.unpair(node_id, remove_fabric_handler);
+
+    if(callback) {
+        return controller_instance.unpair(node_id, callback);
+    } else {
+        return controller_instance.unpair(node_id, remove_fabric_handler);
+    }
 }
 
 } // namespace controller
