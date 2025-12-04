@@ -89,3 +89,6 @@ j. Energy
 
 k. Network Infrastructure
 1. Thread Border Router
+
+l. Camera Device Types
+1. Chime
