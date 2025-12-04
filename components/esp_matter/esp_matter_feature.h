@@ -185,8 +185,8 @@ namespace lighting {
 
 typedef struct config {
     bool global_scene_control;
-    nullable<uint16_t> on_time;
-    nullable<uint16_t> off_wait_time;
+    uint16_t on_time;
+    uint16_t off_wait_time;
     nullable<uint8_t> start_up_on_off;
     config() : global_scene_control(1), on_time(0), off_wait_time(0), start_up_on_off(0) {}
 } config_t;
