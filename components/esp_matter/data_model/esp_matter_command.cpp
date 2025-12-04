@@ -3002,5 +3002,16 @@ namespace webrtc_transport_requestor {
 }/*webrtc_transport_requestor*/
 
 
+namespace chime {
+namespace command {
+command_t *create_play_chime_sound(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Chime::Commands::PlayChimeSound::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* chime */
+
 } /* cluster */
 } /* esp_matter */

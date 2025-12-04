@@ -4921,5 +4921,29 @@ attribute_t *create_current_sessions(cluster_t *cluster, uint8_t *value, uint16_
 }/*webrtc transport requestor*/
 
 
+namespace chime {
+namespace attribute {
+attribute_t *create_installed_chime_sounds(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, Chime::Attributes::InstalledChimeSounds::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_selected_chime(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, Chime::Attributes::SelectedChime::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+}
+
+attribute_t *create_enabled(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, Chime::Attributes::Enabled::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_bool(value));
+}
+
+} /* attribute */
+
+} /* chime */
+
 } /* cluster */
 } /* esp_matter */

@@ -546,5 +546,11 @@ command_t *create_end(cluster_t *cluster);
 }/*webrtc transport requestor*/
 
 
+namespace chime {
+namespace command {
+command_t *create_play_chime_sound(cluster_t *cluster);
+} /* command */
+} /* chime */
+
 } /* cluster */
 } /* esp_matter */
