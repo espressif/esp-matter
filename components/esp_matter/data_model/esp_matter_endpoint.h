@@ -153,6 +153,12 @@
 
 #define ESP_MATTER_CAMERA_DEVICE_TYPE_ID 0x0142
 #define ESP_MATTER_CAMERA_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_CLOSURE_CONTROLLER_DEVICE_TYPE_ID 0x023E
+#define ESP_MATTER_CLOSURE_CONTROLLER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_CLOSURE_DEVICE_TYPE_ID 0x0230
+#define ESP_MATTER_CLOSURE_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_CLOSURE_PANEL_DEVICE_TYPE_ID 0x0231
+#define ESP_MATTER_CLOSURE_PANEL_DEVICE_TYPE_VERSION 1
 
 namespace esp_matter {
 
@@ -1051,7 +1057,41 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** thermostat_controller **/
 
+namespace closure_controller {
+using config_t = app_client_config;
 
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* closure_controller */
+
+namespace closure {
+typedef struct config : app_base_config {
+    cluster::closure_control::config_t closure_control;
+
+    config() {
+        identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
+    }
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* closure */
+
+namespace closure_panel {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::closure_dimension::config_t closure_dimension;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* closure_panel */
 } /* endpoint */
 
 namespace node {
