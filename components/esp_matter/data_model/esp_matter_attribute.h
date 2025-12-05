@@ -1291,5 +1291,23 @@ attribute_t *create_latch_control_modes(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* closure_control */
 
+namespace closure_dimension {
+namespace attribute {
+
+attribute_t *create_current_state(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_target_state(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_resolution(cluster_t *cluster, uint16_t value);
+attribute_t *create_step_value(cluster_t *cluster, uint16_t value);
+attribute_t *create_unit(cluster_t *cluster, uint8_t value);
+attribute_t *create_unit_range(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_limit_range(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_translation_direction(cluster_t *cluster, uint8_t value);
+attribute_t *create_rotation_axis(cluster_t *cluster, uint8_t value);
+attribute_t *create_overflow(cluster_t *cluster, uint8_t value);
+attribute_t *create_modulation_type(cluster_t *cluster, uint8_t value);
+attribute_t *create_latch_control_modes(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* closure_dimension */
+
 } /* cluster */
 } /* esp_matter */
