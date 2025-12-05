@@ -170,11 +170,12 @@ public:
      * Unpair a Matter end-device which will remove the fabric from the remote device
      *
      * @param[in] node_id  NodeId of the Matter end-device to be unpaired.
+     * @param[in] callback Optional callback to be invoked upon completion of unpairing.
      *
      * @return ESP_OK on success
      * @return error in case of failure
      */
-    static esp_err_t unpair_device(NodeId node_id);
+    static esp_err_t unpair_device(NodeId node_id, remove_fabric_callback callback = nullptr);
 
 private:
     NodeId m_remote_node_id;
@@ -240,9 +241,9 @@ inline esp_err_t pairing_code_wifi_thread(NodeId node_id, const char *ssid, cons
     return pairing_command::pairing_code_wifi_thread(node_id, ssid, password, payload, dataset_buf, dataset_len);
 }
 
-inline esp_err_t unpair_device(NodeId node_id)
+inline esp_err_t unpair_device(NodeId node_id, remove_fabric_callback callback = nullptr)
 {
-    return pairing_command::unpair_device(node_id);
+    return pairing_command::unpair_device(node_id, callback);
 }
 
 } // namespace controller
