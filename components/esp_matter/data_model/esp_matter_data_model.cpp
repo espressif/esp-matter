@@ -647,6 +647,10 @@ esp_err_t set_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val, b
     ESP_RETURN_ON_FALSE(!(current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY), ESP_ERR_NOT_SUPPORTED, TAG,
                         "Attribute is not managed by esp matter data model");
 
+    // As we know that this is esp-matter managed attribute, we can safely log the path
+    ESP_LOGD(TAG, "setting attribute value for: 0x%x:0x%" PRIx32 ":0x%" PRIx32, current_attribute->endpoint_id,
+             current_attribute->cluster_id, current_attribute->attribute_id);
+
     VerifyOrReturnError(current_attribute->attribute_val_type == val->type, ESP_ERR_INVALID_ARG,
                         ESP_LOGE(TAG, "Different value type : Expected Type : %u Attempted Type: %u",
                             current_attribute->attribute_val_type, val->type));

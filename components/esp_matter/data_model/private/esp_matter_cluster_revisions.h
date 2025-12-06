@@ -379,6 +379,18 @@ namespace webrtc_transport_requestor {
 constexpr uint16_t cluster_revision = 1;
 } // namespace webrtc_transport_requestor
 
+namespace chime {
+constexpr uint16_t cluster_revision = 1;
+} // namespace chime
+
+namespace closure_control {
+constexpr uint16_t cluster_revision = 1;
+} // namespace closure_control
+
+namespace closure_dimension {
+constexpr uint16_t cluster_revision = 1;
+} // namespace closure_dimension
+
 } // namespace cluster
 } // namespace esp_matter
 

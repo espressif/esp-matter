@@ -399,8 +399,8 @@ namespace on_off {
 namespace attribute {
 attribute_t *create_on_off(cluster_t *cluster, bool value);
 attribute_t *create_global_scene_control(cluster_t *cluster, bool value);
-attribute_t *create_on_time(cluster_t *cluster, nullable<uint16_t> value);
-attribute_t *create_off_wait_time(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_on_time(cluster_t *cluster, uint16_t value);
+attribute_t *create_off_wait_time(cluster_t *cluster, uint16_t value);
 attribute_t *create_start_up_on_off(cluster_t *cluster, nullable<uint8_t> value);
 } /* attribute */
 } /* on_off */
@@ -1269,6 +1269,45 @@ attribute_t *create_current_sessions(cluster_t *cluster, uint8_t * value, uint16
 
 } /* attribute */
 }/*webrtc transport requestor*/
+
+namespace chime {
+namespace attribute {
+
+attribute_t *create_installed_chime_sounds(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_selected_chime(cluster_t *cluster, uint8_t value);
+attribute_t *create_enabled(cluster_t *cluster, bool value);
+} /* attribute */
+} /* chime */
+
+namespace closure_control {
+namespace attribute {
+
+attribute_t *create_countdown_time(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_main_state(cluster_t *cluster, uint8_t value);
+attribute_t *create_current_error_list(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_overall_current_state(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_overall_target_state(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_latch_control_modes(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* closure_control */
+
+namespace closure_dimension {
+namespace attribute {
+
+attribute_t *create_current_state(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_target_state(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_resolution(cluster_t *cluster, uint16_t value);
+attribute_t *create_step_value(cluster_t *cluster, uint16_t value);
+attribute_t *create_unit(cluster_t *cluster, uint8_t value);
+attribute_t *create_unit_range(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_limit_range(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_translation_direction(cluster_t *cluster, uint8_t value);
+attribute_t *create_rotation_axis(cluster_t *cluster, uint8_t value);
+attribute_t *create_overflow(cluster_t *cluster, uint8_t value);
+attribute_t *create_modulation_type(cluster_t *cluster, uint8_t value);
+attribute_t *create_latch_control_modes(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* closure_dimension */
 
 } /* cluster */
 } /* esp_matter */

@@ -546,5 +546,26 @@ command_t *create_end(cluster_t *cluster);
 }/*webrtc transport requestor*/
 
 
+namespace chime {
+namespace command {
+command_t *create_play_chime_sound(cluster_t *cluster);
+} /* command */
+} /* chime */
+
+namespace closure_control {
+namespace command {
+command_t *create_stop(cluster_t *cluster);
+command_t *create_move_to(cluster_t *cluster);
+command_t *create_calibrate(cluster_t *cluster);
+} /* command */
+} /* closure_control */
+
+namespace closure_dimension {
+namespace command {
+command_t *create_set_target(cluster_t *cluster);
+command_t *create_step(cluster_t *cluster);
+} /* command */
+} /* closure_dimension */
+
 } /* cluster */
 } /* esp_matter */

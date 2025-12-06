@@ -3002,5 +3002,56 @@ namespace webrtc_transport_requestor {
 }/*webrtc_transport_requestor*/
 
 
+namespace chime {
+namespace command {
+command_t *create_play_chime_sound(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Chime::Commands::PlayChimeSound::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* chime */
+
+namespace closure_control {
+namespace command {
+command_t *create_stop(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ClosureControl::Commands::Stop::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_move_to(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ClosureControl::Commands::MoveTo::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_calibrate(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ClosureControl::Commands::Calibrate::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* closure_control */
+
+namespace closure_dimension {
+namespace command {
+command_t *create_set_target(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ClosureDimension::Commands::SetTarget::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_step(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ClosureDimension::Commands::Step::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* closure_dimension */
+
 } /* cluster */
 } /* esp_matter */
