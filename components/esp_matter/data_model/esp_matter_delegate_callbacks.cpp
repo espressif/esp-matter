@@ -50,6 +50,7 @@
 #include <app/clusters/chime-server/chime-server.h>
 #include <app/clusters/closure-control-server/closure-control-server.h>
 #include <app/clusters/closure-dimension-server/closure-dimension-server.h>
+#include <app/clusters/push-av-stream-transport-server/push-av-stream-transport-cluster.h>
 #include <unordered_map>
 
 using namespace chip::app::Clusters;
@@ -569,6 +570,18 @@ void ClosureDimensionDelegateInitCB(void *delegate, uint16_t endpoint_id)
     ClosureDimension::ClusterLogic *cluster_logic = new ClosureDimension::ClusterLogic(*closure_dimension_delegate, *matter_context);
     ClosureDimension::Interface *server_interface = new ClosureDimension::Interface(endpoint_id, *cluster_logic);
     server_interface->Init();
+}
+
+
+void PushAvStreamTransportDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    static PushAvStreamTransportServer * pushavstreamtransportserverinstance = nullptr;
+    PushAvStreamTransportDelegate *push_av_stream_transport_delegate = static_cast<PushAvStreamTransportDelegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, PushAvStreamTransport::Id);
+    pushavstreamtransportserverinstance = new PushAvStreamTransportServer(endpoint_id, chip::BitMask<PushAvStreamTransport::Feature, uint32_t>(feature_map));
+    pushavstreamtransportserverinstance->SetDelegate(push_av_stream_transport_delegate);
+    pushavstreamtransportserverinstance->Init();
 }
 
 } // namespace delegate_cb

@@ -2042,5 +2042,24 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* camera_av_settings_user_level_management */
 
+namespace push_av_stream_transport {
+namespace feature {
+
+namespace per_zone_sensitivity {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* per_zone_sensitivity */
+
+/* Provisional */
+namespace metadata {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* metadata */
+
+} /* feature */
+} /* push_av_stream_transport */
+
 } /* cluster */
 } /* esp_matter */

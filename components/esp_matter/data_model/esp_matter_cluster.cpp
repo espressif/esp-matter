@@ -4291,5 +4291,55 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 } /* camera_av_settings_user_level_management */
 
+namespace push_av_stream_transport {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, PushAvStreamTransport::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PushAvStreamTransport::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config && config->delegate != nullptr) {
+            static const auto delegate_init_cb = PushAvStreamTransportDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterPushAvStreamTransportPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        attribute::create_supported_formats(cluster, NULL, 0, 0);
+        attribute::create_current_connections(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        command::create_allocate_push_transport(cluster);
+        command::create_allocate_push_transport_response(cluster);
+        command::create_deallocate_push_transport(cluster);
+        command::create_modify_push_transport(cluster);
+        command::create_set_transport_status(cluster);
+        command::create_manually_trigger_transport(cluster);
+        command::create_find_transport(cluster);
+        command::create_find_transport_response(cluster);
+
+        /* Events */
+        event::create_push_transport_begin(cluster);
+        event::create_push_transport_end(cluster);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterPushAvStreamTransportClusterServerInitCallback,
+                                                 ESPMatterPushAvStreamTransportClusterServerShutdownCallback);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+
+} /* push_av_stream_transport */
+
 } /* cluster */
 } /* esp_matter */

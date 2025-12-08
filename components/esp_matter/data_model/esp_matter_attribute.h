@@ -1325,5 +1325,13 @@ attribute_t *create_movement_state(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* camera_av_settings_user_level_management */
 
+namespace push_av_stream_transport {
+namespace attribute {
+
+attribute_t *create_supported_formats(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_current_connections(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* push_av_stream_transport */
+
 } /* cluster */
 } /* esp_matter */
