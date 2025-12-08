@@ -58,9 +58,10 @@ enum class feature_policy
 {
     k_exact_one = 0,        // O.a
     k_at_least_one = 1,     // 0.a+
+    k_at_most_one = 2,      // 0.a-
 };
 
-const char feature_policy_strs[2][16] = {"Exactly one", "At least one"};
+const char feature_policy_strs[3][16] = {"Exactly one", "At least one", "At most one"};
 
 bool validate_features(uint32_t feature_flag, feature_policy policy,
                        const char *feature_name, std::initializer_list<uint32_t> features)
@@ -81,6 +82,9 @@ bool validate_features(uint32_t feature_flag, feature_policy policy,
     case feature_policy::k_at_least_one:
         result = count >= 1;
         break;
+    case feature_policy::k_at_most_one:
+        result = count <= 1;
+        break;
     }
 
     if (!result) {
@@ -97,6 +101,10 @@ bool validate_features(uint32_t feature_flag, feature_policy policy,
 
 #define VALIDATE_FEATURES_AT_LEAST_ONE(name, ...) \
     do { if (!validate_features(config->feature_flags, feature_policy::k_at_least_one, name, {__VA_ARGS__})) \
+        return ABORT_CLUSTER_CREATE(cluster); } while(0)
+
+#define VALIDATE_FEATURES_AT_MOST_ONE(name, ...) \
+    do { if (!validate_features(config->feature_flags, feature_policy::k_at_most_one, name, {__VA_ARGS__})) \
         return ABORT_CLUSTER_CREATE(cluster); } while(0)
 
 } // anonymous namespace
@@ -4163,6 +4171,76 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 
 } /* closure_control */
+
+namespace closure_dimension {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, ClosureDimension::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ClosureDimension::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config->delegate != nullptr) {
+            static const auto delegate_init_cb = ClosureDimensionDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterClosureDimensionPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, config->feature_flags);
+        attribute::create_current_state(cluster, NULL, 0, 0);
+        attribute::create_target_state(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        // check against O.a+ feature conformance
+        VALIDATE_FEATURES_AT_LEAST_ONE("Positioning,MotionLatching",
+                                      feature::positioning::get_id(), feature::motion_latching::get_id());
+        if (has(feature::positioning::get_id())) {
+            VerifyOrReturnValue(feature::positioning::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+
+            VALIDATE_FEATURES_AT_MOST_ONE("Translation, Rotation, Modulation",
+                                      feature::translation::get_id(), feature::rotation::get_id(), feature::modulation::get_id());
+            if (has(feature::translation::get_id())) {
+                VerifyOrReturnValue(feature::translation::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+            if (has(feature::rotation::get_id())) {
+                VerifyOrReturnValue(feature::rotation::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+            if (has(feature::modulation::get_id())) {
+                VerifyOrReturnValue(feature::modulation::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+            if (has(feature::speed::get_id())) {
+                VerifyOrReturnValue(feature::speed::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+            if (has(feature::unit::get_id())) {
+                VerifyOrReturnValue(feature::unit::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+            if (has(feature::limitation::get_id())) {
+                VerifyOrReturnValue(feature::limitation::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+        }
+        if (has(feature::motion_latching::get_id())) {
+            VerifyOrReturnValue(feature::motion_latching::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+
+        command::create_set_target(cluster);
+
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+
+} /* closure_dimension */
 
 } /* cluster */
 } /* esp_matter */

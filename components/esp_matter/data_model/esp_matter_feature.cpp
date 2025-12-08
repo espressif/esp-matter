@@ -4366,5 +4366,157 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* closure_control */
 
+namespace closure_dimension {
+namespace feature {
+namespace positioning {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureDimension::Feature::kPositioning);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_resolution(cluster, 0);
+    attribute::create_step_value(cluster, 0);
+    // Commands
+    command::create_step(cluster);
+    return ESP_OK;
+}
+
+} /* positioning */
+
+namespace motion_latching {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureDimension::Feature::kMotionLatching);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_latch_control_modes(cluster, 0);
+    return ESP_OK;
+}
+
+} /* motion_latching */
+
+namespace unit {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureDimension::Feature::kUnit);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_unit(cluster, 0);
+    attribute::create_unit_range(cluster, NULL, 0, 0);
+    return ESP_OK;
+}
+
+} /* unit */
+
+namespace limitation {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureDimension::Feature::kLimitation);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_limit_range(cluster, NULL, 0, 0);
+    return ESP_OK;
+}
+
+} /* limitation */
+
+namespace speed {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureDimension::Feature::kSpeed);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* speed */
+
+namespace translation {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureDimension::Feature::kTranslation);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_translation_direction(cluster, 0);
+    return ESP_OK;
+}
+
+} /* translation */
+
+namespace rotation {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureDimension::Feature::kRotation);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_rotation_axis(cluster, 0);
+    attribute::create_overflow(cluster, 0);
+    return ESP_OK;
+}
+
+} /* rotation */
+
+namespace modulation {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureDimension::Feature::kModulation);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_modulation_type(cluster, 0);
+    return ESP_OK;
+}
+
+} /* modulation */
+
+} /* feature */
+} /* closure_dimension */
+
 } /* cluster */
 } /* esp_matter */

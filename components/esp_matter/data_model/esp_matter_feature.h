@@ -211,8 +211,8 @@ namespace lighting {
 
 typedef struct config {
     bool global_scene_control;
-    nullable<uint16_t> on_time;
-    nullable<uint16_t> off_wait_time;
+    uint16_t on_time;
+    uint16_t off_wait_time;
     nullable<uint8_t> start_up_on_off;
     config() : global_scene_control(1), on_time(0), off_wait_time(0), start_up_on_off(0) {}
 } config_t;
@@ -1951,6 +1951,60 @@ esp_err_t add(cluster_t *cluster);
 
 } /* feature */
 } /* closure_control */
+
+namespace closure_dimension {
+namespace feature {
+
+namespace positioning {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* positioning */
+
+namespace motion_latching {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* motion_latching */
+
+namespace unit {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* unit */
+
+namespace limitation {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* limitation */
+
+namespace speed {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* speed */
+
+namespace translation {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* translation */
+
+namespace rotation {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* rotation */
+
+namespace modulation {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* modulation */
+
+} /* feature */
+} /* closure_dimension */
 
 } /* cluster */
 } /* esp_matter */

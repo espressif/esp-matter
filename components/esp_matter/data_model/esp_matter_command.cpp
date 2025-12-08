@@ -3036,5 +3036,22 @@ command_t *create_calibrate(cluster_t *cluster)
 } /* command */
 } /* closure_control */
 
+namespace closure_dimension {
+namespace command {
+command_t *create_set_target(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ClosureDimension::Commands::SetTarget::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_step(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ClosureDimension::Commands::Step::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* closure_dimension */
+
 } /* cluster */
 } /* esp_matter */
