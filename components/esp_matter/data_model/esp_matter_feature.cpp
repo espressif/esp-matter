@@ -4500,5 +4500,42 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* camera_av_settings_user_level_management */
 
+namespace push_av_stream_transport {
+namespace feature {
+namespace per_zone_sensitivity {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(PushAvStreamTransport::Feature::kPerZoneSensitivity);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* per_zone_sensitivity */
+
+namespace metadata {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(PushAvStreamTransport::Feature::kMetadata);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+}
+
+} /* feature */
+} /* push_av_stream_transport */
+
 } /* cluster */
 } /* esp_matter */

@@ -1029,5 +1029,14 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* camera_av_settings_user_level_management */
 
+namespace push_av_stream_transport {
+typedef struct config {
+    void *delegate;
+    config() : delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* push_av_stream_transport */
+
 } /* cluster */
 } /* esp_matter */
