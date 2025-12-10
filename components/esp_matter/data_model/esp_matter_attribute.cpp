@@ -727,7 +727,7 @@ attribute_t *create_clients_supported_per_fabric(cluster_t *cluster, uint16_t va
 attribute_t *create_user_active_mode_trigger_hint(cluster_t *cluster, uint32_t value)
 {
     return esp_matter::attribute::create(cluster, IcdManagement::Attributes::UserActiveModeTriggerHint::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bitmap32(value));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_bitmap32(value));
 }
 
 attribute_t *create_user_active_mode_trigger_instruction(cluster_t *cluster, char *value, uint16_t length)
@@ -737,7 +737,7 @@ attribute_t *create_user_active_mode_trigger_instruction(cluster_t *cluster, cha
         return NULL;
     }
     return esp_matter::attribute::create(cluster, IcdManagement::Attributes::UserActiveModeTriggerInstruction::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_char_str(value, length),
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length),
                                          k_user_active_mode_trigger_instruction_length);
 }
 
@@ -4662,7 +4662,7 @@ attribute_t *create_granularity(cluster_t *cluster, uint8_t value)
 attribute_t *create_time_source(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::TimeSource::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
 }
 
 attribute_t *create_trusted_time_source(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -4703,13 +4703,13 @@ attribute_t *create_local_time(cluster_t *cluster, nullable<uint64_t> value)
 attribute_t *create_time_zone_database(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::TimeZoneDatabase::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
 }
 
 attribute_t *create_ntp_server_available(cluster_t *cluster, bool value)
 {
     return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::NTPServerAvailable::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bool(value));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
 }
 
 attribute_t *create_time_zone_list_max_size(cluster_t *cluster, uint8_t value)
@@ -4727,7 +4727,7 @@ attribute_t *create_dst_offset_list_max_size(cluster_t *cluster, uint8_t value)
 attribute_t *create_supports_dns_resolve(cluster_t *cluster, bool value)
 {
     return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::SupportsDNSResolve::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bool(value));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
 }
 
 } /* attribute */
