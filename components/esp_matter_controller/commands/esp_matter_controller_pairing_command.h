@@ -38,6 +38,10 @@ typedef struct {
     void (*commissioning_failure_callback)(
         ScopedNodeId peer_id, CHIP_ERROR error, chip::Controller::CommissioningStage stage,
         std::optional<chip::Credentials::AttestationVerificationResult> addtional_err_info);
+    // Callback for the success of unpairing
+    void (*unpair_success_callback)(NodeId removed_node);
+    // Callback for the failure of unpairing
+    void (*unpair_failure_callback)(NodeId removed_node, CHIP_ERROR error);
 } pairing_command_callbacks_t;
 
 /** Pairing command class to finish commissioning with Matter end-devices **/
@@ -170,12 +174,11 @@ public:
      * Unpair a Matter end-device which will remove the fabric from the remote device
      *
      * @param[in] node_id  NodeId of the Matter end-device to be unpaired.
-     * @param[in] callback Optional callback to be invoked upon completion of unpairing.
      *
      * @return ESP_OK on success
      * @return error in case of failure
      */
-    static esp_err_t unpair_device(NodeId node_id, remove_fabric_callback callback = nullptr);
+    static esp_err_t unpair_device(NodeId node_id);
 
 private:
     NodeId m_remote_node_id;
@@ -199,6 +202,8 @@ private:
         chip::Crypto::DRBG_get_bytes(m_icd_symmetric_key_buf, sizeof(m_icd_symmetric_key));
         m_icd_symmetric_key = chip::ByteSpan(m_icd_symmetric_key_buf);
     }
+
+    static void remove_fabric_handler(NodeId remote_node, CHIP_ERROR status);
 };
 
 inline esp_err_t pairing_on_network(NodeId node_id, uint32_t pincode)
@@ -241,9 +246,9 @@ inline esp_err_t pairing_code_wifi_thread(NodeId node_id, const char *ssid, cons
     return pairing_command::pairing_code_wifi_thread(node_id, ssid, password, payload, dataset_buf, dataset_len);
 }
 
-inline esp_err_t unpair_device(NodeId node_id, remove_fabric_callback callback = nullptr)
+inline esp_err_t unpair_device(NodeId node_id)
 {
-    return pairing_command::unpair_device(node_id, callback);
+    return pairing_command::unpair_device(node_id);
 }
 
 } // namespace controller

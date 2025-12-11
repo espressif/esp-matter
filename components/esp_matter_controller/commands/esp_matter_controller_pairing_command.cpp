@@ -284,24 +284,25 @@ esp_err_t pairing_command::pairing_code_wifi_thread(NodeId nodeId, const char *s
     return ESP_OK;
 }
 
-static void remove_fabric_handler(NodeId remote_node, CHIP_ERROR status)
+void pairing_command::remove_fabric_handler(NodeId remote_node, CHIP_ERROR status)
 {
     if (status == CHIP_NO_ERROR) {
         ESP_LOGI(TAG, "Succeeded to remove fabric for remote node 0x%" PRIx64, remote_node);
+        if (pairing_command::get_instance().m_callbacks.unpair_success_callback) {
+            pairing_command::get_instance().m_callbacks.unpair_success_callback(remote_node);
+        }
     } else {
         ESP_LOGE(TAG, "Failed to remove fabric for remote node 0x%" PRIx64, remote_node);
+        if (pairing_command::get_instance().m_callbacks.unpair_failure_callback) {
+            pairing_command::get_instance().m_callbacks.unpair_failure_callback(remote_node, status);
+        }
     }
 }
 
-esp_err_t pairing_command::unpair_device(NodeId node_id, remove_fabric_callback callback)
+esp_err_t pairing_command::unpair_device(NodeId node_id)
 {
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
-
-    if(callback) {
-        return controller_instance.unpair(node_id, callback);
-    } else {
-        return controller_instance.unpair(node_id, remove_fabric_handler);
-    }
+    return controller_instance.unpair(node_id, remove_fabric_handler);
 }
 
 } // namespace controller
