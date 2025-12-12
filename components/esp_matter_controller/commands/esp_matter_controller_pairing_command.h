@@ -39,9 +39,7 @@ typedef struct {
         ScopedNodeId peer_id, CHIP_ERROR error, chip::Controller::CommissioningStage stage,
         std::optional<chip::Credentials::AttestationVerificationResult> addtional_err_info);
     // Callback for the success of unpairing
-    void (*unpair_success_callback)(NodeId removed_node);
-    // Callback for the failure of unpairing
-    void (*unpair_failure_callback)(NodeId removed_node, CHIP_ERROR error);
+    void (*unpair_complete_callback)(NodeId removed_node, CHIP_ERROR error);
 } pairing_command_callbacks_t;
 
 /** Pairing command class to finish commissioning with Matter end-devices **/

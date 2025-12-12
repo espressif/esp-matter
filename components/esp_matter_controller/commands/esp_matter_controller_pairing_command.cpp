@@ -288,14 +288,12 @@ void pairing_command::remove_fabric_handler(NodeId remote_node, CHIP_ERROR statu
 {
     if (status == CHIP_NO_ERROR) {
         ESP_LOGI(TAG, "Succeeded to remove fabric for remote node 0x%" PRIx64, remote_node);
-        if (pairing_command::get_instance().m_callbacks.unpair_success_callback) {
-            pairing_command::get_instance().m_callbacks.unpair_success_callback(remote_node);
-        }
     } else {
         ESP_LOGE(TAG, "Failed to remove fabric for remote node 0x%" PRIx64, remote_node);
-        if (pairing_command::get_instance().m_callbacks.unpair_failure_callback) {
-            pairing_command::get_instance().m_callbacks.unpair_failure_callback(remote_node, status);
-        }
+    }
+
+    if (pairing_command::get_instance().m_callbacks.unpair_complete_callback) {
+        pairing_command::get_instance().m_callbacks.unpair_complete_callback(remote_node, status);
     }
 }
 
