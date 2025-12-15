@@ -8,17 +8,7 @@
 
 #include <esp_log.h>
 #include "door_lock_manager.h"
-#include <app/clusters/door-lock-server/door-lock-server.h>
-#include <platform/CHIPDeviceLayer.h>
-
-#include <app-common/zap-generated/ids/Attributes.h>
-#include <app-common/zap-generated/ids/Clusters.h>
-#include <app/ConcreteAttributePath.h>
-#include <app/data-model/Nullable.h>
 #include <lib/core/DataModelTypes.h>
-
-using namespace chip::app::Clusters;
-using chip::app::DataModel::Nullable;
 
 static const char *TAG = "doorlock_callback";
 
