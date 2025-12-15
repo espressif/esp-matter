@@ -6,7 +6,7 @@ MATTER data model implements. It has been tested with multiple ecosystem Apple, 
 See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
 
 **This example only implements mandatory clusters, attributes, commands, events, etc from the spec.**
-If you want to add any optional data model bits please add them in [create api](https://github.com/espressif/esp-matter/blob/main/examples/all_device_types_app/main/esp_matter_console_helpers.cpp#L146) under your desired device type case using [data model creation development guide](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#developing-your-product).
+If you want to add any optional data model bits please add them in [create api](https://github.com/espressif/esp-matter/blob/0c4e0a07c804102f25460ba7e2442f97d109aa0c/examples/all_device_types_app/main/esp_matter_console_helpers.cpp#L173) under your desired device type case using [data model creation development guide](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#developing-your-product).
 
 ## 1. Additional Environment Setup
 
