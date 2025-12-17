@@ -38,6 +38,8 @@ typedef struct {
     void (*commissioning_failure_callback)(
         ScopedNodeId peer_id, CHIP_ERROR error, chip::Controller::CommissioningStage stage,
         std::optional<chip::Credentials::AttestationVerificationResult> addtional_err_info);
+    // Callback for the success of unpairing
+    void (*unpair_complete_callback)(NodeId removed_node, CHIP_ERROR error);
 } pairing_command_callbacks_t;
 
 /** Pairing command class to finish commissioning with Matter end-devices **/
@@ -198,6 +200,8 @@ private:
         chip::Crypto::DRBG_get_bytes(m_icd_symmetric_key_buf, sizeof(m_icd_symmetric_key));
         m_icd_symmetric_key = chip::ByteSpan(m_icd_symmetric_key_buf);
     }
+
+    static void remove_fabric_handler(NodeId remote_node, CHIP_ERROR status);
 };
 
 inline esp_err_t pairing_on_network(NodeId node_id, uint32_t pincode)
