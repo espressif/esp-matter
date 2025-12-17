@@ -32,12 +32,12 @@ typedef struct {
     // Callback for the success or failure of PASE session establishment. err will be CHIP_NO_ERROR when the
     // commissioner establishes PASE session with peer node. Otherwise the commissioner fails to establish PASE session.
     void (*pase_callback)(CHIP_ERROR err);
-    // Callback for the sussess of commisioning
+    // Callback for the sussess of commissioning
     void (*commissioning_success_callback)(ScopedNodeId peer_id);
     // Callback for the failure of commissioning
     void (*commissioning_failure_callback)(
         ScopedNodeId peer_id, CHIP_ERROR error, chip::Controller::CommissioningStage stage,
-        std::optional<chip::Credentials::AttestationVerificationResult> addtional_err_info);
+        std::optional<chip::Credentials::AttestationVerificationResult> additional_err_info);
     // Callback for the success of unpairing
     void (*unpair_complete_callback)(NodeId removed_node, CHIP_ERROR error);
 } pairing_command_callbacks_t;
@@ -47,7 +47,7 @@ class pairing_command : public chip::Controller::DevicePairingDelegate,
                         public chip::Controller::DeviceDiscoveryDelegate {
 public:
     /****************** DevicePairingDelegate Interface *****************/
-    // This function will be called when the PASE session is established or the commisioner fails to establish
+    // This function will be called when the PASE session is established or the commissioner fails to establish
     // PASE session.
     void OnPairingComplete(CHIP_ERROR error) override;
     // The two functions are invoked upon the completion of the commissioning process, either successfully or
