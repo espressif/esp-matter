@@ -159,6 +159,8 @@
 #define ESP_MATTER_CLOSURE_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_CLOSURE_PANEL_DEVICE_TYPE_ID 0x0231
 #define ESP_MATTER_CLOSURE_PANEL_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_CHIME_DEVICE_TYPE_ID 0x0146
+#define ESP_MATTER_CHIME_DEVICE_TYPE_VERSION 1
 
 namespace esp_matter {
 
@@ -1046,6 +1048,20 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 } /* camera */
+
+namespace chime {
+
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::chime::config_t chime;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+
+} /* chime */
 
 
 namespace thermostat_controller {
