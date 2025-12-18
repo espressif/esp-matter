@@ -58,6 +58,7 @@ void DiagnosticLogsDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void ChimeDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void ClosureControlDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void ClosureDimensionDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void PushAvStreamTransportDelegateInitCB(void *delegate, uint16_t endpoint_id);
 } // namespace delegate_cb
 
 } // namespace cluster

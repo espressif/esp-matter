@@ -1309,5 +1309,29 @@ attribute_t *create_latch_control_modes(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* closure_dimension */
 
+namespace camera_av_settings_user_level_management {
+namespace attribute {
+
+attribute_t *create_mptz_position(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_max_presets(cluster_t *cluster, uint8_t value);
+attribute_t *create_mptz_presets(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_dptz_streams(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_zoom_max(cluster_t *cluster, uint8_t value);
+attribute_t *create_tilt_min(cluster_t *cluster, int16_t value);
+attribute_t *create_tilt_max(cluster_t *cluster, int16_t value);
+attribute_t *create_pan_min(cluster_t *cluster, int16_t value);
+attribute_t *create_pan_max(cluster_t *cluster, int16_t value);
+attribute_t *create_movement_state(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* camera_av_settings_user_level_management */
+
+namespace push_av_stream_transport {
+namespace attribute {
+
+attribute_t *create_supported_formats(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_current_connections(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* push_av_stream_transport */
+
 } /* cluster */
 } /* esp_matter */

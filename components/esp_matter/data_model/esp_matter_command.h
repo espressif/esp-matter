@@ -567,5 +567,30 @@ command_t *create_step(cluster_t *cluster);
 } /* command */
 } /* closure_dimension */
 
+namespace camera_av_settings_user_level_management {
+namespace command {
+command_t *create_mptz_set_position(cluster_t *cluster);
+command_t *create_mptz_relative_move(cluster_t *cluster);
+command_t *create_mptz_move_to_preset(cluster_t *cluster);
+command_t *create_mptz_save_preset(cluster_t *cluster);
+command_t *create_mptz_remove_preset(cluster_t *cluster);
+command_t *create_dptz_set_viewport(cluster_t *cluster);
+command_t *create_dptz_relative_move(cluster_t *cluster);
+} /* command */
+} /* camera_av_settings_user_level_management */
+
+namespace push_av_stream_transport {
+namespace command {
+command_t *create_allocate_push_transport(cluster_t *cluster);
+command_t *create_allocate_push_transport_response(cluster_t *cluster);
+command_t *create_deallocate_push_transport(cluster_t *cluster);
+command_t *create_modify_push_transport(cluster_t *cluster);
+command_t *create_set_transport_status(cluster_t *cluster);
+command_t *create_manually_trigger_transport(cluster_t *cluster);
+command_t *create_find_transport(cluster_t *cluster);
+command_t *create_find_transport_response(cluster_t *cluster);
+} /* command */
+} /* push_av_stream_transport */
+
 } /* cluster */
 } /* esp_matter */
