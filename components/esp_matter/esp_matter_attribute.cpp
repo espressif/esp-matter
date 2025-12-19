@@ -1088,18 +1088,18 @@ attribute_t *create_global_scene_control(cluster_t *cluster, bool value)
                                          esp_matter_bool(value));
 }
 
-attribute_t *create_on_time(cluster_t *cluster, nullable<uint16_t> value)
+attribute_t *create_on_time(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, OnOff::Attributes::OnTime::Id,
-                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE,
-                                         esp_matter_nullable_uint16(value));
+                                         ATTRIBUTE_FLAG_WRITABLE,
+                                         esp_matter_uint16(value));
 }
 
-attribute_t *create_off_wait_time(cluster_t *cluster, nullable<uint16_t> value)
+attribute_t *create_off_wait_time(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, OnOff::Attributes::OffWaitTime::Id,
-                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE,
-                                         esp_matter_nullable_uint16(value));
+                                         ATTRIBUTE_FLAG_WRITABLE,
+                                         esp_matter_uint16(value));
 }
 
 attribute_t *create_start_up_on_off(cluster_t *cluster, nullable<uint8_t> value)
