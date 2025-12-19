@@ -47,9 +47,8 @@ static void espnow_ctrl_onoff(espnow_addr_t src_addr, bool status)
     ESP_LOGI(TAG, "Using bridge endpoint: %d", bridged_switch_endpoint_id);
 
     if (bridged_switch_endpoint_id != chip::kInvalidEndpointId) {
-        lock::chip_stack_lock(portMAX_DELAY);
+        lock::ScopedChipStackLock lock(portMAX_DELAY);
         client::cluster_update(bridged_switch_endpoint_id, &req_handle);
-        lock::chip_stack_unlock();
     } else {
         ESP_LOGE(TAG, "Can't find endpoint for bridged device: " MACSTR, MAC2STR(src_addr));
     }

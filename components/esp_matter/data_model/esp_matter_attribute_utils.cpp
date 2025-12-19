@@ -636,23 +636,18 @@ esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
     attribute_t *attr = get(endpoint_id, cluster_id, attribute_id);
     ESP_RETURN_ON_FALSE(attr, ESP_ERR_INVALID_ARG, TAG, "Failed to get attribute handle");
 
-    /* Take lock if not already taken */
-    lock::status_t lock_status = lock::chip_stack_lock(portMAX_DELAY);
-    VerifyOrReturnError(lock_status != lock::FAILED, ESP_FAIL, ESP_LOGE(TAG, "Could not get task context"));
+    lock::ScopedChipStackLock lock(portMAX_DELAY);
     /* Here, the val_print function gets called on attribute write.*/
     attribute::val_print(endpoint_id, cluster_id, attribute_id, val, false);
 
-    esp_err_t err = attribute::set_val_internal(attr, val);
+    esp_err_t err = attribute::set_val(attr, val);
     if (err == ESP_OK) {
         data_model::provider::get_instance().Temporary_ReportAttributeChanged(
             chip::app::AttributePathParams(endpoint_id, cluster_id, attribute_id));
     } else if (err == ESP_ERR_NOT_FINISHED) {
         err = ESP_OK;
     }
-    if (lock_status == lock::SUCCESS) {
-        lock::chip_stack_unlock();
-    }
-    return err;
+    return ESP_OK;
 }
 
 esp_err_t report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val)
@@ -661,14 +656,11 @@ esp_err_t report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
     attribute_t *attr = get(endpoint_id, cluster_id, attribute_id);
     ESP_RETURN_ON_FALSE(attr, ESP_ERR_INVALID_ARG, TAG, "Failed to get attribute handle");
 
-    /* Take lock if not already taken */
-    lock::status_t lock_status = lock::chip_stack_lock(portMAX_DELAY);
-    VerifyOrReturnError(lock_status != lock::FAILED, ESP_FAIL, ESP_LOGE(TAG, "Could not get task context"));
-
+    lock::ScopedChipStackLock lock(portMAX_DELAY);
     /* Here, the val_print function gets called on attribute write.*/
     attribute::val_print(endpoint_id, cluster_id, attribute_id, val, false);
 
-    esp_err_t err = attribute::set_val_internal(attr, val, false);
+    esp_err_t err = attribute::set_val(attr, val, false);
     if (err == ESP_OK) {
         /* Report attribute */
         MatterReportingAttributeChangeCallback(endpoint_id, cluster_id, attribute_id);
@@ -676,9 +668,6 @@ esp_err_t report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
         err = ESP_OK;
     }
 
-    if (lock_status == lock::SUCCESS) {
-        lock::chip_stack_unlock();
-    }
     return ESP_OK;
 }
 

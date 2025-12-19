@@ -109,28 +109,69 @@ typedef enum status {
     SUCCESS,
 } status_t;
 
-/** Stack lock
+/**
+ * @brief RAII-style scoped lock for the Matter (CHIP) stack.
  *
- * This API should be called before calling any upstream APIs.
+ * This class provides automatic locking and unlocking of the Matter stack using the
+ * RAII (Resource Acquisition Is Initialization) pattern. The lock is acquired when
+ * the object is constructed and automatically released when it goes out of scope.
  *
- * @param[in] ticks_to_wait number of ticks to wait for trying to take the lock. Accepted values: 0 to portMAX_DELAY.
+ * Use this class whenever you need to access Matter stack APIs from a non-Matter context
+ * (e.g., from application tasks, callbacks, or interrupt handlers). The Matter stack is
+ * single-threaded and requires synchronization when accessed from external contexts.
  *
- * @return FAILED if the lock was not taken within the specified ticks.
- * @return ALREADY_TAKEN if the lock was already taken by the same task context.
- * @return SUCCESS if the lock was taken successfully.
+ * @section advantages Advantages
+ * - **Exception Safety**: The lock is automatically released even if an exception occurs
+ *   or the function returns early, preventing deadlocks.
+ * - **Simplified Code**: No need to manually call lock/unlock functions or worry about
+ *   missing unlock calls in error paths.
+ * - **Scope-based Lifetime**: The lock duration is clearly defined by the variable's scope,
+ *   making the code easier to read and maintain.
+ * - **Copy Prevention**: The class is non-copyable to prevent accidental lock duplication
+ *   which could lead to undefined behavior.
+ *
+ * @note Always use the smallest possible scope for the lock to minimize blocking time.
  */
-status_t chip_stack_lock(uint32_t ticks_to_wait);
+class ScopedChipStackLock {
+public:
+    ScopedChipStackLock(uint32_t ticks_to_wait) {
+        status = chip_stack_lock(ticks_to_wait);
+    }
+    ~ScopedChipStackLock() {
+        if (status == SUCCESS) {
+            chip_stack_unlock();
+        }
+    }
+private:
+    ScopedChipStackLock(const ScopedChipStackLock &) = delete;
+    ScopedChipStackLock &operator=(const ScopedChipStackLock &) = delete;
+    ScopedChipStackLock(ScopedChipStackLock &&) = default;
+    ScopedChipStackLock &operator=(ScopedChipStackLock &&) = default;
+    status_t status;
 
-/** Stack unlock
- *
- * This API should be called after the upstream APIs have been done calling.
- *
- * @note: This should only be called if `chip_stack_lock()` returns `SUCCESS`.
- *
- * @return ESP_OK on success.
- * @return error in case of failure.
- */
-esp_err_t chip_stack_unlock();
+    /** Stack lock
+    *
+    * This API should be called before calling any upstream APIs.
+    *
+    * @param[in] ticks_to_wait number of ticks to wait for trying to take the lock. Accepted values: 0 to portMAX_DELAY.
+    *
+    * @return FAILED if the lock was not taken within the specified ticks.
+    * @return ALREADY_TAKEN if the lock was already taken by the same task context.
+    * @return SUCCESS if the lock was taken successfully.
+    */
+    status_t chip_stack_lock(uint32_t ticks_to_wait);
+
+    /** Stack unlock
+    *
+    * This API should be called after the upstream APIs have been done calling.
+    *
+    * @note: This should only be called if `chip_stack_lock()` returns `SUCCESS`.
+    *
+    * @return ESP_OK on success.
+    * @return error in case of failure.
+    */
+    esp_err_t chip_stack_unlock();
+}; 
 
 } /* lock */
 

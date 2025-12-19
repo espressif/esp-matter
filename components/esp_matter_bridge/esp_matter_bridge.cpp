@@ -252,9 +252,7 @@ static esp_err_t cluster_server_init(endpoint_t *endpoint)
         return ESP_ERR_INVALID_ARG;
     }
     ESP_LOGI(TAG, "Cluster server init for the new added endpoint");
-    /* Take lock if not already taken */
-    lock::status_t lock_status = lock::chip_stack_lock(portMAX_DELAY);
-    VerifyOrReturnError(lock_status != lock::FAILED, ESP_FAIL, ESP_LOGE(TAG, "Could not get task context"));
+    lock::ScopedChipStackLock lock(portMAX_DELAY);
     cluster_t *cluster = cluster::get_first(endpoint);
     while (cluster) {
         uint8_t flags = cluster::get_flags(cluster);
@@ -270,9 +268,6 @@ static esp_err_t cluster_server_init(endpoint_t *endpoint)
             }
         }
         cluster = cluster::get_next(cluster);
-    }
-    if (lock_status == lock::SUCCESS) {
-        lock::chip_stack_unlock();
     }
     return ESP_OK;
 }
