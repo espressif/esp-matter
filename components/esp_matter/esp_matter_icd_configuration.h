@@ -29,11 +29,9 @@ typedef struct config {
     std::optional<uint32_t> active_threshold_ms;
 } config_t;
 
-#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 /** Get whether ICD server is enabled for Matter end-device
  */
 bool get_icd_server_enabled();
-#endif
 
 /** Set ICD configuration data
  * 
