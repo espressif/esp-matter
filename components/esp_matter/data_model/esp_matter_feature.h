@@ -2103,5 +2103,17 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* commodity_tariff */
 
+namespace commodity_price {
+namespace feature {
+
+namespace forecasting {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* forecasting */
+
+} /* feature */
+} /* commodity_price */
+
 } /* cluster */
 } /* esp_matter */

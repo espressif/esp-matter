@@ -4778,5 +4778,28 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* commodity_tariff */
 
+namespace commodity_price {
+namespace feature {
+namespace forecasting {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityPrice::Feature::kForecasting);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_price_forecast(cluster, NULL, 0, 0);
+    return ESP_OK;
+}
+
+} /* forecasting */
+
+} /* feature */
+} /* commodity_price */
+
 } /* cluster */
 } /* esp_matter */

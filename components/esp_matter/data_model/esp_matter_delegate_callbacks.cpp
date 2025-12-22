@@ -52,6 +52,7 @@
 #include <app/clusters/closure-dimension-server/closure-dimension-server.h>
 #include <app/clusters/push-av-stream-transport-server/push-av-stream-transport-cluster.h>
 #include <app/clusters/commodity-tariff-server/commodity-tariff-server.h>
+#include <app/clusters/commodity-price-server/commodity-price-server.h>
 #include <unordered_map>
 
 using namespace chip::app::Clusters;
@@ -593,6 +594,16 @@ void CommodityTariffDelegateInitCB(void *delegate, uint16_t endpoint_id)
     uint32_t feature_map = get_feature_map_value(endpoint_id, CommodityTariff::Id);
     CommodityTariff::Instance *commodity_tariff_instance = new CommodityTariff::Instance(endpoint_id, *commodity_tariff_delegate, chip::BitMask<CommodityTariff::Feature, uint32_t>(feature_map));
     commodity_tariff_instance->Init();
+}
+
+
+void CommodityPriceDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    CommodityPrice::Delegate *commodity_price_delegate = static_cast<CommodityPrice::Delegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, CommodityPrice::Id);
+    CommodityPrice::Instance *commodity_price_instance = new CommodityPrice::Instance(endpoint_id, *commodity_price_delegate, chip::BitMask<CommodityPrice::Feature, uint32_t>(feature_map));
+    commodity_price_instance->Init();
 }
 
 } // namespace delegate_cb
