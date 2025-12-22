@@ -1130,6 +1130,24 @@ command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callba
         return existing_command;
     }
 
+    // If commands are created using low level create API, we end up having duplicates in the command lists.
+    command_entry_t *command_list = NULL;
+    size_t command_count = 0;
+    if (flags & COMMAND_FLAG_ACCEPTED) {
+        command_list = command::get_cluster_accepted_command_list(cluster::get_id(cluster));
+        command_count = command::get_cluster_accepted_command_count(cluster::get_id(cluster));
+    } else {
+        command_list = command::get_cluster_generated_command_list(cluster::get_id(cluster));
+        command_count = command::get_cluster_generated_command_count(cluster::get_id(cluster));
+    }
+    for (size_t i = 0; i < command_count; i++) {
+        if (command_list[i].command_id == command_id) {
+            ESP_LOGW(TAG, "Command 0x%08" PRIX32 " on cluster 0x%08" PRIX32 " already exists. Not creating again.", command_id,
+                     cluster::get_id(cluster));
+            return NULL;
+        }
+    }
+
     /* Allocate */
     _command_t *command = (_command_t *)esp_matter_mem_calloc(1, sizeof(_command_t));
     VerifyOrReturnValue(command, NULL, ESP_LOGE(TAG, "Couldn't allocate _command_t"));
