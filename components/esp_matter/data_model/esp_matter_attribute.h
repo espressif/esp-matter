@@ -1366,5 +1366,15 @@ attribute_t *create_price_forecast(cluster_t *cluster, uint8_t * value, uint16_t
 } /* attribute */
 } /* commodity_price */
 
+namespace commodity_metering {
+namespace attribute {
+
+attribute_t *create_metered_quantity(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_metered_quantity_timestamp(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_tariff_unit(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_maximum_metered_quantities(cluster_t *cluster, nullable<uint16_t> value);
+} /* attribute */
+} /* commodity_metering */
+
 } /* cluster */
 } /* esp_matter */
