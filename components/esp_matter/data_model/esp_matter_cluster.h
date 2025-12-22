@@ -1038,5 +1038,15 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* push_av_stream_transport */
 
+namespace commodity_tariff {
+typedef struct config {
+    void *delegate;
+    uint32_t feature_flags;
+    config() : delegate(nullptr), feature_flags(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* commodity_tariff */
+
 } /* cluster */
 } /* esp_matter */

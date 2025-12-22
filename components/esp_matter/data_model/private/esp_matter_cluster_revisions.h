@@ -399,6 +399,9 @@ namespace push_av_stream_transport {
 constexpr uint16_t cluster_revision = 1;
 } // namespace push_av_stream_transport
 
+namespace commodity_tariff {
+constexpr uint16_t cluster_revision = 1;
+} // namespace commodity_tariff
 } // namespace cluster
 } // namespace esp_matter
 

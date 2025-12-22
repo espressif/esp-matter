@@ -2061,5 +2061,47 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* push_av_stream_transport */
 
+namespace commodity_tariff {
+namespace feature {
+
+namespace pricing {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* pricing */
+
+namespace friendly_credit {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* friendly_credit */
+
+namespace auxiliary_load {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* auxiliary_load */
+
+namespace peak_period {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* peak_period */
+
+namespace power_threshold {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* power_threshold */
+
+namespace randomization {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* randomization */
+
+} /* feature */
+} /* commodity_tariff */
+
 } /* cluster */
 } /* esp_matter */

@@ -51,6 +51,7 @@
 #include <app/clusters/closure-control-server/closure-control-server.h>
 #include <app/clusters/closure-dimension-server/closure-dimension-server.h>
 #include <app/clusters/push-av-stream-transport-server/push-av-stream-transport-cluster.h>
+#include <app/clusters/commodity-tariff-server/commodity-tariff-server.h>
 #include <unordered_map>
 
 using namespace chip::app::Clusters;
@@ -582,6 +583,16 @@ void PushAvStreamTransportDelegateInitCB(void *delegate, uint16_t endpoint_id)
     pushavstreamtransportserverinstance = new PushAvStreamTransportServer(endpoint_id, chip::BitMask<PushAvStreamTransport::Feature, uint32_t>(feature_map));
     pushavstreamtransportserverinstance->SetDelegate(push_av_stream_transport_delegate);
     pushavstreamtransportserverinstance->Init();
+}
+
+
+void CommodityTariffDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    CommodityTariff::Delegate *commodity_tariff_delegate = static_cast<CommodityTariff::Delegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, CommodityTariff::Id);
+    CommodityTariff::Instance *commodity_tariff_instance = new CommodityTariff::Instance(endpoint_id, *commodity_tariff_delegate, chip::BitMask<CommodityTariff::Feature, uint32_t>(feature_map));
+    commodity_tariff_instance->Init();
 }
 
 } // namespace delegate_cb

@@ -49,5 +49,9 @@ void add_bounds_cb(cluster_t *cluster);
 namespace camera_av_settings_user_level_management {
 void add_bounds_cb(cluster_t *cluster);
 } /* camera_av_settings_user_level_management */
+
+namespace commodity_tariff {
+void add_bounds_cb(cluster_t *cluster);
+} /* commodity_tariff */
 } /* cluster */
 } /* esp_matter */
