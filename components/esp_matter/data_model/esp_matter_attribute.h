@@ -1367,5 +1367,14 @@ attribute_t *create_maximum_metered_quantities(cluster_t *cluster, nullable<uint
 } /* attribute */
 } /* commodity_metering */
 
+namespace electrical_grid_conditions {
+namespace attribute {
+
+attribute_t *create_local_generation_available(cluster_t *cluster, nullable<bool> value);
+attribute_t *create_current_conditions(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_forecast_conditions(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* electrical_grid_conditions */
+
 } /* cluster */
 } /* esp_matter */

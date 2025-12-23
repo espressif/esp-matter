@@ -4664,5 +4664,28 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* commodity_price */
 
+namespace electrical_grid_conditions {
+namespace feature {
+namespace forecasting {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ElectricalGridConditions::Feature::kForecasting);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_forecast_conditions(cluster, NULL, 0, 0);
+    return ESP_OK;
+}
+
+} /* forecasting */
+
+} /* feature */
+} /* electrical_grid_conditions */
+
 } /* cluster */
 } /* esp_matter */
