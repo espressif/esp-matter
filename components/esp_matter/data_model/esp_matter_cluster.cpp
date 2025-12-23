@@ -4355,7 +4355,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
         static const auto plugin_server_init_cb = CALL_ONCE(MatterCommodityTariffPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
-        set_add_bounds_callback(cluster, commodity_tariff::add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
@@ -4435,7 +4434,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
         static const auto plugin_server_init_cb = CALL_ONCE(MatterCommodityPricePluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
-        set_add_bounds_callback(cluster, commodity_price::add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -4468,7 +4466,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterCommodityMeteringPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
-        set_add_bounds_callback(cluster, commodity_metering::add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
