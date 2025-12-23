@@ -613,6 +613,34 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::closure_panel::create(node, &closure_panel_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
+        case ESP_MATTER_ELECTRICAL_ENERGY_TARIFF: {
+            esp_matter::endpoint::electrical_energy_tariff::config_t electrical_energy_tariff_config;
+            endpoint = esp_matter::endpoint::electrical_energy_tariff::create(node, &electrical_energy_tariff_config, ENDPOINT_FLAG_NONE, NULL);
+
+            cluster::commodity_price::config_t commodity_price_config;
+            cluster::commodity_price::create(endpoint, &commodity_price_config, CLUSTER_FLAG_SERVER);
+
+            cluster::commodity_tariff::config_t commodity_tariff_config;
+            commodity_tariff_config.feature_flags = cluster::commodity_tariff::feature::pricing::get_id();
+            cluster::commodity_tariff::create(endpoint, &commodity_tariff_config, CLUSTER_FLAG_SERVER);
+
+            break;
+        }
+        case ESP_MATTER_ELECTRICAL_METER: {
+            esp_matter::endpoint::electrical_meter::config_t electrical_meter_config;
+            electrical_meter_config.electrical_power_measurement.feature_flags = cluster::electrical_power_measurement::feature::direct_current::get_id();
+            electrical_meter_config.electrical_energy_measurement.feature_flags = cluster::electrical_energy_measurement::feature::imported_energy::get_id() |
+            cluster::electrical_energy_measurement::feature::exported_energy::get_id() |
+            cluster::electrical_energy_measurement::feature::cumulative_energy::get_id() |
+            cluster::electrical_energy_measurement::feature::periodic_energy::get_id();
+            endpoint = esp_matter::endpoint::electrical_meter::create(node, &electrical_meter_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
+        case ESP_MATTER_ELECTRICAL_UTILITY_METER: {
+            esp_matter::endpoint::electrical_utility_meter::config_t electrical_utility_meter_config;
+            endpoint = esp_matter::endpoint::electrical_utility_meter::create(node, &electrical_utility_meter_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
         default: {
             ESP_LOGE(TAG, "Please input a valid device type");
             break;

@@ -50,16 +50,5 @@ namespace camera_av_settings_user_level_management {
 void add_bounds_cb(cluster_t *cluster);
 } /* camera_av_settings_user_level_management */
 
-namespace commodity_tariff {
-void add_bounds_cb(cluster_t *cluster);
-} /* commodity_tariff */
-
-namespace commodity_price {
-void add_bounds_cb(cluster_t *cluster);
-} /* commodity_price */
-
-namespace commodity_metering {
-void add_bounds_cb(cluster_t *cluster);
-} /* commodity_metering */
 } /* cluster */
 } /* esp_matter */
