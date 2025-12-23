@@ -59,7 +59,6 @@ jobs:
           - {example: door_lock, target: esp32c2, prefix: wifi_matter}
           - {example: door_lock, target: esp32h2, prefix: thread_matter}
 
-
     steps:
       - run: mkdir -p images
       - name: build application
@@ -82,10 +81,10 @@ jobs:
           OUT_BIN="$GITHUB_WORKSPACE/images/$TARGET_CHIP"_${{ matrix.targets.prefix }}_"$APP_BIN"
           esptool.py --chip $TARGET_CHIP merge_bin -o $OUT_BIN `cat flash_args | tr '\n' '\ '`
 
-          # record the esp-idf and esp-matter commit
-          idf_rev=`git -C $IDF_PATH rev-parse --short HEAD`
-          mtr_rev=`git -C $ESP_MATTER_PATH rev-parse --short HEAD`
-          chip_rev=`git -C $ESP_MATTER_PATH/connectedhomeip/connectedhomeip rev-parse --short HEAD`
+          # read commit ids from pre-stored files
+          idf_rev=`cat /opt/espressif/esp-idf-commit.txt`
+          mtr_rev=`cat /opt/espressif/esp-matter-commit.txt`
+          chip_rev=`cat /opt/espressif/connectedhomeip-commit.txt`
           echo "- esp-idf: [$idf_rev](https://github.com/espressif/esp-idf/tree/$idf_rev)" >> $GITHUB_WORKSPACE/images/.esp-idf
           echo "- esp-matter: [$mtr_rev](https://github.com/espressif/esp-matter/tree/$mtr_rev)" >> $GITHUB_WORKSPACE/images/.esp-matter
           echo "- connectedhomeip: [$chip_rev](https://github.com/project-chip/connectedhomeip/tree/$chip_rev)" >> $GITHUB_WORKSPACE/images/.chip
