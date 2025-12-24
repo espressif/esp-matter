@@ -13,12 +13,12 @@
 // limitations under the License.
 
 #include <esp_log.h>
+#include <esp_matter_attr_data_buffer.h>
 #include <esp_matter_attribute_utils.h>
 #include <esp_matter_cluster.h>
 #include <esp_matter_data_model.h>
 #include <esp_matter_data_model_priv.h>
 #include <esp_matter_data_model_provider.h>
-#include <esp_matter_attr_data_buffer.h>
 
 #include <access/Privilege.h>
 #include <app-common/zap-generated/cluster-objects.h>
@@ -27,22 +27,45 @@
 #include <app/CommandHandlerInterface.h>
 #include <app/CommandHandlerInterfaceRegistry.h>
 #include <app/data-model-provider/MetadataTypes.h>
+#include <app/persistence/AttributePersistenceProviderInstance.h>
+#include <app/persistence/DefaultAttributePersistenceProvider.h>
 #include <app/util/attribute-storage.h>
 #include <app/util/attribute-table.h>
 #include <clusters/shared/GlobalIds.h>
+#include <cstring>
 #include <lib/core/CHIPError.h>
 #include <lib/core/DataModelTypes.h>
 #include <lib/support/CodeUtils.h>
-#include <zap-generated/access.h>
-#include <app/persistence/AttributePersistenceProviderInstance.h>
-#include <app/persistence/DefaultAttributePersistenceProvider.h>
-#include <cstring>
 #include <vector>
+#include <zap-generated/access.h>
 
 using namespace chip;
 using namespace chip::app;
 
 constexpr char TAG[] = "DataModelProvider";
+
+namespace chip {
+namespace app {
+
+/**
+ * Accessor class for AttributeValueDecoder to get the TLV reader.
+ * This leverages the existing friend declaration in the SDK's AttributeValueDecoder.
+ */
+class TestOnlyAttributeValueDecoderAccessor {
+public:
+    TestOnlyAttributeValueDecoderAccessor(AttributeValueDecoder &decoder)
+        : mDecoder(decoder)
+    {
+    }
+
+    const TLV::TLVReader &GetReader() { return mDecoder.mReader; }
+
+private:
+    AttributeValueDecoder &mDecoder;
+};
+
+} // namespace app
+} // namespace chip
 
 namespace {
 chip::Protocols::InteractionModel::Status BuildEmberBufferFromAttrVal(const esp_matter_attr_val_t &val,
@@ -110,9 +133,8 @@ chip::Protocols::InteractionModel::Status BuildEmberBufferFromAttrVal(const esp_
         // UINT16_MAX is reserved for null value
         if (val.val.a.s < UINT16_MAX) {
             size_t max_payload = bufferSize - header_size;
-            size_t copy_len = (static_cast<size_t>(val.val.a.s) <= max_payload)
-                              ? static_cast<size_t>(val.val.a.s)
-                              : max_payload;
+            size_t copy_len =
+                (static_cast<size_t>(val.val.a.s) <= max_payload) ? static_cast<size_t>(val.val.a.s) : max_payload;
             memcpy(dataPtr + header_size, val.val.a.b, copy_len);
         }
         break;
@@ -480,21 +502,57 @@ ActionReturnStatus provider::ReadAttribute(const ReadAttributeRequest &request, 
     VerifyOrReturnError(!aai_result.has_value(), *aai_result);
 
     esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
-    VerifyOrReturnValue(attribute::get_val_internal(attribute, &val) == ESP_OK, Protocols::InteractionModel::Status::Failure);
+    VerifyOrReturnValue(attribute::get_val_internal(attribute, &val) == ESP_OK,
+                        Protocols::InteractionModel::Status::Failure);
     attribute_data_encode_buffer data_buffer(val);
     return encoder.Encode(data_buffer);
 }
 
 ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request, AttributeValueDecoder &decoder)
 {
-    if (auto *cluster = mRegistry.Get(request.path); cluster != nullptr) {
-        return cluster->WriteAttribute(request, decoder);
+    attribute_t *attribute =
+        attribute::get(request.path.mEndpointId, request.path.mClusterId, request.path.mAttributeId);
+
+    // Decode the new value once - copy TLV reader to leave original decoder intact for mRegistry/AAI
+    esp_matter_attr_val_t new_val = esp_matter_invalid(nullptr);
+
+    VerifyOrReturnValue(attribute, Protocols::InteractionModel::Status::UnsupportedAttribute);
+
+    esp_matter_val_type_t current_val_type = attribute::get_val_type(attribute);
+
+    TestOnlyAttributeValueDecoderAccessor accessor(decoder);
+    TLV::TLVReader reader_copy;
+    reader_copy.Init(accessor.GetReader());
+    AttributeValueDecoder decoder_copy(reader_copy, decoder.GetSubjectDescriptor());
+    attribute_data_decode_buffer data_buffer(current_val_type);
+    if (decoder_copy.Decode(data_buffer) == CHIP_NO_ERROR) {
+        new_val = data_buffer.get_attr_val();
+        // PRE_UPDATE callback
+        if (attribute::execute_callback(attribute::PRE_UPDATE, request.path.mEndpointId, request.path.mClusterId,
+                                        request.path.mAttributeId, &new_val) != ESP_OK) {
+            return Protocols::InteractionModel::Status::Failure;
+        }
     }
+
+    // Helper to execute POST_UPDATE callback
+    auto execute_post_update = [&]() {
+        attribute::execute_callback(attribute::POST_UPDATE, request.path.mEndpointId, request.path.mClusterId,
+                                    request.path.mAttributeId, &new_val);
+    };
+
+    // mRegistry handles its own storage
+    if (auto *cluster = mRegistry.Get(request.path); cluster != nullptr) {
+        ActionReturnStatus ret = cluster->WriteAttribute(request, decoder);
+        if (ret.IsSuccess()) {
+            execute_post_update();
+        }
+        return ret;
+    }
+
     Status status = CheckDataModelPath(request.path);
     VerifyOrReturnValue(status == Protocols::InteractionModel::Status::Success,
                         CHIP_ERROR_IM_GLOBAL_STATUS_VALUE(status));
     cluster_t *cluster = cluster::get(request.path.mEndpointId, request.path.mClusterId);
-    attribute_t *attribute = attribute::get(cluster, request.path.mAttributeId);
     if (request.path.mDataVersion.HasValue()) {
         chip::DataVersion data_version;
         VerifyOrReturnValue(cluster::get_data_version(cluster, data_version) == ESP_OK,
@@ -503,6 +561,7 @@ ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request
                             Protocols::InteractionModel::Status::DataVersionMismatch);
     }
 
+    // AAI handles its own storage
     AttributeAccessInterface *aai =
         AttributeAccessInterfaceRegistry::Instance().Get(request.path.mEndpointId, request.path.mClusterId);
     std::optional<CHIP_ERROR> aai_result = TryWriteViaAccessInterface(request.path, aai, decoder);
@@ -511,6 +570,7 @@ ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request
             cluster::increase_data_version(cluster);
             AttributePathParams path(request.path.mEndpointId, request.path.mClusterId, request.path.mAttributeId);
             mContext->dataModelChangeListener.MarkDirty(path);
+            execute_post_update();
         }
         return *aai_result;
     }
@@ -526,9 +586,8 @@ ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request
     ReturnErrorOnFailure(decoder.Decode(decoded_buffer));
 
     std::vector<uint8_t> data_buff(metadata->size);
-    Status buffer_status =
-        BuildEmberBufferFromAttrVal(decoded_buffer.get_attr_val(), data_buff.data(),
-                                    static_cast<uint16_t>(data_buff.size()));
+    Status buffer_status = BuildEmberBufferFromAttrVal(decoded_buffer.get_attr_val(), data_buff.data(),
+                                                       static_cast<uint16_t>(data_buff.size()));
     if (buffer_status != Protocols::InteractionModel::Status::Success) {
         return buffer_status;
     }
@@ -541,6 +600,9 @@ ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request
     }
     // Increase data version and mark dirty
     cluster::increase_data_version(cluster);
+    AttributePathParams path(request.path.mEndpointId, request.path.mClusterId, request.path.mAttributeId);
+    mContext->dataModelChangeListener.MarkDirty(path);
+    execute_post_update();
     return Protocols::InteractionModel::Status::Success;
 }
 
@@ -663,12 +725,14 @@ CHIP_ERROR provider::ServerClusters(EndpointId endpointId, ReadOnlyBufferBuilder
         if (cluster::get_flags(cluster) & CLUSTER_FLAG_SERVER) {
             ServerClusterEntry entry;
             entry.clusterId = cluster::get_id(cluster);
-            if (auto *server_cluster = mRegistry.Get(ConcreteClusterPath(endpointId, entry.clusterId)); server_cluster != nullptr) {
+            if (auto *server_cluster = mRegistry.Get(ConcreteClusterPath(endpointId, entry.clusterId));
+                server_cluster != nullptr) {
                 entry.flags = server_cluster->GetClusterFlags(ConcreteClusterPath(endpointId, entry.clusterId));
                 entry.dataVersion = server_cluster->GetDataVersion(ConcreteClusterPath(endpointId, entry.clusterId));
             } else {
                 entry.flags.ClearAll();
-                VerifyOrReturnError(cluster::get_data_version(cluster, entry.dataVersion) == ESP_OK, CHIP_ERROR_INTERNAL);
+                VerifyOrReturnError(cluster::get_data_version(cluster, entry.dataVersion) == ESP_OK,
+                                    CHIP_ERROR_INTERNAL);
             }
             ReturnErrorOnFailure(builder.Append(entry));
         }
@@ -792,11 +856,10 @@ CHIP_ERROR provider::Attributes(const ConcreteClusterPath &path, ReadOnlyBufferB
         attribute = attribute::get_next(attribute);
     }
     // Append the three Global attributes
-    for (size_t index = 0; index < k_global_attributes_count; ++index)
-    {
+    for (size_t index = 0; index < k_global_attributes_count; ++index) {
         AttributeEntry entry(k_global_attributes_not_in_metadata[index],
-                         chip::BitFlags<DataModel::AttributeQualityFlags>(), chip::Access::Privilege::kView,
-                         std::nullopt);
+                             chip::BitFlags<DataModel::AttributeQualityFlags>(), chip::Access::Privilege::kView,
+                             std::nullopt);
         ReturnErrorOnFailure(builder.Append(entry));
     }
 
