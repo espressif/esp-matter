@@ -292,8 +292,8 @@ esp_err_t set_callback(callback_t callback)
     return ESP_OK;
 }
 
-static esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
-                                  uint32_t attribute_id, esp_matter_attr_val_t *val)
+esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
+                           uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
     if (attribute_callback) {
 #ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
