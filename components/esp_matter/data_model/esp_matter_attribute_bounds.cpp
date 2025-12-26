@@ -121,45 +121,6 @@ void add_bounds_cb(cluster_t *cluster)
                 esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint8(min), esp_matter_uint8(max));
                 break;
             }
-            case LevelControl::Attributes::CurrentFrequency::Id: {
-                esp_matter_attr_val_t min_val = esp_matter_invalid(NULL);
-                esp_matter_attr_val_t max_val = esp_matter_invalid(NULL);
-                uint16_t min = 0, max = UINT16_MAX;
-                if(cluster::get_attribute_value(cluster, LevelControl::Attributes::MinFrequency::Id,
-                                        &min_val) == ESP_OK)
-                {
-                    min = min_val.val.u16;
-                }
-                if(cluster::get_attribute_value(cluster, LevelControl::Attributes::MaxFrequency::Id,
-                                        &max_val) == ESP_OK)
-                {
-                    max = max_val.val.u16;
-                }
-                esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint16(min), esp_matter_uint16(max));
-                break;
-            }
-            case LevelControl::Attributes::MinFrequency::Id: {
-                esp_matter_attr_val_t max_val = esp_matter_invalid(NULL);
-                uint16_t min = 0, max = UINT16_MAX;
-                if(cluster::get_attribute_value(cluster, LevelControl::Attributes::MaxFrequency::Id,
-                                        &max_val) == ESP_OK)
-                {
-                    max = max_val.val.u16;
-                }
-                esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint16(min), esp_matter_uint16(max));
-                break;
-            }
-            case LevelControl::Attributes::MaxFrequency::Id: {
-                esp_matter_attr_val_t min_val = esp_matter_invalid(NULL);
-                uint16_t min = 0, max = UINT16_MAX;
-                if(cluster::get_attribute_value(cluster, LevelControl::Attributes::MinFrequency::Id,
-                                        &min_val) == ESP_OK)
-                {
-                    min = min_val.val.u16;
-                }
-                esp_matter::attribute::add_bounds(current_attribute, esp_matter_uint16(min), esp_matter_uint16(max));
-                break;
-            }
             case LevelControl::Attributes::OnLevel::Id: {
                 esp_matter_attr_val_t min_val = esp_matter_invalid(NULL);
                 esp_matter_attr_val_t max_val = esp_matter_invalid(NULL);

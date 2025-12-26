@@ -564,29 +564,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
 } /* lighting */
 
-namespace frequency {
-
-uint32_t get_id()
-{
-    return (uint32_t)LevelControl::Feature::kFrequency;
-}
-
-esp_err_t add(cluster_t *cluster, config_t *config)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    /* Attributes not managed internally */
-    attribute::create_current_frequency(cluster, config->current_frequency);
-    attribute::create_min_frequency(cluster, config->min_frequency);
-    attribute::create_max_frequency(cluster, config->max_frequency);
-
-    /* Commands */
-    command::create_move_to_closest_frequency(cluster);
-
-    return ESP_OK;
-}
-} /* frequency */
 } /* feature */
 } /* level_control */
 
@@ -2608,55 +2585,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
 } /* rfid_credential */
 
-namespace finger_credentials {
-
-uint32_t get_id()
-{
-    return (uint32_t)DoorLock::Feature::kFingerCredentials;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    uint32_t usr_feature_map = feature::user::get_id();
-    if (!(get_feature_map_value(cluster) & usr_feature_map)) {
-        /* todo: some commands for !USR & FGP feature not define in the
-        connectedhomeip/connectedhomeip/zzz_generated/app-common/app-common/zap-generated/ids/Commands.h
-        will update when added*/
-    }
-
-    return ESP_OK;
-}
-
-} /* finger_credentials */
-
-namespace logging {
-
-uint32_t get_id()
-{
-    return (uint32_t)DoorLock::Feature::kLogging;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    /* todo: all attributes for LOG feature not define in the
-    connectedhomeip/connectedhomeip/zzz_generated/app-common/app-common/zap-generated/ids/Attributes.h
-    will update when added*/
-
-    /* todo: all commands for LOG feature not define in the
-    connectedhomeip/connectedhomeip/zzz_generated/app-common/app-common/zap-generated/ids/Commands.h
-    will update when added*/
-
-    return ESP_OK;
-}
-
-} /* logging */
-
 namespace weekday_access_schedules {
 
 uint32_t get_id()
@@ -2705,22 +2633,6 @@ esp_err_t add(cluster_t *cluster)
 
 } /* door_position_sensor */
 
-namespace face_credentials {
-
-uint32_t get_id()
-{
-    return (uint32_t)DoorLock::Feature::kFaceCredentials;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    return ESP_OK;
-}
-
-} /* face_credentials */
 
 namespace credential_over_the_air_access {
 
@@ -2757,10 +2669,8 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t pin = feature::pin_credential::get_id();
     uint32_t rid = feature::rfid_credential::get_id();
-    uint32_t fgp = feature::finger_credentials::get_id();
-    uint32_t face = feature::face_credentials::get_id();
     uint32_t feature = get_feature_map_value(cluster);
-    VerifyOrReturnError((feature & (pin | rid | fgp | face)) != 0, ESP_FAIL, ESP_LOGE(TAG, "Should add at least one of PIN, RID, FGP and FACE feature before add USR feature"));
+    VerifyOrReturnError((feature & (pin | rid)) != 0, ESP_FAIL, ESP_LOGE(TAG, "Should add at least one of PIN, RID feature before add USR feature"));
 
     update_feature_map(cluster, get_id());
 
@@ -2788,22 +2698,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
 } /* user */
 
-namespace notification {
-
-uint32_t get_id()
-{
-    return (uint32_t)DoorLock::Feature::kNotification;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    return ESP_OK;
-}
-
-} /* notification */
 
 namespace year_day_access_schedules {
 
@@ -3063,44 +2957,13 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    uint32_t power_in_watts_feature_map = feature::power_in_watts::get_id();
-    if ((get_feature_map_value(cluster) & power_in_watts_feature_map) != power_in_watts_feature_map) {
-        update_feature_map(cluster, get_id());
-        /* Attributes managed internally */
-        attribute::create_power_setting(cluster, 0);
-    } else {
-        ESP_LOGE(TAG, "Cluster shall support either PowerAsNumber or PowerInWatts feature");
-        return ESP_ERR_NOT_SUPPORTED;
-    }
+    update_feature_map(cluster, get_id());
+    /* Attributes managed internally */
+    attribute::create_power_setting(cluster, 0);
 
     return ESP_OK;
 }
 } /* power_as_number */
-
-namespace power_in_watts {
-
-uint32_t get_id()
-{
-    return (uint32_t)MicrowaveOvenControl::Feature::kPowerInWatts;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    uint32_t power_as_number_feature_map = feature::power_as_number::get_id();
-    if ((get_feature_map_value(cluster) & power_as_number_feature_map) != power_as_number_feature_map) {
-        update_feature_map(cluster, get_id());
-        /* Attributes managed internally */
-        attribute::create_supported_watts(cluster, NULL, 0, 0);
-        attribute::create_selected_watt_index(cluster, 0);
-    } else {
-        ESP_LOGE(TAG, "Cluster shall support either PowerInWatts or PowerAsNumber feature");
-        return ESP_ERR_NOT_SUPPORTED;
-    }
-
-    return ESP_OK;
-}
-} /* power_in_watts */
 
 namespace power_number_limits {
 
