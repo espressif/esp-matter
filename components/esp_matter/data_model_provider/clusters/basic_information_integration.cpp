@@ -12,23 +12,47 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <esp_matter_data_model.h>
+#include <data_model_provider/esp_matter_data_model_provider.h>
+
 #include <app/ClusterCallbacks.h>
 #include <app/clusters/basic-information/BasicInformationCluster.h>
-#include <data_model_provider/esp_matter_data_model_provider.h>
+#include <lib/core/DataModelTypes.h>
 
 using namespace chip;
 using namespace chip::app;
 using namespace chip::app::Clusters;
+using namespace chip::app::Clusters::BasicInformation::Attributes;
 
 namespace {
 ServerClusterRegistration gRegistration(BasicInformationCluster::Instance());
+
+bool IsAttrEnabled(uint32_t attrId)
+{
+    return esp_matter::attribute::get(kRootEndpointId, BasicInformation::Id, attrId);
 }
+
+BasicInformationCluster::OptionalAttributesSet GetOptionalAttrsSet()
+{
+    BasicInformationCluster::OptionalAttributesSet attrsSet;
+    return attrsSet.Set<ManufacturingDate::Id>(IsAttrEnabled(ManufacturingDate::Id))
+        .Set<PartNumber::Id>(IsAttrEnabled(PartNumber::Id))
+        .Set<ProductURL::Id>(IsAttrEnabled(ProductURL::Id))
+        .Set<ProductLabel::Id>(IsAttrEnabled(ProductLabel::Id))
+        .Set<SerialNumber::Id>(IsAttrEnabled(SerialNumber::Id))
+        .Set<LocalConfigDisabled::Id>(IsAttrEnabled(LocalConfigDisabled::Id))
+        .Set<Reachable::Id>(IsAttrEnabled(Reachable::Id))
+        .Set<ProductAppearance::Id>(IsAttrEnabled(ProductAppearance::Id))
+        .Set<UniqueID::Id>(IsAttrEnabled(UniqueID::Id));
+}
+} // namespace
 
 void ESPMatterBasicInformationClusterServerInitCallback(EndpointId endpoint)
 {
     // We implement the cluster as a singleton on the root endpoint.
     VerifyOrReturn(endpoint == kRootEndpointId);
 
+    BasicInformationCluster::Instance().OptionalAttributes() = GetOptionalAttrsSet();
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gRegistration);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register BasicInformation - Error %" CHIP_ERROR_FORMAT, err.Format());
