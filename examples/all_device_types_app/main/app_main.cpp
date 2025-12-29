@@ -221,6 +221,13 @@ void diagnostic_init()
 }
 #endif // CONFIG_ENABLE_ESP_DIAGNOSTICS_TRACE
 
+#ifdef CONFIG_SUPPORT_DOOR_LOCK_CLUSTER
+void emberAfDoorLockClusterInitCallback(chip::EndpointId endpoint)
+{
+    ESP_LOGI(TAG, "Door Lock App: Init Callback endpoint=%d", endpoint);
+}
+#endif // CONFIG_SUPPORT_DOOR_LOCK_CLUSTER
+
 extern "C" void app_main()
 {
     esp_err_t err = ESP_OK;
