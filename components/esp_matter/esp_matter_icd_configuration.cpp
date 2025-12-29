@@ -110,14 +110,12 @@ static esp_err_t set_active_threshold(uint32_t active_threshold_ms)
     return chip::Test::ICDConfigurationDataTestAccess::SetActiveThreshold(Milliseconds32(active_threshold_ms));
 }
 
-#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
-static bool s_enable_icd_server = true;
+static bool s_enable_icd_server = CHIP_CONFIG_ENABLE_ICD_SERVER;
 
 bool get_icd_server_enabled()
 {
     return s_enable_icd_server;
 }
-#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 
 esp_err_t set_configuration_data(config_t *config)
 {
