@@ -25,6 +25,7 @@ import logging
 import sys
 import glob
 import re
+from datetime import date
 
 # These clusters are not implemented in current connectedhomeip repo
 EXCLUDE_CLUSTERS = ['Demand Response Load Control', 'Timer']
@@ -125,6 +126,40 @@ def generate_cluster_callbacks_h(xml_files, output_dir):
                 format_cluster_name(get_cluster_name(cluster))))
             header_file.write('void ESPMatter{}ClusterServerShutdownCallback(EndpointId endpoint);\n\n'.format(
                 format_cluster_name(get_cluster_name(cluster))))
+
+
+def generate_cluster_callbacks_cpp(xml_files, output_dir):
+    with open(os.path.join(output_dir, 'app/ClusterCallbacks.cpp'), 'w') as cpp_file:
+        cpp_file.write(f'// Copyright 2025-{date.today().year} Espressif Systems (Shanghai) PTE LTD\n')
+        cpp_file.write('//\n')
+        cpp_file.write('// Licensed under the Apache License, Version 2.0 (the "License");\n')
+        cpp_file.write('// you may not use this file except in compliance with the License.\n')
+        cpp_file.write('// You may obtain a copy of the License at\n')
+        cpp_file.write('//\n')
+        cpp_file.write('//     http://www.apache.org/licenses/LICENSE-2.0\n')
+        cpp_file.write('//\n')
+        cpp_file.write('// Unless required by applicable law or agreed to in writing, software\n')
+        cpp_file.write('// distributed under the License is distributed on an "AS IS" BASIS,\n')
+        cpp_file.write('// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n')
+        cpp_file.write('// See the License for the specific language governing permissions and\n')
+        cpp_file.write('// limitations under the License.\n\n')
+        cpp_file.write('// This file is auto-generated. Do not edit manually.\n')
+        cpp_file.write('// Weak definitions for cluster callbacks - can be overridden by application.\n\n')
+        cpp_file.write('#include <app/ClusterCallbacks.h>\n\n')
+        clusters = get_clusters_from_xml_files(xml_files)
+        clusters.sort(key=get_formatted_cluster_name)
+        for cluster in clusters:
+            cluster_name = format_cluster_name(get_cluster_name(cluster))
+            cpp_file.write('__attribute__((weak)) void ESPMatter{}ClusterServerInitCallback(EndpointId endpoint)\n'.format(
+                cluster_name))
+            cpp_file.write('{\n')
+            cpp_file.write('    // Default empty implementation\n')
+            cpp_file.write('}\n\n')
+            cpp_file.write('__attribute__((weak)) void ESPMatter{}ClusterServerShutdownCallback(EndpointId endpoint)\n'.format(
+                cluster_name))
+            cpp_file.write('{\n')
+            cpp_file.write('    // Default empty implementation\n')
+            cpp_file.write('}\n\n')
 
 
 def get_attribute_read_privilege(attribute):
@@ -299,6 +334,7 @@ def main():
     xml_files = glob.glob(os.path.join(args.xml_dir, '*.xml'))
     generate_plugin_application_callbacks_h(xml_files, args.output_dir)
     generate_cluster_callbacks_h(xml_files, args.output_dir)
+    generate_cluster_callbacks_cpp(xml_files, args.output_dir)
     generate_access_h(xml_files, args.output_dir)
 
 
