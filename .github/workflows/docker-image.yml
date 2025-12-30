@@ -34,15 +34,17 @@ jobs:
     # Disable the job in forks
     if: ${{ github.repository_owner == 'espressif' }}
 
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
         # Platforms to build the image for
-        # Using a separate runner for each image to work around space issues on a single runner
-        platform:
-          - linux/amd64
-          - linux/arm64
+        # Using native runners for each architecture to avoid slow QEMU emulation
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-24.04
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
 
     steps:
       # Workaround for disk space issues on the GitHub runner
