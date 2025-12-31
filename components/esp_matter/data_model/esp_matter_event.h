@@ -285,5 +285,11 @@ event_t *create_price_change(cluster_t *cluster);
 } // namespace event
 } // namespace commodity_price
 
+namespace electrical_grid_conditions {
+namespace event {
+event_t *create_current_conditions_changed(cluster_t *cluster);
+} // namespace event
+} // namespace electrical_grid_conditions
+
 } // namespace cluster
 } // namespace esp_matter

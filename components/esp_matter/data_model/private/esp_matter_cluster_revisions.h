@@ -410,6 +410,10 @@ constexpr uint16_t cluster_revision = 4;
 namespace commodity_metering {
 constexpr uint16_t cluster_revision = 1;
 } // namespace commodity_metering
+
+namespace electrical_grid_conditions {
+constexpr uint16_t cluster_revision = 1;
+} // namespace electrical_grid_conditions
 } // namespace cluster
 } // namespace esp_matter
 

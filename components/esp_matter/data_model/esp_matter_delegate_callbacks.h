@@ -61,6 +61,7 @@ void ClosureDimensionDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void PushAvStreamTransportDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void CommodityTariffDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void CommodityPriceDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void ElectricalGridConditionsDelegateInitCB(void *delegate, uint16_t endpoint_id);
 } // namespace delegate_cb
 
 } // namespace cluster

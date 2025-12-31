@@ -2115,5 +2115,17 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* commodity_price */
 
+namespace electrical_grid_conditions {
+namespace feature {
+
+namespace forecasting {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* forecasting */
+
+} /* feature */
+} /* electrical_grid_conditions */
+
 } /* cluster */
 } /* esp_matter */
