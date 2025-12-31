@@ -10,9 +10,6 @@ set(INCLUDE_DIRS_LIST   "."
                         "${MATTER_SDK_PATH}/third_party/nlfaultinjection/include"
                         "${MATTER_SDK_PATH}/src")
 
-# TODO: These files have compilation errors
-set(EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/commodity-tariff-server/commodity-tariff-server.cpp"
-                      "${MATTER_SDK_PATH}/src/app/clusters/commodity-tariff-server/CommodityTariffAttrsDataMgmt.cpp")
 set(PRIV_INCLUDE_DIRS_LIST )
 
 if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
