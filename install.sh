@@ -9,6 +9,10 @@ print_help() {
     echo "  --no-bootstrap          Disable sourcing connectedhomeip's scripts/bootstrap.sh,"
     echo "                          This can be helpful if there's already present connectedhomeip setup"
     echo "  --build-python          Build Python environment for running Python test scripts"
+    echo "  --ninja-jobs            Number of jobs to use for ninja (default: $(nproc))"
+    echo "                          This is used to build the host tools."
+    echo "                          This can be helpful in case of slow build machines/docker containers,"
+    echo "                          or to speed up the build process on faster machines."
     echo "  --help                  Display this help message"
 }
 
@@ -21,6 +25,7 @@ echo_log() {
 NO_HOST_TOOL=false
 NO_BOOTSTRAP=false
 BUILD_PYTHON=false
+NINJA_JOBS=$(nproc)
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
@@ -32,6 +37,10 @@ while [[ "$#" -gt 0 ]]; do
             ;;
         --build-python)
             BUILD_PYTHON=true
+            ;;
+        --ninja-jobs)
+            NINJA_JOBS=${2:-$(nproc)}
+            shift
             ;;
         --help)
             print_help
@@ -63,7 +72,7 @@ fi
 if [ $NO_HOST_TOOL = false ]; then
   echo_log "Building host tools"
   gn --root="${MATTER_PATH}" gen ${MATTER_PATH}/out/host --args='chip_inet_config_enable_ipv4=false'
-  ninja -C ${MATTER_PATH}/out/host chip-cert chip-tool
+  ninja -j $NINJA_JOBS -C ${MATTER_PATH}/out/host chip-cert chip-tool
   echo_log "Host tools built at: ${MATTER_PATH}/out/host"
 else
   echo_log "Skip building host tools"
@@ -84,7 +93,6 @@ else
   echo_log "Installing requirements from requirements.txt"
   python3 -m pip install -r ${ESP_MATTER_PATH}/requirements.txt > /dev/null
 fi
-
 
 if [ $BUILD_PYTHON = true ]; then
   echo_log "Building Python testing environment"
