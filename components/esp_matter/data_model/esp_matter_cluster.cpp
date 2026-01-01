@@ -4538,7 +4538,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-        attribute::create_meter_type(cluster, 0);
+        attribute::create_meter_type(cluster, nullable<uint8_t>(0));
         attribute::create_point_of_delivery(cluster, NULL, 0);
         attribute::create_meter_serial_number(cluster, NULL, 0);
 
