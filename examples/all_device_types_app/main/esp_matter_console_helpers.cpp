@@ -476,8 +476,8 @@ int create(uint8_t device_type_index)
                 }
                 esp_matter::cluster_t *power_cluster = esp_matter::cluster::get(endpoint, chip::app::Clusters::ElectricalPowerMeasurement::Id);
                 if (power_cluster) {
-                    esp_matter::cluster::electrical_power_measurement::attribute::create_voltage(power_cluster, NULL);
-                    esp_matter::cluster::electrical_power_measurement::attribute::create_active_current(power_cluster, NULL);
+                    esp_matter::cluster::electrical_power_measurement::attribute::create_voltage(power_cluster, nullable<int64_t>());
+                    esp_matter::cluster::electrical_power_measurement::attribute::create_active_current(power_cluster, nullable<int64_t>());
                 }
                 if (power_cluster && energy_cluster) {
                     g_electrical_sensor_created = true;
