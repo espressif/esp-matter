@@ -95,6 +95,12 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
                             0);
     }
 #endif // CHIP_CONFIG_ENABLE_ICD_SERVER
+#if defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
+    wifi_network_diagnostics::create(endpoint, nullptr, CLUSTER_FLAG_SERVER);
+#endif
+#if defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
+    thread_network_diagnostics::create(endpoint, nullptr, CLUSTER_FLAG_SERVER);
+#endif
     return ESP_OK;
 }
 } /* root_node */
