@@ -55,6 +55,11 @@ List of clusters with delegate:
     - Water Heater Management Cluster.
     - WebRTC Transport Provider Cluster.
     - Window Covering Cluster.
+    - Chime Cluster.
+    - Push AV Stream Transport Cluster.
+    - Commodity Tariff Cluster.
+    - Commodity Price Cluster.
+    - Electrical Grid Conditions Cluster.
 
 Below is the list of clusters with delegate and their reference implementation header files:
 
@@ -414,6 +419,45 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `Window Covering`_, `Window Covering Delegate`_
 
+1.44 Chime Cluster
+~~~~~~~~~~~~~~~~~~
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Chime`_, `Chime Delegate`_
+
+1.45 Push AV Stream Transport Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Push AV Stream Transport`_, `Push AV Stream Transport Delegate`_
+
+1.46 Commodity Tariff Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Commodity Tariff`_, `Commodity Tariff Delegate`_
+
+1.47 Commodity Price Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Commodity Price`_, `Commodity Price Delegate`_
+
+1.48 Electrical Grid Conditions Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Electrical Grid Conditions`_, `Electrical Grid Conditions Delegate`_
 
 .. note::
     Make sure that after implementing delegate class, you set the delegate class pointer at the time of creating cluster.
@@ -516,3 +560,13 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`WebRTC Transport Provider Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/camera-app/linux/include/clusters/webrtc_provider/webrtc-provider-manager.h
 .. _`Window Covering`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/window-covering-server/window-covering-delegate.h
 .. _`Window Covering Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/chef/common/clusters/window-covering/chef-window-covering.h
+.. _`Chime`: https://github.com/espressif/connectedhomeip/blob/faf4d09/src/app/clusters/chime-server/chime-server.h
+.. _`Chime Delegate`: https://github.com/espressif/connectedhomeip/blob/faf4d09/examples/all-clusters-app/all-clusters-common/include/chime-instance.h
+.. _`Push AV Stream Transport`: https://github.com/espressif/connectedhomeip/blob/faf4d09/src/app/clusters/push-av-stream-transport-server/push-av-stream-transport-delegate.h
+.. _`Push AV Stream Transport Delegate`: https://github.com/espressif/connectedhomeip/blob/faf4d09/examples/all-clusters-app/all-clusters-common/include/push-av-stream-transport-delegate-impl.h
+.. _`Commodity Tariff`: https://github.com/espressif/connectedhomeip/blob/faf4d09/src/app/clusters/commodity-tariff-server/commodity-tariff-server.h
+.. _`Commodity Tariff Delegate`: https://github.com/espressif/connectedhomeip/blob/faf4d09/examples/energy-gateway-app/commodity-tariff/include/CommodityTariffInstance.h
+.. _`Commodity Price`: https://github.com/espressif/connectedhomeip/blob/faf4d09/src/app/clusters/commodity-price-server/commodity-price-server.h
+.. _`Commodity Price Delegate`: https://github.com/espressif/connectedhomeip/blob/faf4d09/examples/energy-gateway-app/commodity-price/include/CommodityPriceDelegate.h
+.. _`Electrical Grid Conditions`: https://github.com/espressif/connectedhomeip/blob/faf4d09/src/app/clusters/electrical-grid-conditions-server/electrical-grid-conditions-server.h
+.. _`Electrical Grid Conditions Delegate`: https://github.com/espressif/connectedhomeip/blob/faf4d09/examples/energy-gateway-app/electrical-grid-conditions/include/ElectricalGridConditionsDelegate.h
