@@ -127,7 +127,15 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Channel`_, `Channel Delegate`_
 
-1.9 Closure Control Cluster
+1.9 Chime Cluster
+~~~~~~~~~~~~~~~~~~
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Chime`_, `Chime Delegate`_
+
+1.10 Closure Control Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -135,7 +143,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Closure Control`_, `Closure Control Delegate`_
 
-1.10 Closure Dimension Cluster
+1.11 Closure Dimension Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -143,7 +151,23 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Closure Dimension`_, `Closure Dimension Delegate`_
 
-1.11 Commissioner Control Cluster
+1.12 Commodity Price Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Commodity Price`_, `Commodity Price Delegate`_
+
+1.13 Commodity Tariff Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Commodity Tariff`_, `Commodity Tariff Delegate`_
+
+1.14 Commissioner Control Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -151,7 +175,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Commissioner Control`_, `Commissioner Control Delegate`_
 
-1.12 Content App Observer Cluster
+1.15 Content App Observer Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -159,7 +183,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Content App Observer`_, None
 
-1.13 Content Control Cluster
+1.16 Content Control Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -167,7 +191,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Content Control`_, None
 
-1.14 Content Launcher Cluster
+1.17 Content Launcher Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -175,7 +199,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Content Launcher`_, `Content Launcher Delegate`_
 
-1.15 Device Energy Management Cluster
+1.18 Device Energy Management Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -183,7 +207,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Device Energy Management`_, `Device Energy Management Delegate`_
 
-1.16 Dishwasher Alarm Cluster
+1.19 Dishwasher Alarm Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -191,7 +215,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Dishwasher Alarm`_, `Dishwasher Alarm Delegate`_
 
-1.17 Door Lock Cluster
+1.20 Door Lock Cluster
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -199,7 +223,15 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Door Lock`_, `Door Lock Delegate`_
 
-1.18 Electrical Power Measurement Cluster
+1.21 Electrical Grid Conditions Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Electrical Grid Conditions`_, `Electrical Grid Conditions Delegate`_
+
+1.22 Electrical Power Measurement Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -207,7 +239,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Electrical Power Measurement`_, `Electrical Power Measurement Delegate`_
 
-1.19 Energy Evse Cluster
+1.23 Energy Evse Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -215,7 +247,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Energy Evse`_, `Energy Evse Delegate`_
 
-1.20 Energy Preference Cluster
+1.24 Energy Preference Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -223,7 +255,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Energy Preference`_, `Energy Preference Delegate`_
 
-1.21 Fan Control Cluster
+1.25 Fan Control Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -231,7 +263,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Fan Control`_, `Fan Control Delegate`_
 
-1.22 Keypad Input Cluster
+1.26 Keypad Input Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -239,7 +271,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Keypad Input`_, `Keypad Input Delegate`_
 
-1.23 Laundry Dryer Controls Cluster
+1.27 Laundry Dryer Controls Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -247,7 +279,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Laundry Dryer Controls`_, `Laundry Dryer Controls Delegate`_
 
-1.24 Laundry Washer Controls Cluster
+1.28 Laundry Washer Controls Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -255,7 +287,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Laundry Washer Controls`_, `Laundry Washer Controls Delegate`_
 
-1.25 Low Power Cluster
+1.29 Low Power Cluster
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -263,7 +295,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Low Power`_, `Low Power Delegate`_
 
-1.26 Media Input Cluster
+1.30 Media Input Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -271,7 +303,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Media Input`_, `Media Input Delegate`_
 
-1.27 Media Playback Cluster
+1.31 Media Playback Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -279,7 +311,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Media Playback`_, `Media Playback Delegate`_
 
-1.28 Messages Cluster
+1.32 Messages Cluster
 ~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -287,7 +319,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Messages`_, `Messages Delegate`_
 
-1.29 Microwave Oven Control Cluster
+1.33 Microwave Oven Control Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -295,7 +327,7 @@ Below is the list of clusters with delegate and their reference implementation h
 
   `Microwave Oven Control`_, `Microwave Oven Control Delegate`_
 
-1.30 Mode Base Cluster
+1.34 Mode Base Cluster
 ~~~~~~~~~~~~~~~~~~~~~~
 
 It is a base cluster for ModeEVSE, ModeOven, ModeRVSRun, ModeRVSClean, ModeDishwasher,
@@ -313,7 +345,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
               , `Device Energy Management Mode`_
               , `Water Heater Mode`_
 
-1.31 Mode Select Cluster
+1.35 Mode Select Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -321,7 +353,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `Mode Select`_, `Mode Select Delegate`_
 
-1.32 Operational State Cluster
+1.36 Operational State Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -329,7 +361,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `Operational State`_, `Operational State Delegate`_
 
-1.33 Power Topology Cluster
+1.37 Power Topology Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -337,7 +369,15 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `Power Topology`_, `Power Topology Delegate`_
 
-1.34 Resource Monitoring Cluster
+1.38 Push AV Stream Transport Cluster
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. csv-table::
+  :header: "Delegate Class", "Reference Implementation"
+
+  `Push AV Stream Transport`_, `Push AV Stream Transport Delegate`_
+
+1.39 Resource Monitoring Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -347,7 +387,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
                         , `Activated Carbon Filter Monitoring Delegate`_
                         , `Water Tank Level Monitoring Delegate`
 
-1.35 Service Area Cluster
+1.40 Service Area Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -355,7 +395,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `Service Area`_, `Service Area Delegate`_
 
-1.36 Target Navigator Cluster
+1.41 Target Navigator Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -363,7 +403,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `Target Navigator`_, `Target Navigator Delegate`_
 
-1.37 Thermostat Cluster
+1.42 Thermostat Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -371,7 +411,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
   
   `Thermostat`_, `Thermostat Delegate`_
 
-1.38 Time Synchronization Cluster
+1.43 Time Synchronization Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -379,7 +419,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `Time Synchronization`_, `Time Synchronization Delegate`_
 
-1.39 Valve Configuration And Control Cluster
+1.44 Valve Configuration And Control Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -387,7 +427,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `Valve Configuration And Control`_, `Valve Configuration And Control Delegate`_
 
-1.40 Wake On LAN Cluster
+1.45 Wake On LAN Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -395,7 +435,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `Wake On LAN`_, `Wake On LAN Delegate`_
 
-1.41 Water Heater Management Cluster
+1.46 Water Heater Management Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -403,7 +443,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `Water Heater Management`_, `Water Heater Management Delegate`_
 
-1.42 WebRTC Transport Provider Cluster
+1.47 WebRTC Transport Provider Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
@@ -411,53 +451,13 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 
   `WebRTC Transport Provider`_, `WebRTC Transport Provider Delegate`_
 
-1.43 Window Covering Cluster
+1.48 Window Covering Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. csv-table::
   :header: "Delegate Class", "Reference Implementation"
 
   `Window Covering`_, `Window Covering Delegate`_
-
-1.44 Chime Cluster
-~~~~~~~~~~~~~~~~~~
-
-.. csv-table::
-  :header: "Delegate Class", "Reference Implementation"
-
-  `Chime`_, `Chime Delegate`_
-
-1.45 Push AV Stream Transport Cluster
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. csv-table::
-  :header: "Delegate Class", "Reference Implementation"
-
-  `Push AV Stream Transport`_, `Push AV Stream Transport Delegate`_
-
-1.46 Commodity Tariff Cluster
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. csv-table::
-  :header: "Delegate Class", "Reference Implementation"
-
-  `Commodity Tariff`_, `Commodity Tariff Delegate`_
-
-1.47 Commodity Price Cluster
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. csv-table::
-  :header: "Delegate Class", "Reference Implementation"
-
-  `Commodity Price`_, `Commodity Price Delegate`_
-
-1.48 Electrical Grid Conditions Cluster
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. csv-table::
-  :header: "Delegate Class", "Reference Implementation"
-
-  `Electrical Grid Conditions`_, `Electrical Grid Conditions Delegate`_
 
 .. note::
     Make sure that after implementing delegate class, you set the delegate class pointer at the time of creating cluster.
