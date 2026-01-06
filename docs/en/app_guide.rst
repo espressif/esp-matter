@@ -472,6 +472,7 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Account Login Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/tv-app/android/include/account-login/AccountLoginManager.h
 .. _`Actions`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/actions-server/actions-server.h
 .. _`Actions Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/bridged-actions-stub.h
+.. _`Activated Carbon Filter Monitoring Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/resource-monitoring-delegates.h
 .. _`Application Basic`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/application-basic-server/application-basic-delegate.h
 .. _`Application Basic Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/tv-app/tv-common/clusters/application-basic/ApplicationBasicManager.h
 .. _`Application Launcher`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/application-launcher-server/application-launcher-delegate.h
@@ -484,10 +485,16 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Camera AV Settings User Level Management Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/camera-av-settings-user-level-management-instance.h
 .. _`Channel`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/channel-server/channel-delegate.h
 .. _`Channel Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/tv-app/tv-common/clusters/channel/ChannelManager.h
+.. _`Chime`: https://github.com/espressif/connectedhomeip/blob/faf4d09/src/app/clusters/chime-server/chime-server.h
+.. _`Chime Delegate`: https://github.com/espressif/connectedhomeip/blob/faf4d09/examples/all-clusters-app/all-clusters-common/include/chime-instance.h
 .. _`Closure Control`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/closure-control-server/closure-control-cluster-delegate.h
 .. _`Closure Control Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/closure-app/closure-common/include/ClosureControlEndpoint.h
 .. _`Closure Dimension`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/closure-dimension-server/closure-dimension-delegate.h
 .. _`Closure Dimension Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/closure-app/closure-common/include/ClosureDimensionEndpoint.h
+.. _`Commodity Price`: https://github.com/espressif/connectedhomeip/blob/faf4d09/src/app/clusters/commodity-price-server/commodity-price-server.h
+.. _`Commodity Price Delegate`: https://github.com/espressif/connectedhomeip/blob/faf4d09/examples/energy-gateway-app/commodity-price/include/CommodityPriceDelegate.h
+.. _`Commodity Tariff`: https://github.com/espressif/connectedhomeip/blob/faf4d09/src/app/clusters/commodity-tariff-server/commodity-tariff-server.h
+.. _`Commodity Tariff Delegate`: https://github.com/espressif/connectedhomeip/blob/faf4d09/examples/energy-gateway-app/commodity-tariff/include/CommodityTariffInstance.h
 .. _`Commissioner Control`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/commissioner-control-server/commissioner-control-server.h
 .. _`Commissioner Control Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/fabric-bridge-app/linux/include/CommissionerControlDelegate.h
 .. _`Content App Observer`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/content-app-observer/content-app-observer-delegate.h
@@ -496,24 +503,31 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Content Launcher Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/tv-app/tv-common/clusters/content-launcher/ContentLauncherManager.h
 .. _`Device Energy Management`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/device-energy-management-server/device-energy-management-server.h
 .. _`Device Energy Management Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/energy-management-app/energy-management-common/device-energy-management/include/DeviceEnergyManagementDelegateImpl.h
+.. _`Device Energy Management Mode`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/energy-management-app/energy-management-common/device-energy-management/include/device-energy-management-modes.h
+.. _`Dish Washer Mode`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/dishwasher-mode.h
 .. _`Dishwasher Alarm`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/dishwasher-alarm-server/dishwasher-alarm-delegate.h
 .. _`Dishwasher Alarm Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/src/dishwasher-alarm-stub.cpp
 .. _`Door Lock`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/door-lock-server/door-lock-delegate.h
 .. _`Door Lock Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/lock-app/lock-common/src/LockEndpoint.cpp
+.. _`Electrical Grid Conditions`: https://github.com/espressif/connectedhomeip/blob/faf4d09/src/app/clusters/electrical-grid-conditions-server/electrical-grid-conditions-server.h
+.. _`Electrical Grid Conditions Delegate`: https://github.com/espressif/connectedhomeip/blob/faf4d09/examples/energy-gateway-app/electrical-grid-conditions/include/ElectricalGridConditionsDelegate.h
 .. _`Electrical Power Measurement`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/electrical-power-measurement-server/electrical-power-measurement-server.h
 .. _`Electrical Power Measurement Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/energy-management-app/energy-management-common/energy-reporting/include/ElectricalPowerMeasurementDelegate.h
 .. _`Energy Evse`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/energy-evse-server/energy-evse-server.h
 .. _`Energy Evse Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/energy-management-app/energy-management-common/energy-evse/include/EnergyEvseDelegateImpl.h
+.. _`Energy Evse Mode`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/energy-management-app/energy-management-common/energy-evse/include/energy-evse-modes.h
 .. _`Energy Preference`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/energy-preference-server/energy-preference-server.h
 .. _`Energy Preference Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/src/energy-preference-delegate.cpp
 .. _`Fan Control`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/fan-control-server/fan-control-delegate.h
 .. _`Fan Control Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/src/fan-stub.cpp
+.. _`HEPA Filter Monitoring Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/resource-monitoring-delegates.h
 .. _`Keypad Input`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/keypad-input-server/keypad-input-delegate.h
 .. _`Keypad Input Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/tv-app/tv-common/clusters/keypad-input/KeypadInputManager.h
 .. _`Laundry Dryer Controls`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/laundry-dryer-controls-server/laundry-dryer-controls-delegate.h
 .. _`Laundry Dryer Controls Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/laundry-dryer-controls-delegate-impl.h
 .. _`Laundry Washer Controls`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/laundry-washer-controls-server/laundry-washer-controls-delegate.h
 .. _`Laundry Washer Controls Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/laundry-washer-controls-delegate-impl.h
+.. _`Laundry Washer Mode`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/laundry-washer-mode.h
 .. _`Low Power`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/low-power-server/low-power-delegate.h
 .. _`Low Power Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/tv-app/tv-common/clusters/low-power/LowPowerManager.h
 .. _`Media Input`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/media-input-server/media-input-delegate.h
@@ -524,24 +538,19 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Messages Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/tv-app/tv-common/clusters/messages/MessagesManager.h
 .. _`Microwave Oven Control`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/microwave-oven-control-server/microwave-oven-control-server.h
 .. _`Microwave Oven Control Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/microwave-oven-app/microwave-oven-common/include/microwave-oven-device.h
-.. _`Mode Base`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/mode-base-server/mode-base-server.h
-.. _`Refrigeratore And TCC Mode`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/tcc-mode.h
-.. _`Laundry Washer Mode`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/laundry-washer-mode.h
-.. _`Dish Washer Mode`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/dishwasher-mode.h
-.. _`Rvc Run And Rvc Clean Mode`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/rvc-modes.h
-.. _`Energy Evse Mode`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/energy-management-app/energy-management-common/energy-evse/include/energy-evse-modes.h
 .. _`Microwave Oven Mode`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/microwave-oven-mode.h
-.. _`Device Energy Management Mode`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/energy-management-app/energy-management-common/device-energy-management/include/device-energy-management-modes.h
-.. _`Water Heater Mode`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/water-heater-mode.h
+.. _`Mode Base`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/mode-base-server/mode-base-server.h
 .. _`Mode Select`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/mode-select-server/supported-modes-manager.h
 .. _`Mode Select Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/static-supported-modes-manager.h
 .. _`Operational State`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/operational-state-server/operational-state-server.h
 .. _`Operational State Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/operational-state-delegate-impl.h
 .. _`Power Topology`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/power-topology-server/power-topology-server.h
 .. _`Power Topology Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/energy-management-app/energy-management-common/energy-reporting/include/PowerTopologyDelegate.h
+.. _`Push AV Stream Transport`: https://github.com/espressif/connectedhomeip/blob/faf4d09/src/app/clusters/push-av-stream-transport-server/push-av-stream-transport-delegate.h
+.. _`Push AV Stream Transport Delegate`: https://github.com/espressif/connectedhomeip/blob/faf4d09/examples/all-clusters-app/all-clusters-common/include/push-av-stream-transport-delegate-impl.h
+.. _`Refrigeratore And TCC Mode`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/tcc-mode.h
 .. _`Resource Monitoring`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/resource-monitoring-server/resource-monitoring-server.h
-.. _`HEPA Filter Monitoring Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/resource-monitoring-delegates.h
-.. _`Activated Carbon Filter Monitoring Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/resource-monitoring-delegates.h
+.. _`Rvc Run And Rvc Clean Mode`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/rvc-modes.h
 .. _`Service Area`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/service-area-server/service-area-server.h
 .. _`Service Area Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/rvc-app/rvc-common/include/rvc-service-area-delegate.h
 .. _`Target Navigator`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/target-navigator-server/target-navigator-delegate.h
@@ -556,17 +565,8 @@ ModeWaterHeater, ModeRefrigerator, ModeLaundryWasher and ModeMicrowaveOven.
 .. _`Wake On LAN Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/tv-app/tv-common/clusters/wake-on-lan/WakeOnLanManager.h
 .. _`Water Heater Management`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/water-heater-management-server/water-heater-management-server.h
 .. _`Water Heater Management Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/WhmDelegate.h
+.. _`Water Heater Mode`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/all-clusters-app/all-clusters-common/include/water-heater-mode.h
 .. _`WebRTC Transport Provider`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/webrtc-transport-provider-server/webrtc-transport-provider-server.h
 .. _`WebRTC Transport Provider Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/camera-app/linux/include/clusters/webrtc_provider/webrtc-provider-manager.h
 .. _`Window Covering`: https://github.com/espressif/connectedhomeip/blob/d144bbb/src/app/clusters/window-covering-server/window-covering-delegate.h
 .. _`Window Covering Delegate`: https://github.com/espressif/connectedhomeip/blob/d144bbb/examples/chef/common/clusters/window-covering/chef-window-covering.h
-.. _`Chime`: https://github.com/espressif/connectedhomeip/blob/faf4d09/src/app/clusters/chime-server/chime-server.h
-.. _`Chime Delegate`: https://github.com/espressif/connectedhomeip/blob/faf4d09/examples/all-clusters-app/all-clusters-common/include/chime-instance.h
-.. _`Push AV Stream Transport`: https://github.com/espressif/connectedhomeip/blob/faf4d09/src/app/clusters/push-av-stream-transport-server/push-av-stream-transport-delegate.h
-.. _`Push AV Stream Transport Delegate`: https://github.com/espressif/connectedhomeip/blob/faf4d09/examples/all-clusters-app/all-clusters-common/include/push-av-stream-transport-delegate-impl.h
-.. _`Commodity Tariff`: https://github.com/espressif/connectedhomeip/blob/faf4d09/src/app/clusters/commodity-tariff-server/commodity-tariff-server.h
-.. _`Commodity Tariff Delegate`: https://github.com/espressif/connectedhomeip/blob/faf4d09/examples/energy-gateway-app/commodity-tariff/include/CommodityTariffInstance.h
-.. _`Commodity Price`: https://github.com/espressif/connectedhomeip/blob/faf4d09/src/app/clusters/commodity-price-server/commodity-price-server.h
-.. _`Commodity Price Delegate`: https://github.com/espressif/connectedhomeip/blob/faf4d09/examples/energy-gateway-app/commodity-price/include/CommodityPriceDelegate.h
-.. _`Electrical Grid Conditions`: https://github.com/espressif/connectedhomeip/blob/faf4d09/src/app/clusters/electrical-grid-conditions-server/electrical-grid-conditions-server.h
-.. _`Electrical Grid Conditions Delegate`: https://github.com/espressif/connectedhomeip/blob/faf4d09/examples/energy-gateway-app/electrical-grid-conditions/include/ElectricalGridConditionsDelegate.h
