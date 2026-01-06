@@ -1,6 +1,6 @@
 #pragma once
 
-#include <app/clusters/webrtc-transport-provider-server/webrtc-transport-provider-server.h>
+#include <app/clusters/webrtc-transport-provider-server/WebRTCTransportProviderCluster.h>
 
 namespace chip {
 namespace app {
@@ -14,9 +14,7 @@ class WebRTCTransportProviderController {
 public:
   virtual ~WebRTCTransportProviderController() = default;
 
-  virtual void
-  SetWebRTCTransportProvider(std::unique_ptr<WebRTCTransportProviderServer>
-                                 webRTCTransportProvider) = 0;
+  virtual void SetWebRTCTransportProvider(WebRTCTransportProviderCluster *webRTCTransportProvider) = 0;
 };
 
 } // namespace WebRTCTransportProvider

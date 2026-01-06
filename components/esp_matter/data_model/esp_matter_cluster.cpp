@@ -847,6 +847,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Commands */
         command::create_set_utc_time(cluster);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterTimeSynchronizationClusterServerInitCallback,
+                                         ESPMatterTimeSynchronizationClusterServerShutdownCallback);
     }
 
     event::create_time_failure(cluster);
@@ -874,6 +876,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterUnitLocalizationClusterServerInitCallback,
+                                         ESPMatterUnitLocalizationClusterServerShutdownCallback);
     }
 
     return cluster;
@@ -971,8 +975,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, IcdManagement::Id));
 #if CONFIG_ENABLE_ICD_SERVER
     if (flags & CLUSTER_FLAG_SERVER) {
-        static const auto plugin_server_init_cb = CALL_ONCE(MatterIcdManagementPluginServerInitCallback);
-        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        set_plugin_server_init_callback(cluster, nullptr);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -983,6 +986,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterIcdManagementClusterServerInitCallback,
+                                                 ESPMatterIcdManagementClusterServerShutdownCallback);
     }
 #endif // CONFIG_ENABLE_ICD_SERVER
     return cluster;
@@ -1130,11 +1135,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 } /* groups */
 
 namespace scenes_management {
-const function_generic_t function_list[] = {
-    (function_generic_t)emberAfScenesManagementClusterServerInitCallback,
-    (function_generic_t)MatterScenesManagementClusterServerShutdownCallback,
-};
-const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION;
+const function_generic_t *function_list = nullptr;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -1158,6 +1160,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterScenesManagementClusterServerInitCallback,
+                                         ESPMatterScenesManagementClusterServerShutdownCallback);
     }
 
     /* Commands */
@@ -1540,14 +1544,24 @@ static cluster_t *create(endpoint_t *endpoint, T *config, uint8_t flags, uint32_
 namespace hepa_filter_monitoring {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    return resource_monitoring::create<config_t, HepaFilterMonitoringDelegateInitCB>(endpoint, config, flags,HepaFilterMonitoring::Id, cluster_revision);
+    cluster_t *cluster = resource_monitoring::create<config_t, HepaFilterMonitoringDelegateInitCB>(endpoint, config, flags,HepaFilterMonitoring::Id, cluster_revision);
+    if (cluster && (flags & CLUSTER_FLAG_SERVER)) {
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterHepaFilterMonitoringClusterServerInitCallback,
+                                                 ESPMatterHepaFilterMonitoringClusterServerShutdownCallback);
+    }
+    return cluster;
 }
 } /* hepa_filter_monitoring */
 
 namespace activated_carbon_filter_monitoring {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    return resource_monitoring::create<config_t, ActivatedCarbonFilterMonitoringDelegateInitCB>(endpoint, config, flags,ActivatedCarbonFilterMonitoring::Id, cluster_revision);
+    cluster_t *cluster = resource_monitoring::create<config_t, ActivatedCarbonFilterMonitoringDelegateInitCB>(endpoint, config, flags,ActivatedCarbonFilterMonitoring::Id, cluster_revision);
+    if (cluster && (flags & CLUSTER_FLAG_SERVER)) {
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterActivatedCarbonFilterMonitoringClusterServerInitCallback,
+                                                 ESPMatterActivatedCarbonFilterMonitoringClusterServerShutdownCallback);
+    }
+    return cluster;
 }
 } /* activated_carbon_filter_monitoring */
 
@@ -2238,10 +2252,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 } /* relative_humidity_measurement */
 
 namespace occupancy_sensing {
-const function_generic_t function_list[] = {
-    (function_generic_t)emberAfOccupancySensingClusterServerInitCallback,
-};
-const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
+const function_generic_t *function_list = nullptr;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -2296,6 +2308,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         if (has(feature::vision::get_id())) {
             feature::vision::add(cluster);
         }
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterOccupancySensingClusterServerInitCallback,
+                                                 ESPMatterOccupancySensingClusterServerShutdownCallback);
     } // if (flags & CLUSTER_FLAG_SERVER)
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -2365,6 +2379,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterBooleanStateConfigurationClusterServerInitCallback,
+                                                 ESPMatterBooleanStateConfigurationClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -3121,6 +3137,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
                 feature::dynamic_power_flow::add(cluster);
             }
         }
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterPowerTopologyClusterServerInitCallback,
+                                                 ESPMatterPowerTopologyClusterServerShutdownCallback);
     } // if (flags & CLUSTER_FLAG_SERVER)
 
     return cluster;
@@ -3176,6 +3194,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
                 feature::power_quality::add(cluster);
             }
         }
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterElectricalPowerMeasurementClusterServerInitCallback,
+                                                 ESPMatterElectricalPowerMeasurementClusterServerShutdownCallback);
     } // if (flags & CLUSTER_FLAG_SERVER)
 
     return cluster;
@@ -3221,6 +3241,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         if (has(feature::periodic_energy::get_id())) {
             feature::periodic_energy::add(cluster);
         }
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterElectricalEnergyMeasurementClusterServerInitCallback,
+                                                 ESPMatterElectricalEnergyMeasurementClusterServerShutdownCallback);
     } // if (flags & CLUSTER_FLAG_SERVER)
 
     return cluster;
@@ -3379,6 +3401,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_abs_max_power(cluster, 0);
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterDeviceEnergyManagementClusterServerInitCallback,
+                                                 ESPMatterDeviceEnergyManagementClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -3925,7 +3949,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         command::create_provide_answer(cluster);
         command::create_provide_ice_candidates(cluster);
         command::create_end_session(cluster);
-
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterWebRTCTransportProviderClusterServerInitCallback,
+                                         ESPMatterWebRTCTransportProviderClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -4065,6 +4090,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
         command::create_play_chime_sound(cluster);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterChimeClusterServerInitCallback,
+                                                 ESPMatterChimeClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {

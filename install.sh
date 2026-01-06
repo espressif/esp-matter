@@ -63,7 +63,7 @@ export ZAP_INSTALL_PATH=${MATTER_PATH}/.environment/cipd/packages/zap
 if [ $NO_BOOTSTRAP = false ]; then
   echo_log "Running Matter Setup"
   cd ${MATTER_PATH}
-  source ${MATTER_PATH}/scripts/bootstrap.sh
+  source ${MATTER_PATH}/scripts/bootstrap.sh -p all,esp32
   cd ${ESP_MATTER_PATH}
 else
   echo_log "Skipping Matter Setup"

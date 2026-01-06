@@ -165,7 +165,7 @@ CHIP_ERROR attribute_data_encode_buffer::Encode(chip::TLV::TLVWriter &writer, ch
     switch (m_attr_val.type) {
     case ESP_MATTER_VAL_TYPE_NULLABLE_BOOLEAN:
         if (chip::app::NumericAttributeTraits<bool>::IsNullValue(m_attr_val.val.b)) {
-            writer.PutNull(tag);
+            ReturnErrorOnFailure(writer.PutNull(tag));
             break;
         }
     // Fall through
@@ -176,7 +176,7 @@ CHIP_ERROR attribute_data_encode_buffer::Encode(chip::TLV::TLVWriter &writer, ch
     case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8:
     case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8:
         if (chip::app::NumericAttributeTraits<uint8_t>::IsNullValue(m_attr_val.val.u8)) {
-            writer.PutNull(tag);
+            ReturnErrorOnFailure(writer.PutNull(tag));
             break;
         }
     // Fall through
@@ -189,7 +189,7 @@ CHIP_ERROR attribute_data_encode_buffer::Encode(chip::TLV::TLVWriter &writer, ch
     case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16:
     case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16:
         if (chip::app::NumericAttributeTraits<uint16_t>::IsNullValue(m_attr_val.val.u16)) {
-            writer.PutNull(tag);
+            ReturnErrorOnFailure(writer.PutNull(tag));
             break;
         }
     // Fall through
@@ -201,7 +201,7 @@ CHIP_ERROR attribute_data_encode_buffer::Encode(chip::TLV::TLVWriter &writer, ch
     case ESP_MATTER_VAL_TYPE_NULLABLE_UINT32:
     case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32:
         if (chip::app::NumericAttributeTraits<uint32_t>::IsNullValue(m_attr_val.val.u32)) {
-            writer.PutNull(tag);
+            ReturnErrorOnFailure(writer.PutNull(tag));
             break;
         }
     // Fall through
@@ -211,7 +211,7 @@ CHIP_ERROR attribute_data_encode_buffer::Encode(chip::TLV::TLVWriter &writer, ch
         break;
     case ESP_MATTER_VAL_TYPE_NULLABLE_UINT64:
         if (chip::app::NumericAttributeTraits<uint64_t>::IsNullValue(m_attr_val.val.u64)) {
-            writer.PutNull(tag);
+            ReturnErrorOnFailure(writer.PutNull(tag));
             break;
         }
     // Fall through
@@ -220,7 +220,7 @@ CHIP_ERROR attribute_data_encode_buffer::Encode(chip::TLV::TLVWriter &writer, ch
         break;
     case ESP_MATTER_VAL_TYPE_NULLABLE_INT8:
         if (chip::app::NumericAttributeTraits<int8_t>::IsNullValue(m_attr_val.val.i8)) {
-            writer.PutNull(tag);
+            ReturnErrorOnFailure(writer.PutNull(tag));
             break;
         }
     // Fall through
@@ -229,7 +229,7 @@ CHIP_ERROR attribute_data_encode_buffer::Encode(chip::TLV::TLVWriter &writer, ch
         break;
     case ESP_MATTER_VAL_TYPE_NULLABLE_INT16:
         if (chip::app::NumericAttributeTraits<int16_t>::IsNullValue(m_attr_val.val.i16)) {
-            writer.PutNull(tag);
+            ReturnErrorOnFailure(writer.PutNull(tag));
             break;
         }
     // Fall through
@@ -238,7 +238,7 @@ CHIP_ERROR attribute_data_encode_buffer::Encode(chip::TLV::TLVWriter &writer, ch
         break;
     case ESP_MATTER_VAL_TYPE_NULLABLE_INT32:
         if (chip::app::NumericAttributeTraits<int32_t>::IsNullValue(m_attr_val.val.i32)) {
-            writer.PutNull(tag);
+            ReturnErrorOnFailure(writer.PutNull(tag));
             break;
         }
     // Fall through
@@ -247,7 +247,7 @@ CHIP_ERROR attribute_data_encode_buffer::Encode(chip::TLV::TLVWriter &writer, ch
         break;
     case ESP_MATTER_VAL_TYPE_NULLABLE_INT64:
         if (chip::app::NumericAttributeTraits<int64_t>::IsNullValue(m_attr_val.val.i64)) {
-            writer.PutNull(tag);
+            ReturnErrorOnFailure(writer.PutNull(tag));
             break;
         }
     // Fall through
@@ -256,7 +256,7 @@ CHIP_ERROR attribute_data_encode_buffer::Encode(chip::TLV::TLVWriter &writer, ch
         break;
     case ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT:
         if (chip::app::NumericAttributeTraits<float>::IsNullValue(m_attr_val.val.f)) {
-            writer.PutNull(tag);
+            ReturnErrorOnFailure(writer.PutNull(tag));
             break;
         }
     // Fall through
@@ -267,7 +267,7 @@ CHIP_ERROR attribute_data_encode_buffer::Encode(chip::TLV::TLVWriter &writer, ch
     case ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING: {
         if (m_attr_val.val.a.b == nullptr &&
             m_attr_val.val.a.s == (m_attr_val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ? 0xFF : 0xFFFF)) {
-            writer.PutNull(tag);
+            ReturnErrorOnFailure(writer.PutNull(tag));
             break;
         }
         if (m_attr_val.val.a.b == nullptr) {
@@ -281,7 +281,7 @@ CHIP_ERROR attribute_data_encode_buffer::Encode(chip::TLV::TLVWriter &writer, ch
     case ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING: {
         if (m_attr_val.val.a.b == nullptr &&
             m_attr_val.val.a.s == (m_attr_val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ? 0xFF : 0xFFFF)) {
-            writer.PutNull(tag);
+            ReturnErrorOnFailure(writer.PutNull(tag));
             break;
         }
         ReturnErrorOnFailure(writer.PutBytes(tag, m_attr_val.val.a.b, m_attr_val.val.a.s));

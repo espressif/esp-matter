@@ -41,6 +41,7 @@
 #include <lib/core/DataModelTypes.h>
 #include <lib/core/TLV.h>
 #include <lib/support/ScopedBuffer.h>
+#include "support/CodeUtils.h"
 
 #define ESP_MATTER_MAX_DEVICE_TYPE_COUNT CONFIG_ESP_MATTER_MAX_DEVICE_TYPE_COUNT
 #define ESP_MATTER_MAX_SEMANTIC_TAG_COUNT 3
@@ -881,7 +882,7 @@ esp_err_t get_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_
     writer.Init(scoped_buf.Get(), k_max_tlv_size_to_read_attribute_value);
 
     chip::app::AttributeReportIBs::Builder reportBuilder = chip::app::AttributeReportIBs::Builder();
-    reportBuilder.Init(&writer);
+    VerifyOrReturnValue(reportBuilder.Init(&writer) == CHIP_NO_ERROR, ESP_FAIL);
 
     chip::Access::SubjectDescriptor subjectDescriptor;
     auto concrete_path = chip::app::ConcreteAttributePath(endpoint_id, cluster_id, attribute_id);

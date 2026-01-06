@@ -258,7 +258,7 @@ CHIP_ERROR provider::Startup(InteractionModelContext context)
         ep = endpoint::get_next(ep);
     }
     if (GetAttributePersistenceProvider() == nullptr) {
-        gDefaultAttributePersistence.Init(&Server::GetInstance().GetPersistentStorage());
+        ReturnErrorOnFailure(gDefaultAttributePersistence.Init(&Server::GetInstance().GetPersistentStorage()));
         SetAttributePersistenceProvider(&gDefaultAttributePersistence);
     }
     return mRegistry.SetContext(ServerClusterContext{

@@ -160,49 +160,6 @@ static esp_err_t esp_matter_command_callback_add_group_if_identifying(const Conc
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_command_callback_register_client(const ConcreteCommandPath &command_path,
-                                                             TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::IcdManagement::Commands::RegisterClient::DecodableType command_data;
-    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
-    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
-
-    if (error == CHIP_NO_ERROR) {
-#if CONFIG_ENABLE_ICD_SERVER
-        emberAfIcdManagementClusterRegisterClientCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-#endif
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_unregister_client(const ConcreteCommandPath &command_path,
-                                                               TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::IcdManagement::Commands::UnregisterClient::DecodableType command_data;
-    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
-    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
-
-    if (error == CHIP_NO_ERROR) {
-#if CONFIG_ENABLE_ICD_SERVER
-        emberAfIcdManagementClusterUnregisterClientCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-#endif
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_stay_active_request(const ConcreteCommandPath &command_path,
-                                                                 TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::IcdManagement::Commands::StayActiveRequest::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-#if CONFIG_ENABLE_ICD_SERVER
-        emberAfIcdManagementClusterStayActiveRequestCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-#endif
-    }
-    return ESP_OK;
-}
-
 static esp_err_t esp_matter_command_callback_off(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                  void *opaque_ptr)
 {
@@ -1112,26 +1069,6 @@ static esp_err_t esp_matter_command_callback_send_key(const ConcreteCommandPath 
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_command_callback_suppress_alarm(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::BooleanStateConfiguration::Commands::SuppressAlarm::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfBooleanStateConfigurationClusterSuppressAlarmCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_enable_disable_alarm(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::BooleanStateConfiguration::Commands::EnableDisableAlarm::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfBooleanStateConfigurationClusterEnableDisableAlarmCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
 static esp_err_t esp_matter_command_callback_open(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
 {
     chip::app::Clusters::ValveConfigurationAndControl::Commands::Open::DecodableType command_data;
@@ -1148,64 +1085,6 @@ static esp_err_t esp_matter_command_callback_close(const ConcreteCommandPath &co
     CHIP_ERROR error = Decode(tlv_data, command_data);
     if (error == CHIP_NO_ERROR) {
         emberAfValveConfigurationAndControlClusterCloseCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_set_utc_time(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                          void *opaque_ptr)
-{
-    chip::app::Clusters::TimeSynchronization::Commands::SetUTCTime::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfTimeSynchronizationClusterSetUTCTimeCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_set_trusted_time_source(const ConcreteCommandPath &command_path,
-                                                                     TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::TimeSynchronization::Commands::SetTrustedTimeSource::DecodableType command_data;
-    chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
-    CHIP_ERROR error = command_data.Decode(tlv_data, command_obj->GetAccessingFabricIndex());
-
-    if (error == CHIP_NO_ERROR) {
-        emberAfTimeSynchronizationClusterSetTrustedTimeSourceCallback((CommandHandler *)opaque_ptr, command_path,
-                                                                      command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_set_time_zone(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                           void *opaque_ptr)
-{
-    chip::app::Clusters::TimeSynchronization::Commands::SetTimeZone::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfTimeSynchronizationClusterSetTimeZoneCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_set_dst_offset(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                            void *opaque_ptr)
-{
-    chip::app::Clusters::TimeSynchronization::Commands::SetDSTOffset::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfTimeSynchronizationClusterSetDSTOffsetCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_set_default_ntp(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                             void *opaque_ptr)
-{
-    chip::app::Clusters::TimeSynchronization::Commands::SetDefaultNTP::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfTimeSynchronizationClusterSetDefaultNTPCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
     return ESP_OK;
 }
@@ -1829,7 +1708,7 @@ namespace command {
 command_t *create_register_client(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, IcdManagement::Commands::RegisterClient::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_register_client);
+                                       nullptr);
 }
 
 command_t *create_register_client_response(cluster_t *cluster)
@@ -1841,13 +1720,13 @@ command_t *create_register_client_response(cluster_t *cluster)
 command_t *create_unregister_client(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, IcdManagement::Commands::UnregisterClient::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_unregister_client);
+                                       nullptr);
 }
 
 command_t *create_stay_active_request(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, IcdManagement::Commands::StayActiveRequest::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_stay_active_request);
+                                       nullptr);
 }
 command_t *create_stay_active_response(cluster_t *cluster)
 {
@@ -2527,12 +2406,12 @@ namespace boolean_state_configuration {
 namespace command {
 command_t *create_suppress_alarm(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, BooleanStateConfiguration::Commands::SuppressAlarm::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_suppress_alarm);
+    return esp_matter::command::create(cluster, BooleanStateConfiguration::Commands::SuppressAlarm::Id, COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 command_t *create_enable_disable_alarm(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, BooleanStateConfiguration::Commands::EnableDisableAlarm::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_enable_disable_alarm);
+    return esp_matter::command::create(cluster, BooleanStateConfiguration::Commands::EnableDisableAlarm::Id, COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 } /* command */
@@ -2819,19 +2698,19 @@ namespace command {
 command_t *create_set_utc_time(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, TimeSynchronization::Commands::SetUTCTime::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_set_utc_time);
+                                       nullptr);
 }
 
 command_t *create_set_trusted_time_source(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, TimeSynchronization::Commands::SetTrustedTimeSource::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_set_trusted_time_source);
+                                       COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 command_t *create_set_time_zone(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, TimeSynchronization::Commands::SetTimeZone::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_set_time_zone);
+                                       nullptr);
 }
 
 command_t *create_set_time_zone_response(cluster_t *cluster)
@@ -2843,13 +2722,13 @@ command_t *create_set_time_zone_response(cluster_t *cluster)
 command_t *create_set_dst_offset(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, TimeSynchronization::Commands::SetDSTOffset::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_set_dst_offset);
+                                       COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 command_t *create_set_default_ntp(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, TimeSynchronization::Commands::SetDefaultNTP::Id,
-                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_set_default_ntp);
+                                       COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 } /* command */
