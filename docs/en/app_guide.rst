@@ -20,8 +20,11 @@ List of clusters with delegate:
     - Boolean State Configuration Cluster.
     - Camera AV Settings User Level Management Cluster.
     - Channel Cluster.
+    - Chime Cluster.
     - Closure Control Cluster.
     - Closure Dimension Cluster.
+    - Commodity Price Cluster.
+    - Commodity Tariff Cluster.
     - Commissioner Control Cluster.
     - Content App Observer Cluster.
     - Content Control Cluster.
@@ -29,6 +32,7 @@ List of clusters with delegate:
     - Device Energy Management Cluster.
     - Dishwasher Alarm Cluster.
     - Door Lock Cluster.
+    - Electrical Grid Conditions Cluster.
     - Electrical Power Measurement Cluster.
     - Energy EVSE Cluster.
     - Energy Preference Cluster.
@@ -45,6 +49,7 @@ List of clusters with delegate:
     - Mode Select Cluster.
     - Operational State Cluster.
     - Power Topology Cluster.
+    - Push AV Stream Transport Cluster.
     - Resource Monitoring Cluster.
     - Service Area Cluster.
     - Target Navigator Cluster.
@@ -55,11 +60,6 @@ List of clusters with delegate:
     - Water Heater Management Cluster.
     - WebRTC Transport Provider Cluster.
     - Window Covering Cluster.
-    - Chime Cluster.
-    - Push AV Stream Transport Cluster.
-    - Commodity Tariff Cluster.
-    - Commodity Price Cluster.
-    - Electrical Grid Conditions Cluster.
 
 Below is the list of clusters with delegate and their reference implementation header files:
 
