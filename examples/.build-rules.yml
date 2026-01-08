@@ -111,12 +111,6 @@ examples/ota_provider:
       temporary: true
       reason: the other targets are not tested yet
 
-examples/light_network_prov:
-  enable:
-    - if: IDF_TARGET in ["esp32s3", "esp32c3", "esp32h2"]
-      temporary: true
-      reason: the other targets are not tested yet
-
 examples/thread_border_router:
   enable:
     - if: IDF_TARGET in ["esp32s3"]
