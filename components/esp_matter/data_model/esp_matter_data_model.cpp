@@ -981,12 +981,10 @@ static esp_err_t set_val_via_write_attribute(uint16_t endpoint_id, uint32_t clus
     chip::app::AttributeValueDecoder decoder(reader, subjectDescriptor);
 
     // we need to ensure locks are in place to avoid assertion errors
-    esp_matter::lock::chip_stack_lock(portMAX_DELAY);
+    esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
 
     chip::app::DataModel::ActionReturnStatus status =
         esp_matter::data_model::provider::get_instance().WriteAttribute(request, decoder);
-
-    esp_matter::lock::chip_stack_unlock();
 
     if (status.IsError()) {
         chip::app::DataModel::ActionReturnStatus::StringStorage storage;

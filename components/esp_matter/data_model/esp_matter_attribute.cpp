@@ -727,7 +727,7 @@ attribute_t *create_clients_supported_per_fabric(cluster_t *cluster, uint16_t va
 attribute_t *create_user_active_mode_trigger_hint(cluster_t *cluster, uint32_t value)
 {
     return esp_matter::attribute::create(cluster, IcdManagement::Attributes::UserActiveModeTriggerHint::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bitmap32(value));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_bitmap32(value));
 }
 
 attribute_t *create_user_active_mode_trigger_instruction(cluster_t *cluster, char *value, uint16_t length)
@@ -737,7 +737,7 @@ attribute_t *create_user_active_mode_trigger_instruction(cluster_t *cluster, cha
         return NULL;
     }
     return esp_matter::attribute::create(cluster, IcdManagement::Attributes::UserActiveModeTriggerInstruction::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_char_str(value, length),
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length),
                                          k_user_active_mode_trigger_instruction_length);
 }
 
@@ -4662,7 +4662,7 @@ attribute_t *create_granularity(cluster_t *cluster, uint8_t value)
 attribute_t *create_time_source(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::TimeSource::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
 }
 
 attribute_t *create_trusted_time_source(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -4703,13 +4703,13 @@ attribute_t *create_local_time(cluster_t *cluster, nullable<uint64_t> value)
 attribute_t *create_time_zone_database(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::TimeZoneDatabase::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
 }
 
 attribute_t *create_ntp_server_available(cluster_t *cluster, bool value)
 {
     return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::NTPServerAvailable::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bool(value));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
 }
 
 attribute_t *create_time_zone_list_max_size(cluster_t *cluster, uint8_t value)
@@ -4727,7 +4727,7 @@ attribute_t *create_dst_offset_list_max_size(cluster_t *cluster, uint8_t value)
 attribute_t *create_supports_dns_resolve(cluster_t *cluster, bool value)
 {
     return esp_matter::attribute::create(cluster, TimeSynchronization::Attributes::SupportsDNSResolve::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_bool(value));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
 }
 
 } /* attribute */
@@ -5064,6 +5064,328 @@ attribute_t *create_latch_control_modes(cluster_t *cluster, uint8_t value)
 } /* attribute */
 
 } /* closure_dimension */
+
+namespace camera_av_settings_user_level_management {
+namespace attribute {
+attribute_t *create_mptz_position(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CameraAvSettingsUserLevelManagement::Attributes::MPTZPosition::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_max_presets(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvSettingsUserLevelManagement::Attributes::MaxPresets::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+}
+
+attribute_t *create_mptz_presets(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CameraAvSettingsUserLevelManagement::Attributes::MPTZPresets::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_dptz_streams(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CameraAvSettingsUserLevelManagement::Attributes::DPTZStreams::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_zoom_max(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvSettingsUserLevelManagement::Attributes::ZoomMax::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+}
+
+attribute_t *create_tilt_min(cluster_t *cluster, int16_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvSettingsUserLevelManagement::Attributes::TiltMin::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_int16(value));
+}
+
+attribute_t *create_tilt_max(cluster_t *cluster, int16_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvSettingsUserLevelManagement::Attributes::TiltMax::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_int16(value));
+}
+
+attribute_t *create_pan_min(cluster_t *cluster, int16_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvSettingsUserLevelManagement::Attributes::PanMin::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_int16(value));
+}
+
+attribute_t *create_pan_max(cluster_t *cluster, int16_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvSettingsUserLevelManagement::Attributes::PanMax::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_int16(value));
+}
+
+attribute_t *create_movement_state(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CameraAvSettingsUserLevelManagement::Attributes::MovementState::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
+}
+
+} /* attribute */
+
+} /* camera_av_settings_user_level_management */
+
+namespace push_av_stream_transport {
+namespace attribute {
+attribute_t *create_supported_formats(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, PushAvStreamTransport::Attributes::SupportedFormats::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_current_connections(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, PushAvStreamTransport::Attributes::CurrentConnections::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+
+} /* push_av_stream_transport */
+
+namespace commodity_tariff {
+namespace attribute {
+attribute_t *create_tariff_info(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::TariffInfo::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_tariff_unit(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::TariffUnit::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
+}
+
+attribute_t *create_start_date(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::StartDate::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_day_entries(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::DayEntries::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_day_patterns(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::DayPatterns::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_calendar_periods(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::CalendarPeriods::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_individual_days(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::IndividualDays::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_current_day(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::CurrentDay::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_next_day(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::NextDay::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_current_day_entry(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::CurrentDayEntry::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_current_day_entry_date(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::CurrentDayEntryDate::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_next_day_entry(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::NextDayEntry::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_next_day_entry_date(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::NextDayEntryDate::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_tariff_components(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::TariffComponents::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_tariff_periods(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::TariffPeriods::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_current_tariff_components(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::CurrentTariffComponents::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_next_tariff_components(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::NextTariffComponents::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_default_randomization_offset(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::DefaultRandomizationOffset::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_default_randomization_type(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, CommodityTariff::Attributes::DefaultRandomizationType::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
+}
+
+} /* attribute */
+} /* commodity_tariff */
+
+namespace commodity_price {
+namespace attribute {
+attribute_t *create_tariff_unit(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, CommodityPrice::Attributes::TariffUnit::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_enum8(value));
+}
+
+attribute_t *create_currency(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityPrice::Attributes::Currency::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_current_price(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityPrice::Attributes::CurrentPrice::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_price_forecast(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityPrice::Attributes::PriceForecast::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+} /* commodity_price */
+
+namespace commodity_metering {
+namespace attribute {
+attribute_t *create_metered_quantity(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, CommodityMetering::Attributes::MeteredQuantity::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_metered_quantity_timestamp(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, CommodityMetering::Attributes::MeteredQuantityTimestamp::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_tariff_unit(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, CommodityMetering::Attributes::TariffUnit::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
+}
+
+attribute_t *create_maximum_metered_quantities(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, CommodityMetering::Attributes::MaximumMeteredQuantities::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+} /* attribute */
+
+} /* commodity_metering */
+
+namespace electrical_grid_conditions {
+namespace attribute {
+attribute_t *create_local_generation_available(cluster_t *cluster, nullable<bool> value)
+{
+    return esp_matter::attribute::create(cluster, ElectricalGridConditions::Attributes::LocalGenerationAvailable::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_bool(value));
+}
+
+attribute_t *create_current_conditions(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ElectricalGridConditions::Attributes::CurrentConditions::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_forecast_conditions(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ElectricalGridConditions::Attributes::ForecastConditions::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+
+} /* electrical_grid_conditions */
+
+namespace meter_identification {
+namespace attribute {
+attribute_t *create_meter_type(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, MeterIdentification::Attributes::MeterType::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
+}
+
+attribute_t *create_point_of_delivery(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, MeterIdentification::Attributes::PointOfDelivery::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_char_str(value, length));
+}
+
+attribute_t *create_meter_serial_number(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, MeterIdentification::Attributes::MeterSerialNumber::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_char_str(value, length));
+}
+
+attribute_t *create_protocol_version(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, MeterIdentification::Attributes::ProtocolVersion::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_char_str(value, length));
+}
+
+attribute_t *create_power_threshold(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, MeterIdentification::Attributes::PowerThreshold::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+
+} /* meter_identification */
 
 } /* cluster */
 } /* esp_matter */

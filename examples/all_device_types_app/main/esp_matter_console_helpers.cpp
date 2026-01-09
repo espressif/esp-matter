@@ -29,6 +29,7 @@
 #include <app/clusters/fan-control-server/fan-control-delegate.h>
 #include <app/clusters/fan-control-server/fan-control-server.h>
 #include "electrical_measurement/electrical_measurement.h"
+#include "mock_delegates/mock_chime_delegate.h"
 
 // External variables for electrical sensor initialization
 bool g_electrical_sensor_created = false;
@@ -168,6 +169,8 @@ static void initialize_console(void)
 namespace esp_matter {
 
 static chip::app::Clusters::PowerTopology::PowerTopologyDelegate powerTopologyDelegate;
+static chip::app::Clusters::Chime::MockChimeDelegate chimeDelegate;
+
 namespace data_model {
 
 int create(uint8_t device_type_index)
@@ -473,8 +476,8 @@ int create(uint8_t device_type_index)
                 }
                 esp_matter::cluster_t *power_cluster = esp_matter::cluster::get(endpoint, chip::app::Clusters::ElectricalPowerMeasurement::Id);
                 if (power_cluster) {
-                    esp_matter::cluster::electrical_power_measurement::attribute::create_voltage(power_cluster, NULL);
-                    esp_matter::cluster::electrical_power_measurement::attribute::create_active_current(power_cluster, NULL);
+                    esp_matter::cluster::electrical_power_measurement::attribute::create_voltage(power_cluster, nullable<int64_t>());
+                    esp_matter::cluster::electrical_power_measurement::attribute::create_active_current(power_cluster, nullable<int64_t>());
                 }
                 if (power_cluster && energy_cluster) {
                     g_electrical_sensor_created = true;
@@ -582,9 +585,60 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::heat_pump::create(node, &heat_pump_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
+        case ESP_MATTER_CHIME: {
+            esp_matter::endpoint::chime::config_t chime_config;
+            chime_config.chime.delegate = &chimeDelegate;
+            endpoint = esp_matter::endpoint::chime::create(node, &chime_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
         case ESP_MATTER_THERMOSTAT_CONTROLLER: {
             esp_matter::endpoint::thermostat_controller::config_t thermostat_controller_config;
             endpoint = esp_matter::endpoint::thermostat_controller::create(node, &thermostat_controller_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
+        case ESP_MATTER_CLOSURE_CONTROLLER: {
+            esp_matter::endpoint::closure_controller::config_t closure_controller_config;
+            endpoint = esp_matter::endpoint::closure_controller::create(node, &closure_controller_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
+        case ESP_MATTER_CLOSURE: {
+            esp_matter::endpoint::closure::config_t closure_config;
+            closure_config.closure_control.feature_flags = cluster::closure_control::feature::positioning::get_id();
+            endpoint = esp_matter::endpoint::closure::create(node, &closure_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
+        case ESP_MATTER_CLOSURE_PANEL: {
+            esp_matter::endpoint::closure_panel::config_t closure_panel_config;
+            closure_panel_config.closure_dimension.feature_flags = cluster::closure_dimension::feature::positioning::get_id();
+            endpoint = esp_matter::endpoint::closure_panel::create(node, &closure_panel_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
+        case ESP_MATTER_ELECTRICAL_ENERGY_TARIFF: {
+            esp_matter::endpoint::electrical_energy_tariff::config_t electrical_energy_tariff_config;
+            endpoint = esp_matter::endpoint::electrical_energy_tariff::create(node, &electrical_energy_tariff_config, ENDPOINT_FLAG_NONE, NULL);
+
+            cluster::commodity_price::config_t commodity_price_config;
+            cluster::commodity_price::create(endpoint, &commodity_price_config, CLUSTER_FLAG_SERVER);
+
+            cluster::commodity_tariff::config_t commodity_tariff_config;
+            commodity_tariff_config.feature_flags = cluster::commodity_tariff::feature::pricing::get_id();
+            cluster::commodity_tariff::create(endpoint, &commodity_tariff_config, CLUSTER_FLAG_SERVER);
+
+            break;
+        }
+        case ESP_MATTER_ELECTRICAL_METER: {
+            esp_matter::endpoint::electrical_meter::config_t electrical_meter_config;
+            electrical_meter_config.electrical_power_measurement.feature_flags = cluster::electrical_power_measurement::feature::direct_current::get_id();
+            electrical_meter_config.electrical_energy_measurement.feature_flags = cluster::electrical_energy_measurement::feature::imported_energy::get_id() |
+            cluster::electrical_energy_measurement::feature::exported_energy::get_id() |
+            cluster::electrical_energy_measurement::feature::cumulative_energy::get_id() |
+            cluster::electrical_energy_measurement::feature::periodic_energy::get_id();
+            endpoint = esp_matter::endpoint::electrical_meter::create(node, &electrical_meter_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
+        case ESP_MATTER_ELECTRICAL_UTILITY_METER: {
+            esp_matter::endpoint::electrical_utility_meter::config_t electrical_utility_meter_config;
+            endpoint = esp_matter::endpoint::electrical_utility_meter::create(node, &electrical_utility_meter_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
         default: {

@@ -4518,5 +4518,334 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* closure_dimension */
 
+namespace camera_av_settings_user_level_management {
+namespace feature {
+namespace digital_ptz {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvSettingsUserLevelManagement::Feature::kDigitalPTZ);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_dptz_streams(cluster, NULL, 0, 0);
+    // Commands
+    command::create_dptz_set_viewport(cluster);
+    return ESP_OK;
+}
+
+} /* digital_ptz */
+
+namespace mechanical_pan {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvSettingsUserLevelManagement::Feature::kMechanicalPan);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_mptz_position(cluster, NULL, 0, 0);
+    attribute::create_pan_min(cluster, 0);
+    attribute::create_pan_max(cluster, 0);
+    attribute::create_movement_state(cluster, 0);
+    // Commands
+    command::create_mptz_set_position(cluster);
+    command::create_mptz_relative_move(cluster);
+    return ESP_OK;
+}
+
+} /* mechanical_pan */
+
+namespace mechanical_tilt {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvSettingsUserLevelManagement::Feature::kMechanicalTilt);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_mptz_position(cluster, NULL, 0, 0);
+    attribute::create_tilt_min(cluster, 0);
+    attribute::create_tilt_max(cluster, 0);
+    attribute::create_movement_state(cluster, 0);
+    // Commands
+    command::create_mptz_set_position(cluster);
+    command::create_mptz_relative_move(cluster);
+    return ESP_OK;
+}
+
+} /* mechanical_tilt */
+
+namespace mechanical_zoom {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvSettingsUserLevelManagement::Feature::kMechanicalZoom);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_mptz_position(cluster, NULL, 0, 0);
+    attribute::create_zoom_max(cluster, 0);
+    attribute::create_movement_state(cluster, 0);
+    // Commands
+    command::create_mptz_set_position(cluster);
+    command::create_mptz_relative_move(cluster);
+    return ESP_OK;
+}
+
+} /* mechanical_zoom */
+
+namespace mechanical_presets {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvSettingsUserLevelManagement::Feature::kMechanicalPresets);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_max_presets(cluster, 0);
+    attribute::create_mptz_presets(cluster, NULL, 0, 0);
+    // Commands
+    command::create_mptz_move_to_preset(cluster);
+    command::create_mptz_save_preset(cluster);
+    command::create_mptz_remove_preset(cluster);
+    return ESP_OK;
+}
+
+} /* mechanical_presets */
+
+} /* feature */
+} /* camera_av_settings_user_level_management */
+
+namespace push_av_stream_transport {
+namespace feature {
+namespace per_zone_sensitivity {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(PushAvStreamTransport::Feature::kPerZoneSensitivity);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* per_zone_sensitivity */
+
+namespace metadata {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(PushAvStreamTransport::Feature::kMetadata);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+}
+
+} /* feature */
+} /* push_av_stream_transport */
+
+namespace commodity_tariff {
+namespace feature {
+namespace pricing {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityTariff::Feature::kPricing);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* pricing */
+
+namespace friendly_credit {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityTariff::Feature::kFriendlyCredit);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* friendly_credit */
+
+namespace auxiliary_load {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityTariff::Feature::kAuxiliaryLoad);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* auxiliary_load */
+
+namespace peak_period {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityTariff::Feature::kPeakPeriod);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* peak_period */
+
+namespace power_threshold {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityTariff::Feature::kPowerThreshold);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* power_threshold */
+
+namespace randomization {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityTariff::Feature::kRandomization);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_default_randomization_offset(cluster, 0);
+    attribute::create_default_randomization_type(cluster, 0);
+    return ESP_OK;
+}
+
+} /* randomization */
+
+} /* feature */
+} /* commodity_tariff */
+
+namespace commodity_price {
+namespace feature {
+namespace forecasting {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityPrice::Feature::kForecasting);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_price_forecast(cluster, NULL, 0, 0);
+    return ESP_OK;
+}
+
+} /* forecasting */
+
+} /* feature */
+} /* commodity_price */
+
+namespace electrical_grid_conditions {
+namespace feature {
+namespace forecasting {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ElectricalGridConditions::Feature::kForecasting);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_forecast_conditions(cluster, NULL, 0, 0);
+    return ESP_OK;
+}
+
+} /* forecasting */
+
+} /* feature */
+} /* electrical_grid_conditions */
+
+namespace meter_identification {
+namespace feature {
+namespace power_threshold {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(MeterIdentification::Feature::kPowerThreshold);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_power_threshold(cluster, NULL, 0, 0);
+    return ESP_OK;
+}
+
+} /* power_threshold */
+
+} /* feature */
+} /* meter_identification */
+
 } /* cluster */
 } /* esp_matter */

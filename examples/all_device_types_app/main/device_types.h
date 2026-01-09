@@ -59,7 +59,14 @@ enum device_type_enum {
     ESP_MATTER_SOLAR_POWER,
     ESP_MATTER_BATTERY_STORAGE,
     ESP_MATTER_HEAT_PUMP,
+    ESP_MATTER_CHIME,
     ESP_MATTER_THERMOSTAT_CONTROLLER,
+    ESP_MATTER_CLOSURE_CONTROLLER,
+    ESP_MATTER_CLOSURE,
+    ESP_MATTER_CLOSURE_PANEL,
+    ESP_MATTER_ELECTRICAL_ENERGY_TARIFF,
+    ESP_MATTER_ELECTRICAL_METER,
+    ESP_MATTER_ELECTRICAL_UTILITY_METER,
     ESP_MATTER_DEVICE_TYPE_MAX
 };
 
@@ -125,6 +132,13 @@ const device_type_name device_type_list[ESP_MATTER_DEVICE_TYPE_MAX] = {
     {"solar_power", ESP_MATTER_SOLAR_POWER},
     {"battery_storage", ESP_MATTER_BATTERY_STORAGE},
     {"heat_pump", ESP_MATTER_HEAT_PUMP},
+    {"chime", ESP_MATTER_CHIME},
     {"thermostat_controller", ESP_MATTER_THERMOSTAT_CONTROLLER},
+    {"closure_controller", ESP_MATTER_CLOSURE_CONTROLLER},
+    {"closure", ESP_MATTER_CLOSURE},
+    {"closure_panel", ESP_MATTER_CLOSURE_PANEL},
+    {"electrical_energy_tariff", ESP_MATTER_ELECTRICAL_ENERGY_TARIFF},
+    {"electrical_meter", ESP_MATTER_ELECTRICAL_METER},
+    {"electrical_utility_meter", ESP_MATTER_ELECTRICAL_UTILITY_METER},
 };
 } /* namespace esp_matter */

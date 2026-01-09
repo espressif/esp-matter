@@ -3053,5 +3053,163 @@ command_t *create_step(cluster_t *cluster)
 } /* command */
 } /* closure_dimension */
 
+namespace camera_av_settings_user_level_management {
+namespace command {
+command_t *create_mptz_set_position(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvSettingsUserLevelManagement::Commands::MPTZSetPosition::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_mptz_relative_move(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvSettingsUserLevelManagement::Commands::MPTZRelativeMove::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_mptz_move_to_preset(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvSettingsUserLevelManagement::Commands::MPTZMoveToPreset::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_mptz_save_preset(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvSettingsUserLevelManagement::Commands::MPTZSavePreset::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_mptz_remove_preset(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvSettingsUserLevelManagement::Commands::MPTZRemovePreset::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_dptz_set_viewport(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvSettingsUserLevelManagement::Commands::DPTZSetViewport::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_dptz_relative_move(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CameraAvSettingsUserLevelManagement::Commands::DPTZRelativeMove::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* camera_av_settings_user_level_management */
+
+namespace push_av_stream_transport {
+namespace command {
+command_t *create_allocate_push_transport(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, PushAvStreamTransport::Commands::AllocatePushTransport::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_allocate_push_transport_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, PushAvStreamTransport::Commands::AllocatePushTransportResponse::Id,
+                                        COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_deallocate_push_transport(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, PushAvStreamTransport::Commands::DeallocatePushTransport::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_modify_push_transport(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, PushAvStreamTransport::Commands::ModifyPushTransport::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_set_transport_status(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, PushAvStreamTransport::Commands::SetTransportStatus::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_manually_trigger_transport(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, PushAvStreamTransport::Commands::ManuallyTriggerTransport::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_find_transport(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, PushAvStreamTransport::Commands::FindTransport::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_find_transport_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, PushAvStreamTransport::Commands::FindTransportResponse::Id,
+                                        COMMAND_FLAG_GENERATED, NULL);
+}
+
+} /* command */
+} /* push_av_stream_transport */
+
+namespace commodity_tariff {
+namespace command {
+command_t *create_get_tariff_component(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommodityTariff::Commands::GetTariffComponent::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_get_tariff_component_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommodityTariff::Commands::GetTariffComponentResponse::Id,
+                                        COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_get_day_entry(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommodityTariff::Commands::GetDayEntry::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_get_day_entry_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommodityTariff::Commands::GetDayEntryResponse::Id,
+                                        COMMAND_FLAG_GENERATED, NULL);
+}
+
+} /* command */
+} /* commodity_tariff */
+
+namespace commodity_price {
+namespace command {
+command_t *create_get_detailed_price_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommodityPrice::Commands::GetDetailedPriceRequest::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_get_detailed_price_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommodityPrice::Commands::GetDetailedPriceResponse::Id,
+                                        COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_get_detailed_forecast_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommodityPrice::Commands::GetDetailedForecastRequest::Id,
+                                        COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_get_detailed_forecast_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, CommodityPrice::Commands::GetDetailedForecastResponse::Id,
+                                        COMMAND_FLAG_GENERATED, NULL);
+}
+
+} /* command */
+} /* commodity_price */
+
 } /* cluster */
 } /* esp_matter */

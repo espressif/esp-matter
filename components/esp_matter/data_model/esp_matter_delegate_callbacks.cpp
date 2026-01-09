@@ -50,6 +50,10 @@
 #include <app/clusters/chime-server/chime-server.h>
 #include <app/clusters/closure-control-server/closure-control-server.h>
 #include <app/clusters/closure-dimension-server/closure-dimension-server.h>
+#include <app/clusters/push-av-stream-transport-server/push-av-stream-transport-cluster.h>
+#include <app/clusters/commodity-tariff-server/commodity-tariff-server.h>
+#include <app/clusters/commodity-price-server/commodity-price-server.h>
+#include <app/clusters/electrical-grid-conditions-server/electrical-grid-conditions-server.h>
 #include <unordered_map>
 
 using namespace chip::app::Clusters;
@@ -569,6 +573,48 @@ void ClosureDimensionDelegateInitCB(void *delegate, uint16_t endpoint_id)
     ClosureDimension::ClusterLogic *cluster_logic = new ClosureDimension::ClusterLogic(*closure_dimension_delegate, *matter_context);
     ClosureDimension::Interface *server_interface = new ClosureDimension::Interface(endpoint_id, *cluster_logic);
     server_interface->Init();
+}
+
+
+void PushAvStreamTransportDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    static PushAvStreamTransportServer * pushavstreamtransportserverinstance = nullptr;
+    PushAvStreamTransportDelegate *push_av_stream_transport_delegate = static_cast<PushAvStreamTransportDelegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, PushAvStreamTransport::Id);
+    pushavstreamtransportserverinstance = new PushAvStreamTransportServer(endpoint_id, chip::BitMask<PushAvStreamTransport::Feature, uint32_t>(feature_map));
+    pushavstreamtransportserverinstance->SetDelegate(push_av_stream_transport_delegate);
+    pushavstreamtransportserverinstance->Init();
+}
+
+
+void CommodityTariffDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    CommodityTariff::Delegate *commodity_tariff_delegate = static_cast<CommodityTariff::Delegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, CommodityTariff::Id);
+    CommodityTariff::Instance *commodity_tariff_instance = new CommodityTariff::Instance(endpoint_id, *commodity_tariff_delegate, chip::BitMask<CommodityTariff::Feature, uint32_t>(feature_map));
+    commodity_tariff_instance->Init();
+}
+
+
+void CommodityPriceDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    CommodityPrice::Delegate *commodity_price_delegate = static_cast<CommodityPrice::Delegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, CommodityPrice::Id);
+    CommodityPrice::Instance *commodity_price_instance = new CommodityPrice::Instance(endpoint_id, *commodity_price_delegate, chip::BitMask<CommodityPrice::Feature, uint32_t>(feature_map));
+    commodity_price_instance->Init();
+}
+
+
+void ElectricalGridConditionsDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    ElectricalGridConditions::Delegate *electrical_grid_conditions_delegate = static_cast<ElectricalGridConditions::Delegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, ElectricalGridConditions::Id);
+    ElectricalGridConditions::Instance *electrical_grid_conditions_instance = new ElectricalGridConditions::Instance(endpoint_id, *electrical_grid_conditions_delegate, chip::BitMask<ElectricalGridConditions::Feature, uint32_t>(feature_map));
+    electrical_grid_conditions_instance->Init();
 }
 
 } // namespace delegate_cb

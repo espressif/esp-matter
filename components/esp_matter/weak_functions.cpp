@@ -13,6 +13,11 @@
 // limitations under the License.
 
 #include <app/clusters/mode-select-server/supported-modes-manager.h>
+#include <app/ConcreteAttributePath.h>
+#include <app-common/zap-generated/callback.h>
+#include "esp_log.h"
+
+static const char *TAG = "weak_functions";
 
 namespace chip {
 namespace app {
@@ -28,4 +33,22 @@ __attribute__((weak)) const SupportedModesManager * getSupportedModesManager(voi
 } /* namespace app */
 } /* namespace Clusters */
 } /* namespace ModeSelect */
+
+
+// Provide weak defaults for attribute changed callbacks so apps
+// Strong definitions in an app will override these.
+
+__attribute__((weak)) void MatterClosureControlClusterServerAttributeChangedCallback(
+    const chip::app::ConcreteAttributePath & attributePath)
+{
+    ESP_LOGI(TAG, "Attribute Changed Callback: Endpoint: %d, Cluster: %ld, Attribute: %ld",
+             attributePath.mEndpointId, attributePath.mClusterId, attributePath.mAttributeId);
+}
+
+__attribute__((weak)) void MatterClosureDimensionClusterServerAttributeChangedCallback(
+    const chip::app::ConcreteAttributePath & attributePath)
+{
+    ESP_LOGI(TAG, "Attribute Changed Callback: Endpoint: %d, Cluster: %ld, Attribute: %ld",
+             attributePath.mEndpointId, attributePath.mClusterId, attributePath.mAttributeId);
+}
 

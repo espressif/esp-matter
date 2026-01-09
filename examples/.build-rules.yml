@@ -134,3 +134,14 @@ examples/sensors:
     - if: IDF_TARGET in ["esp32c3"]
       temporary: true
       reason: the other targets are not tested yet
+
+examples/bridge_apps/esp_rainmaker_bridge:
+  enable:
+    - if: IDF_TARGET in ["esp32s3"]
+      temporary: true
+      reason: the other targets are not tested yet
+examples/camera:
+  enable:
+    - if: IDF_TARGET in [""]
+      temporary: true
+      reason: Another CI has been added

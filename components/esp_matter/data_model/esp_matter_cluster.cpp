@@ -746,6 +746,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterWiFiNetworkDiagnosticsClusterServerInitCallback,
+            ESPMatterWiFiNetworkDiagnosticsClusterServerShutdownCallback);
     }
 
     return cluster;
@@ -1985,11 +1988,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 namespace door_lock {
 const function_generic_t function_list[] = {
+    (function_generic_t)emberAfDoorLockClusterInitCallback,
     (function_generic_t)MatterDoorLockClusterServerAttributeChangedCallback,
     (function_generic_t)MatterDoorLockClusterServerShutdownCallback,
     (function_generic_t)MatterDoorLockClusterServerPreAttributeChangedCallback,
 };
-const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION |
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION |
     CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
@@ -3532,9 +3536,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
-
-        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterWiFiNetworkDiagnosticsClusterServerInitCallback,
-                                                 ESPMatterWiFiNetworkDiagnosticsClusterServerShutdownCallback);
     }
 
     /* Commands */
@@ -3829,11 +3830,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     cluster_t *cluster = esp_matter::cluster::create(endpoint, CameraAvStreamManagement::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CameraAvStreamManagement::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
-        // The server creation api is complex and cannot be called directly from esp_matter_delegate_callbacks.cpp
-        // if (config->delegate != nullptr) {
-        //     static const auto delegate_init_cb = CameraAvStreamManagementDelegateInitCB;
-        //     set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
-        // }
+        // TODO: Add a delegate initialization callback.
+        // The current esp_matter initialization flow makes this hard to implement cleanly.
+
         static const auto plugin_server_init_cb = CALL_ONCE(MatterCameraAvStreamManagementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
@@ -3843,7 +3842,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_feature_map(cluster, config->feature_flags);
 
         /* Attributes not managed internally */
-        global::attribute::create_cluster_revision(cluster, 1);
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
 
         attribute::create_max_content_buffer_size(cluster, config->max_content_buffer_size);
         attribute::create_max_network_bandwidth(cluster, config->max_network_bandwidth);
@@ -3912,18 +3911,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     cluster_t *cluster = esp_matter::cluster::create(endpoint, WebRTCTransportProvider::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, WebRTCTransportProvider::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
-        // The server creation api is complex and cannot be called directly from esp_matter_delegate_callbacks.cpp
-        // if (config->delegate != nullptr) {
-        //     static const auto delegate_init_cb = WebrtcTransportProviderDelegateInitCB;
-        //     set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
-        // }
+        // TODO: Add a delegate initialization callback.
+        // The current esp_matter initialization flow makes this hard to implement cleanly.
+
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
         /* Attributes not managed internally */
-        global::attribute::create_cluster_revision(cluster, 1);
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
 
         attribute::create_current_sessions(cluster, NULL, 0, 0);
 
@@ -3955,18 +3952,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     cluster_t *cluster = esp_matter::cluster::create(endpoint, WebRTCTransportRequestor::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, WebRTCTransportRequestor::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
-        // The server creation api is complex and cannot be called directly from esp_matter_delegate_callbacks.cpp
-        // if (config->delegate != nullptr) {
-        //     static const auto delegate_init_cb = WebrtcTransportRequestorDelegateInitCB;
-        //     set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
-        // }
+        // TODO: Add a delegate initialization callback.
+        // The current esp_matter initialization flow makes this hard to implement cleanly.
+
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
         /* Attributes not managed internally */
-        global::attribute::create_cluster_revision(cluster, 1);
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
 
         attribute::create_current_sessions(cluster, NULL, 0, 0);
 
@@ -4060,10 +4055,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     cluster_t *cluster = esp_matter::cluster::create(endpoint, Chime::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Chime::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config->delegate != nullptr) {
-            static const auto delegate_init_cb = ChimeDelegateInitCB;
-            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
-        }
+        VerifyOrReturnValue(config != NULL && config->delegate != nullptr, NULL, ESP_LOGE(TAG, "Delegate cannot be nullptr"));
+        static const auto delegate_init_cb = ChimeDelegateInitCB;
+        set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         static const auto plugin_server_init_cb = CALL_ONCE(MatterChimePluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
@@ -4078,7 +4072,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
         command::create_play_chime_sound(cluster);
-
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -4241,6 +4234,326 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 
 } /* closure_dimension */
+
+namespace camera_av_settings_user_level_management {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, CameraAvSettingsUserLevelManagement::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CameraAvSettingsUserLevelManagement::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        // TODO: Add a delegate initialization callback.
+        // The current esp_matter initialization flow makes this hard to implement cleanly.
+
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterCameraAvSettingsUserLevelManagementPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        set_add_bounds_callback(cluster, camera_av_settings_user_level_management::add_bounds_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, config->feature_flags);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        // check against O.a+ feature conformance
+        VALIDATE_FEATURES_AT_LEAST_ONE("DigitalPTZ,MechanicalPan,MechanicalTilt,MechanicalZoom",
+                                      feature::digital_ptz::get_id(), feature::mechanical_pan::get_id(), feature::mechanical_tilt::get_id(), feature::mechanical_zoom::get_id());
+        if (has(feature::digital_ptz::get_id())) {
+            VerifyOrReturnValue(feature::digital_ptz::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::mechanical_pan::get_id())) {
+            VerifyOrReturnValue(feature::mechanical_pan::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::mechanical_tilt::get_id())) {
+            VerifyOrReturnValue(feature::mechanical_tilt::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::mechanical_zoom::get_id())) {
+            VerifyOrReturnValue(feature::mechanical_zoom::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::mechanical_presets::get_id())) {
+            if (has(feature::mechanical_pan::get_id()) || has(feature::mechanical_tilt::get_id()) || has(feature::mechanical_zoom::get_id())) {
+                VerifyOrReturnValue(feature::mechanical_presets::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+        }
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+
+} /* camera_av_settings_user_level_management */
+
+namespace push_av_stream_transport {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, PushAvStreamTransport::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PushAvStreamTransport::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config && config->delegate != nullptr) {
+            static const auto delegate_init_cb = PushAvStreamTransportDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterPushAvStreamTransportPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        attribute::create_supported_formats(cluster, NULL, 0, 0);
+        attribute::create_current_connections(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        command::create_allocate_push_transport(cluster);
+        command::create_allocate_push_transport_response(cluster);
+        command::create_deallocate_push_transport(cluster);
+        command::create_modify_push_transport(cluster);
+        command::create_set_transport_status(cluster);
+        command::create_manually_trigger_transport(cluster);
+        command::create_find_transport(cluster);
+        command::create_find_transport_response(cluster);
+
+        /* Events */
+        event::create_push_transport_begin(cluster);
+        event::create_push_transport_end(cluster);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterPushAvStreamTransportClusterServerInitCallback,
+                                                 ESPMatterPushAvStreamTransportClusterServerShutdownCallback);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+
+} /* push_av_stream_transport */
+
+namespace commodity_tariff {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, CommodityTariff::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CommodityTariff::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config && config->delegate != nullptr) {
+            static const auto delegate_init_cb = CommodityTariffDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterCommodityTariffPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, config->feature_flags);
+        attribute::create_tariff_info(cluster, NULL, 0, 0);
+        attribute::create_tariff_unit(cluster, 0);
+        attribute::create_start_date(cluster, 0);
+        attribute::create_day_entries(cluster, NULL, 0, 0);
+        attribute::create_day_patterns(cluster, NULL, 0, 0);
+        attribute::create_calendar_periods(cluster, NULL, 0, 0);
+        attribute::create_individual_days(cluster, NULL, 0, 0);
+        attribute::create_current_day(cluster, NULL, 0, 0);
+        attribute::create_next_day(cluster, NULL, 0, 0);
+        attribute::create_current_day_entry(cluster, NULL, 0, 0);
+        attribute::create_current_day_entry_date(cluster, 0);
+        attribute::create_next_day_entry(cluster, NULL, 0, 0);
+        attribute::create_next_day_entry_date(cluster, 0);
+        attribute::create_tariff_components(cluster, NULL, 0, 0);
+        attribute::create_tariff_periods(cluster, NULL, 0, 0);
+        attribute::create_current_tariff_components(cluster, NULL, 0, 0);
+        attribute::create_next_tariff_components(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        // check against O.a+ feature conformance
+        VALIDATE_FEATURES_AT_LEAST_ONE("Pricing,FriendlyCredit,AuxiliaryLoad",
+                                      feature::pricing::get_id(), feature::friendly_credit::get_id(), feature::auxiliary_load::get_id());
+        if (has(feature::pricing::get_id())) {
+            VerifyOrReturnValue(feature::pricing::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::friendly_credit::get_id())) {
+            VerifyOrReturnValue(feature::friendly_credit::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::auxiliary_load::get_id())) {
+            VerifyOrReturnValue(feature::auxiliary_load::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::power_threshold::get_id())) {
+            VerifyOrReturnValue(feature::power_threshold::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::randomization::get_id())) {
+            VerifyOrReturnValue(feature::randomization::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::peak_period::get_id())) {
+            VerifyOrReturnValue(feature::peak_period::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+
+        command::create_get_tariff_component(cluster);
+        command::create_get_tariff_component_response(cluster);
+        command::create_get_day_entry(cluster);
+        command::create_get_day_entry_response(cluster);
+
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+
+} /* commodity_tariff */
+
+namespace commodity_price {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, CommodityPrice::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CommodityPrice::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config && config->delegate != nullptr) {
+            static const auto delegate_init_cb = CommodityPriceDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterCommodityPricePluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        attribute::create_tariff_unit(cluster, 0);
+        attribute::create_currency(cluster, NULL, 0, 0);
+        attribute::create_current_price(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+
+} /* commodity_price */
+
+namespace commodity_metering {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, CommodityMetering::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CommodityMetering::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterCommodityMeteringPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        attribute::create_metered_quantity(cluster, NULL, 0, 0);
+        attribute::create_metered_quantity_timestamp(cluster, 0);
+        attribute::create_tariff_unit(cluster, 0);
+        attribute::create_maximum_metered_quantities(cluster, 1);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+
+} /* commodity_metering */
+
+namespace electrical_grid_conditions {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, ElectricalGridConditions::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ElectricalGridConditions::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config && config->delegate != nullptr) {
+            static const auto delegate_init_cb = ElectricalGridConditionsDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterElectricalGridConditionsPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        attribute::create_local_generation_available(cluster, false);
+        attribute::create_current_conditions(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+
+} /* electrical_grid_conditions */
+
+namespace meter_identification {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, MeterIdentification::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, MeterIdentification::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterMeterIdentificationPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        attribute::create_meter_type(cluster, 0);
+        attribute::create_point_of_delivery(cluster, NULL, 0);
+        attribute::create_meter_serial_number(cluster, NULL, 0);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+
+} /* meter_identification */
 
 } /* cluster */
 } /* esp_matter */

@@ -867,5 +867,40 @@ event_t *create_secure_state_changed(cluster_t *cluster)
 } // namespace event
 } // namespace closure_control
 
+namespace push_av_stream_transport {
+namespace event {
+event_t *create_push_transport_begin(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, PushAvStreamTransport::Events::PushTransportBegin::Id);
+}
+
+event_t *create_push_transport_end(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, PushAvStreamTransport::Events::PushTransportEnd::Id);
+}
+
+} // namespace event
+} // namespace push_av_stream_transport
+
+namespace commodity_price {
+namespace event {
+event_t *create_price_change(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, CommodityPrice::Events::PriceChange::Id);
+}
+
+} // namespace event
+} // namespace commodity_price
+
+namespace electrical_grid_conditions {
+namespace event {
+event_t *create_current_conditions_changed(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, ElectricalGridConditions::Events::CurrentConditionsChanged::Id);
+}
+
+} // namespace event
+} // namespace electrical_grid_conditions
+
 } // namespace cluster
 } // namespace esp_matter

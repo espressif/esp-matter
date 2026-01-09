@@ -391,6 +391,33 @@ namespace closure_dimension {
 constexpr uint16_t cluster_revision = 1;
 } // namespace closure_dimension
 
+namespace camera_av_settings_user_level_management {
+constexpr uint16_t cluster_revision = 1;
+} // namespace camera_av_settings_user_level_management
+
+namespace push_av_stream_transport {
+constexpr uint16_t cluster_revision = 1;
+} // namespace push_av_stream_transport
+
+namespace commodity_tariff {
+constexpr uint16_t cluster_revision = 1;
+} // namespace commodity_tariff
+
+namespace commodity_price {
+constexpr uint16_t cluster_revision = 4;
+} // namespace commodity_price
+
+namespace commodity_metering {
+constexpr uint16_t cluster_revision = 1;
+} // namespace commodity_metering
+
+namespace electrical_grid_conditions {
+constexpr uint16_t cluster_revision = 1;
+} // namespace electrical_grid_conditions
+
+namespace meter_identification {
+constexpr uint16_t cluster_revision = 1;
+} // namespace meter_identification
 } // namespace cluster
 } // namespace esp_matter
 

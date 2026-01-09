@@ -1309,5 +1309,92 @@ attribute_t *create_latch_control_modes(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* closure_dimension */
 
+namespace camera_av_settings_user_level_management {
+namespace attribute {
+
+attribute_t *create_mptz_position(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_max_presets(cluster_t *cluster, uint8_t value);
+attribute_t *create_mptz_presets(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_dptz_streams(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_zoom_max(cluster_t *cluster, uint8_t value);
+attribute_t *create_tilt_min(cluster_t *cluster, int16_t value);
+attribute_t *create_tilt_max(cluster_t *cluster, int16_t value);
+attribute_t *create_pan_min(cluster_t *cluster, int16_t value);
+attribute_t *create_pan_max(cluster_t *cluster, int16_t value);
+attribute_t *create_movement_state(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* camera_av_settings_user_level_management */
+
+namespace push_av_stream_transport {
+namespace attribute {
+
+attribute_t *create_supported_formats(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_current_connections(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* push_av_stream_transport */
+
+namespace commodity_tariff {
+namespace attribute {
+attribute_t *create_tariff_info(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_tariff_unit(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_start_date(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_day_entries(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_day_patterns(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_calendar_periods(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_individual_days(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_current_day(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_next_day(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_current_day_entry(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_current_day_entry_date(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_next_day_entry(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_next_day_entry_date(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_tariff_components(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_tariff_periods(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_current_tariff_components(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_next_tariff_components(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_default_randomization_offset(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_default_randomization_type(cluster_t *cluster, nullable<uint8_t> value);
+} /* attribute */
+} /* commodity_tariff */
+
+namespace commodity_price {
+namespace attribute {
+attribute_t *create_tariff_unit(cluster_t *cluster, uint8_t value);
+attribute_t *create_currency(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_current_price(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_price_forecast(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* commodity_price */
+
+namespace commodity_metering {
+namespace attribute {
+
+attribute_t *create_metered_quantity(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_metered_quantity_timestamp(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_tariff_unit(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_maximum_metered_quantities(cluster_t *cluster, nullable<uint16_t> value);
+} /* attribute */
+} /* commodity_metering */
+
+namespace electrical_grid_conditions {
+namespace attribute {
+
+attribute_t *create_local_generation_available(cluster_t *cluster, nullable<bool> value);
+attribute_t *create_current_conditions(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_forecast_conditions(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* electrical_grid_conditions */
+
+namespace meter_identification {
+namespace attribute {
+
+attribute_t *create_meter_type(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_point_of_delivery(cluster_t *cluster, char * value, uint16_t length);
+attribute_t *create_meter_serial_number(cluster_t *cluster, char * value, uint16_t length);
+attribute_t *create_protocol_version(cluster_t *cluster, char * value, uint16_t length);
+attribute_t *create_power_threshold(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* meter_identification */
+
 } /* cluster */
 } /* esp_matter */

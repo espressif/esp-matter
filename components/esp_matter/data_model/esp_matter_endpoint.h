@@ -153,7 +153,20 @@
 
 #define ESP_MATTER_CAMERA_DEVICE_TYPE_ID 0x0142
 #define ESP_MATTER_CAMERA_DEVICE_TYPE_VERSION 1
-
+#define ESP_MATTER_CLOSURE_CONTROLLER_DEVICE_TYPE_ID 0x023E
+#define ESP_MATTER_CLOSURE_CONTROLLER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_CLOSURE_DEVICE_TYPE_ID 0x0230
+#define ESP_MATTER_CLOSURE_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_CLOSURE_PANEL_DEVICE_TYPE_ID 0x0231
+#define ESP_MATTER_CLOSURE_PANEL_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_CHIME_DEVICE_TYPE_ID 0x0146
+#define ESP_MATTER_CHIME_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_ELECTRICAL_UTILITY_METER_DEVICE_TYPE_ID 0x0511
+#define ESP_MATTER_ELECTRICAL_UTILITY_METER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_ELECTRICAL_ENERGY_TARIFF_DEVICE_TYPE_ID 0x0513
+#define ESP_MATTER_ELECTRICAL_ENERGY_TARIFF_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_ELECTRICAL_METER_DEVICE_TYPE_ID 0x0514
+#define ESP_MATTER_ELECTRICAL_METER_DEVICE_TYPE_VERSION 1
 namespace esp_matter {
 
 /** Specific endpoint (device type) create APIs
@@ -1041,6 +1054,20 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 } /* camera */
 
+namespace chime {
+
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::chime::config_t chime;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+
+} /* chime */
+
 
 namespace thermostat_controller {
 using config_t = app_client_config;
@@ -1051,7 +1078,77 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** thermostat_controller **/
 
+namespace closure_controller {
+using config_t = app_client_config;
 
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* closure_controller */
+
+namespace closure {
+typedef struct config : app_base_config {
+    cluster::closure_control::config_t closure_control;
+
+    config() {
+        identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
+    }
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* closure */
+
+namespace closure_panel {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::closure_dimension::config_t closure_dimension;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* closure_panel */
+
+namespace electrical_utility_meter {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::meter_identification::config_t meter_identification;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* electrical_utility_meter */
+
+namespace electrical_energy_tariff {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* electrical_energy_tariff */
+
+namespace electrical_meter {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::electrical_power_measurement::config_t electrical_power_measurement;
+    cluster::electrical_energy_measurement::config_t electrical_energy_measurement;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* electrical_meter */
 } /* endpoint */
 
 namespace node {

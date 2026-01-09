@@ -971,7 +971,6 @@ namespace camera_av_stream_management {
 typedef struct config {
     uint32_t max_content_buffer_size;
     uint32_t max_network_bandwidth;
-    void* delegate;
     uint32_t feature_flags;
     config()  : max_content_buffer_size(0), max_network_bandwidth(0), feature_flags(0) {}
 } config_t;
@@ -980,19 +979,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 }/*camera av stream management*/
 
 namespace webrtc_transport_provider {
-    typedef struct config {
-    void* delegate;
-    config()  {}
-} config_t;
+using config_t = common::config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 }/*webrtc transport provider*/
 
 namespace webrtc_transport_requestor {
-    typedef struct config {
-    void* delegate;
-    config()  {}
-} config_t;
+using config_t = common::config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 }/*webrtc transport requestor*/
@@ -1026,6 +1019,63 @@ typedef struct config {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* closure_dimension */
+
+namespace camera_av_settings_user_level_management {
+typedef struct config {
+    uint32_t feature_flags;
+    config() : feature_flags(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* camera_av_settings_user_level_management */
+
+namespace push_av_stream_transport {
+typedef struct config {
+    void *delegate;
+    config() : delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* push_av_stream_transport */
+
+namespace commodity_tariff {
+typedef struct config {
+    void *delegate;
+    uint32_t feature_flags;
+    config() : delegate(nullptr), feature_flags(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* commodity_tariff */
+
+namespace commodity_price {
+typedef struct config {
+    void *delegate;
+    config() : delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* commodity_price */
+
+namespace commodity_metering {
+using config_t = common::config_t;
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* commodity_metering */
+
+namespace electrical_grid_conditions {
+typedef struct config {
+    void *delegate;
+    config() : delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* electrical_grid_conditions */
+
+namespace meter_identification {
+using config_t = common::config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* meter_identification */
 
 } /* cluster */
 } /* esp_matter */

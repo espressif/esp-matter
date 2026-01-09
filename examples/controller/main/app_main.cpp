@@ -99,9 +99,8 @@ extern "C" void app_main()
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
 
 #if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-    esp_matter::lock::chip_stack_lock(portMAX_DELAY);
+    esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
     esp_matter::controller::matter_controller_client::get_instance().init(112233, 1, 5580);
     esp_matter::controller::matter_controller_client::get_instance().setup_commissioner();
-    esp_matter::lock::chip_stack_unlock();
 #endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 }

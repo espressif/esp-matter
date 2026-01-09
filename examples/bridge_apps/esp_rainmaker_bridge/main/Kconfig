@@ -1,0 +1,60 @@
+menu "Rainmaker Bridge"
+
+    config RAINMAKER_PARAMS_GET_PERIOD_MS
+        int
+        default 10000
+        range 1000 60000
+        help
+            Set the period to get rainmaker devices params in rainmaker bridge.
+
+    config RAINMAKER_TASK_STACK_SIZE
+        int
+        default 10240
+        range 1024 65536
+        help
+            Set the stack size for the rainmaker task.
+
+endmenu
+
+menu "Thread BR Example"
+    depends on OPENTHREAD_BORDER_ROUTER
+
+    choice THREAD_BR_BOARD_TYPE
+        prompt "Thread border router board type"
+        default ESP_THREAD_BR_BOARD_DEV_KIT
+        help
+            The board running the border router.
+
+        config ESP_THREAD_BR_BOARD_DEV_KIT
+            bool "ESP Thread border router dev kit"
+            help
+                Integrated border router dev kit
+
+        config M5STACK_THREAD_BR_BOARD
+            bool "M5Stack Thread border router board"
+            help
+                M5Stack CoreS3 with Module Gateway H2
+    endchoice
+
+    menu "Board Configuration"
+        config PIN_TO_RCP_RESET
+            int "Pin to RCP reset"
+            default "7"
+
+        config PIN_TO_RCP_BOOT
+            int "Pin to RCP boot"
+            default "18" if M5STACK_THREAD_BR_BOARD
+            default "8"
+
+        config PIN_TO_RCP_TX
+            int "Pin to RCP TX"
+            default "10" if M5STACK_THREAD_BR_BOARD
+            default "17"
+
+        config PIN_TO_RCP_RX
+            int "Pin to RCP RX"
+            default "17" if M5STACK_THREAD_BR_BOARD
+            default "18"
+    endmenu
+
+endmenu

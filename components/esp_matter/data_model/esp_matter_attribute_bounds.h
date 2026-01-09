@@ -46,5 +46,9 @@ namespace thermostat_user_interface_configuration {
 void add_bounds_cb(cluster_t *cluster);
 } /* thermostat_user_interface_configuration */
 
+namespace camera_av_settings_user_level_management {
+void add_bounds_cb(cluster_t *cluster);
+} /* camera_av_settings_user_level_management */
+
 } /* cluster */
 } /* esp_matter */
