@@ -4535,6 +4535,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterMeterIdentificationPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        /* Not a delegate but an Initialization callback */
+        static const auto delegate_init_cb = MeterIdentificationDelegateInitCB;
+        set_delegate_and_init_callback(cluster, delegate_init_cb, nullptr);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */

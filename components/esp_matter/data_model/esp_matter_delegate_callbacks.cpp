@@ -54,6 +54,7 @@
 #include <app/clusters/commodity-tariff-server/commodity-tariff-server.h>
 #include <app/clusters/commodity-price-server/commodity-price-server.h>
 #include <app/clusters/electrical-grid-conditions-server/electrical-grid-conditions-server.h>
+#include <app/clusters/meter-identification-server/meter-identification-server.h>
 #include <unordered_map>
 
 using namespace chip::app::Clusters;
@@ -615,6 +616,14 @@ void ElectricalGridConditionsDelegateInitCB(void *delegate, uint16_t endpoint_id
     uint32_t feature_map = get_feature_map_value(endpoint_id, ElectricalGridConditions::Id);
     ElectricalGridConditions::Instance *electrical_grid_conditions_instance = new ElectricalGridConditions::Instance(endpoint_id, *electrical_grid_conditions_delegate, chip::BitMask<ElectricalGridConditions::Feature, uint32_t>(feature_map));
     electrical_grid_conditions_instance->Init();
+}
+
+/* Not a delegate but an Initialization callback */
+void MeterIdentificationDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    uint32_t feature_map = get_feature_map_value(endpoint_id, MeterIdentification::Id);
+    MeterIdentification::Instance *meter_identification_instance = new MeterIdentification::Instance(endpoint_id, chip::BitMask<MeterIdentification::Feature, uint32_t>(feature_map));
+    meter_identification_instance->Init();
 }
 
 } // namespace delegate_cb
