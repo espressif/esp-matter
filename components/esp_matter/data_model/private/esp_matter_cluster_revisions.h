@@ -426,5 +426,9 @@ constexpr uint16_t cluster_revision = 1;
 namespace tls_client_management {
 constexpr uint16_t cluster_revision = 1;
 } // namespace tls_client_management
+
+namespace tls_certificate_management {
+constexpr uint16_t cluster_revision = 1;
+} // namespace tls_certificate_management
 } // namespace cluster
 } // namespace esp_matter

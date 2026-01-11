@@ -1439,5 +1439,20 @@ attribute_t *create_provisioned_endpoints(cluster_t *cluster, uint8_t * value, u
 } /* attribute */
 } /* tls_client_management */
 
+namespace tls_certificate_management {
+namespace attribute {
+
+constexpr uint8_t MAX_ROOT_CERTIFICATES_MIN = 5;
+constexpr uint8_t MAX_ROOT_CERTIFICATES_MAX = 254;
+constexpr uint8_t MAX_CLIENT_CERTIFICATES_MIN = 2;
+constexpr uint8_t MAX_CLIENT_CERTIFICATES_MAX = 254;
+
+attribute_t *create_max_root_certificates(cluster_t *cluster, uint8_t value);
+attribute_t *create_provisioned_root_certificates(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_max_client_certificates(cluster_t *cluster, uint8_t value);
+attribute_t *create_provisioned_client_certificates(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* tls_certificate_management */
+
 } /* cluster */
 } /* esp_matter */

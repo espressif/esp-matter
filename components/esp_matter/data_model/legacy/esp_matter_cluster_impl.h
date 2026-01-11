@@ -1099,5 +1099,16 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* tls_client_management */
 
+namespace tls_certificate_management {
+typedef struct config {
+    uint8_t max_root_certificates;
+    uint8_t max_client_certificates;
+    void *delegate;
+    config() : max_root_certificates(5), max_client_certificates(2), delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* tls_certificate_management */
+
 } /* cluster */
 } /* esp_matter */

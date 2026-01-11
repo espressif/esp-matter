@@ -5505,5 +5505,39 @@ attribute_t *create_provisioned_endpoints(cluster_t *cluster, uint8_t *value, ui
 
 } /* tls_client_management */
 
+namespace tls_certificate_management {
+namespace attribute {
+attribute_t *create_max_root_certificates(cluster_t *cluster, uint8_t value)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, TlsCertificateManagement::Attributes::MaxRootCertificates::Id,
+                                                           ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(MAX_ROOT_CERTIFICATES_MIN), esp_matter_uint8(MAX_ROOT_CERTIFICATES_MAX));
+    return attribute;
+}
+
+attribute_t *create_provisioned_root_certificates(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, TlsCertificateManagement::Attributes::ProvisionedRootCertificates::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_max_client_certificates(cluster_t *cluster, uint8_t value)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, TlsCertificateManagement::Attributes::MaxClientCertificates::Id,
+                                                           ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(MAX_CLIENT_CERTIFICATES_MIN), esp_matter_uint8(MAX_CLIENT_CERTIFICATES_MAX));
+    return attribute;
+}
+
+attribute_t *create_provisioned_client_certificates(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, TlsCertificateManagement::Attributes::ProvisionedClientCertificates::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+
+} /* tls_certificate_management */
+
 } /* cluster */
 } /* esp_matter */

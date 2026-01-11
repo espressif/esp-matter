@@ -4735,5 +4735,56 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 } /* tls_client_management */
 
+namespace tls_certificate_management {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, TlsCertificateManagement::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, TlsCertificateManagement::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
+        add_function_list(cluster, function_list, function_flags);
+        if (config->delegate != nullptr) {
+            static const auto delegate_init_cb = TlsCertificateManagementDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterTlsCertificateManagementPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+        attribute::create_max_root_certificates(cluster, config->max_root_certificates);
+        attribute::create_provisioned_root_certificates(cluster, NULL, 0, 0);
+        attribute::create_max_client_certificates(cluster, config->max_client_certificates);
+        attribute::create_provisioned_client_certificates(cluster, NULL, 0, 0);
+
+        command::create_provision_root_certificate(cluster);
+        command::create_provision_root_certificate_response(cluster);
+        command::create_find_root_certificate(cluster);
+        command::create_find_root_certificate_response(cluster);
+        command::create_lookup_root_certificate(cluster);
+        command::create_lookup_root_certificate_response(cluster);
+        command::create_remove_root_certificate(cluster);
+        command::create_client_csr(cluster);
+        command::create_client_csr_response(cluster);
+        command::create_provision_client_certificate(cluster);
+        command::create_find_client_certificate(cluster);
+        command::create_find_client_certificate_response(cluster);
+        command::create_lookup_client_certificate(cluster);
+        command::create_lookup_client_certificate_response(cluster);
+        command::create_remove_client_certificate(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterTlsCertificateManagementClusterServerInitCallback,
+                                                 ESPMatterTlsCertificateManagementClusterServerShutdownCallback);
+    }
+
+    return cluster;
+}
+
+} /* tls_certificate_management */
+
 } /* cluster */
 } /* esp_matter */
