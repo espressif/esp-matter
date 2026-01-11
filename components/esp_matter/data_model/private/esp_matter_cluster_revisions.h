@@ -422,5 +422,9 @@ constexpr uint16_t cluster_revision = 1;
 namespace soil_measurement {
 constexpr uint16_t cluster_revision = 1;
 } // namespace soil_measurement
+
+namespace tls_client_management {
+constexpr uint16_t cluster_revision = 1;
+} // namespace tls_client_management
 } // namespace cluster
 } // namespace esp_matter
