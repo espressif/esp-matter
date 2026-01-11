@@ -1403,5 +1403,18 @@ attribute_t *create_soil_moisture_measured_value(cluster_t *cluster, nullable<ui
 } /* attribute */
 } /* soil_measurement */
 
+namespace zone_management {
+namespace attribute {
+
+attribute_t *create_max_user_defined_zones(cluster_t *cluster, uint8_t value);
+attribute_t *create_max_zones(cluster_t *cluster, uint8_t value);
+attribute_t *create_zones(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_triggers(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_sensitivity_max(cluster_t *cluster, uint8_t value);
+attribute_t *create_sensitivity(cluster_t *cluster, uint8_t value);
+attribute_t *create_two_d_cartesian_max(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* zone_management */
+
 } /* cluster */
 } /* esp_matter */

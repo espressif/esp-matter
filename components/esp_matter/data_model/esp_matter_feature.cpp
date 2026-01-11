@@ -4852,5 +4852,90 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* meter_identification */
 
+namespace zone_management {
+namespace feature {
+namespace two_dimensional_cartesian_zone {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ZoneManagement::Feature::kTwoDimensionalCartesianZone);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_two_d_cartesian_max(cluster, NULL, 0, 0);
+    return ESP_OK;
+}
+
+} /* two_dimensional_cartesian_zone */
+
+namespace per_zone_sensitivity {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ZoneManagement::Feature::kPerZoneSensitivity);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+
+    attribute_t *sensitivity = esp_matter::attribute::get(cluster, ZoneManagement::Attributes::Sensitivity::Id);
+    if (sensitivity) {
+        esp_matter::attribute::destroy(cluster, sensitivity);
+    }
+    return ESP_OK;
+}
+
+} /* per_zone_sensitivity */
+
+namespace user_defined {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ZoneManagement::Feature::kUserDefined);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_max_user_defined_zones(cluster, 0);
+    // Commands
+    command::create_remove_zone(cluster);
+    if (get_feature_map_value(cluster) & feature::two_dimensional_cartesian_zone::get_id()) {
+        command::create_two_d_cartesian_zone(cluster);
+        command::create_two_d_cartesian_zone_response(cluster);
+        command::create_update_two_d_cartesian_zone(cluster);
+    }
+    return ESP_OK;
+}
+
+} /* user_defined */
+
+namespace focus_zones {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ZoneManagement::Feature::kFocusZones);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* focus_zones */
+
+} /* feature */
+} /* zone_management */
+
 } /* cluster */
 } /* esp_matter */

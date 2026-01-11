@@ -1061,5 +1061,11 @@ using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* soil_measurement */
 
+namespace zone_management {
+using config_t = common::config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* zone_management */
+
 } /* cluster */
 } /* esp_matter */

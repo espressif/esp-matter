@@ -290,5 +290,12 @@ event_t *create_current_conditions_changed(cluster_t *cluster);
 } // namespace event
 } // namespace electrical_grid_conditions
 
+namespace zone_management {
+namespace event {
+event_t *create_zone_triggered(cluster_t *cluster);
+event_t *create_zone_stopped(cluster_t *cluster);
+} // namespace event
+} // namespace zone_management
+
 } // namespace cluster
 } // namespace esp_matter
