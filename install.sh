@@ -9,7 +9,7 @@ print_help() {
     echo "  --no-bootstrap          Disable sourcing connectedhomeip's scripts/bootstrap.sh,"
     echo "                          This can be helpful if there's already present connectedhomeip setup"
     echo "  --build-python          Build Python environment for running Python test scripts"
-    echo "  --ninja-jobs            Number of jobs to use for ninja (default: $(nproc))"
+    echo "  --ninja-jobs            Number of jobs to use for ninja (default: $(get_nproc))"
     echo "                          This is used to build the host tools."
     echo "                          This can be helpful in case of slow build machines/docker containers,"
     echo "                          or to speed up the build process on faster machines."
@@ -21,11 +21,21 @@ echo_log() {
   echo ""
 }
 
+# Get the number of available processing units to optimize build performance
+# It tries nproc -> getconf -> sysctl and defaults to 1 if all fail assuming
+# a single processing unit is available.
+get_nproc() {
+  nproc 2>/dev/null \
+  || getconf _NPROCESSORS_ONLN 2>/dev/null \
+  || sysctl -n hw.ncpu 2>/dev/null \
+  || echo 1
+}
+
 # Parse command-line arguments
 NO_HOST_TOOL=false
 NO_BOOTSTRAP=false
 BUILD_PYTHON=false
-NINJA_JOBS=$(nproc)
+NINJA_JOBS=$(get_nproc)
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
@@ -39,7 +49,7 @@ while [[ "$#" -gt 0 ]]; do
             BUILD_PYTHON=true
             ;;
         --ninja-jobs)
-            NINJA_JOBS=${2:-$(nproc)}
+            NINJA_JOBS=${2:-$(get_nproc)}
             shift
             ;;
         --help)
