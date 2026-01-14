@@ -207,7 +207,7 @@ static void ElectricalMeasurementWorkHandler(intptr_t context)
 #ifdef CONFIG_ENABLE_ESP_DIAGNOSTICS_TRACE
 void diagnostic_init()
 {
-    lock::status_t lock_status = lock::chip_stack_lock(portMAX_DELAY);
+    lock::ScopedChipStackLock lock(portMAX_DELAY);
     LogProvider::LogProviderInit providerInit = {
         .endUserBuffer = endUserBuffer,
         .endUserBufferSize = CONFIG_END_USER_BUFFER_SIZE,
@@ -215,9 +215,6 @@ void diagnostic_init()
         .retrievalBufferSize = CONFIG_RETRIEVAL_BUFFER_SIZE,
     };
     logProvider.Init(providerInit);
-    if (lock_status == lock::SUCCESS) {
-        lock::chip_stack_unlock();
-    }
 }
 #endif // CONFIG_ENABLE_ESP_DIAGNOSTICS_TRACE
 

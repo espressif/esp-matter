@@ -141,7 +141,7 @@ FabricDelegateImpl s_fabric_delegate;
 
 namespace lock {
 #define DEFAULT_TICKS (500 / portTICK_PERIOD_MS) /* 500 ms in ticks */
-status_t chip_stack_lock(uint32_t ticks_to_wait)
+status_t ScopedChipStackLock::chip_stack_lock(uint32_t ticks_to_wait)
 {
 #if CHIP_STACK_LOCK_TRACKING_ENABLED
     VerifyOrReturnValue(!PlatformMgr().IsChipStackLockedByCurrentThread(), ALREADY_TAKEN);
@@ -160,7 +160,7 @@ status_t chip_stack_lock(uint32_t ticks_to_wait)
     return FAILED;
 }
 
-esp_err_t chip_stack_unlock()
+esp_err_t ScopedChipStackLock::chip_stack_unlock()
 {
     PlatformMgr().UnlockChipStack();
     return ESP_OK;
