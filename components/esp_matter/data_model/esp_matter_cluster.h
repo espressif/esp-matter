@@ -35,12 +35,6 @@ namespace cluster {
  */
 void plugin_init_callback_common();
 
-/** Common cluster delegate init callback
- *
- * This is the common delegate init callback which calls the delegate init callbacks in the clusters.
- */
-void delegate_init_callback_common();
-
 /** Common cluster add bounds callback
  *
  * This is the common add bounds callback which set the bounds to all the attributes of the clusters.

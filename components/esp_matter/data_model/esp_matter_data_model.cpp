@@ -246,6 +246,7 @@ esp_err_t enable(endpoint_t *endpoint)
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     current_endpoint->enabled = true;
     init_identification(endpoint);
+    esp_matter::cluster::delegate_init_callback_common(endpoint);
     return ESP_OK;
 }
 

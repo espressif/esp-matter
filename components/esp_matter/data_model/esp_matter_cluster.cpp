@@ -143,24 +143,17 @@ void plugin_init_callback_common()
     }
 }
 
-void delegate_init_callback_common()
+void delegate_init_callback_common(endpoint_t *endpoint)
 {
-    node_t *node = node::get();
-    /* Skip delegate_init_callback_common when ESP Matter data model is not used */
-    VerifyOrReturn(node);
-    endpoint_t *endpoint = endpoint::get_first(node);
-    while (endpoint) {
-        uint16_t endpoint_id = endpoint::get_id(endpoint);
-        cluster_t *cluster = get_first(endpoint);
-        while (cluster) {
-            /* Delegate server init callback */
-            delegate_init_callback_t delegate_init_callback = get_delegate_init_callback(cluster);
-            if (delegate_init_callback) {
-                delegate_init_callback(get_delegate_impl(cluster), endpoint_id);
-            }
-            cluster = get_next(cluster);
+    uint16_t endpoint_id = endpoint::get_id(endpoint);
+    cluster_t *cluster = get_first(endpoint);
+    while (cluster) {
+        /* Delegate server init callback */
+        delegate_init_callback_t delegate_init_callback = get_delegate_init_callback(cluster);
+        if (delegate_init_callback) {
+            delegate_init_callback(get_delegate_impl(cluster), endpoint_id);
         }
-        endpoint = endpoint::get_next(endpoint);
+        cluster = get_next(cluster);
     }
 }
 
