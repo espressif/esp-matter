@@ -88,7 +88,7 @@ void ESPMatterTimeFormatLocalizationClusterServerShutdownCallback(EndpointId end
 
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster());
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "TimeFormatLocalization unregister error: %" CHIP_ERROR_FORMAT, err.Format())
+        ChipLogError(AppServer, "TimeFormatLocalization unregister error: %" CHIP_ERROR_FORMAT, err.Format());
     }
     gServer.Destroy();
 }
