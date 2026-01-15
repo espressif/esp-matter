@@ -517,6 +517,15 @@ esp_err_t add(cluster_t *cluster)
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
+    command_t *on_command = esp_matter::command::get(cluster, OnOff::Commands::On::Id, COMMAND_FLAG_ACCEPTED);
+    if (on_command) {
+        esp_matter::command::destroy(cluster, on_command);
+    }
+    command_t *toggle_command = esp_matter::command::get(cluster, OnOff::Commands::Toggle::Id, COMMAND_FLAG_ACCEPTED);
+    if (toggle_command) {
+        esp_matter::command::destroy(cluster, toggle_command);
+    }
+
     return ESP_OK;
 }
 
@@ -4259,6 +4268,14 @@ esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
+    command_t *stop_command = esp_matter::command::get(cluster, ClosureControl::Commands::Stop::Id, COMMAND_FLAG_ACCEPTED);
+    if (stop_command) {
+        esp_matter::command::destroy(cluster, stop_command);
+    }
+    event_t *movement_completed = esp_matter::event::get(cluster, ClosureControl::Events::MovementCompleted::Id);
+    if (movement_completed) {
+        esp_matter::event::destroy(cluster, movement_completed);
+    }
     return ESP_OK;
 }
 

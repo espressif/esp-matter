@@ -72,6 +72,54 @@ esp_err_t get_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val);
  */
 esp_err_t set_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_callbacks = true);
 
+/** Destroy attribute
+ *
+ * This function destroys an attribute that was created and added to a cluster.
+ * It removes the attribute from the cluster's attribute list, frees any
+ * allocated memory for the attribute value (e.g., string, array), and deletes
+ * the attribute from NVS if it was stored there.
+ *
+ * @param[in] cluster Cluster handle.
+ * @param[in] attribute Attribute handle.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t destroy(cluster_t *cluster, attribute_t *attribute);
+
 } // namespace attribute
 
+namespace command {
+
+    /** Destroy command
+ *
+ * This function destroys a command that was created and added to a cluster.
+ * It removes the command from the cluster's command list.
+ *
+ * @param[in] cluster Cluster handle.
+ * @param[in] command Command handle.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t destroy(cluster_t *cluster, command_t *command);
+
+} // namespace command
+
+namespace event {
+
+    /** Destroy event
+ *
+ * This function destroys an event that was created and added to a cluster.
+ * It removes the event from the cluster's event list.
+ *
+ * @param[in] cluster Cluster handle.
+ * @param[in] event Event handle.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t destroy(cluster_t *cluster, event_t *event);
+
+} // namespace event
 } // namespace esp_matter

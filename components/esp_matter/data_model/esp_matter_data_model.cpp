@@ -555,7 +555,7 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, e
     return (attribute_t *)attribute;
 }
 
-static esp_err_t destroy(attribute_t *attribute)
+static esp_err_t free_attribute(attribute_t *attribute)
 {
     VerifyOrReturnError(attribute, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Attribute cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
@@ -585,6 +585,22 @@ static esp_err_t destroy(attribute_t *attribute)
     /* Free */
     esp_matter_mem_free(current_attribute);
     return ESP_OK;
+}
+
+esp_err_t destroy(cluster_t *cluster, attribute_t *attribute)
+{
+    VerifyOrReturnError(cluster && attribute, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster or attribute cannot be NULL"));
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    _attribute_base_t *target_attribute = (_attribute_base_t *)attribute;
+
+    _attribute_base_t **current_attribute = &current_cluster->attribute_list;
+    while (*current_attribute && *current_attribute != target_attribute) {
+        current_attribute = &(*current_attribute)->next;
+    }
+
+    VerifyOrReturnError(*current_attribute, ESP_ERR_NOT_FOUND, ESP_LOGE(TAG, "Attribute not found in the cluster"));
+    *current_attribute = target_attribute->next;
+    return free_attribute(attribute);
 }
 
 attribute_t *get(cluster_t *cluster, uint32_t attribute_id)
@@ -1179,6 +1195,15 @@ command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callba
     return (command_t *)command;
 }
 
+esp_err_t destroy(cluster_t *cluster, command_t *command)
+{
+    VerifyOrReturnError(cluster && command, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster or command cannot be NULL"));
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    _command_t *current_command = (_command_t *)command;
+    SinglyLinkedList<_command_t>::remove(&current_cluster->command_list, current_command);
+    return ESP_OK;
+}
+
 command_t *get(uint16_t endpoint_id, uint32_t cluster_id, uint32_t command_id)
 {
     _cluster_t *current_cluster = (_cluster_t *)cluster::get(endpoint_id, cluster_id);
@@ -1287,6 +1312,15 @@ event_t *create(cluster_t *cluster, uint32_t event_id)
     return (event_t *)event;
 }
 
+esp_err_t destroy(cluster_t *cluster, event_t *event)
+{
+    VerifyOrReturnError(cluster && event, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster or event cannot be NULL"));
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    _event_t *current_event = (_event_t *)event;
+    SinglyLinkedList<_event_t>::remove(&current_cluster->event_list, current_event);
+    return ESP_OK;
+}
+
 event_t *get(cluster_t *cluster, uint32_t event_id)
 {
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Cluster cannot be NULL."));
@@ -1377,7 +1411,7 @@ esp_err_t destroy(cluster_t *cluster)
     _attribute_base_t *attribute = current_cluster->attribute_list;
     while (attribute) {
         _attribute_base_t *next_attribute = attribute->next;
-        attribute::destroy((attribute_t *)attribute);
+        attribute::free_attribute((attribute_t *)attribute);
         attribute = next_attribute;
     }
 
