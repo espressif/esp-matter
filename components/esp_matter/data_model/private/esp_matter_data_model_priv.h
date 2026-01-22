@@ -61,6 +61,23 @@ namespace attribute {
  */
 esp_err_t get_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val);
 
+/** Execute the attribute update callback
+ *
+ * This function executes the attribute update callback set via set_callback().
+ * This is used internally to notify the application about attribute changes.
+ *
+ * @param[in] type Callback type (PRE_UPDATE or POST_UPDATE).
+ * @param[in] endpoint_id Endpoint ID of the attribute.
+ * @param[in] cluster_id Cluster ID of the attribute.
+ * @param[in] attribute_id Attribute ID of the attribute.
+ * @param[in] val Pointer to the attribute value.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
+                           uint32_t attribute_id, esp_matter_attr_val_t *val);
+
 /** Set the attribute value in the esp-matter storage
  *
  * @param[in] attribute Attribute handle.
