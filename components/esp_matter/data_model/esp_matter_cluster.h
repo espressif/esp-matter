@@ -1071,5 +1071,11 @@ using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* meter_identification */
 
+namespace soil_measurement {
+using config_t = common::config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* soil_measurement */
+
 } /* cluster */
 } /* esp_matter */
