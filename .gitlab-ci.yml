@@ -551,7 +551,12 @@ pytest_esp32c6_esp_matter_dut:
     - cp ${ESP_MATTER_PATH}/tools/ci/extended_color_light_wifi_pics_code.txt $ESP_MATTER_PATH/connectedhomeip/connectedhomeip/src/python_testing/
     - pip install -r tools/ci/requirements-pytest.txt
     - python3 -c "import os; os.environ['TEST_CHUNK'] = '$TEST_CHUNK'"
-    - pytest examples/ --target esp32c6 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml --certification-json=$ESP_MATTER_PATH/tools/ci/certification_test_commands.json
+    - |
+      if [ $CI_PIPELINE_SOURCE == "merge_request_event" ]; then
+        pytest examples/ --target esp32c6 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml --certification-json=$ESP_MATTER_PATH/tools/ci/certification_test_commands.json --ci-branch $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
+      else
+        pytest examples/ --target esp32c6 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml --certification-json=$ESP_MATTER_PATH/tools/ci/certification_test_commands.json
+      fi
   tags: ["esp32c6", "esp_matter_dut"]
   parallel:
     matrix:

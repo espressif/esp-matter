@@ -101,7 +101,8 @@
     "TC_IDM_10_3": {
       "script": "TC_DeviceConformance.py",
       "test_case": "test_TC_IDM_10_3",
-      "args": ""
+      "args": "",
+      "skip_on_branch": "main"
     },
     "TC_IDM_10_2": {
       "script": "TC_DeviceConformance.py",

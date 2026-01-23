@@ -127,10 +127,23 @@ def pytest_addoption(parser):
         default="certification_test_commands.json",
         help="Path to the certification test commands JSON file",
     )
+    parser.addoption(
+        "--ci-branch",
+        action="store",
+        default="main",
+        help="Branch on which the CI runs",
+    )
+
 
 @pytest.fixture(scope="session")
 def certification_tests(request):
     return request.config.getoption("--certification-json")
+
+
+@pytest.fixture(scope="session")
+def ci_branch(request):
+    return request.config.getoption("--ci-branch")
+
 
 @pytest.fixture(autouse=True)
 @multi_dut_fixture
