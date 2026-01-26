@@ -5,6 +5,7 @@ void MatterActionsPluginServerInitCallback();
 void MatterActivatedCarbonFilterMonitoringPluginServerInitCallback();
 void MatterAdministratorCommissioningPluginServerInitCallback();
 void MatterAirQualityPluginServerInitCallback();
+void MatterAmbientContextSensingPluginServerInitCallback();
 void MatterApplicationBasicPluginServerInitCallback();
 void MatterApplicationLauncherPluginServerInitCallback();
 void MatterAudioOutputPluginServerInitCallback();

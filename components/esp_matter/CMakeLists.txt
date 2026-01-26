@@ -22,25 +22,30 @@ if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
         get_supported_cluster_dirs(SUPPORTED_CLUSTER_DIRS)
         foreach(CLUSTER_DIR ${SUPPORTED_CLUSTER_DIRS})
             # If the cluster directory has .c/.cpp file, add it to SRC_DIRS_LIST
-            file(GLOB_RECURSE C_CPP_FILES "${CLUSTER_DIR}/*.c" "${CLUSTER_DIR}/*.cpp")
+            file(GLOB C_CPP_FILES "${CLUSTER_DIR}/*.c" "${CLUSTER_DIR}/*.cpp")
             if (C_CPP_FILES)
                 list(APPEND SRC_DIRS_LIST "${CLUSTER_DIR}")
             endif()
-            file(GLOB_RECURSE CODEGEN_INTEGRATION_FILE "${CLUSTER_DIR}/CodegenIntegration.cpp")
-            if (CODEGEN_INTEGRATION_FILE)
-                list(APPEND EXCLUDE_SRCS_LIST "${CLUSTER_DIR}/CodegenIntegration.cpp")
+            file(GLOB_RECURSE CODEGEN_FILES "${CLUSTER_DIR}/Codegen*.cpp")
+            if (CODEGEN_FILES)
+                list(APPEND EXCLUDE_SRCS_LIST ${CODEGEN_FILES})
             endif()
+        endforeach()
+
+        list(APPEND SRC_DIRS_LIST "${MATTER_SDK_PATH}/src/app/clusters/on-off-server/codegen"
+                                  "${MATTER_SDK_PATH}/src/app/clusters/level-control/codegen")
+
+        file(GLOB ESP_MATTER_CLUSTER_DIRS_LIST "data_model_provider/clusters/*")
+        foreach(ESP_MATTER_CLUSTER_DIR ${ESP_MATTER_CLUSTER_DIRS_LIST})
+            list(APPEND SRC_DIRS_LIST ${ESP_MATTER_CLUSTER_DIR})
         endforeach()
 
         list(APPEND SRC_DIRS_LIST "data_model"
                                   "data_model_provider"
-                                  "data_model_provider/clusters"
                                   "data_model/private")
         list(APPEND INCLUDE_DIRS_LIST "zap_common"
                                       "data_model")
         list(APPEND PRIV_INCLUDE_DIRS_LIST "data_model/private")
-        list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/network-commissioning/CodegenInstance.cpp"
-                                      "${MATTER_SDK_PATH}/src/app/clusters/general-commissioning-server/TemporaryTestCoupling.cpp")
     endif(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
 else()
     list(APPEND EXCLUDE_SRCS_LIST "esp_matter_identify.cpp"

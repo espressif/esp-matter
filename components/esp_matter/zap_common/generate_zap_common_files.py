@@ -114,17 +114,20 @@ def generate_plugin_application_callbacks_h(xml_files, output_dir):
             header_file.write('void Matter{}PluginServerInitCallback();\n'.format(
                 format_cluster_name(get_cluster_name(cluster))))
 
+
 def generate_cluster_callbacks_h(xml_files, output_dir):
     with open(os.path.join(output_dir, 'app/ClusterCallbacks.h'), 'w') as header_file:
         header_file.write('#pragma once\n\n')
-        header_file.write('#include <lib/core/DataModelTypes.h>\n\n')
-        header_file.write('using chip::EndpointId;\n\n')
+        header_file.write('#include <lib/core/DataModelTypes.h>\n')
+        header_file.write('#include <app/server-cluster/ServerClusterInterface.h>\n\n')
+        header_file.write('using chip::EndpointId;\n')
+        header_file.write('using chip::app::ClusterShutdownType;\n\n')
         clusters = get_clusters_from_xml_files(xml_files)
         clusters.sort(key=get_formatted_cluster_name)
         for cluster in clusters:
             header_file.write('void ESPMatter{}ClusterServerInitCallback(EndpointId endpoint);\n'.format(
                 format_cluster_name(get_cluster_name(cluster))))
-            header_file.write('void ESPMatter{}ClusterServerShutdownCallback(EndpointId endpoint);\n\n'.format(
+            header_file.write('void ESPMatter{}ClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);\n\n'.format(
                 format_cluster_name(get_cluster_name(cluster))))
 
 
