@@ -77,6 +77,16 @@ __attribute__((weak)) void ESPMatterAirQualityClusterServerShutdownCallback(Endp
     // Default empty implementation
 }
 
+__attribute__((weak)) void ESPMatterAmbientContextSensingClusterServerInitCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterAmbientContextSensingClusterServerShutdownCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
 __attribute__((weak)) void ESPMatterApplicationBasicClusterServerInitCallback(EndpointId endpoint)
 {
     // Default empty implementation

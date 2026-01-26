@@ -167,6 +167,9 @@
 #define ESP_MATTER_ELECTRICAL_ENERGY_TARIFF_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_ELECTRICAL_METER_DEVICE_TYPE_ID 0x0514
 #define ESP_MATTER_ELECTRICAL_METER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_SOIL_SENSOR_DEVICE_TYPE_ID 0x0045
+#define ESP_MATTER_SOIL_SENSOR_DEVICE_TYPE_VERSION 1
+
 namespace esp_matter {
 
 /** Specific endpoint (device type) create APIs
@@ -1149,6 +1152,19 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* electrical_meter */
+
+namespace soil_sensor {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::identify::config_t identify;
+    cluster::soil_measurement::config_t soil_measurement;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* soil_sensor */
 } /* endpoint */
 
 namespace node {
