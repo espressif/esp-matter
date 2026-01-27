@@ -1976,5 +1976,60 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* closure_dimension */
 
+namespace camera_av_settings_user_level_management {
+namespace feature {
+
+namespace digital_ptz {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* digital_ptz */
+
+namespace mechanical_pan {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* mechanical_pan */
+
+namespace mechanical_tilt {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* mechanical_tilt */
+
+namespace mechanical_zoom {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* mechanical_zoom */
+
+namespace mechanical_presets {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* mechanical_presets */
+
+} /* feature */
+} /* camera_av_settings_user_level_management */
+
+namespace push_av_stream_transport {
+namespace feature {
+
+namespace per_zone_sensitivity {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* per_zone_sensitivity */
+
+/* Provisional */
+namespace metadata {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* metadata */
+
+} /* feature */
+} /* push_av_stream_transport */
+
 } /* cluster */
 } /* esp_matter */

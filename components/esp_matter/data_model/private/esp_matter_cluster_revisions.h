@@ -391,6 +391,14 @@ namespace closure_dimension {
 constexpr uint16_t cluster_revision = 1;
 } // namespace closure_dimension
 
+namespace camera_av_settings_user_level_management {
+constexpr uint16_t cluster_revision = 1;
+} // namespace camera_av_settings_user_level_management
+
+namespace push_av_stream_transport {
+constexpr uint16_t cluster_revision = 1;
+} // namespace push_av_stream_transport
+
 } // namespace cluster
 } // namespace esp_matter
 
