@@ -2091,6 +2091,90 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     return ESP_OK;
 }
 } /* thermostat_controller */
+
+namespace closure_controller {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_CLOSURE_CONTROLLER_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_CLOSURE_CONTROLLER_DEVICE_TYPE_VERSION;
+}
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t * endpoint = common::create<config_t>(node, config, flags, priv_data, add);
+    VerifyOrReturnError(endpoint != nullptr, NULL);
+
+    cluster_t *binding_cluster = binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
+    VerifyOrReturnValue(binding_cluster != nullptr, NULL, ESP_LOGE(TAG, "Failed to create binding cluster"));
+
+    return endpoint;
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+    cluster::closure_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
+
+    return ESP_OK;
+}
+} /* closure_controller */
+
+namespace closure {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_CLOSURE_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_CLOSURE_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster::closure_control::create(endpoint, &(config->closure_control), CLUSTER_FLAG_SERVER);
+
+    return ESP_OK;
+}
+} /* closure */
+
+namespace closure_panel {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_CLOSURE_PANEL_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_CLOSURE_PANEL_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+    cluster::closure_dimension::create(endpoint, &(config->closure_dimension), CLUSTER_FLAG_SERVER);
+
+    return ESP_OK;
+}
+} /* closure_panel */
 } /* endpoint */
 
 namespace node {

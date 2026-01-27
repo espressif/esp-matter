@@ -587,6 +587,23 @@ int create(uint8_t device_type_index)
             endpoint = esp_matter::endpoint::thermostat_controller::create(node, &thermostat_controller_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
+        case ESP_MATTER_CLOSURE_CONTROLLER: {
+            esp_matter::endpoint::closure_controller::config_t closure_controller_config;
+            endpoint = esp_matter::endpoint::closure_controller::create(node, &closure_controller_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
+        case ESP_MATTER_CLOSURE: {
+            esp_matter::endpoint::closure::config_t closure_config;
+            closure_config.closure_control.feature_flags = cluster::closure_control::feature::positioning::get_id();
+            endpoint = esp_matter::endpoint::closure::create(node, &closure_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
+        case ESP_MATTER_CLOSURE_PANEL: {
+            esp_matter::endpoint::closure_panel::config_t closure_panel_config;
+            closure_panel_config.closure_dimension.feature_flags = cluster::closure_dimension::feature::positioning::get_id();
+            endpoint = esp_matter::endpoint::closure_panel::create(node, &closure_panel_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
         default: {
             ESP_LOGE(TAG, "Please input a valid device type");
             break;
