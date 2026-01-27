@@ -53,6 +53,7 @@
 #include <app/clusters/push-av-stream-transport-server/push-av-stream-transport-cluster.h>
 #include <app/clusters/commodity-tariff-server/commodity-tariff-server.h>
 #include <app/clusters/commodity-price-server/commodity-price-server.h>
+#include <app/clusters/electrical-grid-conditions-server/electrical-grid-conditions-server.h>
 #include <unordered_map>
 
 using namespace chip::app::Clusters;
@@ -604,6 +605,16 @@ void CommodityPriceDelegateInitCB(void *delegate, uint16_t endpoint_id)
     uint32_t feature_map = get_feature_map_value(endpoint_id, CommodityPrice::Id);
     CommodityPrice::Instance *commodity_price_instance = new CommodityPrice::Instance(endpoint_id, *commodity_price_delegate, chip::BitMask<CommodityPrice::Feature, uint32_t>(feature_map));
     commodity_price_instance->Init();
+}
+
+
+void ElectricalGridConditionsDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    ElectricalGridConditions::Delegate *electrical_grid_conditions_delegate = static_cast<ElectricalGridConditions::Delegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, ElectricalGridConditions::Id);
+    ElectricalGridConditions::Instance *electrical_grid_conditions_instance = new ElectricalGridConditions::Instance(endpoint_id, *electrical_grid_conditions_delegate, chip::BitMask<ElectricalGridConditions::Feature, uint32_t>(feature_map));
+    electrical_grid_conditions_instance->Init();
 }
 
 } // namespace delegate_cb

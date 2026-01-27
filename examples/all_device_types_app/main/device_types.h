@@ -64,6 +64,9 @@ enum device_type_enum {
     ESP_MATTER_CLOSURE_CONTROLLER,
     ESP_MATTER_CLOSURE,
     ESP_MATTER_CLOSURE_PANEL,
+    ESP_MATTER_ELECTRICAL_ENERGY_TARIFF,
+    ESP_MATTER_ELECTRICAL_METER,
+    ESP_MATTER_ELECTRICAL_UTILITY_METER,
     ESP_MATTER_DEVICE_TYPE_MAX
 };
 
@@ -134,5 +137,8 @@ const device_type_name device_type_list[ESP_MATTER_DEVICE_TYPE_MAX] = {
     {"closure_controller", ESP_MATTER_CLOSURE_CONTROLLER},
     {"closure", ESP_MATTER_CLOSURE},
     {"closure_panel", ESP_MATTER_CLOSURE_PANEL},
+    {"electrical_energy_tariff", ESP_MATTER_ELECTRICAL_ENERGY_TARIFF},
+    {"electrical_meter", ESP_MATTER_ELECTRICAL_METER},
+    {"electrical_utility_meter", ESP_MATTER_ELECTRICAL_UTILITY_METER},
 };
 } /* namespace esp_matter */

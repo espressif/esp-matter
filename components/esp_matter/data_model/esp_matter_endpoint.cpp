@@ -2199,6 +2199,81 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     return ESP_OK;
 }
 } /* closure_panel */
+
+namespace electrical_utility_meter {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_ELECTRICAL_UTILITY_METER_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_ELECTRICAL_UTILITY_METER_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+    cluster::meter_identification::create(endpoint, &(config->meter_identification), CLUSTER_FLAG_SERVER);
+    return ESP_OK;
+}
+} /* electrical_utility_meter */
+
+namespace electrical_energy_tariff {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_ELECTRICAL_ENERGY_TARIFF_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_ELECTRICAL_ENERGY_TARIFF_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+    return ESP_OK;
+}
+} /* electrical_energy_tariff */
+
+namespace electrical_meter {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_ELECTRICAL_METER_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_ELECTRICAL_METER_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+    cluster::electrical_power_measurement::create(endpoint, &(config->electrical_power_measurement), CLUSTER_FLAG_SERVER);
+    cluster::electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER);
+    return ESP_OK;
+}
+} /* electrical_meter */
 } /* endpoint */
 
 namespace node {

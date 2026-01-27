@@ -4352,7 +4352,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
         static const auto plugin_server_init_cb = CALL_ONCE(MatterCommodityTariffPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
-        set_add_bounds_callback(cluster, commodity_tariff::add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
@@ -4432,7 +4431,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
         static const auto plugin_server_init_cb = CALL_ONCE(MatterCommodityPricePluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
-        set_add_bounds_callback(cluster, commodity_price::add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -4465,7 +4463,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterCommodityMeteringPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
-        set_add_bounds_callback(cluster, commodity_metering::add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -4486,6 +4483,73 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 
 } /* commodity_metering */
+
+namespace electrical_grid_conditions {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, ElectricalGridConditions::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ElectricalGridConditions::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        if (config && config->delegate != nullptr) {
+            static const auto delegate_init_cb = ElectricalGridConditionsDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterElectricalGridConditionsPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        attribute::create_local_generation_available(cluster, false);
+        attribute::create_current_conditions(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+
+} /* electrical_grid_conditions */
+
+namespace meter_identification {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, MeterIdentification::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, MeterIdentification::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterMeterIdentificationPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        attribute::create_meter_type(cluster, 0);
+        attribute::create_point_of_delivery(cluster, NULL, 0);
+        attribute::create_meter_serial_number(cluster, NULL, 0);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+
+} /* meter_identification */
 
 } /* cluster */
 } /* esp_matter */

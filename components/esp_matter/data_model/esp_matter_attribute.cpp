@@ -5266,5 +5266,65 @@ attribute_t *create_maximum_metered_quantities(cluster_t *cluster, nullable<uint
 
 } /* commodity_metering */
 
+namespace electrical_grid_conditions {
+namespace attribute {
+attribute_t *create_local_generation_available(cluster_t *cluster, nullable<bool> value)
+{
+    return esp_matter::attribute::create(cluster, ElectricalGridConditions::Attributes::LocalGenerationAvailable::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_bool(value));
+}
+
+attribute_t *create_current_conditions(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ElectricalGridConditions::Attributes::CurrentConditions::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_forecast_conditions(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ElectricalGridConditions::Attributes::ForecastConditions::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+
+} /* electrical_grid_conditions */
+
+namespace meter_identification {
+namespace attribute {
+attribute_t *create_meter_type(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, MeterIdentification::Attributes::MeterType::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
+}
+
+attribute_t *create_point_of_delivery(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, MeterIdentification::Attributes::PointOfDelivery::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_char_str(value, length));
+}
+
+attribute_t *create_meter_serial_number(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, MeterIdentification::Attributes::MeterSerialNumber::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_char_str(value, length));
+}
+
+attribute_t *create_protocol_version(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, MeterIdentification::Attributes::ProtocolVersion::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_char_str(value, length));
+}
+
+attribute_t *create_power_threshold(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, MeterIdentification::Attributes::PowerThreshold::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+
+} /* meter_identification */
+
 } /* cluster */
 } /* esp_matter */

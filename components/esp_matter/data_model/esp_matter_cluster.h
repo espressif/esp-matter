@@ -1062,5 +1062,20 @@ using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* commodity_metering */
 
+namespace electrical_grid_conditions {
+typedef struct config {
+    void *delegate;
+    config() : delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* electrical_grid_conditions */
+
+namespace meter_identification {
+using config_t = common::config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* meter_identification */
+
 } /* cluster */
 } /* esp_matter */
