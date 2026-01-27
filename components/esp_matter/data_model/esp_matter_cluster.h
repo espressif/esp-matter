@@ -1038,5 +1038,29 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* push_av_stream_transport */
 
+namespace commodity_tariff {
+typedef struct config {
+    void *delegate;
+    uint32_t feature_flags;
+    config() : delegate(nullptr), feature_flags(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* commodity_tariff */
+
+namespace commodity_price {
+typedef struct config {
+    void *delegate;
+    config() : delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* commodity_price */
+
+namespace commodity_metering {
+using config_t = common::config_t;
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* commodity_metering */
+
 } /* cluster */
 } /* esp_matter */

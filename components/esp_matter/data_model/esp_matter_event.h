@@ -279,5 +279,11 @@ event_t *create_push_transport_end(cluster_t *cluster);
 } // namespace event
 } // namespace push_av_stream_transport
 
+namespace commodity_price {
+namespace event {
+event_t *create_price_change(cluster_t *cluster);
+} // namespace event
+} // namespace commodity_price
+
 } // namespace cluster
 } // namespace esp_matter
