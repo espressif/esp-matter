@@ -1,5 +1,13 @@
 # Changelog for esp_matter component registry
 
+## [1.4.2~1](https://components.espressif.com/components/espressif/esp_matter/versions/1.4.2~1)
+
+#### Features
+
+- Update component based on Matter 1.4.2
+- esp-matter commit: 1560327e9974c02c284f4ee88cf74f576f1c6a98
+- connectedhomeip commit: bc661692ad988565230305be0ecdffca3b37b242
+
 ## [1.4.2](https://components.espressif.com/components/espressif/esp_matter/versions/1.4.2)
 
 #### Features

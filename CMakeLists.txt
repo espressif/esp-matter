@@ -27,10 +27,10 @@ set(SRC_DIRS_LIST "${MATTER_SDK_PATH}/src/access"
                   "${MATTER_SDK_PATH}/src/app/MessageDef"
                   "${MATTER_SDK_PATH}/src/app/reporting"
                   "${MATTER_SDK_PATH}/src/app/server"
-                  "${MATTER_SDK_PATH}/src/app/server-cluster"
+                # "${MATTER_SDK_PATH}/src/app/server-cluster"
                   "${MATTER_SDK_PATH}/src/app/util"
-                  "${MATTER_SDK_PATH}/src/app/util/persistence"
-                #   "${MATTER_SDK_PATH}/src/app/storage"
+                # "${MATTER_SDK_PATH}/src/app/util/persistence"
+                # "${MATTER_SDK_PATH}/src/app/storage"
                   "${MATTER_SDK_PATH}/src/ble"
                   "${MATTER_SDK_PATH}/src/credentials"
                   "${MATTER_SDK_PATH}/src/credentials/attestation_verifier"
@@ -79,6 +79,10 @@ set(INCLUDE_DIRS_LIST "${MATTER_SDK_PATH}/src"
 set(EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/AttributePathExpandIterator-Checked.cpp"
                       "${MATTER_SDK_PATH}/src/app/AttributePathExpandIterator-DataModel.cpp"
                       "${MATTER_SDK_PATH}/src/app/data-model-provider/StringBuilderAdapters.cpp"
+                      "${MATTER_SDK_PATH}/src/app/GenericEventManagementTestEventTriggerHandler.cpp"
+                      "${MATTER_SDK_PATH}/src/app/server/DefaultTermsAndConditionsProvider.cpp"
+                      "${MATTER_SDK_PATH}/src/app/server/JointFabricDatastore.cpp"
+                      "${MATTER_SDK_PATH}/src/app/server/TermsAndConditionsManager.cpp"
                       "${MATTER_SDK_PATH}/src/controller/ExamplePersistentStorage.cpp"
                       "${MATTER_SDK_PATH}/src/credentials/attestation_verifier/FileAttestationTrustStore.cpp"
                       "${MATTER_SDK_PATH}/src/credentials/attestation_verifier/TestDACRevocationDelegateImpl.cpp"
@@ -112,6 +116,7 @@ set(EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/AttributePathExpandIterator-Ch
                       "${MATTER_SDK_PATH}/src/platform/SyscallStubs.cpp"
                       "${MATTER_SDK_PATH}/src/platform/OpenThread/DnssdImpl.cpp"
                       "${MATTER_SDK_PATH}/src/platform/OpenThread/GenericThreadStackManagerImpl_OpenThread_LwIP.cpp"
+                      "${MATTER_SDK_PATH}/src/setup_payload/SetupPayloadHelper.cpp"
                       "${MATTER_SDK_PATH}/src/system/SystemLayerImplSelect.cpp"
                       "${MATTER_SDK_PATH}/src/system/SystemLayerImplZephyr.cpp"
                       "${MATTER_SDK_PATH}/src/transport/raw/TCP.cpp"
@@ -121,8 +126,11 @@ set(EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/AttributePathExpandIterator-Ch
 
 list(APPEND INCLUDE_DIRS_LIST "${CMAKE_CURRENT_BINARY_DIR}")
 
+set(ESP_MATTER_SRC_DIRS_LIST )
 if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
-    list(APPEND SRC_DIRS_LIST "${MATTER_SDK_PATH}/src/data-model-providers/codegen")
+    list(APPEND SRC_DIRS_LIST "${MATTER_SDK_PATH}/src/app/server-cluster"
+                              "${MATTER_SDK_PATH}/src/app/util/persistence"
+                              "${MATTER_SDK_PATH}/src/data-model-providers/codegen")
     if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
         include("${ESP_COMPONENTS_PATH}/esp_matter/utils/cluster_select/cluster_dir.cmake")
         get_supported_cluster_dirs(SUPPORTED_CLUSTER_DIRS)
@@ -134,9 +142,9 @@ if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
             endif()
         endforeach()
 
-        list(APPEND SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter/zap_common/app"
-                                  "${ESP_COMPONENTS_PATH}/esp_matter/data_model"
-                                  "${ESP_COMPONENTS_PATH}/esp_matter/private")
+        list(APPEND ESP_MATTER_SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter/zap_common/app"
+                                             "${ESP_COMPONENTS_PATH}/esp_matter/data_model"
+                                             "${ESP_COMPONENTS_PATH}/esp_matter/private")
         list(APPEND INCLUDE_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter/zap_common"
                                       "${ESP_COMPONENTS_PATH}/esp_matter/data_model")
 
@@ -160,15 +168,18 @@ list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/software-diag
 
 list(APPEND SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter"
                           "${ESP_COMPONENTS_PATH}/esp_matter/utils"
-                          "${MATTER_SDK_PATH}/zzz_generated/app-common/app-common/zap-generated/attributes"
-                          "${ESP_COMPONENTS_PATH}/esp_matter_console")
+                          "${MATTER_SDK_PATH}/zzz_generated/app-common/app-common/zap-generated/attributes")
 
 list(APPEND INCLUDE_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter"
                               "${ESP_COMPONENTS_PATH}/esp_matter/utils"
                               "${ESP_COMPONENTS_PATH}/esp_matter_console")
 
-if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
-    list(APPEND SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_bridge")
+if(CONFIG_ENABLE_CHIP_SHELL)
+    list(APPEND ESP_MATTER_SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_console")
+endif()
+
+if(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
+    list(APPEND ESP_MATTER_SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_bridge")
     list(APPEND INCLUDE_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_bridge")
 endif()
 
@@ -179,11 +190,12 @@ set(PRIV_INCLUDE_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter/private"
 list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/closure-control-server/closure-control-server.cpp")
 list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/general-commissioning-server/TemporaryTestCoupling.cpp")
 
+set(CONTROLLER_SRC_DIRS_LIST )
 if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
-    list(APPEND SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_controller/core"
-                              "${ESP_COMPONENTS_PATH}/esp_matter_controller/commands"
-                              "${MATTER_SDK_PATH}/src/app/icd/client"
-                              "${MATTER_SDK_PATH}/zzz_generated/chip-tool/zap-generated/cluster/logging")
+    list(APPEND CONTROLLER_SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_controller/core"
+                                         "${ESP_COMPONENTS_PATH}/esp_matter_controller/commands"
+                                         "${MATTER_SDK_PATH}/src/app/icd/client"
+                                         "${MATTER_SDK_PATH}/zzz_generated/chip-tool/zap-generated/cluster/logging")
     list(APPEND INCLUDE_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_controller/core"
                                   "${ESP_COMPONENTS_PATH}/esp_matter_controller/commands"
                                   "${MATTER_SDK_PATH}/zzz_generated/chip-tool"
@@ -196,8 +208,8 @@ if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
                                        "${ESP_COMPONENTS_PATH}/esp_matter_controller/core/esp_matter_controller_group_settings.cpp"
                                        "${ESP_COMPONENTS_PATH}/esp_matter_controller/core/esp_matter_controller_icd_client.cpp")
     endif()
-    if (CONFIG_ESP_MATTER_COMMISSIONER_ENABLE)
-        list(APPEND SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_controller/attestation_store")
+    if(CONFIG_ESP_MATTER_COMMISSIONER_ENABLE)
+        list(APPEND CONTROLLER_SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_controller/attestation_store")
         list(APPEND INCLUDE_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_controller/attestation_store")
     else()
         list(APPEND EXCLUDE_SRCS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_controller/commands/esp_matter_controller_pairing_command.cpp")
@@ -205,14 +217,14 @@ if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
 endif()
 
 if (CONFIG_ESP_MATTER_OTA_PROVIDER_ENABLED)
-    list(APPEND SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_ota_provider/src")
+    list(APPEND ESP_MATTER_SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_ota_provider/src")
     list(APPEND INCLUDE_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_ota_provider/include")
     list(APPEND PRIV_INCLUDE_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_ota_provider/private_include")
 endif()
 
 idf_build_get_property(rainmaker_enabled RAINMAKER_ENABLED)
 if (${rainmaker_enabled})
-    list(APPEND SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_rainmaker")
+    list(APPEND ESP_MATTER_SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_rainmaker")
     list(APPEND INCLUDE_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter_rainmaker")
     list(APPEND REQUIRE_COMPONENTS esp_rainmaker)
 endif()
@@ -464,7 +476,9 @@ if(CONFIG_ENABLE_ICD_SERVER)
     list(APPEND SRC_DIRS_LIST "${MATTER_SDK_PATH}/src/app/icd/server/")
 endif()
 
-idf_component_register(SRC_DIRS          ${SRC_DIRS_LIST}
+idf_component_register(SRC_DIRS          ${CONTROLLER_SRC_DIRS_LIST}
+                                         ${SRC_DIRS_LIST}
+                                         ${ESP_MATTER_SRC_DIRS_LIST}
                        EXCLUDE_SRCS      ${EXCLUDE_SRCS_LIST}
                        INCLUDE_DIRS      ${INCLUDE_DIRS_LIST}
                        PRIV_INCLUDE_DIRS ${PRIV_INCLUDE_DIRS_LIST}
@@ -484,7 +498,6 @@ if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
     target_compile_options(${COMPONENT_LIB} PRIVATE "-DCURRENT_TIME_NOT_IMPLEMENTED=1")
 endif()
 
-#TODO: optimize the flash usage
 # compile options from connectedhomeip/build/config/compiler except -Wconversion, -Wshadow, and -Wno-unknown-warning-option
 target_compile_options(${COMPONENT_LIB} PRIVATE "-g2;-fno-common;-fno-unwind-tables;-fno-asynchronous-unwind-tables")
 target_compile_options(${COMPONENT_LIB} PRIVATE "-Wstack-usage=8192;-Wunreachable-code;-Wvla")
@@ -493,8 +506,9 @@ target_compile_options(${COMPONENT_LIB} PRIVATE "-Wno-deprecated-declarations;-W
 target_compile_options(${COMPONENT_LIB} PRIVATE "-Wno-cast-function-type;-Wno-psabi;-Wno-maybe-uninitialized")
 target_compile_options(${COMPONENT_LIB} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-Wnon-virtual-dtor>)
 
-# link options from connectedhomeip/build/config/compiler
-target_link_options(${COMPONENT_LIB} PRIVATE -Wl,-O2 -Wl,--gc-sections -Os -Werror -Wl,--fatal-warnings -fdiagnostics-color)
+# compile options from connectedhomeip/src/BUILD.gn
+get_filename_component(CHIP_ROOT_ABSOLUTE_PATH ${CHIP_ROOT} ABSOLUTE)
+target_compile_options(${COMPONENT_LIB} PRIVATE "-fmacro-prefix-map=${CHIP_ROOT_ABSOLUTE_PATH}/=")
 
 # compile options from esp-matter/components/
 target_compile_options(${COMPONENT_LIB} PUBLIC "-Wno-error=uninitialized;-Wno-error=maybe-uninitialized;-Wno-missing-field-initializers")
