@@ -11,7 +11,12 @@
 #include "esp_log.h"
 #include "esp_matter.h"
 #include "esp_console.h"
+#include "esp_matter_data_model.h"
 #include "esp_vfs_dev.h"
+#include "app/data-model/List.h"
+#include "clusters/SoilMeasurement/Attributes.h"
+#include "clusters/shared/Enums.h"
+#include "clusters/shared/Structs.h"
 #include "linenoise/linenoise.h"
 #include "argtable3/argtable3.h"
 #include "esp_vfs_fat.h"
@@ -28,6 +33,7 @@
 #include <device_types.h>
 #include <app/clusters/fan-control-server/fan-control-delegate.h>
 #include <app/clusters/fan-control-server/fan-control-server.h>
+#include <clusters/soil_measurement/integration.h>
 #include "electrical_measurement/electrical_measurement.h"
 #include "mock_delegates/mock_chime_delegate.h"
 
@@ -639,6 +645,29 @@ int create(uint8_t device_type_index)
         case ESP_MATTER_ELECTRICAL_UTILITY_METER: {
             esp_matter::endpoint::electrical_utility_meter::config_t electrical_utility_meter_config;
             endpoint = esp_matter::endpoint::electrical_utility_meter::create(node, &electrical_utility_meter_config, ENDPOINT_FLAG_NONE, NULL);
+            break;
+        }
+        case ESP_MATTER_SOIL_SENSOR: {
+            esp_matter::endpoint::soil_sensor::config_t soil_sensor_config;
+            endpoint = esp_matter::endpoint::soil_sensor::create(node, &soil_sensor_config, ENDPOINT_FLAG_NONE, NULL);
+            const Globals::Structs::MeasurementAccuracyRangeStruct::Type accuracyRange = {
+                .rangeMin = 0,
+                .rangeMax = 100,
+                .percentMax = MakeOptional<chip::Percent100ths>(10),
+                .percentMin = NullOptional,
+                .percentTypical = NullOptional,
+                .fixedMax = NullOptional,
+                .fixedMin = NullOptional,
+                .fixedTypical = NullOptional,
+            };
+            const Span<const Globals::Structs::MeasurementAccuracyRangeStruct::Type> accuracyRanges(&accuracyRange, 1);
+            chip::app::Clusters::SoilMeasurement::Attributes::SoilMoistureMeasurementLimits::TypeInfo::Type limits;
+            limits.measurementType = Globals::MeasurementTypeEnum::kSoilMoisture;
+            limits.measured = true,
+            limits.minMeasuredValue = 0;
+            limits.maxMeasuredValue = 100;
+            limits.accuracyRanges = app::DataModel::List<const Globals::Structs::MeasurementAccuracyRangeStruct::Type>(accuracyRanges);
+            chip::app::Clusters::SoilMeasurement::SetSoilMoistureLimits(esp_matter::endpoint::get_id(endpoint), limits);
             break;
         }
         default: {
