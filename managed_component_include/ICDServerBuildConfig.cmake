@@ -39,4 +39,6 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/app/icd/server/ICDServerBuildConfig.h
 #else
 #define ICD_MAX_NOTIFICATION_SUBSCRIBERS 1
 #endif
+
+#define CHIP_CONFIG_ENABLE_ICD_CHECK_IN_ON_REPORT_TIMEOUT 1
 ")
