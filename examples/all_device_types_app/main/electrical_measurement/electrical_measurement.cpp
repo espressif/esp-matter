@@ -11,8 +11,9 @@
 #include <app-common/zap-generated/ids/Attributes.h>
 #include <app-common/zap-generated/ids/Clusters.h>
 #include <app-common/zap-generated/ids/Events.h>
-#include <app/clusters/electrical-energy-measurement-server/electrical-energy-measurement-server.h>
-#include <app/clusters/electrical-power-measurement-server/electrical-power-measurement-server.h>
+#include <app/clusters/electrical-energy-measurement-server/ElectricalEnergyMeasurementCluster.h>
+#include <data_model_provider/clusters/electrical_power_measurement/integration.h>
+#include <data_model_provider/clusters/electrical_energy_measurement/integration.h>
 #include <app/reporting/reporting.h>
 #include <app/data-model/Nullable.h>
 #include <system/SystemClock.h>
@@ -31,13 +32,10 @@ using namespace chip::app::Clusters::ElectricalPowerMeasurement::Structs;
 
 static const char *TAG = "electrical_measurement";
 
-// A pointer to store our attribute access object
-static std::unique_ptr<ElectricalEnergyMeasurementAttrAccess> gEEMAttrAccess;
-
 // Global pointer to our ElectricalPowerMeasurementDelegate
 static std::unique_ptr<ElectricalPowerMeasurementDelegate> gEPMDelegate;
 // Global pointer to our ElectricalPowerMeasurementInstance
-static std::unique_ptr<ElectricalPowerMeasurementInstance> gEPMInstance;
+static std::unique_ptr<ElectricalPowerMeasurement::Instance> gEPMInstance;
 
 CHIP_ERROR PowerTopology::PowerTopologyDelegate::GetAvailableEndpointAtIndex(size_t index, EndpointId & endpointId)
 {
@@ -116,20 +114,10 @@ esp_err_t electrical_measurement_example(uint16_t endpoint_id)
     ESP_LOGI(TAG, "Initializing Electrical Energy Measurement cluster for endpoint %d", endpoint_id);
     
     // First ensure we don't initialize it twice
-    if (gEEMAttrAccess) {
+    if (GetClusterInstance(endpoint_id)) {
         ESP_LOGI(TAG, "Electrical Energy Measurement cluster already initialized");
         return send_energy_measurement_events(endpoint_id);
     }
-
-    // Create the attribute access instance with the desired features
-    gEEMAttrAccess = std::make_unique<ElectricalEnergyMeasurementAttrAccess>(
-        BitMask<ElectricalEnergyMeasurement::Feature, uint32_t>(
-            ElectricalEnergyMeasurement::Feature::kImportedEnergy, 
-            ElectricalEnergyMeasurement::Feature::kExportedEnergy,
-            ElectricalEnergyMeasurement::Feature::kCumulativeEnergy, 
-            ElectricalEnergyMeasurement::Feature::kPeriodicEnergy),
-        BitMask<ElectricalEnergyMeasurement::OptionalAttributes, uint32_t>(
-            ElectricalEnergyMeasurement::OptionalAttributes::kOptionalAttributeCumulativeEnergyReset));
 
     // Create accuracy ranges for energy measurements
     MeasurementAccuracyRangeStruct::Type energyAccuracyRanges[] = {
@@ -159,10 +147,7 @@ esp_err_t electrical_measurement_example(uint16_t endpoint_id)
     };
 
     // Initialize and set values if attribute access was created successfully
-    if (gEEMAttrAccess) {
-        ESP_LOGI(TAG, "Initializing electrical energy measurement attribute access");
-        gEEMAttrAccess->Init();
-
+    if (GetClusterInstance(endpoint_id)) {
         // Set accuracy and reset information
         CHIP_ERROR err = SetMeasurementAccuracy(endpoint_id, accuracy);
         if (err != CHIP_NO_ERROR) {

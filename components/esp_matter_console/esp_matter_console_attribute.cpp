@@ -30,144 +30,114 @@ static esp_err_t console_set_handler(int argc, char **argv)
     switch (val.type) {
     case ESP_MATTER_VAL_TYPE_NULLABLE_BOOLEAN:
         if (strncmp(argv[3], "null", sizeof("null")) == 0) {
-            val = esp_matter_nullable_bool(nullable<bool>());
+            chip::app::NumericAttributeTraits<bool>::SetNull(*(uint8_t *)(&(val.val.b)));
         } else {
-            bool value = atoi(argv[3]);
-            val = esp_matter_nullable_bool(value);
+            val.val.b = (atoi(argv[3]) == 1);
         }
         break;
-    case ESP_MATTER_VAL_TYPE_BOOLEAN: {
-        bool value = atoi(argv[3]);
-        val = esp_matter_bool(value);
+    case ESP_MATTER_VAL_TYPE_BOOLEAN:
+        val.val.b = (atoi(argv[3]) == 1);
         break;
-    }
     case ESP_MATTER_VAL_TYPE_NULLABLE_UINT8:
     case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8:
     case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8:
         if (strncmp(argv[3], "null", sizeof("null")) == 0) {
-            val = esp_matter_nullable_uint8(nullable<uint8_t>());
+            chip::app::NumericAttributeTraits<uint8_t>::SetNull(val.val.u8);
         } else {
-            uint8_t value = atoi(argv[3]);
-            val = esp_matter_nullable_uint8(value);
+            val.val.u8 = strtoul(argv[3], nullptr, 0);
         }
         break;
     case ESP_MATTER_VAL_TYPE_UINT8:
     case ESP_MATTER_VAL_TYPE_ENUM8:
-    case ESP_MATTER_VAL_TYPE_BITMAP8: {
-        uint8_t value = atoi(argv[3]);
-        val = esp_matter_uint8(value);
+    case ESP_MATTER_VAL_TYPE_BITMAP8:
+        val.val.u8 = strtoul(argv[3], nullptr, 0);
         break;
-    }
     case ESP_MATTER_VAL_TYPE_NULLABLE_UINT16:
     case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16:
     case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16:
         if (strncmp(argv[3], "null", sizeof("null")) == 0) {
-            val = esp_matter_nullable_uint16(nullable<uint16_t>());
+            chip::app::NumericAttributeTraits<uint16_t>::SetNull(val.val.u16);
         } else {
-            uint16_t value = atoi(argv[3]);
-            val = esp_matter_nullable_uint16(value);
+            val.val.u16 = strtoul(argv[3], nullptr, 0);
         }
         break;
     case ESP_MATTER_VAL_TYPE_UINT16:
     case ESP_MATTER_VAL_TYPE_ENUM16:
-    case ESP_MATTER_VAL_TYPE_BITMAP16: {
-        uint16_t value = atoi(argv[3]);
-        val = esp_matter_uint16(value);
+    case ESP_MATTER_VAL_TYPE_BITMAP16:
+        val.val.u16 = strtoul(argv[3], nullptr, 0);
         break;
-    }
     case ESP_MATTER_VAL_TYPE_NULLABLE_UINT32:
     case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32:
         if (strncmp(argv[3], "null", sizeof("null")) == 0) {
-            val = esp_matter_nullable_uint32(nullable<uint32_t>());
+            chip::app::NumericAttributeTraits<uint32_t>::SetNull(val.val.u32);
         } else {
-            uint32_t value = strtoull(argv[3], nullptr, 10);
-            val = esp_matter_nullable_uint32(value);
+            val.val.u32 = strtoul(argv[3], nullptr, 0);
         }
         break;
     case ESP_MATTER_VAL_TYPE_UINT32:
-    case ESP_MATTER_VAL_TYPE_BITMAP32: {
-        uint32_t value = strtoull(argv[3], nullptr, 10);
-        val = esp_matter_uint32(value);
+    case ESP_MATTER_VAL_TYPE_BITMAP32:
+        val.val.u32 = strtoul(argv[3], nullptr, 0);
         break;
-    }
     case ESP_MATTER_VAL_TYPE_NULLABLE_UINT64:
         if (strncmp(argv[3], "null", sizeof("null")) == 0) {
-            val = esp_matter_nullable_uint64(nullable<uint64_t>());
+            chip::app::NumericAttributeTraits<uint64_t>::SetNull(val.val.u64);
         } else {
-            uint64_t value = strtoull(argv[3], nullptr, 10);
-            val = esp_matter_nullable_uint64(value);
+            val.val.u64 = strtoull(argv[3], nullptr, 0);
         }
         break;
-    case ESP_MATTER_VAL_TYPE_UINT64: {
-        uint64_t value = strtoull(argv[3], nullptr, 10);
-        val = esp_matter_uint64(value);
+    case ESP_MATTER_VAL_TYPE_UINT64:
+        val.val.u64 = strtoull(argv[3], nullptr, 0);
         break;
-    }
     case ESP_MATTER_VAL_TYPE_NULLABLE_INT8:
         if (strncmp(argv[3], "null", sizeof("null")) == 0) {
-            val = esp_matter_nullable_int8(nullable<int8_t>());
+            chip::app::NumericAttributeTraits<int8_t>::SetNull(val.val.i8);
         } else {
-            int8_t value = atoi(argv[3]);
-            val = esp_matter_nullable_int8(value);
+            val.val.i8 = strtol(argv[3], nullptr, 0);
         }
         break;
-    case ESP_MATTER_VAL_TYPE_INT8: {
-        int8_t value = atoi(argv[3]);
-        val = esp_matter_int8(value);
+    case ESP_MATTER_VAL_TYPE_INT8:
+        val.val.i8 = strtol(argv[3], nullptr, 0);
         break;
-    }
     case ESP_MATTER_VAL_TYPE_NULLABLE_INT16:
         if (strncmp(argv[3], "null", sizeof("null")) == 0) {
-            val = esp_matter_nullable_int16(nullable<int16_t>());
+            chip::app::NumericAttributeTraits<int16_t>::SetNull(val.val.i16);
         } else {
-            int16_t value = atoi(argv[3]);
-            val = esp_matter_nullable_int16(value);
+            val.val.i16 = strtol(argv[3], nullptr, 0);
         }
         break;
-    case ESP_MATTER_VAL_TYPE_INT16: {
-        int16_t value = atoi(argv[3]);
-        val = esp_matter_int16(value);
+    case ESP_MATTER_VAL_TYPE_INT16:
+        val.val.i16 = strtol(argv[3], nullptr, 0);
         break;
-    }
     case ESP_MATTER_VAL_TYPE_NULLABLE_INT32:
         if (strncmp(argv[3], "null", sizeof("null")) == 0) {
-            val = esp_matter_nullable_int32(nullable<int32_t>());
+            chip::app::NumericAttributeTraits<int32_t>::SetNull(val.val.i32);
         } else {
-            int32_t value = atoi(argv[3]);
-            val = esp_matter_nullable_int32(value);
+            val.val.i32 = strtol(argv[3], nullptr, 0);
         }
         break;
-    case ESP_MATTER_VAL_TYPE_INT32: {
-        int32_t value = atoi(argv[3]);
-        val = esp_matter_int32(value);
+    case ESP_MATTER_VAL_TYPE_INT32:
+        val.val.i32 = strtol(argv[3], nullptr, 0);
         break;
-    }
     case ESP_MATTER_VAL_TYPE_NULLABLE_INT64:
         if (strncmp(argv[3], "null", sizeof("null")) == 0) {
-            val = esp_matter_nullable_int64(nullable<int64_t>());
+            chip::app::NumericAttributeTraits<int64_t>::SetNull(val.val.i64);
         } else {
-            int64_t value = strtoll(argv[3], nullptr, 10);
-            val = esp_matter_nullable_int64(value);
+            val.val.i64 = strtoll(argv[3], nullptr, 0);
         }
         break;
-    case ESP_MATTER_VAL_TYPE_INT64: {
-        int64_t value = strtoll(argv[3], nullptr, 10);
-        val = esp_matter_int64(value);
+    case ESP_MATTER_VAL_TYPE_INT64:
+        val.val.i64 = strtoll(argv[3], nullptr, 0);
         break;
-    }
     case ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT:
         if (strncmp(argv[3], "null", sizeof("null")) == 0) {
-            val = esp_matter_nullable_float(nullable<float>());
+            chip::app::NumericAttributeTraits<float>::SetNull(val.val.f);
         } else {
-            float value = (float)atof(argv[3]);
-            val = esp_matter_nullable_float(value);
+            val.val.f = (float)atof(argv[3]);
         }
         break;
-    case ESP_MATTER_VAL_TYPE_FLOAT: {
-        float value = (float)atof(argv[3]);
-        val = esp_matter_float(value);
+    case ESP_MATTER_VAL_TYPE_FLOAT:
+        val.val.f = (float)atof(argv[3]);
         break;
-    }
     case ESP_MATTER_VAL_TYPE_CHAR_STRING: {
         char *value = argv[3];
         val = esp_matter_char_str(value, strlen(value));
@@ -245,3 +215,5 @@ esp_err_t attribute_register_commands()
 
 } // namespace console
 } // namespace esp_matter
+
+

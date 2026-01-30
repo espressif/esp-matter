@@ -17,6 +17,7 @@
 #include <esp_matter_attribute_utils.h>
 #include <app/data-model-provider/Provider.h>
 #include "app/ConcreteCommandPath.h"
+#include "app/server-cluster/ServerClusterInterface.h"
 #include "app/util/af-types.h"
 #include "lib/core/DataModelTypes.h"
 #include "lib/core/TLVReader.h"
@@ -550,7 +551,7 @@ typedef void (*initialization_callback_t)(uint16_t endpoint_id);
  *
  * This callback will be called when the data model is shutdown.
  */
-typedef void (*shutdown_callback_t)(uint16_t endpoint_id);
+typedef void (*shutdown_callback_t)(uint16_t endpoint_id, chip::app::ClusterShutdownType shutdownType);
 
 /** Create cluster
  *
@@ -884,11 +885,37 @@ attribute_t *get_next(attribute_t *attribute);
  */
 uint32_t get_id(attribute_t *attribute);
 
-/** Set attribute val
+/** Set attribute value
  *
- * Set/Update the value of the attribute (has `ATTRIBUTE_FLAG_EXTERNAL_STORAGE` flag) in the database.
+ * This API is a unified API that works across all storage types.
+ * It supports writing attributes whose value storage is managed by esp matter data model
+ * as well as writable attributes that are not managed by esp matter data model.
+ * Right now this only works for primitive types and strings.
+ *
+ * TODO: support writing complex types (arrays, structs, lists)
+ * TODO: support remaining attributes by using cluster-specific setter APIs
+ *
+ * This API uses the DataModelProvider::WriteAttribute API to write the value of the attribute,
+ * tries to write value to the supported storages.
+ *
+ * @note: For unsupported cases, this API will return ESP_ERR_NOT_SUPPORTED, please use
+ *        cluster-specific setter APIs for complex types (arrays, structs, lists) and remaining attributes.
  *
  * @note: Once `esp_matter::start()` is done, `attribute::update()` should be used to update the attribute value.
+ *
+ * @param[in] endpoint_id Endpoint id.
+ * @param[in] cluster_id Cluster id.
+ * @param[in] attribute_id Attribute id.
+ * @param[in] val Pointer to `esp_matter_attr_val_t` containing the new value.
+ * @param[in] call_callbacks Whether to call attribute change pre/post callbacks.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t set_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
+                    esp_matter_attr_val_t *val, bool call_callbacks = true);
+
+/** Set attribute val, similar to set_val but with attribute handle
  *
  * @param[in] attribute Attribute handle.
  * @param[in] val Pointer to `esp_matter_attr_val_t`. Use appropriate elements as per the value type.
@@ -900,9 +927,28 @@ uint32_t get_id(attribute_t *attribute);
  */
 esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_callbacks = true);
 
-/** Get attribute val
+/** Get attribute value
  *
- * Get the value of the attribute (has `ATTRIBUTE_FLAG_EXTERNAL_STORAGE` flag) from the database.
+ * Get the value of the attribute from the database.
+ * Right now, only simple i.e. primitive types are supported.
+ * Complex types like arrays, structs, etc. are not supported yet.
+ * Please use the cluster specific get value API for complex types.
+ * TODO: Support complex types.
+ *
+ * This API uses the DataModelProvider::ReadAttribute API to get the value of the attribute,
+ * tries to read value from the supported storages, and then populates the value in esp_matter_attr_val_t.
+ *
+ * @param[in] endpoint_id Endpoint id.
+ * @param[in] cluster_id Cluster id.
+ * @param[in] attribute_id Attribute id.
+ * @param[out] val Pointer to `esp_matter_attr_val_t`. Use appropriate elements as per the value type.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t get_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val);
+
+/** Get attribute value, similar to get_val but with attribute handle
  *
  * @param[in] attribute Attribute handle.
  * @param[out] val Pointer to `esp_matter_attr_val_t`. Use appropriate elements as per the value type.
@@ -911,6 +957,26 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_
  * @return error in case of failure.
  */
 esp_err_t get_val(attribute_t *attribute, esp_matter_attr_val_t *val);
+
+/** Get the attribute value type for the given attribute handle.
+ *
+ * @param[in] attribute Attribute handle.
+ *
+ * @return Attribute value type on success.
+ * @return ESP_MATTER_VAL_TYPE_INVALID, i.e. 0, in case of failure.
+ */
+esp_matter_val_type_t get_val_type(attribute_t *attribute);
+
+/** Get the attribute value type for the given endpoint, cluster and attribute id.
+ *
+ * @param[in] endpoint_id Endpoint id.
+ * @param[in] cluster_id Cluster id.
+ * @param[in] attribute_id Attribute id.
+ *
+ * @return Attribute value type on success.
+ * @return ESP_MATTER_VAL_TYPE_INVALID, i.e. 0, in case of failure.
+ */
+esp_matter_val_type_t get_val_type(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id);
 
 /** Add attribute bounds
  *

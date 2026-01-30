@@ -89,6 +89,12 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 #endif // CHIP_CONFIG_ENABLE_ICD_LIT
     }
 #endif // CHIP_CONFIG_ENABLE_ICD_SERVER
+#if defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
+    wifi_network_diagnostics::create(endpoint, nullptr, CLUSTER_FLAG_SERVER);
+#endif
+#if defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
+    thread_network_diagnostics::create(endpoint, nullptr, CLUSTER_FLAG_SERVER);
+#endif
     return ESP_OK;
 }
 } /* root_node */
@@ -2009,6 +2015,75 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /* heat_pump */
 
+namespace camera {
+
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_CAMERA_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_CAMERA_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = esp_matter::endpoint::add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+    cluster_t *camera_av_stream_management_cluster = cluster::camera_av_stream_management::create(
+        endpoint,
+        &(config->camera_av_stream_management),
+        CLUSTER_FLAG_SERVER
+    );
+    camera_av_stream_management::feature::video::add(camera_av_stream_management_cluster);
+    camera_av_stream_management::feature::audio::add(camera_av_stream_management_cluster);
+    camera_av_stream_management::feature::snapshot::add(camera_av_stream_management_cluster);
+    cluster::webrtc_transport_provider::create(
+        endpoint,
+        &(config->webrtc_transport_provider),
+        CLUSTER_FLAG_SERVER
+    );
+    cluster::webrtc_transport_requestor::create(
+        endpoint,
+        &(config->webrtc_transport_requestor),
+        CLUSTER_FLAG_CLIENT
+    );
+    return ESP_OK;
+}
+
+} /* camera */
+
+namespace chime {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_CHIME_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_CHIME_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+    VerifyOrReturnError(cluster::chime::create(endpoint, &(config->chime), CLUSTER_FLAG_SERVER), ESP_ERR_NO_MEM);
+    return ESP_OK;
+}
+} /* chime */
+
 namespace thermostat_controller {
 uint32_t get_device_type_id()
 {
@@ -2040,6 +2115,192 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     return ESP_OK;
 }
 } /* thermostat_controller */
+
+namespace closure_controller {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_CLOSURE_CONTROLLER_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_CLOSURE_CONTROLLER_DEVICE_TYPE_VERSION;
+}
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t * endpoint = common::create<config_t>(node, config, flags, priv_data, add);
+    VerifyOrReturnError(endpoint != nullptr, NULL);
+
+    cluster_t *binding_cluster = binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
+    VerifyOrReturnValue(binding_cluster != nullptr, NULL, ESP_LOGE(TAG, "Failed to create binding cluster"));
+
+    return endpoint;
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+    cluster::closure_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
+
+    return ESP_OK;
+}
+} /* closure_controller */
+
+namespace closure {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_CLOSURE_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_CLOSURE_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster::closure_control::create(endpoint, &(config->closure_control), CLUSTER_FLAG_SERVER);
+
+    return ESP_OK;
+}
+} /* closure */
+
+namespace closure_panel {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_CLOSURE_PANEL_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_CLOSURE_PANEL_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+    cluster::closure_dimension::create(endpoint, &(config->closure_dimension), CLUSTER_FLAG_SERVER);
+
+    return ESP_OK;
+}
+} /* closure_panel */
+
+namespace electrical_utility_meter {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_ELECTRICAL_UTILITY_METER_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_ELECTRICAL_UTILITY_METER_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+    cluster::meter_identification::create(endpoint, &(config->meter_identification), CLUSTER_FLAG_SERVER);
+    return ESP_OK;
+}
+} /* electrical_utility_meter */
+
+namespace electrical_energy_tariff {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_ELECTRICAL_ENERGY_TARIFF_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_ELECTRICAL_ENERGY_TARIFF_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+    return ESP_OK;
+}
+} /* electrical_energy_tariff */
+
+namespace electrical_meter {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_ELECTRICAL_METER_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_ELECTRICAL_METER_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+    cluster::electrical_power_measurement::create(endpoint, &(config->electrical_power_measurement), CLUSTER_FLAG_SERVER);
+    cluster::electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER);
+    return ESP_OK;
+}
+} /* electrical_meter */
+
+namespace soil_sensor {
+
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_SOIL_SENSOR_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_SOIL_SENSOR_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster::soil_measurement::create(endpoint, &(config->soil_measurement), CLUSTER_FLAG_SERVER);
+    return ESP_OK;
+}
+} /* soil_sensor */
 } /* endpoint */
 
 namespace node {

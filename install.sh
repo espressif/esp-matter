@@ -9,6 +9,10 @@ print_help() {
     echo "  --no-bootstrap          Disable sourcing connectedhomeip's scripts/bootstrap.sh,"
     echo "                          This can be helpful if there's already present connectedhomeip setup"
     echo "  --build-python          Build Python environment for running Python test scripts"
+    echo "  --ninja-jobs            Number of jobs to use for ninja (default: $(get_nproc))"
+    echo "                          This is used to build the host tools."
+    echo "                          This can be helpful in case of slow build machines/docker containers,"
+    echo "                          or to speed up the build process on faster machines."
     echo "  --help                  Display this help message"
 }
 
@@ -17,10 +21,21 @@ echo_log() {
   echo ""
 }
 
+# Get the number of available processing units to optimize build performance
+# It tries nproc -> getconf -> sysctl and defaults to 1 if all fail assuming
+# a single processing unit is available.
+get_nproc() {
+  nproc 2>/dev/null \
+  || getconf _NPROCESSORS_ONLN 2>/dev/null \
+  || sysctl -n hw.ncpu 2>/dev/null \
+  || echo 1
+}
+
 # Parse command-line arguments
 NO_HOST_TOOL=false
 NO_BOOTSTRAP=false
 BUILD_PYTHON=false
+NINJA_JOBS=$(get_nproc)
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
@@ -32,6 +47,10 @@ while [[ "$#" -gt 0 ]]; do
             ;;
         --build-python)
             BUILD_PYTHON=true
+            ;;
+        --ninja-jobs)
+            NINJA_JOBS=${2:-$(get_nproc)}
+            shift
             ;;
         --help)
             print_help
@@ -54,7 +73,7 @@ export ZAP_INSTALL_PATH=${MATTER_PATH}/.environment/cipd/packages/zap
 if [ $NO_BOOTSTRAP = false ]; then
   echo_log "Running Matter Setup"
   cd ${MATTER_PATH}
-  source ${MATTER_PATH}/scripts/bootstrap.sh
+  source ${MATTER_PATH}/scripts/bootstrap.sh -p all,esp32
   cd ${ESP_MATTER_PATH}
 else
   echo_log "Skipping Matter Setup"
@@ -63,7 +82,7 @@ fi
 if [ $NO_HOST_TOOL = false ]; then
   echo_log "Building host tools"
   gn --root="${MATTER_PATH}" gen ${MATTER_PATH}/out/host --args='chip_inet_config_enable_ipv4=false'
-  ninja -C ${MATTER_PATH}/out/host chip-cert chip-tool
+  ninja -j $NINJA_JOBS -C ${MATTER_PATH}/out/host chip-cert chip-tool
   echo_log "Host tools built at: ${MATTER_PATH}/out/host"
 else
   echo_log "Skip building host tools"
@@ -84,7 +103,6 @@ else
   echo_log "Installing requirements from requirements.txt"
   python3 -m pip install -r ${ESP_MATTER_PATH}/requirements.txt > /dev/null
 fi
-
 
 if [ $BUILD_PYTHON = true ]; then
   echo_log "Building Python testing environment"

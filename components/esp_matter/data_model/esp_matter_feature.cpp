@@ -17,6 +17,7 @@
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_feature.h>
+#include <esp_matter_data_model_priv.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
 
@@ -38,11 +39,11 @@ static esp_err_t update_feature_map(cluster_t *cluster, uint32_t value)
 
     /* Update the value if the attribute already exists */
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-    attribute::get_val(attribute, &val);
+    VerifyOrReturnError(attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
     val.val.u32 |= value;
     /* Here we can't call attribute::update() since the chip stack would not have started yet, since we are
-    still creating the data model. So, we are directly using attribute::set_val(). */
-    return attribute::set_val(attribute, &val);
+    still creating the data model. So, we are directly using attribute::set_val_internal(). */
+    return attribute::set_val_internal(attribute, &val, false);
 }
 
 static uint32_t get_feature_map_value(cluster_t *cluster)
@@ -52,7 +53,7 @@ static uint32_t get_feature_map_value(cluster_t *cluster)
 
     VerifyOrReturnValue(attribute, 0, ESP_LOGE(TAG, "Feature map attribute cannot be null"));
 
-    attribute::get_val(attribute, &val);
+    VerifyOrReturnValue(attribute::get_val_internal(attribute, &val) == ESP_OK, 0);
     return val.val.u32;
 }
 
@@ -429,10 +430,31 @@ esp_err_t add(cluster_t *cluster)
 
     /* Attributes not managed internally */
     attribute::create_operating_mode(cluster, 0);
+
+    /* commands */
+    command::create_stay_active_request(cluster);
+    command::create_stay_active_response(cluster);
     return ESP_OK;
 }
 
 } /* long_idle_time_support */
+
+namespace dynamic_sit_lit_support {
+
+uint32_t get_id()
+{
+    return (uint32_t)IcdManagement::Feature::kDynamicSitLitSupport;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* dynamic_sit_lit_support */
 } /* feature */
 } /* icd_management */
 
@@ -494,6 +516,15 @@ esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
+
+    command_t *on_command = esp_matter::command::get(cluster, OnOff::Commands::On::Id, COMMAND_FLAG_ACCEPTED);
+    if (on_command) {
+        esp_matter::command::destroy(cluster, on_command);
+    }
+    command_t *toggle_command = esp_matter::command::get(cluster, OnOff::Commands::Toggle::Id, COMMAND_FLAG_ACCEPTED);
+    if (toggle_command) {
+        esp_matter::command::destroy(cluster, toggle_command);
+    }
 
     return ESP_OK;
 }
@@ -583,11 +614,11 @@ static esp_err_t update_color_capability(cluster_t *cluster, uint16_t value)
 
     /* Update the value if the attribute already exists */
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-    esp_matter::attribute::get_val(attribute, &val);
+    VerifyOrReturnError(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
     val.val.u16 |= value;
     /* Here we can't call attribute::update() since the chip stack would not have started yet, since we are
-    still creating the data model. So, we are directly using attribute::set_val(). */
-    return esp_matter::attribute::set_val(attribute, &val);
+    still creating the data model. So, we are directly using attribute::set_val_internal(). */
+    return esp_matter::attribute::set_val_internal(attribute, &val, false);
 }
 
 namespace hue_saturation {
@@ -803,73 +834,15 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         uint8_t set_third_bit = 1 << 3;
         attribute_t *attribute = esp_matter::attribute::get(cluster, WindowCovering::Attributes::ConfigStatus::Id);
         esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-        esp_matter::attribute::get_val(attribute, &val);
+        VerifyOrReturnError(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
         val.val.u8 = val.val.u8 | set_third_bit;
-        esp_matter::attribute::set_val(attribute, &val);
-    } else {
-        ESP_LOGE(TAG, "Cluster shall support Lift feature");
-        return ESP_ERR_NOT_SUPPORTED;
+        return esp_matter::attribute::set_val_internal(attribute, &val, false);
     }
 
-    return ESP_OK;
+    ESP_LOGE(TAG, "Cluster shall support Lift feature");
+    return ESP_ERR_NOT_SUPPORTED;
 }
 } /* position_aware_lift */
-
-namespace absolute_position {
-
-uint32_t get_id()
-{
-    return (uint32_t)WindowCovering::Feature::kAbsolutePosition;
-}
-
-esp_err_t add(cluster_t *cluster, config_t *config)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    uint32_t abs_and_pa_lf_and_lf_feature_map = get_id() | feature::position_aware_lift::get_id() | feature::lift::get_id();
-    uint32_t abs_and_pa_tl_and_tl_feature_map = get_id() | feature::position_aware_tilt::get_id() | feature::tilt::get_id();
-    uint32_t abs_and_lift_feature_map = get_id() | feature::lift::get_id();
-    uint32_t abs_and_tilt_feature_map = get_id() | feature::tilt::get_id();
-    if (
-        (get_feature_map_value(cluster) & abs_and_pa_lf_and_lf_feature_map) != abs_and_pa_lf_and_lf_feature_map
-        && (get_feature_map_value(cluster) & abs_and_pa_tl_and_tl_feature_map) != abs_and_pa_tl_and_tl_feature_map
-        && (get_feature_map_value(cluster) & abs_and_lift_feature_map) != abs_and_lift_feature_map
-        && (get_feature_map_value(cluster) & abs_and_tilt_feature_map) != abs_and_tilt_feature_map
-    ) {
-        ESP_LOGE(TAG, "Cluster shall support Lift (and optionally Position_Aware_Lift) and/or Tilt (and optionally Position_Aware_Tilt) features");
-        return ESP_ERR_NOT_SUPPORTED;
-    }
-    if ((get_feature_map_value(cluster) & abs_and_pa_lf_and_lf_feature_map) == abs_and_pa_lf_and_lf_feature_map) {
-        attribute::create_installed_open_limit_lift(cluster, config->installed_open_limit_lift);
-        attribute::create_installed_closed_limit_lift(cluster, config->installed_closed_limit_lift);
-    } else {
-        ESP_LOGW(TAG, "Lift related attributes were not created because cluster does not support Position_Aware_Lift feature");
-    }
-
-    if ((get_feature_map_value(cluster) & abs_and_pa_tl_and_tl_feature_map) == abs_and_pa_tl_and_tl_feature_map) {
-        attribute::create_installed_open_limit_tilt(cluster, config->installed_open_limit_tilt);
-        attribute::create_installed_closed_limit_tilt(cluster, config->installed_closed_limit_tilt);
-    } else {
-        ESP_LOGW(TAG, "Tilt related attributes were not created because cluster does not support Position_Aware_Tilt feature");
-    }
-
-    if ((get_feature_map_value(cluster) & abs_and_lift_feature_map) == abs_and_lift_feature_map) {
-        command::create_go_to_lift_value(cluster);
-    } else {
-        ESP_LOGW(TAG, "Lift commands were not created because cluster does not support Lift feature");
-    }
-
-    if ((get_feature_map_value(cluster) & abs_and_tilt_feature_map) == abs_and_tilt_feature_map) {
-        command::create_go_to_tilt_value(cluster);
-    } else {
-        ESP_LOGW(TAG, "Tilt commands were not created because cluster does not support Tilt feature");
-    }
-
-    return ESP_OK;
-}
-
-} /* absolute_position */
 
 namespace position_aware_tilt {
 
@@ -895,15 +868,13 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         uint8_t set_fourth_bit = 1 << 4;
         attribute_t *attribute = esp_matter::attribute::get(cluster, WindowCovering::Attributes::ConfigStatus::Id);
         esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-        esp_matter::attribute::get_val(attribute, &val);
+        VerifyOrReturnError(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
         val.val.u8 = val.val.u8 | set_fourth_bit;
-        esp_matter::attribute::set_val(attribute, &val);
-    } else {
-        ESP_LOGE(TAG, "Cluster shall support Tilt feature");
-        return ESP_ERR_NOT_SUPPORTED;
+        return esp_matter::attribute::set_val_internal(attribute, &val, false);
     }
 
-    return ESP_OK;
+    ESP_LOGE(TAG, "Cluster shall support Tilt feature");
+    return ESP_ERR_NOT_SUPPORTED;
 }
 
 } /* position_aware_tilt */
@@ -971,7 +942,7 @@ esp_err_t add(cluster_t *cluster)
 namespace thread_network_diagnostics {
 namespace feature {
 
-namespace packets_counts {
+namespace packet_counts {
 
 uint32_t get_id()
 {
@@ -985,7 +956,7 @@ esp_err_t add(cluster_t *cluster)
     return ESP_OK;
 }
 
-} /* packets_counts */
+} /* packet_counts */
 
 namespace error_counts {
 
@@ -1081,7 +1052,7 @@ esp_err_t add(cluster_t *cluster)
     update_feature_map(cluster, get_id());
 
     /* Attributes managed internally */
-    attribute::create_tx_error_count(cluster, 0);
+    attribute::create_tx_err_count(cluster, 0);
     attribute::create_collision_count(cluster, 0);
     attribute::create_overrun_count(cluster, 0);
 
@@ -1092,6 +1063,7 @@ esp_err_t add(cluster_t *cluster)
 
 } /* feature */
 } /* ethernet_network_diagnostics */
+
 
 namespace air_quality {
 namespace feature {
@@ -1428,7 +1400,6 @@ esp_err_t add(cluster_t *cluster)
     attribute::create_smoke_state(cluster, 0);
 
     event::create_smoke_alarm(cluster);
-    event::create_interconnect_smoke_alarm(cluster);
 
     return ESP_OK;
 }
@@ -1450,7 +1421,6 @@ esp_err_t add(cluster_t *cluster)
     attribute::create_co_state(cluster, 0);
 
     event::create_co_alarm(cluster);
-    event::create_interconnect_co_alarm(cluster);
 
     return ESP_OK;
 }
@@ -1606,7 +1576,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     }
     update_feature_map(cluster, get_id());
 
-    attribute::create_schedule_type(cluster, NULL, 0, 0);
+    attribute::create_schedule_types(cluster, NULL, 0, 0);
     attribute::create_number_of_schedules(cluster, config->number_of_schedules);
     attribute::create_number_of_schedule_transitions(cluster, config->number_of_schedule_transitions);
     attribute::create_number_of_schedule_transition_per_day(cluster, config->number_of_schedule_transition_per_day);
@@ -1881,10 +1851,10 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     update_feature_map(cluster, get_id());
 
-    attribute::create_pressure_scaled_value(cluster, config->pressure_scaled_value);
-    attribute::create_pressure_min_scaled_value(cluster, config->pressure_min_scaled_value);
-    attribute::create_pressure_max_scaled_value(cluster, config->pressure_max_scaled_value);
-    attribute::create_pressure_scale(cluster, config->pressure_scale);
+    attribute::create_scaled_value(cluster, config->scaled_value);
+    attribute::create_min_scaled_value(cluster, config->min_scaled_value);
+    attribute::create_max_scaled_value(cluster, config->max_scaled_value);
+    attribute::create_scale(cluster, config->scale);
 
     return ESP_OK;
 }
@@ -1894,6 +1864,27 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* pressure_measurement */
 
+namespace general_diagnostics {
+namespace feature {
+
+namespace data_model_test {
+
+uint32_t get_id()
+{
+    return (uint32_t)GeneralDiagnostics::Feature::kDataModelTest;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    update_feature_map(cluster, get_id());
+    command::create_payload_test_request(cluster);
+    command::create_payload_test_response(cluster);
+    return ESP_OK;
+}
+} /* data_model_test */
+} /* feature */
+} /* general diagnostics */
 namespace software_diagnostics {
 namespace feature {
 
@@ -2197,7 +2188,9 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     attribute::create_alarms_active(cluster, config->alarms_active);
     attribute::create_alarms_supported(cluster, config->alarms_supported);
 
-    command::create_enable_disable_alarm(cluster);;
+    command::create_enable_disable_alarm(cluster);
+
+    event::create_alarms_state_changed(cluster);
     return ESP_OK;
 }
 } /* visual */
@@ -2217,7 +2210,9 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     attribute::create_alarms_active(cluster, config->alarms_active);
     attribute::create_alarms_supported(cluster, config->alarms_supported);
 
-    command::create_enable_disable_alarm(cluster);;
+    command::create_enable_disable_alarm(cluster);
+
+    event::create_alarms_state_changed(cluster);
     return ESP_OK;
 }
 } /* audible */
@@ -3832,6 +3827,7 @@ esp_err_t add(cluster_t *cluster)
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
+
     return ESP_OK;
 }
 } /* automatic */
@@ -3967,12 +3963,906 @@ esp_err_t add(cluster_t *cluster)
     // Commands
     command::create_set_trusted_time_source(cluster);
 
+    // Events
+    event::create_missing_trusted_time_source(cluster);
+
     return ESP_OK;
 }
 } /* time_sync_client */
 
 } /* feature */
 } /* time_synchronization */
+
+namespace camera_av_stream_management {
+
+namespace feature {
+namespace audio {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kAudio);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+
+    attribute::create_microphone_capabilities(cluster, NULL, 0, 0);
+    attribute::create_allocated_audio_streams(cluster, NULL, 0, 0);
+    attribute::create_microphone_muted(cluster, 0);
+    attribute::create_microphone_volume_level(cluster, 0);
+    attribute::create_microphone_max_level(cluster, 0);
+    attribute::create_microphone_min_level(cluster, 0);
+
+    command::create_audio_stream_allocate(cluster);
+    command::create_audio_stream_allocate_response(cluster);
+    command::create_audio_stream_deallocate(cluster);
+
+    return ESP_OK;
+}
+
+} /* audio */
+
+namespace video {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kVideo);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+    attribute::create_max_concurrent_encoders(cluster, 0);
+    attribute::create_max_encoded_pixel_rate(cluster, 0);
+    attribute::create_video_sensor_params(cluster, NULL, 0, 0);
+    attribute::create_min_viewport_resolution(cluster, NULL, 0, 0);
+    attribute::create_rate_distortion_trade_off_points(cluster, NULL, 0, 0);
+    attribute::create_current_frame_rate(cluster, 0);
+    attribute::create_allocated_video_streams(cluster, NULL, 0, 0);
+
+    attribute::create_viewport(cluster, NULL, 0, 0);
+
+    command::create_video_stream_allocate(cluster);
+    command::create_video_stream_allocate_response(cluster);
+    command::create_video_stream_deallocate(cluster);
+
+    return ESP_OK;
+}
+
+} /* video */
+
+namespace snapshot {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kSnapshot);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+
+    attribute::create_snapshot_capabilities(cluster, NULL, 0, 0);
+    attribute::create_allocated_snapshot_streams(cluster, NULL, 0, 0);
+    attribute::create_local_snapshot_recording_enabled(cluster, 0);
+
+    command::create_snapshot_stream_allocate(cluster);
+    command::create_snapshot_stream_allocate_response(cluster);
+    command::create_snapshot_stream_deallocate(cluster);
+    command::create_capture_snapshot(cluster);
+    command::create_capture_snapshot_response(cluster);
+
+    return ESP_OK;
+}
+
+} /* snapshot */
+
+namespace privacy {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kPrivacy);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+    attribute::create_soft_recording_privacy_mode_enabled(cluster, 0);
+    attribute::create_soft_livestream_privacy_mode_enabled(cluster, 0);
+
+
+    return ESP_OK;
+}
+
+} /* privacy */
+
+namespace speaker {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kSpeaker);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+    attribute::create_speaker_capabilities(cluster, NULL, 0, 0);
+    attribute::create_two_way_talk_support(cluster, 0);
+    attribute::create_speaker_muted(cluster, 0);
+    attribute::create_speaker_volume_level(cluster, 0);
+    attribute::create_speaker_max_level(cluster, 0);
+    attribute::create_speaker_min_level(cluster, 0);
+
+
+    return ESP_OK;
+}
+
+} /* speaker */
+
+namespace image_control {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kImageControl);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* image_control */
+
+namespace watermark {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kWatermark);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+    command::create_video_stream_modify(cluster);
+
+    return ESP_OK;
+}
+
+} /* watermark */
+
+namespace on_screen_display {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kOnScreenDisplay);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+    command::create_video_stream_modify(cluster);
+    return ESP_OK;
+}
+} /* on_screen_display */
+
+namespace local_storage {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kLocalStorage);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+    attribute::create_local_video_recording_enabled(cluster, 0);
+    attribute::create_local_snapshot_recording_enabled(cluster, 0);
+
+
+    return ESP_OK;
+}
+
+} /* local_storage */
+
+namespace high_dynamic_range {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kHighDynamicRange);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+    attribute::create_hdr_mode_enabled(cluster, 0);
+
+    return ESP_OK;
+}
+} /* high_dynamic_range */
+
+namespace night_vision {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvStreamManagement::Feature::kNightVision);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    esp_matter::cluster::update_feature_map(cluster, get_id());
+    attribute::create_night_vision_uses_infrared(cluster, 0);
+    attribute::create_night_vision(cluster, 0);
+
+    return ESP_OK;
+}
+
+} /* night_vision */
+
+} /* feature */
+} /* Camera AV Stream Management*/
+
+namespace webrtc_transport_provider {
+}/*webrtc_transport_provider*/
+
+namespace webrtc_transport_requestor {
+}/*webrtc_transport_requestor*/
+
+
+namespace closure_control {
+namespace feature {
+namespace positioning {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureControl::Feature::kPositioning);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* positioning */
+
+namespace motion_latching {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureControl::Feature::kMotionLatching);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    /* Attributes managed internally */
+    attribute::create_latch_control_modes(cluster, 0);
+    return ESP_OK;
+}
+
+} /* motion_latching */
+
+namespace instantaneous {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureControl::Feature::kInstantaneous);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    command_t *stop_command = esp_matter::command::get(cluster, ClosureControl::Commands::Stop::Id, COMMAND_FLAG_ACCEPTED);
+    if (stop_command) {
+        esp_matter::command::destroy(cluster, stop_command);
+    }
+    event_t *movement_completed = esp_matter::event::get(cluster, ClosureControl::Events::MovementCompleted::Id);
+    if (movement_completed) {
+        esp_matter::event::destroy(cluster, movement_completed);
+    }
+    return ESP_OK;
+}
+
+} /* instantaneous */
+
+namespace speed {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureControl::Feature::kSpeed);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* speed */
+
+namespace ventilation {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureControl::Feature::kVentilation);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* ventilation */
+
+namespace pedestrian {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureControl::Feature::kPedestrian);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* pedestrian */
+
+namespace calibration {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureControl::Feature::kCalibration);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    command::create_calibrate(cluster);
+    return ESP_OK;
+}
+
+} /* calibration */
+
+namespace protection {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureControl::Feature::kProtection);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* protection */
+
+namespace manually_operable {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureControl::Feature::kManuallyOperable);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Events
+    event::create_engage_state_changed(cluster);
+    return ESP_OK;
+}
+
+} /* manually_operable */
+
+} /* feature */
+} /* closure_control */
+
+namespace closure_dimension {
+namespace feature {
+namespace positioning {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureDimension::Feature::kPositioning);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_resolution(cluster, 0);
+    attribute::create_step_value(cluster, 0);
+    // Commands
+    command::create_step(cluster);
+    return ESP_OK;
+}
+
+} /* positioning */
+
+namespace motion_latching {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureDimension::Feature::kMotionLatching);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_latch_control_modes(cluster, 0);
+    return ESP_OK;
+}
+
+} /* motion_latching */
+
+namespace unit {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureDimension::Feature::kUnit);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_unit(cluster, 0);
+    attribute::create_unit_range(cluster, NULL, 0, 0);
+    return ESP_OK;
+}
+
+} /* unit */
+
+namespace limitation {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureDimension::Feature::kLimitation);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_limit_range(cluster, NULL, 0, 0);
+    return ESP_OK;
+}
+
+} /* limitation */
+
+namespace speed {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureDimension::Feature::kSpeed);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* speed */
+
+namespace translation {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureDimension::Feature::kTranslation);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_translation_direction(cluster, 0);
+    return ESP_OK;
+}
+
+} /* translation */
+
+namespace rotation {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureDimension::Feature::kRotation);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_rotation_axis(cluster, 0);
+    attribute::create_overflow(cluster, 0);
+    return ESP_OK;
+}
+
+} /* rotation */
+
+namespace modulation {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ClosureDimension::Feature::kModulation);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_modulation_type(cluster, 0);
+    return ESP_OK;
+}
+
+} /* modulation */
+
+} /* feature */
+} /* closure_dimension */
+
+namespace camera_av_settings_user_level_management {
+namespace feature {
+namespace digital_ptz {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvSettingsUserLevelManagement::Feature::kDigitalPTZ);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_dptz_streams(cluster, NULL, 0, 0);
+    // Commands
+    command::create_dptz_set_viewport(cluster);
+    return ESP_OK;
+}
+
+} /* digital_ptz */
+
+namespace mechanical_pan {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvSettingsUserLevelManagement::Feature::kMechanicalPan);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_mptz_position(cluster, NULL, 0, 0);
+    attribute::create_pan_min(cluster, 0);
+    attribute::create_pan_max(cluster, 0);
+    attribute::create_movement_state(cluster, 0);
+    // Commands
+    command::create_mptz_set_position(cluster);
+    command::create_mptz_relative_move(cluster);
+    return ESP_OK;
+}
+
+} /* mechanical_pan */
+
+namespace mechanical_tilt {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvSettingsUserLevelManagement::Feature::kMechanicalTilt);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_mptz_position(cluster, NULL, 0, 0);
+    attribute::create_tilt_min(cluster, 0);
+    attribute::create_tilt_max(cluster, 0);
+    attribute::create_movement_state(cluster, 0);
+    // Commands
+    command::create_mptz_set_position(cluster);
+    command::create_mptz_relative_move(cluster);
+    return ESP_OK;
+}
+
+} /* mechanical_tilt */
+
+namespace mechanical_zoom {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvSettingsUserLevelManagement::Feature::kMechanicalZoom);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_mptz_position(cluster, NULL, 0, 0);
+    attribute::create_zoom_max(cluster, 0);
+    attribute::create_movement_state(cluster, 0);
+    // Commands
+    command::create_mptz_set_position(cluster);
+    command::create_mptz_relative_move(cluster);
+    return ESP_OK;
+}
+
+} /* mechanical_zoom */
+
+namespace mechanical_presets {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CameraAvSettingsUserLevelManagement::Feature::kMechanicalPresets);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_max_presets(cluster, 0);
+    attribute::create_mptz_presets(cluster, NULL, 0, 0);
+    // Commands
+    command::create_mptz_move_to_preset(cluster);
+    command::create_mptz_save_preset(cluster);
+    command::create_mptz_remove_preset(cluster);
+    return ESP_OK;
+}
+
+} /* mechanical_presets */
+
+} /* feature */
+} /* camera_av_settings_user_level_management */
+
+namespace push_av_stream_transport {
+namespace feature {
+namespace per_zone_sensitivity {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(PushAvStreamTransport::Feature::kPerZoneSensitivity);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* per_zone_sensitivity */
+
+namespace metadata {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(PushAvStreamTransport::Feature::kMetadata);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+}
+
+} /* feature */
+} /* push_av_stream_transport */
+
+namespace commodity_tariff {
+namespace feature {
+namespace pricing {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityTariff::Feature::kPricing);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* pricing */
+
+namespace friendly_credit {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityTariff::Feature::kFriendlyCredit);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* friendly_credit */
+
+namespace auxiliary_load {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityTariff::Feature::kAuxiliaryLoad);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* auxiliary_load */
+
+namespace peak_period {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityTariff::Feature::kPeakPeriod);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* peak_period */
+
+namespace power_threshold {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityTariff::Feature::kPowerThreshold);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* power_threshold */
+
+namespace randomization {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityTariff::Feature::kRandomization);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_default_randomization_offset(cluster, 0);
+    attribute::create_default_randomization_type(cluster, 0);
+    return ESP_OK;
+}
+
+} /* randomization */
+
+} /* feature */
+} /* commodity_tariff */
+
+namespace commodity_price {
+namespace feature {
+namespace forecasting {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(CommodityPrice::Feature::kForecasting);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_price_forecast(cluster, NULL, 0, 0);
+    return ESP_OK;
+}
+
+} /* forecasting */
+
+} /* feature */
+} /* commodity_price */
+
+namespace electrical_grid_conditions {
+namespace feature {
+namespace forecasting {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ElectricalGridConditions::Feature::kForecasting);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_forecast_conditions(cluster, NULL, 0, 0);
+    return ESP_OK;
+}
+
+} /* forecasting */
+
+} /* feature */
+} /* electrical_grid_conditions */
+
+namespace meter_identification {
+namespace feature {
+namespace power_threshold {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(MeterIdentification::Feature::kPowerThreshold);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_power_threshold(cluster, NULL, 0, 0);
+    return ESP_OK;
+}
+
+} /* power_threshold */
+
+} /* feature */
+} /* meter_identification */
 
 } /* cluster */
 } /* esp_matter */

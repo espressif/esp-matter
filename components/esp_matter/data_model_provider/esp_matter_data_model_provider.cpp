@@ -32,6 +32,8 @@
 #include <lib/core/DataModelTypes.h>
 #include <lib/support/CodeUtils.h>
 #include <zap-generated/access.h>
+#include <app/persistence/AttributePersistenceProviderInstance.h>
+#include <app/persistence/DefaultAttributePersistenceProvider.h>
 
 using namespace chip;
 using namespace chip::app;
@@ -40,17 +42,24 @@ constexpr char TAG[] = "DataModelProvider";
 
 namespace chip {
 namespace app {
-class ContextAttributesChangeListener : public AttributesChangedListener {
+
+/**
+ * Accessor class for AttributeValueDecoder to get the TLV reader.
+ * This leverages the existing friend declaration in the SDK's AttributeValueDecoder.
+ */
+class TestOnlyAttributeValueDecoderAccessor
+{
 public:
-    ContextAttributesChangeListener(const DataModel::InteractionModelContext &context)
-        : mListener(context.dataModelChangeListener)
-    {
-    }
-    void MarkDirty(const AttributePathParams &path) override { mListener->MarkDirty(path); }
+    TestOnlyAttributeValueDecoderAccessor(AttributeValueDecoder & decoder) : mDecoder(decoder) {}
+
+    const TLV::TLVReader & GetReader() { return mDecoder.mReader; }
 
 private:
-    DataModel::ProviderChangeListener *mListener;
+    AttributeValueDecoder & mDecoder;
 };
+
+} // namespace app
+} // namespace chip
 
 namespace {
 /// Attempts to read via an attribute access interface (AAI)
@@ -107,8 +116,6 @@ std::optional<CHIP_ERROR> TryWriteViaAccessInterface(const ConcreteDataAttribute
     return decoder.TriedDecode() ? std::make_optional(CHIP_NO_ERROR) : std::nullopt;
 }
 } // namespace
-} // namespace app
-} // namespace chip
 
 namespace {
 
@@ -232,6 +239,7 @@ size_t get_attribute_count(esp_matter::cluster_t *cluster)
     return ret;
 }
 
+DefaultAttributePersistenceProvider gDefaultAttributePersistence;
 } // anonymous namespace
 
 namespace esp_matter {
@@ -247,6 +255,7 @@ provider &provider::get_instance()
 CHIP_ERROR provider::Startup(InteractionModelContext context)
 {
     ReturnErrorOnFailure(DataModel::Provider::Startup(context));
+    mContext.emplace(context);
     esp_matter::cluster::add_bounds_callback_common();
     esp_matter::cluster::plugin_init_callback_common();
     endpoint_t *ep = endpoint::get_first(node::get());
@@ -269,24 +278,27 @@ CHIP_ERROR provider::Startup(InteractionModelContext context)
         }
         ep = endpoint::get_next(ep);
     }
-
-    return m_registry.SetContext(ServerClusterContext{
-        .provider = this,
-        .storage = nullptr,
-        .attributeStorage = nullptr,
-        .interactionContext = &mContext,
+    if (GetAttributePersistenceProvider() == nullptr) {
+        ReturnErrorOnFailure(gDefaultAttributePersistence.Init(&Server::GetInstance().GetPersistentStorage()));
+        SetAttributePersistenceProvider(&gDefaultAttributePersistence);
+    }
+    return mRegistry.SetContext(ServerClusterContext{
+        .provider = *this,
+        .storage = Server::GetInstance().GetPersistentStorage(),
+        .attributeStorage = *GetAttributePersistenceProvider(),
+        .interactionContext = *mContext,
     });
 }
 
 CHIP_ERROR provider::Shutdown()
 {
-    m_registry.ClearContext();
+    mRegistry.ClearContext();
     return CHIP_NO_ERROR;
 }
 
 ActionReturnStatus provider::ReadAttribute(const ReadAttributeRequest &request, AttributeValueEncoder &encoder)
 {
-    if (auto *cluster = m_registry.Get(request.path); cluster != nullptr) {
+    if (auto *cluster = mRegistry.Get(request.path); cluster != nullptr) {
         return cluster->ReadAttribute(request, encoder);
     }
     Status status = CheckDataModelPath(request.path);
@@ -301,21 +313,58 @@ ActionReturnStatus provider::ReadAttribute(const ReadAttributeRequest &request, 
     VerifyOrReturnError(!aai_result.has_value(), *aai_result);
 
     esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
-    attribute::get_val(attribute, &val);
+    VerifyOrReturnValue(attribute::get_val_internal(attribute, &val) == ESP_OK, Protocols::InteractionModel::Status::Failure);
     attribute_data_encode_buffer data_buffer(val);
     return encoder.Encode(data_buffer);
 }
 
 ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request, AttributeValueDecoder &decoder)
 {
-    if (auto *cluster = m_registry.Get(request.path); cluster != nullptr) {
-        return cluster->WriteAttribute(request, decoder);
+    attribute_t *attribute = attribute::get(request.path.mEndpointId, request.path.mClusterId,
+                                            request.path.mAttributeId);
+
+    // Decode the new value once - copy TLV reader to leave original decoder intact for mRegistry/AAI
+    esp_matter_attr_val_t new_val = esp_matter_invalid(nullptr);
+    
+    VerifyOrReturnValue(attribute, Protocols::InteractionModel::Status::UnsupportedAttribute);
+    
+    esp_matter_val_type_t current_val_type = attribute::get_val_type(attribute);
+    
+    TestOnlyAttributeValueDecoderAccessor accessor(decoder);
+    TLV::TLVReader reader_copy;
+    reader_copy.Init(accessor.GetReader());
+    AttributeValueDecoder decoder_copy(reader_copy, decoder.GetSubjectDescriptor());
+    attribute_data_decode_buffer data_buffer(current_val_type);
+    if (decoder_copy.Decode(data_buffer) == CHIP_NO_ERROR) {
+        new_val = data_buffer.get_attr_val();
+        // PRE_UPDATE callback
+        if (attribute::execute_callback(attribute::PRE_UPDATE, request.path.mEndpointId,
+                                        request.path.mClusterId, request.path.mAttributeId,
+                                        &new_val) != ESP_OK) {
+            return Protocols::InteractionModel::Status::Failure;
+        }
     }
+
+    // Helper to execute POST_UPDATE callback
+    auto execute_post_update = [&]() {
+        
+        attribute::execute_callback(attribute::POST_UPDATE, request.path.mEndpointId,
+                                        request.path.mClusterId, request.path.mAttributeId, &new_val);
+    };
+
+    // mRegistry handles its own storage
+    if (auto *cluster = mRegistry.Get(request.path); cluster != nullptr) {
+        ActionReturnStatus ret = cluster->WriteAttribute(request, decoder);
+        if (ret.IsSuccess()) {
+            execute_post_update();
+        }
+        return ret;
+    }
+
     Status status = CheckDataModelPath(request.path);
     VerifyOrReturnValue(status == Protocols::InteractionModel::Status::Success,
                         CHIP_ERROR_IM_GLOBAL_STATUS_VALUE(status));
     cluster_t *cluster = cluster::get(request.path.mEndpointId, request.path.mClusterId);
-    attribute_t *attribute = attribute::get(cluster, request.path.mAttributeId);
     if (request.path.mDataVersion.HasValue()) {
         chip::DataVersion data_version;
         VerifyOrReturnValue(cluster::get_data_version(cluster, data_version) == ESP_OK,
@@ -323,8 +372,8 @@ ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request
         VerifyOrReturnValue(data_version == request.path.mDataVersion.Value(),
                             Protocols::InteractionModel::Status::DataVersionMismatch);
     }
-    ContextAttributesChangeListener change_listener(CurrentContext());
 
+    // AAI handles its own storage
     AttributeAccessInterface *aai =
         AttributeAccessInterfaceRegistry::Instance().Get(request.path.mEndpointId, request.path.mClusterId);
     std::optional<CHIP_ERROR> aai_result = TryWriteViaAccessInterface(request.path, aai, decoder);
@@ -332,29 +381,32 @@ ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request
         if (*aai_result == CHIP_NO_ERROR) {
             cluster::increase_data_version(cluster);
             AttributePathParams path(request.path.mEndpointId, request.path.mClusterId, request.path.mAttributeId);
-            change_listener.MarkDirty(path);
+            mContext->dataModelChangeListener.MarkDirty(path);
+            execute_post_update();
         }
         return *aai_result;
     }
 
-    esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
-    attribute::get_val(attribute, &val);
-    attribute_data_decode_buffer data_buffer(val.type);
-    ReturnErrorOnFailure(decoder.Decode(data_buffer));
-    esp_err_t err =
-        attribute::update(request.path.mEndpointId, request.path.mClusterId, request.path.mAttributeId, &data_buffer.get_attr_val());
+    // Use set_val_internal with call_callbacks=false since we already called PRE_UPDATE
+    esp_err_t err = attribute::set_val_internal(attribute, &new_val, false);
     if (err == ESP_ERR_NO_MEM) {
         return Protocols::InteractionModel::Status::ResourceExhausted;
-    } else if (err != ESP_OK) {
+    } else if (err != ESP_OK && err != ESP_ERR_NOT_FINISHED) {
         return Protocols::InteractionModel::Status::Failure;
     }
+    // Increase data version and mark dirty
+    cluster::increase_data_version(cluster);
+    AttributePathParams path(request.path.mEndpointId, request.path.mClusterId, request.path.mAttributeId);
+    mContext->dataModelChangeListener.MarkDirty(path);
+    execute_post_update();
     return Protocols::InteractionModel::Status::Success;
 }
 
-void provider::ListAttributeWriteNotification(const ConcreteAttributePath &aPath, ListWriteOperation opType)
+void provider::ListAttributeWriteNotification(const ConcreteAttributePath &aPath, ListWriteOperation opType,
+                                              FabricIndex accessFabric)
 {
-    if (auto *cluster = m_registry.Get(aPath); cluster != nullptr) {
-        return cluster->ListAttributeWriteNotification(aPath, opType);
+    if (auto *cluster = mRegistry.Get(aPath); cluster != nullptr) {
+        return cluster->ListAttributeWriteNotification(aPath, opType, accessFabric);
     }
     AttributeAccessInterface *aai =
         AttributeAccessInterfaceRegistry::Instance().Get(aPath.mEndpointId, aPath.mClusterId);
@@ -378,7 +430,7 @@ std::optional<ActionReturnStatus> provider::InvokeCommand(const InvokeRequest &r
                                                           chip::TLV::TLVReader &input_arguments,
                                                           CommandHandler *handler)
 {
-    if (auto *cluster = m_registry.Get(request.path); cluster != nullptr) {
+    if (auto *cluster = mRegistry.Get(request.path); cluster != nullptr) {
         return cluster->InvokeCommand(request, input_arguments, handler);
     }
     Status status = CheckDataModelPath(request.path);
@@ -416,23 +468,6 @@ CHIP_ERROR provider::Endpoints(ReadOnlyBufferBuilder<EndpointEntry> &builder)
             ReturnErrorOnFailure(builder.Append(entry));
         }
         ep = endpoint::get_next(ep);
-    }
-    return CHIP_NO_ERROR;
-}
-
-CHIP_ERROR provider::SemanticTags(EndpointId endpointId, ReadOnlyBufferBuilder<SemanticTag> &builder)
-{
-    Status status = CheckDataModelPath(endpointId);
-    VerifyOrReturnValue(status == Protocols::InteractionModel::Status::Success,
-                        CHIP_ERROR_IM_GLOBAL_STATUS_VALUE(status));
-    endpoint_t *ep = endpoint::get(endpointId);
-    int count = endpoint::get_semantic_tag_count(ep);
-    ReturnErrorOnFailure(builder.EnsureAppendCapacity(count));
-    for (size_t idx = 0; idx < count; idx++) {
-        DataModel::Provider::SemanticTag semanticTag;
-        VerifyOrReturnError(endpoint::get_semantic_tag_at_index(ep, idx, semanticTag) == ESP_OK, CHIP_ERROR_INTERNAL,
-                            ESP_LOGE(TAG, "Failed to get SemanticTag at %d", idx));
-        ReturnErrorOnFailure(builder.Append(semanticTag));
     }
     return CHIP_NO_ERROR;
 }
@@ -486,8 +521,13 @@ CHIP_ERROR provider::ServerClusters(EndpointId endpointId, ReadOnlyBufferBuilder
         if (cluster::get_flags(cluster) & CLUSTER_FLAG_SERVER) {
             ServerClusterEntry entry;
             entry.clusterId = cluster::get_id(cluster);
-            entry.flags.ClearAll();
-            VerifyOrReturnError(cluster::get_data_version(cluster, entry.dataVersion) == ESP_OK, CHIP_ERROR_INTERNAL);
+            if (auto *server_cluster = mRegistry.Get(ConcreteClusterPath(endpointId, entry.clusterId)); server_cluster != nullptr) {
+                entry.flags = server_cluster->GetClusterFlags(ConcreteClusterPath(endpointId, entry.clusterId));
+                entry.dataVersion = server_cluster->GetDataVersion(ConcreteClusterPath(endpointId, entry.clusterId));
+            } else {
+                entry.flags.ClearAll();
+                VerifyOrReturnError(cluster::get_data_version(cluster, entry.dataVersion) == ESP_OK, CHIP_ERROR_INTERNAL);
+            }
             ReturnErrorOnFailure(builder.Append(entry));
         }
         cluster = cluster::get_next(cluster);
@@ -506,7 +546,7 @@ CHIP_ERROR provider::EndpointUniqueID(EndpointId endpointId, MutableCharSpan &ep
 
 CHIP_ERROR provider::EventInfo(const ConcreteEventPath &path, EventEntry &eventInfo)
 {
-    if (auto *cluster = m_registry.Get(path); cluster != nullptr) {
+    if (auto *cluster = mRegistry.Get(path); cluster != nullptr) {
         return cluster->EventInfo(path, eventInfo);
     }
     Status status = CheckDataModelPath(path);
@@ -518,7 +558,7 @@ CHIP_ERROR provider::EventInfo(const ConcreteEventPath &path, EventEntry &eventI
 
 CHIP_ERROR provider::GeneratedCommands(const ConcreteClusterPath &path, ReadOnlyBufferBuilder<CommandId> &builder)
 {
-    if (auto *cluster = m_registry.Get(path); cluster != nullptr) {
+    if (auto *cluster = mRegistry.Get(path); cluster != nullptr) {
         return cluster->GeneratedCommands(path, builder);
     }
     Status status = CheckDataModelPath(path);
@@ -540,7 +580,7 @@ CHIP_ERROR provider::GeneratedCommands(const ConcreteClusterPath &path, ReadOnly
 CHIP_ERROR provider::AcceptedCommands(const ConcreteClusterPath &path,
                                       ReadOnlyBufferBuilder<AcceptedCommandEntry> &builder)
 {
-    if (auto *cluster = m_registry.Get(path); cluster != nullptr) {
+    if (auto *cluster = mRegistry.Get(path); cluster != nullptr) {
         return cluster->AcceptedCommands(path, builder);
     }
     Status status = CheckDataModelPath(path);
@@ -549,57 +589,9 @@ CHIP_ERROR provider::AcceptedCommands(const ConcreteClusterPath &path,
     CommandHandlerInterface *interface =
         CommandHandlerInterfaceRegistry::Instance().GetCommandHandler(path.mEndpointId, path.mClusterId);
     if (interface != nullptr) {
-        size_t commandCount = 0;
-        CHIP_ERROR err = interface->EnumerateAcceptedCommands(
-            path,
-            [](CommandId id, void *context) -> Loop {
-                *reinterpret_cast<size_t *>(context) += 1;
-                return Loop::Continue;
-            },
-            reinterpret_cast<void *>(&commandCount));
-
-        if (err == CHIP_NO_ERROR) {
-            using EnumerationData = struct {
-                ConcreteCommandPath commandPath;
-                ReadOnlyBufferBuilder<DataModel::AcceptedCommandEntry> *acceptedCommandList;
-                CHIP_ERROR processingError;
-            };
-
-            EnumerationData enumerationData;
-            enumerationData.commandPath = ConcreteCommandPath(path.mEndpointId, path.mClusterId, kInvalidCommandId);
-            enumerationData.processingError = CHIP_NO_ERROR;
-            enumerationData.acceptedCommandList = &builder;
-
-            ReturnErrorOnFailure(builder.EnsureAppendCapacity(commandCount));
-
-            ReturnErrorOnFailure(interface->EnumerateAcceptedCommands(
-                path,
-                [](CommandId commandId, void *context) -> Loop {
-                    auto input = reinterpret_cast<EnumerationData *>(context);
-                    input->commandPath.mCommandId = commandId;
-                    ClusterId clusterId = input->commandPath.mClusterId;
-                    BitMask<DataModel::CommandQualityFlags> quality_flags;
-                    quality_flags
-                        .Set(DataModel::CommandQualityFlags::kFabricScoped, CommandIsFabricScoped(clusterId, commandId))
-                        .Set(DataModel::CommandQualityFlags::kTimed, CommandNeedsTimedInvoke(clusterId, commandId))
-                        .Set(DataModel::CommandQualityFlags::kLargeMessage,
-                             CommandHasLargePayload(clusterId, commandId));
-                    AcceptedCommandEntry entry(
-                        commandId, quality_flags,
-                        MatterGetAccessPrivilegeForInvokeCommand(input->commandPath.mClusterId, commandId));
-                    CHIP_ERROR appendError = input->acceptedCommandList->Append(entry);
-                    if (appendError != CHIP_NO_ERROR) {
-                        input->processingError = appendError;
-                        return Loop::Break;
-                    }
-                    return Loop::Continue;
-                },
-                reinterpret_cast<void *>(&enumerationData)));
-            ReturnErrorOnFailure(enumerationData.processingError);
-            // the two invocations MUST return the same sizes.
-            VerifyOrReturnError(builder.Size() == commandCount, CHIP_ERROR_INTERNAL);
-            return CHIP_NO_ERROR;
-        }
+        CHIP_ERROR err = interface->RetrieveAcceptedCommands(path, builder);
+        // If retrieving the accepted commands returns CHIP_ERROR_NOT_IMPLEMENTED then continue with normal processing.
+        // Otherwise we finished.
         VerifyOrReturnError(err == CHIP_ERROR_NOT_IMPLEMENTED, err);
     }
     // If we cannot get AcceptedCommands array from CommandHandlerinterface, get it from esp_matter data model.
@@ -634,7 +626,7 @@ static constexpr size_t k_global_attributes_count =
 
 CHIP_ERROR provider::Attributes(const ConcreteClusterPath &path, ReadOnlyBufferBuilder<AttributeEntry> &builder)
 {
-    if (auto *cluster = m_registry.Get(path); cluster != nullptr) {
+    if (auto *cluster = mRegistry.Get(path); cluster != nullptr) {
         return cluster->Attributes(path, builder);
     }
     Status status = CheckDataModelPath(path);
@@ -677,8 +669,7 @@ void provider::Temporary_ReportAttributeChanged(const AttributePathParams &path)
     cluster_t *cluster = cluster::get(path.mEndpointId, path.mClusterId);
     VerifyOrReturn(cluster != nullptr);
     VerifyOrReturn(cluster::increase_data_version(cluster) == ESP_OK);
-    ContextAttributesChangeListener change_listener(CurrentContext());
-    change_listener.MarkDirty(path);
+    mContext->dataModelChangeListener.MarkDirty(path);
 }
 
 Status provider::CheckDataModelPath(EndpointId endpointId)

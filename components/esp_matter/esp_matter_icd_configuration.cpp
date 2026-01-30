@@ -28,7 +28,7 @@ using namespace chip::System::Clock;
 static constexpr char *TAG = "icd";
 
 namespace chip {
-namespace Test {
+namespace Testing {
 class ICDConfigurationDataTestAccess {
 // This class is a friend class for ICDConfigurationData, so it can access private members of ICDConfigurationData.
 public:
@@ -39,7 +39,7 @@ public:
 
     static void SetSlowPollingInterval(Milliseconds32 pollInterval)
     {
-        ICDConfigurationData::GetInstance().SetSlowPollingInterval(pollInterval);
+        (void)ICDConfigurationData::GetInstance().SetSlowPollingInterval(pollInterval);
         if (pollInterval >= Milliseconds32(15000)) {
             // Active Threshold SHALL NOT be smaller than 5 seconds for LIT ICD.
             ICDConfigurationData::GetInstance().SetICDMode(ICDConfigurationData::ICDMode::LIT);
@@ -84,10 +84,10 @@ static esp_err_t set_polling_intervals(std::optional<uint32_t> fast_interval_ms,
             return ESP_ERR_INVALID_ARG;
         }
 #endif
-        chip::Test::ICDConfigurationDataTestAccess::SetSlowPollingInterval(Milliseconds32(slow_interval_ms.value()));
+        chip::Testing::ICDConfigurationDataTestAccess::SetSlowPollingInterval(Milliseconds32(slow_interval_ms.value()));
     }
     if (fast_interval_ms.has_value()) {
-        chip::Test::ICDConfigurationDataTestAccess::SetFastPollingInterval(Milliseconds32(fast_interval_ms.value()));
+        chip::Testing::ICDConfigurationDataTestAccess::SetFastPollingInterval(Milliseconds32(fast_interval_ms.value()));
     }
     return ESP_OK;
 }
@@ -101,23 +101,21 @@ static esp_err_t set_mode_durations(std::optional<uint32_t> active_mode_duration
     Seconds32 idle_mode_duration = idle_mode_duration_s.has_value()
         ? Seconds32(idle_mode_duration_s.value())
         : chip::ICDConfigurationData::GetInstance().GetIdleModeDuration();
-    return chip::Test::ICDConfigurationDataTestAccess::SetModeDurations(chip::MakeOptional(active_mode_duration),
+    return chip::Testing::ICDConfigurationDataTestAccess::SetModeDurations(chip::MakeOptional(active_mode_duration),
                                                                         chip::MakeOptional(idle_mode_duration));
 }
 
 static esp_err_t set_active_threshold(uint32_t active_threshold_ms)
 {
-    return chip::Test::ICDConfigurationDataTestAccess::SetActiveThreshold(Milliseconds32(active_threshold_ms));
+    return chip::Testing::ICDConfigurationDataTestAccess::SetActiveThreshold(Milliseconds32(active_threshold_ms));
 }
 
-#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
-static bool s_enable_icd_server = true;
+static bool s_enable_icd_server = CHIP_CONFIG_ENABLE_ICD_SERVER;
 
 bool get_icd_server_enabled()
 {
     return s_enable_icd_server;
 }
-#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 
 esp_err_t set_configuration_data(config_t *config)
 {

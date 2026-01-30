@@ -196,6 +196,12 @@ esp_err_t add(cluster_t *cluster);
 
 } /* long_idle_time_support */
 
+namespace dynamic_sit_lit_support {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} // namespace dynamic_sit_lit_support
+
 } /* feature */
 } /* icd_management */
 
@@ -205,8 +211,8 @@ namespace lighting {
 
 typedef struct config {
     bool global_scene_control;
-    nullable<uint16_t> on_time;
-    nullable<uint16_t> off_wait_time;
+    uint16_t on_time;
+    uint16_t off_wait_time;
     nullable<uint8_t> start_up_on_off;
     config() : global_scene_control(1), on_time(0), off_wait_time(0), start_up_on_off(0) {}
 } config_t;
@@ -387,24 +393,6 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* position_aware_lift */
 
-// Attributes of AbsolutePosition feature may have dependency on LF, TL, PA_LF, PA_TL
-// feature, one must add features according to the usecase first.
-
-namespace absolute_position {
-
-typedef struct config {
-    uint16_t installed_open_limit_lift;
-    uint16_t installed_closed_limit_lift;
-    uint16_t installed_open_limit_tilt;
-    uint16_t installed_closed_limit_tilt;
-    config() : installed_open_limit_lift(0), installed_closed_limit_lift(65534), installed_open_limit_tilt(0), installed_closed_limit_tilt(65534) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-
-} /* absolute_position */
-
 // PositionAwareTilt feature is dependent on Tilt feature, in order to add
 // PositionAwareTilt feature one must add Tilt feature first.
 
@@ -446,12 +434,12 @@ esp_err_t add(cluster_t *cluster);
 namespace thread_network_diagnostics {
 namespace feature {
 
-namespace packets_counts {
+namespace packet_counts {
 
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 
-} /* packets_counts */
+} /* packet_counts */
 
 namespace error_counts {
 
@@ -956,6 +944,17 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* feature */
 } /* mode_select */
 
+namespace general_diagnostics {
+namespace feature {
+namespace data_model_test {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* data_model_test */
+} /* feature */
+} /* general diagnostics */
+
 namespace software_diagnostics {
 namespace feature {
 
@@ -1158,6 +1157,7 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* feature */
 } /* boolean_state_configuration */
+
 
 namespace power_topology {
 namespace feature {
@@ -1608,11 +1608,11 @@ namespace feature {
 namespace extended {
 
 typedef struct config {
-   nullable<int16_t> pressure_scaled_value;
-   nullable<int16_t> pressure_min_scaled_value;
-   nullable<int16_t> pressure_max_scaled_value;
-   uint8_t pressure_scale;
-   config() : pressure_scaled_value(), pressure_min_scaled_value(), pressure_max_scaled_value(), pressure_scale(0) {}
+   nullable<int16_t> scaled_value;
+   nullable<int16_t> min_scaled_value;
+   nullable<int16_t> max_scaled_value;
+   uint8_t scale;
+   config() : scaled_value(), min_scaled_value(), max_scaled_value(), scale(0) {}
 } config_t;
 
 uint32_t get_id();
@@ -1799,6 +1799,345 @@ esp_err_t add(cluster_t *cluster);
 
 } /* feature */
 } /* time_synchronization */
+
+namespace camera_av_stream_management {
+
+namespace feature {
+namespace audio {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* audio */
+
+namespace video {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* video */
+
+namespace snapshot {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* snapshot */
+
+namespace privacy {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* privacy */
+
+namespace speaker {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* speaker */
+
+namespace image_control {
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* image_control */
+
+namespace watermark {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* watermark */
+
+namespace on_screen_display {
+typedef struct config {
+    config()  {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* on_screen_display */
+
+namespace local_storage {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* local_storage */
+
+namespace high_dynamic_range {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* high_dynamic_range */
+
+namespace night_vision {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* night_vision */
+
+} /* feature */
+}/*camera av stream management*/
+
+namespace webrtc_transport_provider {
+}/*webrtc_transport_provider*/
+
+namespace webrtc_transport_requestor {
+}/*webrtc_transport_requestor*/
+
+
+namespace closure_control {
+namespace feature {
+
+namespace positioning {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* positioning */
+
+namespace motion_latching {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* motion_latching */
+
+namespace instantaneous {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* instantaneous */
+
+namespace speed {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* speed */
+
+namespace ventilation {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* ventilation */
+
+namespace pedestrian {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* pedestrian */
+
+namespace calibration {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* calibration */
+
+namespace protection {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* protection */
+
+namespace manually_operable {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* manually_operable */
+
+} /* feature */
+} /* closure_control */
+
+namespace closure_dimension {
+namespace feature {
+
+namespace positioning {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* positioning */
+
+namespace motion_latching {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* motion_latching */
+
+namespace unit {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* unit */
+
+namespace limitation {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* limitation */
+
+namespace speed {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* speed */
+
+namespace translation {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* translation */
+
+namespace rotation {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* rotation */
+
+namespace modulation {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* modulation */
+
+} /* feature */
+} /* closure_dimension */
+
+namespace camera_av_settings_user_level_management {
+namespace feature {
+
+namespace digital_ptz {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* digital_ptz */
+
+namespace mechanical_pan {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* mechanical_pan */
+
+namespace mechanical_tilt {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* mechanical_tilt */
+
+namespace mechanical_zoom {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* mechanical_zoom */
+
+namespace mechanical_presets {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* mechanical_presets */
+
+} /* feature */
+} /* camera_av_settings_user_level_management */
+
+namespace push_av_stream_transport {
+namespace feature {
+
+namespace per_zone_sensitivity {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* per_zone_sensitivity */
+
+/* Provisional */
+namespace metadata {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* metadata */
+
+} /* feature */
+} /* push_av_stream_transport */
+
+namespace commodity_tariff {
+namespace feature {
+
+namespace pricing {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* pricing */
+
+namespace friendly_credit {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* friendly_credit */
+
+namespace auxiliary_load {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* auxiliary_load */
+
+namespace peak_period {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* peak_period */
+
+namespace power_threshold {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* power_threshold */
+
+namespace randomization {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* randomization */
+
+} /* feature */
+} /* commodity_tariff */
+
+namespace commodity_price {
+namespace feature {
+
+namespace forecasting {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* forecasting */
+
+} /* feature */
+} /* commodity_price */
+
+namespace electrical_grid_conditions {
+namespace feature {
+
+namespace forecasting {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* forecasting */
+
+} /* feature */
+} /* electrical_grid_conditions */
+
+namespace meter_identification {
+namespace feature {
+
+namespace power_threshold {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* power_threshold */
+
+} /* feature */
+} /* meter_identification */
 
 } /* cluster */
 } /* esp_matter */

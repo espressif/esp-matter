@@ -85,6 +85,8 @@ namespace command {
 command_t *create_test_event_trigger(cluster_t *cluster);
 command_t *create_time_snap_shot(cluster_t *cluster);
 command_t *create_time_snap_shot_response(cluster_t *cluster);
+command_t *create_payload_test_request(cluster_t *cluster);
+command_t *create_payload_test_response(cluster_t *cluster);
 } /* command */
 } /* general_diagnostics */
 
@@ -204,6 +206,7 @@ command_t *create_register_client(cluster_t *cluster);
 command_t *create_register_client_response(cluster_t *cluster);
 command_t *create_unregister_client(cluster_t *cluster);
 command_t *create_stay_active_request(cluster_t *cluster);
+command_t *create_stay_active_response(cluster_t *cluster);
 } /* command */
 } /* icd_management */
 
@@ -279,10 +282,6 @@ command_t *create_color_loop_set(cluster_t *cluster);
 namespace thermostat {
 namespace command {
 command_t *create_setpoint_raise_lower(cluster_t *cluster);
-command_t *create_set_weekly_schedule(cluster_t *cluster);
-command_t *create_get_weekly_schedule(cluster_t *cluster);
-command_t *create_clear_weekly_schedule(cluster_t *cluster);
-command_t *create_get_weekly_schedule_response(cluster_t *cluster);
 command_t *create_set_active_schedule_request(cluster_t *cluster);
 command_t *create_set_active_preset_request(cluster_t *cluster);
 command_t *create_atomic_request(cluster_t *cluster);
@@ -346,9 +345,7 @@ namespace command {
 command_t *create_up_or_open(cluster_t *cluster);
 command_t *create_down_or_close(cluster_t *cluster);
 command_t *create_stop_motion(cluster_t *cluster);
-command_t *create_go_to_lift_value(cluster_t *cluster);
 command_t *create_go_to_lift_percentage(cluster_t *cluster);
-command_t *create_go_to_tilt_value(cluster_t *cluster);
 command_t *create_go_to_tilt_percentage(cluster_t *cluster);
 } /* command */
 } /* window_covering */
@@ -507,6 +504,111 @@ command_t *create_set_dst_offset(cluster_t *cluster);
 command_t *create_set_default_ntp(cluster_t *cluster);
 } /* command */
 } /* time_synchronization */
+
+namespace camera_av_stream_management {
+namespace command {
+command_t *create_audio_stream_allocate(cluster_t *cluster);
+command_t *create_audio_stream_allocate_response(cluster_t *cluster);
+command_t *create_audio_stream_deallocate(cluster_t *cluster);
+command_t *create_video_stream_allocate(cluster_t *cluster);
+command_t *create_video_stream_allocate_response(cluster_t *cluster);
+command_t *create_video_stream_modify(cluster_t *cluster);
+command_t *create_video_stream_deallocate(cluster_t *cluster);
+command_t *create_snapshot_stream_allocate(cluster_t *cluster);
+command_t *create_snapshot_stream_allocate_response(cluster_t *cluster);
+command_t *create_snapshot_stream_modify(cluster_t *cluster);
+command_t *create_snapshot_stream_deallocate(cluster_t *cluster);
+command_t *create_set_stream_priorities(cluster_t *cluster);
+command_t *create_capture_snapshot(cluster_t *cluster);
+command_t *create_capture_snapshot_response(cluster_t *cluster);
+} /* command */
+} /*camera av stream transport*/
+
+namespace webrtc_transport_provider {
+namespace command {
+command_t *create_solicit_offer(cluster_t *cluster);
+command_t *create_solicit_offer_response(cluster_t *cluster);
+command_t *create_provide_offer(cluster_t *cluster);
+command_t *create_provide_offer_response(cluster_t *cluster);
+command_t *create_provide_answer(cluster_t *cluster);
+command_t *create_provide_ice_candidates(cluster_t *cluster);
+command_t *create_end_session(cluster_t *cluster);
+} /* command */
+}/*webrtc transport provider*/
+
+namespace webrtc_transport_requestor {
+namespace command {
+command_t *create_offer(cluster_t *cluster);
+command_t *create_answer(cluster_t *cluster);
+command_t *create_ice_candidates(cluster_t *cluster);
+command_t *create_end(cluster_t *cluster);
+} /* command */
+}/*webrtc transport requestor*/
+
+
+namespace chime {
+namespace command {
+command_t *create_play_chime_sound(cluster_t *cluster);
+} /* command */
+} /* chime */
+
+namespace closure_control {
+namespace command {
+command_t *create_stop(cluster_t *cluster);
+command_t *create_move_to(cluster_t *cluster);
+command_t *create_calibrate(cluster_t *cluster);
+} /* command */
+} /* closure_control */
+
+namespace closure_dimension {
+namespace command {
+command_t *create_set_target(cluster_t *cluster);
+command_t *create_step(cluster_t *cluster);
+} /* command */
+} /* closure_dimension */
+
+namespace camera_av_settings_user_level_management {
+namespace command {
+command_t *create_mptz_set_position(cluster_t *cluster);
+command_t *create_mptz_relative_move(cluster_t *cluster);
+command_t *create_mptz_move_to_preset(cluster_t *cluster);
+command_t *create_mptz_save_preset(cluster_t *cluster);
+command_t *create_mptz_remove_preset(cluster_t *cluster);
+command_t *create_dptz_set_viewport(cluster_t *cluster);
+command_t *create_dptz_relative_move(cluster_t *cluster);
+} /* command */
+} /* camera_av_settings_user_level_management */
+
+namespace push_av_stream_transport {
+namespace command {
+command_t *create_allocate_push_transport(cluster_t *cluster);
+command_t *create_allocate_push_transport_response(cluster_t *cluster);
+command_t *create_deallocate_push_transport(cluster_t *cluster);
+command_t *create_modify_push_transport(cluster_t *cluster);
+command_t *create_set_transport_status(cluster_t *cluster);
+command_t *create_manually_trigger_transport(cluster_t *cluster);
+command_t *create_find_transport(cluster_t *cluster);
+command_t *create_find_transport_response(cluster_t *cluster);
+} /* command */
+} /* push_av_stream_transport */
+
+namespace commodity_tariff {
+namespace command {
+command_t *create_get_tariff_component(cluster_t *cluster);
+command_t *create_get_tariff_component_response(cluster_t *cluster);
+command_t *create_get_day_entry(cluster_t *cluster);
+command_t *create_get_day_entry_response(cluster_t *cluster);
+} /* command */
+} /* commodity_tariff */
+
+namespace commodity_price {
+namespace command {
+command_t *create_get_detailed_price_request(cluster_t *cluster);
+command_t *create_get_detailed_price_response(cluster_t *cluster);
+command_t *create_get_detailed_forecast_request(cluster_t *cluster);
+command_t *create_get_detailed_forecast_response(cluster_t *cluster);
+} /* command */
+} /* commodity_price */
 
 } /* cluster */
 } /* esp_matter */

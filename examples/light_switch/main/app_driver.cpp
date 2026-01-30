@@ -310,9 +310,8 @@ static void app_driver_button_toggle_cb(void *arg, void *data)
     req_handle.command_path.mClusterId = OnOff::Id;
     req_handle.command_path.mCommandId = OnOff::Commands::Toggle::Id;
 
-    lock::chip_stack_lock(portMAX_DELAY);
+    lock::ScopedChipStackLock lock(portMAX_DELAY);
     client::cluster_update(switch_endpoint_id, &req_handle);
-    lock::chip_stack_unlock();
 }
 
 app_driver_handle_t app_driver_switch_init()

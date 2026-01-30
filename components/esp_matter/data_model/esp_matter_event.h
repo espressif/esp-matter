@@ -40,13 +40,6 @@ event_t *create_state_changed(cluster_t *cluster);
 event_t *create_action_failed(cluster_t *cluster);
 } // namespace event
 } // namespace actions
-
-namespace bridged_device_basic_information {
-namespace event {
-event_t *create_active_changed(cluster_t *cluster);
-} // namespace event
-} // namespace bridged_device_basic_information
-
 namespace basic_information {
 namespace event {
 event_t *create_start_up(cluster_t *cluster);
@@ -106,12 +99,22 @@ event_t *create_missing_trusted_time_source(cluster_t *cluster);
 
 namespace bridged_device_basic_information {
 namespace event {
+event_t *create_active_changed(cluster_t *cluster);
 event_t *create_start_up(cluster_t *cluster);
 event_t *create_shut_down(cluster_t *cluster);
 event_t *create_leave(cluster_t *cluster);
 event_t *create_reachable_changed(cluster_t *cluster);
 } // namespace event
 } // namespace bridged_device_basic_information
+
+
+namespace power_source {
+namespace event {
+event_t *create_wired_fault_change(cluster_t *cluster);
+event_t *create_bat_fault_change(cluster_t *cluster);
+event_t *create_bat_charge_fault_change(cluster_t *cluster);
+}
+}
 
 namespace smoke_co_alarm {
 namespace event {
@@ -214,6 +217,17 @@ event_t *create_periodic_energy_measured(cluster_t *cluster);
 } // namespace event
 } // namespace electrical_energy_measurement
 
+namespace energy_evse {
+namespace event {
+event_t *create_ev_connected(cluster_t *cluster);
+event_t *create_ev_not_detected(cluster_t *cluster);
+event_t *create_energy_transfer_started(cluster_t *cluster);
+event_t *create_energy_transfer_stopped(cluster_t *cluster);
+event_t *create_fault(cluster_t *cluster);
+event_t *create_rfid(cluster_t *cluster);
+} /* event */
+} /* energy_evse */
+
 namespace valve_configuration_and_control {
 namespace event {
 event_t *create_valve_state_changed(cluster_t *cluster);
@@ -248,6 +262,34 @@ namespace event {
 event_t *create_occupancy_changed(cluster_t *cluster);
 } // namespace event
 } // namespace occupancy_sensing
+
+namespace closure_control {
+namespace event {
+event_t *create_operational_error(cluster_t *cluster);
+event_t *create_movement_completed(cluster_t *cluster);
+event_t *create_engage_state_changed(cluster_t *cluster);
+event_t *create_secure_state_changed(cluster_t *cluster);
+} // namespace event
+} // namespace closure_control
+
+namespace push_av_stream_transport {
+namespace event {
+event_t *create_push_transport_begin(cluster_t *cluster);
+event_t *create_push_transport_end(cluster_t *cluster);
+} // namespace event
+} // namespace push_av_stream_transport
+
+namespace commodity_price {
+namespace event {
+event_t *create_price_change(cluster_t *cluster);
+} // namespace event
+} // namespace commodity_price
+
+namespace electrical_grid_conditions {
+namespace event {
+event_t *create_current_conditions_changed(cluster_t *cluster);
+} // namespace event
+} // namespace electrical_grid_conditions
 
 } // namespace cluster
 } // namespace esp_matter

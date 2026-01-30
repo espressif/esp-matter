@@ -19,15 +19,14 @@
 
 #include <esp_matter_attribute_utils.h>
 #include <esp_matter_data_model.h>
+#include <esp_matter_data_model_priv.h>
 
 #include <app-common/zap-generated/attribute-type.h>
 #include <app/AttributePathParams.h>
 #include <app/InteractionModelEngine.h>
-#include <app/util/AttributesChangedListener.h>
 #include <app/util/MarkAttributeDirty.h>
 #include <app/util/attribute-storage.h>
 #include <app/util/attribute-table.h>
-#include <app/util/binding-table.h>
 #include <app/util/endpoint-config-api.h>
 #include <lib/core/DataModelTypes.h>
 #include <protocols/interaction_model/StatusCode.h>
@@ -731,22 +730,12 @@ EmberAfDefaultAttributeValue get_default_attr_value_from_val(esp_matter_attr_val
     }
     return EmberAfDefaultAttributeValue(nullptr);
 }
-
-class GlobalInteractionModelEngineChangedpathListener : public chip::app::AttributesChangedListener {
-public:
-    ~GlobalInteractionModelEngineChangedpathListener() = default;
-
-    void MarkDirty(const chip::app::AttributePathParams &path) override
-    {
-        chip::app::InteractionModelEngine::GetInstance()->GetReportingEngine().SetDirty(path);
-    }
-};
-
-static GlobalInteractionModelEngineChangedpathListener gListener;
 } // namespace
 
 namespace chip {
 namespace app {
+// TODO: Remove EnabledEndpointsWithServerCluster when door-lock, power-source-configuration, and ota-requestor server
+// is decoupled from ember.
 EnabledEndpointsWithServerCluster::EnabledEndpointsWithServerCluster(ClusterId clusterId)
     : mEndpointCount(esp_matter::endpoint::get_count(esp_matter::node::get()))
     , mClusterId(clusterId)
@@ -756,7 +745,7 @@ EnabledEndpointsWithServerCluster::EnabledEndpointsWithServerCluster(ClusterId c
 
 EndpointId EnabledEndpointsWithServerCluster::operator*() const
 {
-    return emberAfEndpointFromIndex(mEndpointIndex);
+    return esp_matter::endpoint::get_id(get_endpoint_at_index(mEndpointIndex));
 }
 
 EnabledEndpointsWithServerCluster &EnabledEndpointsWithServerCluster::operator++()
@@ -779,434 +768,16 @@ void EnabledEndpointsWithServerCluster::EnsureMatchingEndpoint()
     }
 }
 
-namespace Compatibility {
-namespace Internal {
-
-EmberAfAttributeType AttributeBaseType(EmberAfAttributeType type)
-{
-    switch (type) {
-    case ZCL_ACTION_ID_ATTRIBUTE_TYPE: // Action Id
-    case ZCL_FABRIC_IDX_ATTRIBUTE_TYPE: // Fabric Index
-    case ZCL_BITMAP8_ATTRIBUTE_TYPE: // 8-bit bitmap
-    case ZCL_ENUM8_ATTRIBUTE_TYPE: // 8-bit enumeration
-    case ZCL_STATUS_ATTRIBUTE_TYPE: // Status Code
-    case ZCL_PERCENT_ATTRIBUTE_TYPE: // Percentage
-        static_assert(std::is_same<chip::Percent, uint8_t>::value,
-                      "chip::Percent is expected to be uint8_t, change this when necessary");
-        return ZCL_INT8U_ATTRIBUTE_TYPE;
-
-    case ZCL_ENDPOINT_NO_ATTRIBUTE_TYPE: // Endpoint Number
-    case ZCL_GROUP_ID_ATTRIBUTE_TYPE: // Group Id
-    case ZCL_VENDOR_ID_ATTRIBUTE_TYPE: // Vendor Id
-    case ZCL_ENUM16_ATTRIBUTE_TYPE: // 16-bit enumeration
-    case ZCL_BITMAP16_ATTRIBUTE_TYPE: // 16-bit bitmap
-    case ZCL_PERCENT100THS_ATTRIBUTE_TYPE: // 100ths of a percent
-        static_assert(std::is_same<chip::EndpointId, uint16_t>::value,
-                      "chip::EndpointId is expected to be uint16_t, change this when necessary");
-        static_assert(std::is_same<chip::GroupId, uint16_t>::value,
-                      "chip::GroupId is expected to be uint16_t, change this when necessary");
-        static_assert(std::is_same<chip::Percent100ths, uint16_t>::value,
-                      "chip::Percent100ths is expected to be uint16_t, change this when necessary");
-        return ZCL_INT16U_ATTRIBUTE_TYPE;
-
-    case ZCL_CLUSTER_ID_ATTRIBUTE_TYPE: // Cluster Id
-    case ZCL_ATTRIB_ID_ATTRIBUTE_TYPE: // Attribute Id
-    case ZCL_FIELD_ID_ATTRIBUTE_TYPE: // Field Id
-    case ZCL_EVENT_ID_ATTRIBUTE_TYPE: // Event Id
-    case ZCL_COMMAND_ID_ATTRIBUTE_TYPE: // Command Id
-    case ZCL_TRANS_ID_ATTRIBUTE_TYPE: // Transaction Id
-    case ZCL_DEVTYPE_ID_ATTRIBUTE_TYPE: // Device Type Id
-    case ZCL_DATA_VER_ATTRIBUTE_TYPE: // Data Version
-    case ZCL_BITMAP32_ATTRIBUTE_TYPE: // 32-bit bitmap
-    case ZCL_EPOCH_S_ATTRIBUTE_TYPE: // Epoch Seconds
-    case ZCL_ELAPSED_S_ATTRIBUTE_TYPE: // Elapsed Seconds
-        static_assert(std::is_same<chip::ClusterId, uint32_t>::value,
-                      "chip::Cluster is expected to be uint32_t, change this when necessary");
-        static_assert(std::is_same<chip::AttributeId, uint32_t>::value,
-                      "chip::AttributeId is expected to be uint32_t, change this when necessary");
-        static_assert(std::is_same<chip::AttributeId, uint32_t>::value,
-                      "chip::AttributeId is expected to be uint32_t, change this when necessary");
-        static_assert(std::is_same<chip::EventId, uint32_t>::value,
-                      "chip::EventId is expected to be uint32_t, change this when necessary");
-        static_assert(std::is_same<chip::CommandId, uint32_t>::value,
-                      "chip::CommandId is expected to be uint32_t, change this when necessary");
-        static_assert(std::is_same<chip::TransactionId, uint32_t>::value,
-                      "chip::TransactionId is expected to be uint32_t, change this when necessary");
-        static_assert(std::is_same<chip::DeviceTypeId, uint32_t>::value,
-                      "chip::DeviceTypeId is expected to be uint32_t, change this when necessary");
-        static_assert(std::is_same<chip::DataVersion, uint32_t>::value,
-                      "chip::DataVersion is expected to be uint32_t, change this when necessary");
-        return ZCL_INT32U_ATTRIBUTE_TYPE;
-
-    case ZCL_AMPERAGE_MA_ATTRIBUTE_TYPE: // Amperage
-    case ZCL_ENERGY_MWH_ATTRIBUTE_TYPE: // Energy
-    case ZCL_ENERGY_MVAH_ATTRIBUTE_TYPE: // Apparent Energy
-    case ZCL_ENERGY_MVARH_ATTRIBUTE_TYPE: // Reactive Energy
-    case ZCL_POWER_MW_ATTRIBUTE_TYPE: // Power
-    case ZCL_POWER_MVA_ATTRIBUTE_TYPE: // Apparent Power
-    case ZCL_POWER_MVAR_ATTRIBUTE_TYPE: // Reactive Power
-    case ZCL_VOLTAGE_MV_ATTRIBUTE_TYPE: // Voltage
-    case ZCL_MONEY_ATTRIBUTE_TYPE: // Money
-        return ZCL_INT64S_ATTRIBUTE_TYPE;
-
-    case ZCL_EVENT_NO_ATTRIBUTE_TYPE: // Event Number
-    case ZCL_FABRIC_ID_ATTRIBUTE_TYPE: // Fabric Id
-    case ZCL_NODE_ID_ATTRIBUTE_TYPE: // Node Id
-    case ZCL_BITMAP64_ATTRIBUTE_TYPE: // 64-bit bitmap
-    case ZCL_EPOCH_US_ATTRIBUTE_TYPE: // Epoch Microseconds
-    case ZCL_POSIX_MS_ATTRIBUTE_TYPE: // POSIX Milliseconds
-    case ZCL_SYSTIME_MS_ATTRIBUTE_TYPE: // System time Milliseconds
-    case ZCL_SYSTIME_US_ATTRIBUTE_TYPE: // System time Microseconds
-        static_assert(std::is_same<chip::EventNumber, uint64_t>::value,
-                      "chip::EventNumber is expected to be uint64_t, change this when necessary");
-        static_assert(std::is_same<chip::FabricId, uint64_t>::value,
-                      "chip::FabricId is expected to be uint64_t, change this when necessary");
-        static_assert(std::is_same<chip::NodeId, uint64_t>::value,
-                      "chip::NodeId is expected to be uint64_t, change this when necessary");
-        return ZCL_INT64U_ATTRIBUTE_TYPE;
-
-    case ZCL_TEMPERATURE_ATTRIBUTE_TYPE: // Temperature
-        return ZCL_INT16S_ATTRIBUTE_TYPE;
-
-    default:
-        return type;
-    }
-}
-
-} // namespace Internal
-} // namespace Compatibility
 } // namespace app
-} // namespace chip
-
-// TODO: Remove the BindingTable definition when binding cluster is decoupled from ember.
-namespace chip {
-
-BindingTable BindingTable::sInstance;
-
-BindingTable::BindingTable()
-{
-    memset(mNextIndex, kNextNullIndex, sizeof(mNextIndex));
-}
-
-CHIP_ERROR BindingTable::Add(const EmberBindingTableEntry &entry)
-{
-    if (entry.type == MATTER_UNUSED_BINDING) {
-        return CHIP_ERROR_INVALID_ARGUMENT;
-    }
-    uint8_t newIndex = MATTER_BINDING_TABLE_SIZE;
-    for (uint8_t i = 0; i < MATTER_BINDING_TABLE_SIZE; i++) {
-        if (mBindingTable[i].type == MATTER_UNUSED_BINDING) {
-            newIndex = i;
-        }
-    }
-    if (newIndex >= MATTER_BINDING_TABLE_SIZE) {
-        return CHIP_ERROR_NO_MEMORY;
-    }
-    mBindingTable[newIndex] = entry;
-    CHIP_ERROR error = SaveEntryToStorage(newIndex, kNextNullIndex);
-    if (error == CHIP_NO_ERROR) {
-        if (mTail == kNextNullIndex) {
-            error = SaveListInfo(newIndex);
-        } else {
-            error = SaveEntryToStorage(mTail, newIndex);
-        }
-        if (error != CHIP_NO_ERROR) {
-            mStorage->SyncDeleteKeyValue(DefaultStorageKeyAllocator::BindingTableEntry(newIndex).KeyName());
-        }
-    }
-    if (error != CHIP_NO_ERROR) {
-        // Roll back
-        mBindingTable[newIndex].type = MATTER_UNUSED_BINDING;
-        return error;
-    }
-
-    if (mTail == kNextNullIndex) {
-        mTail = newIndex;
-        mHead = newIndex;
-    } else {
-        mNextIndex[mTail] = newIndex;
-        mNextIndex[newIndex] = kNextNullIndex;
-        mTail = newIndex;
-    }
-
-    mSize++;
-    return CHIP_NO_ERROR;
-}
-
-const EmberBindingTableEntry &BindingTable::GetAt(uint8_t index)
-{
-    return mBindingTable[index];
-}
-
-CHIP_ERROR BindingTable::SaveEntryToStorage(uint8_t index, uint8_t nextIndex)
-{
-    EmberBindingTableEntry &entry = mBindingTable[index];
-    uint8_t buffer[kEntryStorageSize] = {0};
-    TLV::TLVWriter writer;
-    writer.Init(buffer);
-    TLV::TLVType container;
-    ReturnErrorOnFailure(writer.StartContainer(TLV::AnonymousTag(), TLV::TLVType::kTLVType_Structure, container));
-    ReturnErrorOnFailure(writer.Put(TLV::ContextTag(kTagFabricIndex), entry.fabricIndex));
-    ReturnErrorOnFailure(writer.Put(TLV::ContextTag(kTagLocalEndpoint), entry.local));
-    if (entry.clusterId.has_value()) {
-        ReturnErrorOnFailure(writer.Put(TLV::ContextTag(kTagCluster), *entry.clusterId));
-    }
-    if (entry.type == MATTER_UNICAST_BINDING) {
-        ReturnErrorOnFailure(writer.Put(TLV::ContextTag(kTagRemoteEndpoint), entry.remote));
-        ReturnErrorOnFailure(writer.Put(TLV::ContextTag(kTagNodeId), entry.nodeId));
-    } else {
-        ReturnErrorOnFailure(writer.Put(TLV::ContextTag(kTagGroupId), entry.groupId));
-    }
-    ReturnErrorOnFailure(writer.Put(TLV::ContextTag(kTagNextEntry), nextIndex));
-    ReturnErrorOnFailure(writer.EndContainer(container));
-    ReturnErrorOnFailure(writer.Finalize());
-    return mStorage->SyncSetKeyValue(DefaultStorageKeyAllocator::BindingTableEntry(index).KeyName(), buffer,
-                                     static_cast<uint16_t>(writer.GetLengthWritten()));
-}
-
-CHIP_ERROR BindingTable::SaveListInfo(uint8_t head)
-{
-    uint8_t buffer[kListInfoStorageSize] = {0};
-    TLV::TLVWriter writer;
-    writer.Init(buffer);
-    TLV::TLVType container;
-    ReturnErrorOnFailure(writer.StartContainer(TLV::AnonymousTag(), TLV::TLVType::kTLVType_Structure, container));
-    ReturnErrorOnFailure(writer.Put(TLV::ContextTag(kTagStorageVersion), kStorageVersion));
-    ReturnErrorOnFailure(writer.Put(TLV::ContextTag(kTagHead), head));
-    ReturnErrorOnFailure(writer.EndContainer(container));
-    ReturnErrorOnFailure(writer.Finalize());
-    return mStorage->SyncSetKeyValue(DefaultStorageKeyAllocator::BindingTable().KeyName(), buffer,
-                                     static_cast<uint16_t>(writer.GetLengthWritten()));
-}
-
-CHIP_ERROR BindingTable::LoadFromStorage()
-{
-    VerifyOrReturnError(mStorage != nullptr, CHIP_ERROR_INCORRECT_STATE);
-    uint8_t buffer[kListInfoStorageSize] = {0};
-    uint16_t size = sizeof(buffer);
-    CHIP_ERROR error;
-
-    ReturnErrorOnFailure(mStorage->SyncGetKeyValue(DefaultStorageKeyAllocator::BindingTable().KeyName(), buffer, size));
-    TLV::TLVReader reader;
-    reader.Init(buffer, size);
-
-    ReturnErrorOnFailure(reader.Next(TLV::kTLVType_Structure, TLV::AnonymousTag()));
-
-    TLV::TLVType container;
-    ReturnErrorOnFailure(reader.EnterContainer(container));
-
-    ReturnErrorOnFailure(reader.Next(TLV::ContextTag(kTagStorageVersion)));
-    uint32_t version;
-    ReturnErrorOnFailure(reader.Get(version));
-    VerifyOrReturnError(version == kStorageVersion, CHIP_ERROR_VERSION_MISMATCH);
-    ReturnErrorOnFailure(reader.Next(TLV::ContextTag(kTagHead)));
-    uint8_t index;
-    ReturnErrorOnFailure(reader.Get(index));
-    mHead = index;
-    while (index != kNextNullIndex) {
-        uint8_t nextIndex;
-        error = LoadEntryFromStorage(index, nextIndex);
-        if (error != CHIP_NO_ERROR) {
-            mHead = kNextNullIndex;
-            mTail = kNextNullIndex;
-            return error;
-        }
-        mTail = index;
-        index = nextIndex;
-        mSize++;
-    }
-    error = reader.ExitContainer(container);
-    if (error != CHIP_NO_ERROR) {
-        mHead = kNextNullIndex;
-        mTail = kNextNullIndex;
-    }
-    return error;
-}
-
-CHIP_ERROR BindingTable::LoadEntryFromStorage(uint8_t index, uint8_t &nextIndex)
-{
-    uint8_t buffer[kEntryStorageSize] = {0};
-    uint16_t size = sizeof(buffer);
-    EmberBindingTableEntry entry;
-
-    ReturnErrorOnFailure(
-        mStorage->SyncGetKeyValue(DefaultStorageKeyAllocator::BindingTableEntry(index).KeyName(), buffer, size));
-    TLV::TLVReader reader;
-    reader.Init(buffer, size);
-
-    ReturnErrorOnFailure(reader.Next(TLV::kTLVType_Structure, TLV::AnonymousTag()));
-
-    TLV::TLVType container;
-    ReturnErrorOnFailure(reader.EnterContainer(container));
-    ReturnErrorOnFailure(reader.Next(TLV::ContextTag(kTagFabricIndex)));
-    ReturnErrorOnFailure(reader.Get(entry.fabricIndex));
-    ReturnErrorOnFailure(reader.Next(TLV::ContextTag(kTagLocalEndpoint)));
-    ReturnErrorOnFailure(reader.Get(entry.local));
-    ReturnErrorOnFailure(reader.Next());
-    if (reader.GetTag() == TLV::ContextTag(kTagCluster)) {
-        ClusterId clusterId;
-        ReturnErrorOnFailure(reader.Get(clusterId));
-        entry.clusterId.emplace(clusterId);
-        ReturnErrorOnFailure(reader.Next());
-    } else {
-        entry.clusterId = std::nullopt;
-    }
-    if (reader.GetTag() == TLV::ContextTag(kTagRemoteEndpoint)) {
-        entry.type = MATTER_UNICAST_BINDING;
-        ReturnErrorOnFailure(reader.Get(entry.remote));
-        ReturnErrorOnFailure(reader.Next(TLV::ContextTag(kTagNodeId)));
-        ReturnErrorOnFailure(reader.Get(entry.nodeId));
-    } else {
-        entry.type = MATTER_MULTICAST_BINDING;
-        VerifyOrReturnError(reader.GetTag() == TLV::ContextTag(kTagGroupId), CHIP_ERROR_INVALID_TLV_TAG);
-        ReturnErrorOnFailure(reader.Get(entry.groupId));
-    }
-    ReturnErrorOnFailure(reader.Next(TLV::ContextTag(kTagNextEntry)));
-    ReturnErrorOnFailure(reader.Get(nextIndex));
-    ReturnErrorOnFailure(reader.ExitContainer(container));
-    mBindingTable[index] = entry;
-    mNextIndex[index] = nextIndex;
-    return CHIP_NO_ERROR;
-}
-
-CHIP_ERROR BindingTable::RemoveAt(Iterator &iter)
-{
-    CHIP_ERROR error;
-    if (iter.mTable != this || iter.mIndex == kNextNullIndex) {
-        return CHIP_ERROR_INVALID_ARGUMENT;
-    }
-    if (iter.mIndex == mTail) {
-        mTail = iter.mPrevIndex;
-    }
-    uint8_t next = mNextIndex[iter.mIndex];
-    if (iter.mIndex != mHead) {
-        error = SaveEntryToStorage(iter.mPrevIndex, next);
-        if (error == CHIP_NO_ERROR) {
-            mNextIndex[iter.mPrevIndex] = next;
-        }
-    } else {
-        error = SaveListInfo(next);
-        if (error == CHIP_NO_ERROR) {
-            mHead = next;
-        }
-    }
-    if (error == CHIP_NO_ERROR) {
-        // The remove is considered "submitted" once the change on prev node takes effect
-        if (mStorage->SyncDeleteKeyValue(DefaultStorageKeyAllocator::BindingTableEntry(iter.mIndex).KeyName()) !=
-            CHIP_NO_ERROR) {
-            ChipLogError(AppServer, "Failed to remove binding table entry %u from storage", iter.mIndex);
-        }
-        mBindingTable[iter.mIndex].type = MATTER_UNUSED_BINDING;
-        mNextIndex[iter.mIndex] = kNextNullIndex;
-        mSize--;
-    }
-    iter.mIndex = next;
-    return error;
-}
-
-BindingTable::Iterator BindingTable::begin()
-{
-    Iterator iter;
-    iter.mTable = this;
-    iter.mPrevIndex = kNextNullIndex;
-    iter.mIndex = mHead;
-    return iter;
-}
-
-BindingTable::Iterator BindingTable::end()
-{
-    Iterator iter;
-    iter.mTable = this;
-    iter.mIndex = kNextNullIndex;
-    return iter;
-}
-
-BindingTable::Iterator BindingTable::Iterator::operator++()
-{
-    if (mIndex != kNextNullIndex) {
-        mPrevIndex = mIndex;
-        mIndex = mTable->mNextIndex[mIndex];
-    }
-    return *this;
-}
-
 } // namespace chip
 
 // Override Ember functions
 
-// TODO: Remove the emberAfEndpointIndexIsEnabled and emberAfEndpointCount functions when FabricTableImpl is decoupled
-// from ember
-chip::EndpointId emberAfEndpointFromIndex(uint16_t index)
-{
-    esp_matter::endpoint_t *ep = get_endpoint_at_index(index);
-    if (ep) {
-        return esp_matter::endpoint::get_id(ep);
-    }
-    return chip::kInvalidEndpointId;
-}
-
-bool emberAfEndpointIndexIsEnabled(uint16_t index)
-{
-    esp_matter::endpoint_t *ep = get_endpoint_at_index(index);
-    if (ep) {
-        return esp_matter::endpoint::is_enabled(ep);
-    }
-    return false;
-}
-
-uint16_t emberAfEndpointCount()
-{
-    return esp_matter::endpoint::get_count(esp_matter::node::get());
-}
-
-// TODO: Remove the emberAfGetClusterCountForEndpoint when scenes cluster is decoupled from ember
-uint8_t emberAfGetClusterCountForEndpoint(chip::EndpointId endpoint)
-{
-    esp_matter::endpoint_t *ep = esp_matter::endpoint::get(endpoint);
-    if (ep) {
-        esp_matter::cluster_t *cluster = esp_matter::cluster::get_first(ep);
-        if (cluster) {
-            uint8_t count = 0;
-            while (cluster) {
-                count++;
-                cluster = esp_matter::cluster::get_next(cluster);
-            }
-            return count;
-        }
-    }
-    return 0;
-}
-
-// TODO: Remove the emberAfGetClustersFromEndpoint function when scenes cluster is decoupled from ember
-uint8_t emberAfGetClustersFromEndpoint(chip::EndpointId endpoint, chip::ClusterId *clusterList, uint8_t listLen,
-                                       bool server)
-{
-    esp_matter::endpoint_t *ep = esp_matter::endpoint::get(endpoint);
-    if (ep) {
-        esp_matter::cluster_t *cluster = esp_matter::cluster::get_first(ep);
-        if (cluster) {
-            uint8_t count = 0;
-            while (cluster) {
-                if ((server && (esp_matter::cluster::get_flags(cluster) & esp_matter::CLUSTER_FLAG_SERVER)) ||
-                    (!server && (esp_matter::cluster::get_flags(cluster) & esp_matter::CLUSTER_FLAG_CLIENT))) {
-                    clusterList[count++] = esp_matter::cluster::get_id(cluster);
-                    if (count >= listLen) {
-                        break;
-                    }
-                }
-                cluster = esp_matter::cluster::get_next(cluster);
-            }
-            return count;
-        }
-    }
-    return 0;
-}
-
 // TODO: Remove the emberAfGetClusterServerEndpointIndex function when laundry-dryer-controls, keypad-input,
 // door-lock, level-control, target-navigator, fan-control, occupancy-sensor, valve-configuration-and-control,
 // media-playback, content-launch, audio-output, power-source, application-basic, low-power, diagnostic-logs,
-// scenes, color-control, channel, laundry-washer-controls, wake-on-lan, window-covering, content-control,
-// dishwasher-alarm, on-off, media-input, application-launcher, account-login, thermostat, electrical-energy-measurement,
+// color-control, channel, laundry-washer-controls, wake-on-lan, window-covering, content-control, dishwasher-alarm,
+// on-off, media-input, application-launcher, account-login, thermostat, electrical-energy-measurement,
 // content-app-observer, and boolean-state-configuration clusters are decoupled from ember.
 uint16_t emberAfGetClusterServerEndpointIndex(chip::EndpointId endpoint, chip::ClusterId clusterId,
                                               uint16_t fixedClusterServerEndpointCount)
@@ -1261,27 +832,6 @@ bool emberAfContainsAttribute(chip::EndpointId endpoint, chip::ClusterId cluster
     return esp_matter::attribute::get(endpoint, clusterId, attributeId);
 }
 
-// TODO: Remove the emberAfContainsClient function when binding cluster is decoupled from ember
-bool emberAfContainsClient(chip::EndpointId endpoint, chip::ClusterId clusterId)
-{
-    esp_matter::cluster_t *cluster = esp_matter::cluster::get(endpoint, clusterId);
-    if (cluster && (esp_matter::cluster::get_flags(cluster) & esp_matter::CLUSTER_FLAG_CLIENT)) {
-        return true;
-    }
-    return false;
-}
-
-// TODO: Remove the GetSemanticTagForEndpointAtIndex function when descriptor cluster is decoupled from ember
-CHIP_ERROR GetSemanticTagForEndpointAtIndex(chip::EndpointId endpoint, size_t index,
-                                            chip::app::Clusters::Descriptor::Structs::SemanticTagStruct::Type &tag)
-{
-    esp_matter::endpoint_t *ep = esp_matter::endpoint::get(endpoint);
-    if (!ep || (esp_matter::endpoint::get_semantic_tag_at_index(ep, index, tag) != ESP_OK)) {
-        return CHIP_ERROR_NOT_FOUND;
-    }
-    return CHIP_NO_ERROR;
-}
-
 // TODO: Remove the emberAfRead/Write functions when all the clusters are decoupled from ember.
 chip::Protocols::InteractionModel::Status emberAfReadAttribute(chip::EndpointId endpointId, chip::ClusterId clusterId,
                                                                chip::AttributeId attributeId, uint8_t *dataPtr,
@@ -1300,7 +850,7 @@ chip::Protocols::InteractionModel::Status emberAfReadAttribute(chip::EndpointId 
         return chip::Protocols::InteractionModel::Status::UnsupportedAttribute;
     }
     esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
-    if (esp_matter::attribute::get_val(attribute, &val) != ESP_OK) {
+    if (esp_matter::attribute::get_val_internal(attribute, &val) != ESP_OK) {
         return chip::Protocols::InteractionModel::Status::Failure;
     }
     return get_raw_data_buffer_from_attr_val(val, dataPtr, readLength);
@@ -1310,7 +860,8 @@ Status emberAfWriteAttribute(chip::EndpointId endpointId, chip::ClusterId cluste
                              uint8_t *value, EmberAfAttributeType dataType)
 {
     return emberAfWriteAttribute(chip::app::ConcreteAttributePath(endpointId, clusterId, attributeId),
-                                 EmberAfWriteDataInput(value, dataType).SetChangeListener(&gListener));
+                                 EmberAfWriteDataInput(value, dataType).SetChangeListener(
+                                     &chip::app::InteractionModelEngine::GetInstance()->GetReportingEngine()));
 }
 
 Status emberAfWriteAttribute(const chip::app::ConcreteAttributePath &path, const EmberAfWriteDataInput &input)
@@ -1334,7 +885,7 @@ Status emberAfWriteAttribute(const chip::app::ConcreteAttributePath &path, const
     if (status != Status::Success) {
         return status;
     }
-    esp_err_t err = esp_matter::attribute::set_val(attribute, &val);
+    esp_err_t err = esp_matter::attribute::set_val_internal(attribute, &val);
     if (err != ESP_OK && err != ESP_ERR_NOT_FINISHED) {
         status = Status::Failure;
     }
@@ -1345,7 +896,7 @@ Status emberAfWriteAttribute(const chip::app::ConcreteAttributePath &path, const
                 input.changeListener->MarkDirty(
                     chip::app::AttributePathParams(path.mEndpointId, path.mClusterId, path.mAttributeId));
             } else {
-                gListener.MarkDirty(
+                chip::app::InteractionModelEngine::GetInstance()->GetReportingEngine().MarkDirty(
                     chip::app::AttributePathParams(path.mEndpointId, path.mClusterId, path.mAttributeId));
             }
         }
@@ -1368,7 +919,7 @@ const EmberAfAttributeMetadata *emberAfLocateAttributeMetadata(chip::EndpointId 
     esp_matter::attribute_t *attribute = esp_matter::attribute::get(endpointId, clusterId, attributeId);
     if (attribute) {
         esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
-        if (esp_matter::attribute::get_val(attribute, &val) == ESP_OK) {
+        if (esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK) {
             s_metadata.attributeId = attributeId;
             s_metadata.attributeType = get_ember_attr_type_from_val_type(val.type);
             s_metadata.mask = esp_matter::attribute::get_flags(attribute) & 0xFF;

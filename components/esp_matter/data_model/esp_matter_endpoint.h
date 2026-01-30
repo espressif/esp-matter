@@ -21,7 +21,7 @@
 
 /* Replace these with IDs from submodule whenever they are implemented */
 #define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID 0x0016
-#define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_VERSION 3
+#define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_VERSION 4
 #define ESP_MATTER_OTA_REQUESTOR_DEVICE_TYPE_ID 0x0012
 #define ESP_MATTER_OTA_REQUESTOR_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_OTA_PROVIDER_DEVICE_TYPE_ID 0x0014
@@ -150,6 +150,25 @@
 #define ESP_MATTER_HEAT_PUMP_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_THERMOSTAT_CONTROLLER_DEVICE_TYPE_ID 0x030A
 #define ESP_MATTER_THERMOSTAT_CONTROLLER_DEVICE_TYPE_VERSION 1
+
+#define ESP_MATTER_CAMERA_DEVICE_TYPE_ID 0x0142
+#define ESP_MATTER_CAMERA_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_CLOSURE_CONTROLLER_DEVICE_TYPE_ID 0x023E
+#define ESP_MATTER_CLOSURE_CONTROLLER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_CLOSURE_DEVICE_TYPE_ID 0x0230
+#define ESP_MATTER_CLOSURE_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_CLOSURE_PANEL_DEVICE_TYPE_ID 0x0231
+#define ESP_MATTER_CLOSURE_PANEL_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_CHIME_DEVICE_TYPE_ID 0x0146
+#define ESP_MATTER_CHIME_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_ELECTRICAL_UTILITY_METER_DEVICE_TYPE_ID 0x0511
+#define ESP_MATTER_ELECTRICAL_UTILITY_METER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_ELECTRICAL_ENERGY_TARIFF_DEVICE_TYPE_ID 0x0513
+#define ESP_MATTER_ELECTRICAL_ENERGY_TARIFF_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_ELECTRICAL_METER_DEVICE_TYPE_ID 0x0514
+#define ESP_MATTER_ELECTRICAL_METER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_SOIL_SENSOR_DEVICE_TYPE_ID 0x0045
+#define ESP_MATTER_SOIL_SENSOR_DEVICE_TYPE_VERSION 1
 
 namespace esp_matter {
 
@@ -370,7 +389,7 @@ namespace on_off_plug_in_unit {
 typedef struct config : on_off_with_lighting_config {
    config() {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
-   } 
+   }
 } config_t;
 
 uint32_t get_device_type_id();
@@ -656,7 +675,7 @@ typedef struct config : app_base_config {
         nullable<int16_t> max_pressure = nullable<int16_t>(),
         nullable<uint16_t> max_speed = nullable<uint16_t>(),
         nullable<uint16_t> max_flow = nullable<uint16_t>()
-    ) : pump_configuration_and_control(max_pressure, max_speed, max_flow) {     
+    ) : pump_configuration_and_control(max_pressure, max_speed, max_flow) {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
     }
 } config_t;
@@ -1022,6 +1041,37 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** heat_pump **/
 
+namespace camera {
+
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::camera_av_stream_management::config_t camera_av_stream_management;
+    cluster::webrtc_transport_provider::config_t webrtc_transport_provider;
+    cluster::webrtc_transport_requestor::config_t webrtc_transport_requestor;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+
+} /* camera */
+
+namespace chime {
+
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::chime::config_t chime;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+
+} /* chime */
+
+
 namespace thermostat_controller {
 using config_t = app_client_config;
 
@@ -1031,7 +1081,90 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /** thermostat_controller **/
 
+namespace closure_controller {
+using config_t = app_client_config;
 
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* closure_controller */
+
+namespace closure {
+typedef struct config : app_base_config {
+    cluster::closure_control::config_t closure_control;
+
+    config() {
+        identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
+    }
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* closure */
+
+namespace closure_panel {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::closure_dimension::config_t closure_dimension;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* closure_panel */
+
+namespace electrical_utility_meter {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::meter_identification::config_t meter_identification;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* electrical_utility_meter */
+
+namespace electrical_energy_tariff {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* electrical_energy_tariff */
+
+namespace electrical_meter {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::electrical_power_measurement::config_t electrical_power_measurement;
+    cluster::electrical_energy_measurement::config_t electrical_energy_measurement;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* electrical_meter */
+
+namespace soil_sensor {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::identify::config_t identify;
+    cluster::soil_measurement::config_t soil_measurement;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* soil_sensor */
 } /* endpoint */
 
 namespace node {

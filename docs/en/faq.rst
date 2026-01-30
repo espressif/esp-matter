@@ -232,13 +232,12 @@ operations using the server's object, such as opening or closing the commissioni
 
 To address this, there are two possible approaches:
 
-- Locking the Matter thread
+- Using ScopedChipStackLock to lock the Matter thread
 
     ::
 
-        lock::chip_stack_lock(portMAX_DELAY);
+        lock::ScopedChipStackLock lock(portMAX_DELAY);
         ... // eg: access Matter attribute, open/close commissioning window.
-        lock::chip_stack_unlock();
 
 - Scheduling the work on Matter thread
 

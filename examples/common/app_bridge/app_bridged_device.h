@@ -26,6 +26,8 @@ typedef enum {
     ESP_MATTER_BRIDGED_DEVICE_TYPE_BLEMESH,
     /** ESP-NOW */
     ESP_MATTER_BRIDGED_DEVICE_TYPE_ESPNOW,
+    /** Rainmaker */
+    ESP_MATTER_BRIDGED_DEVICE_TYPE_RAINMAKER,
 } app_bridged_device_type_t;
 
 /* Bridged Device Address */
@@ -42,6 +44,11 @@ typedef union {
     /** ESP-NOW */
     struct {
         uint8_t espnow_macaddr[6];
+    };
+    /** Rainmaker */
+    struct {
+        char rainmaker_node_id[32];
+        char rainmaker_node_name[32];
     };
 } app_bridged_device_address_t;
 
@@ -65,6 +72,8 @@ app_bridged_device_address_t app_bridge_zigbee_address(uint8_t zigbee_endpointid
 app_bridged_device_address_t app_bridge_blemesh_address(uint16_t blemesh_addr);
 
 app_bridged_device_address_t app_bridge_espnow_address(uint8_t espnow_macaddr[6], uint16_t espnow_initiator_attr);
+
+app_bridged_device_address_t app_bridge_rainmaker_address(const char* rainmaker_node_id, const char* rainmaker_node_name);
 
 /** Bridged Device APIs */
 app_bridged_device_t *app_bridge_create_bridged_device(node_t *node, uint16_t parent_endpoint_id,
@@ -97,3 +106,12 @@ app_bridged_device_t *app_bridge_get_device_by_espnow_macaddr(uint8_t espnow_mac
 uint16_t app_bridge_get_matter_endpointid_by_espnow_macaddr(uint8_t espnow_macaddr[6]);
 
 uint8_t* app_bridge_get_espnow_macaddr_by_matter_endpointid(uint16_t matter_endpointid);
+
+/** Rainmaker Device APIs */
+app_bridged_device_t *app_bridge_get_device_by_rainmaker_node_id(char rainmaker_node_id[32]);
+
+uint16_t app_bridge_get_matter_endpointid_by_rainmaker_node_id(char rainmaker_node_id[32]);
+
+char* app_bridge_get_rainmaker_node_id_by_matter_endpointid(uint16_t matter_endpointid);
+
+char* app_bridge_get_rainmaker_node_name_by_matter_endpointid(uint16_t matter_endpointid);

@@ -35,12 +35,6 @@ namespace cluster {
  */
 void plugin_init_callback_common();
 
-/** Common cluster delegate init callback
- *
- * This is the common delegate init callback which calls the delegate init callbacks in the clusters.
- */
-void delegate_init_callback_common();
-
 /** Common cluster add bounds callback
  *
  * This is the common add bounds callback which set the bounds to all the attributes of the clusters.
@@ -538,7 +532,6 @@ typedef struct config {
     uint8_t mode;
     struct {
         feature::position_aware_lift::config_t position_aware_lift;
-        feature::absolute_position::config_t absolute_position;
         feature::position_aware_tilt::config_t position_aware_tilt;
     } features;
     uint32_t feature_flags;
@@ -636,10 +629,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace illuminance_measurement {
 typedef struct config {
-    nullable<uint16_t> illuminance_measured_value;
-    nullable<uint16_t> illuminance_min_measured_value;
-    nullable<uint16_t> illuminance_max_measured_value;
-    config() : illuminance_measured_value(0), illuminance_min_measured_value(), illuminance_max_measured_value() {}
+    nullable<uint16_t> measured_value;
+    nullable<uint16_t> min_measured_value;
+    nullable<uint16_t> max_measured_value;
+    config() : measured_value(0), min_measured_value(), max_measured_value() {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -647,10 +640,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace pressure_measurement {
 typedef struct config {
-    nullable<int16_t> pressure_measured_value;
-    nullable<int16_t> pressure_min_measured_value;
-    nullable<int16_t> pressure_max_measured_value;
-    config() : pressure_measured_value(), pressure_min_measured_value(), pressure_max_measured_value() {}
+    nullable<int16_t> measured_value;
+    nullable<int16_t> min_measured_value;
+    nullable<int16_t> max_measured_value;
+    config() : measured_value(), min_measured_value(), max_measured_value() {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -658,10 +651,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace flow_measurement {
 typedef struct config {
-    nullable<uint16_t> flow_measured_value;
-    nullable<uint16_t> flow_min_measured_value;
-    nullable<uint16_t> flow_max_measured_value;
-    config() : flow_measured_value(), flow_min_measured_value(), flow_max_measured_value() {}
+    nullable<uint16_t> measured_value;
+    nullable<uint16_t> min_measured_value;
+    nullable<uint16_t> max_measured_value;
+    config() : measured_value(), min_measured_value(), max_measured_value() {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -700,11 +693,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace mode_select {
 typedef struct config {
-    char mode_select_description[k_max_mode_select_description_length + 1];
+    char description[k_max_description_length + 1];
     const nullable<uint16_t> standard_namespace;
     uint8_t current_mode;
     void *delegate;
-    config() : mode_select_description{0}, standard_namespace(), current_mode(0), delegate(nullptr) {}
+    config() : description{0}, standard_namespace(), current_mode(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -803,7 +796,7 @@ namespace power_topology {
 typedef struct config {
     uint32_t feature_flags;
     void *delegate;
-    config() : feature_flags(0), delegate(nullptr) {} 
+    config() : feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -967,6 +960,122 @@ namespace ecosystem_information {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* ecosystem_information */
+
+namespace camera_av_stream_management {
+typedef struct config {
+    uint32_t max_content_buffer_size;
+    uint32_t max_network_bandwidth;
+    uint32_t feature_flags;
+    config()  : max_content_buffer_size(0), max_network_bandwidth(0), feature_flags(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+}/*camera av stream management*/
+
+namespace webrtc_transport_provider {
+using config_t = common::config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+}/*webrtc transport provider*/
+
+namespace webrtc_transport_requestor {
+using config_t = common::config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+}/*webrtc transport requestor*/
+
+
+namespace chime {
+typedef struct config {
+    void *delegate;
+    config() : delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* chime */
+
+namespace closure_control {
+typedef struct config {
+    void *delegate;
+    uint32_t feature_flags;
+    config() : delegate(nullptr), feature_flags(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* closure_control */
+
+namespace closure_dimension {
+typedef struct config {
+    void *delegate;
+    uint32_t feature_flags = 0;
+    config() : delegate(nullptr), feature_flags(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* closure_dimension */
+
+namespace camera_av_settings_user_level_management {
+typedef struct config {
+    uint32_t feature_flags;
+    config() : feature_flags(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* camera_av_settings_user_level_management */
+
+namespace push_av_stream_transport {
+typedef struct config {
+    void *delegate;
+    config() : delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* push_av_stream_transport */
+
+namespace commodity_tariff {
+typedef struct config {
+    void *delegate;
+    uint32_t feature_flags;
+    config() : delegate(nullptr), feature_flags(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* commodity_tariff */
+
+namespace commodity_price {
+typedef struct config {
+    void *delegate;
+    config() : delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* commodity_price */
+
+namespace commodity_metering {
+using config_t = common::config_t;
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* commodity_metering */
+
+namespace electrical_grid_conditions {
+typedef struct config {
+    void *delegate;
+    config() : delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* electrical_grid_conditions */
+
+namespace meter_identification {
+using config_t = common::config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* meter_identification */
+
+namespace soil_measurement {
+using config_t = common::config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* soil_measurement */
 
 } /* cluster */
 } /* esp_matter */

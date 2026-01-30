@@ -40,6 +40,7 @@
 using chip::ClusterId;
 using chip::CommandId;
 using chip::EndpointId;
+using chip::FabricIndex;
 using chip::ReadOnlyBufferBuilder;
 using chip::app::AttributePathParams;
 using chip::app::AttributeValueDecoder;
@@ -107,7 +108,8 @@ public:
 #endif
     }
 
-    void ListAttributeWriteNotification(const ConcreteAttributePath &aPath, ListWriteOperation opType) override {}
+    void ListAttributeWriteNotification(const ConcreteAttributePath &aPath, ListWriteOperation opType,
+                                        FabricIndex accessFabric) override {}
 
     std::optional<ActionReturnStatus> InvokeCommand(const InvokeRequest &request, TLVReader &input_arguments,
                                                     CommandHandler *handler) override
@@ -138,11 +140,6 @@ public:
 #else
         return CHIP_NO_ERROR;
 #endif
-    }
-
-    CHIP_ERROR SemanticTags(EndpointId endpointId, ReadOnlyBufferBuilder<SemanticTag> &builder) override
-    {
-        return CHIP_NO_ERROR;
     }
 
     CHIP_ERROR DeviceTypes(EndpointId endpointId, ReadOnlyBufferBuilder<DeviceTypeEntry> &builder) override

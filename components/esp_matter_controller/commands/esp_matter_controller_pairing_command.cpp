@@ -52,7 +52,7 @@ void pairing_command::OnCommissioningSuccess(chip::PeerId peerId)
     if (m_callbacks.commissioning_success_callback) {
         auto fabric = controller_instance.get_commissioner()->GetFabricTable()->FindFabricWithCompressedId(
             peerId.GetCompressedFabricId());
-        m_callbacks.commissioning_success_callback(ScopedNodeId(fabric->GetFabricIndex(), peerId.GetNodeId()));
+        m_callbacks.commissioning_success_callback(ScopedNodeId(peerId.GetNodeId(), fabric->GetFabricIndex()));
     }
 }
 
@@ -68,7 +68,7 @@ void pairing_command::OnCommissioningFailure(
         auto fabric = controller_instance.get_commissioner()->GetFabricTable()->FindFabricWithCompressedId(
             peerId.GetCompressedFabricId());
         m_callbacks.commissioning_failure_callback(
-            ScopedNodeId(fabric->GetFabricIndex(), peerId.GetNodeId()), error, stageFailed,
+            ScopedNodeId(peerId.GetNodeId(), fabric->GetFabricIndex()), error, stageFailed,
             additionalErrorInfo.HasValue() ? std::make_optional(additionalErrorInfo.Value()) : std::nullopt);
     }
     if (m_device_is_icd) {
@@ -106,7 +106,7 @@ void pairing_command::OnICDStayActiveComplete(ScopedNodeId deviceId, uint32_t pr
 void pairing_command::OnDiscoveredDevice(const Dnssd::CommissionNodeData &nodeData)
 {
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
-    // Ignore nodes with closed comissioning window
+    // Ignore nodes with closed commissioning window
     VerifyOrReturn(nodeData.commissioningMode != 0);
     const uint16_t port = nodeData.port;
     char buf[Inet::IPAddress::kMaxStringLength];
@@ -284,12 +284,16 @@ esp_err_t pairing_command::pairing_code_wifi_thread(NodeId nodeId, const char *s
     return ESP_OK;
 }
 
-static void remove_fabric_handler(NodeId remote_node, CHIP_ERROR status)
+void pairing_command::remove_fabric_handler(NodeId remote_node, CHIP_ERROR status)
 {
     if (status == CHIP_NO_ERROR) {
         ESP_LOGI(TAG, "Succeeded to remove fabric for remote node 0x%" PRIx64, remote_node);
     } else {
         ESP_LOGE(TAG, "Failed to remove fabric for remote node 0x%" PRIx64, remote_node);
+    }
+
+    if (pairing_command::get_instance().m_callbacks.unpair_complete_callback) {
+        pairing_command::get_instance().m_callbacks.unpair_complete_callback(remote_node, status);
     }
 }
 

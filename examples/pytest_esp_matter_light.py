@@ -116,10 +116,10 @@ def test_matter_commissioning_c2(dut:Dut) -> None:
 )
 
 # Matter over wifi commissioning
-def test_matter_commissioning_c6(dut:Dut, certification_tests: str) -> None:
+def test_matter_commissioning_c6(dut:Dut, certification_tests: str, ci_branch: str) -> None:
     light = dut
     # BLE start advertising
-    light.expect(r'chip\[DL\]\: Configuring CHIPoBLE advertising', timeout=20)
+    light.expect(r'Configuring CHIPoBLE advertising', timeout=20)
     # Start commissioning
     time.sleep(5)
     command = CHIP_TOOL_EXE + f" pairing ble-wifi 1 {PYTEST_SSID} {PYTEST_PASSPHRASE} 20202021 3840"
@@ -144,7 +144,7 @@ def test_matter_commissioning_c6(dut:Dut, certification_tests: str) -> None:
 
     light.write('matter esp factoryreset')
     time.sleep(10)
-    run_python_certification_tests(light, certification_tests)
+    run_python_certification_tests(light, certification_tests, ci_branch)
 
     result = re.findall(r'Run command failure', str(out_str))
     if len(result) != 0:

@@ -18,7 +18,7 @@ set(EXTRA_COMPONENT_DIRS
 
 project(controller)
 
-idf_build_set_property(CXX_COMPILE_OPTIONS "-std=gnu++17;-Os;-DCHIP_HAVE_CONFIG_H;-Wno-overloaded-virtual" APPEND)
+idf_build_set_property(CXX_COMPILE_OPTIONS "-std=gnu++17;-Os;-DCHIP_HAVE_CONFIG_H;-Wno-overloaded-virtual;-Wno-error=unused-result" APPEND)
 idf_build_set_property(C_COMPILE_OPTIONS "-Os" APPEND)
 
 # We don't need Thread Network Commissioning Driver

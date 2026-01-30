@@ -58,7 +58,7 @@ RUN set -x \
     && git fetch origin --depth=1  ${CHIP_CHECKOUT_REF} \
     && git checkout FETCH_HEAD \
     && ./scripts/checkout_submodules.py --platform esp32 linux --shallow \
-    && bash -c "source scripts/bootstrap.sh" \
+    && bash -c "source scripts/bootstrap.sh -p all,esp32" \
     && ./scripts/build_python.sh --enable_ble true --chip_detail_logging true -i out/py-env \
     && bash -c "source out/py-env/bin/activate" \
     && ./scripts/examples/gn_build_example.sh examples/chip-tool out/host \

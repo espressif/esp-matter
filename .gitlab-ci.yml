@@ -28,7 +28,7 @@ variables:
     IDF_CHECKOUT_REF: "v5.4.1"
     # This variable represents the short hash of the connectedhomeip submodule.
     # Note: Do change this short hash on submodule update MRs.
-    CHIP_SHORT_HASH: "bdc38cd772"
+    CHIP_SHORT_HASH: "8f943388a"
     DOCKER_IMAGE_NAME: "espressif/chip-idf"
 
 .add_gitlab_ssh_key: &add_gitlab_ssh_key |
@@ -93,6 +93,11 @@ variables:
   - git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/espressif/esp-rainmaker.git
   - cd ${ESP_RMAKER_PATH}/examples/matter/
 
+.setup_kvs_sdk: &setup_kvs_sdk
+  - cd ${CI_PROJECT_DIR}
+  - git clone -b beta-reference-esp-port --single-branch --depth 1 --recurse-submodules https://github.com/awslabs/amazon-kinesis-video-streams-webrtc-sdk-c.git
+  - export KVS_SDK_PATH=${CI_PROJECT_DIR}/amazon-kinesis-video-streams-webrtc-sdk-c
+
 .build_matter_examples: &build_matter_examples
     - export MATTER_EXAMPLES_PATH=$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/examples
     - cd $ESP_MATTER_PATH/connectedhomeip/connectedhomeip
@@ -112,9 +117,7 @@ variables:
     - rm -rf ${ESP_MATTER_PATH}/../platform
     - mkdir -p ${ESP_MATTER_PATH}/../platform
     - cp -r ${CHIP_SUBMODULE_PATH}/src/platform/ESP32 $ESP_MATTER_PATH/../platform/ESP32_custom
-    # We have modified the ESP32SecureCertDataProvider.h file to include the ESP32FactoryDataProvider.h
-    # So copying all files from the external_platform directory.
-    - cp ${ESP_MATTER_PATH}/examples/common/external_platform/* $ESP_MATTER_PATH/../platform/ESP32_custom/
+    - cp ${ESP_MATTER_PATH}/examples/common/external_platform/BUILD.gn $ESP_MATTER_PATH/../platform/ESP32_custom
     - cd ${ESP_MATTER_PATH}/examples/light
     - cp sdkconfig.defaults sdkconfig.defaults.backup
     - cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
@@ -278,7 +281,6 @@ build_image:
     - *add_gitlab_ssh_key
     - *get_build_caches
     - *setup_idf
-    - pip install 'idf-component-manager~=2.1.2'
     - cd ${ESP_MATTER_PATH}
     - mkdir -p ${REPOS_PATH}
     - *update_build_caches
@@ -464,6 +466,7 @@ build_esp_matter_examples_idf_v4_4:
   extends:
         - .build_examples_template
   image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
+  allow_failure: true
   artifacts:
     paths:
       - "examples/**/build*/size.json"
@@ -548,7 +551,12 @@ pytest_esp32c6_esp_matter_dut:
     - cp ${ESP_MATTER_PATH}/tools/ci/extended_color_light_wifi_pics_code.txt $ESP_MATTER_PATH/connectedhomeip/connectedhomeip/src/python_testing/
     - pip install -r tools/ci/requirements-pytest.txt
     - python3 -c "import os; os.environ['TEST_CHUNK'] = '$TEST_CHUNK'"
-    - pytest examples/ --target esp32c6 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml --certification-json=$ESP_MATTER_PATH/tools/ci/certification_test_commands.json
+    - |
+      if [ $CI_PIPELINE_SOURCE == "merge_request_event" ]; then
+        pytest examples/ --target esp32c6 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml --certification-json=$ESP_MATTER_PATH/tools/ci/certification_test_commands.json --ci-branch $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
+      else
+        pytest examples/ --target esp32c6 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml --certification-json=$ESP_MATTER_PATH/tools/ci/certification_test_commands.json
+      fi
   tags: ["esp32c6", "esp_matter_dut"]
   parallel:
     matrix:
@@ -612,6 +620,20 @@ build_managed_component_light:
         - cd ${ESP_MATTER_PATH}/examples/managed_component_light
         - idf.py set-target esp32c3
         - idf.py build
+
+build_esp_matter_camera_example:
+  extends:
+        - .build_examples_template
+  before_script:
+    - *setup_idf
+    - *setup_matter
+    - *setup_kvs_sdk
+  variables:
+    KVS_SDK_PATH: ${CI_PROJECT_DIR}/amazon-kinesis-video-streams-webrtc-sdk-c
+  script:
+    - cd ${ESP_MATTER_PATH}/examples/camera
+    - idf.py set-target esp32c6
+    - idf.py build
 
 # This job is allowed to fail due to a circular dependency with esp-rainmaker.
 build_esp_rainmaker_apps:

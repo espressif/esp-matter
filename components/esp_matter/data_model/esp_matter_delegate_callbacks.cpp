@@ -17,6 +17,7 @@
 #include <esp_matter_delegate_callbacks.h>
 #include <esp_matter_core.h>
 #include <esp_matter_feature.h>
+#include <esp_matter_data_model_priv.h>
 #include <app/clusters/mode-base-server/mode-base-server.h>
 #include <app/clusters/energy-evse-server/energy-evse-server.h>
 #include <app/clusters/microwave-oven-control-server/microwave-oven-control-server.h>
@@ -24,14 +25,10 @@
 #include <app/clusters/resource-monitoring-server/resource-monitoring-server.h>
 #include <app/clusters/fan-control-server/fan-control-server.h>
 #include <app/clusters/laundry-dryer-controls-server/laundry-dryer-controls-server.h>
-#include <app/clusters/valve-configuration-and-control-server/valve-configuration-and-control-server.h>
-#include <app/clusters/device-energy-management-server/device-energy-management-server.h>
+#include <app/clusters/valve-configuration-and-control-server/valve-configuration-and-control-cluster.h>
 #include <app/clusters/door-lock-server/door-lock-server.h>
 #include <app/clusters/boolean-state-configuration-server/boolean-state-configuration-server.h>
-#include <app/clusters/time-synchronization-server/time-synchronization-server.h>
 #include <app/clusters/application-basic-server/application-basic-server.h>
-#include <app/clusters/power-topology-server/power-topology-server.h>
-#include <app/clusters/electrical-power-measurement-server/electrical-power-measurement-server.h>
 #include <app/clusters/laundry-washer-controls-server/laundry-washer-controls-server.h>
 #include <app/clusters/window-covering-server/window-covering-server.h>
 #include <app/clusters/dishwasher-alarm-server/dishwasher-alarm-server.h>
@@ -43,10 +40,24 @@
 #include <app/clusters/commissioner-control-server/commissioner-control-server.h>
 #include <app/clusters/actions-server/actions-server.h>
 #include <app/clusters/thermostat-server/thermostat-server.h>
-#include <app/clusters/ota-provider/ota-provider-cluster.h>
-#include <app/clusters/ota-provider/CodegenIntegration.h>
 #include <app/clusters/diagnostic-logs-server/diagnostic-logs-server.h>
+#include <app/clusters/closure-control-server/closure-control-server.h>
+#include <app/clusters/closure-dimension-server/closure-dimension-server.h>
+#include <app/clusters/commodity-tariff-server/commodity-tariff-server.h>
+#include <app/clusters/commodity-price-server/commodity-price-server.h>
+#include <app/clusters/electrical-grid-conditions-server/electrical-grid-conditions-server.h>
+#include <app/clusters/meter-identification-server/meter-identification-server.h>
 #include <unordered_map>
+
+#include <clusters/ota_software_update_provider/integration.h>
+#include <clusters/push_av_stream_transport/integration.h>
+#include <clusters/power_topology/integration.h>
+#include <clusters/device_energy_management/integration.h>
+#include <clusters/diagnostic_logs/integration.h>
+#include <clusters/electrical_power_measurement/integration.h>
+#include <clusters/time_synchronization/integration.h>
+#include <clusters/resource_monitor/integration.h>
+#include <clusters/chime/integration.h>
 
 using namespace chip::app::Clusters;
 namespace esp_matter {
@@ -59,9 +70,10 @@ static uint32_t get_feature_map_value(uint16_t endpoint_id, uint32_t cluster_id)
 {
     uint32_t attribute_id = Globals::Attributes::FeatureMap::Id;
     attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
+    VerifyOrReturnError(attribute, 0);
 
     esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
-    attribute::get_val(attribute, &val);
+    VerifyOrReturnError(attribute::get_val_internal(attribute, &val) == ESP_OK, 0);
     return val.val.u32;
 }
 
@@ -80,21 +92,6 @@ chip::BitMask<EnergyEvse::OptionalAttributes> get_energy_evse_enabled_optional_a
     
     if (endpoint::is_attribute_enabled(endpoint_id, EnergyEvse::Id, EnergyEvse::Attributes::ApproximateEVEfficiency::Id)) {
         optional_attrs.Set(EnergyEvse::OptionalAttributes::kSupportsApproximateEvEfficiency);
-    }
-    
-    return optional_attrs;
-}
-
-chip::BitMask<PowerTopology::OptionalAttributes> get_power_topology_enabled_optional_attributes(uint16_t endpoint_id)
-{
-    chip::BitMask<PowerTopology::OptionalAttributes> optional_attrs = 0;
-    
-    if (endpoint::is_attribute_enabled(endpoint_id, PowerTopology::Id, PowerTopology::Attributes::AvailableEndpoints::Id)) {
-        optional_attrs.Set(PowerTopology::OptionalAttributes::kOptionalAttributeAvailableEndpoints);
-    }
-    
-    if (endpoint::is_attribute_enabled(endpoint_id, PowerTopology::Id, PowerTopology::Attributes::ActiveEndpoints::Id)) {
-        optional_attrs.Set(PowerTopology::OptionalAttributes::kOptionalAttributeActiveEndpoints);
     }
     
     return optional_attrs;
@@ -181,7 +178,7 @@ void InitModeDelegate(void *delegate, uint16_t endpoint_id, uint32_t cluster_id)
     ModeBase::Delegate *mode_delegate = static_cast<ModeBase::Delegate*>(delegate);
     uint32_t feature_map = get_feature_map_value(endpoint_id, cluster_id);
     modeInstance = new ModeBase::Instance(mode_delegate, endpoint_id, cluster_id, feature_map);
-    modeInstance->Init();
+    (void)modeInstance->Init();
 }
 
 void LaundryWasherModeDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -233,12 +230,16 @@ void MicrowaveOvenModeDelegateInitCB(void *delegate, uint16_t endpoint_id)
     } else {
         modeInstance = s_microwave_oven_mode_instances[endpoint_id];
     }
-    modeInstance->Init();
+    (void)modeInstance->Init();
 }
 
 void DeviceEnergyManagementModeDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    InitModeDelegate(delegate, endpoint_id, DeviceEnergyManagementMode::Id);
+    VerifyOrReturn(delegate != nullptr);
+    DeviceEnergyManagement::Delegate *_delegate = static_cast<DeviceEnergyManagement::Delegate*>(delegate);
+    chip::BitMask<DeviceEnergyManagement::Feature> feature_map(get_feature_map_value(endpoint_id, DeviceEnergyManagement::Id));
+    DeviceEnergyManagement::Instance *instance = new DeviceEnergyManagement::Instance(endpoint_id, *_delegate, feature_map);
+    (void)instance->Init();
 }
 
 void EnergyEvseDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -251,7 +252,7 @@ void EnergyEvseDelegateInitCB(void *delegate, uint16_t endpoint_id)
     chip::BitMask<EnergyEvse::OptionalCommands> optional_cmds = get_energy_evse_enabled_optional_commands(endpoint_id);
     energyEvseInstance = new EnergyEvse::Instance(endpoint_id, *energy_evse_delegate, chip::BitMask<EnergyEvse::Feature, uint32_t>(feature_map),
                             optional_attrs, optional_cmds);
-    energyEvseInstance->Init();
+    (void)energyEvseInstance->Init();
 }
 
 void MicrowaveOvenControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -290,7 +291,7 @@ void MicrowaveOvenControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
     uint32_t feature_map = get_feature_map_value(endpoint_id, MicrowaveOvenControl::Id);
     microwaveOvenControlInstance = new MicrowaveOvenControl::Instance(microwave_oven_control_delegate, endpoint_id, MicrowaveOvenControl::Id, feature_map,
                                         *operationalStateInstance, *microwaveOvenModeInstance);
-    microwaveOvenControlInstance->Init();
+    (void)microwaveOvenControlInstance->Init();
 }
 
 void OperationalStateDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -306,7 +307,7 @@ void OperationalStateDelegateInitCB(void *delegate, uint16_t endpoint_id)
     } else {
         operationalStateInstance = s_operational_state_instances[endpoint_id];
     }
-    operationalStateInstance->Init();
+    (void)operationalStateInstance->Init();
 }
 
 void FanControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -319,23 +320,17 @@ void FanControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
 void HepaFilterMonitoringDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     VerifyOrReturn(delegate != nullptr);
-    static ResourceMonitoring::Instance * hepaFilterMonitoringInstance = nullptr;
     ResourceMonitoring::Delegate *resource_monitoring_delegate = static_cast<ResourceMonitoring::Delegate*>(delegate);
-    uint32_t feature_map = get_feature_map_value(endpoint_id, HepaFilterMonitoring::Id);
-    hepaFilterMonitoringInstance = new ResourceMonitoring::Instance(resource_monitoring_delegate, endpoint_id, HepaFilterMonitoring::Id,
-                                        static_cast<uint32_t>(feature_map), ResourceMonitoring::DegradationDirectionEnum::kDown, true);
-    hepaFilterMonitoringInstance->Init();
+    (void) chip::app::Clusters::ResourceMonitoring::SetDefaultDelegate(endpoint_id, HepaFilterMonitoring::Id,
+                                                                       resource_monitoring_delegate);
 }
 
 void ActivatedCarbonFilterMonitoringDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     VerifyOrReturn(delegate != nullptr);
-    static ResourceMonitoring::Instance * activatedCarbonFilterMonitoringInstance = nullptr;
     ResourceMonitoring::Delegate *resource_monitoring_delegate = static_cast<ResourceMonitoring::Delegate*>(delegate);
-    uint32_t feature_map = get_feature_map_value(endpoint_id, ActivatedCarbonFilterMonitoring::Id);
-    activatedCarbonFilterMonitoringInstance = new ResourceMonitoring::Instance(resource_monitoring_delegate, endpoint_id, ActivatedCarbonFilterMonitoring::Id,
-                                            static_cast<uint32_t>(feature_map), ResourceMonitoring::DegradationDirectionEnum::kDown, true);
-    activatedCarbonFilterMonitoringInstance->Init();
+    (void) chip::app::Clusters::ResourceMonitoring::SetDefaultDelegate(endpoint_id, ActivatedCarbonFilterMonitoring::Id,
+                                                                       resource_monitoring_delegate);
 }
 
 void LaundryDryerControlsDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -359,14 +354,14 @@ void DeviceEnergyManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
     DeviceEnergyManagement::Delegate *device_energy_management_delegate = static_cast<DeviceEnergyManagement::Delegate*>(delegate);
     uint32_t feature_map = get_feature_map_value(endpoint_id, DeviceEnergyManagement::Id);
     deviceEnergyManagementInstance = new DeviceEnergyManagement::Instance(endpoint_id, *device_energy_management_delegate, chip::BitMask<DeviceEnergyManagement::Feature, uint32_t>(feature_map));
-    deviceEnergyManagementInstance->Init();
+    (void)deviceEnergyManagementInstance->Init();
 }
 
 void DoorLockDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     VerifyOrReturn(delegate != nullptr);
     DoorLock::Delegate *door_lock_delegate = static_cast<DoorLock::Delegate*>(delegate);
-    DoorLockServer::Instance().SetDelegate(endpoint_id, door_lock_delegate);
+    (void)DoorLockServer::Instance().SetDelegate(endpoint_id, door_lock_delegate);
 }
 
 void BooleanStateConfigurationDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -395,11 +390,9 @@ void PowerTopologyDelegateInitCB(void *delegate, uint16_t endpoint_id)
     VerifyOrReturn(delegate != nullptr);
     static PowerTopology::Instance * powerTopologyInstance = nullptr;
     PowerTopology::Delegate *power_topology_delegate = static_cast<PowerTopology::Delegate*>(delegate);
-    uint32_t feature_map = get_feature_map_value(endpoint_id, PowerTopology::Id);
-    chip::BitMask<PowerTopology::OptionalAttributes> optional_attrs = get_power_topology_enabled_optional_attributes(endpoint_id);
-    powerTopologyInstance = new PowerTopology::Instance(endpoint_id, *power_topology_delegate, chip::BitMask<PowerTopology::Feature,
-                            uint32_t>(feature_map), optional_attrs);
-    powerTopologyInstance->Init();
+    chip::BitMask<PowerTopology::Feature> feature_map(get_feature_map_value(endpoint_id, PowerTopology::Id));
+    powerTopologyInstance = new PowerTopology::Instance(endpoint_id, *power_topology_delegate, feature_map);
+    (void)powerTopologyInstance->Init();
 }
 
 void ElectricalPowerMeasurementDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -411,7 +404,7 @@ void ElectricalPowerMeasurementDelegateInitCB(void *delegate, uint16_t endpoint_
     chip::BitMask<ElectricalPowerMeasurement::OptionalAttributes> optional_attrs = get_electrical_power_measurement_enabled_optional_attributes(endpoint_id);
     electricalPowerMeasurementInstance = new ElectricalPowerMeasurement::Instance(endpoint_id, *electrical_power_measurement_delegate,
                             chip::BitMask<ElectricalPowerMeasurement::Feature, uint32_t>(feature_map), optional_attrs);
-    electricalPowerMeasurementInstance->Init();
+    (void)electricalPowerMeasurementInstance->Init();
 }
 
 void LaundryWasherControlsDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -463,7 +456,7 @@ void ThreadBorderRouterManagementDelegateInitCB(void *delegate, uint16_t endpoin
     assert(thread_br_delegate->GetPanChangeSupported() == pan_change_supported);
     ThreadBorderRouterManagement::ServerInstance *server_instance =
         chip::Platform::New<ThreadBorderRouterManagement::ServerInstance>(endpoint_id, thread_br_delegate, chip::Server::GetInstance().GetFailSafeContext());
-    server_instance->Init();
+    (void)server_instance->Init();
 }
 
 void ServiceAreaDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -481,7 +474,7 @@ void WaterHeaterManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
     WaterHeaterManagement::Delegate *whtr_delegate = static_cast<WaterHeaterManagement::Delegate*>(delegate);
     uint32_t feature_map = get_feature_map_value(endpoint_id, WaterHeaterManagement::Id);
     wHtrInstance = new WaterHeaterManagement::Instance(endpoint_id, *whtr_delegate, chip::BitMask<WaterHeaterManagement::Feature, uint32_t>(feature_map));
-    wHtrInstance->Init();
+    (void)wHtrInstance->Init();
 }
 
 void EnergyPreferenceDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -504,7 +497,7 @@ void CommissionerControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
     CommissionerControl::CommissionerControlServer *commissioner_control_instance = nullptr;
     commissioner_control_instance =
         new CommissionerControl::CommissionerControlServer(commissioner_control_delegate, endpoint_id);
-    commissioner_control_instance->Init();
+    (void)commissioner_control_instance->Init();
 }
 
 void ActionsDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -513,7 +506,7 @@ void ActionsDelegateInitCB(void *delegate, uint16_t endpoint_id)
     static Actions::ActionsServer *actionsServer = nullptr;
     Actions::Delegate *actions_delegate = static_cast<Actions::Delegate*>(delegate);
     actionsServer = new Actions::ActionsServer(endpoint_id, *actions_delegate);
-    actionsServer->Init();
+    (void)actionsServer->Init();
 }
 
 
@@ -532,12 +525,86 @@ void OtaSoftwareUpdateProviderDelegateInitCB(void *delegate, uint16_t endpoint_i
 
 void DiagnosticLogsDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    VerifyOrReturn(delegate != nullptr);
+    VerifyOrReturn(delegate != nullptr && endpoint_id == chip::kRootEndpointId);
     DiagnosticLogs::DiagnosticLogsProviderDelegate *diagnostic_logs_delegate = static_cast<DiagnosticLogs::DiagnosticLogsProviderDelegate*>(delegate);
-    DiagnosticLogs::DiagnosticLogsServer::Instance().SetDiagnosticLogsProviderDelegate(endpoint_id, diagnostic_logs_delegate);
+    DiagnosticLogs::SetDiagnosticLogsProviderDelegate(diagnostic_logs_delegate);
+}
+
+void ChimeDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    ChimeDelegate *chime_delegate = static_cast<ChimeDelegate*>(delegate);
+    Chime::ChimeServer *chime_server = new Chime::ChimeServer(endpoint_id, *chime_delegate);
+    (void)chime_server->Init();
+}
+
+void ClosureControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    ClosureControl::DelegateBase *closure_control_delegate = static_cast<ClosureControl::DelegateBase*>(delegate);
+    ClosureControl::MatterContext *matter_context = new ClosureControl::MatterContext(endpoint_id);
+    ClosureControl::ClusterLogic *cluster_logic = new ClosureControl::ClusterLogic(*closure_control_delegate, *matter_context);
+    ClosureControl::Interface *server_interface = new ClosureControl::Interface(endpoint_id, *cluster_logic);
+    (void)server_interface->Init();
+}
+
+
+void ClosureDimensionDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    ClosureDimension::DelegateBase *closure_dimension_delegate = static_cast<ClosureDimension::DelegateBase*>(delegate);
+    ClosureDimension::MatterContext *matter_context = new ClosureDimension::MatterContext(endpoint_id);
+    ClosureDimension::ClusterLogic *cluster_logic = new ClosureDimension::ClusterLogic(*closure_dimension_delegate, *matter_context);
+    ClosureDimension::Interface *server_interface = new ClosureDimension::Interface(endpoint_id, *cluster_logic);
+    (void)server_interface->Init();
+}
+
+
+void PushAvStreamTransportDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    PushAvStreamTransportDelegate *push_av_stream_transport_delegate = static_cast<PushAvStreamTransportDelegate*>(delegate);
+    chip::app::Clusters::PushAvStreamTransport::SetDelegate(endpoint_id, push_av_stream_transport_delegate);
+}
+
+
+void CommodityTariffDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    CommodityTariff::Delegate *commodity_tariff_delegate = static_cast<CommodityTariff::Delegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, CommodityTariff::Id);
+    CommodityTariff::Instance *commodity_tariff_instance = new CommodityTariff::Instance(endpoint_id, *commodity_tariff_delegate, chip::BitMask<CommodityTariff::Feature, uint32_t>(feature_map));
+    (void)commodity_tariff_instance->Init();
+}
+
+
+void CommodityPriceDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    CommodityPrice::Delegate *commodity_price_delegate = static_cast<CommodityPrice::Delegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, CommodityPrice::Id);
+    CommodityPrice::Instance *commodity_price_instance = new CommodityPrice::Instance(endpoint_id, *commodity_price_delegate, chip::BitMask<CommodityPrice::Feature, uint32_t>(feature_map));
+    (void)commodity_price_instance->Init();
+}
+
+
+void ElectricalGridConditionsDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    ElectricalGridConditions::Delegate *electrical_grid_conditions_delegate = static_cast<ElectricalGridConditions::Delegate*>(delegate);
+    uint32_t feature_map = get_feature_map_value(endpoint_id, ElectricalGridConditions::Id);
+    ElectricalGridConditions::Instance *electrical_grid_conditions_instance = new ElectricalGridConditions::Instance(endpoint_id, *electrical_grid_conditions_delegate, chip::BitMask<ElectricalGridConditions::Feature, uint32_t>(feature_map));
+    (void)electrical_grid_conditions_instance->Init();
+}
+
+/* Not a delegate but an Initialization callback */
+void MeterIdentificationDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    uint32_t feature_map = get_feature_map_value(endpoint_id, MeterIdentification::Id);
+    MeterIdentification::Instance *meter_identification_instance = new MeterIdentification::Instance(endpoint_id, chip::BitMask<MeterIdentification::Feature, uint32_t>(feature_map));
+    meter_identification_instance->Init();
 }
 
 } // namespace delegate_cb
-
 } // namespace cluster
 } // namespace esp_matter

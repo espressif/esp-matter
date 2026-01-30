@@ -165,6 +165,17 @@ app_bridged_device_address_t app_bridge_espnow_address(uint8_t espnow_macaddr[6]
     return bridged_address;
 }
 
+app_bridged_device_address_t app_bridge_rainmaker_address(const char* rainmaker_node_id, const char* rainmaker_node_name)
+{
+    app_bridged_device_address_t bridged_address = {
+        .rainmaker_node_id = {0},
+        .rainmaker_node_name = {0},
+    };
+    memcpy(bridged_address.rainmaker_node_id, rainmaker_node_id, 32);
+    memcpy(bridged_address.rainmaker_node_name, rainmaker_node_name, 32);
+    return bridged_address;
+}
+
 /** Bridged Device APIs */
 app_bridged_device_t *app_bridge_create_bridged_device(node_t *node, uint16_t parent_endpoint_id,
                                                        uint32_t matter_device_type_id,
@@ -399,6 +410,59 @@ uint8_t *app_bridge_get_espnow_macaddr_by_matter_endpointid(uint16_t matter_endp
         if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ESPNOW) && current_dev->dev &&
             (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
             return current_dev->dev_addr.espnow_macaddr;
+        }
+        current_dev = current_dev->next;
+    }
+    return NULL;
+}
+
+/** Rainmaker Device APIs */
+app_bridged_device_t *app_bridge_get_device_by_rainmaker_node_id(char rainmaker_node_id[32])
+{
+    app_bridged_device_t *current_dev = g_bridged_device_list;
+    while (current_dev) {
+        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_RAINMAKER) && current_dev->dev &&
+            !memcmp(current_dev->dev_addr.rainmaker_node_id, rainmaker_node_id, 32)) {
+            return current_dev;
+        }
+        current_dev = current_dev->next;
+    }
+    return NULL;
+}
+
+uint16_t app_bridge_get_matter_endpointid_by_rainmaker_node_id(char rainmaker_node_id[32])
+{
+    app_bridged_device_t *current_dev = g_bridged_device_list;
+    while (current_dev) {
+        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_RAINMAKER) && current_dev->dev &&
+            !memcmp(current_dev->dev_addr.rainmaker_node_id, rainmaker_node_id, strlen(rainmaker_node_id))) {
+            return esp_matter::endpoint::get_id(current_dev->dev->endpoint);
+        }
+        current_dev = current_dev->next;
+    }
+    return chip::kInvalidEndpointId;
+}
+
+char* app_bridge_get_rainmaker_node_id_by_matter_endpointid(uint16_t matter_endpointid)
+{
+    app_bridged_device_t *current_dev = g_bridged_device_list;
+    while (current_dev) {
+        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_RAINMAKER) && current_dev->dev &&
+            (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
+            return current_dev->dev_addr.rainmaker_node_id;
+        }
+        current_dev = current_dev->next;
+    }
+    return NULL;
+}
+
+char* app_bridge_get_rainmaker_node_name_by_matter_endpointid(uint16_t matter_endpointid)
+{
+    app_bridged_device_t *current_dev = g_bridged_device_list;
+    while (current_dev) {
+        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_RAINMAKER) && current_dev->dev &&
+            (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
+            return current_dev->dev_addr.rainmaker_node_name;
         }
         current_dev = current_dev->next;
     }

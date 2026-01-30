@@ -28,6 +28,7 @@
 #include <core/Optional.h>
 #include <core/TLVReader.h>
 #include <core/TLVWriter.h>
+#include "support/CodeUtils.h"
 #ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 #include <app/clusters/bindings/BindingManager.h>
 #endif
@@ -53,7 +54,6 @@ namespace client {
 static request_callback_t client_request_callback = NULL;
 static group_request_callback_t client_group_request_callback = NULL;
 static void *request_callback_priv_data;
-static bool initialize_binding_manager = false;
 
 esp_err_t set_request_callback(request_callback_t callback, group_request_callback_t g_callback, void *priv_data)
 {
@@ -113,12 +113,12 @@ esp_err_t group_request_send(uint8_t fabric_index, request_handle_t *req_handle)
 }
 
 #ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
-static void esp_matter_command_client_binding_callback(const EmberBindingTableEntry &binding,
+static void esp_matter_command_client_binding_callback(const chip::app::Clusters::Binding::TableEntry &binding,
                                                        OperationalDeviceProxy *peer_device, void *context)
 {
     request_handle_t *req_handle = static_cast<request_handle_t *>(context);
     VerifyOrReturn(req_handle, ESP_LOGE(TAG, "Failed to call the binding callback since command handle is NULL"));
-    if (binding.type == MATTER_UNICAST_BINDING && peer_device) {
+    if (binding.type == chip::app::Clusters::Binding::MATTER_UNICAST_BINDING && peer_device) {
         if (client_request_callback) {
             if (req_handle->type == INVOKE_CMD) {
                 req_handle->command_path.mFlags.Set(chip::app::CommandPathFlags::kEndpointIdValid);
@@ -132,7 +132,7 @@ static void esp_matter_command_client_binding_callback(const EmberBindingTableEn
             }
             client_request_callback(peer_device, req_handle, request_callback_priv_data);
         }
-    } else if (binding.type == MATTER_MULTICAST_BINDING && !peer_device) {
+    } else if (binding.type == chip::app::Clusters::Binding::MATTER_MULTICAST_BINDING && !peer_device) {
         if (client_group_request_callback) {
             if (req_handle->type == INVOKE_CMD) {
                 req_handle->command_path.mFlags.Set(chip::app::CommandPathFlags::kGroupIdValid);
@@ -168,7 +168,7 @@ esp_err_t cluster_update(uint16_t local_endpoint_id, request_handle_t *req_handl
     }
     VerifyOrReturnError(notified_cluster_id != chip::kInvalidClusterId, ESP_ERR_INVALID_ARG);
     if (CHIP_NO_ERROR !=
-        chip::BindingManager::GetInstance().NotifyBoundClusterChanged(local_endpoint_id, notified_cluster_id,
+        chip::app::Clusters::Binding::Manager::GetInstance().NotifyBoundClusterChanged(local_endpoint_id, notified_cluster_id,
                                                                       static_cast<void *>(context))) {
         chip::Platform::Delete(context);
         ESP_LOGE(TAG, "failed to notify the bound cluster changed");
@@ -181,28 +181,28 @@ esp_err_t cluster_update(uint16_t local_endpoint_id, request_handle_t *req_handl
 static void __binding_manager_init(intptr_t arg)
 {
     auto &server = chip::Server::GetInstance();
-    struct chip::BindingManagerInitParams binding_init_params = {
+    struct chip::app::Clusters::Binding::ManagerInitParams binding_init_params = {
         .mFabricTable = &server.GetFabricTable(),
         .mCASESessionManager = server.GetCASESessionManager(),
         .mStorage = &server.GetPersistentStorage(),
     };
 
-    chip::BindingManager::GetInstance().Init(binding_init_params);
-    chip::BindingManager::GetInstance().RegisterBoundDeviceChangedHandler(esp_matter_command_client_binding_callback);
-    chip::BindingManager::GetInstance().RegisterBoundDeviceContextReleaseHandler(esp_matter_binding_context_release);
+    if (chip::app::Clusters::Binding::Manager::GetInstance().Init(binding_init_params) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to initialize Binding Manager");
+    }
+    chip::app::Clusters::Binding::Manager::GetInstance().RegisterBoundDeviceChangedHandler(esp_matter_command_client_binding_callback);
+    chip::app::Clusters::Binding::Manager::GetInstance().RegisterBoundDeviceContextReleaseHandler(esp_matter_binding_context_release);
 }
 
 void binding_manager_init()
 {
-    if (initialize_binding_manager) {
-        chip::DeviceLayer::PlatformMgr().ScheduleWork(__binding_manager_init);
-        initialize_binding_manager = false;
+#ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
+    if (endpoint::get_cluster_count(chip::kInvalidEndpointId, Binding::Id, CLUSTER_FLAG_SERVER) > 0) {
+        if (chip::DeviceLayer::PlatformMgr().ScheduleWork(__binding_manager_init) != CHIP_NO_ERROR) {
+            ESP_LOGE(TAG, "Failed to schedule work to initialize Binding Manager");
+        }
     }
-}
-
-void binding_init()
-{
-    initialize_binding_manager = true;
+#endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 }
 #endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 
@@ -253,7 +253,7 @@ esp_err_t send_request(void *ctx, peer_device_t *remote_device, const CommandPat
                                                                     timed_invoke_timeout_ms.HasValue());
     VerifyOrReturnError(command_sender != nullptr, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "No memory for command sender"));
     chip::app::CommandSender::AddRequestDataParameters add_request_data_params(timed_invoke_timeout_ms);
-    command_sender->AddRequestData(command_path, encodable, add_request_data_params);
+    VerifyOrReturnError(command_sender->AddRequestData(command_path, encodable, add_request_data_params) == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to add request data"));;
     VerifyOrReturnError(command_sender->SendCommandRequest(remote_device->GetSecureSession().Value(), response_timeout) == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to send command request"));
     (void)decoder.release();
     (void)command_sender.release();
@@ -270,7 +270,7 @@ esp_err_t send_group_request(const uint8_t fabric_index, const CommandPathParams
     auto command_sender = chip::Platform::MakeUnique<chip::app::CommandSender>(nullptr, exchange_mgr);
     VerifyOrReturnError(command_sender != nullptr, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "No memory for command sender"));
     chip::app::CommandSender::AddRequestDataParameters add_request_data_params;
-    command_sender->AddRequestData(command_path, encodeable, add_request_data_params);
+    VerifyOrReturnError(command_sender->AddRequestData(command_path, encodeable, add_request_data_params) == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to add request data"));
     VerifyOrReturnError(command_sender->SendGroupCommandRequest(SessionHandle(session)) == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to send command request"));
     return ESP_OK;
 }
