@@ -256,28 +256,6 @@ CHIP_ERROR provider::Startup(InteractionModelContext context)
 {
     ReturnErrorOnFailure(DataModel::Provider::Startup(context));
     mContext.emplace(context);
-    esp_matter::cluster::add_bounds_callback_common();
-    esp_matter::cluster::plugin_init_callback_common();
-    endpoint_t *ep = endpoint::get_first(node::get());
-    while (ep) {
-        cluster_t *cluster = cluster::get_first(ep);
-        while (cluster) {
-            uint8_t flags = cluster::get_flags(cluster);
-            cluster::initialization_callback_t init_callback = cluster::get_init_callback(cluster);
-            if (init_callback) {
-                init_callback(endpoint::get_id(ep));
-            }
-            if ((flags & CLUSTER_FLAG_SERVER) && (flags & CLUSTER_FLAG_INIT_FUNCTION)) {
-                cluster::function_cluster_init_t init_function =
-                    (cluster::function_cluster_init_t)cluster::get_function(cluster, CLUSTER_FLAG_INIT_FUNCTION);
-                if (init_function) {
-                    init_function(endpoint::get_id(ep));
-                }
-            }
-            cluster = cluster::get_next(cluster);
-        }
-        ep = endpoint::get_next(ep);
-    }
     if (GetAttributePersistenceProvider() == nullptr) {
         ReturnErrorOnFailure(gDefaultAttributePersistence.Init(&Server::GetInstance().GetPersistentStorage()));
         SetAttributePersistenceProvider(&gDefaultAttributePersistence);

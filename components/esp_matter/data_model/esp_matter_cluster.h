@@ -26,21 +26,6 @@
 namespace esp_matter {
 namespace cluster {
 
-/** Common cluster plugin init callback
- *
- * This is the common plugin init callback which calls the plugin init callbacks in the clusters.
- *
- * This common API has been added so that the specific APIs in zap-generated/PluginApplicationCallbacks.h can be
- * removed.
- */
-void plugin_init_callback_common();
-
-/** Common cluster add bounds callback
- *
- * This is the common add bounds callback which set the bounds to all the attributes of the clusters.
- */
-void add_bounds_callback_common();
-
 /** Specific cluster create APIs
  *
  * These APIs also create the mandatory attributes and commands for the cluster. If the mandatory attribute is not
