@@ -140,6 +140,8 @@ const ble_uuid128_t UUID_CHIPoBLEChar_C3 = {
 };
 #endif // CHIP_ENABLE_ADDITIONAL_DATA_ADVERTISING
 
+const struct ble_gatt_svc_def kNullSvc = { 0 };
+
 SemaphoreHandle_t semaphoreHandle = NULL;
 
 // LE Random Device Address
@@ -152,7 +154,7 @@ uint8_t own_addr_type = BLE_OWN_ADDR_RANDOM;
 ChipDeviceScanner & mDeviceScanner = Internal::ChipDeviceScanner::GetInstance();
 #endif
 BLEManagerImpl BLEManagerImpl::sInstance;
-const struct ble_gatt_svc_def BLEManagerImpl::CHIPoBLEGATTAttrs[] = {
+const struct ble_gatt_svc_def BLEManagerImpl::CHIPoBLEGATTSvc =
     { .type = BLE_GATT_SVC_TYPE_PRIMARY,
       .uuid = (ble_uuid_t *) (&ShortUUID_CHIPoBLEService),
       .characteristics =
@@ -180,11 +182,7 @@ const struct ble_gatt_svc_def BLEManagerImpl::CHIPoBLEGATTAttrs[] = {
               {
                   0, /* No more characteristics in this service */
               },
-          } },
-
-    {
-        0, /* No more services. */
-    },
+        }
 };
 
 #ifdef CONFIG_ENABLE_ESP32_BLE_CONTROLLER
@@ -1006,14 +1004,19 @@ CHIP_ERROR BLEManagerImpl::InitESPBleLayer(void)
         ble_svc_gap_init();
         ble_svc_gatt_init();
 
-        err = MapBLEError(ble_gatts_count_cfg(CHIPoBLEGATTAttrs));
+        if (mGattSvcs.size() == 0)
+        {
+            mGattSvcs.push_back(CHIPoBLEGATTSvc);
+            mGattSvcs.push_back(kNullSvc);
+        }
+        err = MapBLEError(ble_gatts_count_cfg(&mGattSvcs[0]));
         if (err != CHIP_NO_ERROR)
         {
             ChipLogError(DeviceLayer, "ble_gatts_count_cfg failed: %s", ErrorStr(err));
             ExitNow();
         }
 
-        err = MapBLEError(ble_gatts_add_svcs(CHIPoBLEGATTAttrs));
+        err = MapBLEError(ble_gatts_add_svcs(&mGattSvcs[0]));
         if (err != CHIP_NO_ERROR)
         {
             ChipLogError(DeviceLayer, "ble_gatts_add_svcs failed: %s", ErrorStr(err));
