@@ -246,6 +246,39 @@ esp_err_t enable(endpoint_t *endpoint)
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     current_endpoint->enabled = true;
     init_identification(endpoint);
+    chip::DeviceLayer::SystemLayer().ScheduleLambda([endpoint] {
+        cluster_t *cluster = cluster::get_first(endpoint);
+        while (cluster) {
+            cluster::add_bounds_callback_t add_bounds_callback =
+                cluster::get_add_bounds_callback(cluster);
+            if (add_bounds_callback) {
+                add_bounds_callback(cluster);
+            }
+            cluster::plugin_server_init_callback_t plugin_server_init_callback =
+                cluster::get_plugin_server_init_callback(cluster);
+            if (plugin_server_init_callback) {
+                plugin_server_init_callback();
+            }
+            uint8_t flags = cluster::get_flags(cluster);
+            cluster::initialization_callback_t init_callback = cluster::get_init_callback(cluster);
+            if (init_callback) {
+                init_callback(endpoint::get_id(endpoint));
+            }
+            if ((flags & CLUSTER_FLAG_SERVER) && (flags & CLUSTER_FLAG_INIT_FUNCTION)) {
+                cluster::function_cluster_init_t init_function =
+                    (cluster::function_cluster_init_t)cluster::get_function(cluster, CLUSTER_FLAG_INIT_FUNCTION);
+                if (init_function) {
+                    init_function(endpoint::get_id(endpoint));
+                }
+            }
+            cluster::delegate_init_callback_t delegate_init_callback =
+                cluster::get_delegate_init_callback(cluster);
+            if (delegate_init_callback) {
+                delegate_init_callback(cluster::get_delegate_impl(cluster), endpoint::get_id(endpoint));
+            }
+            cluster = cluster::get_next(cluster);
+        }
+    });
     return ESP_OK;
 }
 
