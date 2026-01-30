@@ -2129,7 +2129,6 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     power_source_device::add(endpoint, &config->power_source_device);
 
     cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id);
-    power_source::feature::wired::add(power_source_cluster, &config->power_source_device.power_source.wired);
     power_source::feature::battery::add(power_source_cluster, &config->power_source_device.power_source.battery);
 
     power_source::attribute::create_bat_voltage(power_source_cluster, config->bat_voltage, 0x00, 0xFFFF);
