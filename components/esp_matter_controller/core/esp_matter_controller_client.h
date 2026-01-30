@@ -35,13 +35,13 @@
 #include <lib/core/CHIPError.h>
 #include <lib/core/CHIPPersistentStorageDelegate.h>
 #include <lib/core/DataModelTypes.h>
+#include <lib/support/CodeUtils.h>
 #include <lib/support/Span.h>
 #include <platform/CHIPDeviceLayer.h>
 #include <platform/KeyValueStoreManager.h>
 #include <platform/PlatformManager.h>
 #include <stdint.h>
 #include <transport/TransportMgr.h>
-#include "support/CodeUtils.h"
 
 #if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
 #include <controller/CommissionerDiscoveryController.h>
@@ -73,7 +73,9 @@ public:
     auto_fabric_remover(chip::Controller::DeviceController *controller, remove_fabric_callback callback)
         : chip::Controller::CurrentFabricRemover(controller)
         , m_matter_callback(on_remove_current_fabric, this)
-        , m_remove_fabric_callback(callback) {}
+        , m_remove_fabric_callback(callback)
+    {
+    }
 
 private:
     static void on_remove_current_fabric(void *context, chip::NodeId remote_node, CHIP_ERROR status)
@@ -86,6 +88,42 @@ private:
     }
     chip::Callback::Callback<chip::Controller::OnCurrentFabricRemove> m_matter_callback;
     remove_fabric_callback m_remove_fabric_callback;
+};
+
+class controller_check_in_delegate : public chip::app::DefaultCheckInDelegate {
+public:
+    using check_in_complete_callback = void (*)(const chip::app::ICDClientInfo &clientInfo);
+    using key_refresh_done_callback = void (*)(const chip::app::RefreshKeySender *refreshKeySender, CHIP_ERROR error);
+    CHIP_ERROR Init(chip::app::ICDClientStorage *storage, chip::app::InteractionModelEngine *engine)
+    {
+        return chip::app::DefaultCheckInDelegate::Init(storage, engine);
+    }
+
+    void SetICDDelegateCallback(check_in_complete_callback check_in_complete_cb,
+                                key_refresh_done_callback key_refresh_done_cb)
+    {
+        m_check_in_complete_cb = check_in_complete_cb;
+        m_key_refresh_done_cb = key_refresh_done_cb;
+    }
+
+    void OnCheckInComplete(const chip::app::ICDClientInfo &clientInfo) override
+    {
+        if (m_check_in_complete_cb) {
+            m_check_in_complete_cb(clientInfo);
+        }
+    }
+
+    void OnKeyRefreshDone(chip::app::RefreshKeySender *refreshKeySender, CHIP_ERROR error) override
+    {
+        if (m_key_refresh_done_cb) {
+            m_key_refresh_done_cb(refreshKeySender, error);
+        }
+        chip::app::DefaultCheckInDelegate::OnKeyRefreshDone(refreshKeySender, error);
+    }
+
+private:
+    check_in_complete_callback m_check_in_complete_cb;
+    key_refresh_done_callback m_key_refresh_done_cb;
 };
 
 class matter_controller_client {
@@ -133,6 +171,11 @@ public:
 
     esp_err_t init(NodeId node_id, FabricId fabric_id, uint16_t listen_port);
     chip::app::DefaultICDClientStorage &get_icd_client_storage() { return m_icd_client_storage; }
+    void set_icd_client_callback(controller_check_in_delegate::check_in_complete_callback check_in_complete_cb,
+                                 controller_check_in_delegate::key_refresh_done_callback key_refresh_done_cb)
+    {
+        m_icd_check_in_delegate.SetICDDelegateCallback(check_in_complete_cb, key_refresh_done_cb);
+    }
 
 #ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     esp_err_t setup_commissioner();
@@ -227,7 +270,7 @@ private:
     NodeId m_controller_node_id;
     FabricId m_controller_fabric_id;
     chip::app::DefaultICDClientStorage m_icd_client_storage;
-    chip::app::DefaultCheckInDelegate m_icd_check_in_delegate;
+    controller_check_in_delegate m_icd_check_in_delegate;
     chip::app::CheckInHandler m_check_in_handler;
 
 #ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
