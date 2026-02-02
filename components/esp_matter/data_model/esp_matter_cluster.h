@@ -842,7 +842,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace device_energy_management {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    uint32_t feature_flags;
+    config() : delegate(nullptr), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

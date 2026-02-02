@@ -292,6 +292,12 @@ int create(uint8_t device_type_index)
     case ESP_MATTER_DOOR_LOCK: {
         esp_matter::endpoint::door_lock::config_t door_lock_config;
         endpoint = esp_matter::endpoint::door_lock::create(node, &door_lock_config, ENDPOINT_FLAG_NONE, NULL);
+        cluster_t *door_lock_cluster = cluster::get(endpoint, chip::app::Clusters::DoorLock::Id);
+        VerifyOrReturnError(door_lock_cluster, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Failed to get door lock cluster"));
+        cluster::door_lock::feature::pin_credential::config_t pin_credential_config;
+        cluster::door_lock::feature::user::config_t user_config;
+        cluster::door_lock::feature::pin_credential::add(door_lock_cluster, &pin_credential_config);
+        cluster::door_lock::feature::user::add(door_lock_cluster, &user_config);
         break;
     }
     case ESP_MATTER_WINDOW_COVERING_DEVICE: {
@@ -500,6 +506,8 @@ int create(uint8_t device_type_index)
     case ESP_MATTER_ENERGY_EVSE: {
         esp_matter::endpoint::energy_evse::config_t energy_evse_config;
         endpoint = esp_matter::endpoint::energy_evse::create(node, &energy_evse_config, ENDPOINT_FLAG_NONE, NULL);
+        cluster_t *energy_evse_cluster = cluster::get(endpoint, chip::app::Clusters::EnergyEvse::Id);
+        cluster::energy_evse::feature::charging_preferences::add(energy_evse_cluster);
 
         esp_matter::endpoint::power_source::config_t power_source_config;
         esp_matter::endpoint_t *ps_endpoint = esp_matter::endpoint::power_source::create(node, &power_source_config, ENDPOINT_FLAG_NONE, NULL);
@@ -514,6 +522,7 @@ int create(uint8_t device_type_index)
     }
     case ESP_MATTER_MICROWAVE_OVEN: {
         esp_matter::endpoint::microwave_oven::config_t microwave_oven_config;
+        microwave_oven_config.microwave_oven_control.feature_flags = esp_matter::cluster::microwave_oven_control::feature::power_as_number::get_id();
         endpoint = esp_matter::endpoint::microwave_oven::create(node, &microwave_oven_config, ENDPOINT_FLAG_NONE, NULL);
         break;
     }
@@ -534,6 +543,7 @@ int create(uint8_t device_type_index)
     }
     case ESP_MATTER_DEVICE_ENERGY_MANAGEMENT: {
         esp_matter::endpoint::device_energy_management::config_t device_energy_management_config;
+        device_energy_management_config.device_energy_management.feature_flags = esp_matter::cluster::device_energy_management::feature::power_forecast_reporting::get_id();
         endpoint = esp_matter::endpoint::device_energy_management::create(node, &device_energy_management_config, ENDPOINT_FLAG_NONE, NULL);
         break;
     }
@@ -615,7 +625,7 @@ int create(uint8_t device_type_index)
     }
     case ESP_MATTER_CLOSURE_PANEL: {
         esp_matter::endpoint::closure_panel::config_t closure_panel_config;
-        closure_panel_config.closure_dimension.feature_flags = cluster::closure_dimension::feature::positioning::get_id();
+        closure_panel_config.closure_dimension.feature_flags = cluster::closure_dimension::feature::positioning::get_id() | cluster::closure_dimension::feature::rotation::get_id();
         endpoint = esp_matter::endpoint::closure_panel::create(node, &closure_panel_config, ENDPOINT_FLAG_NONE, NULL);
         break;
     }
