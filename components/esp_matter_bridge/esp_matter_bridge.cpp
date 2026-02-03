@@ -245,33 +245,6 @@ static esp_err_t plugin_init_callback_endpoint(endpoint_t *endpoint)
     return ESP_OK;
 }
 
-static esp_err_t cluster_server_init(endpoint_t *endpoint)
-{
-    if (!endpoint) {
-        ESP_LOGE(TAG, "endpoint cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-    ESP_LOGI(TAG, "Cluster server init for the new added endpoint");
-    lock::ScopedChipStackLock lock(portMAX_DELAY);
-    cluster_t *cluster = cluster::get_first(endpoint);
-    while (cluster) {
-        uint8_t flags = cluster::get_flags(cluster);
-        cluster::initialization_callback_t init_callback = cluster::get_init_callback(cluster);
-        if (init_callback) {
-            init_callback(endpoint::get_id(endpoint));
-        }
-        if ((flags & CLUSTER_FLAG_SERVER) && (flags & CLUSTER_FLAG_INIT_FUNCTION)) {
-            cluster::function_cluster_init_t init_function =
-                (cluster::function_cluster_init_t)cluster::get_function(cluster, CLUSTER_FLAG_INIT_FUNCTION);
-            if (init_function) {
-                init_function(endpoint::get_id(endpoint));
-            }
-        }
-        cluster = cluster::get_next(cluster);
-    }
-    return ESP_OK;
-}
-
 static bridge_device_type_callback_t device_type_callback;
 
 esp_err_t set_device_type(device_t *bridged_device, uint32_t device_type_id, void *priv_data)
@@ -285,9 +258,6 @@ esp_err_t set_device_type(device_t *bridged_device, uint32_t device_type_id, voi
     err = device_type_callback(bridged_device->endpoint, device_type_id, priv_data);
     if (err != ESP_OK)
         return err;
-
-    cluster_server_init(bridged_device->endpoint);
-
     return plugin_init_callback_endpoint(bridged_device->endpoint);
 }
 
