@@ -62,6 +62,8 @@ void PushAvStreamTransportDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void CommodityTariffDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void CommodityPriceDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void ElectricalGridConditionsDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void CameraAvStreamManagementDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void WebRTCTransportProviderDelegateInitCB(void *delegate, uint16_t endpoint_id);
 } // namespace delegate_cb
 
 } // namespace cluster

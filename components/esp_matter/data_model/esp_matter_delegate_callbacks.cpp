@@ -18,6 +18,10 @@
 #include <esp_matter_core.h>
 #include <esp_matter_feature.h>
 #include <esp_matter_data_model_priv.h>
+#include <data_model_provider/clusters/chime_integration.h>
+#include <data_model_provider/clusters/camera_av_stream_management_integration.h>
+#include <data_model_provider/clusters/webrtc_transport_provider_integration.h>
+
 #include <app/clusters/mode-base-server/mode-base-server.h>
 #include <app/clusters/energy-evse-server/energy-evse-server.h>
 #include <app/clusters/microwave-oven-control-server/microwave-oven-control-server.h>
@@ -47,13 +51,13 @@
 #include <app/clusters/ota-provider/ota-provider-cluster.h>
 #include <app/clusters/ota-provider/CodegenIntegration.h>
 #include <app/clusters/diagnostic-logs-server/diagnostic-logs-server.h>
-#include <app/clusters/chime-server/chime-server.h>
 #include <app/clusters/closure-control-server/closure-control-server.h>
 #include <app/clusters/closure-dimension-server/closure-dimension-server.h>
-#include <app/clusters/push-av-stream-transport-server/push-av-stream-transport-cluster.h>
+#include <app/clusters/push-av-stream-transport-server/PushAVStreamTransportCluster.h>
 #include <app/clusters/commodity-tariff-server/commodity-tariff-server.h>
 #include <app/clusters/commodity-price-server/commodity-price-server.h>
 #include <app/clusters/electrical-grid-conditions-server/electrical-grid-conditions-server.h>
+
 #include <unordered_map>
 
 using namespace chip::app::Clusters;
@@ -549,9 +553,7 @@ void DiagnosticLogsDelegateInitCB(void *delegate, uint16_t endpoint_id)
 void ChimeDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     VerifyOrReturn(delegate != nullptr);
-    ChimeDelegate *chime_delegate = static_cast<ChimeDelegate*>(delegate);
-    ChimeServer *chime_server = new ChimeServer(endpoint_id, *chime_delegate);
-    chime_server->Init();
+    chip::app::Clusters::Chime::SetDelegate(endpoint_id, static_cast<ChimeDelegate*>(delegate));
 }
 
 void ClosureControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -617,6 +619,22 @@ void ElectricalGridConditionsDelegateInitCB(void *delegate, uint16_t endpoint_id
     electrical_grid_conditions_instance->Init();
 }
 
+
+void CameraAvStreamManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    CameraAvStreamManagement::SetDelegate(
+        endpoint_id,
+        static_cast<chip::app::Clusters::CameraAvStreamManagement::CameraAVStreamManagementDelegate *>(delegate));
+}
+
+void WebRTCTransportProviderDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    WebRTCTransportProvider::SetDelegate(
+        endpoint_id,
+        static_cast<chip::app::Clusters::WebRTCTransportProvider::Delegate *>(delegate));
+}
 } // namespace delegate_cb
 } // namespace cluster
 } // namespace esp_matter

@@ -15,7 +15,7 @@
 #include <esp_matter_data_model_priv.h>
 
 #include <app/ClusterCallbacks.h>
-#include <app/clusters/push-av-stream-transport-server/push-av-stream-transport-cluster.h>
+#include <app/clusters/push-av-stream-transport-server/PushAVStreamTransportCluster.h>
 #include <data_model/esp_matter_data_model.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
 #include <unordered_map>
