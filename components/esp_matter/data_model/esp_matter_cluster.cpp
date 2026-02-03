@@ -122,63 +122,17 @@ cluster_t * ABORT_CLUSTER_CREATE(cluster_t *cluster)
 }
 } // anonymous namespace
 
-void plugin_init_callback_common()
+void delegate_init_callback_common(endpoint_t *endpoint)
 {
-    ESP_LOGI(TAG, "Cluster plugin init common callback");
-    node_t *node = node::get();
-    /* Skip plugin_init_callback_common when ESP Matter data model is not used */
-    VerifyOrReturn(node);
-    endpoint_t *endpoint = endpoint::get_first(node);
-    while (endpoint) {
-        cluster_t *cluster = get_first(endpoint);
-        while (cluster) {
-            /* Plugin server init callback */
-            plugin_server_init_callback_t plugin_server_init_callback = get_plugin_server_init_callback(cluster);
-            if (plugin_server_init_callback) {
-                plugin_server_init_callback();
-            }
-            cluster = get_next(cluster);
+    uint16_t endpoint_id = endpoint::get_id(endpoint);
+    cluster_t *cluster = get_first(endpoint);
+    while (cluster) {
+        /* Delegate server init callback */
+        delegate_init_callback_t delegate_init_callback = get_delegate_init_callback(cluster);
+        if (delegate_init_callback) {
+            delegate_init_callback(get_delegate_impl(cluster), endpoint_id);
         }
-        endpoint = endpoint::get_next(endpoint);
-    }
-}
-
-void delegate_init_callback_common()
-{
-    node_t *node = node::get();
-    /* Skip delegate_init_callback_common when ESP Matter data model is not used */
-    VerifyOrReturn(node);
-    endpoint_t *endpoint = endpoint::get_first(node);
-    while (endpoint) {
-        uint16_t endpoint_id = endpoint::get_id(endpoint);
-        cluster_t *cluster = get_first(endpoint);
-        while (cluster) {
-            /* Delegate server init callback */
-            delegate_init_callback_t delegate_init_callback = get_delegate_init_callback(cluster);
-            if (delegate_init_callback) {
-                delegate_init_callback(get_delegate_impl(cluster), endpoint_id);
-            }
-            cluster = get_next(cluster);
-        }
-        endpoint = endpoint::get_next(endpoint);
-    }
-}
-
-void add_bounds_callback_common()
-{
-    node_t *node = node::get();
-    VerifyOrReturn(node);
-    endpoint_t *endpoint = endpoint::get_first(node);
-    while (endpoint) {
-        cluster_t *cluster = get_first(endpoint);
-        while (cluster) {
-            add_bounds_callback_t add_bounds_callback = get_add_bounds_callback(cluster);
-            if (add_bounds_callback) {
-                add_bounds_callback(cluster);
-            }
-            cluster = get_next(cluster);
-        }
-        endpoint = endpoint::get_next(endpoint);
+        cluster = get_next(cluster);
     }
 }
 
@@ -854,6 +808,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Commands */
         command::create_set_utc_time(cluster);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterTimeSynchronizationClusterServerInitCallback,
+                                         ESPMatterTimeSynchronizationClusterServerShutdownCallback);
     }
 
     event::create_time_failure(cluster);
@@ -881,6 +837,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterUnitLocalizationClusterServerInitCallback,
+                                         ESPMatterUnitLocalizationClusterServerShutdownCallback);
     }
 
     return cluster;
@@ -978,8 +936,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, IcdManagement::Id));
 #if CONFIG_ENABLE_ICD_SERVER
     if (flags & CLUSTER_FLAG_SERVER) {
-        static const auto plugin_server_init_cb = CALL_ONCE(MatterIcdManagementPluginServerInitCallback);
-        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        set_plugin_server_init_callback(cluster, nullptr);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -990,6 +947,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterIcdManagementClusterServerInitCallback,
+                                                 ESPMatterIcdManagementClusterServerShutdownCallback);
     }
 #endif // CONFIG_ENABLE_ICD_SERVER
     return cluster;
@@ -1137,11 +1096,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 } /* groups */
 
 namespace scenes_management {
-const function_generic_t function_list[] = {
-    (function_generic_t)emberAfScenesManagementClusterServerInitCallback,
-    (function_generic_t)MatterScenesManagementClusterServerShutdownCallback,
-};
-const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION;
+const function_generic_t *function_list = nullptr;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -1165,6 +1121,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterScenesManagementClusterServerInitCallback,
+                                         ESPMatterScenesManagementClusterServerShutdownCallback);
     }
 
     /* Commands */
@@ -1547,14 +1505,24 @@ static cluster_t *create(endpoint_t *endpoint, T *config, uint8_t flags, uint32_
 namespace hepa_filter_monitoring {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    return resource_monitoring::create<config_t, HepaFilterMonitoringDelegateInitCB>(endpoint, config, flags,HepaFilterMonitoring::Id, cluster_revision);
+    cluster_t *cluster = resource_monitoring::create<config_t, HepaFilterMonitoringDelegateInitCB>(endpoint, config, flags,HepaFilterMonitoring::Id, cluster_revision);
+    if (cluster && (flags & CLUSTER_FLAG_SERVER)) {
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterHepaFilterMonitoringClusterServerInitCallback,
+                                                 ESPMatterHepaFilterMonitoringClusterServerShutdownCallback);
+    }
+    return cluster;
 }
 } /* hepa_filter_monitoring */
 
 namespace activated_carbon_filter_monitoring {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    return resource_monitoring::create<config_t, ActivatedCarbonFilterMonitoringDelegateInitCB>(endpoint, config, flags,ActivatedCarbonFilterMonitoring::Id, cluster_revision);
+    cluster_t *cluster = resource_monitoring::create<config_t, ActivatedCarbonFilterMonitoringDelegateInitCB>(endpoint, config, flags,ActivatedCarbonFilterMonitoring::Id, cluster_revision);
+    if (cluster && (flags & CLUSTER_FLAG_SERVER)) {
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterActivatedCarbonFilterMonitoringClusterServerInitCallback,
+                                                 ESPMatterActivatedCarbonFilterMonitoringClusterServerShutdownCallback);
+    }
+    return cluster;
 }
 } /* activated_carbon_filter_monitoring */
 
@@ -2245,10 +2213,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 } /* relative_humidity_measurement */
 
 namespace occupancy_sensing {
-const function_generic_t function_list[] = {
-    (function_generic_t)emberAfOccupancySensingClusterServerInitCallback,
-};
-const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
+const function_generic_t *function_list = nullptr;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -2303,6 +2269,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         if (has(feature::vision::get_id())) {
             feature::vision::add(cluster);
         }
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterOccupancySensingClusterServerInitCallback,
+                                                 ESPMatterOccupancySensingClusterServerShutdownCallback);
     } // if (flags & CLUSTER_FLAG_SERVER)
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -2372,6 +2340,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterBooleanStateConfigurationClusterServerInitCallback,
+                                                 ESPMatterBooleanStateConfigurationClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -3128,6 +3098,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
                 feature::dynamic_power_flow::add(cluster);
             }
         }
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterPowerTopologyClusterServerInitCallback,
+                                                 ESPMatterPowerTopologyClusterServerShutdownCallback);
     } // if (flags & CLUSTER_FLAG_SERVER)
 
     return cluster;
@@ -3183,6 +3155,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
                 feature::power_quality::add(cluster);
             }
         }
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterElectricalPowerMeasurementClusterServerInitCallback,
+                                                 ESPMatterElectricalPowerMeasurementClusterServerShutdownCallback);
     } // if (flags & CLUSTER_FLAG_SERVER)
 
     return cluster;
@@ -3228,6 +3202,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         if (has(feature::periodic_energy::get_id())) {
             feature::periodic_energy::add(cluster);
         }
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterElectricalEnergyMeasurementClusterServerInitCallback,
+                                                 ESPMatterElectricalEnergyMeasurementClusterServerShutdownCallback);
     } // if (flags & CLUSTER_FLAG_SERVER)
 
     return cluster;
@@ -3386,6 +3362,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_abs_max_power(cluster, 0);
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterDeviceEnergyManagementClusterServerInitCallback,
+                                                 ESPMatterDeviceEnergyManagementClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -3932,7 +3910,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         command::create_provide_answer(cluster);
         command::create_provide_ice_candidates(cluster);
         command::create_end_session(cluster);
-
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterWebRTCTransportProviderClusterServerInitCallback,
+                                         ESPMatterWebRTCTransportProviderClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -4072,6 +4051,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
         command::create_play_chime_sound(cluster);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterChimeClusterServerInitCallback,
+                                                 ESPMatterChimeClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -4535,6 +4516,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterMeterIdentificationPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        /* Not a delegate but an Initialization callback */
+        static const auto delegate_init_cb = MeterIdentificationDelegateInitCB;
+        set_delegate_and_init_callback(cluster, delegate_init_cb, nullptr);
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
@@ -4554,6 +4538,39 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 
 } /* meter_identification */
+
+namespace soil_measurement {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, SoilMeasurement::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, SoilMeasurement::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterSoilMeasurementPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        attribute::create_soil_moisture_measurement_limits(cluster, NULL, 0, 0);
+        attribute::create_soil_moisture_measured_value(cluster, 0);
+
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterSoilMeasurementClusterServerInitCallback,
+                                                 ESPMatterSoilMeasurementClusterServerShutdownCallback);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+
+} /* soil_measurement */
 
 } /* cluster */
 } /* esp_matter */

@@ -41,6 +41,7 @@
 #include <lib/core/DataModelTypes.h>
 #include <lib/core/TLV.h>
 #include <lib/support/ScopedBuffer.h>
+#include "support/CodeUtils.h"
 
 #define ESP_MATTER_MAX_DEVICE_TYPE_COUNT CONFIG_ESP_MATTER_MAX_DEVICE_TYPE_COUNT
 #define ESP_MATTER_MAX_SEMANTIC_TAG_COUNT 3
@@ -246,6 +247,37 @@ esp_err_t enable(endpoint_t *endpoint)
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     current_endpoint->enabled = true;
     init_identification(endpoint);
+    esp_matter::cluster::delegate_init_callback_common(endpoint);
+    chip::DeviceLayer::SystemLayer().ScheduleLambda([endpoint] {
+        cluster_t *cluster = cluster::get_first(endpoint);
+        while (cluster) {
+            /* Add bounds callback */
+            cluster::add_bounds_callback_t add_bounds_callback = cluster::get_add_bounds_callback(cluster);
+            if (add_bounds_callback) {
+                add_bounds_callback(cluster);
+            }
+            /* Plugin server init callback */
+            cluster::plugin_server_init_callback_t plugin_server_init_callback =
+                cluster::get_plugin_server_init_callback(cluster);
+            if (plugin_server_init_callback) {
+                plugin_server_init_callback();
+            }
+            /* Initialization callback */
+            uint8_t flags = cluster::get_flags(cluster);
+            cluster::initialization_callback_t init_callback = cluster::get_init_callback(cluster);
+            if (init_callback) {
+                init_callback(endpoint::get_id(endpoint));
+            }
+            if ((flags & CLUSTER_FLAG_SERVER) && (flags & CLUSTER_FLAG_INIT_FUNCTION)) {
+                cluster::function_cluster_init_t init_function =
+                    (cluster::function_cluster_init_t)cluster::get_function(cluster, CLUSTER_FLAG_INIT_FUNCTION);
+                if (init_function) {
+                    init_function(endpoint::get_id(endpoint));
+                }
+            }
+            cluster = cluster::get_next(cluster);
+        }
+    });
     return ESP_OK;
 }
 
@@ -292,8 +324,8 @@ esp_err_t set_callback(callback_t callback)
     return ESP_OK;
 }
 
-static esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
-                                  uint32_t attribute_id, esp_matter_attr_val_t *val)
+esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
+                           uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
     if (attribute_callback) {
 #ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
@@ -554,7 +586,7 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, e
     return (attribute_t *)attribute;
 }
 
-static esp_err_t destroy(attribute_t *attribute)
+static esp_err_t free_attribute(attribute_t *attribute)
 {
     VerifyOrReturnError(attribute, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Attribute cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
@@ -584,6 +616,22 @@ static esp_err_t destroy(attribute_t *attribute)
     /* Free */
     esp_matter_mem_free(current_attribute);
     return ESP_OK;
+}
+
+esp_err_t destroy(cluster_t *cluster, attribute_t *attribute)
+{
+    VerifyOrReturnError(cluster && attribute, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster or attribute cannot be NULL"));
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    _attribute_base_t *target_attribute = (_attribute_base_t *)attribute;
+
+    _attribute_base_t **current_attribute = &current_cluster->attribute_list;
+    while (*current_attribute && *current_attribute != target_attribute) {
+        current_attribute = &(*current_attribute)->next;
+    }
+
+    VerifyOrReturnError(*current_attribute, ESP_ERR_NOT_FOUND, ESP_LOGE(TAG, "Attribute not found in the cluster"));
+    *current_attribute = target_attribute->next;
+    return free_attribute(attribute);
 }
 
 attribute_t *get(cluster_t *cluster, uint32_t attribute_id)
@@ -864,7 +912,7 @@ esp_err_t get_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_
     writer.Init(scoped_buf.Get(), k_max_tlv_size_to_read_attribute_value);
 
     chip::app::AttributeReportIBs::Builder reportBuilder = chip::app::AttributeReportIBs::Builder();
-    reportBuilder.Init(&writer);
+    VerifyOrReturnValue(reportBuilder.Init(&writer) == CHIP_NO_ERROR, ESP_FAIL);
 
     chip::Access::SubjectDescriptor subjectDescriptor;
     auto concrete_path = chip::app::ConcreteAttributePath(endpoint_id, cluster_id, attribute_id);
@@ -1178,6 +1226,15 @@ command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callba
     return (command_t *)command;
 }
 
+esp_err_t destroy(cluster_t *cluster, command_t *command)
+{
+    VerifyOrReturnError(cluster && command, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster or command cannot be NULL"));
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    _command_t *current_command = (_command_t *)command;
+    SinglyLinkedList<_command_t>::remove(&current_cluster->command_list, current_command);
+    return ESP_OK;
+}
+
 command_t *get(uint16_t endpoint_id, uint32_t cluster_id, uint32_t command_id)
 {
     _cluster_t *current_cluster = (_cluster_t *)cluster::get(endpoint_id, cluster_id);
@@ -1286,6 +1343,15 @@ event_t *create(cluster_t *cluster, uint32_t event_id)
     return (event_t *)event;
 }
 
+esp_err_t destroy(cluster_t *cluster, event_t *event)
+{
+    VerifyOrReturnError(cluster && event, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster or event cannot be NULL"));
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    _event_t *current_event = (_event_t *)event;
+    SinglyLinkedList<_event_t>::remove(&current_cluster->event_list, current_event);
+    return ESP_OK;
+}
+
 event_t *get(cluster_t *cluster, uint32_t event_id)
 {
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Cluster cannot be NULL."));
@@ -1376,7 +1442,7 @@ esp_err_t destroy(cluster_t *cluster)
     _attribute_base_t *attribute = current_cluster->attribute_list;
     while (attribute) {
         _attribute_base_t *next_attribute = attribute->next;
-        attribute::destroy((attribute_t *)attribute);
+        attribute::free_attribute((attribute_t *)attribute);
         attribute = next_attribute;
     }
 

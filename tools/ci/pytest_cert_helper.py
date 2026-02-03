@@ -19,7 +19,7 @@ gitlab_api = GitLabAPI()
 PYTEST_SSID = gitlab_api.ci_gitlab_pytest_ssid
 PYTEST_PASSPHRASE = gitlab_api.ci_gitlab_pytest_passphrase
 
-def load_test_commands(certification_tests: str):
+def load_test_commands(certification_tests: str, ci_branch:str):
     if not PYTEST_SSID or not PYTEST_PASSPHRASE:
         raise ValueError("CI_GITLAB_PYTEST_SSID and CI_GITLAB_PYTEST_PASSPHRASE must be set as environment variables")
 
@@ -36,19 +36,21 @@ def load_test_commands(certification_tests: str):
     for test_case_name, test_config in test_cases.items():
         script = test_config["script"]
         args = test_config.get("args", "")
-
-        if "test_case" in test_config:
-            test_param = f"--tests {test_config['test_case']}"
-            storage_path = f"--storage-path logs/{test_config['test_case']}.json"
-            command = f"python3 {script} {common_args} {storage_path} {test_param} {args}".strip()
+        if ci_branch == test_config.get("skip_on_branch", ""):
+            print(f"Skip {test_case_name} for {ci_branch} branch")
         else:
-            storage_path = f"--storage-path logs/{test_case_name}.json"
-            command = f"python3 {script} {common_args} {storage_path} {args}".strip()
+            if "test_case" in test_config:
+                test_param = f"--tests {test_config['test_case']}"
+                storage_path = f"--storage-path logs/{test_config['test_case']}.json"
+                command = f"python3 {script} {common_args} {storage_path} {test_param} {args}".strip()
+            else:
+                storage_path = f"--storage-path logs/{test_case_name}.json"
+                command = f"python3 {script} {common_args} {storage_path} {args}".strip()
 
-        test_commands.append({
-            "name": test_case_name,
-            "command": command
-        })
+            test_commands.append({
+                "name": test_case_name,
+                "command": command
+            })
 
     return test_commands
 
@@ -115,9 +117,9 @@ def update_mr_description_with_results(markdown_content, chunk_id=None):
     except Exception as e:
         print(f"Failed to update MR description: {e}")
 
-def run_python_certification_tests(dut:Dut, certification_tests:str) -> None:
+def run_python_certification_tests(dut:Dut, certification_tests:str, ci_branch:str) -> None:
     light = dut
-    test_commands = load_test_commands(certification_tests)
+    test_commands = load_test_commands(certification_tests, ci_branch)
 
     num_commands = len(test_commands)
     mid_index = (num_commands+1) // 2

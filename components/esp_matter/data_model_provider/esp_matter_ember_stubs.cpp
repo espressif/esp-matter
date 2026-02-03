@@ -734,6 +734,8 @@ EmberAfDefaultAttributeValue get_default_attr_value_from_val(esp_matter_attr_val
 
 namespace chip {
 namespace app {
+// TODO: Remove EnabledEndpointsWithServerCluster when door-lock, power-source-configuration, and ota-requestor server
+// is decoupled from ember.
 EnabledEndpointsWithServerCluster::EnabledEndpointsWithServerCluster(ClusterId clusterId)
     : mEndpointCount(esp_matter::endpoint::get_count(esp_matter::node::get()))
     , mClusterId(clusterId)
@@ -743,7 +745,7 @@ EnabledEndpointsWithServerCluster::EnabledEndpointsWithServerCluster(ClusterId c
 
 EndpointId EnabledEndpointsWithServerCluster::operator*() const
 {
-    return emberAfEndpointFromIndex(mEndpointIndex);
+    return esp_matter::endpoint::get_id(get_endpoint_at_index(mEndpointIndex));
 }
 
 EnabledEndpointsWithServerCluster &EnabledEndpointsWithServerCluster::operator++()
@@ -766,181 +768,16 @@ void EnabledEndpointsWithServerCluster::EnsureMatchingEndpoint()
     }
 }
 
-namespace Compatibility {
-namespace Internal {
-
-// Remove AttributeBaseType() when scenes management cluster is decoupled from ember.
-EmberAfAttributeType AttributeBaseType(EmberAfAttributeType type)
-{
-    switch (type) {
-    case ZCL_ACTION_ID_ATTRIBUTE_TYPE: // Action Id
-    case ZCL_FABRIC_IDX_ATTRIBUTE_TYPE: // Fabric Index
-    case ZCL_BITMAP8_ATTRIBUTE_TYPE: // 8-bit bitmap
-    case ZCL_ENUM8_ATTRIBUTE_TYPE: // 8-bit enumeration
-    case ZCL_STATUS_ATTRIBUTE_TYPE: // Status Code
-    case ZCL_PERCENT_ATTRIBUTE_TYPE: // Percentage
-        static_assert(std::is_same<chip::Percent, uint8_t>::value,
-                      "chip::Percent is expected to be uint8_t, change this when necessary");
-        return ZCL_INT8U_ATTRIBUTE_TYPE;
-
-    case ZCL_ENDPOINT_NO_ATTRIBUTE_TYPE: // Endpoint Number
-    case ZCL_GROUP_ID_ATTRIBUTE_TYPE: // Group Id
-    case ZCL_VENDOR_ID_ATTRIBUTE_TYPE: // Vendor Id
-    case ZCL_ENUM16_ATTRIBUTE_TYPE: // 16-bit enumeration
-    case ZCL_BITMAP16_ATTRIBUTE_TYPE: // 16-bit bitmap
-    case ZCL_PERCENT100THS_ATTRIBUTE_TYPE: // 100ths of a percent
-        static_assert(std::is_same<chip::EndpointId, uint16_t>::value,
-                      "chip::EndpointId is expected to be uint16_t, change this when necessary");
-        static_assert(std::is_same<chip::GroupId, uint16_t>::value,
-                      "chip::GroupId is expected to be uint16_t, change this when necessary");
-        static_assert(std::is_same<chip::Percent100ths, uint16_t>::value,
-                      "chip::Percent100ths is expected to be uint16_t, change this when necessary");
-        return ZCL_INT16U_ATTRIBUTE_TYPE;
-
-    case ZCL_CLUSTER_ID_ATTRIBUTE_TYPE: // Cluster Id
-    case ZCL_ATTRIB_ID_ATTRIBUTE_TYPE: // Attribute Id
-    case ZCL_FIELD_ID_ATTRIBUTE_TYPE: // Field Id
-    case ZCL_EVENT_ID_ATTRIBUTE_TYPE: // Event Id
-    case ZCL_COMMAND_ID_ATTRIBUTE_TYPE: // Command Id
-    case ZCL_TRANS_ID_ATTRIBUTE_TYPE: // Transaction Id
-    case ZCL_DEVTYPE_ID_ATTRIBUTE_TYPE: // Device Type Id
-    case ZCL_DATA_VER_ATTRIBUTE_TYPE: // Data Version
-    case ZCL_BITMAP32_ATTRIBUTE_TYPE: // 32-bit bitmap
-    case ZCL_EPOCH_S_ATTRIBUTE_TYPE: // Epoch Seconds
-    case ZCL_ELAPSED_S_ATTRIBUTE_TYPE: // Elapsed Seconds
-        static_assert(std::is_same<chip::ClusterId, uint32_t>::value,
-                      "chip::Cluster is expected to be uint32_t, change this when necessary");
-        static_assert(std::is_same<chip::AttributeId, uint32_t>::value,
-                      "chip::AttributeId is expected to be uint32_t, change this when necessary");
-        static_assert(std::is_same<chip::AttributeId, uint32_t>::value,
-                      "chip::AttributeId is expected to be uint32_t, change this when necessary");
-        static_assert(std::is_same<chip::EventId, uint32_t>::value,
-                      "chip::EventId is expected to be uint32_t, change this when necessary");
-        static_assert(std::is_same<chip::CommandId, uint32_t>::value,
-                      "chip::CommandId is expected to be uint32_t, change this when necessary");
-        static_assert(std::is_same<chip::TransactionId, uint32_t>::value,
-                      "chip::TransactionId is expected to be uint32_t, change this when necessary");
-        static_assert(std::is_same<chip::DeviceTypeId, uint32_t>::value,
-                      "chip::DeviceTypeId is expected to be uint32_t, change this when necessary");
-        static_assert(std::is_same<chip::DataVersion, uint32_t>::value,
-                      "chip::DataVersion is expected to be uint32_t, change this when necessary");
-        return ZCL_INT32U_ATTRIBUTE_TYPE;
-
-    case ZCL_AMPERAGE_MA_ATTRIBUTE_TYPE: // Amperage
-    case ZCL_ENERGY_MWH_ATTRIBUTE_TYPE: // Energy
-    case ZCL_ENERGY_MVAH_ATTRIBUTE_TYPE: // Apparent Energy
-    case ZCL_ENERGY_MVARH_ATTRIBUTE_TYPE: // Reactive Energy
-    case ZCL_POWER_MW_ATTRIBUTE_TYPE: // Power
-    case ZCL_POWER_MVA_ATTRIBUTE_TYPE: // Apparent Power
-    case ZCL_POWER_MVAR_ATTRIBUTE_TYPE: // Reactive Power
-    case ZCL_VOLTAGE_MV_ATTRIBUTE_TYPE: // Voltage
-    case ZCL_MONEY_ATTRIBUTE_TYPE: // Money
-        return ZCL_INT64S_ATTRIBUTE_TYPE;
-
-    case ZCL_EVENT_NO_ATTRIBUTE_TYPE: // Event Number
-    case ZCL_FABRIC_ID_ATTRIBUTE_TYPE: // Fabric Id
-    case ZCL_NODE_ID_ATTRIBUTE_TYPE: // Node Id
-    case ZCL_BITMAP64_ATTRIBUTE_TYPE: // 64-bit bitmap
-    case ZCL_EPOCH_US_ATTRIBUTE_TYPE: // Epoch Microseconds
-    case ZCL_POSIX_MS_ATTRIBUTE_TYPE: // POSIX Milliseconds
-    case ZCL_SYSTIME_MS_ATTRIBUTE_TYPE: // System time Milliseconds
-    case ZCL_SYSTIME_US_ATTRIBUTE_TYPE: // System time Microseconds
-        static_assert(std::is_same<chip::EventNumber, uint64_t>::value,
-                      "chip::EventNumber is expected to be uint64_t, change this when necessary");
-        static_assert(std::is_same<chip::FabricId, uint64_t>::value,
-                      "chip::FabricId is expected to be uint64_t, change this when necessary");
-        static_assert(std::is_same<chip::NodeId, uint64_t>::value,
-                      "chip::NodeId is expected to be uint64_t, change this when necessary");
-        return ZCL_INT64U_ATTRIBUTE_TYPE;
-
-    case ZCL_TEMPERATURE_ATTRIBUTE_TYPE: // Temperature
-        return ZCL_INT16S_ATTRIBUTE_TYPE;
-
-    default:
-        return type;
-    }
-}
-
-} // namespace Internal
-} // namespace Compatibility
 } // namespace app
 } // namespace chip
 
 // Override Ember functions
 
-// TODO: Remove the emberAfEndpointIndexIsEnabled and emberAfEndpointCount functions when FabricTableImpl is decoupled
-// from ember
-chip::EndpointId emberAfEndpointFromIndex(uint16_t index)
-{
-    esp_matter::endpoint_t *ep = get_endpoint_at_index(index);
-    if (ep) {
-        return esp_matter::endpoint::get_id(ep);
-    }
-    return chip::kInvalidEndpointId;
-}
-
-bool emberAfEndpointIndexIsEnabled(uint16_t index)
-{
-    esp_matter::endpoint_t *ep = get_endpoint_at_index(index);
-    if (ep) {
-        return esp_matter::endpoint::is_enabled(ep);
-    }
-    return false;
-}
-
-uint16_t emberAfEndpointCount()
-{
-    return esp_matter::endpoint::get_count(esp_matter::node::get());
-}
-
-// TODO: Remove the emberAfGetClusterCountForEndpoint when scenes cluster is decoupled from ember
-uint8_t emberAfGetClusterCountForEndpoint(chip::EndpointId endpoint)
-{
-    esp_matter::endpoint_t *ep = esp_matter::endpoint::get(endpoint);
-    if (ep) {
-        esp_matter::cluster_t *cluster = esp_matter::cluster::get_first(ep);
-        if (cluster) {
-            uint8_t count = 0;
-            while (cluster) {
-                count++;
-                cluster = esp_matter::cluster::get_next(cluster);
-            }
-            return count;
-        }
-    }
-    return 0;
-}
-
-// TODO: Remove the emberAfGetClustersFromEndpoint function when scenes cluster is decoupled from ember
-uint8_t emberAfGetClustersFromEndpoint(chip::EndpointId endpoint, chip::ClusterId *clusterList, uint8_t listLen,
-                                       bool server)
-{
-    esp_matter::endpoint_t *ep = esp_matter::endpoint::get(endpoint);
-    if (ep) {
-        esp_matter::cluster_t *cluster = esp_matter::cluster::get_first(ep);
-        if (cluster) {
-            uint8_t count = 0;
-            while (cluster) {
-                if ((server && (esp_matter::cluster::get_flags(cluster) & esp_matter::CLUSTER_FLAG_SERVER)) ||
-                    (!server && (esp_matter::cluster::get_flags(cluster) & esp_matter::CLUSTER_FLAG_CLIENT))) {
-                    clusterList[count++] = esp_matter::cluster::get_id(cluster);
-                    if (count >= listLen) {
-                        break;
-                    }
-                }
-                cluster = esp_matter::cluster::get_next(cluster);
-            }
-            return count;
-        }
-    }
-    return 0;
-}
-
 // TODO: Remove the emberAfGetClusterServerEndpointIndex function when laundry-dryer-controls, keypad-input,
 // door-lock, level-control, target-navigator, fan-control, occupancy-sensor, valve-configuration-and-control,
 // media-playback, content-launch, audio-output, power-source, application-basic, low-power, diagnostic-logs,
-// scenes, color-control, channel, laundry-washer-controls, wake-on-lan, window-covering, content-control,
-// dishwasher-alarm, on-off, media-input, application-launcher, account-login, thermostat, electrical-energy-measurement,
+// color-control, channel, laundry-washer-controls, wake-on-lan, window-covering, content-control, dishwasher-alarm,
+// on-off, media-input, application-launcher, account-login, thermostat, electrical-energy-measurement,
 // content-app-observer, and boolean-state-configuration clusters are decoupled from ember.
 uint16_t emberAfGetClusterServerEndpointIndex(chip::EndpointId endpoint, chip::ClusterId clusterId,
                                               uint16_t fixedClusterServerEndpointCount)

@@ -40,6 +40,15 @@ esp_err_t enable_all();
 
 }
 
+namespace cluster {
+
+/** Common cluster delegate init callback
+ *
+ * This is the common delegate init callback which calls the delegate init callbacks in the clusters.
+ */
+void delegate_init_callback_common(endpoint_t *endpoint);
+}
+
 namespace attribute {
 
 /** Get the attribute value from the esp-matter storage
@@ -52,6 +61,23 @@ namespace attribute {
  */
 esp_err_t get_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val);
 
+/** Execute the attribute update callback
+ *
+ * This function executes the attribute update callback set via set_callback().
+ * This is used internally to notify the application about attribute changes.
+ *
+ * @param[in] type Callback type (PRE_UPDATE or POST_UPDATE).
+ * @param[in] endpoint_id Endpoint ID of the attribute.
+ * @param[in] cluster_id Cluster ID of the attribute.
+ * @param[in] attribute_id Attribute ID of the attribute.
+ * @param[in] val Pointer to the attribute value.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
+                           uint32_t attribute_id, esp_matter_attr_val_t *val);
+
 /** Set the attribute value in the esp-matter storage
  *
  * @param[in] attribute Attribute handle.
@@ -63,6 +89,54 @@ esp_err_t get_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val);
  */
 esp_err_t set_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_callbacks = true);
 
+/** Destroy attribute
+ *
+ * This function destroys an attribute that was created and added to a cluster.
+ * It removes the attribute from the cluster's attribute list, frees any
+ * allocated memory for the attribute value (e.g., string, array), and deletes
+ * the attribute from NVS if it was stored there.
+ *
+ * @param[in] cluster Cluster handle.
+ * @param[in] attribute Attribute handle.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t destroy(cluster_t *cluster, attribute_t *attribute);
+
 } // namespace attribute
 
+namespace command {
+
+    /** Destroy command
+ *
+ * This function destroys a command that was created and added to a cluster.
+ * It removes the command from the cluster's command list.
+ *
+ * @param[in] cluster Cluster handle.
+ * @param[in] command Command handle.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t destroy(cluster_t *cluster, command_t *command);
+
+} // namespace command
+
+namespace event {
+
+    /** Destroy event
+ *
+ * This function destroys an event that was created and added to a cluster.
+ * It removes the event from the cluster's event list.
+ *
+ * @param[in] cluster Cluster handle.
+ * @param[in] event Event handle.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t destroy(cluster_t *cluster, event_t *event);
+
+} // namespace event
 } // namespace esp_matter

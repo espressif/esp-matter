@@ -17,6 +17,7 @@
 #include <esp_matter_attribute_utils.h>
 #include <app/data-model-provider/Provider.h>
 #include "app/ConcreteCommandPath.h"
+#include "app/server-cluster/ServerClusterInterface.h"
 #include "app/util/af-types.h"
 #include "lib/core/DataModelTypes.h"
 #include "lib/core/TLVReader.h"
@@ -550,7 +551,7 @@ typedef void (*initialization_callback_t)(uint16_t endpoint_id);
  *
  * This callback will be called when the data model is shutdown.
  */
-typedef void (*shutdown_callback_t)(uint16_t endpoint_id);
+typedef void (*shutdown_callback_t)(uint16_t endpoint_id, chip::app::ClusterShutdownType shutdownType);
 
 /** Create cluster
  *

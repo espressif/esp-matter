@@ -418,6 +418,10 @@ constexpr uint16_t cluster_revision = 1;
 namespace meter_identification {
 constexpr uint16_t cluster_revision = 1;
 } // namespace meter_identification
+
+namespace soil_measurement {
+constexpr uint16_t cluster_revision = 1;
+} // namespace soil_measurement
 } // namespace cluster
 } // namespace esp_matter
 

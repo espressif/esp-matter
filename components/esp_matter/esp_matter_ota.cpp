@@ -97,7 +97,10 @@ void esp_matter_ota_requestor_start(void)
     chip::SetRequestorInstance(&gRequestorCore);
     gRequestorStorage.Init(Server::GetInstance().GetPersistentStorage());
 
-    gRequestorCore.Init(Server::GetInstance(), gRequestorStorage, *s_ota_requestor_impl.driver, gDownloader);
+    if (gRequestorCore.Init(Server::GetInstance(), gRequestorStorage, *s_ota_requestor_impl.driver, gDownloader) != CHIP_NO_ERROR) {
+        ESP_LOGE("OTARequestor", "Failed to init OTARequestor core");
+        return;
+    }
 
     gImageProcessor.SetOTADownloader(&gDownloader);
 

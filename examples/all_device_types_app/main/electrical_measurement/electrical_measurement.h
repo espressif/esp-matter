@@ -9,7 +9,7 @@
 #pragma once
 
 #include <esp_err.h>
-#include <app/clusters/electrical-power-measurement-server/electrical-power-measurement-server.h>
+#include <data_model_provider/clusters/electrical_power_measurement/integration.h>
 #include <app/util/af-types.h>
 #include <lib/core/CHIPError.h>
 

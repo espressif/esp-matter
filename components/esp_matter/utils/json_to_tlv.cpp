@@ -21,6 +21,7 @@
 #include <lib/support/SafeInt.h>
 
 #include <stdlib.h>
+#include "support/CodeUtils.h"
 
 using namespace chip;
 using chip::TLV::TLVElementType;
@@ -394,7 +395,7 @@ static esp_err_t encode_tlv_element(const cJSON *val, TLV::TLVWriter &writer, co
         for (size_t i = 0; i < array_size; ++i) {
             if ((err = encode_tlv_element(cJSON_GetArrayItem(val, i), writer, nested_element_ctx)) != ESP_OK) {
                 ESP_LOGE(TAG, "Failed to encode");
-                writer.EndContainer(container_type);
+                ReturnValueOnFailure(writer.EndContainer(container_type), ESP_FAIL);
                 return err;
             }
         }
@@ -423,7 +424,8 @@ static esp_err_t encode_tlv_element(const cJSON *val, TLV::TLVWriter &writer, co
             if ((err = encode_tlv_element(cJSON_GetObjectItem(val, element_array[element_idx].json_name), writer,
                                           element_array[element_idx])) != ESP_OK) {
                 ESP_LOGE(TAG, "Failed to encode");
-                writer.EndContainer(container_type);
+                // Ignore the return value of EndContainer()
+                (void)writer.EndContainer(container_type);
                 return err;
             }
         }

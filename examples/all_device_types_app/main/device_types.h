@@ -67,6 +67,7 @@ enum device_type_enum {
     ESP_MATTER_ELECTRICAL_ENERGY_TARIFF,
     ESP_MATTER_ELECTRICAL_METER,
     ESP_MATTER_ELECTRICAL_UTILITY_METER,
+    ESP_MATTER_SOIL_SENSOR,
     ESP_MATTER_DEVICE_TYPE_MAX
 };
 
@@ -140,5 +141,6 @@ const device_type_name device_type_list[ESP_MATTER_DEVICE_TYPE_MAX] = {
     {"electrical_energy_tariff", ESP_MATTER_ELECTRICAL_ENERGY_TARIFF},
     {"electrical_meter", ESP_MATTER_ELECTRICAL_METER},
     {"electrical_utility_meter", ESP_MATTER_ELECTRICAL_UTILITY_METER},
+    {"soil_sensor", ESP_MATTER_SOIL_SENSOR},
 };
 } /* namespace esp_matter */

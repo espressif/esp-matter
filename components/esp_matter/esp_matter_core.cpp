@@ -185,7 +185,10 @@ static void esp_matter_chip_init_task(intptr_t context)
     chip::CommonCaseDeviceServerInitParams &initParams =
         s_server_init_params ? *s_server_init_params : defaultInitParams;
 
-    initParams.InitializeStaticResourcesBeforeServerInit();
+    if (initParams.InitializeStaticResourcesBeforeServerInit() != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to initialize static resources before server initialization");
+        return;
+    }
     if (!initParams.appDelegate) {
         initParams.appDelegate = &s_app_delegate;
     }
@@ -209,7 +212,9 @@ static void esp_matter_chip_init_task(intptr_t context)
                 CHIP_CONFIG_MAX_GROUP_KEYS_PER_FABRIC);
         groupDataProvider.SetStorageDelegate(initParams.persistentStorageDelegate);
         groupDataProvider.SetSessionKeystore(initParams.sessionKeystore);
-        groupDataProvider.Init();
+        if (groupDataProvider.Init() != CHIP_NO_ERROR) {
+            ESP_LOGE(TAG, "Failed to initialize group data provider");
+        }
         initParams.groupDataProvider = &groupDataProvider;
     }
 #endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
@@ -219,14 +224,15 @@ static void esp_matter_chip_init_task(intptr_t context)
     {
         ESP_LOGE(TAG, "Failed to add fabric delegate, err:%" CHIP_ERROR_FORMAT, ret.Format());
     }
-    chip::Server::GetInstance().Init(initParams);
+    ret = chip::Server::GetInstance().Init(initParams);
+    if (ret != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to init server instance, err:%" CHIP_ERROR_FORMAT, ret.Format());
+    }
 
 #ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
     if (endpoint::enable_all() != ESP_OK) {
         ESP_LOGE(TAG, "Enable all endpoints failure");
     }
-    // Initialise clusters which have delegate implemented
-    esp_matter::cluster::delegate_init_callback_common();
 #endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 #if CHIP_CONFIG_ENABLE_ICD_SERVER
     if (!icd::get_icd_server_enabled()) {
@@ -241,7 +247,9 @@ static void esp_matter_chip_init_task(intptr_t context)
         chip::Server::GetInstance().GetICDManager().Shutdown();
     }
 #endif // CHIP_CONFIG_ENABLE_ICD_SERVER
-    PlatformMgr().ScheduleWork(deinit_ble_if_commissioned, reinterpret_cast<intptr_t>(nullptr));
+    if (PlatformMgr().ScheduleWork(deinit_ble_if_commissioned, reinterpret_cast<intptr_t>(nullptr)) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Schedule ble deinitialization fails");
+    }
     xTaskNotifyGive(task_to_notify);
 }
 #endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
@@ -267,7 +275,9 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
 
     case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
         ESP_LOGI(TAG, "Commissioning Complete");
-        PlatformMgr().ScheduleWork(deinit_ble_if_commissioned, reinterpret_cast<intptr_t>(nullptr));
+        if (PlatformMgr().ScheduleWork(deinit_ble_if_commissioned, reinterpret_cast<intptr_t>(nullptr)) != CHIP_NO_ERROR) {
+            ESP_LOGE(TAG, "Schedule ble deinitialization fails");
+        }
         break;
 
     case chip::DeviceLayer::DeviceEventType::kCHIPoBLEConnectionClosed:
@@ -320,13 +330,28 @@ static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
         ESP_LOGE(TAG, "Failed to launch Matter main task");
         return ESP_FAIL;
     }
-    PlatformMgr().AddEventHandler(device_callback_internal, static_cast<intptr_t>(NULL));
+    if (PlatformMgr().AddEventHandler(device_callback_internal, static_cast<intptr_t>(NULL))  != CHIP_NO_ERROR) {
+        (void)PlatformMgr().StopEventLoopTask();
+        chip::Platform::MemoryShutdown();
+        ESP_LOGE(TAG, "Failed to add internal device callback");
+        return ESP_FAIL;
+    }
     if(callback) {
-       PlatformMgr().AddEventHandler(callback, callback_arg);
+        if (PlatformMgr().AddEventHandler(callback, callback_arg) != CHIP_NO_ERROR) {
+            (void)PlatformMgr().StopEventLoopTask();
+            chip::Platform::MemoryShutdown();
+            ESP_LOGE(TAG, "Failed to add user callback");
+            return ESP_FAIL;
+       }
     }
     init_thread_stack_and_start_thread_task();
 #if CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
-    PlatformMgr().ScheduleWork(esp_matter_chip_init_task, reinterpret_cast<intptr_t>(xTaskGetCurrentTaskHandle()));
+    if (PlatformMgr().ScheduleWork(esp_matter_chip_init_task, reinterpret_cast<intptr_t>(xTaskGetCurrentTaskHandle())) != CHIP_NO_ERROR) {
+        (void)PlatformMgr().StopEventLoopTask();
+        chip::Platform::MemoryShutdown();
+        ESP_LOGE(TAG, "Failed to schedule chip init task");
+        return ESP_FAIL;
+    }
     // Wait for the matter stack to be initialized
     xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);
 #endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
