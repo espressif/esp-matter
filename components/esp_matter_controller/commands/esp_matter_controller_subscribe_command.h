@@ -45,7 +45,33 @@ public:
     subscribe_command(uint64_t node_id, ScopedMemoryBufferWithSize<AttributePathParams> &&attr_paths,
                       ScopedMemoryBufferWithSize<EventPathParams> &&event_paths, uint16_t min_interval,
                       uint16_t max_interval, bool auto_resubscribe = true, attribute_report_cb_t attribute_cb = nullptr,
-                      event_report_cb_t event_cb = nullptr, subscribe_done_cb_t done_cb = nullptr,
+                      event_report_cb_t event_cb = nullptr, subscription_established_cb_t established_cb = nullptr,
+                      subscription_terminated_cb_t terminated_cb = nullptr, subscribe_failure_cb_t connect_failure_cb = nullptr, 
+                      bool keep_subscription = true)
+        : m_node_id(node_id)
+        , m_min_interval(min_interval)
+        , m_max_interval(max_interval)
+        , m_auto_resubscribe(auto_resubscribe)
+        , m_keep_subscription(keep_subscription)
+        , m_buffered_read_cb(*this)
+        , m_attr_paths(std::move(attr_paths))
+        , m_event_paths(std::move(event_paths))
+        , on_device_connected_cb(on_device_connected_fcn, this)
+        , on_device_connection_failure_cb(on_device_connection_failure_fcn, this)
+        , attribute_data_cb(attribute_cb)
+        , event_data_cb(event_cb)
+        , subscription_established_cb(established_cb)
+        , subscription_terminated_cb(terminated_cb)
+        , subscribe_failure_cb(connect_failure_cb)
+    {
+    }
+
+    public:
+    /** Constructor for command with multiple paths**/
+    subscribe_command(uint64_t node_id, ScopedMemoryBufferWithSize<AttributePathParams> &&attr_paths,
+                      ScopedMemoryBufferWithSize<EventPathParams> &&event_paths, uint16_t min_interval,
+                      uint16_t max_interval, bool auto_resubscribe = true, attribute_report_cb_t attribute_cb = nullptr,
+                      event_report_cb_t event_cb = nullptr, subscription_terminated_cb_t terminated_cb = nullptr, 
                       subscribe_failure_cb_t connect_failure_cb = nullptr, bool keep_subscription = true)
         : m_node_id(node_id)
         , m_min_interval(min_interval)
@@ -59,7 +85,7 @@ public:
         , on_device_connection_failure_cb(on_device_connection_failure_fcn, this)
         , attribute_data_cb(attribute_cb)
         , event_data_cb(event_cb)
-        , subscribe_done_cb(done_cb)
+        , subscription_terminated_cb(terminated_cb)
         , subscribe_failure_cb(connect_failure_cb)
     {
     }
@@ -71,7 +97,44 @@ public:
     subscribe_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_or_event_id,
                       subscribe_command_type_t command_type, uint16_t min_interval, uint16_t max_interval,
                       bool auto_resubscribe = true, attribute_report_cb_t attribute_cb = nullptr,
-                      event_report_cb_t event_cb = nullptr, subscribe_done_cb_t done_cb = nullptr,
+                      event_report_cb_t event_cb = nullptr, subscription_established_cb_t established_cb = nullptr,
+                      subscription_terminated_cb_t terminated_cb = nullptr, subscribe_failure_cb_t connect_failure_cb = nullptr, 
+                      bool keep_subscription = true)
+        : m_node_id(node_id)
+        , m_min_interval(min_interval)
+        , m_max_interval(max_interval)
+        , m_auto_resubscribe(auto_resubscribe)
+        , m_keep_subscription(keep_subscription)
+        , m_buffered_read_cb(*this)
+        , on_device_connected_cb(on_device_connected_fcn, this)
+        , on_device_connection_failure_cb(on_device_connection_failure_fcn, this)
+        , attribute_data_cb(attribute_cb)
+        , event_data_cb(event_cb)
+        , subscription_established_cb(established_cb)
+        , subscription_terminated_cb(terminated_cb)
+        , subscribe_failure_cb(connect_failure_cb)
+    {
+        if (command_type == SUBSCRIBE_ATTRIBUTE) {
+            m_attr_paths.Alloc(1);
+            if (m_attr_paths.Get()) {
+                m_attr_paths[0] = AttributePathParams(endpoint_id, cluster_id, attribute_or_event_id);
+            }
+        } else if (command_type == SUBSCRIBE_EVENT) {
+            m_event_paths.Alloc(1);
+            if (m_event_paths.Get()) {
+                m_event_paths[0] = EventPathParams(endpoint_id, cluster_id, attribute_or_event_id);
+            }
+        }
+    }
+
+     /** Constructor for command with single path.
+     * @note 0xFFFF could be used as wildcard EndpointId
+     * @note 0xFFFFFFFF could be used as wildcard ClusterId/AttributeId/EventId
+     */
+    subscribe_command(uint64_t node_id, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_or_event_id,
+                      subscribe_command_type_t command_type, uint16_t min_interval, uint16_t max_interval,
+                      bool auto_resubscribe = true, attribute_report_cb_t attribute_cb = nullptr,
+                      event_report_cb_t event_cb = nullptr, subscription_terminated_cb_t terminated_cb = nullptr, 
                       subscribe_failure_cb_t connect_failure_cb = nullptr, bool keep_subscription = true)
         : m_node_id(node_id)
         , m_min_interval(min_interval)
@@ -83,7 +146,7 @@ public:
         , on_device_connection_failure_cb(on_device_connection_failure_fcn, this)
         , attribute_data_cb(attribute_cb)
         , event_data_cb(event_cb)
-        , subscribe_done_cb(done_cb)
+        , subscription_terminated_cb(terminated_cb)
         , subscribe_failure_cb(connect_failure_cb)
     {
         if (command_type == SUBSCRIBE_ATTRIBUTE) {
@@ -142,7 +205,8 @@ private:
     chip::Callback::Callback<chip::OnDeviceConnectionFailure> on_device_connection_failure_cb;
     attribute_report_cb_t attribute_data_cb;
     event_report_cb_t event_data_cb;
-    subscribe_done_cb_t subscribe_done_cb;
+    subscription_established_cb_t subscription_established_cb;
+    subscription_terminated_cb_t subscription_terminated_cb;
     subscribe_failure_cb_t subscribe_failure_cb;
 };
 
@@ -200,7 +264,7 @@ esp_err_t send_subscribe_event_command(uint64_t node_id, ScopedMemoryBufferWithS
  * @param[in] node_id Remote NodeId
  * @param[in] endpoint_id EndpointId of the attribute path
  * @param[in] cluster_id ClusterId of the attribute path
- * @param[in] attribute_id AttributeId of the attribue path
+ * @param[in] attribute_id AttributeId of the attribute path
  * @param[in] min_interval Minimum interval of the subscription
  * @param[in] max_interval Maximum interval of the subscription
  * @param[in] auto_resubscribe Auto re-subscribe flag
