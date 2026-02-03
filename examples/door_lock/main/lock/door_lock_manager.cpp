@@ -31,37 +31,32 @@ CHIP_ERROR BoltLockManager::Init(DataModel::Nullable<DoorLock::DlLockState> stat
 {
     LockParams = lockParam;
 
-    if (LockParams.numberOfUsers > kMaxUsers)
-    {
-        ESP_LOGI(TAG,"Max number of users is greater than %d, the maximum amount of users currently supported on this platform", kMaxUsers);
+    if (LockParams.numberOfUsers > kMaxUsers) {
+        ESP_LOGI(TAG, "Max number of users is greater than %d, the maximum amount of users currently supported on this platform", kMaxUsers);
         return CHIP_ERROR_NO_MEMORY;
     }
 
-    if (LockParams.numberOfCredentialsPerUser > kMaxCredentialsPerUser)
-    {
+    if (LockParams.numberOfCredentialsPerUser > kMaxCredentialsPerUser) {
         ESP_LOGI(TAG, "Max number of credentials per user is greater than %d, the maximum amount of users currently supported on "
-                      "this platform", kMaxCredentialsPerUser);
+                 "this platform", kMaxCredentialsPerUser);
         return CHIP_ERROR_NO_MEMORY;
     }
 
-    if (LockParams.numberOfWeekdaySchedulesPerUser > kMaxWeekdaySchedulesPerUser)
-    {
+    if (LockParams.numberOfWeekdaySchedulesPerUser > kMaxWeekdaySchedulesPerUser) {
         ESP_LOGI(TAG, " Max number of schedules is greater than %d, the maximum amount of schedules currently supported on this platform",
-            kMaxWeekdaySchedulesPerUser);
+                 kMaxWeekdaySchedulesPerUser);
         return CHIP_ERROR_NO_MEMORY;
     }
 
-    if (LockParams.numberOfYeardaySchedulesPerUser > kMaxYeardaySchedulesPerUser)
-    {
+    if (LockParams.numberOfYeardaySchedulesPerUser > kMaxYeardaySchedulesPerUser) {
         ESP_LOGI(TAG, "Max number of schedules is greater than %d, the maximum amount of schedules currently supported on this platform",
-            kMaxYeardaySchedulesPerUser);
+                 kMaxYeardaySchedulesPerUser);
         return CHIP_ERROR_NO_MEMORY;
     }
 
-    if (LockParams.numberOfHolidaySchedules > kMaxHolidaySchedules)
-    {
+    if (LockParams.numberOfHolidaySchedules > kMaxHolidaySchedules) {
         ESP_LOGI(TAG, "Max number of schedules is greater than %d, the maximum amount of schedules currently supported on this platform",
-            kMaxHolidaySchedules);
+                 kMaxHolidaySchedules);
         return CHIP_ERROR_NO_MEMORY;
     }
 
@@ -75,8 +70,7 @@ bool BoltLockManager::IsValidUserIndex(uint16_t userIndex)
 
 bool BoltLockManager::IsValidCredentialIndex(uint16_t credentialIndex, CredentialTypeEnum type)
 {
-    if (CredentialTypeEnum::kProgrammingPIN == type)
-    {
+    if (CredentialTypeEnum::kProgrammingPIN == type) {
         return (0 == credentialIndex); // 0 is required index for Programming PIN
     }
     return (credentialIndex < kMaxCredentialsPerUser);
@@ -118,12 +112,12 @@ bool BoltLockManager::ReadConfigValues()
 
     ESP32Config::ReadConfigValueBin(ESP32Config::kConfigKey_WeekDaySchedules, reinterpret_cast<uint8_t *>(mWeekdaySchedule),
                                     sizeof(EmberAfPluginDoorLockWeekDaySchedule) * LockParams.numberOfWeekdaySchedulesPerUser *
-                                        LockParams.numberOfUsers,
+                                    LockParams.numberOfUsers,
                                     outLen);
 
     ESP32Config::ReadConfigValueBin(ESP32Config::kConfigKey_YearDaySchedules, reinterpret_cast<uint8_t *>(mYeardaySchedule),
                                     sizeof(EmberAfPluginDoorLockYearDaySchedule) * LockParams.numberOfYeardaySchedulesPerUser *
-                                        LockParams.numberOfUsers,
+                                    LockParams.numberOfUsers,
                                     outLen);
 
     ESP32Config::ReadConfigValueBin(ESP32Config::kConfigKey_HolidaySchedules, reinterpret_cast<uint8_t *>(&(mHolidaySchedule)),
@@ -132,17 +126,17 @@ bool BoltLockManager::ReadConfigValues()
     return true;
 }
 
-bool BoltLockManager::Lock(EndpointId endpointId, const Optional<ByteSpan> & pin, OperationErrorEnum & err)
+bool BoltLockManager::Lock(EndpointId endpointId, const Optional<ByteSpan>  &pin, OperationErrorEnum  &err)
 {
     return setLockState(endpointId, DlLockState::kLocked, pin, err);
 }
 
-bool BoltLockManager::Unlock(EndpointId endpointId, const Optional<ByteSpan> & pin, OperationErrorEnum & err)
+bool BoltLockManager::Unlock(EndpointId endpointId, const Optional<ByteSpan>  &pin, OperationErrorEnum  &err)
 {
     return setLockState(endpointId, DlLockState::kUnlocked, pin, err);
 }
 
-bool BoltLockManager::GetUser(EndpointId endpointId, uint16_t userIndex, EmberAfPluginDoorLockUserInfo & user)
+bool BoltLockManager::GetUser(EndpointId endpointId, uint16_t userIndex, EmberAfPluginDoorLockUserInfo  &user)
 {
     VerifyOrReturnValue(userIndex > 0, false); // indices are one-indexed
 
@@ -152,11 +146,10 @@ bool BoltLockManager::GetUser(EndpointId endpointId, uint16_t userIndex, EmberAf
 
     ESP_LOGI(TAG, "Door Lock App: BoltLockManager::GetUser [endpoint=%d,userIndex=%hu]", endpointId, userIndex);
 
-    const auto & userInDb = mLockUsers[userIndex];
+    const auto  &userInDb = mLockUsers[userIndex];
 
     user.userStatus = userInDb.userStatus;
-    if (UserStatusEnum::kAvailable == user.userStatus)
-    {
+    if (UserStatusEnum::kAvailable == user.userStatus) {
         ESP_LOGI(TAG, "Found unoccupied user [endpoint=%d]", endpointId);
         return true;
     }
@@ -182,7 +175,7 @@ bool BoltLockManager::GetUser(EndpointId endpointId, uint16_t userIndex, EmberAf
 }
 
 bool BoltLockManager::SetUser(EndpointId endpointId, uint16_t userIndex, FabricIndex creator,
-                              FabricIndex modifier, const CharSpan & userName, uint32_t uniqueId,
+                              FabricIndex modifier, const CharSpan  &userName, uint32_t uniqueId,
                               UserStatusEnum userStatus, UserTypeEnum usertype, CredentialRuleEnum credentialRule,
                               const CredentialStruct * credentials, size_t totalCredentials)
 {
@@ -198,16 +191,14 @@ bool BoltLockManager::SetUser(EndpointId endpointId, uint16_t userIndex, FabricI
 
     VerifyOrReturnValue(IsValidUserIndex(userIndex), false);
 
-    auto & userInStorage = mLockUsers[userIndex];
+    auto  &userInStorage = mLockUsers[userIndex];
 
-    if (userName.size() > DOOR_LOCK_MAX_USER_NAME_SIZE)
-    {
+    if (userName.size() > DOOR_LOCK_MAX_USER_NAME_SIZE) {
         ESP_LOGE(TAG, "Cannot set user - user name is too long [endpoint=%d,index=%d]", endpointId, userIndex);
         return false;
     }
 
-    if (totalCredentials > LockParams.numberOfCredentialsPerUser)
-    {
+    if (totalCredentials > LockParams.numberOfCredentialsPerUser) {
         ESP_LOGE(TAG, "Cannot set user - total number of credentials is too big [endpoint=%d,index=%d,totalCredentials=%u]",
                  endpointId, userIndex, totalCredentials);
         return false;
@@ -222,8 +213,7 @@ bool BoltLockManager::SetUser(EndpointId endpointId, uint16_t userIndex, FabricI
     userInStorage.lastModifiedBy = modifier;
     userInStorage.createdBy      = creator;
 
-    for (size_t i = 0; i < totalCredentials; ++i)
-    {
+    for (size_t i = 0; i < totalCredentials; ++i) {
         mCredentials[userIndex][i] = credentials[i];
     }
     userInStorage.credentials = Span<const CredentialStruct>(mCredentials[userIndex], totalCredentials);
@@ -244,29 +234,25 @@ bool BoltLockManager::SetUser(EndpointId endpointId, uint16_t userIndex, FabricI
 }
 
 bool BoltLockManager::GetCredential(EndpointId endpointId, uint16_t credentialIndex, CredentialTypeEnum credentialType,
-                                    EmberAfPluginDoorLockCredentialInfo & credential)
+                                    EmberAfPluginDoorLockCredentialInfo  &credential)
 {
 
-    if (CredentialTypeEnum::kProgrammingPIN == credentialType)
-    {
+    if (CredentialTypeEnum::kProgrammingPIN == credentialType) {
         VerifyOrReturnValue(IsValidCredentialIndex(credentialIndex, credentialType),
                             false); // programming pin index is only index allowed to contain 0
-    }
-    else
-    {
+    } else {
         VerifyOrReturnValue(IsValidCredentialIndex(--credentialIndex, credentialType), false); // otherwise, indices are one-indexed
     }
 
     ESP_LOGI(TAG, "Lock App: BoltLockManager::GetCredential [credentialType=%u], credentialIndex=%d", to_underlying(credentialType),
              credentialIndex);
 
-    const auto & credentialInStorage = mLockCredentials[credentialIndex];
+    const auto  &credentialInStorage = mLockCredentials[credentialIndex];
 
     credential.status = credentialInStorage.status;
     ESP_LOGI(TAG, "CredentialStatus: %d, CredentialIndex: %d ", (int) credential.status, credentialIndex);
 
-    if (DlCredentialStatus::kAvailable == credential.status)
-    {
+    if (DlCredentialStatus::kAvailable == credential.status) {
         ESP_LOGI(TAG, "Found unoccupied credential ");
         return true;
     }
@@ -287,16 +273,13 @@ bool BoltLockManager::GetCredential(EndpointId endpointId, uint16_t credentialIn
 
 bool BoltLockManager::SetCredential(EndpointId endpointId, uint16_t credentialIndex, FabricIndex creator,
                                     FabricIndex modifier, DlCredentialStatus credentialStatus,
-                                    CredentialTypeEnum credentialType, const ByteSpan & credentialData)
+                                    CredentialTypeEnum credentialType, const ByteSpan  &credentialData)
 {
 
-    if (CredentialTypeEnum::kProgrammingPIN == credentialType)
-    {
+    if (CredentialTypeEnum::kProgrammingPIN == credentialType) {
         VerifyOrReturnValue(IsValidCredentialIndex(credentialIndex, credentialType),
                             false); // programming pin index is only index allowed to contain 0
-    }
-    else
-    {
+    } else {
         VerifyOrReturnValue(IsValidCredentialIndex(--credentialIndex, credentialType), false); // otherwise, indices are one-indexed
     }
 
@@ -304,7 +287,7 @@ bool BoltLockManager::SetCredential(EndpointId endpointId, uint16_t credentialIn
              "[credentialStatus=%u,credentialType=%u,credentialDataSize=%u,creator=%d,modifier=%d]",
              to_underlying(credentialStatus), to_underlying(credentialType), credentialData.size(), creator, modifier);
 
-    auto & credentialInStorage = mLockCredentials[credentialIndex];
+    auto  &credentialInStorage = mLockCredentials[credentialIndex];
 
     credentialInStorage.status         = credentialStatus;
     credentialInStorage.credentialType = credentialType;
@@ -327,7 +310,7 @@ bool BoltLockManager::SetCredential(EndpointId endpointId, uint16_t credentialIn
 }
 
 DlStatus BoltLockManager::GetWeekdaySchedule(EndpointId endpointId, uint8_t weekdayIndex, uint16_t userIndex,
-                                             EmberAfPluginDoorLockWeekDaySchedule & schedule)
+                                             EmberAfPluginDoorLockWeekDaySchedule  &schedule)
 {
 
     VerifyOrReturnValue(weekdayIndex > 0, DlStatus::kFailure); // indices are one-indexed
@@ -339,9 +322,8 @@ DlStatus BoltLockManager::GetWeekdaySchedule(EndpointId endpointId, uint8_t week
     VerifyOrReturnValue(IsValidWeekdayScheduleIndex(weekdayIndex), DlStatus::kFailure);
     VerifyOrReturnValue(IsValidUserIndex(userIndex), DlStatus::kFailure);
 
-    const auto & scheduleInStorage = mWeekdaySchedule[userIndex][weekdayIndex];
-    if (DlScheduleStatus::kAvailable == scheduleInStorage.status)
-    {
+    const auto  &scheduleInStorage = mWeekdaySchedule[userIndex][weekdayIndex];
+    if (DlScheduleStatus::kAvailable == scheduleInStorage.status) {
         return DlStatus::kNotFound;
     }
 
@@ -364,7 +346,7 @@ DlStatus BoltLockManager::SetWeekdaySchedule(EndpointId endpointId, uint8_t week
     VerifyOrReturnValue(IsValidWeekdayScheduleIndex(weekdayIndex), DlStatus::kFailure);
     VerifyOrReturnValue(IsValidUserIndex(userIndex), DlStatus::kFailure);
 
-    auto & scheduleInStorage = mWeekdaySchedule[userIndex][weekdayIndex];
+    auto  &scheduleInStorage = mWeekdaySchedule[userIndex][weekdayIndex];
 
     scheduleInStorage.schedule.daysMask    = daysMask;
     scheduleInStorage.schedule.startHour   = startHour;
@@ -376,13 +358,13 @@ DlStatus BoltLockManager::SetWeekdaySchedule(EndpointId endpointId, uint8_t week
     // Save schedule information in NVM flash
     ESP32Config::WriteConfigValueBin(ESP32Config::kConfigKey_WeekDaySchedules, reinterpret_cast<const uint8_t *>(mWeekdaySchedule),
                                      sizeof(EmberAfPluginDoorLockWeekDaySchedule) * LockParams.numberOfWeekdaySchedulesPerUser *
-                                         LockParams.numberOfUsers);
+                                     LockParams.numberOfUsers);
 
     return DlStatus::kSuccess;
 }
 
 DlStatus BoltLockManager::GetYeardaySchedule(EndpointId endpointId, uint8_t yearDayIndex, uint16_t userIndex,
-                                             EmberAfPluginDoorLockYearDaySchedule & schedule)
+                                             EmberAfPluginDoorLockYearDaySchedule  &schedule)
 {
     VerifyOrReturnValue(yearDayIndex > 0, DlStatus::kFailure); // indices are one-indexed
     VerifyOrReturnValue(userIndex > 0, DlStatus::kFailure);    // indices are one-indexed
@@ -393,9 +375,8 @@ DlStatus BoltLockManager::GetYeardaySchedule(EndpointId endpointId, uint8_t year
     VerifyOrReturnValue(IsValidYeardayScheduleIndex(yearDayIndex), DlStatus::kFailure);
     VerifyOrReturnValue(IsValidUserIndex(userIndex), DlStatus::kFailure);
 
-    const auto & scheduleInStorage = mYeardaySchedule[userIndex][yearDayIndex];
-    if (DlScheduleStatus::kAvailable == scheduleInStorage.status)
-    {
+    const auto  &scheduleInStorage = mYeardaySchedule[userIndex][yearDayIndex];
+    if (DlScheduleStatus::kAvailable == scheduleInStorage.status) {
         return DlStatus::kNotFound;
     }
 
@@ -416,7 +397,7 @@ DlStatus BoltLockManager::SetYeardaySchedule(EndpointId endpointId, uint8_t year
     VerifyOrReturnValue(IsValidYeardayScheduleIndex(yearDayIndex), DlStatus::kFailure);
     VerifyOrReturnValue(IsValidUserIndex(userIndex), DlStatus::kFailure);
 
-    auto & scheduleInStorage = mYeardaySchedule[userIndex][yearDayIndex];
+    auto  &scheduleInStorage = mYeardaySchedule[userIndex][yearDayIndex];
 
     scheduleInStorage.schedule.localStartTime = localStartTime;
     scheduleInStorage.schedule.localEndTime   = localEndTime;
@@ -425,13 +406,13 @@ DlStatus BoltLockManager::SetYeardaySchedule(EndpointId endpointId, uint8_t year
     // Save schedule information in NVM flash
     ESP32Config::WriteConfigValueBin(ESP32Config::kConfigKey_YearDaySchedules, reinterpret_cast<const uint8_t *>(mYeardaySchedule),
                                      sizeof(EmberAfPluginDoorLockYearDaySchedule) * LockParams.numberOfYeardaySchedulesPerUser *
-                                         LockParams.numberOfUsers);
+                                     LockParams.numberOfUsers);
 
     return DlStatus::kSuccess;
 }
 
 DlStatus BoltLockManager::GetHolidaySchedule(EndpointId endpointId, uint8_t holidayIndex,
-                                             EmberAfPluginDoorLockHolidaySchedule & schedule)
+                                             EmberAfPluginDoorLockHolidaySchedule  &schedule)
 {
     VerifyOrReturnValue(holidayIndex > 0, DlStatus::kFailure); // indices are one-indexed
 
@@ -439,9 +420,8 @@ DlStatus BoltLockManager::GetHolidaySchedule(EndpointId endpointId, uint8_t holi
 
     VerifyOrReturnValue(IsValidHolidayScheduleIndex(holidayIndex), DlStatus::kFailure);
 
-    const auto & scheduleInStorage = mHolidaySchedule[holidayIndex];
-    if (DlScheduleStatus::kAvailable == scheduleInStorage.status)
-    {
+    const auto  &scheduleInStorage = mHolidaySchedule[holidayIndex];
+    if (DlScheduleStatus::kAvailable == scheduleInStorage.status) {
         return DlStatus::kNotFound;
     }
 
@@ -459,7 +439,7 @@ DlStatus BoltLockManager::SetHolidaySchedule(EndpointId endpointId, uint8_t holi
 
     VerifyOrReturnValue(IsValidHolidayScheduleIndex(holidayIndex), DlStatus::kFailure);
 
-    auto & scheduleInStorage = mHolidaySchedule[holidayIndex];
+    auto  &scheduleInStorage = mHolidaySchedule[holidayIndex];
 
     scheduleInStorage.schedule.localStartTime = localStartTime;
     scheduleInStorage.schedule.localEndTime   = localEndTime;
@@ -476,8 +456,7 @@ DlStatus BoltLockManager::SetHolidaySchedule(EndpointId endpointId, uint8_t holi
 
 const char * BoltLockManager::lockStateToString(DlLockState lockState) const
 {
-    switch (lockState)
-    {
+    switch (lockState) {
     case DlLockState::kNotFullyLocked:
         return "Not Fully Locked";
     case DlLockState::kLocked:
@@ -493,24 +472,22 @@ const char * BoltLockManager::lockStateToString(DlLockState lockState) const
     return "Unknown";
 }
 
-bool BoltLockManager::setLockState(EndpointId endpointId, DlLockState lockState, const Optional<ByteSpan> & pin,
-                                   OperationErrorEnum & err)
+bool BoltLockManager::setLockState(EndpointId endpointId, DlLockState lockState, const Optional<ByteSpan>  &pin,
+                                   OperationErrorEnum  &err)
 {
 
     // Assume pin is required until told otherwise
     bool requirePin = true;
-    if ( Status::Success != DoorLock::Attributes::RequirePINforRemoteOperation::Get(endpointId, &requirePin)) {
+    if (Status::Success != DoorLock::Attributes::RequirePINforRemoteOperation::Get(endpointId, &requirePin)) {
         requirePin = false;
     }
 
     // If a pin code is not given
-    if (!pin.HasValue())
-    {
+    if (!pin.HasValue()) {
         ESP_LOGI(TAG, "Door Lock App: PIN code is not specified [endpointId=%d]", endpointId);
 
         // If a pin code is not required
-        if (!requirePin)
-        {
+        if (!requirePin) {
             ESP_LOGI(TAG, "Door Lock App: setting door lock state to \"%s\" [endpointId=%d]", lockStateToString(lockState),
                      endpointId);
 
@@ -525,16 +502,13 @@ bool BoltLockManager::setLockState(EndpointId endpointId, DlLockState lockState,
     }
 
     // Check the PIN code
-    for (uint8_t i = 0; i < kMaxCredentials; i++)
-    {
+    for (uint8_t i = 0; i < kMaxCredentials; i++) {
         if (mLockCredentials[i].credentialType != CredentialTypeEnum::kPin ||
-            mLockCredentials[i].status == DlCredentialStatus::kAvailable)
-        {
+                mLockCredentials[i].status == DlCredentialStatus::kAvailable) {
             continue;
         }
 
-        if (mLockCredentials[i].credentialData.data_equal(pin.Value()))
-        {
+        if (mLockCredentials[i].credentialData.data_equal(pin.Value())) {
             ESP_LOGI(TAG, "Lock App: specified PIN code was found in the database, setting lock state to \"%s\" [endpointId=%d]",
                      lockStateToString(lockState), endpointId);
 
@@ -560,26 +534,23 @@ CHIP_ERROR BoltLockManager::InitLockState()
     DoorLock::Attributes::LockState::Get(endpointId, state);
 
     uint8_t numberOfCredentialsPerUser = 0;
-    if (!DoorLockServer::Instance().GetNumberOfCredentialsSupportedPerUser(endpointId, numberOfCredentialsPerUser))
-    {
+    if (!DoorLockServer::Instance().GetNumberOfCredentialsSupportedPerUser(endpointId, numberOfCredentialsPerUser)) {
         ESP_LOGE(TAG, "Unable to get number of credentials supported per user when initializing lock endpoint, defaulting to 5 [endpointId=%d]", endpointId);
         numberOfCredentialsPerUser = 5;
     }
 
     uint16_t numberOfUsers = 0;
-    if (!DoorLockServer::Instance().GetNumberOfUserSupported(endpointId, numberOfUsers))
-    {
+    if (!DoorLockServer::Instance().GetNumberOfUserSupported(endpointId, numberOfUsers)) {
         ESP_LOGE(TAG, "Unable to get number of supported users when initializing lock endpoint, defaulting to 10 [endpointId=%d]", endpointId);
         numberOfUsers = 10;
     }
 
     CHIP_ERROR err = BoltLockMgr().Init(state, ParamBuilder()
-                                               .SetNumberOfUsers(numberOfUsers)
-                                               .SetNumberOfCredentialsPerUser(numberOfCredentialsPerUser)
-                                               .GetLockParam());
+                                        .SetNumberOfUsers(numberOfUsers)
+                                        .SetNumberOfCredentialsPerUser(numberOfCredentialsPerUser)
+                                        .GetLockParam());
     ReadConfigValues();
-    if (err != CHIP_NO_ERROR)
-    {
+    if (err != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "BoltLockMgr().Init() failed");
         return err;
     }

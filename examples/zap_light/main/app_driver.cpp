@@ -63,7 +63,7 @@ static void app_driver_button_toggle_cb(void *arg, void *data)
 {
     ESP_LOGI(TAG, "Toggle button pressed");
 
-    chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t arg){
+    chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t arg) {
         bool value;
         OnOff::Attributes::OnOff::Get(light_endpoint_id, &value);
         value = !value;

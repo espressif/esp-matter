@@ -8,19 +8,18 @@
 
 #pragma once
 
-
 namespace esp_matter {
 
 namespace data_model {
 
-    int create(uint8_t device_type_index);
+int create(uint8_t device_type_index);
 } /* namespace data_model */
 
 namespace nvs_helpers {
 
-    esp_err_t set_device_type_in_nvs(uint8_t device_type_index);
+esp_err_t set_device_type_in_nvs(uint8_t device_type_index);
 
-    esp_err_t get_device_type_from_nvs(uint8_t *device_type_index);
+esp_err_t get_device_type_from_nvs(uint8_t *device_type_index);
 } /* namespace nvs_helpers */
 
 } /* namespace esp_matter */
@@ -50,4 +49,4 @@ void init(void);
 
 void deinit(void);
 } /* namespace console */
-} /* namepsace example */
+} /* namespace example */

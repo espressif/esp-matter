@@ -32,7 +32,7 @@ extern "C" {
 
 /**
  * @brief adc button configuration
- * 
+ *
  */
 typedef struct {
     adc_channel_t adc_channel;  /**< Channel of ADC */
@@ -43,9 +43,9 @@ typedef struct {
 
 /**
  * @brief Initialize gpio button
- * 
+ *
  * @param config pointer of configuration struct
- * 
+ *
  * @return
  *      - ESP_OK on success
  *      - ESP_ERR_INVALID_ARG   Arguments is NULL.
@@ -56,10 +56,10 @@ esp_err_t button_adc_init(const button_adc_config_t *config);
 
 /**
  * @brief Deinitialize gpio button
- * 
+ *
  * @param channel ADC channel
  * @param button_index Button index on the channel
- * 
+ *
  * @return
  *      - ESP_OK on success
  *      - ESP_ERR_INVALID_ARG   Arguments is invalid.
@@ -68,10 +68,10 @@ esp_err_t button_adc_deinit(adc_channel_t channel, int button_index);
 
 /**
  * @brief Get the adc button level
- * 
+ *
  * @param button_index It is compressed by ADC channel and button index, use the macro ADC_BUTTON_COMBINE to generate. It will be treated as a uint32_t variable.
- * 
- * @return 
+ *
+ * @return
  *      - 0 Not pressed
  *      - 1 Pressed
  */

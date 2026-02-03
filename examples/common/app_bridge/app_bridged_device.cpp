@@ -302,7 +302,7 @@ app_bridged_device_t *app_bridge_get_device_by_zigbee_shortaddr(uint16_t zigbee_
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
         if (current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ZIGBEE && current_dev->dev &&
-            current_dev->dev_addr.zigbee_shortaddr == zigbee_shortaddr) {
+                current_dev->dev_addr.zigbee_shortaddr == zigbee_shortaddr) {
             return current_dev;
         }
         current_dev = current_dev->next;
@@ -315,7 +315,7 @@ uint16_t app_bridge_get_matter_endpointid_by_zigbee_shortaddr(uint16_t zigbee_sh
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
         if (current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ZIGBEE && current_dev->dev &&
-            current_dev->dev_addr.zigbee_shortaddr == zigbee_shortaddr) {
+                current_dev->dev_addr.zigbee_shortaddr == zigbee_shortaddr) {
             return esp_matter::endpoint::get_id(current_dev->dev->endpoint);
         }
         current_dev = current_dev->next;
@@ -328,7 +328,7 @@ uint16_t app_bridge_get_zigbee_shortaddr_by_matter_endpointid(uint16_t matter_en
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
         if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ZIGBEE) && current_dev->dev &&
-            (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
+                (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
             return current_dev->dev_addr.zigbee_shortaddr;
         }
         current_dev = current_dev->next;
@@ -342,7 +342,7 @@ app_bridged_device_t *app_bridge_get_device_by_blemesh_addr(uint16_t blemesh_add
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
         if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_BLEMESH) && current_dev->dev &&
-            (current_dev->dev_addr.blemesh_addr == blemesh_addr)) {
+                (current_dev->dev_addr.blemesh_addr == blemesh_addr)) {
             return current_dev;
         }
         current_dev = current_dev->next;
@@ -355,7 +355,7 @@ uint16_t app_bridge_get_matter_endpointid_by_blemesh_addr(uint16_t blemesh_addr)
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
         if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_BLEMESH) && current_dev->dev &&
-            (current_dev->dev_addr.blemesh_addr == blemesh_addr)) {
+                (current_dev->dev_addr.blemesh_addr == blemesh_addr)) {
             return esp_matter::endpoint::get_id(current_dev->dev->endpoint);
         }
         current_dev = current_dev->next;
@@ -368,7 +368,7 @@ uint16_t app_bridge_get_blemesh_addr_by_matter_endpointid(uint16_t matter_endpoi
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
         if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_BLEMESH) && current_dev->dev &&
-            (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
+                (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
             return current_dev->dev_addr.blemesh_addr;
         }
         current_dev = current_dev->next;
@@ -382,7 +382,7 @@ app_bridged_device_t *app_bridge_get_device_by_espnow_macaddr(uint8_t espnow_mac
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
         if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ESPNOW) && current_dev->dev &&
-            !memcmp(current_dev->dev_addr.espnow_macaddr, espnow_macaddr, 6)) {
+                !memcmp(current_dev->dev_addr.espnow_macaddr, espnow_macaddr, 6)) {
             return current_dev;
         }
         current_dev = current_dev->next;
@@ -395,7 +395,7 @@ uint16_t app_bridge_get_matter_endpointid_by_espnow_macaddr(uint8_t espnow_macad
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
         if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ESPNOW) && current_dev->dev &&
-            !memcmp(current_dev->dev_addr.espnow_macaddr, espnow_macaddr, 6)) {
+                !memcmp(current_dev->dev_addr.espnow_macaddr, espnow_macaddr, 6)) {
             return esp_matter::endpoint::get_id(current_dev->dev->endpoint);
         }
         current_dev = current_dev->next;
@@ -408,7 +408,7 @@ uint8_t *app_bridge_get_espnow_macaddr_by_matter_endpointid(uint16_t matter_endp
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
         if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ESPNOW) && current_dev->dev &&
-            (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
+                (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
             return current_dev->dev_addr.espnow_macaddr;
         }
         current_dev = current_dev->next;
@@ -422,7 +422,7 @@ app_bridged_device_t *app_bridge_get_device_by_rainmaker_node_id(char rainmaker_
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
         if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_RAINMAKER) && current_dev->dev &&
-            !memcmp(current_dev->dev_addr.rainmaker_node_id, rainmaker_node_id, 32)) {
+                !memcmp(current_dev->dev_addr.rainmaker_node_id, rainmaker_node_id, 32)) {
             return current_dev;
         }
         current_dev = current_dev->next;
@@ -435,7 +435,7 @@ uint16_t app_bridge_get_matter_endpointid_by_rainmaker_node_id(char rainmaker_no
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
         if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_RAINMAKER) && current_dev->dev &&
-            !memcmp(current_dev->dev_addr.rainmaker_node_id, rainmaker_node_id, strlen(rainmaker_node_id))) {
+                !memcmp(current_dev->dev_addr.rainmaker_node_id, rainmaker_node_id, strlen(rainmaker_node_id))) {
             return esp_matter::endpoint::get_id(current_dev->dev->endpoint);
         }
         current_dev = current_dev->next;
@@ -448,7 +448,7 @@ char* app_bridge_get_rainmaker_node_id_by_matter_endpointid(uint16_t matter_endp
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
         if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_RAINMAKER) && current_dev->dev &&
-            (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
+                (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
             return current_dev->dev_addr.rainmaker_node_id;
         }
         current_dev = current_dev->next;
@@ -461,7 +461,7 @@ char* app_bridge_get_rainmaker_node_name_by_matter_endpointid(uint16_t matter_en
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
         if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_RAINMAKER) && current_dev->dev &&
-            (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
+                (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
             return current_dev->dev_addr.rainmaker_node_name;
         }
         current_dev = current_dev->next;

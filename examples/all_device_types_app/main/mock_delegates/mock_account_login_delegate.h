@@ -27,18 +27,17 @@ namespace app {
 namespace Clusters {
 namespace AccountLogin {
 
-class MockAccountLoginDelegate : public Delegate
-{
+class MockAccountLoginDelegate : public Delegate {
 public:
     MockAccountLoginDelegate() = default;
 
     void SetSetupPin(char * setupPin) override;
-    bool HandleLogin(const chip::CharSpan & tempAccountIdentifierString, const chip::CharSpan & setupPinString,
-                     const chip::Optional<NodeId> & nodeId) override;
-    bool HandleLogout(const chip::Optional<NodeId> & nodeId) override;
-    void HandleGetSetupPin(CommandResponseHelper<Commands::GetSetupPINResponse::Type> & helper,
-                           const chip::CharSpan & tempAccountIdentifierString) override;
-    void GetSetupPin(char * setupPin, size_t setupPinSize, const chip::CharSpan & tempAccountIdentifierString) override;
+    bool HandleLogin(const chip::CharSpan  &tempAccountIdentifierString, const chip::CharSpan  &setupPinString,
+                     const chip::Optional<NodeId>  &nodeId) override;
+    bool HandleLogout(const chip::Optional<NodeId>  &nodeId) override;
+    void HandleGetSetupPin(CommandResponseHelper<Commands::GetSetupPINResponse::Type>  &helper,
+                           const chip::CharSpan  &tempAccountIdentifierString) override;
+    void GetSetupPin(char * setupPin, size_t setupPinSize, const chip::CharSpan  &tempAccountIdentifierString) override;
     uint16_t GetClusterRevision(chip::EndpointId endpoint) override;
 
 private:

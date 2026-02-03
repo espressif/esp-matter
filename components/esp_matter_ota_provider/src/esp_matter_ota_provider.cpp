@@ -79,9 +79,9 @@ esp_err_t EspOtaProvider::Init(bool otaAllowedDefault, chip::System::Layer *syst
     mOtaAllowedDefault = otaAllowedDefault;
     init_ota_candidates();
     return exchange_mgr->RegisterUnsolicitedMessageHandlerForProtocol(chip::Protocols::BDX::Id, &mOtaBdxSender) ==
-            CHIP_NO_ERROR
-        ? ESP_OK
-        : ESP_FAIL;
+           CHIP_NO_ERROR
+           ? ESP_OK
+           : ESP_FAIL;
 }
 
 void EspOtaProvider::SendQueryImageResponse(OTAQueryStatus status)
@@ -234,7 +234,7 @@ void EspOtaProvider::HandleApplyUpdateRequest(app::CommandHandler *commandObj,
     GetUpdateTokenString(commandData.updateToken, tokenBuf, kUpdateTokenStrLen);
     ESP_LOGD(TAG, "%s: token: %s, version: %" PRIu32, __FUNCTION__, tokenBuf, commandData.newVersion);
     if (requestor && commandData.updateToken.data_equal(ByteSpan(requestor->mUpdateToken)) &&
-        commandData.newVersion == requestor->mSoftwareVersion) {
+            commandData.newVersion == requestor->mSoftwareVersion) {
         ApplyUpdateResponse::Type response;
         response.action = mUpdateAction;
         response.delayedActionTime = mDelayedApplyActionTimeSec;
@@ -265,7 +265,7 @@ void EspOtaProvider::HandleNotifyUpdateApplied(app::CommandHandler *commandObj,
     GetUpdateTokenString(commandData.updateToken, tokenBuf, kUpdateTokenStrLen);
     ESP_LOGD(TAG, "%s: token: %s, version: %" PRIu32, __FUNCTION__, tokenBuf, commandData.softwareVersion);
     if (requestor && commandData.updateToken.data_equal(ByteSpan(requestor->mUpdateToken)) &&
-        commandData.softwareVersion == requestor->mSoftwareVersion) {
+            commandData.softwareVersion == requestor->mSoftwareVersion) {
         commandObj->AddStatus(commandPath, Status::Success);
         // Finish OTA, set the set OtaAllowedOnce to false.
         requestor->mOtaAllowedOnce = false;
@@ -280,9 +280,9 @@ esp_err_t EspOtaProvider::EnableOtaForNode(const chip::ScopedNodeId &nodeId, boo
     bool found = false;
     while (iter) {
         if (iter->mNodeId == nodeId ||
-            (nodeId.GetNodeId() == chip::kUndefinedNodeId &&
-             (nodeId.GetFabricIndex() == iter->mNodeId.GetFabricIndex() ||
-              nodeId.GetFabricIndex() == chip::kUndefinedFabricIndex))) {
+                (nodeId.GetNodeId() == chip::kUndefinedNodeId &&
+                 (nodeId.GetFabricIndex() == iter->mNodeId.GetFabricIndex() ||
+                  nodeId.GetFabricIndex() == chip::kUndefinedFabricIndex))) {
             if (!forOnlyOnce) {
                 iter->mOtaAllowed = true;
             } else {
@@ -300,9 +300,9 @@ esp_err_t EspOtaProvider::DisableOtaForNode(const chip::ScopedNodeId &nodeId)
     bool found = false;
     while (iter) {
         if (iter->mNodeId == nodeId ||
-            (nodeId.GetNodeId() == chip::kUndefinedNodeId &&
-             (nodeId.GetFabricIndex() == iter->mNodeId.GetFabricIndex() ||
-              nodeId.GetFabricIndex() == chip::kUndefinedFabricIndex))) {
+                (nodeId.GetNodeId() == chip::kUndefinedNodeId &&
+                 (nodeId.GetFabricIndex() == iter->mNodeId.GetFabricIndex() ||
+                  nodeId.GetFabricIndex() == chip::kUndefinedFabricIndex))) {
             iter->mOtaAllowed = false;
             iter->mOtaAllowedOnce = false;
             found = true;

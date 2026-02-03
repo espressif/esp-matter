@@ -17,11 +17,10 @@ esp_err_t set_device_type_in_nvs(uint8_t device_type_index)
     nvs_handle_t handle;
     esp_err_t err = nvs_open_from_partition(CONFIG_CHIP_CONFIG_NAMESPACE_PARTITION_LABEL, "chip-config", NVS_READWRITE, &handle);
     if (err != ESP_OK) {
-	    return err;
+        return err;
     }
     err = nvs_set_u8(handle, "device_name", device_type_index);
-    if(err == ESP_OK)
-    {
+    if (err == ESP_OK) {
         nvs_commit(handle);
     }
     nvs_close(handle);
@@ -33,11 +32,11 @@ esp_err_t get_device_type_from_nvs(uint8_t *device_type_index)
     nvs_handle_t handle;
     esp_err_t err = nvs_open_from_partition(CONFIG_CHIP_CONFIG_NAMESPACE_PARTITION_LABEL, "chip-config", NVS_READONLY, &handle);
     if (err != ESP_OK) {
-	    return err;
+        return err;
     }
     err = nvs_get_u8(handle, "device_name", device_type_index);
     nvs_close(handle);
     return err;
 }
 } /* namespace nvs_helpers */
-} /* namepsace esp_matter */
+} /* namespace esp_matter */

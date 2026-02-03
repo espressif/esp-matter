@@ -23,18 +23,18 @@ void emberAfDoorLockClusterInitCallback(EndpointId endpoint)
     BoltLockMgr().InitLockState();
 }
 
-bool emberAfPluginDoorLockOnDoorLockCommand(chip::EndpointId endpointId, const Nullable<chip::FabricIndex> & fabricIdx,
-                                            const Nullable<chip::NodeId> & nodeId, const Optional<ByteSpan> & pinCode,
-                                            OperationErrorEnum & err)
+bool emberAfPluginDoorLockOnDoorLockCommand(chip::EndpointId endpointId, const Nullable<chip::FabricIndex>  &fabricIdx,
+                                            const Nullable<chip::NodeId>  &nodeId, const Optional<ByteSpan>  &pinCode,
+                                            OperationErrorEnum  &err)
 {
     ESP_LOGI(TAG, "Door Lock App: Lock Command endpoint=%d", endpointId);
     bool status = BoltLockMgr().Lock(endpointId, pinCode, err);
     return status;
 }
 
-bool emberAfPluginDoorLockOnDoorUnlockCommand(chip::EndpointId endpointId, const Nullable<chip::FabricIndex> & fabricIdx,
-                                              const Nullable<chip::NodeId> & nodeId, const Optional<ByteSpan> & pinCode,
-                                              OperationErrorEnum & err)
+bool emberAfPluginDoorLockOnDoorUnlockCommand(chip::EndpointId endpointId, const Nullable<chip::FabricIndex>  &fabricIdx,
+                                              const Nullable<chip::NodeId>  &nodeId, const Optional<ByteSpan>  &pinCode,
+                                              OperationErrorEnum  &err)
 {
     ESP_LOGI(TAG, "Door Lock App: Unlock Command endpoint=%d", endpointId);
     bool status = BoltLockMgr().Unlock(endpointId, pinCode, err);
@@ -42,26 +42,26 @@ bool emberAfPluginDoorLockOnDoorUnlockCommand(chip::EndpointId endpointId, const
 }
 
 bool emberAfPluginDoorLockGetCredential(chip::EndpointId endpointId, uint16_t credentialIndex, CredentialTypeEnum credentialType,
-                                        EmberAfPluginDoorLockCredentialInfo & credential)
+                                        EmberAfPluginDoorLockCredentialInfo  &credential)
 {
     return BoltLockMgr().GetCredential(endpointId, credentialIndex, credentialType, credential);
 }
 
 bool emberAfPluginDoorLockSetCredential(chip::EndpointId endpointId, uint16_t credentialIndex, chip::FabricIndex creator,
                                         chip::FabricIndex modifier, DlCredentialStatus credentialStatus,
-                                        CredentialTypeEnum credentialType, const chip::ByteSpan & credentialData)
+                                        CredentialTypeEnum credentialType, const chip::ByteSpan  &credentialData)
 {
     return BoltLockMgr().SetCredential(endpointId, credentialIndex, creator, modifier, credentialStatus, credentialType,
                                        credentialData);
 }
 
-bool emberAfPluginDoorLockGetUser(chip::EndpointId endpointId, uint16_t userIndex, EmberAfPluginDoorLockUserInfo & user)
+bool emberAfPluginDoorLockGetUser(chip::EndpointId endpointId, uint16_t userIndex, EmberAfPluginDoorLockUserInfo  &user)
 {
     return BoltLockMgr().GetUser(endpointId, userIndex, user);
 }
 
 bool emberAfPluginDoorLockSetUser(chip::EndpointId endpointId, uint16_t userIndex, chip::FabricIndex creator,
-                                  chip::FabricIndex modifier, const chip::CharSpan & userName, uint32_t uniqueId,
+                                  chip::FabricIndex modifier, const chip::CharSpan  &userName, uint32_t uniqueId,
                                   UserStatusEnum userStatus, UserTypeEnum usertype, CredentialRuleEnum credentialRule,
                                   const CredentialStruct * credentials, size_t totalCredentials)
 {
@@ -71,19 +71,19 @@ bool emberAfPluginDoorLockSetUser(chip::EndpointId endpointId, uint16_t userInde
 }
 
 DlStatus emberAfPluginDoorLockGetSchedule(chip::EndpointId endpointId, uint8_t weekdayIndex, uint16_t userIndex,
-                                          EmberAfPluginDoorLockWeekDaySchedule & schedule)
+                                          EmberAfPluginDoorLockWeekDaySchedule  &schedule)
 {
     return BoltLockMgr().GetWeekdaySchedule(endpointId, weekdayIndex, userIndex, schedule);
 }
 
 DlStatus emberAfPluginDoorLockGetSchedule(chip::EndpointId endpointId, uint8_t yearDayIndex, uint16_t userIndex,
-                                          EmberAfPluginDoorLockYearDaySchedule & schedule)
+                                          EmberAfPluginDoorLockYearDaySchedule  &schedule)
 {
     return BoltLockMgr().GetYeardaySchedule(endpointId, yearDayIndex, userIndex, schedule);
 }
 
 DlStatus emberAfPluginDoorLockGetSchedule(chip::EndpointId endpointId, uint8_t holidayIndex,
-                                          EmberAfPluginDoorLockHolidaySchedule & holidaySchedule)
+                                          EmberAfPluginDoorLockHolidaySchedule  &holidaySchedule)
 {
     return BoltLockMgr().GetHolidaySchedule(endpointId, holidayIndex, holidaySchedule);
 }

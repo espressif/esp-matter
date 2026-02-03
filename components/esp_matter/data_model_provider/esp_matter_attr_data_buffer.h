@@ -35,16 +35,19 @@ public:
     ~attribute_data_decode_buffer()
     {
         if (m_attr_val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
-            m_attr_val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
-            m_attr_val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
-            m_attr_val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING) {
+                m_attr_val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
+                m_attr_val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
+                m_attr_val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING) {
             if (m_attr_val.val.a.b) {
                 esp_matter_mem_free(m_attr_val.val.a.b);
             }
         }
     }
 
-    esp_matter_attr_val_t &get_attr_val() { return m_attr_val; }
+    esp_matter_attr_val_t &get_attr_val()
+    {
+        return m_attr_val;
+    }
 
     CHIP_ERROR Decode(chip::TLV::TLVReader &reader);
 

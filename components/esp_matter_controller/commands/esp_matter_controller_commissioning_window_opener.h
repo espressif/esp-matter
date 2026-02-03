@@ -38,7 +38,10 @@ public:
         return instance;
     }
 
-    void set_callback(commissioning_window_open_callback_t callback) { m_callback = callback; }
+    void set_callback(commissioning_window_open_callback_t callback)
+    {
+        m_callback = callback;
+    }
 
     esp_err_t send_open_commissioning_window_command(uint64_t node_id, bool is_enhanced, uint16_t timeout,
                                                      uint32_t iteration, uint16_t discriminator,
@@ -68,7 +71,7 @@ private:
     uint32_t m_discriminator = 0;
     bool m_is_enhanced = false;
     uint32_t m_pincode = 0;
-    uint16_t m_timout = 0;
+    uint16_t m_timeout = 0;
     uint32_t m_iteration = 0;
     uint16_t m_timed_invoke_timeout_ms = 0;
     commissioning_window_open_callback_t m_callback = nullptr;

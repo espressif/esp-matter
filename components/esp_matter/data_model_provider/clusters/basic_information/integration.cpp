@@ -36,14 +36,14 @@ BasicInformationCluster::OptionalAttributesSet GetOptionalAttrsSet()
 {
     BasicInformationCluster::OptionalAttributesSet attrsSet;
     return attrsSet.Set<ManufacturingDate::Id>(IsAttrEnabled(ManufacturingDate::Id))
-        .Set<PartNumber::Id>(IsAttrEnabled(PartNumber::Id))
-        .Set<ProductURL::Id>(IsAttrEnabled(ProductURL::Id))
-        .Set<ProductLabel::Id>(IsAttrEnabled(ProductLabel::Id))
-        .Set<SerialNumber::Id>(IsAttrEnabled(SerialNumber::Id))
-        .Set<LocalConfigDisabled::Id>(IsAttrEnabled(LocalConfigDisabled::Id))
-        .Set<Reachable::Id>(IsAttrEnabled(Reachable::Id))
-        .Set<ProductAppearance::Id>(IsAttrEnabled(ProductAppearance::Id))
-        .Set<UniqueID::Id>(IsAttrEnabled(UniqueID::Id));
+           .Set<PartNumber::Id>(IsAttrEnabled(PartNumber::Id))
+           .Set<ProductURL::Id>(IsAttrEnabled(ProductURL::Id))
+           .Set<ProductLabel::Id>(IsAttrEnabled(ProductLabel::Id))
+           .Set<SerialNumber::Id>(IsAttrEnabled(SerialNumber::Id))
+           .Set<LocalConfigDisabled::Id>(IsAttrEnabled(LocalConfigDisabled::Id))
+           .Set<Reachable::Id>(IsAttrEnabled(Reachable::Id))
+           .Set<ProductAppearance::Id>(IsAttrEnabled(ProductAppearance::Id))
+           .Set<UniqueID::Id>(IsAttrEnabled(UniqueID::Id));
 }
 } // namespace
 

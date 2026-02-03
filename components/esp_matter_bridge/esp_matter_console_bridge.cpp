@@ -61,7 +61,8 @@ const device_type_handler device_handlers[] = {
     {"temperature_sensor", ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID, ADD_DEVICE_FUN(temperature_sensor)},
 };
 
-static bool is_device_type_supported(uint32_t device_type_id) {
+static bool is_device_type_supported(uint32_t device_type_id)
+{
     for (const auto &handler : device_handlers) {
         if (handler.device_type_id == device_type_id) {
             return true;
@@ -82,7 +83,7 @@ static esp_err_t list_endpoint_handler(int argc, char *argv[])
 {
     ESP_RETURN_ON_FALSE(argc == 0, ESP_ERR_INVALID_ARG, TAG, "Incorrect arguments");
     uint16_t matter_endpoint_id_array[MAX_BRIDGED_DEVICE_COUNT];
-    ESP_RETURN_ON_ERROR(esp_matter_bridge::get_bridged_endpoint_ids(matter_endpoint_id_array), TAG, 
+    ESP_RETURN_ON_ERROR(esp_matter_bridge::get_bridged_endpoint_ids(matter_endpoint_id_array), TAG,
                         "Failed to get bridged endpoint id");
     ESP_LOGI(TAG, "Bridged endpoint id:");
     uint8_t count = 0;
@@ -252,7 +253,7 @@ esp_err_t bridge_register_commands()
         {
             .name = "add",
             .description =
-                "Add matter bridged device. Usage: matter esp bridge add <parent_endpoint_id> <device_type_id>.",
+            "Add matter bridged device. Usage: matter esp bridge add <parent_endpoint_id> <device_type_id>.",
             .handler = add_bridge_device_handler,
         },
         {
@@ -274,7 +275,8 @@ esp_err_t bridge_register_commands()
             .name = "reset",
             .description = "reset bridge. Usage: matter esp bridge reset.",
             .handler = reset_bridge_handler,
-        }};
+        }
+    };
     bridge_console.register_commands(bridge_commands, sizeof(bridge_commands) / sizeof(command_t));
     return add_commands(&command, 1);
 }

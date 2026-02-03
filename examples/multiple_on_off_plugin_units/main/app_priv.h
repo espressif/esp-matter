@@ -64,7 +64,7 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
 /** Initialize the button driver
  *
  * This initializes the button driver associated with the selected board.
- * 
+ *
  * @param[out] reset_gpio GPIO pin # assigned to the reset button
  *
  * @return Handle on success.

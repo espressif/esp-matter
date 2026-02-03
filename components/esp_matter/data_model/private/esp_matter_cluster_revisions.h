@@ -424,4 +424,3 @@ constexpr uint16_t cluster_revision = 1;
 } // namespace soil_measurement
 } // namespace cluster
 } // namespace esp_matter
-

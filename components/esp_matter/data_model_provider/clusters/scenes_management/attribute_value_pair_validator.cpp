@@ -65,22 +65,30 @@ typename app::NumericAttributeTraits<Type>::WorkingType ConvertDefaultValueToWor
 bool IsExactlyOneValuePopulated(const AttributeValuePairType &type)
 {
     int count = 0;
-    if (type.valueUnsigned8.HasValue())
+    if (type.valueUnsigned8.HasValue()) {
         count++;
-    if (type.valueSigned8.HasValue())
+    }
+    if (type.valueSigned8.HasValue()) {
         count++;
-    if (type.valueUnsigned16.HasValue())
+    }
+    if (type.valueUnsigned16.HasValue()) {
         count++;
-    if (type.valueSigned16.HasValue())
+    }
+    if (type.valueSigned16.HasValue()) {
         count++;
-    if (type.valueUnsigned32.HasValue())
+    }
+    if (type.valueUnsigned32.HasValue()) {
         count++;
-    if (type.valueSigned32.HasValue())
+    }
+    if (type.valueSigned32.HasValue()) {
         count++;
-    if (type.valueUnsigned64.HasValue())
+    }
+    if (type.valueUnsigned64.HasValue()) {
         count++;
-    if (type.valueSigned64.HasValue())
+    }
+    if (type.valueSigned64.HasValue()) {
         count++;
+    }
     return count == 1;
 }
 

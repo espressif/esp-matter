@@ -152,7 +152,7 @@ esp_err_t esp_rainmaker_api_delete_group(const char* group_id);
  * Returns ESP_OK on success, error code otherwise
  */
 esp_err_t esp_rainmaker_api_operate_node_to_group(const char* node_id, const char* group_id,
-                                                 esp_rainmaker_api_group_operation_type_t operation_type);
+                                                  esp_rainmaker_api_group_operation_type_t operation_type);
 
 /* Set node mapping
  * This function sets the node mapping for a user.
@@ -190,21 +190,21 @@ esp_err_t esp_rainmaker_api_get_node_connection_status(const char *node_id, bool
  * This class provides a unified interface for interacting with ESP Rainmaker cloud services.
  * It handles authentication, node management, and group operations.
  */
-class RainmakerApi
-{
+class RainmakerApi {
 public:
     /**
      * @brief Get singleton instance
      * @return Reference to the singleton instance
      */
-    static RainmakerApi& GetInstance() {
+    static RainmakerApi &GetInstance()
+    {
         static RainmakerApi instance;
         return instance;
     }
 
     /* Disable copy constructor and assignment operator */
-    RainmakerApi(const RainmakerApi&) = delete;
-    RainmakerApi& operator=(const RainmakerApi&) = delete;
+    RainmakerApi(const RainmakerApi &) = delete;
+    RainmakerApi &operator=(const RainmakerApi &) = delete;
 
     /**
      * @brief Login to Rainmaker cloud using refresh token
@@ -299,7 +299,7 @@ public:
      * @return ESP_OK on success, error code otherwise
      */
     esp_err_t OperateNodeToGroup(const char* node_id, const char* group_id,
-                                esp_rainmaker_api_group_operation_type_t operation_type);
+                                 esp_rainmaker_api_group_operation_type_t operation_type);
 
     /**
      * @brief Set node mapping
@@ -331,7 +331,7 @@ public:
     /**
      * @brief Get user id string (for C API)
      */
-    const std::string& GetUserId() const;
+    const std::string &GetUserId() const;
 
 private:
     /**
@@ -379,7 +379,7 @@ private:
      * @return ESP_OK on success, error code otherwise
      */
     esp_err_t HandleHttpResponse(esp_http_client_handle_t client, char** response_data,
-                                std::function<esp_err_t()> retry_func);
+                                 std::function<esp_err_t()> retry_func);
 
     /**
      * @brief Read HTTP response data
@@ -391,4 +391,3 @@ private:
 };
 
 #endif /* __cplusplus */
-

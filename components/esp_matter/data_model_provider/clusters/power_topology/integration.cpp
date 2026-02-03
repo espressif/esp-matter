@@ -38,8 +38,7 @@ CHIP_ERROR Instance::Init()
 void Instance::Shutdown()
 {
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&mCluster.Cluster());
-    if (err != CHIP_NO_ERROR)
-    {
+    if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister Power Topology cluster: %" CHIP_ERROR_FORMAT, err.Format());
     }
 }

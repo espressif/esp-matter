@@ -16,13 +16,11 @@
 #include "esp_openthread_types.h"
 #endif
 
-struct gpio_button
-{
-      gpio_num_t GPIO_PIN_VALUE;
+struct gpio_button {
+    gpio_num_t GPIO_PIN_VALUE;
 };
 
-struct button_endpoint
-{
+struct button_endpoint {
     gpio_button* button;
     uint16_t endpoint;
 };

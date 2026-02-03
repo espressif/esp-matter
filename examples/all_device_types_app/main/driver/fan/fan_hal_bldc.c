@@ -219,7 +219,7 @@ esp_err_t hal_bldc_set_fanmode(uint8_t status)
 
 esp_err_t hal_bldc_set_percent_speed(uint16_t percent)
 {
-    percent = percent > 100 ? 0:percent;
+    percent = percent > 100 ? 0 : percent;
     motor_parameter.target_speed = (uint16_t)(percent * DEFAULT_SPEED_MAX * 0.01 * DEFAULT_SPEED2MOTOR);
     motor_parameter.target_speed = LIMIT(motor_parameter.target_speed, motor_parameter.min_speed, motor_parameter.max_speed);
     if (percent != 0) {

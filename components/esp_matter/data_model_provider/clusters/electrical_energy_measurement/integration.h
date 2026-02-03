@@ -18,15 +18,15 @@
 
 namespace chip::app::Clusters::ElectricalEnergyMeasurement {
 
-bool NotifyCumulativeEnergyMeasured(EndpointId endpointId, const Optional<Structs::EnergyMeasurementStruct::Type> & energyImported,
-                                    const Optional<Structs::EnergyMeasurementStruct::Type> & energyExported);
+bool NotifyCumulativeEnergyMeasured(EndpointId endpointId, const Optional<Structs::EnergyMeasurementStruct::Type>  &energyImported,
+                                    const Optional<Structs::EnergyMeasurementStruct::Type>  &energyExported);
 
-bool NotifyPeriodicEnergyMeasured(EndpointId endpointId, const Optional<Structs::EnergyMeasurementStruct::Type> & energyImported,
-                                  const Optional<Structs::EnergyMeasurementStruct::Type> & energyExported);
+bool NotifyPeriodicEnergyMeasured(EndpointId endpointId, const Optional<Structs::EnergyMeasurementStruct::Type>  &energyImported,
+                                  const Optional<Structs::EnergyMeasurementStruct::Type>  &energyExported);
 
-CHIP_ERROR SetMeasurementAccuracy(EndpointId endpointId, const Structs::MeasurementAccuracyStruct::Type & accuracy);
+CHIP_ERROR SetMeasurementAccuracy(EndpointId endpointId, const Structs::MeasurementAccuracyStruct::Type  &accuracy);
 
-CHIP_ERROR SetCumulativeReset(EndpointId endpointId, const Optional<Structs::CumulativeEnergyResetStruct::Type> & cumulativeReset);
+CHIP_ERROR SetCumulativeReset(EndpointId endpointId, const Optional<Structs::CumulativeEnergyResetStruct::Type>  &cumulativeReset);
 
 const ElectricalEnergyMeasurement::MeasurementData * MeasurementDataForEndpoint(EndpointId endpointId);
 

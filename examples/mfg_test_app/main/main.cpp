@@ -171,8 +171,7 @@ CHIP_ERROR test_dac(ByteSpan dac)
 
 AttestationVerificationResult MapError(CertificateChainValidationResult certificateChainValidationResult)
 {
-    switch (certificateChainValidationResult)
-    {
+    switch (certificateChainValidationResult) {
     case CertificateChainValidationResult::kRootFormatInvalid:
         return AttestationVerificationResult::kPaaFormatInvalid;
 
@@ -233,14 +232,12 @@ bool test_cert_chain(ByteSpan paa, ByteSpan pai, ByteSpan dac)
         VerifyOrExit(dacVidPid.mVendorId.HasValue() && dacVidPid.mVendorId == paiVidPid.mVendorId,
                      err = AttestationVerificationResult::kDacVendorIdMismatch);
 
-        if (paaVidPid.mVendorId.HasValue())
-        {
+        if (paaVidPid.mVendorId.HasValue()) {
             VerifyOrExit(dacVidPid.mVendorId == paaVidPid.mVendorId,
                          err = AttestationVerificationResult::kPaiVendorIdMismatch);
         }
 
-        if (paiVidPid.mProductId.HasValue())
-        {
+        if (paiVidPid.mProductId.HasValue()) {
             VerifyOrExit(dacVidPid.mProductId == paiVidPid.mProductId,
                          err = AttestationVerificationResult::kDacProductIdMismatch);
         }

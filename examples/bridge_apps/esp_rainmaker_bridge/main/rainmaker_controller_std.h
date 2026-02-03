@@ -27,4 +27,4 @@ esp_rmaker_param_t *rainmaker_controller_base_url_param_create(const char *param
 esp_rmaker_param_t *rainmaker_controller_user_token_param_create(const char *param_name);
 
 esp_rmaker_device_t *rainmaker_controller_service_create(const char *serv_name, esp_rmaker_device_write_cb_t write_cb,
-                                                      esp_rmaker_device_read_cb_t read_cb, void *priv_data);
+                                                         esp_rmaker_device_read_cb_t read_cb, void *priv_data);

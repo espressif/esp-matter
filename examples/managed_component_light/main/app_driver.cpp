@@ -179,7 +179,7 @@ app_driver_handle_t app_driver_light_init()
     led_indicator_handle_t leds[CONFIG_BSP_LEDS_NUM];
     ESP_ERROR_CHECK(bsp_led_indicator_create(leds, NULL, CONFIG_BSP_LEDS_NUM));
     led_indicator_set_hsv(leds[0], SET_HSV(DEFAULT_HUE, DEFAULT_SATURATION, DEFAULT_BRIGHTNESS));
-    
+
     return (app_driver_handle_t)leds[0];
 #else
     return NULL;
@@ -192,6 +192,6 @@ app_driver_handle_t app_driver_button_init()
     button_handle_t btns[BSP_BUTTON_NUM];
     ESP_ERROR_CHECK(bsp_iot_button_create(btns, NULL, BSP_BUTTON_NUM));
     ESP_ERROR_CHECK(iot_button_register_cb(btns[0], BUTTON_PRESS_DOWN, NULL, app_driver_button_toggle_cb, NULL));
-    
+
     return (app_driver_handle_t)btns[0];
 }

@@ -54,23 +54,35 @@ public:
      * Sets the Enabled attribute. Note, this also handles writing the new value into non-volatile storage.
      * @param Enabled The value to which the Enabled  is to be set.
      */
-    Protocols::InteractionModel::Status SetEnabled(bool enabled) { return mCluster.Cluster().SetEnabled(enabled); }
+    Protocols::InteractionModel::Status SetEnabled(bool enabled)
+    {
+        return mCluster.Cluster().SetEnabled(enabled);
+    }
 
     // Attribute Getters
     /**
      * @return The Current SelectedChime.
      */
-    uint8_t GetSelectedChime() const { return mCluster.Cluster().GetSelectedChime(); }
+    uint8_t GetSelectedChime() const
+    {
+        return mCluster.Cluster().GetSelectedChime();
+    }
 
     /**
      * @return The Enabled attribute..
      */
-    bool GetEnabled() const { return mCluster.Cluster().GetEnabled(); }
+    bool GetEnabled() const
+    {
+        return mCluster.Cluster().GetEnabled();
+    }
 
     /**
      * @return The endpoint ID.
      */
-    EndpointId GetEndpointId() { return mCluster.Cluster().GetPaths()[0].mEndpointId; }
+    EndpointId GetEndpointId()
+    {
+        return mCluster.Cluster().GetPaths()[0].mEndpointId;
+    }
 
     // Cluster constants from the spec
     static constexpr uint8_t kMaxChimeSoundNameSize = ChimeCluster::kMaxChimeSoundNameSize;

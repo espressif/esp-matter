@@ -96,15 +96,14 @@ static void open_commissioning_window_if_necessary()
 {
     VerifyOrReturn(chip::Server::GetInstance().GetFabricTable().FabricCount() == 0);
 
-    chip::CommissioningWindowManager & commissionMgr = chip::Server::GetInstance().GetCommissioningWindowManager();
+    chip::CommissioningWindowManager  &commissionMgr = chip::Server::GetInstance().GetCommissioningWindowManager();
     VerifyOrReturn(commissionMgr.IsCommissioningWindowOpen() == false);
 
     // After removing last fabric, this example does not remove the Wi-Fi credentials
     // and still has IP connectivity so, only advertising on DNS-SD.
     CHIP_ERROR err = commissionMgr.OpenBasicCommissioningWindow(chip::System::Clock::Seconds16(300),
-                                    chip::CommissioningWindowAdvertisement::kDnssdOnly);
-    if (err != CHIP_NO_ERROR)
-    {
+                                                                chip::CommissioningWindowAdvertisement::kDnssdOnly);
+    if (err != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to open commissioning window, err:%" CHIP_ERROR_FORMAT, err.Format());
     }
 }

@@ -881,7 +881,7 @@ Status emberAfWriteAttribute(const chip::app::ConcreteAttributePath &path, const
     esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
     Status status = get_attr_val_from_raw_data_buffer(input.dataPtr, input.dataType, val,
                                                       esp_matter::attribute::get_flags(attribute) &
-                                                          esp_matter::ATTRIBUTE_FLAG_NULLABLE);
+                                                      esp_matter::ATTRIBUTE_FLAG_NULLABLE);
     if (status != Status::Success) {
         return status;
     }
@@ -891,10 +891,10 @@ Status emberAfWriteAttribute(const chip::app::ConcreteAttributePath &path, const
     }
     if (status == Status::Success) {
         if (input.markDirty == chip::app::MarkAttributeDirty::kYes ||
-            ((err == ESP_OK) && (input.markDirty != chip::app::MarkAttributeDirty::kNo))) {
+                ((err == ESP_OK) && (input.markDirty != chip::app::MarkAttributeDirty::kNo))) {
             if (input.changeListener) {
                 input.changeListener->MarkDirty(
-                    chip::app::AttributePathParams(path.mEndpointId, path.mClusterId, path.mAttributeId));
+                         chip::app::AttributePathParams(path.mEndpointId, path.mClusterId, path.mAttributeId));
             } else {
                 chip::app::InteractionModelEngine::GetInstance()->GetReportingEngine().MarkDirty(
                     chip::app::AttributePathParams(path.mEndpointId, path.mClusterId, path.mAttributeId));
@@ -912,8 +912,8 @@ const EmberAfAttributeMetadata *emberAfLocateAttributeMetadata(chip::EndpointId 
 {
     static esp_matter_attr_bounds_t sBounds;
     static EmberAfAttributeMinMaxValue sMinMaxValue{EmberAfDefaultAttributeValue(nullptr),
-                                             EmberAfDefaultAttributeValue(nullptr),
-                                             EmberAfDefaultAttributeValue(nullptr)};
+                                                    EmberAfDefaultAttributeValue(nullptr),
+                                                    EmberAfDefaultAttributeValue(nullptr)};
     static EmberAfAttributeMetadata s_metadata{EmberAfDefaultOrMinMaxAttributeValue((uint32_t)0), attributeId, 0, 0, 0};
 
     esp_matter::attribute_t *attribute = esp_matter::attribute::get(endpointId, clusterId, attributeId);

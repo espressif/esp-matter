@@ -259,7 +259,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* ota_provider */
 
-namespace power_source{
+namespace power_source {
 typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::power_source::config_t power_source;
@@ -274,7 +274,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace on_off_light {
 
 typedef struct config : on_off_with_lighting_config {
-    config() {
+    config()
+    {
         /* For lighting product, the default identify type should be 0x01: LightOutput*/
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kLightOutput);
     }
@@ -331,7 +332,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace on_off_light_switch {
 
 typedef struct config : app_client_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
     }
 } config_t;
@@ -345,7 +347,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace dimmer_switch {
 
 typedef struct config : app_client_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
     }
 } config_t;
@@ -359,7 +362,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace color_dimmer_switch {
 
 typedef struct config : app_client_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
     }
 } config_t;
@@ -372,7 +376,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace generic_switch {
 typedef struct config : app_base_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
     }
     cluster::switch_cluster::config_t switch_cluster;
@@ -387,9 +392,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace on_off_plug_in_unit {
 
 typedef struct config : on_off_with_lighting_config {
-   config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
-   }
+    }
 } config_t;
 
 uint32_t get_device_type_id();
@@ -412,7 +418,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace fan {
 typedef struct config : app_with_group_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
     }
     cluster::fan_control::config_t fan_control;
@@ -426,7 +433,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace thermostat {
 typedef struct config : app_with_group_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
     }
     cluster::scenes_management::config_t scenes_management;
@@ -441,7 +449,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace air_quality_sensor {
 typedef struct config : app_base_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
     }
     cluster::air_quality::config_t air_quality;
@@ -455,7 +464,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace air_purifier {
 typedef struct config : app_base_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
     }
     cluster::fan_control::config_t fan_control;
@@ -496,7 +506,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace smoke_co_alarm {
 typedef struct config : app_base_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kAudibleBeep);
     }
     cluster::smoke_co_alarm::config_t smoke_co_alarm;
@@ -543,7 +554,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace door_lock {
 typedef struct config : app_base_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kAudibleBeep);
     }
     cluster::door_lock::config_t door_lock;
@@ -558,8 +570,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace window_covering {
 typedef struct config : app_with_group_config {
     cluster::window_covering::config_t window_covering;
-    config(uint8_t end_product_type = 0) : window_covering(end_product_type) {
-       identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
+    config(uint8_t end_product_type = 0) : window_covering(end_product_type)
+    {
+        identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
     }
 } config_t;
 
@@ -571,7 +584,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace temperature_sensor {
 typedef struct config : app_base_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
     }
     cluster::temperature_measurement::config_t temperature_measurement;
@@ -585,7 +599,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace humidity_sensor {
 typedef struct config : app_base_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
     }
     cluster::relative_humidity_measurement::config_t relative_humidity_measurement;
@@ -599,7 +614,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace occupancy_sensor {
 typedef struct config : app_base_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kAudibleBeep);
     }
     cluster::occupancy_sensing::config_t occupancy_sensing;
@@ -614,7 +630,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace contact_sensor {
 
 typedef struct config : app_with_bool_state_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
     }
 } config_t;
@@ -627,7 +644,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace light_sensor {
 typedef struct config : app_base_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
     }
     cluster::illuminance_measurement::config_t illuminance_measurement;
@@ -641,7 +659,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace pressure_sensor {
 typedef struct config : app_base_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
     }
     cluster::pressure_measurement::config_t pressure_measurement;
@@ -655,7 +674,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace flow_sensor {
 typedef struct config : app_base_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
     }
     cluster::flow_measurement::config_t flow_measurement;
@@ -675,7 +695,8 @@ typedef struct config : app_base_config {
         nullable<int16_t> max_pressure = nullable<int16_t>(),
         nullable<uint16_t> max_speed = nullable<uint16_t>(),
         nullable<uint16_t> max_flow = nullable<uint16_t>()
-    ) : pump_configuration_and_control(max_pressure, max_speed, max_flow) {
+    ) : pump_configuration_and_control(max_pressure, max_speed, max_flow)
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
     }
 } config_t;
@@ -688,7 +709,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace pump_controller {
 typedef struct config : app_client_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
     }
 } config_t;
@@ -713,7 +735,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace room_air_conditioner {
 typedef struct config : app_base_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
     }
     cluster::on_off::config_t on_off;
@@ -762,7 +785,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace robotic_vacuum_cleaner {
 typedef struct config : app_base_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
     }
     cluster::rvc_run_mode::config_t rvc_run_mode;
@@ -778,7 +802,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace water_leak_detector {
 
 typedef struct config : app_with_bool_state_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
     }
 } config_t;
@@ -792,7 +817,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace water_freeze_detector {
 
 typedef struct config : app_with_bool_state_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
     }
 } config_t;
@@ -806,7 +832,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace rain_sensor {
 
 typedef struct config : app_with_bool_state_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kVisibleIndicator);
     }
 } config_t;
@@ -895,7 +922,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace water_valve {
 typedef struct config : app_base_config {
     cluster::valve_configuration_and_control::config_t valve_configuration_and_control;
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
     }
 } config_t;
@@ -946,7 +974,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 namespace mounted_on_off_control {
 typedef struct config : on_off_with_lighting_config {
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
     }
 } config_t;
@@ -1071,7 +1100,6 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 
 } /* chime */
 
-
 namespace thermostat_controller {
 using config_t = app_client_config;
 
@@ -1094,7 +1122,8 @@ namespace closure {
 typedef struct config : app_base_config {
     cluster::closure_control::config_t closure_control;
 
-    config() {
+    config()
+    {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
     }
 } config_t;

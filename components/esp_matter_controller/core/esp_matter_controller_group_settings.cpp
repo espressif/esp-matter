@@ -114,7 +114,7 @@ esp_err_t show_keysets()
         while (iter->Next(keyset)) {
             ESP_LOGI(TAG, "  | 0x%-12x  %-66s  |", keyset.keyset_id,
                      (keyset.policy == GroupDataProvider::SecurityPolicy::kCacheAndSync) ? "Cache and Sync"
-                                                                                         : "Trust First");
+                     : "Trust First");
         }
         iter->Release();
     }
@@ -133,8 +133,8 @@ esp_err_t bind_keyset(uint16_t group_id, uint16_t keyset_id)
     iter->Release();
 
     if (CHIP_NO_ERROR !=
-        group_data_provider->SetGroupKeyAt(fabric_index, current_count,
-                                           GroupDataProvider::GroupKey(group_id, keyset_id))) {
+            group_data_provider->SetGroupKeyAt(fabric_index, current_count,
+                                               GroupDataProvider::GroupKey(group_id, keyset_id))) {
         ESP_LOGE(TAG, "Failed to bind keyset");
         return ESP_FAIL;
     }
@@ -173,9 +173,9 @@ esp_err_t add_keyset(uint16_t keyset_id, uint8_t key_policy, uint64_t validity_t
     chip::MutableByteSpan compressed_fabric_id_span(compressed_fabric_id);
     if (CHIP_NO_ERROR !=
 #ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-        controller_instance.get_commissioner()->GetCompressedFabricIdBytes(compressed_fabric_id_span)) {
+            controller_instance.get_commissioner()->GetCompressedFabricIdBytes(compressed_fabric_id_span)) {
 #else
-        controller_instance.get_controller()->GetCompressedFabricIdBytes(compressed_fabric_id_span)) {
+            controller_instance.get_controller()->GetCompressedFabricIdBytes(compressed_fabric_id_span)) {
 #endif
         ESP_LOGE(TAG, "Failed to get the compressed fabric_id");
         return ESP_FAIL;

@@ -1064,7 +1064,6 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* ethernet_network_diagnostics */
 
-
 namespace air_quality {
 namespace feature {
 
@@ -1835,7 +1834,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* mode_select */
 
-
 namespace pressure_measurement {
 namespace feature {
 
@@ -2400,7 +2398,6 @@ esp_err_t add(cluster_t *cluster)
         return ESP_ERR_NOT_SUPPORTED;
     }
 
-
     return ESP_OK;
 }
 } /* polyphase_power */
@@ -2426,7 +2423,6 @@ esp_err_t add(cluster_t *cluster)
         return ESP_ERR_NOT_SUPPORTED;
     }
 
-
     return ESP_OK;
 }
 } /* harmonics */
@@ -2451,7 +2447,6 @@ esp_err_t add(cluster_t *cluster)
         ESP_LOGE(TAG, "Cluster shall support Alternating Current feature");
         return ESP_ERR_NOT_SUPPORTED;
     }
-
 
     return ESP_OK;
 }
@@ -3208,7 +3203,6 @@ esp_err_t add(cluster_t *cluster)
     event::create_power_adjust_start(cluster);
     event::create_power_adjust_end(cluster);
 
-
     return ESP_OK;
 }
 } /* power_adjustment */
@@ -3259,7 +3253,6 @@ esp_err_t add(cluster_t *cluster)
         ESP_LOGE(TAG, "Cluster shall satisfy condition (STA|PAU|FA|CON|!PA)&!PFR of feature");
         return ESP_ERR_NOT_SUPPORTED;
     }
-
 
     return ESP_OK;
 }
@@ -3493,7 +3486,6 @@ esp_err_t add(cluster_t *cluster)
 
     return ESP_OK;
 }
-
 
 } /* tank_percent */
 
@@ -4075,7 +4067,6 @@ esp_err_t add(cluster_t *cluster)
     attribute::create_soft_recording_privacy_mode_enabled(cluster, 0);
     attribute::create_soft_livestream_privacy_mode_enabled(cluster, 0);
 
-
     return ESP_OK;
 }
 
@@ -4098,7 +4089,6 @@ esp_err_t add(cluster_t *cluster)
     attribute::create_speaker_volume_level(cluster, 0);
     attribute::create_speaker_max_level(cluster, 0);
     attribute::create_speaker_min_level(cluster, 0);
-
 
     return ESP_OK;
 }
@@ -4169,7 +4159,6 @@ esp_err_t add(cluster_t *cluster)
     attribute::create_local_video_recording_enabled(cluster, 0);
     attribute::create_local_snapshot_recording_enabled(cluster, 0);
 
-
     return ESP_OK;
 }
 
@@ -4219,7 +4208,6 @@ namespace webrtc_transport_provider {
 
 namespace webrtc_transport_requestor {
 }/*webrtc_transport_requestor*/
-
 
 namespace closure_control {
 namespace feature {

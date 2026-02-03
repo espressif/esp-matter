@@ -442,7 +442,6 @@ esp_err_t set_identify(uint16_t endpoint_id, void *identify);
  */
 esp_err_t enable(endpoint_t *endpoint);
 
-
 /** Check if attribute is enabled
  *
  * Check if the attribute of a cluster is enabled on an endpoint.
@@ -532,14 +531,14 @@ typedef void (*function_cluster_shutdown_t)(uint16_t endpoint_id);
  *
  * This will be called when attributes are change for the cluster.
  */
-typedef void (*function_attribute_change_t)(const chip::app::ConcreteAttributePath & attributePath);
+typedef void (*function_attribute_change_t)(const chip::app::ConcreteAttributePath  &attributePath);
 
 /** Pre attribute change function
  *
  * This function is called before an attribute changes.
  */
-typedef chip::Protocols::InteractionModel::Status (*function_pre_attribute_change_t)(
-    const chip::app::ConcreteAttributePath & attributePath, EmberAfAttributeType attributeType, uint16_t size, uint8_t * value);
+typedef chip::Protocols::InteractionModel::Status(*function_pre_attribute_change_t)(
+    const chip::app::ConcreteAttributePath  &attributePath, EmberAfAttributeType attributeType, uint16_t size, uint8_t * value);
 
 /** Initialization callback
  *
@@ -851,7 +850,6 @@ attribute_t *get(cluster_t *cluster, uint32_t attribute_id);
  */
 attribute_t *get(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id);
 
-
 /** Get first attribute
  *
  * Get the first attribute present on the cluster.
@@ -913,7 +911,7 @@ uint32_t get_id(attribute_t *attribute);
  * @return error in case of failure.
  */
 esp_err_t set_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
-                    esp_matter_attr_val_t *val, bool call_callbacks = true);
+                  esp_matter_attr_val_t *val, bool call_callbacks = true);
 
 /** Set attribute val, similar to set_val but with attribute handle
  *

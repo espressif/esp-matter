@@ -45,8 +45,7 @@ void enable_insights(const char * insights_auth_key)
 
     esp_err_t ret = esp_insights_init(&config);
 
-    if (ret != ESP_OK)
-    {
+    if (ret != ESP_OK) {
         ESP_LOGE("Insights", "Failed to initialize ESP Insights, err:0x%x", ret);
     }
 

@@ -43,7 +43,7 @@ static esp_err_t _http_handle_response_code(esp_http_client_handle_t http_client
 {
     esp_err_t err = ESP_OK;
     if (status_code == HttpStatus_MovedPermanently || status_code == HttpStatus_Found ||
-        status_code == HttpStatus_TemporaryRedirect) {
+            status_code == HttpStatus_TemporaryRedirect) {
         err = esp_http_client_set_redirection(http_client);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "URL redirection Failed");
@@ -122,7 +122,7 @@ static int _http_client_read_check_connection(esp_http_client_handle_t client, c
 {
     int len = esp_http_client_read(client, data, size);
     if (len == 0 && !esp_http_client_is_complete_data_received(client) &&
-        (errno == ENOTCONN || errno == ECONNRESET || errno == ECONNABORTED)) {
+            (errno == ENOTCONN || errno == ECONNRESET || errno == ECONNABORTED)) {
         return -1;
     }
     return len;

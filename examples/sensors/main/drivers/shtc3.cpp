@@ -95,7 +95,7 @@ static float shtc3_get_humidity(uint16_t raw_humidity)
     return 100.0f * (static_cast<float>(raw_humidity) / 65535.0f);
 }
 
-static esp_err_t shtc3_get_read_temp_and_humidity(float & temp, float & humidity)
+static esp_err_t shtc3_get_read_temp_and_humidity(float  &temp, float  &humidity)
 {
     // foreach temperature and humidity: two bytes data, one byte for checksum
     uint8_t data[6] = {0};

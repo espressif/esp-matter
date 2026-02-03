@@ -72,12 +72,12 @@ static uint64_t prov_timeout_period = (APP_NETWORK_PROV_TIMEOUT_PERIOD * 60 * 10
 #define ESP_RAINMAKER_INTRO_LINK    "https://rainmaker.espressif.com"
 #define ESP_RMAKER_PHONE_APP_LINK   "http://bit.ly/esp-rmaker"
 char esp_rainmaker_ascii_art[] = \
-"  ______  _____ _____    _____            _____ _   _ __  __          _  ________ _____\n"\
-" |  ____|/ ____|  __ \\  |  __ \\     /\\   |_   _| \\ | |  \\/  |   /\\   | |/ /  ____|  __ \\\n"\
-" | |__  | (___ | |__) | | |__) |   /  \\    | | |  \\| | \\  / |  /  \\  | ' /| |__  | |__) |\n"\
-" |  __|  \\___ \\|  ___/  |  _  /   / /\\ \\   | | | . ` | |\\/| | / /\\ \\ |  < |  __| |  _  /\n"\
-" | |____ ____) | |      | | \\ \\  / ____ \\ _| |_| |\\  | |  | |/ ____ \\| . \\| |____| | \\ \\\n"\
-" |______|_____/|_|      |_|  \\_\\/_/    \\_\\_____|_| \\_|_|  |_/_/    \\_\\_|\\_\\______|_|  \\_\\\n";
+                                 "  ______  _____ _____    _____            _____ _   _ __  __          _  ________ _____\n"\
+                                 " |  ____|/ ____|  __ \\  |  __ \\     /\\   |_   _| \\ | |  \\/  |   /\\   | |/ /  ____|  __ \\\n"\
+                                 " | |__  | (___ | |__) | | |__) |   /  \\    | | |  \\| | \\  / |  /  \\  | ' /| |__  | |__) |\n"\
+                                 " |  __|  \\___ \\|  ___/  |  _  /   / /\\ \\   | | | . ` | |\\/| | / /\\ \\ |  < |  __| |  _  /\n"\
+                                 " | |____ ____) | |      | | \\ \\  / ____ \\ _| |_| |\\  | |  | |/ ____ \\| . \\| |____| | \\ \\\n"\
+                                 " |______|_____/|_|      |_|  \\_\\/_/    \\_\\_____|_| \\_|_|  |_/_/    \\_\\_|\\_\\______|_|  \\_\\\n";
 
 static void intro_print(bool provisioned)
 {
@@ -95,7 +95,7 @@ static void intro_print(bool provisioned)
     printf("\nIf you want to reset network credentials, or reset to factory, press and hold the Boot button.\n");
     printf("\nThis application uses ESP RainMaker, which is based on ESP IDF.\n");
     printf("Check out the source code for this application here:\n   %s/%s\n",
-            ESP_RAINMAKER_GITHUB_EXAMPLES_PATH, RMAKER_DEMO_PROJECT_NAME);
+           ESP_RAINMAKER_GITHUB_EXAMPLES_PATH, RMAKER_DEMO_PROJECT_NAME);
     printf("\nPlease visit %s for additional information.\n\n", ESP_RAINMAKER_INTRO_LINK);
     printf("####################################################################################################\n");
 }
@@ -150,12 +150,12 @@ static void app_network_print_qr(const char *name, const char *pop, const char *
     char payload[150];
     if (pop) {
         snprintf(payload, sizeof(payload), "{\"ver\":\"%s\",\"name\":\"%s\"" \
-                ",\"pop\":\"%s\",\"transport\":\"%s\"}",
-                PROV_QR_VERSION, name, pop, transport);
+                 ",\"pop\":\"%s\",\"transport\":\"%s\"}",
+                 PROV_QR_VERSION, name, pop, transport);
     } else {
         snprintf(payload, sizeof(payload), "{\"ver\":\"%s\",\"name\":\"%s\"" \
-                ",\"transport\":\"%s\"}",
-                PROV_QR_VERSION, name, transport);
+                 ",\"transport\":\"%s\"}",
+                 PROV_QR_VERSION, name, transport);
     }
 #ifdef CONFIG_APP_NETWORK_PROV_SHOW_QR
     ESP_LOGI(TAG, "Scan this QR code from the ESP RainMaker phone app for Provisioning.");
@@ -173,7 +173,7 @@ static esp_err_t read_random_bytes_from_nvs(uint8_t **random_bytes, size_t *len)
     *len = 0;
 
     if ((err = nvs_open_from_partition(CONFIG_ESP_RMAKER_FACTORY_PARTITION_NAME, CREDENTIALS_NAMESPACE,
-                                NVS_READONLY, &handle)) != ESP_OK) {
+                                       NVS_READONLY, &handle)) != ESP_OK) {
         ESP_LOGD(TAG, "NVS open for %s %s %s failed with error %d", CONFIG_ESP_RMAKER_FACTORY_PARTITION_NAME, CREDENTIALS_NAMESPACE, RANDOM_NVS_KEY, err);
         return ESP_FAIL;
     }
@@ -226,14 +226,13 @@ static esp_err_t get_device_service_name(char *service_name, size_t max)
         snprintf(service_name, max, "%s_%02x%02x%02x", ssid_prefix, mac_addr[3], mac_addr[4], mac_addr[5]);
     } else {
         snprintf(service_name, max, "%s_%02x%02x%02x", ssid_prefix, nvs_random[nvs_random_size - 3],
-                nvs_random[nvs_random_size - 2], nvs_random[nvs_random_size - 1]);
+                 nvs_random[nvs_random_size - 2], nvs_random[nvs_random_size - 1]);
     }
     if (nvs_random) {
         free(nvs_random);
     }
     return ESP_OK;
 }
-
 
 static char *get_device_pop(app_network_pop_type_t pop_type)
 {
@@ -291,23 +290,23 @@ static void network_event_handler(void* arg, esp_event_base_t event_base, int32_
 #ifdef APP_PROV_STOP_ON_CREDS_MISMATCH
     if (event_base == PROTOCOMM_SECURITY_SESSION_EVENT) {
         switch (event_id) {
-            case PROTOCOMM_SECURITY_SESSION_SETUP_OK:
-                ESP_LOGI(TAG, "Secured session established!");
-                break;
-            case PROTOCOMM_SECURITY_SESSION_INVALID_SECURITY_PARAMS:
-                /* fall-through */
-            case PROTOCOMM_SECURITY_SESSION_CREDENTIALS_MISMATCH:
-                ESP_LOGE(TAG, "Received incorrect PoP or invalid security params! event: %d", (int) event_id);
-                if (CONFIG_APP_NETWORK_PROV_MAX_POP_MISMATCH &&
-                        (++failed_cnt >= CONFIG_APP_NETWORK_PROV_MAX_POP_MISMATCH)) {
-                    /* stop provisioning for security reasons */
-                    network_prov_mgr_stop_provisioning();
-                    ESP_LOGW(TAG, "Max PoP attempts reached! Provisioning disabled for security reasons. Please reboot device to restart provisioning");
-                    esp_event_post(APP_NETWORK_EVENT, APP_NETWORK_EVENT_PROV_CRED_MISMATCH, NULL, 0, portMAX_DELAY);
-                }
-                break;
-            default:
-                break;
+        case PROTOCOMM_SECURITY_SESSION_SETUP_OK:
+            ESP_LOGI(TAG, "Secured session established!");
+            break;
+        case PROTOCOMM_SECURITY_SESSION_INVALID_SECURITY_PARAMS:
+        /* fall-through */
+        case PROTOCOMM_SECURITY_SESSION_CREDENTIALS_MISMATCH:
+            ESP_LOGE(TAG, "Received incorrect PoP or invalid security params! event: %d", (int) event_id);
+            if (CONFIG_APP_NETWORK_PROV_MAX_POP_MISMATCH &&
+                    (++failed_cnt >= CONFIG_APP_NETWORK_PROV_MAX_POP_MISMATCH)) {
+                /* stop provisioning for security reasons */
+                network_prov_mgr_stop_provisioning();
+                ESP_LOGW(TAG, "Max PoP attempts reached! Provisioning disabled for security reasons. Please reboot device to restart provisioning");
+                esp_event_post(APP_NETWORK_EVENT, APP_NETWORK_EVENT_PROV_CRED_MISMATCH, NULL, 0, portMAX_DELAY);
+            }
+            break;
+        default:
+            break;
         }
     }
 #endif /* APP_PROV_STOP_ON_CREDS_MISMATCH */
@@ -376,7 +375,7 @@ esp_err_t app_network_start_timer(void)
     if (esp_timer_create(&prov_stop_timer_conf, &prov_stop_timer) == ESP_OK) {
         esp_timer_start_once(prov_stop_timer, prov_timeout_period);
         ESP_LOGI(TAG, "Provisioning will auto stop after %d minute(s).",
-                APP_NETWORK_PROV_TIMEOUT_PERIOD);
+                 APP_NETWORK_PROV_TIMEOUT_PERIOD);
         return ESP_OK;
     } else {
         ESP_LOGE(TAG, "Failed to create Provisioning auto stop timer.");

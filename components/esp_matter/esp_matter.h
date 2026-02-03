@@ -45,8 +45,7 @@ namespace DeviceEventType {
 /**
  * Enumerates platform-specific event types that are visible to the application.
  */
-enum
-{
+enum {
     /** Signals that Commissioning session has started */
     kCommissioningSessionStarted  = kRange_PublicPlatformSpecific + 0x1000,
     /** Signals that Commissioning session has stopped */

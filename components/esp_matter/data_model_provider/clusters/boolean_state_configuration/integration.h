@@ -48,7 +48,7 @@ inline CHIP_ERROR SetAlarmsActive(EndpointId ep, BitMask<AlarmModeBitmap> alarms
     VerifyOrReturnError(cluster != nullptr, CHIP_ERROR_NO_ENDPOINT);
     auto status = cluster->SetAlarmsActive(alarms);
     return (status == Protocols::InteractionModel::Status::Success) ? CHIP_NO_ERROR
-                                                                    : CHIP_ERROR_IM_GLOBAL_STATUS_VALUE(status);
+           : CHIP_ERROR_IM_GLOBAL_STATUS_VALUE(status);
 }
 
 inline CHIP_ERROR SetAllEnabledAlarmsActive(EndpointId ep)
@@ -57,7 +57,7 @@ inline CHIP_ERROR SetAllEnabledAlarmsActive(EndpointId ep)
     VerifyOrReturnError(cluster != nullptr, CHIP_ERROR_NO_ENDPOINT);
     auto status = cluster->SetAllEnabledAlarmsActive();
     return (status == Protocols::InteractionModel::Status::Success) ? CHIP_NO_ERROR
-                                                                    : CHIP_ERROR_IM_GLOBAL_STATUS_VALUE(status);
+           : CHIP_ERROR_IM_GLOBAL_STATUS_VALUE(status);
 }
 
 inline CHIP_ERROR ClearAllAlarms(EndpointId ep)
@@ -74,7 +74,7 @@ inline CHIP_ERROR SuppressAlarms(EndpointId ep, BitMask<BooleanStateConfiguratio
     VerifyOrReturnError(cluster != nullptr, CHIP_ERROR_NO_ENDPOINT);
     auto status = cluster->SuppressAlarms(alarms);
     return (status == Protocols::InteractionModel::Status::Success) ? CHIP_NO_ERROR
-                                                                    : CHIP_ERROR_IM_GLOBAL_STATUS_VALUE(status);
+           : CHIP_ERROR_IM_GLOBAL_STATUS_VALUE(status);
 }
 
 inline CHIP_ERROR SetCurrentSensitivityLevel(EndpointId ep, uint8_t level)
