@@ -40,15 +40,6 @@ esp_err_t enable_all();
 
 }
 
-namespace cluster {
-
-/** Common cluster delegate init callback
- *
- * This is the common delegate init callback which calls the delegate init callbacks in the clusters.
- */
-void delegate_init_callback_common(endpoint_t *endpoint);
-}
-
 namespace attribute {
 
 /** Get the attribute value from the esp-matter storage

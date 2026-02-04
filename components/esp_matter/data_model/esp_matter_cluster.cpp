@@ -122,20 +122,6 @@ cluster_t * ABORT_CLUSTER_CREATE(cluster_t *cluster)
 }
 } // anonymous namespace
 
-void delegate_init_callback_common(endpoint_t *endpoint)
-{
-    uint16_t endpoint_id = endpoint::get_id(endpoint);
-    cluster_t *cluster = get_first(endpoint);
-    while (cluster) {
-        /* Delegate server init callback */
-        delegate_init_callback_t delegate_init_callback = get_delegate_init_callback(cluster);
-        if (delegate_init_callback) {
-            delegate_init_callback(get_delegate_impl(cluster), endpoint_id);
-        }
-        cluster = get_next(cluster);
-    }
-}
-
 cluster_t *create_default_binding_cluster(endpoint_t *endpoint)
 {
     /* Don't create binding cluster if it already exists on the endpoint */
