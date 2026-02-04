@@ -64,8 +64,8 @@ typedef struct {
 static bool _is_ota_candidate_valid(model_version_t *model, uint32_t current_software_version)
 {
     return model->software_version > current_software_version &&
-        model->max_applicable_software_version >= current_software_version &&
-        model->min_applicable_software_version <= current_software_version;
+           model->max_applicable_software_version >= current_software_version &&
+           model->min_applicable_software_version <= current_software_version;
 }
 
 // Search the OTA candidate from the cache, return the index of candidate on success, or return -1 on failure.
@@ -268,11 +268,11 @@ static esp_err_t _query_ota_candidate(model_version_t *model, uint32_t new_softw
                       "Failed to parse the http response json on json_parse_start");
     if (json_obj_get_object(&jctx, "modelVersion") == 0) {
         if (json_obj_get_int(&jctx, "maxApplicableSoftwareVersion", &max_applicable_software_version) == 0 &&
-            json_obj_get_int(&jctx, "minApplicableSoftwareVersion", &min_applicable_software_version) == 0 &&
-            json_obj_get_bool(&jctx, "softwareVersionValid", &software_version_valid) == 0 && software_version_valid &&
-            max_applicable_software_version >= current_software_version &&
-            min_applicable_software_version <= current_software_version &&
-            new_software_version > current_software_version) {
+                json_obj_get_int(&jctx, "minApplicableSoftwareVersion", &min_applicable_software_version) == 0 &&
+                json_obj_get_bool(&jctx, "softwareVersionValid", &software_version_valid) == 0 && software_version_valid &&
+                max_applicable_software_version >= current_software_version &&
+                min_applicable_software_version <= current_software_version &&
+                new_software_version > current_software_version) {
             model->max_applicable_software_version = max_applicable_software_version;
             model->min_applicable_software_version = min_applicable_software_version;
             model->software_version = new_software_version;
@@ -280,15 +280,15 @@ static esp_err_t _query_ota_candidate(model_version_t *model, uint32_t new_softw
                 model->cd_version_number = cd_version_number;
             }
             if (json_obj_get_strlen(&jctx, "softwareVersionString", &string_len) == 0 &&
-                json_obj_get_string(&jctx, "softwareVersionString", model->software_version_str,
-                                    sizeof(model->software_version_str)) == 0) {
+                    json_obj_get_string(&jctx, "softwareVersionString", model->software_version_str,
+                                        sizeof(model->software_version_str)) == 0) {
                 string_len = string_len < sizeof(model->software_version_str) - 1
-                    ? string_len
-                    : sizeof(model->software_version_str) - 1;
+                             ? string_len
+                             : sizeof(model->software_version_str) - 1;
                 model->software_version_str[string_len] = 0;
             }
             if (json_obj_get_strlen(&jctx, "otaUrl", &string_len) == 0 &&
-                json_obj_get_string(&jctx, "otaUrl", model->ota_url, sizeof(model->ota_url)) == 0) {
+                    json_obj_get_string(&jctx, "otaUrl", model->ota_url, sizeof(model->ota_url)) == 0) {
                 model->ota_url[string_len] = 0;
             }
         } else {
@@ -322,8 +322,8 @@ static void _update_all_ota_candidates_cache()
                 std::sort(&software_version_array[0], &software_version_array[software_version_count],
                           std::greater<uint32_t>());
                 for (size_t index = 0;
-                     index < software_version_count && software_version_array[index] > candidate->software_version;
-                     ++index) {
+                        index < software_version_count && software_version_array[index] > candidate->software_version;
+                        ++index) {
                     err = _query_ota_candidate(candidate, software_version_array[index], candidate->software_version);
                     if (err == ESP_OK) {
                         break;
@@ -371,7 +371,7 @@ static void _ota_candidate_fetch_handler(ota_candidate_fetch_action_t &action)
             candidate->vendor_id = action.vendor_id;
             candidate->product_id = action.product_id;
             for (size_t index = 0;
-                 index < software_version_count && software_version_array[index] > action.software_version; ++index) {
+                    index < software_version_count && software_version_array[index] > action.software_version; ++index) {
                 err = _query_ota_candidate(candidate, software_version_array[index], action.software_version);
                 if (err == ESP_OK) {
                     size_t empty_index = _find_empty_ota_candidates();
@@ -462,7 +462,8 @@ esp_err_t init_ota_candidates()
         // start a timer which will update the candidates cache everyday.
         esp_timer_init();
         const esp_timer_create_args_t timer_args = {
-            .callback = _ota_candidates_periodic_update_handler, .arg = nullptr, .name = "ota_candidates_update_timer"};
+            .callback = _ota_candidates_periodic_update_handler, .arg = nullptr, .name = "ota_candidates_update_timer"
+        };
         esp_timer_create(&timer_args, &_ota_candidates_update_timer);
         esp_timer_start_periodic(_ota_candidates_update_timer,
                                  (uint64_t)CONFIG_ESP_MATTER_OTA_CANDIDATES_UPDATE_PERIOD * 3600 * 1000 * 1000);

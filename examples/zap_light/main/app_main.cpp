@@ -111,7 +111,7 @@ extern "C" void app_main()
     esp_matter::identification::set_callback(nullptr);
 
     /* Starting driver with default values */
-    chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t arg){
+    chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t arg) {
         app_driver_light_set_defaults(light_endpoint_id);
     });
 

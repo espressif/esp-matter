@@ -12,9 +12,9 @@ namespace WebRTCTransportProvider {
  */
 class WebRTCTransportProviderController {
 public:
-  virtual ~WebRTCTransportProviderController() = default;
+    virtual ~WebRTCTransportProviderController() = default;
 
-  virtual void SetWebRTCTransportProvider(WebRTCTransportProviderCluster *webRTCTransportProvider) = 0;
+    virtual void SetWebRTCTransportProvider(WebRTCTransportProviderCluster *webRTCTransportProvider) = 0;
 };
 
 } // namespace WebRTCTransportProvider

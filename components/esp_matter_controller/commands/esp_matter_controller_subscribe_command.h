@@ -120,7 +120,10 @@ public:
 
     CHIP_ERROR OnResubscriptionNeeded(ReadClient *apReadClient, CHIP_ERROR aTerminationCause) override;
 
-    uint32_t get_subscription_id() { return m_subscription_id; }
+    uint32_t get_subscription_id()
+    {
+        return m_subscription_id;
+    }
 
 private:
     uint64_t m_node_id;
@@ -200,7 +203,7 @@ esp_err_t send_subscribe_event_command(uint64_t node_id, ScopedMemoryBufferWithS
  * @param[in] node_id Remote NodeId
  * @param[in] endpoint_id EndpointId of the attribute path
  * @param[in] cluster_id ClusterId of the attribute path
- * @param[in] attribute_id AttributeId of the attribue path
+ * @param[in] attribute_id AttributeId of the attribute path
  * @param[in] min_interval Minimum interval of the subscription
  * @param[in] max_interval Maximum interval of the subscription
  * @param[in] auto_resubscribe Auto re-subscribe flag

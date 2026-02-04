@@ -134,10 +134,12 @@ typedef enum status {
  */
 class ScopedChipStackLock {
 public:
-    ScopedChipStackLock(uint32_t ticks_to_wait) {
+    ScopedChipStackLock(uint32_t ticks_to_wait)
+    {
         status = chip_stack_lock(ticks_to_wait);
     }
-    ~ScopedChipStackLock() {
+    ~ScopedChipStackLock()
+    {
         if (status == SUCCESS) {
             chip_stack_unlock();
         }
@@ -171,7 +173,7 @@ private:
     * @return error in case of failure.
     */
     esp_err_t chip_stack_unlock();
-}; 
+};
 
 } /* lock */
 

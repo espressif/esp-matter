@@ -42,42 +42,42 @@ static void event_handler(void* arg, esp_event_base_t event_base,
 
     if (event_base == NETWORK_PROV_EVENT) {
         switch (event_id) {
-            case NETWORK_PROV_START:
-                ESP_LOGI(TAG, "Provisioning started");
-                break;
-            case NETWORK_PROV_WIFI_CRED_RECV: {
-                wifi_sta_config_t *wifi_sta_cfg = (wifi_sta_config_t *)event_data;
-                ESP_LOGI(TAG, "Received Wi-Fi credentials"
-                         "\n\tSSID     : %s\n\tPassword : %s",
-                         (const char *) wifi_sta_cfg->ssid,
-                         (const char *) wifi_sta_cfg->password);
-                break;
-            }
-            case NETWORK_PROV_WIFI_CRED_FAIL: {
-                network_prov_wifi_sta_fail_reason_t *reason = (network_prov_wifi_sta_fail_reason_t *)event_data;
-                ESP_LOGE(TAG, "Provisioning failed!\n\tReason : %s"
-                         "\n\tPlease reset to factory and retry provisioning",
-                         (*reason == NETWORK_PROV_WIFI_STA_AUTH_ERROR) ?
-                         "Wi-Fi station authentication failed" : "Wi-Fi access-point not found");
+        case NETWORK_PROV_START:
+            ESP_LOGI(TAG, "Provisioning started");
+            break;
+        case NETWORK_PROV_WIFI_CRED_RECV: {
+            wifi_sta_config_t *wifi_sta_cfg = (wifi_sta_config_t *)event_data;
+            ESP_LOGI(TAG, "Received Wi-Fi credentials"
+                     "\n\tSSID     : %s\n\tPassword : %s",
+                     (const char *) wifi_sta_cfg->ssid,
+                     (const char *) wifi_sta_cfg->password);
+            break;
+        }
+        case NETWORK_PROV_WIFI_CRED_FAIL: {
+            network_prov_wifi_sta_fail_reason_t *reason = (network_prov_wifi_sta_fail_reason_t *)event_data;
+            ESP_LOGE(TAG, "Provisioning failed!\n\tReason : %s"
+                     "\n\tPlease reset to factory and retry provisioning",
+                     (*reason == NETWORK_PROV_WIFI_STA_AUTH_ERROR) ?
+                     "Wi-Fi station authentication failed" : "Wi-Fi access-point not found");
 #ifdef CONFIG_APP_NETWORK_RESET_PROV_ON_FAILURE
-                retries++;
-                if (retries >= CONFIG_APP_NETWORK_PROV_MAX_RETRY_CNT) {
-                    ESP_LOGI(TAG, "Failed to connect with provisioned AP, resetting provisioned credentials");
-                    network_prov_mgr_reset_wifi_sm_state_on_failure();
-                    esp_event_post(APP_NETWORK_EVENT, APP_NETWORK_EVENT_PROV_RESTART, NULL, 0, portMAX_DELAY);
-                    retries = 0;
-                }
-#endif // CONFIG_APP_NETWORK_RESET_PROV_ON_FAILURE
-                break;
-            }
-            case NETWORK_PROV_WIFI_CRED_SUCCESS:
-                ESP_LOGI(TAG, "Provisioning successful");
-#ifdef CONFIG_APP_NETWORK_RESET_PROV_ON_FAILURE
+            retries++;
+            if (retries >= CONFIG_APP_NETWORK_PROV_MAX_RETRY_CNT) {
+                ESP_LOGI(TAG, "Failed to connect with provisioned AP, resetting provisioned credentials");
+                network_prov_mgr_reset_wifi_sm_state_on_failure();
+                esp_event_post(APP_NETWORK_EVENT, APP_NETWORK_EVENT_PROV_RESTART, NULL, 0, portMAX_DELAY);
                 retries = 0;
+            }
+#endif // CONFIG_APP_NETWORK_RESET_PROV_ON_FAILURE
+            break;
+        }
+        case NETWORK_PROV_WIFI_CRED_SUCCESS:
+            ESP_LOGI(TAG, "Provisioning successful");
+#ifdef CONFIG_APP_NETWORK_RESET_PROV_ON_FAILURE
+            retries = 0;
 #endif
-                break;
-            default:
-                break;
+            break;
+        default:
+            break;
         }
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         esp_wifi_connect();

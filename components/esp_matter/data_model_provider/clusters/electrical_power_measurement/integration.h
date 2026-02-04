@@ -20,8 +20,7 @@
 
 namespace chip::app::Clusters::ElectricalPowerMeasurement {
 
-enum class OptionalAttributes : uint32_t
-{
+enum class OptionalAttributes : uint32_t {
     kOptionalAttributeRanges          = 0x1,
     kOptionalAttributeVoltage         = 0x2,
     kOptionalAttributeActiveCurrent   = 0x4,
@@ -37,17 +36,16 @@ enum class OptionalAttributes : uint32_t
     kOptionalAttributeNeutralCurrent  = 0x1000,
 };
 
-class Instance
-{
+class Instance {
 public:
-    Instance(EndpointId aEndpointId, Delegate & aDelegate, BitMask<Feature> aFeature,
+    Instance(EndpointId aEndpointId, Delegate  &aDelegate, BitMask<Feature> aFeature,
              BitMask<OptionalAttributes> aOptionalAttributes) :
         mCluster(ElectricalPowerMeasurementCluster::Config{
-            .endpointId         = aEndpointId,
-            .delegate           = aDelegate,
-            .features           = aFeature,
-            .optionalAttributes = FromLegacyOptionalAttributes(aOptionalAttributes),
-        })
+        .endpointId         = aEndpointId,
+        .delegate           = aDelegate,
+        .features           = aFeature,
+        .optionalAttributes = FromLegacyOptionalAttributes(aOptionalAttributes),
+    })
     {}
 
     CHIP_ERROR Init();

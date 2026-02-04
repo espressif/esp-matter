@@ -37,7 +37,7 @@ esp_err_t get_attr_val(esp_matter::cluster_t *cluster, uint32_t attribute_id, es
 {
     esp_matter::attribute_t *attr = esp_matter::attribute::get(cluster, attribute_id);
     if (!attr) {
-      return ESP_FAIL;
+        return ESP_FAIL;
     }
     return esp_matter::attribute::get_val_internal(attr, &val);
 }
@@ -52,13 +52,13 @@ esp_err_t GetClusterConfig(EndpointId endpointId, TimeSynchronizationCluster::Op
     }
     esp_matter_attr_val_t feature_val;
     ESP_RETURN_ON_ERROR(get_attr_val(cluster, Globals::Attributes::FeatureMap::Id, feature_val), "TimeSync",
-        "Failed to get feature map");
+                        "Failed to get feature map");
     VerifyOrReturnError(feature_val.type == ESP_MATTER_VAL_TYPE_BITMAP32, ESP_FAIL);
     featureMap = BitFlags<TimeSynchronization::Feature>(feature_val.val.u32);
     esp_matter_attr_val_t attr_val;
     if (featureMap.Has(Feature::kNTPClient) || featureMap.Has(Feature::kNTPServer)) {
         ESP_RETURN_ON_ERROR(get_attr_val(cluster, Attributes::SupportsDNSResolve::Id, attr_val), "TimeSync",
-        "Failed to get SupportsDNSResolve");
+                            "Failed to get SupportsDNSResolve");
         VerifyOrReturnError(attr_val.type == ESP_MATTER_VAL_TYPE_BOOLEAN, ESP_FAIL);
         if (featureMap.Has(Feature::kNTPClient)) {
             startupConfig.supportsDNSResolve = attr_val.val.b;
@@ -69,14 +69,14 @@ esp_err_t GetClusterConfig(EndpointId endpointId, TimeSynchronizationCluster::Op
     }
     if (featureMap.Has(Feature::kTimeZone)) {
         ESP_RETURN_ON_ERROR(get_attr_val(cluster, Attributes::TimeZoneDatabase::Id, attr_val), "TimeSync",
-        "Failed to get TimeZoneDatabase");
+                            "Failed to get TimeZoneDatabase");
         VerifyOrReturnError(attr_val.type == ESP_MATTER_VAL_TYPE_ENUM8, ESP_FAIL);
-        startupConfig.timeZoneDatabase = (TimeZoneDatabaseEnum)attr_val.val.u8; 
+        startupConfig.timeZoneDatabase = (TimeZoneDatabaseEnum)attr_val.val.u8;
     }
-    if (get_attr_val(cluster, Attributes::TimeSource::Id, attr_val) == ESP_OK && 
-        attr_val.type == ESP_MATTER_VAL_TYPE_ENUM8) {
+    if (get_attr_val(cluster, Attributes::TimeSource::Id, attr_val) == ESP_OK &&
+            attr_val.type == ESP_MATTER_VAL_TYPE_ENUM8) {
         attrSet.Set<Attributes::TimeSource::Id>();
-        startupConfig.timeSource = (TimeSourceEnum)attr_val.val.u8;        
+        startupConfig.timeSource = (TimeSourceEnum)attr_val.val.u8;
     }
     startupConfig.delegate = GetDefaultDelegate();
     return ESP_OK;
@@ -123,8 +123,7 @@ void SetDefaultDelegate(Delegate * delegate)
     VerifyOrReturn(delegate != nullptr);
     gDelegate                = delegate;
     auto timeSynchronization = GetClusterInstance();
-    if (timeSynchronization != nullptr)
-    {
+    if (timeSynchronization != nullptr) {
         timeSynchronization->SetDelegate(gDelegate);
     }
 }
@@ -132,12 +131,10 @@ void SetDefaultDelegate(Delegate * delegate)
 Delegate * GetDefaultDelegate()
 {
     auto timeSynchronization = GetClusterInstance();
-    if (timeSynchronization != nullptr)
-    {
+    if (timeSynchronization != nullptr) {
         return timeSynchronization->GetDelegate();
     }
-    if (gDelegate == nullptr)
-    {
+    if (gDelegate == nullptr) {
         static DefaultTimeSyncDelegate delegate;
         gDelegate = &delegate;
     }

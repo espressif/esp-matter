@@ -36,11 +36,11 @@ void ESPMatterLocalizationConfigurationClusterServerInitCallback(EndpointId endp
         return;
     }
     esp_matter::attribute_t *active_locale = esp_matter::attribute::get(
-        endpointId, LocalizationConfiguration::Id, LocalizationConfiguration::Attributes::ActiveLocale::Id);
+                                                 endpointId, LocalizationConfiguration::Id, LocalizationConfiguration::Attributes::ActiveLocale::Id);
     esp_matter_attr_val_t attr_val;
     if (active_locale && esp_matter::attribute::get_val_internal(active_locale, &attr_val) == ESP_OK &&
-        attr_val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING &&
-        attr_val.val.a.s <= LocalizationConfiguration::Attributes::ActiveLocale::TypeInfo::MaxLength()) {
+            attr_val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING &&
+            attr_val.val.a.s <= LocalizationConfiguration::Attributes::ActiveLocale::TypeInfo::MaxLength()) {
         ChipLogError(AppServer, "Failed to get active locale on endpoint %u", endpointId);
     }
     gServer.Create(*DeviceLayer::GetDeviceInfoProvider(), CharSpan((const char *)attr_val.val.a.b, attr_val.val.a.s));

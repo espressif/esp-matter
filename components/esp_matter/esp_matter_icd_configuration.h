@@ -34,7 +34,7 @@ typedef struct config {
 bool get_icd_server_enabled();
 
 /** Set ICD configuration data
- * 
+ *
  * This function allows the user to enable or disable the ICD server and configure its settings at runtime, before creating the Matter data model.
  */
 esp_err_t set_configuration_data(config_t *config);

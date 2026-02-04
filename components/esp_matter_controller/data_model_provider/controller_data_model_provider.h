@@ -76,7 +76,10 @@ public:
         return instance;
     }
 
-    CHIP_ERROR Shutdown() override { return CHIP_NO_ERROR; }
+    CHIP_ERROR Shutdown() override
+    {
+        return CHIP_NO_ERROR;
+    }
 
     ActionReturnStatus ReadAttribute(const ReadAttributeRequest &request, AttributeValueEncoder &encoder) override
     {
@@ -179,7 +182,7 @@ public:
 #endif
     }
 
-    CHIP_ERROR EventInfo(const ConcreteEventPath & path, EventEntry & eventInfo) override
+    CHIP_ERROR EventInfo(const ConcreteEventPath  &path, EventEntry  &eventInfo) override
     {
         return CHIP_NO_ERROR;
     }

@@ -69,8 +69,7 @@ esp_err_t zigbee_bridge_attribute_update(uint16_t endpoint_id, uint32_t cluster_
                 }
             }
         }
-    }
-    else{
+    } else {
         ESP_LOGE(TAG, "Unable to Update Bridge Device, ep: %" PRId16 ", cluster: %" PRId32 ", att: %" PRId32 "", endpoint_id, cluster_id, attribute_id);
     }
     return ESP_OK;

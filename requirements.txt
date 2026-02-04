@@ -8,3 +8,6 @@ urllib3>=2.5.0
 
 # mfg_tool
 esp-matter-mfg-tool>=1.0.4
+
+# astyle
+astyle_py==1.0.5

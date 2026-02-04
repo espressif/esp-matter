@@ -62,7 +62,7 @@ public:
     static esp_err_t SetActiveThreshold(Milliseconds32 activeThreshold)
     {
         if (ICDConfigurationData::GetInstance().GetICDMode() == ICDConfigurationData::ICDMode::LIT &&
-            activeThreshold < Milliseconds32(5000)) {
+                activeThreshold < Milliseconds32(5000)) {
             return ESP_ERR_INVALID_ARG;
         }
         ICDConfigurationData::GetInstance().mActiveThreshold = activeThreshold;
@@ -96,13 +96,13 @@ static esp_err_t set_mode_durations(std::optional<uint32_t> active_mode_duration
                                     std::optional<uint32_t> idle_mode_duration_s)
 {
     Milliseconds32 active_mode_duration = active_mode_duration_ms.has_value()
-        ? Milliseconds32(active_mode_duration_ms.value())
-        : chip::ICDConfigurationData::GetInstance().GetActiveModeDuration();
+                                          ? Milliseconds32(active_mode_duration_ms.value())
+                                          : chip::ICDConfigurationData::GetInstance().GetActiveModeDuration();
     Seconds32 idle_mode_duration = idle_mode_duration_s.has_value()
-        ? Seconds32(idle_mode_duration_s.value())
-        : chip::ICDConfigurationData::GetInstance().GetIdleModeDuration();
+                                   ? Seconds32(idle_mode_duration_s.value())
+                                   : chip::ICDConfigurationData::GetInstance().GetIdleModeDuration();
     return chip::Testing::ICDConfigurationDataTestAccess::SetModeDurations(chip::MakeOptional(active_mode_duration),
-                                                                        chip::MakeOptional(idle_mode_duration));
+                                                                           chip::MakeOptional(idle_mode_duration));
 }
 
 static esp_err_t set_active_threshold(uint32_t active_threshold_ms)

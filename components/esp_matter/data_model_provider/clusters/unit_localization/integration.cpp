@@ -23,7 +23,7 @@ using namespace chip::app::Clusters::UnitLocalization;
 
 namespace chip::app::Clusters::UnitLocalization {
 
-UnitLocalizationServer & UnitLocalizationServer::Instance()
+UnitLocalizationServer  &UnitLocalizationServer::Instance()
 {
     static UnitLocalizationServer mInstance;
     return mInstance;

@@ -68,7 +68,10 @@ public:
     // access to the typed global singleton of this class.
     static provider &get_instance();
 
-    chip::app::ServerClusterInterfaceRegistry &registry() { return mRegistry; }
+    chip::app::ServerClusterInterfaceRegistry &registry()
+    {
+        return mRegistry;
+    }
 
     /// Generic model implementations
     CHIP_ERROR Startup(InteractionModelContext context) override;

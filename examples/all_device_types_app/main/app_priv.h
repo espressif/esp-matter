@@ -138,12 +138,11 @@ esp_err_t app_driver_init();
 #endif // CONFIG_OPENTHREAD_BORDER_ROUTER
 
 #if CONFIG_IDF_TARGET_ESP32 || CONFIG_IDF_TARGET_ESP32S3
-class FanDelegateImpl:public chip::app::Clusters::FanControl::Delegate
-{
+class FanDelegateImpl: public chip::app::Clusters::FanControl::Delegate {
 public:
     // Constructor to match the base class design, however endpoint_id set here is not being using at all.
     // FanControlDelegateInitCB sets the delegate on correct endpoint while initialization.
-    FanDelegateImpl():Delegate(chip::kInvalidEndpointId) {}
+    FanDelegateImpl(): Delegate(chip::kInvalidEndpointId) {}
 
     chip::Protocols::InteractionModel::Status HandleStep(chip::app::Clusters::FanControl::StepDirectionEnum aDirection, bool aWrap, bool aLowestOff);
 };

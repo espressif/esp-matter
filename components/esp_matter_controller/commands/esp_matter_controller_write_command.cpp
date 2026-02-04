@@ -71,14 +71,14 @@ esp_err_t write_command::send_command()
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
 #ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     if (CHIP_NO_ERROR ==
-        controller_instance.get_commissioner()->GetConnectedDevice(m_node_id, &on_device_connected_cb,
-                                                                   &on_device_connection_failure_cb)) {
+            controller_instance.get_commissioner()->GetConnectedDevice(m_node_id, &on_device_connected_cb,
+                                                                       &on_device_connection_failure_cb)) {
         return ESP_OK;
     }
 #else
     if (CHIP_NO_ERROR ==
-        controller_instance.get_controller()->GetConnectedDevice(m_node_id, &on_device_connected_cb,
-                                                                 &on_device_connection_failure_cb)) {
+            controller_instance.get_controller()->GetConnectedDevice(m_node_id, &on_device_connected_cb,
+                                                                     &on_device_connection_failure_cb)) {
         return ESP_OK;
     }
 #endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
@@ -111,7 +111,7 @@ esp_err_t send_write_attr_command(uint64_t node_id, ScopedMemoryBufferWithSize<u
                                   chip::Optional<uint16_t> timed_write_timeout_ms)
 {
     if (endpoint_ids.AllocatedSize() != cluster_ids.AllocatedSize() ||
-        endpoint_ids.AllocatedSize() != attribute_ids.AllocatedSize()) {
+            endpoint_ids.AllocatedSize() != attribute_ids.AllocatedSize()) {
         ESP_LOGE(TAG,
                  "The endpoint_id array length should be the same as the cluster_ids array length"
                  "and the attribute_ids array length");

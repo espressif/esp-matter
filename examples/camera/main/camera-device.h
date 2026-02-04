@@ -62,18 +62,20 @@ static constexpr uint16_t kInvalidStreamID = 65500;
 
 namespace Camera {
 
-class CameraDevice : public CameraDeviceInterface, public CameraDeviceInterface::CameraHALInterface
-{
+class CameraDevice : public CameraDeviceInterface, public CameraDeviceInterface::CameraHALInterface {
 public:
-    chip::app::Clusters::WebRTCTransportProvider::Delegate & GetWebRTCProviderDelegate() override;
+    chip::app::Clusters::WebRTCTransportProvider::Delegate  &GetWebRTCProviderDelegate() override;
     void
     SetWebRTCTransportProvider(chip::app::Clusters::WebRTCTransportProvider::WebRTCTransportProviderCluster * provider) override;
-    chip::app::Clusters::CameraAvStreamManagement::CameraAVStreamManagementDelegate & GetCameraAVStreamMgmtDelegate() override;
-    chip::app::Clusters::CameraAvStreamManagement::CameraAVStreamController & GetCameraAVStreamMgmtController() override;
+    chip::app::Clusters::CameraAvStreamManagement::CameraAVStreamManagementDelegate  &GetCameraAVStreamMgmtDelegate() override;
+    chip::app::Clusters::CameraAvStreamManagement::CameraAVStreamController  &GetCameraAVStreamMgmtController() override;
     CameraDevice();
     ~CameraDevice();
 
-    CameraDeviceInterface::CameraHALInterface & GetCameraHALInterface() override { return *this; }
+    CameraDeviceInterface::CameraHALInterface  &GetCameraHALInterface() override
+    {
+        return *this;
+    }
 
     void Init();
 
@@ -82,19 +84,19 @@ public:
 
     CameraError InitializeStreams() override;
 
-    CameraError CaptureSnapshot(const chip::app::DataModel::Nullable<uint16_t> streamID, const VideoResolutionStruct & resolution,
-                                ImageSnapshot & outImageSnapshot) override;
+    CameraError CaptureSnapshot(const chip::app::DataModel::Nullable<uint16_t> streamID, const VideoResolutionStruct  &resolution,
+                                ImageSnapshot  &outImageSnapshot) override;
 
     // Allocate snapshot stream
     CameraError AllocateSnapshotStream(
-        const chip::app::Clusters::CameraAvStreamManagement::CameraAVStreamManagementDelegate::SnapshotStreamAllocateArgs & args,
-        uint16_t & outStreamID) override;
+        const chip::app::Clusters::CameraAvStreamManagement::CameraAVStreamManagementDelegate::SnapshotStreamAllocateArgs  &args,
+        uint16_t  &outStreamID) override;
 
     uint8_t GetMaxConcurrentEncoders() override;
 
     uint32_t GetMaxEncodedPixelRate() override;
 
-    VideoSensorParamsStruct & GetVideoSensorParams() override;
+    VideoSensorParamsStruct  &GetVideoSensorParams() override;
 
     bool GetCameraSupportsHDR() override;
 
@@ -110,39 +112,54 @@ public:
 
     bool GetCameraSupportsImageControl() override;
 
-    VideoResolutionStruct & GetMinViewport() override;
+    VideoResolutionStruct  &GetMinViewport() override;
 
-    std::vector<RateDistortionTradeOffStruct> & GetRateDistortionTradeOffPoints() override;
+    std::vector<RateDistortionTradeOffStruct>  &GetRateDistortionTradeOffPoints() override;
 
     uint32_t GetMaxContentBufferSize() override;
 
-    AudioCapabilitiesStruct & GetMicrophoneCapabilities() override;
+    AudioCapabilitiesStruct  &GetMicrophoneCapabilities() override;
 
-    AudioCapabilitiesStruct & GetSpeakerCapabilities() override;
+    AudioCapabilitiesStruct  &GetSpeakerCapabilities() override;
 
-    std::vector<SnapshotCapabilitiesStruct> & GetSnapshotCapabilities() override;
+    std::vector<SnapshotCapabilitiesStruct>  &GetSnapshotCapabilities() override;
 
     uint32_t GetMaxNetworkBandwidth() override;
 
     uint16_t GetCurrentFrameRate() override;
 
     CameraError SetHDRMode(bool hdrMode) override;
-    bool GetHDRMode() override { return mHDREnabled; }
+    bool GetHDRMode() override
+    {
+        return mHDREnabled;
+    }
 
     CameraError SetHardPrivacyMode(bool hardPrivacyMode) override;
-    bool GetHardPrivacyMode() override { return mHardPrivacyModeOn; }
+    bool GetHardPrivacyMode() override
+    {
+        return mHardPrivacyModeOn;
+    }
 
     CameraError SetNightVision(chip::app::Clusters::CameraAvStreamManagement::TriStateAutoEnum nightVision) override;
-    chip::app::Clusters::CameraAvStreamManagement::TriStateAutoEnum GetNightVision() override { return mNightVision; }
+    chip::app::Clusters::CameraAvStreamManagement::TriStateAutoEnum GetNightVision() override
+    {
+        return mNightVision;
+    }
 
-    std::vector<StreamUsageEnum> & GetSupportedStreamUsages() override;
+    std::vector<StreamUsageEnum>  &GetSupportedStreamUsages() override;
 
-    std::vector<StreamUsageEnum> & GetStreamUsagePriorities() override { return mStreamUsagePriorities; }
+    std::vector<StreamUsageEnum>  &GetStreamUsagePriorities() override
+    {
+        return mStreamUsagePriorities;
+    }
     CameraError SetStreamUsagePriorities(std::vector<StreamUsageEnum> streamUsagePriorities) override;
 
     // Sets the Default Camera Viewport
-    CameraError SetViewport(const chip::app::Clusters::Globals::Structs::ViewportStruct::Type & viewPort) override;
-    const chip::app::Clusters::Globals::Structs::ViewportStruct::Type & GetViewport() override { return mViewport; }
+    CameraError SetViewport(const chip::app::Clusters::Globals::Structs::ViewportStruct::Type  &viewPort) override;
+    const chip::app::Clusters::Globals::Structs::ViewportStruct::Type  &GetViewport() override
+    {
+        return mViewport;
+    }
 
     /**
      * Sets the Viewport for a specific stream. The implementation of this HAL API
@@ -155,83 +172,155 @@ public:
      * is being set
      * @param viewport the viewport to be set on the stream
      */
-    CameraError SetViewport(VideoStream & stream,
-                            const chip::app::Clusters::Globals::Structs::ViewportStruct::Type & viewport) override;
+    CameraError SetViewport(VideoStream  &stream,
+                            const chip::app::Clusters::Globals::Structs::ViewportStruct::Type  &viewport) override;
 
     // Get/Set SoftRecordingPrivacyMode.
     CameraError SetSoftRecordingPrivacyModeEnabled(bool softRecordingPrivacyMode) override;
-    bool GetSoftRecordingPrivacyModeEnabled() override { return mSoftRecordingPrivacyModeEnabled; }
+    bool GetSoftRecordingPrivacyModeEnabled() override
+    {
+        return mSoftRecordingPrivacyModeEnabled;
+    }
 
     // Get/Set SoftLivestreamPrivacyMode.
     CameraError SetSoftLivestreamPrivacyModeEnabled(bool softLivestreamPrivacyMode) override;
-    bool GetSoftLivestreamPrivacyModeEnabled() override { return mSoftLivestreamPrivacyModeEnabled; }
+    bool GetSoftLivestreamPrivacyModeEnabled() override
+    {
+        return mSoftLivestreamPrivacyModeEnabled;
+    }
 
     // Currently, defaulting to not supporting hard privacy switch.
-    bool HasHardPrivacySwitch() override { return false; }
+    bool HasHardPrivacySwitch() override
+    {
+        return false;
+    }
 
     // Currently, defaulting to not supporting speaker.
-    bool HasSpeaker() override { return false; }
+    bool HasSpeaker() override
+    {
+        return false;
+    }
 
     // Mute/Unmute speaker.
     CameraError SetSpeakerMuted(bool muteSpeaker) override;
-    bool GetSpeakerMuted() override { return mSpeakerMuted; }
+    bool GetSpeakerMuted() override
+    {
+        return mSpeakerMuted;
+    }
 
     // Get/Set speaker volume level.
     CameraError SetSpeakerVolume(uint8_t speakerVol) override;
-    uint8_t GetSpeakerVolume() override { return mSpeakerVol; }
+    uint8_t GetSpeakerVolume() override
+    {
+        return mSpeakerVol;
+    }
 
     // Get the speaker max and min levels.
-    uint8_t GetSpeakerMaxLevel() override { return INVALID_SPKR_LEVEL; }
-    uint8_t GetSpeakerMinLevel() override { return INVALID_SPKR_LEVEL; }
+    uint8_t GetSpeakerMaxLevel() override
+    {
+        return INVALID_SPKR_LEVEL;
+    }
+    uint8_t GetSpeakerMinLevel() override
+    {
+        return INVALID_SPKR_LEVEL;
+    }
 
     // Does camera have a microphone
-    bool HasMicrophone() override { return true; }
+    bool HasMicrophone() override
+    {
+        return true;
+    }
 
     // Mute/Unmute microphone.
     CameraError SetMicrophoneMuted(bool muteMicrophone) override;
-    bool GetMicrophoneMuted() override { return mMicrophoneMuted; }
+    bool GetMicrophoneMuted() override
+    {
+        return mMicrophoneMuted;
+    }
 
     // Set microphone volume level.
     CameraError SetMicrophoneVolume(uint8_t microphoneVol) override;
-    uint8_t GetMicrophoneVolume() override { return mMicrophoneVol; }
+    uint8_t GetMicrophoneVolume() override
+    {
+        return mMicrophoneVol;
+    }
 
     // Get the microphone max and min levels.
-    uint8_t GetMicrophoneMaxLevel() override { return mMicrophoneMaxLevel; }
-    uint8_t GetMicrophoneMinLevel() override { return mMicrophoneMinLevel; }
+    uint8_t GetMicrophoneMaxLevel() override
+    {
+        return mMicrophoneMaxLevel;
+    }
+    uint8_t GetMicrophoneMinLevel() override
+    {
+        return mMicrophoneMinLevel;
+    }
 
     // Get/Set image control attributes
     CameraError SetImageRotation(uint16_t imageRotation) override;
-    uint16_t GetImageRotation() override { return mImageRotation; }
+    uint16_t GetImageRotation() override
+    {
+        return mImageRotation;
+    }
 
     CameraError SetImageFlipHorizontal(bool imageFlipHorizontal) override;
-    bool GetImageFlipHorizontal() override { return mImageFlipHorizontal; }
+    bool GetImageFlipHorizontal() override
+    {
+        return mImageFlipHorizontal;
+    }
 
     CameraError SetImageFlipVertical(bool imageFlipVertical) override;
-    bool GetImageFlipVertical() override { return mImageFlipVertical; }
+    bool GetImageFlipVertical() override
+    {
+        return mImageFlipVertical;
+    }
 
     // Does camera have local storage
-    bool HasLocalStorage() override { return false; }
+    bool HasLocalStorage() override
+    {
+        return false;
+    }
 
     // Set/Get LocalVideoRecordingEnabled
     CameraError SetLocalVideoRecordingEnabled(bool localVideoRecordingEnabled) override;
-    bool GetLocalVideoRecordingEnabled() override { return mLocalVideoRecordingEnabled; }
+    bool GetLocalVideoRecordingEnabled() override
+    {
+        return mLocalVideoRecordingEnabled;
+    }
 
     // Set/Get LocalSnapshotRecordingEnabled
     CameraError SetLocalSnapshotRecordingEnabled(bool localSnapshotRecordingEnabled) override;
-    bool GetLocalSnapshotRecordingEnabled() override { return mLocalSnapshotRecordingEnabled; }
+    bool GetLocalSnapshotRecordingEnabled() override
+    {
+        return mLocalSnapshotRecordingEnabled;
+    }
 
     // Does camera have a status light
-    bool HasStatusLight() override { return true; }
+    bool HasStatusLight() override
+    {
+        return true;
+    }
 
     // Set/Get StatusLightEnabled
     CameraError SetStatusLightEnabled(bool statusLightEnabled) override;
-    bool GetStatusLightEnabled() override { return mStatusLightEnabled; }
+    bool GetStatusLightEnabled() override
+    {
+        return mStatusLightEnabled;
+    }
 
-    std::vector<VideoStream> & GetAvailableVideoStreams() override { return mVideoStreams; }
+    std::vector<VideoStream>  &GetAvailableVideoStreams() override
+    {
+        return mVideoStreams;
+    }
 
-    std::vector<AudioStream> & GetAvailableAudioStreams() override { return mAudioStreams; }
+    std::vector<AudioStream>  &GetAvailableAudioStreams() override
+    {
+        return mAudioStreams;
+    }
 
-    std::vector<SnapshotStream> & GetAvailableSnapshotStreams() override { return mSnapshotStreams; }
+    std::vector<SnapshotStream>  &GetAvailableSnapshotStreams() override
+    {
+        return mSnapshotStreams;
+    }
 
 private:
     std::vector<VideoStream> mVideoStreams;       // Vector to hold available video streams
@@ -243,11 +332,11 @@ private:
     void InitializeSnapshotStreams();
 
     bool AddSnapshotStream(const chip::app::Clusters::CameraAvStreamManagement::CameraAVStreamManager::SnapshotStreamAllocateArgs &
-                               snapshotStreamAllocateArgs,
-                           uint16_t & outStreamID);
+                           snapshotStreamAllocateArgs,
+                           uint16_t  &outStreamID);
 
-    bool MatchClosestSnapshotParams(const VideoResolutionStruct & requested, VideoResolutionStruct & outResolution,
-                                    chip::app::Clusters::CameraAvStreamManagement::ImageCodecEnum & outCodec);
+    bool MatchClosestSnapshotParams(const VideoResolutionStruct  &requested, VideoResolutionStruct  &outResolution,
+                                    chip::app::Clusters::CameraAvStreamManagement::ImageCodecEnum  &outCodec);
 
     // Various cluster server delegates
     chip::app::Clusters::WebRTCTransportProvider::WebRTCProviderManager mWebRTCProviderManager;

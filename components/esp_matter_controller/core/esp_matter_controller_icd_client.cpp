@@ -44,14 +44,14 @@ esp_err_t list_registered_icd()
     while (iter->Next(info)) {
         ESP_LOGI(TAG, "  | " ChipLogFormatX64 " | " ChipLogFormatX64 " | %13" PRIu32 " | %14" PRIu32
                  " | " ChipLogFormatX64 " | %10u |", ChipLogValueX64(info.peer_node.GetNodeId()),
-                 ChipLogValueX64(info.check_in_node.GetNodeId()),info.start_icd_counter, info.offset,
+                 ChipLogValueX64(info.check_in_node.GetNodeId()), info.start_icd_counter, info.offset,
                  ChipLogValueX64(info.monitored_subject), static_cast<uint8_t>(info.client_type));
         Encoding::BytesToHex(info.aes_key_handle.As<Crypto::Symmetric128BitsKeyByteArray>(), Crypto::kAES_CCM128_Key_Length,
                              icd_aes_key_hex, sizeof(icd_aes_key_hex), Encoding::HexFlags::kNullTerminate);
-        ESP_LOGI(TAG,"  | aes key:  %60s                               |", icd_aes_key_hex);
+        ESP_LOGI(TAG, "  | aes key:  %60s                               |", icd_aes_key_hex);
         Encoding::BytesToHex(info.hmac_key_handle.As<Crypto::Symmetric128BitsKeyByteArray>(), Crypto::kHMAC_CCM128_Key_Length,
                              icd_hmac_key_hex, sizeof(icd_hmac_key_hex), Encoding::HexFlags::kNullTerminate);
-        ESP_LOGI(TAG,"  | hmac key: %60s                               |", icd_hmac_key_hex);
+        ESP_LOGI(TAG, "  | hmac key: %60s                               |", icd_hmac_key_hex);
         ESP_LOGI(TAG, "  +------------------------------------------------------------------------------------------------------+");
     }
     return ESP_OK;

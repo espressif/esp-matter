@@ -62,10 +62,10 @@ CHIP_ERROR GetClusterConfig(EndpointId endpointId, ICDManagementCluster::Optiona
     }
     esp_matter_attr_val_t attr_val;
     if (get_attr_val(cluster, Attributes::UserActiveModeTriggerHint::Id, attr_val) == ESP_OK &&
-        attr_val.type == ESP_MATTER_VAL_TYPE_BITMAP32) {
+            attr_val.type == ESP_MATTER_VAL_TYPE_BITMAP32) {
         uatHint = BitMask<UserActiveModeTriggerBitmap>(attr_val.val.u32);
         if (get_attr_val(cluster, Attributes::UserActiveModeTriggerInstruction::Id, attr_val) == ESP_OK &&
-            attr_val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING && instructionSpan.size() >= attr_val.val.a.s) {
+                attr_val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING && instructionSpan.size() >= attr_val.val.a.s) {
             memcpy(instructionSpan.data(), (const char *)attr_val.val.a.b, attr_val.val.a.s);
             instructionSpan.reduce_size(attr_val.val.a.s);
             optionalAttrSet.Set<Attributes::UserActiveModeTriggerInstruction::Id>();

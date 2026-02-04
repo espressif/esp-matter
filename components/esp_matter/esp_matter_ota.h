@@ -85,4 +85,4 @@ esp_err_t esp_matter_ota_requestor_encrypted_init(const char *key, uint16_t size
  *
  * @note Ensure that this API is called only after esp_matter::start() has been invoked.
  */
-esp_err_t esp_matter_ota_requestor_set_config(const esp_matter_ota_config_t & config);
+esp_err_t esp_matter_ota_requestor_set_config(const esp_matter_ota_config_t  &config);

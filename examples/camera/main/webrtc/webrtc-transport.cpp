@@ -38,20 +38,19 @@ void WebrtcTransport::SetCallbacks(OnTransportLocalDescriptionCallback onLocalDe
     mOnConnectionState  = onConnectionState;
 }
 
-void WebrtcTransport::SetRequestArgs(const RequestArgs & args)
+void WebrtcTransport::SetRequestArgs(const RequestArgs  &args)
 {
     mRequestArgs = args;
 }
 
-WebrtcTransport::RequestArgs & WebrtcTransport::GetRequestArgs()
+WebrtcTransport::RequestArgs  &WebrtcTransport::GetRequestArgs()
 {
     return mRequestArgs;
 }
 
 const char * WebrtcTransport::GetStateStr() const
 {
-    switch (mState)
-    {
+    switch (mState) {
     case State::Idle:
         return "Idle";
 
@@ -83,18 +82,25 @@ void WebrtcTransport::SetCommandType(const CommandType commandtype)
 
 void WebrtcTransport::Start()
 {
-    if (mPeerConnection.get())
-    {
+    if (mPeerConnection.get()) {
         ChipLogProgress(Camera, "Start, mPeerConnection is already created");
         return;
     }
 
     mPeerConnection = CreateWebRTCPeerConnection();
 
-    mPeerConnection->SetCallbacks([this](const std::string & sdp, SDPType type) { this->OnLocalDescription(sdp, type); },
-                                  [this](const std::string & candidate) { this->OnICECandidate(candidate); },
-                                  [this](bool connected) { this->OnConnectionStateChanged(connected); },
-                                  [this](std::shared_ptr<WebRTCTrack> track) { this->OnTrack(track); });
+    mPeerConnection->SetCallbacks([this](const std::string & sdp, SDPType type) {
+        this->OnLocalDescription(sdp, type);
+    },
+    [this](const std::string & candidate) {
+        this->OnICECandidate(candidate);
+    },
+    [this](bool connected) {
+        this->OnConnectionStateChanged(connected);
+    },
+    [this](std::shared_ptr<WebRTCTrack> track) {
+        this->OnTrack(track);
+    });
 }
 
 void WebrtcTransport::Stop()
@@ -105,8 +111,7 @@ void WebrtcTransport::Stop()
 
 void WebrtcTransport::AddTracks()
 {
-    if (mPeerConnection != nullptr)
-    {
+    if (mPeerConnection != nullptr) {
         mVideoTrack = mPeerConnection->AddTrack(MediaType::Video);
         mAudioTrack = mPeerConnection->AddTrack(MediaType::Audio);
     }
@@ -126,33 +131,33 @@ void WebrtcTransport::SetAudioTrack(std::shared_ptr<WebRTCTrack> audioTrack)
     mAudioTrack = audioTrack;
 }
 
-void WebrtcTransport::AddRemoteCandidate(const std::string & candidate, const std::string & mid)
+void WebrtcTransport::AddRemoteCandidate(const std::string  &candidate, const std::string  &mid)
 {
     ChipLogProgress(Camera, "Adding remote candidate for sessionID: %u", mRequestArgs.sessionId);
     mPeerConnection->AddRemoteCandidate(candidate, mid);
 }
 
 // WebRTC Callbacks
-void WebrtcTransport::OnLocalDescription(const std::string & sdp, SDPType type)
+void WebrtcTransport::OnLocalDescription(const std::string  &sdp, SDPType type)
 {
     ChipLogProgress(Camera, "Local description received for sessionID: %u", mRequestArgs.sessionId);
     mLocalSdp     = sdp;
     mLocalSdpType = type;
-    if (mOnLocalDescription)
+    if (mOnLocalDescription) {
         mOnLocalDescription(sdp, type, mRequestArgs.sessionId);
+    }
 }
 
 bool WebrtcTransport::ClosePeerConnection()
 {
-    if (mPeerConnection == nullptr)
-    {
+    if (mPeerConnection == nullptr) {
         return false;
     }
     // KVSWebRTC close is handled by the KVSWebRTCManager.
     return true;
 }
 
-void WebrtcTransport::OnICECandidate(const std::string & candidate)
+void WebrtcTransport::OnICECandidate(const std::string  &candidate)
 {
     ChipLogProgress(Camera, "ICE Candidate received for sessionID: %u", mRequestArgs.sessionId);
     mLocalCandidates.push_back(candidate);
@@ -163,20 +168,18 @@ void WebrtcTransport::OnICECandidate(const std::string & candidate)
 void WebrtcTransport::OnConnectionStateChanged(bool connected)
 {
     ChipLogProgress(Camera, "Connection state changed for sessionID: %u", mRequestArgs.sessionId);
-    if (mOnConnectionState)
+    if (mOnConnectionState) {
         mOnConnectionState(connected, mRequestArgs.sessionId);
+    }
 }
 
 void WebrtcTransport::OnTrack(std::shared_ptr<WebRTCTrack> track)
 {
     ChipLogProgress(Camera, "Track received for sessionID: %u, type: %s", mRequestArgs.sessionId, track->GetType().c_str());
-    if (track->GetType() == "video")
-    {
+    if (track->GetType() == "video") {
         ChipLogProgress(Camera, "Video track updated from remote peer");
         SetVideoTrack(track);
-    }
-    else if (track->GetType() == "audio")
-    {
+    } else if (track->GetType() == "audio") {
         ChipLogProgress(Camera, "audio track updated from remote peer");
         SetAudioTrack(track);
     }

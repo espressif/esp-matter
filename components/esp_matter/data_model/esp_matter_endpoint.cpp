@@ -77,14 +77,14 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     group_key_management::create(endpoint, CLUSTER_FLAG_SERVER);
 #if CHIP_CONFIG_ENABLE_ICD_SERVER
     if (icd::get_icd_server_enabled()) {
-    cluster_t *icd_management_cluster = icd_management::create(endpoint, &(config->icd_management), CLUSTER_FLAG_SERVER);
+        cluster_t *icd_management_cluster = icd_management::create(endpoint, &(config->icd_management), CLUSTER_FLAG_SERVER);
 #if CHIP_CONFIG_ENABLE_ICD_LIT
-    icd_management::feature::long_idle_time_support::add(icd_management_cluster);
+        icd_management::feature::long_idle_time_support::add(icd_management_cluster);
 #if CHIP_CONFIG_ENABLE_ICD_CIP
-    icd_management::feature::check_in_protocol_support::add(icd_management_cluster);
+        icd_management::feature::check_in_protocol_support::add(icd_management_cluster);
 #endif // CHIP_CONFIG_ENABLE_ICD_CIP
 #if CHIP_CONFIG_ENABLE_ICD_UAT
-    icd_management::feature::user_active_mode_trigger::add(icd_management_cluster, &(config->icd_user_active_mode_trigger));
+        icd_management::feature::user_active_mode_trigger::add(icd_management_cluster, &(config->icd_user_active_mode_trigger));
 #endif // CHIP_CONFIG_ENABLE_ICD_UAT
 #endif // CHIP_CONFIG_ENABLE_ICD_LIT
     }
@@ -172,7 +172,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
 } /** ota_provider **/
 
-namespace power_source{
+namespace power_source {
 uint32_t get_device_type_id()
 {
     return ESP_MATTER_POWER_SOURCE_DEVICE_TYPE_ID;
@@ -1260,7 +1260,6 @@ uint8_t get_device_type_version()
     return ESP_MATTER_ROOM_AIR_CONDITIONER_DEVICE_TYPE_VERSION;
 }
 
-
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     return common::create<config_t>(node, config, flags, priv_data, add);
@@ -1283,7 +1282,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /** room_air_conditioner **/
 
-namespace temperature_controlled_cabinet{
+namespace temperature_controlled_cabinet {
 
 uint32_t get_device_type_id()
 {
@@ -1311,7 +1310,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 }
 } /** temperature_controlled_cabinet**/
 
-namespace refrigerator{
+namespace refrigerator {
 
 uint32_t get_device_type_id()
 {
@@ -2037,10 +2036,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     esp_err_t err = esp_matter::endpoint::add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
     cluster_t *camera_av_stream_management_cluster = cluster::camera_av_stream_management::create(
-        endpoint,
-        &(config->camera_av_stream_management),
-        CLUSTER_FLAG_SERVER
-    );
+                                                         endpoint,
+                                                         &(config->camera_av_stream_management),
+                                                         CLUSTER_FLAG_SERVER
+                                                     );
     camera_av_stream_management::feature::video::add(camera_av_stream_management_cluster);
     camera_av_stream_management::feature::audio::add(camera_av_stream_management_cluster);
     camera_av_stream_management::feature::snapshot::add(camera_av_stream_management_cluster);

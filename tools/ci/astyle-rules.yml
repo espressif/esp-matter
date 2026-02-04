@@ -1,0 +1,19 @@
+DEFAULT:
+  # These formatting options will be used by default.
+  options: "--style=otbs --attach-namespaces --attach-classes --indent=spaces=4 --convert-tabs --align-reference=name --keep-one-line-statements --pad-header --pad-oper --unpad-paren --max-continuation-indent=120"
+
+submodules:
+  # Don't format the code in submodules
+  check: false
+  include:
+    - "/connectedhomeip/connectedhomeip/"
+
+not_formatted:
+  # Files which are not supposed to be formatted.
+  # Typically, these are:
+  # - Upstream source code we don't want to modify
+  # - Generated files
+  check: false
+  include:
+    - "/components/esp_matter/zap_common/"
+    - "/examples/demo/badge/components/"

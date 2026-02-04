@@ -47,15 +47,17 @@ namespace app {
  * Accessor class for AttributeValueDecoder to get the TLV reader.
  * This leverages the existing friend declaration in the SDK's AttributeValueDecoder.
  */
-class TestOnlyAttributeValueDecoderAccessor
-{
+class TestOnlyAttributeValueDecoderAccessor {
 public:
-    TestOnlyAttributeValueDecoderAccessor(AttributeValueDecoder & decoder) : mDecoder(decoder) {}
+    TestOnlyAttributeValueDecoderAccessor(AttributeValueDecoder  &decoder) : mDecoder(decoder) {}
 
-    const TLV::TLVReader & GetReader() { return mDecoder.mReader; }
+    const TLV::TLVReader  &GetReader()
+    {
+        return mDecoder.mReader;
+    }
 
 private:
-    AttributeValueDecoder & mDecoder;
+    AttributeValueDecoder  &mDecoder;
 };
 
 } // namespace app
@@ -125,7 +127,7 @@ constexpr ClusterId kCluster[] = GENERATED_ACCESS_READ_ATTRIBUTE__CLUSTER;
 constexpr AttributeId kAttribute[] = GENERATED_ACCESS_READ_ATTRIBUTE__ATTRIBUTE;
 constexpr chip::Access::Privilege kPrivilege[] = GENERATED_ACCESS_READ_ATTRIBUTE__PRIVILEGE;
 static_assert(MATTER_ARRAY_SIZE(kCluster) == MATTER_ARRAY_SIZE(kAttribute) &&
-                  MATTER_ARRAY_SIZE(kAttribute) == MATTER_ARRAY_SIZE(kPrivilege),
+              MATTER_ARRAY_SIZE(kAttribute) == MATTER_ARRAY_SIZE(kPrivilege),
               "Generated parallel arrays must be same size");
 } // namespace GeneratedAccessReadAttribute
 #endif
@@ -136,7 +138,7 @@ constexpr ClusterId kCluster[] = GENERATED_ACCESS_WRITE_ATTRIBUTE__CLUSTER;
 constexpr AttributeId kAttribute[] = GENERATED_ACCESS_WRITE_ATTRIBUTE__ATTRIBUTE;
 constexpr chip::Access::Privilege kPrivilege[] = GENERATED_ACCESS_WRITE_ATTRIBUTE__PRIVILEGE;
 static_assert(MATTER_ARRAY_SIZE(kCluster) == MATTER_ARRAY_SIZE(kAttribute) &&
-                  MATTER_ARRAY_SIZE(kAttribute) == MATTER_ARRAY_SIZE(kPrivilege),
+              MATTER_ARRAY_SIZE(kAttribute) == MATTER_ARRAY_SIZE(kPrivilege),
               "Generated parallel arrays must be same size");
 } // namespace GeneratedAccessWriteAttribute
 #endif
@@ -147,7 +149,7 @@ constexpr ClusterId kCluster[] = GENERATED_ACCESS_INVOKE_COMMAND__CLUSTER;
 constexpr CommandId kCommand[] = GENERATED_ACCESS_INVOKE_COMMAND__COMMAND;
 constexpr chip::Access::Privilege kPrivilege[] = GENERATED_ACCESS_INVOKE_COMMAND__PRIVILEGE;
 static_assert(MATTER_ARRAY_SIZE(kCluster) == MATTER_ARRAY_SIZE(kCommand) &&
-                  MATTER_ARRAY_SIZE(kCommand) == MATTER_ARRAY_SIZE(kPrivilege),
+              MATTER_ARRAY_SIZE(kCommand) == MATTER_ARRAY_SIZE(kPrivilege),
               "Generated parallel arrays must be same size");
 } // namespace GeneratedAccessInvokeCommand
 #endif
@@ -158,7 +160,7 @@ constexpr ClusterId kCluster[] = GENERATED_ACCESS_READ_EVENT__CLUSTER;
 constexpr EventId kEvent[] = GENERATED_ACCESS_READ_EVENT__EVENT;
 constexpr chip::Access::Privilege kPrivilege[] = GENERATED_ACCESS_READ_EVENT__PRIVILEGE;
 static_assert(MATTER_ARRAY_SIZE(kCluster) == MATTER_ARRAY_SIZE(kEvent) &&
-                  MATTER_ARRAY_SIZE(kEvent) == MATTER_ARRAY_SIZE(kPrivilege),
+              MATTER_ARRAY_SIZE(kEvent) == MATTER_ARRAY_SIZE(kPrivilege),
               "Generated parallel arrays must be same size");
 } // namespace GeneratedAccessReadEvent
 #endif
@@ -286,8 +288,8 @@ ActionReturnStatus provider::ReadAttribute(const ReadAttributeRequest &request, 
         attribute::get(request.path.mEndpointId, request.path.mClusterId, request.path.mAttributeId);
 
     std::optional<CHIP_ERROR> aai_result = TryReadViaAccessInterface(
-        request.path,
-        AttributeAccessInterfaceRegistry::Instance().Get(request.path.mEndpointId, request.path.mClusterId), encoder);
+                                               request.path,
+                                               AttributeAccessInterfaceRegistry::Instance().Get(request.path.mEndpointId, request.path.mClusterId), encoder);
     VerifyOrReturnError(!aai_result.has_value(), *aai_result);
 
     esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
@@ -303,11 +305,11 @@ ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request
 
     // Decode the new value once - copy TLV reader to leave original decoder intact for mRegistry/AAI
     esp_matter_attr_val_t new_val = esp_matter_invalid(nullptr);
-    
+
     VerifyOrReturnValue(attribute, Protocols::InteractionModel::Status::UnsupportedAttribute);
-    
+
     esp_matter_val_type_t current_val_type = attribute::get_val_type(attribute);
-    
+
     TestOnlyAttributeValueDecoderAccessor accessor(decoder);
     TLV::TLVReader reader_copy;
     reader_copy.Init(accessor.GetReader());
@@ -325,9 +327,9 @@ ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request
 
     // Helper to execute POST_UPDATE callback
     auto execute_post_update = [&]() {
-        
+
         attribute::execute_callback(attribute::POST_UPDATE, request.path.mEndpointId,
-                                        request.path.mClusterId, request.path.mAttributeId, &new_val);
+                                    request.path.mClusterId, request.path.mAttributeId, &new_val);
     };
 
     // mRegistry handles its own storage
@@ -415,7 +417,7 @@ std::optional<ActionReturnStatus> provider::InvokeCommand(const InvokeRequest &r
     VerifyOrReturnValue(status == Protocols::InteractionModel::Status::Success,
                         CHIP_ERROR_IM_GLOBAL_STATUS_VALUE(status));
     CommandHandlerInterface *handler_interface = CommandHandlerInterfaceRegistry::Instance().GetCommandHandler(
-        request.path.mEndpointId, request.path.mClusterId);
+                                                     request.path.mEndpointId, request.path.mClusterId);
 
     if (handler_interface) {
         CommandHandlerInterface::HandlerContext context(*handler, request.path, input_arguments);
@@ -461,7 +463,7 @@ CHIP_ERROR provider::DeviceTypes(EndpointId endpointId, ReadOnlyBufferBuilder<De
     for (size_t idx = 0; idx < count; idx++) {
         DeviceTypeEntry entry;
         VerifyOrReturnError(endpoint::get_device_type_at_index(ep, idx, entry.deviceTypeId, entry.deviceTypeRevision) ==
-                                ESP_OK,
+                            ESP_OK,
                             CHIP_ERROR_INTERNAL, ESP_LOGE(TAG, "Failed to get device type at %d", idx));
         ReturnErrorOnFailure(builder.Append(entry));
     }
@@ -565,7 +567,7 @@ CHIP_ERROR provider::AcceptedCommands(const ConcreteClusterPath &path,
     VerifyOrReturnValue(status == Protocols::InteractionModel::Status::Success,
                         CHIP_ERROR_IM_GLOBAL_STATUS_VALUE(status));
     CommandHandlerInterface *interface =
-        CommandHandlerInterfaceRegistry::Instance().GetCommandHandler(path.mEndpointId, path.mClusterId);
+            CommandHandlerInterfaceRegistry::Instance().GetCommandHandler(path.mEndpointId, path.mClusterId);
     if (interface != nullptr) {
         CHIP_ERROR err = interface->RetrieveAcceptedCommands(path, builder);
         // If retrieving the accepted commands returns CHIP_ERROR_NOT_IMPLEMENTED then continue with normal processing.
@@ -582,10 +584,10 @@ CHIP_ERROR provider::AcceptedCommands(const ConcreteClusterPath &path,
             uint32_t command_id = command::get_id(command);
             BitMask<DataModel::CommandQualityFlags> quality_flags;
             quality_flags
-                .Set(DataModel::CommandQualityFlags::kFabricScoped, CommandIsFabricScoped(path.mClusterId, command_id))
-                .Set(DataModel::CommandQualityFlags::kTimed, CommandNeedsTimedInvoke(path.mClusterId, command_id))
-                .Set(DataModel::CommandQualityFlags::kLargeMessage,
-                     CommandHasLargePayload(path.mClusterId, command_id));
+            .Set(DataModel::CommandQualityFlags::kFabricScoped, CommandIsFabricScoped(path.mClusterId, command_id))
+            .Set(DataModel::CommandQualityFlags::kTimed, CommandNeedsTimedInvoke(path.mClusterId, command_id))
+            .Set(DataModel::CommandQualityFlags::kLargeMessage,
+                 CommandHasLargePayload(path.mClusterId, command_id));
             AcceptedCommandEntry entry(command_id, quality_flags,
                                        MatterGetAccessPrivilegeForInvokeCommand(path.mClusterId, command_id));
             ReturnErrorOnFailure(builder.Append(entry));
@@ -597,7 +599,8 @@ CHIP_ERROR provider::AcceptedCommands(const ConcreteClusterPath &path,
 
 static constexpr AttributeId k_global_attributes_not_in_metadata[] = {
     Clusters::Globals::Attributes::AttributeList::Id, Clusters::Globals::Attributes::AcceptedCommandList::Id,
-    Clusters::Globals::Attributes::GeneratedCommandList::Id};
+    Clusters::Globals::Attributes::GeneratedCommandList::Id
+};
 
 static constexpr size_t k_global_attributes_count =
     sizeof(k_global_attributes_not_in_metadata) / sizeof(k_global_attributes_not_in_metadata[0]);
@@ -624,18 +627,17 @@ CHIP_ERROR provider::Attributes(const ConcreteClusterPath &path, ReadOnlyBufferB
         attr_quality_flags.Set(DataModel::AttributeQualityFlags::kTimed, flags & ATTRIBUTE_FLAG_MUST_USE_TIMED_WRITE);
         chip::Access::Privilege read_privilege = MatterGetAccessPrivilegeForReadAttribute(path.mClusterId, id);
         auto write_privilege = (flags & ATTRIBUTE_FLAG_WRITABLE)
-            ? std::make_optional(MatterGetAccessPrivilegeForWriteAttribute(path.mClusterId, id))
-            : std::nullopt;
+                               ? std::make_optional(MatterGetAccessPrivilegeForWriteAttribute(path.mClusterId, id))
+                               : std::nullopt;
         AttributeEntry entry(id, attr_quality_flags, read_privilege, write_privilege);
         ReturnErrorOnFailure(builder.Append(entry));
         attribute = attribute::get_next(attribute);
     }
     // Append the three Global attributes
-    for (size_t index = 0; index < k_global_attributes_count; ++index)
-    {
+    for (size_t index = 0; index < k_global_attributes_count; ++index) {
         AttributeEntry entry(k_global_attributes_not_in_metadata[index],
-                         chip::BitFlags<DataModel::AttributeQualityFlags>(), chip::Access::Privilege::kView,
-                         std::nullopt);
+                             chip::BitFlags<DataModel::AttributeQualityFlags>(), chip::Access::Privilege::kView,
+                             std::nullopt);
         ReturnErrorOnFailure(builder.Append(entry));
     }
 

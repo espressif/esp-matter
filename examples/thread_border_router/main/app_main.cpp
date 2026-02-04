@@ -42,7 +42,7 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
         break;
     case chip::DeviceLayer::DeviceEventType::kESPSystemEvent:
         if (event->Platform.ESPSystemEvent.Base == IP_EVENT &&
-            event->Platform.ESPSystemEvent.Id == IP_EVENT_STA_GOT_IP) {
+                event->Platform.ESPSystemEvent.Id == IP_EVENT_STA_GOT_IP) {
 #if CONFIG_OPENTHREAD_BORDER_ROUTER
             static bool sThreadBRInitialized = false;
             if (!sThreadBRInitialized) {
@@ -71,7 +71,7 @@ extern "C" void app_main()
     node::config_t node_config;
     node_t *node = node::create(&node_config, NULL, NULL);
     static chip::KvsPersistentStorageDelegate tbr_storage_delegate;
-    chip::DeviceLayer::PersistedStorage::KeyValueStoreManager & kvsManager = chip::DeviceLayer::PersistedStorage::KeyValueStoreMgr();
+    chip::DeviceLayer::PersistedStorage::KeyValueStoreManager  &kvsManager = chip::DeviceLayer::PersistedStorage::KeyValueStoreMgr();
     tbr_storage_delegate.Init(&kvsManager);
     GenericOpenThreadBorderRouterDelegate *delegate = chip::Platform::New<GenericOpenThreadBorderRouterDelegate>(&tbr_storage_delegate);
     char threadBRName[] = "Espressif-ThreadBR";
@@ -92,7 +92,8 @@ extern "C" void app_main()
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #if defined(CONFIG_OPENTHREAD_BORDER_ROUTER) && defined(CONFIG_AUTO_UPDATE_RCP)
     esp_vfs_spiffs_conf_t rcp_fw_conf = {
-        .base_path = "/rcp_fw", .partition_label = "rcp_fw", .max_files = 10, .format_if_mount_failed = false};
+        .base_path = "/rcp_fw", .partition_label = "rcp_fw", .max_files = 10, .format_if_mount_failed = false
+    };
     if (ESP_OK != esp_vfs_spiffs_register(&rcp_fw_conf)) {
         ESP_LOGE(TAG, "Failed to mount rcp firmware storage");
         return;

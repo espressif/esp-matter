@@ -178,13 +178,13 @@ static uint32_t matter_get_device_type_from_rainmaker_device(const char *input_b
                                 if (json_obj_get_string(&jctx, "type", param_type, sizeof(param_type)) == 0) {
                                     /* get param type */
                                     if (((strcmp(param_type, ESP_RMAKER_PARAM_HUE) == 0) || (strcmp(param_type, ESP_RMAKER_PARAM_SATURATION) == 0)) &&
-                                        (matter_device_type_id < ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_ID)) {
+                                            (matter_device_type_id < ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_ID)) {
                                         matter_device_type_id = ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_ID;
                                     } else if ((strcmp(param_type, ESP_RMAKER_PARAM_CCT) == 0) &&
                                                (matter_device_type_id < ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_ID)) {
                                         matter_device_type_id = ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_ID;
                                     } else if (((strcmp(param_type, ESP_RMAKER_PARAM_BRIGHTNESS) == 0) || (strcmp(param_type, ESP_RMAKER_PARAM_INTENSITY) == 0)) &&
-                                                (matter_device_type_id < ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID)) {
+                                               (matter_device_type_id < ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID)) {
                                         matter_device_type_id = ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID;
                                     }
                                 }
@@ -254,15 +254,14 @@ static esp_err_t rainmaker_bridge_get_param_from_device(const char* node_id, uin
         }
     }
 
-    switch(dev_type_id) {
+    switch (dev_type_id) {
     case ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_ID:
     case ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_ID:
     case ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID:
-    case ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID:
-        {
-            get_attribute_value_from_rainmaker_device(endpoint_id, node_id, app_bridge_get_rainmaker_node_name_by_matter_endpointid(endpoint_id));
-        }
-        break;
+    case ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID: {
+        get_attribute_value_from_rainmaker_device(endpoint_id, node_id, app_bridge_get_rainmaker_node_name_by_matter_endpointid(endpoint_id));
+    }
+    break;
     /* Todo: add other device types */
     default:
         break;
@@ -446,7 +445,7 @@ esp_err_t rainmaker_bridge_attribute_update(uint16_t endpoint_id, uint32_t clust
 
 static void rainmaker_bridge_task(void *pvParameters)
 {
-    while(true) {
+    while (true) {
         vTaskDelay(pdMS_TO_TICKS(CONFIG_RAINMAKER_PARAMS_GET_PERIOD_MS));
         char* nodes_buffer = esp_rainmaker_api_get_nodes_list();
         if (nodes_buffer == NULL) {
@@ -483,7 +482,8 @@ static esp_err_t init_spiffs()
     esp_err_t err = ESP_OK;
     esp_vfs_spiffs_conf_t rcp_fw_conf = {.base_path = "/" CONFIG_RCP_PARTITION_NAME,
                                          .partition_label = CONFIG_RCP_PARTITION_NAME,
-                                         .max_files = 10, .format_if_mount_failed = false};
+                                         .max_files = 10, .format_if_mount_failed = false
+                                        };
     err = esp_vfs_spiffs_register(&rcp_fw_conf);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to mount rcp firmware storage");
@@ -510,7 +510,7 @@ void rainmaker_init()
     esp_rmaker_node_t *node = esp_rmaker_node_init(&rainmaker_cfg, "ESP RainMaker Device", "RainmakerController");
     if (!node) {
         ESP_LOGE(TAG, "Could not initialise node. Aborting!!!");
-        vTaskDelay(5000/portTICK_PERIOD_MS);
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
         abort();
     }
 
@@ -541,4 +541,3 @@ void rainmaker_init()
     /* create task to get node and params from rainmaker side */
     xTaskCreate(rainmaker_bridge_task, "rainmaker_main", CONFIG_RAINMAKER_TASK_STACK_SIZE, xTaskGetCurrentTaskHandle(), 5, NULL);
 }
-

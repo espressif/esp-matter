@@ -108,34 +108,34 @@ esp_err_t destroy(cluster_t *cluster, attribute_t *attribute);
 
 namespace command {
 
-    /** Destroy command
- *
- * This function destroys a command that was created and added to a cluster.
- * It removes the command from the cluster's command list.
- *
- * @param[in] cluster Cluster handle.
- * @param[in] command Command handle.
- *
- * @return ESP_OK on success.
- * @return error in case of failure.
- */
+/** Destroy command
+*
+* This function destroys a command that was created and added to a cluster.
+* It removes the command from the cluster's command list.
+*
+* @param[in] cluster Cluster handle.
+* @param[in] command Command handle.
+*
+* @return ESP_OK on success.
+* @return error in case of failure.
+*/
 esp_err_t destroy(cluster_t *cluster, command_t *command);
 
 } // namespace command
 
 namespace event {
 
-    /** Destroy event
- *
- * This function destroys an event that was created and added to a cluster.
- * It removes the event from the cluster's event list.
- *
- * @param[in] cluster Cluster handle.
- * @param[in] event Event handle.
- *
- * @return ESP_OK on success.
- * @return error in case of failure.
- */
+/** Destroy event
+*
+* This function destroys an event that was created and added to a cluster.
+* It removes the event from the cluster's event list.
+*
+* @param[in] cluster Cluster handle.
+* @param[in] event Event handle.
+*
+* @return ESP_OK on success.
+* @return error in case of failure.
+*/
 esp_err_t destroy(cluster_t *cluster, event_t *event);
 
 } // namespace event

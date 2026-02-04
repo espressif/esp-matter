@@ -73,13 +73,13 @@ enum device_type_enum {
 
 struct device_type_name {
     const char *device_name;
-    device_type_enum device_id;  
+    device_type_enum device_id;
 };
 
-const device_type_name device_type_list[ESP_MATTER_DEVICE_TYPE_MAX] = { 
+const device_type_name device_type_list[ESP_MATTER_DEVICE_TYPE_MAX] = {
     {"on_off_light", ESP_MATTER_ON_OFF_LIGHT},
     {"dimmable_light", ESP_MATTER_DIMMABLE_LIGHT},
-    {"color_temperature_light",ESP_MATTER_COLOR_TEMP_LIGHT},
+    {"color_temperature_light", ESP_MATTER_COLOR_TEMP_LIGHT},
     {"extended_color_light", ESP_MATTER_EXTENDED_COLOR_LIGHT},
     {"on_off_light_switch", ESP_MATTER_ON_OFF_LIGHT_SWITCH},
     {"dimmer_switch", ESP_MATTER_DIMMER_SWITCH},

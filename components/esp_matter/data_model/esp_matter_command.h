@@ -382,7 +382,6 @@ namespace activated_carbon_filter_monitoring {
 namespace command = resource_monitoring::command;
 } /* activated_carbon_filter_monitoring */
 
-
 namespace mode_base {
 namespace command {
 command_t *create_change_to_mode(cluster_t *cluster);
@@ -544,7 +543,6 @@ command_t *create_ice_candidates(cluster_t *cluster);
 command_t *create_end(cluster_t *cluster);
 } /* command */
 }/*webrtc transport requestor*/
-
 
 namespace chime {
 namespace command {

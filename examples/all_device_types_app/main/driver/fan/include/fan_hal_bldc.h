@@ -82,7 +82,7 @@ esp_err_t hal_bldc_set_wind(uint8_t status);
  * @param status, aWrap, aLowestOff
  * @return esp_err_t
  */
-esp_err_t hal_bldc_set_step(uint8_t status,bool aWrap,bool aLowestOff);
+esp_err_t hal_bldc_set_step(uint8_t status, bool aWrap, bool aLowestOff);
 
 /**
  * @brief set bldc direction

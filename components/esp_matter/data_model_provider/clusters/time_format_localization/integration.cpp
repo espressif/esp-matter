@@ -32,7 +32,7 @@ uint32_t get_feature_map(esp_matter::cluster_t *cluster)
     if (attribute) {
         esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
         if (esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK &&
-            val.type == ESP_MATTER_VAL_TYPE_BITMAP32) {
+                val.type == ESP_MATTER_VAL_TYPE_BITMAP32) {
             return val.val.u32;
         }
     }
@@ -46,7 +46,7 @@ TimeFormatLocalization::HourFormatEnum get_default_hour_format(esp_matter::clust
     if (attribute) {
         esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
         if (esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK &&
-            val.type == ESP_MATTER_VAL_TYPE_ENUM8) {
+                val.type == ESP_MATTER_VAL_TYPE_ENUM8) {
             return TimeFormatLocalization::HourFormatEnum(val.val.u8);
         }
     }
@@ -60,7 +60,7 @@ TimeFormatLocalization::CalendarTypeEnum get_default_calendar_type(esp_matter::c
     if (attribute) {
         esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
         if (esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK &&
-            val.type == ESP_MATTER_VAL_TYPE_ENUM8) {
+                val.type == ESP_MATTER_VAL_TYPE_ENUM8) {
             return TimeFormatLocalization::CalendarTypeEnum(val.val.u8);
         }
     }

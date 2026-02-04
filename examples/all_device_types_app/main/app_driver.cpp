@@ -58,23 +58,24 @@ chip::Protocols::InteractionModel::Status FanDelegateImpl::HandleStep(chip::app:
 
     ESP_LOGI(TAG, "Step received value: %d %d %d", (uint8_t)aDirection, aWrap, aLowestOff);
     /* Update percent-setting when speed is changed by the step command */
-    if (aLowestOff)
+    if (aLowestOff) {
         lowest = 0;
-    else
+    } else {
         lowest = 1;
+    }
     if ((uint8_t)aDirection == 0) {
         tmp += 1;
         if (aWrap == 0) {
-            tmp = tmp > max_speed ? max_speed:tmp;
+            tmp = tmp > max_speed ? max_speed : tmp;
         } else {
-            tmp = tmp > max_speed ? lowest:tmp;
+            tmp = tmp > max_speed ? lowest : tmp;
         }
     } else if ((uint8_t)aDirection == 1) {
         tmp -= 1;
         if (aWrap == 0) {
-            tmp = tmp < lowest ? lowest:tmp;
+            tmp = tmp < lowest ? lowest : tmp;
         } else {
-            tmp = tmp < lowest ? max_speed:tmp;
+            tmp = tmp < lowest ? max_speed : tmp;
         }
     }
     val.val.u8 = tmp;
@@ -166,26 +167,26 @@ static esp_err_t app_driver_fan_set_airflow_direction(fan_driver_handle_t handle
 static bool check_if_mode_percent_match(uint8_t fan_mode, uint8_t percent)
 {
     switch (fan_mode) {
-        case chip::to_underlying(FanModeEnum::kHigh): {
-            if (percent < HIGH_MODE_PERCENT_MIN) {
-                return false;
-            }
-            break;
-        }
-        case chip::to_underlying(FanModeEnum::kMedium): {
-            if ((percent < MED_MODE_PERCENT_MIN) || (percent > MED_MODE_PERCENT_MAX)) {
-               return false;
-            }
-            break;
-        }
-        case chip::to_underlying(FanModeEnum::kLow): {
-            if ((percent < LOW_MODE_PERCENT_MIN) || (percent > LOW_MODE_PERCENT_MAX)) {
-                return false;
-            }
-            break;
-        }
-        default:
+    case chip::to_underlying(FanModeEnum::kHigh): {
+        if (percent < HIGH_MODE_PERCENT_MIN) {
             return false;
+        }
+        break;
+    }
+    case chip::to_underlying(FanModeEnum::kMedium): {
+        if ((percent < MED_MODE_PERCENT_MIN) || (percent > MED_MODE_PERCENT_MAX)) {
+            return false;
+        }
+        break;
+    }
+    case chip::to_underlying(FanModeEnum::kLow): {
+        if ((percent < LOW_MODE_PERCENT_MIN) || (percent > LOW_MODE_PERCENT_MAX)) {
+            return false;
+        }
+        break;
+    }
+    default:
+        return false;
     }
 
     return true;
@@ -197,7 +198,7 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
     esp_err_t err = ESP_OK;
 
     if (endpoint_id == app_endpoint_id) {
-       fan_driver_handle_t handle = (fan_driver_handle_t)driver_handle;
+        fan_driver_handle_t handle = (fan_driver_handle_t)driver_handle;
 
         if (cluster_id == FanControl::Id) {
             if (attribute_id == FanControl::Attributes::FanMode::Id) {
@@ -208,34 +209,34 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
                    value of the FanMode */
                 if (!check_if_mode_percent_match(val->val.u8, val_a.val.u8)) {
                     switch (val->val.u8) {
-                        case chip::to_underlying(FanModeEnum::kHigh): {
-                                val_a.val.u8 = HIGH_MODE_PERCENT_MAX;
-                                set_attribute(endpoint_id, FanControl::Id, Attributes::PercentSetting::Id, val_a);
-                                set_attribute(endpoint_id, FanControl::Id, Attributes::SpeedSetting::Id, val_a);
-                            break;
-                        }
-                        case chip::to_underlying(FanModeEnum::kMedium): {
-                                val_a.val.u8 = MED_MODE_PERCENT_MAX;
-                                set_attribute(endpoint_id, FanControl::Id, Attributes::PercentSetting::Id, val_a);
-                                set_attribute(endpoint_id, FanControl::Id, Attributes::SpeedSetting::Id, val_a);
-                            break;
-                        }
-                        case chip::to_underlying(FanModeEnum::kLow): {
-                                val_a.val.u8 = LOW_MODE_PERCENT_MAX;
-                                set_attribute(endpoint_id, FanControl::Id, Attributes::PercentSetting::Id, val_a);
-                                set_attribute(endpoint_id, FanControl::Id, Attributes::SpeedSetting::Id, val_a);
-                            break;
-                        }
-                        case chip::to_underlying(FanModeEnum::kAuto): {
-                            /* add auto mode driver for auto logic */
-                            break;
-                        }
-                        case chip::to_underlying(FanModeEnum::kOff): {
-                            /* add off mode driver if needed */
-                            break;
-                        }
-                        default:
-                            break;
+                    case chip::to_underlying(FanModeEnum::kHigh): {
+                        val_a.val.u8 = HIGH_MODE_PERCENT_MAX;
+                        set_attribute(endpoint_id, FanControl::Id, Attributes::PercentSetting::Id, val_a);
+                        set_attribute(endpoint_id, FanControl::Id, Attributes::SpeedSetting::Id, val_a);
+                        break;
+                    }
+                    case chip::to_underlying(FanModeEnum::kMedium): {
+                        val_a.val.u8 = MED_MODE_PERCENT_MAX;
+                        set_attribute(endpoint_id, FanControl::Id, Attributes::PercentSetting::Id, val_a);
+                        set_attribute(endpoint_id, FanControl::Id, Attributes::SpeedSetting::Id, val_a);
+                        break;
+                    }
+                    case chip::to_underlying(FanModeEnum::kLow): {
+                        val_a.val.u8 = LOW_MODE_PERCENT_MAX;
+                        set_attribute(endpoint_id, FanControl::Id, Attributes::PercentSetting::Id, val_a);
+                        set_attribute(endpoint_id, FanControl::Id, Attributes::SpeedSetting::Id, val_a);
+                        break;
+                    }
+                    case chip::to_underlying(FanModeEnum::kAuto): {
+                        /* add auto mode driver for auto logic */
+                        break;
+                    }
+                    case chip::to_underlying(FanModeEnum::kOff): {
+                        /* add off mode driver if needed */
+                        break;
+                    }
+                    default:
+                        break;
                     }
                 }
                 set_attribute(endpoint_id, FanControl::Id, FanControl::Attributes::PercentCurrent::Id, val_a);
@@ -299,4 +300,3 @@ esp_err_t app_driver_init()
 
     return err;
 }
-

@@ -25,14 +25,17 @@ class example_credentials_issuer : public credentials_issuer {
         return m_operational_creds_issuer.Initialize(storage) == CHIP_NO_ERROR ? ESP_OK : ESP_FAIL;
     }
 
-    chip::Controller::OperationalCredentialsDelegate *get_delegate() override { return &m_operational_creds_issuer; }
+    chip::Controller::OperationalCredentialsDelegate *get_delegate() override
+    {
+        return &m_operational_creds_issuer;
+    }
 
     esp_err_t generate_controller_noc_chain(chip::NodeId node_id, chip::FabricId fabric_id,
                                             chip::Crypto::P256Keypair &keypair, chip::MutableByteSpan &rcac,
                                             chip::MutableByteSpan &icac, chip::MutableByteSpan &noc) override
     {
         CHIP_ERROR err = m_operational_creds_issuer.GenerateNOCChainAfterValidation(
-            node_id, fabric_id, chip::kUndefinedCATs, keypair.Pubkey(), rcac, icac, noc);
+                             node_id, fabric_id, chip::kUndefinedCATs, keypair.Pubkey(), rcac, icac, noc);
         return err == CHIP_NO_ERROR ? ESP_OK : ESP_FAIL;
     }
 

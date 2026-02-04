@@ -60,7 +60,7 @@ static uint8_t idlePosition    = 0;
 
 static void app_driver_button_initial_pressed(void *arg, void *data)
 {
-    if(!is_multipress) {
+    if (!is_multipress) {
         ESP_LOGI(TAG, "Initial button pressed");
         gpio_button * button = (gpio_button*)data;
         int switch_endpoint_id = (button != NULL) ? get_endpoint(button) : 1;
@@ -119,7 +119,7 @@ static void app_driver_button_multipress_ongoing(void *arg, void *data)
     uint32_t feature_map = val.val.u32;
     uint32_t msm_feature_map = switch_cluster::feature::momentary_switch_multi_press::get_id();
     uint32_t as_feature_map = switch_cluster::feature::action_switch::get_id();
-    if(((feature_map & msm_feature_map) == msm_feature_map) && ((feature_map & as_feature_map) != as_feature_map)) {
+    if (((feature_map & msm_feature_map) == msm_feature_map) && ((feature_map & as_feature_map) != as_feature_map)) {
         chip::DeviceLayer::SystemLayer().ScheduleLambda([switch_endpoint_id, newPosition]() {
             chip::app::Clusters::Switch::Attributes::CurrentPosition::Set(switch_endpoint_id, newPosition);
             // MultiPress Ongoing event takes newPosition and current_number_of_presses_counted as event data
@@ -144,7 +144,7 @@ static void app_driver_button_multipress_complete(void *arg, void *data)
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
     attribute::get_val(attribute, &val);
     uint8_t multipress_max = val.val.u8;
-    int total_number_of_presses_counted = (current_number_of_presses_counted > multipress_max)? 0:current_number_of_presses_counted;
+    int total_number_of_presses_counted = (current_number_of_presses_counted > multipress_max) ? 0 : current_number_of_presses_counted;
     chip::DeviceLayer::SystemLayer().ScheduleLambda([switch_endpoint_id, previousPosition, total_number_of_presses_counted]() {
         chip::app::Clusters::Switch::Attributes::CurrentPosition::Set(switch_endpoint_id, idlePosition);
         // MultiPress Complete event takes previousPosition and total_number_of_presses_counted as event data
@@ -181,7 +181,6 @@ app_driver_handle_t app_driver_button_init(gpio_button * button)
             return NULL;
         }
     }
-
 
 #if CONFIG_GENERIC_SWITCH_TYPE_LATCHING
     iot_button_register_cb(handle, BUTTON_PRESS_DOWN, NULL, app_driver_button_switch_latched, button);

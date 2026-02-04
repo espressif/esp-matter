@@ -20,17 +20,19 @@
 
 namespace chip::app::Clusters::PowerTopology {
 
-class Instance
-{
+class Instance {
 public:
-    Instance(EndpointId aEndpointId, Delegate & aDelegate, BitMask<Feature> aFeature) :
+    Instance(EndpointId aEndpointId, Delegate  &aDelegate, BitMask<Feature> aFeature) :
         mCluster(PowerTopologyCluster::Config{
-            .endpointId = aEndpointId,
-            .delegate   = aDelegate,
-            .features   = aFeature,
-        })
+        .endpointId = aEndpointId,
+        .delegate   = aDelegate,
+        .features   = aFeature,
+    })
     {}
-    ~Instance() { Shutdown(); }
+    ~Instance()
+    {
+        Shutdown();
+    }
 
     CHIP_ERROR Init();
     void Shutdown();

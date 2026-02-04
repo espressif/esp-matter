@@ -37,7 +37,7 @@ esp_err_t OtaBdxSender::InitializeTransfer(chip::FabricIndex fabricIndex, chip::
 {
     if (mInitialized) {
         if ((mFabricIndex.HasValue() && mFabricIndex.Value() == fabricIndex) &&
-            (mNodeId.HasValue() && mNodeId.Value() == nodeId)) {
+                (mNodeId.HasValue() && mNodeId.Value() == nodeId)) {
             Reset();
         } else if ((mFabricIndex.HasValue() && mFabricIndex.Value() != fabricIndex) ||
                    (mNodeId.HasValue() && mNodeId.Value() != nodeId)) {
@@ -161,7 +161,7 @@ void OtaBdxSender::HandleTransferSessionOutput(TransferSession::OutputEvent &eve
         blockData.Length =
             static_cast<size_t>(std::min(static_cast<uint64_t>(bytes_read), (mOtaImageSize - mNumBytesSent)));
         blockData.IsEof = (blockData.Length < bytesToRead) ||
-            (mNumBytesSent + static_cast<uint64_t>(blockData.Length) == mOtaImageSize);
+                          (mNumBytesSent + static_cast<uint64_t>(blockData.Length) == mOtaImageSize);
         mNumBytesSent = static_cast<uint64_t>(mNumBytesSent + blockData.Length);
 
         if (CHIP_NO_ERROR != mTransfer.PrepareBlock(blockData)) {

@@ -23,7 +23,7 @@ namespace app {
 namespace Clusters {
 namespace DeviceEnergyManagement {
 
-Instance::Instance(EndpointId aEndpointId, Delegate & aDelegate, BitMask<Feature> aFeature) :
+Instance::Instance(EndpointId aEndpointId, Delegate  &aDelegate, BitMask<Feature> aFeature) :
     mCluster(DeviceEnergyManagementCluster::Config(aEndpointId, aFeature, aDelegate))
 {}
 
@@ -31,8 +31,7 @@ CHIP_ERROR Instance::Init()
 {
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(mCluster.Registration());
 
-    if (err != CHIP_NO_ERROR)
-    {
+    if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register cluster %u/" ChipLogFormatMEI ": %" CHIP_ERROR_FORMAT,
                      mCluster.Cluster().GetPaths()[0].mEndpointId, ChipLogValueMEI(DeviceEnergyManagement::Id), err.Format());
     }
@@ -43,8 +42,7 @@ void Instance::Shutdown()
 {
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&mCluster.Cluster());
 
-    if (err != CHIP_NO_ERROR)
-    {
+    if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister cluster %u/" ChipLogFormatMEI ": %" CHIP_ERROR_FORMAT,
                      mCluster.Cluster().GetPaths()[0].mEndpointId, ChipLogValueMEI(DeviceEnergyManagement::Id), err.Format());
     }

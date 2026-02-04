@@ -102,7 +102,8 @@ void paa_der_cert_iterator::release()
 esp_err_t spiffs_attestation_trust_store::init()
 {
     esp_vfs_spiffs_conf_t conf = {
-        .base_path = "/paa", .partition_label = nullptr, .max_files = 5, .format_if_mount_failed = false};
+        .base_path = "/paa", .partition_label = nullptr, .max_files = 5, .format_if_mount_failed = false
+    };
     ESP_RETURN_ON_ERROR(esp_vfs_spiffs_register(&conf), TAG, "Failed to initialize SPIFFS");
     size_t total = 0, used = 0;
     ESP_RETURN_ON_ERROR(esp_spiffs_info(conf.partition_label, &total, &used), TAG, "Failed to get SPIFFS info");
@@ -124,7 +125,7 @@ CHIP_ERROR spiffs_attestation_trust_store::GetProductAttestationAuthorityCert(co
             uint8_t skid_buf[Crypto::kSubjectKeyIdentifierLength] = {0};
             MutableByteSpan skid_span{skid_buf};
             if (CHIP_NO_ERROR !=
-                Crypto::ExtractSKIDFromX509Cert(ByteSpan{paa_cert.m_buffer, paa_cert.m_len}, skid_span)) {
+                    Crypto::ExtractSKIDFromX509Cert(ByteSpan{paa_cert.m_buffer, paa_cert.m_len}, skid_span)) {
                 continue;
             }
 
@@ -273,7 +274,7 @@ CHIP_ERROR dcl_attestation_trust_store::GetProductAttestationAuthorityCert(const
             if (json_obj_get_array(&jctx, "certs", &certs_count) == 0 && certs_count == 1) {
                 if (json_arr_get_object(&jctx, 0) == 0) {
                     if (json_obj_get_strlen(&jctx, "pemCert", &paa_str_len) == 0 &&
-                        json_obj_get_string(&jctx, "pemCert", paa_pem_buffer, paa_pem_size) == 0) {
+                            json_obj_get_string(&jctx, "pemCert", paa_pem_buffer, paa_pem_size) == 0) {
                         paa_str_len = paa_str_len < paa_pem_size - 1 ? paa_str_len : paa_pem_size - 1;
                         paa_pem_buffer[paa_str_len] = 0;
                         remove_backslash_n(paa_pem_buffer);

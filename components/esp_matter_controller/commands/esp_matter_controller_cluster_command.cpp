@@ -41,8 +41,8 @@ esp_err_t decode_command_response(const ConcreteCommandPath &command_path, TLVRe
 {
     ESP_RETURN_ON_FALSE(reader, ESP_ERR_INVALID_ARG, TAG, "reader cannot be NULL");
     ESP_RETURN_ON_FALSE(command_path.mClusterId == CommandResponseObjectT::GetClusterId() &&
-                            command_path.mCommandId == CommandResponseObjectT::GetCommandId(),
-                            ESP_ERR_INVALID_ARG, TAG, "Wrong command to decode");
+                        command_path.mCommandId == CommandResponseObjectT::GetCommandId(),
+                        ESP_ERR_INVALID_ARG, TAG, "Wrong command to decode");
     DataModelLogger::LogCommand(command_path, reader);
     return ESP_OK;
 }
@@ -147,7 +147,8 @@ void cluster_command::on_device_connected_fcn(void *context, ExchangeManager &ex
     cluster_command *cmd = reinterpret_cast<cluster_command *>(context);
     chip::OperationalDeviceProxy device_proxy(&exchangeMgr, sessionHandle);
     chip::app::CommandPathParams command_path = {cmd->m_endpoint_id, 0, cmd->m_cluster_id, cmd->m_command_id,
-                                                 chip::app::CommandPathFlags::kEndpointIdValid};
+                                                 chip::app::CommandPathFlags::kEndpointIdValid
+                                                };
     interaction::invoke::send_request(context, &device_proxy, command_path, cmd->m_command_data_field,
                                       cmd->on_success_cb, cmd->on_error_cb, cmd->m_timed_invoke_timeout_ms);
     chip::Platform::Delete(cmd);
@@ -166,11 +167,11 @@ void cluster_command::default_success_fcn(void *ctx, const ConcreteCommandPath &
 {
     ESP_LOGI(TAG, "Send command success");
     ESP_LOGI(TAG,
-             "Some commands of specific clusters will have a reponse which is not NullObject, so we need to handle the "
-             "response data for those commands. Here we print the reponse data.");
+             "Some commands of specific clusters will have a response which is not NullObject, so we need to handle the "
+             "response data for those commands. Here we print the response data.");
     ESP_LOGI(TAG,
-             "If your command's reponse is not printed here, please register another success callback when creating "
-             "the cluster_command object to handle the reponse data.");
+             "If your command's response is not printed here, please register another success callback when creating "
+             "the cluster_command object to handle the response data.");
     switch (command_path.mClusterId) {
     case GroupKeyManagement::Id:
         cluster::group_key_management::command::decode_response(command_path, response_data);
@@ -208,7 +209,8 @@ esp_err_t cluster_command::dispatch_group_command(void *context)
     uint8_t fabric_index = matter_controller_client::get_instance().get_fabric_index();
 #endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
     chip::app::CommandPathParams command_path = {cmd->m_endpoint_id, group_id, cmd->m_cluster_id, cmd->m_command_id,
-                                                 chip::app::CommandPathFlags::kGroupIdValid};
+                                                 chip::app::CommandPathFlags::kGroupIdValid
+                                                };
     err = interaction::invoke::send_group_request(fabric_index, command_path, cmd->m_command_data_field);
     chip::Platform::Delete(cmd);
     return err;
@@ -228,14 +230,14 @@ esp_err_t cluster_command::send_command()
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
 #ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     if (CHIP_NO_ERROR ==
-        controller_instance.get_commissioner()->GetConnectedDevice(m_destination_id, &on_device_connected_cb,
-                                                                   &on_device_connection_failure_cb)) {
+            controller_instance.get_commissioner()->GetConnectedDevice(m_destination_id, &on_device_connected_cb,
+                                                                       &on_device_connection_failure_cb)) {
         return ESP_OK;
     }
 #else
     if (CHIP_NO_ERROR ==
-        controller_instance.get_controller()->GetConnectedDevice(m_destination_id, &on_device_connected_cb,
-                                                                 &on_device_connection_failure_cb)) {
+            controller_instance.get_controller()->GetConnectedDevice(m_destination_id, &on_device_connected_cb,
+                                                                     &on_device_connection_failure_cb)) {
         return ESP_OK;
     }
 #endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE

@@ -12,19 +12,19 @@
 esp_rmaker_param_t *rainmaker_controller_base_url_param_create(const char *param_name)
 {
     esp_rmaker_param_t *param = esp_rmaker_param_create(param_name, ESP_RMAKER_PARAM_BASE_URL,
-            esp_rmaker_str(""), PROP_FLAG_READ | PROP_FLAG_WRITE | PROP_FLAG_PERSIST);
+                                                        esp_rmaker_str(""), PROP_FLAG_READ | PROP_FLAG_WRITE | PROP_FLAG_PERSIST);
     return param;
 }
 
 esp_rmaker_param_t *rainmaker_controller_user_token_param_create(const char *param_name)
 {
     esp_rmaker_param_t *param = esp_rmaker_param_create(param_name, ESP_RMAKER_PARAM_USER_TOKEN,
-            esp_rmaker_str(""), PROP_FLAG_WRITE | PROP_FLAG_PERSIST);
+                                                        esp_rmaker_str(""), PROP_FLAG_WRITE | PROP_FLAG_PERSIST);
     return param;
 }
 
 esp_rmaker_device_t *rainmaker_controller_service_create(const char *serv_name, esp_rmaker_device_write_cb_t write_cb,
-                                                      esp_rmaker_device_read_cb_t read_cb, void *priv_data)
+                                                         esp_rmaker_device_read_cb_t read_cb, void *priv_data)
 {
     esp_rmaker_device_t *service = esp_rmaker_service_create(serv_name, ESP_RMAKER_SERVICE_CONTROLLER, priv_data);
     if (service) {

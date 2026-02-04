@@ -103,7 +103,7 @@ void ESPMatterGeneralDiagnosticsClusterServerInitCallback(EndpointId endpointId)
 
     CHIP_ERROR err = CHIP_NO_ERROR;
     if (IsCommandEnabled(endpointId, GeneralDiagnostics::Commands::PayloadTestRequest::Id, COMMAND_FLAG_ACCEPTED) ||
-        IsClusterEnabled(endpointId, TimeSynchronization::Id)) {
+            IsClusterEnabled(endpointId, TimeSynchronization::Id)) {
         gServer.isFullConfigurable = true;
         GeneralDiagnosticsFunctionsConfig functionsConfig{
             /*
@@ -114,9 +114,9 @@ void ESPMatterGeneralDiagnosticsClusterServerInitCallback(EndpointId endpointId)
             IsCommandEnabled(endpointId, GeneralDiagnostics::Commands::PayloadTestRequest::Id, COMMAND_FLAG_ACCEPTED),
         };
 
-        gServer.fullConfigurableServer.Create(attrSet,featureFlags, InteractionModelEngine::GetInstance(), functionsConfig);
+        gServer.fullConfigurableServer.Create(attrSet, featureFlags, InteractionModelEngine::GetInstance(), functionsConfig);
         err = esp_matter::data_model::provider::get_instance().registry().Register(
-            gServer.fullConfigurableServer.Registration());
+                  gServer.fullConfigurableServer.Registration());
     } else {
         gServer.server.Create(attrSet, featureFlags, InteractionModelEngine::GetInstance());
         err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.server.Registration());
@@ -132,7 +132,7 @@ void ESPMatterGeneralDiagnosticsClusterServerShutdownCallback(EndpointId endpoin
     CHIP_ERROR err = CHIP_NO_ERROR;
     if (gServer.isFullConfigurable) {
         err = esp_matter::data_model::provider::get_instance().registry().Unregister(
-            &gServer.fullConfigurableServer.Cluster());
+                  &gServer.fullConfigurableServer.Cluster());
         gServer.fullConfigurableServer.Destroy();
     } else {
         err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.server.Cluster());

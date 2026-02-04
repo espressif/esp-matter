@@ -256,8 +256,9 @@ esp_err_t set_device_type(device_t *bridged_device, uint32_t device_type_id, voi
         return ESP_ERR_INVALID_ARG;
     }
     err = device_type_callback(bridged_device->endpoint, device_type_id, priv_data);
-    if (err != ESP_OK)
+    if (err != ESP_OK) {
         return err;
+    }
     return plugin_init_callback_endpoint(bridged_device->endpoint);
 }
 
@@ -277,7 +278,7 @@ static bool parent_endpoint_is_valid(node_t *node, uint16_t parent_endpoint_id)
         uint32_t dev_type_id;
         uint8_t dev_type_ver;
         if ((ESP_OK == get_device_type_at_index(parent_endpoint, i, dev_type_id, dev_type_ver)) &&
-            (dev_type_id == endpoint::aggregator::get_device_type_id())) {
+                (dev_type_id == endpoint::aggregator::get_device_type_id())) {
             return true;
         }
     }
