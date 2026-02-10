@@ -646,9 +646,13 @@ CHIP_ERROR provider::Attributes(const ConcreteClusterPath &path, ReadOnlyBufferB
 
 void provider::Temporary_ReportAttributeChanged(const AttributePathParams &path)
 {
-    cluster_t *cluster = cluster::get(path.mEndpointId, path.mClusterId);
-    VerifyOrReturn(cluster != nullptr);
-    VerifyOrReturn(cluster::increase_data_version(cluster) == ESP_OK);
+    VerifyOrReturn(!path.HasWildcardEndpointId());
+    // If the cluster is not wildcard, increase the data version
+    if (!path.HasWildcardClusterId()) {
+        cluster_t *cluster = cluster::get(path.mEndpointId, path.mClusterId);
+        VerifyOrReturn(cluster != nullptr);
+        VerifyOrReturn(cluster::increase_data_version(cluster) == ESP_OK);
+    }
     mContext->dataModelChangeListener.MarkDirty(path);
 }
 
