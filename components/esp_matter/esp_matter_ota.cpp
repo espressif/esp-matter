@@ -120,8 +120,7 @@ esp_err_t esp_matter_ota_requestor_encrypted_init(const char *key, uint16_t size
 }
 #endif // CONFIG_ENABLE_ENCRYPTED_OTA
 
-
-esp_err_t esp_matter_ota_requestor_set_config(const esp_matter_ota_config_t & config)
+esp_err_t esp_matter_ota_requestor_set_config(const esp_matter_ota_config_t  &config)
 {
 #if CONFIG_ENABLE_OTA_REQUESTOR
     if (config.periodic_query_timeout) {

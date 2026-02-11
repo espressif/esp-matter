@@ -107,7 +107,6 @@ event_t *create_reachable_changed(cluster_t *cluster);
 } // namespace event
 } // namespace bridged_device_basic_information
 
-
 namespace power_source {
 namespace event {
 event_t *create_wired_fault_change(cluster_t *cluster);

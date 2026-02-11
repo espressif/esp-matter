@@ -208,7 +208,7 @@ typedef struct config {
         feature::replaceable::config_t replaceable;
     } features;
     uint32_t feature_flags;
-	config() : status(0), order(0), description{0}, feature_flags(0) {}
+    config() : status(0), order(0), description{0}, feature_flags(0) {}
 } config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* power_source */
@@ -281,7 +281,7 @@ typedef struct config {
     uint16_t color_capabilities;
     nullable<uint8_t> number_of_primaries;
     config() : color_mode(1), color_control_options(0), enhanced_color_mode(1),
-               color_capabilities(0), number_of_primaries(0) {}
+        color_capabilities(0), number_of_primaries(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -570,7 +570,7 @@ typedef struct config {
     uint8_t occupancy_sensor_type_bitmap;
     uint32_t feature_flags;
     config() : occupancy(0), occupancy_sensor_type(0),
-               occupancy_sensor_type_bitmap(0), feature_flags(0) {}
+        occupancy_sensor_type_bitmap(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -968,7 +968,6 @@ using config_t = common::config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 }/*webrtc transport requestor*/
-
 
 namespace chime {
 typedef struct config {

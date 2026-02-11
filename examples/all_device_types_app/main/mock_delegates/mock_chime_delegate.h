@@ -23,14 +23,13 @@ namespace app {
 namespace Clusters {
 namespace Chime {
 
-class MockChimeDelegate : public ChimeDelegate
-{
+class MockChimeDelegate : public ChimeDelegate {
 public:
     MockChimeDelegate() = default;
     ~MockChimeDelegate() override;
 
-    CHIP_ERROR GetChimeSoundByIndex(uint8_t chimeIndex, uint8_t & chimeID, MutableCharSpan & name) override;
-    CHIP_ERROR GetChimeIDByIndex(uint8_t chimeIndex, uint8_t & chimeID) override;
+    CHIP_ERROR GetChimeSoundByIndex(uint8_t chimeIndex, uint8_t  &chimeID, MutableCharSpan  &name) override;
+    CHIP_ERROR GetChimeIDByIndex(uint8_t chimeIndex, uint8_t  &chimeID) override;
     Protocols::InteractionModel::Status PlayChimeSound() override;
 
 private:

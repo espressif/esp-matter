@@ -266,7 +266,7 @@ CHIP_ERROR attribute_data_encode_buffer::Encode(chip::TLV::TLVWriter &writer, ch
     case ESP_MATTER_VAL_TYPE_CHAR_STRING:
     case ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING: {
         if (m_attr_val.val.a.b == nullptr &&
-            m_attr_val.val.a.s == (m_attr_val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ? 0xFF : 0xFFFF)) {
+                m_attr_val.val.a.s == (m_attr_val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ? 0xFF : 0xFFFF)) {
             ReturnErrorOnFailure(writer.PutNull(tag));
             break;
         }
@@ -280,7 +280,7 @@ CHIP_ERROR attribute_data_encode_buffer::Encode(chip::TLV::TLVWriter &writer, ch
     case ESP_MATTER_VAL_TYPE_OCTET_STRING:
     case ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING: {
         if (m_attr_val.val.a.b == nullptr &&
-            m_attr_val.val.a.s == (m_attr_val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ? 0xFF : 0xFFFF)) {
+                m_attr_val.val.a.s == (m_attr_val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ? 0xFF : 0xFFFF)) {
             ReturnErrorOnFailure(writer.PutNull(tag));
             break;
         }

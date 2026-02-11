@@ -40,9 +40,15 @@ public:
         mEndpointId = endpointId;
         mEndpointTableSize = endpointTableSize;
     }
-    EndpointId GetEndpointId() const { return mEndpointId; }
+    EndpointId GetEndpointId() const
+    {
+        return mEndpointId;
+    }
 
-    ScenesManagementSceneTable *Take() override { return scenes::GetSceneTableImpl(mEndpointId, mEndpointTableSize); }
+    ScenesManagementSceneTable *Take() override
+    {
+        return scenes::GetSceneTableImpl(mEndpointId, mEndpointTableSize);
+    }
     void Release(ScenesManagementSceneTable *) override {}
 
 private:
@@ -189,13 +195,13 @@ void ESPMatterScenesManagementClusterServerInitCallback(EndpointId endpointId)
     }
     gTableProviders[endpointId].SetParameters(endpointId, tableSize);
     gServers[endpointId].Create(endpointId,
-                                ScenesManagementCluster::Context{
-                                    .groupDataProvider = Credentials::GetGroupDataProvider(),
-                                    .fabricTable = &Server::GetInstance().GetFabricTable(),
-                                    .features = featureMap,
-                                    .sceneTableProvider = gTableProviders[endpointId],
-                                    .supportsCopyScene = supportsCopyScene,
-                                });
+    ScenesManagementCluster::Context{
+        .groupDataProvider = Credentials::GetGroupDataProvider(),
+        .fabricTable = &Server::GetInstance().GetFabricTable(),
+        .features = featureMap,
+        .sceneTableProvider = gTableProviders[endpointId],
+        .supportsCopyScene = supportsCopyScene,
+    });
     CHIP_ERROR err =
         esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
@@ -210,7 +216,7 @@ void ESPMatterScenesManagementClusterServerShutdownCallback(EndpointId endpointI
         return;
     }
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(
-        &gServers[endpointId].Cluster(), shutdownType);
+                         &gServers[endpointId].Cluster(), shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register Scenes on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
                      err.Format());

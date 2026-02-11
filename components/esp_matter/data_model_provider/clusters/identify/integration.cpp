@@ -86,7 +86,10 @@ public:
             }
         }
     }
-    bool IsTriggerEffectEnabled() const override { return true; }
+    bool IsTriggerEffectEnabled() const override
+    {
+        return true;
+    }
 };
 
 IdentifyLegacyDelegate gLegacyDelegate;
@@ -140,16 +143,16 @@ Identify::Identify(EndpointId endpoint, onIdentifyStartCb onIdentifyStart, onIde
     , mCurrentEffectIdentifier(effectIdentifier)
     , mEffectVariant(effectVariant)
     , mCluster(
-          chip::app::Clusters::IdentifyCluster::Config(endpoint, timerDelegate ? *timerDelegate : sDefaultTimerDelegate)
-              .WithIdentifyType(identifyType)
-              .WithDelegate(&gLegacyDelegate)
-              .WithEffectIdentifier(effectIdentifier)
-              .WithEffectVariant(effectVariant))
+        chip::app::Clusters::IdentifyCluster::Config(endpoint, timerDelegate ? * timerDelegate : sDefaultTimerDelegate)
+        .WithIdentifyType(identifyType)
+        .WithDelegate(&gLegacyDelegate)
+        .WithEffectIdentifier(effectIdentifier)
+        .WithEffectVariant(effectVariant))
 {
     RegisterLegacyIdentify(this);
 
     if (esp_matter::data_model::provider::get_instance().registry().Register(mCluster.Registration()) !=
-        CHIP_NO_ERROR) {
+            CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to registry Identify cluster registration for endpoint %u", endpoint);
     }
 };
@@ -157,7 +160,7 @@ Identify::Identify(EndpointId endpoint, onIdentifyStartCb onIdentifyStart, onIde
 Identify::~Identify()
 {
     if (esp_matter::data_model::provider::get_instance().registry().Unregister(&(mCluster.Cluster())) !=
-        CHIP_NO_ERROR) {
+            CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregistry Identify cluster registration");
     }
     UnregisterLegacyIdentify(this);
@@ -165,7 +168,7 @@ Identify::~Identify()
 
 void ESPMatterIdentifyClusterServerInitCallback(EndpointId endpointId)
 {
-    // Intentionally make this function empty as the identify cluster will be registered when enabling endpoint.    
+    // Intentionally make this function empty as the identify cluster will be registered when enabling endpoint.
 }
 
 void ESPMatterIdentifyClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)

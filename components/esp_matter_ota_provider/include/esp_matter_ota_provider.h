@@ -55,17 +55,17 @@ public:
     // OTAProviderDelegate Implementation
     void HandleQueryImage(chip::app::CommandHandler *commandObj, const chip::app::ConcreteCommandPath &commandPath,
                           const chip::app::Clusters::OtaSoftwareUpdateProvider::Commands::QueryImage::DecodableType
-                              &commandData) override;
+                          &commandData) override;
 
     void HandleApplyUpdateRequest(
         chip::app::CommandHandler *commandObj, const chip::app::ConcreteCommandPath &commandPath,
         const chip::app::Clusters::OtaSoftwareUpdateProvider::Commands::ApplyUpdateRequest::DecodableType &commandData)
-        override;
+    override;
 
     void HandleNotifyUpdateApplied(
         chip::app::CommandHandler *commandObj, const chip::app::ConcreteCommandPath &commandPath,
         const chip::app::Clusters::OtaSoftwareUpdateProvider::Commands::NotifyUpdateApplied::DecodableType &commandData)
-        override;
+    override;
 
     // OTAProviderImpl public APIs
     static EspOtaProvider &GetInstance()
@@ -75,10 +75,22 @@ public:
     }
     esp_err_t Init(bool otaAllowedDefault, chip::System::Layer *system_layer,
                    chip::Messaging::ExchangeManager *exchange_mgr, chip::FabricTable *fabric_table);
-    void SetApplyUpdateAction(OTAApplyUpdateAction action) { mUpdateAction = action; }
-    void SetDelayedQueryActionTimeSec(uint32_t time) { mDelayedQueryActionTimeSec = time; }
-    void SetDelayedApplyActionTimeSec(uint32_t time) { mDelayedApplyActionTimeSec = time; }
-    void SetPollInterval(uint32_t interval) { mPollInterval = (interval != 0) ? interval : mPollInterval; }
+    void SetApplyUpdateAction(OTAApplyUpdateAction action)
+    {
+        mUpdateAction = action;
+    }
+    void SetDelayedQueryActionTimeSec(uint32_t time)
+    {
+        mDelayedQueryActionTimeSec = time;
+    }
+    void SetDelayedApplyActionTimeSec(uint32_t time)
+    {
+        mDelayedApplyActionTimeSec = time;
+    }
+    void SetPollInterval(uint32_t interval)
+    {
+        mPollInterval = (interval != 0) ? interval : mPollInterval;
+    }
 
     static void FetchImageDoneCallback(OTAQueryStatus status, const char *imageUrl, size_t imageSize,
                                        uint32_t softwareVersion, const char *softwareVersionStr, void *arg);
@@ -86,7 +98,10 @@ public:
     // When the OTA Provider receives a QueryImage command from an OTA Requestor and there is no existing entry for the
     // Requestor node, the Provider will create an OTA Requestor Entry for the requestor, and set the entry's
     // mOtaAllowed to mOtaAllowedDefault.
-    void SetOtaAllowedDefault(bool otaAllowed) { mOtaAllowedDefault = otaAllowed; }
+    void SetOtaAllowedDefault(bool otaAllowed)
+    {
+        mOtaAllowedDefault = otaAllowed;
+    }
     // When there is a Requestor entry for the nodeId, we can call the EnableOtaForNode/DisableOtaForNode to make the
     // provider allow whether the requestor proceed the OTA process.
     esp_err_t EnableOtaForNode(const chip::ScopedNodeId &nodeId, bool forOnlyOnce);

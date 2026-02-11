@@ -127,7 +127,7 @@ static void register_commands()
         {
             .name = "add-user",
             .description = "Initiate ESP RainMaker User-Node mapping from the node. "
-                           "Usage: matter esp rainmaker add-user <user_id> <secret_key>",
+            "Usage: matter esp rainmaker add-user <user_id> <secret_key>",
             .handler = console_add_user_handler,
         },
     };
@@ -206,7 +206,7 @@ static esp_err_t config_command_callback(const ConcreteCommandPath &command_path
 
     /* Return if this is not the rainmaker configuration command */
     if (endpoint_id != cluster::rainmaker::endpoint_id || cluster_id != cluster::rainmaker::Id ||
-        command_id != cluster::rainmaker::command::configuration::Id) {
+            command_id != cluster::rainmaker::command::configuration::Id) {
         ESP_LOGE(TAG, "Got rainmaker command callback for some other command. This should not happen.");
         return ESP_FAIL;
     }
@@ -261,7 +261,7 @@ static esp_err_t config_command_callback(const ConcreteCommandPath &command_path
     char *check_first = (char *)memchr(data, (int)ch, size);
     char *check_second = NULL;
     if (check_first && (size >= (int)((check_first + 1) - data))) {
-        check_second =  (char *)memchr(check_first + 1, (int)ch, size - (check_first - data + 1));
+        check_second = (char *)memchr(check_first + 1, (int)ch, size - (check_first - data + 1));
     }
     if (!check_first || !check_second) {
         ESP_LOGE(TAG, "\"::\" not found in the received data: %.*s. The expected format is \"<user_id>::<secret_key>\"",
@@ -275,7 +275,7 @@ static esp_err_t config_command_callback(const ConcreteCommandPath &command_path
     int secret_key_index = (int)(&data[user_id_len] - data) + 2; /* (user id end) - (start of string) + 2 */
     int secret_key_len = size - secret_key_index;
     if (user_id_len <= 0 || user_id_len >= ESP_MATTER_RAINMAKER_MAX_DATA_LEN || secret_key_len <= 0 ||
-        secret_key_len >= ESP_MATTER_RAINMAKER_MAX_DATA_LEN) {
+            secret_key_len >= ESP_MATTER_RAINMAKER_MAX_DATA_LEN) {
         ESP_LOGE(TAG, "User id or secret key length invalid: user_id_len: %d, secret_key_len: %d, received_data: %.*s",
                  user_id_len, secret_key_len, size, data);
         return ESP_FAIL;
@@ -332,7 +332,7 @@ static esp_err_t sign_data_command_callback(const ConcreteCommandPath &command_p
 
     /* Return if this is not the rainmaker sign_data command */
     if (endpoint_id != cluster::rainmaker::endpoint_id || cluster_id != cluster::rainmaker::Id ||
-        command_id != cluster::rainmaker::command::sign_data::Id) {
+            command_id != cluster::rainmaker::command::sign_data::Id) {
         ESP_LOGE(TAG, "Got rainmaker command callback for some other command. This should not happen.");
         return ESP_FAIL;
     }
@@ -370,7 +370,7 @@ static esp_err_t custom_cluster_create()
     /* Create custom rainmaker cluster */
     cluster_t *cluster = esp_matter::cluster::create(endpoint, cluster::rainmaker::Id, CLUSTER_FLAG_SERVER);
     VerifyOrReturnError(cluster != NULL, ESP_FAIL,
-                            ESP_LOGE(TAG, "Failed to create rainmaker cluster, id:0x%" PRIX32, cluster::rainmaker::Id));
+                        ESP_LOGE(TAG, "Failed to create rainmaker cluster, id:0x%" PRIX32, cluster::rainmaker::Id));
 
     // global attributes
     cluster::global::attribute::create_cluster_revision(cluster, RAINMAKER_CLUSTER_REVISION);
@@ -408,29 +408,26 @@ static esp_err_t custom_cluster_create()
     return ESP_OK;
 }
 
-class RainmakerAttrAccess : public AttributeAccessInterface
-{
+class RainmakerAttrAccess : public AttributeAccessInterface {
 public:
     // Register for the RainMaker cluster on endpoint 0.
     RainmakerAttrAccess() : AttributeAccessInterface(chip::Optional<chip::EndpointId>(cluster::rainmaker::endpoint_id),
-            cluster::rainmaker::Id) {}
+                                                         cluster::rainmaker::Id) {}
 
-    CHIP_ERROR Read(const ConcreteReadAttributePath & aPath, AttributeValueEncoder & aEncoder) override
+    CHIP_ERROR Read(const ConcreteReadAttributePath  &aPath, AttributeValueEncoder  &aEncoder) override
     {
         return CHIP_NO_ERROR;
     }
 
-    CHIP_ERROR Write(const ConcreteDataAttributePath & aPath, AttributeValueDecoder & aDecoder) override
+    CHIP_ERROR Write(const ConcreteDataAttributePath  &aPath, AttributeValueDecoder  &aDecoder) override
     {
         ConcreteDataAttributePath challengeAttrPath(cluster::rainmaker::endpoint_id, cluster::rainmaker::Id,
-                                                        cluster::rainmaker::attribute::challenge::Id);
+                                                    cluster::rainmaker::attribute::challenge::Id);
 
-        if (challengeAttrPath.MatchesConcreteAttributePath(aPath))
-        {
+        if (challengeAttrPath.MatchesConcreteAttributePath(aPath)) {
             chip::CharSpan challenge;
             CHIP_ERROR c_err = aDecoder.Decode(challenge);
-            if (c_err != CHIP_NO_ERROR)
-            {
+            if (c_err != CHIP_NO_ERROR) {
                 ESP_LOGE(TAG, "Failed to decode challenge, err:%" CHIP_ERROR_FORMAT, c_err.Format());
                 return c_err;
             }
@@ -472,7 +469,7 @@ esp_err_t start()
     esp_event_handler_register(RMAKER_EVENT, RMAKER_EVENT_USER_NODE_MAPPING_DONE, &user_node_association_event_handler,
                                NULL);
     esp_event_handler_register(RMAKER_EVENT, RMAKER_EVENT_USER_NODE_MAPPING_RESET,
-                                &user_node_association_event_handler, NULL);
+                               &user_node_association_event_handler, NULL);
 
     /* Update rmaker_node_id */
     return rmaker_node_id_attribute_update(esp_rmaker_get_node_id());

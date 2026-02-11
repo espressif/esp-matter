@@ -57,8 +57,7 @@ void KVSWebRTCPeerConnection::CreateOffer(uint16_t sessionId)
     // Set local description in KVSWebRTC
     // Answer is received via webrtc_bridge_message_received_cb
     std::unique_ptr<signaling_msg_t> message(new (std::nothrow) signaling_msg_t());
-    if (message == nullptr)
-    {
+    if (message == nullptr) {
         ChipLogError(Camera, "CreateOffer: failed to allocate signaling_msg_t");
         return;
     }
@@ -73,8 +72,7 @@ void KVSWebRTCPeerConnection::CreateOffer(uint16_t sessionId)
 
     size_t serialized_len = 0;
     char * serialized_msg = serialize_signaling_message(message.get(), &serialized_len);
-    if (serialized_msg)
-    {
+    if (serialized_msg) {
         webrtc_bridge_send_message(serialized_msg, serialized_len);
     }
 }
@@ -85,28 +83,24 @@ void KVSWebRTCPeerConnection::CreateAnswer()
     // via webrtc_bridge.
 }
 
-void KVSWebRTCPeerConnection::SetRemoteDescription(const std::string & sdp, SDPType type)
+void KVSWebRTCPeerConnection::SetRemoteDescription(const std::string  &sdp, SDPType type)
 {
     // handles SDP Offer received from webrtc requestor.
     // Send SDP to KVSWebRTCManager.
     char * sdp_json = (char *) malloc(gSDPLength);
     std::unique_ptr<signaling_msg_t> message(new (std::nothrow) signaling_msg_t());
-    if (message == nullptr)
-    {
+    if (message == nullptr) {
         ChipLogError(Camera, "SetRemoteDescription: failed to allocate signaling_msg_t");
         return;
     }
 
     std::string escaped_sdp = json_escape(sdp);
     size_t json_len         = 0;
-    if (type == SDPType::Offer)
-    {
+    if (type == SDPType::Offer) {
         json_len = sprintf(sdp_json, "{\"type\": \"offer\", \"sdp\": \"%s\"}", escaped_sdp.c_str());
         ChipLogProgress(Camera, "OFFER: \n%s\n", sdp_json);
         message->messageType = SIGNALING_MSG_TYPE_OFFER;
-    }
-    else if (type == SDPType::Answer)
-    {
+    } else if (type == SDPType::Answer) {
         json_len = sprintf(sdp_json, "{\"type\": \"answer\", \"sdp\": \"%s\"}", escaped_sdp.c_str());
         ChipLogProgress(Camera, "ANSWER: \n%s\n", sdp_json);
         message->messageType = SIGNALING_MSG_TYPE_ANSWER;
@@ -121,8 +115,7 @@ void KVSWebRTCPeerConnection::SetRemoteDescription(const std::string & sdp, SDPT
 
     size_t serialized_len = 0;
     char * serialized_msg = serialize_signaling_message(message.get(), &serialized_len);
-    if (serialized_msg)
-    {
+    if (serialized_msg) {
         webrtc_bridge_send_message(serialized_msg, serialized_len);
     }
 
@@ -131,7 +124,7 @@ void KVSWebRTCPeerConnection::SetRemoteDescription(const std::string & sdp, SDPT
     free(sdp_json);
 }
 
-void KVSWebRTCPeerConnection::AddRemoteCandidate(const std::string & candidate, const std::string & mid)
+void KVSWebRTCPeerConnection::AddRemoteCandidate(const std::string  &candidate, const std::string  &mid)
 {
 
     // Send webrtc requestor's candidates to KVSWebRTCManager.
@@ -143,8 +136,7 @@ void KVSWebRTCPeerConnection::AddRemoteCandidate(const std::string & candidate, 
     ChipLogProgress(Camera, "CANDIDATE: \n%s\n", candidate_json);
 
     std::unique_ptr<signaling_msg_t> message(new (std::nothrow) signaling_msg_t());
-    if (message == nullptr)
-    {
+    if (message == nullptr) {
         ChipLogError(Camera, "AddRemoteCandidate: failed to allocate signaling_msg_t");
         return;
     }
@@ -158,8 +150,7 @@ void KVSWebRTCPeerConnection::AddRemoteCandidate(const std::string & candidate, 
 
     size_t serialized_len = 0;
     char * serialized_msg = serialize_signaling_message(message.get(), &serialized_len);
-    if (serialized_msg)
-    {
+    if (serialized_msg) {
         webrtc_bridge_send_message(serialized_msg, serialized_len);
     }
 

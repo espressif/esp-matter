@@ -89,7 +89,7 @@ esp_err_t matter_controller_client::init(NodeId node_id, FabricId fabric_id, uin
         reinterpret_cast<chip::Credentials::GroupDataProvider *>(&m_group_data_provider);
     chip::Credentials::SetGroupDataProvider(factory_init_params.groupDataProvider);
     ESP_RETURN_ON_FALSE(chip::Controller::DeviceControllerFactory::GetInstance().Init(factory_init_params) ==
-                            CHIP_NO_ERROR,
+                        CHIP_NO_ERROR,
                         ESP_FAIL, TAG, "Failed to initialize DeviceControllerFactory");
     auto *system_state = chip::Controller::DeviceControllerFactory::GetInstance().GetSystemState();
     m_group_data_provider_listener.Init(system_state);
@@ -177,7 +177,7 @@ esp_err_t matter_controller_client::setup_commissioner()
     chip::Credentials::GroupDataProvider *group_data_provider =
         reinterpret_cast<chip::Credentials::GroupDataProvider *>(&m_group_data_provider);
     ESP_RETURN_ON_FALSE(chip::GroupTesting::InitData(group_data_provider, fabric_index, compressed_fabric_id_span) ==
-                            CHIP_NO_ERROR,
+                        CHIP_NO_ERROR,
                         ESP_FAIL, TAG, "Failed to initialize group data");
     chip::ByteSpan default_ipk = chip::GroupTesting::DefaultIpkValue::GetDefaultIpk();
     ESP_RETURN_ON_FALSE(chip::Credentials::SetSingleIpkEpochKey(group_data_provider, fabric_index, default_ipk,
@@ -264,7 +264,7 @@ esp_err_t matter_controller_client::setup_controller(chip::MutableByteSpan &ipk)
         keyset.epoch_keys[0].start_time = 0;
         memcpy(keyset.epoch_keys[0].key, ipk.data(), chip::Crypto::CHIP_CRYPTO_SYMMETRIC_KEY_LENGTH_BYTES);
         ESP_RETURN_ON_FALSE(group_data_provider->SetKeySet(fabric_index, compressed_fabric_id_span, keyset) ==
-                                CHIP_NO_ERROR,
+                            CHIP_NO_ERROR,
                             ESP_FAIL, TAG, "Failed to set ipk for commissioner fabric");
     }
 

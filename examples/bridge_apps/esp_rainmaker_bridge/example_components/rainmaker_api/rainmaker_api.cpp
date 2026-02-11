@@ -29,68 +29,90 @@ static const char* rainmaker_node_mapping_payload_remove = "{\"node_id\":\"%s\",
 #define RAINMAKER_URL_LEN 256
 
 /* RAII wrapper for HTTP client */
-class HttpClientWrapper
-{
+class HttpClientWrapper {
 public:
-    explicit HttpClientWrapper(const esp_http_client_config_t& config)
+    explicit HttpClientWrapper(const esp_http_client_config_t &config)
         : client_(esp_http_client_init(&config)) {}
 
-    ~HttpClientWrapper() {
+    ~HttpClientWrapper()
+    {
         if (client_) {
             esp_http_client_cleanup(client_);
         }
     }
 
-    esp_http_client_handle_t get() const { return client_; }
-    bool is_valid() const { return client_ != nullptr; }
+    esp_http_client_handle_t get() const
+    {
+        return client_;
+    }
+    bool is_valid() const
+    {
+        return client_ != nullptr;
+    }
 
     /* Non-copyable */
-    HttpClientWrapper(const HttpClientWrapper&) = delete;
-    HttpClientWrapper& operator=(const HttpClientWrapper&) = delete;
+    HttpClientWrapper(const HttpClientWrapper &) = delete;
+    HttpClientWrapper &operator=(const HttpClientWrapper &) = delete;
 
 private:
     esp_http_client_handle_t client_;
 };
 
 /* RAII wrapper for JSON objects */
-class JsonWrapper
-{
+class JsonWrapper {
 public:
     explicit JsonWrapper(cJSON* json) : json_(json) {}
-    ~JsonWrapper() { if (json_) cJSON_Delete(json_); }
+    ~JsonWrapper()
+    {
+        if (json_) {
+            cJSON_Delete(json_);
+        }
+    }
 
-    cJSON* get() const { return json_; }
-    cJSON* release() {
+    cJSON* get() const
+    {
+        return json_;
+    }
+    cJSON* release()
+    {
         cJSON* temp = json_;
         json_ = nullptr;
         return temp;
     }
 
     /* Non-copyable */
-    JsonWrapper(const JsonWrapper&) = delete;
-    JsonWrapper& operator=(const JsonWrapper&) = delete;
+    JsonWrapper(const JsonWrapper &) = delete;
+    JsonWrapper &operator=(const JsonWrapper &) = delete;
 
 private:
     cJSON* json_;
 };
 
 /* RAII wrapper for malloc'd memory */
-class MallocWrapper
-{
+class MallocWrapper {
 public:
     explicit MallocWrapper(void* ptr) : ptr_(ptr) {}
-    ~MallocWrapper() { if (ptr_) free(ptr_); }
+    ~MallocWrapper()
+    {
+        if (ptr_) {
+            free(ptr_);
+        }
+    }
 
-    void* get() const { return ptr_; }
-    void* release() {
+    void* get() const
+    {
+        return ptr_;
+    }
+    void* release()
+    {
         void* temp = ptr_;
         ptr_ = nullptr;
         return temp;
     }
 
     /* Non-copyable */
-    MallocWrapper(const MallocWrapper&) = delete;
-    MallocWrapper& operator=(const MallocWrapper&) = delete;
+    MallocWrapper(const MallocWrapper &) = delete;
+    MallocWrapper &operator=(const MallocWrapper &) = delete;
 
 private:
     void* ptr_;
@@ -157,7 +179,7 @@ esp_err_t RainmakerApi::ReadHttpResponse(esp_http_client_handle_t client, char**
 
 /* Helper function to handle HTTP response and check for authentication errors */
 esp_err_t RainmakerApi::HandleHttpResponse(esp_http_client_handle_t client, char** response_data,
-                                   std::function<esp_err_t()> retry_func)
+                                           std::function<esp_err_t()> retry_func)
 {
     int status_code = esp_http_client_get_status_code(client);
     esp_err_t err = ReadHttpResponse(client, response_data);
@@ -188,7 +210,7 @@ esp_err_t RainmakerApi::HandleHttpResponse(esp_http_client_handle_t client, char
 }
 
 /* Helper function to create JSON payload with refresh token */
-static char* CreateRefreshTokenPayload(const std::string& refresh_token)
+static char* CreateRefreshTokenPayload(const std::string &refresh_token)
 {
     JsonWrapper root(cJSON_CreateObject());
     if (!root.get()) {
@@ -201,7 +223,7 @@ static char* CreateRefreshTokenPayload(const std::string& refresh_token)
 }
 
 /* Helper function to parse login response */
-static esp_err_t ParseLoginResponse(const char* response_data, std::string& access_token)
+static esp_err_t ParseLoginResponse(const char* response_data, std::string &access_token)
 {
     JsonWrapper response(cJSON_Parse(response_data));
     if (!response.get()) {
@@ -213,7 +235,7 @@ static esp_err_t ParseLoginResponse(const char* response_data, std::string& acce
     if (!status || !status->valuestring || strcmp(status->valuestring, "success") != 0) {
         cJSON *description = cJSON_GetObjectItem(response.get(), "description");
         ESP_LOGE(TAG, "Login failed: %s",
-            description && description->valuestring ? description->valuestring : "Unknown error");
+                 description && description->valuestring ? description->valuestring : "Unknown error");
         return ESP_FAIL;
     }
 
@@ -229,8 +251,8 @@ static esp_err_t ParseLoginResponse(const char* response_data, std::string& acce
 }
 
 /* Helper function to set common HTTP headers */
-static void SetCommonHeaders(esp_http_client_handle_t client, const std::string& access_token,
-                           bool is_json_content = false)
+static void SetCommonHeaders(esp_http_client_handle_t client, const std::string &access_token,
+                             bool is_json_content = false)
 {
     if (!access_token.empty()) {
         esp_http_client_set_header(client, "Authorization", access_token.c_str());
@@ -283,7 +305,7 @@ esp_err_t RainmakerApi::Login(void)
     /* Set headers */
     SetCommonHeaders(client.get(), "", true);
     esp_http_client_set_post_field(client.get(), static_cast<char*>(post_data.get()),
-                                  strlen(static_cast<char*>(post_data.get())));
+                                   strlen(static_cast<char*>(post_data.get())));
 
     esp_err_t err = MakeHttpRequest(client.get(), static_cast<char*>(post_data.get()));
     if (err != ESP_OK) {
@@ -382,10 +404,10 @@ esp_err_t RainmakerApi::GetNodesRecursive(const char* start_id)
 
     if (start_id) {
         snprintf(url, sizeof(url), "%s%s%s&start_id=%s",
-                base_url_.c_str(), rainmaker_nodes_url, base_params, start_id);
+                 base_url_.c_str(), rainmaker_nodes_url, base_params, start_id);
     } else {
         snprintf(url, sizeof(url), "%s%s%s",
-                base_url_.c_str(), rainmaker_nodes_url, base_params);
+                 base_url_.c_str(), rainmaker_nodes_url, base_params);
     }
 
     esp_http_client_config_t config = {
@@ -457,7 +479,7 @@ char* RainmakerApi::GetNodeList(void)
     const char* base_params = "?node_details=false&status=false&config=false&params=false&show_tags=false&is_matter=false";
 
     snprintf(url, sizeof(url), "%s%s%s",
-            base_url_.c_str(), rainmaker_nodes_url, base_params);
+             base_url_.c_str(), rainmaker_nodes_url, base_params);
 
     esp_http_client_config_t config = {
         .url = url,
@@ -781,7 +803,7 @@ esp_err_t RainmakerApi::CreateGroup(const char* group_name)
     /* Set headers */
     SetCommonHeaders(client.get(), access_token_, true);
     esp_http_client_set_post_field(client.get(), static_cast<char*>(post_data.get()),
-                                  strlen(static_cast<char*>(post_data.get())));
+                                   strlen(static_cast<char*>(post_data.get())));
 
     esp_err_t err = MakeHttpRequest(client.get(), static_cast<char*>(post_data.get()));
     if (err != ESP_OK) {
@@ -907,7 +929,7 @@ esp_err_t RainmakerApi::OperateNodeToGroup(const char* node_id, const char* grou
     /* Set headers */
     SetCommonHeaders(client.get(), access_token_, true);
     esp_http_client_set_post_field(client.get(), static_cast<char*>(post_data.get()),
-                                  strlen(static_cast<char*>(post_data.get())));
+                                   strlen(static_cast<char*>(post_data.get())));
 
     esp_err_t err = MakeHttpRequest(client.get(), static_cast<char*>(post_data.get()));
     if (err != ESP_OK) {
@@ -1099,7 +1121,7 @@ esp_rainmaker_api_node_mapping_status_type_t RainmakerApi::GetNodeMappingStatus(
     return status;
 }
 
-const std::string& RainmakerApi::GetUserId() const
+const std::string &RainmakerApi::GetUserId() const
 {
     return user_id_;
 }
@@ -1268,7 +1290,7 @@ esp_err_t esp_rainmaker_api_delete_group(const char* group_id)
 }
 
 esp_err_t esp_rainmaker_api_operate_node_to_group(const char* node_id, const char* group_id,
-                                                 esp_rainmaker_api_group_operation_type_t operation_type)
+                                                  esp_rainmaker_api_group_operation_type_t operation_type)
 {
     return RainmakerApi::GetInstance().OperateNodeToGroup(node_id, group_id, operation_type);
 }
@@ -1291,7 +1313,7 @@ esp_err_t esp_rainmaker_api_get_node_connection_status(const char *node_id, bool
 
 char* esp_rainmaker_api_get_user_id(void)
 {
-    const std::string& user_id = RainmakerApi::GetInstance().GetUserId();
+    const std::string &user_id = RainmakerApi::GetInstance().GetUserId();
     if (user_id.empty()) {
         return nullptr;
     }

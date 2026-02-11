@@ -21,16 +21,15 @@ using chip::app::Clusters::CameraAvStreamManagement::VideoSensorParamsStruct;
 using chip::app::Clusters::CameraAvStreamManagement::VideoStreamStruct;
 using chip::app::Clusters::Globals::StreamUsageEnum;
 
-struct VideoStream
-{
+struct VideoStream {
     VideoStreamStruct videoStreamParams;
     bool isAllocated; // Flag to indicate if the stream is allocated.
     chip::app::Clusters::Globals::Structs::ViewportStruct::Type
-        viewport;        // Stream specific viewport, defaults to the camera viewport
+    viewport;        // Stream specific viewport, defaults to the camera viewport
     void * videoContext; // Platform-specific context object associated with
     // video stream;
 
-    bool IsCompatible(const VideoStreamStruct & inputParams) const
+    bool IsCompatible(const VideoStreamStruct  &inputParams) const
     {
         return (videoStreamParams.videoCodec == inputParams.videoCodec &&
                 videoStreamParams.minFrameRate >= inputParams.minFrameRate &&
@@ -44,14 +43,13 @@ struct VideoStream
     }
 };
 
-struct AudioStream
-{
+struct AudioStream {
     AudioStreamStruct audioStreamParams;
     bool isAllocated;    // Flag to indicate if the stream is allocated.
     void * audioContext; // Platform-specific context object associated with
     // video stream;
 
-    bool IsCompatible(const AudioStreamStruct & inputParams) const
+    bool IsCompatible(const AudioStreamStruct  &inputParams) const
     {
         return (audioStreamParams.audioCodec == inputParams.audioCodec &&
                 audioStreamParams.channelCount == inputParams.channelCount &&
@@ -59,8 +57,7 @@ struct AudioStream
     }
 };
 
-struct SnapshotStream
-{
+struct SnapshotStream {
     SnapshotStreamStruct snapshotStreamParams;
     bool isAllocated;       // Flag to indicate if the stream is allocated
     void * snapshotContext; // Platform-specific context object associated with
@@ -68,7 +65,7 @@ struct SnapshotStream
 
     bool
     IsCompatible(const chip::app::Clusters::CameraAvStreamManagement::CameraAVStreamManagementDelegate::SnapshotStreamAllocateArgs &
-                     inputParams) const
+                 inputParams) const
     {
         return (snapshotStreamParams.imageCodec == inputParams.imageCodec && snapshotStreamParams.quality == inputParams.quality &&
                 snapshotStreamParams.frameRate <= inputParams.maxFrameRate &&
@@ -80,8 +77,7 @@ struct SnapshotStream
 };
 
 // Enumeration for common camera errors
-enum class CameraError
-{
+enum class CameraError {
     SUCCESS,
     ERROR_INIT_FAILED,
     ERROR_VIDEO_STREAM_START_FAILED,
@@ -98,27 +94,25 @@ enum class CameraError
 
 // Camera Device Interface defines all the clusters that need to be implemented
 // for a Camera Device
-class CameraDeviceInterface
-{
+class CameraDeviceInterface {
 public:
     virtual ~CameraDeviceInterface() = default;
 
     // Getter for WebRTCProvider Delegate
-    virtual chip::app::Clusters::WebRTCTransportProvider::Delegate & GetWebRTCProviderDelegate() = 0;
+    virtual chip::app::Clusters::WebRTCTransportProvider::Delegate  &GetWebRTCProviderDelegate() = 0;
 
     // Set the WebRTC Transport Provider server instance
     virtual void
     SetWebRTCTransportProvider(chip::app::Clusters::WebRTCTransportProvider::WebRTCTransportProviderCluster * provider) = 0;
 
     // Getter for CameraAVStreamManagement Delegate
-    virtual chip::app::Clusters::CameraAvStreamManagement::CameraAVStreamManagementDelegate & GetCameraAVStreamMgmtDelegate() = 0;
+    virtual chip::app::Clusters::CameraAvStreamManagement::CameraAVStreamManagementDelegate  &GetCameraAVStreamMgmtDelegate() = 0;
 
     // Getter for CameraAVStreamManagement Controller
-    virtual chip::app::Clusters::CameraAvStreamManagement::CameraAVStreamController & GetCameraAVStreamMgmtController() = 0;
+    virtual chip::app::Clusters::CameraAvStreamManagement::CameraAVStreamController  &GetCameraAVStreamMgmtController() = 0;
 
     // Class defining the Camera HAL interface
-    class CameraHALInterface
-    {
+    class CameraHALInterface {
     public:
         // Virtual destructor
         virtual ~CameraHALInterface() = default;
@@ -128,21 +122,21 @@ public:
 
         virtual CameraError InitializeStreams() = 0;
 
-        virtual std::vector<VideoStream> & GetAvailableVideoStreams() = 0;
+        virtual std::vector<VideoStream>  &GetAvailableVideoStreams() = 0;
 
-        virtual std::vector<AudioStream> & GetAvailableAudioStreams() = 0;
+        virtual std::vector<AudioStream>  &GetAvailableAudioStreams() = 0;
 
-        virtual std::vector<SnapshotStream> & GetAvailableSnapshotStreams() = 0;
+        virtual std::vector<SnapshotStream>  &GetAvailableSnapshotStreams() = 0;
 
         // Capture a snapshot image
         virtual CameraError CaptureSnapshot(const chip::app::DataModel::Nullable<uint16_t> streamID,
-                                            const VideoResolutionStruct & resolution, ImageSnapshot & outImageSnapshot) = 0;
+                                            const VideoResolutionStruct  &resolution, ImageSnapshot  &outImageSnapshot) = 0;
 
         // Allocate snapshot stream
         virtual CameraError AllocateSnapshotStream(
             const chip::app::Clusters::CameraAvStreamManagement::CameraAVStreamManagementDelegate::SnapshotStreamAllocateArgs &
-                args,
-            uint16_t & outStreamID) = 0;
+            args,
+            uint16_t  &outStreamID) = 0;
 
         // Get the maximum number of concurrent encoders supported by camera.
         virtual uint8_t GetMaxConcurrentEncoders() = 0;
@@ -153,7 +147,7 @@ public:
 
         // Get the Video sensor params(sensor dimensions, framerate, HDR
         // capabilities)
-        virtual VideoSensorParamsStruct & GetVideoSensorParams() = 0;
+        virtual VideoSensorParamsStruct  &GetVideoSensorParams() = 0;
 
         // Get indication whether camera supports high dynamic range for video
         virtual bool GetCameraSupportsHDR() = 0;
@@ -180,24 +174,24 @@ public:
 
         // Get indication of the min resolution(pixels) that camera allows for
         // its viewport.
-        virtual VideoResolutionStruct & GetMinViewport() = 0;
+        virtual VideoResolutionStruct  &GetMinViewport() = 0;
 
         // Get the rate distortion tradeoff points(min bitrate for resolutions) for
         // video codecs.
-        virtual std::vector<RateDistortionTradeOffStruct> & GetRateDistortionTradeOffPoints() = 0;
+        virtual std::vector<RateDistortionTradeOffStruct>  &GetRateDistortionTradeOffPoints() = 0;
 
         // Get the maximum size of content buffer in bytes. This buffer holds
         // compressed and/or raw audio/video content.
         virtual uint32_t GetMaxContentBufferSize() = 0;
 
         // Get microphone capabilities.
-        virtual AudioCapabilitiesStruct & GetMicrophoneCapabilities() = 0;
+        virtual AudioCapabilitiesStruct  &GetMicrophoneCapabilities() = 0;
 
         // Get speaker capabilities.
-        virtual AudioCapabilitiesStruct & GetSpeakerCapabilities() = 0;
+        virtual AudioCapabilitiesStruct  &GetSpeakerCapabilities() = 0;
 
         // Get snapshot capabilities
-        virtual std::vector<SnapshotCapabilitiesStruct> & GetSnapshotCapabilities() = 0;
+        virtual std::vector<SnapshotCapabilitiesStruct>  &GetSnapshotCapabilities() = 0;
 
         // Get the maximum network bandwidth(mbps) that the camera would consume
         // for transmission of its media streams.
@@ -214,11 +208,11 @@ public:
 
         // Get Supported Stream usages; Typically set by manudacturer.
         // This also sets the default priority of the stream usages.
-        virtual std::vector<StreamUsageEnum> & GetSupportedStreamUsages() = 0;
+        virtual std::vector<StreamUsageEnum>  &GetSupportedStreamUsages() = 0;
 
         // Get stream usage priorities as an ordered list. This is expected to
         // be a subset of the SupportedStreamUsages.
-        virtual std::vector<StreamUsageEnum> & GetStreamUsagePriorities()                                = 0;
+        virtual std::vector<StreamUsageEnum>  &GetStreamUsagePriorities()                                = 0;
         virtual CameraError SetStreamUsagePriorities(std::vector<StreamUsageEnum> streamUsagePriorities) = 0;
 
         // Get/Set soft recording privacy mode
@@ -241,14 +235,14 @@ public:
         virtual TriStateAutoEnum GetNightVision()                        = 0;
 
         // Set the viewport for all streams
-        virtual CameraError SetViewport(const chip::app::Clusters::Globals::Structs::ViewportStruct::Type & viewPort) = 0;
+        virtual CameraError SetViewport(const chip::app::Clusters::Globals::Structs::ViewportStruct::Type  &viewPort) = 0;
 
         // Get the current camera viewport.
-        virtual const chip::app::Clusters::Globals::Structs::ViewportStruct::Type & GetViewport() = 0;
+        virtual const chip::app::Clusters::Globals::Structs::ViewportStruct::Type  &GetViewport() = 0;
 
         // Set the viewport for a specific stream
-        virtual CameraError SetViewport(VideoStream & stream,
-                                        const chip::app::Clusters::Globals::Structs::ViewportStruct::Type & viewPort) = 0;
+        virtual CameraError SetViewport(VideoStream  &stream,
+                                        const chip::app::Clusters::Globals::Structs::ViewportStruct::Type  &viewPort) = 0;
 
         // Does camera have a speaker
         virtual bool HasSpeaker() = 0;
@@ -306,5 +300,5 @@ public:
         virtual bool GetStatusLightEnabled();
     };
 
-    virtual CameraHALInterface & GetCameraHALInterface() = 0;
+    virtual CameraHALInterface  &GetCameraHALInterface() = 0;
 };

@@ -37,12 +37,12 @@ static std::unique_ptr<ElectricalPowerMeasurementDelegate> gEPMDelegate;
 // Global pointer to our ElectricalPowerMeasurementInstance
 static std::unique_ptr<ElectricalPowerMeasurement::Instance> gEPMInstance;
 
-CHIP_ERROR PowerTopology::PowerTopologyDelegate::GetAvailableEndpointAtIndex(size_t index, EndpointId & endpointId)
+CHIP_ERROR PowerTopology::PowerTopologyDelegate::GetAvailableEndpointAtIndex(size_t index, EndpointId  &endpointId)
 {
     return CHIP_ERROR_PROVIDER_LIST_EXHAUSTED;
 }
 
-CHIP_ERROR PowerTopology::PowerTopologyDelegate::GetActiveEndpointAtIndex(size_t index, EndpointId & endpointId)
+CHIP_ERROR PowerTopology::PowerTopologyDelegate::GetActiveEndpointAtIndex(size_t index, EndpointId  &endpointId)
 {
     return CHIP_ERROR_PROVIDER_LIST_EXHAUSTED;
 }
@@ -50,10 +50,10 @@ CHIP_ERROR PowerTopology::PowerTopologyDelegate::GetActiveEndpointAtIndex(size_t
 esp_err_t send_energy_measurement_events(uint16_t endpoint_id)
 {
     ESP_LOGI(TAG, "Sending energy measurement events examples");
-    
+
     // Example 1: Reporting periodic energy measurement
     ESP_LOGI(TAG, "Example 1: Reporting periodic energy measurement");
-    
+
     // Create energy measurement struct for imported energy (0.5 kWh = 500000 mWh)
     EnergyMeasurementStruct::Type energy_imported = {
         .energy        = 500000,
@@ -62,20 +62,20 @@ esp_err_t send_energy_measurement_events(uint16_t endpoint_id)
         .startSystime   = MakeOptional(static_cast<uint64_t>(0)),
         .endSystime     = MakeOptional(static_cast<uint64_t>(System::SystemClock().GetMonotonicTimestamp().count()))
     };
-    
+
     // Send the periodic energy measured event (just imported energy)
     Optional<EnergyMeasurementStruct::Type> optional_energy_imported(energy_imported);
     Optional<EnergyMeasurementStruct::Type> optional_energy_exported; // No exported energy
-    
+
     bool success = NotifyPeriodicEnergyMeasured(endpoint_id, optional_energy_imported, optional_energy_exported);
     if (!success) {
         ESP_LOGE(TAG, "Failed to report periodic energy");
         return ESP_FAIL;
     }
-    
+
     // Example 2: Report cumulative energy measurement with both imported and exported energy
     ESP_LOGI(TAG, "Example 2: Reporting cumulative energy measurement");
-    
+
     // Create energy measurement struct for imported energy (10 kWh = 10000000 mWh)
     EnergyMeasurementStruct::Type cumulative_imported = {
         .energy        = 10000000,
@@ -84,7 +84,7 @@ esp_err_t send_energy_measurement_events(uint16_t endpoint_id)
         .startSystime   = MakeOptional(static_cast<uint64_t>(0)),
         .endSystime     = MakeOptional(static_cast<uint64_t>(System::SystemClock().GetMonotonicTimestamp().count()))
     };
-    
+
     // Create energy measurement struct for exported energy (1 kWh = 1000000 mWh)
     EnergyMeasurementStruct::Type cumulative_exported = {
         .energy        = 1000000,
@@ -93,18 +93,18 @@ esp_err_t send_energy_measurement_events(uint16_t endpoint_id)
         .startSystime   = MakeOptional(static_cast<uint64_t>(0)),
         .endSystime     = MakeOptional(static_cast<uint64_t>(System::SystemClock().GetMonotonicTimestamp().count()))
     };
-    
+
     // Set the optional values for both imported and exported
     Optional<EnergyMeasurementStruct::Type> optional_cumulative_imported(cumulative_imported);
     Optional<EnergyMeasurementStruct::Type> optional_cumulative_exported(cumulative_exported);
-    
+
     // Send the cumulative energy measured event
     success = NotifyCumulativeEnergyMeasured(endpoint_id, optional_cumulative_imported, optional_cumulative_exported);
     if (!success) {
         ESP_LOGE(TAG, "Failed to report cumulative energy");
         return ESP_FAIL;
     }
-    
+
     ESP_LOGI(TAG, "Energy measurement events sent successfully");
     return ESP_OK;
 }
@@ -112,7 +112,7 @@ esp_err_t send_energy_measurement_events(uint16_t endpoint_id)
 esp_err_t electrical_measurement_example(uint16_t endpoint_id)
 {
     ESP_LOGI(TAG, "Initializing Electrical Energy Measurement cluster for endpoint %d", endpoint_id);
-    
+
     // First ensure we don't initialize it twice
     if (GetClusterInstance(endpoint_id)) {
         ESP_LOGI(TAG, "Electrical Energy Measurement cluster already initialized");
@@ -154,19 +154,19 @@ esp_err_t electrical_measurement_example(uint16_t endpoint_id)
             ESP_LOGE(TAG, "Failed to set measurement accuracy: %" CHIP_ERROR_FORMAT, err.Format());
             return ESP_FAIL;
         }
-        
+
         err = SetCumulativeReset(endpoint_id, MakeOptional(resetStruct));
         if (err != CHIP_NO_ERROR) {
             ESP_LOGE(TAG, "Failed to set cumulative reset: %" CHIP_ERROR_FORMAT, err.Format());
             return ESP_FAIL;
         }
-        
+
         // After initializing the cluster, send example events
         esp_err_t ret = send_energy_measurement_events(endpoint_id);
         if (ret != ESP_OK) {
             return ret;
         }
-        
+
         ESP_LOGI(TAG, "Electrical Energy Measurement cluster initialized successfully");
     } else {
         ESP_LOGE(TAG, "Failed to create electrical energy measurement attribute access");
@@ -175,7 +175,7 @@ esp_err_t electrical_measurement_example(uint16_t endpoint_id)
 
     // Initialize Electrical Power Measurement cluster.
     ESP_LOGI(TAG, "Initializing Electrical Power Measurement cluster for endpoint %d", endpoint_id);
-    
+
     if (gEPMDelegate || gEPMInstance) {
         ESP_LOGI(TAG, "EPM Instance or Delegate already exist.");
         return ESP_OK;
@@ -188,14 +188,14 @@ esp_err_t electrical_measurement_example(uint16_t endpoint_id)
     }
 
     gEPMInstance = std::make_unique<ElectricalPowerMeasurementInstance>(
-        EndpointId(endpoint_id), *gEPMDelegate,
-        BitMask<ElectricalPowerMeasurement::Feature, uint32_t>(
-            ElectricalPowerMeasurement::Feature::kDirectCurrent, 
-            ElectricalPowerMeasurement::Feature::kAlternatingCurrent),
-        BitMask<ElectricalPowerMeasurement::OptionalAttributes, uint32_t>(
-            ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeVoltage,
-            ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeActiveCurrent
-        ));
+                       EndpointId(endpoint_id), *gEPMDelegate,
+                       BitMask<ElectricalPowerMeasurement::Feature, uint32_t>(
+                           ElectricalPowerMeasurement::Feature::kDirectCurrent,
+                           ElectricalPowerMeasurement::Feature::kAlternatingCurrent),
+                       BitMask<ElectricalPowerMeasurement::OptionalAttributes, uint32_t>(
+                           ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeVoltage,
+                           ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeActiveCurrent
+                       ));
 
     if (!gEPMInstance) {
         ESP_LOGE(TAG, "Failed to allocate memory for EPM Instance");
@@ -210,7 +210,7 @@ esp_err_t electrical_measurement_example(uint16_t endpoint_id)
         gEPMDelegate.reset();
         return ESP_FAIL;
     }
-    
+
     ESP_LOGI(TAG, "Electrical Energy and Power Measurement clusters initialized successfully");
     return ESP_OK;
 }
@@ -348,12 +348,12 @@ CHIP_ERROR ElectricalPowerMeasurementDelegate::StartAccuracyRead()
     return CHIP_NO_ERROR;
 }
 
-CHIP_ERROR ElectricalPowerMeasurementDelegate::GetAccuracyByIndex(uint8_t index, Structs::MeasurementAccuracyStruct::Type & accuracy)
+CHIP_ERROR ElectricalPowerMeasurementDelegate::GetAccuracyByIndex(uint8_t index, Structs::MeasurementAccuracyStruct::Type  &accuracy)
 {
     if (index >= MATTER_ARRAY_SIZE(kMeasurementAccuracies)) {
         return CHIP_ERROR_PROVIDER_LIST_EXHAUSTED;
     }
-    
+
     accuracy = kMeasurementAccuracies[index];
     return CHIP_NO_ERROR;
 }
@@ -370,7 +370,7 @@ CHIP_ERROR ElectricalPowerMeasurementDelegate::StartRangesRead()
     return CHIP_NO_ERROR;
 }
 
-CHIP_ERROR ElectricalPowerMeasurementDelegate::GetRangeByIndex(uint8_t index, Structs::MeasurementRangeStruct::Type & range)
+CHIP_ERROR ElectricalPowerMeasurementDelegate::GetRangeByIndex(uint8_t index, Structs::MeasurementRangeStruct::Type  &range)
 {
     return CHIP_ERROR_PROVIDER_LIST_EXHAUSTED;
 }
@@ -387,7 +387,7 @@ CHIP_ERROR ElectricalPowerMeasurementDelegate::StartHarmonicCurrentsRead()
     return CHIP_NO_ERROR;
 }
 
-CHIP_ERROR ElectricalPowerMeasurementDelegate::GetHarmonicCurrentsByIndex(uint8_t index, Structs::HarmonicMeasurementStruct::Type & harmonics)
+CHIP_ERROR ElectricalPowerMeasurementDelegate::GetHarmonicCurrentsByIndex(uint8_t index, Structs::HarmonicMeasurementStruct::Type  &harmonics)
 {
     if (index >= MATTER_ARRAY_SIZE(kHarmonicCurrentMeasurements)) {
         return CHIP_ERROR_PROVIDER_LIST_EXHAUSTED;
@@ -409,7 +409,7 @@ CHIP_ERROR ElectricalPowerMeasurementDelegate::StartHarmonicPhasesRead()
     return CHIP_NO_ERROR;
 }
 
-CHIP_ERROR ElectricalPowerMeasurementDelegate::GetHarmonicPhasesByIndex(uint8_t index, Structs::HarmonicMeasurementStruct::Type & harmonics)
+CHIP_ERROR ElectricalPowerMeasurementDelegate::GetHarmonicPhasesByIndex(uint8_t index, Structs::HarmonicMeasurementStruct::Type  &harmonics)
 {
     if (index >= MATTER_ARRAY_SIZE(kHarmonicPhaseMeasurements)) {
         return CHIP_ERROR_PROVIDER_LIST_EXHAUSTED;
@@ -430,14 +430,12 @@ CHIP_ERROR ElectricalPowerMeasurementDelegate::SetPowerMode(PowerModeEnum newVal
 {
     PowerModeEnum oldValue = mPowerMode;
 
-    if (EnsureKnownEnumValue(newValue) == PowerModeEnum::kUnknownEnumValue)
-    {
+    if (EnsureKnownEnumValue(newValue) == PowerModeEnum::kUnknownEnumValue) {
         return CHIP_IM_GLOBAL_STATUS(ConstraintError);
     }
 
     mPowerMode = newValue;
-    if (oldValue != newValue)
-    {
+    if (oldValue != newValue) {
         ChipLogDetail(AppServer, "mPowerMode updated to %d", static_cast<int>(mPowerMode));
         MatterReportingAttributeChangeCallback(mEndpointId, ElectricalPowerMeasurement::Id, PowerMode::Id);
     }
@@ -450,8 +448,7 @@ CHIP_ERROR ElectricalPowerMeasurementDelegate::SetVoltage(DataModel::Nullable<in
     DataModel::Nullable<int64_t> oldValue = mVoltage;
 
     mVoltage = newValue;
-    if (oldValue != newValue)
-    {
+    if (oldValue != newValue) {
         // We won't log raw values since these could change frequently
         MatterReportingAttributeChangeCallback(mEndpointId, ElectricalPowerMeasurement::Id, Voltage::Id);
     }
@@ -464,8 +461,7 @@ CHIP_ERROR ElectricalPowerMeasurementDelegate::SetActiveCurrent(DataModel::Nulla
     DataModel::Nullable<int64_t> oldValue = mActiveCurrent;
 
     mActiveCurrent = newValue;
-    if (oldValue != newValue)
-    {
+    if (oldValue != newValue) {
         // We won't log raw values since these could change frequently
         MatterReportingAttributeChangeCallback(mEndpointId, ElectricalPowerMeasurement::Id, ActiveCurrent::Id);
     }
@@ -478,8 +474,7 @@ CHIP_ERROR ElectricalPowerMeasurementDelegate::SetReactiveCurrent(DataModel::Nul
     DataModel::Nullable<int64_t> oldValue = mReactiveCurrent;
 
     mReactiveCurrent = newValue;
-    if (oldValue != newValue)
-    {
+    if (oldValue != newValue) {
         // We won't log raw values since these could change frequently
         MatterReportingAttributeChangeCallback(mEndpointId, ElectricalPowerMeasurement::Id, ReactiveCurrent::Id);
     }
@@ -492,8 +487,7 @@ CHIP_ERROR ElectricalPowerMeasurementDelegate::SetApparentCurrent(DataModel::Nul
     DataModel::Nullable<int64_t> oldValue = mApparentCurrent;
 
     mApparentCurrent = newValue;
-    if (oldValue != newValue)
-    {
+    if (oldValue != newValue) {
         // We won't log raw values since these could change frequently
         MatterReportingAttributeChangeCallback(mEndpointId, ElectricalPowerMeasurement::Id, ApparentCurrent::Id);
     }
@@ -506,8 +500,7 @@ CHIP_ERROR ElectricalPowerMeasurementDelegate::SetActivePower(DataModel::Nullabl
     DataModel::Nullable<int64_t> oldValue = mActivePower;
 
     mActivePower = newValue;
-    if (oldValue != newValue)
-    {
+    if (oldValue != newValue) {
         // We won't log raw values since these could change frequently
         MatterReportingAttributeChangeCallback(mEndpointId, ElectricalPowerMeasurement::Id, ActivePower::Id);
     }
@@ -520,8 +513,7 @@ CHIP_ERROR ElectricalPowerMeasurementDelegate::SetReactivePower(DataModel::Nulla
     DataModel::Nullable<int64_t> oldValue = mReactivePower;
 
     mReactivePower = newValue;
-    if (oldValue != newValue)
-    {
+    if (oldValue != newValue) {
         // We won't log raw values since these could change frequently
         MatterReportingAttributeChangeCallback(mEndpointId, ElectricalPowerMeasurement::Id, ReactivePower::Id);
     }
@@ -534,8 +526,7 @@ CHIP_ERROR ElectricalPowerMeasurementDelegate::SetApparentPower(DataModel::Nulla
     DataModel::Nullable<int64_t> oldValue = mApparentPower;
 
     mApparentPower = newValue;
-    if (oldValue != newValue)
-    {
+    if (oldValue != newValue) {
         // We won't log raw values since these could change frequently
         MatterReportingAttributeChangeCallback(mEndpointId, ElectricalPowerMeasurement::Id, ApparentPower::Id);
     }
@@ -548,8 +539,7 @@ CHIP_ERROR ElectricalPowerMeasurementDelegate::SetRMSVoltage(DataModel::Nullable
     DataModel::Nullable<int64_t> oldValue = mRMSVoltage;
 
     mRMSVoltage = newValue;
-    if (oldValue != newValue)
-    {
+    if (oldValue != newValue) {
         // We won't log raw values since these could change frequently
         MatterReportingAttributeChangeCallback(mEndpointId, ElectricalPowerMeasurement::Id, RMSVoltage::Id);
     }
@@ -562,8 +552,7 @@ CHIP_ERROR ElectricalPowerMeasurementDelegate::SetRMSCurrent(DataModel::Nullable
     DataModel::Nullable<int64_t> oldValue = mRMSCurrent;
 
     mRMSCurrent = newValue;
-    if (oldValue != newValue)
-    {
+    if (oldValue != newValue) {
         // We won't log raw values since these could change frequently
         MatterReportingAttributeChangeCallback(mEndpointId, ElectricalPowerMeasurement::Id, RMSCurrent::Id);
     }
@@ -576,8 +565,7 @@ CHIP_ERROR ElectricalPowerMeasurementDelegate::SetRMSPower(DataModel::Nullable<i
     DataModel::Nullable<int64_t> oldValue = mRMSPower;
 
     mRMSPower = newValue;
-    if (oldValue != newValue)
-    {
+    if (oldValue != newValue) {
         // We won't log raw values since these could change frequently
         MatterReportingAttributeChangeCallback(mEndpointId, ElectricalPowerMeasurement::Id, RMSPower::Id);
     }
@@ -590,8 +578,7 @@ CHIP_ERROR ElectricalPowerMeasurementDelegate::SetFrequency(DataModel::Nullable<
     DataModel::Nullable<int64_t> oldValue = mFrequency;
 
     mFrequency = newValue;
-    if (oldValue != newValue)
-    {
+    if (oldValue != newValue) {
         // We won't log raw values since these could change frequently
         MatterReportingAttributeChangeCallback(mEndpointId, ElectricalPowerMeasurement::Id, Frequency::Id);
     }
@@ -604,8 +591,7 @@ CHIP_ERROR ElectricalPowerMeasurementDelegate::SetPowerFactor(DataModel::Nullabl
     DataModel::Nullable<int64_t> oldValue = mPowerFactor;
 
     mPowerFactor = newValue;
-    if (oldValue != newValue)
-    {
+    if (oldValue != newValue) {
         // We won't log raw values since these could change frequently
         MatterReportingAttributeChangeCallback(mEndpointId, ElectricalPowerMeasurement::Id, PowerFactor::Id);
     }
@@ -618,8 +604,7 @@ CHIP_ERROR ElectricalPowerMeasurementDelegate::SetNeutralCurrent(DataModel::Null
     DataModel::Nullable<int64_t> oldValue = mNeutralCurrent;
 
     mNeutralCurrent = newValue;
-    if (oldValue != newValue)
-    {
+    if (oldValue != newValue) {
         // We won't log raw values since these could change frequently
         MatterReportingAttributeChangeCallback(mEndpointId, ElectricalPowerMeasurement::Id, NeutralCurrent::Id);
     }

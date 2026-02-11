@@ -50,23 +50,23 @@ CHIP_ERROR GetClusterConfig(EndpointId endpointId, BitMask<Feature> &featureMap,
     }
     esp_matter_attr_val_t tmp_attr_val;
     VerifyOrReturnError(get_attr_val(cluster, Globals::Attributes::FeatureMap::Id, tmp_attr_val) == ESP_OK &&
-                            tmp_attr_val.type == ESP_MATTER_VAL_TYPE_BITMAP32,
+                        tmp_attr_val.type == ESP_MATTER_VAL_TYPE_BITMAP32,
                         CHIP_ERROR_INTERNAL);
     featureMap = BitMask<BooleanStateConfiguration::Feature>(tmp_attr_val.val.u32);
     if (featureMap.Has(Feature::kSensitivityLevel)) {
         VerifyOrReturnError(get_attr_val(cluster, Attributes::SupportedSensitivityLevels::Id, tmp_attr_val) == ESP_OK &&
-                                tmp_attr_val.type == ESP_MATTER_VAL_TYPE_UINT8,
+                            tmp_attr_val.type == ESP_MATTER_VAL_TYPE_UINT8,
                             CHIP_ERROR_INTERNAL);
         supportedSensitivityLevels = tmp_attr_val.val.u8;
         if (get_attr_val(cluster, Attributes::DefaultSensitivityLevel::Id, tmp_attr_val) == ESP_OK &&
-            tmp_attr_val.type == ESP_MATTER_VAL_TYPE_UINT8) {
+                tmp_attr_val.type == ESP_MATTER_VAL_TYPE_UINT8) {
             defaultSensitivityLevel = tmp_attr_val.val.u8;
             optionalAttrSet.Set<Attributes::DefaultSensitivityLevel::Id>();
         }
     }
     if (featureMap.Has(Feature::kAudible) || featureMap.Has(Feature::kVisual)) {
         VerifyOrReturnError(get_attr_val(cluster, Attributes::AlarmsSupported::Id, tmp_attr_val) == ESP_OK &&
-                                tmp_attr_val.type == ESP_MATTER_VAL_TYPE_BITMAP8,
+                            tmp_attr_val.type == ESP_MATTER_VAL_TYPE_BITMAP8,
                             CHIP_ERROR_INTERNAL);
         alarmsSupported = AlarmModeBitmap(tmp_attr_val.val.u8);
         if (esp_matter::attribute::get(cluster, Attributes::AlarmsEnabled::Id)) {
@@ -109,11 +109,11 @@ void ESPMatterBooleanStateConfigurationClusterServerInitCallback(EndpointId endp
         return;
     }
     gServers[endpointId].Create(endpointId, featureMap, optionalAttrSet,
-                                BooleanStateConfigurationCluster::StartupConfiguration{
-                                    .supportedSensitivityLevels = supportedSensitivityLevels,
-                                    .defaultSensitivityLevel = defaultSensitivityLevel,
-                                    .alarmsSupported = alarmsSupported,
-                                });
+    BooleanStateConfigurationCluster::StartupConfiguration{
+        .supportedSensitivityLevels = supportedSensitivityLevels,
+        .defaultSensitivityLevel = defaultSensitivityLevel,
+        .alarmsSupported = alarmsSupported,
+    });
     err = esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register BooleanStateConfiguration - Error %" CHIP_ERROR_FORMAT,
@@ -128,7 +128,7 @@ void ESPMatterBooleanStateConfigurationClusterServerShutdownCallback(EndpointId 
         return;
     }
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(
-        &gServers[endpointId].Cluster(), shutdownType);
+                         &gServers[endpointId].Cluster(), shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister BooleanStateConfiguration - Error %" CHIP_ERROR_FORMAT,
                      err.Format());

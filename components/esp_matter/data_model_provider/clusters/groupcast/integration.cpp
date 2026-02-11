@@ -31,7 +31,7 @@ LazyRegisteredServerCluster<GroupcastCluster> gServer;
 void ESPMatterGroupcastClusterServerInitCallback(chip::EndpointId endpointId)
 {
     VerifyOrDie(endpointId == chip::kRootEndpointId);
-    
+
     // Currently we don't support groupcast cluster in our data model, create the cluster with LN feature enabled.
     // TODO: We should create the cluster according to the enabled features after we add the cluster.
     chip::BitFlags<Groupcast::Feature> feature;

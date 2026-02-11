@@ -183,7 +183,10 @@ public:
 
     CHIP_ERROR OnResubscriptionNeeded(ReadClient *apReadClient, CHIP_ERROR aTerminationCause) override;
 
-    uint32_t get_subscription_id() { return m_subscription_id; }
+    uint32_t get_subscription_id()
+    {
+        return m_subscription_id;
+    }
 
 private:
     uint64_t m_node_id;

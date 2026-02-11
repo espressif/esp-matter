@@ -31,43 +31,42 @@ namespace CameraAvStreamManagement {
 /**
  * The application delegate to define the options & implement commands.
  */
-class CameraAVStreamManager : public CameraAVStreamManagementDelegate, public CameraAVStreamController
-{
+class CameraAVStreamManager : public CameraAVStreamManagementDelegate, public CameraAVStreamController {
 public:
-    Protocols::InteractionModel::Status VideoStreamAllocate(const VideoStreamStruct & allocateArgs,
-                                                            uint16_t & outStreamID) override;
+    Protocols::InteractionModel::Status VideoStreamAllocate(const VideoStreamStruct  &allocateArgs,
+                                                            uint16_t  &outStreamID) override;
 
     Protocols::InteractionModel::Status VideoStreamModify(const uint16_t streamID, const chip::Optional<bool> waterMarkEnabled,
                                                           const chip::Optional<bool> osdEnabled) override;
 
     Protocols::InteractionModel::Status VideoStreamDeallocate(const uint16_t streamID) override;
 
-    Protocols::InteractionModel::Status AudioStreamAllocate(const AudioStreamStruct & allocateArgs,
-                                                            uint16_t & outStreamID) override;
+    Protocols::InteractionModel::Status AudioStreamAllocate(const AudioStreamStruct  &allocateArgs,
+                                                            uint16_t  &outStreamID) override;
 
     Protocols::InteractionModel::Status AudioStreamDeallocate(const uint16_t streamID) override;
 
-    Protocols::InteractionModel::Status SnapshotStreamAllocate(const SnapshotStreamAllocateArgs & allocateArgs,
-                                                               uint16_t & outStreamID) override;
+    Protocols::InteractionModel::Status SnapshotStreamAllocate(const SnapshotStreamAllocateArgs  &allocateArgs,
+                                                               uint16_t  &outStreamID) override;
 
     Protocols::InteractionModel::Status SnapshotStreamModify(const uint16_t streamID, const chip::Optional<bool> waterMarkEnabled,
                                                              const chip::Optional<bool> osdEnabled) override;
 
     Protocols::InteractionModel::Status SnapshotStreamDeallocate(const uint16_t streamID) override;
 
-    void OnVideoStreamAllocated(const VideoStreamStruct & allocatedStream, StreamAllocationAction action) override;
+    void OnVideoStreamAllocated(const VideoStreamStruct  &allocatedStream, StreamAllocationAction action) override;
 
     void OnStreamUsagePrioritiesChanged() override;
 
     void OnAttributeChanged(AttributeId attributeId) override;
 
     Protocols::InteractionModel::Status CaptureSnapshot(const chip::app::DataModel::Nullable<uint16_t> streamID,
-                                                        const VideoResolutionStruct & resolution,
-                                                        ImageSnapshot & outImageSnapshot) override;
+                                                        const VideoResolutionStruct  &resolution,
+                                                        ImageSnapshot  &outImageSnapshot) override;
 
     CHIP_ERROR
-    ValidateStreamUsage(StreamUsageEnum streamUsage, Optional<DataModel::Nullable<uint16_t>> & videoStreamId,
-                        Optional<DataModel::Nullable<uint16_t>> & audioStreamId) override;
+    ValidateStreamUsage(StreamUsageEnum streamUsage, Optional<DataModel::Nullable<uint16_t>>  &videoStreamId,
+                        Optional<DataModel::Nullable<uint16_t>>  &audioStreamId) override;
 
     CHIP_ERROR
     ValidateVideoStreamID(uint16_t videoStreamId) override;
@@ -75,11 +74,11 @@ public:
     CHIP_ERROR
     ValidateAudioStreamID(uint16_t audioStreamId) override;
 
-    CHIP_ERROR IsHardPrivacyModeActive(bool & isActive) override;
+    CHIP_ERROR IsHardPrivacyModeActive(bool  &isActive) override;
 
-    CHIP_ERROR IsSoftRecordingPrivacyModeActive(bool & isActive) override;
+    CHIP_ERROR IsSoftRecordingPrivacyModeActive(bool  &isActive) override;
 
-    CHIP_ERROR IsSoftLivestreamPrivacyModeActive(bool & isActive) override;
+    CHIP_ERROR IsSoftLivestreamPrivacyModeActive(bool  &isActive) override;
 
     bool HasAllocatedVideoStreams() override;
 
@@ -95,12 +94,12 @@ public:
     CHIP_ERROR
     OnTransportReleaseAudioVideoStreams(uint16_t audioStreamID, uint16_t videoStreamID) override;
 
-    const std::vector<chip::app::Clusters::CameraAvStreamManagement::VideoStreamStruct> & GetAllocatedVideoStreams() const override;
+    const std::vector<chip::app::Clusters::CameraAvStreamManagement::VideoStreamStruct>  &GetAllocatedVideoStreams() const override;
 
-    const std::vector<chip::app::Clusters::CameraAvStreamManagement::AudioStreamStruct> & GetAllocatedAudioStreams() const override;
+    const std::vector<chip::app::Clusters::CameraAvStreamManagement::AudioStreamStruct>  &GetAllocatedAudioStreams() const override;
 
-    void GetBandwidthForStreams(const Optional<DataModel::Nullable<uint16_t>> & videoStreamId,
-                                const Optional<DataModel::Nullable<uint16_t>> & audioStreamId, uint32_t & outBandwidthbps) override;
+    void GetBandwidthForStreams(const Optional<DataModel::Nullable<uint16_t>>  &videoStreamId,
+                                const Optional<DataModel::Nullable<uint16_t>>  &audioStreamId, uint32_t  &outBandwidthbps) override;
 
     CameraAVStreamManager()  = default;
     ~CameraAVStreamManager() = default;

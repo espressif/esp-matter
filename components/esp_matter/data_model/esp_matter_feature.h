@@ -301,8 +301,8 @@ typedef struct config {
     uint16_t couple_color_temp_to_level_min_mireds;
     nullable<uint16_t> start_up_color_temperature_mireds;
     config() : color_temperature_mireds(0x00fa), color_temp_physical_min_mireds(1),
-               color_temp_physical_max_mireds(0xfeff), couple_color_temp_to_level_min_mireds(1),
-               start_up_color_temperature_mireds(0x00fa) {}
+        color_temp_physical_max_mireds(0xfeff), couple_color_temp_to_level_min_mireds(1),
+        start_up_color_temperature_mireds(0x00fa) {}
 } config_t;
 
 uint32_t get_id();
@@ -350,7 +350,7 @@ typedef struct config {
     uint16_t color_loop_start_enhanced_hue;
     uint16_t color_loop_stored_enhanced_hue;
     config() : color_loop_active(0), color_loop_direction(0), color_loop_time(0x19),
-               color_loop_start_enhanced_hue(0x2300), color_loop_stored_enhanced_hue(0) {}
+        color_loop_start_enhanced_hue(0x2300), color_loop_stored_enhanced_hue(0) {}
 } config_t;
 
 uint32_t get_id();
@@ -491,9 +491,9 @@ namespace feature {
 namespace heating {
 
 typedef struct config {
-   int16_t occupied_heating_setpoint;
+    int16_t occupied_heating_setpoint;
 
-   config (): occupied_heating_setpoint(2000) {}
+    config(): occupied_heating_setpoint(2000) {}
 } config_t;
 
 uint32_t get_id();
@@ -503,9 +503,9 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 namespace cooling {
 
 typedef struct config {
-   int16_t occupied_cooling_setpoint;
+    int16_t occupied_cooling_setpoint;
 
-   config (): occupied_cooling_setpoint(2600) {}
+    config(): occupied_cooling_setpoint(2600) {}
 } config_t;
 
 uint32_t get_id();
@@ -517,14 +517,14 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 namespace occupancy {
 
 typedef struct config {
-   uint8_t occupancy;
-   int16_t unoccupied_cooling_setpoint;
-   int16_t unoccupied_heating_setpoint;
-   nullable<uint8_t> unoccupied_setback;
-   nullable<uint8_t> unoccupied_setback_min;
-   nullable<uint8_t> unoccupied_setback_max;
+    uint8_t occupancy;
+    int16_t unoccupied_cooling_setpoint;
+    int16_t unoccupied_heating_setpoint;
+    nullable<uint8_t> unoccupied_setback;
+    nullable<uint8_t> unoccupied_setback_min;
+    nullable<uint8_t> unoccupied_setback_max;
 
-   config (): occupancy(1), unoccupied_cooling_setpoint(2600), unoccupied_heating_setpoint(2000), unoccupied_setback(), unoccupied_setback_min(), unoccupied_setback_max() {}
+    config(): occupancy(1), unoccupied_cooling_setpoint(2600), unoccupied_heating_setpoint(2000), unoccupied_setback(), unoccupied_setback_min(), unoccupied_setback_max() {}
 } config_t;
 
 uint32_t get_id();
@@ -534,11 +534,11 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 namespace setback {
 
 typedef struct config {
-   nullable<uint8_t> occupied_setback;
-   nullable<uint8_t> occupied_setback_min;
-   nullable<uint8_t> occupied_setback_max;
+    nullable<uint8_t> occupied_setback;
+    nullable<uint8_t> occupied_setback_min;
+    nullable<uint8_t> occupied_setback_max;
 
-   config (): occupied_setback(), occupied_setback_min(), occupied_setback_max() {}
+    config(): occupied_setback(), occupied_setback_min(), occupied_setback_max() {}
 } config_t;
 
 uint32_t get_id();
@@ -551,9 +551,9 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 namespace auto_mode {
 
 typedef struct config {
-   int8_t min_setpoint_dead_band;
+    int8_t min_setpoint_dead_band;
 
-   config (): min_setpoint_dead_band(2) {}
+    config(): min_setpoint_dead_band(2) {}
 } config_t;
 
 uint32_t get_id();
@@ -565,7 +565,7 @@ namespace local_temperature_not_exposed {
 typedef struct config {
     int16_t local_temperature_calibration;
 
-    config (): local_temperature_calibration(0) {}
+    config(): local_temperature_calibration(0) {}
 } config_t;
 
 uint32_t get_id();
@@ -580,7 +580,7 @@ typedef struct config {
     nullable<uint8_t> number_of_schedule_transition_per_day;
     uint8_t active_schedule_handle[k_max_active_schedule_handle];
 
-    config (): number_of_schedules(0), number_of_schedule_transitions(0), number_of_schedule_transition_per_day() {}
+    config(): number_of_schedules(0), number_of_schedule_transitions(0), number_of_schedule_transition_per_day() {}
 } config_t;
 
 uint32_t get_id();
@@ -1158,7 +1158,6 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* feature */
 } /* boolean_state_configuration */
 
-
 namespace power_topology {
 namespace feature {
 
@@ -1267,8 +1266,8 @@ typedef struct config {
     uint8_t user_code_temporary_disable_time;
     bool require_pin_for_remote_operation;
     config() : number_pin_users_supported(5), max_pin_code_length(16), min_pin_code_length(4),
-               wrong_code_entry_limit(5), user_code_temporary_disable_time(5),
-               require_pin_for_remote_operation(true) {}
+        wrong_code_entry_limit(5), user_code_temporary_disable_time(5),
+        require_pin_for_remote_operation(true) {}
 } config_t;
 
 uint32_t get_id();
@@ -1283,7 +1282,7 @@ typedef struct config {
     uint8_t wrong_code_entry_limit;
     uint8_t user_code_temporary_disable_time;
     config() : number_rfid_users_supported(5), max_rfid_code_length(16), min_rfid_code_length(4),
-               wrong_code_entry_limit(5), user_code_temporary_disable_time(5) {}
+        wrong_code_entry_limit(5), user_code_temporary_disable_time(5) {}
 } config_t;
 
 uint32_t get_id();
@@ -1370,7 +1369,7 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 } /* aliro_provisioning */
 
-namespace aliro_bleuwb{
+namespace aliro_bleuwb {
 
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
@@ -1608,11 +1607,11 @@ namespace feature {
 namespace extended {
 
 typedef struct config {
-   nullable<int16_t> scaled_value;
-   nullable<int16_t> min_scaled_value;
-   nullable<int16_t> max_scaled_value;
-   uint8_t scale;
-   config() : scaled_value(), min_scaled_value(), max_scaled_value(), scale(0) {}
+    nullable<int16_t> scaled_value;
+    nullable<int16_t> min_scaled_value;
+    nullable<int16_t> max_scaled_value;
+    uint8_t scale;
+    config() : scaled_value(), min_scaled_value(), max_scaled_value(), scale(0) {}
 } config_t;
 
 uint32_t get_id();
@@ -1890,7 +1889,6 @@ namespace webrtc_transport_provider {
 
 namespace webrtc_transport_requestor {
 }/*webrtc_transport_requestor*/
-
 
 namespace closure_control {
 namespace feature {

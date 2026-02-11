@@ -56,10 +56,12 @@ constexpr const uint8_t kTagPositionRight = 1;
 
 const Descriptor::Structs::SemanticTagStruct::Type gEp1TagList[] = {
     {.namespaceID = kNamespaceSwitches, .tag = kTagSwitchOn},
-    {.namespaceID = kNamespacePosition, .tag = kTagPositionRight}};
+    {.namespaceID = kNamespacePosition, .tag = kTagPositionRight}
+};
 const Descriptor::Structs::SemanticTagStruct::Type gEp2TagList[] = {
     {.namespaceID = kNamespaceSwitches, .tag = kTagSwitchOff},
-    {.namespaceID = kNamespacePosition, .tag = kTagPositionLeft}};
+    {.namespaceID = kNamespacePosition, .tag = kTagPositionLeft}
+};
 
 }
 
@@ -136,7 +138,7 @@ static esp_err_t create_button(struct gpio_button* button, node_t* node)
     generic_switch::config_t switch_config;
     switch_config.switch_cluster.feature_flags =
 #if CONFIG_GENERIC_SWITCH_TYPE_LATCHING
-    cluster::switch_cluster::feature::latching_switch::get_id();
+        cluster::switch_cluster::feature::latching_switch::get_id();
 #endif
 
 #if CONFIG_GENERIC_SWITCH_TYPE_MOMENTARY
@@ -145,12 +147,11 @@ static esp_err_t create_button(struct gpio_button* button, node_t* node)
 
     endpoint_t *endpoint = generic_switch::create(node, &switch_config, ENDPOINT_FLAG_NONE, button_handle);
 
-    cluster_t* descriptor = cluster::get(endpoint,Descriptor::Id);
+    cluster_t* descriptor = cluster::get(endpoint, Descriptor::Id);
     descriptor::feature::tag_list::add(descriptor);
 
     /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
-    if (!node || !endpoint)
-    {
+    if (!node || !endpoint) {
         ESP_LOGE(TAG, "Matter node creation failed");
         err = ESP_FAIL;
         return err;
@@ -163,13 +164,11 @@ static esp_err_t create_button(struct gpio_button* button, node_t* node)
     }
 
     /* Check for maximum physical buttons that can be configured. */
-    if (configured_buttons <CONFIG_MAX_CONFIGURABLE_BUTTONS) {
+    if (configured_buttons < CONFIG_MAX_CONFIGURABLE_BUTTONS) {
         button_list[configured_buttons].button = button;
         button_list[configured_buttons].endpoint = endpoint::get_id(endpoint);
         configured_buttons++;
-    }
-    else
-    {
+    } else {
         ESP_LOGI(TAG, "Cannot configure more buttons");
         err = ESP_FAIL;
         return err;
@@ -192,7 +191,8 @@ static esp_err_t create_button(struct gpio_button* button, node_t* node)
     return err;
 }
 
-int get_endpoint(gpio_button* button) {
+int get_endpoint(gpio_button* button)
+{
     for (int i = 0; i < configured_buttons; i++) {
         if (button_list[i].button == button) {
             return button_list[i].endpoint;

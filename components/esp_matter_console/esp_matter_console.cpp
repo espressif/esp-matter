@@ -88,7 +88,6 @@ esp_err_t print_description(const command_t *command, void *arg)
     return ESP_OK;
 }
 
-
 static esp_err_t help_handler(int argc, char **argv)
 {
     base_engine.for_each_command(print_description, NULL);
@@ -97,7 +96,7 @@ static esp_err_t help_handler(int argc, char **argv)
 
 static esp_err_t register_default_commands()
 {
-    static const command_t command= {
+    static const command_t command = {
         .name = "help",
         .description = "Print help",
         .handler = help_handler,

@@ -57,7 +57,7 @@ uint32_t GetFeatureMap(EndpointId endpointId)
 void ESPMatterWiFiNetworkDiagnosticsClusterServerInitCallback(EndpointId endpointId)
 {
     if (!IsClusterEnabled(endpointId) && gServers[endpointId].IsConstructed()) {
-      return;
+        return;
     }
     WiFiDiagnosticsServerCluster::OptionalAttributeSet attrSet;
     if (IsAttributeEnabled(endpointId, WiFiNetworkDiagnostics::Attributes::CurrentMaxRate::Id)) {
@@ -71,8 +71,7 @@ void ESPMatterWiFiNetworkDiagnosticsClusterServerInitCallback(EndpointId endpoin
                                 BitFlags<WiFiNetworkDiagnostics::Feature>(GetFeatureMap(endpointId)));
 
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
-    if (err != CHIP_NO_ERROR)
-    {
+    if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register WiFiNetworkDiagnostics on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
                      err.Format());
     }
@@ -83,8 +82,7 @@ void ESPMatterWiFiNetworkDiagnosticsClusterServerShutdownCallback(EndpointId end
 {
 
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[endpointId].Cluster(), shutdownType);
-    if (err != CHIP_NO_ERROR)
-    {
+    if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister WiFiNetworkDiagnostics on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
                      err.Format());
     }

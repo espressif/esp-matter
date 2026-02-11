@@ -18,10 +18,9 @@
 
 namespace chip::app::Clusters::UnitLocalization {
 
-class UnitLocalizationServer : public UnitLocalizationCluster
-{
+class UnitLocalizationServer : public UnitLocalizationCluster {
 public:
-    static UnitLocalizationServer & Instance();
+    static UnitLocalizationServer  &Instance();
 };
 
 }

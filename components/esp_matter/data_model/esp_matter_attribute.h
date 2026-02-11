@@ -570,7 +570,6 @@ namespace activated_carbon_filter_monitoring {
 namespace attribute = resource_monitoring::attribute;
 } /* activated_carbon_filter_monitoring */
 
-
 namespace concentration_measurement {
 namespace attribute {
 attribute_t *create_measured_value(cluster_t *cluster, nullable<float> value);
@@ -1257,14 +1256,14 @@ attribute_t *create_status_light_brightness(cluster_t *cluster, uint8_t value);
 } /*camera av stream management*/
 
 namespace webrtc_transport_provider {
-  namespace attribute {
+namespace attribute {
 attribute_t *create_current_sessions(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 
 } /* attribute */
 }/*webrtc transport provider*/
 
 namespace webrtc_transport_requestor {
-  namespace attribute {
+namespace attribute {
 attribute_t *create_current_sessions(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 
 } /* attribute */

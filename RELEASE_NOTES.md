@@ -1,3 +1,7 @@
+# 4-Feb-2026
+### API Changes
+- Removed APIs: `plugin_init_callback_common()`, `add_bounds_callback_common()` and `delegate_init_callback_common()`.
+
 # 27-Nov-2025
 ### Feature: attribute::get_val() and attribute::set_val() APIs
 

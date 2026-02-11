@@ -33,7 +33,7 @@ esp_err_t espnow_bridge_match_bridged_switch(uint8_t espnow_macaddr[6], uint16_t
 
     if (app_bridge_get_device_by_espnow_macaddr(espnow_macaddr)) {
         ESP_LOGI(TAG, "Bridged node for " MACSTR " ESP-NOW device on endpoint %d has been created", MAC2STR(espnow_macaddr),
-                app_bridge_get_matter_endpointid_by_espnow_macaddr(espnow_macaddr));
+                 app_bridge_get_matter_endpointid_by_espnow_macaddr(espnow_macaddr));
     } else {
         app_bridged_device_t *bridged_device =
             app_bridge_create_bridged_device(node, aggregator_endpoint_id, matter_device_type_id,
@@ -41,7 +41,7 @@ esp_err_t espnow_bridge_match_bridged_switch(uint8_t espnow_macaddr[6], uint16_t
                                              app_bridge_espnow_address(espnow_macaddr, espnow_initiator_attr), NULL);
         ESP_RETURN_ON_FALSE(bridged_device, ESP_FAIL, TAG, "Failed to create bridged device (espnow switch)");
         ESP_LOGI(TAG, "Create/Update bridged node for " MACSTR " bridged device on endpoint %d", MAC2STR(espnow_macaddr),
-                app_bridge_get_matter_endpointid_by_espnow_macaddr(espnow_macaddr));
+                 app_bridge_get_matter_endpointid_by_espnow_macaddr(espnow_macaddr));
     }
     return ESP_OK;
 }

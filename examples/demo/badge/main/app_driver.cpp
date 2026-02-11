@@ -44,8 +44,8 @@ static esp_err_t app_driver_light_set_power(led_indicator_handle_t handle, esp_m
 
 static esp_err_t set_badge_name(esp_matter_attr_val_t *val)
 {
-   if (val->val.a.b[0]) {
-        if (!strchr((char*)val->val.a.b, '/')) {
+    if (val->val.a.b[0]) {
+        if (!strchr((char *)val->val.a.b, '/')) {
             return ESP_FAIL;
         }
         uint8_t* buffer = (uint8_t*)malloc(val->val.a.s * sizeof(uint8_t) + 1);
@@ -93,7 +93,7 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
                 vcard_data[i][val->val.a.s] = '\0';
                 _attribute_id++;
                 continue;
-            } 
+            }
             attribute = attribute::get(0x0, cluster_id, _attribute_id);
             attribute::get_val(attribute, &_val);
             memcpy(vcard_data[i], _val.val.a.b, _val.val.a.s);
@@ -107,8 +107,9 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
 
     /* Update NodeLabel based name and company_name input */
     if (cluster_id == BasicInformation::Id && attribute_id == BasicInformation::Attributes::NodeLabel::Id && !badge_cluster_input_exists) {
-        if(set_badge_name(val) == ESP_OK)
+        if (set_badge_name(val) == ESP_OK) {
             return ESP_OK;
+        }
     }
 
     /* Update Light Display */
@@ -163,8 +164,9 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
     if (!nodelabel_input) {
         attribute = attribute::get(0x0, OnOff::Id, OnOff::Attributes::OnOff::Id);
         attribute::get_val(attribute, &val);
-        if (chip::Server::GetInstance().GetFabricTable().FabricCount())
+        if (chip::Server::GetInstance().GetFabricTable().FabricCount()) {
             err |= app_driver_light_set_power(handle, &val);
+        }
     }
 
     return err;

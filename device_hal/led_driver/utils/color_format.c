@@ -83,7 +83,8 @@ const HS_color_t temp_table[] = {
     {0, 0},    {294, 2},  {265, 3},  {251, 4},  {242, 5},  {237, 6},  {233, 7},  {231, 8},  {229, 9},  {228, 10},
     {227, 11}, {226, 11}, {226, 12}, {225, 13}, {225, 13}, {224, 14}, {224, 14}, {224, 15}, {224, 15}, {223, 16},
     {223, 16}, {223, 17}, {223, 17}, {223, 17}, {222, 18}, {222, 18}, {222, 19}, {222, 19}, {222, 19}, {222, 19},
-    {222, 20}, {222, 20}, {222, 20}, {222, 21}, {222, 21}};
+    {222, 20}, {222, 20}, {222, 20}, {222, 21}, {222, 21}
+};
 
 void temp_to_hs(uint32_t temperature, HS_color_t *HS)
 {
@@ -107,10 +108,10 @@ void xy_to_rgb(XY_color_t XY, uint8_t brightness, RGB_color_t *RGB)
     float x = (float)XY.x / 65536.0f;
     float y = (float)XY.y / 65536.0f;
     float z = 1.0f - x - y;
-    
+
     // Convert brightness (0-255) to Y value (0.0-1.0)
     float Y = (float)brightness / 255.0f;
-    
+
     // Convert from xy to XYZ
     float X, Z;
     if (y > 0.0f) {
@@ -120,39 +121,51 @@ void xy_to_rgb(XY_color_t XY, uint8_t brightness, RGB_color_t *RGB)
         X = 0.0f;
         Z = 0.0f;
     }
-    
+
     // Convert XYZ to RGB using D65 white point matrix
     float r = X * 3.240479f - Y * 1.537150f - Z * 0.498535f;
     float g = -X * 0.969256f + Y * 1.875992f + Z * 0.041556f;
     float b = X * 0.055648f - Y * 0.204043f + Z * 1.057311f;
-    
+
     // Apply reverse gamma correction
     if (r <= 0.0031308f) {
         r = 12.92f * r;
     } else {
         r = (1.0f + 0.055f) * powf(r, (1.0f / 2.4f)) - 0.055f;
     }
-    
+
     if (g <= 0.0031308f) {
         g = 12.92f * g;
     } else {
         g = (1.0f + 0.055f) * powf(g, (1.0f / 2.4f)) - 0.055f;
     }
-    
+
     if (b <= 0.0031308f) {
         b = 12.92f * b;
     } else {
         b = (1.0f + 0.055f) * powf(b, (1.0f / 2.4f)) - 0.055f;
     }
-    
+
     // Clamp values to [0, 1] range
-    if (r < 0.0f) r = 0.0f;
-    if (r > 1.0f) r = 1.0f;
-    if (g < 0.0f) g = 0.0f;
-    if (g > 1.0f) g = 1.0f;
-    if (b < 0.0f) b = 0.0f;
-    if (b > 1.0f) b = 1.0f;
-    
+    if (r < 0.0f) {
+        r = 0.0f;
+    }
+    if (r > 1.0f) {
+        r = 1.0f;
+    }
+    if (g < 0.0f) {
+        g = 0.0f;
+    }
+    if (g > 1.0f) {
+        g = 1.0f;
+    }
+    if (b < 0.0f) {
+        b = 0.0f;
+    }
+    if (b > 1.0f) {
+        b = 1.0f;
+    }
+
     // Convert to 0-255 range
     RGB->red = (uint8_t)(r * 255.0f);
     RGB->green = (uint8_t)(g * 255.0f);

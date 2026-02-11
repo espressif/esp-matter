@@ -19,10 +19,9 @@
 
 namespace chip::app::Clusters::DeviceEnergyManagement {
 
-class Instance
-{
+class Instance {
 public:
-    Instance(EndpointId aEndpointId, Delegate & aDelegate, BitMask<Feature> aFeature);
+    Instance(EndpointId aEndpointId, Delegate  &aDelegate, BitMask<Feature> aFeature);
 
     CHIP_ERROR Init();
     void Shutdown();

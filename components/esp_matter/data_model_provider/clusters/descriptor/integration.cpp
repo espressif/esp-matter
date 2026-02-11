@@ -35,28 +35,25 @@ namespace {
  * emberAfSetDynamicEndpointWithEpUniqueId() by calling emberAfEndpointEnableDisable(), which calls initializeEndpoint(). The tag
  * list is a fixed attribute, but to maintain backwards compatibility we get that information within the functions here.
  */
-class ESPMatterDescriptorCluster : public DescriptorCluster
-{
+class ESPMatterDescriptorCluster : public DescriptorCluster {
 public:
     ESPMatterDescriptorCluster(EndpointId endpointId, DescriptorCluster::OptionalAttributesSet optionalAttributeSet) :
         DescriptorCluster(endpointId, optionalAttributeSet, Span<const SemanticTag>())
     {}
 
-    CHIP_ERROR Attributes(const ConcreteClusterPath & path, ReadOnlyBufferBuilder<DataModel::AttributeEntry> & builder) override
+    CHIP_ERROR Attributes(const ConcreteClusterPath  &path, ReadOnlyBufferBuilder<DataModel::AttributeEntry>  &builder) override
     {
-        if (!mFetchedSemanticTags)
-        {
+        if (!mFetchedSemanticTags) {
             ReturnErrorOnFailure(GetSemanticTag(path.mEndpointId, mSemanticTags));
             mFetchedSemanticTags = true;
         }
         return DescriptorCluster::Attributes(path, builder);
     }
 
-    DataModel::ActionReturnStatus ReadAttribute(const DataModel::ReadAttributeRequest & request,
-                                                AttributeValueEncoder & encoder) override
+    DataModel::ActionReturnStatus ReadAttribute(const DataModel::ReadAttributeRequest  &request,
+                                                AttributeValueEncoder  &encoder) override
     {
-        if (!mFetchedSemanticTags)
-        {
+        if (!mFetchedSemanticTags) {
             ReturnErrorOnFailure(GetSemanticTag(request.path.mEndpointId, mSemanticTags));
             mFetchedSemanticTags = true;
         }

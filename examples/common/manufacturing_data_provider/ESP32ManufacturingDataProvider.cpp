@@ -28,14 +28,13 @@ namespace DeviceLayer {
 
 const char * ESP32ManufacturingDataProvider::PrecedenceToString(Precedence precedence)
 {
-    switch (precedence)
-    {
-        case Precedence::kFactoryFirst:
-            return "FactoryFirst";
-        case Precedence::kSecureCertFirst:
-            return "SecureCertFirst";
-        default:
-            return "Unknown";
+    switch (precedence) {
+    case Precedence::kFactoryFirst:
+        return "FactoryFirst";
+    case Precedence::kSecureCertFirst:
+        return "SecureCertFirst";
+    default:
+        return "Unknown";
     }
 }
 
@@ -52,7 +51,7 @@ ESP32ManufacturingDataProvider::ESP32ManufacturingDataProvider(Precedence preced
 
     // should we really die here? can the non-Matter functionality still work?
     VerifyOrReturn(mFactoryDataValid || mSecureCertDataValid,
-                    ChipLogError(DeviceLayer, "No valid data found in factory or secure cert partition"));
+                   ChipLogError(DeviceLayer, "No valid data found in factory or secure cert partition"));
 
     SetProvidersAsPerPrecedence();
 
@@ -126,23 +125,19 @@ CHIP_ERROR ESP32ManufacturingDataProvider::SetProvidersAsPerPrecedence()
 
     // we performed CheckFactoryDataIntegrity() and CheckSecureCertDataIntegrity() in constructor,
     // so we can use the result here
-    switch (mPrecedence)
-    {
-        case Precedence::kFactoryFirst:
-        {
-            useFactoryData = mFactoryDataValid;
-            break;
-        }
-        case Precedence::kSecureCertFirst:
-        {
-            useFactoryData = !mSecureCertDataValid;
-            break;
-        }
-        default:
-        {
-            ChipLogError(DeviceLayer, "Invalid precedence");
-            return CHIP_ERROR_INVALID_ARGUMENT;
-        }
+    switch (mPrecedence) {
+    case Precedence::kFactoryFirst: {
+        useFactoryData = mFactoryDataValid;
+        break;
+    }
+    case Precedence::kSecureCertFirst: {
+        useFactoryData = !mSecureCertDataValid;
+        break;
+    }
+    default: {
+        ChipLogError(DeviceLayer, "Invalid precedence");
+        return CHIP_ERROR_INVALID_ARGUMENT;
+    }
     }
 
     ChipLogProgress(DeviceLayer, "Using commissionable and device instance info providers from %s",
@@ -154,27 +149,27 @@ CHIP_ERROR ESP32ManufacturingDataProvider::SetProvidersAsPerPrecedence()
     return CHIP_NO_ERROR;
 }
 
-CHIP_ERROR ESP32ManufacturingDataProvider::GetSetupDiscriminator(uint16_t & setupDiscriminator)
+CHIP_ERROR ESP32ManufacturingDataProvider::GetSetupDiscriminator(uint16_t  &setupDiscriminator)
 {
     return mCommissionableDataProvider->GetSetupDiscriminator(setupDiscriminator);
 }
 
-CHIP_ERROR ESP32ManufacturingDataProvider::GetSpake2pIterationCount(uint32_t & iterationCount)
+CHIP_ERROR ESP32ManufacturingDataProvider::GetSpake2pIterationCount(uint32_t  &iterationCount)
 {
     return mCommissionableDataProvider->GetSpake2pIterationCount(iterationCount);
 }
 
-CHIP_ERROR ESP32ManufacturingDataProvider::GetSpake2pSalt(MutableByteSpan & saltBuf)
+CHIP_ERROR ESP32ManufacturingDataProvider::GetSpake2pSalt(MutableByteSpan  &saltBuf)
 {
     return mCommissionableDataProvider->GetSpake2pSalt(saltBuf);
 }
 
-CHIP_ERROR ESP32ManufacturingDataProvider::GetSpake2pVerifier(MutableByteSpan & verifierBuf, size_t & verifierLen)
+CHIP_ERROR ESP32ManufacturingDataProvider::GetSpake2pVerifier(MutableByteSpan  &verifierBuf, size_t  &verifierLen)
 {
     return mCommissionableDataProvider->GetSpake2pVerifier(verifierBuf, verifierLen);
 }
 
-CHIP_ERROR ESP32ManufacturingDataProvider::GetRotatingDeviceIdUniqueId(MutableByteSpan & uniqueIdSpan)
+CHIP_ERROR ESP32ManufacturingDataProvider::GetRotatingDeviceIdUniqueId(MutableByteSpan  &uniqueIdSpan)
 {
 #if CHIP_DEVICE_CONFIG_ENABLE_DEVICE_INSTANCE_INFO_PROVIDER && CHIP_ENABLE_ROTATING_DEVICE_ID
     return mDeviceInstanceInfoProvider->GetRotatingDeviceIdUniqueId(uniqueIdSpan);
@@ -185,4 +180,3 @@ CHIP_ERROR ESP32ManufacturingDataProvider::GetRotatingDeviceIdUniqueId(MutableBy
 
 } // namespace DeviceLayer
 } // namespace chip
-

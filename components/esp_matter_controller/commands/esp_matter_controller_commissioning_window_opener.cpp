@@ -44,7 +44,7 @@ esp_err_t commissioning_window_opener::send_open_commissioning_window_command(ui
         return ESP_ERR_INVALID_ARG;
     }
     m_is_enhanced = is_enhanced;
-    m_timout = timeout;
+    m_timeout = timeout;
     m_iteration = iteration;
     m_discriminator = discriminator;
     m_timed_invoke_timeout_ms = timed_invoke_timeout_ms;
@@ -57,14 +57,14 @@ esp_err_t commissioning_window_opener::send_open_commissioning_window_command(ui
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
 #ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     if (CHIP_NO_ERROR ==
-        controller_instance.get_commissioner()->GetConnectedDevice(node_id, &on_device_connected_cb,
-                                                                   &on_device_connection_failure_cb)) {
+            controller_instance.get_commissioner()->GetConnectedDevice(node_id, &on_device_connected_cb,
+                                                                       &on_device_connection_failure_cb)) {
         return ESP_OK;
     }
 #else
     if (CHIP_NO_ERROR ==
-        controller_instance.get_controller()->GetConnectedDevice(node_id, &on_device_connected_cb,
-                                                                 &on_device_connection_failure_cb)) {
+            controller_instance.get_controller()->GetConnectedDevice(node_id, &on_device_connected_cb,
+                                                                     &on_device_connection_failure_cb)) {
         return ESP_OK;
     }
 #endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
@@ -125,7 +125,7 @@ void commissioning_window_opener::on_device_connected_fcn(void *context, Exchang
             return;
         }
         AdministratorCommissioning::Commands::OpenCommissioningWindow::Type command_data;
-        command_data.commissioningTimeout = window_opener->m_timout;
+        command_data.commissioningTimeout = window_opener->m_timeout;
         command_data.PAKEPasscodeVerifier = serialized_verifier_span;
         command_data.discriminator = window_opener->m_discriminator;
         command_data.iterations = window_opener->m_iteration;
@@ -136,7 +136,7 @@ void commissioning_window_opener::on_device_connected_fcn(void *context, Exchang
                               chip::MakeOptional(window_opener->m_timed_invoke_timeout_ms));
     } else {
         AdministratorCommissioning::Commands::OpenBasicCommissioningWindow::Type command_data;
-        command_data.commissioningTimeout = window_opener->m_timout;
+        command_data.commissioningTimeout = window_opener->m_timeout;
         chip::Controller::ClusterBase cluster(exchangeMgr, sessionHandle, window_opener->m_default_remote_endpoint_id);
         cluster.InvokeCommand(command_data, window_opener, send_command_success_callback, send_command_failure_callback,
                               chip::MakeOptional(window_opener->m_timed_invoke_timeout_ms));
@@ -148,7 +148,7 @@ void commissioning_window_opener::on_device_connection_failure_fcn(void *context
 {
     commissioning_window_opener *window_opener = reinterpret_cast<commissioning_window_opener *>(context);
     if (window_opener) {
-        ESP_LOGE(TAG, "Failed to establish CASE session for open %s commisioning window command",
+        ESP_LOGE(TAG, "Failed to establish CASE session for open %s commissioning window command",
                  window_opener->m_is_enhanced ? "enhanced" : "basic");
     }
 }
@@ -176,7 +176,7 @@ void commissioning_window_opener::send_command_failure_callback(void *context, C
 {
     commissioning_window_opener *window_opener = reinterpret_cast<commissioning_window_opener *>(context);
     if (window_opener) {
-        ESP_LOGE(TAG, "Failed to send open %s commisioning window command",
+        ESP_LOGE(TAG, "Failed to send open %s commissioning window command",
                  window_opener->m_is_enhanced ? "enhanced" : "basic");
     }
 }

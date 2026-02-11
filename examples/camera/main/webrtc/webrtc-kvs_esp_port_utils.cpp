@@ -40,17 +40,14 @@ extern CameraDevice gCameraDevice;
 
 static std::atomic<unsigned int> peerConnectionCounter{ 0 }; // Starts from 0
 
-static std::string json_unescape(const std::string & input)
+static std::string json_unescape(const std::string  &input)
 {
     std::string output;
     size_t i = 0;
-    while (i < input.length())
-    {
-        if (input[i] == '\\' && i + 1 < input.length())
-        {
+    while (i < input.length()) {
+        if (input[i] == '\\' && i + 1 < input.length()) {
             char next = input[i + 1];
-            switch (next)
-            {
+            switch (next) {
             case '\"':
                 output += '\"';
                 i += 2;
@@ -80,18 +77,14 @@ static std::string json_unescape(const std::string & input)
                 i += 2;
                 break;
             case 'u':
-                if (i + 5 < input.length())
-                {
+                if (i + 5 < input.length()) {
                     std::istringstream iss(input.substr(i + 2, 4));
                     unsigned int code;
-                    if (iss >> std::hex >> code)
-                    {
+                    if (iss >> std::hex >> code) {
                         output += static_cast<char>(code); // For ASCII-range only
                     }
                     i += 6;
-                }
-                else
-                {
+                } else {
                     output += '?'; // malformed
                     i += 2;
                 }
@@ -100,9 +93,7 @@ static std::string json_unescape(const std::string & input)
                 output += next;
                 i += 2;
             }
-        }
-        else
-        {
+        } else {
             output += input[i];
             ++i;
         }
@@ -110,13 +101,11 @@ static std::string json_unescape(const std::string & input)
     return output;
 }
 
-std::string json_escape(const std::string & input)
+std::string json_escape(const std::string  &input)
 {
     std::string output;
-    for (char c : input)
-    {
-        switch (c)
-        {
+    for (char c : input) {
+        switch (c) {
         case '\"':
             output += "\\\"";
             break;
@@ -139,14 +128,11 @@ std::string json_escape(const std::string & input)
             output += "\\t";
             break;
         default:
-            if (static_cast<unsigned char>(c) < 0x20)
-            {
+            if (static_cast<unsigned char>(c) < 0x20) {
                 char buf[7];
                 snprintf(buf, sizeof(buf), "\\u%04x", c);
                 output += buf;
-            }
-            else
-            {
+            } else {
                 output += c;
             }
         }
@@ -156,8 +142,7 @@ std::string json_escape(const std::string & input)
 
 static int extract_sdp(const char * json, char * sdp_buf, size_t sdp_buf_len)
 {
-    if (json == nullptr || sdp_buf == nullptr || sdp_buf_len == 0)
-    {
+    if (json == nullptr || sdp_buf == nullptr || sdp_buf_len == 0) {
         ChipLogError(Camera, "extract_sdp failed");
         return -1;
     }
@@ -168,19 +153,17 @@ static int extract_sdp(const char * json, char * sdp_buf, size_t sdp_buf_len)
 
     jsmn_init(&parser);
     ret = jsmn_parse(&parser, json, strlen(json), tokens, sizeof(tokens) / sizeof(tokens[0]));
-    if (ret < 0)
-    {
+    if (ret < 0) {
         printf("Failed to parse JSON: %d\n", ret);
         return -1;
     }
 
-    for (int i = 1; i < ret; i++)
-    {
-        if (tokens[i].type == JSMN_STRING && strncmp(json + tokens[i].start, "sdp", tokens[i].end - tokens[i].start) == 0)
-        {
+    for (int i = 1; i < ret; i++) {
+        if (tokens[i].type == JSMN_STRING && strncmp(json + tokens[i].start, "sdp", tokens[i].end - tokens[i].start) == 0) {
             int len = tokens[i + 1].end - tokens[i + 1].start;
-            if (len >= sdp_buf_len)
+            if (len >= sdp_buf_len) {
                 len = sdp_buf_len - 1;
+            }
             strncpy(sdp_buf, json + tokens[i + 1].start, len);
             sdp_buf[len] = '\0';
             return 0;
@@ -193,8 +176,7 @@ static int extract_sdp(const char * json, char * sdp_buf, size_t sdp_buf_len)
 static int extract_candidate(const char * json, char * sdp_buf, size_t sdp_buf_len)
 {
     // Sanity checks for input parameters
-    if (json == nullptr || sdp_buf == nullptr || sdp_buf_len == 0)
-    {
+    if (json == nullptr || sdp_buf == nullptr || sdp_buf_len == 0) {
         ChipLogError(Camera, "extract_candidate failed");
         return -1;
     }
@@ -205,19 +187,17 @@ static int extract_candidate(const char * json, char * sdp_buf, size_t sdp_buf_l
 
     jsmn_init(&parser);
     ret = jsmn_parse(&parser, json, strlen(json), tokens, sizeof(tokens) / sizeof(tokens[0]));
-    if (ret < 0)
-    {
+    if (ret < 0) {
         printf("Failed to parse JSON: %d\n", ret);
         return -1;
     }
 
-    for (int i = 1; i < ret; i++)
-    {
-        if (tokens[i].type == JSMN_STRING && strncmp(json + tokens[i].start, "candidate", tokens[i].end - tokens[i].start) == 0)
-        {
+    for (int i = 1; i < ret; i++) {
+        if (tokens[i].type == JSMN_STRING && strncmp(json + tokens[i].start, "candidate", tokens[i].end - tokens[i].start) == 0) {
             int len = tokens[i + 1].end - tokens[i + 1].start;
-            if (len >= sdp_buf_len)
+            if (len >= sdp_buf_len) {
                 len = sdp_buf_len - 1;
+            }
             strncpy(sdp_buf, json + tokens[i + 1].start, len);
             sdp_buf[len] = '\0';
             return 0;
@@ -234,8 +214,7 @@ void webrtc_bridge_message_received_cb(void * data, int len)
 
     // Use nothrow to check for allocation failure
     std::unique_ptr<signaling_msg_t> msg(new (std::nothrow) signaling_msg_t());
-    if (msg == nullptr)
-    {
+    if (msg == nullptr) {
         ChipLogError(Camera, "webrtc_bridge_message_received_cb: failed to allocate signaling_msg_t");
         return;
     }
@@ -243,23 +222,19 @@ void webrtc_bridge_message_received_cb(void * data, int len)
     deserialize_signaling_message((const char *) data, len, msg.get());
 
     char sdp_buf[gSDPLength];
-    switch (msg->messageType)
-    {
+    switch (msg->messageType) {
     case SIGNALING_MSG_TYPE_OFFER:
-        if (extract_sdp(msg->payload, sdp_buf, sizeof(sdp_buf)) == 0)
-        {
+        if (extract_sdp(msg->payload, sdp_buf, sizeof(sdp_buf)) == 0) {
             ESP_LOGD(TAG, "Extracted SDP:\n%s\n", sdp_buf);
         }
         break;
     case SIGNALING_MSG_TYPE_ANSWER:
-        if (extract_sdp(msg->payload, sdp_buf, sizeof(sdp_buf)) == 0)
-        {
+        if (extract_sdp(msg->payload, sdp_buf, sizeof(sdp_buf)) == 0) {
             ESP_LOGD(TAG, "Extracted SDP:\n%s\n", sdp_buf);
         }
         break;
     case SIGNALING_MSG_TYPE_ICE_CANDIDATE:
-        if (extract_candidate(msg->payload, sdp_buf, sizeof(sdp_buf)) == 0)
-        {
+        if (extract_candidate(msg->payload, sdp_buf, sizeof(sdp_buf)) == 0) {
             ESP_LOGD(TAG, "Extracted Candidate:\n%s\n", sdp_buf);
         }
         break;
@@ -282,79 +257,55 @@ void webrtc_bridge_message_received_cb(void * data, int len)
 
         ESP_LOGD(TAG, "unescaped msg: \n%s\n", unescaped_msg.c_str());
 
-        if (msg->messageType == SIGNALING_MSG_TYPE_OFFER)
-        {
-            WebRTCTransportProvider::Delegate & delegateRef = gCameraDevice.GetWebRTCProviderDelegate();
+        if (msg->messageType == SIGNALING_MSG_TYPE_OFFER) {
+            WebRTCTransportProvider::Delegate  &delegateRef = gCameraDevice.GetWebRTCProviderDelegate();
             auto * webrtcMgr                                = static_cast<WebRTCProviderManager *>(&delegateRef);
-            if (webrtcMgr != nullptr)
-            {
+            if (webrtcMgr != nullptr) {
                 WebrtcTransport * transport = webrtcMgr->GetTransport(sessionId);
-                if (transport != nullptr)
-                {
+                if (transport != nullptr) {
                     transport->OnLocalDescription(unescaped_msg, SDPType::Offer);
                     printf("Set SDP Offer to WebRTCProviderManager\n");
-                }
-                else
-                {
+                } else {
                     printf("Transport is not found for sessionID: %u\n", sessionId);
                 }
-            }
-            else
-            {
+            } else {
                 printf("Delegate is not of type WebRTCProviderManager\n");
             }
-        }
-        else if (msg->messageType == SIGNALING_MSG_TYPE_ANSWER)
-        {
-            WebRTCTransportProvider::Delegate & delegateRef = gCameraDevice.GetWebRTCProviderDelegate();
+        } else if (msg->messageType == SIGNALING_MSG_TYPE_ANSWER) {
+            WebRTCTransportProvider::Delegate  &delegateRef = gCameraDevice.GetWebRTCProviderDelegate();
             auto * webrtcMgr                                = static_cast<WebRTCProviderManager *>(&delegateRef);
-            if (webrtcMgr != nullptr)
-            {
+            if (webrtcMgr != nullptr) {
                 WebrtcTransport * transport = webrtcMgr->GetTransport(sessionId);
-                if (transport != nullptr)
-                {
+                if (transport != nullptr) {
                     transport->OnLocalDescription(unescaped_msg, SDPType::Answer);
                     printf("Set SDP Answer to WebRTCProviderManager\n");
-                }
-                else
-                {
+                } else {
                     printf("Transport is not found for sessionID: %u\n", sessionId);
                 }
                 printf("Set SDP Answer to WebRTCProviderManager\n");
-            }
-            else
-            {
+            } else {
                 printf("Delegate is not of type WebRTCProviderManager\n");
             }
-        }
-        else if (msg->messageType == SIGNALING_MSG_TYPE_ICE_CANDIDATE)
-        {
-            WebRTCTransportProvider::Delegate & delegateRef = gCameraDevice.GetWebRTCProviderDelegate();
+        } else if (msg->messageType == SIGNALING_MSG_TYPE_ICE_CANDIDATE) {
+            WebRTCTransportProvider::Delegate  &delegateRef = gCameraDevice.GetWebRTCProviderDelegate();
             auto * webrtcMgr                                = static_cast<WebRTCProviderManager *>(&delegateRef);
-            if (webrtcMgr != nullptr)
-            {
+            if (webrtcMgr != nullptr) {
                 WebrtcTransport * transport = webrtcMgr->GetTransport(sessionId);
-                if (transport != nullptr)
-                {
+                if (transport != nullptr) {
                     transport->OnICECandidate(unescaped_msg); // todo: session id based
                     printf("Set Candidate to WebRTCProviderManager\n");
-                }
-                else
-                {
+                } else {
                     printf("Transport is not found for sessionID: %u\n", sessionId);
                 }
                 printf("Set Candidate to WebRTCProviderManager\n");
-            }
-            else
-            {
+            } else {
                 printf("Delegate is not of type WebRTCProviderManager\n");
             }
         }
     }
 
 cleanup:
-    if (msg->payload)
-    {
+    if (msg->payload) {
         free(msg->payload);
     }
 }

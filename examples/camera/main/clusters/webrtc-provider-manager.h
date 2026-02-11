@@ -35,14 +35,16 @@ using ICECandidateStruct       = chip::app::Clusters::Globals::Structs::ICECandi
 using StreamUsageEnum          = chip::app::Clusters::Globals::StreamUsageEnum;
 using WebRTCEndReasonEnum      = chip::app::Clusters::Globals::WebRTCEndReasonEnum;
 
-class WebRTCProviderManager : public Delegate
-{
+class WebRTCProviderManager : public Delegate {
 public:
     WebRTCProviderManager() :
         mOnConnectedCallback(OnDeviceConnected, this), mOnConnectionFailureCallback(OnDeviceConnectionFailure, this)
     {}
 
-    ~WebRTCProviderManager() { CloseConnection(); };
+    ~WebRTCProviderManager()
+    {
+        CloseConnection();
+    };
 
     void Init();
 
@@ -50,25 +52,25 @@ public:
 
     void SetWebRTCTransportProvider(WebRTCTransportProviderCluster * webRTCTransportProvider);
 
-    CHIP_ERROR HandleSolicitOffer(const OfferRequestArgs & args,
-                                  chip::app::Clusters::WebRTCTransportProvider::WebRTCSessionStruct & outSession,
-                                  bool & outDeferredOffer) override;
+    CHIP_ERROR HandleSolicitOffer(const OfferRequestArgs  &args,
+                                  chip::app::Clusters::WebRTCTransportProvider::WebRTCSessionStruct  &outSession,
+                                  bool  &outDeferredOffer) override;
 
     CHIP_ERROR
-    HandleProvideOffer(const ProvideOfferRequestArgs & args,
-                       chip::app::Clusters::WebRTCTransportProvider::WebRTCSessionStruct & outSession) override;
+    HandleProvideOffer(const ProvideOfferRequestArgs  &args,
+                       chip::app::Clusters::WebRTCTransportProvider::WebRTCSessionStruct  &outSession) override;
 
-    CHIP_ERROR HandleProvideAnswer(uint16_t sessionId, const std::string & sdpAnswer) override;
+    CHIP_ERROR HandleProvideAnswer(uint16_t sessionId, const std::string  &sdpAnswer) override;
 
-    CHIP_ERROR HandleProvideICECandidates(uint16_t sessionId, const std::vector<ICECandidateStruct> & candidates) override;
+    CHIP_ERROR HandleProvideICECandidates(uint16_t sessionId, const std::vector<ICECandidateStruct>  &candidates) override;
 
     CHIP_ERROR HandleEndSession(uint16_t sessionId, chip::app::Clusters::WebRTCTransportProvider::WebRTCEndReasonEnum reasonCode,
                                 chip::app::DataModel::Nullable<uint16_t> videoStreamID,
                                 chip::app::DataModel::Nullable<uint16_t> audioStreamID) override;
 
     CHIP_ERROR ValidateStreamUsage(StreamUsageEnum streamUsage,
-                                   chip::Optional<chip::app::DataModel::Nullable<uint16_t>> & videoStreamId,
-                                   chip::Optional<chip::app::DataModel::Nullable<uint16_t>> & audioStreamId) override;
+                                   chip::Optional<chip::app::DataModel::Nullable<uint16_t>>  &videoStreamId,
+                                   chip::Optional<chip::app::DataModel::Nullable<uint16_t>>  &audioStreamId) override;
 
     void SetCameraDevice(CameraDeviceInterface * aCameraDevice);
 
@@ -78,11 +80,11 @@ public:
 
     CHIP_ERROR IsStreamUsageSupported(StreamUsageEnum streamUsage) override;
 
-    CHIP_ERROR IsHardPrivacyModeActive(bool & isActive) override;
+    CHIP_ERROR IsHardPrivacyModeActive(bool  &isActive) override;
 
-    CHIP_ERROR IsSoftRecordingPrivacyModeActive(bool & isActive) override;
+    CHIP_ERROR IsSoftRecordingPrivacyModeActive(bool  &isActive) override;
 
-    CHIP_ERROR IsSoftLivestreamPrivacyModeActive(bool & isActive) override;
+    CHIP_ERROR IsSoftLivestreamPrivacyModeActive(bool  &isActive) override;
 
     bool HasAllocatedVideoStreams() override;
 
@@ -90,7 +92,7 @@ public:
 
     CHIP_ERROR ValidateSFrameConfig(uint16_t cipherSuite, size_t baseKeyLength) override;
 
-    CHIP_ERROR IsUTCTimeNull(bool & isNull) override;
+    CHIP_ERROR IsUTCTimeNull(bool  &isNull) override;
 
     void LiveStreamPrivacyModeChanged(bool privacyModeEnabled);
 
@@ -109,30 +111,30 @@ private:
 
     void UnregisterWebrtcTransport(uint16_t sessionId);
 
-    CHIP_ERROR SendOfferCommand(chip::Messaging::ExchangeManager & exchangeMgr, const chip::SessionHandle & sessionHandle,
+    CHIP_ERROR SendOfferCommand(chip::Messaging::ExchangeManager  &exchangeMgr, const chip::SessionHandle  &sessionHandle,
                                 uint16_t sessionId);
 
-    CHIP_ERROR SendAnswerCommand(chip::Messaging::ExchangeManager & exchangeMgr, const chip::SessionHandle & sessionHandle,
+    CHIP_ERROR SendAnswerCommand(chip::Messaging::ExchangeManager  &exchangeMgr, const chip::SessionHandle  &sessionHandle,
                                  uint16_t sessionId);
 
     CHIP_ERROR
-    SendICECandidatesCommand(chip::Messaging::ExchangeManager & exchangeMgr, const chip::SessionHandle & sessionHandle,
+    SendICECandidatesCommand(chip::Messaging::ExchangeManager  &exchangeMgr, const chip::SessionHandle  &sessionHandle,
                              uint16_t sessionId);
 
-    CHIP_ERROR SendEndCommand(chip::Messaging::ExchangeManager & exchangeMgr, const chip::SessionHandle & sessionHandle,
+    CHIP_ERROR SendEndCommand(chip::Messaging::ExchangeManager  &exchangeMgr, const chip::SessionHandle  &sessionHandle,
                               uint16_t sessionId, WebRTCEndReasonEnum endReason);
 
     CHIP_ERROR AcquireAudioVideoStreams(uint16_t sessionId);
 
     CHIP_ERROR ReleaseAudioVideoStreams(uint16_t sessionId);
 
-    static void OnDeviceConnected(void * context, chip::Messaging::ExchangeManager & exchangeMgr,
-                                  const chip::SessionHandle & sessionHandle);
+    static void OnDeviceConnected(void * context, chip::Messaging::ExchangeManager  &exchangeMgr,
+                                  const chip::SessionHandle  &sessionHandle);
 
-    static void OnDeviceConnectionFailure(void * context, const chip::ScopedNodeId & peerId, CHIP_ERROR error);
+    static void OnDeviceConnectionFailure(void * context, const chip::ScopedNodeId  &peerId, CHIP_ERROR error);
 
     // WebRTC Callbacks
-    void OnLocalDescription(const std::string & sdp, SDPType type, const uint16_t sessionId);
+    void OnLocalDescription(const std::string  &sdp, SDPType type, const uint16_t sessionId);
     void OnConnectionStateChanged(bool connected, const uint16_t sessionId);
 
     chip::Callback::Callback<chip::OnDeviceConnected> mOnConnectedCallback;

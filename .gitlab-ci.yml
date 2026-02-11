@@ -1,5 +1,5 @@
 stages:
-    - check_typos
+    - pre_check
     - cleanup
     - docker_build
     - build
@@ -250,6 +250,7 @@ build_image:
     - job: build_image
       optional: true
     - job: check_typos
+    - job: pre_commit_check
   tags:
     - build
     # runner: `sudo mkdir -p /cache/matter_build/`
@@ -616,6 +617,7 @@ build_managed_component_light:
       - job: build_image
         optional: true
       - job: check_typos
+      - job: pre_commit_check
     script:
         - cd ${ESP_MATTER_PATH}/examples/managed_component_light
         - idf.py set-target esp32c3
@@ -649,6 +651,7 @@ build_esp_rainmaker_apps:
       - job: build_image
         optional: true
       - job: check_typos
+      - job: pre_commit_check
 
     artifacts:
         paths:
@@ -754,7 +757,7 @@ deploy_docs_production:
 
 check_typos:
   image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
-  stage: check_typos
+  stage: pre_check
   script:
     - pip install codespell
     - git fetch origin main
@@ -764,5 +767,31 @@ check_typos:
       if [ -n "$FILES" ]; then
         ./tools/check_typos.sh $FILES
       fi
+  tags:
+    - build
+
+pre_commit_check:
+  image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
+  stage: pre_check
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
+  script:
+    - pip install pre-commit
+    - git fetch origin main
+    - pre-commit install-hooks
+    - |
+      # Get the base commit for comparison
+      BASE_COMMIT=$(git merge-base origin/main HEAD)
+      # Run pre-commit on changed files
+      FILES=$(git diff --name-only --diff-filter=ACMRT ${BASE_COMMIT}...HEAD)
+      if [ -n "$FILES" ]; then
+        echo "Running pre-commit on changed files:"
+        echo "$FILES"
+        # Convert newline-separated files to space-separated and pass to pre-commit
+        echo "$FILES" | xargs pre-commit run --files
+      else
+        echo "No files changed, skipping pre-commit"
+      fi
+
   tags:
     - build

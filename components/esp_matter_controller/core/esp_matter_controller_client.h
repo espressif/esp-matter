@@ -170,7 +170,10 @@ public:
     }
 
     esp_err_t init(NodeId node_id, FabricId fabric_id, uint16_t listen_port);
-    chip::app::DefaultICDClientStorage &get_icd_client_storage() { return m_icd_client_storage; }
+    chip::app::DefaultICDClientStorage &get_icd_client_storage()
+    {
+        return m_icd_client_storage;
+    }
     void set_icd_client_callback(controller_check_in_delegate::check_in_complete_callback check_in_complete_cb,
                                  controller_check_in_delegate::key_refresh_done_callback key_refresh_done_cb)
     {
@@ -179,17 +182,26 @@ public:
 
 #ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     esp_err_t setup_commissioner();
-    MatterDeviceCommissioner *get_commissioner() { return &m_device_commissioner; }
+    MatterDeviceCommissioner *get_commissioner()
+    {
+        return &m_device_commissioner;
+    }
     esp_err_t unpair(NodeId remote_node, remove_fabric_callback callback = nullptr)
     {
         return auto_fabric_remover::remove_fabric(&m_device_commissioner, remote_node, callback);
     }
 #if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
-    CommissionerDiscoveryController *get_discovery_controller() { return &m_commissioner_discovery_controller; }
+    CommissionerDiscoveryController *get_discovery_controller()
+    {
+        return &m_commissioner_discovery_controller;
+    }
 #endif
 #else
     esp_err_t setup_controller(chip::MutableByteSpan &ipk);
-    MatterDeviceController *get_controller() { return &m_device_controller; }
+    MatterDeviceController *get_controller()
+    {
+        return &m_device_controller;
+    }
 #endif
     chip::FabricIndex get_fabric_index()
     {
@@ -228,8 +240,8 @@ private:
             }
 
             if (mSystemState->TransportMgr()->MulticastGroupJoinLeave(
-                    chip::Transport::PeerAddress::Multicast(fabric->GetFabricId(), new_group.group_id), true) !=
-                CHIP_NO_ERROR) {
+                        chip::Transport::PeerAddress::Multicast(fabric->GetFabricId(), new_group.group_id), true) !=
+                    CHIP_NO_ERROR) {
                 ChipLogError(AppServer, "Unable to listen to group");
             }
         };
@@ -264,7 +276,7 @@ private:
     chip::Credentials::PersistentStorageOpCertStore m_operational_cert_store;
     chip::Crypto::RawKeySessionKeystore m_session_key_store;
     chip::Credentials::GroupDataProviderImpl m_group_data_provider{k_max_groups_per_fabric,
-                                                                   k_max_group_keys_per_fabric};
+             k_max_group_keys_per_fabric};
     GroupDataProviderListener m_group_data_provider_listener;
     credentials_issuer *m_credentials_issuer;
     NodeId m_controller_node_id;
@@ -291,9 +303,9 @@ class ESPCommissionerCallback : public CommissionerCallback {
     {
         NodeId gRemoteId = chip::kTestDeviceNodeId;
         chip::RendezvousParameters params = chip::RendezvousParameters()
-                                                .SetSetupPINCode(pincode)
-                                                .SetDiscriminator(longDiscriminator)
-                                                .SetPeerAddress(peerAddress);
+                                            .SetSetupPINCode(pincode)
+                                            .SetDiscriminator(longDiscriminator)
+                                            .SetPeerAddress(peerAddress);
         do {
             chip::Crypto::DRBG_get_bytes(reinterpret_cast<uint8_t *>(&gRemoteId), sizeof(gRemoteId));
         } while (!chip::IsOperationalNodeId(gRemoteId));

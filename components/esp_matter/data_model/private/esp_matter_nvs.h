@@ -31,7 +31,7 @@ namespace attribute {
  *
  * @return ESP_OK on success, appropriate error code otherwise
  */
-esp_err_t get_val_from_nvs(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t & val);
+esp_err_t get_val_from_nvs(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t  &val);
 
 /**
  * @brief Stores the attribute value in NVS, it generates the key based on endpoint, cluster, and attribute id.
@@ -42,7 +42,7 @@ esp_err_t get_val_from_nvs(uint16_t endpoint_id, uint32_t cluster_id, uint32_t a
  *
  * @return ESP_OK on success, appropriate error code otherwise
  */
-esp_err_t store_val_in_nvs(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, const esp_matter_attr_val_t & val);
+esp_err_t store_val_in_nvs(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, const esp_matter_attr_val_t  &val);
 
 /**
  * @brief Erases the attribute value in NVS, it generates the key based on endpoint, cluster, and attribute id.

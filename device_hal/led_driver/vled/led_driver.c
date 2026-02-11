@@ -61,7 +61,7 @@ static void SetupBrightnessControl(led_driver_config_t *config)
 static void SetDisplayBrightness(uint8_t brightness)
 {
     if (ledc_set_duty(LEDC_HIGH_SPEED_MODE, led_driver_channel, brightness) ||
-        ledc_update_duty(LEDC_HIGH_SPEED_MODE, led_driver_channel)) {
+            ledc_update_duty(LEDC_HIGH_SPEED_MODE, led_driver_channel)) {
         ESP_LOGE(TAG, "Failed to set display brightness...");
     }
 }
@@ -155,8 +155,12 @@ esp_err_t led_driver_set_power(led_driver_handle_t handle, bool power)
 esp_err_t led_driver_set_RGB(led_driver_handle_t handle)
 {
     TFT_fillWindow(TFT_BLACK);
-    TFT_fillCircle(DisplayWidth / 2, DisplayHeight / 2, DisplayWidth / 4, (color_t){mRGB.red, mRGB.green, mRGB.blue});
-    TFT_drawCircle(DisplayWidth / 2, DisplayHeight / 2, DisplayWidth / 4, (color_t){255, 255, 255});
+    TFT_fillCircle(DisplayWidth / 2, DisplayHeight / 2, DisplayWidth / 4, (color_t) {
+        mRGB.red, mRGB.green, mRGB.blue
+    });
+    TFT_drawCircle(DisplayWidth / 2, DisplayHeight / 2, DisplayWidth / 4, (color_t) {
+        255, 255, 255
+    });
     return ESP_OK;
 }
 

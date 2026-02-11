@@ -51,7 +51,10 @@ public:
         strncpy(mOtaImageUrl, otaImageUrl, strnlen(otaImageUrl, OTA_URL_MAX_LEN));
     }
 
-    const char *GetOtaImageUrl() const { return mOtaImageUrl; }
+    const char *GetOtaImageUrl() const
+    {
+        return mOtaImageUrl;
+    }
 
 private:
     void HandleTransferSessionOutput(chip::bdx::TransferSession::OutputEvent &event) override;

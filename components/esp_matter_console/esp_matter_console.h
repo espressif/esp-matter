@@ -50,8 +50,7 @@ typedef struct {
  */
 typedef esp_err_t command_iterator_t(const command_t *command, void *arg);
 
-class engine
-{
+class engine {
 protected:
     const command_t *_command_set[CONSOLE_MAX_COMMAND_SETS];
     unsigned _command_set_size[CONSOLE_MAX_COMMAND_SETS];

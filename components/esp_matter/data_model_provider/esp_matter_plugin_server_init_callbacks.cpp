@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 // Cluster init functions that don't have a cluster implementation to define
 // them in.
 void MatterBallastConfigurationPluginServerInitCallback() {}

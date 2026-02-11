@@ -58,7 +58,10 @@ public:
 
     esp_err_t send_command();
 
-    bool is_group_command() { return chip::IsGroupId(m_destination_id); }
+    bool is_group_command()
+    {
+        return chip::IsGroupId(m_destination_id);
+    }
 
 private:
     uint64_t m_destination_id;

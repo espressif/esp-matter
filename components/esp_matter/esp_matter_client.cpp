@@ -168,8 +168,8 @@ esp_err_t cluster_update(uint16_t local_endpoint_id, request_handle_t *req_handl
     }
     VerifyOrReturnError(notified_cluster_id != chip::kInvalidClusterId, ESP_ERR_INVALID_ARG);
     if (CHIP_NO_ERROR !=
-        chip::app::Clusters::Binding::Manager::GetInstance().NotifyBoundClusterChanged(local_endpoint_id, notified_cluster_id,
-                                                                      static_cast<void *>(context))) {
+            chip::app::Clusters::Binding::Manager::GetInstance().NotifyBoundClusterChanged(local_endpoint_id, notified_cluster_id,
+                                                                                           static_cast<void *>(context))) {
         chip::Platform::Delete(context);
         ESP_LOGE(TAG, "failed to notify the bound cluster changed");
         return ESP_FAIL;
@@ -243,7 +243,7 @@ esp_err_t send_request(void *ctx, peer_device_t *remote_device, const CommandPat
     auto decoder = chip::Platform::MakeUnique<custom_command_callback>(ctx, on_success, on_error);
     VerifyOrReturnError(decoder != nullptr, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "No memory for command callback"));
 
-    auto on_done = [raw_decoder_ptr = decoder.get()](void *context, CommandSender *command_sender) {
+    auto on_done = [raw_decoder_ptr = decoder.get()](void *context, CommandSender * command_sender) {
         chip::Platform::Delete(command_sender);
         chip::Platform::Delete(raw_decoder_ptr);
     };
@@ -294,9 +294,18 @@ public:
     }
 
 private:
-    void OnReportBegin() override { m_callback.OnReportBegin(); }
-    void OnReportEnd() override { m_callback.OnReportEnd(); }
-    void OnError(CHIP_ERROR aError) override { m_callback.OnError(aError); }
+    void OnReportBegin() override
+    {
+        m_callback.OnReportBegin();
+    }
+    void OnReportEnd() override
+    {
+        m_callback.OnReportEnd();
+    }
+    void OnError(CHIP_ERROR aError) override
+    {
+        m_callback.OnError(aError);
+    }
 
     void OnAttributeData(const ConcreteDataAttributePath &aPath, TLVReader *apData, const StatusIB &aStatus) override
     {
@@ -363,7 +372,7 @@ esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams
 {
     VerifyOrReturnError(remote_device->GetSecureSession().HasValue() && !remote_device->GetSecureSession().Value()->IsGroupSession(), ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid Session Type"));
     VerifyOrReturnError((attr_path && attr_path_size != 0) || (event_path && event_path_size != 0),
-                    ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid attribute path and event path"));
+                        ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid attribute path and event path"));
     ReadPrepareParams params(remote_device->GetSecureSession().Value());
     params.mpAttributePathParamsList = attr_path;
     params.mAttributePathParamsListSize = attr_path_size;
@@ -381,7 +390,7 @@ esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams
     VerifyOrReturnError(client, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "Failed to allocate memory for ReadClient"));
 
     VerifyOrReturnError(client->SendRequest(params) == CHIP_NO_ERROR,
-                    ESP_FAIL, ESP_LOGE(TAG, "Failed to send read request"));
+                        ESP_FAIL, ESP_LOGE(TAG, "Failed to send read request"));
 
     // The memory will be released when OnDone() is called
     client.release();
@@ -399,9 +408,9 @@ esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams
                        ReadClient::Callback &callback)
 {
     VerifyOrReturnError(remote_device->GetSecureSession().HasValue() && !remote_device->GetSecureSession().Value()->IsGroupSession(),
-                    ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid Session Type"));
+                        ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid Session Type"));
     VerifyOrReturnError((attr_path && attr_path_size != 0) || (event_path && event_path_size != 0),
-                    ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid attribute path and event path"));
+                        ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid attribute path and event path"));
     ReadPrepareParams params(remote_device->GetSecureSession().Value());
     params.mpAttributePathParamsList = attr_path;
     params.mAttributePathParamsListSize = attr_path_size;
@@ -428,7 +437,7 @@ esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams
         err = client->SendRequest(params);
     }
     VerifyOrReturnError(err == CHIP_NO_ERROR,
-                    ESP_FAIL, ESP_LOGE(TAG, "Failed to send subscribe request"));
+                        ESP_FAIL, ESP_LOGE(TAG, "Failed to send subscribe request"));
     // The memory will be released when OnDone() is called
     client.release();
     client_deleter_callback.release();
@@ -477,19 +486,19 @@ static esp_err_t encode_attribute_value(uint8_t *encoded_buf, size_t encoded_buf
 
     writer.Init(encoded_buf, encoded_buf_size);
     VerifyOrReturnError(encodable.EncodeTo(writer, chip::TLV::AnonymousTag()) == CHIP_NO_ERROR,
-                    ESP_FAIL, ESP_LOGE(TAG, "Failed to encode attribute value"));
+                        ESP_FAIL, ESP_LOGE(TAG, "Failed to encode attribute value"));
     VerifyOrReturnError(writer.Finalize() == CHIP_NO_ERROR,
-                    ESP_FAIL, ESP_LOGE(TAG, "Failed to finalize TLV writer"));
+                        ESP_FAIL, ESP_LOGE(TAG, "Failed to finalize TLV writer"));
     encoded_len = writer.GetLengthWritten();
     reader.Init(encoded_buf, encoded_len);
     VerifyOrReturnError(reader.Next() == CHIP_NO_ERROR,
-                    ESP_FAIL, ESP_LOGE(TAG, "Failed to read next"));
+                        ESP_FAIL, ESP_LOGE(TAG, "Failed to read next"));
     VerifyOrReturnError(reader.GetType() == chip::TLV::TLVType::kTLVType_Structure,
-                    ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "The TLV type must be structure"));
+                        ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "The TLV type must be structure"));
     VerifyOrReturnError(reader.OpenContainer(out_reader) == CHIP_NO_ERROR,
-                    ESP_FAIL, ESP_LOGE(TAG, "Failed to open container"));
+                        ESP_FAIL, ESP_LOGE(TAG, "Failed to open container"));
     VerifyOrReturnError(out_reader.Next() == CHIP_NO_ERROR,
-                    ESP_FAIL, ESP_LOGE(TAG, "Failed to read next"));
+                        ESP_FAIL, ESP_LOGE(TAG, "Failed to read next"));
     return ESP_OK;
 }
 
@@ -499,7 +508,7 @@ esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams
 {
     esp_err_t err = ESP_OK;
     VerifyOrReturnError(remote_device->GetSecureSession().HasValue() && !remote_device->GetSecureSession().Value()->IsGroupSession(),
-                    ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid Session Type"));
+                        ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid Session Type"));
     VerifyOrReturnError(!attr_path.HasWildcardEndpointId(),
                         ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint Id Invalid"));
 
@@ -516,7 +525,7 @@ esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams
     TLVReader attr_val_reader;
     err = encode_attribute_value(encoded_buf.Get(), k_encoded_buf_size, encodable, attr_val_reader);
     VerifyOrReturnError(err == ESP_OK,
-                    err, ESP_LOGE(TAG, "Failed to encode attribute value to a TLV reader"));
+                        err, ESP_LOGE(TAG, "Failed to encode attribute value to a TLV reader"));
     VerifyOrReturnError(write_client->PutPreencodedAttribute(path, attr_val_reader) == CHIP_NO_ERROR,
                         ESP_FAIL, ESP_LOGE(TAG, "Failed to put pre-encoded attribute value to WriteClient"));
     VerifyOrReturnError(write_client->SendWriteRequest(remote_device->GetSecureSession().Value()) == CHIP_NO_ERROR,
@@ -545,7 +554,7 @@ esp_err_t send_request(client::peer_device_t *remote_device,
         json_encodable.GetJsonArraySize() == attr_paths.AllocatedSize(), ESP_ERR_INVALID_ARG,
         ESP_LOGE(TAG, "The attr_values array length should be the same as the attr_paths array length"));
     VerifyOrReturnError(remote_device->GetSecureSession().HasValue() &&
-                            !remote_device->GetSecureSession().Value()->IsGroupSession(),
+                        !remote_device->GetSecureSession().Value()->IsGroupSession(),
                         ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid Session Type"));
     auto client_deleter_callback = chip::Platform::MakeUnique<client_deleter_write_callback>(callback);
     VerifyOrReturnError(client_deleter_callback, ESP_ERR_NO_MEM,
