@@ -19,7 +19,7 @@
 #include <app_priv.h>
 #include <app_reset.h>
 #if CONFIG_SUBSCRIBE_TO_ON_OFF_SERVER_AFTER_BINDING
-#include <app/util/binding-table.h>
+#include <app/clusters/bindings/binding-table.h>
 #include <esp_matter_client.h>
 #include <app/AttributePathParams.h>
 #include <app/ConcreteAttributePath.h>
@@ -86,14 +86,14 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
         ESP_LOGI(TAG, "Binding entry changed");
 #if CONFIG_SUBSCRIBE_TO_ON_OFF_SERVER_AFTER_BINDING
         if (do_subscribe) {
-            for (const auto  &binding : chip::BindingTable::GetInstance()) {
+            for (const auto  &binding : chip::app::Clusters::Binding::Table::GetInstance()) {
                 ESP_LOGI(
                     TAG,
                     "Read cached binding type=%d fabrixIndex=%d nodeId=0x" ChipLogFormatX64
                     " groupId=%d local endpoint=%d remote endpoint=%d cluster=" ChipLogFormatMEI,
                     binding.type, binding.fabricIndex, ChipLogValueX64(binding.nodeId), binding.groupId, binding.local,
                     binding.remote, ChipLogValueMEI(binding.clusterId.value_or(0)));
-                if (binding.type == MATTER_UNICAST_BINDING && event->BindingsChanged.fabricIndex == binding.fabricIndex) {
+                if (binding.type == chip::app::Clusters::Binding::MATTER_UNICAST_BINDING && event->BindingsChanged.fabricIndex == binding.fabricIndex) {
                     ESP_LOGI(
                         TAG,
                         "Matched accessingFabricIndex with nodeId=0x" ChipLogFormatX64,
