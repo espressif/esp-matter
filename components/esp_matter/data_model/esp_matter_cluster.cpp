@@ -4552,5 +4552,48 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 } /* soil_measurement */
 
+namespace zone_management {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, ZoneManagement::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ZoneManagement::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        // TODO: Add a delegate initialization callback.
+        // The current esp_matter initialization flow makes this hard to implement cleanly.
+
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterZoneManagementPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_cluster_revision(cluster, 0);
+        attribute::create_max_zones(cluster, 1);
+        attribute::create_zones(cluster, NULL, 0, 0);
+        attribute::create_triggers(cluster, NULL, 0, 0);
+        attribute::create_sensitivity_max(cluster, 0);
+        // if !per_zone_sensitivity, create sensitivity attribute
+        attribute::create_sensitivity(cluster, 0);
+
+        command::create_or_update_trigger(cluster);
+        command::create_remove_trigger(cluster);
+
+        /* Events */
+        event::create_zone_triggered(cluster);
+        event::create_zone_stopped(cluster);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+
+} /* zone_management */
+
 } /* cluster */
 } /* esp_matter */

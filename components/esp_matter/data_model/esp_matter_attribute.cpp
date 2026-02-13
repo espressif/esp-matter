@@ -5402,5 +5402,53 @@ attribute_t *create_soil_moisture_measured_value(cluster_t *cluster, nullable<ui
 
 } /* soil_measurement */
 
+namespace zone_management {
+namespace attribute {
+attribute_t *create_max_user_defined_zones(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ZoneManagement::Attributes::MaxUserDefinedZones::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+}
+
+attribute_t *create_max_zones(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ZoneManagement::Attributes::MaxZones::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+}
+
+attribute_t *create_zones(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ZoneManagement::Attributes::Zones::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_triggers(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ZoneManagement::Attributes::Triggers::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_sensitivity_max(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ZoneManagement::Attributes::SensitivityMax::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+}
+
+attribute_t *create_sensitivity(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ZoneManagement::Attributes::Sensitivity::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
+}
+
+attribute_t *create_two_d_cartesian_max(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ZoneManagement::Attributes::TwoDCartesianMax::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+
+} /* zone_management */
+
 } /* cluster */
 } /* esp_matter */
