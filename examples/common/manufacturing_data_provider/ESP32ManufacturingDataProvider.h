@@ -38,8 +38,7 @@ class ESP32ManufacturingDataProvider : public CommissionableDataProvider
 #endif
 {
 public:
-    enum class Precedence : uint8_t
-    {
+    enum class Precedence : uint8_t {
         // Data is expected to be found in the factory partition first, if not
         // fallback to the secure cert partition
         kFactoryFirst,
@@ -57,19 +56,28 @@ public:
     Precedence GetPrecedence() const;
 
     // CommissionableDataProvider implementation
-    CHIP_ERROR GetSetupDiscriminator(uint16_t & setupDiscriminator) override;
-    CHIP_ERROR GetSpake2pIterationCount(uint32_t & iterationCount) override;
-    CHIP_ERROR GetSpake2pSalt(MutableByteSpan & saltBuf) override;
-    CHIP_ERROR GetSpake2pVerifier(MutableByteSpan & verifierBuf, size_t & verifierLen) override;
+    CHIP_ERROR GetSetupDiscriminator(uint16_t  &setupDiscriminator) override;
+    CHIP_ERROR GetSpake2pIterationCount(uint32_t  &iterationCount) override;
+    CHIP_ERROR GetSpake2pSalt(MutableByteSpan  &saltBuf) override;
+    CHIP_ERROR GetSpake2pVerifier(MutableByteSpan  &verifierBuf, size_t  &verifierLen) override;
 
     // not supported APIs but required to be implemented
-    CHIP_ERROR SetSetupDiscriminator(uint16_t setupDiscriminator) override { return CHIP_ERROR_NOT_IMPLEMENTED; }
-    CHIP_ERROR GetSetupPasscode(uint32_t & setupPasscode) override { return CHIP_ERROR_NOT_IMPLEMENTED; }
-    CHIP_ERROR SetSetupPasscode(uint32_t setupPasscode) override { return CHIP_ERROR_NOT_IMPLEMENTED; }
+    CHIP_ERROR SetSetupDiscriminator(uint16_t setupDiscriminator) override
+    {
+        return CHIP_ERROR_NOT_IMPLEMENTED;
+    }
+    CHIP_ERROR GetSetupPasscode(uint32_t  &setupPasscode) override
+    {
+        return CHIP_ERROR_NOT_IMPLEMENTED;
+    }
+    CHIP_ERROR SetSetupPasscode(uint32_t setupPasscode) override
+    {
+        return CHIP_ERROR_NOT_IMPLEMENTED;
+    }
 
 #if CHIP_DEVICE_CONFIG_ENABLE_DEVICE_INSTANCE_INFO_PROVIDER
     // DeviceInstanceInfoProvider implementation
-    CHIP_ERROR GetRotatingDeviceIdUniqueId(MutableByteSpan & uniqueIdSpan) override;
+    CHIP_ERROR GetRotatingDeviceIdUniqueId(MutableByteSpan  &uniqueIdSpan) override;
 #endif // CHIP_DEVICE_CONFIG_ENABLE_DEVICE_INSTANCE_INFO_PROVIDER
 
 private:
@@ -91,4 +99,4 @@ private:
 };
 
 } // namespace DeviceLayer
-} // namespace chip 
+} // namespace chip

@@ -42,7 +42,7 @@ typedef enum callback_type {
  * @return error in case of failure.
  */
 typedef esp_err_t (*callback_t)(callback_type_t type, uint16_t endpoint_id, uint8_t effect_id, uint8_t effect_variant,
-                                    void *priv_data);
+                                void *priv_data);
 
 /** Set identification callback
  *
@@ -70,8 +70,8 @@ esp_err_t set_callback(callback_t callback);
  * @return error in case of failure.
  */
 esp_err_t init(uint16_t endpoint_id, uint8_t identify_type,
-                uint8_t effect_identifier = static_cast<uint8_t>(chip::app::Clusters::Identify::EffectIdentifierEnum::kBlink),
-                uint8_t effect_variant = static_cast<uint8_t>(chip::app::Clusters::Identify::EffectVariantEnum::kDefault));
+               uint8_t effect_identifier = static_cast<uint8_t>(chip::app::Clusters::Identify::EffectIdentifierEnum::kBlink),
+               uint8_t effect_variant = static_cast<uint8_t>(chip::app::Clusters::Identify::EffectVariantEnum::kDefault));
 
 } /* identification */
 } /* esp_matter */

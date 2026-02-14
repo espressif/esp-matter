@@ -570,7 +570,6 @@ namespace activated_carbon_filter_monitoring {
 namespace attribute = resource_monitoring::attribute;
 } /* activated_carbon_filter_monitoring */
 
-
 namespace concentration_measurement {
 namespace attribute {
 attribute_t *create_measured_value(cluster_t *cluster, nullable<float> value);
@@ -1257,14 +1256,14 @@ attribute_t *create_status_light_brightness(cluster_t *cluster, uint8_t value);
 } /*camera av stream management*/
 
 namespace webrtc_transport_provider {
-  namespace attribute {
+namespace attribute {
 attribute_t *create_current_sessions(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 
 } /* attribute */
 }/*webrtc transport provider*/
 
 namespace webrtc_transport_requestor {
-  namespace attribute {
+namespace attribute {
 attribute_t *create_current_sessions(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 
 } /* attribute */
@@ -1403,6 +1402,19 @@ attribute_t *create_soil_moisture_measurement_limits(cluster_t *cluster, uint8_t
 attribute_t *create_soil_moisture_measured_value(cluster_t *cluster, nullable<uint8_t> value);
 } /* attribute */
 } /* soil_measurement */
+
+namespace zone_management {
+namespace attribute {
+
+attribute_t *create_max_user_defined_zones(cluster_t *cluster, uint8_t value);
+attribute_t *create_max_zones(cluster_t *cluster, uint8_t value);
+attribute_t *create_zones(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_triggers(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_sensitivity_max(cluster_t *cluster, uint8_t value);
+attribute_t *create_sensitivity(cluster_t *cluster, uint8_t value);
+attribute_t *create_two_d_cartesian_max(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* zone_management */
 
 } /* cluster */
 } /* esp_matter */

@@ -213,11 +213,36 @@ esp_err_t read_min_unused_endpoint_id()
 
 namespace endpoint {
 
+static void report_parts_list_change_internal(endpoint_t *endpoint)
+{
+    chip::EndpointId parent_endpoint_id = endpoint::get_parent_endpoint_id(endpoint);
+    while (parent_endpoint_id != chip::kInvalidEndpointId) {
+        MatterReportingAttributeChangeCallback(parent_endpoint_id, chip::app::Clusters::Descriptor::Id,
+                                               chip::app::Clusters::Descriptor::Attributes::PartsList::Id);
+        parent_endpoint_id = endpoint::get_parent_endpoint_id(endpoint::get(parent_endpoint_id));
+    }
+    MatterReportingAttributeChangeCallback(/* endpoint = */ 0, chip::app::Clusters::Descriptor::Id,
+                                           chip::app::Clusters::Descriptor::Attributes::PartsList::Id);
+}
+
 esp_err_t disable(endpoint_t *endpoint)
 {
     VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     current_endpoint->enabled = false;
+    {
+        esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
+        report_parts_list_change_internal(endpoint);
+        cluster_t *cluster = cluster::get_first(endpoint);
+        while (cluster) {
+            /* kClusterShutdown type shutdown callback */
+            cluster::shutdown_callback_t shutdown_callback = cluster::get_shutdown_callback(cluster);
+            if (shutdown_callback) {
+                shutdown_callback(endpoint::get_id(endpoint), chip::app::ClusterShutdownType::kClusterShutdown);
+            }
+            cluster = cluster::get_next(cluster);
+        }
+    }
     return ESP_OK;
 }
 
@@ -229,7 +254,7 @@ static esp_err_t init_identification(endpoint_t *endpoint)
     /* Init identify if exists and not initialized */
     if (identify_cluster != nullptr && current_endpoint->identify == NULL) {
         _attribute_t *identify_type_attr = (_attribute_t *)attribute::get(
-            identify_cluster, chip::app::Clusters::Identify::Attributes::IdentifyType::Id);
+                                               identify_cluster, chip::app::Clusters::Identify::Attributes::IdentifyType::Id);
         if (identify_type_attr) {
             return identification::init(current_endpoint->endpoint_id, identify_type_attr->attribute_val.u8);
         } else {
@@ -241,43 +266,62 @@ static esp_err_t init_identification(endpoint_t *endpoint)
     return ESP_OK;
 }
 
+static void invoke_init_callbacks_internal(endpoint_t *endpoint)
+{
+    cluster_t *cluster = cluster::get_first(endpoint);
+    while (cluster) {
+        /* Delegate server init callback */
+        cluster::delegate_init_callback_t delegate_init_callback = cluster::get_delegate_init_callback(cluster);
+        if (delegate_init_callback) {
+            delegate_init_callback(cluster::get_delegate_impl(cluster), endpoint::get_id(endpoint));
+        }
+
+        /* Add bounds callback */
+        cluster::add_bounds_callback_t add_bounds_callback = cluster::get_add_bounds_callback(cluster);
+        if (add_bounds_callback) {
+            add_bounds_callback(cluster);
+        }
+
+        /* Plugin server init callback */
+        cluster::plugin_server_init_callback_t plugin_server_init_callback =
+            cluster::get_plugin_server_init_callback(cluster);
+        if (plugin_server_init_callback) {
+            plugin_server_init_callback();
+        }
+
+        /* Initialization callback */
+        uint8_t flags = cluster::get_flags(cluster);
+        cluster::initialization_callback_t init_callback = cluster::get_init_callback(cluster);
+        if (init_callback) {
+            init_callback(endpoint::get_id(endpoint));
+        }
+
+        /* Init function */
+        if ((flags & CLUSTER_FLAG_SERVER) && (flags & CLUSTER_FLAG_INIT_FUNCTION)) {
+            cluster::function_cluster_init_t init_function =
+                (cluster::function_cluster_init_t)cluster::get_function(cluster, CLUSTER_FLAG_INIT_FUNCTION);
+            if (init_function) {
+                init_function(endpoint::get_id(endpoint));
+            }
+        }
+        cluster = cluster::get_next(cluster);
+    }
+}
+
 esp_err_t enable(endpoint_t *endpoint)
 {
     VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     current_endpoint->enabled = true;
     init_identification(endpoint);
-    esp_matter::cluster::delegate_init_callback_common(endpoint);
-    chip::DeviceLayer::SystemLayer().ScheduleLambda([endpoint] {
-        cluster_t *cluster = cluster::get_first(endpoint);
-        while (cluster) {
-            /* Add bounds callback */
-            cluster::add_bounds_callback_t add_bounds_callback = cluster::get_add_bounds_callback(cluster);
-            if (add_bounds_callback) {
-                add_bounds_callback(cluster);
-            }
-            /* Plugin server init callback */
-            cluster::plugin_server_init_callback_t plugin_server_init_callback =
-                cluster::get_plugin_server_init_callback(cluster);
-            if (plugin_server_init_callback) {
-                plugin_server_init_callback();
-            }
-            /* Initialization callback */
-            uint8_t flags = cluster::get_flags(cluster);
-            cluster::initialization_callback_t init_callback = cluster::get_init_callback(cluster);
-            if (init_callback) {
-                init_callback(endpoint::get_id(endpoint));
-            }
-            if ((flags & CLUSTER_FLAG_SERVER) && (flags & CLUSTER_FLAG_INIT_FUNCTION)) {
-                cluster::function_cluster_init_t init_function =
-                    (cluster::function_cluster_init_t)cluster::get_function(cluster, CLUSTER_FLAG_INIT_FUNCTION);
-                if (init_function) {
-                    init_function(endpoint::get_id(endpoint));
-                }
-            }
-            cluster = cluster::get_next(cluster);
-        }
-    });
+    {
+        // Use the lock instead of schedule lambda to ensure the callbacks are invoked before esp_matter::start() returns.
+        esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
+        invoke_init_callbacks_internal(endpoint);
+        // Mark the endpoint as dirty so that the data model provider will report the attribute changes.
+        MatterReportingAttributeChangeCallback(endpoint::get_id(endpoint));
+        report_parts_list_change_internal(endpoint);
+    }
     return ESP_OK;
 }
 
@@ -560,7 +604,7 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, e
         attribute->endpoint_id = current_cluster->endpoint_id;
         attribute->attribute_val_type = val.type;
         if (val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING || val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
-            val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING || val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING) {
+                val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING || val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING) {
             attribute->attribute_val.a.max = max_val_size;
             val.val.a.max = max_val_size;
         }
@@ -599,10 +643,10 @@ static esp_err_t free_attribute(attribute_t *attribute)
 
     /* Delete val here, if required */
     if (current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
-        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
-        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
-        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
-        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_ARRAY) {
+            current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
+            current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+            current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
+            current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_ARRAY) {
         /* Free buf */
         esp_matter_mem_free(current_attribute->attribute_val.a.b);
     }
@@ -684,7 +728,7 @@ static void deferred_attribute_write(chip::System::Layer *layer, void *attribute
     ESP_LOGI(TAG, "Store the deferred attribute 0x%" PRIx32 " of cluster 0x%" PRIX32 " on endpoint 0x%" PRIx16,
              current_attribute->attribute_id, current_attribute->cluster_id, current_attribute->endpoint_id);
     store_val_in_nvs(current_attribute->endpoint_id, current_attribute->cluster_id, current_attribute->attribute_id,
-                     {current_attribute->attribute_val_type, current_attribute->attribute_val});
+    {current_attribute->attribute_val_type, current_attribute->attribute_val});
 }
 
 esp_err_t set_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_callbacks)
@@ -701,7 +745,7 @@ esp_err_t set_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val, b
 
     VerifyOrReturnError(current_attribute->attribute_val_type == val->type, ESP_ERR_INVALID_ARG,
                         ESP_LOGE(TAG, "Different value type : Expected Type : %u Attempted Type: %u",
-                            current_attribute->attribute_val_type, val->type));
+                                 current_attribute->attribute_val_type, val->type));
 
     if ((current_attribute->flags & ATTRIBUTE_FLAG_MIN_MAX) && current_attribute->bounds) {
         if (compare_attr_val_with_bounds(*val, *current_attribute->bounds) != 0) {
@@ -718,12 +762,12 @@ esp_err_t set_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val, b
     /* Callback to application */
     if (call_callbacks) {
         ESP_RETURN_ON_ERROR(execute_callback(attribute::PRE_UPDATE, current_attribute->endpoint_id,
-                                         current_attribute->cluster_id, current_attribute->attribute_id, val),
+                                             current_attribute->cluster_id, current_attribute->attribute_id, val),
                             TAG, "Failed to execute pre update callback");
     }
     // TODO: call pre attribute change function is the cluster has the flag
     if (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING || val->type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
-        val->type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING || val->type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING) {
+            val->type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING || val->type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING) {
         uint16_t null_len =
             (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING || val->type == ESP_MATTER_VAL_TYPE_OCTET_STRING)
             ? UINT8_MAX
@@ -766,7 +810,7 @@ esp_err_t set_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val, b
 
         if (attr_change_function) {
             attr_change_function(chip::app::ConcreteAttributePath(
-                current_attribute->endpoint_id, current_attribute->cluster_id, current_attribute->attribute_id));
+                                     current_attribute->endpoint_id, current_attribute->cluster_id, current_attribute->attribute_id));
         }
     }
     if (current_attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE) {
@@ -850,9 +894,9 @@ static esp_err_t get_val_from_tlv_data(const uint8_t *tlv_data, uint32_t tlv_len
     // and pass on to the user. This is only required for string and octet string types
 
     bool is_type_string = (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING
-                            || val->type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING);
+                           || val->type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING);
     bool is_type_octet_string = (val->type == ESP_MATTER_VAL_TYPE_OCTET_STRING
-                                    || val->type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING);
+                                 || val->type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING);
 
     if (is_type_string || is_type_octet_string) {
         // for empty strings, we need to copy at least null terminator
@@ -872,8 +916,8 @@ static esp_err_t get_val_from_tlv_data(const uint8_t *tlv_data, uint32_t tlv_len
 
 // Helper function to find the cluster_id and attribute_id for internally managed attributes
 static esp_err_t find_cluster_and_endpoint_id_for_internally_managed_attribute(const _attribute_base_t *attribute_base,
-                                                                                uint16_t &out_endpoint_id,
-                                                                                uint32_t &out_cluster_id)
+                                                                               uint16_t &out_endpoint_id,
+                                                                               uint32_t &out_cluster_id)
 {
     VerifyOrReturnError(attribute_base, ESP_ERR_INVALID_ARG);
     _node_t *node = (_node_t *)node::get();
@@ -938,7 +982,7 @@ esp_err_t get_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_
 }
 
 static esp_err_t get_path_from_attribute_handle(const _attribute_t *attribute, uint16_t &endpoint_id,
-                                                    uint32_t &cluster_id, uint32_t &attribute_id)
+                                                uint32_t &cluster_id, uint32_t &attribute_id)
 {
     attribute_id = attribute->attribute_id;
     if (attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY) {
@@ -993,7 +1037,7 @@ esp_matter_val_type_t get_val_type(uint16_t endpoint_id, uint32_t cluster_id, ui
 
 // Helper function: Set value via WriteAttribute with kInternal flag (for SCI/AAI writable attributes)
 static esp_err_t set_val_via_write_attribute(uint16_t endpoint_id, uint32_t cluster_id,
-                                              uint32_t attribute_id, esp_matter_attr_val_t *val)
+                                             uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
     chip::Platform::ScopedMemoryBuffer<uint8_t> tlv_buffer;
     tlv_buffer.Calloc(k_max_tlv_size_to_write_attribute_value);
@@ -1094,11 +1138,11 @@ esp_err_t add_bounds(attribute_t *attribute, esp_matter_attr_val_t min, esp_matt
 
     /* Check if bounds can be set */
     if (current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
-        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
-        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
-        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
-        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_ARRAY ||
-        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
+            current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
+            current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+            current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING ||
+            current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_ARRAY ||
+            current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
         ESP_LOGE(TAG, "Bounds cannot be set for string/array/boolean type attributes");
         return ESP_ERR_INVALID_ARG;
     }
@@ -1155,10 +1199,10 @@ esp_err_t set_override_callback(attribute_t *attribute, callback_t callback)
                         "Attribute is not managed by esp matter data model");
 
     if (current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_ARRAY ||
-        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
-        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
-        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
-        current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING) {
+            current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+            current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
+            current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
+            current_attribute->attribute_val_type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING) {
         // The override callback might allocate memory and we have no way to free the memory
         // TODO: Add memory-safe override callback for these attribute types
         ESP_LOGE(TAG, "Cannot set override callback for attribute 0x%" PRIX32, current_attribute->attribute_id);
@@ -1726,6 +1770,25 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
     }
     VerifyOrReturnError(current_endpoint != NULL, ESP_FAIL, ESP_LOGE(TAG, "Could not find the endpoint to delete"));
 
+    {
+        esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
+        cluster_t *cluster = cluster::get_first(endpoint);
+        while (cluster) {
+            /* TODO: kPermanentRemove type shutdown callback is not implemented yet in upstream code */
+
+            /* Shutdown function */
+            uint8_t flags = cluster::get_flags(cluster);
+            if ((flags & CLUSTER_FLAG_SERVER) && (flags & CLUSTER_FLAG_SHUTDOWN_FUNCTION)) {
+                cluster::function_cluster_shutdown_t shutdown_function =
+                    (cluster::function_cluster_shutdown_t)cluster::get_function(cluster, CLUSTER_FLAG_SHUTDOWN_FUNCTION);
+                if (shutdown_function) {
+                    shutdown_function(endpoint::get_id(endpoint));
+                }
+            }
+            cluster = cluster::get_next(cluster);
+        }
+    }
+
     /* Parse and delete all clusters */
     _cluster_t *cluster = current_endpoint->cluster_list;
     while (cluster) {
@@ -1921,11 +1984,13 @@ uint32_t get_cluster_count(uint32_t endpoint_id, uint32_t cluster_id, uint8_t cl
     // lambda to count all matching clusters for an endpoint
     auto get_count_on_all_clusters = [&check_cluster_flags](endpoint_t *endpoint) -> uint32_t {
         uint32_t result = 0;
-        if (!endpoint)
+        if (!endpoint) {
             return result;
+        }
 
         cluster_t *cluster = cluster::get_first(endpoint);
-        while (cluster) {
+        while (cluster)
+        {
             result += check_cluster_flags(cluster);
             cluster = cluster::get_next(cluster);
         }
@@ -1934,9 +1999,10 @@ uint32_t get_cluster_count(uint32_t endpoint_id, uint32_t cluster_id, uint8_t cl
 
     // lambda to find and count a specific cluster
     auto get_count_on_specific_cluster = [&check_cluster_flags](const endpoint_t *endpoint,
-                                                                uint32_t cluster_id) -> uint32_t {
-        if (!endpoint)
+    uint32_t cluster_id) -> uint32_t {
+        if (!endpoint) {
             return 0;
+        }
         cluster_t *cluster = cluster::get((endpoint_t *)endpoint, cluster_id);
         return check_cluster_flags(cluster);
     };

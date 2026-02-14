@@ -61,15 +61,15 @@ esp_err_t hal_stepper_motor_init(gpio_num_t pin_1, gpio_num_t pin_2, gpio_num_t 
 esp_err_t hal_stepper_motor_set_rock(int status)
 {
     uint8_t bldc_status = hal_bldc_status();
-    if(status == 0) {
+    if (status == 0) {
         // close
         stepper_motor.is_start = 0;
     } else if ((status == 1 || status == 3 || status == 5 || status == 7) && bldc_status != 0) {
         // RockLeftRight
         stepper_motor.is_start = 1;
-    } else if ((status == 2 || status == 6) && bldc_status !=0) {
+    } else if ((status == 2 || status == 6) && bldc_status != 0) {
         // UpDown
-    } else if (status == 4 && bldc_status !=0) {
+    } else if (status == 4 && bldc_status != 0) {
         // Round
     }
     return ESP_OK;

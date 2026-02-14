@@ -46,14 +46,13 @@ constexpr size_t kEthernetNetworkCommissioningClusterCount = 0;
 #endif
 
 constexpr size_t kNetworkCommissioningClusterCount = kThreadNetworkCommissioningClusterCount +
-    kWifiNetworkCommissioningClusterCount + kEthernetNetworkCommissioningClusterCount;
+                                                     kWifiNetworkCommissioningClusterCount + kEthernetNetworkCommissioningClusterCount;
 
 static_assert(kNetworkCommissioningClusterCount > 0, "NetworkCommissioningCluster count must be more than 0");
 
 LazyRegisteredServerCluster<NetworkCommissioningCluster> gServers[kNetworkCommissioningClusterCount];
 
-class ESPMatterGeneralCommissioningBreadcrumbTracker : public BreadCrumbTracker
-{
+class ESPMatterGeneralCommissioningBreadcrumbTracker : public BreadCrumbTracker {
 public:
     void SetBreadCrumb(uint64_t value) override
     {

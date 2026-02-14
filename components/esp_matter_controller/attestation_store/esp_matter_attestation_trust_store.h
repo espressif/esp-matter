@@ -31,8 +31,14 @@ typedef struct paa_der_cert {
 class paa_der_cert_iterator {
 public:
     paa_der_cert_iterator(const char *path);
-    ~paa_der_cert_iterator() { release(); };
-    size_t count() { return m_count; }
+    ~paa_der_cert_iterator()
+    {
+        release();
+    };
+    size_t count()
+    {
+        return m_count;
+    }
     bool next(paa_der_cert_t &item);
     void release();
 
@@ -84,7 +90,10 @@ public:
     CHIP_ERROR GetProductAttestationAuthorityCert(const ByteSpan &skid,
                                                   MutableByteSpan &outPaaDerBuffer) const override;
 
-    void SetDCLNetType(dcl_net_type_t type) { dcl_net_type = type; }
+    void SetDCLNetType(dcl_net_type_t type)
+    {
+        dcl_net_type = type;
+    }
 
 private:
     dcl_net_type_t dcl_net_type = DCL_MAIN_NET;

@@ -44,7 +44,8 @@ class MyReadClientCallback : public chip::app::ReadClient::Callback {
 public:
     void OnAttributeData(const chip::app::ConcreteDataAttributePath &aPath,
                          chip::TLV::TLVReader *aReader,
-                         const chip::app::StatusIB &aStatus) override {
+                         const chip::app::StatusIB &aStatus) override
+    {
         // Handle the attribute data
         if (aPath.mClusterId == chip::app::Clusters::OnOff::Id) {
             if (aPath.mAttributeId == chip::app::Clusters::OnOff::Attributes::OnOff::Id) {
@@ -54,16 +55,19 @@ public:
     }
 
     void OnEventData(const chip::app::EventHeader &aEventHeader, chip::TLV::TLVReader * apData,
-                     const chip::app::StatusIB *aStatus) override {
+                     const chip::app::StatusIB *aStatus) override
+    {
         // Handle event data
     }
 
-    void OnError(CHIP_ERROR aError) override {
+    void OnError(CHIP_ERROR aError) override
+    {
         // Handle the error
         ESP_LOGI(TAG, "ReadClient Error: %s", ErrorStr(aError));
     }
 
-    void OnDone(chip::app::ReadClient * apReadClient) override {
+    void OnDone(chip::app::ReadClient * apReadClient) override
+    {
         // Cleanup after done
         ESP_LOGI(TAG, "ReadClient Done");
     }
@@ -71,7 +75,7 @@ public:
 MyReadClientCallback readClientCb;
 
 void app_client_subscribe_command_callback(client::peer_device_t *peer_device, client::request_handle_t *req_handle,
-                                               void *priv_data)
+                                           void *priv_data)
 {
     uint16_t min_interval = 5;
     uint16_t max_interval = 10;
@@ -80,8 +84,8 @@ void app_client_subscribe_command_callback(client::peer_device_t *peer_device, c
     chip::Platform::ScopedMemoryBufferWithSize<chip::app::AttributePathParams> attrb_path;
     attrb_path.Alloc(1);
     client::interaction::subscribe::send_request(peer_device, &req_handle->attribute_path, attrb_path.AllocatedSize(),
-                                                &req_handle->event_path, 0, min_interval, max_interval, keep_subscription,
-                                                auto_resubscribe, readClientCb);
+                                                 &req_handle->event_path, 0, min_interval, max_interval, keep_subscription,
+                                                 auto_resubscribe, readClientCb);
 }
 
 #endif
@@ -106,7 +110,7 @@ static esp_err_t app_driver_bound_console_handler(int argc, char **argv)
             console_buffer[0] = argc - 4;
             for (int i = 0; i < (argc - 4); i++) {
                 if ((argv[4 + i][0] != '0') || (argv[4 + i][1] != 'x') ||
-                    (strlen((const char *)&argv[4 + i][2]) > 10)) {
+                        (strlen((const char *)&argv[4 + i][2]) > 10)) {
                     ESP_LOGE(TAG, "Incorrect arguments. Check help for more details.");
                     return ESP_ERR_INVALID_ARG;
                 }
@@ -143,13 +147,14 @@ static esp_err_t app_driver_client_console_handler(int argc, char **argv)
         req_handle.command_path = {(chip::EndpointId)strtoul((const char *)&argv[3][2], NULL, 16) /* EndpointId */,
                                    0 /* GroupId */, strtoul((const char *)&argv[4][2], NULL, 16) /* ClusterId */,
                                    strtoul((const char *)&argv[5][2], NULL, 16) /* CommandId */,
-                                   chip::app::CommandPathFlags::kEndpointIdValid};
+                                   chip::app::CommandPathFlags::kEndpointIdValid
+                                  };
 
         if (argc > 6) {
             console_buffer[0] = argc - 6;
             for (int i = 0; i < (argc - 6); i++) {
                 if ((argv[6 + i][0] != '0') || (argv[6 + i][1] != 'x') ||
-                    (strlen((const char *)&argv[6 + i][2]) > 10)) {
+                        (strlen((const char *)&argv[6 + i][2]) > 10)) {
                     ESP_LOGE(TAG, "Incorrect arguments. Check help for more details.");
                     return ESP_ERR_INVALID_ARG;
                 }
@@ -170,13 +175,14 @@ static esp_err_t app_driver_client_console_handler(int argc, char **argv)
         req_handle.command_path = {
             0 /* EndpointId */, (chip::GroupId)strtoul((const char *)&argv[2][2], NULL, 16) /* GroupId */,
             strtoul((const char *)&argv[3][2], NULL, 16) /* ClusterId */,
-            strtoul((const char *)&argv[4][2], NULL, 16) /* CommandId */, chip::app::CommandPathFlags::kGroupIdValid};
+            strtoul((const char *)&argv[4][2], NULL, 16) /* CommandId */, chip::app::CommandPathFlags::kGroupIdValid
+        };
 
         if (argc > 5) {
             console_buffer[0] = argc - 5;
             for (int i = 0; i < (argc - 5); i++) {
                 if ((argv[5 + i][0] != '0') || (argv[5 + i][1] != 'x') ||
-                    (strlen((const char *)&argv[5 + i][2]) > 10)) {
+                        (strlen((const char *)&argv[5 + i][2]) > 10)) {
                     ESP_LOGE(TAG, "Incorrect arguments. Check help for more details.");
                     return ESP_ERR_INVALID_ARG;
                 }
@@ -201,8 +207,8 @@ static void app_driver_register_commands()
     static const esp_matter::console::command_t bound_command = {
         .name = "bound",
         .description = "This can be used to simulate on-device control for bound devices."
-                       "Usage: matter esp bound <bound_command>. "
-                       "Bound commands: help, invoke",
+        "Usage: matter esp bound <bound_command>. "
+        "Bound commands: help, invoke",
         .handler = app_driver_bound_console_handler,
     };
     esp_matter::console::add_commands(&bound_command, 1);
@@ -211,8 +217,8 @@ static void app_driver_register_commands()
     static const esp_matter::console::command_t client_command = {
         .name = "client",
         .description = "This can be used to simulate on-device control for client devices."
-                       "Usage: matter esp client <client_command>. "
-                       "Client commands: help, invoke",
+        "Usage: matter esp client <client_command>. "
+        "Client commands: help, invoke",
         .handler = app_driver_client_console_handler,
     };
     esp_matter::console::add_commands(&client_command, 1);
@@ -245,7 +251,7 @@ void app_driver_client_invoke_command_callback(client::peer_device_t *peer_devic
                     return;
                 }
                 snprintf(command_data_str, sizeof(command_data_str), "{\"0:U16\": %ld}",
-                        strtoul((const char *)(req_handle->request_data) + 1, NULL, 16));
+                         strtoul((const char *)(req_handle->request_data) + 1, NULL, 16));
             } else {
                 ESP_LOGE(TAG, "Unsupported command");
                 return;
@@ -262,7 +268,7 @@ void app_driver_client_invoke_command_callback(client::peer_device_t *peer_devic
 }
 
 void app_driver_client_callback(client::peer_device_t *peer_device, client::request_handle_t *req_handle,
-                                               void *priv_data)
+                                void *priv_data)
 {
     if (req_handle->type == esp_matter::client::INVOKE_CMD) {
         app_driver_client_invoke_command_callback(peer_device, req_handle, priv_data);
@@ -290,7 +296,7 @@ void app_driver_client_group_invoke_command_callback(uint8_t fabric_index, clien
                 return;
             }
             snprintf(command_data_str, sizeof(command_data_str), "{\"0:U16\": %ld}",
-                    strtoul((const char *)(req_handle->request_data) + 1, NULL, 16));
+                     strtoul((const char *)(req_handle->request_data) + 1, NULL, 16));
         } else {
             ESP_LOGE(TAG, "Unsupported command");
             return;

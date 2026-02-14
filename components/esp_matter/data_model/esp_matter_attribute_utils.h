@@ -85,7 +85,7 @@ typedef enum {
     ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8 = ESP_MATTER_VAL_TYPE_ENUM8 + ESP_MATTER_VAL_NULLABLE_BASE,
     ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8 = ESP_MATTER_VAL_TYPE_BITMAP8 + ESP_MATTER_VAL_NULLABLE_BASE,
     ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16 = ESP_MATTER_VAL_TYPE_BITMAP16 + ESP_MATTER_VAL_NULLABLE_BASE,
-    ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32= ESP_MATTER_VAL_TYPE_BITMAP32 + ESP_MATTER_VAL_NULLABLE_BASE,
+    ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32 = ESP_MATTER_VAL_TYPE_BITMAP32 + ESP_MATTER_VAL_NULLABLE_BASE,
     ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16 = ESP_MATTER_VAL_TYPE_ENUM16 + ESP_MATTER_VAL_NULLABLE_BASE,
 } esp_matter_val_type_t;
 
@@ -148,7 +148,7 @@ typedef struct esp_matter_attr_bounds {
 template <typename T>
 class nullable {
 
-/** NOTE: GetNullValue is taken from src/app/util/attribute-storage-null-handling.h */
+    /** NOTE: GetNullValue is taken from src/app/util/attribute-storage-null-handling.h */
 private:
     template <typename U = T, typename std::enable_if_t<std::is_floating_point<U>::value, int> = 0>
     static constexpr T GetNullValue()
@@ -223,8 +223,7 @@ private:
 
 /** Template specialization for bool */
 template <>
-class nullable<bool>
-{
+class nullable<bool> {
     using Traits      = chip::app::NumericAttributeTraits<bool>;
     using StorageType = typename Traits::StorageType; // Resolves to uint8_t
 
@@ -233,12 +232,21 @@ class nullable<bool>
 
 public:
     /** Constructors */
-    nullable()                               { Traits::SetNull(storage); }
-    nullable(std::nullptr_t)                 { Traits::SetNull(storage); }
+    nullable()
+    {
+        Traits::SetNull(storage);
+    }
+    nullable(std::nullptr_t)
+    {
+        Traits::SetNull(storage);
+    }
     constexpr nullable(bool v)               : storage(static_cast<StorageType>(v)) {}
 
     /** Observers */
-    constexpr bool is_null()  const          { return Traits::IsNullValue(storage); }
+    constexpr bool is_null()  const
+    {
+        return Traits::IsNullValue(storage);
+    }
 
     /**
      * @brief Gets the stored bool value.
@@ -255,13 +263,25 @@ public:
      * ```
      * @return `true` if storage is non-zero (includes null state), `false` if storage is zero.
      */
-    constexpr bool value()  const            { return static_cast<bool>(storage); }
+    constexpr bool value()  const
+    {
+        return static_cast<bool>(storage);
+    }
 
-    constexpr bool value_or(bool d)  const   { return is_null() ? d : static_cast<bool>(storage); }
+    constexpr bool value_or(bool d)  const
+    {
+        return is_null() ? d : static_cast<bool>(storage);
+    }
 
     /** Modifiers */
-    void operator=(std::nullptr_t)           { Traits::SetNull(storage); }
-    void operator=(bool v)                   { storage = static_cast<StorageType>(v); }
+    void operator=(std::nullptr_t)
+    {
+        Traits::SetNull(storage);
+    }
+    void operator=(bool v)
+    {
+        storage = static_cast<StorageType>(v);
+    }
 
 private:
     StorageType storage; // 1‑byte payload holding 0 / 1 / 0xFF

@@ -51,7 +51,7 @@ void pairing_command::OnCommissioningSuccess(chip::PeerId peerId)
     controller_instance.get_commissioner()->RegisterPairingDelegate(nullptr);
     if (m_callbacks.commissioning_success_callback) {
         auto fabric = controller_instance.get_commissioner()->GetFabricTable()->FindFabricWithCompressedId(
-            peerId.GetCompressedFabricId());
+                          peerId.GetCompressedFabricId());
         m_callbacks.commissioning_success_callback(ScopedNodeId(peerId.GetNodeId(), fabric->GetFabricIndex()));
     }
 }
@@ -66,14 +66,14 @@ void pairing_command::OnCommissioningFailure(
     controller_instance.get_commissioner()->RegisterPairingDelegate(nullptr);
     if (m_callbacks.commissioning_failure_callback) {
         auto fabric = controller_instance.get_commissioner()->GetFabricTable()->FindFabricWithCompressedId(
-            peerId.GetCompressedFabricId());
+                          peerId.GetCompressedFabricId());
         m_callbacks.commissioning_failure_callback(
-            ScopedNodeId(peerId.GetNodeId(), fabric->GetFabricIndex()), error, stageFailed,
-            additionalErrorInfo.HasValue() ? std::make_optional(additionalErrorInfo.Value()) : std::nullopt);
+                       ScopedNodeId(peerId.GetNodeId(), fabric->GetFabricIndex()), error, stageFailed,
+                       additionalErrorInfo.HasValue() ? std::make_optional(additionalErrorInfo.Value()) : std::nullopt);
     }
     if (m_device_is_icd) {
         controller_instance.get_icd_client_storage().DeleteEntry(
-            ScopedNodeId(peerId.GetNodeId(), controller_instance.get_fabric_index()));
+                               ScopedNodeId(peerId.GetNodeId(), controller_instance.get_fabric_index()));
     }
 }
 
@@ -125,10 +125,10 @@ void pairing_command::OnDiscoveredDevice(const Dnssd::CommissionNodeData &nodeDa
     if (m_icd_registration) {
         m_device_is_icd = false;
         commissioning_params.SetICDRegistrationStrategy(m_icd_registration_strategy)
-            .SetICDClientType(app::Clusters::IcdManagement::ClientTypeEnum::kPermanent)
-            .SetICDCheckInNodeId(commissioner_node_id)
-            .SetICDMonitoredSubject(commissioner_node_id)
-            .SetICDSymmetricKey(m_icd_symmetric_key);
+                            .SetICDClientType(app::Clusters::IcdManagement::ClientTypeEnum::kPermanent)
+                            .SetICDCheckInNodeId(commissioner_node_id)
+                            .SetICDMonitoredSubject(commissioner_node_id)
+                            .SetICDSymmetricKey(m_icd_symmetric_key);
     }
     controller_instance.get_commissioner()->PairDevice(m_remote_node_id, params, commissioning_params);
 }
@@ -155,7 +155,7 @@ esp_err_t pairing_command::pairing_ble_wifi(NodeId node_id, uint32_t pincode, ui
                                             const char *pwd)
 {
     RendezvousParameters params = RendezvousParameters().SetSetupPINCode(pincode).SetDiscriminator(disc).SetPeerAddress(
-        Transport::PeerAddress::BLE());
+                                      Transport::PeerAddress::BLE());
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
     ESP_RETURN_ON_FALSE(controller_instance.get_commissioner()->GetPairingDelegate() == nullptr, ESP_ERR_INVALID_STATE,
                         TAG, "There is already a pairing process");
@@ -173,7 +173,7 @@ esp_err_t pairing_command::pairing_ble_thread(NodeId node_id, uint32_t pincode, 
                                               uint8_t dataset_len)
 {
     RendezvousParameters params = RendezvousParameters().SetSetupPINCode(pincode).SetDiscriminator(disc).SetPeerAddress(
-        Transport::PeerAddress::BLE());
+                                      Transport::PeerAddress::BLE());
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
     ESP_RETURN_ON_FALSE(controller_instance.get_commissioner()->GetPairingDelegate() == nullptr, ESP_ERR_INVALID_STATE,
                         TAG, "There is already a pairing process");
@@ -184,10 +184,10 @@ esp_err_t pairing_command::pairing_ble_thread(NodeId node_id, uint32_t pincode, 
     if (pairing_command::get_instance().m_icd_registration) {
         pairing_command::get_instance().m_device_is_icd = false;
         commissioning_params.SetICDRegistrationStrategy(pairing_command::get_instance().m_icd_registration_strategy)
-            .SetICDClientType(app::Clusters::IcdManagement::ClientTypeEnum::kPermanent)
-            .SetICDCheckInNodeId(commissioner_node_id)
-            .SetICDMonitoredSubject(commissioner_node_id)
-            .SetICDSymmetricKey(pairing_command::get_instance().m_icd_symmetric_key);
+                            .SetICDClientType(app::Clusters::IcdManagement::ClientTypeEnum::kPermanent)
+                            .SetICDCheckInNodeId(commissioner_node_id)
+                            .SetICDMonitoredSubject(commissioner_node_id)
+                            .SetICDSymmetricKey(pairing_command::get_instance().m_icd_symmetric_key);
     }
     controller_instance.get_commissioner()->PairDevice(node_id, params, commissioning_params);
     return ESP_OK;
@@ -204,10 +204,10 @@ esp_err_t pairing_command::pairing_code(NodeId nodeId, const char *payload)
     if (pairing_command::get_instance().m_icd_registration) {
         pairing_command::get_instance().m_device_is_icd = false;
         commissioning_params.SetICDRegistrationStrategy(pairing_command::get_instance().m_icd_registration_strategy)
-            .SetICDClientType(app::Clusters::IcdManagement::ClientTypeEnum::kPermanent)
-            .SetICDCheckInNodeId(commissioner_node_id)
-            .SetICDMonitoredSubject(commissioner_node_id)
-            .SetICDSymmetricKey(pairing_command::get_instance().m_icd_symmetric_key);
+                            .SetICDClientType(app::Clusters::IcdManagement::ClientTypeEnum::kPermanent)
+                            .SetICDCheckInNodeId(commissioner_node_id)
+                            .SetICDMonitoredSubject(commissioner_node_id)
+                            .SetICDSymmetricKey(pairing_command::get_instance().m_icd_symmetric_key);
     }
     controller_instance.get_commissioner()->RegisterPairingDelegate(&pairing_command::get_instance());
     controller_instance.get_commissioner()->PairDevice(nodeId, payload, commissioning_params,
@@ -228,10 +228,10 @@ esp_err_t pairing_command::pairing_code_thread(NodeId nodeId, const char *payloa
     if (pairing_command::get_instance().m_icd_registration) {
         pairing_command::get_instance().m_device_is_icd = false;
         commissioning_params.SetICDRegistrationStrategy(pairing_command::get_instance().m_icd_registration_strategy)
-            .SetICDClientType(app::Clusters::IcdManagement::ClientTypeEnum::kPermanent)
-            .SetICDCheckInNodeId(commissioner_node_id)
-            .SetICDMonitoredSubject(commissioner_node_id)
-            .SetICDSymmetricKey(pairing_command::get_instance().m_icd_symmetric_key);
+                            .SetICDClientType(app::Clusters::IcdManagement::ClientTypeEnum::kPermanent)
+                            .SetICDCheckInNodeId(commissioner_node_id)
+                            .SetICDMonitoredSubject(commissioner_node_id)
+                            .SetICDSymmetricKey(pairing_command::get_instance().m_icd_symmetric_key);
     }
     controller_instance.get_commissioner()->RegisterPairingDelegate(&pairing_command::get_instance());
     controller_instance.get_commissioner()->PairDevice(nodeId, payload, commissioning_params, DiscoveryType::kAll);
@@ -264,8 +264,8 @@ esp_err_t pairing_command::pairing_code_wifi_thread(NodeId nodeId, const char *s
 
     CommissioningParameters commissioning_params =
         CommissioningParameters()
-            .SetWiFiCredentials(Controller::WiFiCredentials(nameSpan, pwdSpan))
-            .SetThreadOperationalDataset(dataset_span);
+        .SetWiFiCredentials(Controller::WiFiCredentials(nameSpan, pwdSpan))
+        .SetThreadOperationalDataset(dataset_span);
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
     ESP_RETURN_ON_FALSE(controller_instance.get_commissioner()->GetPairingDelegate() == nullptr, ESP_ERR_INVALID_STATE,
                         TAG, "There is already a pairing process");
@@ -273,10 +273,10 @@ esp_err_t pairing_command::pairing_code_wifi_thread(NodeId nodeId, const char *s
     if (pairing_command::get_instance().m_icd_registration) {
         pairing_command::get_instance().m_device_is_icd = false;
         commissioning_params.SetICDRegistrationStrategy(pairing_command::get_instance().m_icd_registration_strategy)
-            .SetICDClientType(app::Clusters::IcdManagement::ClientTypeEnum::kPermanent)
-            .SetICDCheckInNodeId(commissioner_node_id)
-            .SetICDMonitoredSubject(commissioner_node_id)
-            .SetICDSymmetricKey(pairing_command::get_instance().m_icd_symmetric_key);
+                            .SetICDClientType(app::Clusters::IcdManagement::ClientTypeEnum::kPermanent)
+                            .SetICDCheckInNodeId(commissioner_node_id)
+                            .SetICDMonitoredSubject(commissioner_node_id)
+                            .SetICDSymmetricKey(pairing_command::get_instance().m_icd_symmetric_key);
     }
     controller_instance.get_commissioner()->RegisterPairingDelegate(&pairing_command::get_instance());
     controller_instance.get_commissioner()->PairDevice(nodeId, payload, commissioning_params, DiscoveryType::kAll);

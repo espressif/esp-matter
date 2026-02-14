@@ -44,7 +44,7 @@ typedef struct {
 
 /** Pairing command class to finish commissioning with Matter end-devices **/
 class pairing_command : public chip::Controller::DevicePairingDelegate,
-                        public chip::Controller::DeviceDiscoveryDelegate {
+    public chip::Controller::DeviceDiscoveryDelegate {
 public:
     /****************** DevicePairingDelegate Interface *****************/
     // This function will be called when the PASE session is established or the commissioner fails to establish
@@ -68,9 +68,15 @@ public:
         return s_instance;
     }
 
-    void set_callbacks(pairing_command_callbacks_t callbacks) { m_callbacks = callbacks; }
+    void set_callbacks(pairing_command_callbacks_t callbacks)
+    {
+        m_callbacks = callbacks;
+    }
 
-    void set_icd_registration(bool icd_registration) { m_icd_registration = icd_registration; }
+    void set_icd_registration(bool icd_registration)
+    {
+        m_icd_registration = icd_registration;
+    }
 
     /**
      * Pairing a Matter end-device on the same IP network

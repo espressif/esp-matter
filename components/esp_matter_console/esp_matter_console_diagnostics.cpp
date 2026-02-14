@@ -72,7 +72,7 @@ esp_err_t diagnostics_register_commands()
             .handler = up_time_console_handler,
         },
     };
-    diagnostics_console.register_commands(diagnostics_commands, sizeof(diagnostics_commands)/sizeof(command_t));
+    diagnostics_console.register_commands(diagnostics_commands, sizeof(diagnostics_commands) / sizeof(command_t));
 
     return add_commands(&command, 1);
 }

@@ -45,7 +45,7 @@ OccupancySensing::Feature getFeature(EndpointId endpointId)
         esp_matter::attribute::get(endpointId, OccupancySensing::Id, Globals::Attributes::FeatureMap::Id);
     esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
     if (attr && esp_matter::attribute::get_val_internal(attr, &val) == ESP_OK &&
-        val.type == ESP_MATTER_VAL_TYPE_BITMAP32) {
+            val.type == ESP_MATTER_VAL_TYPE_BITMAP32) {
         return static_cast<OccupancySensing::Feature>(val.val.u32);
     }
     return static_cast<OccupancySensing::Feature>(0);
@@ -67,17 +67,18 @@ void ESPMatterOccupancySensingClusterServerInitCallback(EndpointId endpointId)
         // SetHoldTime() later to customize. Initial defaults come from typical values found in real devices on the
         // market.
         constexpr chip::app::Clusters::OccupancySensing::Structs::HoldTimeLimitsStruct::Type kDefaultHoldTimeLimits = {
-            .holdTimeMin = 1, .holdTimeMax = 300, .holdTimeDefault = 30};
+            .holdTimeMin = 1, .holdTimeMax = 300, .holdTimeDefault = 30
+        };
         config.WithHoldTime(kDefaultHoldTimeLimits.holdTimeDefault, kDefaultHoldTimeLimits, gDefaultTimerDelegate);
 
         // Show deprecated attributes if enabled in Zap
         config.WithDeprecatedAttributes(
-            esp_matter::endpoint::is_attribute_enabled(endpointId, OccupancySensing::Id,
-                                                       Attributes::PIROccupiedToUnoccupiedDelay::Id) ||
-            esp_matter::endpoint::is_attribute_enabled(endpointId, OccupancySensing::Id,
-                                                       Attributes::UltrasonicOccupiedToUnoccupiedDelay::Id) ||
-            esp_matter::endpoint::is_attribute_enabled(endpointId, OccupancySensing::Id,
-                                                       Attributes::PhysicalContactOccupiedToUnoccupiedDelay::Id));
+                  esp_matter::endpoint::is_attribute_enabled(endpointId, OccupancySensing::Id,
+                                                             Attributes::PIROccupiedToUnoccupiedDelay::Id) ||
+                  esp_matter::endpoint::is_attribute_enabled(endpointId, OccupancySensing::Id,
+                                                             Attributes::UltrasonicOccupiedToUnoccupiedDelay::Id) ||
+                  esp_matter::endpoint::is_attribute_enabled(endpointId, OccupancySensing::Id,
+                                                             Attributes::PhysicalContactOccupiedToUnoccupiedDelay::Id));
     }
     gServers[endpointId].Create(config);
     CHIP_ERROR err =
@@ -93,7 +94,7 @@ void ESPMatterOccupancySensingClusterServerShutdownCallback(EndpointId endpointI
         return;
     }
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(
-        &gServers[endpointId].Cluster(), shutdownType);
+                         &gServers[endpointId].Cluster(), shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister OccupancySensing - Error %" CHIP_ERROR_FORMAT, err.Format());
     }

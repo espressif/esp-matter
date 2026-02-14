@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #include <inttypes.h>
 #include <esp_matter_delegate_callbacks.h>
 #include <esp_matter_core.h>
@@ -81,79 +80,79 @@ static uint32_t get_feature_map_value(uint16_t endpoint_id, uint32_t cluster_id)
 chip::BitMask<EnergyEvse::OptionalAttributes> get_energy_evse_enabled_optional_attributes(uint16_t endpoint_id)
 {
     chip::BitMask<EnergyEvse::OptionalAttributes> optional_attrs = 0;
-    
+
     if (endpoint::is_attribute_enabled(endpoint_id, EnergyEvse::Id, EnergyEvse::Attributes::UserMaximumChargeCurrent::Id)) {
         optional_attrs.Set(EnergyEvse::OptionalAttributes::kSupportsUserMaximumChargingCurrent);
     }
-    
+
     if (endpoint::is_attribute_enabled(endpoint_id, EnergyEvse::Id, EnergyEvse::Attributes::RandomizationDelayWindow::Id)) {
         optional_attrs.Set(EnergyEvse::OptionalAttributes::kSupportsRandomizationWindow);
     }
-    
+
     if (endpoint::is_attribute_enabled(endpoint_id, EnergyEvse::Id, EnergyEvse::Attributes::ApproximateEVEfficiency::Id)) {
         optional_attrs.Set(EnergyEvse::OptionalAttributes::kSupportsApproximateEvEfficiency);
     }
-    
+
     return optional_attrs;
 }
 
 chip::BitMask<ElectricalPowerMeasurement::OptionalAttributes> get_electrical_power_measurement_enabled_optional_attributes(uint16_t endpoint_id)
 {
     chip::BitMask<ElectricalPowerMeasurement::OptionalAttributes> optional_attrs = 0;
-    
+
     // Check for various optional attributes
     if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::Ranges::Id)) {
         optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeRanges);
     }
-    
+
     if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::Voltage::Id)) {
         optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeVoltage);
     }
-    
+
     if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::ActiveCurrent::Id)) {
         optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeActiveCurrent);
     }
-    
+
     if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::ReactiveCurrent::Id)) {
         optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeReactiveCurrent);
     }
-    
+
     if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::ApparentCurrent::Id)) {
         optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeApparentCurrent);
     }
-    
+
     if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::ReactivePower::Id)) {
         optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeReactivePower);
     }
-    
+
     if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::ApparentPower::Id)) {
         optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeApparentPower);
     }
-    
+
     if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::RMSVoltage::Id)) {
         optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeRMSVoltage);
     }
-    
+
     if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::RMSCurrent::Id)) {
         optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeRMSCurrent);
     }
-    
+
     if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::RMSPower::Id)) {
         optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeRMSPower);
     }
-    
+
     if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::Frequency::Id)) {
         optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeFrequency);
     }
-    
+
     if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::PowerFactor::Id)) {
         optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributePowerFactor);
     }
-    
+
     if (endpoint::is_attribute_enabled(endpoint_id, ElectricalPowerMeasurement::Id, ElectricalPowerMeasurement::Attributes::NeutralCurrent::Id)) {
         optional_attrs.Set(ElectricalPowerMeasurement::OptionalAttributes::kOptionalAttributeNeutralCurrent);
     }
-    
+
     return optional_attrs;
 }
 
@@ -161,11 +160,11 @@ chip::BitMask<ElectricalPowerMeasurement::OptionalAttributes> get_electrical_pow
 chip::BitMask<EnergyEvse::OptionalCommands> get_energy_evse_enabled_optional_commands(uint16_t endpoint_id)
 {
     chip::BitMask<EnergyEvse::OptionalCommands> optional_cmds = 0;
-    
+
     if (endpoint::is_command_enabled(endpoint_id, EnergyEvse::Id, EnergyEvse::Commands::StartDiagnostics::Id)) {
         optional_cmds.Set(EnergyEvse::OptionalCommands::kSupportsStartDiagnostics);
     }
-    
+
     return optional_cmds;
 }
 
@@ -222,8 +221,7 @@ void MicrowaveOvenModeDelegateInitCB(void *delegate, uint16_t endpoint_id)
     ModeBase::Delegate *mode_delegate = static_cast<ModeBase::Delegate*>(delegate);
     ModeBase::Instance * modeInstance = nullptr;
     // Create new instance of MicrowaveOvenMode if not found in the map, otherwise use existing instance.
-    if(s_microwave_oven_mode_instances.find(endpoint_id) == s_microwave_oven_mode_instances.end())
-    {
+    if (s_microwave_oven_mode_instances.find(endpoint_id) == s_microwave_oven_mode_instances.end()) {
         uint32_t feature_map = get_feature_map_value(endpoint_id, MicrowaveOvenMode::Id);
         modeInstance = new ModeBase::Instance(mode_delegate, endpoint_id, MicrowaveOvenMode::Id, feature_map);
         s_microwave_oven_mode_instances[endpoint_id] = modeInstance;
@@ -251,7 +249,7 @@ void EnergyEvseDelegateInitCB(void *delegate, uint16_t endpoint_id)
     chip::BitMask<EnergyEvse::OptionalAttributes> optional_attrs = get_energy_evse_enabled_optional_attributes(endpoint_id);
     chip::BitMask<EnergyEvse::OptionalCommands> optional_cmds = get_energy_evse_enabled_optional_commands(endpoint_id);
     energyEvseInstance = new EnergyEvse::Instance(endpoint_id, *energy_evse_delegate, chip::BitMask<EnergyEvse::Feature, uint32_t>(feature_map),
-                            optional_attrs, optional_cmds);
+                                                  optional_attrs, optional_cmds);
     (void)energyEvseInstance->Init();
 }
 
@@ -265,32 +263,30 @@ void MicrowaveOvenControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
     VerifyOrReturn(delegate != nullptr && microwave_oven_mode_delegate != nullptr && operational_state_delegate != nullptr);
     ModeBase::Instance* microwaveOvenModeInstance = nullptr;
     OperationalState::Instance* operationalStateInstance = nullptr;
-    
+
     // Create new instance of MicrowaveOvenMode if not found in the map, otherwise use existing instance.
-    if(s_microwave_oven_mode_instances.find(endpoint_id) == s_microwave_oven_mode_instances.end())
-    {
+    if (s_microwave_oven_mode_instances.find(endpoint_id) == s_microwave_oven_mode_instances.end()) {
         uint32_t feature_map = get_feature_map_value(endpoint_id, MicrowaveOvenMode::Id);
         microwaveOvenModeInstance = new ModeBase::Instance(microwave_oven_mode_delegate, endpoint_id, MicrowaveOvenMode::Id, feature_map);
         s_microwave_oven_mode_instances[endpoint_id] = microwaveOvenModeInstance;
     } else {
         microwaveOvenModeInstance = s_microwave_oven_mode_instances[endpoint_id];
     }
-    
+
     // Create new instance of OperationalState if not found in the map, otherwise use existing instance.
-    if(s_operational_state_instances.find(endpoint_id) == s_operational_state_instances.end())
-    {
+    if (s_operational_state_instances.find(endpoint_id) == s_operational_state_instances.end()) {
         operationalStateInstance = new OperationalState::Instance(operational_state_delegate, endpoint_id);
         s_operational_state_instances[endpoint_id] = operationalStateInstance;
     } else {
         operationalStateInstance = s_operational_state_instances[endpoint_id];
     }
-    
+
     // Create MicrowaveOvenControl instance
     static MicrowaveOvenControl::Instance * microwaveOvenControlInstance = nullptr;
     MicrowaveOvenControl::Delegate *microwave_oven_control_delegate = static_cast<MicrowaveOvenControl::Delegate*>(delegate);
     uint32_t feature_map = get_feature_map_value(endpoint_id, MicrowaveOvenControl::Id);
     microwaveOvenControlInstance = new MicrowaveOvenControl::Instance(microwave_oven_control_delegate, endpoint_id, MicrowaveOvenControl::Id, feature_map,
-                                        *operationalStateInstance, *microwaveOvenModeInstance);
+                                                                      *operationalStateInstance, *microwaveOvenModeInstance);
     (void)microwaveOvenControlInstance->Init();
 }
 
@@ -300,8 +296,7 @@ void OperationalStateDelegateInitCB(void *delegate, uint16_t endpoint_id)
     static OperationalState::Instance * operationalStateInstance = nullptr;
     OperationalState::Delegate *operational_state_delegate = static_cast<OperationalState::Delegate*>(delegate);
     // Create new instance of OperationalState if not found in the map, otherwise use existing instance.
-    if(s_operational_state_instances.find(endpoint_id) == s_operational_state_instances.end())
-    {
+    if (s_operational_state_instances.find(endpoint_id) == s_operational_state_instances.end()) {
         operationalStateInstance = new OperationalState::Instance(operational_state_delegate, endpoint_id);
         s_operational_state_instances[endpoint_id] = operationalStateInstance;
     } else {
@@ -403,7 +398,7 @@ void ElectricalPowerMeasurementDelegateInitCB(void *delegate, uint16_t endpoint_
     uint32_t feature_map = get_feature_map_value(endpoint_id, ElectricalPowerMeasurement::Id);
     chip::BitMask<ElectricalPowerMeasurement::OptionalAttributes> optional_attrs = get_electrical_power_measurement_enabled_optional_attributes(endpoint_id);
     electricalPowerMeasurementInstance = new ElectricalPowerMeasurement::Instance(endpoint_id, *electrical_power_measurement_delegate,
-                            chip::BitMask<ElectricalPowerMeasurement::Feature, uint32_t>(feature_map), optional_attrs);
+                                                                                  chip::BitMask<ElectricalPowerMeasurement::Feature, uint32_t>(feature_map), optional_attrs);
     (void)electricalPowerMeasurementInstance->Init();
 }
 
@@ -466,8 +461,7 @@ void ServiceAreaDelegateInitCB(void *delegate, uint16_t endpoint_id)
 
 void WaterHeaterManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
+    if (delegate == nullptr) {
         return;
     }
     static WaterHeaterManagement::Instance * wHtrInstance = nullptr;
@@ -479,8 +473,7 @@ void WaterHeaterManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
 
 void EnergyPreferenceDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
+    if (delegate == nullptr) {
         return;
     }
     EnergyPreference::Delegate *energy_preference_delegate = static_cast<EnergyPreference::Delegate*>(delegate);
@@ -489,8 +482,7 @@ void EnergyPreferenceDelegateInitCB(void *delegate, uint16_t endpoint_id)
 
 void CommissionerControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if(delegate == nullptr)
-    {
+    if (delegate == nullptr) {
         return;
     }
     CommissionerControl::Delegate *commissioner_control_delegate = static_cast<CommissionerControl::Delegate*>(delegate);
@@ -508,7 +500,6 @@ void ActionsDelegateInitCB(void *delegate, uint16_t endpoint_id)
     actionsServer = new Actions::ActionsServer(endpoint_id, *actions_delegate);
     (void)actionsServer->Init();
 }
-
 
 void ThermostatDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
@@ -548,7 +539,6 @@ void ClosureControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
     (void)server_interface->Init();
 }
 
-
 void ClosureDimensionDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     VerifyOrReturn(delegate != nullptr);
@@ -559,14 +549,12 @@ void ClosureDimensionDelegateInitCB(void *delegate, uint16_t endpoint_id)
     (void)server_interface->Init();
 }
 
-
 void PushAvStreamTransportDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     VerifyOrReturn(delegate != nullptr);
     PushAvStreamTransportDelegate *push_av_stream_transport_delegate = static_cast<PushAvStreamTransportDelegate*>(delegate);
     chip::app::Clusters::PushAvStreamTransport::SetDelegate(endpoint_id, push_av_stream_transport_delegate);
 }
-
 
 void CommodityTariffDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
@@ -577,7 +565,6 @@ void CommodityTariffDelegateInitCB(void *delegate, uint16_t endpoint_id)
     (void)commodity_tariff_instance->Init();
 }
 
-
 void CommodityPriceDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     VerifyOrReturn(delegate != nullptr);
@@ -586,7 +573,6 @@ void CommodityPriceDelegateInitCB(void *delegate, uint16_t endpoint_id)
     CommodityPrice::Instance *commodity_price_instance = new CommodityPrice::Instance(endpoint_id, *commodity_price_delegate, chip::BitMask<CommodityPrice::Feature, uint32_t>(feature_map));
     (void)commodity_price_instance->Init();
 }
-
 
 void ElectricalGridConditionsDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {

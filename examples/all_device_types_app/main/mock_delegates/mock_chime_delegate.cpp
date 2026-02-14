@@ -17,18 +17,18 @@ namespace Chime {
 
 MockChimeDelegate::~MockChimeDelegate() = default;
 
-CHIP_ERROR MockChimeDelegate::GetChimeSoundByIndex(uint8_t chimeIndex, uint8_t & chimeID, MutableCharSpan & name)
+CHIP_ERROR MockChimeDelegate::GetChimeSoundByIndex(uint8_t chimeIndex, uint8_t  &chimeID, MutableCharSpan  &name)
 {
     // Implement your own logic here.
     ESP_LOGE(LOG_TAG, "%s is not implemented", __func__);
-    return CHIP_NO_ERROR;
+    return CHIP_ERROR_PROVIDER_LIST_EXHAUSTED;
 }
 
-CHIP_ERROR MockChimeDelegate::GetChimeIDByIndex(uint8_t chimeIndex, uint8_t & chimeID)
+CHIP_ERROR MockChimeDelegate::GetChimeIDByIndex(uint8_t chimeIndex, uint8_t  &chimeID)
 {
     // Implement your own logic here.
     ESP_LOGE(LOG_TAG, "%s is not implemented", __func__);
-    return CHIP_NO_ERROR;
+    return CHIP_ERROR_PROVIDER_LIST_EXHAUSTED;
 }
 
 Protocols::InteractionModel::Status MockChimeDelegate::PlayChimeSound()

@@ -32,7 +32,7 @@ uint32_t get_feature_map(esp_matter::cluster_t *cluster)
     if (attribute) {
         esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
         if (esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK &&
-            val.type == ESP_MATTER_VAL_TYPE_BITMAP32) {
+                val.type == ESP_MATTER_VAL_TYPE_BITMAP32) {
             return val.val.u32;
         }
     }
@@ -82,7 +82,7 @@ void ESPMatterEthernetNetworkDiagnosticsClusterServerShutdownCallback(EndpointId
                                                                       ClusterShutdownType shutdownType)
 {
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(
-        &gServers[endpointId].Cluster(), shutdownType);
+                         &gServers[endpointId].Cluster(), shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer,
                      "Failed to unregister EthernetNetworkDiagnostics on endpoint %u - Error: %" CHIP_ERROR_FORMAT,

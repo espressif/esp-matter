@@ -44,18 +44,18 @@ GeneralCommissioningCluster * Instance()
 
     if (!gServer.IsConstructed()) {
         gServer.Create(
-            GeneralCommissioningCluster::Context {
-                .commissioningWindowManager = Server::GetInstance().GetCommissioningWindowManager(), //
-                    .configurationManager   = DeviceLayer::ConfigurationMgr(),                       //
-                    .deviceControlServer    = DeviceLayer::DeviceControlServer::DeviceControlSvr(),  //
-                    .fabricTable            = Server::GetInstance().GetFabricTable(),                //
-                    .failsafeContext        = Server::GetInstance().GetFailSafeContext(),            //
-                    .platformManager        = DeviceLayer::PlatformMgr(),                            //
+        GeneralCommissioningCluster::Context {
+            .commissioningWindowManager = Server::GetInstance().GetCommissioningWindowManager(), //
+            .configurationManager   = DeviceLayer::ConfigurationMgr(),                       //
+            .deviceControlServer    = DeviceLayer::DeviceControlServer::DeviceControlSvr(),  //
+            .fabricTable            = Server::GetInstance().GetFabricTable(),                //
+            .failsafeContext        = Server::GetInstance().GetFailSafeContext(),            //
+            .platformManager        = DeviceLayer::PlatformMgr(),                            //
 #if CHIP_CONFIG_TERMS_AND_CONDITIONS_REQUIRED
-                    .termsAndConditionsProvider = TermsAndConditionsManager::GetInstance(),
+            .termsAndConditionsProvider = TermsAndConditionsManager::GetInstance(),
 #endif // CHIP_CONFIG_TERMS_AND_CONDITIONS_REQUIRED
-            },
-            optionalAttrs);
+        },
+        optionalAttrs);
     }
 
     return &gServer.Cluster();
@@ -75,18 +75,18 @@ void ESPMatterGeneralCommissioningClusterServerInitCallback(EndpointId endpointI
 
     if (!gServer.IsConstructed()) {
         gServer.Create(
-            GeneralCommissioningCluster::Context {
-                .commissioningWindowManager = Server::GetInstance().GetCommissioningWindowManager(), //
-                    .configurationManager   = DeviceLayer::ConfigurationMgr(),                       //
-                    .deviceControlServer    = DeviceLayer::DeviceControlServer::DeviceControlSvr(),  //
-                    .fabricTable            = Server::GetInstance().GetFabricTable(),                //
-                    .failsafeContext        = Server::GetInstance().GetFailSafeContext(),            //
-                    .platformManager        = DeviceLayer::PlatformMgr(),                            //
+        GeneralCommissioningCluster::Context {
+            .commissioningWindowManager = Server::GetInstance().GetCommissioningWindowManager(), //
+            .configurationManager   = DeviceLayer::ConfigurationMgr(),                       //
+            .deviceControlServer    = DeviceLayer::DeviceControlServer::DeviceControlSvr(),  //
+            .fabricTable            = Server::GetInstance().GetFabricTable(),                //
+            .failsafeContext        = Server::GetInstance().GetFailSafeContext(),            //
+            .platformManager        = DeviceLayer::PlatformMgr(),                            //
 #if CHIP_CONFIG_TERMS_AND_CONDITIONS_REQUIRED
-                    .termsAndConditionsProvider = TermsAndConditionsManager::GetInstance(),
+            .termsAndConditionsProvider = TermsAndConditionsManager::GetInstance(),
 #endif // CHIP_CONFIG_TERMS_AND_CONDITIONS_REQUIRED
-            },
-            optionalAttrs);
+        },
+        optionalAttrs);
     }
 
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());

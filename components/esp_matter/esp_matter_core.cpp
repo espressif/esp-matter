@@ -84,8 +84,7 @@ void PostEvent(uint16_t eventType)
     VerifyOrReturn(error == CHIP_NO_ERROR, ESP_LOGE(TAG, "Failed to post event for event type:%" PRIu16 ", err:%" CHIP_ERROR_FORMAT, eventType, error.Format()));
 }
 
-class AppDelegateImpl : public AppDelegate
-{
+class AppDelegateImpl : public AppDelegate {
 public:
     void OnCommissioningSessionStarted()
     {
@@ -108,25 +107,24 @@ public:
     }
 };
 
-class FabricDelegateImpl : public chip::FabricTable::Delegate
-{
+class FabricDelegateImpl : public chip::FabricTable::Delegate {
 public:
-    void FabricWillBeRemoved(const chip::FabricTable & fabricTable,chip::FabricIndex fabricIndex)
+    void FabricWillBeRemoved(const chip::FabricTable  &fabricTable, chip::FabricIndex fabricIndex)
     {
         PostEvent(chip::DeviceLayer::DeviceEventType::kFabricWillBeRemoved);
     }
 
-    void OnFabricRemoved(const chip::FabricTable & fabricTable,chip::FabricIndex fabricIndex)
+    void OnFabricRemoved(const chip::FabricTable  &fabricTable, chip::FabricIndex fabricIndex)
     {
         PostEvent(chip::DeviceLayer::DeviceEventType::kFabricRemoved);
     }
 
-    void OnFabricCommitted(const chip::FabricTable & fabricTable, chip::FabricIndex fabricIndex)
+    void OnFabricCommitted(const chip::FabricTable  &fabricTable, chip::FabricIndex fabricIndex)
     {
         PostEvent(chip::DeviceLayer::DeviceEventType::kFabricCommitted);
     }
 
-    void OnFabricUpdated(const chip::FabricTable & fabricTable, chip::FabricIndex fabricIndex)
+    void OnFabricUpdated(const chip::FabricTable  &fabricTable, chip::FabricIndex fabricIndex)
     {
         PostEvent(chip::DeviceLayer::DeviceEventType::kFabricUpdated);
     }
@@ -171,7 +169,7 @@ esp_err_t ScopedChipStackLock::chip_stack_unlock()
 static void deinit_ble_if_commissioned(intptr_t unused)
 {
 #if CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING
-    if(chip::Server::GetInstance().GetFabricTable().FabricCount() > 0) {
+    if (chip::Server::GetInstance().GetFabricTable().FabricCount() > 0) {
         chip::DeviceLayer::Internal::BLEMgr().Shutdown();
     }
 #endif /* CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING */
@@ -209,7 +207,7 @@ static void esp_matter_chip_init_task(intptr_t context)
         uint8_t max_groups_server_cluster_count = CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT - 1;
         uint16_t max_groups_per_fabric = max_groups_server_cluster_count * MAX_GROUPS_PER_FABRIC_PER_ENDPOINT;
         static chip::Credentials::GroupDataProviderImpl groupDataProvider(max_groups_per_fabric,
-                CHIP_CONFIG_MAX_GROUP_KEYS_PER_FABRIC);
+                                                                          CHIP_CONFIG_MAX_GROUP_KEYS_PER_FABRIC);
         groupDataProvider.SetStorageDelegate(initParams.persistentStorageDelegate);
         groupDataProvider.SetSessionKeystore(initParams.sessionKeystore);
         if (groupDataProvider.Init() != CHIP_NO_ERROR) {
@@ -220,8 +218,7 @@ static void esp_matter_chip_init_task(intptr_t context)
 #endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 
     CHIP_ERROR ret = chip::Server::GetInstance().GetFabricTable().AddFabricDelegate(&s_fabric_delegate);
-    if (ret != CHIP_NO_ERROR)
-    {
+    if (ret != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to add fabric delegate, err:%" CHIP_ERROR_FORMAT, ret.Format());
     }
     ret = chip::Server::GetInstance().Init(initParams);
@@ -256,8 +253,7 @@ static void esp_matter_chip_init_task(intptr_t context)
 
 static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg)
 {
-    switch (event->Type)
-    {
+    switch (event->Type) {
     case chip::DeviceLayer::DeviceEventType::kInterfaceIpAddressChanged:
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI || CHIP_DEVICE_CONFIG_ENABLE_ETHERNET
         if (event->InterfaceIpAddressChanged.Type == chip::DeviceLayer::InterfaceIpChangeType::kIpV6_Assigned ||
@@ -336,13 +332,13 @@ static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
         ESP_LOGE(TAG, "Failed to add internal device callback");
         return ESP_FAIL;
     }
-    if(callback) {
+    if (callback) {
         if (PlatformMgr().AddEventHandler(callback, callback_arg) != CHIP_NO_ERROR) {
             (void)PlatformMgr().StopEventLoopTask();
             chip::Platform::MemoryShutdown();
             ESP_LOGE(TAG, "Failed to add user callback");
             return ESP_FAIL;
-       }
+        }
     }
     init_thread_stack_and_start_thread_task();
 #if CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
@@ -392,9 +388,11 @@ esp_err_t start(event_callback_t callback, intptr_t callback_arg)
 #if defined(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER) && defined(CONFIG_ESP_MATTER_ENABLE_OPENTHREAD)
     // If Thread is Provisioned, publish the dns service
     if (chip::DeviceLayer::ConnectivityMgr().IsThreadProvisioned() &&
-        (chip::Server::GetInstance().GetFabricTable().FabricCount() != 0)) {
-        PlatformMgr().ScheduleWork([](intptr_t){ chip::app::DnssdServer::Instance().StartServer(); },
-                                   reinterpret_cast<intptr_t>(nullptr));
+            (chip::Server::GetInstance().GetFabricTable().FabricCount() != 0)) {
+        PlatformMgr().ScheduleWork([](intptr_t) {
+            chip::app::DnssdServer::Instance().StartServer();
+        },
+        reinterpret_cast<intptr_t>(nullptr));
     }
 #endif // CONFIG_ESP_MATTER_ENABLE_OPENTHREAD
 #endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD

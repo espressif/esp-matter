@@ -21,29 +21,29 @@ void MockAccountLoginDelegate::SetSetupPin(char * setupPin)
     ESP_LOGE(LOG_TAG, "%s is not implemented", __func__);
 }
 
-bool MockAccountLoginDelegate::HandleLogin(const chip::CharSpan & tempAccountIdentifierString, const chip::CharSpan & setupPinString,
-                 const chip::Optional<NodeId> & nodeId)
+bool MockAccountLoginDelegate::HandleLogin(const chip::CharSpan  &tempAccountIdentifierString, const chip::CharSpan  &setupPinString,
+                                           const chip::Optional<NodeId>  &nodeId)
 {
     // Implement your own logic here.
     ESP_LOGE(LOG_TAG, "%s is not implemented", __func__);
     return true;
 }
 
-bool MockAccountLoginDelegate::HandleLogout(const chip::Optional<NodeId> & nodeId)
+bool MockAccountLoginDelegate::HandleLogout(const chip::Optional<NodeId>  &nodeId)
 {
     // Implement your own logic here.
     ESP_LOGE(LOG_TAG, "%s is not implemented", __func__);
     return true;
 }
 
-void MockAccountLoginDelegate::HandleGetSetupPin(CommandResponseHelper<Commands::GetSetupPINResponse::Type> & helper,
-                       const chip::CharSpan & tempAccountIdentifierString)
+void MockAccountLoginDelegate::HandleGetSetupPin(CommandResponseHelper<Commands::GetSetupPINResponse::Type>  &helper,
+                                                 const chip::CharSpan  &tempAccountIdentifierString)
 {
     // Implement your own logic here.
     ESP_LOGE(LOG_TAG, "%s is not implemented", __func__);
 }
 
-void MockAccountLoginDelegate::GetSetupPin(char * setupPin, size_t setupPinSize, const chip::CharSpan & tempAccountIdentifierString)
+void MockAccountLoginDelegate::GetSetupPin(char * setupPin, size_t setupPinSize, const chip::CharSpan  &tempAccountIdentifierString)
 {
     // Implement your own logic here.
     ESP_LOGE(LOG_TAG, "%s is not implemented", __func__);

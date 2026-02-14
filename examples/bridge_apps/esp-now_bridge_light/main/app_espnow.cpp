@@ -71,11 +71,11 @@ static void espnow_ctrl_onoff(espnow_addr_t src_addr, bool status)
 static void espnow_ctrl_responder_raw_data_cb(espnow_addr_t src_addr, espnow_ctrl_data_t *data, wifi_pkt_rx_ctrl_t *rx_ctrl)
 {
     ESP_LOGI(TAG, "espnow_ctrl_responder_raw_data_cb, from initiator: " MACSTR
-        ", initiator_attribute: %d, responder_attribute: %d, value: %d",
-        MAC2STR(src_addr),
-        data->initiator_attribute,
-        data->responder_attribute,
-        data->responder_value_i);
+             ", initiator_attribute: %d, responder_attribute: %d, value: %d",
+             MAC2STR(src_addr),
+             data->initiator_attribute,
+             data->responder_attribute,
+             data->responder_value_i);
 
     light_status = !light_status;
     ESP_LOGI(TAG, "Toggle Status to %d", light_status);
@@ -83,11 +83,11 @@ static void espnow_ctrl_responder_raw_data_cb(espnow_addr_t src_addr, espnow_ctr
 }
 
 static void espnow_ctrl_responder_data_cb(espnow_attribute_t initiator_attribute,
-                                     espnow_attribute_t responder_attribute,
-                                     uint32_t status)
+                                          espnow_attribute_t responder_attribute,
+                                          uint32_t status)
 {
     ESP_LOGI(TAG, "espnow_ctrl_responder_recv, initiator_attribute: %d, responder_attribute: %d, value: %d",
-                initiator_attribute, responder_attribute, status);
+             initiator_attribute, responder_attribute, status);
 }
 
 static void espnow_event_handler(void* handler_args, esp_event_base_t base, int32_t id, void* event_data)
@@ -105,28 +105,28 @@ static void espnow_event_handler(void* handler_args, esp_event_base_t base, int3
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
 
     switch (id) {
-        case ESP_EVENT_ESPNOW_CTRL_BIND: {
-            espnow_ctrl_bind_info_t *info = (espnow_ctrl_bind_info_t *)event_data;
-            ESP_LOGI(TAG, "bind, uuid: " MACSTR ", initiator_type: %d", MAC2STR(info->mac), info->initiator_attribute);
-            ESP_LOGI(TAG, "Create bridged switch type: 0x%04x", ESP_MATTER_ON_OFF_LIGHT_SWITCH_DEVICE_TYPE_ID);
-            espnow_bridge_match_bridged_switch(info->mac, info->initiator_attribute, ESP_MATTER_ON_OFF_LIGHT_SWITCH_DEVICE_TYPE_ID);
-            attribute::get_val(attribute, &val);
-            val.val.b = !val.val.b;
-            attribute::update(endpoint_id, cluster_id, attribute_id, &val);
-            break;
-        }
+    case ESP_EVENT_ESPNOW_CTRL_BIND: {
+        espnow_ctrl_bind_info_t *info = (espnow_ctrl_bind_info_t *)event_data;
+        ESP_LOGI(TAG, "bind, uuid: " MACSTR ", initiator_type: %d", MAC2STR(info->mac), info->initiator_attribute);
+        ESP_LOGI(TAG, "Create bridged switch type: 0x%04x", ESP_MATTER_ON_OFF_LIGHT_SWITCH_DEVICE_TYPE_ID);
+        espnow_bridge_match_bridged_switch(info->mac, info->initiator_attribute, ESP_MATTER_ON_OFF_LIGHT_SWITCH_DEVICE_TYPE_ID);
+        attribute::get_val(attribute, &val);
+        val.val.b = !val.val.b;
+        attribute::update(endpoint_id, cluster_id, attribute_id, &val);
+        break;
+    }
 
-        case ESP_EVENT_ESPNOW_CTRL_UNBIND: {
-            espnow_ctrl_bind_info_t *info = (espnow_ctrl_bind_info_t *)event_data;
-            ESP_LOGI(TAG, "unbind, uuid: " MACSTR ", initiator_type: %d", MAC2STR(info->mac), info->initiator_attribute);
-            espnow_bridge_remove_bridged_switch(info->mac);
-            attribute::get_val(attribute, &val);
-            val.val.b = !val.val.b;
-            attribute::update(endpoint_id, cluster_id, attribute_id, &val);
-            break;
-        }
+    case ESP_EVENT_ESPNOW_CTRL_UNBIND: {
+        espnow_ctrl_bind_info_t *info = (espnow_ctrl_bind_info_t *)event_data;
+        ESP_LOGI(TAG, "unbind, uuid: " MACSTR ", initiator_type: %d", MAC2STR(info->mac), info->initiator_attribute);
+        espnow_bridge_remove_bridged_switch(info->mac);
+        attribute::get_val(attribute, &val);
+        val.val.b = !val.val.b;
+        attribute::update(endpoint_id, cluster_id, attribute_id, &val);
+        break;
+    }
 
-        default:
+    default:
         break;
     }
     light_status = val.val.b;

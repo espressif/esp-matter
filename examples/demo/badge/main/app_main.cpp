@@ -79,29 +79,25 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
         ESP_LOGI(TAG, "Commissioning window closed");
         break;
 
-    case chip::DeviceLayer::DeviceEventType::kFabricRemoved:
-        {
-            ESP_LOGI(TAG, "Fabric removed successfully");
-            if (chip::Server::GetInstance().GetFabricTable().FabricCount() == 0)
-            {
-                chip::CommissioningWindowManager & commissionMgr = chip::Server::GetInstance().GetCommissioningWindowManager();
-                constexpr auto kTimeoutSeconds = chip::System::Clock::Seconds16(k_timeout_seconds);
-                if (!commissionMgr.IsCommissioningWindowOpen())
-                {
-                    /* After removing last fabric, this example does not remove the Wi-Fi credentials
-                     * and still has IP connectivity so, only advertising on DNS-SD.
-                     */
-                    CHIP_ERROR err = commissionMgr.OpenBasicCommissioningWindow(kTimeoutSeconds,
-                                                    chip::CommissioningWindowAdvertisement::kDnssdOnly);
-                    if (err != CHIP_NO_ERROR)
-                    {
-                        ESP_LOGE(TAG, "Failed to open commissioning window, err:%" CHIP_ERROR_FORMAT, err.Format());
-                    }
+    case chip::DeviceLayer::DeviceEventType::kFabricRemoved: {
+        ESP_LOGI(TAG, "Fabric removed successfully");
+        if (chip::Server::GetInstance().GetFabricTable().FabricCount() == 0) {
+            chip::CommissioningWindowManager  &commissionMgr = chip::Server::GetInstance().GetCommissioningWindowManager();
+            constexpr auto kTimeoutSeconds = chip::System::Clock::Seconds16(k_timeout_seconds);
+            if (!commissionMgr.IsCommissioningWindowOpen()) {
+                /* After removing last fabric, this example does not remove the Wi-Fi credentials
+                 * and still has IP connectivity so, only advertising on DNS-SD.
+                 */
+                CHIP_ERROR err = commissionMgr.OpenBasicCommissioningWindow(kTimeoutSeconds,
+                                                                            chip::CommissioningWindowAdvertisement::kDnssdOnly);
+                if (err != CHIP_NO_ERROR) {
+                    ESP_LOGE(TAG, "Failed to open commissioning window, err:%" CHIP_ERROR_FORMAT, err.Format());
                 }
             }
-            esp_matter::factory_reset();
-            break;
         }
+        esp_matter::factory_reset();
+        break;
+    }
 
     case chip::DeviceLayer::DeviceEventType::kFabricWillBeRemoved:
         ESP_LOGI(TAG, "Fabric will be removed");
@@ -150,8 +146,9 @@ esp_err_t change_badge_name(int argc, char **argv)
 
     char delimiter = '/';
     for (int i = 0; argv[0][i] != '\0'; ++i) {
-        if (delimiter == argv[0][i])
+        if (delimiter == argv[0][i]) {
             ++count;
+        }
     }
     if (count != 4) {
         ESP_LOGE("CHANGE_BADGE_NAME_CONSOLE", "Usage: matter esp change_name '{UserName}/{CompanyName}/{Email}/{Contact}/{Event Name}'");
@@ -161,7 +158,7 @@ esp_err_t change_badge_name(int argc, char **argv)
     char *in_ptr = argv[0];
     char *o_ptr;
     int i = 0;
-    while((o_ptr = strsep(&in_ptr, "/")) != NULL) {
+    while ((o_ptr = strsep(&in_ptr, "/")) != NULL) {
         strcpy(vcard_data[i], o_ptr);
         i++;
     }
@@ -212,14 +209,16 @@ static esp_err_t update_badge_command_info(const ConcreteCommandPath &command_pa
         return ESP_FAIL;
     }
     char **vcard_data = (char**)malloc(sizeof(char*) * MAX_VCARD_ATTR);
-    for (int i = 0; i < MAX_VCARD_ATTR; i++)
+    for (int i = 0; i < MAX_VCARD_ATTR; i++) {
         vcard_data[i] = NULL;
-    while(1) {
+    }
+    while (1) {
         CHIP_ERROR err = tlv_data.Next();
-        if (err == CHIP_ERROR_END_OF_TLV)
+        if (err == CHIP_ERROR_END_OF_TLV) {
             break;
-        else if (CHIP_NO_ERROR != err)
+        } else if (CHIP_NO_ERROR != err) {
             return ESP_FAIL;
+        }
 
         chip::TLV::Tag tag = tlv_data.GetTag();
         if (!IsContextTag(tag)) {
@@ -242,25 +241,25 @@ static esp_err_t update_badge_command_info(const ConcreteCommandPath &command_pa
         uint32_t attribute_id;
         size_t size = config_value.size() < 32 ? config_value.size() : 32;
         esp_matter_attr_val_t val = esp_matter_long_char_str((char*)config_value.data(), size);
-        switch(TagNumFromTag(tag)) {
-            case NAME:
-                attribute_id = NAME_ATTRIBUTE_ID;
-                break;
-            case COMPANY_NAME:
-                attribute_id = COMPANY_NAME_ATTRIBUTE_ID;
-                break;
-            case EMAIL:
-                attribute_id = EMAIL_ATTRIBUTE_ID;
-                break;
-            case CONTACT:
-                attribute_id = CONTACT_ATTRIBUTE_ID;
-                break;
-            case EVENT_NAME:
-                attribute_id = EVENT_NAME_ATTRIBUTE_ID;
-                break;
-            default:
-                ESP_LOGE(TAG, "No such TAG found");
-                return ESP_FAIL;
+        switch (TagNumFromTag(tag)) {
+        case NAME:
+            attribute_id = NAME_ATTRIBUTE_ID;
+            break;
+        case COMPANY_NAME:
+            attribute_id = COMPANY_NAME_ATTRIBUTE_ID;
+            break;
+        case EMAIL:
+            attribute_id = EMAIL_ATTRIBUTE_ID;
+            break;
+        case CONTACT:
+            attribute_id = CONTACT_ATTRIBUTE_ID;
+            break;
+        case EVENT_NAME:
+            attribute_id = EVENT_NAME_ATTRIBUTE_ID;
+            break;
+        default:
+            ESP_LOGE(TAG, "No such TAG found");
+            return ESP_FAIL;
         }
         attribute::report(endpoint_id, cluster_id, attribute_id, &val);
         vcard_data[TagNumFromTag(tag)] = (char*)malloc(sizeof(char) * (size + 1));
@@ -343,8 +342,9 @@ extern "C" void app_main()
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
 
     /* Starting driver with default values */
-    if (chip::Server::GetInstance().GetFabricTable().FabricCount())
+    if (chip::Server::GetInstance().GetFabricTable().FabricCount()) {
         app_driver_light_set_defaults(light_endpoint_id);
+    }
 
 #if CONFIG_ENABLE_ENCRYPTED_OTA
     err = esp_matter_ota_requestor_encrypted_init(s_decryption_key, s_decryption_key_len);

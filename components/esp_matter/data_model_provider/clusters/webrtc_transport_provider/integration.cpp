@@ -21,7 +21,7 @@ void ESPMatterWebRTCTransportProviderClusterServerInitCallback(chip::EndpointId 
 }
 
 void ESPMatterWebRTCTransportProviderClusterServerShutdownCallback(
-        chip::EndpointId endpointId, chip::app::ClusterShutdownType shutdownType)
+    chip::EndpointId endpointId, chip::app::ClusterShutdownType shutdownType)
 {
 }
 

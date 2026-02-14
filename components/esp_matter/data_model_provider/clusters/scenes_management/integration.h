@@ -21,8 +21,7 @@
 
 namespace chip::app::Clusters::ScenesManagement {
 
-class ScenesServer
-{
+class ScenesServer {
 public:
     static constexpr SceneId kGlobalSceneId      = 0x00;
     static constexpr GroupId kGlobalSceneGroupId = 0x0000;
@@ -30,7 +29,7 @@ public:
     ScenesServer()  = default;
     ~ScenesServer() = default;
 
-    static ScenesServer & Instance();
+    static ScenesServer  &Instance();
 
     // Callbacks
     void GroupWillBeRemoved(FabricIndex aFabricIx, EndpointId aEndpointId, GroupId aGroupId);

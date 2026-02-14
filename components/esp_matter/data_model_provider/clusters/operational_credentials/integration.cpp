@@ -34,7 +34,8 @@ void ESPMatterOperationalCredentialsClusterServerInitCallback(EndpointId endpoin
                                                       .sessionManager = Server::GetInstance().GetSecureSessionManager(),
                                                       .dnssdServer = app::DnssdServer::Instance(),
                                                       .commissioningWindowManager =
-                                                          Server::GetInstance().GetCommissioningWindowManager()};
+                                                          Server::GetInstance().GetCommissioningWindowManager()
+                                                     };
     gServer.Create(endpoint, context);
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
     if (err != CHIP_NO_ERROR) {

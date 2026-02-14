@@ -284,17 +284,17 @@ static esp_err_t controller_udc_handler(int argc, char **argv)
             return ESP_ERR_INVALID_ARG;
         }
         controller::matter_controller_client::get_instance()
-            .get_commissioner()
-            ->GetUserDirectedCommissioningServer()
-            ->ResetUDCClientProcessingStates();
+        .get_commissioner()
+        ->GetUserDirectedCommissioningServer()
+        ->ResetUDCClientProcessingStates();
     } else if (strncmp(argv[0], "print", sizeof("print")) == 0) {
         if (argc != 1) {
             return ESP_ERR_INVALID_ARG;
         }
         controller::matter_controller_client::get_instance()
-            .get_commissioner()
-            ->GetUserDirectedCommissioningServer()
-            ->PrintUDCClients();
+        .get_commissioner()
+        ->GetUserDirectedCommissioningServer()
+        ->PrintUDCClients();
     } else if (strncmp(argv[0], "commission", sizeof("commission")) == 0) {
         if (argc != 3) {
             return ESP_ERR_INVALID_ARG;
@@ -310,9 +310,9 @@ static esp_err_t controller_udc_handler(int argc, char **argv)
 
         chip::NodeId gRemoteId = chip::kTestDeviceNodeId;
         chip::RendezvousParameters params = chip::RendezvousParameters()
-                                                .SetSetupPINCode(pincode)
-                                                .SetDiscriminator(state->GetLongDiscriminator())
-                                                .SetPeerAddress(state->GetPeerAddress());
+                                            .SetSetupPINCode(pincode)
+                                            .SetDiscriminator(state->GetLongDiscriminator())
+                                            .SetPeerAddress(state->GetPeerAddress());
         do {
             chip::Crypto::DRBG_get_bytes(reinterpret_cast<uint8_t *>(&gRemoteId), sizeof(gRemoteId));
         } while (!chip::IsOperationalNodeId(gRemoteId));
@@ -415,7 +415,7 @@ static esp_err_t open_commissioning_window_handler(int argc, char **argv)
 
     controller::commissioning_window_opener::get_instance().set_callback(print_manual_code);
     return controller::commissioning_window_opener::get_instance().send_open_commissioning_window_command(
-        node_id, is_enhanced, window_timeout, iteration, discriminator, 10000 /* timed_invoke_timeout_ms */);
+               node_id, is_enhanced, window_timeout, iteration, discriminator, 10000 /* timed_invoke_timeout_ms */);
 }
 
 static esp_err_t controller_invoke_command_handler(int argc, char **argv)
@@ -620,30 +620,30 @@ esp_err_t controller_register_commands()
         {
             .name = "pairing",
             .description = "Commands for commissioning/unpair nodes.\n"
-                           "\tUsage: controller pairing onnetwork <nodeid> <pincode> OR\n"
-                           "\tcontroller pairing ble-wifi <nodeid> <ssid> <password> <pincode> <discriminator> OR\n"
-                           "\tcontroller pairing ble-thread <nodeid> <dataset> <pincode> <discriminator> OR\n"
-                           "\tcontroller pairing ble-thread <nodeid> <dataset> <pincode> <discriminator> OR\n"
-                           "\tcontroller pairing code <nodeid> <payload> OR\n"
-                           "\tcontroller pairing code-wifi <nodeid> <ssid> <password> <payload> OR\n"
-                           "\tcontroller pairing code-thread <nodeid> <dataset> <payload> OR\n"
-                           "\tcontroller pairing code-wifi-thread <nodeid> <ssid> <password> <dataset> <payload> OR\n"
-                           "\tcontroller pairing unpair <nodeid>",
+            "\tUsage: controller pairing onnetwork <nodeid> <pincode> OR\n"
+            "\tcontroller pairing ble-wifi <nodeid> <ssid> <password> <pincode> <discriminator> OR\n"
+            "\tcontroller pairing ble-thread <nodeid> <dataset> <pincode> <discriminator> OR\n"
+            "\tcontroller pairing ble-thread <nodeid> <dataset> <pincode> <discriminator> OR\n"
+            "\tcontroller pairing code <nodeid> <payload> OR\n"
+            "\tcontroller pairing code-wifi <nodeid> <ssid> <password> <payload> OR\n"
+            "\tcontroller pairing code-thread <nodeid> <dataset> <payload> OR\n"
+            "\tcontroller pairing code-wifi-thread <nodeid> <ssid> <password> <dataset> <payload> OR\n"
+            "\tcontroller pairing unpair <nodeid>",
             .handler = controller_pairing_handler,
         },
         {
             .name = "icd",
             .description = "icd client management.\n"
-                           "\tUsage: controller icd list",
+            "\tUsage: controller icd list",
             .handler = controller_icd_list_handler,
         },
 #if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
         {
             .name = "udc",
             .description = "UDC command.\n"
-                           "\tUsage: controller udc reset OR\n"
-                           "\tcontroller udc print OR\n"
-                           "\tcontroller udc commission <pincode> <udc-entry>",
+            "\tUsage: controller udc reset OR\n"
+            "\tcontroller udc print OR\n"
+            "\tcontroller udc commission <pincode> <udc-entry>",
             .handler = controller_udc_handler,
         },
 #endif
@@ -652,95 +652,95 @@ esp_err_t controller_register_commands()
         {
             .name = "group-settings",
             .description = "Managing the groups and keysets of the controller.\n"
-                           "\tUsage: controller group-settings <sub-commands>",
+            "\tUsage: controller group-settings <sub-commands>",
             .handler = controller_group_settings_handler,
         },
 #endif // !CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
         {
             .name = "open-commissioning-window",
             .description =
-                "Send command to open basic/enhanced commissioning window\n"
-                "\tUsage: controller open-commissioning-window <node-id> <option> <window-timeout> <iteration> "
-                "<discriminator>\n"
-                "\toption: 1 to use enhanced commissioning window. 0 to use basic commissioning window.\n"
-                "\titeration: Number of PBKDF iterations to use to derive the verifier. Ignored if 'option' is 0.\n"
-                "\tdiscriminator: Discriminator to use for advertising.  Ignored if 'option' is 0.",
+            "Send command to open basic/enhanced commissioning window\n"
+            "\tUsage: controller open-commissioning-window <node-id> <option> <window-timeout> <iteration> "
+            "<discriminator>\n"
+            "\toption: 1 to use enhanced commissioning window. 0 to use basic commissioning window.\n"
+            "\titeration: Number of PBKDF iterations to use to derive the verifier. Ignored if 'option' is 0.\n"
+            "\tdiscriminator: Discriminator to use for advertising.  Ignored if 'option' is 0.",
             .handler = open_commissioning_window_handler,
         },
         {
             .name = "invoke-cmd",
             .description =
-                "Send command to the nodes.\n"
-                "\tUsage: controller invoke-cmd <node-id|group-id> <endpoint-id> <cluster-id> <command-id> "
-                "[command_data] [timed_invoke_timeout_ms]\n"
-                "\tNotes: group-id should start with prefix '0xFFFFFFFFFFFF', endpoint-id will be ignored if the fist "
-                "parameter is group-id.\n"
-                "\tNotes: The command_data should be a JSON object that includes all the command data fields defined "
-                "in the "
-                "SPEC. You can get the format of the payload from "
-                "https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#cluster-commands\n"
-                "\tNotes: The timed_invoke_timeout_ms should be used with command_data. If the command has no command "
-                "data field, please use '\"{}\"' as the command_data ",
+            "Send command to the nodes.\n"
+            "\tUsage: controller invoke-cmd <node-id|group-id> <endpoint-id> <cluster-id> <command-id> "
+            "[command_data] [timed_invoke_timeout_ms]\n"
+            "\tNotes: group-id should start with prefix '0xFFFFFFFFFFFF', endpoint-id will be ignored if the fist "
+            "parameter is group-id.\n"
+            "\tNotes: The command_data should be a JSON object that includes all the command data fields defined "
+            "in the "
+            "SPEC. You can get the format of the payload from "
+            "https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#cluster-commands\n"
+            "\tNotes: The timed_invoke_timeout_ms should be used with command_data. If the command has no command "
+            "data field, please use '\"{}\"' as the command_data ",
             .handler = controller_invoke_command_handler,
         },
         {
             .name = "read-attr",
             .description = "Read attributes of the nodes.\n"
-                           "\tUsage: controller read-attr <node-id> <endpoint-ids> <cluster-ids> <attr-ids>\n"
-                           "\tNotes: endpoint-ids can represent a single or multiple endpoints, e.g. '0' or '0,1'. "
-                           "And the same applies to cluster-ids, attr-ids, and event-ids.",
+            "\tUsage: controller read-attr <node-id> <endpoint-ids> <cluster-ids> <attr-ids>\n"
+            "\tNotes: endpoint-ids can represent a single or multiple endpoints, e.g. '0' or '0,1'. "
+            "And the same applies to cluster-ids, attr-ids, and event-ids.",
             .handler = controller_read_attr_handler,
         },
         {
             .name = "write-attr",
             .description =
-                "Write attributes of the nodes.\n"
-                "\tUsage: controller write-attr <node-id> <endpoint-ids> <cluster-ids> <attr-ids> <attr-value> [timed_write_timeout_ms]\n"
-                "\tNotes: attr-value should be a JSON object that contains the attribute value JSON item."
-                "You can get the format of the attr-value from "
-                "https://docs.espressif.com/projects/esp-matter/en/latest/esp32/"
-                "developing.html#write-attribute-commands",
+            "Write attributes of the nodes.\n"
+            "\tUsage: controller write-attr <node-id> <endpoint-ids> <cluster-ids> <attr-ids> <attr-value> [timed_write_timeout_ms]\n"
+            "\tNotes: attr-value should be a JSON object that contains the attribute value JSON item."
+            "You can get the format of the attr-value from "
+            "https://docs.espressif.com/projects/esp-matter/en/latest/esp32/"
+            "developing.html#write-attribute-commands",
             .handler = controller_write_attr_handler,
         },
         {
             .name = "read-event",
             .description = "Read events of the nodes.\n"
-                           "\tUsage: controller read-event <node-id> <endpoint-ids> <cluster-ids> <event-ids>",
+            "\tUsage: controller read-event <node-id> <endpoint-ids> <cluster-ids> <event-ids>",
             .handler = controller_read_event_handler,
         },
         {
             .name = "subs-attr",
             .description = "Subscribe attributes of the nodes.\n"
-                           "\tUsage: controller subs-attr <node-id> <endpoint-ids> <cluster-ids> <attr-ids> "
-                           "<min-interval> <max-interval> [keep-subscription] [auto-resubscribe]\n"
-                           "\tNotes: If 'keep-subscription' is 'false', existing subscriptions will be terminated for the node. "
-                           "If 'auto-resubscribe' is 'true', controller will auto resubscribe if subscriptions timeout",
+            "\tUsage: controller subs-attr <node-id> <endpoint-ids> <cluster-ids> <attr-ids> "
+            "<min-interval> <max-interval> [keep-subscription] [auto-resubscribe]\n"
+            "\tNotes: If 'keep-subscription' is 'false', existing subscriptions will be terminated for the node. "
+            "If 'auto-resubscribe' is 'true', controller will auto resubscribe if subscriptions timeout",
             .handler = controller_subscribe_attr_handler,
         },
         {
             .name = "subs-event",
             .description = "Subscribe events of the nodes.\n"
-                           "\tUsage: controller subs-event <node-id> <endpoint-ids> <cluster-ids> <event-ids> "
-                           "<min-interval> <max-interval> [keep-subscription] [auto-resubscribe]\n"
-                           "\tNotes: 'keep-subscription' and 'auto-resubscribe' are the same as 'subs-attr' command",
+            "\tUsage: controller subs-event <node-id> <endpoint-ids> <cluster-ids> <event-ids> "
+            "<min-interval> <max-interval> [keep-subscription] [auto-resubscribe]\n"
+            "\tNotes: 'keep-subscription' and 'auto-resubscribe' are the same as 'subs-attr' command",
             .handler = controller_subscribe_event_handler,
         },
         {
             .name = "shutdown-subs",
             .description = "Shutdown subscription for given node id and subscription id.\n"
-                           "\tUsage: controller shutdown-subs <node-id> <subscription-id>",
+            "\tUsage: controller shutdown-subs <node-id> <subscription-id>",
             .handler = controller_shutdown_subscription_handler,
         },
         {
             .name = "shutdown-subss",
             .description = "Shutdown all subscriptions for a given node.\n"
-                           "\tUsage: controller shutdown-subss <node-id>",
+            "\tUsage: controller shutdown-subss <node-id>",
             .handler = controller_shutdown_subscriptions_handler,
         },
         {
             .name = "shutdown-all-subss",
             .description = "Shutdown all subscriptions to all nodes.\n"
-                           "\tUsage: controller shutdown-all-subss",
+            "\tUsage: controller shutdown-all-subss",
             .handler = controller_shutdown_all_subscriptions_handler,
         },
     };

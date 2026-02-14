@@ -53,7 +53,7 @@ typedef struct request_handle {
      */
     void *request_data;
     request_handle() : type(INVOKE_CMD), request_data(NULL) {}
-    request_handle(struct request_handle& req) : type(req.type), request_data(req.request_data)
+    request_handle(struct request_handle &req) : type(req.type), request_data(req.request_data)
     {
         if (req.type == INVOKE_CMD) {
             command_path = req.command_path;
@@ -178,8 +178,7 @@ using chip::TLV::TLVReader;
 using client::peer_device_t;
 using chip::app::DataModel::EncodableToTLV;
 
-class custom_encodable_type : public EncodableToTLV
-{
+class custom_encodable_type : public EncodableToTLV {
 public:
     const char *k_empty_command_data = "{}";
     const char *k_null_attribute_data = "null";
@@ -202,9 +201,12 @@ public:
         assert(m_json_str);
     }
 
-    ~custom_encodable_type() { free(m_json_str); }
+    ~custom_encodable_type()
+    {
+        free(m_json_str);
+    }
 
-    CHIP_ERROR EncodeTo(chip::TLV::TLVWriter & writer, chip::TLV::Tag tag) const override
+    CHIP_ERROR EncodeTo(chip::TLV::TLVWriter  &writer, chip::TLV::Tag tag) const override
     {
         if (json_to_tlv(m_json_str, writer, tag) != ESP_OK) {
             return CHIP_ERROR_INTERNAL;
@@ -215,15 +217,17 @@ private:
     char *m_json_str = NULL;
 };
 
-class multiple_write_encodable_type
-{
+class multiple_write_encodable_type {
 public:
     multiple_write_encodable_type(const char *json_str)
     {
         json = cJSON_Parse(json_str);
     }
 
-    ~multiple_write_encodable_type() { cJSON_Delete(json); }
+    ~multiple_write_encodable_type()
+    {
+        cJSON_Delete(json);
+    }
 
     CHIP_ERROR EncodeTo(chip::TLV::TLVWriter &writer, chip::TLV::Tag tag, size_t index)
     {
@@ -242,7 +246,10 @@ public:
         return CHIP_NO_ERROR;
     }
 
-    size_t GetJsonArraySize() { return static_cast<size_t>(cJSON_GetArraySize(json)); }
+    size_t GetJsonArraySize()
+    {
+        return static_cast<size_t>(cJSON_GetArraySize(json));
+    }
 
 private:
     cJSON *json = NULL;
@@ -269,7 +276,10 @@ public:
         , context(ctx)
     {
     }
-    void set_on_done_callback(on_done_callback_t on_done) { on_done_cb = on_done; }
+    void set_on_done_callback(on_done_callback_t on_done)
+    {
+        on_done_cb = on_done;
+    }
 
 private:
     void OnResponse(CommandSender *command_sender, const ConcreteCommandPath &command_path, const StatusIB &status,
@@ -327,7 +337,6 @@ esp_err_t send_request(void *ctx, peer_device_t *remote_device, const CommandPat
                        custom_command_callback::on_error_callback_t on_error,
                        const Optional<uint16_t> &timed_invoke_timeout_ms,
                        const Optional<Timeout> &response_timeout = chip::NullOptional);
-
 
 esp_err_t send_group_request(const uint8_t fabric_index, const CommandPathParams &command_path,
                              const chip::app::DataModel::EncodableToTLV &encodable);

@@ -1064,7 +1064,6 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* ethernet_network_diagnostics */
 
-
 namespace air_quality {
 namespace feature {
 
@@ -1835,7 +1834,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* mode_select */
 
-
 namespace pressure_measurement {
 namespace feature {
 
@@ -2400,7 +2398,6 @@ esp_err_t add(cluster_t *cluster)
         return ESP_ERR_NOT_SUPPORTED;
     }
 
-
     return ESP_OK;
 }
 } /* polyphase_power */
@@ -2426,7 +2423,6 @@ esp_err_t add(cluster_t *cluster)
         return ESP_ERR_NOT_SUPPORTED;
     }
 
-
     return ESP_OK;
 }
 } /* harmonics */
@@ -2451,7 +2447,6 @@ esp_err_t add(cluster_t *cluster)
         ESP_LOGE(TAG, "Cluster shall support Alternating Current feature");
         return ESP_ERR_NOT_SUPPORTED;
     }
-
 
     return ESP_OK;
 }
@@ -3208,7 +3203,6 @@ esp_err_t add(cluster_t *cluster)
     event::create_power_adjust_start(cluster);
     event::create_power_adjust_end(cluster);
 
-
     return ESP_OK;
 }
 } /* power_adjustment */
@@ -3259,7 +3253,6 @@ esp_err_t add(cluster_t *cluster)
         ESP_LOGE(TAG, "Cluster shall satisfy condition (STA|PAU|FA|CON|!PA)&!PFR of feature");
         return ESP_ERR_NOT_SUPPORTED;
     }
-
 
     return ESP_OK;
 }
@@ -3493,7 +3486,6 @@ esp_err_t add(cluster_t *cluster)
 
     return ESP_OK;
 }
-
 
 } /* tank_percent */
 
@@ -4075,7 +4067,6 @@ esp_err_t add(cluster_t *cluster)
     attribute::create_soft_recording_privacy_mode_enabled(cluster, 0);
     attribute::create_soft_livestream_privacy_mode_enabled(cluster, 0);
 
-
     return ESP_OK;
 }
 
@@ -4098,7 +4089,6 @@ esp_err_t add(cluster_t *cluster)
     attribute::create_speaker_volume_level(cluster, 0);
     attribute::create_speaker_max_level(cluster, 0);
     attribute::create_speaker_min_level(cluster, 0);
-
 
     return ESP_OK;
 }
@@ -4169,7 +4159,6 @@ esp_err_t add(cluster_t *cluster)
     attribute::create_local_video_recording_enabled(cluster, 0);
     attribute::create_local_snapshot_recording_enabled(cluster, 0);
 
-
     return ESP_OK;
 }
 
@@ -4219,7 +4208,6 @@ namespace webrtc_transport_provider {
 
 namespace webrtc_transport_requestor {
 }/*webrtc_transport_requestor*/
-
 
 namespace closure_control {
 namespace feature {
@@ -4863,6 +4851,91 @@ esp_err_t add(cluster_t *cluster)
 
 } /* feature */
 } /* meter_identification */
+
+namespace zone_management {
+namespace feature {
+namespace two_dimensional_cartesian_zone {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ZoneManagement::Feature::kTwoDimensionalCartesianZone);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_two_d_cartesian_max(cluster, NULL, 0, 0);
+    return ESP_OK;
+}
+
+} /* two_dimensional_cartesian_zone */
+
+namespace per_zone_sensitivity {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ZoneManagement::Feature::kPerZoneSensitivity);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+
+    attribute_t *sensitivity = esp_matter::attribute::get(cluster, ZoneManagement::Attributes::Sensitivity::Id);
+    if (sensitivity) {
+        esp_matter::attribute::destroy(cluster, sensitivity);
+    }
+    return ESP_OK;
+}
+
+} /* per_zone_sensitivity */
+
+namespace user_defined {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ZoneManagement::Feature::kUserDefined);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    // Attributes
+    attribute::create_max_user_defined_zones(cluster, 0);
+    // Commands
+    command::create_remove_zone(cluster);
+    if (get_feature_map_value(cluster) & feature::two_dimensional_cartesian_zone::get_id()) {
+        command::create_two_d_cartesian_zone(cluster);
+        command::create_two_d_cartesian_zone_response(cluster);
+        command::create_update_two_d_cartesian_zone(cluster);
+    }
+    return ESP_OK;
+}
+
+} /* user_defined */
+
+namespace focus_zones {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(ZoneManagement::Feature::kFocusZones);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+    return ESP_OK;
+}
+
+} /* focus_zones */
+
+} /* feature */
+} /* zone_management */
 
 } /* cluster */
 } /* esp_matter */

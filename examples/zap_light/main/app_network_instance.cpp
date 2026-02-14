@@ -17,19 +17,19 @@ namespace {
 
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI && CHIP_DEVICE_CONFIG_WIFI_NETWORK_DRIVER
 app::Clusters::NetworkCommissioning::Instance
-    sWiFiNetworkCommissioningInstance(CONFIG_WIFI_NETWORK_ENDPOINT_ID /* Endpoint Id */,
-                                      &(NetworkCommissioning::ESPWiFiDriver::GetInstance()));
+sWiFiNetworkCommissioningInstance(CONFIG_WIFI_NETWORK_ENDPOINT_ID /* Endpoint Id */,
+                                  &(NetworkCommissioning::ESPWiFiDriver::GetInstance()));
 #endif
 
 #if CHIP_DEVICE_CONFIG_ENABLE_ETHERNET && CHIP_DEVICE_CONFIG_ETHERNET_NETWORK_DRIVER
 app::Clusters::NetworkCommissioning::Instance
-    sEthernetNetworkCommissioningInstance(CONFIG_ETHERNET_NETWORK_ENDPOINT_ID /* Endpoint Id */,
-                                          &(NetworkCommissioning::ESPEthernetDriver::GetInstance()));
+sEthernetNetworkCommissioningInstance(CONFIG_ETHERNET_NETWORK_ENDPOINT_ID /* Endpoint Id */,
+                                      &(NetworkCommissioning::ESPEthernetDriver::GetInstance()));
 #endif
 
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD && CONFIG_THREAD_NETWORK_COMMISSIONING_DRIVER
 app::Clusters::NetworkCommissioning::InstanceAndDriver<NetworkCommissioning::GenericThreadDriver>
-    sThreadNetworkDriver(CONFIG_THREAD_NETWORK_ENDPOINT_ID);
+sThreadNetworkDriver(CONFIG_THREAD_NETWORK_ENDPOINT_ID);
 #endif
 
 #if defined(CONFIG_WIFI_NETWORK_ENDPOINT_ID) && defined(CONFIG_THREAD_NETWORK_ENDPOINT_ID)

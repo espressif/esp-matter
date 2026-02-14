@@ -27,8 +27,7 @@
 #include <utility>
 
 // Camera App defines all the cluster servers needed for a particular device
-class CameraApp
-{
+class CameraApp {
 
 public:
     // This class is responsible for initialising all the camera clusters and
@@ -47,7 +46,7 @@ private:
 
     // SDK cluster servers
     chip::app::LazyRegisteredServerCluster<chip::app::Clusters::WebRTCTransportProvider::WebRTCTransportProviderCluster>
-        mWebRTCTransportProviderServer;
+    mWebRTCTransportProviderServer;
     std::unique_ptr<chip::app::Clusters::CameraAvStreamManagement::CameraAVStreamManagementCluster> mAVStreamMgmtServerPtr;
 
     // Helper to set attribute defaults for CameraAVStreamMgmt

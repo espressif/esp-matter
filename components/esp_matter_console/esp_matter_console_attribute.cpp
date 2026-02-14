@@ -194,15 +194,15 @@ esp_err_t attribute_register_commands()
         {
             .name = "set",
             .description = "Set an attribute value of a cluster on an endpoint. "
-                           "Usage: matter esp attribute set <endpoint_id> <cluster_id> <attribute_id> <value>. "
-                           "Example: matter esp attribute set 0x0001 0x0006 0x0000 1.",
+            "Usage: matter esp attribute set <endpoint_id> <cluster_id> <attribute_id> <value>. "
+            "Example: matter esp attribute set 0x0001 0x0006 0x0000 1.",
             .handler = console_set_handler,
         },
         {
             .name = "get",
             .description = "Get an attribute value of a cluster on an endpoint. "
-                           "Usage: matter esp attribute get <endpoint_id> <cluster_id> <attribute_id>. "
-                           "Example: matter esp attribute get 0x0001 0x0006 0x0000.",
+            "Usage: matter esp attribute get <endpoint_id> <cluster_id> <attribute_id>. "
+            "Example: matter esp attribute get 0x0001 0x0006 0x0000.",
             .handler = console_get_handler,
         },
     };
@@ -215,5 +215,3 @@ esp_err_t attribute_register_commands()
 
 } // namespace console
 } // namespace esp_matter
-
-

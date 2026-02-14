@@ -41,9 +41,9 @@ void subscribe_command::on_device_connected_fcn(void *context, ExchangeManager &
     subscribe_command *cmd = (subscribe_command *)context;
     chip::OperationalDeviceProxy device_proxy(&exchangeMgr, sessionHandle);
     esp_err_t err = interaction::subscribe::send_request(
-        &device_proxy, cmd->m_attr_paths.Get(), cmd->m_attr_paths.AllocatedSize(), cmd->m_event_paths.Get(),
-        cmd->m_event_paths.AllocatedSize(), cmd->m_min_interval, cmd->m_max_interval, cmd->m_keep_subscription,
-        cmd->m_auto_resubscribe, cmd->m_buffered_read_cb);
+                        &device_proxy, cmd->m_attr_paths.Get(), cmd->m_attr_paths.AllocatedSize(), cmd->m_event_paths.Get(),
+                        cmd->m_event_paths.AllocatedSize(), cmd->m_min_interval, cmd->m_max_interval, cmd->m_keep_subscription,
+                        cmd->m_auto_resubscribe, cmd->m_buffered_read_cb);
     if (err != ESP_OK) {
         chip::Platform::Delete(cmd);
     }
@@ -54,8 +54,9 @@ void subscribe_command::on_device_connection_failure_fcn(void *context, const Sc
 {
     subscribe_command *cmd = (subscribe_command *)context;
 
-    if (cmd->subscribe_failure_cb)
+    if (cmd->subscribe_failure_cb) {
         cmd->subscribe_failure_cb((void *)cmd);
+    }
 
     chip::Platform::Delete(cmd);
     return;
@@ -72,14 +73,14 @@ esp_err_t subscribe_command::send_command()
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
 #ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     if (CHIP_NO_ERROR ==
-        controller_instance.get_commissioner()->GetConnectedDevice(m_node_id, &on_device_connected_cb,
-                                                                   &on_device_connection_failure_cb)) {
+            controller_instance.get_commissioner()->GetConnectedDevice(m_node_id, &on_device_connected_cb,
+                                                                       &on_device_connection_failure_cb)) {
         return ESP_OK;
     }
 #else
     if (CHIP_NO_ERROR ==
-        controller_instance.get_controller()->GetConnectedDevice(m_node_id, &on_device_connected_cb,
-                                                                 &on_device_connection_failure_cb)) {
+            controller_instance.get_controller()->GetConnectedDevice(m_node_id, &on_device_connected_cb,
+                                                                     &on_device_connection_failure_cb)) {
         return ESP_OK;
     }
 #endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
@@ -187,7 +188,7 @@ esp_err_t send_subscribe_attr_command(uint64_t node_id, ScopedMemoryBufferWithSi
                                       uint16_t max_interval, bool auto_resubscribe, bool keep_subscription)
 {
     if (endpoint_ids.AllocatedSize() != cluster_ids.AllocatedSize() ||
-        endpoint_ids.AllocatedSize() != attribute_ids.AllocatedSize()) {
+            endpoint_ids.AllocatedSize() != attribute_ids.AllocatedSize()) {
         ESP_LOGE(TAG,
                  "The endpoint_id array length should be the same as the cluster_ids array length and the "
                  "attribute_ids array length");
@@ -205,8 +206,8 @@ esp_err_t send_subscribe_attr_command(uint64_t node_id, ScopedMemoryBufferWithSi
     }
 
     subscribe_command *cmd = chip::Platform::New<subscribe_command>(
-        node_id, std::move(attr_paths), std::move(event_paths), min_interval, max_interval, auto_resubscribe, nullptr,
-        nullptr, nullptr, nullptr, keep_subscription);
+                                 node_id, std::move(attr_paths), std::move(event_paths), min_interval, max_interval, auto_resubscribe, nullptr,
+                                 nullptr, nullptr, nullptr, keep_subscription);
     if (!cmd) {
         ESP_LOGE(TAG, "Failed to alloc memory for subscribe_command");
         return ESP_ERR_NO_MEM;
@@ -220,7 +221,7 @@ esp_err_t send_subscribe_event_command(uint64_t node_id, ScopedMemoryBufferWithS
                                        uint16_t max_interval, bool auto_resubscribe, bool keep_subscription)
 {
     if (endpoint_ids.AllocatedSize() != cluster_ids.AllocatedSize() ||
-        endpoint_ids.AllocatedSize() != event_ids.AllocatedSize()) {
+            endpoint_ids.AllocatedSize() != event_ids.AllocatedSize()) {
         ESP_LOGE(TAG,
                  "The endpoint_id array length should be the same as the cluster_ids array length and the "
                  "attribute_ids array length");
@@ -238,8 +239,8 @@ esp_err_t send_subscribe_event_command(uint64_t node_id, ScopedMemoryBufferWithS
     }
 
     subscribe_command *cmd = chip::Platform::New<subscribe_command>(
-        node_id, std::move(attr_paths), std::move(event_paths), min_interval, max_interval, auto_resubscribe, nullptr,
-        nullptr, nullptr, nullptr, keep_subscription);
+                                 node_id, std::move(attr_paths), std::move(event_paths), min_interval, max_interval, auto_resubscribe, nullptr,
+                                 nullptr, nullptr, nullptr, keep_subscription);
     if (!cmd) {
         ESP_LOGE(TAG, "Failed to alloc memory for subscribe_command");
         return ESP_ERR_NO_MEM;
@@ -289,8 +290,8 @@ esp_err_t send_shutdown_subscription(uint64_t node_id, uint32_t subscription_id)
     chip::FabricIndex fabric_index = matter_controller_client::get_instance().get_fabric_index();
 #endif
     if (CHIP_NO_ERROR !=
-        InteractionModelEngine::GetInstance()->ShutdownSubscription(ScopedNodeId(node_id, fabric_index),
-                                                                    subscription_id)) {
+            InteractionModelEngine::GetInstance()->ShutdownSubscription(ScopedNodeId(node_id, fabric_index),
+                                                                        subscription_id)) {
         ESP_LOGE(TAG, "Shutdown Subscription Failed");
         return ESP_FAIL;
     }
