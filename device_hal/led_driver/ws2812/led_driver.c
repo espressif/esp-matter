@@ -12,10 +12,16 @@
 // limitations under the License
 
 #include <color_format.h>
-#include <driver/rmt.h>
 #include <esp_log.h>
-#include <led_strip.h>
 #include <led_driver.h>
+#include <led_strip.h>
+
+// Numbers of the LED in the strip
+#define LED_STRIP_LED_COUNT 1
+// let the driver choose a proper memory block size automatically
+#define LED_STRIP_MEMORY_BLOCK_WORDS 0 
+// 10MHz resolution, 1 tick = 0.1us (led strip needs a high resolution)
+#define LED_STRIP_RMT_RES_HZ  (10 * 1000 * 1000)
 
 static const char *TAG = "led_driver_ws2812";
 static bool current_power = false;
@@ -28,26 +34,31 @@ led_driver_handle_t led_driver_init(led_driver_config_t *config)
 {
     ESP_LOGI(TAG, "Initializing light driver");
     esp_err_t err = ESP_OK;
-    rmt_config_t rmt_cfg = RMT_DEFAULT_CONFIG_TX(config->gpio, config->channel);
-    rmt_cfg.clk_div = 2;
-    err = rmt_config(&rmt_cfg);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "rmt_cfg failed");
-        return NULL;
-    }
-    err = rmt_driver_install(rmt_cfg.channel, 0, 0);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "rmt_driver_install failed");
-        return NULL;
-    }
 
-    led_strip_config_t strip_config = LED_STRIP_DEFAULT_CONFIG(1, (led_strip_dev_t)rmt_cfg.channel);
-    led_strip_t *strip = led_strip_new_rmt_ws2812(&strip_config);
-    if (!strip) {
+    // LED strip general initialization, according to your led board design
+    led_strip_config_t strip_config = {
+        .strip_gpio_num = config->gpio,       // The GPIO that connected to the LED strip's data line
+        .max_leds = LED_STRIP_LED_COUNT,      // The number of LEDs in the strip,
+        .led_model = LED_MODEL_WS2812,        // LED strip model
+        .color_component_format = LED_STRIP_COLOR_COMPONENT_FMT_GRB, // The color order of the strip: GRB
+    };
+
+    // LED strip backend configuration: RMT
+    led_strip_rmt_config_t rmt_config = {
+        .clk_src = RMT_CLK_SRC_DEFAULT,        // different clock source can lead to different power consumption
+        .resolution_hz = LED_STRIP_RMT_RES_HZ, // RMT counter clock frequency
+        .mem_block_symbols = LED_STRIP_MEMORY_BLOCK_WORDS, // the memory block size used by the RMT channel
+    };
+
+    // LED Strip object handle
+    led_strip_handle_t led_strip;
+    err = led_strip_new_rmt_device(&strip_config, &rmt_config, &led_strip);
+
+    if (err != ESP_OK) {
         ESP_LOGE(TAG, "W2812 driver install failed");
         return NULL;
     }
-    return (led_driver_handle_t)strip;
+    return (led_driver_handle_t)led_strip;
 }
 
 esp_err_t led_driver_set_power(led_driver_handle_t handle, bool power)
@@ -63,14 +74,14 @@ esp_err_t led_driver_set_RGB(led_driver_handle_t handle)
         ESP_LOGE(TAG, "led driver handle cannot be NULL");
         err = ESP_FAIL;
     } else {
-        led_strip_t *strip = (led_strip_t *)handle;
-        err = strip->set_pixel(strip, 0, mRGB.red, mRGB.green, mRGB.blue);
+        led_strip_handle_t strip = (led_strip_handle_t)handle;
+        err = led_strip_set_pixel(strip, 0, mRGB.red, mRGB.green, mRGB.blue);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "strip_set_pixel failed");
             return err;
         }
         ESP_LOGI(TAG, "led set r:%d, g:%d, b:%d", mRGB.red, mRGB.green, mRGB.blue);
-        err = strip->refresh(strip, 100);
+        err = led_strip_refresh(strip);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "strip_refresh failed");
         }
