@@ -222,7 +222,7 @@ static void report_parts_list_change_internal(endpoint_t *endpoint)
         parent_endpoint_id = endpoint::get_parent_endpoint_id(endpoint::get(parent_endpoint_id));
     }
     MatterReportingAttributeChangeCallback(/* endpoint = */ 0, chip::app::Clusters::Descriptor::Id,
-                                           chip::app::Clusters::Descriptor::Attributes::PartsList::Id);
+                                                            chip::app::Clusters::Descriptor::Attributes::PartsList::Id);
 }
 
 esp_err_t disable(endpoint_t *endpoint)
@@ -696,6 +696,9 @@ attribute_t *get(cluster_t *cluster, uint32_t attribute_id)
 attribute_t *get(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id)
 {
     cluster_t *cluster = cluster::get(endpoint_id, cluster_id);
+    if (!cluster) {
+        return nullptr;
+    }
     return get(cluster, attribute_id);
 }
 
