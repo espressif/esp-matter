@@ -30,7 +30,7 @@ LazyRegisteredServerCluster<SoftwareDiagnosticsServerCluster> gServer;
 
 bool IsAttributeEnabled(EndpointId endpointId, AttributeId attributeId)
 {
-    return endpoint::is_attribute_enabled(endpointId, GeneralDiagnostics::Id, attributeId);
+    return endpoint::is_attribute_enabled(endpointId, SoftwareDiagnostics::Id, attributeId);
 }
 
 } // namespace
