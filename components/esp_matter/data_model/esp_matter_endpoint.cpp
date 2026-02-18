@@ -91,7 +91,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 #if defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
     wifi_network_diagnostics::create(endpoint, nullptr, CLUSTER_FLAG_SERVER);
 #endif
-#if defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
+#if defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER) && defined(CONFIG_OPENTHREAD_ENABLED)
     thread_network_diagnostics::create(endpoint, nullptr, CLUSTER_FLAG_SERVER);
 #endif
     return ESP_OK;
