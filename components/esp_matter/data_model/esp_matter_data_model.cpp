@@ -696,6 +696,9 @@ attribute_t *get(cluster_t *cluster, uint32_t attribute_id)
 attribute_t *get(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id)
 {
     cluster_t *cluster = cluster::get(endpoint_id, cluster_id);
+    if (!cluster) {
+        return nullptr;
+    }
     return get(cluster, attribute_id);
 }
 
