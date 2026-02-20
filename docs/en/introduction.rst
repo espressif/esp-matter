@@ -60,3 +60,13 @@ If you want to test Matter on Espressif devices without any additional setup:
 .. |Try it with Launchpad| image:: ../_static/launchpad.png
                            :scale: 50 %
 .. _Try it with Launchpad: https://espressif.github.io/esp-launchpad/?flashConfigURL=https://espressif.github.io/esp-matter/launchpad.toml
+
+
+3. Try Data Model Validator
+----------------------------
+
+Espressif provides a web UI tool to validate the data model of the Matter devices. It is available at `https://espressif.github.io/esp-matter-tools/`.
+
+.. | Try Data Model Validator | image:: ../_static/dmv_tool.png
+                           :scale: 50 %
+.. _Try Data Model Validator: https://espressif.github.io/esp-matter-tools/
