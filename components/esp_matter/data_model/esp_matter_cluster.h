@@ -842,7 +842,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace device_energy_management {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    uint32_t feature_flags;
+    config() : delegate(nullptr), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -1060,6 +1061,12 @@ using config_t = common::config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* soil_measurement */
+
+namespace zone_management {
+using config_t = common::config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* zone_management */
 
 } /* cluster */
 } /* esp_matter */

@@ -2137,5 +2137,35 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* meter_identification */
 
+namespace zone_management {
+namespace feature {
+
+namespace two_dimensional_cartesian_zone {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* two_dimensional_cartesian_zone */
+
+namespace per_zone_sensitivity {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* per_zone_sensitivity */
+
+namespace user_defined {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* user_defined */
+
+namespace focus_zones {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* focus_zones */
+
+} /* feature */
+} /* zone_management */
+
 } /* cluster */
 } /* esp_matter */

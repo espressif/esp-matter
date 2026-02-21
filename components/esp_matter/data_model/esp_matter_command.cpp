@@ -3087,5 +3087,46 @@ command_t *create_get_detailed_forecast_response(cluster_t *cluster)
 } /* command */
 } /* commodity_price */
 
+namespace zone_management {
+namespace command {
+command_t *create_two_d_cartesian_zone(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ZoneManagement::Commands::CreateTwoDCartesianZone::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_two_d_cartesian_zone_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ZoneManagement::Commands::CreateTwoDCartesianZoneResponse::Id,
+                                       COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_update_two_d_cartesian_zone(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ZoneManagement::Commands::UpdateTwoDCartesianZone::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_remove_zone(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ZoneManagement::Commands::RemoveZone::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_or_update_trigger(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ZoneManagement::Commands::CreateOrUpdateTrigger::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_remove_trigger(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ZoneManagement::Commands::RemoveTrigger::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* zone_management */
+
 } /* cluster */
 } /* esp_matter */

@@ -57,7 +57,6 @@ namespace {
 enum class feature_policy {
     k_exact_one = 0,        // O.a
     k_at_least_one = 1,     // 0.a+
-    k_at_most_one = 2,      // 0.a-
 };
 
 const char feature_policy_strs[3][16] = {"Exactly one", "At least one", "At most one"};
@@ -81,9 +80,6 @@ bool validate_features(uint32_t feature_flag, feature_policy policy,
     case feature_policy::k_at_least_one:
         result = count >= 1;
         break;
-    case feature_policy::k_at_most_one:
-        result = count <= 1;
-        break;
     }
 
     if (!result) {
@@ -100,10 +96,6 @@ bool validate_features(uint32_t feature_flag, feature_policy policy,
 
 #define VALIDATE_FEATURES_AT_LEAST_ONE(name, ...) \
     do { if (!validate_features(config->feature_flags, feature_policy::k_at_least_one, name, {__VA_ARGS__})) \
-        return ABORT_CLUSTER_CREATE(cluster); } while(0)
-
-#define VALIDATE_FEATURES_AT_MOST_ONE(name, ...) \
-    do { if (!validate_features(config->feature_flags, feature_policy::k_at_most_one, name, {__VA_ARGS__})) \
         return ABORT_CLUSTER_CREATE(cluster); } while(0)
 
 } // anonymous namespace
@@ -889,7 +881,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_feature_map(cluster, config->feature_flags);
 
         // check against O.a feature conformance for Wired and Battery
-        VALIDATE_FEATURES_EXACT_ONE("PowerSource,Battery", feature::wired::get_id(), feature::battery::get_id());
+        VALIDATE_FEATURES_EXACT_ONE("Wired, Battery", feature::wired::get_id(), feature::battery::get_id());
 
         /* Features */
         if (has(feature::wired::get_id())) {
@@ -3346,6 +3338,34 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_abs_max_power(cluster, 0);
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+        if ((!(has(feature::power_adjustment::get_id())))) {
+            VALIDATE_FEATURES_EXACT_ONE("PowerForecastReporting,StateForecastReporting",
+                                        feature::power_forecast_reporting::get_id(), feature::state_forecast_reporting::get_id());
+            if (has(feature::power_forecast_reporting::get_id())) {
+                VerifyOrReturnValue(feature::power_forecast_reporting::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+            if (has(feature::state_forecast_reporting::get_id())) {
+                VerifyOrReturnValue(feature::state_forecast_reporting::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            }
+        }
+        if (has(feature::start_time_adjustment::get_id()) || has(feature::pausable::get_id()) || has(feature::forecast_adjustment::get_id()) || has(feature::constraint_based_adjustment::get_id())) {
+            VerifyOrReturnValue(feature::power_forecast_reporting::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::power_adjustment::get_id())) {
+            VerifyOrReturnValue(feature::power_adjustment::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::start_time_adjustment::get_id())) {
+            VerifyOrReturnValue(feature::start_time_adjustment::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::pausable::get_id())) {
+            VerifyOrReturnValue(feature::pausable::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::forecast_adjustment::get_id())) {
+            VerifyOrReturnValue(feature::forecast_adjustment::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (has(feature::constraint_based_adjustment::get_id())) {
+            VerifyOrReturnValue(feature::constraint_based_adjustment::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
         cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterDeviceEnergyManagementClusterServerInitCallback,
                                                  ESPMatterDeviceEnergyManagementClusterServerShutdownCallback);
     }
@@ -4159,8 +4179,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         if (has(feature::positioning::get_id())) {
             VerifyOrReturnValue(feature::positioning::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
 
-            VALIDATE_FEATURES_AT_MOST_ONE("Translation, Rotation, Modulation",
-                                          feature::translation::get_id(), feature::rotation::get_id(), feature::modulation::get_id());
+            VALIDATE_FEATURES_EXACT_ONE("Translation, Rotation, Modulation",
+                                        feature::translation::get_id(), feature::rotation::get_id(), feature::modulation::get_id());
             if (has(feature::translation::get_id())) {
                 VerifyOrReturnValue(feature::translation::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
             }
@@ -4551,6 +4571,49 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 
 } /* soil_measurement */
+
+namespace zone_management {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, ZoneManagement::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ZoneManagement::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        // TODO: Add a delegate initialization callback.
+        // The current esp_matter initialization flow makes this hard to implement cleanly.
+
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterZoneManagementPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+        add_function_list(cluster, function_list, function_flags);
+
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_cluster_revision(cluster, 0);
+        attribute::create_max_zones(cluster, 1);
+        attribute::create_zones(cluster, NULL, 0, 0);
+        attribute::create_triggers(cluster, NULL, 0, 0);
+        attribute::create_sensitivity_max(cluster, 0);
+        // if !per_zone_sensitivity, create sensitivity attribute
+        attribute::create_sensitivity(cluster, 0);
+
+        command::create_or_update_trigger(cluster);
+        command::create_remove_trigger(cluster);
+
+        /* Events */
+        event::create_zone_triggered(cluster);
+        event::create_zone_stopped(cluster);
+    }
+
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        create_default_binding_cluster(endpoint);
+    }
+    return cluster;
+}
+
+} /* zone_management */
 
 } /* cluster */
 } /* esp_matter */
