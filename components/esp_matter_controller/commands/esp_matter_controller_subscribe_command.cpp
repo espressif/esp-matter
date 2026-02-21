@@ -159,6 +159,11 @@ void subscribe_command::OnSubscriptionEstablished(chip::SubscriptionId subscript
     m_subscription_id = subscriptionId;
     m_resubscribe_retries = 0;
     ESP_LOGI(TAG, "Subscription 0x%" PRIx32 " established", subscriptionId);
+
+    if (subscription_established_cb) {
+        // This will be called when the subscription is established.
+        subscription_established_cb(m_node_id, m_subscription_id);
+    }
 }
 
 CHIP_ERROR subscribe_command::OnResubscriptionNeeded(ReadClient *apReadClient, CHIP_ERROR aTerminationCause)
@@ -175,9 +180,9 @@ CHIP_ERROR subscribe_command::OnResubscriptionNeeded(ReadClient *apReadClient, C
 void subscribe_command::OnDone(ReadClient *apReadClient)
 {
     ESP_LOGI(TAG, "Subscription 0x%" PRIx32 " Done for remote node 0x%" PRIx64, m_subscription_id, m_node_id);
-    if (subscribe_done_cb) {
+    if (subscription_terminated_cb) {
         // This will be called when the subscription is terminated.
-        subscribe_done_cb(m_node_id, m_subscription_id);
+        subscription_terminated_cb(m_node_id, m_subscription_id);
     }
     chip::Platform::Delete(this);
 }
@@ -206,8 +211,8 @@ esp_err_t send_subscribe_attr_command(uint64_t node_id, ScopedMemoryBufferWithSi
     }
 
     subscribe_command *cmd = chip::Platform::New<subscribe_command>(
-                                 node_id, std::move(attr_paths), std::move(event_paths), min_interval, max_interval, auto_resubscribe, nullptr,
-                                 nullptr, nullptr, nullptr, keep_subscription);
+        node_id, std::move(attr_paths), std::move(event_paths), min_interval, max_interval, auto_resubscribe, nullptr, 
+        nullptr, nullptr, nullptr, nullptr, keep_subscription);
     if (!cmd) {
         ESP_LOGE(TAG, "Failed to alloc memory for subscribe_command");
         return ESP_ERR_NO_MEM;
@@ -239,8 +244,8 @@ esp_err_t send_subscribe_event_command(uint64_t node_id, ScopedMemoryBufferWithS
     }
 
     subscribe_command *cmd = chip::Platform::New<subscribe_command>(
-                                 node_id, std::move(attr_paths), std::move(event_paths), min_interval, max_interval, auto_resubscribe, nullptr,
-                                 nullptr, nullptr, nullptr, keep_subscription);
+        node_id, std::move(attr_paths), std::move(event_paths), min_interval, max_interval, auto_resubscribe, nullptr,
+        nullptr, nullptr, nullptr, nullptr, keep_subscription);
     if (!cmd) {
         ESP_LOGE(TAG, "Failed to alloc memory for subscribe_command");
         return ESP_ERR_NO_MEM;

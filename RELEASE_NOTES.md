@@ -1,3 +1,8 @@
+# 21-Feb-2026
+### API Changes
+- In `subscribe_command`, `subscribe_done_cb_t` has been renamed to `subscribe_terminated_cb_t` to align better with the terminology.
+- In `subscribe_command` a new callback `subscription_established_cb_t` has been added to report successfully subscription commands. 
+
 # 4-Feb-2026
 ### API Changes
 - Removed APIs: `plugin_init_callback_common()`, `add_bounds_callback_common()` and `delegate_init_callback_common()`.

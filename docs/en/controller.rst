@@ -169,7 +169,10 @@ inputs:
 - **Event report callback**:
   This callback will be invoked upon the reception of the event report for subscribe-event commands.
 
-- **Subscribe done callback**:
+- **Subscription established callback**:
+  This callback will be invoked when the subscription is established successfully.
+
+- **Subscription terminate callback**:
   This callback will be invoked when the subscription is terminated or shutdown.
 
 - **Subscribe failure callback**:
