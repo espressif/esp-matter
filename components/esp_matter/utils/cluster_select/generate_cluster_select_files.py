@@ -46,15 +46,25 @@ def load_json(json_file):
     return {key: value for key, value in server_dirs.items() if value}
 
 
+# Clusters that require OpenThread support
+OPENTHREAD_CLUSTERS = {
+    'THREAD_BORDER_ROUTER_MANAGEMENT_CLUSTER',
+    'THREAD_NETWORK_DIAGNOSTICS_CLUSTER',
+    'THREAD_NETWORK_DIRECTORY_CLUSTER',
+}
+
+
 def generate_cluster_select_kconfig(cluster_list, output_dir):
     with open(os.path.join(output_dir, 'Kconfig.in'), 'w') as kconfig_file:
         write_file_header(kconfig_file)
         for cluster in cluster_list.keys():
-            kconfig_file.writelines(
-                [f'config SUPPORT_{cluster}\n',
-                 f'\tbool "Support {cluster}"\n',
-                 '\tdefault y\n'
-                 '\n'])
+            lines = [f'config SUPPORT_{cluster}\n',
+                     f'\tbool "Support {cluster}"\n']
+            if cluster in OPENTHREAD_CLUSTERS:
+                lines.append('\tdepends on OPENTHREAD_ENABLED\n')
+            lines.append('\tdefault y\n')
+            lines.append('\n')
+            kconfig_file.writelines(lines)
 
 
 def generate_cluster_select_cmake(cluster_list, output_dir):
