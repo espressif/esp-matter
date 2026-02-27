@@ -2300,6 +2300,30 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     return ESP_OK;
 }
 } /* soil_sensor */
+
+namespace irrigation_system {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_IRRIGATION_SYSTEM_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_IRRIGATION_SYSTEM_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+    return ESP_OK;
+}
+} /* irrigation_system */
 } /* endpoint */
 
 namespace node {
