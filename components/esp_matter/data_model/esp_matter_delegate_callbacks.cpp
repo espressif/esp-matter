@@ -588,7 +588,7 @@ void MeterIdentificationDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     uint32_t feature_map = get_feature_map_value(endpoint_id, MeterIdentification::Id);
     MeterIdentification::Instance *meter_identification_instance = new MeterIdentification::Instance(endpoint_id, chip::BitMask<MeterIdentification::Feature, uint32_t>(feature_map));
-    meter_identification_instance->Init();
+    LogErrorOnFailure(meter_identification_instance->Init());
 }
 
 } // namespace delegate_cb
