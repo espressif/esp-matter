@@ -120,6 +120,7 @@ command_t *create_set_tc_acknowledgements_response(cluster_t *cluster);
 } /* command */
 } /* general_commissioning */
 
+#ifndef CONFIG_CUSTOM_NETWORK_CONFIG
 namespace network_commissioning {
 namespace command {
 command_t *create_scan_networks(cluster_t *cluster);
@@ -133,6 +134,7 @@ command_t *create_network_config_response(cluster_t *cluster);
 command_t *create_connect_network_response(cluster_t *cluster);
 } /* command */
 } /* network_commissioning */
+#endif // CONFIG_CUSTOM_NETWORK_CONFIG
 
 namespace administrator_commissioning {
 namespace command {
