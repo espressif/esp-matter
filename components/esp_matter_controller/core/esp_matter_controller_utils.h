@@ -31,7 +31,8 @@ using attribute_report_cb_t = void (*)(uint64_t remote_node_id, const chip::app:
                                        chip::TLV::TLVReader *data);
 using event_report_cb_t = void (*)(uint64_t remote_node_id, const chip::app::EventHeader &header,
                                    chip::TLV::TLVReader *data);
-using subscribe_done_cb_t = void (*)(uint64_t remote_node_id, uint32_t subscription_id);
+using subscription_established_cb_t = void (*)(uint64_t remote_node_id, uint32_t subscription_id);
+using subscription_terminated_cb_t = void (*)(uint64_t remote_node_id, uint32_t subscription_id);
 using subscribe_failure_cb_t = void (*)(void *subscribe_command);
 using read_done_cb_t = void (*)(uint64_t remote_node_id,
                                 const ScopedMemoryBufferWithSize<AttributePathParams> &attr_paths,

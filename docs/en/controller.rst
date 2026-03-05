@@ -36,10 +36,10 @@ The controller should support the following features:
 The ``invoke-cmd`` command is used for sending cluster commands to the end-devices. It utilizes a ``cluster_command`` class to establish the sessions and send the command packets. The class constructor function could accept two callback inputs:
 
 - **Success callback**:
-  This callback will be called upon the reception of the success response. It could be used to handle the response data for the command that requires a reponse. Now the default success callback will print the response data for GroupKeyManagement, Groups, Scenes, Thermostat, and DoorLock clusters. If you want to handle the response data in your example, you can register your success callback when creating the ``cluster_command`` object.
+  This callback will be called upon the reception of the success response. It could be used to handle the response data for the command that requires a response. Now the default success callback will print the response data for GroupKeyManagement, Groups, Scenes, Thermostat, and DoorLock clusters. If you want to handle the response data in your example, you can register your success callback when creating the ``cluster_command`` object.
 
 - **Error callback**:
-  This callback will be called upon the reception of the failure response or reponse timeout.
+  This callback will be called upon the reception of the failure response or response timeout.
 
 ^^^^^^^^^^^^^^^^
 
@@ -169,11 +169,11 @@ inputs:
 - **Event report callback**:
   This callback will be invoked upon the reception of the event report for subscribe-event commands.
 
-- **Subscribe done callback**:
-  This callback will be invoked when the subscription is terminated or shutdown.
+- **Subscription established callback**:
+  This callback will be invoked when the subscription is established successfully.
 
-- **Subscribe failure callback**:
-  This callback will be invoked upon the failure of establishing CASE session.
+- **Subscription terminated callback**:
+  This callback will be invoked when the subscription is terminated or shutdown.
 
 1.4.1 Subscribe attribute commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
