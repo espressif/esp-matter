@@ -628,45 +628,40 @@ void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
     }
 }
 
-esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val)
+static esp_err_t update_or_report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val, bool call_attribute_callbacks)
 {
     VerifyOrReturnError(val, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "val cannot be NULL"));
+
     attribute_t *attr = get(endpoint_id, cluster_id, attribute_id);
-    ESP_RETURN_ON_FALSE(attr, ESP_ERR_INVALID_ARG, TAG, "Failed to get attribute handle");
+    VerifyOrReturnError(attr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Failed to get attribute handle"));
 
     lock::ScopedChipStackLock lock(portMAX_DELAY);
+
     /* Here, the val_print function gets called on attribute write.*/
     attribute::val_print(endpoint_id, cluster_id, attribute_id, val, false);
 
-    esp_err_t err = attribute::set_val(attr, val);
+    esp_err_t err = attribute::set_val(attr, val, call_attribute_callbacks);
     if (err == ESP_OK) {
         data_model::provider::get_instance().Temporary_ReportAttributeChanged(
             chip::app::AttributePathParams(endpoint_id, cluster_id, attribute_id));
     } else if (err == ESP_ERR_NOT_FINISHED) {
+        // new value is same as older value, skip reporting to IM engine
         err = ESP_OK;
+    } else {
+        ESP_LOGE(TAG, "Failed to set attribute value for path: 0x%x/0x%" PRIx32 "/0x%" PRIX32 " err: %d",
+                 endpoint_id, cluster_id, attribute_id, err);
     }
-    return ESP_OK;
+    return err;
+}
+
+esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val)
+{
+    return update_or_report(endpoint_id, cluster_id, attribute_id, val, true /* call_attribute_callbacks */);
 }
 
 esp_err_t report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
-    VerifyOrReturnError(val, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "val cannot be NULL"));
-    attribute_t *attr = get(endpoint_id, cluster_id, attribute_id);
-    ESP_RETURN_ON_FALSE(attr, ESP_ERR_INVALID_ARG, TAG, "Failed to get attribute handle");
-
-    lock::ScopedChipStackLock lock(portMAX_DELAY);
-    /* Here, the val_print function gets called on attribute write.*/
-    attribute::val_print(endpoint_id, cluster_id, attribute_id, val, false);
-
-    esp_err_t err = attribute::set_val(attr, val, false);
-    if (err == ESP_OK) {
-        /* Report attribute */
-        MatterReportingAttributeChangeCallback(endpoint_id, cluster_id, attribute_id);
-    } else if (err == ESP_ERR_NOT_FINISHED) {
-        err = ESP_OK;
-    }
-
-    return ESP_OK;
+    return update_or_report(endpoint_id, cluster_id, attribute_id, val, false /* call_attribute_callbacks */);
 }
 
 bool val_compare(const esp_matter_attr_val_t *val1, const esp_matter_attr_val_t *val2)
