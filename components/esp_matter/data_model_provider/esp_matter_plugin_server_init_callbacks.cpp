@@ -68,6 +68,5 @@ void MatterWaterHeaterManagementPluginServerInitCallback() {}
 void MatterWaterHeaterModePluginServerInitCallback() {}
 void MatterCommodityTariffPluginServerInitCallback() {}
 void MatterCommodityPricePluginServerInitCallback() {}
-void MatterCommodityMeteringPluginServerInitCallback() {}
 void MatterElectricalGridConditionsPluginServerInitCallback() {}
 void MatterSoilMeasurementPluginServerInitCallback() {}
