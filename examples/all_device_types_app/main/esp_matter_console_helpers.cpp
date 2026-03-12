@@ -743,6 +743,15 @@ int create(uint8_t device_type_index)
         chip::app::Clusters::SoilMeasurement::SetSoilMoistureLimits(esp_matter::endpoint::get_id(endpoint), limits);
         break;
     }
+    case ESP_MATTER_IRRIGATION_SYSTEM: {
+        esp_matter::endpoint::irrigation_system::config_t irrigation_system_config;
+        endpoint = esp_matter::endpoint::irrigation_system::create(node, &irrigation_system_config, ENDPOINT_FLAG_NONE, NULL);
+
+        esp_matter::endpoint::water_valve::config_t water_valve_config;
+        esp_err_t err = esp_matter::endpoint::water_valve::add(endpoint, &water_valve_config);
+        VerifyOrReturnValue(err == ESP_OK, 1, ESP_LOGE(TAG, "Failed to add water valve endpoint"));
+        break;
+    }
     default: {
         ESP_LOGE(TAG, "Please input a valid device type");
         break;
