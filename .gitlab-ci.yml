@@ -286,6 +286,7 @@ build_image:
     IDF_CCACHE_ENABLE: 1
 
 build_esp_matter_examples_pytest_C6:
+  resource_group: build_esp_matter_examples_pytest_C6
   extends:
         - .build_examples_template
   artifacts:
@@ -306,6 +307,7 @@ build_esp_matter_examples_pytest_C6:
     - python tools/ci/build_apps.py ./examples --pytest_c6
 
 build_esp_matter_examples_pytest_H2:
+  resource_group: build_esp_matter_examples_pytest_H2
   extends:
         - .build_examples_template
   artifacts:
@@ -343,6 +345,7 @@ build_esp_matter_examples_pytest_H2:
       fi
 
 build_esp_matter_examples_pytest_C2:
+  resource_group: build_esp_matter_examples_pytest_C2
   extends:
         - .build_examples_template
   artifacts:
@@ -371,6 +374,7 @@ build_esp_matter_examples_pytest_C2:
 
 
 build_override_sdkconfig_examples:
+  resource_group: build_override_sdkconfig_examples
   extends:
         - .build_examples_template
   script:
@@ -381,6 +385,7 @@ build_override_sdkconfig_examples:
     - *build_lit_icd_example
 
 build_zap_light_example:
+  resource_group: build_zap_light_example
   extends:
         - .build_examples_template
   script:
@@ -392,6 +397,7 @@ build_zap_light_example:
     - idf.py set-target esp32h2 build
 
 build_esp_matter_examples:
+  resource_group: build_esp_matter_examples_${CI_NODE_INDEX}
   extends:
         - .build_examples_template
   artifacts:
@@ -431,6 +437,7 @@ build_esp_matter_examples:
   parallel: 2
 
 build_nopytest_remaining_examples_manual:
+  resource_group: build_nopytest_remaining_examples_manual_${CI_NODE_INDEX}
   extends:
         - .build_examples_template
   rules:
@@ -460,6 +467,7 @@ build_nopytest_remaining_examples_manual:
 
 
 build_esp_matter_examples_idf_v4_4:
+  resource_group: build_esp_matter_examples_idf_v4_4
   extends:
         - .build_examples_template
   image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
@@ -495,6 +503,7 @@ build_esp_matter_examples_idf_v4_4:
 
 
 build_esp_matter_examples_pytest_C3:
+  resource_group: build_esp_matter_examples_pytest_C3
   extends:
         - .build_examples_template
   image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
@@ -595,6 +604,7 @@ pytest_esp32h2_esp_matter_dut:
   tags: ["esp32h2", "esp_matter_dut"]
 
 build_upstream_examples:
+    resource_group: build_upstream_examples
     extends:
         - .build_examples_template
     when: manual
@@ -602,6 +612,7 @@ build_upstream_examples:
         - *build_matter_examples
 
 build_managed_component_light:
+    resource_group: build_managed_component_light
     extends:
         - .build_managed_component_light_example
     needs:
@@ -615,6 +626,7 @@ build_managed_component_light:
 
 # This job is allowed to fail due to a circular dependency with esp-rainmaker.
 build_esp_rainmaker_apps:
+    resource_group: build_esp_rainmaker_apps
     stage: build
     image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
     # Allow failures to avoid circular dependency with any breaking changes in the Esp-Matter SDK.
