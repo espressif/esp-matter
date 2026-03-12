@@ -225,8 +225,6 @@ static void esp_matter_chip_init_task(intptr_t context)
     if (endpoint::enable_all() != ESP_OK) {
         ESP_LOGE(TAG, "Enable all endpoints failure");
     }
-    // Initialise clusters which have delegate implemented
-    esp_matter::cluster::delegate_init_callback_common();
 #endif // CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
 #if CHIP_CONFIG_ENABLE_ICD_SERVER
     if (!icd::get_icd_server_enabled()) {
