@@ -769,9 +769,10 @@ check_typos:
   stage: check_typos
   script:
     - pip install codespell
-    - git fetch origin main
+    # Use target branch for MR pipelines, fallback to main for branch push pipelines
+    - git fetch origin ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}
     - |
-      FILES=$(git diff --name-only origin/main...HEAD)
+      FILES=$(git diff --name-only origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}...HEAD)
       echo "change files: $FILES"
       if [ -n "$FILES" ]; then
         ./tools/check_typos.sh $FILES
