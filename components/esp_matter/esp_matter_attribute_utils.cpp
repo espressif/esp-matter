@@ -1,4 +1,4 @@
-// Copyright 2021 Espressif Systems (Shanghai) PTE LTD
+// Copyright 2021-2026 Espressif Systems (Shanghai) PTE LTD
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -2081,7 +2081,8 @@ esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
         }
         return ESP_ERR_NO_MEM;
     }
-    get_data_from_attr_val(val, &attribute_type, &attribute_size, value);
+    /* Ignore return value: identical call succeeded above with NULL value buffer */
+    (void)get_data_from_attr_val(val, &attribute_type, &attribute_size, value);
 
     /* Update matter */
     Status status = Status::Success;
@@ -2126,7 +2127,15 @@ esp_err_t report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
 
     /* Update attribute */
     esp_matter_attr_val_t raw_val = esp_matter_invalid(NULL);
-    attribute::get_val(attribute, &raw_val);
+    esp_err_t err = attribute::get_val(attribute, &raw_val);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to get the attribute value for Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " err: %d",
+                 endpoint_id, cluster_id, attribute_id, err);
+        if (lock_status == lock::SUCCESS) {
+            lock::chip_stack_unlock();
+        }
+        return err;
+    }
     if (val->type != raw_val.type) {
         ESP_LOGE(TAG, "Attribute type mismatch when trying to report Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32,
                  endpoint_id, cluster_id, attribute_id);
@@ -2135,7 +2144,15 @@ esp_err_t report(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
         }
         return ESP_FAIL;
     }
-    attribute::set_val(attribute, val);
+    err = attribute::set_val(attribute, val);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to set attribute value for Endpoint 0x%04" PRIX16 "'s Cluster 0x%08" PRIX32 "'s Attribute 0x%08" PRIX32 " err: %d",
+                 endpoint_id, cluster_id, attribute_id, err);
+        if (lock_status == lock::SUCCESS) {
+            lock::chip_stack_unlock();
+        }
+        return err;
+    }
 
     /* Report attribute */
     MatterReportingAttributeChangeCallback(endpoint_id, cluster_id, attribute_id);
