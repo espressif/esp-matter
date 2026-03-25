@@ -1592,8 +1592,13 @@ static esp_err_t destroy(cluster_t *cluster)
         current_cluster->matter_attributes = NULL;
     }
 
-    /* Free */
-    esp_matter_mem_free(current_cluster);
+    /* Remove from parent endpoint's cluster list and free */
+    _endpoint_t *parent_endpoint = (_endpoint_t *)endpoint::get(current_cluster->endpoint_id);
+    if (parent_endpoint) {
+        SinglyLinkedList<_cluster_t>::remove(&parent_endpoint->cluster_list, current_cluster);
+    } else {
+        esp_matter_mem_free(current_cluster);
+    }
     return ESP_OK;
 }
 
