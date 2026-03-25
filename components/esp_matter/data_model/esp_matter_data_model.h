@@ -567,8 +567,8 @@ cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags);
 
 /** Destroy cluster
  *
- * This will destroy the cluster which has been created and added to the endpoint. It also destroys the associated
- * attributes, commands and events.
+ * This will remove the cluster from the parent endpoint's cluster list, then destroy the cluster
+ * and free its associated attributes, commands and events.
  *
  * @param[in] cluster Cluster handle.
  *
