@@ -1019,6 +1019,33 @@ chip::Protocols::InteractionModel::Status emberAfReadAttribute(chip::EndpointId 
     return get_raw_data_buffer_from_attr_val(val, dataPtr, readLength);
 }
 
+chip::Protocols::InteractionModel::Status __attribute__((weak))
+MatterPreAttributeChangeCallback(const chip::app::ConcreteAttributePath  &attributePath, uint8_t type, uint16_t size,
+                                 uint8_t * value)
+{
+    return chip::Protocols::InteractionModel::Status::Success;
+}
+
+void __attribute__((weak))
+MatterPostAttributeChangeCallback(const chip::app::ConcreteAttributePath  &attributePath, uint8_t type, uint16_t size,
+                                  uint8_t * value)
+{}
+
+// This function is used to call the per-cluster pre-attribute changed callback
+Status emAfClusterPreAttributeChangedCallback(const chip::app::ConcreteAttributePath  &attributePath, esp_matter::cluster_t *cluster, EmberAfAttributeType attributeType,
+                                              uint16_t size, uint8_t * value)
+{
+    Status status = Status::Success;
+    esp_matter::cluster::function_pre_attribute_change_t f =
+        (esp_matter::cluster::function_pre_attribute_change_t)esp_matter::cluster::get_function(
+            cluster, esp_matter::CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION);
+
+    if (f != nullptr) {
+        status = f(attributePath, attributeType, size, value);
+    }
+    return status;
+}
+
 Status emberAfWriteAttribute(chip::EndpointId endpointId, chip::ClusterId clusterId, chip::AttributeId attributeId,
                              uint8_t *value, EmberAfAttributeType dataType)
 {
@@ -1041,13 +1068,38 @@ Status emberAfWriteAttribute(const chip::app::ConcreteAttributePath &path, const
     if (!attribute) {
         return chip::Protocols::InteractionModel::Status::UnsupportedAttribute;
     }
-    esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
-    Status status = get_attr_val_from_raw_data_buffer(input.dataPtr, input.dataType, val,
-                                                      esp_matter::attribute::get_flags(attribute) &
-                                                          esp_matter::ATTRIBUTE_FLAG_NULLABLE);
+
+    const chip::app::ConcreteAttributePath attributePath(path.mEndpointId, path.mClusterId, path.mAttributeId);
+    const EmberAfAttributeMetadata *metadata = emberAfLocateAttributeMetadata(path.mEndpointId, path.mClusterId, path.mAttributeId);
+    if (!metadata) {
+        return chip::Protocols::InteractionModel::Status::UnsupportedAttribute;
+    }
+    // Pre write attribute callback for all attribute changes, regardless of cluster.
+    Status status = MatterPreAttributeChangeCallback(attributePath, input.dataType, emberAfAttributeSize(metadata), input.dataPtr);
     if (status != Status::Success) {
         return status;
     }
+
+    // Pre-write attribute callback specific to the cluster that the attribute lives in.
+    status = emAfClusterPreAttributeChangedCallback(attributePath, cluster, input.dataType, emberAfAttributeSize(metadata), input.dataPtr);
+
+    // Ignore the following write operation and return success
+    if (status == Status::WriteIgnored) {
+        return Status::Success;
+    }
+
+    if (status != Status::Success) {
+        return status;
+    }
+
+    esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
+    status = get_attr_val_from_raw_data_buffer(input.dataPtr, input.dataType, val,
+                                               esp_matter::attribute::get_flags(attribute) &
+                                               esp_matter::ATTRIBUTE_FLAG_NULLABLE);
+    if (status != Status::Success) {
+        return status;
+    }
+
     esp_err_t err = esp_matter::attribute::set_val_internal(attribute, &val);
     if (err != ESP_OK && err != ESP_ERR_NOT_FINISHED) {
         status = Status::Failure;
@@ -1064,6 +1116,10 @@ Status emberAfWriteAttribute(const chip::app::ConcreteAttributePath &path, const
             }
         }
     }
+
+    // Post write attribute callback for all attributes changes, regardless of cluster.
+    MatterPostAttributeChangeCallback(attributePath, input.dataType, emberAfAttributeSize(metadata), input.dataPtr);
+
     return status;
 }
 
