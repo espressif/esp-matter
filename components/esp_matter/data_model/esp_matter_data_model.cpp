@@ -534,6 +534,17 @@ esp_err_t enable(endpoint_t *endpoint)
     }
     ESP_LOGI(TAG, "Dynamic endpoint %" PRIu16 " added", current_endpoint->endpoint_id);
 
+    /* Set composition pattern for dynamic endpoints. emberAfSetDynamicEndpoint does not auto-detect
+     * device types to set the composition, unlike static endpoints. Root node, aggregator, and bridged
+     * node device types need kFullFamily composition for correct PartsList computation. */
+    for (uint8_t i = 0; i < current_endpoint->device_type_count; i++) {
+        if (current_endpoint->device_type_ids[i] == ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID ||
+            current_endpoint->device_type_ids[i] == ESP_MATTER_AGGREGATOR_DEVICE_TYPE_ID ||
+            current_endpoint->device_type_ids[i] == ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID) {
+            chip::app::SetFlatCompositionForEndpoint(current_endpoint->endpoint_id);
+            break;
+        }
+    }
 
 #ifdef CONFIG_SUPPORT_UNIT_LOCALIZATION_CLUSTER
 // set the temperature unit from unit localization cluster
