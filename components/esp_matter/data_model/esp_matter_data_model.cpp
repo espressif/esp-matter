@@ -256,7 +256,7 @@ static esp_err_t init_identification(endpoint_t *endpoint)
     return ESP_OK;
 }
 
-static void invoke_init_callbacks_internal(endpoint_t *endpoint)
+void invoke_init_callbacks_internal(endpoint_t *endpoint)
 {
     cluster_t *cluster = cluster::get_first(endpoint);
     while (cluster) {
@@ -304,7 +304,8 @@ esp_err_t enable(endpoint_t *endpoint)
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     current_endpoint->enabled = true;
     init_identification(endpoint);
-    {
+    /* Call the init callbacks for the endpoints which are created after esp_matter::start(). (e.g. for bridged endpoints) */
+    if (esp_matter::is_started()) {
         // Use the lock instead of schedule lambda to ensure the callbacks are invoked before esp_matter::start() returns.
         esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
         invoke_init_callbacks_internal(endpoint);
