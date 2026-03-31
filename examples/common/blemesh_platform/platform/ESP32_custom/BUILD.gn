@@ -71,6 +71,7 @@ buildconfig_header("custom_buildconfig") {
     "CHIP_USE_TRANSITIONAL_DEVICE_INSTANCE_INFO_PROVIDER=true",
     "CHIP_DEVICE_LAYER_TARGET_ESP32=1",
     "CHIP_DEVICE_LAYER_TARGET=ESP32_custom",
+    "CHIP_DEVICE_CONFIG_ENABLE_CHIPOBLE=${chip_enable_chipoble}",
     "BLE_PLATFORM_CONFIG_INCLUDE=<platform/ESP32_custom/BlePlatformConfig.h>",
     "CHIP_DEVICE_PLATFORM_CONFIG_INCLUDE=<platform/ESP32_custom/CHIPDevicePlatformConfig.h>",
     "CHIP_PLATFORM_CONFIG_INCLUDE=<platform/ESP32_custom/CHIPPlatformConfig.h>",
