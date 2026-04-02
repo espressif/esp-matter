@@ -38,6 +38,11 @@ namespace endpoint {
 
 esp_err_t enable_all();
 
+/** Invoke the init callbacks for the clusters on the endpoint
+ *
+ * @param[in] endpoint Endpoint handle.
+ */
+void invoke_init_callbacks_internal(endpoint_t *endpoint);
 }
 
 namespace attribute {

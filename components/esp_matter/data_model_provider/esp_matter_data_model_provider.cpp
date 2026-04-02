@@ -443,6 +443,12 @@ CHIP_ERROR provider::Startup(InteractionModelContext context)
         gDefaultAttributePersistence.Init(&Server::GetInstance().GetPersistentStorage());
         SetAttributePersistenceProvider(&gDefaultAttributePersistence);
     }
+    /* Call the init callbacks for the endpoints which are created before esp_matter::start() */
+    endpoint_t *ep = endpoint::get_first(node::get());
+    while (ep) {
+        endpoint::invoke_init_callbacks_internal(ep);
+        ep = endpoint::get_next(ep);
+    }
     return mRegistry.SetContext(ServerClusterContext{
         .provider = *this,
         .storage = Server::GetInstance().GetPersistentStorage(),
