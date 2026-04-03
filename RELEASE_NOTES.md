@@ -1,3 +1,8 @@
+# 9-June-2026
+### all_device_types_app
+- The `create` CLI syntax changed from `create --device_type=<name>` to `create <device_type>`.
+- Added `change <device_type>` CLI command to switch device type. This reboots the device to ensure stable endpoint IDs.
+
 # 5-June-2026
 ### API Changes: Integer attribute value type is deprecated
 
@@ -9,16 +14,15 @@ The integer attribute value type `ESP_MATTER_VAL_TYPE_INTEGER` and `ESP_MATTER_V
 
 - Add `is_nullable()`, `is_null()`, `get_base_type()`, `get_storage_type()` for `esp_matter_attr_val_t` which help easier management of attribute value
 
-
 # 3-June-2026
 
 ## O.a+ Cluster Builder Pattern
 
-#### Previous Behavior
+### Previous Behavior
 
 In earlier versions, some device types automatically created the O.a+ clusters during endpoint creation. Applications could instantiate these device types without explicitly enabling the corresponding clusters in the configuration.
 
-#### New Behavior (Breaking Change)
+### New Behavior (Breaking Change)
 
 Device types that support O.a+ clusters now require explicit opt-in through the corresponding with_*() builder methods. O.a+ clusters are no longer created automatically.
 
@@ -82,7 +86,6 @@ attribute_t *create_primary_1_intensity(cluster_t *cluster, nullable<uint8_t> va
 ### Configuration
 - Enable via `CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL` (menuconfig → ESP Matter → Generated Data Model)
 - Existing implementations is used by default
-
 
 # 5-Mar-2026
 

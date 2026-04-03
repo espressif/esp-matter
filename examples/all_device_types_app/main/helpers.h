@@ -13,6 +13,17 @@ namespace esp_matter {
 namespace data_model {
 
 int create(uint8_t device_type_index);
+
+/** Change the device type.
+ *
+ * Persists the new device type selection to NVS and reboots.
+ * On reboot, the new device type is created with stable endpoint IDs.
+ *
+ * @param[in] device_type_index Index into the device type list.
+ *
+ * @return 0 on success, non-zero on failure. Does not return on success (reboots).
+ */
+int change(uint8_t device_type_index);
 } /* namespace data_model */
 
 namespace nvs_helpers {
@@ -44,6 +55,15 @@ esp_err_t register_help_commands();
  * @return error in case of failure.
  */
 esp_err_t register_create_device_commands();
+
+/** Add Change Device Commands
+ *
+ * Registers the 'change' CLI command that switches the device type at runtime.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t register_change_device_commands();
 
 void init(void);
 
