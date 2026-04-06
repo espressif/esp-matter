@@ -691,9 +691,6 @@ CHIP_ERROR provider::EventInfo(const ConcreteEventPath &path, EventEntry &eventI
     if (auto *cluster = mRegistry.Get(path); cluster != nullptr) {
         return cluster->EventInfo(path, eventInfo);
     }
-    Status status = CheckDataModelPath(path);
-    VerifyOrReturnValue(status == Protocols::InteractionModel::Status::Success,
-                        CHIP_ERROR_IM_GLOBAL_STATUS_VALUE(status));
     eventInfo.readPrivilege = MatterGetAccessPrivilegeForReadEvent(path.mClusterId, path.mEventId);
     return CHIP_NO_ERROR;
 }
