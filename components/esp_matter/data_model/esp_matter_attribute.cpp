@@ -1426,8 +1426,7 @@ attribute_t *create_identify_time(cluster_t *cluster, uint16_t value)
 
 attribute_t *create_identify_type(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, Identify::Attributes::IdentifyType::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
-                                         esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, Identify::Attributes::IdentifyType::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
 }
 
 } /* attribute */
