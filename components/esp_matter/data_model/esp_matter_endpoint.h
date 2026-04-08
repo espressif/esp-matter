@@ -202,7 +202,9 @@ typedef struct config {
     cluster::access_control::config_t access_control;
     cluster::basic_information::config_t basic_information;
     cluster::general_commissioning::config_t general_commissioning;
+#ifndef CONFIG_CUSTOM_NETWORK_CONFIG
     cluster::network_commissioning::config_t network_commissioning;
+#endif // CONFIG_CUSTOM_NETWORK_CONFIG
     cluster::general_diagnostics::config_t general_diagnostics;
     cluster::administrator_commissioning::config_t administrator_commissioning;
     cluster::operational_credentials::config_t operational_credentials;
@@ -913,6 +915,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* thread_border_router */
 
+#ifndef CONFIG_CUSTOM_NETWORK_CONFIG
 namespace secondary_network_interface {
 typedef struct config {
     cluster::descriptor::config_t descriptor;
@@ -924,6 +927,7 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* secondary_network_interface */
+#endif // CONFIG_CUSTOM_NETWORK_CONFIG
 
 namespace mounted_on_off_control {
 typedef struct config : on_off_with_lighting_config {

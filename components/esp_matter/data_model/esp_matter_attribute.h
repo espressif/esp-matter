@@ -133,6 +133,7 @@ attribute_t *create_tc_update_deadline(cluster_t *cluster, nullable<uint32_t> va
 } /* attribute */
 } /* general_commissioning */
 
+#ifndef CONFIG_CUSTOM_NETWORK_CONFIG
 namespace network_commissioning {
 namespace attribute {
 attribute_t *create_max_networks(cluster_t *cluster, uint8_t value);
@@ -148,6 +149,7 @@ attribute_t *create_supported_thread_features(cluster_t *cluster, uint16_t value
 attribute_t *create_thread_version(cluster_t *cluster, uint16_t value);
 } /* attribute */
 } /* network_commissioning */
+#endif // CONFIG_CUSTOM_NETWORK_CONFIG
 
 namespace general_diagnostics {
 namespace attribute {
