@@ -359,7 +359,7 @@ A1.14 ESP32-C2 log garbled, unable to perform Matter commissioning and other abn
 
 When encountering the above issues, the following possible causes may exist:
 1. Incorrect baud rate settings. See `UART console baud rate <https://docs.espressif.com/projects/esp-idf/en/latest/esp32c2/api-reference/kconfig.html#config-esp-console-uart-baudrate>`__.
-2. Incorrect XTAL crystal frequency settings. The default XTAL crystal frequency in the SDK examples is 26 Mhz, if the ESP32-C2 board used for testing is 40 MHz, please change the configuration as `CONFIG_XTAL_FREQ_40=y`. See `Main XTAL frequency <https://docs.espressif.com/projects/esp-idf/en/latest/esp32c2/api-reference/kconfig.html#main-xtal-config>`__. You can check the XTAL frequency with this command. 
+2. Incorrect XTAL crystal frequency settings. The default XTAL crystal frequency in the SDK examples is 26 Mhz, if the ESP32-C2 board used for testing is 40 MHz, please change the configuration as `CONFIG_XTAL_FREQ_40=y`. See `Main XTAL frequency <https://docs.espressif.com/projects/esp-idf/en/latest/esp32c2/api-reference/kconfig.html#main-xtal-config>`__. You can check the XTAL frequency with this command.
 
    ::
 
@@ -372,3 +372,21 @@ When encountering the above issues, the following possible causes may exist:
       Features: WiFi, BLE
       Crystal is 26MHz
       MAC: 08:3a:8d:49:b3:90
+
+A1.15 How to skip the Network Commissioning cluster (CustomNetworkConfig)
+-------------------------------------------------------------------------
+
+If your device uses out-of-band-configured networking (for example a rich
+user interface, manufacturer-specific means, or a custom commissioning flow),
+the Matter specification allows omitting the Network Commissioning cluster
+from the Root Node endpoint via the **CustomNetworkConfig** condition.
+
+To enable this in ESP-Matter:
+
+1. Run ``idf.py menuconfig``.
+2. Navigate to **ESP Matter -> Use custom network commissioning (skip
+   Network Commissioning cluster)** and enable it (``CONFIG_CUSTOM_NETWORK_CONFIG``).
+3. Rebuild the project.
+
+When enabled the Network Commissioning cluster and all of its attributes,
+commands, and related code are compiled out of the root node endpoint.

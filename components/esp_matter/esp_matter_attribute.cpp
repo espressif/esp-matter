@@ -375,6 +375,7 @@ attribute_t *create_supports_concurrent_connection(cluster_t *cluster, bool valu
 } /* attribute */
 } /* general_commissioning */
 
+#ifndef CONFIG_CUSTOM_NETWORK_CONFIG
 namespace network_commissioning {
 namespace attribute {
 
@@ -446,6 +447,7 @@ attribute_t *create_thread_version(cluster_t *cluster, uint16_t value)
 
 } /* attribute */
 } /* network_commissioning */
+#endif // CONFIG_CUSTOM_NETWORK_CONFIG
 
 namespace general_diagnostics {
 namespace attribute {

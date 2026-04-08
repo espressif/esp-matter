@@ -124,6 +124,7 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* general_commissioning */
 
+#ifndef CONFIG_CUSTOM_NETWORK_CONFIG
 namespace network_commissioning {
 typedef struct config {
     uint16_t cluster_revision;
@@ -132,6 +133,7 @@ typedef struct config {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* network_commissioning */
+#endif // CONFIG_CUSTOM_NETWORK_CONFIG
 
 namespace diagnostic_logs {
 typedef struct config {

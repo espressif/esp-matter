@@ -18,7 +18,7 @@ menu "ESP Matter"
         string "ESP Matter NVS partition name"
         default "nvs"
         help
-            The NVS Partition name for ESP Matter to store the NONVOLATILE attribues
+            The NVS Partition name for ESP Matter to store the NONVOLATILE attributes
 
     config ESP_MATTER_DEFERRED_ATTR_PERSISTENCE_TIME_MS
         int "ESP Matter deferred attribute persistence time (ms)"
@@ -209,6 +209,16 @@ menu "ESP Matter"
                 and incur penalty of certain clock cycles per unaligned read/write.
 
     endchoice #ESP_MATTER_MEM_ALLOC_MODE
+
+    config CUSTOM_NETWORK_CONFIG
+        bool "Use custom network commissioning (skip Network Commissioning cluster)"
+        default n
+        help
+            Enable this if the device uses out-of-band-configured networking
+            (e.g. rich user interface, manufacturer-specific means, custom
+            commissioning flows). When enabled, the Network Commissioning
+            cluster will NOT be added to the root node endpoint, per the
+            Matter spec CustomNetworkConfig condition.
 
     config ESP_MATTER_ENABLE_DATA_MODEL
         bool "Use ESP-Matter data model"
