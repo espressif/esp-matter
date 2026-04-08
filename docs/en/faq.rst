@@ -435,6 +435,31 @@ Please refer to the `advance setup`_ section in the programming guide.
 This has been demonstrated in the `blemesh_bridge`_ and `light_wifi_prov`_ examples.
 
 
+A1.17 Using custom network commissioning (CustomNetworkConfig)
+--------------------------------------------------------------
+
+If your device uses out-of-band-configured networking (for example a rich user interface,
+manufacturer-specific means, or a custom commissioning flow), the Matter specification's
+``CustomNetworkConfig`` condition allows you to omit the Network Commissioning cluster from
+the root node endpoint.
+
+To enable this in ESP-Matter, set the following Kconfig option:
+
+    ::
+
+        CONFIG_CUSTOM_NETWORK_CONFIG=y
+
+When this option is enabled:
+
+-  The Network Commissioning cluster will **not** be created on the root node endpoint.
+-  The ``secondary_network_interface`` endpoint type is also excluded from compilation.
+-  All Network Commissioning cluster code (attributes, commands, cluster creation) is
+   compiled out, reducing firmware size.
+
+This is useful for devices that manage their own network configuration and do not need
+the standard Matter Network Commissioning flow.
+
+
 .. _bleprph: https://github.com/espressif/esp-idf/tree/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/bleprph
 .. _blecent: https://github.com/espressif/esp-idf/tree/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/blecent
 .. _bleprph_advertise(): https://github.com/espressif/esp-idf/blob/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/bleprph/main/main.c#L146

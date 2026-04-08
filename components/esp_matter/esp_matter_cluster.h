@@ -121,6 +121,7 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* general_commissioning */
 
+#ifndef CONFIG_CUSTOM_NETWORK_CONFIG
 namespace network_commissioning {
 typedef struct config {
     uint32_t feature_map;
@@ -135,6 +136,7 @@ typedef struct config {
 } config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* network_commissioning */
+#endif // CONFIG_CUSTOM_NETWORK_CONFIG
 
 namespace diagnostic_logs {
 using config_t = common::config_t;
