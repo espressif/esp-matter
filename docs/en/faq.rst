@@ -423,6 +423,27 @@ For example, to update ``DefaultOTAProviders`` attribute in ``OTASoftwareUpdateR
           request->AddDefaultOtaProvider(provider);
       }
 
+A1.18 Devices with custom means of network configuration (CustomNetworkConfig)
+------------------------------------------------------------------------------
+
+Some devices configure their network through custom means — such as a rich user interface,
+manufacturer-specific provisioning, custom commissioning flows, or a future IP-compliant
+network technology not yet directly supported by the Network Commissioning cluster — rather
+than through the standard Matter Network Commissioning cluster.
+
+The Matter specification defines a ``CustomNetworkConfig`` condition for such devices.
+When this condition is set, the Network Commissioning cluster is not required on the
+Root Node endpoint.
+
+To enable this in the ESP-Matter SDK:
+
+1. Enable the ``CONFIG_CUSTOM_NETWORK_CONFIG`` option in menuconfig
+   Menu path: (Top) -> Component config -> ESP Matter -> Use custom network commissioning (skip Network Commissioning cluster)
+
+2. When enabled, the Network Commissioning cluster will not be added to the
+   root node endpoint (endpoint 0). The device is expected to handle network
+   configuration through its own out-of-band mechanism.
+
 .. _bleprph: https://github.com/espressif/esp-idf/tree/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/bleprph
 .. _blecent: https://github.com/espressif/esp-idf/tree/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/blecent
 .. _bleprph_advertise(): https://github.com/espressif/esp-idf/blob/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/bleprph/main/main.c#L146
