@@ -3616,7 +3616,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config && config->delegate != nullptr) {
+        VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
+        if (config->delegate != nullptr) {
             static const auto delegate_init_cb = WaterHeaterManagementDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -3744,7 +3745,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
     if (flags & CLUSTER_FLAG_SERVER) {
-        if (config && config->delegate != nullptr) {
+        VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
+        if (config->delegate != nullptr) {
             static const auto delegate_init_cb = CommissionerControlDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }

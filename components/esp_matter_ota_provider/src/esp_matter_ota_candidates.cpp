@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <inttypes.h>
 #include <algorithm>
 #include <esp_check.h>
 #include <esp_crt_bundle.h>
@@ -222,7 +223,7 @@ static esp_err_t _query_ota_candidate(model_version_t *model, uint32_t new_softw
     }
     esp_err_t ret = ESP_OK;
     char url[128];
-    snprintf(url, sizeof(url), "%s/%d/%d/%ld", dcl_rest_url, model->vendor_id, model->product_id, new_software_version);
+    snprintf(url, sizeof(url), "%s/%d/%d/%" PRIu32, dcl_rest_url, model->vendor_id, model->product_id, new_software_version);
     esp_http_client_config_t config = {
         .url = url,
         .transport_type = HTTP_TRANSPORT_OVER_SSL,
@@ -321,10 +322,10 @@ static void _update_all_ota_candidates_cache()
             if (err == ESP_OK && software_version_array && software_version_count > 0) {
                 std::sort(&software_version_array[0], &software_version_array[software_version_count],
                           std::greater<uint32_t>());
-                for (size_t index = 0;
-                        index < software_version_count && software_version_array[index] > candidate->software_version;
-                        ++index) {
-                    err = _query_ota_candidate(candidate, software_version_array[index], candidate->software_version);
+                for (size_t ver_index = 0;
+                        ver_index < software_version_count && software_version_array[ver_index] > candidate->software_version;
+                        ++ver_index) {
+                    err = _query_ota_candidate(candidate, software_version_array[ver_index], candidate->software_version);
                     if (err == ESP_OK) {
                         break;
                     }

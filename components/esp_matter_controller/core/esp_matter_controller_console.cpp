@@ -15,6 +15,7 @@
  *    limitations under the License.
  */
 
+#include <inttypes.h>
 #include <esp_check.h>
 #include <esp_matter_controller_client.h>
 #include <esp_matter_controller_cluster_command.h>
@@ -300,7 +301,7 @@ static esp_err_t controller_udc_handler(int argc, char **argv)
             return ESP_ERR_INVALID_ARG;
         }
         uint32_t pincode = string_to_uint32(argv[1]);
-        printf("pincode %ld", pincode);
+        printf("pincode %" PRIu32, pincode);
         size_t index = (size_t)string_to_uint32(argv[2]);
         controller::matter_controller_client &instance = controller::matter_controller_client::get_instance();
         UDCClientState *state =

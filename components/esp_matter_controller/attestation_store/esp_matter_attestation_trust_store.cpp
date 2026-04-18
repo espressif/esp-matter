@@ -143,7 +143,7 @@ static void remove_backslash_n(char *str)
 {
     char *src = str, *dst = str;
     while (*src) {
-        if (*src == '\\' && *(src + 1) == 'n' && *(src + 1) != '\0') {
+        if (*src == '\\' && *(src + 1) == 'n') {
             src += 2;
         } else {
             *dst++ = *src++;
@@ -189,7 +189,7 @@ static esp_err_t convert_pem_to_der(const char *pem, uint8_t *der_buf, size_t *d
     if (len > *der_len) {
         return ESP_FAIL;
     }
-    if ((ret = mbedtls_base64_decode(der_buf, len, &len, (const unsigned char *)s1, s2 - s1)) != 0) {
+    if (mbedtls_base64_decode(der_buf, len, &len, (const unsigned char *)s1, s2 - s1) != 0) {
         return ESP_FAIL;
     }
     *der_len = len;
@@ -326,6 +326,8 @@ const AttestationTrustStore *get_attestation_trust_store()
     return &dcl_attestation_trust_store::get_instance();
 #elif CONFIG_CUSTOM_ATTESTATION_TRUST_STORE
     return s_custom_store;
+#else
+    return nullptr;
 #endif
 }
 
