@@ -12,7 +12,7 @@ namespace data_model {
 class attribute_data_encode_buffer {
 public:
     static constexpr bool kIsFabricScoped = false;
-    attribute_data_encode_buffer(const esp_matter_attr_val_t attr_val)
+    explicit attribute_data_encode_buffer(const esp_matter_attr_val_t &attr_val)
         : m_attr_val(attr_val)
     {
     }
@@ -26,7 +26,7 @@ private:
 class attribute_data_decode_buffer {
 public:
     static constexpr bool kIsFabricScoped = false;
-    attribute_data_decode_buffer(esp_matter_val_type_t attr_val_type)
+    explicit attribute_data_decode_buffer(esp_matter_val_type_t attr_val_type)
     {
         m_attr_val.type = attr_val_type;
         memset(&m_attr_val.val, 0, sizeof(m_attr_val.val));

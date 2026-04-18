@@ -219,7 +219,7 @@ private:
 
 class multiple_write_encodable_type {
 public:
-    multiple_write_encodable_type(const char *json_str)
+    explicit multiple_write_encodable_type(const char *json_str)
     {
         json = cJSON_Parse(json_str);
     }

@@ -574,7 +574,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 namespace window_covering {
 typedef struct config : app_with_group_config {
     cluster::window_covering::config_t window_covering;
-    config(uint8_t end_product_type = 0) : window_covering(end_product_type)
+    explicit config(uint8_t end_product_type = 0) : window_covering(end_product_type)
     {
         identify.identify_type = chip::to_underlying(chip::app::Clusters::Identify::IdentifyTypeEnum::kActuator);
     }
@@ -695,7 +695,7 @@ namespace pump {
 typedef struct config : app_base_config {
     cluster::on_off::config_t on_off;
     cluster::pump_configuration_and_control::config_t pump_configuration_and_control;
-    config(
+    explicit config(
         nullable<int16_t> max_pressure = nullable<int16_t>(),
         nullable<uint16_t> max_speed = nullable<uint16_t>(),
         nullable<uint16_t> max_flow = nullable<uint16_t>()

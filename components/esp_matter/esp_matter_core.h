@@ -134,7 +134,7 @@ typedef enum status {
  */
 class ScopedChipStackLock {
 public:
-    ScopedChipStackLock(uint32_t ticks_to_wait)
+    explicit ScopedChipStackLock(uint32_t ticks_to_wait)
     {
         status = chip_stack_lock(ticks_to_wait);
     }

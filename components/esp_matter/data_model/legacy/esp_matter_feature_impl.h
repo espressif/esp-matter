@@ -580,7 +580,7 @@ typedef struct config {
     nullable<uint8_t> number_of_schedule_transition_per_day;
     uint8_t active_schedule_handle[k_max_active_schedule_handle];
 
-    config(): number_of_schedules(0), number_of_schedule_transitions(0), number_of_schedule_transition_per_day() {}
+    config(): number_of_schedules(0), number_of_schedule_transitions(0), number_of_schedule_transition_per_day(), active_schedule_handle{} {}
 } config_t;
 
 uint32_t get_id();

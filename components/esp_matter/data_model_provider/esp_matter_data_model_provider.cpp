@@ -56,7 +56,7 @@ namespace app {
  */
 class TestOnlyAttributeValueDecoderAccessor {
 public:
-    TestOnlyAttributeValueDecoderAccessor(AttributeValueDecoder  &decoder) : mDecoder(decoder) {}
+    explicit TestOnlyAttributeValueDecoderAccessor(AttributeValueDecoder  &decoder) : mDecoder(decoder) {}
 
     const TLV::TLVReader  &GetReader()
     {
