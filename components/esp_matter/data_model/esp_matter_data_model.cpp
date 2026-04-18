@@ -394,7 +394,7 @@ esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, uint32_t 
  * @return -1 if val is less than bounds.min
  * @return -2 if val type is wrong
  */
-static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_attr_bounds_t bounds)
+static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, const esp_matter_attr_bounds_t &bounds)
 {
     switch (val.type) {
     case ESP_MATTER_VAL_TYPE_UINT8:

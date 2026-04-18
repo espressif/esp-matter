@@ -686,43 +686,32 @@ bool val_compare(const esp_matter_attr_val_t *val1, const esp_matter_attr_val_t 
             return true;
         }
         return memcmp(val1->val.a.b, val2->val.a.b, val1->val.a.s) == 0;
-        break;
     }
     case ESP_MATTER_VAL_TYPE_UINT8:
     case ESP_MATTER_VAL_TYPE_ENUM8:
     case ESP_MATTER_VAL_TYPE_BITMAP8:
         return val1->val.u8 == val2->val.u8;
-        break;
     case ESP_MATTER_VAL_TYPE_UINT16:
     case ESP_MATTER_VAL_TYPE_ENUM16:
     case ESP_MATTER_VAL_TYPE_BITMAP16:
         return val1->val.u16 == val2->val.u16;
-        break;
     case ESP_MATTER_VAL_TYPE_UINT32:
     case ESP_MATTER_VAL_TYPE_BITMAP32:
         return val1->val.u32 == val2->val.u32;
-        break;
     case ESP_MATTER_VAL_TYPE_UINT64:
         return val1->val.u64 == val2->val.u64;
-        break;
     case ESP_MATTER_VAL_TYPE_INT8:
         return val1->val.i8 == val2->val.i8;
-        break;
     case ESP_MATTER_VAL_TYPE_INT16:
         return val1->val.i16 == val2->val.i16;
-        break;
     case ESP_MATTER_VAL_TYPE_INT32:
         return val1->val.i32 == val2->val.i32;
-        break;
     case ESP_MATTER_VAL_TYPE_INT64:
         return val1->val.i64 == val2->val.i64;
-        break;
     case ESP_MATTER_VAL_TYPE_BOOLEAN:
         return val1->val.b == val2->val.b;
-        break;
     case ESP_MATTER_VAL_TYPE_FLOAT:
         return val1->val.f == val2->val.f;
-        break;
     default:
         ESP_LOGE(TAG, "Unsupported type to compare");
     }

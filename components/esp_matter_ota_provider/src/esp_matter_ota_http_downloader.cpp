@@ -62,9 +62,9 @@ static esp_err_t _http_handle_response_code(esp_http_client_handle_t http_client
         return ESP_FAIL;
     }
 
-    char upgrade_data_buf[256];
     // process_again() returns true only in case of redirection.
     if (_process_again(status_code)) {
+        char upgrade_data_buf[256];
         while (1) {
             // In case of redirection, esp_http_client_read() is called
             // to clear the response buffer of http_client.
@@ -80,7 +80,7 @@ static esp_err_t _http_handle_response_code(esp_http_client_handle_t http_client
 static esp_err_t _http_connect(esp_http_client_handle_t http_client)
 {
     esp_err_t err = ESP_OK;
-    int status_code, header_ret;
+    int status_code;
     do {
         char *post_data = NULL;
         /* Send POST request if body is set.
@@ -94,9 +94,8 @@ static esp_err_t _http_connect(esp_http_client_handle_t http_client)
             return err;
         }
         if (post_len) {
-            int write_len = 0;
             while (post_len > 0) {
-                write_len = esp_http_client_write(http_client, post_data, post_len);
+                int write_len = esp_http_client_write(http_client, post_data, post_len);
                 if (write_len < 0) {
                     ESP_LOGE(TAG, "Write failed");
                     return ESP_FAIL;
@@ -105,7 +104,7 @@ static esp_err_t _http_connect(esp_http_client_handle_t http_client)
                 post_data += write_len;
             }
         }
-        header_ret = esp_http_client_fetch_headers(http_client);
+        int header_ret = esp_http_client_fetch_headers(http_client);
         if (header_ret < 0) {
             return header_ret;
         }
