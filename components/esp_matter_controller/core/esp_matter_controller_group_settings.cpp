@@ -221,8 +221,8 @@ esp_err_t remove_keyset(uint16_t keyset_id)
     }
     iter->Release();
 
-    if (err == CHIP_NO_ERROR) {
-        return ESP_OK;
+    if (err != CHIP_NO_ERROR) {
+        return ESP_FAIL;
     }
     ESP_RETURN_ON_FALSE(CHIP_NO_ERROR == group_data_provider->RemoveKeySet(fabric_index, keyset_id), ESP_FAIL, TAG,
                         "Failed to remove the keyset");
