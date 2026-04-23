@@ -36,11 +36,14 @@
 #include <lib/core/CHIPError.h>
 #include <lib/core/DataModelTypes.h>
 #include <lib/support/CodeUtils.h>
-#include <vector>
+#include <lib/support/ScopedBuffer.h>
 #include <zap-generated/access.h>
+
+#include "esp_matter_attr_val_ember_buffer.h"
 
 using namespace chip;
 using namespace chip::app;
+using chip::Protocols::InteractionModel::Status;
 
 constexpr char TAG[] = "DataModelProvider";
 
@@ -68,203 +71,29 @@ private:
 } // namespace chip
 
 namespace {
-chip::Protocols::InteractionModel::Status BuildEmberBufferFromAttrVal(const esp_matter_attr_val_t &val,
-                                                                      uint8_t *dataPtr, uint16_t bufferSize)
+
+Status ClusterPreAttributeChanged(const chip::app::ConcreteAttributePath &attributePath, esp_matter::cluster_t *cluster,
+                                  const esp_matter_attr_val_t &val)
 {
-    switch (val.type) {
-    case ESP_MATTER_VAL_TYPE_BOOLEAN:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BOOLEAN: {
-        if (bufferSize < sizeof(bool) || !dataPtr) {
-            return chip::Protocols::InteractionModel::Status::ResourceExhausted;
-        }
-        using Traits = chip::app::NumericAttributeTraits<bool>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(*(uint8_t *)(&(val.val.b)))) {
-            Traits::SetNull(*(uint8_t *)dataPtr);
-        } else {
-            Traits::WorkingToStorage(val.val.b, *dataPtr);
-        }
-        break;
+    uint8_t attributeType = get_ember_attr_type_from_val_type(val.type);
+    uint16_t valueSize = get_ember_attr_size_from_val(val);
+    Platform::ScopedMemoryBuffer<uint8_t> emberBuffer;
+    emberBuffer.Calloc(valueSize);
+    if (!emberBuffer.Get()) {
+        return Status::ResourceExhausted;
     }
+    Status status = build_ember_buffer_from_attr_val(val, emberBuffer.Get(), valueSize);
+    if (status != Status::Success) {
+        return status;
+    }
+    esp_matter::cluster::function_pre_attribute_change_t f =
+        (esp_matter::cluster::function_pre_attribute_change_t)esp_matter::cluster::get_function(
+            cluster, esp_matter::CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION);
 
-    case ESP_MATTER_VAL_TYPE_FLOAT:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT: {
-        if (bufferSize < sizeof(float) || !dataPtr) {
-            return chip::Protocols::InteractionModel::Status::ResourceExhausted;
-        }
-        using Traits = chip::app::NumericAttributeTraits<float>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.f)) {
-            Traits::SetNull(*(float *)dataPtr);
-        } else {
-            Traits::WorkingToStorage(val.val.f, *(float *)dataPtr);
-        }
-        break;
+    if (f != nullptr) {
+        status = f(attributePath, attributeType, valueSize, emberBuffer.Get());
     }
-
-    case ESP_MATTER_VAL_TYPE_OCTET_STRING:
-    case ESP_MATTER_VAL_TYPE_CHAR_STRING: {
-        if (bufferSize < val.val.a.t || !dataPtr) {
-            return chip::Protocols::InteractionModel::Status::ResourceExhausted;
-        }
-        uint8_t len = val.val.a.s;
-        size_t header_size = sizeof(len);
-        if (bufferSize < header_size) {
-            return chip::Protocols::InteractionModel::Status::ResourceExhausted;
-        }
-        memcpy(dataPtr, &len, header_size);
-        // UINT8_MAX is reserved for null value
-        if (len < UINT8_MAX) {
-            size_t max_payload = bufferSize - header_size;
-            size_t copy_len = (static_cast<size_t>(len) <= max_payload) ? static_cast<size_t>(len) : max_payload;
-            memcpy(dataPtr + header_size, val.val.a.b, copy_len);
-        }
-        break;
-    }
-
-    case ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING:
-    case ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING: {
-        if (bufferSize < val.val.a.t || !dataPtr) {
-            return chip::Protocols::InteractionModel::Status::ResourceExhausted;
-        }
-        size_t header_size = sizeof(val.val.a.s);
-        if (bufferSize < header_size) {
-            return chip::Protocols::InteractionModel::Status::ResourceExhausted;
-        }
-        memcpy(dataPtr, &val.val.a.s, header_size);
-        // UINT16_MAX is reserved for null value
-        if (val.val.a.s < UINT16_MAX) {
-            size_t max_payload = bufferSize - header_size;
-            size_t copy_len =
-                (static_cast<size_t>(val.val.a.s) <= max_payload) ? static_cast<size_t>(val.val.a.s) : max_payload;
-            memcpy(dataPtr + header_size, val.val.a.b, copy_len);
-        }
-        break;
-    }
-
-    case ESP_MATTER_VAL_TYPE_INT8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT8: {
-        if (bufferSize < sizeof(int8_t) || !dataPtr) {
-            return chip::Protocols::InteractionModel::Status::ResourceExhausted;
-        }
-        using Traits = chip::app::NumericAttributeTraits<int8_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.i8)) {
-            Traits::SetNull(*(int8_t *)dataPtr);
-        } else {
-            Traits::WorkingToStorage(val.val.i8, *(int8_t *)dataPtr);
-        }
-        break;
-    }
-    case ESP_MATTER_VAL_TYPE_BITMAP8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8:
-    case ESP_MATTER_VAL_TYPE_ENUM8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8:
-    case ESP_MATTER_VAL_TYPE_UINT8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT8: {
-        if (bufferSize < sizeof(uint8_t) || !dataPtr) {
-            return chip::Protocols::InteractionModel::Status::ResourceExhausted;
-        }
-        using Traits = chip::app::NumericAttributeTraits<uint8_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.u8)) {
-            Traits::SetNull(*dataPtr);
-        } else {
-            Traits::WorkingToStorage(val.val.u8, *dataPtr);
-        }
-        break;
-    }
-
-    case ESP_MATTER_VAL_TYPE_INT16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT16: {
-        if (bufferSize < sizeof(int16_t) || !dataPtr) {
-            return chip::Protocols::InteractionModel::Status::ResourceExhausted;
-        }
-        using Traits = chip::app::NumericAttributeTraits<int16_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.i16)) {
-            Traits::SetNull(*(int16_t *)dataPtr);
-        } else {
-            Traits::WorkingToStorage(val.val.i16, *(int16_t *)dataPtr);
-        }
-        break;
-    }
-
-    case ESP_MATTER_VAL_TYPE_BITMAP16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16:
-    case ESP_MATTER_VAL_TYPE_ENUM16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16:
-    case ESP_MATTER_VAL_TYPE_UINT16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT16: {
-        if (bufferSize < sizeof(uint16_t) || !dataPtr) {
-            return chip::Protocols::InteractionModel::Status::ResourceExhausted;
-        }
-        using Traits = chip::app::NumericAttributeTraits<uint16_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.u16)) {
-            Traits::SetNull(*(uint16_t *)dataPtr);
-        } else {
-            Traits::WorkingToStorage(val.val.u16, *(uint16_t *)dataPtr);
-        }
-        break;
-    }
-
-    case ESP_MATTER_VAL_TYPE_INT32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT32: {
-        if (bufferSize < sizeof(int32_t) || !dataPtr) {
-            return chip::Protocols::InteractionModel::Status::ResourceExhausted;
-        }
-        using Traits = chip::app::NumericAttributeTraits<int32_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.i32)) {
-            Traits::SetNull(*(int32_t *)dataPtr);
-        } else {
-            Traits::WorkingToStorage(val.val.i32, *(int32_t *)dataPtr);
-        }
-        break;
-    }
-
-    case ESP_MATTER_VAL_TYPE_BITMAP32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32:
-    case ESP_MATTER_VAL_TYPE_UINT32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT32: {
-        if (bufferSize < sizeof(uint32_t) || !dataPtr) {
-            return chip::Protocols::InteractionModel::Status::ResourceExhausted;
-        }
-        using Traits = chip::app::NumericAttributeTraits<uint32_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.u32)) {
-            Traits::SetNull(*(uint32_t *)dataPtr);
-        } else {
-            Traits::WorkingToStorage(val.val.u32, *(uint32_t *)dataPtr);
-        }
-        break;
-    }
-
-    case ESP_MATTER_VAL_TYPE_INT64:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT64: {
-        if (bufferSize < sizeof(int64_t) || !dataPtr) {
-            return chip::Protocols::InteractionModel::Status::ResourceExhausted;
-        }
-        using Traits = chip::app::NumericAttributeTraits<int64_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.i64)) {
-            Traits::SetNull(*(int64_t *)dataPtr);
-        } else {
-            Traits::WorkingToStorage(val.val.i64, *(int64_t *)dataPtr);
-        }
-        break;
-    }
-
-    case ESP_MATTER_VAL_TYPE_UINT64:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT64: {
-        if (bufferSize < sizeof(uint64_t) || !dataPtr) {
-            return chip::Protocols::InteractionModel::Status::ResourceExhausted;
-        }
-        using Traits = chip::app::NumericAttributeTraits<uint64_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.u64)) {
-            Traits::SetNull(*(uint64_t *)dataPtr);
-        } else {
-            Traits::WorkingToStorage(val.val.u64, *(uint64_t *)dataPtr);
-        }
-        break;
-    }
-
-    default:
-        return chip::Protocols::InteractionModel::Status::InvalidDataType;
-    }
-    return chip::Protocols::InteractionModel::Status::Success;
+    return status;
 }
 
 /// Attempts to read via an attribute access interface (AAI)
@@ -575,33 +404,27 @@ ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request
         return *aai_result;
     }
 
-    const EmberAfAttributeMetadata *metadata =
-        emberAfLocateAttributeMetadata(request.path.mEndpointId, request.path.mClusterId, request.path.mAttributeId);
-    VerifyOrReturnValue(metadata != nullptr, Protocols::InteractionModel::Status::Failure);
-
-    esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
-    VerifyOrReturnValue(attribute::get_val_internal(attribute, &val) == ESP_OK,
-                        Protocols::InteractionModel::Status::Failure);
-    attribute_data_decode_buffer decoded_buffer(val.type);
-    ReturnErrorOnFailure(decoder.Decode(decoded_buffer));
-
-    std::vector<uint8_t> data_buff(metadata->size);
-    Status buffer_status = BuildEmberBufferFromAttrVal(decoded_buffer.get_attr_val(), data_buff.data(),
-                                                       static_cast<uint16_t>(data_buff.size()));
-    if (buffer_status != Protocols::InteractionModel::Status::Success) {
-        return buffer_status;
+    if (new_val.type == ESP_MATTER_VAL_TYPE_INVALID) {
+        // If previous decoding fails we should not call the pre attribute change callback.
+        return Protocols::InteractionModel::Status::Failure;
     }
-
-    EmberAfWriteDataInput data_input(data_buff.data(), metadata->attributeType);
-    data_input.SetChangeListener(&mContext->dataModelChangeListener);
-    status = emberAfWriteAttribute(request.path, data_input);
-    if (status != Protocols::InteractionModel::Status::Success) {
+    // Use set_val_internal with call_callbacks=false since we already called PRE_UPDATE
+    status = ClusterPreAttributeChanged(request.path, cluster, new_val);
+    if (status != Status::Success) {
         return status;
     }
-    // Increase data version and mark dirty
-    cluster::increase_data_version(cluster);
-    AttributePathParams path(request.path.mEndpointId, request.path.mClusterId, request.path.mAttributeId);
-    mContext->dataModelChangeListener.MarkDirty(path);
+    esp_err_t err = attribute::set_val_internal(attribute, &new_val, false);
+    if (err == ESP_ERR_NO_MEM) {
+        return Protocols::InteractionModel::Status::ResourceExhausted;
+    } else if (err != ESP_OK && err != ESP_ERR_NOT_FINISHED) {
+        return Protocols::InteractionModel::Status::Failure;
+    }
+    if (err == ESP_OK) {
+        // Increase data version and mark dirty when the attribute is changed
+        cluster::increase_data_version(cluster);
+        AttributePathParams path(request.path.mEndpointId, request.path.mClusterId, request.path.mAttributeId);
+        mContext->dataModelChangeListener.MarkDirty(path);
+    }
     execute_post_update();
     return Protocols::InteractionModel::Status::Success;
 }
