@@ -248,26 +248,6 @@ esp_err_t disable(endpoint_t *endpoint)
     return ESP_OK;
 }
 
-static esp_err_t init_identification(endpoint_t *endpoint)
-{
-    VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    cluster_t *identify_cluster = cluster::get(endpoint, chip::app::Clusters::Identify::Id);
-    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
-    /* Init identify if exists and not initialized */
-    if (identify_cluster != nullptr && current_endpoint->identify == NULL) {
-        _attribute_t *identify_type_attr = (_attribute_t *)attribute::get(
-                                               identify_cluster, chip::app::Clusters::Identify::Attributes::IdentifyType::Id);
-        if (identify_type_attr) {
-            return identification::init(current_endpoint->endpoint_id, identify_type_attr->attribute_val.u8);
-        } else {
-            ESP_LOGE(TAG, "Can't get IdentifyType attribute in Identify cluster");
-            return ESP_ERR_INVALID_STATE;
-        }
-    }
-    // Return ESP_OK when identify cluster is not on the endpoint.
-    return ESP_OK;
-}
-
 void invoke_init_callbacks_internal(endpoint_t *endpoint)
 {
     cluster_t *cluster = cluster::get_first(endpoint);
@@ -315,7 +295,6 @@ esp_err_t enable(endpoint_t *endpoint)
     VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     current_endpoint->enabled = true;
-    init_identification(endpoint);
     /* Call the init callbacks for the endpoints which are created after esp_matter::start(). (e.g. for bridged endpoints) */
     if (esp_matter::is_started()) {
         // Use the lock instead of schedule lambda to ensure the callbacks are invoked before esp_matter::start() returns.

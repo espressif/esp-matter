@@ -24,6 +24,8 @@
 #include <app/clusters/identify-server/identify-server.h>
 #include <app/server-cluster/DefaultServerCluster.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
+#include <esp_matter_data_model_priv.h>
+#include <esp_matter_identify.h>
 #include <lib/support/CodeUtils.h>
 #include <lib/support/logging/TextOnlyLogging.h>
 #include <lib/support/TimerDelegate.h>
@@ -168,12 +170,29 @@ Identify::~Identify()
 
 void ESPMatterIdentifyClusterServerInitCallback(EndpointId endpointId)
 {
-    // Intentionally make this function empty as the identify cluster will be registered when enabling endpoint.
+    VerifyOrReturn(GetLegacyIdentifyInstance(endpointId) == nullptr);
+
+    esp_matter::attribute_t *identifyTypeAttr = esp_matter::attribute::get(
+                                                    endpointId, Id, Attributes::IdentifyType::Id);
+    VerifyOrReturn(identifyTypeAttr != nullptr,
+                   ChipLogError(AppServer, "Failed to get IdentifyType attribute for endpoint %u", endpointId));
+
+    esp_matter_attr_val_t identifyType = esp_matter_invalid(nullptr);
+    VerifyOrReturn(esp_matter::attribute::get_val_internal(identifyTypeAttr, &identifyType) == ESP_OK,
+                   ChipLogError(AppServer, "Failed to get IdentifyType value for endpoint %u", endpointId));
+    VerifyOrReturn(esp_matter::identification::init(endpointId, identifyType.val.u8) == ESP_OK,
+                   ChipLogError(AppServer, "Failed to initialize Identify cluster for endpoint %u", endpointId));
 }
 
 void ESPMatterIdentifyClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
-    // Intentionally make this function empty as the identify cluster will be unregistered when disabling endpoint.
+    VerifyOrReturn(shutdownType == ClusterShutdownType::kClusterShutdown);
+
+    Identify *identify = GetLegacyIdentifyInstance(endpointId);
+    if (identify != nullptr) {
+        chip::Platform::Delete(identify);
+        esp_matter::endpoint::set_identify(endpointId, nullptr);
+    }
 }
 
 // Legacy PluginServer callback stubs
