@@ -633,6 +633,10 @@ static esp_err_t free_attribute(attribute_t *attribute)
         esp_matter_mem_free(current_attribute->attribute_val.a.b);
     }
 
+    if (current_attribute->bounds != nullptr) {
+        esp_matter_mem_free(current_attribute->bounds);
+    }
+
     /* Erase the persistent data */
     if (attribute::get_flags(attribute) & ATTRIBUTE_FLAG_NONVOLATILE) {
         erase_val_in_nvs(current_attribute->endpoint_id, current_attribute->cluster_id,
@@ -1133,10 +1137,12 @@ esp_err_t add_bounds(attribute_t *attribute, esp_matter_attr_val_t min, esp_matt
                         ESP_ERR_INVALID_ARG,
                         ESP_LOGE(TAG, "Cannot set bounds because of val type mismatch: expected: %d, min: %d, max: %d",
                                  current_attribute->attribute_val_type, min.type, max.type));
-    current_attribute->bounds = (esp_matter_attr_bounds_t *)esp_matter_mem_calloc(1, sizeof(esp_matter_attr_bounds_t));
-    if (!current_attribute->bounds) {
-        ESP_LOGE(TAG, "Failed to allocate bounds for attribute");
-        return ESP_ERR_NO_MEM;
+    if (current_attribute->bounds == nullptr) {
+        current_attribute->bounds = (esp_matter_attr_bounds_t *)esp_matter_mem_calloc(1, sizeof(esp_matter_attr_bounds_t));
+        if (current_attribute->bounds == nullptr) {
+            ESP_LOGE(TAG, "Failed to allocate bounds for attribute");
+            return ESP_ERR_NO_MEM;
+        }
     }
     current_attribute->flags |= ATTRIBUTE_FLAG_MIN_MAX;
     current_attribute->bounds->min = min;
