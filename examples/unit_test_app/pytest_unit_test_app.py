@@ -19,33 +19,40 @@ def run_group(dut: QemuDut, group: str, timeout: int = 120) -> None:
     failed = dut.testsuite.failed_cases
     if failed:
         names = [tc.name for tc in failed]
-        pytest.fail(f'{len(failed)} failed in [{group}]: {", ".join(names)}')
+        pytest.fail(f"{len(failed)} failed in [{group}]: {', '.join(names)}")
 
 
 @pytest.mark.host_test
 @pytest.mark.qemu
 @pytest.mark.esp32c3
 def test_get_val(dut: QemuDut) -> None:
-    run_group(dut, 'get_val')
+    run_group(dut, "get_val")
 
 
 @pytest.mark.host_test
 @pytest.mark.qemu
 @pytest.mark.esp32c3
 def test_get_val_type(dut: QemuDut) -> None:
-    run_group(dut, 'get_val_type')
+    run_group(dut, "get_val_type")
 
 
 @pytest.mark.host_test
 @pytest.mark.qemu
 @pytest.mark.esp32c3
 def test_update_report(dut: QemuDut) -> None:
-    run_group(dut, 'report')
-    run_group(dut, 'update')
+    run_group(dut, "report")
+    run_group(dut, "update")
 
 
 @pytest.mark.host_test
 @pytest.mark.qemu
 @pytest.mark.esp32c3
 def test_jsontlv(dut: QemuDut) -> None:
-    run_group(dut, 'jsontlv')
+    run_group(dut, "jsontlv")
+
+
+@pytest.mark.host_test
+@pytest.mark.qemu
+@pytest.mark.esp32c3
+def test_lifecycle(dut: QemuDut) -> None:
+    run_group(dut, "cluster_lifecycle")
