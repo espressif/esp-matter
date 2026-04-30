@@ -33,55 +33,6 @@ using namespace esp_matter;
 
 namespace {
 std::unordered_map<EndpointId, LazyRegisteredServerCluster<IlluminanceMeasurementCluster>> gServers;
-
-void BuildAndRegister(EndpointId endpointId)
-{
-    if (gServers[endpointId].IsConstructed()) {
-        return;
-    }
-
-    IlluminanceMeasurementCluster::OptionalAttributeSet optionalAttributeSet(0);
-    if (endpoint::is_attribute_enabled(endpointId, IlluminanceMeasurement::Id, Tolerance::Id)) {
-        optionalAttributeSet.Set<Tolerance::Id>();
-    }
-    if (endpoint::is_attribute_enabled(endpointId, IlluminanceMeasurement::Id, LightSensorType::Id)) {
-        optionalAttributeSet.Set<LightSensorType::Id>();
-    }
-
-    DataModel::Nullable<uint16_t> minMeasuredValue{};
-    if (MinMeasuredValue::Get(endpointId, minMeasuredValue) != Status::Success) {
-        minMeasuredValue.SetNull();
-    }
-
-    DataModel::Nullable<uint16_t> maxMeasuredValue{};
-    if (MaxMeasuredValue::Get(endpointId, maxMeasuredValue) != Status::Success) {
-        maxMeasuredValue.SetNull();
-    }
-
-    uint16_t tolerance{};
-    if (optionalAttributeSet.IsSet(Tolerance::Id)) {
-        VerifyOrDie(Tolerance::Get(endpointId, &tolerance) == Status::Success);
-    }
-
-    DataModel::Nullable<chip::app::Clusters::IlluminanceMeasurement::LightSensorTypeEnum> lightSensorType{};
-    if (optionalAttributeSet.IsSet(LightSensorType::Id)) {
-        VerifyOrDie(LightSensorType::Get(endpointId, lightSensorType) == Status::Success);
-    }
-
-    gServers[endpointId].Create(
-        endpointId, optionalAttributeSet,
-        IlluminanceMeasurementCluster::StartupConfiguration{ .minMeasuredValue = minMeasuredValue,
-                                                             .maxMeasuredValue = maxMeasuredValue,
-                                                             .tolerance        = tolerance,
-                                                             .lightSensorType  = lightSensorType });
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
-    if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "IlluminanceMeasurement register failed ep %u: %" CHIP_ERROR_FORMAT, endpointId, err.Format());
-        gServers[endpointId].Destroy();
-        gServers.erase(endpointId);
-    }
-}
 } // namespace
 
 void ESPMatterIlluminanceMeasurementClusterServerInitCallback(EndpointId endpointId)
@@ -90,20 +41,63 @@ void ESPMatterIlluminanceMeasurementClusterServerInitCallback(EndpointId endpoin
                    ChipLogError(AppServer,
                                 "IlluminanceMeasurement: cluster missing in esp-matter data model for endpoint %u",
                                 endpointId));
-    BuildAndRegister(endpointId);
+    if (!gServers[endpointId].IsConstructed()) {
+        IlluminanceMeasurementCluster::OptionalAttributeSet optionalAttributeSet(0);
+        if (endpoint::is_attribute_enabled(endpointId, IlluminanceMeasurement::Id, Tolerance::Id)) {
+            optionalAttributeSet.Set<Tolerance::Id>();
+        }
+        if (endpoint::is_attribute_enabled(endpointId, IlluminanceMeasurement::Id, LightSensorType::Id)) {
+            optionalAttributeSet.Set<LightSensorType::Id>();
+        }
+
+        DataModel::Nullable<uint16_t> minMeasuredValue{};
+        if (MinMeasuredValue::Get(endpointId, minMeasuredValue) != Status::Success) {
+            minMeasuredValue.SetNull();
+        }
+
+        DataModel::Nullable<uint16_t> maxMeasuredValue{};
+        if (MaxMeasuredValue::Get(endpointId, maxMeasuredValue) != Status::Success) {
+            maxMeasuredValue.SetNull();
+        }
+
+        uint16_t tolerance{};
+        if (optionalAttributeSet.IsSet(Tolerance::Id)) {
+            VerifyOrDie(Tolerance::Get(endpointId, &tolerance) == Status::Success);
+        }
+
+        DataModel::Nullable<chip::app::Clusters::IlluminanceMeasurement::LightSensorTypeEnum> lightSensorType{};
+        if (optionalAttributeSet.IsSet(LightSensorType::Id)) {
+            VerifyOrDie(LightSensorType::Get(endpointId, lightSensorType) == Status::Success);
+        }
+
+        gServers[endpointId].Create(
+            endpointId, optionalAttributeSet,
+            IlluminanceMeasurementCluster::StartupConfiguration{ .minMeasuredValue = minMeasuredValue,
+                                                                 .maxMeasuredValue = maxMeasuredValue,
+                                                                 .tolerance        = tolerance,
+                                                                 .lightSensorType  = lightSensorType });
+    }
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(
+                         gServers[endpointId].Registration());
+    if (err != CHIP_NO_ERROR) {
+        ChipLogError(AppServer, "IlluminanceMeasurement register failed ep %u: %" CHIP_ERROR_FORMAT, endpointId, err.Format());
+    }
 }
 
-void ESPMatterIlluminanceMeasurementClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
+void ESPMatterIlluminanceMeasurementClusterServerShutdownCallback(EndpointId endpointId,
+                                                                  ClusterShutdownType shutdownType)
 {
     auto it = gServers.find(endpointId);
-    if (it == gServers.end() || !it->second.IsConstructed()) {
-        return;
-    }
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(), shutdownType);
+    VerifyOrReturn(it != gServers.end());
+    VerifyOrReturn(it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "IlluminanceMeasurement unregister failed ep %u: %" CHIP_ERROR_FORMAT, endpointId, err.Format());
+        ChipLogError(AppServer, "IlluminanceMeasurement unregister failed ep %u: %" CHIP_ERROR_FORMAT, endpointId,
+                     err.Format());
     }
-    it->second.Destroy();
-    gServers.erase(it);
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        it->second.Destroy();
+        gServers.erase(it);
+    }
 }

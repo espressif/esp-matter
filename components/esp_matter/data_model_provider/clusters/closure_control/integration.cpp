@@ -80,64 +80,58 @@ void MatterClosureControlSetInitParams(EndpointId endpointId, const ClusterInitP
 
 void ESPMatterClosureControlClusterServerInitCallback(EndpointId endpointId)
 {
-    cluster_t *cluster = cluster::get(endpointId, ClosureControl::Id);
-    VerifyOrReturn(cluster != nullptr,
-                   ChipLogError(AppServer,
-                                "ClosureControl: cluster missing in esp-matter data model for endpoint %u", endpointId));
+    VerifyOrReturn(cluster::get(endpointId, ClosureControl::Id) != nullptr,
+                   ChipLogError(AppServer, "ClosureControl: cluster missing in esp-matter data model for endpoint %u", endpointId));
+    if (!gServers[endpointId].IsConstructed()) {
+        ClosureControlClusterDelegate * delegate = nullptr;
+        {
+            auto it = gDelegates.find(endpointId);
+            VerifyOrReturn(it != gDelegates.end() && it->second != nullptr,
+                           ChipLogError(AppServer,
+                                        "ClosureControl: delegate not set for ep %u (call MatterClosureControlSetDelegate first)",
+                                        endpointId));
+            delegate = it->second;
+        }
 
-    if (gServers[endpointId].IsConstructed()) {
-        return;
+        ClusterConformance conformance;
+        auto confIt = gConformanceOverride.find(endpointId);
+        if (confIt != gConformanceOverride.end()) {
+            conformance = confIt->second;
+        } else {
+            conformance.FeatureMap() = BitFlags<ClosureControl::Feature>(read_feature_map_u32(endpointId, ClosureControl::Id));
+        }
+        VerifyOrReturn(conformance.IsValid(),
+                       ChipLogError(AppServer, "ClosureControl: invalid conformance or feature map on ep %u", endpointId));
+
+        ClusterInitParameters initParams;
+        auto initIt = gInitParamsOverride.find(endpointId);
+        if (initIt != gInitParamsOverride.end()) {
+            initParams = initIt->second;
+        }
+        ClosureControlCluster::Context context{ *delegate, gTimerDelegate, conformance, initParams };
+        gServers[endpointId].Create(endpointId, context);
     }
-
-    ClosureControlClusterDelegate * delegate = nullptr;
-    {
-        auto it = gDelegates.find(endpointId);
-        VerifyOrReturn(it != gDelegates.end() && it->second != nullptr,
-                       ChipLogError(AppServer,
-                                    "ClosureControl: delegate not set for ep %u (call MatterClosureControlSetDelegate first)",
-                                    endpointId));
-        delegate = it->second;
-    }
-
-    ClusterConformance conformance;
-    auto confIt = gConformanceOverride.find(endpointId);
-    if (confIt != gConformanceOverride.end()) {
-        conformance = confIt->second;
-    } else {
-        conformance.FeatureMap() = BitFlags<ClosureControl::Feature>(read_feature_map_u32(endpointId, ClosureControl::Id));
-    }
-    VerifyOrReturn(conformance.IsValid(),
-                   ChipLogError(AppServer, "ClosureControl: invalid conformance or feature map on ep %u", endpointId));
-
-    ClusterInitParameters initParams;
-    auto initIt = gInitParamsOverride.find(endpointId);
-    if (initIt != gInitParamsOverride.end()) {
-        initParams = initIt->second;
-    }
-
-    ClosureControlCluster::Context context{ *delegate, gTimerDelegate, conformance, initParams };
-    gServers[endpointId].Create(endpointId, context);
-
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(
+                         gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "ClosureControl register failed ep %u: %" CHIP_ERROR_FORMAT, endpointId, err.Format());
-        gServers[endpointId].Destroy();
     }
 }
 
 void ESPMatterClosureControlClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
     auto it = gServers.find(endpointId);
-    if (it == gServers.end() || !it->second.IsConstructed()) {
-        return;
-    }
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(), shutdownType);
+    VerifyOrReturn(it != gServers.end());
+    VerifyOrReturn(it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "ClosureControl unregister failed ep %u: %" CHIP_ERROR_FORMAT, endpointId, err.Format());
     }
-    it->second.Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        it->second.Destroy();
+        gServers.erase(it);
+    }
 }
 
 void MatterClosureControlPluginServerInitCallback() {}

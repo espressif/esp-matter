@@ -37,22 +37,23 @@ bool IsAttributeEnabled(EndpointId endpointId, AttributeId attributeId)
 void ESPMatterSoftwareDiagnosticsClusterServerInitCallback(EndpointId endpointId)
 {
     VerifyOrReturn(endpointId == kRootEndpointId);
-    SoftwareDiagnosticsServerCluster::OptionalAttributeSet attrSet;
-    if (IsAttributeEnabled(kRootEndpointId, Attributes::ThreadMetrics::Id)) {
-        attrSet.Set<Attributes::ThreadMetrics::Id>();
-    }
-    if (IsAttributeEnabled(kRootEndpointId, Attributes::CurrentHeapFree::Id)) {
-        attrSet.Set<Attributes::CurrentHeapFree::Id>();
-    }
-    if (IsAttributeEnabled(kRootEndpointId, Attributes::CurrentHeapUsed::Id)) {
-        attrSet.Set<Attributes::CurrentHeapUsed::Id>();
-    }
-    if (IsAttributeEnabled(kRootEndpointId, Attributes::CurrentHeapHighWatermark::Id)) {
-        attrSet.Set<Attributes::CurrentHeapHighWatermark::Id>();
-    }
+    if (!gServer.IsConstructed()) {
+        SoftwareDiagnosticsServerCluster::OptionalAttributeSet attrSet;
+        if (IsAttributeEnabled(kRootEndpointId, Attributes::ThreadMetrics::Id)) {
+            attrSet.Set<Attributes::ThreadMetrics::Id>();
+        }
+        if (IsAttributeEnabled(kRootEndpointId, Attributes::CurrentHeapFree::Id)) {
+            attrSet.Set<Attributes::CurrentHeapFree::Id>();
+        }
+        if (IsAttributeEnabled(kRootEndpointId, Attributes::CurrentHeapUsed::Id)) {
+            attrSet.Set<Attributes::CurrentHeapUsed::Id>();
+        }
+        if (IsAttributeEnabled(kRootEndpointId, Attributes::CurrentHeapHighWatermark::Id)) {
+            attrSet.Set<Attributes::CurrentHeapHighWatermark::Id>();
+        }
 
-    gServer.Create(attrSet, DeviceLayer::GetDiagnosticDataProvider());
-
+        gServer.Create(attrSet, DeviceLayer::GetDiagnosticDataProvider());
+    }
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register SoftwareDiagnostics - Error: %" CHIP_ERROR_FORMAT, err.Format());
@@ -62,11 +63,15 @@ void ESPMatterSoftwareDiagnosticsClusterServerInitCallback(EndpointId endpointId
 void ESPMatterSoftwareDiagnosticsClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
     VerifyOrReturn(endpointId == kRootEndpointId);
-    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(), shutdownType);
+    VerifyOrReturn(gServer.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister SoftwareDiagnostics - Error: %" CHIP_ERROR_FORMAT, err.Format());
     }
-    gServer.Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        gServer.Destroy();
+    }
 }
 
 void MatterSoftwareDiagnosticsPluginServerInitCallback() {}

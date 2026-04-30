@@ -39,31 +39,29 @@ void ESPMatterAirQualityClusterServerInitCallback(EndpointId endpointId)
 {
     VerifyOrReturn(cluster::get(endpointId, AirQuality::Id) != nullptr,
                    ChipLogError(AppServer, "AirQuality: cluster missing in esp-matter data model for endpoint %u", endpointId));
-    if (gServers[endpointId].IsConstructed()) {
-        return;
+    if (!gServers[endpointId].IsConstructed()) {
+        const uint32_t raw = read_feature_map_u32(endpointId, AirQuality::Id);
+        gServers[endpointId].Create(endpointId, BitFlags<Feature>(raw));
     }
-    const uint32_t raw = read_feature_map_u32(endpointId, AirQuality::Id);
-    gServers[endpointId].Create(endpointId, BitFlags<Feature>(raw));
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(
+                         gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "AirQuality register failed ep %u: %" CHIP_ERROR_FORMAT, endpointId, err.Format());
-        gServers[endpointId].Destroy();
-        gServers.erase(endpointId);
     }
 }
 
 void ESPMatterAirQualityClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
     auto it = gServers.find(endpointId);
-    if (it == gServers.end() || !it->second.IsConstructed()) {
-        return;
-    }
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(), shutdownType);
+    VerifyOrReturn(it != gServers.end());
+    VerifyOrReturn(it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "AirQuality unregister failed ep %u: %" CHIP_ERROR_FORMAT, endpointId, err.Format());
     }
-    it->second.Destroy();
-    gServers.erase(it);
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        it->second.Destroy();
+        gServers.erase(it);
+    }
 }

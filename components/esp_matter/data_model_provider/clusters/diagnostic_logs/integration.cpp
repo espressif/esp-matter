@@ -24,29 +24,34 @@ using namespace chip::app::Clusters;
 
 LazyRegisteredServerCluster<DiagnosticLogsCluster> gServer;
 
-void ESPMatterDiagnosticLogsClusterServerInitCallback(EndpointId endpoint)
+void ESPMatterDiagnosticLogsClusterServerInitCallback(EndpointId endpointId)
 {
     // We implement the cluster as a singleton on the root endpoint.
-    VerifyOrReturn(endpoint == kRootEndpointId && !gServer.IsConstructed());
-    gServer.Create();
+    VerifyOrReturn(endpointId == kRootEndpointId);
+    if (!gServer.IsConstructed()) {
+        gServer.Create();
+    }
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to register DiagnosticLogs on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
-                     endpoint, err.Format());
+        ChipLogError(AppServer, "Failed to register DiagnosticLogs on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
+                     err.Format());
     }
 }
 
 void ESPMatterDiagnosticLogsClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
     // We implement the cluster as a singleton on the root endpoint.
-    VerifyOrReturn(endpointId == kRootEndpointId && gServer.IsConstructed());
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(), shutdownType);
+    VerifyOrReturn(endpointId == kRootEndpointId);
+    VerifyOrReturn(gServer.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to unregister DiagnosticLogs on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
-                     endpointId, err.Format());
+        ChipLogError(AppServer, "Failed to unregister DiagnosticLogs on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
+                     err.Format());
     }
-    gServer.Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        gServer.Destroy();
+    }
 }
 
 void MatterDiagnosticLogsPluginServerInitCallback() {}

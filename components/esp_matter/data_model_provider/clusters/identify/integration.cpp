@@ -152,44 +152,53 @@ Identify::Identify(EndpointId endpoint, onIdentifyStartCb onIdentifyStart, onIde
         .WithEffectVariant(effectVariant))
 {
     RegisterLegacyIdentify(this);
-
-    if (esp_matter::data_model::provider::get_instance().registry().Register(mCluster.Registration()) !=
-            CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to registry Identify cluster registration for endpoint %u", endpoint);
-    }
 };
 
 Identify::~Identify()
 {
-    if (esp_matter::data_model::provider::get_instance().registry().Unregister(&(mCluster.Cluster())) !=
-            CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to unregistry Identify cluster registration");
-    }
     UnregisterLegacyIdentify(this);
 }
 
 void ESPMatterIdentifyClusterServerInitCallback(EndpointId endpointId)
 {
-    VerifyOrReturn(GetLegacyIdentifyInstance(endpointId) == nullptr);
+    Identify *identify = GetLegacyIdentifyInstance(endpointId);
+    if (identify == nullptr) {
+        esp_matter::attribute_t *identifyTypeAttr = esp_matter::attribute::get(
+                                                        endpointId, Id, Attributes::IdentifyType::Id);
+        VerifyOrReturn(identifyTypeAttr != nullptr,
+                       ChipLogError(AppServer, "Failed to get IdentifyType attribute for endpoint %u", endpointId));
 
-    esp_matter::attribute_t *identifyTypeAttr = esp_matter::attribute::get(
-                                                    endpointId, Id, Attributes::IdentifyType::Id);
-    VerifyOrReturn(identifyTypeAttr != nullptr,
-                   ChipLogError(AppServer, "Failed to get IdentifyType attribute for endpoint %u", endpointId));
+        esp_matter_attr_val_t identifyType = esp_matter_invalid(nullptr);
+        esp_err_t err = esp_matter::attribute::get_val_internal(identifyTypeAttr, &identifyType);
+        VerifyOrReturn(err == ESP_OK, ChipLogError(AppServer, "Failed to get IdentifyType value for endpoint %u - Error: %d",
+                                                   endpointId, err));
+        err = esp_matter::identification::init(endpointId, identifyType.val.u8);
+        VerifyOrReturn(err == ESP_OK, ChipLogError(AppServer,
+                                                   "Failed to initialize Identify cluster for endpoint %u - Error: %d", endpointId, err));
 
-    esp_matter_attr_val_t identifyType = esp_matter_invalid(nullptr);
-    VerifyOrReturn(esp_matter::attribute::get_val_internal(identifyTypeAttr, &identifyType) == ESP_OK,
-                   ChipLogError(AppServer, "Failed to get IdentifyType value for endpoint %u", endpointId));
-    VerifyOrReturn(esp_matter::identification::init(endpointId, identifyType.val.u8) == ESP_OK,
-                   ChipLogError(AppServer, "Failed to initialize Identify cluster for endpoint %u", endpointId));
+        identify = GetLegacyIdentifyInstance(endpointId);
+        VerifyOrReturn(identify != nullptr, ChipLogError(AppServer, "Failed to create Identify object on endpoint %u",
+                                                         endpointId));
+    };
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(
+                         identify->mCluster.Registration());
+    if (err != CHIP_NO_ERROR) {
+        ChipLogError(AppServer, "Failed to register Identify cluster for endpoint %u - Error: %" CHIP_ERROR_FORMAT,
+                     endpointId, err.Format());
+    }
 }
 
 void ESPMatterIdentifyClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
-    VerifyOrReturn(shutdownType == ClusterShutdownType::kClusterShutdown);
-
     Identify *identify = GetLegacyIdentifyInstance(endpointId);
-    if (identify != nullptr) {
+    VerifyOrReturn(identify != nullptr);
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&(identify->mCluster.Cluster()),
+                                                                                            shutdownType);
+    if (err != CHIP_NO_ERROR) {
+        ChipLogError(AppServer, "Failed to unregisster Identify cluster on endpoint %u - Error: %"
+                     CHIP_ERROR_FORMAT, endpointId, err.Format());
+    }
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
         chip::Platform::Delete(identify);
         esp_matter::endpoint::set_identify(endpointId, nullptr);
     }

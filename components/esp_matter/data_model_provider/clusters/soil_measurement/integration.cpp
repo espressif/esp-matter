@@ -37,32 +37,31 @@ CHIP_ERROR SetSoilMoistureMeasuredValue(
     EndpointId endpointId,
     const SoilMeasurement::Attributes::SoilMoistureMeasuredValue::TypeInfo::Type &soilMoistureMeasuredValue)
 {
-    if (gServers[endpointId].IsConstructed()) {
-        return gServers[endpointId].Cluster().SetSoilMoistureMeasuredValue(soilMoistureMeasuredValue);
-    }
-    return CHIP_ERROR_INCORRECT_STATE;
+    auto it = gServers.find(endpointId);
+    VerifyOrReturnError(it != gServers.end(), CHIP_ERROR_NOT_FOUND);
+    VerifyOrReturnError(it->second.IsConstructed(), CHIP_ERROR_INCORRECT_STATE);
+    return it->second.Cluster().SetSoilMoistureMeasuredValue(soilMoistureMeasuredValue);
 }
 
 void SetSoilMoistureLimits(
     EndpointId endpointId,
     const SoilMeasurement::Attributes::SoilMoistureMeasurementLimits::TypeInfo::Type &soilMoistureLimits)
 {
-    gLimits[endpointId] = soilMoistureLimits;
+    auto [it, _] = gLimits.try_emplace(endpointId);
+    it->second = soilMoistureLimits;
 }
 
 } // namespace chip::app::Clusters::SoilMeasurement
 
 void ESPMatterSoilMeasurementClusterServerInitCallback(EndpointId endpointId)
 {
-    if (gServers[endpointId].IsConstructed()) {
-        return;
+    if (!gServers[endpointId].IsConstructed()) {
+        VerifyOrDieWithMsg(gLimits.find(endpointId) != gLimits.end(), AppServer,
+                           "Please set the limit for SoilMeasurementCluster on Endpoint 0x%" PRIx16, endpointId);
+        gServers[endpointId].Create(endpointId, gLimits[endpointId]);
     }
-    VerifyOrDieWithMsg(gLimits.find(endpointId) != gLimits.end(), AppServer,
-                       "Please set the limit for SoilMeasurementCluster on Endpoint 0x%" PRIx16, endpointId);
-    gServers[endpointId].Create(endpointId, gLimits[endpointId]);
-
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(
+                         gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register SoilMeasurement - Error: %" CHIP_ERROR_FORMAT, err.Format());
     }
@@ -70,10 +69,19 @@ void ESPMatterSoilMeasurementClusterServerInitCallback(EndpointId endpointId)
 
 void ESPMatterSoilMeasurementClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[endpointId].Cluster(), shutdownType);
+    auto serverIt = gServers.find(endpointId);
+    VerifyOrReturn(serverIt != gServers.end());
+    VerifyOrReturn(serverIt->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&serverIt->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "SoilMeasurement unregister error: %" CHIP_ERROR_FORMAT, err.Format());
     }
-    gServers[endpointId].Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        serverIt->second.Destroy();
+        gServers.erase(serverIt);
+        auto limitIt = gLimits.find(endpointId);
+        VerifyOrReturn(limitIt != gLimits.end());
+        gLimits.erase(limitIt);
+    }
 }

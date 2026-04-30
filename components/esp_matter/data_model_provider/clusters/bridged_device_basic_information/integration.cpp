@@ -39,6 +39,7 @@ void ReachableChanged(EndpointId endpointId)
     bool reachable = false;
     if (Status::Success != Attributes::Reachable::Get(endpointId, &reachable)) {
         ChipLogError(Zcl, "ReachableChanged: Failed to get Reachable value");
+        return;
     }
 
     Events::ReachableChanged::Type event{ reachable };
@@ -48,17 +49,12 @@ void ReachableChanged(EndpointId endpointId)
 
 } // namespace
 
-void ESPMatterBridgedDeviceBasicInformationClusterServerInitCallback(EndpointId endpointId)
-{
-    (void) endpointId;
-}
+void ESPMatterBridgedDeviceBasicInformationClusterServerInitCallback(EndpointId) {}
 
-void ESPMatterBridgedDeviceBasicInformationClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType)
-{
-    (void) endpointId;
-}
+void ESPMatterBridgedDeviceBasicInformationClusterServerShutdownCallback(EndpointId, ClusterShutdownType) {}
 
-void MatterBridgedDeviceBasicInformationClusterServerAttributeChangedCallback(const ConcreteAttributePath  &attributePath)
+void MatterBridgedDeviceBasicInformationClusterServerAttributeChangedCallback(const ConcreteAttributePath
+                                                                              &attributePath)
 {
     VerifyOrReturn(attributePath.mClusterId == BridgedDeviceBasicInformation::Id);
 

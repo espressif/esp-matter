@@ -29,18 +29,20 @@ namespace {
 LazyRegisteredServerCluster<GroupKeyManagementCluster> gServer;
 }
 
-void ESPMatterGroupKeyManagementClusterServerInitCallback(EndpointId endpoint)
+void ESPMatterGroupKeyManagementClusterServerInitCallback(EndpointId endpointId)
 {
     // We implement the cluster as a singleton on the root endpoint.
-    VerifyOrReturn(endpoint == kRootEndpointId);
+    VerifyOrReturn(endpointId == kRootEndpointId);
 
-    Credentials::GroupDataProvider * groupDataProvider = Credentials::GetGroupDataProvider();
-    VerifyOrDie(groupDataProvider != nullptr); // we require app main to set this before cluster startup
+    if (!gServer.IsConstructed()) {
+        Credentials::GroupDataProvider * groupDataProvider = Credentials::GetGroupDataProvider();
+        VerifyOrDie(groupDataProvider != nullptr); // we require app main to set this before cluster startup
 
-    gServer.Create(GroupKeyManagementCluster::Context{
-        .fabricTable       = Server::GetInstance().GetFabricTable(),
-        .groupDataProvider = *groupDataProvider,
-    });
+        gServer.Create(GroupKeyManagementCluster::Context{
+            .fabricTable       = Server::GetInstance().GetFabricTable(),
+            .groupDataProvider = *groupDataProvider,
+        });
+    }
 
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
     if (err != CHIP_NO_ERROR) {
@@ -52,11 +54,15 @@ void ESPMatterGroupKeyManagementClusterServerShutdownCallback(EndpointId endpoin
 {
     // We implement the cluster as a singleton on the root endpoint.
     VerifyOrReturn(endpointId == kRootEndpointId);
-    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(), shutdownType);
+    VerifyOrReturn(gServer.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister GroupKeyManagement - Error: %" CHIP_ERROR_FORMAT, err.Format());
     }
-    gServer.Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        gServer.Destroy();
+    }
 }
 
 void MatterGroupKeyManagementPluginServerInitCallback() {}

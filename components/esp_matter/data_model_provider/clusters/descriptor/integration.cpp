@@ -41,7 +41,8 @@ public:
         DescriptorCluster(endpointId, optionalAttributeSet, Span<const SemanticTag>())
     {}
 
-    CHIP_ERROR Attributes(const ConcreteClusterPath  &path, ReadOnlyBufferBuilder<DataModel::AttributeEntry>  &builder) override
+    CHIP_ERROR Attributes(const ConcreteClusterPath  &path,
+                          ReadOnlyBufferBuilder<DataModel::AttributeEntry>  &builder) override
     {
         if (!mFetchedSemanticTags) {
             ReturnErrorOnFailure(GetSemanticTag(path.mEndpointId, mSemanticTags));
@@ -91,17 +92,16 @@ std::unordered_map<EndpointId, LazyRegisteredServerCluster<ESPMatterDescriptorCl
 
 void ESPMatterDescriptorClusterServerInitCallback(EndpointId endpointId)
 {
-    if (gServers[endpointId].IsConstructed()) {
-        return;
+    if (!gServers[endpointId].IsConstructed()) {
+        DescriptorCluster::OptionalAttributesSet optionalAttrSet;
+        if (esp_matter::endpoint::is_attribute_enabled(endpointId, Descriptor::Id,
+                                                       Descriptor::Attributes::EndpointUniqueID::Id)) {
+            optionalAttrSet.Set<Descriptor::Attributes::EndpointUniqueID::Id>();
+        }
+        gServers[endpointId].Create(endpointId, optionalAttrSet);
     }
-    DescriptorCluster::OptionalAttributesSet optionalAttrSet;
-    if (esp_matter::endpoint::is_attribute_enabled(endpointId, Descriptor::Id, Descriptor::Attributes::EndpointUniqueID::Id)) {
-        optionalAttrSet.Set<Descriptor::Attributes::EndpointUniqueID::Id>();
-    }
-
-    gServers[endpointId].Create(endpointId, optionalAttrSet);
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(
+                         gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register Descriptor on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
                      err.Format());
@@ -110,13 +110,19 @@ void ESPMatterDescriptorClusterServerInitCallback(EndpointId endpointId)
 
 void ESPMatterDescriptorClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[endpointId].Cluster());
+    auto it = gServers.find(endpointId);
+    VerifyOrReturn(it != gServers.end());
+    VerifyOrReturn(it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to unregister UserLabel on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
-                     endpointId, err.Format());
+        ChipLogError(AppServer, "Failed to unregister Descriptor on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
+                     err.Format());
     }
-    gServers[endpointId].Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        it->second.Destroy();
+        gServers.erase(it);
+    }
 }
 
 void MatterDescriptorPluginServerInitCallback() {}

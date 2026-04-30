@@ -82,58 +82,60 @@ bool IsClusterEnabled(EndpointId endpointId, ClusterId clusterId)
 
 void ESPMatterGeneralDiagnosticsClusterServerInitCallback(EndpointId endpointId)
 {
-    VerifyOrDie(endpointId == kRootEndpointId);
-    chip::app::InteractionModelEngine * interactionModel = chip::app::InteractionModelEngine::GetInstance();
-    VerifyOrDie(interactionModel != nullptr);
-    GeneralDiagnosticsCluster::OptionalAttributeSet attrSet;
-    if (IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::TotalOperationalHours::Id)) {
-        attrSet.Set<GeneralDiagnostics::Attributes::TotalOperationalHours::Id>();
-    }
-    if (IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::BootReason::Id)) {
-        attrSet.Set<GeneralDiagnostics::Attributes::BootReason::Id>();
-    }
-    if (IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::ActiveHardwareFaults::Id)) {
-        attrSet.Set<GeneralDiagnostics::Attributes::ActiveHardwareFaults::Id>();
-    }
-    if (IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::ActiveRadioFaults::Id)) {
-        attrSet.Set<GeneralDiagnostics::Attributes::ActiveRadioFaults::Id>();
-    }
-    if (IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::ActiveNetworkFaults::Id)) {
-        attrSet.Set<GeneralDiagnostics::Attributes::ActiveNetworkFaults::Id>();
-    }
-    attribute_t *feature = attribute::get(endpointId, GeneralDiagnostics::Id, Globals::Attributes::FeatureMap::Id);
-    esp_matter_attr_val_t feature_val = esp_matter_invalid(nullptr);
-    VerifyOrReturn(attribute::get_val_internal(feature, &feature_val) == ESP_OK && feature_val.type == ESP_MATTER_VAL_TYPE_BITMAP32);
-    BitFlags<GeneralDiagnostics::Feature> featureFlags(feature_val.val.u32);
+    VerifyOrReturn(endpointId == kRootEndpointId);
+    if (gServer.isFullConfigurable ? !gServer.fullConfigurableServer.IsConstructed() : !gServer.server.IsConstructed()) {
+        chip::app::InteractionModelEngine * interactionModel = chip::app::InteractionModelEngine::GetInstance();
+        VerifyOrDie(interactionModel != nullptr);
+        GeneralDiagnosticsCluster::OptionalAttributeSet attrSet;
+        if (IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::TotalOperationalHours::Id)) {
+            attrSet.Set<GeneralDiagnostics::Attributes::TotalOperationalHours::Id>();
+        }
+        if (IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::BootReason::Id)) {
+            attrSet.Set<GeneralDiagnostics::Attributes::BootReason::Id>();
+        }
+        if (IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::ActiveHardwareFaults::Id)) {
+            attrSet.Set<GeneralDiagnostics::Attributes::ActiveHardwareFaults::Id>();
+        }
+        if (IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::ActiveRadioFaults::Id)) {
+            attrSet.Set<GeneralDiagnostics::Attributes::ActiveRadioFaults::Id>();
+        }
+        if (IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::ActiveNetworkFaults::Id)) {
+            attrSet.Set<GeneralDiagnostics::Attributes::ActiveNetworkFaults::Id>();
+        }
+        attribute_t *feature = attribute::get(endpointId, GeneralDiagnostics::Id, Globals::Attributes::FeatureMap::Id);
+        esp_matter_attr_val_t feature_val = esp_matter_invalid(nullptr);
+        VerifyOrReturn(attribute::get_val_internal(feature, &feature_val) == ESP_OK &&
+                       feature_val.type == ESP_MATTER_VAL_TYPE_BITMAP32);
+        BitFlags<GeneralDiagnostics::Feature> featureFlags(feature_val.val.u32);
 
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    if (IsCommandEnabled(endpointId, GeneralDiagnostics::Commands::PayloadTestRequest::Id, COMMAND_FLAG_ACCEPTED) ||
-            IsClusterEnabled(endpointId, TimeSynchronization::Id)) {
-        gServer.isFullConfigurable = true;
-        GeneralDiagnosticsFunctionsConfig functionsConfig{
-            /*
-            Only consider real time if time sync cluster is actually enabled. If it's not
-            enabled, this avoids likelihood of frequently reporting unusable unsynched time.
-            */
-            IsClusterEnabled(endpointId, TimeSynchronization::Id),
-            IsCommandEnabled(endpointId, GeneralDiagnostics::Commands::PayloadTestRequest::Id, COMMAND_FLAG_ACCEPTED),
-        };
+        if (IsCommandEnabled(endpointId, GeneralDiagnostics::Commands::PayloadTestRequest::Id, COMMAND_FLAG_ACCEPTED) ||
+                IsClusterEnabled(endpointId, TimeSynchronization::Id)) {
+            gServer.isFullConfigurable = true;
+            GeneralDiagnosticsFunctionsConfig functionsConfig{
+                /*
+                Only consider real time if time sync cluster is actually enabled. If it's not
+                enabled, this avoids likelihood of frequently reporting unusable unsynched time.
+                */
+                IsClusterEnabled(endpointId, TimeSynchronization::Id),
+                IsCommandEnabled(endpointId, GeneralDiagnostics::Commands::PayloadTestRequest::Id, COMMAND_FLAG_ACCEPTED),
+            };
 
-        gServer.fullConfigurableServer.Create(attrSet, featureFlags, GeneralDiagnosticsCluster::Context{
-            .deviceLoadStatusProvider = *interactionModel,
-            .diagnosticDataProvider   = DeviceLayer::GetDiagnosticDataProvider(),
-            .testEventTriggerDelegate = Server::GetInstance().GetTestEventTriggerDelegate(),
-        }, functionsConfig);
-        err = esp_matter::data_model::provider::get_instance().registry().Register(
-                  gServer.fullConfigurableServer.Registration());
-    } else {
-        gServer.server.Create(attrSet, featureFlags,  GeneralDiagnosticsCluster::Context{
-            .deviceLoadStatusProvider = *interactionModel,
-            .diagnosticDataProvider   = DeviceLayer::GetDiagnosticDataProvider(),
-            .testEventTriggerDelegate = Server::GetInstance().GetTestEventTriggerDelegate(),
-        });
-        err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.server.Registration());
+            gServer.fullConfigurableServer.Create(attrSet, featureFlags, GeneralDiagnosticsCluster::Context{
+                .deviceLoadStatusProvider = *interactionModel,
+                .diagnosticDataProvider   = DeviceLayer::GetDiagnosticDataProvider(),
+                .testEventTriggerDelegate = Server::GetInstance().GetTestEventTriggerDelegate(),
+            }, functionsConfig);
+        } else {
+            gServer.server.Create(attrSet, featureFlags,  GeneralDiagnosticsCluster::Context{
+                .deviceLoadStatusProvider = *interactionModel,
+                .diagnosticDataProvider   = DeviceLayer::GetDiagnosticDataProvider(),
+                .testEventTriggerDelegate = Server::GetInstance().GetTestEventTriggerDelegate(),
+            });
+        }
     }
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(
+                         gServer.isFullConfigurable ? gServer.fullConfigurableServer.Registration() :
+                         gServer.server.Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register GeneralDiagnostics - Error: %" CHIP_ERROR_FORMAT, err.Format());
     }
@@ -142,14 +144,13 @@ void ESPMatterGeneralDiagnosticsClusterServerInitCallback(EndpointId endpointId)
 void ESPMatterGeneralDiagnosticsClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
     VerifyOrReturn(endpointId == kRootEndpointId);
-    CHIP_ERROR err = CHIP_NO_ERROR;
-    if (gServer.isFullConfigurable) {
-        err = esp_matter::data_model::provider::get_instance().registry().Unregister(
-                  &gServer.fullConfigurableServer.Cluster());
-        gServer.fullConfigurableServer.Destroy();
-    } else {
-        err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.server.Cluster());
-        gServer.server.Destroy();
+    VerifyOrReturn(gServer.isFullConfigurable ? gServer.fullConfigurableServer.IsConstructed() :
+                   gServer.server.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(
+                         gServer.isFullConfigurable ? &gServer.fullConfigurableServer.Cluster() : &gServer.server.Cluster(),
+                         shutdownType);
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        gServer.isFullConfigurable ? gServer.fullConfigurableServer.Destroy() : gServer.server.Destroy();
     }
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister GeneralDiagnostics - Error: %" CHIP_ERROR_FORMAT, err.Format());

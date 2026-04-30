@@ -87,14 +87,16 @@ esp_err_t GetClusterConfig(EndpointId endpointId, TimeSynchronizationCluster::Op
 void ESPMatterTimeSynchronizationClusterServerInitCallback(EndpointId endpointId)
 {
     VerifyOrReturn(endpointId == kRootEndpointId);
-    TimeSynchronizationCluster::OptionalAttributeSet attrSet;
-    TimeSynchronizationCluster::StartupConfiguration startupConfig;
-    BitFlags<TimeSynchronization::Feature> featureMap;
-    VerifyOrReturn(GetClusterConfig(endpointId, attrSet, startupConfig, featureMap) == ESP_OK,
-                   ChipLogError(AppServer,
-                                "TimeSynchronization: cluster missing or invalid esp-matter data model for endpoint %u",
-                                endpointId));
-    gServer.Create(endpointId, featureMap, attrSet, startupConfig);
+    if (!gServer.IsConstructed()) {
+        TimeSynchronizationCluster::OptionalAttributeSet attrSet;
+        TimeSynchronizationCluster::StartupConfiguration startupConfig;
+        BitFlags<TimeSynchronization::Feature> featureMap;
+        VerifyOrReturn(GetClusterConfig(endpointId, attrSet, startupConfig, featureMap) == ESP_OK,
+                       ChipLogError(AppServer,
+                                    "TimeSynchronization: cluster missing or invalid esp-matter data model for endpoint %u",
+                                    endpointId));
+        gServer.Create(endpointId, featureMap, attrSet, startupConfig);
+    }
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register TimeSynchronization - Error %" CHIP_ERROR_FORMAT, err.Format());
@@ -109,7 +111,9 @@ void ESPMatterTimeSynchronizationClusterServerShutdownCallback(EndpointId endpoi
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister TimeSynchronization - Error %" CHIP_ERROR_FORMAT, err.Format());
     }
-    gServer.Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        gServer.Destroy();
+    }
 }
 
 void MatterTimeSynchronizationPluginServerInitCallback() {}

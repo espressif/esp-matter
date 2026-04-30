@@ -24,17 +24,17 @@ namespace {
 LazyRegisteredServerCluster<AccessControlCluster> gServer;
 }
 
-void ESPMatterAccessControlClusterServerInitCallback(EndpointId endpoint)
+void ESPMatterAccessControlClusterServerInitCallback(EndpointId endpointId)
 {
     // We implement the cluster as a singleton on the root endpoint.
-    VerifyOrReturn(endpoint == kRootEndpointId);
-
-    gServer.Create(AccessControlCluster::Context{
-        .persistentStorage = Server::GetInstance().GetPersistentStorage(),
-        .fabricTable       = Server::GetInstance().GetFabricTable(),
-        .accessControl     = Server::GetInstance().GetAccessControl(),
-    });
-
+    VerifyOrReturn(endpointId == kRootEndpointId);
+    if (!gServer.IsConstructed()) {
+        gServer.Create(AccessControlCluster::Context{
+            .persistentStorage = Server::GetInstance().GetPersistentStorage(),
+            .fabricTable       = Server::GetInstance().GetFabricTable(),
+            .accessControl     = Server::GetInstance().GetAccessControl(),
+        });
+    }
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register AccessControl - Error %" CHIP_ERROR_FORMAT, err.Format());
@@ -45,11 +45,15 @@ void ESPMatterAccessControlClusterServerShutdownCallback(EndpointId endpointId, 
 {
     // We implement the cluster as a singleton on the root endpoint.
     VerifyOrReturn(endpointId == kRootEndpointId);
-    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(), shutdownType);
+    VerifyOrReturn(gServer.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister AccessControl - Error %" CHIP_ERROR_FORMAT, err.Format());
     }
-    gServer.Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        gServer.Destroy();
+    }
 }
 
 void MatterAccessControlPluginServerInitCallback() {}

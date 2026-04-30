@@ -183,25 +183,22 @@ esp_err_t GetScenesClusterContextParams(EndpointId endpointId, BitMask<ScenesMan
 
 void ESPMatterScenesManagementClusterServerInitCallback(EndpointId endpointId)
 {
-    if (gServers[endpointId].IsConstructed()) {
-        return;
+    if (!gServers[endpointId].IsConstructed()) {
+        BitMask<ScenesManagement::Feature> featureMap;
+        bool supportsCopyScene;
+        uint16_t tableSize;
+        VerifyOrReturn(GetScenesClusterContextParams(endpointId, featureMap, supportsCopyScene, tableSize) == ESP_OK,
+                       ChipLogError(AppServer, "Failed to get cluster context parameters"));
+        gTableProviders[endpointId].SetParameters(endpointId, tableSize);
+        gServers[endpointId].Create(endpointId,
+        ScenesManagementCluster::Context{
+            .groupDataProvider = Credentials::GetGroupDataProvider(),
+            .fabricTable = &Server::GetInstance().GetFabricTable(),
+            .features = featureMap,
+            .sceneTableProvider = gTableProviders[endpointId],
+            .supportsCopyScene = supportsCopyScene,
+        });
     }
-    BitMask<ScenesManagement::Feature> featureMap;
-    bool supportsCopyScene;
-    uint16_t tableSize;
-    if (GetScenesClusterContextParams(endpointId, featureMap, supportsCopyScene, tableSize) != ESP_OK) {
-        ESP_LOGE("Scenes", "Failed to get cluster context parameters");
-        return;
-    }
-    gTableProviders[endpointId].SetParameters(endpointId, tableSize);
-    gServers[endpointId].Create(endpointId,
-    ScenesManagementCluster::Context{
-        .groupDataProvider = Credentials::GetGroupDataProvider(),
-        .fabricTable = &Server::GetInstance().GetFabricTable(),
-        .features = featureMap,
-        .sceneTableProvider = gTableProviders[endpointId],
-        .supportsCopyScene = supportsCopyScene,
-    });
     CHIP_ERROR err =
         esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
@@ -212,18 +209,22 @@ void ESPMatterScenesManagementClusterServerInitCallback(EndpointId endpointId)
 
 void ESPMatterScenesManagementClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
-    if (!gServers[endpointId].IsConstructed()) {
-        return;
-    }
-    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(
-                         &gServers[endpointId].Cluster(), shutdownType);
+    auto serverIt = gServers.find(endpointId);
+    VerifyOrReturn(serverIt != gServers.end());
+    VerifyOrReturn(serverIt->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&serverIt->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to register Scenes on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
+        ChipLogError(AppServer, "Failed to unregister Scenes on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
                      err.Format());
     }
-    gServers[endpointId].Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        serverIt->second.Destroy();
+        gServers.erase(serverIt);
+        auto tableProviderIt = gTableProviders.find(endpointId);
+        VerifyOrReturn(tableProviderIt != gTableProviders.end());
+        gTableProviders.erase(tableProviderIt);
+    }
 }
 
-void MatterScenesManagementPluginServerInitCallback()
-{
-}
+void MatterScenesManagementPluginServerInitCallback() {}

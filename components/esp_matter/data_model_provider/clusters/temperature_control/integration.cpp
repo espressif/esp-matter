@@ -46,67 +46,70 @@ void ESPMatterTemperatureControlClusterServerInitCallback(EndpointId endpointId)
                    ChipLogError(AppServer,
                                 "TemperatureControl: cluster missing in esp-matter data model for endpoint %u", endpointId));
 
-    if (gServers[endpointId].IsConstructed()) {
-        return;
-    }
+    if (!gServers[endpointId].IsConstructed()) {
+        const uint32_t rawFeatureMap = read_feature_map_u32(endpointId, TemperatureControl::Id);
+        BitFlags<TemperatureControl::Feature> features(rawFeatureMap);
 
-    const uint32_t rawFeatureMap = read_feature_map_u32(endpointId, TemperatureControl::Id);
-    BitFlags<TemperatureControl::Feature> features(rawFeatureMap);
+        int16_t temperatureSetpoint = 0;
+        int16_t minTemperature      = 0;
+        int16_t maxTemperature      = 0;
+        int16_t step                = 0;
+        uint8_t selectedTemperatureLevel = 0;
 
-    int16_t temperatureSetpoint = 0;
-    int16_t minTemperature      = 0;
-    int16_t maxTemperature      = 0;
-    int16_t step                = 0;
-    uint8_t selectedTemperatureLevel = 0;
-
-    if (features.Has(TemperatureControl::Feature::kTemperatureNumber)) {
-        VerifyOrReturn(read_attribute_raw_value(endpointId, TemperatureControl::Id, Attributes::TemperatureSetpoint::Id, temperatureSetpoint),
-                       ChipLogError(AppServer, "TemperatureControl: TemperatureSetpoint read failed on ep %u", endpointId));
-        VerifyOrReturn(read_attribute_raw_value(endpointId, TemperatureControl::Id, Attributes::MinTemperature::Id, minTemperature),
-                       ChipLogError(AppServer, "TemperatureControl: MinTemperature read failed on ep %u", endpointId));
-        VerifyOrReturn(read_attribute_raw_value(endpointId, TemperatureControl::Id, Attributes::MaxTemperature::Id, maxTemperature),
-                       ChipLogError(AppServer, "TemperatureControl: MaxTemperature read failed on ep %u", endpointId));
-        if (features.Has(TemperatureControl::Feature::kTemperatureStep)) {
-            VerifyOrReturn(read_attribute_raw_value(endpointId, TemperatureControl::Id, Attributes::Step::Id, step),
-                           ChipLogError(AppServer, "TemperatureControl: Step read failed on ep %u", endpointId));
+        if (features.Has(TemperatureControl::Feature::kTemperatureNumber)) {
+            VerifyOrReturn(read_attribute_raw_value(endpointId, TemperatureControl::Id, Attributes::TemperatureSetpoint::Id,
+                                                    temperatureSetpoint),
+                           ChipLogError(AppServer, "TemperatureControl: TemperatureSetpoint read failed on ep %u", endpointId));
+            VerifyOrReturn(read_attribute_raw_value(endpointId, TemperatureControl::Id, Attributes::MinTemperature::Id,
+                                                    minTemperature),
+                           ChipLogError(AppServer, "TemperatureControl: MinTemperature read failed on ep %u", endpointId));
+            VerifyOrReturn(read_attribute_raw_value(endpointId, TemperatureControl::Id, Attributes::MaxTemperature::Id,
+                                                    maxTemperature),
+                           ChipLogError(AppServer, "TemperatureControl: MaxTemperature read failed on ep %u", endpointId));
+            if (features.Has(TemperatureControl::Feature::kTemperatureStep)) {
+                VerifyOrReturn(read_attribute_raw_value(endpointId, TemperatureControl::Id, Attributes::Step::Id, step),
+                               ChipLogError(AppServer, "TemperatureControl: Step read failed on ep %u", endpointId));
+            }
         }
+        if (features.Has(TemperatureControl::Feature::kTemperatureLevel)) {
+            VerifyOrReturn(
+                read_attribute_raw_value(endpointId, TemperatureControl::Id, Attributes::SelectedTemperatureLevel::Id,
+                                         selectedTemperatureLevel),
+                ChipLogError(AppServer, "TemperatureControl: SelectedTemperatureLevel read failed on ep %u", endpointId));
+            VerifyOrReturn(attribute::get(endpointId, TemperatureControl::Id,
+                                          Attributes::SupportedTemperatureLevels::Id) != nullptr,
+                           ChipLogError(AppServer, "TemperatureControl: SupportedTemperatureLevels missing on ep %u", endpointId));
+        }
+
+        TemperatureControlCluster::StartupConfiguration startupConfig{ .temperatureSetpoint      = temperatureSetpoint,
+                                                                       .minTemperature           = minTemperature,
+                                                                       .maxTemperature           = maxTemperature,
+                                                                       .step                     = step,
+                                                                       .selectedTemperatureLevel = selectedTemperatureLevel };
+
+        gServers[endpointId].Create(endpointId, features, startupConfig);
     }
-    if (features.Has(TemperatureControl::Feature::kTemperatureLevel)) {
-        VerifyOrReturn(
-            read_attribute_raw_value(endpointId, TemperatureControl::Id, Attributes::SelectedTemperatureLevel::Id, selectedTemperatureLevel),
-            ChipLogError(AppServer, "TemperatureControl: SelectedTemperatureLevel read failed on ep %u", endpointId));
-        VerifyOrReturn(attribute::get(endpointId, TemperatureControl::Id, Attributes::SupportedTemperatureLevels::Id) != nullptr,
-                       ChipLogError(AppServer, "TemperatureControl: SupportedTemperatureLevels missing on ep %u", endpointId));
-    }
-
-    TemperatureControlCluster::StartupConfiguration startupConfig{ .temperatureSetpoint      = temperatureSetpoint,
-                                                                   .minTemperature           = minTemperature,
-                                                                   .maxTemperature           = maxTemperature,
-                                                                   .step                     = step,
-                                                                   .selectedTemperatureLevel = selectedTemperatureLevel };
-
-    gServers[endpointId].Create(endpointId, features, startupConfig);
-
     CHIP_ERROR err =
         esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "TemperatureControl register failed ep %u: %" CHIP_ERROR_FORMAT, endpointId, err.Format());
-        gServers[endpointId].Destroy();
     }
 }
 
 void ESPMatterTemperatureControlClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
     auto it = gServers.find(endpointId);
-    if (it == gServers.end() || !it->second.IsConstructed()) {
-        return;
-    }
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(), shutdownType);
+    VerifyOrReturn(it != gServers.end());
+    VerifyOrReturn(it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "TemperatureControl unregister failed ep %u: %" CHIP_ERROR_FORMAT, endpointId, err.Format());
     }
-    it->second.Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        it->second.Destroy();
+        gServers.erase(it);
+    }
 }
 
 void MatterTemperatureControlPluginServerInitCallback() {}

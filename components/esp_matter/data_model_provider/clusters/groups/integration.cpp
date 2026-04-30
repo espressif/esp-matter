@@ -45,54 +45,52 @@ void ESPMatterGroupsClusterServerInitCallback(EndpointId endpointId)
     VerifyOrReturn(esp_matter::cluster::get(endpointId, Groups::Id) != nullptr,
                    ChipLogError(AppServer, "Groups: cluster missing in esp-matter data model for endpoint %u", endpointId));
 
-    if (gServers[endpointId].IsConstructed()) {
-        return;
-    }
+    if (!gServers[endpointId].IsConstructed()) {
+        Credentials::GroupDataProvider * groupDataProvider = Credentials::GetGroupDataProvider();
+        VerifyOrDie(groupDataProvider != nullptr);
 
-    Credentials::GroupDataProvider * groupDataProvider = Credentials::GetGroupDataProvider();
-    VerifyOrDie(groupDataProvider != nullptr);
-
-    gServers[endpointId].Create(endpointId,
-    GroupsCluster::Context{
-        .groupDataProvider = *groupDataProvider,
+        gServers[endpointId].Create(endpointId,
+        GroupsCluster::Context{
+            .groupDataProvider = *groupDataProvider,
 #ifdef MATTER_DM_PLUGIN_SCENES_MANAGEMENT
-        .scenesIntegration =
-        (esp_matter::cluster::get(endpointId, ScenesManagement::Id) != nullptr)
-        ? ScenesManagement::FindClusterOnEndpoint(endpointId)
-        : nullptr,
+            .scenesIntegration =
+            (esp_matter::cluster::get(endpointId, ScenesManagement::Id) != nullptr)
+            ? ScenesManagement::FindClusterOnEndpoint(endpointId)
+            : nullptr,
 #else
-        .scenesIntegration = nullptr,
+            .scenesIntegration = nullptr,
 #endif
 #ifdef ZCL_USING_IDENTIFY_CLUSTER_SERVER
-        .identifyIntegration =
-        (esp_matter::cluster::get(endpointId, Identify::Id) != nullptr)
-        ? Identify::FindClusterOnEndpoint(endpointId)
-        : nullptr,
+            .identifyIntegration =
+            (esp_matter::cluster::get(endpointId, Identify::Id) != nullptr)
+            ? Identify::FindClusterOnEndpoint(endpointId)
+            : nullptr,
 #else
-        .identifyIntegration = nullptr,
+            .identifyIntegration = nullptr,
 #endif
-    });
-
+        });
+    }
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(
                          gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register Groups - Error %" CHIP_ERROR_FORMAT, err.Format());
-        gServers[endpointId].Destroy();
     }
 }
 
 void ESPMatterGroupsClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
-    if (!gServers[endpointId].IsConstructed()) {
-        return;
-    }
-
-    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(
-                         &gServers[endpointId].Cluster(), shutdownType);
+    auto it = gServers.find(endpointId);
+    VerifyOrReturn(it != gServers.end());
+    VerifyOrReturn(it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister Groups - Error %" CHIP_ERROR_FORMAT, err.Format());
     }
-    gServers[endpointId].Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        it->second.Destroy();
+        gServers.erase(it);
+    }
 }
 
 void MatterGroupsPluginServerInitCallback() {}

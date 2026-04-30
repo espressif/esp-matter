@@ -79,20 +79,19 @@ CHIP_ERROR GetClusterConfig(EndpointId endpointId, ICDManagementCluster::Optiona
 void ESPMatterIcdManagementClusterServerInitCallback(EndpointId endpointId)
 {
     VerifyOrReturn(endpointId == kRootEndpointId);
-    VerifyOrReturn(!gServer.IsConstructed());
-    ICDManagementCluster::OptionalAttributeSet optionalAttrSet;
-    BitMask<OptionalCommands> optionalCommands;
-    BitMask<UserActiveModeTriggerBitmap> uatHint;
-    char instructionBuffer[kUserActiveModeTriggerInstructionMaxLength];
-    MutableCharSpan instructionSpan(instructionBuffer);
-    CHIP_ERROR err = GetClusterConfig(endpointId, optionalAttrSet, optionalCommands, uatHint, instructionSpan);
-    if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to get config for IcdManagement - Error %" CHIP_ERROR_FORMAT, err.Format());
-        return;
+    if (!gServer.IsConstructed()) {
+        ICDManagementCluster::OptionalAttributeSet optionalAttrSet;
+        BitMask<OptionalCommands> optionalCommands;
+        BitMask<UserActiveModeTriggerBitmap> uatHint;
+        char instructionBuffer[kUserActiveModeTriggerInstructionMaxLength];
+        MutableCharSpan instructionSpan(instructionBuffer);
+        CHIP_ERROR err = GetClusterConfig(endpointId, optionalAttrSet, optionalCommands, uatHint, instructionSpan);
+        VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(AppServer,
+                                                          "Failed to get config for IcdManagement - Error %" CHIP_ERROR_FORMAT, err.Format()));
+        gServer.Create(endpointId, *Server::GetInstance().GetSessionKeystore(), Server::GetInstance().GetFabricTable(),
+                       ICDConfigurationData::GetInstance(), optionalAttrSet, optionalCommands, uatHint, instructionSpan);
     }
-    gServer.Create(endpointId, *Server::GetInstance().GetSessionKeystore(), Server::GetInstance().GetFabricTable(),
-                   ICDConfigurationData::GetInstance(), optionalAttrSet, optionalCommands, uatHint, instructionSpan);
-    err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register IcdManagement - Error %" CHIP_ERROR_FORMAT, err.Format());
     }
@@ -107,5 +106,7 @@ void ESPMatterIcdManagementClusterServerShutdownCallback(EndpointId endpointId, 
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister IcdManagement - Error %" CHIP_ERROR_FORMAT, err.Format());
     }
-    gServer.Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        gServer.Destroy();
+    }
 }

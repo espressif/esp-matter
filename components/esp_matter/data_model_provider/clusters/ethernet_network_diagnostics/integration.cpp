@@ -63,18 +63,17 @@ EthernetDiagnosticsServerCluster::OptionalAttributeSet get_attribute_set(esp_mat
 
 void ESPMatterEthernetNetworkDiagnosticsClusterServerInitCallback(EndpointId endpointId)
 {
-    if (gServers[endpointId].IsConstructed()) {
-        return;
-    }
-    esp_matter::cluster_t *cluster = esp_matter::cluster::get(endpointId, EthernetNetworkDiagnostics::Id);
-    VerifyOrReturn(cluster != nullptr,
-                   ChipLogError(AppServer,
-                                "EthernetNetworkDiagnostics: cluster missing in esp-matter data model for endpoint %u",
-                                endpointId));
+    if (!gServers[endpointId].IsConstructed()) {
+        esp_matter::cluster_t *cluster = esp_matter::cluster::get(endpointId, EthernetNetworkDiagnostics::Id);
+        VerifyOrReturn(cluster != nullptr,
+                       ChipLogError(AppServer,
+                                    "EthernetNetworkDiagnostics: cluster missing in esp-matter data model for endpoint %u",
+                                    endpointId));
 
-    gServers[endpointId].Create(DeviceLayer::GetDiagnosticDataProvider(),
-                                BitFlags<EthernetNetworkDiagnostics::Feature>(get_feature_map(cluster)),
-                                get_attribute_set(cluster));
+        gServers[endpointId].Create(DeviceLayer::GetDiagnosticDataProvider(),
+                                    BitFlags<EthernetNetworkDiagnostics::Feature>(get_feature_map(cluster)),
+                                    get_attribute_set(cluster));
+    }
     CHIP_ERROR err =
         esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
@@ -87,14 +86,20 @@ void ESPMatterEthernetNetworkDiagnosticsClusterServerInitCallback(EndpointId end
 void ESPMatterEthernetNetworkDiagnosticsClusterServerShutdownCallback(EndpointId endpointId,
                                                                       ClusterShutdownType shutdownType)
 {
-    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(
-                         &gServers[endpointId].Cluster(), shutdownType);
+    auto it = gServers.find(endpointId);
+    VerifyOrReturn(it != gServers.end());
+    VerifyOrReturn(it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer,
                      "Failed to unregister EthernetNetworkDiagnostics on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
                      endpointId, err.Format());
     }
-    gServers[endpointId].Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        it->second.Destroy();
+        gServers.erase(it);
+    }
 }
 
 void MatterEthernetNetworkDiagnosticsPluginServerInitCallback()

@@ -32,45 +32,51 @@ namespace {
 LazyRegisteredServerCluster<OperationalCredentialsCluster> gServer;
 }
 
-void ESPMatterOperationalCredentialsClusterServerInitCallback(EndpointId endpoint)
+void ESPMatterOperationalCredentialsClusterServerInitCallback(EndpointId endpointId)
 {
     // We implement the cluster as a singleton on the root endpoint.
-    VerifyOrReturn(endpoint == kRootEndpointId);
+    VerifyOrReturn(endpointId == kRootEndpointId);
+    if (!gServer.IsConstructed()) {
+        auto * dacProvider = Credentials::GetDeviceAttestationCredentialsProvider();
+        VerifyOrDie(dacProvider != nullptr);
+        auto * groupDataProvider = Server::GetInstance().GetGroupDataProvider();
+        VerifyOrDie(groupDataProvider != nullptr);
 
-    auto * dacProvider = Credentials::GetDeviceAttestationCredentialsProvider();
-    VerifyOrDie(dacProvider != nullptr);
-    auto * groupDataProvider = Server::GetInstance().GetGroupDataProvider();
-    VerifyOrDie(groupDataProvider != nullptr);
-
-    OperationalCredentialsCluster::Context context = {
-        .fabricTable                = Server::GetInstance().GetFabricTable(),
-        .failSafeContext            = Server::GetInstance().GetFailSafeContext(),
-        .sessionManager             = Server::GetInstance().GetSecureSessionManager(),
-        .dnssdServer                = app::DnssdServer::Instance(),
-        .commissioningWindowManager = Server::GetInstance().GetCommissioningWindowManager(),
-        .dacProvider                = *dacProvider,
-        .groupDataProvider          = *groupDataProvider,
-        .accessControl              = Access::GetAccessControl(),
-        .platformManager            = DeviceLayer::PlatformMgr(),
-        .eventManagement            = EventManagement::GetInstance(),
-    };
-    gServer.Create(endpoint, context);
+        OperationalCredentialsCluster::Context context = {
+            .fabricTable                = Server::GetInstance().GetFabricTable(),
+            .failSafeContext            = Server::GetInstance().GetFailSafeContext(),
+            .sessionManager             = Server::GetInstance().GetSecureSessionManager(),
+            .dnssdServer                = app::DnssdServer::Instance(),
+            .commissioningWindowManager = Server::GetInstance().GetCommissioningWindowManager(),
+            .dacProvider                = *dacProvider,
+            .groupDataProvider          = *groupDataProvider,
+            .accessControl              = Access::GetAccessControl(),
+            .platformManager            = DeviceLayer::PlatformMgr(),
+            .eventManagement            = EventManagement::GetInstance(),
+        };
+        gServer.Create(endpointId, context);
+    }
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register OperationalCredentials - Error: %" CHIP_ERROR_FORMAT, err.Format());
     }
 }
 
-void ESPMatterOperationalCredentialsClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
+void ESPMatterOperationalCredentialsClusterServerShutdownCallback(EndpointId endpointId,
+                                                                  ClusterShutdownType shutdownType)
 {
     // We implement the cluster as a singleton on the root endpoint.
     VerifyOrReturn(endpointId == kRootEndpointId);
-    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(), shutdownType);
+    VerifyOrReturn(gServer.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister OperationalCredentials - Error: %" CHIP_ERROR_FORMAT,
                      err.Format());
     }
-    gServer.Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        gServer.Destroy();
+    }
 }
 
 void MatterOperationalCredentialsPluginServerInitCallback() {}

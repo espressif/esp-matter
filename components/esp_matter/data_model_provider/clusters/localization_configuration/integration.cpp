@@ -32,37 +32,34 @@ LazyRegisteredServerCluster<LocalizationConfigurationCluster> gServer;
 
 void ESPMatterLocalizationConfigurationClusterServerInitCallback(EndpointId endpointId)
 {
-    if (endpointId != kRootEndpointId) {
-        return;
+    VerifyOrReturn(endpointId == kRootEndpointId);
+    if (!gServer.IsConstructed()) {
+        esp_matter::attribute_t *active_locale = esp_matter::attribute::get(
+                                                     endpointId, LocalizationConfiguration::Id, LocalizationConfiguration::Attributes::ActiveLocale::Id);
+        esp_matter_attr_val_t attr_val;
+        VerifyOrReturn(active_locale && esp_matter::attribute::get_val_internal(active_locale, &attr_val) == ESP_OK &&
+                       attr_val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING &&
+                       attr_val.val.a.s <= LocalizationConfiguration::Attributes::ActiveLocale::TypeInfo::MaxLength(),
+                       ChipLogError(AppServer, "Failed to get active locale on endpoint %u", endpointId));
+        gServer.Create(*DeviceLayer::GetDeviceInfoProvider(), CharSpan((const char *)attr_val.val.a.b, attr_val.val.a.s));
     }
-    esp_matter::attribute_t *active_locale = esp_matter::attribute::get(
-                                                 endpointId, LocalizationConfiguration::Id, LocalizationConfiguration::Attributes::ActiveLocale::Id);
-    esp_matter_attr_val_t attr_val;
-    if (active_locale && esp_matter::attribute::get_val_internal(active_locale, &attr_val) == ESP_OK &&
-            attr_val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING &&
-            attr_val.val.a.s <= LocalizationConfiguration::Attributes::ActiveLocale::TypeInfo::MaxLength()) {
-        ChipLogError(AppServer, "Failed to get active locale on endpoint %u", endpointId);
-    }
-    gServer.Create(*DeviceLayer::GetDeviceInfoProvider(), CharSpan((const char *)attr_val.val.a.b, attr_val.val.a.s));
-
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to register LocalizationConfiguration - Error: %" CHIP_ERROR_FORMAT,
-                     err.Format());
+        ChipLogError(AppServer, "Failed to register LocalizationConfiguration - Error: %" CHIP_ERROR_FORMAT, err.Format());
     }
 }
 
 void ESPMatterLocalizationConfigurationClusterServerShutdownCallback(EndpointId endpointId,
                                                                      ClusterShutdownType shutdownType)
 {
-    if (endpointId != kRootEndpointId) {
-        return;
-    }
-
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(), shutdownType);
+    VerifyOrReturn(endpointId == kRootEndpointId);
+    VerifyOrReturn(gServer.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to unregister LocalizationConfiguration - Error: %" CHIP_ERROR_FORMAT,
-                     err.Format());
+        ChipLogError(AppServer, "Failed to unregister LocalizationConfiguration - Error: %" CHIP_ERROR_FORMAT, err.Format());
+    }
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        gServer.Destroy();
     }
 }
