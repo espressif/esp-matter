@@ -525,47 +525,34 @@ bool val_is_null(esp_matter_attr_val_t *val)
     switch (val->type) {
     case ESP_MATTER_VAL_TYPE_NULLABLE_BOOLEAN:
         return chip::app::NumericAttributeTraits<bool>::IsNullValue(*(uint8_t *)(&(val->val.b)));
-        break;
     case ESP_MATTER_VAL_TYPE_NULLABLE_INTEGER:
         return chip::app::NumericAttributeTraits<int>::IsNullValue(val->val.i);
-        break;
     case ESP_MATTER_VAL_TYPE_NULLABLE_UINT8:
     case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8:
     case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8:
         return chip::app::NumericAttributeTraits<uint8_t>::IsNullValue(val->val.u8);
-        break;
     case ESP_MATTER_VAL_TYPE_NULLABLE_UINT16:
     case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16:
     case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16:
         return chip::app::NumericAttributeTraits<uint16_t>::IsNullValue(val->val.u16);
-        break;
     case ESP_MATTER_VAL_TYPE_NULLABLE_UINT32:
     case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32:
         return chip::app::NumericAttributeTraits<uint32_t>::IsNullValue(val->val.u32);
-        break;
     case ESP_MATTER_VAL_TYPE_NULLABLE_UINT64:
         return chip::app::NumericAttributeTraits<uint64_t>::IsNullValue(val->val.u64);
-        break;
     case ESP_MATTER_VAL_TYPE_NULLABLE_INT8:
         return chip::app::NumericAttributeTraits<int8_t>::IsNullValue(val->val.i8);
-        break;
     case ESP_MATTER_VAL_TYPE_NULLABLE_INT16:
         return chip::app::NumericAttributeTraits<int16_t>::IsNullValue(val->val.i16);
-        break;
     case ESP_MATTER_VAL_TYPE_NULLABLE_INT32:
         return chip::app::NumericAttributeTraits<int32_t>::IsNullValue(val->val.i32);
-        break;
     case ESP_MATTER_VAL_TYPE_NULLABLE_INT64:
         return chip::app::NumericAttributeTraits<int64_t>::IsNullValue(val->val.i64);
-        break;
     case ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT:
         return chip::app::NumericAttributeTraits<float>::IsNullValue(val->val.f);
-        break;
     default:
         return false;
-        break;
     }
-    return false;
 }
 
 void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val, bool is_read)

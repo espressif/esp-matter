@@ -54,3 +54,21 @@ invalidPointerCast
 
 // Info-only: complex function branching, not actionable
 normalCheckLevelMaxBranches
+
+// engine arrays guarded by _command_set_count, safe
+uninitMemberVar:*/esp_matter_console.h
+
+// Different scopes in same function, renaming adds no clarity
+shadowVariable
+
+// Embedded code, raw loops are clearer than STL algorithms
+useStlAlgorithm
+
+// Used inside #if CHIP_CONFIG_ENABLE_ICD_LIT — conditional compilation
+unreadVariable:*/esp_matter_endpoint.cpp
+
+// Info-only: cppcheck config limitation
+toomanyconfigs
+
+// Small struct, pass-by-value is intentional
+passedByValue
