@@ -52,6 +52,9 @@ redundantAssignment:*/tlv_to_json.cpp
 // Intentional uchar* <-> float* for attribute storage buffer manipulation
 invalidPointerCast
 
+// False positive: VerifyOrReturnValue macro guards null before bare config-> access
+nullPointerRedundantCheck:*/esp_matter_cluster.cpp
+
 // Info-only: complex function branching, not actionable
 normalCheckLevelMaxBranches
 
