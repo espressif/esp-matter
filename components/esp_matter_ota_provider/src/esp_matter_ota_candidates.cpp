@@ -91,7 +91,7 @@ static int _search_ota_candidate_from_cache(uint16_t vendor_id, uint16_t product
 
 static size_t _find_empty_ota_candidates()
 {
-    uint8_t oldest_candidate_lifetime = 0;
+    uint32_t oldest_candidate_lifetime = 0;
     size_t oldest_candidate_index = 0;
     for (size_t index = 0; index < max_ota_candidate_count; ++index) {
         if (!_ota_candidates_cache[index]) {
@@ -159,11 +159,9 @@ static esp_err_t _query_software_version_array(const uint16_t vendor_id, const u
     http_payload.Calloc(1024);
     if ((http_len > 0) && (http_status_code == 200)) {
         ESP_GOTO_ON_FALSE(http_payload.Get(), ESP_ERR_NO_MEM, close, TAG, "Failed to alloc memory for http_payload");
-        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize());
-        http_payload[http_len] = '\0';
+        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize() - 1);
     } else {
-        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize());
-        http_payload[http_len] = '\0';
+        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize() - 1);
         ESP_LOGE(TAG, "Invalid response for %s", url);
         ESP_LOGE(TAG, "Status = %d, Data = %s", http_status_code, http_len > 0 ? http_payload.Get() : "None");
         ret = ESP_FAIL;
@@ -252,11 +250,9 @@ static esp_err_t _query_ota_candidate(model_version_t *model, uint32_t new_softw
     http_payload.Calloc(1024);
     if ((http_len > 0) && (http_status_code == 200)) {
         ESP_GOTO_ON_FALSE(http_payload.Get(), ESP_ERR_NO_MEM, close, TAG, "Failed to alloc memory for http_payload");
-        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize());
-        http_payload[http_len] = '\0';
+        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize() - 1);
     } else {
-        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize());
-        http_payload[http_len] = '\0';
+        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize() - 1);
         ESP_LOGE(TAG, "Invalid response for %s", url);
         ESP_LOGE(TAG, "Status = %d, Data = %s", http_status_code, http_len > 0 ? http_payload.Get() : "None");
         ret = ESP_FAIL;
@@ -289,6 +285,9 @@ static esp_err_t _query_ota_candidate(model_version_t *model, uint32_t new_softw
             }
             if (json_obj_get_strlen(&jctx, "otaUrl", &string_len) == 0 &&
                     json_obj_get_string(&jctx, "otaUrl", model->ota_url, sizeof(model->ota_url)) == 0) {
+                string_len = string_len < sizeof(model->ota_url) - 1
+                             ? string_len
+                             : sizeof(model->ota_url) - 1;
                 model->ota_url[string_len] = 0;
             }
         } else {

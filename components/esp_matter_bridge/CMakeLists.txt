@@ -8,3 +8,7 @@ endif()
 idf_component_register(SRC_DIRS        ${src_dirs_list}
                        INCLUDE_DIRS    ${include_dirs_list}
                        REQUIRES        esp_matter)
+
+if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
+    target_compile_options(${COMPONENT_LIB} PRIVATE "-Wstringop-truncation" "-Wstringop-overflow")
+endif()

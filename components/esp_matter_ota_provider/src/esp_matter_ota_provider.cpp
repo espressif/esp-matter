@@ -58,6 +58,10 @@ static void GetUpdateTokenString(const ByteSpan &token, char *buf, size_t bufSiz
 {
     const uint8_t *tokenData = static_cast<const uint8_t *>(token.data());
     size_t minLength = std::min(token.size(), bufSize);
+    if (minLength < 2 && bufSize > 0) {
+        buf[0] = 0;
+        return;
+    }
     for (size_t i = 0; i < (minLength / 2) - 1; ++i) {
         snprintf(&buf[i * 2], bufSize, "%02X", tokenData[i]);
     }
@@ -117,7 +121,11 @@ void EspOtaProvider::SendQueryImageResponse(OTAQueryStatus status)
         MutableCharSpan uri(requestor->mImageUri);
         char otaFileName[128] = {0};
         char *ptr = strrchr(requestor->mOtaImageUrl, '/');
-        strncpy(otaFileName, ptr + 1, strnlen(ptr + 1, 255));
+        if (!ptr) {
+            ESP_LOGE(TAG, "Invalid OTA image URL: missing '/'");
+            return;
+        }
+        strlcpy(otaFileName, ptr + 1, sizeof(otaFileName));
         CHIP_ERROR error = chip::bdx::MakeURI(providerNodeId, CharSpan::fromCharString(otaFileName), uri);
         if (error != CHIP_NO_ERROR) {
             ESP_LOGE(TAG, "Cannot generate URI");
@@ -332,6 +340,7 @@ esp_err_t EspOtaProvider::CreateOtaRequestorEntry(const chip::ScopedNodeId &node
         if (!entry) {
             return ESP_ERR_NO_MEM;
         }
+        memset(entry, 0, sizeof(EspOtaRequestorEntry));
         entry->mNodeId = nodeId;
         entry->mOtaAllowed = mOtaAllowedDefault;
         entry->mNext = mOtaRequestorList;
