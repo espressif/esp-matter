@@ -720,10 +720,6 @@ build_esp_rainmaker_apps:
         - idf.py set-target esp32c3 build
 
         - cd ${ESP_RMAKER_PATH}/examples/matter/matter_switch
-        # Flash overflows on esp32c6, few optimizations
-        - echo "CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT=2" >> sdkconfig.defaults.esp32c6
-        - echo "CONFIG_NEWLIB_NANO_FORMAT=y" >> sdkconfig.defaults.esp32c6
-        - echo "CONFIG_ENABLE_CHIP_SHELL=n" >> sdkconfig.defaults.esp32c6
         - idf.py set-target esp32c6 build
 
         # just build controller example
