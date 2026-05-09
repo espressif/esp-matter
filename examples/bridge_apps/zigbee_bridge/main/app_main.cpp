@@ -18,6 +18,8 @@
 #include <app_bridged_device.h>
 #include <app_zboss.h>
 #include <zigbee_bridge.h>
+#include <app_zigbee_bridged_device.h>
+#include "support/CHIPMem.h"
 
 static const char *TAG = "app_main";
 
@@ -117,6 +119,16 @@ esp_err_t create_bridge_devices(esp_matter::endpoint_t *ep, uint32_t device_type
     return err;
 }
 
+static app_bridged_device_t *create_zigbee_bridged_device(node_t *node, uint16_t endpoint)
+{
+    return chip::Platform::New<app_zigbee_bridged_device_t>();
+}
+
+static void free_zigbee_bridged_device(app_bridged_device_t *device)
+{
+    chip::Platform::Delete((app_zigbee_bridged_device_t *)device);
+}
+
 extern "C" void app_main()
 {
     esp_err_t err = ESP_OK;
@@ -139,7 +151,7 @@ extern "C" void app_main()
     err = esp_matter::start(app_event_cb);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
 
-    err = app_bridge_initialize(node, create_bridge_devices);
+    err = app_bridge_initialize(node, create_bridge_devices, create_zigbee_bridged_device, free_zigbee_bridged_device);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to resume the bridged endpoints: %d", err));
 
 #if CONFIG_ENABLE_CHIP_SHELL

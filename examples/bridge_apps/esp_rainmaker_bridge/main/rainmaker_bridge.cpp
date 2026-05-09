@@ -6,6 +6,7 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
+#include <cstring>
 #include <esp_check.h>
 #include <esp_err.h>
 #include <esp_log.h>
@@ -13,7 +14,7 @@
 #include <esp_matter.h>
 #include <esp_matter_bridge.h>
 #include <esp_rmaker_standard_types.h>
-#include "esp_rmaker_standard_params.h"
+#include <esp_rmaker_standard_params.h>
 #include <json_parser.h>
 #include <json_generator.h>
 #include <app_bridged_device.h>
@@ -23,6 +24,8 @@
 #include <common_macros.h>
 #include <rainmaker_bridge.h>
 #include <mdns.h>
+#include <app_rainmaker_bridged_device.h>
+#include <lib/support/CHIPMem.h>
 #if CONFIG_OPENTHREAD_BORDER_ROUTER
 #include <app_thread_config.h>
 #include <esp_rmaker_thread_br.h>
@@ -153,7 +156,7 @@ static esp_err_t get_attribute_value_from_rainmaker_device(uint16_t endpoint_id,
     return ESP_OK;
 }
 
-static uint32_t matter_get_device_type_from_rainmaker_device(const char *input_buf, size_t buf_length, const char *node_name)
+static uint32_t matter_get_device_type_from_rainmaker_device(const char *input_buf, size_t buf_length, char *node_name)
 {
     jparse_ctx_t jctx;
     int param_count;
@@ -225,15 +228,25 @@ static esp_err_t rainmaker_bridge_match_device(const char *node_id, const char *
 {
     node_t *node = node::get();
 
-    if (app_bridge_get_matter_endpointid_by_rainmaker_node_id(node_id) == chip::kInvalidEndpointId) {
-        app_bridged_device_t *bridged_device = app_bridge_create_bridged_device(node, aggregator_endpoint_id, device_type_id,
-                                                                                ESP_MATTER_BRIDGED_DEVICE_TYPE_RAINMAKER,
-                                                                                app_bridge_rainmaker_address(node_id, node_name), NULL);
-        ESP_RETURN_ON_FALSE(bridged_device, ESP_FAIL, TAG, "Failed to create bridged device (rainmaker device)");
+    rainmaker_device_addr_t dev_addr;
+    strlcpy(dev_addr.rainmaker_node_id, node_id, sizeof(dev_addr.rainmaker_node_id));
+    strlcpy(dev_addr.rainmaker_node_name, node_name, sizeof(dev_addr.rainmaker_node_name));
+    if (app_bridge_get_endpoint(&dev_addr) == chip::kInvalidEndpointId) {
+        esp_err_t err = app_bridge_create_new_device(node, aggregator_endpoint_id, device_type_id, &dev_addr, nullptr);
+        ESP_RETURN_ON_ERROR(err, TAG, "Failed to create bridged device (rainmaker device)");
     } else {
         ESP_LOGI(TAG, "Bridged node for %s rainmaker device has been created", node_id);
     }
 
+    return ESP_OK;
+}
+
+static esp_err_t get_rainmaker_device_addr(uint16_t matter_endpoint_id, rainmaker_device_addr_t &dev_addr)
+{
+    app_bridged_device_t *bridged_device = app_bridge_get_device(matter_endpoint_id);
+    ESP_RETURN_ON_FALSE(bridged_device, ESP_ERR_NOT_FOUND, TAG, "Failed to find bridged device");
+    ESP_RETURN_ON_FALSE(bridged_device->get_dev_addr(), ESP_ERR_INVALID_STATE, TAG, "Invalid device address");
+    dev_addr = *(rainmaker_device_addr_t *)bridged_device->get_dev_addr();
     return ESP_OK;
 }
 
@@ -247,7 +260,7 @@ static esp_err_t rainmaker_bridge_get_param_from_device(const char* node_id, uin
 
     for (uint8_t i = 0; i < device_type_count; ++i) {
         if ((ESP_OK == endpoint::get_device_type_at_index(dev_endpoint, i, dev_type_id, dev_type_ver))) {
-            ESP_LOGI(TAG, "Endpoint Id: %d--Node Id: %s Device Type: %ld\n", endpoint_id, node_id, dev_type_id);
+            ESP_LOGI(TAG, "Endpoint Id: %u--Node Id: %s Device Type: %ld\n", endpoint_id, node_id, dev_type_id);
             if (dev_type_id != endpoint::bridged_node::get_device_type_id()) {
                 break;
             }
@@ -259,7 +272,9 @@ static esp_err_t rainmaker_bridge_get_param_from_device(const char* node_id, uin
     case ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_ID:
     case ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID:
     case ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID: {
-        get_attribute_value_from_rainmaker_device(endpoint_id, node_id, app_bridge_get_rainmaker_node_name_by_matter_endpointid(endpoint_id));
+        rainmaker_device_addr_t dev_addr;
+        ESP_RETURN_ON_ERROR(get_rainmaker_device_addr(endpoint_id, dev_addr), TAG, "Failed to get device address");
+        get_attribute_value_from_rainmaker_device(endpoint_id, node_id, dev_addr.rainmaker_node_name);
     }
     break;
     /* Todo: add other device types */
@@ -316,21 +331,10 @@ static esp_err_t rainmaker_bridge_add_new_device(const char *node_id)
 
 static esp_err_t rainmaker_bridge_delete_device(uint16_t endpoint_id)
 {
-    const char* node_id = app_bridge_get_rainmaker_node_id_by_matter_endpointid(endpoint_id);
-
-    if (node_id == NULL) {
-        ESP_LOGI(TAG, "Can't find rainmaker device from ep: %d", endpoint_id);
-        return ESP_FAIL;
-    }
-
-    app_bridged_device_t *bridged_device = app_bridge_get_device_by_rainmaker_node_id(node_id);
-
-    if (bridged_device) {
-        app_bridge_remove_device(bridged_device);
-        ESP_LOGI(TAG, "Bridged rainmaker device removed: %s", node_id);
-    } else {
-        ESP_LOGI(TAG, "Bridged rainmaker device not found: %s", node_id);
-    }
+    app_bridged_device_t *bridged_device = app_bridge_get_device(endpoint_id);
+    ESP_RETURN_ON_FALSE(bridged_device, ESP_ERR_NOT_FOUND, TAG, "Failed to find bridged device");
+    app_bridge_remove_device(bridged_device);
+    ESP_LOGI(TAG, "Bridged rainmaker device removed: %u", endpoint_id);
     return ESP_OK;
 }
 
@@ -341,14 +345,18 @@ static void matter_check_and_remove_not_exist_device()
 
     for (int i = 0; i < MAX_BRIDGED_DEVICE_COUNT; i++) {
         if (matter_endpoint_id_array[i] != chip::kInvalidEndpointId) {
-            const char *node_id = app_bridge_get_rainmaker_node_id_by_matter_endpointid(matter_endpoint_id_array[i]);
-            if (node_id != NULL) {
-                char *buffer = esp_rainmaker_api_get_node_params(node_id);
-                if (buffer == NULL) {
-                    ESP_LOGI(TAG, "Remove not exist Rainmaker device Node: %s Endpoint: %d\n", node_id, matter_endpoint_id_array[i]);
-                    rainmaker_bridge_delete_device(matter_endpoint_id_array[i]);
-                } else {
-                    free(buffer);
+            app_bridged_device_t *bridged_device = app_bridge_get_device(matter_endpoint_id_array[i]);
+            if (bridged_device) {
+                rainmaker_device_addr_t *dev_addr = (rainmaker_device_addr_t *)bridged_device->get_dev_addr();
+                if (dev_addr && dev_addr->rainmaker_node_id[0] != 0) {
+                    char *buffer = esp_rainmaker_api_get_node_params(dev_addr->rainmaker_node_id);
+                    if (buffer == NULL) {
+                        ESP_LOGI(TAG, "Remove not exist Rainmaker device Node: %s Endpoint: %u\n", dev_addr->rainmaker_node_id,
+                                 matter_endpoint_id_array[i]);
+                        rainmaker_bridge_delete_device(matter_endpoint_id_array[i]);
+                    } else {
+                        free(buffer);
+                    }
                 }
             }
         }
@@ -368,14 +376,18 @@ static esp_err_t rainmaker_sync_nodes(char *out_buf, size_t out_buf_len)
     if (json_obj_get_array(&jctx, "nodes", &total_count) == 0) {
         for (int i = 0; i < total_count; i++) {
             if (json_arr_get_string(&jctx, i, node, sizeof(node)) == 0) {
-                uint16_t endpoint_id = app_bridge_get_matter_endpointid_by_rainmaker_node_id(node);
+                rainmaker_device_addr_t dev_addr;
+                strncpy(dev_addr.rainmaker_node_id, node, sizeof(node) - 1);
+                uint16_t endpoint_id = app_bridge_get_endpoint(&dev_addr);
                 if (endpoint_id == chip::kInvalidEndpointId) {
                     if (rainmaker_bridge_add_new_device(node) == ESP_OK) {
-                        endpoint_id = app_bridge_get_matter_endpointid_by_rainmaker_node_id(node);
+                        endpoint_id = app_bridge_get_endpoint(&dev_addr);
+                        ESP_LOGI(TAG, "Create node: %s--endpoint id: %u\n", node, endpoint_id);
                     }
+                } else {
+                    ESP_LOGI(TAG, "Exist node: %s--endpoint id: %u\n", node, endpoint_id);
                 }
 
-                ESP_LOGI(TAG, "Exist node: %s--endpoint id: %d\n", node, endpoint_id);
                 if (endpoint_id != chip::kInvalidEndpointId) {
                     rainmaker_bridge_get_param_from_device(node, endpoint_id);
                     rainmaker_bridge_update_online_state(node, endpoint_id);
@@ -400,9 +412,11 @@ static esp_err_t rainmaker_sync_nodes(char *out_buf, size_t out_buf_len)
 esp_err_t rainmaker_bridge_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
     char param_buffer[128] = {0};
-    const char* node_id = app_bridge_get_rainmaker_node_id_by_matter_endpointid(endpoint_id);
-    const char* node_name = app_bridge_get_rainmaker_node_name_by_matter_endpointid(endpoint_id);
-    if (node_id == NULL) {
+    rainmaker_device_addr_t dev_addr;
+    ESP_RETURN_ON_ERROR(get_rainmaker_device_addr(endpoint_id, dev_addr), TAG, "Failed to get device address");
+    const char* node_id = dev_addr.rainmaker_node_id;
+    const char* node_name = dev_addr.rainmaker_node_name;
+    if (node_id[0] == 0) {
         return ESP_OK;
     }
 

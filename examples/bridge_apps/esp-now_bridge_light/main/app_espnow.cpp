@@ -43,8 +43,9 @@ static void espnow_ctrl_onoff(espnow_addr_t src_addr, bool status)
     } else {
         req_handle.command_path.mCommandId = OnOff::Commands::Off::Id;
     }
-    uint16_t bridged_switch_endpoint_id = app_bridge_get_matter_endpointid_by_espnow_macaddr(src_addr);
-    ESP_LOGI(TAG, "Using bridge endpoint: %d", bridged_switch_endpoint_id);
+
+    uint16_t bridged_switch_endpoint_id = app_bridge_get_endpoint(&src_addr);
+    ESP_LOGI(TAG, "Using bridge endpoint: %u", bridged_switch_endpoint_id);
 
     if (bridged_switch_endpoint_id != chip::kInvalidEndpointId) {
         lock::ScopedChipStackLock lock(portMAX_DELAY);

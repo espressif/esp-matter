@@ -14,104 +14,105 @@
 
 #pragma once
 #include <sdkconfig.h>
+
+#include <nvs.h>
 #include <esp_matter_bridge.h>
+#include <nvs_key_allocator.h>
 
 using esp_matter::node_t;
 
-/** Bridged Device Type */
-typedef enum {
-    /** ZigBee */
-    ESP_MATTER_BRIDGED_DEVICE_TYPE_ZIGBEE = 0,
-    /** BLE Mesh */
-    ESP_MATTER_BRIDGED_DEVICE_TYPE_BLEMESH,
-    /** ESP-NOW */
-    ESP_MATTER_BRIDGED_DEVICE_TYPE_ESPNOW,
-    /** Rainmaker */
-    ESP_MATTER_BRIDGED_DEVICE_TYPE_RAINMAKER,
-} app_bridged_device_type_t;
+/* Virtual Class for Bridged Device */
+class app_bridged_device_t {
+public:
+    app_bridged_device_t() : m_dev(nullptr), m_dev_addr_ctx(nullptr), m_next(nullptr), m_priv_data(nullptr) {};
 
-/* Bridged Device Address */
-typedef union {
-    /** ZigBee */
-    struct {
-        uint8_t zigbee_endpointid;
-        uint16_t zigbee_shortaddr;
-    };
-    /** BLE Mesh */
-    struct {
-        uint16_t blemesh_addr;
-    };
-    /** ESP-NOW */
-    struct {
-        uint8_t espnow_macaddr[6];
-    };
-    /** Rainmaker */
-    struct {
-        char rainmaker_node_id[32];
-        char rainmaker_node_name[32];
-    };
-} app_bridged_device_address_t;
+    virtual ~app_bridged_device_t() = default;
 
-/* Bridged Device */
-typedef struct app_bridged_device {
+    // This function will set device address for this class. It might allocate memory for device address
+    // and the allocated memory must be released in delete_dev_addr().
+    virtual esp_err_t set_dev_addr(const void *addr_ctx) = 0;
+    // This function will compare device address in addr_ctx and dev_addr_ctx. If the two addresses are the
+    // same, it should return true.
+    virtual bool check_dev_addr(const void *addr_ctx) = 0;
+    // This function will release the allocated device address in set_dev_addr().
+    virtual esp_err_t delete_dev_addr() = 0;
+    // This function will store the device address in NVS.
+    virtual esp_err_t store_dev_addr() = 0;
+    // This function will restore the device address from NVS, it might allocate memory for device address
+    // and the allocated memory must be released in delete_dev_addr().
+    virtual esp_err_t restore_dev_addr() = 0;
+    // This function will erase the device address from NVS.
+    virtual esp_err_t erase_dev_addr() = 0;
+
+    esp_matter_bridge::device_t *get_matter_device() const
+    {
+        return m_dev;
+    }
+    void set_matter_device(esp_matter_bridge::device_t *dev)
+    {
+        m_dev = dev;
+    }
+
+    void *get_dev_addr() const
+    {
+        return m_dev_addr_ctx;
+    }
+
+    app_bridged_device_t *get_next() const
+    {
+        return m_next;
+    }
+    void set_next(app_bridged_device_t *next)
+    {
+        m_next = next;
+    }
+
+    void *get_priv_data() const
+    {
+        return m_priv_data;
+    }
+    void set_priv_data(void *priv_data)
+    {
+        m_priv_data = priv_data;
+    }
+
+protected:
     /** Bridged Device */
-    esp_matter_bridge::device_t *dev;
-    /** Type of Bridged Device */
-    app_bridged_device_type_t dev_type;
-    /** Address of Bridged Device */
-    app_bridged_device_address_t dev_addr;
+    esp_matter_bridge::device_t *m_dev;
+    /** Address context of Bridged Device */
+    void *m_dev_addr_ctx;
     /** Pointer of Next Bridged Device */
-    struct app_bridged_device *next;
+    app_bridged_device_t *m_next;
     /* User initialization data */
-    void *priv_data;
-} app_bridged_device_t;
+    void *m_priv_data;
+};
 
-/** Bridged Device's Address APIs */
-app_bridged_device_address_t app_bridge_zigbee_address(uint8_t zigbee_endpointid, uint16_t zigbee_shortaddr);
+namespace esp_matter_bridge {
+namespace nvs_key_allocator {
 
-app_bridged_device_address_t app_bridge_blemesh_address(uint16_t blemesh_addr);
+inline StorageKeyName endpoint_dev_addr(uint16_t endpoint_id)
+{
+    return StorageKeyName::Formatted("b/%x/da", endpoint_id);
+}
 
-app_bridged_device_address_t app_bridge_espnow_address(uint8_t espnow_macaddr[6], uint16_t espnow_initiator_attr);
+} // namespace nvs_key_allocator
+} // namespace esp_matter_bridge
 
-app_bridged_device_address_t app_bridge_rainmaker_address(const char* rainmaker_node_id, const char* rainmaker_node_name);
+esp_err_t map_matter_error(CHIP_ERROR error);
 
-/** Bridged Device APIs */
-app_bridged_device_t *app_bridge_create_bridged_device(node_t *node, uint16_t parent_endpoint_id,
-                                                       uint32_t matter_device_type_id,
-                                                       app_bridged_device_type_t bridged_device_type,
-                                                       app_bridged_device_address_t bridged_device_address,
-                                                       void *priv_data);
+typedef app_bridged_device_t *(*create_device_callback_t)(node_t *node, uint16_t endpoint_id);
+typedef void (*free_device_callback_t)(app_bridged_device_t *device);
 
-esp_err_t app_bridge_initialize(node_t *node, esp_matter_bridge::bridge_device_type_callback_t device_type_cb);
+esp_err_t app_bridge_initialize(node_t *node, esp_matter_bridge::bridge_device_type_callback_t device_type_cb,
+                                create_device_callback_t create_cb, free_device_callback_t free_cb);
+
+esp_err_t app_bridge_create_new_device(node_t *node, uint16_t parent_endpoint_id, uint32_t matter_device_type_id,
+                                       void *addr_ctx, void *priv_data);
 
 esp_err_t app_bridge_remove_device(app_bridged_device_t *bridged_device);
 
-/** ZigBee Device APIs */
-app_bridged_device_t *app_bridge_get_device_by_zigbee_shortaddr(uint16_t zigbee_shortaddr);
+app_bridged_device_t *app_bridge_get_device(const void *dev_addr);
 
-uint16_t app_bridge_get_matter_endpointid_by_zigbee_shortaddr(uint16_t zigbee_shortaddr);
+app_bridged_device_t *app_bridge_get_device(uint16_t endpoint_id);
 
-uint16_t app_bridge_get_zigbee_shortaddr_by_matter_endpointid(uint16_t matter_endpointid);
-
-/** BLE Mesh Device APIs */
-app_bridged_device_t *app_bridge_get_device_by_blemesh_addr(uint16_t blemesh_addr);
-
-uint16_t app_bridge_get_matter_endpointid_by_blemesh_addr(uint16_t blemesh_addr);
-
-uint16_t app_bridge_get_blemesh_addr_by_matter_endpointid(uint16_t matter_endpointid);
-
-/** ESP-NOW Device APIs */
-app_bridged_device_t *app_bridge_get_device_by_espnow_macaddr(uint8_t espnow_macaddr[6]);
-
-uint16_t app_bridge_get_matter_endpointid_by_espnow_macaddr(uint8_t espnow_macaddr[6]);
-
-uint8_t* app_bridge_get_espnow_macaddr_by_matter_endpointid(uint16_t matter_endpointid);
-
-/** Rainmaker Device APIs */
-app_bridged_device_t *app_bridge_get_device_by_rainmaker_node_id(char rainmaker_node_id[32]);
-
-uint16_t app_bridge_get_matter_endpointid_by_rainmaker_node_id(char rainmaker_node_id[32]);
-
-char* app_bridge_get_rainmaker_node_id_by_matter_endpointid(uint16_t matter_endpointid);
-
-char* app_bridge_get_rainmaker_node_name_by_matter_endpointid(uint16_t matter_endpointid);
+uint16_t app_bridge_get_endpoint(const void *dev_addr);
