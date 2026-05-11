@@ -32,7 +32,8 @@ static esp_err_t send_udc_request(int argc, char *argv[])
 {
     ESP_RETURN_ON_FALSE(argc == 2, ESP_ERR_INVALID_ARG, TAG, "Incorrect arguments");
     chip::Inet::IPAddress commissioner;
-    chip::Inet::IPAddress::FromString(argv[0], commissioner);
+    ESP_RETURN_ON_FALSE(chip::Inet::IPAddress::FromString(argv[0], commissioner),
+                        ESP_ERR_INVALID_ARG, TAG, "Invalid IP address");
     uint16_t port = (uint16_t)strtol(argv[1], nullptr, 10);
     chip::Protocols::UserDirectedCommissioning::IdentificationDeclaration id;
     chip::Server::GetInstance().SendUserDirectedCommissioningRequest(
@@ -44,7 +45,8 @@ static esp_err_t send_udc_cancel(int argc, char *argv[])
 {
     ESP_RETURN_ON_FALSE(argc == 2, ESP_ERR_INVALID_ARG, TAG, "Incorrect arguments");
     chip::Inet::IPAddress commissioner;
-    chip::Inet::IPAddress::FromString(argv[0], commissioner);
+    ESP_RETURN_ON_FALSE(chip::Inet::IPAddress::FromString(argv[0], commissioner),
+                        ESP_ERR_INVALID_ARG, TAG, "Invalid IP address");
     uint16_t port = (uint16_t)strtol(argv[1], nullptr, 10);
     chip::Protocols::UserDirectedCommissioning::IdentificationDeclaration id;
     id.SetCancelPasscode(true);

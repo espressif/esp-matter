@@ -48,20 +48,21 @@ void engine::for_each_command(command_iterator_t *on_command, void *arg)
 
 esp_err_t engine::exec_command(int argc, char *argv[])
 {
-    esp_err_t err = ESP_ERR_INVALID_ARG;
     if (argc <= 0) {
-        return err;
+        return ESP_ERR_INVALID_ARG;
     }
+
     // find the command from the command set
     for (unsigned i = 0; i < _command_set_count; ++i) {
         for (unsigned j = 0; j < _command_set_size[i]; ++j) {
             if (strcmp(argv[0], _command_set[i][j].name) == 0 && _command_set[i][j].handler) {
-                err = _command_set[i][j].handler(argc - 1, &argv[1]);
-                break;
+                return _command_set[i][j].handler(argc - 1, &argv[1]);
             }
         }
     }
-    return err;
+
+    return ESP_ERR_INVALID_ARG;
+
 }
 
 esp_err_t engine::register_commands(const command_t *command_set, unsigned count)
