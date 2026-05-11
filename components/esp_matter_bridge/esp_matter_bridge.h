@@ -19,7 +19,7 @@
 #include <esp_matter_data_model.h>
 
 #define MAX_BRIDGED_DEVICE_COUNT \
-    CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT - 1 - CONFIG_ESP_MATTER_AGGREGATOR_ENDPOINT_COUNT
+    (CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT - 1 - CONFIG_ESP_MATTER_AGGREGATOR_ENDPOINT_COUNT)
 // There is an endpoint reserved as root endpoint
 
 namespace esp_matter_bridge {
