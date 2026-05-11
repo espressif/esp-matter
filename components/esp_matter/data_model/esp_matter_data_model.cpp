@@ -809,16 +809,19 @@ esp_err_t set_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val, b
     if (call_callbacks) {
         execute_callback(attribute::POST_UPDATE, current_attribute->endpoint_id, current_attribute->cluster_id,
                          current_attribute->attribute_id, val);
-
-        cluster_t *cluster = cluster::get(current_attribute->endpoint_id, current_attribute->cluster_id);
-        cluster::function_attribute_change_t attr_change_function =
-            (cluster::function_attribute_change_t)cluster::get_function(cluster, CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION);
-
-        if (attr_change_function) {
-            attr_change_function(chip::app::ConcreteAttributePath(
-                                     current_attribute->endpoint_id, current_attribute->cluster_id, current_attribute->attribute_id));
-        }
     }
+
+    // This ember attribute callback should be called anyway
+    // TODO: remove the ember attribute change function
+    cluster_t *cluster = cluster::get(current_attribute->endpoint_id, current_attribute->cluster_id);
+    cluster::function_attribute_change_t attr_change_function =
+        (cluster::function_attribute_change_t)cluster::get_function(cluster, CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION);
+
+    if (attr_change_function) {
+        attr_change_function(chip::app::ConcreteAttributePath(
+                                 current_attribute->endpoint_id, current_attribute->cluster_id, current_attribute->attribute_id));
+    }
+
     if (current_attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE) {
         if (current_attribute->flags & ATTRIBUTE_FLAG_DEFERRED) {
             if (!chip::DeviceLayer::SystemLayer().IsTimerActive(deferred_attribute_write, current_attribute)) {
