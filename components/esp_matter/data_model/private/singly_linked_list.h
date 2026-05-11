@@ -78,11 +78,13 @@ template <typename T>
 void SinglyLinkedList<T>::remove(T **head, T *target)
 {
     T **p = head;
-    while (*p != target) {
+    while (*p && *p != target) {
         p = &(*p)->next;
     }
-    *p = target->next;
-    free(target);
+    if (*p != nullptr) {
+        *p = target->next;
+        free(target);
+    }
 }
 
 template <typename T>

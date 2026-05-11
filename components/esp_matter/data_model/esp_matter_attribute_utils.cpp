@@ -685,6 +685,12 @@ bool val_compare(const esp_matter_attr_val_t *val1, const esp_matter_attr_val_t 
         if (val1->val.a.s == null_len || val1->val.a.s == 0) {
             return true;
         }
+        if (val1->val.a.b == nullptr && val2->val.a.b == nullptr) {
+            return true;
+        }
+        if (val1->val.a.b == nullptr || val2->val.a.b == nullptr) {
+            return false;
+        }
         return memcmp(val1->val.a.b, val2->val.a.b, val1->val.a.s) == 0;
         break;
     }
