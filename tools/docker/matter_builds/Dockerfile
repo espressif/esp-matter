@@ -58,6 +58,7 @@ RUN set -x \
     libcairo2-dev \
     libreadline-dev \
     libmbedtls-dev \
+    libevent-dev \
     # Additional utilities
     tree \
     # Cleanup apt and unnecessary files
