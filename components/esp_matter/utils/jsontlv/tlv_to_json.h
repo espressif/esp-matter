@@ -20,6 +20,10 @@
 
 namespace esp_matter {
 
+struct tlv_to_json_options {
+    bool human_readable_bytes = false;
+};
+
 /** Convert TLV data model payload to cJSON.
  *
  * @param[in]   reader The TLV reader positioned at the payload.
@@ -29,5 +33,16 @@ namespace esp_matter {
  * @return error in case of failure.
  */
 esp_err_t tlv_to_json(chip::TLV::TLVReader &reader, cJSON **json);
+
+/** Convert TLV data model payload to cJSON with conversion options.
+ *
+ * @param[in]   reader  The TLV reader positioned at the payload.
+ * @param[out]  json    The JSON object output.
+ * @param[in]   options Options controlling non-canonical display behavior.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t tlv_to_json(chip::TLV::TLVReader &reader, cJSON **json, const tlv_to_json_options &options);
 
 } // namespace esp_matter

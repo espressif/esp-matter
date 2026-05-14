@@ -19,6 +19,7 @@
 #include <esp_matter_mem.h>
 #include <tlv_to_json.h>
 #include <lib/support/Base64.h>
+#include <lib/support/utf8.h>
 
 #include "support/CodeUtils.h"
 
@@ -139,10 +140,40 @@ static esp_err_t encode_unsigned_integer_string(uint64_t value, cJSON **json)
     return ESP_OK;
 }
 
-static esp_err_t encode_byte_string(TLV::TLVReader &reader, cJSON **json)
+static bool is_human_readable_utf8(ByteSpan value)
+{
+    if (!Utf8::IsValid(CharSpan(reinterpret_cast<const char *>(value.data()), value.size()))) {
+        return false;
+    }
+
+    // This option is for display, not validation. Valid UTF-8 can still contain
+    // control characters or C1 controls, which make opaque byte strings look
+    // textual while remaining unreadable in logs. Keep those as Base64.
+    for (size_t i = 0; i < value.size(); ++i) {
+        uint8_t c = value.data()[i];
+        if (c < 0x20 || c == 0x7F || (c == 0xC2 && i + 1 < value.size() && value.data()[i + 1] <= 0x9F)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+static esp_err_t encode_byte_string(TLV::TLVReader &reader, cJSON **json, const tlv_to_json_options &options)
 {
     ByteSpan value;
     ESP_RETURN_ON_FALSE(reader.Get(value) == CHIP_NO_ERROR, ESP_FAIL, TAG, "Failed to read byte string");
+
+    if (options.human_readable_bytes && is_human_readable_utf8(value)) {
+        char *value_str = static_cast<char *>(esp_matter_mem_calloc(value.size() + 1, sizeof(char)));
+        ESP_RETURN_ON_FALSE(value_str, ESP_ERR_NO_MEM, TAG, "No memory");
+        memcpy(value_str, value.data(), value.size());
+
+        *json = cJSON_CreateString(value_str);
+        esp_matter_mem_free(value_str);
+        ESP_RETURN_ON_FALSE(*json, ESP_ERR_NO_MEM, TAG, "No memory");
+        return ESP_OK;
+    }
 
     char *value_str = static_cast<char *>(esp_matter_mem_calloc(BASE64_ENCODED_LEN(value.size()) + 1, sizeof(char)));
     ESP_RETURN_ON_FALSE(value_str, ESP_ERR_NO_MEM, TAG, "No memory");
@@ -192,9 +223,10 @@ static esp_err_t encode_floating_point(double value, cJSON **json)
     return ESP_OK;
 }
 
-static esp_err_t encode_tlv_node(TLV::TLVReader &reader, cJSON **json, TLVElementType &sub_type);
+static esp_err_t encode_tlv_node(TLV::TLVReader &reader, cJSON **json, TLVElementType &sub_type,
+                                 const tlv_to_json_options &options);
 
-static esp_err_t encode_tlv_object(TLV::TLVReader &reader, cJSON **json)
+static esp_err_t encode_tlv_object(TLV::TLVReader &reader, cJSON **json, const tlv_to_json_options &options)
 {
     esp_err_t ret = ESP_OK;
     TLV::TLVType container_type;
@@ -212,7 +244,8 @@ static esp_err_t encode_tlv_object(TLV::TLVReader &reader, cJSON **json)
         TLV::Tag child_tag = reader.GetTag();
         TLVElementType child_type = get_tlv_element_type(reader);
         TLVElementType child_sub_type = TLVElementType::NotSpecified;
-        ESP_GOTO_ON_ERROR(encode_tlv_node(reader, &json_obj_child, child_sub_type), cleanup, TAG, "Failed to encode tlv node");
+        ESP_GOTO_ON_ERROR(encode_tlv_node(reader, &json_obj_child, child_sub_type, options), cleanup, TAG,
+                          "Failed to encode tlv node");
 
         char json_name[64] = { 0 };
         ESP_GOTO_ON_ERROR(create_json_name(child_tag, child_type, child_sub_type, json_name, sizeof(json_name)),
@@ -243,7 +276,8 @@ cleanup:
     return ret;
 }
 
-static esp_err_t encode_tlv_array(TLV::TLVReader &reader, cJSON **json, TLVElementType &sub_type)
+static esp_err_t encode_tlv_array(TLV::TLVReader &reader, cJSON **json, TLVElementType &sub_type,
+                                  const tlv_to_json_options &options)
 {
     esp_err_t ret = ESP_OK;
     TLV::TLVType container_type;
@@ -262,7 +296,8 @@ static esp_err_t encode_tlv_array(TLV::TLVReader &reader, cJSON **json, TLVEleme
     while ((err = reader.Next()) == CHIP_NO_ERROR) {
         TLVElementType child_sub_type = TLVElementType::NotSpecified;
         TLVElementType child_type = get_tlv_element_type(reader);
-        ESP_GOTO_ON_ERROR(encode_tlv_node(reader, &json_array_child, child_sub_type), cleanup, TAG, "Failed to encode tlv node");
+        ESP_GOTO_ON_ERROR(encode_tlv_node(reader, &json_array_child, child_sub_type, options), cleanup, TAG,
+                          "Failed to encode tlv node");
 
         if (sub_type == TLVElementType::NotSpecified) {
             sub_type = child_type;
@@ -293,7 +328,8 @@ cleanup:
     return ret;
 }
 
-static esp_err_t encode_tlv_node(TLV::TLVReader &reader, cJSON **json, TLVElementType &sub_type)
+static esp_err_t encode_tlv_node(TLV::TLVReader &reader, cJSON **json, TLVElementType &sub_type,
+                                 const tlv_to_json_options &options)
 {
     sub_type = TLVElementType::NotSpecified;
 
@@ -370,15 +406,15 @@ static esp_err_t encode_tlv_node(TLV::TLVReader &reader, cJSON **json, TLVElemen
     case TLVElementType::ByteString_2ByteLength:
     case TLVElementType::ByteString_4ByteLength:
     case TLVElementType::ByteString_8ByteLength:
-        return encode_byte_string(reader, json);
+        return encode_byte_string(reader, json, options);
     case TLVElementType::Null:
         *json = cJSON_CreateNull();
         break;
     case TLVElementType::Structure:
-        return encode_tlv_object(reader, json);
+        return encode_tlv_object(reader, json, options);
     case TLVElementType::Array:
     case TLVElementType::List:
-        return encode_tlv_array(reader, json, sub_type);
+        return encode_tlv_array(reader, json, sub_type, options);
     default:
         ESP_LOGE(TAG, "Unsupported tlv element type: %d", static_cast<int>(get_tlv_element_type(reader)));
         return ESP_ERR_NOT_SUPPORTED;
@@ -389,6 +425,11 @@ static esp_err_t encode_tlv_node(TLV::TLVReader &reader, cJSON **json, TLVElemen
 }
 
 esp_err_t tlv_to_json(TLV::TLVReader &reader, cJSON **json)
+{
+    return tlv_to_json(reader, json, tlv_to_json_options {});
+}
+
+esp_err_t tlv_to_json(TLV::TLVReader &reader, cJSON **json, const tlv_to_json_options &options)
 {
     ESP_RETURN_ON_FALSE(json, ESP_ERR_INVALID_ARG, TAG, "json cannot be NULL");
 
@@ -406,7 +447,7 @@ esp_err_t tlv_to_json(TLV::TLVReader &reader, cJSON **json)
     }
 
     TLVElementType sub_type = TLVElementType::NotSpecified;
-    esp_err_t err = encode_tlv_node(reader_copy, json, sub_type);
+    esp_err_t err = encode_tlv_node(reader_copy, json, sub_type, options);
     if (err != ESP_OK) {
         return err;
     }

@@ -14,7 +14,8 @@
 
 static constexpr size_t k_tlv_buffer_size = 1024;
 
-static esp_err_t roundtrip_json_tree(const char *input_json, cJSON **output_json)
+static esp_err_t roundtrip_json_tree(const char *input_json, cJSON **output_json,
+                                     const esp_matter::tlv_to_json_options &options)
 {
     if (output_json == nullptr) {
         return ESP_ERR_INVALID_ARG;
@@ -33,7 +34,12 @@ static esp_err_t roundtrip_json_tree(const char *input_json, cJSON **output_json
 
     chip::TLV::TLVReader reader;
     reader.Init(buffer, writer.GetLengthWritten());
-    return esp_matter::tlv_to_json(reader, output_json);
+    return esp_matter::tlv_to_json(reader, output_json, options);
+}
+
+static esp_err_t roundtrip_json_tree(const char *input_json, cJSON **output_json)
+{
+    return roundtrip_json_tree(input_json, output_json, esp_matter::tlv_to_json_options {});
 }
 
 static void expect_roundtrip(const char *input_json, const char *expected_json)
@@ -85,6 +91,31 @@ TEST_CASE("jsontlv roundtrip scalar values", "[jsontlv][roundtrip]")
     expect_roundtrip(
         R"({"1:I64":"-1234567890123456789","2:U64":"12345678901234567890"})",
         R"({"1:I64":"-1234567890123456789","2:U64":"12345678901234567890"})");
+}
+
+TEST_CASE("jsontlv optionally renders readable byte strings", "[jsontlv][tlv_to_json]")
+{
+    cJSON *json = nullptr;
+
+    esp_err_t err = roundtrip_json_tree(R"({"1:BYT":"bWF0dGVyMV8y"})", &json);
+    TEST_ASSERT_EQUAL(ESP_OK, err);
+    TEST_ASSERT_NOT_NULL(json);
+    TEST_ASSERT_EQUAL_STRING("bWF0dGVyMV8y", cJSON_GetObjectItemCaseSensitive(json, "1:BYT")->valuestring);
+    cJSON_Delete(json);
+    json = nullptr;
+
+    esp_matter::tlv_to_json_options options;
+    options.human_readable_bytes = true;
+
+    err = roundtrip_json_tree(R"({"1:BYT":"bWF0dGVyMV8y","2:BYT":"AQID","3:STR":"already text"})", &json, options);
+    TEST_ASSERT_EQUAL(ESP_OK, err);
+    TEST_ASSERT_NOT_NULL(json);
+
+    TEST_ASSERT_EQUAL_STRING("matter1_2", cJSON_GetObjectItemCaseSensitive(json, "1:BYT")->valuestring);
+    TEST_ASSERT_EQUAL_STRING("AQID", cJSON_GetObjectItemCaseSensitive(json, "2:BYT")->valuestring);
+    TEST_ASSERT_EQUAL_STRING("already text", cJSON_GetObjectItemCaseSensitive(json, "3:STR")->valuestring);
+
+    cJSON_Delete(json);
 }
 
 TEST_CASE("jsontlv roundtrip container and ordering cases", "[jsontlv][roundtrip]")
