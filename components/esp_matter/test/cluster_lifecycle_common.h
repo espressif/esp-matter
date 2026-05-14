@@ -11,6 +11,8 @@
 #include <esp_matter_core.h>
 #include <nvs_flash.h>
 
+#include "common.h"
+
 #include <platform/DeviceInfoProvider.h>
 
 namespace esp_matter::test {
@@ -79,6 +81,7 @@ inline node_t *get_or_create_node()
 inline void start_matter_if_needed()
 {
     if (!esp_matter::is_started()) {
+        suppress_matter_logs();
         chip::DeviceLayer::SetDeviceInfoProvider(&get_test_device_info_provider());
         esp_err_t err = esp_matter::start(nullptr);
         TEST_ASSERT_EQUAL(ESP_OK, err);
