@@ -261,10 +261,11 @@ static esp_err_t encode_tlv_array(TLV::TLVReader &reader, cJSON **json, TLVEleme
     sub_type = TLVElementType::NotSpecified;
     while ((err = reader.Next()) == CHIP_NO_ERROR) {
         TLVElementType child_sub_type = TLVElementType::NotSpecified;
+        TLVElementType child_type = get_tlv_element_type(reader);
         ESP_GOTO_ON_ERROR(encode_tlv_node(reader, &json_array_child, child_sub_type), cleanup, TAG, "Failed to encode tlv node");
 
         if (sub_type == TLVElementType::NotSpecified) {
-            sub_type = get_tlv_element_type(reader);
+            sub_type = child_type;
         }
 
         cJSON_AddItemToArray(json_array, json_array_child);
