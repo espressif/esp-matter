@@ -136,7 +136,6 @@ static esp_err_t controller_help_handler(int argc, char **argv)
     return ESP_OK;
 }
 
-#if defined(CONFIG_ENABLE_ESP32_BLE_CONTROLLER) && defined(CONFIG_ESP_MATTER_COMMISSIONER_ENABLE)
 static int char_to_int(char ch)
 {
     if ('A' <= ch && ch <= 'F') {
@@ -169,7 +168,6 @@ static bool convert_hex_str_to_bytes(const char *hex_str, uint8_t *bytes, uint8_
     }
     return true;
 }
-#endif // defined(CONFIG_ENABLE_ESP32_BLE_CONTROLLER) && defined(CONFIG_ESP_MATTER_COMMISSIONER_ENABLE)
 
 #if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 static esp_err_t controller_pairing_handler(int argc, char **argv)
