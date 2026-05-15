@@ -18,7 +18,6 @@
 #include "aggregator_device.h"
 #include "air_purifier_device.h"
 #include "air_quality_sensor_device.h"
-#include "ambient_context_sensor_device.h"
 #include "audio_doorbell_device.h"
 #include "basic_video_player_device.h"
 #include "battery_storage_device.h"

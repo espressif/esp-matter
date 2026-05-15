@@ -259,36 +259,53 @@ class DeviceDeserializer:
         with open(json_path, "r") as f:
             device_data_list = json.load(f)
 
-        return [
-            self._deserialize_single_device(device_data, cluster_lookup_table)
-            for device_data in device_data_list
-        ]
+        devices = []
+        for device_data in device_data_list:
+            device = self._deserialize_single_device(device_data, cluster_lookup_table)
+            if device is not None:
+                devices.append(device)
+        return devices
 
     def _deserialize_single_device(
         self,
         device_data: Dict[str, Any],
         cluster_lookup_table: Dict[str, Cluster],
     ) -> Device:
-        """Deserialize a single device from device JSON data"""
-        logger.debug(f"Deserializing device: {device_data.get('name', 'Unknown')}")
+        """Deserialize a single device from device JSON data.
+        Returns None if any required cluster is missing from the lookup table.
+        """
+        device_name = device_data.get("name", "Unknown")
+        logger.debug(f"Deserializing device: {device_name}")
+
+        clusters, missing_clusters = self._deserialize_device_clusters(
+            device_data.get("clusters", []), cluster_lookup_table
+        )
+
+        # Skip device if any cluster is missing (cluster XML not available)
+        if missing_clusters:
+            logger.warning(
+                f"Skipping device '{device_name}': missing cluster(s) {missing_clusters}"
+            )
+            return None
+
         device = Device(
             id=device_data["id"],
             name=device_data["name"],
             revision=device_data["revision"],
         )
-
-        device.clusters = self._deserialize_device_clusters(
-            device_data.get("clusters", []), cluster_lookup_table
-        )
+        device.clusters = clusters
         return device
 
     def _deserialize_device_clusters(
         self,
         clusters_data: List[Dict[str, Any]],
         cluster_lookup_table: Dict[str, Cluster],
-    ) -> List[Cluster]:
-        """Deserialize clusters for a device from device JSON data"""
+    ) -> tuple:
+        """Deserialize clusters for a device from device JSON data.
+        Returns a tuple of (clusters_list, missing_cluster_names).
+        """
         clusters = []
+        missing_clusters = []
         for cluster_data in clusters_data:
             cluster = Cluster(
                 name=cluster_data["name"],
@@ -303,6 +320,8 @@ class DeviceDeserializer:
             cluster.function_flags = cluster_data.get("flags", "")
             cluster.server_cluster = cluster_data.get("type", "Unknown") == "server"
             cluster.client_cluster = cluster_data.get("type", "Unknown") == "client"
+
+            cluster.optional_choice = cluster_data.get("optional_choice", None)
             if cluster_obj:
                 cluster_attribute_names = cluster_data.get("attributes", [])
                 cluster_feature_names = cluster_data.get("features", [])
@@ -335,9 +354,7 @@ class DeviceDeserializer:
                     for event in cluster_obj.events
                     if event.func_name in cluster_event_names
                 ]
+                clusters.append(cluster)
             else:
-                logger.error(
-                    f"Cluster {cluster.esp_name} not found in cluster lookup table"
-                )
-            clusters.append(cluster)
-        return clusters
+                missing_clusters.append(cluster.esp_name)
+        return clusters, missing_clusters

@@ -19,7 +19,7 @@ PowerModeEnum MockElectricalPowerMeasurementDelegate::GetPowerMode()
 {
     // Implement your own logic here.
     ESP_LOGE(LOG_TAG, "%s is not implemented", __func__);
-    return PowerModeEnum::kUnknownEnumValue;
+    return PowerModeEnum::kUnknown;
 }
 
 uint8_t MockElectricalPowerMeasurementDelegate::GetNumberOfMeasurementTypes()

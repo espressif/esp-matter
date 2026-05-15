@@ -15,6 +15,7 @@ import logging
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element
 from .elements import Cluster, Device
+from .conformance_parser import parse_choice
 from utils.helper import check_valid_id, convert_to_snake_case, safe_get_attr
 
 logger = logging.getLogger(__name__)
@@ -95,6 +96,13 @@ class DeviceParser:
             and mandatory_conform.find("condition") is None
         ):
             cluster.is_mandatory = True
+
+        optional_conform = cluster_elem.find("optionalConform")
+        if optional_conform is not None:
+            choice = parse_choice(optional_conform)
+            if choice is not None:
+                cluster.optional_choice = choice.to_dict()
+
         attribute_list = []
         for attribute_elem in cluster_elem.findall("attributes/attribute"):
             if is_mandatory(attribute_elem):

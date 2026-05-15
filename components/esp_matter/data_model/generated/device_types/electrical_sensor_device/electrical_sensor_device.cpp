@@ -17,6 +17,7 @@
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_core.h>
+#include <esp_matter_macros.h>
 #include <electrical_sensor_device.h>
 
 using namespace esp_matter;
@@ -50,10 +51,20 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
+    // Validate O.a+ clusters: at least one must be enabled
+    VALIDATE_OPTIONAL_CLUSTERS_AT_LEAST_ONE("electrical_sensor", config->optional_clusters_mask, ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_POWER_MEASUREMENT, ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_ENERGY_MEASUREMENT);
+
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
     cluster::power_topology::create(endpoint, &(config->power_topology), CLUSTER_FLAG_SERVER);
+
+    if (config->optional_clusters_mask & ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_POWER_MEASUREMENT) {
+        cluster::electrical_power_measurement::create(endpoint, &(config->electrical_power_measurement), CLUSTER_FLAG_SERVER);
+    }
+    if (config->optional_clusters_mask & ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_ENERGY_MEASUREMENT) {
+        cluster::electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER);
+    }
     return ESP_OK;
 }
 

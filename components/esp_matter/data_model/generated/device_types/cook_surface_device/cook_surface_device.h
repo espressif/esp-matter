@@ -18,11 +18,16 @@
 #include <esp_matter_data_model.h>
 
 #include <descriptor.h>
+#include <temperature_control.h>
+#include <temperature_measurement.h>
 
 #include <esp_matter_core.h>
 
 #define ESP_MATTER_COOK_SURFACE_DEVICE_TYPE_ID 0x0077
 #define ESP_MATTER_COOK_SURFACE_DEVICE_TYPE_VERSION 2
+
+#define COOK_SURFACE_OPTIONAL_CLUSTER_TEMPERATURE_CONTROL  (1 << 0)
+#define COOK_SURFACE_OPTIONAL_CLUSTER_TEMPERATURE_MEASUREMENT  (1 << 1)
 
 namespace esp_matter {
 namespace endpoint {
@@ -30,6 +35,23 @@ namespace cook_surface {
 
 typedef struct config {
     cluster::descriptor::config_t descriptor;
+    cluster::temperature_control::config_t temperature_control;
+    cluster::temperature_measurement::config_t temperature_measurement;
+    uint32_t optional_clusters_mask;
+
+    cluster::temperature_control::config_t &with_temperature_control()
+    {
+        optional_clusters_mask |= COOK_SURFACE_OPTIONAL_CLUSTER_TEMPERATURE_CONTROL;
+        return temperature_control;
+    }
+
+    cluster::temperature_measurement::config_t &with_temperature_measurement()
+    {
+        optional_clusters_mask |= COOK_SURFACE_OPTIONAL_CLUSTER_TEMPERATURE_MEASUREMENT;
+        return temperature_measurement;
+    }
+
+    config() : optional_clusters_mask(0) {}
 } config_t;
 
 uint32_t get_device_type_id();

@@ -17,6 +17,9 @@
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_core.h>
+{% if device.has_optional_choice_clusters() -%}
+#include <esp_matter_macros.h>
+{% endif -%}
 #include <{{ device.filename }}.h>
 
 using namespace esp_matter;
@@ -50,6 +53,11 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
+{% if device.has_optional_choice_clusters() %}
+    // Validate O.a+ clusters: at least one must be enabled
+    VALIDATE_OPTIONAL_CLUSTERS_AT_LEAST_ONE("{{ device.esp_name }}", config->optional_clusters_mask, {%- for cluster in device.get_unique_optional_choice_clusters() %}{{ device.esp_name | upper }}_OPTIONAL_CLUSTER_{{ cluster.esp_name | upper }}{% if not loop.last %},{% endif %}{%- endfor %});
+
+{% endif %}
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
@@ -156,6 +164,14 @@ cluster::{{ cluster.func_name }}::feature::{{ mandatory_feature.func_name }}::ge
 {% endif %}
     {% endif %}
     {% endfor %}
+{% if device.has_optional_choice_clusters() %}
+
+{% for cluster in device.get_unique_optional_choice_clusters() %}
+    if (config->optional_clusters_mask & {{ device.esp_name | upper }}_OPTIONAL_CLUSTER_{{ cluster.esp_name | upper }}) {
+        cluster::{{ cluster.esp_name }}::create(endpoint, &(config->{{ cluster.esp_name }}), CLUSTER_FLAG_SERVER);
+    }
+{% endfor %}
+{% endif %}
 {% if device.esp_name == "root_node" %}
 
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)

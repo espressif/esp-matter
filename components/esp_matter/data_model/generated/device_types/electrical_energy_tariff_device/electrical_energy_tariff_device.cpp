@@ -17,6 +17,7 @@
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_core.h>
+#include <esp_matter_macros.h>
 #include <electrical_energy_tariff_device.h>
 
 using namespace esp_matter;
@@ -50,9 +51,18 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
+    // Validate O.a+ clusters: at least one must be enabled
+    VALIDATE_OPTIONAL_CLUSTERS_AT_LEAST_ONE("electrical_energy_tariff", config->optional_clusters_mask, ELECTRICAL_ENERGY_TARIFF_OPTIONAL_CLUSTER_COMMODITY_PRICE, ELECTRICAL_ENERGY_TARIFF_OPTIONAL_CLUSTER_COMMODITY_TARIFF);
+
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
+    if (config->optional_clusters_mask & ELECTRICAL_ENERGY_TARIFF_OPTIONAL_CLUSTER_COMMODITY_PRICE) {
+        cluster::commodity_price::create(endpoint, &(config->commodity_price), CLUSTER_FLAG_SERVER);
+    }
+    if (config->optional_clusters_mask & ELECTRICAL_ENERGY_TARIFF_OPTIONAL_CLUSTER_COMMODITY_TARIFF) {
+        cluster::commodity_tariff::create(endpoint, &(config->commodity_tariff), CLUSTER_FLAG_SERVER);
+    }
     return ESP_OK;
 }
 

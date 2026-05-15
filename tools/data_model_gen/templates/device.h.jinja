@@ -24,6 +24,9 @@
 {% for cluster in device.get_unique_mandatory_clusters() %}
 #include <{{ cluster.esp_name }}.h>
 {% endfor %}
+{% for cluster in device.get_unique_optional_choice_clusters() %}
+#include <{{ cluster.esp_name }}.h>
+{% endfor %}
 {% if device.esp_name == "root_node" %}
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
 #include <wi_fi_network_diagnostics.h>
@@ -37,6 +40,14 @@
 
 #define ESP_MATTER_{{ device.esp_name | upper }}_DEVICE_TYPE_ID {{ device.id }}
 #define ESP_MATTER_{{ device.esp_name | upper }}_DEVICE_TYPE_VERSION {{device.revision }}
+
+{% if device.has_optional_choice_clusters() %}
+{% set bit_index = [0] %}
+{% for cluster in device.get_unique_optional_choice_clusters() %}
+#define {{ device.esp_name | upper }}_OPTIONAL_CLUSTER_{{ cluster.esp_name | upper }}  (1 << {{ bit_index[0] }})
+{% set _ = bit_index.append(bit_index.pop() + 1) %}
+{% endfor %}
+{% endif %}
 
 namespace esp_matter {
 namespace endpoint {
@@ -76,6 +87,22 @@ typedef struct config {
     {% endfor %}
     {% endif %}
     {% endfor %}
+{% if device.has_optional_choice_clusters() %}
+{% for cluster in device.get_unique_optional_choice_clusters() %}
+    cluster::{{ cluster.esp_name }}::config_t {{ cluster.esp_name }};
+{% endfor %}
+    uint32_t optional_clusters_mask;
+
+{% for cluster in device.get_unique_optional_choice_clusters() %}
+    cluster::{{ cluster.esp_name }}::config_t &with_{{ cluster.esp_name }}()
+    {
+        optional_clusters_mask |= {{ device.esp_name | upper }}_OPTIONAL_CLUSTER_{{ cluster.esp_name | upper }};
+        return {{ cluster.esp_name }};
+    }
+
+{% endfor %}
+{% set _ = init_list.insert(0, "optional_clusters_mask(0)") %}
+{% endif %}
 {% if device.esp_name == "root_node" %}
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
     cluster::wi_fi_network_diagnostics::config_t wi_fi_network_diagnostics;

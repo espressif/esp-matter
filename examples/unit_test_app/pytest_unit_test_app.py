@@ -71,3 +71,10 @@ def test_attribute_create_value_persistence(dut: QemuDut) -> None:
     if failed:
         names = [tc.name for tc in failed]
         pytest.fail(f"{len(failed)} failed: {', '.join(names)}")
+
+
+@pytest.mark.host_test
+@pytest.mark.qemu
+@pytest.mark.esp32c3
+def test_optional_clusters(dut: QemuDut) -> None:
+    run_group(dut, "optional_clusters")

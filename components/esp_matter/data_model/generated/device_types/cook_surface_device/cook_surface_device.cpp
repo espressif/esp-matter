@@ -17,6 +17,7 @@
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_core.h>
+#include <esp_matter_macros.h>
 #include <cook_surface_device.h>
 
 using namespace esp_matter;
@@ -50,9 +51,18 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
+    // Validate O.a+ clusters: at least one must be enabled
+    VALIDATE_OPTIONAL_CLUSTERS_AT_LEAST_ONE("cook_surface", config->optional_clusters_mask, COOK_SURFACE_OPTIONAL_CLUSTER_TEMPERATURE_CONTROL, COOK_SURFACE_OPTIONAL_CLUSTER_TEMPERATURE_MEASUREMENT);
+
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
+    if (config->optional_clusters_mask & COOK_SURFACE_OPTIONAL_CLUSTER_TEMPERATURE_CONTROL) {
+        cluster::temperature_control::create(endpoint, &(config->temperature_control), CLUSTER_FLAG_SERVER);
+    }
+    if (config->optional_clusters_mask & COOK_SURFACE_OPTIONAL_CLUSTER_TEMPERATURE_MEASUREMENT) {
+        cluster::temperature_measurement::create(endpoint, &(config->temperature_measurement), CLUSTER_FLAG_SERVER);
+    }
     return ESP_OK;
 }
 

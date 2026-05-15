@@ -4,6 +4,7 @@ list(APPEND srcs_list "attribute_get_val_type.cpp")
 list(APPEND srcs_list "attribute_report.cpp")
 list(APPEND srcs_list "cluster_lifecycle_basic.cpp")
 list(APPEND srcs_list "cluster_lifecycle_managed_delegate.cpp")
+list(APPEND srcs_list "test_optional_clusters_validation.cpp")
 list(APPEND srcs_list "jsontlv.cpp")
 
 idf_component_register(SRCS ${srcs_list}

@@ -101,6 +101,8 @@ class Cluster(BaseCluster):
         self.function_flags = ""
         self.is_migrated_cluster = False
         self.is_base_cluster = False
+        # O.a+ conformance (optional with choice)
+        self.optional_choice = None
 
     def get_attributes(self):
         """Get the list of attributes sorted by ID and name"""
@@ -494,3 +496,42 @@ class Device(BaseDevice):
                 unique_clusters.append(cluster)
                 seen_names.add(cluster.esp_name)
         return unique_clusters
+
+    def get_optional_choice_clusters(self) -> Dict[str, List]:
+        """Get clusters with O.a+ conformance grouped by choice marker.
+        Returns a dict: {choice_marker: [cluster, ...]}
+        """
+        choice_groups: Dict[str, List] = {}
+        for cluster in self.clusters:
+            if (
+                hasattr(cluster, "optional_choice")
+                and cluster.optional_choice is not None
+            ):
+                marker = cluster.optional_choice.get("choice")
+                if marker not in choice_groups:
+                    choice_groups[marker] = []
+                choice_groups[marker].append(cluster)
+        # Sort clusters within each group
+        for marker in choice_groups:
+            choice_groups[marker] = sorted(
+                choice_groups[marker],
+                key=lambda x: (convert_to_int(x.get_id()), x.name),
+            )
+        return choice_groups
+
+    def get_unique_optional_choice_clusters(self) -> List:
+        """Get unique O.a+ clusters (flattened, no duplicates)."""
+        seen_names = set()
+        unique_clusters = []
+        for marker, clusters in self.get_optional_choice_clusters().items():
+            for cluster in clusters:
+                if cluster.esp_name not in seen_names:
+                    unique_clusters.append(cluster)
+                    seen_names.add(cluster.esp_name)
+        return sorted(
+            unique_clusters, key=lambda x: (convert_to_int(x.get_id()), x.name)
+        )
+
+    def has_optional_choice_clusters(self) -> bool:
+        """Check if device has any O.a+ clusters."""
+        return len(self.get_optional_choice_clusters()) > 0
