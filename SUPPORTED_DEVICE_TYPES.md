@@ -1,6 +1,8 @@
 ## Supported Device Types
 
-Below are the device types supported by SDK
+Below are the device types supported by SDK. The SDK supports two data model implementations:
+- **Generated data model (Experimental)**: Supports all device types listed below
+- **Legacy data model**: Supports a limited set; entries marked with *(Generated only)* device types are not available in the legacy data model
 
 Utility Device Types
 1. Root Node
@@ -11,6 +13,7 @@ Utility Device Types
 6. Electrical Sensor
 7. Device Energy Management
 8. Secondary Network Interface
+9. Joint Fabric Administrator *(Generated only)*
 
 Application Device Types
 
@@ -40,16 +43,24 @@ c. Smart Plugs/Outlets
 d. Generic
 1. Mode Select
 2. Aggregator
+3. On/Off Sensor *(Generated only)*
+4. Ambient Context Sensor *(Generated only)*
 
 e. HVAC
 1. Fan
 2. Thermostat
-3. Air Quality Sensor
-4. Air Purifier
+3. Thermostat Controller
+4. Air Quality Sensor
+5. Air Purifier
 
 f. Closure
 1. Door Lock
-2. Window Covering
+2. Door Lock Controller *(Generated only)*
+3. Window Covering
+4. Window Covering Controller *(Generated only)*
+5. Closure
+6. Closure Controller
+7. Closure Panel
 
 g. Sensors
 1. Temperature Sensor
@@ -63,6 +74,7 @@ g. Sensors
 9. Water Leak Detector
 10. Rain Sensor
 11. Water Freeze Detector
+12. Soil Sensor
 
 h. Robotic Devices
 1. Robotic Vacuum Cleaner
@@ -86,9 +98,31 @@ j. Energy
 3. Solar Power
 4. Battery Storage
 5. Heat Pump
+6. Electrical Utility Meter
+7. Electrical Energy Tariff
+8. Electrical Meter
+9. Meter Reference Point *(Generated only)*
 
 k. Network Infrastructure
 1. Thread Border Router
+2. Network Infrastructure Manager *(Generated only)*
 
-l. Camera Device Types
-1. Chime
+l. Camera and AV Device Types
+1. Camera
+2. Camera Controller *(Generated only)*
+3. Floodlight Camera *(Generated only)*
+4. Snapshot Camera *(Generated only)*
+5. Chime
+6. Doorbell *(Generated only)*
+7. Audio Doorbell *(Generated only)*
+8. Video Doorbell *(Generated only)*
+9. Speaker *(Generated only)*
+10. Basic Video Player *(Generated only)*
+11. Casting Video Player *(Generated only)*
+12. Casting Video Client *(Generated only)*
+13. Video Remote Control *(Generated only)*
+14. Content App *(Generated only)*
+15. Intercom *(Generated only)*
+
+m. Agriculture
+1. Irrigation System
