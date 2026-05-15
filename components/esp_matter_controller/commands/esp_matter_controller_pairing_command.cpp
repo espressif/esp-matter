@@ -50,9 +50,13 @@ void pairing_command::OnCommissioningSuccess(chip::PeerId peerId)
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
     controller_instance.get_commissioner()->RegisterPairingDelegate(nullptr);
     if (m_callbacks.commissioning_success_callback) {
-        auto fabric = controller_instance.get_commissioner()->GetFabricTable()->FindFabricWithCompressedId(
-                          peerId.GetCompressedFabricId());
-        m_callbacks.commissioning_success_callback(ScopedNodeId(peerId.GetNodeId(), fabric->GetFabricIndex()));
+        const auto fabric = controller_instance.get_commissioner()->GetFabricTable()->FindFabricWithCompressedId(
+                                peerId.GetCompressedFabricId());
+        if (fabric) {
+            m_callbacks.commissioning_success_callback(ScopedNodeId(peerId.GetNodeId(), fabric->GetFabricIndex()));
+        } else {
+            ESP_LOGE(TAG, "Failed to find fabric for compressed ID %" PRIX64, peerId.GetCompressedFabricId());
+        }
     }
 }
 
@@ -65,11 +69,15 @@ void pairing_command::OnCommissioningFailure(
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
     controller_instance.get_commissioner()->RegisterPairingDelegate(nullptr);
     if (m_callbacks.commissioning_failure_callback) {
-        auto fabric = controller_instance.get_commissioner()->GetFabricTable()->FindFabricWithCompressedId(
-                          peerId.GetCompressedFabricId());
-        m_callbacks.commissioning_failure_callback(
-                       ScopedNodeId(peerId.GetNodeId(), fabric->GetFabricIndex()), error, stageFailed,
-                       additionalErrorInfo.HasValue() ? std::make_optional(additionalErrorInfo.Value()) : std::nullopt);
+        const auto fabric = controller_instance.get_commissioner()->GetFabricTable()->FindFabricWithCompressedId(
+                                peerId.GetCompressedFabricId());
+        if (fabric) {
+            m_callbacks.commissioning_failure_callback(
+                           ScopedNodeId(peerId.GetNodeId(), fabric->GetFabricIndex()), error, stageFailed,
+                           additionalErrorInfo.HasValue() ? std::make_optional(additionalErrorInfo.Value()) : std::nullopt);
+        } else {
+            ESP_LOGE(TAG, "Failed to find fabric for compressed ID %" PRIX64, peerId.GetCompressedFabricId());
+        }
     }
     if (m_device_is_icd) {
         controller_instance.get_icd_client_storage().DeleteEntry(

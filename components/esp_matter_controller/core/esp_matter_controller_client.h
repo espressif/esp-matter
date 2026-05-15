@@ -122,8 +122,8 @@ public:
     }
 
 private:
-    check_in_complete_callback m_check_in_complete_cb;
-    key_refresh_done_callback m_key_refresh_done_cb;
+    check_in_complete_callback m_check_in_complete_cb = nullptr;
+    key_refresh_done_callback m_key_refresh_done_cb = nullptr;
 };
 
 class matter_controller_client {
@@ -215,7 +215,7 @@ public:
 private:
     class GroupDataProviderListener final : public chip::Credentials::GroupDataProvider::GroupListener {
     public:
-        GroupDataProviderListener() {}
+        GroupDataProviderListener() : mSystemState(nullptr) {}
 
         CHIP_ERROR Init(const chip::Controller::DeviceControllerSystemState *systemState)
         {

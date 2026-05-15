@@ -263,9 +263,8 @@ static esp_err_t config_command_callback(const ConcreteCommandPath &command_path
     if (check_first && (size >= (int)((check_first + 1) - data))) {
         check_second = (char *)memchr(check_first + 1, (int)ch, size - (check_first - data + 1));
     }
-    if (!check_first || !check_second) {
-        ESP_LOGE(TAG, "\"::\" not found in the received data: %.*s. The expected format is \"<user_id>::<secret_key>\"",
-                 size, data);
+    if (!check_first || !check_second || check_second != check_first + 1) {
+        ESP_LOGE(TAG, "\"::\" not found in the received data. The expected format is \"<user_id>::<secret_key>\"");
         return ESP_FAIL;
     }
 
@@ -276,8 +275,8 @@ static esp_err_t config_command_callback(const ConcreteCommandPath &command_path
     int secret_key_len = size - secret_key_index;
     if (user_id_len <= 0 || user_id_len >= ESP_MATTER_RAINMAKER_MAX_DATA_LEN || secret_key_len <= 0 ||
             secret_key_len >= ESP_MATTER_RAINMAKER_MAX_DATA_LEN) {
-        ESP_LOGE(TAG, "User id or secret key length invalid: user_id_len: %d, secret_key_len: %d, received_data: %.*s",
-                 user_id_len, secret_key_len, size, data);
+        ESP_LOGE(TAG, "User id or secret key length invalid: user_id_len: %d, secret_key_len: %d",
+                 user_id_len, secret_key_len);
         return ESP_FAIL;
     }
 
@@ -297,9 +296,16 @@ static esp_err_t config_command_callback(const ConcreteCommandPath &command_path
 
 static esp_err_t sign_and_update_challenge_response(chip::CharSpan challenge_span)
 {
-    if (challenge_span.size() > ESP_MATTER_RAINMAKER_MAX_CHALLENGE_LEN) {
+    if (challenge_span.size() >= ESP_MATTER_RAINMAKER_MAX_CHALLENGE_LEN) {
         return ESP_ERR_INVALID_ARG;
     }
+
+    static int sign_count = ESP_MATTER_RAINMAKER_COMMAND_LIMIT;
+    if (sign_count <= 0) {
+        ESP_LOGE(TAG, "Signing limit reached. Please reboot to try again.");
+        return ESP_FAIL;
+    }
+    sign_count--;
 
     /* Copy the data. This is done to make the strings NULL terminated. */
     char challenge[ESP_MATTER_RAINMAKER_MAX_CHALLENGE_LEN] = {0};
@@ -316,6 +322,9 @@ static esp_err_t sign_and_update_challenge_response(chip::CharSpan challenge_spa
     esp_err_t err = esp_rmaker_node_auth_sign_msg((void *)challenge, challenge_span.size(), (void **)&challenge_response, &outlen);
     if (err != ESP_OK) {
         return err;
+    }
+    if (!challenge_response) {
+        return ESP_ERR_INVALID_STATE;
     }
 
     err = challenge_response_attribute_update(challenge_response);
@@ -351,7 +360,10 @@ static esp_err_t sign_data_command_callback(const ConcreteCommandPath &command_p
 
     /* Parse the tlv data */
     chip::CharSpan config_value;
-    DataModel::Decode(tlv_data, config_value);
+    if (CHIP_NO_ERROR != DataModel::Decode(tlv_data, config_value)) {
+        ESP_LOGE(TAG, "Failed to decode sign_data command payload");
+        return ESP_FAIL;
+    }
     if (!config_value.data() || config_value.size() <= 0) {
         ESP_LOGE(TAG, "Command data not found or was not decoded correctly. The expected data is a string or the"
                  "format is \"<data>\"");
@@ -435,7 +447,7 @@ public:
             return (ESP_OK == sign_and_update_challenge_response(challenge)) ? CHIP_NO_ERROR : CHIP_ERROR_INCORRECT_STATE;
         }
 
-        return CHIP_NO_ERROR;
+        return CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE;
     }
 };
 

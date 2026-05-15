@@ -199,11 +199,11 @@ private:
         : m_remote_node_id(0)
         , m_setup_pincode(0)
         , m_discriminator(0)
-        , m_callbacks{nullptr, nullptr, nullptr}
+        , m_callbacks{nullptr, nullptr, nullptr, nullptr}
         , m_icd_registration(true)
         , m_icd_registration_strategy(chip::Controller::ICDRegistrationStrategy::kBeforeComplete)
     {
-        chip::Crypto::DRBG_get_bytes(m_icd_symmetric_key_buf, sizeof(m_icd_symmetric_key));
+        chip::Crypto::DRBG_get_bytes(m_icd_symmetric_key_buf, sizeof(m_icd_symmetric_key_buf));
         m_icd_symmetric_key = chip::ByteSpan(m_icd_symmetric_key_buf);
     }
 
