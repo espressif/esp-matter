@@ -1,5 +1,29 @@
 # Changelog for esp_matter component registry
 
+## [1.4.2~2](https://components.espressif.com/components/espressif/esp_matter/versions/1.4.2~2)
+
+#### Bug Fixes
+- components/esp_matter: Prevent creation of duplicate commands.
+- components/esp_matter: propagate error code from attribute report on v1.4.2
+- components/esp_matter: unlink cluster from endpoint on cluster::destroy
+- components/esp_matter: set full-family composition for dynamic endpoints
+- components/esp_matter: gate network diagnostics clusters on transport config
+- components/esp_matter_controller: fix remove group keyset
+- components/esp_matter_controller: remove the guards for hex to str helpers
+
+#### Features
+- components/esp_matter: add CustomNetworkConfig support
+
+#### CI
+- ci: use the target branch for comparing typos
+
+#### Examples
+- examples/common: fix ble not start in blemesh_bridge example
+- examples: enable matter server as this is required for commissioner to work
+
+- esp-matter commit: f84f5527ef980dde5ae6b877636d0397e948e3fc
+- connectedhomeip commit: bc661692ad988565230305be0ecdffca3b37b242
+
 ## [1.4.2~1](https://components.espressif.com/components/espressif/esp_matter/versions/1.4.2~1)
 
 #### Features
