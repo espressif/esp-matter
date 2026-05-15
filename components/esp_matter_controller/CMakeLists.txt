@@ -27,8 +27,9 @@ if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
     endif()
 
     if (CONFIG_ESP_MATTER_COMMISSIONER_ENABLE)
-        list(APPEND src_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/attestation_store")
-        list(APPEND include_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/attestation_store")
+        list(APPEND src_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/attestation_verification")
+        list(APPEND src_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/attestation_verification/utils")
+        list(APPEND include_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/attestation_verification")
     else()
         list(APPEND exclude_srcs_list "${CMAKE_CURRENT_SOURCE_DIR}/commands/esp_matter_controller_pairing_command.cpp")
     endif()
@@ -43,6 +44,7 @@ endif()
 idf_component_register(SRC_DIRS ${src_dirs_list}
     EXCLUDE_SRCS ${exclude_srcs_list}
     INCLUDE_DIRS ${include_dirs_list}
+    PRIV_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/attestation_verification/utils"
     REQUIRES ${requires_list})
 
 idf_build_set_property(COMPILE_OPTIONS "-Wno-write-strings" APPEND)

@@ -18,6 +18,10 @@ set(EXTRA_COMPONENT_DIRS
 
 project(controller)
 
+if(CONFIG_CUSTOM_REVOKED_DAC_CHAIN_CHECK)
+    target_add_binary_data(controller.elf "main/revocation_set/revocation_set.json" TEXT)
+endif()
+
 idf_build_set_property(CXX_COMPILE_OPTIONS "-std=gnu++17;-Os;-DCHIP_HAVE_CONFIG_H;-Wno-overloaded-virtual;-Wno-error=unused-result" APPEND)
 idf_build_set_property(C_COMPILE_OPTIONS "-Os" APPEND)
 

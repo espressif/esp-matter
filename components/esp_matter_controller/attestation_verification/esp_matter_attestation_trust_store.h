@@ -1,4 +1,4 @@
-// Copyright 2023 Espressif Systems (Shanghai) PTE LTD
+// Copyright 2023-2025 Espressif Systems (Shanghai) PTE LTD
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@
 namespace chip {
 namespace Credentials {
 
+#ifdef CONFIG_SPIFFS_ATTESTATION_TRUST_STORE
 typedef struct paa_der_cert {
     uint8_t m_buffer[kMaxDERCertLength] = {0};
     size_t m_len = 0;
@@ -69,8 +70,9 @@ private:
     bool m_is_initialized = false;
     spiffs_attestation_trust_store() {}
 };
+#endif // CONFIG_SPIFFS_ATTESTATION_TRUST_STORE
 
-#if CONFIG_DCL_ATTESTATION_TRUST_STORE
+#ifdef CONFIG_DCL_ATTESTATION_TRUST_STORE
 class dcl_attestation_trust_store : public AttestationTrustStore {
 public:
     typedef enum {
@@ -92,17 +94,34 @@ public:
 
     void SetDCLNetType(dcl_net_type_t type)
     {
-        dcl_net_type = type;
+        m_dcl_net_base_url = (type == DCL_MAIN_NET) ? k_main_net_base_url : k_test_net_base_url;
     }
 
 private:
-    dcl_net_type_t dcl_net_type = DCL_MAIN_NET;
+    static constexpr char *k_test_net_base_url = "https://on.test-net.dcl.csa-iot.org";
+    static constexpr char *k_main_net_base_url = "https://on.dcl.csa-iot.org";
+    const char *m_dcl_net_base_url = k_main_net_base_url;
     dcl_attestation_trust_store() {}
 };
 #endif // CONFIG_DCL_ATTESTATION_TRUST_STORE
 
-void set_custom_attestation_trust_store(AttestationTrustStore *custom_store);
+#ifdef CONFIG_CUSTOM_ATTESTATION_TRUST_STORE
+/** Set the custom attestation trust store for device attestation verification
+ *
+ *  This API MUST be called before matter_controller_client::setup_commissioner(). Otherwise
+ *  the commissioner setup will fail.
+ *
+ *  If passing nullptr for this function, the commissioner setup will fail.
+ *
+ * @param[in] store the custom attestation trust store
+ */
+void set_custom_attestation_trust_store(AttestationTrustStore *store);
+#endif // CONFIG_CUSTOM_ATTESTATION_TRUST_STORE
 
+/** Get the device attestation trust store for DA verification
+ *
+ * @return the device attestation trust store used by the commissioner
+ */
 const AttestationTrustStore *get_attestation_trust_store();
 
 } // namespace Credentials

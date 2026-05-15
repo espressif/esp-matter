@@ -1,4 +1,4 @@
-// Copyright 2024 Espressif Systems (Shanghai) PTE LTD
+// Copyright 2024-2025 Espressif Systems (Shanghai) PTE LTD
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@
 
 #ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 #include <esp_matter_attestation_trust_store.h>
+#include <esp_matter_da_revocation_delegate.h>
 #endif
 
 #if CONFIG_ENABLE_ESP32_BLE_CONTROLLER
@@ -124,9 +125,14 @@ esp_err_t matter_controller_client::setup_commissioner()
 #endif
     chip::Controller::SetupParams commissioner_params;
     const chip::Credentials::AttestationTrustStore *trust_store = chip::Credentials::get_attestation_trust_store();
-    chip::Credentials::DeviceAttestationVerifier *dac_verifier = chip::Credentials::GetDefaultDACVerifier(trust_store);
-    chip::Credentials::SetDeviceAttestationVerifier(dac_verifier);
-    commissioner_params.deviceAttestationVerifier = dac_verifier;
+    auto *da_revocation_delegate = chip::Credentials::get_da_revocation_delegate();
+    chip::Credentials::DeviceAttestationVerifier *da_verifier =
+        chip::Credentials::GetDefaultDACVerifier(trust_store, da_revocation_delegate);
+#ifndef CONFIG_ESP_MATTER_COMMISSIONER_SUPPORT_TEST_CD
+    da_verifier->EnableCdTestKeySupport(false);
+#endif
+    chip::Credentials::SetDeviceAttestationVerifier(da_verifier);
+    commissioner_params.deviceAttestationVerifier = da_verifier;
     m_credentials_issuer = get_credentials_issuer();
     ESP_RETURN_ON_FALSE(m_credentials_issuer, ESP_FAIL, TAG,
                         "Please set the custom credentials_issuer before calling setup_commissioner");
