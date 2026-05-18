@@ -74,7 +74,7 @@ void cluster_command::default_success_fcn(void *ctx, const ConcreteCommandPath &
     }
 
     cJSON *decoded_json = nullptr;
-    if (tlv_to_json(*response_data, &decoded_json) != ESP_OK) {
+    if (tlv_to_json(*response_data, &decoded_json, tlv_to_json_options { .human_readable_bytes = true }) != ESP_OK) {
         ESP_LOGW(TAG, "Failed to convert response payload to JSON");
         cJSON_Delete(decoded_json);
         return;
