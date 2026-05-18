@@ -1,4 +1,6 @@
 CONFIG_IDF_TARGET="esp32h2"
+# Use single OTA partition to avoid overflow with Thread stack
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.h2.csv"
 
 # Enable OpenThread
 CONFIG_OPENTHREAD_ENABLED=y
