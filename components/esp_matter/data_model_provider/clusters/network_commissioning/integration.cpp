@@ -91,65 +91,68 @@ uint16_t GetServerIndex(EndpointId endpointId)
             }
             ep = esp_matter::endpoint::get_next(ep);
         }
-        return ret;
+        return ret < kNetworkCommissioningClusterCount ? ret : UINT16_MAX;
     }
     return UINT16_MAX;
+}
+
+bool endpointIdIsValid(EndpointId endpointId)
+{
+    bool endpointIdMatched = false;
+#ifdef CONFIG_THREAD_NETWORK_COMMISSIONING_DRIVER
+    endpointIdMatched |= endpointId == CONFIG_THREAD_NETWORK_ENDPOINT_ID;
+#endif
+#ifdef CONFIG_WIFI_NETWORK_COMMISSIONING_DRIVER
+    endpointIdMatched |= endpointId == CONFIG_WIFI_NETWORK_ENDPOINT_ID;
+#endif
+#ifdef CONFIG_ETHERNET_NETWORK_COMMISSIONING_DRIVER
+    endpointIdMatched |= endpointId == CONFIG_ETHERNET_NETWORK_ENDPOINT_ID;
+#endif
+    return endpointIdMatched;
 }
 
 } // namespace
 
 void ESPMatterNetworkCommissioningClusterServerInitCallback(EndpointId endpointId)
 {
+    VerifyOrReturn(endpointIdIsValid(endpointId));
     uint16_t index = GetServerIndex(endpointId);
     VerifyOrReturn(index != UINT16_MAX);
+    if (!gServers[index].IsConstructed()) {
 #ifdef CONFIG_THREAD_NETWORK_COMMISSIONING_DRIVER
-    if (endpointId == CONFIG_THREAD_NETWORK_ENDPOINT_ID) {
-        static DeviceLayer::NetworkCommissioning::GenericThreadDriver sThreadDriver;
-        gServers[index].Create(endpointId, &sThreadDriver, MakeNetworkCommissioningClusterContext());
-        LogErrorOnFailure(gServers[index].Cluster().Init());
-        LogErrorOnFailure(esp_matter::data_model::provider::get_instance().registry().Register(gServers[index].Registration()));
-    }
+        if (endpointId == CONFIG_THREAD_NETWORK_ENDPOINT_ID) {
+            static DeviceLayer::NetworkCommissioning::GenericThreadDriver sThreadDriver;
+            gServers[index].Create(endpointId, &sThreadDriver, MakeNetworkCommissioningClusterContext());
+        }
 #endif
 #ifdef CONFIG_WIFI_NETWORK_COMMISSIONING_DRIVER
-    if (endpointId == CONFIG_WIFI_NETWORK_ENDPOINT_ID) {
-        gServers[index].Create(endpointId, &(DeviceLayer::NetworkCommissioning::ESPWiFiDriver::GetInstance()),
-                               MakeNetworkCommissioningClusterContext());
-        LogErrorOnFailure(gServers[index].Cluster().Init());
-        LogErrorOnFailure(esp_matter::data_model::provider::get_instance().registry().Register(gServers[index].Registration()));
-    }
+        if (endpointId == CONFIG_WIFI_NETWORK_ENDPOINT_ID) {
+            gServers[index].Create(endpointId, &(DeviceLayer::NetworkCommissioning::ESPWiFiDriver::GetInstance()),
+                                   MakeNetworkCommissioningClusterContext());
+        }
 #endif
 #ifdef CONFIG_ETHERNET_NETWORK_COMMISSIONING_DRIVER
-    if (endpointId == CONFIG_ETHERNET_NETWORK_ENDPOINT_ID) {
-        gServers[index].Create(endpointId, &(DeviceLayer::NetworkCommissioning::ESPEthernetDriver::GetInstance()),
-                               MakeNetworkCommissioningClusterContext());
-        LogErrorOnFailure(gServers[index].Cluster().Init());
-        LogErrorOnFailure(esp_matter::data_model::provider::get_instance().registry().Register(gServers[index].Registration()));
-    }
+        if (endpointId == CONFIG_ETHERNET_NETWORK_ENDPOINT_ID) {
+            gServers[index].Create(endpointId, &(DeviceLayer::NetworkCommissioning::ESPEthernetDriver::GetInstance()),
+                                   MakeNetworkCommissioningClusterContext());
+        }
 #endif
+    }
+    LogErrorOnFailure(gServers[index].Cluster().Init());
+    LogErrorOnFailure(esp_matter::data_model::provider::get_instance().registry().Register(gServers[index].Registration()));
 }
 
 void ESPMatterNetworkCommissioningClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
+    VerifyOrReturn(endpointIdIsValid(endpointId));
     uint16_t index = GetServerIndex(endpointId);
     VerifyOrReturn(index != UINT16_MAX);
-#ifdef CONFIG_THREAD_NETWORK_COMMISSIONING_DRIVER
-    if (endpointId == CONFIG_THREAD_NETWORK_ENDPOINT_ID) {
-        LogErrorOnFailure(esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[index].Cluster(), shutdownType));
-        gServers[index].Cluster().Deinit();
+    LogErrorOnFailure(esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[index].Cluster(),
+                                                                                             shutdownType));
+    gServers[index].Cluster().Deinit();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        gServers[index].Destroy();
     }
-#endif
-#ifdef CONFIG_WIFI_NETWORK_COMMISSIONING_DRIVER
-    if (endpointId == CONFIG_WIFI_NETWORK_ENDPOINT_ID) {
-        LogErrorOnFailure(esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[index].Cluster(), shutdownType));
-        gServers[index].Cluster().Deinit();
-    }
-#endif
-#ifdef CONFIG_ETHERNET_NETWORK_COMMISSIONING_DRIVER
-    if (endpointId == CONFIG_ETHERNET_NETWORK_ENDPOINT_ID) {
-        LogErrorOnFailure(esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[index].Cluster(), shutdownType));
-        gServers[index].Cluster().Deinit();
-    }
-#endif
 }
 
 void MatterNetworkCommissioningPluginServerInitCallback()

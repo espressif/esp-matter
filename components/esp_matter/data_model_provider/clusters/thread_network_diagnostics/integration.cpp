@@ -39,44 +39,43 @@ std::unordered_map<EndpointId, LazyRegisteredServerCluster<ThreadNetworkDiagnost
 void ESPMatterThreadNetworkDiagnosticsClusterServerInitCallback(EndpointId endpointId)
 {
     VerifyOrReturn(cluster::get(endpointId, ThreadNetworkDiagnostics::Id) != nullptr,
-                   ChipLogError(AppServer,
-                                "ThreadNetworkDiagnostics: cluster missing in esp-matter data model for endpoint %u",
+                   ChipLogError(AppServer, "ThreadNetworkDiagnostics: cluster missing in esp-matter data model for endpoint %u",
                                 endpointId));
+    if (!gServers[endpointId].IsConstructed()) {
+        const uint32_t rawFeatureMap = read_feature_map_u32(endpointId, ThreadNetworkDiagnostics::Id);
+        VerifyOrDie(rawFeatureMap == 0 || rawFeatureMap == ThreadNetworkDiagnostics::kFeaturesAll.Raw());
 
-    if (gServers[endpointId].IsConstructed()) {
-        return;
+        const auto cluster_type = rawFeatureMap == 0 ? ThreadNetworkDiagnosticsCluster::ClusterType::kMinimal
+                                  : ThreadNetworkDiagnosticsCluster::ClusterType::kFull;
+
+        gServers[endpointId].Create(endpointId, cluster_type);
     }
 
-    const uint32_t rawFeatureMap = read_feature_map_u32(endpointId, ThreadNetworkDiagnostics::Id);
-    VerifyOrDie(rawFeatureMap == 0 || rawFeatureMap == ThreadNetworkDiagnostics::kFeaturesAll.Raw());
-
-    const auto cluster_type = rawFeatureMap == 0 ? ThreadNetworkDiagnosticsCluster::ClusterType::kMinimal
-                              : ThreadNetworkDiagnosticsCluster::ClusterType::kFull;
-
-    gServers[endpointId].Create(endpointId, cluster_type);
-
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(
+                         gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer,
-                     "Failed to register ThreadNetworkDiagnostics on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
-                     err.Format());
+                     "Failed to register ThreadNetworkDiagnostics on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId, err.Format());
     }
 }
 
-void ESPMatterThreadNetworkDiagnosticsClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
+void ESPMatterThreadNetworkDiagnosticsClusterServerShutdownCallback(EndpointId endpointId,
+                                                                    ClusterShutdownType shutdownType)
 {
-    if (!gServers[endpointId].IsConstructed()) {
-        return;
-    }
-    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(
-                         &gServers[endpointId].Cluster(), shutdownType);
+    auto it = gServers.find(endpointId);
+    VerifyOrReturn(it != gServers.end());
+    VerifyOrReturn(it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer,
                      "Failed to unregister ThreadNetworkDiagnostics on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
                      err.Format());
     }
-    gServers[endpointId].Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        it->second.Destroy();
+        gServers.erase(it);
+    }
 }
 
 void MatterThreadNetworkDiagnosticsPluginServerInitCallback() {}

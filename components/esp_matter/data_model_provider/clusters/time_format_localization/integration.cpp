@@ -71,38 +71,43 @@ TimeFormatLocalization::CalendarTypeEnum get_default_calendar_type(esp_matter::c
 }
 } // namespace
 
-void ESPMatterTimeFormatLocalizationClusterServerInitCallback(EndpointId endpoint)
+void ESPMatterTimeFormatLocalizationClusterServerInitCallback(EndpointId endpointId)
 {
     // This cluster should only exist in Root endpoint.
-    VerifyOrReturn(endpoint == kRootEndpointId);
-    esp_matter::cluster_t *cluster = esp_matter::cluster::get(endpoint, TimeFormatLocalization::Id);
-    VerifyOrReturn(cluster != nullptr,
-                   ChipLogError(AppServer,
-                                "TimeFormatLocalization: cluster missing in esp-matter data model for endpoint %u", endpoint));
-    auto * deviceInfoProvider = DeviceLayer::GetDeviceInfoProvider();
-    VerifyOrDie(deviceInfoProvider != nullptr);
+    VerifyOrReturn(endpointId == kRootEndpointId);
+    if (!gServer.IsConstructed()) {
+        esp_matter::cluster_t *cluster = esp_matter::cluster::get(endpointId, TimeFormatLocalization::Id);
+        VerifyOrReturn(cluster != nullptr,
+                       ChipLogError(AppServer,
+                                    "TimeFormatLocalization: cluster missing in esp-matter data model for endpoint %u",
+                                    endpointId));
+        auto * deviceInfoProvider = DeviceLayer::GetDeviceInfoProvider();
+        VerifyOrDie(deviceInfoProvider != nullptr);
 
-    gServer.Create(endpoint, BitFlags<TimeFormatLocalization::Feature>(get_feature_map(cluster)),
-                   get_default_hour_format(cluster), get_default_calendar_type(cluster),
-                   TimeFormatLocalizationCluster::Context{ .deviceInfoProvider = *deviceInfoProvider });
-
+        gServer.Create(endpointId, BitFlags<TimeFormatLocalization::Feature>(get_feature_map(cluster)),
+                       get_default_hour_format(cluster), get_default_calendar_type(cluster),
+                       TimeFormatLocalizationCluster::Context{ .deviceInfoProvider = *deviceInfoProvider });
+    }
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register TimeFormatLocalization - Error: %" CHIP_ERROR_FORMAT, err.Format());
     }
 }
 
-void ESPMatterTimeFormatLocalizationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
+void ESPMatterTimeFormatLocalizationClusterServerShutdownCallback(EndpointId endpointId,
+                                                                  ClusterShutdownType shutdownType)
 {
     // This cluster should only exist in Root endpoint.
-    VerifyOrReturn(endpoint == kRootEndpointId);
-
+    VerifyOrReturn(endpointId == kRootEndpointId);
+    VerifyOrReturn(gServer.IsConstructed());
     CHIP_ERROR err =
         esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(), shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "TimeFormatLocalization unregister error: %" CHIP_ERROR_FORMAT, err.Format());
     }
-    gServer.Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        gServer.Destroy();
+    }
 }
 
 void MatterTimeFormatLocalizationPluginServerInitCallback()

@@ -39,51 +39,48 @@ std::unordered_map<EndpointId, LazyRegisteredServerCluster<SwitchCluster>> gServ
 
 void ESPMatterSwitchClusterServerInitCallback(EndpointId endpointId)
 {
-    cluster_t *cluster = cluster::get(endpointId, Switch::Id);
-    VerifyOrReturn(cluster != nullptr,
+    VerifyOrReturn(cluster::get(endpointId, Switch::Id) != nullptr,
                    ChipLogError(AppServer, "Switch: cluster missing in esp-matter data model for endpoint %u", endpointId));
 
-    if (gServers[endpointId].IsConstructed()) {
-        return;
+    if (!gServers[endpointId].IsConstructed()) {
+        const uint32_t rawFeatureMap = read_feature_map_u32(endpointId, Switch::Id);
+        BitFlags<Switch::Feature> features(rawFeatureMap);
+
+        uint8_t numberOfPositions = 0;
+        VerifyOrReturn(read_attribute_raw_value(endpointId, Switch::Id, Attributes::NumberOfPositions::Id, numberOfPositions),
+                       ChipLogError(AppServer, "Switch: NumberOfPositions read failed on ep %u", endpointId));
+
+        uint8_t multiPressMax = 0;
+        if (features.Has(Switch::Feature::kMomentarySwitchMultiPress)) {
+            VerifyOrReturn(read_attribute_raw_value(endpointId, Switch::Id, Attributes::MultiPressMax::Id, multiPressMax),
+                           ChipLogError(AppServer, "Switch: MultiPressMax read failed on ep %u", endpointId));
+        }
+
+        SwitchCluster::StartupConfiguration startupConfig{ .numberOfPositions = numberOfPositions, .multiPressMax = multiPressMax };
+
+        gServers[endpointId].Create(endpointId, features, startupConfig);
     }
-
-    const uint32_t rawFeatureMap = read_feature_map_u32(endpointId, Switch::Id);
-    BitFlags<Switch::Feature> features(rawFeatureMap);
-
-    uint8_t numberOfPositions = 0;
-    VerifyOrReturn(read_attribute_raw_value(endpointId, Switch::Id, Attributes::NumberOfPositions::Id, numberOfPositions),
-                   ChipLogError(AppServer, "Switch: NumberOfPositions read failed on ep %u", endpointId));
-
-    uint8_t multiPressMax = 0;
-    if (features.Has(Switch::Feature::kMomentarySwitchMultiPress)) {
-        VerifyOrReturn(read_attribute_raw_value(endpointId, Switch::Id, Attributes::MultiPressMax::Id, multiPressMax),
-                       ChipLogError(AppServer, "Switch: MultiPressMax read failed on ep %u", endpointId));
-    }
-
-    SwitchCluster::StartupConfiguration startupConfig{ .numberOfPositions = numberOfPositions, .multiPressMax = multiPressMax };
-
-    gServers[endpointId].Create(endpointId, features, startupConfig);
-
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(
+                         gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Switch cluster register failed ep %u: %" CHIP_ERROR_FORMAT, endpointId, err.Format());
-        gServers[endpointId].Destroy();
     }
 }
 
 void ESPMatterSwitchClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
     auto it = gServers.find(endpointId);
-    if (it == gServers.end() || !it->second.IsConstructed()) {
-        return;
-    }
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(), shutdownType);
+    VerifyOrReturn(it != gServers.end());
+    VerifyOrReturn(it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Switch cluster unregister failed ep %u: %" CHIP_ERROR_FORMAT, endpointId, err.Format());
     }
-    it->second.Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        it->second.Destroy();
+        gServers.erase(it);
+    }
 }
 
 void MatterSwitchPluginServerInitCallback() {}
@@ -96,9 +93,8 @@ namespace Switch {
 SwitchCluster * FindClusterOnEndpoint(EndpointId endpointId)
 {
     auto it = gServers.find(endpointId);
-    if (it == gServers.end() || !it->second.IsConstructed()) {
-        return nullptr;
-    }
+    VerifyOrReturnValue(it != gServers.end(), nullptr);
+    VerifyOrReturnValue(it->second.IsConstructed(), nullptr);
     return &it->second.Cluster();
 }
 

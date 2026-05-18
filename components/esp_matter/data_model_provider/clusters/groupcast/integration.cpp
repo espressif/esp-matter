@@ -36,48 +36,42 @@ DefaultTimerDelegate sTimerDelegate;
 
 void ESPMatterGroupcastClusterServerInitCallback(chip::EndpointId endpointId)
 {
-    VerifyOrDie(endpointId == chip::kRootEndpointId);
+    VerifyOrReturn(endpointId == kRootEndpointId);
+    if (!gServer.IsConstructed()) {
+        // Currently we don't support groupcast cluster in our data model; create with Listener (LN) feature only.
+        // TODO: Create from enabled ZAP features once the cluster is in the ESP-Matter data model.
+        Credentials::GroupDataProvider * groupDataProvider = Credentials::GetGroupDataProvider();
+        VerifyOrDie(groupDataProvider != nullptr);
 
-    if (gServer.IsConstructed()) {
-        return;
+        BitFlags<Groupcast::Feature> features;
+        features.Set(Groupcast::Feature::kListener);
+
+        gServer.Create(
+        GroupcastContext{
+            .fabricTable       = Server::GetInstance().GetFabricTable(),
+            .groupDataProvider = *groupDataProvider,
+            .timerDelegate     = sTimerDelegate,
+        },
+        features);
     }
-
-    // Currently we don't support groupcast cluster in our data model; create with Listener (LN) feature only.
-    // TODO: Create from enabled ZAP features once the cluster is in the ESP-Matter data model.
-    Credentials::GroupDataProvider * groupDataProvider = Credentials::GetGroupDataProvider();
-    VerifyOrDie(groupDataProvider != nullptr);
-
-    BitFlags<Groupcast::Feature> features;
-    features.Set(Groupcast::Feature::kListener);
-
-    gServer.Create(
-    GroupcastContext{
-        .fabricTable       = Server::GetInstance().GetFabricTable(),
-        .groupDataProvider = *groupDataProvider,
-        .timerDelegate     = sTimerDelegate,
-    },
-    features);
-
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register Groupcast - Error %" CHIP_ERROR_FORMAT, err.Format());
-        gServer.Destroy();
     }
 }
 
 void ESPMatterGroupcastClusterServerShutdownCallback(chip::EndpointId endpointId, ClusterShutdownType shutdownType)
 {
-    VerifyOrDie(endpointId == chip::kRootEndpointId);
-
-    if (!gServer.IsConstructed()) {
-        return;
-    }
-
-    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(), shutdownType);
+    VerifyOrReturn(endpointId == chip::kRootEndpointId);
+    VerifyOrReturn(gServer.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister Groupcast - Error %" CHIP_ERROR_FORMAT, err.Format());
     }
-    gServer.Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        gServer.Destroy();
+    }
 }
 
 void MatterGroupcastPluginServerInitCallback() {}

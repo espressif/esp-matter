@@ -38,7 +38,8 @@ namespace chip::app::Clusters::GeneralCommissioning {
 GeneralCommissioningCluster * Instance()
 {
     GeneralCommissioningCluster::OptionalAttributes optionalAttrs;
-    if (esp_matter::endpoint::is_attribute_enabled(kRootEndpointId, GeneralCommissioning::Id, GeneralCommissioning::Attributes::IsCommissioningWithoutPower::Id)) {
+    if (esp_matter::endpoint::is_attribute_enabled(kRootEndpointId, GeneralCommissioning::Id,
+                                                   GeneralCommissioning::Attributes::IsCommissioningWithoutPower::Id)) {
         optionalAttrs.Set<GeneralCommissioning::Attributes::IsCommissioningWithoutPower::Id>();
     }
 
@@ -65,15 +66,13 @@ GeneralCommissioningCluster * Instance()
 
 void ESPMatterGeneralCommissioningClusterServerInitCallback(EndpointId endpointId)
 {
-    if (endpointId != kRootEndpointId) {
-        return;
-    }
-    GeneralCommissioningCluster::OptionalAttributes optionalAttrs;
-    if (esp_matter::endpoint::is_attribute_enabled(endpointId, GeneralCommissioning::Id, GeneralCommissioning::Attributes::IsCommissioningWithoutPower::Id)) {
-        optionalAttrs.Set<GeneralCommissioning::Attributes::IsCommissioningWithoutPower::Id>();
-    }
-
+    VerifyOrReturn(endpointId == kRootEndpointId);
     if (!gServer.IsConstructed()) {
+        GeneralCommissioningCluster::OptionalAttributes optionalAttrs;
+        if (esp_matter::endpoint::is_attribute_enabled(endpointId, GeneralCommissioning::Id,
+                                                       GeneralCommissioning::Attributes::IsCommissioningWithoutPower::Id)) {
+            optionalAttrs.Set<GeneralCommissioning::Attributes::IsCommissioningWithoutPower::Id>();
+        }
         gServer.Create(
         GeneralCommissioningCluster::Context {
             .commissioningWindowManager = Server::GetInstance().GetCommissioningWindowManager(), //
@@ -88,7 +87,6 @@ void ESPMatterGeneralCommissioningClusterServerInitCallback(EndpointId endpointI
         },
         optionalAttrs);
     }
-
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register GeneralCommissioning - Error: %" CHIP_ERROR_FORMAT, err.Format());
@@ -97,13 +95,16 @@ void ESPMatterGeneralCommissioningClusterServerInitCallback(EndpointId endpointI
 
 void ESPMatterGeneralCommissioningClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
-    VerifyOrReturn(endpointId == kRootEndpointId && gServer.IsConstructed());
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(), shutdownType);
+    VerifyOrReturn(endpointId == kRootEndpointId);
+    VerifyOrReturn(gServer.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister GeneralCommissioning - Error: %" CHIP_ERROR_FORMAT, err.Format());
     }
-    gServer.Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        gServer.Destroy();
+    }
 }
 
 void MatterGeneralCommissioningPluginServerInitCallback() {}

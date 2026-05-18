@@ -32,18 +32,16 @@ std::unordered_map<EndpointId, LazyRegisteredServerCluster<UserLabelCluster>> gS
 
 void ESPMatterUserLabelClusterServerInitCallback(EndpointId endpointId)
 {
-    if (gServers[endpointId].IsConstructed()) {
-        return;
+    if (!gServers[endpointId].IsConstructed()) {
+        DeviceLayer::DeviceInfoProvider * deviceInfoProvider = DeviceLayer::GetDeviceInfoProvider();
+        VerifyOrDie(deviceInfoProvider != nullptr);
+
+        UserLabelCluster::Context ctx{
+            .deviceInfoProvider = *deviceInfoProvider,
+            .fabricTable        = Server::GetInstance().GetFabricTable(),
+        };
+        gServers[endpointId].Create(endpointId, std::move(ctx));
     }
-
-    DeviceLayer::DeviceInfoProvider * deviceInfoProvider = DeviceLayer::GetDeviceInfoProvider();
-    VerifyOrDie(deviceInfoProvider != nullptr);
-
-    UserLabelCluster::Context ctx{
-        .deviceInfoProvider = *deviceInfoProvider,
-        .fabricTable        = Server::GetInstance().GetFabricTable(),
-    };
-    gServers[endpointId].Create(endpointId, std::move(ctx));
     CHIP_ERROR err =
         esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
@@ -54,16 +52,19 @@ void ESPMatterUserLabelClusterServerInitCallback(EndpointId endpointId)
 
 void ESPMatterUserLabelClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
-    if (!gServers[endpointId].IsConstructed()) {
-        return;
-    }
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[endpointId].Cluster(), shutdownType);
+    auto it = gServers.find(endpointId);
+    VerifyOrReturn(it != gServers.end());
+    VerifyOrReturn(it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister UserLabel on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
                      endpointId, err.Format());
     }
-    gServers[endpointId].Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        it->second.Destroy();
+        gServers.erase(it);
+    }
 }
 
 void MatterUserLabelPluginServerInitCallback() {}

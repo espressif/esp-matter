@@ -33,68 +33,61 @@ using namespace esp_matter;
 
 namespace {
 std::unordered_map<EndpointId, LazyRegisteredServerCluster<TemperatureMeasurementCluster>> gServers;
-
-void BuildAndRegister(EndpointId endpointId)
-{
-    if (gServers[endpointId].IsConstructed()) {
-        return;
-    }
-
-    TemperatureMeasurementCluster::OptionalAttributeSet optionalAttributeSet(0);
-    if (endpoint::is_attribute_enabled(endpointId, TemperatureMeasurement::Id, Tolerance::Id)) {
-        optionalAttributeSet.Set<Tolerance::Id>();
-    }
-
-    DataModel::Nullable<int16_t> minMeasuredValue{};
-    if (MinMeasuredValue::Get(endpointId, minMeasuredValue) != Status::Success) {
-        minMeasuredValue.SetNull();
-    }
-
-    DataModel::Nullable<int16_t> maxMeasuredValue{};
-    if (MaxMeasuredValue::Get(endpointId, maxMeasuredValue) != Status::Success) {
-        maxMeasuredValue.SetNull();
-    }
-
-    uint16_t tolerance{};
-    if (optionalAttributeSet.IsSet(Tolerance::Id)) {
-        VerifyOrDie(Tolerance::Get(endpointId, &tolerance) == Status::Success);
-    }
-
-    gServers[endpointId].Create(
-        endpointId, optionalAttributeSet,
-        TemperatureMeasurementCluster::StartupConfiguration{ .minMeasuredValue = minMeasuredValue,
-                                                             .maxMeasuredValue = maxMeasuredValue,
-                                                             .tolerance        = tolerance });
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
-    if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "TemperatureMeasurement register failed ep %u: %" CHIP_ERROR_FORMAT, endpointId, err.Format());
-        gServers[endpointId].Destroy();
-        gServers.erase(endpointId);
-    }
-}
 } // namespace
 
 void ESPMatterTemperatureMeasurementClusterServerInitCallback(EndpointId endpointId)
 {
     VerifyOrReturn(cluster::get(endpointId, TemperatureMeasurement::Id) != nullptr,
-                   ChipLogError(AppServer,
-                                "TemperatureMeasurement: cluster missing in esp-matter data model for endpoint %u",
+                   ChipLogError(AppServer, "TemperatureMeasurement: cluster missing in esp-matter data model for endpoint %u",
                                 endpointId));
-    BuildAndRegister(endpointId);
+    if (!gServers[endpointId].IsConstructed()) {
+        TemperatureMeasurementCluster::OptionalAttributeSet optionalAttributeSet(0);
+        if (endpoint::is_attribute_enabled(endpointId, TemperatureMeasurement::Id, Tolerance::Id)) {
+            optionalAttributeSet.Set<Tolerance::Id>();
+        }
+
+        DataModel::Nullable<int16_t> minMeasuredValue{};
+        if (MinMeasuredValue::Get(endpointId, minMeasuredValue) != Status::Success) {
+            minMeasuredValue.SetNull();
+        }
+
+        DataModel::Nullable<int16_t> maxMeasuredValue{};
+        if (MaxMeasuredValue::Get(endpointId, maxMeasuredValue) != Status::Success) {
+            maxMeasuredValue.SetNull();
+        }
+
+        uint16_t tolerance{};
+        if (optionalAttributeSet.IsSet(Tolerance::Id)) {
+            VerifyOrDie(Tolerance::Get(endpointId, &tolerance) == Status::Success);
+        }
+
+        gServers[endpointId].Create(
+            endpointId, optionalAttributeSet,
+            TemperatureMeasurementCluster::StartupConfiguration{ .minMeasuredValue = minMeasuredValue,
+                                                                 .maxMeasuredValue = maxMeasuredValue,
+                                                                 .tolerance        = tolerance });
+    }
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(
+                         gServers[endpointId].Registration());
+    if (err != CHIP_NO_ERROR) {
+        ChipLogError(AppServer, "TemperatureMeasurement register failed ep %u: %" CHIP_ERROR_FORMAT, endpointId, err.Format());
+    }
 }
 
-void ESPMatterTemperatureMeasurementClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
+void ESPMatterTemperatureMeasurementClusterServerShutdownCallback(EndpointId endpointId,
+                                                                  ClusterShutdownType shutdownType)
 {
     auto it = gServers.find(endpointId);
-    if (it == gServers.end() || !it->second.IsConstructed()) {
-        return;
-    }
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(), shutdownType);
+    VerifyOrReturn(it != gServers.end());
+    VerifyOrReturn(it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "TemperatureMeasurement unregister failed ep %u: %" CHIP_ERROR_FORMAT, endpointId, err.Format());
+        ChipLogError(AppServer, "TemperatureMeasurement unregister failed ep %u: %" CHIP_ERROR_FORMAT, endpointId,
+                     err.Format());
     }
-    it->second.Destroy();
-    gServers.erase(it);
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        it->second.Destroy();
+        gServers.erase(it);
+    }
 }

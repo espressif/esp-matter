@@ -227,7 +227,7 @@ static void report_parts_list_change_internal(endpoint_t *endpoint)
                                                             chip::app::Clusters::Descriptor::Attributes::PartsList::Id);
 }
 
-esp_err_t disable(endpoint_t *endpoint)
+esp_err_t shutdown_endpoint_internal(endpoint_t *endpoint, chip::app::ClusterShutdownType shutdown_type)
 {
     VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
@@ -237,10 +237,9 @@ esp_err_t disable(endpoint_t *endpoint)
         report_parts_list_change_internal(endpoint);
         cluster_t *cluster = cluster::get_first(endpoint);
         while (cluster) {
-            /* kClusterShutdown type shutdown callback */
             cluster::shutdown_callback_t shutdown_callback = cluster::get_shutdown_callback(cluster);
             if (shutdown_callback) {
-                shutdown_callback(endpoint::get_id(endpoint), chip::app::ClusterShutdownType::kClusterShutdown);
+                shutdown_callback(endpoint::get_id(endpoint), shutdown_type);
             }
             cluster = cluster::get_next(cluster);
         }
@@ -248,24 +247,9 @@ esp_err_t disable(endpoint_t *endpoint)
     return ESP_OK;
 }
 
-static esp_err_t init_identification(endpoint_t *endpoint)
+esp_err_t disable(endpoint_t *endpoint)
 {
-    VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
-    cluster_t *identify_cluster = cluster::get(endpoint, chip::app::Clusters::Identify::Id);
-    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
-    /* Init identify if exists and not initialized */
-    if (identify_cluster != nullptr && current_endpoint->identify == NULL) {
-        _attribute_t *identify_type_attr = (_attribute_t *)attribute::get(
-                                               identify_cluster, chip::app::Clusters::Identify::Attributes::IdentifyType::Id);
-        if (identify_type_attr) {
-            return identification::init(current_endpoint->endpoint_id, identify_type_attr->attribute_val.u8);
-        } else {
-            ESP_LOGE(TAG, "Can't get IdentifyType attribute in Identify cluster");
-            return ESP_ERR_INVALID_STATE;
-        }
-    }
-    // Return ESP_OK when identify cluster is not on the endpoint.
-    return ESP_OK;
+    return shutdown_endpoint_internal(endpoint, chip::app::ClusterShutdownType::kClusterShutdown);
 }
 
 void invoke_init_callbacks_internal(endpoint_t *endpoint)
@@ -315,7 +299,6 @@ esp_err_t enable(endpoint_t *endpoint)
     VerifyOrReturnError(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     current_endpoint->enabled = true;
-    init_identification(endpoint);
     /* Call the init callbacks for the endpoints which are created after esp_matter::start(). (e.g. for bridged endpoints) */
     if (esp_matter::is_started()) {
         // Use the lock instead of schedule lambda to ensure the callbacks are invoked before esp_matter::start() returns.
@@ -654,6 +637,10 @@ static esp_err_t free_attribute(attribute_t *attribute)
         esp_matter_mem_free(current_attribute->attribute_val.a.b);
     }
 
+    if (current_attribute->bounds != nullptr) {
+        esp_matter_mem_free(current_attribute->bounds);
+    }
+
     /* Erase the persistent data */
     if (attribute::get_flags(attribute) & ATTRIBUTE_FLAG_NONVOLATILE) {
         erase_val_in_nvs(current_attribute->endpoint_id, current_attribute->cluster_id,
@@ -975,7 +962,8 @@ esp_err_t get_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_
     chip::app::DataModel::ReadAttributeRequest request(concrete_path, subjectDescriptor);
     request.readFlags.Set(chip::app::DataModel::ReadFlags::kFabricFiltered);
 
-    chip::app::DataModel::ActionReturnStatus action_return_status = esp_matter::data_model::provider::get_instance().ReadAttribute(request, encoder);
+    chip::app::DataModel::ActionReturnStatus action_return_status =
+        esp_matter::data_model::provider::get_instance().ReadAttribute(request, encoder);
 
     if (action_return_status.IsError()) {
         chip::app::DataModel::ActionReturnStatus::StringStorage storage;
@@ -1058,7 +1046,8 @@ static esp_err_t set_val_via_write_attribute(uint16_t endpoint_id, uint32_t clus
     //     - 1: <encoded value>
     //   - END_STRUCT
     chip::TLV::TLVType outerContainer;
-    VerifyOrReturnError(writer.StartContainer(chip::TLV::AnonymousTag(), chip::TLV::kTLVType_Structure, outerContainer) == CHIP_NO_ERROR, ESP_FAIL);
+    VerifyOrReturnError(writer.StartContainer(chip::TLV::AnonymousTag(), chip::TLV::kTLVType_Structure,
+                                              outerContainer) == CHIP_NO_ERROR, ESP_FAIL);
     data_model::attribute_data_encode_buffer encode_buffer(*val);
     VerifyOrReturnError(encode_buffer.Encode(writer, chip::TLV::ContextTag(1)) == CHIP_NO_ERROR, ESP_FAIL);
     VerifyOrReturnError(writer.EndContainer(outerContainer) == CHIP_NO_ERROR, ESP_FAIL);
@@ -1091,7 +1080,8 @@ static esp_err_t set_val_via_write_attribute(uint16_t endpoint_id, uint32_t clus
     return ESP_OK;
 }
 
-esp_err_t set_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val, bool call_callbacks)
+esp_err_t set_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val,
+                  bool call_callbacks)
 {
     VerifyOrReturnError(val && val->type != ESP_MATTER_VAL_TYPE_INVALID, ESP_ERR_INVALID_ARG);
     VerifyOrReturnError(val->type != ESP_MATTER_VAL_TYPE_ARRAY, ESP_ERR_NOT_SUPPORTED);
@@ -1150,14 +1140,17 @@ esp_err_t add_bounds(attribute_t *attribute, esp_matter_attr_val_t min, esp_matt
         ESP_LOGE(TAG, "Bounds cannot be set for string/array/boolean type attributes");
         return ESP_ERR_INVALID_ARG;
     }
-    VerifyOrReturnError(((current_attribute->attribute_val_type == min.type) && (current_attribute->attribute_val_type == max.type)),
+    VerifyOrReturnError(((current_attribute->attribute_val_type == min.type)
+                         && (current_attribute->attribute_val_type == max.type)),
                         ESP_ERR_INVALID_ARG,
                         ESP_LOGE(TAG, "Cannot set bounds because of val type mismatch: expected: %d, min: %d, max: %d",
                                  current_attribute->attribute_val_type, min.type, max.type));
-    current_attribute->bounds = (esp_matter_attr_bounds_t *)esp_matter_mem_calloc(1, sizeof(esp_matter_attr_bounds_t));
-    if (!current_attribute->bounds) {
-        ESP_LOGE(TAG, "Failed to allocate bounds for attribute");
-        return ESP_ERR_NO_MEM;
+    if (current_attribute->bounds == nullptr) {
+        current_attribute->bounds = (esp_matter_attr_bounds_t *)esp_matter_mem_calloc(1, sizeof(esp_matter_attr_bounds_t));
+        if (current_attribute->bounds == nullptr) {
+            ESP_LOGE(TAG, "Failed to allocate bounds for attribute");
+            return ESP_ERR_NO_MEM;
+        }
     }
     current_attribute->flags |= ATTRIBUTE_FLAG_MIN_MAX;
     current_attribute->bounds->min = min;
@@ -1793,8 +1786,8 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
         (_endpoint->flags & ENDPOINT_FLAG_DESTROYABLE), ESP_FAIL,
         ESP_LOGE(TAG, "This endpoint cannot be deleted since the ENDPOINT_FLAG_DESTROYABLE is not set"));
 
-    /* Disable */
-    disable(endpoint);
+    /* Disable and permanently shut down code-driven cluster callbacks once before cluster metadata is deleted. */
+    shutdown_endpoint_internal(endpoint, chip::app::ClusterShutdownType::kPermanentRemove);
 
     /* Find current endpoint */
     _endpoint_t *current_endpoint = current_node->endpoint_list;
@@ -1812,8 +1805,6 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
         esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
         cluster_t *cluster = cluster::get_first(endpoint);
         while (cluster) {
-            /* TODO: kPermanentRemove type shutdown callback is not implemented yet in upstream code */
-
             /* Release any heap instance allocated by the delegate init callback. */
             cluster::delegate_shutdown(cluster, endpoint::get_id(endpoint));
 
@@ -1965,7 +1956,8 @@ EndpointCompositionPattern get_composition_pattern(endpoint_t *endpoint)
     return current_endpoint->composition_pattern;
 }
 
-esp_err_t set_semantic_tags(endpoint_t *endpoint, const chip::app::DataModel::Provider::SemanticTag *tags, size_t tag_count)
+esp_err_t set_semantic_tags(endpoint_t *endpoint, const chip::app::DataModel::Provider::SemanticTag *tags,
+                            size_t tag_count)
 {
     VerifyOrReturnValue(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     VerifyOrReturnValue(tag_count <= ESP_MATTER_MAX_SEMANTIC_TAG_COUNT, ESP_ERR_INVALID_ARG,

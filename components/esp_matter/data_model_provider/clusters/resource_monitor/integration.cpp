@@ -79,25 +79,20 @@ esp_err_t GetClusterConfig(EndpointId endpointId, ClusterId clusterId,
 void ESPMatterResourceMonitoringClusterInitCallback(EndpointId endpointId, ClusterId clusterId)
 {
     uint64_t index = ((uint64_t)(endpointId) << 32) + clusterId;
-    if (gServers[index].IsConstructed()) {
-        return;
+    if (!gServers[index].IsConstructed()) {
+        BitFlags<ResourceMonitoring::Feature> enabledFeatures;
+        ResourceMonitoringCluster::OptionalAttributeSet optionalAttributeSet;
+        Attributes::DegradationDirection::TypeInfo::Type degradationDirection;
+        bool resetConditionCommandSupported;
+        VerifyOrReturn(GetClusterConfig(endpointId, clusterId, enabledFeatures, optionalAttributeSet, degradationDirection,
+                                        resetConditionCommandSupported) == ESP_OK,
+                       ChipLogError(AppServer, "Failed to get config for Cluster %" PRIu32, clusterId));
+        gServers[index].Create(endpointId, clusterId, enabledFeatures, optionalAttributeSet, degradationDirection,
+                               resetConditionCommandSupported);
     }
-    BitFlags<ResourceMonitoring::Feature> enabledFeatures;
-    ResourceMonitoringCluster::OptionalAttributeSet optionalAttributeSet;
-    Attributes::DegradationDirection::TypeInfo::Type degradationDirection;
-    bool resetConditionCommandSupported;
-    if (GetClusterConfig(endpointId, clusterId, enabledFeatures, optionalAttributeSet, degradationDirection,
-                         resetConditionCommandSupported) != ESP_OK) {
-        ChipLogError(AppServer, "Failed to get config for Cluster %" PRIu32, clusterId);
-        return;
-    }
-    gServers[index].Create(endpointId, clusterId, enabledFeatures, optionalAttributeSet, degradationDirection,
-                           resetConditionCommandSupported);
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Register(gServers[index].Registration());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServers[index].Registration());
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to register Cluster %" PRIu32 " - Error %" CHIP_ERROR_FORMAT, clusterId,
-                     err.Format());
+        ChipLogError(AppServer, "Failed to register Cluster %" PRIu32 " - Error %" CHIP_ERROR_FORMAT, clusterId, err.Format());
     }
 }
 
@@ -105,16 +100,19 @@ void ESPMatterResourceMonitoringClusterShutdownCallback(EndpointId endpointId, C
                                                         ClusterShutdownType shutdownType)
 {
     uint64_t index = ((uint64_t)(endpointId) << 32) + clusterId;
-    if (!gServers[index].IsConstructed()) {
-        return;
-    }
-    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[index].Cluster(),
+    auto it = gServers.find(index);
+    VerifyOrReturn(it != gServers.end());
+    VerifyOrReturn(it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(),
                                                                                             shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister Cluster %" PRIu32 " - Error %" CHIP_ERROR_FORMAT, clusterId,
                      err.Format());
     }
-    gServers[index].Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        it->second.Destroy();
+        gServers.erase(it);
+    };
 }
 } // namespace
 

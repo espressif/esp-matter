@@ -36,41 +36,42 @@ LazyRegisteredServerCluster<ClusterImpl> gServer;
 
 void ESPMatterAdministratorCommissioningClusterServerInitCallback(EndpointId endpointId)
 {
-    if (endpointId != kRootEndpointId) {
-        return;
-    }
-    esp_matter::attribute_t *attribute =
-        esp_matter::attribute::get(endpointId, AdministratorCommissioning::Id, Globals::Attributes::FeatureMap::Id);
-    if (attribute) {
+    VerifyOrReturn(endpointId == kRootEndpointId);
+    if (!gServer.IsConstructed()) {
+        esp_matter::attribute_t *attribute = esp_matter::attribute::get(endpointId, AdministratorCommissioning::Id,
+                                                                        Globals::Attributes::FeatureMap::Id);
+        VerifyOrReturn(attribute != nullptr);
         esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
-        if (esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK && val.type == ESP_MATTER_VAL_TYPE_BITMAP32) {
-            gServer.Create(endpointId, BitFlags<AdministratorCommissioning::Feature>(val.val.u32),
-                           AdministratorCommissioningCluster::Context{ .commissioningWindowManager =
-                                                                           Server::GetInstance().GetCommissioningWindowManager(),
-                                                                       .fabricTable     = Server::GetInstance().GetFabricTable(),
-                                                                       .failSafeContext = Server::GetInstance().GetFailSafeContext() });
+        VerifyOrReturn(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK);
+        VerifyOrReturn(val.type == ESP_MATTER_VAL_TYPE_BITMAP32);
 
-            CHIP_ERROR err =
-                esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
-            if (err != CHIP_NO_ERROR) {
-                ChipLogError(AppServer, "Admin Commissioning register error: %" CHIP_ERROR_FORMAT, err.Format());
-            }
-        }
+        gServer.Create(endpointId, BitFlags<AdministratorCommissioning::Feature>(val.val.u32),
+                       AdministratorCommissioningCluster::Context{ .commissioningWindowManager =
+                                                                       Server::GetInstance().GetCommissioningWindowManager(),
+                                                                   .fabricTable     = Server::GetInstance().GetFabricTable(),
+                                                                   .failSafeContext = Server::GetInstance().GetFailSafeContext() });
+    }
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
+    if (err != CHIP_NO_ERROR) {
+        ChipLogError(AppServer, "Admin Commissioning register error: %" CHIP_ERROR_FORMAT, err.Format());
     }
 }
 
-void ESPMatterAdministratorCommissioningClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
+void ESPMatterAdministratorCommissioningClusterServerShutdownCallback(EndpointId endpointId,
+                                                                      ClusterShutdownType shutdownType)
 {
-    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(), shutdownType);
+    VerifyOrReturn(endpointId == kRootEndpointId);
+    VerifyOrReturn(gServer.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Admin Commissioning unregister error: %" CHIP_ERROR_FORMAT, err.Format());
     }
-    gServer.Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        gServer.Destroy();
+    }
 }
 
-void MatterAdministratorCommissioningPluginServerInitCallback()
-{
-}
-void MatterAdministratorCommissioningPluginServerShutdownCallback()
-{
-}
+void MatterAdministratorCommissioningPluginServerInitCallback() {}
+
+void MatterAdministratorCommissioningPluginServerShutdownCallback() {}

@@ -54,36 +54,32 @@ UnitLocalizationServer &UnitLocalizationServer::Instance()
 void ESPMatterUnitLocalizationClusterServerInitCallback(EndpointId endpointId)
 {
     VerifyOrReturn(endpointId == kRootEndpointId);
-    if (gServer.IsConstructed()) {
-        return;
+    if (!gServer.IsConstructed()) {
+        esp_matter::cluster_t *cluster = esp_matter::cluster::get(endpointId, UnitLocalization::Id);
+        VerifyOrReturn(cluster != nullptr,
+                       ChipLogError(AppServer,
+                                    "UnitLocalization: cluster missing in esp-matter data model for endpoint %u", endpointId));
+
+        gServer.Create(endpointId, BitFlags<UnitLocalization::Feature>(get_feature_map(cluster)));
     }
-
-    esp_matter::cluster_t *cluster = esp_matter::cluster::get(endpointId, UnitLocalization::Id);
-    VerifyOrReturn(cluster != nullptr,
-                   ChipLogError(AppServer,
-                                "UnitLocalization: cluster missing in esp-matter data model for endpoint %u", endpointId));
-
-    gServer.Create(endpointId, BitFlags<UnitLocalization::Feature>(get_feature_map(cluster)));
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to register UnitLocalization - Error: %" CHIP_ERROR_FORMAT, err.Format());
-        gServer.Destroy();
     }
 }
 
 void ESPMatterUnitLocalizationClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
     VerifyOrReturn(endpointId == kRootEndpointId);
-    if (!gServer.IsConstructed()) {
-        return;
-    }
-
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(), shutdownType);
+    VerifyOrReturn(gServer.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServer.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "UnitLocalization unregister error: %" CHIP_ERROR_FORMAT, err.Format());
     }
-    gServer.Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        gServer.Destroy();
+    }
 }
 
 void MatterUnitLocalizationPluginServerInitCallback() {}

@@ -40,12 +40,11 @@ void ESPMatterPushAvStreamTransportClusterServerInitCallback(EndpointId endpoint
                    ChipLogError(AppServer,
                                 "PushAvStreamTransport: cluster missing in esp-matter data model for endpoint %u",
                                 endpointId));
-    if (gServers[endpointId].IsConstructed()) {
-        return;
+    if (!gServers[endpointId].IsConstructed()) {
+        uint32_t rawFeatureMap = read_feature_map_u32(endpointId, PushAvStreamTransport::Id);
+        ChipLogProgress(AppServer, "Registering Push AV Stream Transport on endpoint %u", endpointId);
+        gServers[endpointId].Create(endpointId, BitFlags<PushAvStreamTransport::Feature>(rawFeatureMap));
     }
-    uint32_t rawFeatureMap = read_feature_map_u32(endpointId, PushAvStreamTransport::Id);
-    ChipLogProgress(AppServer, "Registering Push AV Stream Transport on endpoint %u", endpointId);
-    gServers[endpointId].Create(endpointId, BitFlags<PushAvStreamTransport::Feature>(rawFeatureMap));
     CHIP_ERROR err = data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer,
@@ -54,19 +53,27 @@ void ESPMatterPushAvStreamTransportClusterServerInitCallback(EndpointId endpoint
     }
 }
 
-void ESPMatterPushAvStreamTransportClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
+void ESPMatterPushAvStreamTransportClusterServerShutdownCallback(EndpointId endpointId,
+                                                                 ClusterShutdownType shutdownType)
 {
-    if (cluster::get(endpointId, PushAvStreamTransport::Id) == nullptr || !gServers[endpointId].IsConstructed()) {
-        return;
-    }
-
-    CHIP_ERROR err = data_model::provider::get_instance().registry().Unregister(&gServers[endpointId].Cluster(), shutdownType);
+    VerifyOrReturn(cluster::get(endpointId, PushAvStreamTransport::Id) != nullptr,
+                   ChipLogError(AppServer,
+                                "PushAvStreamTransport: cluster missing in esp-matter data model for endpoint %u",
+                                endpointId));
+    auto it = gServers.find(endpointId);
+    VerifyOrReturn(it != gServers.end());
+    VerifyOrReturn(it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer,
                      "Failed to unregister Push AV Stream Transport on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
                      endpointId, err.Format());
     }
-    gServers[endpointId].Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        it->second.Destroy();
+        gServers.erase(it);
+    }
 }
 
 void MatterPushAvStreamTransportPluginServerInitCallback() {}

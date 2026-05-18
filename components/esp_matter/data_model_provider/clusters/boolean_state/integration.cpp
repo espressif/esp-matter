@@ -28,28 +28,32 @@ std::unordered_map<EndpointId, LazyRegisteredServerCluster<BooleanStateCluster>>
 
 void ESPMatterBooleanStateClusterServerInitCallback(EndpointId endpointId)
 {
-    if (gServers[endpointId].IsConstructed()) {
-        return;
+    if (!gServers[endpointId].IsConstructed()) {
+        gServers[endpointId].Create(endpointId);
     }
-
-    gServers[endpointId].Create(endpointId);
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(
+                         gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to register BooleanState on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
-                     endpointId, err.Format());
+        ChipLogError(AppServer, "Failed to register BooleanState on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
+                     err.Format());
     }
 }
 
 void ESPMatterBooleanStateClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[endpointId].Cluster(), shutdownType);
+    auto it = gServers.find(endpointId);
+    VerifyOrReturn(it != gServers.end());
+    VerifyOrReturn(it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to unregister BooleanState on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
-                     endpointId, err.Format());
+        ChipLogError(AppServer, "Failed to unregister BooleanState on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
+                     err.Format());
     }
-    gServers[endpointId].Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        it->second.Destroy();
+        gServers.erase(it);
+    }
 }
 
 void MatterBooleanStatePluginServerInitCallback() {}

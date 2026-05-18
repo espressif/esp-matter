@@ -28,17 +28,15 @@ std::unordered_map<EndpointId, LazyRegisteredServerCluster<BindingCluster>> gSer
 
 void ESPMatterBindingClusterServerInitCallback(EndpointId endpointId)
 {
-    if (gServers[endpointId].IsConstructed()) {
-        return;
+    if (!gServers[endpointId].IsConstructed()) {
+        gServers[endpointId].Create(
+        BindingCluster::Context{
+            .bindingTable    = Binding::Table::GetInstance(),
+            .bindingManager  = Binding::Manager::GetInstance(),
+            .platformManager = DeviceLayer::PlatformMgr(),
+        },
+        endpointId);
     }
-
-    gServers[endpointId].Create(
-    BindingCluster::Context{
-        .bindingTable    = Binding::Table::GetInstance(),
-        .bindingManager  = Binding::Manager::GetInstance(),
-        .platformManager = DeviceLayer::PlatformMgr(),
-    },
-    endpointId);
 
     CHIP_ERROR err =
         esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
@@ -50,13 +48,19 @@ void ESPMatterBindingClusterServerInitCallback(EndpointId endpointId)
 
 void ESPMatterBindingClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[endpointId].Cluster(), shutdownType);
+    auto it = gServers.find(endpointId);
+    VerifyOrReturn(it != gServers.end());
+    VerifyOrReturn(it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister Binding on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
                      err.Format());
     }
-    gServers[endpointId].Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        it->second.Destroy();
+        gServers.erase(it);
+    }
 }
 
 void MatterBindingPluginServerInitCallback() {}

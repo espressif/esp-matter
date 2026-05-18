@@ -47,44 +47,48 @@ bool IsAttributeEnabled(EndpointId endpointId, AttributeId attributeId)
 
 void ESPMatterWiFiNetworkDiagnosticsClusterServerInitCallback(EndpointId endpointId)
 {
-    if (!IsClusterEnabled(endpointId)) {
-        if (gServers[endpointId].IsConstructed()) {
-            return;
+    VerifyOrReturn(IsClusterEnabled(endpointId));
+    if (!gServers[endpointId].IsConstructed()) {
+        WiFiDiagnosticsServerCluster::OptionalAttributeSet attrSet;
+        if (IsAttributeEnabled(endpointId, WiFiNetworkDiagnostics::Attributes::CurrentMaxRate::Id)) {
+            attrSet.Set<WiFiNetworkDiagnostics::Attributes::CurrentMaxRate::Id>();
         }
-        ChipLogError(AppServer,
-                     "WiFiNetworkDiagnostics: cluster missing in esp-matter data model for endpoint %u", endpointId);
-        return;
-    }
-    WiFiDiagnosticsServerCluster::OptionalAttributeSet attrSet;
-    if (IsAttributeEnabled(endpointId, WiFiNetworkDiagnostics::Attributes::CurrentMaxRate::Id)) {
-        attrSet.Set<WiFiNetworkDiagnostics::Attributes::CurrentMaxRate::Id>();
-    }
 
-    // NOTE: Currently, diagnostics only support a single provider (DeviceLayer::GetDiagnosticDataProvider())
-    // and do not properly support secondary network interfaces or per-endpoint diagnostics.
-    // See issue:#40317
-    gServers[endpointId].Create(endpointId, DeviceLayer::GetDiagnosticDataProvider(), attrSet,
-                                BitFlags<WiFiNetworkDiagnostics::Feature>(
-                                    read_feature_map_u32(endpointId, WiFiNetworkDiagnostics::Id)));
-
-    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
+        // NOTE: Currently, diagnostics only support a single provider (DeviceLayer::GetDiagnosticDataProvider())
+        // and do not properly support secondary network interfaces or per-endpoint diagnostics.
+        // See issue:#40317
+        gServers[endpointId].Create(endpointId, DeviceLayer::GetDiagnosticDataProvider(), attrSet,
+                                    BitFlags<WiFiNetworkDiagnostics::Feature>(
+                                        read_feature_map_u32(endpointId, WiFiNetworkDiagnostics::Id)));
+    }
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(
+                         gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to register WiFiNetworkDiagnostics on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
+        ChipLogError(AppServer, "Failed to register WiFiNetworkDiagnostics on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
+                     endpointId,
                      err.Format());
     }
 }
 
 // This callback is called for any endpoint (fixed or dynamic) that is registered with the Ember machinery.
-void ESPMatterWiFiNetworkDiagnosticsClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
+void ESPMatterWiFiNetworkDiagnosticsClusterServerShutdownCallback(EndpointId endpointId,
+                                                                  ClusterShutdownType shutdownType)
 {
-
-    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[endpointId].Cluster(), shutdownType);
+    VerifyOrReturn(IsClusterEnabled(endpointId));
+    auto it = gServers.find(endpointId);
+    VerifyOrReturn(it != gServers.end());
+    VerifyOrReturn(it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to unregister WiFiNetworkDiagnostics on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
+        ChipLogError(AppServer, "Failed to unregister WiFiNetworkDiagnostics on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
+                     endpointId,
                      err.Format());
     }
-
-    gServers[endpointId].Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        it->second.Destroy();
+        gServers.erase(it);
+    }
 }
 
 void MatterWiFiNetworkDiagnosticsPluginServerInitCallback() {}

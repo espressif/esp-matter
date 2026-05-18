@@ -85,59 +85,58 @@ ValveConfigurationAndControlCluster::OptionalAttributeSet BuildOptionalSet(Endpo
 
 void ESPMatterValveConfigurationAndControlClusterServerInitCallback(EndpointId endpointId)
 {
-    cluster_t *cluster = cluster::get(endpointId, ValveConfigurationAndControl::Id);
-    VerifyOrReturn(cluster != nullptr,
+    VerifyOrReturn(cluster::get(endpointId, ValveConfigurationAndControl::Id) != nullptr,
                    ChipLogError(AppServer,
                                 "ValveConfigurationAndControl: cluster missing in esp-matter data model for endpoint %u",
                                 endpointId));
+    if (!gServers[endpointId].IsConstructed()) {
+        const uint32_t featureMap = read_feature_map_u32(endpointId, ValveConfigurationAndControl::Id);
+        const auto optionalSet    = BuildOptionalSet(endpointId);
 
-    if (gServers[endpointId].IsConstructed()) {
-        return;
+        DataModel::Nullable<uint32_t> defaultOpenDuration = ReadNullableU32(endpointId, Attributes::DefaultOpenDuration::Id);
+        Percent defaultOpenLevel = ReadU8OrDefault(endpointId, Attributes::DefaultOpenLevel::Id,
+                                                   ValveConfigurationAndControlCluster::kDefaultOpenLevel);
+        uint8_t levelStep = ReadU8OrDefault(endpointId, Attributes::LevelStep::Id,
+                                            ValveConfigurationAndControlCluster::kDefaultLevelStep);
+
+        ValveConfigurationAndControlCluster::StartupConfiguration startupConfig{ .defaultOpenDuration = defaultOpenDuration,
+                                                                                 .defaultOpenLevel    = defaultOpenLevel,
+                                                                                 .levelStep           = levelStep };
+
+        ValveConfigurationAndControlCluster::ValveContext context = {
+            .features             = BitFlags<ValveConfigurationAndControl::Feature>(featureMap),
+            .optionalAttributeSet = optionalSet,
+            .config               = startupConfig,
+            .tsTracker            = nullptr,
+            .delegate             = nullptr,
+        };
+
+        gServers[endpointId].Create(endpointId, context);
     }
-
-    const uint32_t featureMap = read_feature_map_u32(endpointId, ValveConfigurationAndControl::Id);
-    const auto optionalSet    = BuildOptionalSet(endpointId);
-
-    DataModel::Nullable<uint32_t> defaultOpenDuration = ReadNullableU32(endpointId, Attributes::DefaultOpenDuration::Id);
-    Percent defaultOpenLevel =
-        ReadU8OrDefault(endpointId, Attributes::DefaultOpenLevel::Id, ValveConfigurationAndControlCluster::kDefaultOpenLevel);
-    uint8_t levelStep = ReadU8OrDefault(endpointId, Attributes::LevelStep::Id, ValveConfigurationAndControlCluster::kDefaultLevelStep);
-
-    ValveConfigurationAndControlCluster::StartupConfiguration startupConfig{ .defaultOpenDuration = defaultOpenDuration,
-                                                                             .defaultOpenLevel    = defaultOpenLevel,
-                                                                             .levelStep           = levelStep };
-
-    ValveConfigurationAndControlCluster::ValveContext context = {
-        .features             = BitFlags<ValveConfigurationAndControl::Feature>(featureMap),
-        .optionalAttributeSet = optionalSet,
-        .config               = startupConfig,
-        .tsTracker            = nullptr,
-        .delegate             = nullptr,
-    };
-
-    gServers[endpointId].Create(endpointId, context);
-
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(
+                         gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "ValveConfigurationAndControl register failed ep %u: %" CHIP_ERROR_FORMAT, endpointId, err.Format());
-        gServers[endpointId].Destroy();
+        ChipLogError(AppServer, "ValveConfigurationAndControl register failed ep %u: %" CHIP_ERROR_FORMAT, endpointId,
+                     err.Format());
     }
 }
 
-void ESPMatterValveConfigurationAndControlClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
+void ESPMatterValveConfigurationAndControlClusterServerShutdownCallback(EndpointId endpointId,
+                                                                        ClusterShutdownType shutdownType)
 {
     auto it = gServers.find(endpointId);
-    if (it == gServers.end() || !it->second.IsConstructed()) {
-        return;
-    }
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(), shutdownType);
+    VerifyOrReturn(it != gServers.end());
+    VerifyOrReturn(it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "ValveConfigurationAndControl unregister failed ep %u: %" CHIP_ERROR_FORMAT, endpointId,
                      err.Format());
     }
-    it->second.Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        it->second.Destroy();
+        gServers.erase(it);
+    }
 }
 
 void MatterValveConfigurationAndControlPluginServerInitCallback() {}

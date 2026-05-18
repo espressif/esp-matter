@@ -8,6 +8,8 @@
 #include <esp_matter_core.h>
 #include <nvs_flash.h>
 
+#include "common.h"
+
 using namespace esp_matter;
 using namespace chip::app::Clusters;
 
@@ -57,6 +59,7 @@ void setup_for_get_val()
     TEST_ASSERT_NOT_NULL(test_endpoint);
 
     test_endpoint_id = endpoint::get_id(test_endpoint);
+    test::suppress_matter_logs();
     err = esp_matter::start(nullptr);
     TEST_ASSERT_EQUAL(ESP_OK, err);
 

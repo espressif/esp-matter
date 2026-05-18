@@ -94,44 +94,44 @@ BooleanStateConfigurationCluster *FindClusterOnEndpoint(EndpointId endpointId)
 
 void ESPMatterBooleanStateConfigurationClusterServerInitCallback(EndpointId endpointId)
 {
-    if (gServers[endpointId].IsConstructed()) {
-        return;
+    if (!gServers[endpointId].IsConstructed()) {
+        BitMask<Feature> featureMap;
+        uint8_t supportedSensitivityLevels = 0, defaultSensitivityLevel = 0;
+        AlarmModeBitmap alarmsSupported = AlarmModeBitmap::kAudible;
+        BooleanStateConfigurationCluster::OptionalAttributesSet optionalAttrSet;
+
+        CHIP_ERROR err = GetClusterConfig(endpointId, featureMap, supportedSensitivityLevels, defaultSensitivityLevel,
+                                          alarmsSupported, optionalAttrSet);
+        VerifyOrReturn(err == CHIP_NO_ERROR, ChipLogError(AppServer,
+                                                          "Failed to get config of BooleanStateConfiguration - Error %" CHIP_ERROR_FORMAT, err.Format()));
+
+        gServers[endpointId].Create(endpointId, featureMap, optionalAttrSet,
+        BooleanStateConfigurationCluster::StartupConfiguration{
+            .supportedSensitivityLevels = supportedSensitivityLevels,
+            .defaultSensitivityLevel = defaultSensitivityLevel,
+            .alarmsSupported = alarmsSupported,
+        });
     }
-    BitMask<Feature> featureMap;
-    uint8_t supportedSensitivityLevels = 0, defaultSensitivityLevel = 0;
-    AlarmModeBitmap alarmsSupported = AlarmModeBitmap::kAudible;
-    BooleanStateConfigurationCluster::OptionalAttributesSet optionalAttrSet;
-    CHIP_ERROR err = GetClusterConfig(endpointId, featureMap, supportedSensitivityLevels, defaultSensitivityLevel,
-                                      alarmsSupported, optionalAttrSet);
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(
+                         gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to get config of BooleanStateConfiguration - Error %" CHIP_ERROR_FORMAT,
-                     err.Format());
-        return;
-    }
-    gServers[endpointId].Create(endpointId, featureMap, optionalAttrSet,
-    BooleanStateConfigurationCluster::StartupConfiguration{
-        .supportedSensitivityLevels = supportedSensitivityLevels,
-        .defaultSensitivityLevel = defaultSensitivityLevel,
-        .alarmsSupported = alarmsSupported,
-    });
-    err = esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
-    if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to register BooleanStateConfiguration - Error %" CHIP_ERROR_FORMAT,
-                     err.Format());
+        ChipLogError(AppServer, "Failed to register BooleanStateConfiguration - Error %" CHIP_ERROR_FORMAT, err.Format());
     }
 }
 
 void ESPMatterBooleanStateConfigurationClusterServerShutdownCallback(EndpointId endpointId,
                                                                      ClusterShutdownType shutdownType)
 {
-    if (!gServers[endpointId].IsConstructed()) {
-        return;
-    }
-    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(
-                         &gServers[endpointId].Cluster(), shutdownType);
+    auto it = gServers.find(endpointId);
+    VerifyOrReturn(it != gServers.end());
+    VerifyOrReturn(it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster(),
+                                                                                            shutdownType);
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to unregister BooleanStateConfiguration - Error %" CHIP_ERROR_FORMAT,
-                     err.Format());
+        ChipLogError(AppServer, "Failed to unregister BooleanStateConfiguration - Error %" CHIP_ERROR_FORMAT, err.Format());
     }
-    gServers[endpointId].Destroy();
+    if (shutdownType == ClusterShutdownType::kPermanentRemove) {
+        it->second.Destroy();
+        gServers.erase(it);
+    }
 }
