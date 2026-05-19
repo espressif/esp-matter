@@ -145,7 +145,9 @@ typedef struct config {
     cluster::access_control::config_t access_control;
     cluster::basic_information::config_t basic_information;
     cluster::general_commissioning::config_t general_commissioning;
+#ifndef CONFIG_CUSTOM_NETWORK_CONFIG
     cluster::network_commissioning::config_t network_commissioning;
+#endif
     cluster::general_diagnostics::config_t general_diagnostics;
     cluster::administrator_commissioning::config_t administrator_commissioning;
     cluster::operational_credentials::config_t operational_credentials;
