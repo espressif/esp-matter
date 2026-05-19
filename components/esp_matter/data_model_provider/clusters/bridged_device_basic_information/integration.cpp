@@ -23,28 +23,43 @@
 #include <clusters/BridgedDeviceBasicInformation/Events.h>
 #include <lib/support/CodeUtils.h>
 #include <lib/support/logging/CHIPLogging.h>
+#include <platform/PlatformManager.h>
 #include <tracing/macros.h>
 
 using namespace chip;
 using namespace chip::app;
 using namespace chip::app::Clusters;
 using namespace chip::app::Clusters::BridgedDeviceBasicInformation;
+using chip::DeviceLayer::PlatformMgr;
 using chip::Protocols::InteractionModel::Status;
 
 namespace {
 
-void ReachableChanged(EndpointId endpointId)
+void EmitReachableChangedEvent(intptr_t arg)
 {
+    VerifyOrReturn(arg != 0);
+    const EndpointId endpointId = static_cast<EndpointId>(arg);
     MATTER_TRACE_INSTANT("ReachableChanged", "BridgeBasicInfo");
+
     bool reachable = false;
-    if (Status::Success != Attributes::Reachable::Get(endpointId, &reachable)) {
-        ChipLogError(Zcl, "ReachableChanged: Failed to get Reachable value");
+    const Status status = Attributes::Reachable::Get(endpointId, &reachable);
+    if (status != Status::Success) {
+        ChipLogError(AppServer, "BridgedDeviceBasicInfo: ReachableChanged: failed to read Reachable on ep %u", endpointId);
         return;
     }
 
     Events::ReachableChanged::Type event{ reachable };
     EventNumber eventNumber;
     LogErrorOnFailure(LogEvent(event, endpointId, eventNumber));
+}
+
+void ScheduleReachableChangedEvent(EndpointId endpointId)
+{
+    CHIP_ERROR err = PlatformMgr().ScheduleWork(EmitReachableChangedEvent, static_cast<intptr_t>(endpointId));
+    if (err != CHIP_NO_ERROR) {
+        ChipLogError(AppServer, "BridgedDeviceBasicInfo: ReachableChanged: ScheduleWork failed: %" CHIP_ERROR_FORMAT,
+                     err.Format());
+    }
 }
 
 } // namespace
@@ -60,7 +75,7 @@ void MatterBridgedDeviceBasicInformationClusterServerAttributeChangedCallback(co
 
     switch (attributePath.mAttributeId) {
     case Attributes::Reachable::Id:
-        ReachableChanged(attributePath.mEndpointId);
+        ScheduleReachableChangedEvent(attributePath.mEndpointId);
         break;
     default:
         break;
