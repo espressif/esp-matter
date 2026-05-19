@@ -1,0 +1,12 @@
+dependencies:
+  espressif/cmake_utilities:
+    version: "^1"
+    rules: # will add "optional_component" only when all if clauses are True
+      - if: "idf_version >=5.0"
+      - if: "target in [esp32c2]"
+  esp_bsp_devkit:
+    version: "^3"
+  espressif/led_strip:
+    version: "^2.0.0"
+  espressif/button:
+    version: "^4"
