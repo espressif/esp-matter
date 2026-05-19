@@ -2362,8 +2362,6 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *switch_cluster = cluster::switch_cluster::create(endpoint, &(config->switch_cluster), CLUSTER_FLAG_SERVER);
     cluster::switch_cluster::feature::momentary_switch::add(switch_cluster);
     cluster::chime::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
-    cluster_t *binding_cluster = binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
-    VerifyOrReturnValue(binding_cluster != nullptr, NULL, ESP_LOGE("doorbell", "Failed to create binding cluster"));
 
     return ESP_OK;
 }
@@ -2398,8 +2396,6 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster::webrtc_transport_provider::create(endpoint, &(config->webrtc_transport_provider), CLUSTER_FLAG_SERVER);
     cluster::webrtc_transport_requestor::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
     cluster::chime::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
-    cluster_t *binding_cluster = binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
-    VerifyOrReturnValue(binding_cluster != nullptr, NULL, ESP_LOGE("audio_doorbell", "Failed to create binding cluster"));
 
     return ESP_OK;
 }
