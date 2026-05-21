@@ -31,7 +31,9 @@ namespace secondary_network_interface {
 
 typedef struct config {
     cluster::descriptor::config_t descriptor;
+#if !defined(CONFIG_CUSTOM_NETWORK_CONFIG)
     cluster::network_commissioning::config_t network_commissioning;
+#endif // !defined(CONFIG_CUSTOM_NETWORK_CONFIG)
 } config_t;
 
 uint32_t get_device_type_id();

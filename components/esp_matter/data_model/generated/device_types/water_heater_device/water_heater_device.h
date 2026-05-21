@@ -36,7 +36,6 @@ typedef struct config {
     cluster::water_heater_management::config_t water_heater_management;
     cluster::water_heater_mode::config_t water_heater_mode;
     cluster::thermostat::config_t thermostat;
-    cluster::thermostat::feature::heating::config_t thermostat_heating;
 } config_t;
 
 uint32_t get_device_type_id();

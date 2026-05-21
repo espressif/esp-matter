@@ -33,6 +33,9 @@
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
 #include <thread_network_diagnostics.h>
 #endif
+#if defined(CONFIG_SUPPORT_GROUPCAST_CLUSTER)
+#include <groupcast.h>
+#endif
 
 #include <esp_matter_core.h>
 
@@ -48,18 +51,34 @@ typedef struct config {
     cluster::access_control::config_t access_control;
     cluster::basic_information::config_t basic_information;
     cluster::general_commissioning::config_t general_commissioning;
+#if !defined(CONFIG_CUSTOM_NETWORK_CONFIG)
     cluster::network_commissioning::config_t network_commissioning;
+#endif // !defined(CONFIG_CUSTOM_NETWORK_CONFIG)
     cluster::general_diagnostics::config_t general_diagnostics;
     cluster::administrator_commissioning::config_t administrator_commissioning;
     cluster::operational_credentials::config_t operational_credentials;
     cluster::group_key_management::config_t group_key_management;
+#if CHIP_CONFIG_ENABLE_ICD_SERVER
     cluster::icd_management::config_t icd_management;
+#if CHIP_CONFIG_ENABLE_ICD_LIT
+    cluster::icd_management::feature::long_idle_time_support::config_t icd_management_long_idle_time_support;
+#endif // CHIP_CONFIG_ENABLE_ICD_LIT
+#if CHIP_CONFIG_ENABLE_ICD_CIP
+    cluster::icd_management::feature::check_in_protocol_support::config_t icd_management_check_in_protocol_support;
+#endif // CHIP_CONFIG_ENABLE_ICD_CIP
+#if CHIP_CONFIG_ENABLE_ICD_UAT
+    cluster::icd_management::feature::user_active_mode_trigger::config_t icd_management_user_active_mode_trigger;
+#endif // CHIP_CONFIG_ENABLE_ICD_UAT
+#endif // CHIP_CONFIG_ENABLE_ICD_SERVER
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
     cluster::wi_fi_network_diagnostics::config_t wi_fi_network_diagnostics;
-#endif
+#endif // CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
     cluster::thread_network_diagnostics::config_t thread_network_diagnostics;
-#endif
+#endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
+#if defined(CONFIG_SUPPORT_GROUPCAST_CLUSTER)
+    cluster::groupcast::config_t groupcast;
+#endif // defined(CONFIG_SUPPORT_GROUPCAST_CLUSTER)
 } config_t;
 
 uint32_t get_device_type_id();

@@ -35,9 +35,6 @@ typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::binding::config_t binding;
     cluster::camera_av_stream_management::config_t camera_av_stream_management;
-    cluster::camera_av_stream_management::feature::audio::config_t camera_av_stream_management_audio;
-    cluster::camera_av_stream_management::feature::video::config_t camera_av_stream_management_video;
-    cluster::camera_av_stream_management::feature::snapshot::config_t camera_av_stream_management_snapshot;
     cluster::webrtc_transport_provider::config_t webrtc_transport_provider;
 } config_t;
 

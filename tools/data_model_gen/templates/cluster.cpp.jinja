@@ -90,9 +90,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = esp_matter::cluster::create(endpoint, {{ cluster.esp_name }}::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, {{ cluster.esp_name }}::Id));
-    {% if cluster.has_special_config() %}
-    #if {{ cluster.get_special_config() }}
-    {% endif %}
+{% if cluster.has_special_config() %}
+#if {{ cluster.get_special_config() }}
+{% endif %}
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
         {% if cluster.delegate_init_callback %}
@@ -108,17 +108,15 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, {% if cluster.has_choice_features() and cluster.get_features() | length > 0 %}config->feature_flags{% else %}0{% endif %});
+        global::attribute::create_feature_map(cluster, {% if cluster.has_choice_features() %}config->feature_flags{% else %}0{% endif %});
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
         {% set attrs = cluster.get_mandatory_attributes() %}
-        {% if attrs | length > 0 %}
         {% filter indent(8, true) %}
         {% include "common.attribute.cpp.jinja" %}
         {% endfilter %}
-        {% endif %}
         {% for condition, comp_attrs in cluster.get_comparison_conditional_attributes() %}
         if ({{ condition }}) {
             {% set attrs = comp_attrs %}
@@ -127,13 +125,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             {% endfilter %}
         }
         {% endfor %}
-        {% if cluster.has_choice_features() and cluster.get_features() | length > 0 %}
+        {% if cluster.has_choice_features() %}
 
         {% filter indent(8, true) %}
         {% include "common.feature.cpp.jinja" %}
         {% endfilter %}
         {% endif %}
-        {% if cluster.get_mandatory_commands() | length > 0 %}
         {% for command in cluster.get_mandatory_commands() %}
 {% if command.has_special_config() %}
 #if {{ command.get_special_config() }}
@@ -143,7 +140,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 #endif // {{ command.get_special_config() }}
 {% endif %}
         {% endfor %}
-        {% endif %}
         {% if cluster.get_mandatory_events() | length > 0 %}
         /* Events */
         {% for event in cluster.get_mandatory_events() %}

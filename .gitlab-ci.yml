@@ -923,9 +923,12 @@ data_model_gen_check:
     - git submodule update --init --depth 1 connectedhomeip/connectedhomeip
     # Install data_model_gen dependencies and pre-commit
     - pip install -r ${ESP_MATTER_PATH}/tools/data_model_gen/requirements.txt
-    - pip install pre-commit
+    - pip install pre-commit ruff
     # Regenerate data model from scratch
     - cd ${ESP_MATTER_PATH}/tools/data_model_gen
+    # ruff check the data_model_gen directory
+    - ruff check .
+    - ruff format .
     - python data_model_gen.py --clean --no-colored-logs
     # Format generated code with pre-commit hooks (astyle, codespell, etc.)
     - cd ${ESP_MATTER_PATH}

@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Dict, FrozenSet, Optional, Tuple
+from typing import Dict, FrozenSet, Tuple
 
 from utils.conversion_utils import convert_to_int
 
@@ -165,82 +165,6 @@ CLUSTER_CALLBACK_NAME_OVERRIDES: Dict[int, Tuple[str, str]] = {
 }
 
 
-# ── Special config (preprocessor guards) ────────────────────────────────────
-# (cluster_id, element_id, element_func_name, config_macro)
-# element_id is None for cluster-level configs
-_SPECIAL_CONFIG_DEFS = (
-    # Cluster-level
-    (0x0046, None, "icd_management", "CHIP_CONFIG_ENABLE_ICD_SERVER"),
-    # Attributes
-    (
-        0x0039,
-        0x0012,
-        "endpoint_unique_id",
-        "CHIP_CONFIG_USE_ENDPOINT_UNIQUE_ID",
-    ),  # Bridged Device Basic Info - UniqueID
-    (
-        0x001F,
-        0x0005,
-        "commissioning_arl",
-        "CHIP_CONFIG_USE_ACCESS_RESTRICTIONS",
-    ),  # Access Control
-    (0x001F, 0x0006, "arl", "CHIP_CONFIG_USE_ACCESS_RESTRICTIONS"),  # Access Control
-    # Commands
-    (
-        0x001F,
-        0x0000,
-        "review_fabric_restrictions",
-        "CHIP_CONFIG_USE_ACCESS_RESTRICTIONS",
-    ),  # Access Control
-    # Features
-    (
-        0x0031,
-        0x0001,
-        "wifi_network_interface",
-        "CHIP_DEVICE_CONFIG_ENABLE_WIFI",
-    ),  # Network Commissioning
-    (
-        0x0031,
-        0x0002,
-        "thread_network_interface",
-        "CHIP_DEVICE_CONFIG_ENABLE_THREAD",
-    ),  # Network Commissioning
-    (
-        0x0031,
-        0x0004,
-        "ethernet_network_interface",
-        "CHIP_DEVICE_CONFIG_ENABLE_ETHERNET",
-    ),  # Network Commissioning
-    (
-        0x0046,
-        0x0004,
-        "long_idle_time_support",
-        "CHIP_CONFIG_ENABLE_ICD_LIT",
-    ),  # ICD Management
-    (
-        0x0046,
-        0x0001,
-        "check_in_protocol_support",
-        "CHIP_CONFIG_ENABLE_ICD_CIP",
-    ),  # ICD Management
-    (
-        0x0046,
-        0x0002,
-        "user_active_mode_trigger",
-        "CHIP_CONFIG_ENABLE_ICD_UAT",
-    ),  # ICD Management
-    # Events (none currently)
-)
-
-SPECIAL_CONFIG_LIST: Dict[Tuple[int, Optional[int]], str] = {
-    (cid, eid): config for cid, eid, _, config in _SPECIAL_CONFIG_DEFS
-}
-
-_SPECIAL_CONFIG_BY_NAME: Dict[str, str] = {
-    name: config for _, _, name, config in _SPECIAL_CONFIG_DEFS
-}
-
-
 # ── C++ reserved words (name-based — not cluster/element related) ───────────
 # can grow over time as we observe more reserved words in the codebase
 _RESERVED_WORDS_OBSERVED_IN_PRACTICE: FrozenSet[str] = frozenset(
@@ -342,24 +266,3 @@ def get_overridden_cluster_shutdown_callback_name(
     if entry:
         return entry[1]
     return f"ESPMatter{chip_name}ClusterServerShutdownCallback"
-
-
-def get_special_config_for_element(
-    element_name: str, cluster_id: str = None, element_id: str = None
-) -> str:
-    """Look up the special config (preprocessor guard) for an element.
-    Uses (cluster_id, element_id) pair when both are provided,
-    falls back to element_name-based lookup otherwise."""
-    # ID-based lookup with both cluster and element ID
-    if cluster_id is not None and element_id is not None:
-        cid = convert_to_int(cluster_id)
-        eid = convert_to_int(element_id)
-        result = SPECIAL_CONFIG_LIST.get((cid, eid))
-        if result:
-            return result
-
-    # Fallback to name-based lookup
-    if element_name is not None:
-        return _SPECIAL_CONFIG_BY_NAME.get(element_name)
-
-    return None

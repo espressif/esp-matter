@@ -191,7 +191,9 @@ class NotExpr(Expr):
 class ComparisonExpr(Expr):
     """Runtime comparison of a config attribute value against a literal."""
 
-    def __init__(self, config_name: str, literal: int, is_nullable: bool, operator: str):
+    def __init__(
+        self, config_name: str, literal: int, is_nullable: bool, operator: str
+    ):
         self.config_name = config_name
         self.literal = literal
         self.is_nullable = is_nullable

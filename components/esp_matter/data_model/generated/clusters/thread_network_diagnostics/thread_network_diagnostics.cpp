@@ -569,6 +569,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = esp_matter::cluster::create(endpoint, thread_network_diagnostics::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, thread_network_diagnostics::Id));
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
         static const auto plugin_server_init_cb = CALL_ONCE(MatterThreadNetworkDiagnosticsPluginServerInitCallback);
@@ -602,6 +603,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterThreadNetworkDiagnosticsClusterServerInitCallback,
                                                  ESPMatterThreadNetworkDiagnosticsClusterServerShutdownCallback);
     }
+#endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
 
     return cluster;
 }

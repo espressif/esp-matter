@@ -32,7 +32,6 @@ from utils.overrides import (  # noqa: E402
     should_skip_internally_managed_flag,
     get_overridden_cluster_init_callback_name,
     get_overridden_cluster_shutdown_callback_name,
-    get_special_config_for_element,
 )
 
 
@@ -244,57 +243,6 @@ class TestCallbackNameOverrides(unittest.TestCase):
     def test_no_override(self):
         result = get_overridden_cluster_init_callback_name("0x0201", "Thermostat")
         self.assertEqual(result, "ESPMatterThermostatClusterServerInitCallback")
-
-
-class TestSpecialConfig(unittest.TestCase):
-    """Test special config (preprocessor guard) lookups."""
-
-    def test_icd_management_by_name(self):
-        self.assertEqual(
-            get_special_config_for_element("icd_management"),
-            "CHIP_CONFIG_ENABLE_ICD_SERVER",
-        )
-
-    def test_wifi_feature_by_id(self):
-        # element_name is unused when both cluster_id and element_id resolve
-        # via SPECIAL_CONFIG_LIST, but is still required by the signature.
-        self.assertEqual(
-            get_special_config_for_element(
-                "wifi_network_interface",
-                cluster_id="0x0031",
-                element_id="0x1",
-            ),
-            "CHIP_DEVICE_CONFIG_ENABLE_WIFI",
-        )
-
-    def test_thread_feature_by_name(self):
-        self.assertEqual(
-            get_special_config_for_element("thread_network_interface"),
-            "CHIP_DEVICE_CONFIG_ENABLE_THREAD",
-        )
-
-    def test_no_special_config(self):
-        self.assertIsNone(get_special_config_for_element("on_off"))
-
-    def test_name_fallback_for_feature(self):
-        """Without cluster_id, falls back to name-based lookup."""
-        self.assertEqual(
-            get_special_config_for_element("wifi_network_interface"),
-            "CHIP_DEVICE_CONFIG_ENABLE_WIFI",
-        )
-
-    def test_id_based_with_both_ids(self):
-        """With both cluster_id and element_id, uses precise ID lookup."""
-        # element_name is unused on the ID-based path but still required by
-        # the signature; pass an unrelated name to prove the ID lookup wins.
-        self.assertEqual(
-            get_special_config_for_element(
-                "ignored_name",
-                cluster_id="0x0046",
-                element_id="0x0004",
-            ),
-            "CHIP_CONFIG_ENABLE_ICD_LIT",
-        )
 
 
 if __name__ == "__main__":

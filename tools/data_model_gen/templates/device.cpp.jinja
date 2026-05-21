@@ -20,6 +20,11 @@
 {% if device.has_optional_choice_clusters() -%}
 #include <esp_matter_macros.h>
 {% endif -%}
+{% if device.esp_name == "root_node" %}
+#if CHIP_CONFIG_ENABLE_ICD_SERVER
+#include <esp_matter_icd_configuration.h>
+#endif // CHIP_CONFIG_ENABLE_ICD_SERVER
+{% endif %}
 #include <{{ device.filename }}.h>
 
 using namespace esp_matter;
@@ -61,32 +66,49 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
-    {% for cluster in device.get_clusters() %}
-    {% if cluster.is_mandatory %}
-{% if cluster.esp_name == "network_commissioning"%}
-#ifndef CONFIG_CUSTOM_NETWORK_CONFIG
-{% endif %}
+    {% for cluster in device.get_mandatory_clusters() %}
 {% if cluster.has_special_config() %}
 #if {{ cluster.get_special_config() }}
 {% endif %}
-    {% if cluster.esp_name == "network_commissioning" %}
-#if CHIP_DEVICE_CONFIG_ENABLE_WIFI
-    config->network_commissioning.feature_flags |= cluster::network_commissioning::feature::wi_fi_network_interface::get_id();
-#elif CHIP_DEVICE_CONFIG_ENABLE_THREAD
-    config->network_commissioning.feature_flags |= cluster::network_commissioning::feature::thread_network_interface::get_id();
-#else
-    config->network_commissioning.feature_flags |= cluster::network_commissioning::feature::ethernet_network_interface::get_id();
-#endif
-    {% endif %}
+{% if cluster.esp_name == "icd_management" %}
+    if (icd::get_icd_server_enabled()) {
+{% endif %}
     {% if cluster.server_cluster %}
-{% if cluster.device_mandatory_features and cluster.has_choice_features %}
-{% if cluster.has_choice_features %}
-config->{{ cluster.func_name }}.feature_flags |= {% for mandatory_feature in cluster.device_mandatory_features %}
-cluster::{{ cluster.func_name }}::feature::{{ mandatory_feature.func_name }}::get_id(){% if not loop.last %} | {% endif %}
-{% endfor %};
+{% if cluster.device_mandatory_features and cluster.device_has_choice_features %}
+{% for group in cluster.get_device_feature_flags_groups() %}
+{% if group.constraint == 'exact_one' %}
+{% set has_guards = group.features | selectattr('has_special_config') | list | length > 0 %}
+{% for mandatory_feature in group.features %}
+{% if loop.first %}
+{% if mandatory_feature.has_special_config() %}
+#if {{ mandatory_feature.get_special_config() }}
+{% endif %}
+{% elif loop.last and has_guards %}
+#else
+{% else %}
+{% if mandatory_feature.has_special_config() %}
+#elif {{ mandatory_feature.get_special_config() }}
 {% endif %}
 {% endif %}
-    {% set has_mandatory_items = cluster.device_mandatory_attribute or cluster.device_mandatory_commands or cluster.device_mandatory_events or (cluster.device_mandatory_features and not cluster.has_choice_features) %}
+    config->{{ cluster.func_name }}.feature_flags |= cluster::{{ cluster.func_name }}::feature::{{ mandatory_feature.func_name }}::get_id();
+{% endfor %}
+{% if has_guards %}
+#endif
+{% endif %}
+{% else %}
+{% for mandatory_feature in group.features %}
+{% if mandatory_feature.has_special_config() %}
+#if {{ mandatory_feature.get_special_config() }}
+{% endif %}
+    config->{{ cluster.func_name }}.feature_flags |= cluster::{{ cluster.func_name }}::feature::{{ mandatory_feature.func_name }}::get_id();
+{% if mandatory_feature.has_special_config() %}
+#endif // {{ mandatory_feature.get_special_config() }}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+    {% set has_mandatory_items = cluster.device_mandatory_attributes or cluster.device_mandatory_commands or cluster.device_mandatory_events or (cluster.device_mandatory_features and not cluster.device_has_choice_features) %}
     {% if has_mandatory_items %}
     cluster_t *{{ cluster.esp_name }} = cluster::{{ cluster.esp_name }}::create(endpoint, &(config->{{ cluster.esp_name }}), {{ cluster.function_flags }});
     VerifyOrReturnValue({{ cluster.esp_name }} != NULL, ESP_FAIL, ESP_LOGE("{{ device.esp_name }}", "Failed to create cluster: {{ cluster.esp_name }}"));
@@ -113,8 +135,8 @@ cluster::{{ cluster.func_name }}::feature::{{ mandatory_feature.func_name }}::ge
 #endif // {{ attr.get_special_config() }}
 {% endif %}
     {% endfor %}
-    {% if cluster.device_mandatory_features | length > 0 %}
     {% for mandatory_feature in cluster.device_mandatory_features %}
+    {% if not cluster.device_has_choice_features %}
 {% if mandatory_feature.has_special_config() %}
 #if {{ mandatory_feature.get_special_config() }}
 {% endif %}
@@ -126,9 +148,8 @@ cluster::{{ cluster.func_name }}::feature::{{ mandatory_feature.func_name }}::ge
 {% if mandatory_feature.has_special_config() %}
 #endif // {{ mandatory_feature.get_special_config() }}
 {% endif %}
-    {% endfor %}
     {% endif %}
-    {% if cluster.device_mandatory_commands | length > 0 %}
+    {% endfor %}
     {% for mandatory_command in cluster.device_mandatory_commands %}
 {% if mandatory_command.has_special_config() %}
 #if {{ mandatory_command.get_special_config() }}
@@ -138,8 +159,6 @@ cluster::{{ cluster.func_name }}::feature::{{ mandatory_feature.func_name }}::ge
 #endif // {{ mandatory_command.get_special_config() }}
 {% endif %}
     {% endfor %}
-    {% endif %}
-    {% if cluster.device_mandatory_events | length > 0 %}
     {% for mandatory_event in cluster.device_mandatory_events %}
 {% if mandatory_event.has_special_config() %}
 #if {{ mandatory_event.get_special_config() }}
@@ -149,20 +168,18 @@ cluster::{{ cluster.func_name }}::feature::{{ mandatory_feature.func_name }}::ge
 #endif // {{ mandatory_event.get_special_config() }}
 {% endif %}
     {% endfor %}
-    {% endif %}
     {% else %}
     cluster::{{ cluster.esp_name }}::create(endpoint, &(config->{{ cluster.esp_name }}), {{ cluster.function_flags }});
     {% endif %}
     {% else %}
     cluster::{{ cluster.esp_name }}::create(endpoint, NULL, {{ cluster.function_flags }});
     {% endif %}
-{% if cluster.esp_name == "network_commissioning" %}
-#endif // CONFIG_CUSTOM_NETWORK_CONFIG
+{% if cluster.esp_name == "icd_management" %}
+    }
 {% endif %}
 {% if cluster.has_special_config() %}
 #endif // {{ cluster.get_special_config() }}
 {% endif %}
-    {% endif %}
     {% endfor %}
 {% if device.has_optional_choice_clusters() %}
 
@@ -171,16 +188,6 @@ cluster::{{ cluster.func_name }}::feature::{{ mandatory_feature.func_name }}::ge
         cluster::{{ cluster.esp_name }}::create(endpoint, &(config->{{ cluster.esp_name }}), CLUSTER_FLAG_SERVER);
     }
 {% endfor %}
-{% endif %}
-{% if device.esp_name == "root_node" %}
-
-#if CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
-    cluster::wi_fi_network_diagnostics::create(endpoint, &(config->wi_fi_network_diagnostics), CLUSTER_FLAG_SERVER);
-#endif
-
-#if CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
-    cluster::thread_network_diagnostics::create(endpoint, &(config->thread_network_diagnostics), CLUSTER_FLAG_SERVER);
-#endif
 {% endif %}
 {% if device.binding_cluster_available() %}
     binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);

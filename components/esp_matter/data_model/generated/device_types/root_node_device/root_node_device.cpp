@@ -17,6 +17,9 @@
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_core.h>
+#if CHIP_CONFIG_ENABLE_ICD_SERVER
+#include <esp_matter_icd_configuration.h>
+#endif // CHIP_CONFIG_ENABLE_ICD_SERVER
 #include <root_node_device.h>
 
 using namespace esp_matter;
@@ -56,7 +59,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster::access_control::create(endpoint, &(config->access_control), CLUSTER_FLAG_SERVER);
     cluster::basic_information::create(endpoint, &(config->basic_information), CLUSTER_FLAG_SERVER);
     cluster::general_commissioning::create(endpoint, &(config->general_commissioning), CLUSTER_FLAG_SERVER);
-#ifndef CONFIG_CUSTOM_NETWORK_CONFIG
+#if !defined(CONFIG_CUSTOM_NETWORK_CONFIG)
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI
     config->network_commissioning.feature_flags |= cluster::network_commissioning::feature::wi_fi_network_interface::get_id();
 #elif CHIP_DEVICE_CONFIG_ENABLE_THREAD
@@ -65,22 +68,35 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     config->network_commissioning.feature_flags |= cluster::network_commissioning::feature::ethernet_network_interface::get_id();
 #endif
     cluster::network_commissioning::create(endpoint, &(config->network_commissioning), CLUSTER_FLAG_SERVER);
-#endif // CONFIG_CUSTOM_NETWORK_CONFIG
+#endif // !defined(CONFIG_CUSTOM_NETWORK_CONFIG)
     cluster::general_diagnostics::create(endpoint, &(config->general_diagnostics), CLUSTER_FLAG_SERVER);
     cluster::administrator_commissioning::create(endpoint, &(config->administrator_commissioning), CLUSTER_FLAG_SERVER);
     cluster::operational_credentials::create(endpoint, &(config->operational_credentials), CLUSTER_FLAG_SERVER);
     cluster::group_key_management::create(endpoint, &(config->group_key_management), CLUSTER_FLAG_SERVER);
 #if CHIP_CONFIG_ENABLE_ICD_SERVER
-    cluster::icd_management::create(endpoint, &(config->icd_management), CLUSTER_FLAG_SERVER);
+    if (icd::get_icd_server_enabled()) {
+        cluster_t *icd_management = cluster::icd_management::create(endpoint, &(config->icd_management), CLUSTER_FLAG_SERVER);
+        VerifyOrReturnValue(icd_management != NULL, ESP_FAIL, ESP_LOGE("root_node", "Failed to create cluster: icd_management"));
+#if CHIP_CONFIG_ENABLE_ICD_LIT
+        cluster::icd_management::feature::long_idle_time_support::add(icd_management, &(config->icd_management_long_idle_time_support));
+#endif // CHIP_CONFIG_ENABLE_ICD_LIT
+#if CHIP_CONFIG_ENABLE_ICD_CIP
+        cluster::icd_management::feature::check_in_protocol_support::add(icd_management, &(config->icd_management_check_in_protocol_support));
+#endif // CHIP_CONFIG_ENABLE_ICD_CIP
+#if CHIP_CONFIG_ENABLE_ICD_UAT
+        cluster::icd_management::feature::user_active_mode_trigger::add(icd_management, &(config->icd_management_user_active_mode_trigger));
+#endif // CHIP_CONFIG_ENABLE_ICD_UAT
+    }
 #endif // CHIP_CONFIG_ENABLE_ICD_SERVER
-
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
     cluster::wi_fi_network_diagnostics::create(endpoint, &(config->wi_fi_network_diagnostics), CLUSTER_FLAG_SERVER);
-#endif
-
+#endif // CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
     cluster::thread_network_diagnostics::create(endpoint, &(config->thread_network_diagnostics), CLUSTER_FLAG_SERVER);
-#endif
+#endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
+#if defined(CONFIG_SUPPORT_GROUPCAST_CLUSTER)
+    cluster::groupcast::create(endpoint, &(config->groupcast), CLUSTER_FLAG_SERVER);
+#endif // defined(CONFIG_SUPPORT_GROUPCAST_CLUSTER)
     return ESP_OK;
 }
 

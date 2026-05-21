@@ -27,14 +27,15 @@
 {% for cluster in device.get_unique_optional_choice_clusters() %}
 #include <{{ cluster.esp_name }}.h>
 {% endfor %}
-{% if device.esp_name == "root_node" %}
-#if CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
-#include <wi_fi_network_diagnostics.h>
-#endif
-#if CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
-#include <thread_network_diagnostics.h>
+{% for cluster in device.extra_clusters %}
+{% if cluster.has_special_config() %}
+#if {{ cluster.get_special_config() }}
+{% endif %}
+#include <{{ cluster.esp_name }}.h>
+{% if cluster.has_special_config() %}
 #endif
 {% endif %}
+{% endfor %}
 
 #include <esp_matter_core.h>
 
@@ -61,6 +62,9 @@ typedef struct config {
     cluster::binding::config_t binding;
     {% endif %}
     {% for cluster in device.get_unique_mandatory_clusters() %}
+{% if cluster.has_special_config() %}
+#if {{ cluster.get_special_config() }}
+{% endif %}
     {% if cluster.server_cluster %}
     cluster::{{ cluster.esp_name }}::config_t {{ cluster.esp_name }};
     {% for attribute in cluster.device_mandatory_attributes %}
@@ -81,11 +85,20 @@ typedef struct config {
     {% endif %}
     {% endfor %}
     {% for mandatory_feature in cluster.device_mandatory_features %}
-    {% if mandatory_feature.get_externally_managed_attributes() | length > 0 %}
-    cluster::{{ cluster.esp_name }}::feature::{{ mandatory_feature.func_name }}::config_t {{cluster.esp_name}}_{{ mandatory_feature.func_name }};
+    {% if not cluster.device_has_choice_features and mandatory_feature.get_externally_managed_attributes() | length > 0 %}
+{% if mandatory_feature.has_special_config() %}
+#if {{ mandatory_feature.get_special_config() }}
+{% endif %}
+cluster::{{ cluster.esp_name }}::feature::{{ mandatory_feature.func_name }}::config_t {{cluster.esp_name}}_{{ mandatory_feature.func_name }};
+{% if mandatory_feature.has_special_config() %}
+#endif // {{ mandatory_feature.get_special_config() }}
+{% endif %}
     {% endif %}
     {% endfor %}
     {% endif %}
+{% if cluster.has_special_config() %}
+#endif // {{ cluster.get_special_config() }}
+{% endif %}
     {% endfor %}
 {% if device.has_optional_choice_clusters() %}
 {% for cluster in device.get_unique_optional_choice_clusters() %}
@@ -103,14 +116,15 @@ typedef struct config {
 {% endfor %}
 {% set _ = init_list.insert(0, "optional_clusters_mask(0)") %}
 {% endif %}
-{% if device.esp_name == "root_node" %}
-#if CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
-    cluster::wi_fi_network_diagnostics::config_t wi_fi_network_diagnostics;
-#endif
-#if CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
-    cluster::thread_network_diagnostics::config_t thread_network_diagnostics;
-#endif
+{% for cluster in device.extra_clusters %}
+{% if cluster.has_special_config() %}
+#if {{ cluster.get_special_config() }}
 {% endif %}
+    cluster::{{ cluster.esp_name }}::config_t {{ cluster.esp_name }};
+{% if cluster.has_special_config() %}
+#endif // {{ cluster.get_special_config() }}
+{% endif %}
+{% endfor %}
     {% if init_list %}
     config() : {{ init_list | join(", ") }} {}
     {% endif %}

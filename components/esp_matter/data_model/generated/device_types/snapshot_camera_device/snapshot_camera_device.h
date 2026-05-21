@@ -32,7 +32,6 @@ namespace snapshot_camera {
 typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::camera_av_stream_management::config_t camera_av_stream_management;
-    cluster::camera_av_stream_management::feature::snapshot::config_t camera_av_stream_management_snapshot;
 } config_t;
 
 uint32_t get_device_type_id();
