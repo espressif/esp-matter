@@ -35,10 +35,12 @@ if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
         list(APPEND SRC_DIRS_LIST "data_model"
                                   "data_model_provider"
                                   "data_model_provider/clusters"
-                                  "data_model/private")
+                                  "data_model/private"
+                                  "data_model_provider/private")
         list(APPEND INCLUDE_DIRS_LIST "zap_common"
                                       "data_model")
-        list(APPEND PRIV_INCLUDE_DIRS_LIST "data_model/private")
+        list(APPEND PRIV_INCLUDE_DIRS_LIST "data_model/private"
+                                           "data_model_provider/private")
         list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/network-commissioning/CodegenInstance.cpp"
                                       "${MATTER_SDK_PATH}/src/app/clusters/general-commissioning-server/TemporaryTestCoupling.cpp")
     endif(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)

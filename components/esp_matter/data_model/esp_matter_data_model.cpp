@@ -18,12 +18,12 @@
 #include <esp_err.h>
 #include <esp_log.h>
 #include <esp_matter.h>
+#include <esp_matter_attr_data_buffer.h>
 #include <esp_matter_attribute_utils.h>
 #include <esp_matter_core.h>
 #include <esp_matter_data_model.h>
 #include <esp_matter_data_model_priv.h>
 #include <esp_matter_data_model_provider.h>
-#include <esp_matter_attr_data_buffer.h>
 #include <esp_matter_mem.h>
 #include <esp_matter_nvs.h>
 #include <esp_random.h>
@@ -304,9 +304,11 @@ esp_err_t enable(endpoint_t *endpoint)
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     current_endpoint->enabled = true;
     init_identification(endpoint);
-    /* Call the init callbacks for the endpoints which are created after esp_matter::start(). (e.g. for bridged endpoints) */
+    /* Call the init callbacks for the endpoints which are created after esp_matter::start(). (e.g. for bridged
+     * endpoints) */
     if (esp_matter::is_started()) {
-        // Use the lock instead of schedule lambda to ensure the callbacks are invoked before esp_matter::start() returns.
+        // Use the lock instead of schedule lambda to ensure the callbacks are invoked before esp_matter::start()
+        // returns.
         esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
         invoke_init_callbacks_internal(endpoint);
         // Mark the endpoint as dirty so that the data model provider will report the attribute changes.
@@ -348,7 +350,7 @@ bool is_enabled(endpoint_t *endpoint)
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     return current_endpoint->enabled;
 }
-} /* endpoint */
+} // namespace endpoint
 
 namespace attribute {
 
@@ -359,8 +361,8 @@ esp_err_t set_callback(callback_t callback)
     return ESP_OK;
 }
 
-static esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
-                                  uint32_t attribute_id, esp_matter_attr_val_t *val)
+esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
+                           esp_matter_attr_val_t *val)
 {
     if (attribute_callback) {
 #ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
@@ -604,8 +606,7 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, e
             // read from the NVS and store in the attribute's storage
             esp_matter_attr_val_t temp_val;
             temp_val.type = attribute->attribute_val_type;
-            esp_err_t err =
-                get_val_from_nvs(attribute->endpoint_id, attribute->cluster_id, attribute_id, temp_val);
+            esp_err_t err = get_val_from_nvs(attribute->endpoint_id, attribute->cluster_id, attribute_id, temp_val);
             if (err == ESP_OK) {
                 attribute->attribute_val = temp_val.val;
                 attribute_updated = true;
@@ -720,7 +721,7 @@ esp_err_t set_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val, b
 
     VerifyOrReturnError(current_attribute->attribute_val_type == val->type, ESP_ERR_INVALID_ARG,
                         ESP_LOGE(TAG, "Different value type : Expected Type : %u Attempted Type: %u",
-                            current_attribute->attribute_val_type, val->type));
+                                 current_attribute->attribute_val_type, val->type));
 
     if ((current_attribute->flags & ATTRIBUTE_FLAG_MIN_MAX) && current_attribute->bounds) {
         if (compare_attr_val_with_bounds(*val, *current_attribute->bounds) != 0) {
@@ -737,7 +738,7 @@ esp_err_t set_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val, b
     /* Callback to application */
     if (call_callbacks) {
         ESP_RETURN_ON_ERROR(execute_callback(attribute::PRE_UPDATE, current_attribute->endpoint_id,
-                                         current_attribute->cluster_id, current_attribute->attribute_id, val),
+                                             current_attribute->cluster_id, current_attribute->attribute_id, val),
                             TAG, "Failed to execute pre update callback");
     }
     // TODO: call pre attribute change function is the cluster has the flag
@@ -778,16 +779,19 @@ esp_err_t set_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val, b
     if (call_callbacks) {
         execute_callback(attribute::POST_UPDATE, current_attribute->endpoint_id, current_attribute->cluster_id,
                          current_attribute->attribute_id, val);
-
-        cluster_t *cluster = cluster::get(current_attribute->endpoint_id, current_attribute->cluster_id);
-        cluster::function_attribute_change_t attr_change_function =
-            (cluster::function_attribute_change_t)cluster::get_function(cluster, CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION);
-
-        if (attr_change_function) {
-            attr_change_function(chip::app::ConcreteAttributePath(
-                current_attribute->endpoint_id, current_attribute->cluster_id, current_attribute->attribute_id));
-        }
     }
+
+    // This ember attribute callback should be called anyway
+    // TODO: remove the ember attribute change function
+    cluster_t *cluster = cluster::get(current_attribute->endpoint_id, current_attribute->cluster_id);
+    cluster::function_attribute_change_t attr_change_function =
+        (cluster::function_attribute_change_t)cluster::get_function(cluster, CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION);
+
+    if (attr_change_function) {
+        attr_change_function(chip::app::ConcreteAttributePath(
+            current_attribute->endpoint_id, current_attribute->cluster_id, current_attribute->attribute_id));
+    }
+
     if (current_attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE) {
         if (current_attribute->flags & ATTRIBUTE_FLAG_DEFERRED) {
             if (!chip::DeviceLayer::SystemLayer().IsTimerActive(deferred_attribute_write, current_attribute)) {
@@ -861,17 +865,18 @@ static esp_err_t get_val_from_tlv_data(const uint8_t *tlv_data, uint32_t tlv_len
                         ESP_LOGE(TAG, "Failed to get TLV reader for attribute data"));
 
     esp_matter::data_model::attribute_data_decode_buffer data_buffer(val->type);
-    VerifyOrReturnError(data_buffer.Decode(reader) == CHIP_NO_ERROR, ESP_FAIL, ESP_LOGE(TAG, "Failed to decode TLV data"));
+    VerifyOrReturnError(data_buffer.Decode(reader) == CHIP_NO_ERROR, ESP_FAIL,
+                        ESP_LOGE(TAG, "Failed to decode TLV data"));
 
     *val = data_buffer.get_attr_val();
 
     // attribute_data_decode_buffer's destructor frees the buffer so we need to copy the buffer to a new buffer
     // and pass on to the user. This is only required for string and octet string types
 
-    bool is_type_string = (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING
-                            || val->type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING);
-    bool is_type_octet_string = (val->type == ESP_MATTER_VAL_TYPE_OCTET_STRING
-                                    || val->type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING);
+    bool is_type_string =
+        (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING || val->type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING);
+    bool is_type_octet_string =
+        (val->type == ESP_MATTER_VAL_TYPE_OCTET_STRING || val->type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING);
 
     if (is_type_string || is_type_octet_string) {
         // for empty strings, we need to copy at least null terminator
@@ -891,8 +896,8 @@ static esp_err_t get_val_from_tlv_data(const uint8_t *tlv_data, uint32_t tlv_len
 
 // Helper function to find the cluster_id and attribute_id for internally managed attributes
 static esp_err_t find_cluster_and_endpoint_id_for_internally_managed_attribute(const _attribute_base_t *attribute_base,
-                                                                                uint16_t &out_endpoint_id,
-                                                                                uint32_t &out_cluster_id)
+                                                                               uint16_t &out_endpoint_id,
+                                                                               uint32_t &out_cluster_id)
 {
     VerifyOrReturnError(attribute_base, ESP_ERR_INVALID_ARG);
     _node_t *node = (_node_t *)node::get();
@@ -942,7 +947,8 @@ esp_err_t get_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_
     request.path = concrete_path;
     request.readFlags = chip::app::DataModel::ReadFlags::kFabricFiltered;
 
-    chip::app::DataModel::ActionReturnStatus action_return_status = esp_matter::data_model::provider::get_instance().ReadAttribute(request, encoder);
+    chip::app::DataModel::ActionReturnStatus action_return_status =
+        esp_matter::data_model::provider::get_instance().ReadAttribute(request, encoder);
 
     if (action_return_status.IsError()) {
         chip::app::DataModel::ActionReturnStatus::StringStorage storage;
@@ -957,7 +963,7 @@ esp_err_t get_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_
 }
 
 static esp_err_t get_path_from_attribute_handle(const _attribute_t *attribute, uint16_t &endpoint_id,
-                                                    uint32_t &cluster_id, uint32_t &attribute_id)
+                                                uint32_t &cluster_id, uint32_t &attribute_id)
 {
     attribute_id = attribute->attribute_id;
     if (attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY) {
@@ -1011,8 +1017,8 @@ esp_matter_val_type_t get_val_type(uint16_t endpoint_id, uint32_t cluster_id, ui
 }
 
 // Helper function: Set value via WriteAttribute with kInternal flag (for SCI/AAI writable attributes)
-static esp_err_t set_val_via_write_attribute(uint16_t endpoint_id, uint32_t cluster_id,
-                                              uint32_t attribute_id, esp_matter_attr_val_t *val)
+static esp_err_t set_val_via_write_attribute(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
+                                             esp_matter_attr_val_t *val)
 {
     chip::Platform::ScopedMemoryBuffer<uint8_t> tlv_buffer;
     tlv_buffer.Calloc(k_max_tlv_size_to_write_attribute_value);
@@ -1026,7 +1032,9 @@ static esp_err_t set_val_via_write_attribute(uint16_t endpoint_id, uint32_t clus
     //     - 1: <encoded value>
     //   - END_STRUCT
     chip::TLV::TLVType outerContainer;
-    VerifyOrReturnError(writer.StartContainer(chip::TLV::AnonymousTag(), chip::TLV::kTLVType_Structure, outerContainer) == CHIP_NO_ERROR, ESP_FAIL);
+    VerifyOrReturnError(writer.StartContainer(chip::TLV::AnonymousTag(), chip::TLV::kTLVType_Structure,
+                                              outerContainer) == CHIP_NO_ERROR,
+                        ESP_FAIL);
     data_model::attribute_data_encode_buffer encode_buffer(*val);
     VerifyOrReturnError(encode_buffer.Encode(writer, chip::TLV::ContextTag(1)) == CHIP_NO_ERROR, ESP_FAIL);
     VerifyOrReturnError(writer.EndContainer(outerContainer) == CHIP_NO_ERROR, ESP_FAIL);
@@ -1062,7 +1070,8 @@ static esp_err_t set_val_via_write_attribute(uint16_t endpoint_id, uint32_t clus
     return ESP_OK;
 }
 
-esp_err_t set_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val, bool call_callbacks)
+esp_err_t set_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val,
+                  bool call_callbacks)
 {
     VerifyOrReturnError(val && val->type != ESP_MATTER_VAL_TYPE_INVALID, ESP_ERR_INVALID_ARG);
     VerifyOrReturnError(val->type != ESP_MATTER_VAL_TYPE_ARRAY, ESP_ERR_NOT_SUPPORTED);
@@ -1121,10 +1130,11 @@ esp_err_t add_bounds(attribute_t *attribute, esp_matter_attr_val_t min, esp_matt
         ESP_LOGE(TAG, "Bounds cannot be set for string/array/boolean type attributes");
         return ESP_ERR_INVALID_ARG;
     }
-    VerifyOrReturnError(((current_attribute->attribute_val_type == min.type) && (current_attribute->attribute_val_type == max.type)),
-                        ESP_ERR_INVALID_ARG,
-                        ESP_LOGE(TAG, "Cannot set bounds because of val type mismatch: expected: %d, min: %d, max: %d",
-                                 current_attribute->attribute_val_type, min.type, max.type));
+    VerifyOrReturnError(
+        ((current_attribute->attribute_val_type == min.type) && (current_attribute->attribute_val_type == max.type)),
+        ESP_ERR_INVALID_ARG,
+        ESP_LOGE(TAG, "Cannot set bounds because of val type mismatch: expected: %d, min: %d, max: %d",
+                 current_attribute->attribute_val_type, min.type, max.type));
     current_attribute->bounds = (esp_matter_attr_bounds_t *)esp_matter_mem_calloc(1, sizeof(esp_matter_attr_bounds_t));
     if (!current_attribute->bounds) {
         ESP_LOGE(TAG, "Failed to allocate bounds for attribute");
@@ -1747,7 +1757,8 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
             uint8_t flags = cluster::get_flags(cluster);
             if ((flags & CLUSTER_FLAG_SERVER) && (flags & CLUSTER_FLAG_SHUTDOWN_FUNCTION)) {
                 cluster::function_cluster_shutdown_t shutdown_function =
-                    (cluster::function_cluster_shutdown_t)cluster::get_function(cluster, CLUSTER_FLAG_SHUTDOWN_FUNCTION);
+                    (cluster::function_cluster_shutdown_t)cluster::get_function(cluster,
+                                                                                CLUSTER_FLAG_SHUTDOWN_FUNCTION);
                 if (shutdown_function) {
                     shutdown_function(endpoint::get_id(endpoint));
                 }
@@ -1891,7 +1902,8 @@ EndpointCompositionPattern get_composition_pattern(endpoint_t *endpoint)
     return current_endpoint->composition_pattern;
 }
 
-esp_err_t set_semantic_tags(endpoint_t *endpoint, const chip::app::DataModel::Provider::SemanticTag *tags, size_t tag_count)
+esp_err_t set_semantic_tags(endpoint_t *endpoint, const chip::app::DataModel::Provider::SemanticTag *tags,
+                            size_t tag_count)
 {
     VerifyOrReturnValue(endpoint, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Endpoint cannot be NULL"));
     VerifyOrReturnValue(tag_count <= ESP_MATTER_MAX_SEMANTIC_TAG_COUNT, ESP_ERR_INVALID_ARG,

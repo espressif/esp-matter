@@ -33,6 +33,8 @@
 
 #include <cstdint>
 
+#include "esp_matter_attr_val_ember_buffer.h"
+
 using chip::Protocols::InteractionModel::Status;
 
 namespace {
@@ -569,119 +571,6 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
     return Status::Success;
 }
 
-EmberAfAttributeType get_ember_attr_type_from_val_type(esp_matter_val_type_t val_type)
-{
-    switch (val_type) {
-    case ESP_MATTER_VAL_TYPE_BOOLEAN:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BOOLEAN:
-        return ZCL_BOOLEAN_ATTRIBUTE_TYPE;
-    case ESP_MATTER_VAL_TYPE_FLOAT:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT:
-        return ZCL_SINGLE_ATTRIBUTE_TYPE;
-    case ESP_MATTER_VAL_TYPE_OCTET_STRING:
-        return ZCL_OCTET_STRING_ATTRIBUTE_TYPE;
-    case ESP_MATTER_VAL_TYPE_CHAR_STRING:
-        return ZCL_CHAR_STRING_ATTRIBUTE_TYPE;
-    case ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING:
-        return ZCL_LONG_OCTET_STRING_ATTRIBUTE_TYPE;
-    case ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING:
-        return ZCL_LONG_CHAR_STRING_ATTRIBUTE_TYPE;
-    case ESP_MATTER_VAL_TYPE_INT8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT8:
-        return ZCL_INT8S_ATTRIBUTE_TYPE;
-    case ESP_MATTER_VAL_TYPE_BITMAP8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8:
-        return ZCL_BITMAP8_ATTRIBUTE_TYPE;
-    case ESP_MATTER_VAL_TYPE_ENUM8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8:
-        return ZCL_ENUM8_ATTRIBUTE_TYPE;
-    case ESP_MATTER_VAL_TYPE_UINT8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT8:
-        return ZCL_INT8U_ATTRIBUTE_TYPE;
-    case ESP_MATTER_VAL_TYPE_INT16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT16:
-        return ZCL_INT16S_ATTRIBUTE_TYPE;
-    case ESP_MATTER_VAL_TYPE_BITMAP16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16:
-        return ZCL_BITMAP16_ATTRIBUTE_TYPE;
-    case ESP_MATTER_VAL_TYPE_ENUM16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16:
-        return ZCL_ENUM16_ATTRIBUTE_TYPE;
-    case ESP_MATTER_VAL_TYPE_UINT16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT16:
-        return ZCL_INT16U_ATTRIBUTE_TYPE;
-    case ESP_MATTER_VAL_TYPE_INT32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT32:
-        return ZCL_INT32S_ATTRIBUTE_TYPE;
-    case ESP_MATTER_VAL_TYPE_BITMAP32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32:
-        return ZCL_BITMAP32_ATTRIBUTE_TYPE;
-    case ESP_MATTER_VAL_TYPE_UINT32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT32:
-        return ZCL_INT32U_ATTRIBUTE_TYPE;
-    case ESP_MATTER_VAL_TYPE_INT64:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT64:
-        return ZCL_INT64S_ATTRIBUTE_TYPE;
-    case ESP_MATTER_VAL_TYPE_UINT64:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT64:
-        return ZCL_INT64U_ATTRIBUTE_TYPE;
-    default:
-        break;
-    }
-    return ZCL_NO_DATA_ATTRIBUTE_TYPE;
-}
-
-uint16_t get_ember_attr_size_from_val(const esp_matter_attr_val_t &val)
-{
-    switch (val.type) {
-    case ESP_MATTER_VAL_TYPE_BOOLEAN:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BOOLEAN:
-    case ESP_MATTER_VAL_TYPE_INT8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT8:
-    case ESP_MATTER_VAL_TYPE_BITMAP8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8:
-    case ESP_MATTER_VAL_TYPE_ENUM8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8:
-    case ESP_MATTER_VAL_TYPE_UINT8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT8:
-        return 1;
-    case ESP_MATTER_VAL_TYPE_INT16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT16:
-    case ESP_MATTER_VAL_TYPE_BITMAP16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16:
-    case ESP_MATTER_VAL_TYPE_ENUM16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16:
-    case ESP_MATTER_VAL_TYPE_UINT16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT16:
-        return 2;
-    case ESP_MATTER_VAL_TYPE_INT32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT32:
-    case ESP_MATTER_VAL_TYPE_BITMAP32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32:
-    case ESP_MATTER_VAL_TYPE_UINT32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT32:
-        return 4;
-    case ESP_MATTER_VAL_TYPE_INT64:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT64:
-    case ESP_MATTER_VAL_TYPE_UINT64:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT64:
-        return 8;
-
-    case ESP_MATTER_VAL_TYPE_FLOAT:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT:
-        return sizeof(float);
-    case ESP_MATTER_VAL_TYPE_OCTET_STRING:
-    case ESP_MATTER_VAL_TYPE_CHAR_STRING:
-        return (val.val.a.s == UINT8_MAX ? 0 : val.val.a.s) + 1;
-    case ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING:
-    case ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING:
-        return (val.val.a.s == UINT16_MAX ? 0 : val.val.a.s) + 1;
-    default:
-        break;
-    }
-    return 0;
-}
-
 EmberAfDefaultAttributeValue get_default_attr_value_from_val(esp_matter_attr_val_t *val)
 {
     switch (val->type) {
@@ -940,8 +829,9 @@ uint8_t emberAfGetClustersFromEndpoint(chip::EndpointId endpoint, chip::ClusterI
 // door-lock, level-control, target-navigator, fan-control, occupancy-sensor, valve-configuration-and-control,
 // media-playback, content-launch, audio-output, power-source, application-basic, low-power, diagnostic-logs,
 // scenes, color-control, channel, laundry-washer-controls, wake-on-lan, window-covering, content-control,
-// dishwasher-alarm, on-off, media-input, application-launcher, account-login, thermostat, electrical-energy-measurement,
-// content-app-observer, and boolean-state-configuration clusters are decoupled from ember.
+// dishwasher-alarm, on-off, media-input, application-launcher, account-login, thermostat,
+// electrical-energy-measurement, content-app-observer, and boolean-state-configuration clusters are decoupled from
+// ember.
 uint16_t emberAfGetClusterServerEndpointIndex(chip::EndpointId endpoint, chip::ClusterId clusterId,
                                               uint16_t fixedClusterServerEndpointCount)
 {
@@ -1019,21 +909,10 @@ chip::Protocols::InteractionModel::Status emberAfReadAttribute(chip::EndpointId 
     return get_raw_data_buffer_from_attr_val(val, dataPtr, readLength);
 }
 
-chip::Protocols::InteractionModel::Status __attribute__((weak))
-MatterPreAttributeChangeCallback(const chip::app::ConcreteAttributePath  &attributePath, uint8_t type, uint16_t size,
-                                 uint8_t * value)
-{
-    return chip::Protocols::InteractionModel::Status::Success;
-}
-
-void __attribute__((weak))
-MatterPostAttributeChangeCallback(const chip::app::ConcreteAttributePath  &attributePath, uint8_t type, uint16_t size,
-                                  uint8_t * value)
-{}
-
 // This function is used to call the per-cluster pre-attribute changed callback
-Status emAfClusterPreAttributeChangedCallback(const chip::app::ConcreteAttributePath  &attributePath, esp_matter::cluster_t *cluster, EmberAfAttributeType attributeType,
-                                              uint16_t size, uint8_t * value)
+Status emAfClusterPreAttributeChangedCallback(const chip::app::ConcreteAttributePath &attributePath,
+                                              esp_matter::cluster_t *cluster, EmberAfAttributeType attributeType,
+                                              uint16_t size, uint8_t *value)
 {
     Status status = Status::Success;
     esp_matter::cluster::function_pre_attribute_change_t f =
@@ -1049,9 +928,10 @@ Status emAfClusterPreAttributeChangedCallback(const chip::app::ConcreteAttribute
 Status emberAfWriteAttribute(chip::EndpointId endpointId, chip::ClusterId clusterId, chip::AttributeId attributeId,
                              uint8_t *value, EmberAfAttributeType dataType)
 {
-    return emberAfWriteAttribute(chip::app::ConcreteAttributePath(endpointId, clusterId, attributeId),
-                                 EmberAfWriteDataInput(value, dataType).SetChangeListener(
-                                     &chip::app::InteractionModelEngine::GetInstance()->GetReportingEngine()));
+    return emberAfWriteAttribute(
+        chip::app::ConcreteAttributePath(endpointId, clusterId, attributeId),
+        EmberAfWriteDataInput(value, dataType)
+            .SetChangeListener(&chip::app::InteractionModelEngine::GetInstance()->GetReportingEngine()));
 }
 
 Status emberAfWriteAttribute(const chip::app::ConcreteAttributePath &path, const EmberAfWriteDataInput &input)
@@ -1070,18 +950,14 @@ Status emberAfWriteAttribute(const chip::app::ConcreteAttributePath &path, const
     }
 
     const chip::app::ConcreteAttributePath attributePath(path.mEndpointId, path.mClusterId, path.mAttributeId);
-    const EmberAfAttributeMetadata *metadata = emberAfLocateAttributeMetadata(path.mEndpointId, path.mClusterId, path.mAttributeId);
+    const EmberAfAttributeMetadata *metadata =
+        emberAfLocateAttributeMetadata(path.mEndpointId, path.mClusterId, path.mAttributeId);
     if (!metadata) {
         return chip::Protocols::InteractionModel::Status::UnsupportedAttribute;
     }
     // Pre write attribute callback for all attribute changes, regardless of cluster.
-    Status status = MatterPreAttributeChangeCallback(attributePath, input.dataType, emberAfAttributeSize(metadata), input.dataPtr);
-    if (status != Status::Success) {
-        return status;
-    }
-
-    // Pre-write attribute callback specific to the cluster that the attribute lives in.
-    status = emAfClusterPreAttributeChangedCallback(attributePath, cluster, input.dataType, emberAfAttributeSize(metadata), input.dataPtr);
+    Status status = emAfClusterPreAttributeChangedCallback(attributePath, cluster, input.dataType,
+                                                           emberAfAttributeSize(metadata), input.dataPtr);
 
     // Ignore the following write operation and return success
     if (status == Status::WriteIgnored) {
@@ -1095,7 +971,7 @@ Status emberAfWriteAttribute(const chip::app::ConcreteAttributePath &path, const
     esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
     status = get_attr_val_from_raw_data_buffer(input.dataPtr, input.dataType, val,
                                                esp_matter::attribute::get_flags(attribute) &
-                                               esp_matter::ATTRIBUTE_FLAG_NULLABLE);
+                                                   esp_matter::ATTRIBUTE_FLAG_NULLABLE);
     if (status != Status::Success) {
         return status;
     }
@@ -1117,9 +993,6 @@ Status emberAfWriteAttribute(const chip::app::ConcreteAttributePath &path, const
         }
     }
 
-    // Post write attribute callback for all attributes changes, regardless of cluster.
-    MatterPostAttributeChangeCallback(attributePath, input.dataType, emberAfAttributeSize(metadata), input.dataPtr);
-
     return status;
 }
 
@@ -1131,8 +1004,8 @@ const EmberAfAttributeMetadata *emberAfLocateAttributeMetadata(chip::EndpointId 
 {
     static esp_matter_attr_bounds_t sBounds;
     static EmberAfAttributeMinMaxValue sMinMaxValue{EmberAfDefaultAttributeValue(nullptr),
-                                             EmberAfDefaultAttributeValue(nullptr),
-                                             EmberAfDefaultAttributeValue(nullptr)};
+                                                    EmberAfDefaultAttributeValue(nullptr),
+                                                    EmberAfDefaultAttributeValue(nullptr)};
     static EmberAfAttributeMetadata s_metadata{EmberAfDefaultOrMinMaxAttributeValue((uint32_t)0), attributeId, 0, 0, 0};
 
     esp_matter::attribute_t *attribute = esp_matter::attribute::get(endpointId, clusterId, attributeId);

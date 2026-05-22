@@ -14,10 +14,10 @@
 
 #pragma once
 
+#include <app/ConcreteCommandPath.h>
+#include <app/util/attribute-storage.h>
 #include <esp_err.h>
 #include <esp_matter_attribute_utils.h>
-#include <app/util/attribute-storage.h>
-#include <app/ConcreteCommandPath.h>
 
 #include <esp_matter_data_model.h>
 
@@ -25,7 +25,7 @@ namespace esp_matter {
 namespace command {
 void dispatch_single_cluster_command(const chip::app::ConcreteCommandPath &command_path, chip::TLV::TLVReader &tlv_data,
                                      void *opaque_ptr);
-} // command
+} // namespace command
 
 namespace node {
 
@@ -43,7 +43,7 @@ esp_err_t enable_all();
  * @param[in] endpoint Endpoint handle.
  */
 void invoke_init_callbacks_internal(endpoint_t *endpoint);
-}
+} // namespace endpoint
 
 namespace attribute {
 
@@ -56,6 +56,23 @@ namespace attribute {
  * @return error in case of failure.
  */
 esp_err_t get_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val);
+
+/** Execute the attribute update callback
+ *
+ * This function executes the attribute update callback set via set_callback().
+ * This is used internally to notify the application about attribute changes.
+ *
+ * @param[in] type Callback type (PRE_UPDATE or POST_UPDATE).
+ * @param[in] endpoint_id Endpoint ID of the attribute.
+ * @param[in] cluster_id Cluster ID of the attribute.
+ * @param[in] attribute_id Attribute ID of the attribute.
+ * @param[in] val Pointer to the attribute value.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
+                           esp_matter_attr_val_t *val);
 
 /** Set the attribute value in the esp-matter storage
  *
