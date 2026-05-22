@@ -1,0 +1,77 @@
+// Cppcheck suppressions for esp-matter SDK
+// Suppress known false positives from embedded/ESP-IDF patterns
+
+// ESP-IDF macros use patterns cppcheck can't parse without full preprocessor context
+preprocessorErrorDirective
+missingIncludeSystem
+
+// cppcheck without full build context can't resolve all includes
+missingInclude
+
+// Unused function warnings for weak symbols (overridable defaults)
+unusedFunction:*/weak_functions.cpp
+
+// ESP-IDF logging macros (ESP_LOGI etc.) trigger this without full expansion
+syntaxError
+
+// chip::Platform::MemoryAlloc and similar SDK allocators
+memleak
+
+// C-style casts: bulk cleanup planned (346 instances), not bugs
+cstyleCast
+
+// const-correctness: valid but public API change, planned cleanup
+constParameterPointer
+constVariablePointer
+constParameterCallback
+
+// Matter SDK logging macros (ChipLogFormatMEI, ChipLogFormatX64) not visible to cppcheck
+unknownMacro
+
+// False positive: cppcheck can't see VerifyOrReturnError/VerifyOrReturnValue null guards
+legacyUninitvar:*/esp_matter_data_model.cpp
+
+// False positive: cppcheck confuses cast-to-prefixed-name with self-assignment
+selfAssignment:*/esp_matter_data_model.cpp
+
+// nullable<T> intentionally allows implicit conversion from T (like std::optional)
+noExplicitConstructor:*/esp_matter_attribute_utils.h
+
+// Labels used by ESP_GOTO_ON_FALSE/ESP_GOTO_ON_ERROR macros — cppcheck can't see through them
+unusedLabel
+
+// False positive: cppcheck confuses static_cast<size_t> comparison with < 0 check
+unsignedLessThanZero
+
+// False positive: cppcheck can't see through #ifdef CONFIG_* branches
+knownConditionTrueFalse
+
+// container_opened set on success path, checked on error cleanup — not redundant
+redundantAssignment:*/tlv_to_json.cpp
+
+// Intentional uchar* <-> float* for attribute storage buffer manipulation
+invalidPointerCast
+
+// False positive: VerifyOrReturnValue macro guards null before bare config-> access
+nullPointerRedundantCheck:*/esp_matter_cluster.cpp
+
+// Info-only: complex function branching, not actionable
+normalCheckLevelMaxBranches
+
+// engine arrays guarded by _command_set_count, safe
+uninitMemberVar:*/esp_matter_console.h
+
+// Different scopes in same function, renaming adds no clarity
+shadowVariable
+
+// Embedded code, raw loops are clearer than STL algorithms
+useStlAlgorithm
+
+// Used inside #if CHIP_CONFIG_ENABLE_ICD_LIT — conditional compilation
+unreadVariable:*/esp_matter_endpoint.cpp
+
+// Info-only: cppcheck config limitation
+toomanyconfigs
+
+// Small struct, pass-by-value is intentional
+passedByValue

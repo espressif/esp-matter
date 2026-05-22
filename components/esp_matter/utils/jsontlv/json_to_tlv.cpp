@@ -35,7 +35,7 @@ namespace esp_matter {
 constexpr size_t k_max_json_name_len = 64;
 
 struct element_context {
-    element_context() {}
+    element_context() : json_name{}, type(TLV::TLVElementType::NotSpecified), sub_type(TLV::TLVElementType::NotSpecified) {}
     ~element_context() {}
     char json_name[k_max_json_name_len];
     TLV::Tag tag = chip::TLV::AnonymousTag();

@@ -388,7 +388,7 @@ typedef struct config {
     } features;
     uint32_t feature_flags;
     void *delegate;
-    config() : measurement_medium(0), feature_flags(0) {}
+    config() : measurement_medium(0), feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t cluster_id);
@@ -542,7 +542,7 @@ typedef struct config {
     } features;
     uint32_t feature_flags;
     void *delegate;
-    config(uint8_t end_product_type = 0) : type(0), config_status(0), operational_status(0), end_product_type(end_product_type), mode(0), feature_flags(0), delegate(nullptr) {}
+    explicit config(uint8_t end_product_type = 0) : type(0), config_status(0), operational_status(0), end_product_type(end_product_type), mode(0), feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -686,7 +686,7 @@ typedef struct config {
         feature::constant_temperature::config_t constant_temperature;
     } features;
     uint32_t feature_flags;
-    config(
+    explicit config(
         nullable<int16_t> max_pressure = nullable<int16_t>(),
         nullable<uint16_t> max_speed = nullable<uint16_t>(),
         nullable<uint16_t> max_flow = nullable<uint16_t>()

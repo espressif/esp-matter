@@ -13,3 +13,4 @@ tools/chip-tool/
 .zap/
 .DS_Store
 pytest_embedded_log
+cppcheck_report.txt

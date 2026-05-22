@@ -396,10 +396,8 @@ static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_at
             return -1;
         } else if (val.val.u8 > bounds.max.val.u8) {
             return 1;
-        } else {
-            return 0;
         }
-        break;
+        return 0;
     }
     case ESP_MATTER_VAL_TYPE_UINT16:
     case ESP_MATTER_VAL_TYPE_ENUM16:
@@ -415,10 +413,8 @@ static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_at
             return -1;
         } else if (val.val.u16 > bounds.max.val.u16) {
             return 1;
-        } else {
-            return 0;
         }
-        break;
+        return 0;
     }
     case ESP_MATTER_VAL_TYPE_UINT32:
     case ESP_MATTER_VAL_TYPE_BITMAP32:
@@ -432,10 +428,8 @@ static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_at
             return -1;
         } else if (val.val.u32 > bounds.max.val.u32) {
             return 1;
-        } else {
-            return 0;
         }
-        break;
+        return 0;
     }
     case ESP_MATTER_VAL_TYPE_UINT64:
     case ESP_MATTER_VAL_TYPE_NULLABLE_UINT64: {
@@ -447,10 +441,8 @@ static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_at
             return -1;
         } else if (val.val.u64 > bounds.max.val.u64) {
             return 1;
-        } else {
-            return 0;
         }
-        break;
+        return 0;
     }
     case ESP_MATTER_VAL_TYPE_INT8:
     case ESP_MATTER_VAL_TYPE_NULLABLE_INT8: {
@@ -462,10 +454,8 @@ static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_at
             return -1;
         } else if (val.val.i8 > bounds.max.val.i8) {
             return 1;
-        } else {
-            return 0;
         }
-        break;
+        return 0;
     }
     case ESP_MATTER_VAL_TYPE_INT16:
     case ESP_MATTER_VAL_TYPE_NULLABLE_INT16: {
@@ -477,10 +467,8 @@ static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_at
             return -1;
         } else if (val.val.i16 > bounds.max.val.i16) {
             return 1;
-        } else {
-            return 0;
         }
-        break;
+        return 0;
     }
     case ESP_MATTER_VAL_TYPE_INT32:
     case ESP_MATTER_VAL_TYPE_NULLABLE_INT32: {
@@ -492,10 +480,8 @@ static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_at
             return -1;
         } else if (val.val.i32 > bounds.max.val.i32) {
             return 1;
-        } else {
-            return 0;
         }
-        break;
+        return 0;
     }
     case ESP_MATTER_VAL_TYPE_INT64:
     case ESP_MATTER_VAL_TYPE_NULLABLE_INT64: {
@@ -507,10 +493,8 @@ static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_at
             return -1;
         } else if (val.val.i64 > bounds.max.val.i64) {
             return 1;
-        } else {
-            return 0;
         }
-        break;
+        return 0;
     }
     case ESP_MATTER_VAL_TYPE_FLOAT:
     case ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT: {
@@ -522,10 +506,8 @@ static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_at
             return -1;
         } else if (val.val.f > bounds.max.val.f) {
             return 1;
-        } else {
-            return 0;
         }
-        break;
+        return 0;
     }
     default:
         ESP_LOGE(TAG, "Failed to compare_attr_val_with_bounds as the attribute value type is wrong");

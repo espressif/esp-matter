@@ -105,7 +105,6 @@ void EspOtaProvider::SendQueryImageResponse(OTAQueryStatus status)
     }
 
     QueryImageResponse::Type response;
-    char strBuf[kUpdateTokenStrLen] = {0};
 
     // Set fields specific for an available status response
     if (status == OTAQueryStatus::kUpdateAvailable) {
@@ -132,15 +131,16 @@ void EspOtaProvider::SendQueryImageResponse(OTAQueryStatus status)
         if (mOtaBdxSender.InitializeTransfer(mSubjectDescriptor.fabricIndex, mSubjectDescriptor.subject) == ESP_OK) {
             mOtaBdxSender.SetOtaImageUrl(requestor->mOtaImageUrl);
             ESP_LOGI(TAG, "Bdx Sender will query the OTA image from %s", requestor->mOtaImageUrl);
-            CHIP_ERROR error = mOtaBdxSender.PrepareForTransfer(mSystemLayer, chip::bdx::TransferRole::kSender,
-                                                                bdxFlags, kMaxBdxBlockSize, kBdxTimeout,
-                                                                chip::System::Clock::Milliseconds32(mPollInterval));
-            if (error != CHIP_NO_ERROR) {
-                ESP_LOGE(TAG, "Cannot prepare for transfer: %" CHIP_ERROR_FORMAT, error.Format());
+            CHIP_ERROR bdx_error = mOtaBdxSender.PrepareForTransfer(mSystemLayer, chip::bdx::TransferRole::kSender,
+                                                                    bdxFlags, kMaxBdxBlockSize, kBdxTimeout,
+                                                                    chip::System::Clock::Milliseconds32(mPollInterval));
+            if (bdx_error != CHIP_NO_ERROR) {
+                ESP_LOGE(TAG, "Cannot prepare for transfer: %" CHIP_ERROR_FORMAT, bdx_error.Format());
                 commandHandle->AddStatus(mPath, Status::Failure);
                 return;
             }
             GenerateUpdateToken(requestor->mUpdateToken, kUpdateTokenLen);
+            char strBuf[kUpdateTokenStrLen] = {0};
             GetUpdateTokenString(ByteSpan(requestor->mUpdateToken), strBuf, kUpdateTokenStrLen);
             ESP_LOGD(TAG, "Generated updateToken: %s", strBuf);
 

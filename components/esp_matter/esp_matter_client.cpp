@@ -288,7 +288,7 @@ using chip::TLV::TLVWriter;
 
 class client_deleter_read_callback : public ReadClient::Callback {
 public:
-    client_deleter_read_callback(ReadClient::Callback &callback)
+    explicit client_deleter_read_callback(ReadClient::Callback &callback)
         : m_callback(callback)
     {
     }
@@ -451,7 +451,7 @@ static constexpr size_t k_encoded_buf_size = chip::kMaxAppMessageLen;
 
 class client_deleter_write_callback : public WriteClient::Callback {
 public:
-    client_deleter_write_callback(WriteClient::Callback &callback)
+    explicit client_deleter_write_callback(WriteClient::Callback &callback)
         : m_callback(callback)
     {
     }

@@ -146,10 +146,9 @@ status_t ScopedChipStackLock::chip_stack_lock(uint32_t ticks_to_wait)
 #endif
     VerifyOrReturnValue(ticks_to_wait != portMAX_DELAY, SUCCESS, PlatformMgr().LockChipStack());
     uint32_t ticks_remaining = ticks_to_wait;
-    uint32_t ticks = DEFAULT_TICKS;
     while (ticks_remaining > 0) {
         VerifyOrReturnValue(!PlatformMgr().TryLockChipStack(), SUCCESS);
-        ticks = ticks_remaining < DEFAULT_TICKS ? ticks_remaining : DEFAULT_TICKS;
+        uint32_t ticks = ticks_remaining < DEFAULT_TICKS ? ticks_remaining : DEFAULT_TICKS;
         ticks_remaining -= ticks;
         ESP_LOGI(TAG, "Did not get lock yet. Retrying...");
         vTaskDelay(ticks);

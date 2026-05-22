@@ -829,6 +829,24 @@ pre_commit_check:
   tags:
     - build
 
+cppcheck:
+  image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
+  stage: pre_check
+  allow_failure: true
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq cppcheck > /dev/null 2>&1
+  script:
+    - ${ESP_MATTER_PATH}/tools/ci/run_cppcheck.sh
+  artifacts:
+    paths:
+      - cppcheck_report.txt
+    expire_in: 1 week
+    when: always
+  tags:
+    - build
+
 data_model_gen_unit_tests:
   image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
   stage: pre_check
