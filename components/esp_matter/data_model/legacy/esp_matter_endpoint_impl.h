@@ -1223,7 +1223,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 }
 
 namespace doorbell {
-typedef struct config : app_client_config {
+typedef struct config : app_base_config {
     cluster::switch_cluster::config_t switch_cluster;
 } config_t;
 
@@ -1234,7 +1234,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* doorbell */
 
 namespace audio_doorbell {
-typedef struct config : app_client_config {
+typedef struct config : app_base_config {
     cluster::switch_cluster::config_t switch_cluster;
     cluster::camera_av_stream_management::config_t camera_av_stream_management;
     cluster::webrtc_transport_provider::config_t webrtc_transport_provider;
