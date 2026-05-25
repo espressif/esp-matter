@@ -134,6 +134,7 @@ static void verify_cluster_lifecycle_no_heap_leak(chip::ClusterId cluster_id,
 // Requires an application delegate.
 // - ClosureControl
 // - TlsClientManagement
+// - TlsCertificateManagement
 
 // Requires an upstream server constructor that is not linked into this unit-test app build.
 // - ThreadNetworkDiagnostics

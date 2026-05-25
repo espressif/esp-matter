@@ -3076,5 +3076,100 @@ command_t *create_remove_endpoint(cluster_t *cluster)
 } /* command */
 } /* tls_client_management */
 
+namespace tls_certificate_management {
+namespace command {
+command_t *create_provision_root_certificate(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsCertificateManagement::Commands::ProvisionRootCertificate::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_provision_root_certificate_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsCertificateManagement::Commands::ProvisionRootCertificateResponse::Id,
+                                       COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_find_root_certificate(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsCertificateManagement::Commands::FindRootCertificate::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_find_root_certificate_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsCertificateManagement::Commands::FindRootCertificateResponse::Id,
+                                       COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_lookup_root_certificate(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsCertificateManagement::Commands::LookupRootCertificate::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_lookup_root_certificate_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsCertificateManagement::Commands::LookupRootCertificateResponse::Id,
+                                       COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_remove_root_certificate(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsCertificateManagement::Commands::RemoveRootCertificate::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_client_csr(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsCertificateManagement::Commands::ClientCSR::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_client_csr_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsCertificateManagement::Commands::ClientCSRResponse::Id,
+                                       COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_provision_client_certificate(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsCertificateManagement::Commands::ProvisionClientCertificate::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_find_client_certificate(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsCertificateManagement::Commands::FindClientCertificate::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_find_client_certificate_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsCertificateManagement::Commands::FindClientCertificateResponse::Id,
+                                       COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_lookup_client_certificate(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsCertificateManagement::Commands::LookupClientCertificate::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_lookup_client_certificate_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsCertificateManagement::Commands::LookupClientCertificateResponse::Id,
+                                       COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_remove_client_certificate(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsCertificateManagement::Commands::RemoveClientCertificate::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* tls_certificate_management */
+
 } /* cluster */
 } /* esp_matter */

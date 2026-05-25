@@ -72,6 +72,7 @@
 #include <clusters/resource_monitor/integration.h>
 #include <clusters/chime/integration.h>
 #include <clusters/tls_client_management/integration.h>
+#include <clusters/tls_certificate_management/integration.h>
 
 using namespace chip::app::Clusters;
 namespace esp_matter {
@@ -902,6 +903,12 @@ void TlsClientManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
     VerifyOrReturn(delegate != nullptr);
     TLSClientManagementDelegate *tls_client_management_delegate = static_cast<TLSClientManagementDelegate *>(delegate);
     TlsClientManagement::SetDelegate(endpoint_id, *tls_client_management_delegate);
+}
+void TlsCertificateManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    TLSCertificateManagementDelegate *tls_certificate_management_delegate = static_cast<TLSCertificateManagementDelegate *>(delegate);
+    TlsCertificateManagement::SetDelegate(endpoint_id, *tls_certificate_management_delegate);
 }
 } // namespace delegate_cb
 } // namespace cluster

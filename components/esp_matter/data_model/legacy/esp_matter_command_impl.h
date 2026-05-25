@@ -642,5 +642,25 @@ command_t *create_remove_endpoint(cluster_t *cluster);
 } /* command */
 } /* tls_client_management */
 
+namespace tls_certificate_management {
+namespace command {
+command_t *create_provision_root_certificate(cluster_t *cluster);
+command_t *create_provision_root_certificate_response(cluster_t *cluster);
+command_t *create_find_root_certificate(cluster_t *cluster);
+command_t *create_find_root_certificate_response(cluster_t *cluster);
+command_t *create_lookup_root_certificate(cluster_t *cluster);
+command_t *create_lookup_root_certificate_response(cluster_t *cluster);
+command_t *create_remove_root_certificate(cluster_t *cluster);
+command_t *create_client_csr(cluster_t *cluster);
+command_t *create_client_csr_response(cluster_t *cluster);
+command_t *create_provision_client_certificate(cluster_t *cluster);
+command_t *create_find_client_certificate(cluster_t *cluster);
+command_t *create_find_client_certificate_response(cluster_t *cluster);
+command_t *create_lookup_client_certificate(cluster_t *cluster);
+command_t *create_lookup_client_certificate_response(cluster_t *cluster);
+command_t *create_remove_client_certificate(cluster_t *cluster);
+} /* command */
+} /* tls_certificate_management */
+
 } /* cluster */
 } /* esp_matter */
