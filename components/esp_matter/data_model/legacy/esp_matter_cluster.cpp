@@ -4667,9 +4667,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     cluster_t *cluster = esp_matter::cluster::create(endpoint, ZoneManagement::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ZoneManagement::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
-        // TODO: Add a delegate initialization callback.
-        // The current esp_matter initialization flow makes this hard to implement cleanly.
-
         static const auto plugin_server_init_cb = CALL_ONCE(MatterZoneManagementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
@@ -4699,6 +4696,46 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 
 } /* zone_management */
+
+namespace tls_client_management {
+const function_generic_t *function_list = NULL;
+
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, TlsClientManagement::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, TlsClientManagement::Id));
+    if (flags & CLUSTER_FLAG_SERVER) {
+        add_function_list(cluster, function_list, function_flags);
+        VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
+        if (config->delegate != nullptr) {
+            static const auto delegate_init_cb = TlsClientManagementDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterTlsClientManagementPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+
+        global::attribute::create_feature_map(cluster, 0);
+        global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        attribute::create_max_provisioned(cluster, config->max_provisioned);
+        attribute::create_provisioned_endpoints(cluster, NULL, 0, 0);
+
+        command::create_provision_endpoint(cluster);
+        command::create_provision_endpoint_response(cluster);
+        command::create_find_endpoint(cluster);
+        command::create_find_endpoint_response(cluster);
+        command::create_remove_endpoint(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterTlsClientManagementClusterServerInitCallback,
+                                                 ESPMatterTlsClientManagementClusterServerShutdownCallback);
+    }
+
+    return cluster;
+}
+
+} /* tls_client_management */
 
 } /* cluster */
 } /* esp_matter */

@@ -1089,5 +1089,15 @@ using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* zone_management */
 
+namespace tls_client_management {
+typedef struct config {
+    uint8_t max_provisioned;
+    void *delegate;
+    config() : max_provisioned(5), delegate(nullptr) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* tls_client_management */
+
 } /* cluster */
 } /* esp_matter */

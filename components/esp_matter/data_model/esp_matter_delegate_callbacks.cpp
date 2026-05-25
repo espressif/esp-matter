@@ -58,6 +58,7 @@
 #include <app/clusters/commodity-price-server/commodity-price-server.h>
 #include <app/clusters/electrical-grid-conditions-server/electrical-grid-conditions-server.h>
 #include <app/clusters/meter-identification-server/meter-identification-server.h>
+#include <app/clusters/tls-client-management-server/TLSClientManagementCluster.h>
 
 #include <clusters/ota_software_update_provider/integration.h>
 #include <clusters/push_av_stream_transport/integration.h>
@@ -70,6 +71,7 @@
 #include <clusters/temperature_control/integration.h>
 #include <clusters/resource_monitor/integration.h>
 #include <clusters/chime/integration.h>
+#include <clusters/tls_client_management/integration.h>
 
 using namespace chip::app::Clusters;
 namespace esp_matter {
@@ -893,6 +895,13 @@ void WakeOnLanDelegateInitCB(void *delegate, uint16_t endpoint_id)
     VerifyOrReturn(delegate != nullptr);
     WakeOnLan::Delegate *wake_on_lan_delegate = static_cast<WakeOnLan::Delegate *>(delegate);
     WakeOnLan::SetDefaultDelegate(endpoint_id, wake_on_lan_delegate);
+}
+
+void TlsClientManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    TLSClientManagementDelegate *tls_client_management_delegate = static_cast<TLSClientManagementDelegate *>(delegate);
+    TlsClientManagement::SetDelegate(endpoint_id, *tls_client_management_delegate);
 }
 } // namespace delegate_cb
 } // namespace cluster

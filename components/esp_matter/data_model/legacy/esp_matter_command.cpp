@@ -3041,5 +3041,40 @@ command_t *create_remove_trigger(cluster_t *cluster)
 } /* command */
 } /* zone_management */
 
+namespace tls_client_management {
+namespace command {
+command_t *create_provision_endpoint(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsClientManagement::Commands::ProvisionEndpoint::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_provision_endpoint_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsClientManagement::Commands::ProvisionEndpointResponse::Id,
+                                       COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_find_endpoint(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsClientManagement::Commands::FindEndpoint::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_find_endpoint_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsClientManagement::Commands::FindEndpointResponse::Id,
+                                       COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_remove_endpoint(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TlsClientManagement::Commands::RemoveEndpoint::Id,
+                                       COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+} /* tls_client_management */
+
 } /* cluster */
 } /* esp_matter */

@@ -632,5 +632,15 @@ command_t *create_remove_trigger(cluster_t *cluster);
 } /* command */
 } /* zone_management */
 
+namespace tls_client_management {
+namespace command {
+command_t *create_provision_endpoint(cluster_t *cluster);
+command_t *create_provision_endpoint_response(cluster_t *cluster);
+command_t *create_find_endpoint(cluster_t *cluster);
+command_t *create_find_endpoint_response(cluster_t *cluster);
+command_t *create_remove_endpoint(cluster_t *cluster);
+} /* command */
+} /* tls_client_management */
+
 } /* cluster */
 } /* esp_matter */

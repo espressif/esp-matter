@@ -1428,5 +1428,16 @@ attribute_t *create_two_d_cartesian_max(cluster_t *cluster, uint8_t * value, uin
 } /* attribute */
 } /* zone_management */
 
+namespace tls_client_management {
+namespace attribute {
+
+constexpr uint8_t MAX_PROVISIONED_MIN = 5;
+constexpr uint8_t MAX_PROVISIONED_MAX = 254;
+
+attribute_t *create_max_provisioned(cluster_t *cluster, uint8_t value);
+attribute_t *create_provisioned_endpoints(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* tls_client_management */
+
 } /* cluster */
 } /* esp_matter */
