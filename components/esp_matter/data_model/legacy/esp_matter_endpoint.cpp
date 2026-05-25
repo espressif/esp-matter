@@ -2336,6 +2336,97 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     return ESP_OK;
 }
 } /* irrigation_system */
+
+namespace doorbell {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_DOORBELL_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_DOORBELL_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster_t *switch_cluster = cluster::switch_cluster::create(endpoint, &(config->switch_cluster), CLUSTER_FLAG_SERVER);
+    cluster::switch_cluster::feature::momentary_switch::add(switch_cluster);
+    cluster::chime::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
+
+    return ESP_OK;
+}
+
+} /* doorbell */
+
+namespace audio_doorbell {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_AUDIO_DOORBELL_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_AUDIO_DOORBELL_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster::switch_cluster::create(endpoint, &(config->switch_cluster), CLUSTER_FLAG_SERVER);
+    cluster_t *camera_av_stream_management = cluster::camera_av_stream_management::create(endpoint, &(config->camera_av_stream_management), CLUSTER_FLAG_SERVER);
+    cluster::camera_av_stream_management::feature::audio::add(camera_av_stream_management);
+    cluster::webrtc_transport_provider::create(endpoint, &(config->webrtc_transport_provider), CLUSTER_FLAG_SERVER);
+    cluster::webrtc_transport_requestor::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
+    cluster::chime::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
+
+    return ESP_OK;
+}
+
+} /* audio_doorbell */
+
+namespace video_doorbell {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_VIDEO_DOORBELL_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_VIDEO_DOORBELL_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+
+    return ESP_OK;
+}
+
+} /* video_doorbell */
 } /* endpoint */
 
 namespace node {
