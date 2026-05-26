@@ -86,6 +86,7 @@ void TargetNavigatorDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void WakeOnLanDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void TlsClientManagementDelegateInitCB(void *delegate, uint16_t endpoint_id);
 void TlsCertificateManagementDelegateInitCB(void *delegate, uint16_t endpoint_id);
+void CameraAvStreamManagementDelegateInitCB(void *delegate, uint16_t endpoint_id);
 } // namespace delegate_cb
 
 } // namespace cluster

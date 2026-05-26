@@ -70,6 +70,7 @@
 #include <clusters/time_synchronization/integration.h>
 #include <clusters/temperature_control/integration.h>
 #include <clusters/resource_monitor/integration.h>
+#include <clusters/camera_av_stream_management/integration.h>
 #include <clusters/chime/integration.h>
 #include <clusters/tls_client_management/integration.h>
 #include <clusters/tls_certificate_management/integration.h>
@@ -909,6 +910,13 @@ void TlsCertificateManagementDelegateInitCB(void *delegate, uint16_t endpoint_id
     VerifyOrReturn(delegate != nullptr);
     TLSCertificateManagementDelegate *tls_certificate_management_delegate = static_cast<TLSCertificateManagementDelegate *>(delegate);
     TlsCertificateManagement::SetDelegate(endpoint_id, *tls_certificate_management_delegate);
+}
+void CameraAvStreamManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    CameraAvStreamManagement::SetDelegate(
+        endpoint_id,
+        static_cast<chip::app::Clusters::CameraAvStreamManagement::CameraAVStreamManagementDelegate *>(delegate));
 }
 } // namespace delegate_cb
 } // namespace cluster

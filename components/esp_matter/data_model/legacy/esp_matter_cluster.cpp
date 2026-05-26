@@ -3893,9 +3893,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     cluster_t *cluster = esp_matter::cluster::create(endpoint, CameraAvStreamManagement::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CameraAvStreamManagement::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
-        // TODO: Add a delegate initialization callback.
-        // The current esp_matter initialization flow makes this hard to implement cleanly.
-
+        if (config && config->delegate != nullptr) {
+            static const auto delegate_init_cb = CameraAvStreamManagementDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
         add_function_list(cluster, function_list, function_flags);
 
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
@@ -3951,6 +3952,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             VerifyOrReturnValue(feature::privacy::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
         command::create_set_stream_priorities(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterCameraAvStreamManagementClusterServerInitCallback,
+                                                 ESPMatterCameraAvStreamManagementClusterServerShutdownCallback);
 
     }
 
