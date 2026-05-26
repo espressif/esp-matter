@@ -13,7 +13,6 @@
 # limitations under the License.
 import json
 import os
-import re
 import logging
 
 from utils.conversion_utils import format_hex_value, is_hex_value
@@ -41,7 +40,7 @@ def parse_attributes_header(file_path):
     try:
         with open(file_path, "r") as f:
             content = f.read()
-            matches = re.finditer(ATTRIBUTE_PATTERN, content)
+            matches = ATTRIBUTE_PATTERN.finditer(content)
             for match in matches:
                 attr_name = match.group(1)
                 attr_id = match.group(2)
@@ -66,7 +65,7 @@ def parse_commands_header(file_path):
     try:
         with open(file_path, "r") as f:
             content = f.read()
-            matches = re.finditer(COMMAND_PATTERN, content)
+            matches = COMMAND_PATTERN.finditer(content)
             for match in matches:
                 cmd_name = match.group(1)
                 cmd_id = match.group(2)
@@ -90,7 +89,7 @@ def parse_events_header(file_path):
     try:
         with open(file_path, "r") as f:
             content = f.read()
-            matches = re.finditer(EVENT_PATTERN, content)
+            matches = EVENT_PATTERN.finditer(content)
             for match in matches:
                 event_name = match.group(1)
                 event_id = match.group(2)
@@ -112,7 +111,7 @@ def extract_cluster_id(file_path):
     try:
         with open(file_path, "r") as f:
             content = f.read()
-            match = re.search(CLUSTER_ID_PATTERN, content)
+            match = CLUSTER_ID_PATTERN.search(content)
             if match:
                 return format_hex_value(match.group(1))
         return None

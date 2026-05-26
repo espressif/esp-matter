@@ -14,15 +14,13 @@
 import json
 import os
 import logging
-
 from utils.helper import convert_to_snake_case, write_to_file
+from chip_source_deps.cluster_mapping import normalize_cluster_name
 from chip_source_deps.server_files_config import (
-    parser,
-    local_mappings,
     KEYWORDS,
     ATTRIBUTE_REGEX,
+    READ_FUNC_PATTERN,
 )
-from utils.tree_sitter_utils import get_function_by_keywords, extract_case_labels
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +44,42 @@ def merge_attributes_dicts(dict1, dict2):
     return merged
 
 
+def _extract_braced_region(code: str, open_brace_index: int) -> str:
+    """Return the substring from open_brace_index through its matching closing brace."""
+    depth = 0
+    for index in range(open_brace_index, len(code)):
+        if code[index] == "{":
+            depth += 1
+        elif code[index] == "}":
+            depth -= 1
+            if depth == 0:
+                return code[open_brace_index : index + 1]
+    return ""
+
+
+def _attribute_names_from_case_labels(body: str) -> list[str]:
+    """Extract attribute names from ``case Attribute::Id:`` labels in a function body."""
+    labels = []
+    for match in ATTRIBUTE_REGEX.finditer(body):
+        parts = match.group(1).split("::")
+        if len(parts) >= 2 and "Id" in parts[-1]:
+            labels.append(parts[-2].lower())
+    return labels
+
+
+def _function_bodies_for_read_keywords(code: str) -> list[str]:
+    """Return braced bodies of Read / ReadAttribute / ReadImpl member functions."""
+    if not any(keyword in code for keyword in KEYWORDS):
+        return []
+
+    bodies = []
+    for match in READ_FUNC_PATTERN.finditer(code):
+        body = _extract_braced_region(code, match.end() - 1)
+        if body:
+            bodies.append(body)
+    return bodies
+
+
 def extract_attributes_from_server_file(file_path):
     """Extract attributes from Read Attribute function in the server source file.
 
@@ -62,16 +96,9 @@ def extract_attributes_from_server_file(file_path):
         logger.error(f"Error reading file {file_path}: {e}")
         return []
 
-    tree = parser.parse(bytes(code, "utf8"))
-    root = tree.root_node
-    code_bytes = bytes(code, "utf8")
-
-    functions = get_function_by_keywords(root, code_bytes, KEYWORDS)
-
     all_attributes = []
-    for func in functions:
-        attrs = extract_case_labels(func, code_bytes, ATTRIBUTE_REGEX)
-        all_attributes.extend(attrs)
+    for body in _function_bodies_for_read_keywords(code):
+        all_attributes.extend(_attribute_names_from_case_labels(body))
 
     return sorted(list(set(all_attributes)))
 
@@ -90,14 +117,7 @@ def find_server_source_files(root_dir):
     server_source_files = {}
     for dirpath, _, filenames in os.walk(root_dir):
         for filename in (f for f in filenames if f and f.endswith(".cpp")):
-            cluster_name = filename.replace("-server.cpp", "")
-            cluster_name = cluster_name.replace(".cpp", "")
-            cluster_name = cluster_name.replace("-cluster", "")
-            cluster_name = cluster_name.replace("cluster", "")
-            cluster_name = cluster_name.replace("Cluster", "")
-            cluster_name = local_mappings.get(cluster_name, cluster_name)
-            cluster_name = convert_to_snake_case(cluster_name)
-
+            cluster_name = normalize_cluster_name(filename)
             server_source_files[cluster_name] = os.path.join(dirpath, filename)
     return server_source_files
 
