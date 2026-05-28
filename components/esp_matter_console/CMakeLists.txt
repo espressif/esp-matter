@@ -13,3 +13,7 @@ idf_component_register(SRC_DIRS ${src_dirs}
                     INCLUDE_DIRS .
                     EXCLUDE_SRCS ${exclude_srcs_list}
                     PRIV_REQUIRES ${priv_req})
+
+if (CONFIG_ENABLE_CHIP_SHELL)
+    target_compile_options(${COMPONENT_LIB} PRIVATE "-Wstringop-truncation" "-Wstringop-overflow")
+endif()

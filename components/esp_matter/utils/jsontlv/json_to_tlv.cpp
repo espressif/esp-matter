@@ -198,8 +198,7 @@ static esp_err_t parse_json_name(const char *name, element_context &element_ctx,
                         "Failed to parse json name");
     ESP_RETURN_ON_ERROR(internal_convert_tlv_tag(tag_number, element_ctx.tag, implicit_profile_id), TAG,
                         "Failed to convert TLV tag");
-    strncpy(element_ctx.json_name, name, strlen(name));
-    element_ctx.json_name[strlen(name)] = 0;
+    strlcpy(element_ctx.json_name, name, sizeof(element_ctx.json_name));
     return ESP_OK;
 }
 

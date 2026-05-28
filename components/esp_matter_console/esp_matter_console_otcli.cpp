@@ -37,7 +37,7 @@ static esp_err_t otcli_handler(int argc, char *argv[])
     /* the beginning of command "matter esp otcli" has already been removed */
     std::unique_ptr<char[]> cli_str(new char[CLI_INPUT_BUFF_LENGTH]);
     memset(cli_str.get(), 0, CLI_INPUT_BUFF_LENGTH);
-    uint8_t len = 0;
+    size_t len = 0;
     for (size_t i = 0; i < (size_t)argc; ++i) {
         len = len + strlen(argv[i]) + 1;
         if (len > CLI_INPUT_BUFF_LENGTH - 1) {

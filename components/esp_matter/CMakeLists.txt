@@ -104,6 +104,8 @@ idf_component_register( SRC_DIRS        ${SRC_DIRS_LIST}
 idf_build_set_property(COMPILE_OPTIONS "-Wno-error=uninitialized;-Wno-error=maybe-uninitialized;-Wno-missing-field-initializers;" APPEND)
 idf_build_set_property(COMPILE_OPTIONS "-Wno-error=array-bounds" APPEND)
 
+target_compile_options(${COMPONENT_LIB} PRIVATE "-Wstringop-truncation" "-Wstringop-overflow")
+
 if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
     if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
         target_link_libraries(${COMPONENT_LIB} INTERFACE "-u data_model_utils_impl")

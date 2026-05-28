@@ -10,3 +10,7 @@ endif()
 idf_component_register(SRCS             ${SRCS_LIST}
                        INCLUDE_DIRS     "."
                        REQUIRES         ${REQUIRES_LIST})
+
+if (${rainmaker_enabled})
+    target_compile_options(${COMPONENT_LIB} PRIVATE "-Wstringop-truncation" "-Wstringop-overflow")
+endif()

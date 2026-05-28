@@ -39,8 +39,11 @@ static const char *get_filename_extension(const char *filename)
 
 paa_der_cert_iterator::paa_der_cert_iterator(const char *path)
 {
-    strncpy(m_path, path, strnlen(path, 16));
-    m_path[15] = 0;
+    if (path == nullptr) {
+        assert(false);
+        return;
+    }
+    strlcpy(m_path, path, sizeof(m_path));
     m_dir = opendir(path);
     if (!m_dir) {
         ESP_LOGE(TAG, "Failed to open the directory");
@@ -258,8 +261,7 @@ CHIP_ERROR dcl_attestation_trust_store::GetProductAttestationAuthorityCert(const
     http_payload.Calloc(2400);
     ESP_GOTO_ON_FALSE(http_payload.Get(), ESP_ERR_NO_MEM, close, TAG, "Failed to alloc memory for http_payload");
     if (http_status_code == HttpStatus_Ok) {
-        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize());
-        http_payload[http_len] = '\0';
+        http_len = esp_http_client_read_response(client, http_payload.Get(), http_payload.AllocatedSize() - 1);
     } else {
         ESP_LOGE(TAG, "Status = %d. Invalid response for %s", http_status_code, url);
         ret = ESP_FAIL;

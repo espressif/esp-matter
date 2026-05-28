@@ -46,3 +46,7 @@ idf_component_register(SRC_DIRS ${src_dirs_list}
     REQUIRES ${requires_list})
 
 idf_build_set_property(COMPILE_OPTIONS "-Wno-write-strings" APPEND)
+
+if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
+    target_compile_options(${COMPONENT_LIB} PRIVATE "-Wstringop-truncation" "-Wstringop-overflow")
+endif()

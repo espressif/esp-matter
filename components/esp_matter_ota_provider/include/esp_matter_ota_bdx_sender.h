@@ -48,7 +48,7 @@ public:
 
     void SetOtaImageUrl(const char *otaImageUrl)
     {
-        strncpy(mOtaImageUrl, otaImageUrl, strnlen(otaImageUrl, OTA_URL_MAX_LEN));
+        strlcpy(mOtaImageUrl, otaImageUrl, sizeof(mOtaImageUrl));
     }
 
     const char *GetOtaImageUrl() const
