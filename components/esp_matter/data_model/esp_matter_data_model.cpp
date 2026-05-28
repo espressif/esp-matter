@@ -1326,6 +1326,7 @@ void set_user_callback(command_t *command, callback_t user_callback)
 {
     if (!command) {
         ESP_LOGE(TAG, "Command cannot be NULL");
+        return;
     }
     _command_t *current_command = (_command_t *)command;
     current_command->user_callback = user_callback;

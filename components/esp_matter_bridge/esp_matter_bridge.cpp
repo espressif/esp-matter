@@ -55,6 +55,8 @@ static esp_err_t store_device_persistent_info(device_persistent_info_t *persiste
                        persistent_info, sizeof(device_persistent_info_t));
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed on nvs_set_blob when storing device_persistent_info");
+        nvs_close(handle);
+        return err;
     }
     err = nvs_commit(handle);
     if (err != ESP_OK) {
@@ -255,6 +257,10 @@ esp_err_t set_device_type(device_t *bridged_device, uint32_t device_type_id, voi
         ESP_LOGE(TAG, "bridged_device cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
+    if (!device_type_callback) {
+        ESP_LOGE(TAG, "device_type_callback is NULL, call initialize() first");
+        return ESP_ERR_INVALID_STATE;
+    }
     err = device_type_callback(bridged_device->endpoint, device_type_id, priv_data);
     if (err != ESP_OK) {
         return err;
@@ -345,7 +351,9 @@ device_t *create_device(node_t *node, uint16_t parent_endpoint_id, uint32_t devi
         remove_device(dev);
         return NULL;
     }
-    store_bridged_endpoint_ids();
+    if (store_bridged_endpoint_ids() != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to persist bridged endpoint IDs");
+    }
     return dev;
 }
 

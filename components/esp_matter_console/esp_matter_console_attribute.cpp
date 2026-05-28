@@ -17,9 +17,9 @@ static esp_err_t console_set_handler(int argc, char **argv)
 {
     VerifyOrReturnError(argc >= 4, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "The arguments for this command is invalid"));
 
-    uint16_t endpoint_id = strtoul((const char *)&argv[0][2], NULL, 16);
-    uint32_t cluster_id = strtoul((const char *)&argv[1][2], NULL, 16);
-    uint32_t attribute_id = strtoul((const char *)&argv[2][2], NULL, 16);
+    uint16_t endpoint_id = strtoul(argv[0], NULL, 0);
+    uint32_t cluster_id = strtoul(argv[1], NULL, 0);
+    uint32_t attribute_id = strtoul(argv[2], NULL, 0);
 
     attribute_t *attr = attribute::get(endpoint_id, cluster_id, attribute_id);
     if (!attr) {
@@ -158,9 +158,9 @@ static esp_err_t console_set_handler(int argc, char **argv)
 static esp_err_t console_get_handler(int argc, char **argv)
 {
     VerifyOrReturnError(argc >= 3, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "The arguments for this command is invalid"));
-    uint16_t endpoint_id = strtoul((const char *)&argv[0][2], NULL, 16);
-    uint32_t cluster_id = strtoul((const char *)&argv[1][2], NULL, 16);
-    uint32_t attribute_id = strtoul((const char *)&argv[2][2], NULL, 16);
+    uint16_t endpoint_id = strtoul(argv[0], NULL, 0);
+    uint32_t cluster_id = strtoul(argv[1], NULL, 0);
+    uint32_t attribute_id = strtoul(argv[2], NULL, 0);
 
     attribute_t *attr = attribute::get(endpoint_id, cluster_id, attribute_id);
     if (!attr) {
