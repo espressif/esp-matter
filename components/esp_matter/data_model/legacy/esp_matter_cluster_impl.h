@@ -973,6 +973,7 @@ typedef struct config {
     uint32_t max_content_buffer_size;
     uint32_t max_network_bandwidth;
     uint32_t feature_flags;
+    void *delegate;
     config()  : max_content_buffer_size(0), max_network_bandwidth(0), feature_flags(0) {}
 } config_t;
 
