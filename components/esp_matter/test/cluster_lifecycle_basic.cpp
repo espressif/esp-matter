@@ -134,6 +134,7 @@ static void verify_cluster_lifecycle_no_heap_leak(chip::ClusterId cluster_id,
 // Requires an application delegate.
 // - ClosureControl
 // - CameraAvStreamManagement
+// - WebRTCTransportProvider
 // - TlsClientManagement
 // - TlsCertificateManagement
 
