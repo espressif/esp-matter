@@ -45,10 +45,10 @@ void SetDelegate(EndpointId endpointId, Delegate * delegate)
 
 WebRTCTransportProviderCluster * GetServer(EndpointId endpointId)
 {
-    if (!gServers[endpointId].IsConstructed()) {
-        return nullptr;
-    }
-    return &gServers[endpointId].Cluster();
+    auto it = gServers.find(endpointId);
+    VerifyOrReturnValue(it != gServers.end(), nullptr);
+    VerifyOrReturnValue(it->second.IsConstructed(), nullptr);
+    return &it->second.Cluster();
 }
 
 } // namespace chip::app::Clusters::WebRTCTransportProvider
