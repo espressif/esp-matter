@@ -14,10 +14,10 @@
 
 #include <data_model_provider/clusters/webrtc_transport_provider_integration.h>
 
-#include <esp_matter_data_model_priv.h>
 #include <app/ClusterCallbacks.h>
 #include <data_model/esp_matter_data_model.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
+#include <esp_matter_data_model_priv.h>
 #include <unordered_map>
 
 using namespace chip;
@@ -39,47 +39,66 @@ bool IsClusterEnabled(EndpointId endpointId)
 
 namespace chip::app::Clusters::WebRTCTransportProvider {
 
-void SetDelegate(EndpointId endpointId, Delegate * delegate)
+void SetDelegate(EndpointId endpointId, Delegate *delegate)
 {
     gDelegates[endpointId] = delegate;
+}
+
+WebRTCTransportProviderCluster *GetServer(EndpointId endpointId)
+{
+    auto it = gServers.find(endpointId);
+    VerifyOrReturnValue(it != gServers.end(), nullptr);
+    VerifyOrReturnValue(it->second.IsConstructed(), nullptr);
+    return &it->second.Cluster();
 }
 
 } // namespace chip::app::Clusters::WebRTCTransportProvider
 
 void ESPMatterWebRTCTransportProviderClusterServerInitCallback(EndpointId endpointId)
 {
-    if (!IsClusterEnabled(endpointId) || gServers[endpointId].IsConstructed()) {
+    if (!IsClusterEnabled(endpointId)) {
+        ChipLogError(AppServer, "WebRTC Transport Provider cluster not enabled for endpoint %u", endpointId);
         return;
     }
+    if (!gServers[endpointId].IsConstructed()) {
+        if (gDelegates[endpointId] == nullptr) {
+            ChipLogError(AppServer, "WebRTC Transport Provider delegate missing for endpoint %u", endpointId);
+            return;
+        }
 
-    if (gDelegates[endpointId] == nullptr) {
-        ChipLogError(AppServer, "WebRTC Transport Provider delegate missing for endpoint %u", endpointId);
-        return;
+        ChipLogProgress(AppServer, "Registering WebRTC Transport Provider on endpoint %u", endpointId);
+        gServers[endpointId].Create(endpointId, *gDelegates[endpointId]);
     }
 
-    ChipLogProgress(AppServer, "Registering WebRTC Transport Provider on endpoint %u", endpointId);
-    gServers[endpointId].Create(endpointId, *gDelegates[endpointId]);
     CHIP_ERROR err = data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to register WebRTC Transport Provider on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
+        ChipLogError(AppServer,
+                     "Failed to register WebRTC Transport Provider on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
                      endpointId, err.Format());
     }
 }
 
 void ESPMatterWebRTCTransportProviderClusterServerShutdownCallback(EndpointId endpointId)
 {
-    if (!IsClusterEnabled(endpointId) || !gServers[endpointId].IsConstructed()) {
-        return;
-    }
+    auto serverIt = gServers.find(endpointId);
+    VerifyOrReturn(serverIt != gServers.end());
+    VerifyOrReturn(serverIt->second.IsConstructed());
 
-    CHIP_ERROR err = data_model::provider::get_instance().registry().Unregister(&gServers[endpointId].Cluster());
+    CHIP_ERROR err = data_model::provider::get_instance().registry().Unregister(&serverIt->second.Cluster());
     if (err != CHIP_NO_ERROR) {
-        ChipLogError(AppServer, "Failed to unregister WebRTC Transport Provider on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
+        ChipLogError(AppServer,
+                     "Failed to unregister WebRTC Transport Provider on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
                      endpointId, err.Format());
     }
-    gServers[endpointId].Destroy();
+    serverIt->second.Destroy();
+    gServers.erase(serverIt);
+    gDelegates.erase(endpointId);
 }
 
-void MatterWebRTCTransportProviderPluginServerInitCallback() {}
+void MatterWebRTCTransportProviderPluginServerInitCallback()
+{
+}
 
-void MatterWebRTCTransportProviderPluginServerShutdownCallback() {}
+void MatterWebRTCTransportProviderPluginServerShutdownCallback()
+{
+}

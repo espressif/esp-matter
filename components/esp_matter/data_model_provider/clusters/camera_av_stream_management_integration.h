@@ -24,11 +24,10 @@ namespace app {
 namespace Clusters {
 namespace CameraAvStreamManagement {
 
-struct CameraAvStreamManagementConfig
-{
-    CameraAVStreamManagementDelegate * delegate = nullptr;
+struct CameraAvStreamManagementConfig {
+    CameraAVStreamManagementDelegate *delegate = nullptr;
     uint8_t maxConcurrentEncoders = 0;
-    uint32_t maxEncodedPixelRate  = 0;
+    uint32_t maxEncodedPixelRate = 0;
     VideoSensorParamsStruct videoSensorParams{};
     bool nightVisionUsesInfrared = false;
     VideoResolutionStruct minViewPortRes{};
@@ -43,9 +42,10 @@ struct CameraAvStreamManagementConfig
     std::vector<Globals::StreamUsageEnum> streamUsagePriorities;
 };
 
-void SetConfig(EndpointId endpointId, const CameraAvStreamManagementConfig & config);
-const CameraAvStreamManagementConfig * GetConfig(EndpointId endpointId);
-void SetDelegate(EndpointId endpointId, CameraAVStreamManagementDelegate * delegate);
+void SetConfig(EndpointId endpointId, const CameraAvStreamManagementConfig &config);
+const CameraAvStreamManagementConfig *GetConfig(EndpointId endpointId);
+void SetDelegate(EndpointId endpointId, CameraAVStreamManagementDelegate *delegate);
+CameraAVStreamManagementCluster *GetServer(EndpointId endpointId);
 
 } // namespace CameraAvStreamManagement
 } // namespace Clusters

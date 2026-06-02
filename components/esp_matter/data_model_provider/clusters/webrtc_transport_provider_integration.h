@@ -22,7 +22,8 @@ namespace app {
 namespace Clusters {
 namespace WebRTCTransportProvider {
 
-void SetDelegate(EndpointId endpointId, Delegate * delegate);
+void SetDelegate(EndpointId endpointId, Delegate *delegate);
+WebRTCTransportProviderCluster *GetServer(EndpointId endpointId);
 
 } // namespace WebRTCTransportProvider
 } // namespace Clusters

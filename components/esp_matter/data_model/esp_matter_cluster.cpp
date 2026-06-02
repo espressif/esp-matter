@@ -16,33 +16,33 @@
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_attribute.h>
+#include <esp_matter_attribute_bounds.h>
 #include <esp_matter_cluster.h>
+#include <esp_matter_cluster_revisions.h>
 #include <esp_matter_command.h>
 #include <esp_matter_core.h>
 #include <esp_matter_data_model.h>
 #include <esp_matter_delegate_callbacks.h>
-#include <esp_matter_cluster_revisions.h>
-#include <esp_matter_attribute_bounds.h>
 
 #include <app-common/zap-generated/callback.h>
 #include <app-common/zap-generated/cluster-enums.h>
-#include <app/PluginApplicationCallbacks.h>
 #include <app/ClusterCallbacks.h>
-#include <lib/support/TypeTraits.h>
+#include <app/PluginApplicationCallbacks.h>
 #include <lib/support/CodeUtils.h>
+#include <lib/support/TypeTraits.h>
 
 static const char *TAG = "esp_matter_cluster";
 
 using namespace chip::app::Clusters;
 using namespace esp_matter::cluster::delegate_cb;
 
-#define CALL_ONCE(cb)                           \
-    [](){                                       \
-        static bool is_called = false;          \
-        if (!is_called) {                       \
-            cb();                               \
-            is_called = true;                   \
-        }                                       \
+#define CALL_ONCE(cb)                  \
+    []() {                             \
+        static bool is_called = false; \
+        if (!is_called) {              \
+            cb();                      \
+            is_called = true;          \
+        }                              \
     }
 
 // convenience macro for checking if features is enabled or not
@@ -54,17 +54,16 @@ namespace {
 
 // this space is for feature validation functions
 
-enum class feature_policy
-{
-    k_exact_one = 0,        // O.a
-    k_at_least_one = 1,     // 0.a+
-    k_at_most_one = 2,      // 0.a-
+enum class feature_policy {
+    k_exact_one = 0, // O.a
+    k_at_least_one = 1, // 0.a+
+    k_at_most_one = 2, // 0.a-
 };
 
 const char feature_policy_strs[3][16] = {"Exactly one", "At least one", "At most one"};
 
-bool validate_features(uint32_t feature_flag, feature_policy policy,
-                       const char *feature_name, std::initializer_list<uint32_t> features)
+bool validate_features(uint32_t feature_flag, feature_policy policy, const char *feature_name,
+                       std::initializer_list<uint32_t> features)
 {
     uint8_t count = 0;
     for (uint32_t feature : features) {
@@ -88,24 +87,31 @@ bool validate_features(uint32_t feature_flag, feature_policy policy,
     }
 
     if (!result) {
-        ESP_LOGE(TAG, "%s of the feature(s) must be supported from (%s)", feature_policy_strs[static_cast<uint8_t>(policy)], feature_name);
+        ESP_LOGE(TAG, "%s of the feature(s) must be supported from (%s)",
+                 feature_policy_strs[static_cast<uint8_t>(policy)], feature_name);
     }
 
     return result;
 }
 
 // Macros to reduce repetitive validation code
-#define VALIDATE_FEATURES_EXACT_ONE(name, ...) \
-    do { if (!validate_features(config->feature_flags, feature_policy::k_exact_one, name, {__VA_ARGS__})) \
-        return ABORT_CLUSTER_CREATE(cluster); } while(0)
+#define VALIDATE_FEATURES_EXACT_ONE(name, ...)                                                           \
+    do {                                                                                                 \
+        if (!validate_features(config->feature_flags, feature_policy::k_exact_one, name, {__VA_ARGS__})) \
+            return ABORT_CLUSTER_CREATE(cluster);                                                        \
+    } while (0)
 
-#define VALIDATE_FEATURES_AT_LEAST_ONE(name, ...) \
-    do { if (!validate_features(config->feature_flags, feature_policy::k_at_least_one, name, {__VA_ARGS__})) \
-        return ABORT_CLUSTER_CREATE(cluster); } while(0)
+#define VALIDATE_FEATURES_AT_LEAST_ONE(name, ...)                                                           \
+    do {                                                                                                    \
+        if (!validate_features(config->feature_flags, feature_policy::k_at_least_one, name, {__VA_ARGS__})) \
+            return ABORT_CLUSTER_CREATE(cluster);                                                           \
+    } while (0)
 
-#define VALIDATE_FEATURES_AT_MOST_ONE(name, ...) \
-    do { if (!validate_features(config->feature_flags, feature_policy::k_at_most_one, name, {__VA_ARGS__})) \
-        return ABORT_CLUSTER_CREATE(cluster); } while(0)
+#define VALIDATE_FEATURES_AT_MOST_ONE(name, ...)                                                           \
+    do {                                                                                                   \
+        if (!validate_features(config->feature_flags, feature_policy::k_at_most_one, name, {__VA_ARGS__})) \
+            return ABORT_CLUSTER_CREATE(cluster);                                                          \
+    } while (0)
 
 } // anonymous namespace
 
@@ -114,7 +120,7 @@ namespace cluster {
 
 namespace {
 // simple API to abort cluster creation and return NULL
-cluster_t * ABORT_CLUSTER_CREATE(cluster_t *cluster)
+cluster_t *ABORT_CLUSTER_CREATE(cluster_t *cluster)
 {
     esp_matter::cluster::destroy(cluster);
     assert(false);
@@ -199,7 +205,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, Descriptor::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Descriptor::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Descriptor::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterDescriptorPluginServerInitCallback);
@@ -222,7 +229,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* descriptor */
+} // namespace descriptor
 
 namespace actions {
 const function_generic_t *function_list = NULL;
@@ -231,7 +238,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, Actions::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Actions::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Actions::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
@@ -256,7 +264,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* actions */
+} // namespace actions
 
 namespace access_control {
 const function_generic_t *function_list = NULL;
@@ -265,7 +273,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, AccessControl::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, AccessControl::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, AccessControl::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterAccessControlPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
@@ -290,16 +299,17 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* access_control */
+} // namespace access_control
 
 namespace basic_information {
-const function_generic_t * function_list = NULL;
+const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, BasicInformation::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, BasicInformation::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, BasicInformation::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterBasicInformationPluginServerInitCallback);
@@ -339,7 +349,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* basic_information */
+} // namespace basic_information
 
 namespace binding {
 const function_generic_t *function_list = NULL;
@@ -348,7 +358,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, Binding::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Binding::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Binding::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterBindingPluginServerInitCallback);
@@ -367,7 +378,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
     return cluster;
 }
-} /* binding */
+} // namespace binding
 
 namespace ota_software_update_provider {
 const function_generic_t *function_list = NULL;
@@ -376,7 +387,9 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, OtaSoftwareUpdateProvider::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OtaSoftwareUpdateProvider::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OtaSoftwareUpdateProvider::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
@@ -405,7 +418,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* ota_software_update_provider */
+} // namespace ota_software_update_provider
 
 namespace ota_software_update_requestor {
 const function_generic_t *function_list = NULL;
@@ -414,7 +427,9 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, OtaSoftwareUpdateRequestor::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OtaSoftwareUpdateRequestor::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OtaSoftwareUpdateRequestor::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterOtaSoftwareUpdateRequestorPluginServerInitCallback);
@@ -446,7 +461,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* ota_software_update_requestor */
+} // namespace ota_software_update_requestor
 
 namespace general_commissioning {
 const function_generic_t *function_list = NULL;
@@ -455,7 +470,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, GeneralCommissioning::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, GeneralCommissioning::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, GeneralCommissioning::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterGeneralCommissioningPluginServerInitCallback);
@@ -491,7 +507,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* general_commissioning */
+} // namespace general_commissioning
 
 #ifndef CONFIG_CUSTOM_NETWORK_CONFIG
 namespace network_commissioning {
@@ -501,7 +517,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, NetworkCommissioning::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, NetworkCommissioning::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, NetworkCommissioning::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterNetworkCommissioningPluginServerInitCallback);
@@ -556,7 +573,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* network_commissioning */
+} // namespace network_commissioning
 #endif // CONFIG_CUSTOM_NETWORK_CONFIG
 
 namespace general_diagnostics {
@@ -566,7 +583,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, GeneralDiagnostics::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, GeneralDiagnostics::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, GeneralDiagnostics::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterGeneralDiagnosticsPluginServerInitCallback);
@@ -596,7 +614,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* general_diagnostics */
+} // namespace general_diagnostics
 
 namespace administrator_commissioning {
 const function_generic_t *function_list = NULL;
@@ -605,7 +623,9 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, AdministratorCommissioning::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, AdministratorCommissioning::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, AdministratorCommissioning::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterAdministratorCommissioningPluginServerInitCallback);
@@ -632,7 +652,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* administrator_commissioning */
+} // namespace administrator_commissioning
 
 namespace operational_credentials {
 const function_generic_t *function_list = NULL;
@@ -641,7 +661,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, OperationalCredentials::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OperationalCredentials::Id));
+    VerifyOrReturnValue(
+        cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OperationalCredentials::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterOperationalCredentialsPluginServerInitCallback);
@@ -683,7 +704,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* operational_credentials */
+} // namespace operational_credentials
 
 namespace group_key_management {
 const function_generic_t *function_list = NULL;
@@ -692,7 +713,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, GroupKeyManagement::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, GroupKeyManagement::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, GroupKeyManagement::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterGroupKeyManagementPluginServerInitCallback);
@@ -720,7 +742,7 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 
     return cluster;
 }
-} /* group_key_management */
+} // namespace group_key_management
 
 namespace wifi_network_diagnostics {
 const function_generic_t *function_list = NULL;
@@ -729,7 +751,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, WiFiNetworkDiagnostics::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, WiFiNetworkDiagnostics::Id));
+    VerifyOrReturnValue(
+        cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, WiFiNetworkDiagnostics::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterWiFiNetworkDiagnosticsPluginServerInitCallback);
@@ -749,12 +772,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
         cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterWiFiNetworkDiagnosticsClusterServerInitCallback,
-            ESPMatterWiFiNetworkDiagnosticsClusterServerShutdownCallback);
+                                                 ESPMatterWiFiNetworkDiagnosticsClusterServerShutdownCallback);
     }
 
     return cluster;
 }
-} /* wifi_network_diagnostics */
+} // namespace wifi_network_diagnostics
 
 namespace thread_network_diagnostics {
 const function_generic_t *function_list = NULL;
@@ -763,7 +786,9 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ThreadNetworkDiagnostics::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ThreadNetworkDiagnostics::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ThreadNetworkDiagnostics::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterThreadNetworkDiagnosticsPluginServerInitCallback);
@@ -797,7 +822,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* thread_network_diagnostics */
+} // namespace thread_network_diagnostics
 
 namespace ethernet_network_diagnostics {
 const function_generic_t *function_list = NULL;
@@ -806,7 +831,9 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, EthernetNetworkDiagnostics::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, EthernetNetworkDiagnostics::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, EthernetNetworkDiagnostics::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterEthernetNetworkDiagnosticsPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
@@ -814,7 +841,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -824,7 +850,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* ethernet_network_diagnostics */
+} // namespace ethernet_network_diagnostics
 
 namespace time_synchronization {
 const function_generic_t *function_list = NULL;
@@ -833,7 +859,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, TimeSynchronization::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, TimeSynchronization::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, TimeSynchronization::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
@@ -861,7 +888,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* time_synchronization */
+} // namespace time_synchronization
 
 namespace unit_localization {
 const function_generic_t *function_list = NULL;
@@ -870,7 +897,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, UnitLocalization::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, UnitLocalization::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, UnitLocalization::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterUnitLocalizationPluginServerInitCallback);
@@ -886,7 +914,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* unit_localization */
+} // namespace unit_localization
 
 namespace bridged_device_basic_information {
 const function_generic_t *function_list = NULL;
@@ -895,7 +923,9 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, BridgedDeviceBasicInformation::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, BridgedDeviceBasicInformation::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, BridgedDeviceBasicInformation::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         // There is not PluginServer(Client)InitCallback for this cluster
@@ -919,7 +949,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* bridged_device_basic_information */
+} // namespace bridged_device_basic_information
 
 namespace power_source {
 const function_generic_t *function_list = NULL;
@@ -928,7 +958,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, PowerSource::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PowerSource::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PowerSource::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
 
@@ -967,7 +998,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* power_source */
+} // namespace power_source
 
 namespace icd_management {
 const function_generic_t *function_list = NULL;
@@ -976,7 +1007,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, IcdManagement::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, IcdManagement::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, IcdManagement::Id));
 #if CONFIG_ENABLE_ICD_SERVER
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterIcdManagementPluginServerInitCallback);
@@ -996,7 +1028,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 
-} /* icd_management */
+} // namespace icd_management
 
 namespace user_label {
 const function_generic_t *function_list = NULL;
@@ -1005,7 +1037,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, UserLabel::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, UserLabel::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, UserLabel::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterUserLabelPluginServerInitCallback);
@@ -1025,7 +1058,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* user_label */
+} // namespace user_label
 
 namespace fixed_label {
 const function_generic_t *function_list = NULL;
@@ -1034,7 +1067,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, FixedLabel::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, FixedLabel::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, FixedLabel::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterFixedLabelPluginServerInitCallback);
@@ -1054,7 +1088,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* fixed_label */
+} // namespace fixed_label
 
 namespace identify {
 const function_generic_t *function_list = NULL;
@@ -1063,7 +1097,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, Identify::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Identify::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Identify::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterIdentifyPluginServerInitCallback);
@@ -1090,7 +1125,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* identify */
+} // namespace identify
 
 namespace groups {
 const function_generic_t function_list[] = {
@@ -1135,7 +1170,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* groups */
+} // namespace groups
 
 namespace scenes_management {
 const function_generic_t function_list[] = {
@@ -1147,7 +1182,8 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FU
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ScenesManagement::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ScenesManagement::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ScenesManagement::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterScenesManagementPluginServerInitCallback);
@@ -1185,7 +1221,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* scenes_management */
+} // namespace scenes_management
 
 namespace on_off {
 const function_generic_t function_list[] = {
@@ -1222,7 +1258,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* on_off */
+} // namespace on_off
 
 namespace level_control {
 const function_generic_t function_list[] = {
@@ -1234,7 +1270,8 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FU
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, LevelControl::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LevelControl::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LevelControl::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterLevelControlPluginServerInitCallback);
@@ -1268,7 +1305,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* level_control */
+} // namespace level_control
 
 namespace color_control {
 const function_generic_t function_list[] = {
@@ -1280,7 +1317,8 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FU
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ColorControl::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ColorControl::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ColorControl::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterColorControlPluginServerInitCallback);
@@ -1313,7 +1351,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* color_control */
+} // namespace color_control
 
 namespace fan_control {
 const function_generic_t function_list[] = {
@@ -1325,7 +1363,8 @@ const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION | CLUSTER_FLA
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, FanControl::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, FanControl::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, FanControl::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
@@ -1358,7 +1397,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* fan_control */
+} // namespace fan_control
 
 namespace thermostat {
 const function_generic_t function_list[] = {
@@ -1370,12 +1409,13 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBU
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, Thermostat::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Thermostat::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Thermostat::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
 
-        if (config -> delegate != nullptr) {
+        if (config->delegate != nullptr) {
             static const auto delegate_init_cb = ThermostatDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -1400,10 +1440,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             feature::cooling::add(cluster, &(config->features.cooling));
         } else {
             // HEAT and COOL must be checked against O.a+
-            VALIDATE_FEATURES_AT_LEAST_ONE("Heat,Cool",
-                                      feature::heating::get_id(), feature::cooling::get_id());
+            VALIDATE_FEATURES_AT_LEAST_ONE("Heat,Cool", feature::heating::get_id(), feature::cooling::get_id());
 
-            if(has(feature::heating::get_id())) {
+            if (has(feature::heating::get_id())) {
                 feature::heating::add(cluster, &(config->features.heating));
             }
             if (has(feature::cooling::get_id())) {
@@ -1444,7 +1483,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* thermostat */
+} // namespace thermostat
 
 namespace thermostat_user_interface_configuration {
 const function_generic_t function_list[] = {
@@ -1455,7 +1494,9 @@ const int function_flags = CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ThermostatUserInterfaceConfiguration::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ThermostatUserInterfaceConfiguration::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ThermostatUserInterfaceConfiguration::Id));
 
     if (flags & CLUSTER_FLAG_CLIENT) {
         create_default_binding_cluster(endpoint);
@@ -1480,7 +1521,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* thermostat_user_interface_configuration */
+} // namespace thermostat_user_interface_configuration
 
 namespace air_quality {
 const function_generic_t *function_list = NULL;
@@ -1489,7 +1530,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, AirQuality::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, AirQuality::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, AirQuality::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
@@ -1509,14 +1551,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* air_quality */
+} // namespace air_quality
 
 namespace resource_monitoring {
 typedef void (*delegate_init_cb_t)(void *, uint16_t);
 
 template <typename T, delegate_init_cb_t delegate_init_cb = nullptr>
-static cluster_t *create(endpoint_t *endpoint, T *config, uint8_t flags, uint32_t cluster_id,
-                         uint32_t cluster_revision,
+static cluster_t *create(endpoint_t *endpoint, T *config, uint8_t flags, uint32_t cluster_id, uint32_t cluster_revision,
                          const function_generic_t *function_list = nullptr,
                          const int function_flags = CLUSTER_FLAG_NONE)
 {
@@ -1543,21 +1584,23 @@ static cluster_t *create(endpoint_t *endpoint, T *config, uint8_t flags, uint32_
     }
     return cluster;
 }
-} /* resource_monitoring */
+} // namespace resource_monitoring
 
 namespace hepa_filter_monitoring {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    return resource_monitoring::create<config_t, HepaFilterMonitoringDelegateInitCB>(endpoint, config, flags,HepaFilterMonitoring::Id, cluster_revision);
+    return resource_monitoring::create<config_t, HepaFilterMonitoringDelegateInitCB>(
+        endpoint, config, flags, HepaFilterMonitoring::Id, cluster_revision);
 }
-} /* hepa_filter_monitoring */
+} // namespace hepa_filter_monitoring
 
 namespace activated_carbon_filter_monitoring {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    return resource_monitoring::create<config_t, ActivatedCarbonFilterMonitoringDelegateInitCB>(endpoint, config, flags,ActivatedCarbonFilterMonitoring::Id, cluster_revision);
+    return resource_monitoring::create<config_t, ActivatedCarbonFilterMonitoringDelegateInitCB>(
+        endpoint, config, flags, ActivatedCarbonFilterMonitoring::Id, cluster_revision);
 }
-} /* activated_carbon_filter_monitoring */
+} // namespace activated_carbon_filter_monitoring
 
 namespace concentration_measurement {
 
@@ -1582,10 +1625,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         global::attribute::create_feature_map(cluster, config->feature_flags);
 
         // check against O.a+ feature conformance for Numeric Measurement and Level Indication
-        VALIDATE_FEATURES_AT_LEAST_ONE("NumericMeasurement,LevelIndication",
-                                      feature::numeric_measurement::get_id(), feature::level_indication::get_id());
+        VALIDATE_FEATURES_AT_LEAST_ONE("NumericMeasurement,LevelIndication", feature::numeric_measurement::get_id(),
+                                       feature::level_indication::get_id());
 
-        if(has(feature::numeric_measurement::get_id())) {
+        if (has(feature::numeric_measurement::get_id())) {
             feature::numeric_measurement::add(cluster, &(config->features.numeric_measurement));
             if (has(feature::peak_measurement::get_id())) {
                 feature::peak_measurement::add(cluster, &(config->features.peak_measurement));
@@ -1612,7 +1655,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     return cluster;
 }
 
-} // concentration_measurement
+} // namespace concentration_measurement
 
 namespace carbon_monoxide_concentration_measurement {
 
@@ -1621,7 +1664,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return concentration_measurement::create(endpoint, config, flags, CarbonMonoxideConcentrationMeasurement::Id);
 }
 
-} /* carbon_monoxide_concentration_measurement */
+} // namespace carbon_monoxide_concentration_measurement
 
 namespace carbon_dioxide_concentration_measurement {
 
@@ -1630,7 +1673,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return concentration_measurement::create(endpoint, config, flags, CarbonDioxideConcentrationMeasurement::Id);
 }
 
-} /* carbon_dioxide_concentration_measurement */
+} // namespace carbon_dioxide_concentration_measurement
 
 namespace nitrogen_dioxide_concentration_measurement {
 
@@ -1639,7 +1682,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return concentration_measurement::create(endpoint, config, flags, NitrogenDioxideConcentrationMeasurement::Id);
 }
 
-} /* nitrogen_dioxide_concentration_measurement */
+} // namespace nitrogen_dioxide_concentration_measurement
 
 namespace ozone_concentration_measurement {
 
@@ -1648,7 +1691,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return concentration_measurement::create(endpoint, config, flags, OzoneConcentrationMeasurement::Id);
 }
 
-} /* ozone_concentration_measurement */
+} // namespace ozone_concentration_measurement
 
 namespace formaldehyde_concentration_measurement {
 
@@ -1657,7 +1700,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return concentration_measurement::create(endpoint, config, flags, FormaldehydeConcentrationMeasurement::Id);
 }
 
-} /* formaldehyde_concentration_measurement */
+} // namespace formaldehyde_concentration_measurement
 
 namespace pm1_concentration_measurement {
 
@@ -1666,7 +1709,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return concentration_measurement::create(endpoint, config, flags, Pm1ConcentrationMeasurement::Id);
 }
 
-} /* pm1_concentration_measurement */
+} // namespace pm1_concentration_measurement
 
 namespace pm25_concentration_measurement {
 
@@ -1675,7 +1718,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return concentration_measurement::create(endpoint, config, flags, Pm25ConcentrationMeasurement::Id);
 }
 
-} /* pm25_concentration_measurement */
+} // namespace pm25_concentration_measurement
 
 namespace pm10_concentration_measurement {
 
@@ -1684,7 +1727,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return concentration_measurement::create(endpoint, config, flags, Pm10ConcentrationMeasurement::Id);
 }
 
-} /* pm10_concentration_measurement */
+} // namespace pm10_concentration_measurement
 
 namespace radon_concentration_measurement {
 
@@ -1693,15 +1736,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return concentration_measurement::create(endpoint, config, flags, RadonConcentrationMeasurement::Id);
 }
 
-} /* radon_concentration_measurement */
+} // namespace radon_concentration_measurement
 
 namespace total_volatile_organic_compounds_concentration_measurement {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    return concentration_measurement::create(endpoint, config, flags, TotalVolatileOrganicCompoundsConcentrationMeasurement::Id);
+    return concentration_measurement::create(endpoint, config, flags,
+                                             TotalVolatileOrganicCompoundsConcentrationMeasurement::Id);
 }
-} /* total_volatile_organic_compounds_concentration_measurement */
+} // namespace total_volatile_organic_compounds_concentration_measurement
 
 namespace operational_state {
 const function_generic_t *function_list = NULL;
@@ -1710,7 +1754,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, OperationalState::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OperationalState::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OperationalState::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
@@ -1740,7 +1785,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* operational_state */
+} // namespace operational_state
 
 namespace laundry_washer_mode {
 const function_generic_t *function_list = NULL;
@@ -1749,7 +1794,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, LaundryWasherMode::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LaundryWasherMode::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LaundryWasherMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
@@ -1776,7 +1822,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* laundry_washer_mode */
+} // namespace laundry_washer_mode
 
 namespace laundry_washer_controls {
 
@@ -1788,12 +1834,13 @@ const int function_flags = CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, LaundryWasherControls::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LaundryWasherControls::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LaundryWasherControls::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
 
-        if (config -> delegate != nullptr) {
+        if (config->delegate != nullptr) {
             static const auto delegate_init_cb = LaundryWasherControlsDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -1809,8 +1856,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_feature_map(cluster, config->feature_flags);
 
         // check against O.a+ feature conformance for Spin and Rinse
-        VALIDATE_FEATURES_AT_LEAST_ONE("Spin,Rinse",
-                                      feature::spin::get_id(), feature::rinse::get_id());
+        VALIDATE_FEATURES_AT_LEAST_ONE("Spin,Rinse", feature::spin::get_id(), feature::rinse::get_id());
 
         if (has(feature::spin::get_id())) {
             feature::spin::add(cluster, &(config->features.spin));
@@ -1826,7 +1872,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* laundry_washer_controls */
+} // namespace laundry_washer_controls
 
 namespace laundry_dryer_controls {
 
@@ -1838,7 +1884,8 @@ const int function_flags = CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, LaundryDryerControls::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LaundryDryerControls::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LaundryDryerControls::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
@@ -1866,7 +1913,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* laundry_dryer_controls */
+} // namespace laundry_dryer_controls
 
 namespace dish_washer_mode {
 const function_generic_t *function_list = NULL;
@@ -1875,7 +1922,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, DishwasherMode::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DishwasherMode::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DishwasherMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
@@ -1902,7 +1950,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* dish_washer_mode */
+} // namespace dish_washer_mode
 
 namespace dish_washer_alarm {
 const function_generic_t *function_list = NULL;
@@ -1911,7 +1959,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, DishwasherAlarm::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DishwasherAlarm::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DishwasherAlarm::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
@@ -1933,7 +1982,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* dish_washer_alarm */
+} // namespace dish_washer_alarm
 
 namespace smoke_co_alarm {
 const function_generic_t *function_list = NULL;
@@ -1942,7 +1991,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, SmokeCoAlarm::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, SmokeCoAlarm::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, SmokeCoAlarm::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
@@ -1962,8 +2012,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_feature_map(cluster, config->feature_flags);
 
         // check against O.a+ feature conformance for Smoke Alarm and CO Alarm
-        VALIDATE_FEATURES_AT_LEAST_ONE("Smoke Alarm,CO Alarm",
-                                      feature::smoke_alarm::get_id(), feature::co_alarm::get_id());
+        VALIDATE_FEATURES_AT_LEAST_ONE("Smoke Alarm,CO Alarm", feature::smoke_alarm::get_id(),
+                                       feature::co_alarm::get_id());
 
         if (has(feature::smoke_alarm::get_id())) {
             feature::smoke_alarm::add(cluster);
@@ -1985,7 +2035,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* smoke_co_alarm */
+} // namespace smoke_co_alarm
 
 namespace door_lock {
 const function_generic_t function_list[] = {
@@ -1994,13 +2044,14 @@ const function_generic_t function_list[] = {
     (function_generic_t)MatterDoorLockClusterServerShutdownCallback,
     (function_generic_t)MatterDoorLockClusterServerPreAttributeChangedCallback,
 };
-const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION |
-    CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION |
+    CLUSTER_FLAG_SHUTDOWN_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, DoorLock::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DoorLock::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DoorLock::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
@@ -2041,7 +2092,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* door_lock */
+} // namespace door_lock
 
 namespace window_covering {
 const function_generic_t function_list[] = {
@@ -2052,7 +2103,8 @@ const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, WindowCovering::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, WindowCovering::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, WindowCovering::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
@@ -2078,8 +2130,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_feature_map(cluster, config->feature_flags);
 
         // check against O.a+ feature conformance for Lift and Tilt
-        VALIDATE_FEATURES_AT_LEAST_ONE("Lift,Tilt",
-                                      feature::lift::get_id(), feature::tilt::get_id());
+        VALIDATE_FEATURES_AT_LEAST_ONE("Lift,Tilt", feature::lift::get_id(), feature::tilt::get_id());
 
         if (has(feature::lift::get_id())) {
             feature::lift::add(cluster);
@@ -2108,8 +2159,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* window_covering */
-
+} // namespace window_covering
 
 namespace switch_cluster {
 const function_generic_t *function_list = NULL;
@@ -2136,8 +2186,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_feature_map(cluster, config->feature_flags);
 
         // check against O.a feature conformance Latching and Momentary Switch
-        VALIDATE_FEATURES_EXACT_ONE("Latching Switch,Momentary Switch",
-                                   feature::latching_switch::get_id(), feature::momentary_switch::get_id());
+        VALIDATE_FEATURES_EXACT_ONE("Latching Switch,Momentary Switch", feature::latching_switch::get_id(),
+                                    feature::momentary_switch::get_id());
 
         if (has(feature::latching_switch::get_id())) {
             feature::latching_switch::add(cluster);
@@ -2151,17 +2201,24 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         if (has(feature::action_switch::get_id())) {
             VerifyOrReturnValue(feature::action_switch::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
             // add MSM, conformance: AS,[MS & MSR]
-            VerifyOrReturnValue(feature::momentary_switch_multi_press::add(cluster, &(config->features.momentary_switch_multi_press)) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            VerifyOrReturnValue(feature::momentary_switch_multi_press::add(
+                                    cluster, &(config->features.momentary_switch_multi_press)) == ESP_OK,
+                                ABORT_CLUSTER_CREATE(cluster));
         }
         if (has(feature::momentary_switch_release::get_id())) {
-            VerifyOrReturnValue(feature::momentary_switch_release::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            VerifyOrReturnValue(feature::momentary_switch_release::add(cluster) == ESP_OK,
+                                ABORT_CLUSTER_CREATE(cluster));
         }
         if (has(feature::momentary_switch_long_press::get_id())) {
-            VerifyOrReturnValue(feature::momentary_switch_long_press::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            VerifyOrReturnValue(feature::momentary_switch_long_press::add(cluster) == ESP_OK,
+                                ABORT_CLUSTER_CREATE(cluster));
         }
         if (has(feature::momentary_switch_multi_press::get_id())) {
-            // momentary_switch_multi_press::add() checks against !AS feature so okay to call it twice even if AS is present
-            VerifyOrReturnValue(feature::momentary_switch_multi_press::add(cluster, &(config->features.momentary_switch_multi_press)) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            // momentary_switch_multi_press::add() checks against !AS feature so okay to call it twice even if AS is
+            // present
+            VerifyOrReturnValue(feature::momentary_switch_multi_press::add(
+                                    cluster, &(config->features.momentary_switch_multi_press)) == ESP_OK,
+                                ABORT_CLUSTER_CREATE(cluster));
         }
     } // if (flags & CLUSTER_FLAG_SERVER)
 
@@ -2171,7 +2228,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* switch_cluster */
+} // namespace switch_cluster
 
 namespace temperature_measurement {
 const function_generic_t *function_list = NULL;
@@ -2180,7 +2237,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, TemperatureMeasurement::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, TemperatureMeasurement::Id));
+    VerifyOrReturnValue(
+        cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, TemperatureMeasurement::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterTemperatureMeasurementPluginServerInitCallback);
@@ -2207,7 +2265,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* temperature_measurement */
+} // namespace temperature_measurement
 
 namespace relative_humidity_measurement {
 const function_generic_t *function_list = NULL;
@@ -2216,7 +2274,9 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, RelativeHumidityMeasurement::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RelativeHumidityMeasurement::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RelativeHumidityMeasurement::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterRelativeHumidityMeasurementPluginServerInitCallback);
@@ -2243,7 +2303,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* relative_humidity_measurement */
+} // namespace relative_humidity_measurement
 
 namespace occupancy_sensing {
 const function_generic_t function_list[] = {
@@ -2254,7 +2314,8 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, OccupancySensing::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OccupancySensing::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, OccupancySensing::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
@@ -2274,11 +2335,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_feature_map(cluster, config->feature_flags);
 
         // check against O.a+ feature conformance for occupancy sensing
-        VALIDATE_FEATURES_AT_LEAST_ONE("Other,Passive Infrared,Ultrasonic,Physical Contact,Active Infrared,Radar,RF Sensing,Vision",
-                                      feature::other::get_id(), feature::passive_infrared::get_id(),
-                                      feature::ultrasonic::get_id(), feature::physical_contact::get_id(),
-                                      feature::active_infrared::get_id(), feature::radar::get_id(),
-                                      feature::rf_sensing::get_id(), feature::vision::get_id());
+        VALIDATE_FEATURES_AT_LEAST_ONE(
+            "Other,Passive Infrared,Ultrasonic,Physical Contact,Active Infrared,Radar,RF Sensing,Vision",
+            feature::other::get_id(), feature::passive_infrared::get_id(), feature::ultrasonic::get_id(),
+            feature::physical_contact::get_id(), feature::active_infrared::get_id(), feature::radar::get_id(),
+            feature::rf_sensing::get_id(), feature::vision::get_id());
 
         if (has(feature::other::get_id())) {
             feature::other::add(cluster);
@@ -2312,7 +2373,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* occupancy_sensing */
+} // namespace occupancy_sensing
 
 namespace boolean_state {
 const function_generic_t *function_list = NULL;
@@ -2321,7 +2382,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, BooleanState::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, BooleanState::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, BooleanState::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterBooleanStatePluginServerInitCallback);
@@ -2348,7 +2410,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* boolean_state */
+} // namespace boolean_state
 
 namespace boolean_state_configuration {
 const function_generic_t *function_list = NULL;
@@ -2357,7 +2419,9 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, BooleanStateConfiguration::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, BooleanStateConfiguration::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, BooleanStateConfiguration::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
@@ -2381,7 +2445,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* boolean_state_configuration */
+} // namespace boolean_state_configuration
 
 namespace localization_configuration {
 const function_generic_t function_list[] = {
@@ -2392,7 +2456,9 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBU
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, LocalizationConfiguration::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LocalizationConfiguration::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, LocalizationConfiguration::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterLocalizationConfigurationPluginServerInitCallback);
@@ -2419,7 +2485,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 
-} /* localization_configuration */
+} // namespace localization_configuration
 
 namespace time_format_localization {
 const function_generic_t function_list[] = {
@@ -2430,7 +2496,8 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBU
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, TimeFormatLocalization::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, TimeFormatLocalization::Id));
+    VerifyOrReturnValue(
+        cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, TimeFormatLocalization::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterTimeFormatLocalizationPluginServerInitCallback);
@@ -2455,7 +2522,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* time_format_localization */
+} // namespace time_format_localization
 
 namespace illuminance_measurement {
 const function_generic_t *function_list = NULL;
@@ -2464,7 +2531,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, IlluminanceMeasurement::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, IlluminanceMeasurement::Id));
+    VerifyOrReturnValue(
+        cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, IlluminanceMeasurement::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterIlluminanceMeasurementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
@@ -2477,10 +2545,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         if (config) {
             attribute::create_measured_value(cluster, config->measured_value, 0x0000, 0xFFFF);
-            attribute::create_min_measured_value(cluster, config->min_measured_value, 0x0001,
-                                                             0xFFFD);
-            attribute::create_max_measured_value(cluster, config->max_measured_value, 0x0002,
-                                                             0xFFFE);
+            attribute::create_min_measured_value(cluster, config->min_measured_value, 0x0001, 0xFFFD);
+            attribute::create_max_measured_value(cluster, config->max_measured_value, 0x0002, 0xFFFE);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -2492,7 +2558,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* illuminance_measurement */
+} // namespace illuminance_measurement
 
 namespace pressure_measurement {
 const function_generic_t *function_list = NULL;
@@ -2501,7 +2567,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, PressureMeasurement::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PressureMeasurement::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PressureMeasurement::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterPressureMeasurementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
@@ -2527,7 +2594,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* pressure_measurement */
+} // namespace pressure_measurement
 
 namespace flow_measurement {
 const function_generic_t *function_list = NULL;
@@ -2536,7 +2603,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, FlowMeasurement::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, FlowMeasurement::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, FlowMeasurement::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterFlowMeasurementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
@@ -2562,7 +2630,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* flow_measurement */
+} // namespace flow_measurement
 
 namespace pump_configuration_and_control {
 const function_generic_t function_list[] = {
@@ -2576,7 +2644,9 @@ const int function_flags =
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, PumpConfigurationAndControl::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PumpConfigurationAndControl::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PumpConfigurationAndControl::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
 
@@ -2598,10 +2668,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_feature_map(cluster, config->feature_flags);
 
         // check against O.a+ feature conformance for pump configuration and control
-        VALIDATE_FEATURES_AT_LEAST_ONE("ConstantPressure,CompensatedPressure,ConstantFlow,ConstantSpeed,ConstantTemperature",
-                                      feature::constant_pressure::get_id(), feature::compensated_pressure::get_id(),
-                                      feature::constant_flow::get_id(), feature::constant_speed::get_id(),
-                                      feature::constant_temperature::get_id());
+        VALIDATE_FEATURES_AT_LEAST_ONE(
+            "ConstantPressure,CompensatedPressure,ConstantFlow,ConstantSpeed,ConstantTemperature",
+            feature::constant_pressure::get_id(), feature::compensated_pressure::get_id(),
+            feature::constant_flow::get_id(), feature::constant_speed::get_id(),
+            feature::constant_temperature::get_id());
 
         if (has(feature::constant_pressure::get_id())) {
             feature::constant_pressure::add(cluster, &config->features.constant_pressure);
@@ -2633,7 +2704,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* pump_configuration_and_control */
+} // namespace pump_configuration_and_control
 
 namespace mode_select {
 const function_generic_t function_list[] = {
@@ -2645,7 +2716,8 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBU
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ModeSelect::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ModeSelect::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ModeSelect::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = ModeSelectDelegateInitCB;
@@ -2678,7 +2750,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* mode_select */
+} // namespace mode_select
 
 namespace diagnostic_logs {
 const function_generic_t *function_list = NULL;
@@ -2716,7 +2788,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* diagnostic_logs */
+} // namespace diagnostic_logs
 
 namespace software_diagnostics {
 const function_generic_t *function_list = NULL;
@@ -2725,7 +2797,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, SoftwareDiagnostics::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, SoftwareDiagnostics::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, SoftwareDiagnostics::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterSoftwareDiagnosticsPluginServerInitCallback);
@@ -2743,7 +2816,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* software_diagnostics */
+} // namespace software_diagnostics
 
 namespace temperature_control {
 const function_generic_t *function_list = NULL;
@@ -2752,7 +2825,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, TemperatureControl::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, TemperatureControl::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, TemperatureControl::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
@@ -2768,8 +2842,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_feature_map(cluster, config->feature_flags);
 
         // check against O.a feature conformance for TN, TL
-        VALIDATE_FEATURES_EXACT_ONE("TemperatureNumber,TemperatureLevel",
-                                   feature::temperature_number::get_id(), feature::temperature_level::get_id());
+        VALIDATE_FEATURES_EXACT_ONE("TemperatureNumber,TemperatureLevel", feature::temperature_number::get_id(),
+                                    feature::temperature_level::get_id());
 
         if (has(feature::temperature_number::get_id())) {
             feature::temperature_number::add(cluster, &(config->features.temperature_number));
@@ -2787,7 +2861,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* temperature_control */
+} // namespace temperature_control
 
 namespace refrigerator_alarm {
 const function_generic_t *function_list = NULL;
@@ -2796,7 +2870,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, RefrigeratorAlarm::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RefrigeratorAlarm::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RefrigeratorAlarm::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterRefrigeratorAlarmPluginServerInitCallback);
@@ -2819,7 +2894,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* refrigerator_alarm */
+} // namespace refrigerator_alarm
 
 namespace refrigerator_and_tcc_mode {
 const function_generic_t *function_list = NULL;
@@ -2828,7 +2903,9 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, RefrigeratorAndTemperatureControlledCabinetMode::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RefrigeratorAndTemperatureControlledCabinetMode::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32,
+                                 RefrigeratorAndTemperatureControlledCabinetMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
@@ -2840,7 +2917,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
-	    mode_base::attribute::create_supported_modes(cluster, NULL, 0, 0);
+        mode_base::attribute::create_supported_modes(cluster, NULL, 0, 0);
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
@@ -2857,7 +2934,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* refrigerator_and_tcc_mode */
+} // namespace refrigerator_and_tcc_mode
 
 namespace rvc_run_mode {
 const function_generic_t *function_list = NULL;
@@ -2866,7 +2943,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, RvcRunMode::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RvcRunMode::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RvcRunMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
@@ -2895,7 +2973,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* rvc_run_mode */
+} // namespace rvc_run_mode
 
 namespace rvc_clean_mode {
 const function_generic_t *function_list = NULL;
@@ -2904,7 +2982,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, RvcCleanMode::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RvcCleanMode::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RvcCleanMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
@@ -2932,7 +3011,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* rvc_clean_mode */
+} // namespace rvc_clean_mode
 
 namespace microwave_oven_mode {
 const function_generic_t *function_list = NULL;
@@ -2941,7 +3020,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, MicrowaveOvenMode::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, MicrowaveOvenMode::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, MicrowaveOvenMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
@@ -2965,7 +3045,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* microwave_oven_mode */
+} // namespace microwave_oven_mode
 
 namespace microwave_oven_control {
 const function_generic_t *function_list = NULL;
@@ -2974,12 +3054,13 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, MicrowaveOvenControl::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, MicrowaveOvenControl::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, MicrowaveOvenControl::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
 
-        if (config -> delegate != nullptr) {
+        if (config->delegate != nullptr) {
             static const auto delegate_init_cb = MicrowaveOvenControlDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -2996,8 +3077,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_feature_map(cluster, config->feature_flags);
 
         // check against O.a feature conformance for microwave oven control
-        VALIDATE_FEATURES_EXACT_ONE("PowerAsNumber",
-                                   feature::power_as_number::get_id());
+        VALIDATE_FEATURES_EXACT_ONE("PowerAsNumber", feature::power_as_number::get_id());
 
         if (has(feature::power_as_number::get_id())) {
             feature::power_as_number::add(cluster);
@@ -3014,7 +3094,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* microwave_oven_control */
+} // namespace microwave_oven_control
 
 namespace rvc_operational_state {
 const function_generic_t *function_list = NULL;
@@ -3023,7 +3103,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, RvcOperationalState::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RvcOperationalState::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, RvcOperationalState::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         add_function_list(cluster, function_list, function_flags);
@@ -3047,7 +3128,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* rvc_operational_state */
+} // namespace rvc_operational_state
 
 namespace keypad_input {
 const function_generic_t *function_list = NULL;
@@ -3056,7 +3137,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, KeypadInput::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, KeypadInput::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, KeypadInput::Id));
 
     if (flags & CLUSTER_FLAG_CLIENT) {
         create_default_binding_cluster(endpoint);
@@ -3072,7 +3154,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
 
-
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
     }
@@ -3083,7 +3164,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* keypad_input */
+} // namespace keypad_input
 
 namespace power_topology {
 const function_generic_t *function_list = NULL;
@@ -3092,12 +3173,13 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, PowerTopology::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PowerTopology::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PowerTopology::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
 
-        if (config -> delegate != nullptr) {
+        if (config->delegate != nullptr) {
             static const auto delegate_init_cb = PowerTopologyDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -3110,9 +3192,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_feature_map(cluster, config->feature_flags);
 
         // check against O.a feature conformance for power topology
-        VALIDATE_FEATURES_EXACT_ONE("NodeTopology,TreeTopology,SetTopology",
-                                   feature::node_topology::get_id(), feature::tree_topology::get_id(),
-                                   feature::set_topology::get_id());
+        VALIDATE_FEATURES_EXACT_ONE("NodeTopology,TreeTopology,SetTopology", feature::node_topology::get_id(),
+                                    feature::tree_topology::get_id(), feature::set_topology::get_id());
 
         if (has(feature::node_topology::get_id())) {
             feature::node_topology::add(cluster);
@@ -3130,7 +3211,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* power_topology */
+} // namespace power_topology
 
 namespace electrical_power_measurement {
 const function_generic_t *function_list = NULL;
@@ -3139,12 +3220,14 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ElectricalPowerMeasurement::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ElectricalPowerMeasurement::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ElectricalPowerMeasurement::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
 
-        if (config -> delegate != nullptr) {
+        if (config->delegate != nullptr) {
             static const auto delegate_init_cb = ElectricalPowerMeasurementDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -3161,8 +3244,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_feature_map(cluster, config->feature_flags);
 
         // check against O.a+ feature conformance for electrical power measurement
-        VALIDATE_FEATURES_AT_LEAST_ONE("Direct Current,Alternating Current",
-                                      feature::direct_current::get_id(), feature::alternating_current::get_id());
+        VALIDATE_FEATURES_AT_LEAST_ONE("Direct Current,Alternating Current", feature::direct_current::get_id(),
+                                       feature::alternating_current::get_id());
 
         if (has(feature::direct_current::get_id())) {
             feature::direct_current::add(cluster);
@@ -3185,7 +3268,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* electrical_power_measurement */
+} // namespace electrical_power_measurement
 
 namespace electrical_energy_measurement {
 const function_generic_t *function_list = NULL;
@@ -3194,7 +3277,9 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ElectricalEnergyMeasurement::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ElectricalEnergyMeasurement::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ElectricalEnergyMeasurement::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
@@ -3209,10 +3294,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_feature_map(cluster, config->feature_flags);
 
         // check against O.a+ feature conformance for electrical energy measurement
-        VALIDATE_FEATURES_AT_LEAST_ONE("ImportedEnergy,ExportedEnergy",
-                                      feature::imported_energy::get_id(), feature::exported_energy::get_id());
-        VALIDATE_FEATURES_AT_LEAST_ONE("CumulativeEnergy,PeriodicEnergy",
-                                      feature::cumulative_energy::get_id(), feature::periodic_energy::get_id());
+        VALIDATE_FEATURES_AT_LEAST_ONE("ImportedEnergy,ExportedEnergy", feature::imported_energy::get_id(),
+                                       feature::exported_energy::get_id());
+        VALIDATE_FEATURES_AT_LEAST_ONE("CumulativeEnergy,PeriodicEnergy", feature::cumulative_energy::get_id(),
+                                       feature::periodic_energy::get_id());
 
         if (has(feature::imported_energy::get_id())) {
             feature::imported_energy::add(cluster);
@@ -3230,7 +3315,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* electrical_energy_measurement */
+} // namespace electrical_energy_measurement
 
 namespace energy_evse_mode {
 const function_generic_t *function_list = NULL;
@@ -3239,7 +3324,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, EnergyEvseMode::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, EnergyEvseMode::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, EnergyEvseMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
@@ -3267,7 +3353,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* energy_evse_mode */
+} // namespace energy_evse_mode
 
 namespace energy_evse {
 const function_generic_t *function_list = NULL;
@@ -3276,7 +3362,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, EnergyEvse::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, EnergyEvse::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, EnergyEvse::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
@@ -3309,7 +3396,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* energy_evse */
+} // namespace energy_evse
 
 namespace valve_configuration_and_control {
 const function_generic_t *function_list = NULL;
@@ -3318,7 +3405,9 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ValveConfigurationAndControl::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ValveConfigurationAndControl::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ValveConfigurationAndControl::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = ValveConfigurationAndControlDelegateInitCB;
@@ -3354,7 +3443,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* valve_configuration_and_control */
+} // namespace valve_configuration_and_control
 
 namespace device_energy_management {
 const function_generic_t *function_list = NULL;
@@ -3363,7 +3452,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, DeviceEnergyManagement::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DeviceEnergyManagement::Id));
+    VerifyOrReturnValue(
+        cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DeviceEnergyManagement::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = DeviceEnergyManagementDelegateInitCB;
@@ -3392,7 +3482,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* device_energy_management */
+} // namespace device_energy_management
 
 namespace device_energy_management_mode {
 const function_generic_t *function_list = NULL;
@@ -3401,7 +3491,9 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, DeviceEnergyManagementMode::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DeviceEnergyManagementMode::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, DeviceEnergyManagementMode::Id));
 
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
@@ -3429,7 +3521,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* device_energy_management_mode */
+} // namespace device_energy_management_mode
 
 namespace application_basic {
 const function_generic_t *function_list = NULL;
@@ -3438,7 +3530,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ApplicationBasic::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ApplicationBasic::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ApplicationBasic::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = ApplicationBasicDelegateInitCB;
@@ -3453,10 +3546,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes should managed by application */
         attribute::create_application_name(cluster, NULL, 0);
-        attribute::create_application(cluster, NULL, 0 , 0);
+        attribute::create_application(cluster, NULL, 0, 0);
         attribute::create_status(cluster, 0);
         attribute::create_application_version(cluster, NULL, 0);
-        attribute::create_allowed_vendor_list(cluster, NULL, 0 , 0);
+        attribute::create_allowed_vendor_list(cluster, NULL, 0, 0);
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
     }
@@ -3467,7 +3560,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* application_basic */
+} // namespace application_basic
 
 namespace thread_border_router_management {
 const function_generic_t *function_list = NULL;
@@ -3509,7 +3602,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 
-} /* thread_border_router_management */
+} // namespace thread_border_router_management
 
 namespace wifi_network_management {
 const function_generic_t *function_list = NULL;
@@ -3543,7 +3636,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 
-} /* wifi_network_management */
+} // namespace wifi_network_management
 
 namespace thread_network_directory {
 const function_generic_t *function_list = NULL;
@@ -3579,7 +3672,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* thread_network_directory */
+} // namespace thread_network_directory
 
 namespace service_area {
 const function_generic_t *function_list = NULL;
@@ -3616,7 +3709,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* service_area */
+} // namespace service_area
 
 namespace water_heater_management {
 const function_generic_t *function_list = NULL;
@@ -3656,7 +3749,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 
-} /* water_heater_management */
+} // namespace water_heater_management
 
 namespace water_heater_mode {
 const function_generic_t *function_list = NULL;
@@ -3696,7 +3789,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* water_heater_mode */
+} // namespace water_heater_mode
 
 namespace energy_preference {
 const function_generic_t *function_list = NULL;
@@ -3712,7 +3805,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
 
-        if (config -> delegate != nullptr) {
+        if (config->delegate != nullptr) {
             static const auto delegate_init_cb = EnergyPreferenceDelegateInitCB;
             set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         }
@@ -3727,8 +3820,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_feature_map(cluster, config->feature_flags);
 
         // check against O.a+ feature conformance for energy preference
-        VALIDATE_FEATURES_AT_LEAST_ONE("EnergyBalance,LowPowerModeSensitivity",
-                                      feature::energy_balance::get_id(), feature::low_power_mode_sensitivity::get_id());
+        VALIDATE_FEATURES_AT_LEAST_ONE("EnergyBalance,LowPowerModeSensitivity", feature::energy_balance::get_id(),
+                                       feature::low_power_mode_sensitivity::get_id());
 
         if (has(feature::energy_balance::get_id())) {
             feature::energy_balance::add(cluster, &(config->features.energy_balance));
@@ -3744,7 +3837,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* energy_preference */
+} // namespace energy_preference
 
 namespace commissioner_control {
 const function_generic_t *function_list = NULL;
@@ -3786,7 +3879,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     event::create_commissioning_request_result(cluster);
     return cluster;
 }
-} /* commissioner_control */
+} // namespace commissioner_control
 
 namespace ecosystem_information {
 const function_generic_t *function_list = NULL;
@@ -3815,7 +3908,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* ecosystem_information */
+} // namespace ecosystem_information
 
 namespace camera_av_stream_management {
 
@@ -3826,10 +3919,14 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = esp_matter::cluster::create(endpoint, CameraAvStreamManagement::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CameraAvStreamManagement::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CameraAvStreamManagement::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
-        static const auto delegate_init_cb = CameraAvStreamManagementDelegateInitCB;
-        set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        if (config && config->delegate != nullptr) {
+            static const auto delegate_init_cb = CameraAvStreamManagementDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
 
         static const auto plugin_server_init_cb = CALL_ONCE(MatterCameraAvStreamManagementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
@@ -3847,10 +3944,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_supported_stream_usages(cluster, NULL, 0, 0);
         attribute::create_stream_usage_priorities(cluster, NULL, 0, 0);
 
-
         // check against at least one feature conformance
-        VALIDATE_FEATURES_AT_LEAST_ONE("Audio,Video,Snapshot",
-                                        feature::audio::get_id(), feature::video::get_id(), feature::snapshot::get_id());
+        VALIDATE_FEATURES_AT_LEAST_ONE("Audio,Video,Snapshot", feature::audio::get_id(), feature::video::get_id(),
+                                       feature::snapshot::get_id());
         if (has(feature::audio::get_id())) {
             VerifyOrReturnValue(feature::audio::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
             if (has(feature::speaker::get_id())) {
@@ -3868,7 +3964,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             VerifyOrReturnValue(feature::local_storage::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
 
-        if (has(feature::video::get_id())|| has(feature::snapshot::get_id())) {
+        if (has(feature::video::get_id()) || has(feature::snapshot::get_id())) {
             if (has(feature::image_control::get_id())) {
                 VerifyOrReturnValue(feature::image_control::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
             }
@@ -3889,7 +3985,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             VerifyOrReturnValue(feature::privacy::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
         command::create_set_stream_priorities(cluster);
-
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterCameraAvStreamManagementClusterServerInitCallback,
+                                                 ESPMatterCameraAvStreamManagementClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -3897,7 +3994,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
     return cluster;
 }
-} /*camera av stream management*/
+} // namespace camera_av_stream_management
 
 namespace webrtc_transport_provider {
 const function_generic_t *function_list = NULL;
@@ -3907,10 +4004,14 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = esp_matter::cluster::create(endpoint, WebRTCTransportProvider::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, WebRTCTransportProvider::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, WebRTCTransportProvider::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
-        static const auto delegate_init_cb = WebRTCTransportProviderDelegateInitCB;
-        set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        if (config && config->delegate != nullptr) {
+            static const auto delegate_init_cb = WebRTCTransportProviderDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
 
         add_function_list(cluster, function_list, function_flags);
 
@@ -3922,7 +4023,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         attribute::create_current_sessions(cluster, NULL, 0, 0);
 
-
         command::create_solicit_offer(cluster);
         command::create_solicit_offer_response(cluster);
         command::create_provide_offer(cluster);
@@ -3931,6 +4031,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         command::create_provide_ice_candidates(cluster);
         command::create_end_session(cluster);
 
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterWebRTCTransportProviderClusterServerInitCallback,
+                                                 ESPMatterWebRTCTransportProviderClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -3938,7 +4040,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
     return cluster;
 }
-} /*webrtc transport provider*/
+} // namespace webrtc_transport_provider
 
 namespace webrtc_transport_requestor {
 const function_generic_t *function_list = NULL;
@@ -3948,7 +4050,9 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = esp_matter::cluster::create(endpoint, WebRTCTransportRequestor::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, WebRTCTransportRequestor::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, WebRTCTransportRequestor::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         // TODO: Add a delegate initialization callback.
         // The current esp_matter initialization flow makes this hard to implement cleanly.
@@ -3963,12 +4067,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         attribute::create_current_sessions(cluster, NULL, 0, 0);
 
-
         command::create_offer(cluster);
         command::create_answer(cluster);
         command::create_ice_candidates(cluster);
         command::create_end(cluster);
-
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -3976,8 +4078,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
     return cluster;
 }
-} /*webrtc transport requestor*/
-
+} // namespace webrtc_transport_requestor
 
 // namespace binary_input_basic {
 //     // ToDo
@@ -4053,7 +4154,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     cluster_t *cluster = esp_matter::cluster::create(endpoint, Chime::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, Chime::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
-        VerifyOrReturnValue(config != NULL && config->delegate != nullptr, NULL, ESP_LOGE(TAG, "Delegate cannot be nullptr"));
+        VerifyOrReturnValue(config != NULL && config->delegate != nullptr, NULL,
+                            ESP_LOGE(TAG, "Delegate cannot be nullptr"));
         static const auto delegate_init_cb = ChimeDelegateInitCB;
         set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
         static const auto plugin_server_init_cb = CALL_ONCE(MatterChimePluginServerInitCallback);
@@ -4078,7 +4180,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 
-} /* chime */
+} // namespace chime
 
 namespace closure_control {
 const function_generic_t *function_list = NULL;
@@ -4088,7 +4190,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = esp_matter::cluster::create(endpoint, ClosureControl::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ClosureControl::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ClosureControl::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config->delegate != nullptr) {
             static const auto delegate_init_cb = ClosureControlDelegateInitCB;
@@ -4110,8 +4213,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
         // check against O.a+ feature conformance
-        VALIDATE_FEATURES_AT_LEAST_ONE("Positioning,MotionLatching",
-                                      feature::positioning::get_id(), feature::motion_latching::get_id());
+        VALIDATE_FEATURES_AT_LEAST_ONE("Positioning,MotionLatching", feature::positioning::get_id(),
+                                       feature::motion_latching::get_id());
         if (has(feature::positioning::get_id())) {
             VerifyOrReturnValue(feature::positioning::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
             if (has(feature::ventilation::get_id())) {
@@ -4161,7 +4264,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 
-} /* closure_control */
+} // namespace closure_control
 
 namespace closure_dimension {
 const function_generic_t *function_list = NULL;
@@ -4171,7 +4274,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = esp_matter::cluster::create(endpoint, ClosureDimension::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ClosureDimension::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ClosureDimension::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config->delegate != nullptr) {
             static const auto delegate_init_cb = ClosureDimensionDelegateInitCB;
@@ -4191,13 +4295,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
         // check against O.a+ feature conformance
-        VALIDATE_FEATURES_AT_LEAST_ONE("Positioning,MotionLatching",
-                                      feature::positioning::get_id(), feature::motion_latching::get_id());
+        VALIDATE_FEATURES_AT_LEAST_ONE("Positioning,MotionLatching", feature::positioning::get_id(),
+                                       feature::motion_latching::get_id());
         if (has(feature::positioning::get_id())) {
             VerifyOrReturnValue(feature::positioning::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
 
-            VALIDATE_FEATURES_AT_MOST_ONE("Translation, Rotation, Modulation",
-                                      feature::translation::get_id(), feature::rotation::get_id(), feature::modulation::get_id());
+            VALIDATE_FEATURES_AT_MOST_ONE("Translation, Rotation, Modulation", feature::translation::get_id(),
+                                          feature::rotation::get_id(), feature::modulation::get_id());
             if (has(feature::translation::get_id())) {
                 VerifyOrReturnValue(feature::translation::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
             }
@@ -4222,7 +4326,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
 
         command::create_set_target(cluster);
-
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -4231,7 +4334,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 
-} /* closure_dimension */
+} // namespace closure_dimension
 
 namespace camera_av_settings_user_level_management {
 const function_generic_t *function_list = NULL;
@@ -4241,12 +4344,15 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = esp_matter::cluster::create(endpoint, CameraAvSettingsUserLevelManagement::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CameraAvSettingsUserLevelManagement::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CameraAvSettingsUserLevelManagement::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         // TODO: Add a delegate initialization callback.
         // The current esp_matter initialization flow makes this hard to implement cleanly.
 
-        static const auto plugin_server_init_cb = CALL_ONCE(MatterCameraAvSettingsUserLevelManagementPluginServerInitCallback);
+        static const auto plugin_server_init_cb =
+            CALL_ONCE(MatterCameraAvSettingsUserLevelManagementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         set_add_bounds_callback(cluster, camera_av_settings_user_level_management::add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
@@ -4260,7 +4366,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         // check against O.a+ feature conformance
         VALIDATE_FEATURES_AT_LEAST_ONE("DigitalPTZ,MechanicalPan,MechanicalTilt,MechanicalZoom",
-                                      feature::digital_ptz::get_id(), feature::mechanical_pan::get_id(), feature::mechanical_tilt::get_id(), feature::mechanical_zoom::get_id());
+                                       feature::digital_ptz::get_id(), feature::mechanical_pan::get_id(),
+                                       feature::mechanical_tilt::get_id(), feature::mechanical_zoom::get_id());
         if (has(feature::digital_ptz::get_id())) {
             VerifyOrReturnValue(feature::digital_ptz::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
@@ -4274,7 +4381,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             VerifyOrReturnValue(feature::mechanical_zoom::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
         if (has(feature::mechanical_presets::get_id())) {
-            if (has(feature::mechanical_pan::get_id()) || has(feature::mechanical_tilt::get_id()) || has(feature::mechanical_zoom::get_id())) {
+            if (has(feature::mechanical_pan::get_id()) || has(feature::mechanical_tilt::get_id()) ||
+                has(feature::mechanical_zoom::get_id())) {
                 VerifyOrReturnValue(feature::mechanical_presets::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
             }
         }
@@ -4286,7 +4394,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 
-} /* camera_av_settings_user_level_management */
+} // namespace camera_av_settings_user_level_management
 
 namespace push_av_stream_transport {
 const function_generic_t *function_list = NULL;
@@ -4296,7 +4404,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = esp_matter::cluster::create(endpoint, PushAvStreamTransport::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PushAvStreamTransport::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, PushAvStreamTransport::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = PushAvStreamTransportDelegateInitCB;
@@ -4336,7 +4445,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 
-} /* push_av_stream_transport */
+} // namespace push_av_stream_transport
 
 namespace commodity_tariff {
 const function_generic_t *function_list = NULL;
@@ -4346,7 +4455,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = esp_matter::cluster::create(endpoint, CommodityTariff::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CommodityTariff::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CommodityTariff::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = CommodityTariffDelegateInitCB;
@@ -4381,8 +4491,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
         // check against O.a+ feature conformance
-        VALIDATE_FEATURES_AT_LEAST_ONE("Pricing,FriendlyCredit,AuxiliaryLoad",
-                                      feature::pricing::get_id(), feature::friendly_credit::get_id(), feature::auxiliary_load::get_id());
+        VALIDATE_FEATURES_AT_LEAST_ONE("Pricing,FriendlyCredit,AuxiliaryLoad", feature::pricing::get_id(),
+                                       feature::friendly_credit::get_id(), feature::auxiliary_load::get_id());
         if (has(feature::pricing::get_id())) {
             VerifyOrReturnValue(feature::pricing::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
@@ -4406,7 +4516,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         command::create_get_tariff_component_response(cluster);
         command::create_get_day_entry(cluster);
         command::create_get_day_entry_response(cluster);
-
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -4415,7 +4524,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 
-} /* commodity_tariff */
+} // namespace commodity_tariff
 
 namespace commodity_price {
 const function_generic_t *function_list = NULL;
@@ -4425,7 +4534,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = esp_matter::cluster::create(endpoint, CommodityPrice::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CommodityPrice::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CommodityPrice::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = CommodityPriceDelegateInitCB;
@@ -4451,7 +4561,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 
-} /* commodity_price */
+} // namespace commodity_price
 
 namespace commodity_metering {
 const function_generic_t *function_list = NULL;
@@ -4461,7 +4571,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = esp_matter::cluster::create(endpoint, CommodityMetering::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CommodityMetering::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, CommodityMetering::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterCommodityMeteringPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
@@ -4484,7 +4595,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 
-} /* commodity_metering */
+} // namespace commodity_metering
 
 namespace electrical_grid_conditions {
 const function_generic_t *function_list = NULL;
@@ -4494,7 +4605,9 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = esp_matter::cluster::create(endpoint, ElectricalGridConditions::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ElectricalGridConditions::Id));
+    VerifyOrReturnValue(
+        cluster, NULL,
+        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, ElectricalGridConditions::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         if (config && config->delegate != nullptr) {
             static const auto delegate_init_cb = ElectricalGridConditionsDelegateInitCB;
@@ -4519,7 +4632,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 
-} /* electrical_grid_conditions */
+} // namespace electrical_grid_conditions
 
 namespace meter_identification {
 const function_generic_t *function_list = NULL;
@@ -4529,7 +4642,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = esp_matter::cluster::create(endpoint, MeterIdentification::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, MeterIdentification::Id));
+    VerifyOrReturnValue(cluster, NULL,
+                        ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, MeterIdentification::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         static const auto plugin_server_init_cb = CALL_ONCE(MatterMeterIdentificationPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
@@ -4551,7 +4665,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 
-} /* meter_identification */
+} // namespace meter_identification
 
-} /* cluster */
-} /* esp_matter */
+} // namespace cluster
+} // namespace esp_matter

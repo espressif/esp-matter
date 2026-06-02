@@ -14,11 +14,11 @@
 
 #include <data_model_provider/clusters/camera_av_stream_management_integration.h>
 
-#include <esp_matter_data_model_priv.h>
 #include <app/ClusterCallbacks.h>
 #include <data_model/esp_matter_data_model.h>
 #include <data_model/esp_matter_endpoint.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
+#include <esp_matter_data_model_priv.h>
 #include <unordered_map>
 
 using namespace chip;
@@ -39,7 +39,8 @@ bool IsClusterEnabled(EndpointId endpointId)
 
 uint32_t GetFeatureMap(EndpointId endpointId)
 {
-    attribute_t *attribute = attribute::get(endpointId, CameraAvStreamManagement::Id, Globals::Attributes::FeatureMap::Id);
+    attribute_t *attribute =
+        attribute::get(endpointId, CameraAvStreamManagement::Id, Globals::Attributes::FeatureMap::Id);
     VerifyOrReturnValue(attribute, 0);
 
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
@@ -89,18 +90,18 @@ BitFlags<OptionalAttribute> GetOptionalAttributes(EndpointId endpointId)
 
 namespace chip::app::Clusters::CameraAvStreamManagement {
 
-void SetConfig(EndpointId endpointId, const CameraAvStreamManagementConfig & config)
+void SetConfig(EndpointId endpointId, const CameraAvStreamManagementConfig &config)
 {
     gConfigs[endpointId] = config;
 }
 
-const CameraAvStreamManagementConfig * GetConfig(EndpointId endpointId)
+const CameraAvStreamManagementConfig *GetConfig(EndpointId endpointId)
 {
     auto it = gConfigs.find(endpointId);
     return (it == gConfigs.end()) ? nullptr : &it->second;
 }
 
-void SetDelegate(EndpointId endpointId, CameraAVStreamManagementDelegate * delegate)
+void SetDelegate(EndpointId endpointId, CameraAVStreamManagementDelegate *delegate)
 {
     if (gConfigs.find(endpointId) == gConfigs.end()) {
         ChipLogError(AppServer, "Camera AV Stream Management config not found for endpoint %u", endpointId);
@@ -109,54 +110,71 @@ void SetDelegate(EndpointId endpointId, CameraAVStreamManagementDelegate * deleg
     gConfigs[endpointId].delegate = delegate;
 }
 
+CameraAVStreamManagementCluster *GetServer(EndpointId endpointId)
+{
+    auto it = gServers.find(endpointId);
+    VerifyOrReturnValue(it != gServers.end(), nullptr);
+    VerifyOrReturnValue(it->second.IsConstructed(), nullptr);
+    return &it->second.Cluster();
+}
+
 } // namespace chip::app::Clusters::CameraAvStreamManagement
 
 void ESPMatterCameraAvStreamManagementClusterServerInitCallback(EndpointId endpointId)
 {
-    if (!IsClusterEnabled(endpointId) || gServers[endpointId].IsConstructed()) {
+    if (!IsClusterEnabled(endpointId)) {
         return;
     }
 
-    const CameraAvStreamManagementConfig *config = CameraAvStreamManagement::GetConfig(endpointId);
-    if (config == nullptr || config->delegate == nullptr) {
-        ChipLogError(AppServer, "Camera AV Stream Management config/delegate missing for endpoint %u", endpointId);
-        return;
+    if (!gServers[endpointId].IsConstructed()) {
+        const CameraAvStreamManagementConfig *config = CameraAvStreamManagement::GetConfig(endpointId);
+        if (config == nullptr || config->delegate == nullptr) {
+            ChipLogError(AppServer, "Camera AV Stream Management config/delegate missing for endpoint %u", endpointId);
+            return;
+        }
+
+        ChipLogProgress(AppServer, "Registering Camera AV Stream Management on endpoint %u", endpointId);
+        BitFlags<Feature> features(GetFeatureMap(endpointId));
+        BitFlags<OptionalAttribute> optionalAttrs = GetOptionalAttributes(endpointId);
+
+        gServers[endpointId].Create(
+            *config->delegate, endpointId, features, optionalAttrs, config->maxConcurrentEncoders,
+            config->maxEncodedPixelRate, config->videoSensorParams, config->nightVisionUsesInfrared,
+            config->minViewPortRes, config->rateDistortionTradeOffPoints, config->maxContentBufferSize,
+            config->microphoneCapabilities, config->speakerCapabilities, config->twoWayTalkSupport,
+            config->snapshotCapabilities, config->maxNetworkBandwidth, config->supportedStreamUsages,
+            config->streamUsagePriorities);
     }
-
-    ChipLogProgress(AppServer, "Registering Camera AV Stream Management on endpoint %u", endpointId);
-    BitFlags<Feature> features(GetFeatureMap(endpointId));
-    BitFlags<OptionalAttribute> optionalAttrs = GetOptionalAttributes(endpointId);
-
-    gServers[endpointId].Create(*config->delegate, endpointId, features, optionalAttrs,
-                                config->maxConcurrentEncoders, config->maxEncodedPixelRate, config->videoSensorParams,
-                                config->nightVisionUsesInfrared, config->minViewPortRes, config->rateDistortionTradeOffPoints,
-                                config->maxContentBufferSize, config->microphoneCapabilities, config->speakerCapabilities,
-                                config->twoWayTalkSupport, config->snapshotCapabilities, config->maxNetworkBandwidth,
-                                config->supportedStreamUsages, config->streamUsagePriorities);
 
     CHIP_ERROR err = data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer,
-                     "Failed to register Camera AV Stream Management on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
-                     err.Format());
+                     "Failed to register Camera AV Stream Management on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
+                     endpointId, err.Format());
     }
 }
 
 void ESPMatterCameraAvStreamManagementClusterServerShutdownCallback(EndpointId endpointId)
 {
-    if (!IsClusterEnabled(endpointId) || !gServers[endpointId].IsConstructed()) {
-        return;
-    }
+    auto serverIt = gServers.find(endpointId);
+    VerifyOrReturn(serverIt != gServers.end());
+    VerifyOrReturn(serverIt->second.IsConstructed());
 
-    CHIP_ERROR err = data_model::provider::get_instance().registry().Unregister(&gServers[endpointId].Cluster());
+    CHIP_ERROR err = data_model::provider::get_instance().registry().Unregister(&serverIt->second.Cluster());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer,
-                     "Failed to unregister Camera AV Stream Management on endpoint %u - Error: %" CHIP_ERROR_FORMAT, endpointId,
-                     err.Format());
+                     "Failed to unregister Camera AV Stream Management on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
+                     endpointId, err.Format());
     }
-    gServers[endpointId].Destroy();
+    serverIt->second.Destroy();
+    gServers.erase(serverIt);
+    gConfigs.erase(endpointId);
 }
 
-void MatterCameraAvStreamManagementPluginServerInitCallback() {}
+void MatterCameraAvStreamManagementPluginServerInitCallback()
+{
+}
 
-void MatterCameraAvStreamManagementPluginServerShutdownCallback() {}
+void MatterCameraAvStreamManagementPluginServerShutdownCallback()
+{
+}
