@@ -974,14 +974,17 @@ typedef struct config {
     uint32_t max_network_bandwidth;
     uint32_t feature_flags;
     void *delegate;
-    config()  : max_content_buffer_size(0), max_network_bandwidth(0), feature_flags(0) {}
+    config() : max_content_buffer_size(0), max_network_bandwidth(0), feature_flags(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 }/*camera av stream management*/
 
 namespace webrtc_transport_provider {
-using config_t = common::config_t;
+typedef struct config {
+    void *delegate;
+    config() : delegate(nullptr) {}
+} config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 }/*webrtc transport provider*/

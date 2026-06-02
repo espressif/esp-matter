@@ -71,6 +71,7 @@
 #include <clusters/temperature_control/integration.h>
 #include <clusters/resource_monitor/integration.h>
 #include <clusters/camera_av_stream_management/integration.h>
+#include <clusters/webrtc_transport_provider/integration.h>
 #include <clusters/chime/integration.h>
 #include <clusters/tls_client_management/integration.h>
 #include <clusters/tls_certificate_management/integration.h>
@@ -917,6 +918,13 @@ void CameraAvStreamManagementDelegateInitCB(void *delegate, uint16_t endpoint_id
     CameraAvStreamManagement::SetDelegate(
         endpoint_id,
         static_cast<chip::app::Clusters::CameraAvStreamManagement::CameraAVStreamManagementDelegate *>(delegate));
+}
+void WebRTCTransportProviderDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    WebRTCTransportProvider::SetDelegate(
+        endpoint_id,
+        static_cast<chip::app::Clusters::WebRTCTransportProvider::Delegate *>(delegate));
 }
 } // namespace delegate_cb
 } // namespace cluster
