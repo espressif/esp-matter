@@ -56,3 +56,18 @@ def test_jsontlv(dut: QemuDut) -> None:
 @pytest.mark.esp32c3
 def test_lifecycle(dut: QemuDut) -> None:
     run_group(dut, "cluster_lifecycle")
+
+
+@pytest.mark.host_test
+@pytest.mark.qemu
+@pytest.mark.esp32c3
+def test_attribute_create_value_persistence(dut: QemuDut) -> None:
+    """Runs TEST_CASE_MULTIPLE_STAGES cases (both stages, including across SW reset)."""
+    dut.run_all_single_board_cases(
+        name=["attribute::create preserves max value after reboot"],
+        timeout=120,
+    )
+    failed = dut.testsuite.failed_cases
+    if failed:
+        names = [tc.name for tc in failed]
+        pytest.fail(f"{len(failed)} failed: {', '.join(names)}")

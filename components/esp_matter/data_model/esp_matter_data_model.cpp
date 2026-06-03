@@ -581,6 +581,12 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, e
             // read from the NVS and store in the attribute's storage
             esp_matter_attr_val_t temp_val;
             temp_val.type = attribute->attribute_val_type;
+            if (val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING || val.type == ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING ||
+                    val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING || val.type == ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING) {
+                temp_val.val.a.max = max_val_size;
+                temp_val.val.a.s = 0;
+                temp_val.val.a.t = 0;
+            }
             esp_err_t err =
                 get_val_from_nvs(attribute->endpoint_id, attribute->cluster_id, attribute_id, temp_val);
             if (err == ESP_OK) {
