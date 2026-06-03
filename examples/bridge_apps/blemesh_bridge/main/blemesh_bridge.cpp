@@ -17,6 +17,7 @@
 #include <app_bridged_device.h>
 #include <blemesh_bridge.h>
 #include <app_blemesh.h>
+#include "app_blemesh_bridged_device.h"
 
 static const char *TAG = "blemesh_bridge";
 
@@ -50,17 +51,17 @@ esp_err_t blemesh_bridge_match_bridged_onoff_light(uint8_t *composition_data, ui
         ESP_LOGI(TAG, "This is an expected device ...");
         node_t *node = node::get();
         ESP_RETURN_ON_FALSE(node, ESP_ERR_INVALID_STATE, TAG, "Could not find esp_matter node");
-        if (app_bridge_get_device_by_blemesh_addr(blemesh_addr)) {
-            ESP_LOGI(TAG, "Bridged node for 0x%04x bridged device on endpoint %d has been created", blemesh_addr,
-                     app_bridge_get_matter_endpointid_by_blemesh_addr(blemesh_addr));
+        blemesh_device_addr_t dev_addr = {blemesh_addr};
+        if (app_bridge_get_device(&dev_addr)) {
+            ESP_LOGI(TAG, "Bridged node for 0x%04x bridged device on endpoint %u has been created", blemesh_addr,
+                     app_bridge_get_endpoint(&dev_addr));
         } else {
-            app_bridged_device_t *bridged_device =
-                app_bridge_create_bridged_device(node, aggregator_endpoint_id, ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID,
-                                                 ESP_MATTER_BRIDGED_DEVICE_TYPE_BLEMESH,
-                                                 app_bridge_blemesh_address(blemesh_addr), NULL);
-            ESP_RETURN_ON_FALSE(bridged_device, ESP_FAIL, TAG, "Failed to create bridged device (on_off light)");
-            ESP_LOGI(TAG, "Create/Update bridged node for 0x%04x bridged device on endpoint %d", blemesh_addr,
-                     app_bridge_get_matter_endpointid_by_blemesh_addr(blemesh_addr));
+            esp_err_t err = app_bridge_create_new_device(
+                                node, aggregator_endpoint_id, ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID,
+                                &dev_addr, NULL);
+            ESP_RETURN_ON_ERROR(err, TAG, "Failed to create bridged device (on_off light)");
+            ESP_LOGI(TAG, "Create/Update bridged node for 0x%04x bridged device on endpoint %u", blemesh_addr,
+                     app_bridge_get_endpoint(&dev_addr));
         }
     } else {
         ESP_LOGW(TAG, "This isn't an unexpected device ...");
@@ -71,12 +72,14 @@ esp_err_t blemesh_bridge_match_bridged_onoff_light(uint8_t *composition_data, ui
 esp_err_t blemesh_bridge_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
                                           esp_matter_attr_val_t *val, app_bridged_device_t *bridged_device)
 {
-    if (bridged_device && bridged_device->dev && bridged_device->dev->endpoint) {
+    esp_matter_bridge::device_t *matter_device = bridged_device ? bridged_device->get_matter_device() : nullptr;
+    if (matter_device && matter_device->endpoint) {
         if (cluster_id == OnOff::Id) {
             if (attribute_id == OnOff::Attributes::OnOff::Id) {
                 ESP_LOGD(TAG, "Update Bridged Device, ep: 0x%x, cluster: 0x%lx, att: 0x%lx", endpoint_id, cluster_id,
                          attribute_id);
-                app_ble_mesh_onoff_set(bridged_device->dev_addr.blemesh_addr, val->val.b);
+                blemesh_device_addr_t *dev_addr = (blemesh_device_addr_t *)bridged_device->get_dev_addr();
+                app_ble_mesh_onoff_set(dev_addr->blemesh_addr, val->val.b);
             }
         }
     } else {

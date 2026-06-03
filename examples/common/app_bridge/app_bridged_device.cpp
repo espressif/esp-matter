@@ -12,249 +12,115 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <esp_matter_data_model.h>
 #include <esp_log.h>
 #include <esp_matter.h>
+#include <esp_matter_bridge.h>
 #include <nvs.h>
 #include <string.h>
 
 #include <app_bridged_device.h>
-#include <esp_matter_mem.h>
-#include <nvs_key_allocator.h>
+#include "lib/core/DataModelTypes.h"
 
 // The bridge app can be used only when MAX_BRIDGED_DEVICE_COUNT > 0
 #if defined(MAX_BRIDGED_DEVICE_COUNT) && MAX_BRIDGED_DEVICE_COUNT > 0
 
-namespace esp_matter_bridge {
-namespace nvs_key_allocator {
-static inline StorageKeyName endpoint_dev_addr(uint16_t endpoint_id)
-{
-    return StorageKeyName::Formatted("b/%x/da", endpoint_id);
-}
-
-static inline StorageKeyName endpoint_dev_type(uint16_t endpoint_id)
-{
-    return StorageKeyName::Formatted("b/%x/dt", endpoint_id);
-}
-
-} // namespace nvs_key_allocator
-} // namespace esp_matter_bridge
-
 using namespace esp_matter;
 
 static const char *TAG = "app_bridged_device";
-app_bridged_device_t *g_bridged_device_list = NULL;
+app_bridged_device_t *g_bridged_device_list = nullptr;
 static uint8_t g_current_bridged_device_count = 0;
+static create_device_callback_t g_create_device_cb = nullptr;
+static free_device_callback_t g_free_device_cb = nullptr;
 
-/** Persistent Bridged Device Info **/
-
-static esp_err_t app_bridge_store_bridged_device_info(app_bridged_device_t *bridged_device)
+esp_err_t map_matter_error(CHIP_ERROR error)
 {
-    esp_err_t err = ESP_OK;
-    if (!bridged_device) {
-        ESP_LOGE(TAG, "bridged device cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
+    if (error.IsRange(chip::ChipError::Range::kPlatform)) {
+        return error.GetValue();
     }
-    nvs_handle_t handle;
-    err = nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, ESP_MATTER_BRIDGE_NAMESPACE, NVS_READWRITE,
-                                  &handle);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Error opening partition %s namespace %s. Err: %d", CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME,
-                 ESP_MATTER_BRIDGE_NAMESPACE, err);
-        return err;
+    if (error == CHIP_NO_ERROR) {
+        return ESP_OK;
     }
-    uint16_t endpoint_id = endpoint::get_id(bridged_device->dev->endpoint);
-    err = nvs_set_blob(handle, esp_matter_bridge::nvs_key_allocator::endpoint_dev_addr(endpoint_id).KeyName(),
-                       &bridged_device->dev_addr, sizeof(app_bridged_device_address_t));
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Error storing the device address");
+    if (error == CHIP_ERROR_PERSISTED_STORAGE_VALUE_NOT_FOUND) {
+        return ESP_ERR_NVS_NOT_FOUND;
     }
-    err = nvs_set_blob(handle, esp_matter_bridge::nvs_key_allocator::endpoint_dev_type(endpoint_id).KeyName(),
-                       &bridged_device->dev_type, sizeof(app_bridged_device_type_t));
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Error storing the device type");
+    if (error == CHIP_ERROR_BUFFER_TOO_SMALL) {
+        return ESP_ERR_NVS_INVALID_LENGTH;
     }
-    nvs_commit(handle);
-    nvs_close(handle);
-    return err;
-}
-
-static esp_err_t app_bridge_read_bridged_device_info(app_bridged_device_type_t *device_type,
-                                                     app_bridged_device_address_t *device_addr,
-                                                     uint16_t matter_endpoint_id)
-{
-    esp_err_t err = ESP_OK;
-    if (!device_type || !device_addr) {
-        ESP_LOGE(TAG, "device_type or device_addr cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-    nvs_handle_t handle;
-    err = nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, ESP_MATTER_BRIDGE_NAMESPACE, NVS_READONLY,
-                                  &handle);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Error opening partition %s namespace %s. Err: %d", CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME,
-                 ESP_MATTER_BRIDGE_NAMESPACE, err);
-        return err;
-    }
-    size_t len = sizeof(app_bridged_device_address_t);
-    err = nvs_get_blob(handle, esp_matter_bridge::nvs_key_allocator::endpoint_dev_addr(matter_endpoint_id).KeyName(),
-                       device_addr, &len);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Error reading the device address");
-    }
-    len = sizeof(app_bridged_device_type_t);
-    err = nvs_get_blob(handle, esp_matter_bridge::nvs_key_allocator::endpoint_dev_type(matter_endpoint_id).KeyName(),
-                       device_type, &len);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Error reading the device type");
-    }
-    nvs_close(handle);
-    return err;
-}
-
-static esp_err_t app_bridge_erase_bridged_device_info(uint16_t endpoint_id)
-{
-    esp_err_t err = ESP_OK;
-    nvs_handle_t handle;
-    err = nvs_open_from_partition(CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME, ESP_MATTER_BRIDGE_NAMESPACE, NVS_READWRITE,
-                                  &handle);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Error opening partition %s namespace %s. Err: %d", CONFIG_ESP_MATTER_BRIDGE_INFO_PART_NAME,
-                 ESP_MATTER_BRIDGE_NAMESPACE, err);
-        return err;
-    }
-    err = nvs_erase_key(handle, esp_matter_bridge::nvs_key_allocator::endpoint_dev_addr(endpoint_id).KeyName());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Error erasing the device address");
-    }
-    err = nvs_erase_key(handle, esp_matter_bridge::nvs_key_allocator::endpoint_dev_type(endpoint_id).KeyName());
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Error erasing the device type");
-    }
-    nvs_commit(handle);
-    nvs_close(handle);
-    return err;
-}
-
-/** Bridged Device's Address APIs */
-app_bridged_device_address_t app_bridge_zigbee_address(uint8_t zigbee_endpointid, uint16_t zigbee_shortaddr)
-{
-    app_bridged_device_address_t bridged_address = {
-        {
-            .zigbee_endpointid = zigbee_endpointid,
-            .zigbee_shortaddr = zigbee_shortaddr,
-        },
-    };
-    return bridged_address;
-}
-
-app_bridged_device_address_t app_bridge_blemesh_address(uint16_t blemesh_addr)
-{
-    app_bridged_device_address_t bridged_address = {
-        .blemesh_addr = blemesh_addr,
-    };
-    return bridged_address;
-}
-
-app_bridged_device_address_t app_bridge_espnow_address(uint8_t espnow_macaddr[6], uint16_t espnow_initiator_attr)
-{
-    app_bridged_device_address_t bridged_address = {
-        .espnow_macaddr = {0},
-    };
-    memcpy(bridged_address.espnow_macaddr, espnow_macaddr, 6);
-    ESP_LOGI(TAG, "espnow_initiator_attr: %d", espnow_initiator_attr);
-    return bridged_address;
-}
-
-app_bridged_device_address_t app_bridge_rainmaker_address(const char* rainmaker_node_id, const char* rainmaker_node_name)
-{
-    app_bridged_device_address_t bridged_address = {
-        .rainmaker_node_id = {0},
-        .rainmaker_node_name = {0},
-    };
-    memcpy(bridged_address.rainmaker_node_id, rainmaker_node_id, 32);
-    memcpy(bridged_address.rainmaker_node_name, rainmaker_node_name, 32);
-    return bridged_address;
+    return ESP_FAIL;
 }
 
 /** Bridged Device APIs */
-app_bridged_device_t *app_bridge_create_bridged_device(node_t *node, uint16_t parent_endpoint_id,
-                                                       uint32_t matter_device_type_id,
-                                                       app_bridged_device_type_t bridged_device_type,
-                                                       app_bridged_device_address_t bridged_device_address,
-                                                       void *priv_data)
+esp_err_t app_bridge_initialize(node_t *node, esp_matter_bridge::bridge_device_type_callback_t device_type_cb,
+                                create_device_callback_t create_cb, free_device_callback_t free_cb)
 {
-    if (g_current_bridged_device_count >= MAX_BRIDGED_DEVICE_COUNT) {
-        ESP_LOGE(TAG, "The device list is full, could not add bridged device");
-        return NULL;
-    }
-    app_bridged_device_t *new_dev = (app_bridged_device_t *)esp_matter_mem_calloc(1, sizeof(app_bridged_device_t));
-    new_dev->priv_data = priv_data;
-    new_dev->dev = esp_matter_bridge::create_device(node, parent_endpoint_id, matter_device_type_id, new_dev);
-    if (!(new_dev->dev)) {
-        ESP_LOGE(TAG, "Failed to create the bridged device");
-        esp_matter_mem_free(new_dev);
-        return NULL;
-    }
-
-    new_dev->dev_type = bridged_device_type;
-    new_dev->dev_addr = bridged_device_address;
-    new_dev->next = g_bridged_device_list;
-    g_bridged_device_list = new_dev;
-    g_current_bridged_device_count++;
-
-    if (ESP_OK != app_bridge_store_bridged_device_info(new_dev)) {
-        ESP_LOGW(TAG, "Failed to store the bridged device information");
-    }
-
-    // Enable the created endpoint
-    esp_matter::endpoint::enable(new_dev->dev->endpoint);
-
-    return new_dev;
-}
-
-esp_err_t app_bridge_initialize(node_t *node, esp_matter_bridge::bridge_device_type_callback_t device_type_cb)
-{
+    // Free_callback can be null if the user doesn't want to delete app_bridged_device_t app_bridge_remove_device()
+    VerifyOrReturnValue(node && device_type_cb && create_cb, ESP_ERR_INVALID_ARG);
     esp_err_t err = esp_matter_bridge::initialize(node, device_type_cb);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to initialize the esp_matter_bridge");
         return err;
     }
-
+    g_bridged_device_list = nullptr;
+    g_current_bridged_device_count = 0;
+    g_create_device_cb = create_cb;
+    g_free_device_cb = free_cb;
     uint16_t matter_endpoint_id_array[MAX_BRIDGED_DEVICE_COUNT];
     esp_matter_bridge::get_bridged_endpoint_ids(matter_endpoint_id_array);
     for (size_t idx = 0; idx < MAX_BRIDGED_DEVICE_COUNT; ++idx) {
         if (matter_endpoint_id_array[idx] != chip::kInvalidEndpointId) {
-            app_bridged_device_type_t device_type;
-            app_bridged_device_address_t device_addr;
-            err = app_bridge_read_bridged_device_info(&device_type, &device_addr, matter_endpoint_id_array[idx]);
-            if (err != ESP_OK) {
-                ESP_LOGE(TAG,
-                         "Failed to read the app_bridged_device_type and app_bridged_device_address for endpoint %d",
-                         matter_endpoint_id_array[idx]);
-                continue;
+            app_bridged_device_t *bridged_device = create_cb(node, matter_endpoint_id_array[idx]);
+            if (!bridged_device) {
+                ESP_LOGE(TAG, "Failed to resume the endpoint %u", matter_endpoint_id_array[idx]);
+                return ESP_FAIL;
             }
-            app_bridged_device_t *new_dev =
-                (app_bridged_device_t *)esp_matter_mem_calloc(1, sizeof(app_bridged_device_t));
-            if (!new_dev) {
-                ESP_LOGE(TAG, "Failed to alloc memory for the resumed bridged device");
-                continue;
-            }
-            new_dev->dev = esp_matter_bridge::resume_device(node, matter_endpoint_id_array[idx], new_dev);
-            if (!(new_dev->dev)) {
-                ESP_LOGE(TAG, "Failed to resume the bridged device");
-                esp_matter_mem_free(new_dev);
-                continue;
-            }
-            new_dev->dev_type = device_type;
-            new_dev->dev_addr = device_addr;
-            new_dev->next = g_bridged_device_list;
-            g_bridged_device_list = new_dev;
+            bridged_device->set_matter_device(esp_matter_bridge::resume_device(node, matter_endpoint_id_array[idx], bridged_device));
+            VerifyOrReturnValue(bridged_device->get_matter_device(), ESP_ERR_NO_MEM);
+            err = bridged_device->restore_dev_addr();
+            VerifyOrReturnValue(err == ESP_OK, err);
+            bridged_device->set_next(g_bridged_device_list);
+            g_bridged_device_list = bridged_device;
             g_current_bridged_device_count++;
-
             // Enable the resumed endpoint
-            esp_matter::endpoint::enable(new_dev->dev->endpoint);
+            esp_matter::endpoint::enable(bridged_device->get_matter_device()->endpoint);
         }
     }
+    return ESP_OK;
+}
+
+esp_err_t app_bridge_create_new_device(node_t *node, uint16_t parent_endpoint_id, uint32_t matter_device_type_id,
+                                       void *addr_ctx, void *priv_data)
+{
+    VerifyOrReturnValue(node && parent_endpoint_id != chip::kInvalidEndpointId, ESP_ERR_INVALID_ARG);
+    VerifyOrReturnValue(g_create_device_cb, ESP_ERR_INVALID_STATE);
+    if (g_current_bridged_device_count >= MAX_BRIDGED_DEVICE_COUNT) {
+        ESP_LOGE(TAG, "The device list is full, could not add bridged device");
+        return ESP_ERR_NO_MEM;
+    }
+    app_bridged_device_t *bridged_device = g_create_device_cb(node, chip::kInvalidEndpointId);
+    if (!bridged_device) {
+        ESP_LOGE(TAG, "Failed to create new endpoint");
+        return ESP_FAIL;
+    }
+
+    bridged_device->set_matter_device(
+        esp_matter_bridge::create_device(node, parent_endpoint_id, matter_device_type_id, bridged_device));
+    if (!(bridged_device->get_matter_device())) {
+        ESP_LOGE(TAG, "Failed to create the bridged device");
+        g_free_device_cb(bridged_device);
+        return ESP_ERR_NO_MEM;
+    }
+    bridged_device->set_dev_addr(addr_ctx);
+    bridged_device->set_priv_data(priv_data);
+    bridged_device->set_next(g_bridged_device_list);
+    g_bridged_device_list = bridged_device;
+    g_current_bridged_device_count++;
+
+    if (ESP_OK != bridged_device->store_dev_addr()) {
+        ESP_LOGW(TAG, "Failed to store the bridged device information");
+    }
+    // Enable the created endpoint
+    esp_matter::endpoint::enable(bridged_device->get_matter_device()->endpoint);
     return ESP_OK;
 }
 
@@ -267,205 +133,71 @@ esp_err_t app_bridge_remove_device(app_bridged_device_t *bridged_device)
     }
     if (g_bridged_device_list == bridged_device) {
         // The delete bridged device is on the head of device list
-        g_bridged_device_list = bridged_device->next;
+        g_bridged_device_list = bridged_device->get_next();
     } else {
         current_dev = g_bridged_device_list;
-        while (current_dev && current_dev->next) {
-            if (current_dev->next == bridged_device) {
+        while (current_dev && current_dev->get_next()) {
+            if (current_dev->get_next() == bridged_device) {
                 break;
             }
-            current_dev = current_dev->next;
+            current_dev = current_dev->get_next();
         }
-        if (current_dev->next == bridged_device) {
-            current_dev->next = bridged_device->next;
+        if (current_dev && current_dev->get_next() == bridged_device) {
+            current_dev->set_next(bridged_device->get_next());
         } else {
             return ESP_ERR_NOT_FOUND;
         }
     }
 
-    uint16_t endpoint_id = endpoint::get_id(bridged_device->dev->endpoint);
-    app_bridge_erase_bridged_device_info(endpoint_id);
+    bridged_device->erase_dev_addr();
+    bridged_device->delete_dev_addr();
 
     // Remove the bridged device from the node.
-    error = esp_matter_bridge::remove_device(bridged_device->dev);
+    error = esp_matter_bridge::remove_device(bridged_device->get_matter_device());
     if (error != ESP_OK) {
         ESP_LOGE(TAG, "Failed to delete bridged device");
     }
-    esp_matter_mem_free(bridged_device);
 
+    if (g_free_device_cb) {
+        g_free_device_cb(bridged_device);
+    }
     return error;
 }
 
-/** ZigBee Device APIs */
-app_bridged_device_t *app_bridge_get_device_by_zigbee_shortaddr(uint16_t zigbee_shortaddr)
+app_bridged_device_t *app_bridge_get_device(const void *dev_addr)
 {
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
-        if (current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ZIGBEE && current_dev->dev &&
-                current_dev->dev_addr.zigbee_shortaddr == zigbee_shortaddr) {
+        if (current_dev->check_dev_addr(dev_addr)) {
             return current_dev;
         }
-        current_dev = current_dev->next;
+        current_dev = current_dev->get_next();
     }
-    return NULL;
+    return nullptr;
 }
 
-uint16_t app_bridge_get_matter_endpointid_by_zigbee_shortaddr(uint16_t zigbee_shortaddr)
+app_bridged_device_t *app_bridge_get_device(uint16_t endpoint_id)
 {
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
-        if (current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ZIGBEE && current_dev->dev &&
-                current_dev->dev_addr.zigbee_shortaddr == zigbee_shortaddr) {
-            return esp_matter::endpoint::get_id(current_dev->dev->endpoint);
-        }
-        current_dev = current_dev->next;
-    }
-    return 0xFFFF;
-}
-
-uint16_t app_bridge_get_zigbee_shortaddr_by_matter_endpointid(uint16_t matter_endpointid)
-{
-    app_bridged_device_t *current_dev = g_bridged_device_list;
-    while (current_dev) {
-        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ZIGBEE) && current_dev->dev &&
-                (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
-            return current_dev->dev_addr.zigbee_shortaddr;
-        }
-        current_dev = current_dev->next;
-    }
-    return 0xFFFF;
-}
-
-/** BLE Mesh Device APIs */
-app_bridged_device_t *app_bridge_get_device_by_blemesh_addr(uint16_t blemesh_addr)
-{
-    app_bridged_device_t *current_dev = g_bridged_device_list;
-    while (current_dev) {
-        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_BLEMESH) && current_dev->dev &&
-                (current_dev->dev_addr.blemesh_addr == blemesh_addr)) {
+        if (current_dev->get_matter_device() &&
+                esp_matter::endpoint::get_id(current_dev->get_matter_device()->endpoint) == endpoint_id) {
             return current_dev;
         }
-        current_dev = current_dev->next;
+        current_dev = current_dev->get_next();
     }
-    return NULL;
+    return nullptr;
 }
 
-uint16_t app_bridge_get_matter_endpointid_by_blemesh_addr(uint16_t blemesh_addr)
+uint16_t app_bridge_get_endpoint(const void *dev_addr)
 {
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
-        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_BLEMESH) && current_dev->dev &&
-                (current_dev->dev_addr.blemesh_addr == blemesh_addr)) {
-            return esp_matter::endpoint::get_id(current_dev->dev->endpoint);
+        if (current_dev->check_dev_addr(dev_addr) && current_dev->get_matter_device()) {
+            return endpoint::get_id(current_dev->get_matter_device()->endpoint);
         }
-        current_dev = current_dev->next;
-    }
-    return 0xFFFF;
-}
-
-uint16_t app_bridge_get_blemesh_addr_by_matter_endpointid(uint16_t matter_endpointid)
-{
-    app_bridged_device_t *current_dev = g_bridged_device_list;
-    while (current_dev) {
-        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_BLEMESH) && current_dev->dev &&
-                (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
-            return current_dev->dev_addr.blemesh_addr;
-        }
-        current_dev = current_dev->next;
-    }
-    return 0xFFFF;
-}
-
-/** ESP-NOW Device APIs */
-app_bridged_device_t *app_bridge_get_device_by_espnow_macaddr(uint8_t espnow_macaddr[6])
-{
-    app_bridged_device_t *current_dev = g_bridged_device_list;
-    while (current_dev) {
-        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ESPNOW) && current_dev->dev &&
-                !memcmp(current_dev->dev_addr.espnow_macaddr, espnow_macaddr, 6)) {
-            return current_dev;
-        }
-        current_dev = current_dev->next;
-    }
-    return NULL;
-}
-
-uint16_t app_bridge_get_matter_endpointid_by_espnow_macaddr(uint8_t espnow_macaddr[6])
-{
-    app_bridged_device_t *current_dev = g_bridged_device_list;
-    while (current_dev) {
-        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ESPNOW) && current_dev->dev &&
-                !memcmp(current_dev->dev_addr.espnow_macaddr, espnow_macaddr, 6)) {
-            return esp_matter::endpoint::get_id(current_dev->dev->endpoint);
-        }
-        current_dev = current_dev->next;
+        current_dev = current_dev->get_next();
     }
     return chip::kInvalidEndpointId;
-}
-
-uint8_t *app_bridge_get_espnow_macaddr_by_matter_endpointid(uint16_t matter_endpointid)
-{
-    app_bridged_device_t *current_dev = g_bridged_device_list;
-    while (current_dev) {
-        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ESPNOW) && current_dev->dev &&
-                (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
-            return current_dev->dev_addr.espnow_macaddr;
-        }
-        current_dev = current_dev->next;
-    }
-    return NULL;
-}
-
-/** Rainmaker Device APIs */
-app_bridged_device_t *app_bridge_get_device_by_rainmaker_node_id(char rainmaker_node_id[32])
-{
-    app_bridged_device_t *current_dev = g_bridged_device_list;
-    while (current_dev) {
-        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_RAINMAKER) && current_dev->dev &&
-                !memcmp(current_dev->dev_addr.rainmaker_node_id, rainmaker_node_id, 32)) {
-            return current_dev;
-        }
-        current_dev = current_dev->next;
-    }
-    return NULL;
-}
-
-uint16_t app_bridge_get_matter_endpointid_by_rainmaker_node_id(char rainmaker_node_id[32])
-{
-    app_bridged_device_t *current_dev = g_bridged_device_list;
-    while (current_dev) {
-        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_RAINMAKER) && current_dev->dev &&
-                !memcmp(current_dev->dev_addr.rainmaker_node_id, rainmaker_node_id, strlen(rainmaker_node_id))) {
-            return esp_matter::endpoint::get_id(current_dev->dev->endpoint);
-        }
-        current_dev = current_dev->next;
-    }
-    return chip::kInvalidEndpointId;
-}
-
-char* app_bridge_get_rainmaker_node_id_by_matter_endpointid(uint16_t matter_endpointid)
-{
-    app_bridged_device_t *current_dev = g_bridged_device_list;
-    while (current_dev) {
-        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_RAINMAKER) && current_dev->dev &&
-                (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
-            return current_dev->dev_addr.rainmaker_node_id;
-        }
-        current_dev = current_dev->next;
-    }
-    return NULL;
-}
-
-char* app_bridge_get_rainmaker_node_name_by_matter_endpointid(uint16_t matter_endpointid)
-{
-    app_bridged_device_t *current_dev = g_bridged_device_list;
-    while (current_dev) {
-        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_RAINMAKER) && current_dev->dev &&
-                (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
-            return current_dev->dev_addr.rainmaker_node_name;
-        }
-        current_dev = current_dev->next;
-    }
-    return NULL;
 }
 #endif

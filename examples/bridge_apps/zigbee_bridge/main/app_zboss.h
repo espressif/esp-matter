@@ -32,9 +32,9 @@
     {                                                      \
         .radio_mode = ZB_RADIO_MODE_UART_RCP,              \
         .radio_uart_config = {                             \
-            .port = 1,                                     \
-            .rx_pin = CONFIG_PIN_TO_RCP_TX,                \
-            .tx_pin = CONFIG_PIN_TO_RCP_RX,                \
+            .port = UART_NUM_1,                            \
+            .rx_pin = (gpio_num_t)CONFIG_PIN_TO_RCP_TX,    \
+            .tx_pin = (gpio_num_t)CONFIG_PIN_TO_RCP_RX,    \
             .uart_config =                                 \
                 {                                          \
                     .baud_rate = 460800,                   \

@@ -17,6 +17,7 @@
 #include <common_macros.h>
 #include <app_priv.h>
 #include <app_espnow.h>
+#include <app_espnow_bridged_device.h>
 #include <app_reset.h>
 
 static const char *TAG = "app_main";
@@ -130,6 +131,16 @@ esp_err_t create_bridge_devices(esp_matter::endpoint_t *ep, uint32_t device_type
     return err;
 }
 
+static app_bridged_device_t *create_espnow_bridged_device(node_t *node, uint16_t endpoint)
+{
+    return chip::Platform::New<app_espnow_bridged_device_t>();
+}
+
+static void free_espnow_bridged_device(app_bridged_device_t *device)
+{
+    chip::Platform::Delete((app_espnow_bridged_device_t *)device);
+}
+
 extern "C" void app_main()
 {
     esp_err_t err = ESP_OK;
@@ -166,10 +177,10 @@ extern "C" void app_main()
     ABORT_APP_ON_FAILURE(aggregator != nullptr, ESP_LOGE(TAG, "Failed to create aggregator endpoint"));
 
     light_endpoint_id = endpoint::get_id(endpoint);
-    ESP_LOGI(TAG, "Light created with endpoint_id %d", light_endpoint_id);
+    ESP_LOGI(TAG, "Light created with endpoint_id %u", light_endpoint_id);
 
     aggregator_endpoint_id = endpoint::get_id(aggregator);
-    ESP_LOGI(TAG, "Aggregator created with endpoint id %d", aggregator_endpoint_id);
+    ESP_LOGI(TAG, "Aggregator created with endpoint id %u", aggregator_endpoint_id);
 
     /* Add additional features to the node */
     cluster_t *cluster = cluster::get(endpoint, ColorControl::Id);
@@ -182,7 +193,7 @@ extern "C" void app_main()
     err = esp_matter::start(app_event_cb);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
 
-    err = app_bridge_initialize(node, create_bridge_devices);
+    err = app_bridge_initialize(node, create_bridge_devices, create_espnow_bridged_device, free_espnow_bridged_device);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to resume the bridged endpoints: %d", err));
 
     app_espnow_init();

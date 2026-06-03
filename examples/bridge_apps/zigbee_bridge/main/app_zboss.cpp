@@ -33,10 +33,10 @@ static void bdb_start_top_level_commissioning_cb(uint8_t mode_mask)
 
 void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
 {
-    // Read signal desription
+    // Read signal description
     uint32_t *p_sg_p = signal_struct->p_app_signal;
     esp_err_t err_status = signal_struct->esp_err_status;
-    esp_zb_app_signal_type_t sig_type = *p_sg_p;
+    esp_zb_app_signal_type_t sig_type = (esp_zb_app_signal_type_t) * p_sg_p;
     esp_zb_zdo_signal_device_annce_params_t *dev_annce_params = NULL;
 
     switch (sig_type) {
