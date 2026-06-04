@@ -200,7 +200,7 @@ static esp_err_t update_or_report(uint16_t endpoint_id, uint32_t cluster_id, uin
 
     esp_err_t err = attribute::set_val(attr, val, call_attribute_callbacks);
     if (err == ESP_OK) {
-        data_model::provider::get_instance().Temporary_ReportAttributeChanged(
+        data_model::provider::get_instance().ReportAttributeChanged(
             chip::app::AttributePathParams(endpoint_id, cluster_id, attribute_id));
     } else if (err == ESP_ERR_NOT_FINISHED) {
         // new value is same as older value, skip reporting to IM engine

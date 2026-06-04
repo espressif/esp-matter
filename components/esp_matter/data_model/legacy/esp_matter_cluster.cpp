@@ -367,6 +367,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+
+        cluster::set_init_and_shutdown_callbacks(cluster,
+                                                 ESPMatterOtaSoftwareUpdateRequestorClusterServerInitCallback,
+                                                 ESPMatterOtaSoftwareUpdateRequestorClusterServerShutdownCallback);
     }
 
     event::create_download_error(cluster);
@@ -2250,6 +2254,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+
+        cluster::set_init_and_shutdown_callbacks(cluster,
+                                                 ESPMatterRelativeHumidityMeasurementClusterServerInitCallback,
+                                                 ESPMatterRelativeHumidityMeasurementClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -2536,6 +2544,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+
+        cluster::set_init_and_shutdown_callbacks(cluster,
+                                                 ESPMatterPressureMeasurementClusterServerInitCallback,
+                                                 ESPMatterPressureMeasurementClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -2571,6 +2583,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+
+        cluster::set_init_and_shutdown_callbacks(cluster,
+                                                 ESPMatterFlowMeasurementClusterServerInitCallback,
+                                                 ESPMatterFlowMeasurementClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -3030,6 +3046,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         if (has(feature::power_in_watts::get_id())) {
             feature::power_in_watts::add(cluster);
         }
+
+        cluster::set_init_and_shutdown_callbacks(cluster,
+                                                 ESPMatterMicrowaveOvenControlClusterServerInitCallback,
+                                                 ESPMatterMicrowaveOvenControlClusterServerShutdownCallback);
     } // if (flags & CLUSTER_FLAG_SERVER)
 
     /* Commands */
@@ -3224,6 +3244,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
+        if (config->delegate != nullptr) {
+            static const auto delegate_init_cb = ElectricalEnergyMeasurementDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
 
         add_function_list(cluster, function_list, function_flags);
 
@@ -3549,6 +3573,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         static const auto plugin_server_init_cb = CALL_ONCE(MatterThreadBorderRouterManagementPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
+        cluster::set_init_and_shutdown_callbacks(cluster,
+                                                 ESPMatterThreadBorderRouterManagementClusterServerInitCallback,
+                                                 ESPMatterThreadBorderRouterManagementClusterServerShutdownCallback);
 
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
@@ -3633,6 +3660,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        cluster::set_init_and_shutdown_callbacks(cluster,
+                                                 ESPMatterThreadNetworkDirectoryClusterServerInitCallback,
+                                                 ESPMatterThreadNetworkDirectoryClusterServerShutdownCallback);
     }
 
     /* Commands */
@@ -3838,6 +3869,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         attribute::create_supported_device_categories(cluster, config->supported_device_categories);
+
+        cluster::set_init_and_shutdown_callbacks(cluster,
+                                                 ESPMatterCommissionerControlClusterServerInitCallback,
+                                                 ESPMatterCommissionerControlClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -4299,6 +4334,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         command::create_set_target(cluster);
 
+        cluster::set_init_and_shutdown_callbacks(cluster,
+                                                 ESPMatterClosureDimensionClusterServerInitCallback,
+                                                 ESPMatterClosureDimensionClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -4695,6 +4733,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Events */
         event::create_zone_triggered(cluster);
         event::create_zone_stopped(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster,
+                                                 ESPMatterZoneManagementClusterServerInitCallback,
+                                                 ESPMatterZoneManagementClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
