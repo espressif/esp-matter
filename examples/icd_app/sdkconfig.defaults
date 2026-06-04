@@ -90,3 +90,6 @@ CONFIG_ICD_ACTIVE_MODE_THRESHOLD_MS=1000
 
 # Enable power save for the button
 CONFIG_GPIO_BUTTON_SUPPORT_POWER_SAVE=y
+
+# disable groupcast cluster until verified
+CONFIG_SUPPORT_GROUPCAST_CLUSTER=n

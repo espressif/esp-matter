@@ -64,8 +64,8 @@ esp_err_t send_energy_measurement_events(uint16_t endpoint_id)
     };
 
     // Send the periodic energy measured event (just imported energy)
-    Optional<EnergyMeasurementStruct::Type> optional_energy_imported(energy_imported);
-    Optional<EnergyMeasurementStruct::Type> optional_energy_exported; // No exported energy
+    DataModel::Nullable<EnergyMeasurementStruct::Type> optional_energy_imported(energy_imported);
+    DataModel::Nullable<EnergyMeasurementStruct::Type> optional_energy_exported; // No exported energy
 
     bool success = NotifyPeriodicEnergyMeasured(endpoint_id, optional_energy_imported, optional_energy_exported);
     if (!success) {
@@ -95,8 +95,8 @@ esp_err_t send_energy_measurement_events(uint16_t endpoint_id)
     };
 
     // Set the optional values for both imported and exported
-    Optional<EnergyMeasurementStruct::Type> optional_cumulative_imported(cumulative_imported);
-    Optional<EnergyMeasurementStruct::Type> optional_cumulative_exported(cumulative_exported);
+    DataModel::Nullable<EnergyMeasurementStruct::Type> optional_cumulative_imported(cumulative_imported);
+    DataModel::Nullable<EnergyMeasurementStruct::Type> optional_cumulative_exported(cumulative_exported);
 
     // Send the cumulative energy measured event
     success = NotifyCumulativeEnergyMeasured(endpoint_id, optional_cumulative_imported, optional_cumulative_exported);
@@ -155,7 +155,7 @@ esp_err_t electrical_measurement_example(uint16_t endpoint_id)
             return ESP_FAIL;
         }
 
-        err = SetCumulativeReset(endpoint_id, MakeOptional(resetStruct));
+        err = SetCumulativeReset(endpoint_id, DataModel::MakeNullable(resetStruct));
         if (err != CHIP_NO_ERROR) {
             ESP_LOGE(TAG, "Failed to set cumulative reset: %" CHIP_ERROR_FORMAT, err.Format());
             return ESP_FAIL;

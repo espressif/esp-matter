@@ -12,7 +12,6 @@
 #include "esp_matter.h"
 #include "esp_console.h"
 #include "esp_matter_data_model.h"
-#include "esp_vfs_dev.h"
 #include "app/data-model/List.h"
 #include "clusters/SoilMeasurement/Attributes.h"
 #include "clusters/shared/Enums.h"
@@ -20,12 +19,13 @@
 #include "linenoise/linenoise.h"
 #include "argtable3/argtable3.h"
 #include "esp_vfs_fat.h"
-#include "driver/usb_serial_jtag.h"
-#include "esp_vfs_usb_serial_jtag.h"
+#if CONFIG_ESP_CONSOLE_UART_DEFAULT
 #include "hal/uart_types.h"
 #include "driver/uart.h"
+#include "driver/uart_vfs.h"
+#endif // CONFIG_ESP_CONSOLE_UART_DEFAULT
 #if CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG
-#include "esp_vfs_usb_serial_jtag.h"
+#include "driver/usb_serial_jtag_vfs.h"
 #include "driver/usb_serial_jtag.h"
 #endif // CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG
 #include <app_priv.h>
@@ -109,9 +109,9 @@ static void initialize_console(void)
     setvbuf(stdin, NULL, _IONBF, 0);
 #if CONFIG_ESP_CONSOLE_UART_DEFAULT
     /* Minicom, screen, idf_monitor send CR when ENTER key is pressed */
-    esp_vfs_dev_uart_port_set_rx_line_endings(CONFIG_ESP_CONSOLE_UART_NUM, ESP_LINE_ENDINGS_CR);
+    uart_vfs_dev_port_set_rx_line_endings(CONFIG_ESP_CONSOLE_UART_NUM, ESP_LINE_ENDINGS_CR);
     /* Move the caret to the beginning of the next line on '\n' */
-    esp_vfs_dev_uart_port_set_tx_line_endings(CONFIG_ESP_CONSOLE_UART_NUM, ESP_LINE_ENDINGS_CRLF);
+    uart_vfs_dev_port_set_tx_line_endings(CONFIG_ESP_CONSOLE_UART_NUM, ESP_LINE_ENDINGS_CRLF);
 
     /* Configure UART. Note that REF_TICK is used so that the baud rate remains
      * correct while APB frequency is changing in light sleep mode.
@@ -137,13 +137,10 @@ static void initialize_console(void)
     ESP_ERROR_CHECK(uart_param_config(uart_port, &uart_config));
 
     /* Tell VFS to use UART driver */
-    esp_vfs_dev_uart_use_driver(CONFIG_ESP_CONSOLE_UART_NUM);
+    uart_vfs_dev_use_driver(CONFIG_ESP_CONSOLE_UART_NUM);
 #endif // CONFIG_ESP_CONSOLE_UART_DEFAULT
 
 #if CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG
-    esp_vfs_dev_usb_serial_jtag_set_rx_line_endings(ESP_LINE_ENDINGS_CR);
-    esp_vfs_dev_usb_serial_jtag_set_tx_line_endings(ESP_LINE_ENDINGS_CRLF);
-
     fcntl(fileno(stdout), F_SETFL, O_NONBLOCK);
     fcntl(fileno(stdin), F_SETFL, O_NONBLOCK);
 
@@ -152,8 +149,9 @@ static void initialize_console(void)
         .rx_buffer_size = 256,
     };
     usb_serial_jtag_driver_install(&usb_serial_jtag_config);
-    esp_vfs_usb_serial_jtag_use_driver();
-    esp_vfs_dev_uart_register();
+    usb_serial_jtag_vfs_set_rx_line_endings(ESP_LINE_ENDINGS_CR);
+    usb_serial_jtag_vfs_set_tx_line_endings(ESP_LINE_ENDINGS_CRLF);
+    usb_serial_jtag_vfs_use_driver();
 #endif // CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG
 
     /* Initialize the console */

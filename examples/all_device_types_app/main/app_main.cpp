@@ -290,7 +290,7 @@ extern "C" void app_main()
     // Initialize electrical measurement clusters if electrical sensor was created
     if (g_electrical_sensor_created) {
         ESP_LOGI(TAG, "Initializing electrical measurement clusters for endpoint %d", app_endpoint_id);
-        chip::DeviceLayer::PlatformMgr().ScheduleWork(ElectricalMeasurementWorkHandler, reinterpret_cast<intptr_t>(nullptr));
+        LogErrorOnFailure(chip::DeviceLayer::PlatformMgr().ScheduleWork(ElectricalMeasurementWorkHandler, reinterpret_cast<intptr_t>(nullptr)));
     }
 
 #if CONFIG_ENABLE_CHIP_SHELL

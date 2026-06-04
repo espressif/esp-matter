@@ -18,6 +18,7 @@
 #include <app_reset.h>
 #include <common_macros.h>
 #include "platform/PlatformManager.h"
+#include "support/CodeUtils.h"
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
 #endif
@@ -111,9 +112,9 @@ extern "C" void app_main()
     esp_matter::identification::set_callback(nullptr);
 
     /* Starting driver with default values */
-    chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t arg) {
+    LogErrorOnFailure(chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t arg) {
         app_driver_light_set_defaults(light_endpoint_id);
-    });
+    }));
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter::console::diagnostics_register_commands();

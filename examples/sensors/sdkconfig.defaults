@@ -47,3 +47,6 @@ CONFIG_BSP_BUTTON_1_LEVEL=0
 
 # Enable OTA Requestor
 CONFIG_ENABLE_OTA_REQUESTOR=y
+
+# disable groupcast cluster until verified
+CONFIG_SUPPORT_GROUPCAST_CLUSTER=n

@@ -21,6 +21,7 @@
 #include <app-common/zap-generated/attributes/Accessors.h>
 #include "app/data-model/Nullable.h"
 #include "platform/PlatformManager.h"
+#include "support/CodeUtils.h"
 
 using namespace chip::app::Clusters;
 using namespace esp_matter;
@@ -63,12 +64,12 @@ static void app_driver_button_toggle_cb(void *arg, void *data)
 {
     ESP_LOGI(TAG, "Toggle button pressed");
 
-    chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t arg) {
+    LogErrorOnFailure(chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t arg) {
         bool value;
         OnOff::Attributes::OnOff::Get(light_endpoint_id, &value);
         value = !value;
         OnOff::Attributes::OnOff::Set(light_endpoint_id, value);
-    });
+    }));
 }
 
 esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_t endpoint_id, uint32_t cluster_id,

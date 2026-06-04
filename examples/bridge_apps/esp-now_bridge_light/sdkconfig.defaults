@@ -32,9 +32,15 @@ CONFIG_ESPNOW_CONTROL_RETRANSMISSION_TIMES=5
 CONFIG_ESPNOW_CONTROL_FORWARD_TTL=10
 CONFIG_ESPNOW_CONTROL_FORWARD_RSSI=-55
 
+# Enable protocomm security version 1 (needed by esp-now, optional in IDF v6.0+)
+CONFIG_ESP_PROTOCOMM_SUPPORT_SECURITY_VERSION_1=y
+
 # Enable HKDF in mbedtls
 CONFIG_MBEDTLS_HKDF_C=y
 
 # Increase LwIP IPv6 address number to 6 (MAX_FABRIC + 1)
 # unique local addresses for fabrics(MAX_FABRIC), a link local address(1)
 CONFIG_LWIP_IPV6_NUM_ADDRESSES=6
+
+# disable groupcast cluster until verified
+CONFIG_SUPPORT_GROUPCAST_CLUSTER=n
