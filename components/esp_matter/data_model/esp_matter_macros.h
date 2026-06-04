@@ -14,6 +14,10 @@
 
 #pragma once
 
+#include <initializer_list>
+#include <esp_log.h>
+#include <esp_err.h>
+
 #define CALL_ONCE(cb)                           \
     [](){                                       \
         static bool is_called = false;          \
@@ -38,3 +42,31 @@
 #define VALIDATE_FEATURES_AT_LEAST_ONE(name, ...) \
     do { if (!validate_features(config->feature_flags, feature_policy::k_at_least_one, name, {__VA_ARGS__})) \
         return ABORT_CLUSTER_CREATE(cluster); } while(0)
+
+// O.a+ cluster validation: at least one optional cluster must be enabled
+// Used by device types with optional choice clusters (e.g., electrical_sensor, cook_surface)
+namespace esp_matter {
+namespace endpoint {
+namespace validation {
+
+inline bool validate_optional_clusters(uint32_t optional_clusters_mask, const char *device_type_name,
+                                       std::initializer_list<uint32_t> cluster_masks)
+{
+    for (uint32_t mask : cluster_masks) {
+        if (optional_clusters_mask & mask) {
+            return true;
+        }
+    }
+    ESP_LOGE("esp_matter_endpoint", "%s: At least one O.a+ cluster must be enabled. Use with_*() builder methods.",
+             device_type_name);
+    return false;
+}
+
+} // namespace validation
+} // namespace endpoint
+} // namespace esp_matter
+
+// Macro for O.a+ cluster validation - returns ESP_ERR_INVALID_ARG if validation fails
+#define VALIDATE_OPTIONAL_CLUSTERS_AT_LEAST_ONE(device_name, mask, ...) \
+    do { if (!esp_matter::endpoint::validation::validate_optional_clusters(mask, device_name, {__VA_ARGS__})) \
+        return ESP_ERR_INVALID_ARG; } while(0)

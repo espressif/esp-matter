@@ -17,6 +17,7 @@
 #include <esp_matter.h>
 #include <esp_matter_endpoint_impl.h>
 #include <esp_matter_icd_configuration.h>
+#include <esp_matter_macros.h>
 
 static const char *TAG = "esp_matter_endpoint";
 
@@ -25,7 +26,6 @@ namespace esp_matter {
 using namespace cluster;
 
 namespace endpoint {
-
 namespace common {
 
 template <typename T>
@@ -1508,13 +1508,22 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
+    // Validate O.a+ clusters: at least one of EPM or EEM must be enabled
+    VALIDATE_OPTIONAL_CLUSTERS_AT_LEAST_ONE("electrical_sensor", config->optional_clusters_mask,
+                                            ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_POWER_MEASUREMENT,
+                                            ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_ENERGY_MEASUREMENT);
+
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
-    config->power_topology.feature_flags |= power_topology::feature::node_topology::get_id();
     power_topology::create(endpoint, &(config->power_topology), CLUSTER_FLAG_SERVER);
 
-    electrical_power_measurement::create(endpoint, &(config->electrical_power_measurement), CLUSTER_FLAG_SERVER);
+    if (config->optional_clusters_mask & ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_POWER_MEASUREMENT) {
+        electrical_power_measurement::create(endpoint, &(config->electrical_power_measurement), CLUSTER_FLAG_SERVER);
+    }
+    if (config->optional_clusters_mask & ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_ENERGY_MEASUREMENT) {
+        electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER);
+    }
 
     return ESP_OK;
 }
@@ -1538,11 +1547,21 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
+    // Validate O.a+ clusters: at least one of temperature_control or temperature_measurement must be enabled
+    VALIDATE_OPTIONAL_CLUSTERS_AT_LEAST_ONE("cook_surface", config->optional_clusters_mask,
+                                            COOK_SURFACE_OPTIONAL_CLUSTER_TEMPERATURE_CONTROL,
+                                            COOK_SURFACE_OPTIONAL_CLUSTER_TEMPERATURE_MEASUREMENT);
+
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
-    config->temperature_control.feature_flags = cluster::temperature_control::feature::temperature_level::get_id();
-    temperature_control::create(endpoint, &(config->temperature_control), CLUSTER_FLAG_SERVER);
+    if (config->optional_clusters_mask & COOK_SURFACE_OPTIONAL_CLUSTER_TEMPERATURE_CONTROL) {
+        config->temperature_control.feature_flags |= cluster::temperature_control::feature::temperature_level::get_id();
+        temperature_control::create(endpoint, &(config->temperature_control), CLUSTER_FLAG_SERVER);
+    }
+    if (config->optional_clusters_mask & COOK_SURFACE_OPTIONAL_CLUSTER_TEMPERATURE_MEASUREMENT) {
+        temperature_measurement::create(endpoint, &(config->temperature_measurement), CLUSTER_FLAG_SERVER);
+    }
 
     return ESP_OK;
 }
@@ -1911,16 +1930,22 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     config->power_source_device.power_source.feature_flags = cluster::power_source::feature::wired::get_id();
     endpoint::power_source::add(endpoint, &config->power_source_device);
 
-    config->electrical_energy_measurement.feature_flags = electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id();
-    config->electrical_sensor.electrical_power_measurement.feature_flags |= electrical_power_measurement::feature::alternating_current::get_id();
+    if (config->electrical_sensor.optional_clusters_mask & ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_POWER_MEASUREMENT) {
+        config->electrical_sensor.electrical_power_measurement.feature_flags |= electrical_power_measurement::feature::alternating_current::get_id();
+    }
+    if (config->electrical_sensor.optional_clusters_mask & ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_ENERGY_MEASUREMENT) {
+        config->electrical_sensor.electrical_energy_measurement.feature_flags = electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id();
+    }
     electrical_sensor::add(endpoint, &config->electrical_sensor);
-    electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER);
 
-    cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id);
-
-    nullable<int64_t> voltage = 0, active_current = 0;
-    electrical_power_measurement::attribute::create_voltage(elec_power_measurement_cluster, voltage);
-    electrical_power_measurement::attribute::create_active_current(elec_power_measurement_cluster, active_current);
+    if (config->electrical_sensor.optional_clusters_mask & ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_POWER_MEASUREMENT) {
+        cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id);
+        if (elec_power_measurement_cluster) {
+            nullable<int64_t> voltage = 0, active_current = 0;
+            electrical_power_measurement::attribute::create_voltage(elec_power_measurement_cluster, voltage);
+            electrical_power_measurement::attribute::create_active_current(elec_power_measurement_cluster, active_current);
+        }
+    }
 
     return ESP_OK;
 }
@@ -1950,7 +1975,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *descriptor_cluster = cluster::get(endpoint, Descriptor::Id);
     descriptor::feature::tag_list::add(descriptor_cluster);
 
-    config->power_source_device.power_source.feature_flags = cluster::power_source::feature::battery::get_id() | cluster::power_source::feature::wired::get_id();
+    config->power_source_device.power_source.feature_flags = cluster::power_source::feature::battery::get_id() | cluster::power_source::feature::rechargeable::get_id();
     endpoint::power_source::add(endpoint, &config->power_source_device);
 
     cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id);
@@ -1964,14 +1989,21 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster::power_source::attribute::create_bat_charging_current(power_source_cluster, config->bat_charging_current, 0x00, 0xFFFF);
     cluster::power_source::attribute::create_active_bat_charge_faults(power_source_cluster, NULL, 0, 0);
 
-    config->electrical_energy_measurement.feature_flags = electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id();
-    config->electrical_sensor.electrical_power_measurement.feature_flags = electrical_power_measurement::feature::alternating_current::get_id();
+    if (config->electrical_sensor.optional_clusters_mask & ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_POWER_MEASUREMENT) {
+        config->electrical_sensor.electrical_power_measurement.feature_flags = electrical_power_measurement::feature::alternating_current::get_id();
+    }
+    if (config->electrical_sensor.optional_clusters_mask & ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_ENERGY_MEASUREMENT) {
+        config->electrical_sensor.electrical_energy_measurement.feature_flags = electrical_energy_measurement::feature::exported_energy::get_id() | electrical_energy_measurement::feature::cumulative_energy::get_id();
+    }
     electrical_sensor::add(endpoint, &config->electrical_sensor);
-    electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER);
 
-    cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id);
-    electrical_power_measurement::attribute::create_voltage(elec_power_measurement_cluster, config->voltage);
-    electrical_power_measurement::attribute::create_active_current(elec_power_measurement_cluster, config->active_current);
+    if (config->electrical_sensor.optional_clusters_mask & ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_POWER_MEASUREMENT) {
+        cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id);
+        if (elec_power_measurement_cluster) {
+            electrical_power_measurement::attribute::create_voltage(elec_power_measurement_cluster, config->voltage);
+            electrical_power_measurement::attribute::create_active_current(elec_power_measurement_cluster, config->active_current);
+        }
+    }
 
     device_energy_management::add(endpoint, &config->device_energy_management);
 
@@ -2008,15 +2040,18 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     config->power_source_device.power_source.feature_flags = cluster::power_source::feature::wired::get_id();
     endpoint::power_source::add(endpoint, &config->power_source_device);
 
-    config->electrical_sensor.electrical_power_measurement.feature_flags = electrical_power_measurement::feature::alternating_current::get_id();
+    if (config->electrical_sensor.optional_clusters_mask & ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_POWER_MEASUREMENT) {
+        config->electrical_sensor.electrical_power_measurement.feature_flags = electrical_power_measurement::feature::alternating_current::get_id();
+    }
     electrical_sensor::add(endpoint, &config->electrical_sensor);
 
-    cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id);
-
-    electrical_power_measurement::attribute::create_voltage(elec_power_measurement_cluster, config->voltage);
-    electrical_power_measurement::attribute::create_active_current(elec_power_measurement_cluster, config->active_current);
-
-    electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER);
+    if (config->electrical_sensor.optional_clusters_mask & ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_POWER_MEASUREMENT) {
+        cluster_t *elec_power_measurement_cluster = cluster::get(endpoint, ElectricalPowerMeasurement::Id);
+        if (elec_power_measurement_cluster) {
+            electrical_power_measurement::attribute::create_voltage(elec_power_measurement_cluster, config->voltage);
+            electrical_power_measurement::attribute::create_active_current(elec_power_measurement_cluster, config->active_current);
+        }
+    }
 
     device_energy_management::add(endpoint, &config->device_energy_management);
 
@@ -2254,8 +2289,21 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
 esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
+    // Validate O.a+ clusters: at least one of commodity_price or commodity_tariff must be enabled
+    VALIDATE_OPTIONAL_CLUSTERS_AT_LEAST_ONE("electrical_energy_tariff", config->optional_clusters_mask,
+                                            ELECTRICAL_ENERGY_TARIFF_OPTIONAL_CLUSTER_COMMODITY_PRICE,
+                                            ELECTRICAL_ENERGY_TARIFF_OPTIONAL_CLUSTER_COMMODITY_TARIFF);
+
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
+
+    if (config->optional_clusters_mask & ELECTRICAL_ENERGY_TARIFF_OPTIONAL_CLUSTER_COMMODITY_PRICE) {
+        commodity_price::create(endpoint, &(config->commodity_price), CLUSTER_FLAG_SERVER);
+    }
+    if (config->optional_clusters_mask & ELECTRICAL_ENERGY_TARIFF_OPTIONAL_CLUSTER_COMMODITY_TARIFF) {
+        commodity_tariff::create(endpoint, &(config->commodity_tariff), CLUSTER_FLAG_SERVER);
+    }
+
     return ESP_OK;
 }
 } /* electrical_energy_tariff */
@@ -2280,8 +2328,10 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 {
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
+
     cluster::electrical_power_measurement::create(endpoint, &(config->electrical_power_measurement), CLUSTER_FLAG_SERVER);
     cluster::electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER);
+
     return ESP_OK;
 }
 } /* electrical_meter */

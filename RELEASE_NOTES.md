@@ -1,3 +1,24 @@
+# 3-June-2026
+
+## O.a+ Cluster Builder Pattern
+
+#### Previous Behavior
+
+In earlier versions, some device types automatically created the O.a+ clusters during endpoint creation. Applications could instantiate these device types without explicitly enabling the corresponding clusters in the configuration.
+
+#### New Behavior (Breaking Change)
+
+Device types that support O.a+ clusters now require explicit opt-in through the corresponding with_*() builder methods. O.a+ clusters are no longer created automatically.
+
+**Affected:** `electrical_sensor`, `cook_surface`, `electrical_energy_tariff`, and Composed Device Types (device type contains one or more other device types) (`solar_power`, `battery_storage`, `heat_pump`, `electrical_meter`).
+
+```cpp
+electrical_sensor::config_t config;
+config.with_electrical_power_measurement();
+config.with_electrical_energy_measurement();
+endpoint_t *ep = electrical_sensor::create(node, &config, flags, NULL);
+```
+
 # 16-April-2026
 
 ### Controller API changes

@@ -307,6 +307,30 @@ class ClusterSerializer:
 class DeviceSerializer:
     @staticmethod
     def to_dict(device):
+        def serialize_cluster(cluster):
+            cluster_dict = {
+                "name": cluster.name,
+                "id": cluster.get_id(),
+                "is_mandatory": safe_get_attr(cluster, "is_mandatory", False),
+                "type": (
+                    "server"
+                    if safe_get_attr(cluster, "server_cluster")
+                    else (
+                        "client" if safe_get_attr(cluster, "client_cluster") else None
+                    )
+                ),
+                "flags": cluster.get_function_flags(),
+                "features": safe_get_attr(cluster, "feature_name_list", []),
+                "commands": safe_get_attr(cluster, "command_name_list", []),
+                "attributes": safe_get_attr(cluster, "attribute_name_list", []),
+                "events": safe_get_attr(cluster, "event_name_list", []),
+            }
+            # Include optional_choice if present (O.a+ clusters)
+            optional_choice = safe_get_attr(cluster, "optional_choice")
+            if optional_choice is not None:
+                cluster_dict["optional_choice"] = optional_choice
+            return cluster_dict
+
         result = {
             "name": safe_get_attr(device, "name"),
             "id": device.get_id(),
@@ -315,25 +339,7 @@ class DeviceSerializer:
             "revision_history": safe_get_attr(device, "revision_history", []),
             "conditions": safe_get_attr(device, "conditions", []),
             "clusters": [
-                {
-                    "name": cluster.name,
-                    "id": cluster.get_id(),
-                    "is_mandatory": safe_get_attr(cluster, "is_mandatory", False),
-                    "type": (
-                        "server"
-                        if safe_get_attr(cluster, "server_cluster")
-                        else (
-                            "client"
-                            if safe_get_attr(cluster, "client_cluster")
-                            else None
-                        )
-                    ),
-                    "flags": cluster.get_function_flags(),
-                    "features": safe_get_attr(cluster, "feature_name_list", []),
-                    "commands": safe_get_attr(cluster, "command_name_list", []),
-                    "attributes": safe_get_attr(cluster, "attribute_name_list", []),
-                    "events": safe_get_attr(cluster, "event_name_list", []),
-                }
+                serialize_cluster(cluster)
                 for cluster in (
                     device.get_clusters()
                     if safe_get_attr(device, "get_clusters")

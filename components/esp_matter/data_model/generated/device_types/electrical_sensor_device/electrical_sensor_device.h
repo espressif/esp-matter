@@ -19,11 +19,16 @@
 
 #include <descriptor.h>
 #include <power_topology.h>
+#include <electrical_power_measurement.h>
+#include <electrical_energy_measurement.h>
 
 #include <esp_matter_core.h>
 
 #define ESP_MATTER_ELECTRICAL_SENSOR_DEVICE_TYPE_ID 0x0510
 #define ESP_MATTER_ELECTRICAL_SENSOR_DEVICE_TYPE_VERSION 1
+
+#define ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_POWER_MEASUREMENT  (1 << 0)
+#define ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_ENERGY_MEASUREMENT  (1 << 1)
 
 namespace esp_matter {
 namespace endpoint {
@@ -32,6 +37,23 @@ namespace electrical_sensor {
 typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::power_topology::config_t power_topology;
+    cluster::electrical_power_measurement::config_t electrical_power_measurement;
+    cluster::electrical_energy_measurement::config_t electrical_energy_measurement;
+    uint32_t optional_clusters_mask;
+
+    cluster::electrical_power_measurement::config_t &with_electrical_power_measurement()
+    {
+        optional_clusters_mask |= ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_POWER_MEASUREMENT;
+        return electrical_power_measurement;
+    }
+
+    cluster::electrical_energy_measurement::config_t &with_electrical_energy_measurement()
+    {
+        optional_clusters_mask |= ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_ENERGY_MEASUREMENT;
+        return electrical_energy_measurement;
+    }
+
+    config() : optional_clusters_mask(0) {}
 } config_t;
 
 uint32_t get_device_type_id();

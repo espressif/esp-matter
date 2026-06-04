@@ -78,6 +78,31 @@ class Device(BaseDevice):
             unique_clusters, key=lambda x: (int(x.get_id(), 16), not x.server_cluster)
         )
 
+    def get_optional_choice_clusters(self) -> dict:
+        """Get clusters with O.a+ conformance grouped by choice marker.
+        Returns a dict: {choice_marker: [cluster, ...]}
+        """
+        choice_groups = {}
+        for cluster in self.clusters:
+            if (
+                hasattr(cluster, "optional_choice")
+                and cluster.optional_choice is not None
+            ):
+                marker = cluster.optional_choice.get("choice")
+                if marker not in choice_groups:
+                    choice_groups[marker] = []
+                choice_groups[marker].append(cluster)
+        # Sort clusters within each group
+        for marker in choice_groups:
+            choice_groups[marker] = sorted(
+                choice_groups[marker], key=lambda x: (int(x.get_id(), 16), x.name)
+            )
+        return choice_groups
+
+    def has_optional_choice_clusters(self) -> bool:
+        """Check if device has any O.a+ clusters."""
+        return len(self.get_optional_choice_clusters()) > 0
+
     def to_dict(self):
         return DeviceSerializer.to_dict(self)
 
@@ -455,6 +480,7 @@ class Cluster(BaseCluster):
         self.base_cluster_name = None
         self.is_migrated_cluster = False
         self.skip_command_cb = False
+        self.optional_choice = None
 
     def get_callback_functions(self):
         """Get the callback functions for the cluster"""

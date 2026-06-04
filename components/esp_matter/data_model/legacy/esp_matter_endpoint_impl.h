@@ -859,10 +859,30 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* rain_sensor */
 
 namespace electrical_sensor {
+
+#define ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_POWER_MEASUREMENT   (1 << 0)
+#define ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_ENERGY_MEASUREMENT  (1 << 1)
+
 typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::power_topology::config_t power_topology;
     cluster::electrical_power_measurement::config_t electrical_power_measurement;
+    cluster::electrical_energy_measurement::config_t electrical_energy_measurement;
+    uint32_t optional_clusters_mask;
+
+    cluster::electrical_power_measurement::config_t &with_electrical_power_measurement()
+    {
+        optional_clusters_mask |= ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_POWER_MEASUREMENT;
+        return electrical_power_measurement;
+    }
+
+    cluster::electrical_energy_measurement::config_t &with_electrical_energy_measurement()
+    {
+        optional_clusters_mask |= ELECTRICAL_SENSOR_OPTIONAL_CLUSTER_ELECTRICAL_ENERGY_MEASUREMENT;
+        return electrical_energy_measurement;
+    }
+
+    config() : optional_clusters_mask(0) {}
 } config_t;
 
 uint32_t get_device_type_id();
@@ -872,9 +892,29 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* electrical_sensor */
 
 namespace cook_surface {
+
+#define COOK_SURFACE_OPTIONAL_CLUSTER_TEMPERATURE_CONTROL      (1 << 0)
+#define COOK_SURFACE_OPTIONAL_CLUSTER_TEMPERATURE_MEASUREMENT  (1 << 1)
+
 typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::temperature_control::config_t temperature_control;
+    cluster::temperature_measurement::config_t temperature_measurement;
+    uint32_t optional_clusters_mask;
+
+    cluster::temperature_control::config_t &with_temperature_control()
+    {
+        optional_clusters_mask |= COOK_SURFACE_OPTIONAL_CLUSTER_TEMPERATURE_CONTROL;
+        return temperature_control;
+    }
+
+    cluster::temperature_measurement::config_t &with_temperature_measurement()
+    {
+        optional_clusters_mask |= COOK_SURFACE_OPTIONAL_CLUSTER_TEMPERATURE_MEASUREMENT;
+        return temperature_measurement;
+    }
+
+    config() : optional_clusters_mask(0) {}
 } config_t;
 
 uint32_t get_device_type_id();
@@ -1030,7 +1070,6 @@ typedef struct config {
     cluster::descriptor::config_t descriptor;
     endpoint::power_source::config_t power_source_device;
     electrical_sensor::config_t electrical_sensor;
-    cluster::electrical_energy_measurement::config_t electrical_energy_measurement;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -1045,7 +1084,6 @@ typedef struct config {
     endpoint::power_source::config_t power_source_device;
     electrical_sensor::config_t electrical_sensor;
     device_energy_management::config_t device_energy_management;
-    cluster::electrical_energy_measurement::config_t electrical_energy_measurement;
 
     nullable<uint32_t> bat_voltage;
     nullable<uint8_t> bat_percent_remaining;
@@ -1072,7 +1110,6 @@ typedef struct config {
     endpoint::power_source::config_t power_source_device;
     electrical_sensor::config_t electrical_sensor;
     device_energy_management::config_t device_energy_management;
-    cluster::electrical_energy_measurement::config_t electrical_energy_measurement;
 
     nullable<int64_t> voltage;
     nullable<int64_t> active_current;
@@ -1175,8 +1212,29 @@ esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* electrical_utility_meter */
 
 namespace electrical_energy_tariff {
+
+#define ELECTRICAL_ENERGY_TARIFF_OPTIONAL_CLUSTER_COMMODITY_PRICE   (1 << 0)
+#define ELECTRICAL_ENERGY_TARIFF_OPTIONAL_CLUSTER_COMMODITY_TARIFF  (1 << 1)
+
 typedef struct config {
     cluster::descriptor::config_t descriptor;
+    cluster::commodity_price::config_t commodity_price;
+    cluster::commodity_tariff::config_t commodity_tariff;
+    uint32_t optional_clusters_mask;
+
+    cluster::commodity_price::config_t &with_commodity_price()
+    {
+        optional_clusters_mask |= ELECTRICAL_ENERGY_TARIFF_OPTIONAL_CLUSTER_COMMODITY_PRICE;
+        return commodity_price;
+    }
+
+    cluster::commodity_tariff::config_t &with_commodity_tariff()
+    {
+        optional_clusters_mask |= ELECTRICAL_ENERGY_TARIFF_OPTIONAL_CLUSTER_COMMODITY_TARIFF;
+        return commodity_tariff;
+    }
+
+    config() : optional_clusters_mask(0) {}
 } config_t;
 
 uint32_t get_device_type_id();

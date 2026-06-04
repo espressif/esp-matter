@@ -497,32 +497,25 @@ int create(uint8_t device_type_index)
         static chip::app::Clusters::ElectricalPowerMeasurement::MockElectricalPowerMeasurementDelegate electricalPowerMeasurementDelegate;
         electrical_sensor_config.power_topology.feature_flags = esp_matter::cluster::power_topology::feature::set_topology::get_id();
         electrical_sensor_config.power_topology.delegate = &powerTopologyDelegate;
-#ifndef CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL
-        // Electrical power measurement and ElectricalEnergyMeasurement cluster have choice features O.a+
-        // Generated data model does not consider such clusters as mandatory for device type.
-        // TODO: Remove this from handwritten code as well.
-        electrical_sensor_config.electrical_power_measurement.feature_flags =
+
+        auto &epm_config = electrical_sensor_config.with_electrical_power_measurement();
+        epm_config.feature_flags =
             esp_matter::cluster::electrical_power_measurement::feature::direct_current::get_id() |
             esp_matter::cluster::electrical_power_measurement::feature::alternating_current::get_id();
-        electrical_sensor_config.electrical_power_measurement.delegate = &electricalPowerMeasurementDelegate;
-#endif // CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL
+        epm_config.delegate = &electricalPowerMeasurementDelegate;
+
+        auto &eem_config = electrical_sensor_config.with_electrical_energy_measurement();
+        eem_config.feature_flags =
+            esp_matter::cluster::electrical_energy_measurement::feature::imported_energy::get_id() |
+            esp_matter::cluster::electrical_energy_measurement::feature::exported_energy::get_id() |
+            esp_matter::cluster::electrical_energy_measurement::feature::cumulative_energy::get_id() |
+            esp_matter::cluster::electrical_energy_measurement::feature::periodic_energy::get_id();
+
         endpoint = esp_matter::endpoint::electrical_sensor::create(node, &electrical_sensor_config, ENDPOINT_FLAG_NONE, NULL);
 
         if (endpoint) {
-            // Add the ElectricalEnergyMeasurement cluster with both imported and exported energy features
-            esp_matter::cluster::electrical_energy_measurement::config_t electrical_energy_measurement;
-            electrical_energy_measurement.feature_flags =
-                esp_matter::cluster::electrical_energy_measurement::feature::imported_energy::get_id() |
-                esp_matter::cluster::electrical_energy_measurement::feature::exported_energy::get_id() |
-                esp_matter::cluster::electrical_energy_measurement::feature::cumulative_energy::get_id() |
-                esp_matter::cluster::electrical_energy_measurement::feature::periodic_energy::get_id();
-            esp_matter::cluster_t *energy_cluster = esp_matter::cluster::electrical_energy_measurement::create(endpoint, &electrical_energy_measurement,
-                                                                                                               CLUSTER_FLAG_SERVER);
-
-            if (!energy_cluster) {
-                ESP_LOGE(TAG, "Failed to create electrical energy measurement cluster");
-            }
             esp_matter::cluster_t *power_cluster = esp_matter::cluster::get(endpoint, chip::app::Clusters::ElectricalPowerMeasurement::Id);
+            esp_matter::cluster_t *energy_cluster = esp_matter::cluster::get(endpoint, chip::app::Clusters::ElectricalEnergyMeasurement::Id);
             if (power_cluster) {
                 esp_matter::cluster::electrical_power_measurement::attribute::create_voltage(power_cluster, nullable<int64_t>());
                 esp_matter::cluster::electrical_power_measurement::attribute::create_active_current(power_cluster, nullable<int64_t>());
@@ -543,21 +536,28 @@ int create(uint8_t device_type_index)
         esp_matter::endpoint::energy_evse::config_t energy_evse_config;
         static chip::app::Clusters::EnergyEvse::MockEnergyEVSEDelegate energyEvseDelegate;
         static chip::app::Clusters::ModeBase::MockModeBaseDelegate evseModeDelegate;
-        static chip::app::Clusters::DeviceEnergyManagement::MockDeviceEnergyManagementDelegate evseDemDelegate;
-        energy_evse_config.energy_evse.delegate = &energyEvseDelegate;
-        energy_evse_config.energy_evse_mode.delegate = &evseModeDelegate;
 #ifndef CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL
         // Energy EVSE is composite device type with DeviceEnergyManagement.
         // Generated data model does not generate config for composite device types
         // TODO: Remove this once composite devices handled separately.
+        static chip::app::Clusters::DeviceEnergyManagement::MockDeviceEnergyManagementDelegate evseDemDelegate;
+        energy_evse_config.energy_evse.delegate = &energyEvseDelegate;
+        energy_evse_config.energy_evse_mode.delegate = &evseModeDelegate;
         energy_evse_config.device_energy_management.delegate = &evseDemDelegate;
         energy_evse_config.device_energy_management.feature_flags = cluster::device_energy_management::feature::power_adjustment::get_id();
 #endif // CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL
         endpoint = esp_matter::endpoint::energy_evse::create(node, &energy_evse_config, ENDPOINT_FLAG_NONE, NULL);
 
         esp_matter::endpoint::power_source::config_t power_source_config;
+        power_source_config.power_source.feature_flags = esp_matter::cluster::power_source::feature::wired::get_id();
         esp_matter::endpoint_t *ps_endpoint = esp_matter::endpoint::power_source::create(node, &power_source_config, ENDPOINT_FLAG_NONE, NULL);
+
         esp_matter::endpoint::electrical_sensor::config_t electrical_sensor_config;
+        static chip::app::Clusters::PowerTopology::PowerTopologyDelegate powerTopologyDelegate;
+        electrical_sensor_config.power_topology.feature_flags = cluster::power_topology::feature::node_topology::get_id();
+        electrical_sensor_config.power_topology.delegate = &powerTopologyDelegate;
+        auto &epm_config = electrical_sensor_config.with_electrical_power_measurement();
+        epm_config.feature_flags = esp_matter::cluster::electrical_power_measurement::feature::direct_current::get_id();
         esp_matter::endpoint::electrical_sensor::add(ps_endpoint, &electrical_sensor_config);
 
         if (!ps_endpoint) {
@@ -601,12 +601,12 @@ int create(uint8_t device_type_index)
     }
     case ESP_MATTER_DEVICE_ENERGY_MANAGEMENT: {
         esp_matter::endpoint::device_energy_management::config_t device_energy_management_config;
-        static chip::app::Clusters::ModeBase::MockModeBaseDelegate demModeDelegate;
         static chip::app::Clusters::DeviceEnergyManagement::MockDeviceEnergyManagementDelegate demDelegate;
 #ifndef CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL
         // Device energy management mode cluster is Optional with condition=ControllableESA
         // Generated data model does not consider such clusters as mandatory for device type.
         // TODO: Consider such clusters as optional in handwritten code as well.
+        static chip::app::Clusters::ModeBase::MockModeBaseDelegate demModeDelegate;
         device_energy_management_config.device_energy_management_mode.delegate = &demModeDelegate;
 #endif // CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL
         device_energy_management_config.device_energy_management.delegate = &demDelegate;
@@ -661,16 +661,60 @@ int create(uint8_t device_type_index)
     }
     case ESP_MATTER_SOLAR_POWER: {
         esp_matter::endpoint::solar_power::config_t solar_power_config;
+        // Todo: Remove after adding support for the composite device types.
+#ifndef CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL
+        static chip::app::Clusters::ElectricalPowerMeasurement::MockElectricalPowerMeasurementDelegate solarPowerDelegate;
+        solar_power_config.electrical_sensor.power_topology.feature_flags = cluster::power_topology::feature::node_topology::get_id();
+        auto &epm = solar_power_config.electrical_sensor.with_electrical_power_measurement();
+        epm.feature_flags = cluster::electrical_power_measurement::feature::direct_current::get_id();
+        epm.delegate = &solarPowerDelegate;
+        auto &eem = solar_power_config.electrical_sensor.with_electrical_energy_measurement();
+        eem.feature_flags = cluster::electrical_energy_measurement::feature::exported_energy::get_id() |
+                            cluster::electrical_energy_measurement::feature::cumulative_energy::get_id();
+#endif // CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL
         endpoint = esp_matter::endpoint::solar_power::create(node, &solar_power_config, ENDPOINT_FLAG_NONE, NULL);
         break;
     }
     case ESP_MATTER_BATTERY_STORAGE: {
         esp_matter::endpoint::battery_storage::config_t battery_storage_config;
+        // Todo: Remove after adding support for the composite device types.
+#ifndef CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL
+        static chip::app::Clusters::ElectricalPowerMeasurement::MockElectricalPowerMeasurementDelegate batteryStoragePowerDelegate;
+        static chip::app::Clusters::DeviceEnergyManagement::MockDeviceEnergyManagementDelegate batteryStorageDemDelegate;
+        static chip::app::Clusters::ModeBase::MockModeBaseDelegate batteryStorageDemModeDelegate;
+        battery_storage_config.electrical_sensor.power_topology.feature_flags = cluster::power_topology::feature::node_topology::get_id();
+        auto &epm = battery_storage_config.electrical_sensor.with_electrical_power_measurement();
+        epm.feature_flags = cluster::electrical_power_measurement::feature::direct_current::get_id();
+        epm.delegate = &batteryStoragePowerDelegate;
+        auto &eem = battery_storage_config.electrical_sensor.with_electrical_energy_measurement();
+        eem.feature_flags = cluster::electrical_energy_measurement::feature::imported_energy::get_id() |
+                            cluster::electrical_energy_measurement::feature::exported_energy::get_id() |
+                            cluster::electrical_energy_measurement::feature::cumulative_energy::get_id();
+        battery_storage_config.device_energy_management.device_energy_management.delegate = &batteryStorageDemDelegate;
+        battery_storage_config.device_energy_management.device_energy_management.feature_flags = cluster::device_energy_management::feature::power_forecast_reporting::get_id();
+        battery_storage_config.device_energy_management.device_energy_management_mode.delegate = &batteryStorageDemModeDelegate;
+#endif // CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL
         endpoint = esp_matter::endpoint::battery_storage::create(node, &battery_storage_config, ENDPOINT_FLAG_NONE, NULL);
         break;
     }
     case ESP_MATTER_HEAT_PUMP: {
         esp_matter::endpoint::heat_pump::config_t heat_pump_config;
+        // Todo: Remove after adding support for the composite device types.
+#ifndef CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL
+        static chip::app::Clusters::ElectricalPowerMeasurement::MockElectricalPowerMeasurementDelegate heatPumpPowerDelegate;
+        static chip::app::Clusters::DeviceEnergyManagement::MockDeviceEnergyManagementDelegate heatPumpDemDelegate;
+        static chip::app::Clusters::ModeBase::MockModeBaseDelegate heatPumpDemModeDelegate;
+        heat_pump_config.electrical_sensor.power_topology.feature_flags = cluster::power_topology::feature::node_topology::get_id();
+        auto &epm = heat_pump_config.electrical_sensor.with_electrical_power_measurement();
+        epm.feature_flags = cluster::electrical_power_measurement::feature::direct_current::get_id();
+        epm.delegate = &heatPumpPowerDelegate;
+        auto &eem = heat_pump_config.electrical_sensor.with_electrical_energy_measurement();
+        eem.feature_flags = cluster::electrical_energy_measurement::feature::imported_energy::get_id() |
+                            cluster::electrical_energy_measurement::feature::cumulative_energy::get_id();
+        heat_pump_config.device_energy_management.device_energy_management.delegate = &heatPumpDemDelegate;
+        heat_pump_config.device_energy_management.device_energy_management.feature_flags = cluster::device_energy_management::feature::power_forecast_reporting::get_id();
+        heat_pump_config.device_energy_management.device_energy_management_mode.delegate = &heatPumpDemModeDelegate;
+#endif // CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL
         endpoint = esp_matter::endpoint::heat_pump::create(node, &heat_pump_config, ENDPOINT_FLAG_NONE, NULL);
         break;
     }
@@ -709,26 +753,27 @@ int create(uint8_t device_type_index)
     }
     case ESP_MATTER_ELECTRICAL_ENERGY_TARIFF: {
         esp_matter::endpoint::electrical_energy_tariff::config_t electrical_energy_tariff_config;
-        endpoint = esp_matter::endpoint::electrical_energy_tariff::create(node, &electrical_energy_tariff_config, ENDPOINT_FLAG_NONE, NULL);
-
         static chip::app::Clusters::CommodityPrice::MockCommodityPriceDelegate commodityPriceDelegate;
-        cluster::commodity_price::config_t commodity_price_config;
-        commodity_price_config.delegate = &commodityPriceDelegate;
-        cluster::commodity_price::create(endpoint, &commodity_price_config, CLUSTER_FLAG_SERVER);
-
         static chip::app::Clusters::CommodityTariff::MockCommodityTariffDelegate commodityTariffDelegate;
-        cluster::commodity_tariff::config_t commodity_tariff_config;
-        commodity_tariff_config.delegate = &commodityTariffDelegate;
-        commodity_tariff_config.feature_flags = cluster::commodity_tariff::feature::pricing::get_id();
-        cluster::commodity_tariff::create(endpoint, &commodity_tariff_config, CLUSTER_FLAG_SERVER);
 
+        // Configure commodity_price cluster (O.a+)
+        auto &cp_config = electrical_energy_tariff_config.with_commodity_price();
+        cp_config.delegate = &commodityPriceDelegate;
+
+        // Configure commodity_tariff cluster (O.a+)
+        auto &ct_config = electrical_energy_tariff_config.with_commodity_tariff();
+        ct_config.delegate = &commodityTariffDelegate;
+        ct_config.feature_flags = cluster::commodity_tariff::feature::pricing::get_id();
+
+        endpoint = esp_matter::endpoint::electrical_energy_tariff::create(node, &electrical_energy_tariff_config, ENDPOINT_FLAG_NONE, NULL);
         break;
     }
     case ESP_MATTER_ELECTRICAL_METER: {
         esp_matter::endpoint::electrical_meter::config_t electrical_meter_config;
         static chip::app::Clusters::ElectricalPowerMeasurement::MockElectricalPowerMeasurementDelegate electricalMeterPowerDelegate;
-        electrical_meter_config.electrical_power_measurement.feature_flags = cluster::electrical_power_measurement::feature::direct_current::get_id();
+
         electrical_meter_config.electrical_power_measurement.delegate = &electricalMeterPowerDelegate;
+        electrical_meter_config.electrical_power_measurement.feature_flags = cluster::electrical_power_measurement::feature::direct_current::get_id();
         electrical_meter_config.electrical_energy_measurement.feature_flags = cluster::electrical_energy_measurement::feature::imported_energy::get_id() |
                                                                               cluster::electrical_energy_measurement::feature::exported_energy::get_id() |
                                                                               cluster::electrical_energy_measurement::feature::cumulative_energy::get_id() |
