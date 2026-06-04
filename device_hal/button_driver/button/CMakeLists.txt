@@ -1,7 +1,7 @@
 include($ENV{ESP_MATTER_DEVICE_PATH}/esp_matter_device.cmake)
 
 set(src_dirs )
-set(requires driver)
+set(requires driver esp_driver_gpio)
 
 if("${IDF_VERSION_MAJOR}.${IDF_VERSION_MINOR}" VERSION_GREATER_EQUAL "5.0")
     list(APPEND requires esp_adc)
