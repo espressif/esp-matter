@@ -233,7 +233,7 @@ public:
 #endif
     }
 
-    void Temporary_ReportAttributeChanged(const AttributePathParams &path) override {}
+    void ReportAttributeChanged(const AttributePathParams &path) {}
 #if defined(CONFIG_ESP_MATTER_OTA_PROVIDER_ENABLED) && CHIP_DEVICE_CONFIG_DYNAMIC_SERVER
     void set_ota_provider_delegate(chip::app::Clusters::OTAProviderDelegate * delegate)
     {

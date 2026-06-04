@@ -44,8 +44,11 @@ void cluster_command::on_device_connected_fcn(void *context, ExchangeManager &ex
     chip::app::CommandPathParams command_path = {cmd->m_endpoint_id, 0, cmd->m_cluster_id, cmd->m_command_id,
                                                  chip::app::CommandPathFlags::kEndpointIdValid
                                                 };
-    interaction::invoke::send_request(context, &device_proxy, command_path, cmd->m_command_data_field,
-                                      cmd->on_success_cb, cmd->on_error_cb, cmd->m_timed_invoke_timeout_ms);
+    esp_err_t err = interaction::invoke::send_request(context, &device_proxy, command_path, cmd->m_command_data_field,
+                                                      cmd->on_success_cb, cmd->on_error_cb, cmd->m_timed_invoke_timeout_ms);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to send invoke request");
+    }
     chip::Platform::Delete(cmd);
     return;
 }

@@ -132,14 +132,14 @@ void commissioning_window_opener::on_device_connected_fcn(void *context, Exchang
         command_data.salt = salt;
 
         chip::Controller::ClusterBase cluster(exchangeMgr, sessionHandle, window_opener->m_default_remote_endpoint_id);
-        cluster.InvokeCommand(command_data, window_opener, send_command_success_callback, send_command_failure_callback,
-                              chip::MakeOptional(window_opener->m_timed_invoke_timeout_ms));
+        LogErrorOnFailure(cluster.InvokeCommand(command_data, window_opener, send_command_success_callback, send_command_failure_callback,
+                                                chip::MakeOptional(window_opener->m_timed_invoke_timeout_ms)));
     } else {
         AdministratorCommissioning::Commands::OpenBasicCommissioningWindow::Type command_data;
         command_data.commissioningTimeout = window_opener->m_timeout;
         chip::Controller::ClusterBase cluster(exchangeMgr, sessionHandle, window_opener->m_default_remote_endpoint_id);
-        cluster.InvokeCommand(command_data, window_opener, send_command_success_callback, send_command_failure_callback,
-                              chip::MakeOptional(window_opener->m_timed_invoke_timeout_ms));
+        LogErrorOnFailure(cluster.InvokeCommand(command_data, window_opener, send_command_success_callback, send_command_failure_callback,
+                                                chip::MakeOptional(window_opener->m_timed_invoke_timeout_ms)));
     }
 }
 
