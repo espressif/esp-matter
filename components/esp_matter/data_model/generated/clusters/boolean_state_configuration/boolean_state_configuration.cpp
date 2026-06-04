@@ -123,6 +123,22 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 }
 } /* sensitivity_level */
 
+namespace fault_events {
+uint32_t get_id()
+{
+    return FaultEvents::Id;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    update_feature_map(cluster, get_id());
+    event::create_sensor_fault(cluster);
+
+    return ESP_OK;
+}
+} /* fault_events */
+
 } /* feature */
 
 namespace attribute {
@@ -216,6 +232,11 @@ event_t *create_alarms_state_changed(cluster_t *cluster)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(((has_feature(visual)) || (has_feature(audible))), NULL);
     return esp_matter::event::create(cluster, AlarmsStateChanged::Id);
+}
+
+event_t *create_sensor_fault(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, SensorFault::Id);
 }
 
 } /* event */

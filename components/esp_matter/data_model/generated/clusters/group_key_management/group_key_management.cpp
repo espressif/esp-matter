@@ -42,25 +42,6 @@ namespace esp_matter {
 namespace cluster {
 namespace group_key_management {
 
-namespace feature {
-namespace groupcast {
-uint32_t get_id()
-{
-    return Groupcast::Id;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
-    update_feature_map(cluster, get_id());
-    attribute::create_groupcast_adoption(cluster, NULL, 0, 0);
-
-    return ESP_OK;
-}
-} /* groupcast */
-
-} /* feature */
-
 namespace attribute {
 attribute_t *create_group_key_map(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
@@ -84,13 +65,6 @@ attribute_t *create_max_group_keys_per_fabric(cluster_t *cluster, uint16_t value
     attribute_t *attribute = esp_matter::attribute::create(cluster, MaxGroupKeysPerFabric::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
     esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(1)), esp_matter_attr_val(static_cast<uint16_t>(65535)));
     return attribute;
-}
-
-attribute_t *create_groupcast_adoption(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
-{
-    uint32_t feature_map = get_feature_map_value(cluster);
-    VerifyOrReturnValue(has_feature(groupcast), NULL);
-    return esp_matter::attribute::create(cluster, GroupcastAdoption::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, length, count));
 }
 
 } /* attribute */

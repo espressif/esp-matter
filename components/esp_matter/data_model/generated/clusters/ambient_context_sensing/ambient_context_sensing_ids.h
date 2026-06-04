@@ -19,19 +19,10 @@
 
 namespace esp_matter {
 namespace cluster {
-namespace thread_border_router_diagnostics {
+namespace ambient_context_sensing {
 
-inline constexpr uint32_t Id = 0x0454;
+inline constexpr uint32_t Id = 0x0431;
 
-namespace attribute {
-namespace BrStatus {
-inline constexpr uint32_t Id = 0x0000;
-} /* BrStatus */
-namespace ActiveTbrFaultsList {
-inline constexpr uint32_t Id = 0x0001;
-} /* ActiveTbrFaultsList */
-} /* attribute */
-
-} /* thread_border_router_diagnostics */
+} /* ambient_context_sensing */
 } /* cluster */
 } /* esp_matter */

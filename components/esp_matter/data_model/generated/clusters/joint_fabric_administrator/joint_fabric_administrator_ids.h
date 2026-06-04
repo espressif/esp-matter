@@ -23,6 +23,42 @@ namespace joint_fabric_administrator {
 
 inline constexpr uint32_t Id = 0x0753;
 
+namespace attribute {
+namespace AdministratorFabricIndex {
+inline constexpr uint32_t Id = 0x0000;
+} /* AdministratorFabricIndex */
+} /* attribute */
+
+namespace command {
+namespace ICACCSRRequest {
+inline constexpr uint32_t Id = 0x00;
+} /* ICACCSRRequest */
+namespace ICACCSRResponse {
+inline constexpr uint32_t Id = 0x01;
+} /* ICACCSRResponse */
+namespace AddICAC {
+inline constexpr uint32_t Id = 0x02;
+} /* AddICAC */
+namespace ICACResponse {
+inline constexpr uint32_t Id = 0x03;
+} /* ICACResponse */
+namespace OpenJointCommissioningWindow {
+inline constexpr uint32_t Id = 0x04;
+} /* OpenJointCommissioningWindow */
+namespace TransferAnchorRequest {
+inline constexpr uint32_t Id = 0x05;
+} /* TransferAnchorRequest */
+namespace TransferAnchorResponse {
+inline constexpr uint32_t Id = 0x06;
+} /* TransferAnchorResponse */
+namespace TransferAnchorComplete {
+inline constexpr uint32_t Id = 0x07;
+} /* TransferAnchorComplete */
+namespace AnnounceJointFabricAdministrator {
+inline constexpr uint32_t Id = 0x08;
+} /* AnnounceJointFabricAdministrator */
+} /* command */
+
 } /* joint_fabric_administrator */
 } /* cluster */
 } /* esp_matter */

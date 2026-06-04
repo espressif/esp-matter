@@ -26,7 +26,7 @@
 #include <esp_matter_core.h>
 
 #define ESP_MATTER_PUMP_CONTROLLER_DEVICE_TYPE_ID 0x0304
-#define ESP_MATTER_PUMP_CONTROLLER_DEVICE_TYPE_VERSION 5
+#define ESP_MATTER_PUMP_CONTROLLER_DEVICE_TYPE_VERSION 4
 
 namespace esp_matter {
 namespace endpoint {

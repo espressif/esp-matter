@@ -407,6 +407,16 @@ __attribute__((weak)) void ESPMatterDoorLockClusterServerShutdownCallback(Endpoi
     // Default empty implementation
 }
 
+__attribute__((weak)) void ESPMatterDynamicLightingClusterServerInitCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterDynamicLightingClusterServerShutdownCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
 __attribute__((weak)) void ESPMatterEcosystemInformationClusterServerInitCallback(EndpointId endpoint)
 {
     // Default empty implementation
@@ -593,6 +603,16 @@ __attribute__((weak)) void ESPMatterHepaFilterMonitoringClusterServerInitCallbac
 }
 
 __attribute__((weak)) void ESPMatterHepaFilterMonitoringClusterServerShutdownCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterHumidistatClusterServerInitCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterHumidistatClusterServerShutdownCallback(EndpointId endpoint)
 {
     // Default empty implementation
 }
@@ -797,6 +817,16 @@ __attribute__((weak)) void ESPMatterNetworkCommissioningClusterServerShutdownCal
     // Default empty implementation
 }
 
+__attribute__((weak)) void ESPMatterNetworkIdentityManagementClusterServerInitCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterNetworkIdentityManagementClusterServerShutdownCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
 __attribute__((weak)) void ESPMatterNitrogenDioxideConcentrationMeasurementClusterServerInitCallback(EndpointId endpoint)
 {
     // Default empty implementation
@@ -963,6 +993,16 @@ __attribute__((weak)) void ESPMatterPressureMeasurementClusterServerInitCallback
 }
 
 __attribute__((weak)) void ESPMatterPressureMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterProximityRangingClusterServerInitCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterProximityRangingClusterServerShutdownCallback(EndpointId endpoint)
 {
     // Default empty implementation
 }

@@ -22,7 +22,7 @@
 #include <esp_matter_core.h>
 
 #define ESP_MATTER_OVEN_DEVICE_TYPE_ID 0x007B
-#define ESP_MATTER_OVEN_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_OVEN_DEVICE_TYPE_VERSION 3
 
 namespace esp_matter {
 namespace endpoint {

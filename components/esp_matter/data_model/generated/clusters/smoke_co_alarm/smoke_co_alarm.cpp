@@ -183,6 +183,11 @@ attribute_t *create_expiry_date(cluster_t *cluster, uint32_t value)
     return attribute;
 }
 
+attribute_t *create_unmounted(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, Unmounted::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+}
+
 } /* attribute */
 namespace command {
 command_t *create_self_test_request(cluster_t *cluster)

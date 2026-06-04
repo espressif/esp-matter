@@ -26,6 +26,7 @@
 #include <ota_software_update_requestor_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
 using chip::app::CommandHandler;
@@ -36,17 +37,6 @@ using namespace esp_matter::cluster;
 
 static const char *TAG = "ota_software_update_requestor_cluster";
 constexpr uint16_t cluster_revision = 1;
-
-static esp_err_t esp_matter_command_callback_announce_ota_provider(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                                   void *opaque_ptr)
-{
-    chip::app::Clusters::OtaSoftwareUpdateRequestor::Commands::AnnounceOTAProvider::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfOtaSoftwareUpdateRequestorClusterAnnounceOTAProviderCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
 
 namespace esp_matter {
 namespace cluster {
@@ -81,7 +71,7 @@ attribute_t *create_update_state_progress(cluster_t *cluster, nullable<uint8_t> 
 namespace command {
 command_t *create_announce_ota_provider(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, AnnounceOTAProvider::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_announce_ota_provider);
+    return esp_matter::command::create(cluster, AnnounceOTAProvider::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 } /* command */
@@ -132,6 +122,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         event::create_state_transition(cluster);
         event::create_version_applied(cluster);
         event::create_download_error(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterOtaSoftwareUpdateRequestorClusterServerInitCallback,
+                                                 ESPMatterOtaSoftwareUpdateRequestorClusterServerShutdownCallback);
     }
 
     return cluster;

@@ -27,6 +27,7 @@
 #include <microwave_oven_control_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
 using chip::app::CommandHandler;
@@ -50,11 +51,12 @@ uint32_t get_id()
     return PowerAsNumber::Id;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    VerifyOrReturnError(config, ESP_ERR_INVALID_ARG);
     update_feature_map(cluster, get_id());
-    attribute::create_power_setting(cluster, 0);
+    attribute::create_power_setting(cluster, config->power_setting);
 
     return ESP_OK;
 }
@@ -66,15 +68,16 @@ uint32_t get_id()
     return PowerNumberLimits::Id;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    VerifyOrReturnError(config, ESP_ERR_INVALID_ARG);
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnError(has_feature(power_as_number), ESP_ERR_INVALID_ARG);
     update_feature_map(cluster, get_id());
-    attribute::create_min_power(cluster, 0);
-    attribute::create_max_power(cluster, 0);
-    attribute::create_power_step(cluster, 0);
+    attribute::create_min_power(cluster, config->min_power);
+    attribute::create_max_power(cluster, config->max_power);
+    attribute::create_power_step(cluster, config->power_step);
 
     return ESP_OK;
 }
@@ -85,45 +88,59 @@ esp_err_t add(cluster_t *cluster)
 namespace attribute {
 attribute_t *create_cook_time(cluster_t *cluster, uint32_t value)
 {
-    return esp_matter::attribute::create(cluster, CookTime::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, CookTime::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(1)), esp_matter_attr_val(static_cast<uint32_t>(4294967294)));
+    return attribute;
 }
 
 attribute_t *create_max_cook_time(cluster_t *cluster, uint32_t value)
 {
-    return esp_matter::attribute::create(cluster, MaxCookTime::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxCookTime::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(1)), esp_matter_attr_val(static_cast<uint32_t>(86400)));
+    return attribute;
 }
 
 attribute_t *create_power_setting(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(power_as_number), NULL);
-    return esp_matter::attribute::create(cluster, PowerSetting::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSetting::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
+    return attribute;
 }
 
 attribute_t *create_min_power(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(power_number_limits), NULL);
-    return esp_matter::attribute::create(cluster, MinPower::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, MinPower::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(1)), esp_matter_attr_val(static_cast<uint8_t>(99)));
+    return attribute;
 }
 
 attribute_t *create_max_power(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(power_number_limits), NULL);
-    return esp_matter::attribute::create(cluster, MaxPower::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxPower::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(100)));
+    return attribute;
 }
 
 attribute_t *create_power_step(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(power_number_limits), NULL);
-    return esp_matter::attribute::create(cluster, PowerStep::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerStep::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
+    return attribute;
 }
 
 attribute_t *create_watt_rating(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, WattRating::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, WattRating::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
+    return attribute;
 }
 
 } /* attribute */
@@ -170,19 +187,22 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
-        attribute::create_cook_time(cluster, 0);
-        attribute::create_max_cook_time(cluster, 0);
+        attribute::create_cook_time(cluster, config->cook_time);
+        attribute::create_max_cook_time(cluster, config->max_cook_time);
 
         uint32_t feature_map = config->feature_flags;
         VALIDATE_FEATURES_EXACT_ONE("PowerAsNumber",
                                     feature::power_as_number::get_id());
         if (feature_map & feature::power_as_number::get_id()) {
-            VerifyOrReturnValue(feature::power_as_number::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            VerifyOrReturnValue(feature::power_as_number::add(cluster, &(config->features.power_as_number)) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
         if (feature_map & feature::power_number_limits::get_id()) {
-            VerifyOrReturnValue(feature::power_number_limits::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            VerifyOrReturnValue(feature::power_number_limits::add(cluster, &(config->features.power_number_limits)) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
         command::create_set_cooking_parameters(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterMicrowaveOvenControlClusterServerInitCallback,
+                                                 ESPMatterMicrowaveOvenControlClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {

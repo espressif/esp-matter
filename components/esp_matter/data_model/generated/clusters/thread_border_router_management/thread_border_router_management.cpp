@@ -27,6 +27,7 @@
 #include <thread_border_router_management_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
 using chip::app::CommandHandler;
@@ -65,32 +66,38 @@ esp_err_t add(cluster_t *cluster)
 namespace attribute {
 attribute_t *create_border_router_name(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, BorderRouterName::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length));
+    return esp_matter::attribute::create(cluster, BorderRouterName::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length), k_max_border_router_name_length + 1);
 }
 
 attribute_t *create_border_agent_id(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, BorderAgentID::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length));
+    return esp_matter::attribute::create(cluster, BorderAgentID::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length));
 }
 
 attribute_t *create_thread_version(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ThreadVersion::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ThreadVersion::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
+    return attribute;
 }
 
 attribute_t *create_interface_enabled(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, InterfaceEnabled::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    return esp_matter::attribute::create(cluster, InterfaceEnabled::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_active_dataset_timestamp(cluster_t *cluster, nullable<uint64_t> value)
 {
-    return esp_matter::attribute::create(cluster, ActiveDatasetTimestamp::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ActiveDatasetTimestamp::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint64_t>(0)), esp_matter_attr_val(nullable<uint64_t>(4294967294)));
+    return attribute;
 }
 
 attribute_t *create_pending_dataset_timestamp(cluster_t *cluster, nullable<uint64_t> value)
 {
-    return esp_matter::attribute::create(cluster, PendingDatasetTimestamp::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PendingDatasetTimestamp::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint64_t>(0)), esp_matter_attr_val(nullable<uint64_t>(4294967294)));
+    return attribute;
 }
 
 } /* attribute */
@@ -154,16 +161,19 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
-        attribute::create_border_router_name(cluster, NULL, 0);
-        attribute::create_border_agent_id(cluster, NULL, 0);
-        attribute::create_thread_version(cluster, 0);
-        attribute::create_interface_enabled(cluster, false);
-        attribute::create_active_dataset_timestamp(cluster, 0);
-        attribute::create_pending_dataset_timestamp(cluster, 0);
+        attribute::create_border_router_name(cluster, config->border_router_name, sizeof(config->border_router_name));
+        attribute::create_border_agent_id(cluster, config->border_agent_id, sizeof(config->border_agent_id));
+        attribute::create_thread_version(cluster, config->thread_version);
+        attribute::create_interface_enabled(cluster, config->interface_enabled);
+        attribute::create_active_dataset_timestamp(cluster, config->active_dataset_timestamp);
+        attribute::create_pending_dataset_timestamp(cluster, config->pending_dataset_timestamp);
         command::create_get_active_dataset_request(cluster);
         command::create_get_pending_dataset_request(cluster);
         command::create_dataset_response(cluster);
         command::create_set_active_dataset_request(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterThreadBorderRouterManagementClusterServerInitCallback,
+                                                 ESPMatterThreadBorderRouterManagementClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {

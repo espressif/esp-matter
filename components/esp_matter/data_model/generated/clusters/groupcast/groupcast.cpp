@@ -42,54 +42,6 @@ namespace esp_matter {
 namespace cluster {
 namespace groupcast {
 
-namespace feature {
-namespace listener {
-uint32_t get_id()
-{
-    return Listener::Id;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
-    update_feature_map(cluster, get_id());
-
-    return ESP_OK;
-}
-} /* listener */
-
-namespace sender {
-uint32_t get_id()
-{
-    return Sender::Id;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
-    update_feature_map(cluster, get_id());
-
-    return ESP_OK;
-}
-} /* sender */
-
-namespace per_group {
-uint32_t get_id()
-{
-    return PerGroup::Id;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
-    update_feature_map(cluster, get_id());
-
-    return ESP_OK;
-}
-} /* per_group */
-
-} /* feature */
-
 const function_generic_t *function_list = NULL;
 
 const int function_flags = CLUSTER_FLAG_NONE;
@@ -105,23 +57,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, config->feature_flags);
+        global::attribute::create_feature_map(cluster, 0);
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
-
-        uint32_t feature_map = config->feature_flags;
-        VALIDATE_FEATURES_AT_LEAST_ONE("Listener,Sender",
-                                       feature::listener::get_id(), feature::sender::get_id());
-        if (feature_map & feature::listener::get_id()) {
-            VerifyOrReturnValue(feature::listener::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
-        }
-        if (feature_map & feature::sender::get_id()) {
-            VerifyOrReturnValue(feature::sender::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
-        }
-        if (feature_map & feature::per_group::get_id()) {
-            VerifyOrReturnValue(feature::per_group::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
-        }
 
         cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterGroupcastClusterServerInitCallback,
                                                  ESPMatterGroupcastClusterServerShutdownCallback);

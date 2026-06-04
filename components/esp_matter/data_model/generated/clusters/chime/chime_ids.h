@@ -41,6 +41,12 @@ inline constexpr uint32_t Id = 0x00;
 } /* PlayChimeSound */
 } /* command */
 
+namespace event {
+namespace ChimeStartedPlaying {
+inline constexpr uint32_t Id = 0x00;
+} /* ChimeStartedPlaying */
+} /* event */
+
 } /* chime */
 } /* cluster */
 } /* esp_matter */

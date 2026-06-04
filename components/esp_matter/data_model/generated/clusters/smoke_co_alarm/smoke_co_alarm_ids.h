@@ -72,6 +72,9 @@ inline constexpr uint32_t Id = 0x000B;
 namespace ExpiryDate {
 inline constexpr uint32_t Id = 0x000C;
 } /* ExpiryDate */
+namespace Unmounted {
+inline constexpr uint32_t Id = 0x000D;
+} /* Unmounted */
 } /* attribute */
 
 namespace command {

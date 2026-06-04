@@ -93,6 +93,9 @@ inline constexpr uint32_t Id = 0x0015;
 namespace MaxPathsPerInvoke {
 inline constexpr uint32_t Id = 0x0016;
 } /* MaxPathsPerInvoke */
+namespace ConfigurationVersion {
+inline constexpr uint32_t Id = 0x0018;
+} /* ConfigurationVersion */
 } /* attribute */
 
 namespace event {

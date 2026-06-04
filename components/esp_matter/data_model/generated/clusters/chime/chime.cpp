@@ -71,6 +71,14 @@ command_t *create_play_chime_sound(cluster_t *cluster)
 
 } /* command */
 
+namespace event {
+event_t *create_chime_started_playing(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, ChimeStartedPlaying::Id);
+}
+
+} /* event */
+
 static void create_default_binding_cluster(endpoint_t *endpoint)
 {
     binding::config_t config;
@@ -105,6 +113,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_enabled(cluster, config->enabled);
         attribute::create_installed_chime_sounds(cluster, NULL, 0, 0);
         command::create_play_chime_sound(cluster);
+        /* Events */
+        event::create_chime_started_playing(cluster);
 
         cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterChimeClusterServerInitCallback,
                                                  ESPMatterChimeClusterServerShutdownCallback);

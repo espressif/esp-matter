@@ -31,6 +31,10 @@ namespace command {
 command_t *create_play_chime_sound(cluster_t *cluster);
 } /* command */
 
+namespace event {
+event_t *create_chime_started_playing(cluster_t *cluster);
+} /* event */
+
 typedef struct config {
     uint8_t selected_chime;
     bool enabled;

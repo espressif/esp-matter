@@ -59,8 +59,9 @@ event_t *create_periodic_energy_measured(cluster_t *cluster);
 } /* event */
 
 typedef struct config {
+    void *delegate;
     uint32_t feature_flags;
-    config() : feature_flags(0) {}
+    config() : delegate(nullptr), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

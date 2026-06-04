@@ -172,6 +172,22 @@ esp_err_t add(cluster_t *cluster)
 }
 } /* vision */
 
+namespace occupancy_event {
+uint32_t get_id()
+{
+    return OccupancyEvent::Id;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    update_feature_map(cluster, get_id());
+    event::create_occupancy_changed(cluster);
+
+    return ESP_OK;
+}
+} /* occupancy_event */
+
 } /* feature */
 
 namespace attribute {
@@ -274,6 +290,14 @@ attribute_t *create_physical_contact_unoccupied_to_occupied_threshold(cluster_t 
 
 } /* attribute */
 
+namespace event {
+event_t *create_occupancy_changed(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, OccupancyChanged::Id);
+}
+
+} /* event */
+
 static void create_default_binding_cluster(endpoint_t *endpoint)
 {
     binding::config_t config;
@@ -330,6 +354,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
         if (feature_map & feature::vision::get_id()) {
             VerifyOrReturnValue(feature::vision::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (feature_map & feature::occupancy_event::get_id()) {
+            VerifyOrReturnValue(feature::occupancy_event::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
 
         cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterOccupancySensingClusterServerInitCallback,

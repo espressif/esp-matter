@@ -1,6 +1,7 @@
 {
     "migrated_cluster": [
         "access_control",
+        "actions",
         "administrator_commissioning",
         "air_quality",
         "basic_information",
@@ -11,6 +12,9 @@
         "camera_av_stream_management",
         "chime",
         "closure_control",
+        "closure_dimension",
+        "commissioner_control",
+        "concentration_measurement",
         "descriptor",
         "device_energy_management",
         "diagnostic_logs",
@@ -19,21 +23,29 @@
         "energy_evse",
         "ethernet_network_diagnostics",
         "fixed_label",
+        "flow_measurement",
         "general_commissioning",
         "general_diagnostics",
         "group_key_management",
         "groupcast",
         "groups",
+        "humidistat",
         "icd_management",
         "identify",
         "illuminance_measurement",
         "localization_configuration",
+        "microwave_oven_control",
         "network_commissioning",
+        "network_identity_management",
         "occupancy_sensor",
         "operational_credentials",
         "ota_software_update_provider",
+        "ota_software_update_requestor",
         "power_topology",
+        "pressure_measurement",
+        "proximity_ranging",
         "push_av_stream_transport",
+        "relative_humidity_measurement",
         "resource_monitoring",
         "scenes",
         "software_diagnostics",
@@ -41,7 +53,9 @@
         "switch",
         "temperature_control",
         "temperature_measurement",
+        "thread_border_router_management",
         "thread_network_diagnostics",
+        "thread_network_directory",
         "time_format_localization",
         "time_synchronization",
         "tls_certificate_management",
@@ -52,10 +66,12 @@
         "webrtc_transport_provider",
         "webrtc_transport_requestor",
         "wifi_network_diagnostics",
-        "wifi_network_management"
+        "wifi_network_management",
+        "zone_management"
     ],
     "migrated_cluster_with_codegen_impl": [
         "level_control",
-        "on_off"
+        "on_off",
+        "power_source"
     ]
 }

@@ -85,6 +85,11 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 } /* presets */
 
+namespace thermostat_suggestions {
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* thermostat_suggestions */
+
 } /* feature */
 
 namespace attribute {
@@ -134,12 +139,19 @@ attribute_t *create_active_schedule_handle(cluster_t *cluster, uint8_t * value, 
 attribute_t *create_presets(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 attribute_t *create_schedules(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 attribute_t *create_setpoint_hold_expiry_timestamp(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_max_thermostat_suggestions(cluster_t *cluster, uint8_t value);
+attribute_t *create_thermostat_suggestions(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_current_thermostat_suggestion(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_thermostat_suggestion_not_following_reason(cluster_t *cluster, nullable<uint16_t> value);
 } /* attribute */
 
 namespace command {
 command_t *create_setpoint_raise_lower(cluster_t *cluster);
+command_t *create_add_thermostat_suggestion_response(cluster_t *cluster);
 command_t *create_set_active_schedule_request(cluster_t *cluster);
 command_t *create_set_active_preset_request(cluster_t *cluster);
+command_t *create_add_thermostat_suggestion(cluster_t *cluster);
+command_t *create_remove_thermostat_suggestion(cluster_t *cluster);
 } /* command */
 
 typedef struct config {

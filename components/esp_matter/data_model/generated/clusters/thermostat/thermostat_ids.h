@@ -45,6 +45,9 @@ inline constexpr uint32_t Id = 0x80;
 namespace Presets {
 inline constexpr uint32_t Id = 0x100;
 } /* Presets */
+namespace ThermostatSuggestions {
+inline constexpr uint32_t Id = 0x400;
+} /* ThermostatSuggestions */
 } /* feature */
 
 namespace attribute {
@@ -186,18 +189,39 @@ inline constexpr uint32_t Id = 0x0051;
 namespace SetpointHoldExpiryTimestamp {
 inline constexpr uint32_t Id = 0x0052;
 } /* SetpointHoldExpiryTimestamp */
+namespace MaxThermostatSuggestions {
+inline constexpr uint32_t Id = 0x0053;
+} /* MaxThermostatSuggestions */
+namespace ThermostatSuggestions {
+inline constexpr uint32_t Id = 0x0054;
+} /* ThermostatSuggestions */
+namespace CurrentThermostatSuggestion {
+inline constexpr uint32_t Id = 0x0055;
+} /* CurrentThermostatSuggestion */
+namespace ThermostatSuggestionNotFollowingReason {
+inline constexpr uint32_t Id = 0x0056;
+} /* ThermostatSuggestionNotFollowingReason */
 } /* attribute */
 
 namespace command {
 namespace SetpointRaiseLower {
 inline constexpr uint32_t Id = 0x00;
 } /* SetpointRaiseLower */
+namespace AddThermostatSuggestionResponse {
+inline constexpr uint32_t Id = 0x02;
+} /* AddThermostatSuggestionResponse */
 namespace SetActiveScheduleRequest {
 inline constexpr uint32_t Id = 0x05;
 } /* SetActiveScheduleRequest */
 namespace SetActivePresetRequest {
 inline constexpr uint32_t Id = 0x06;
 } /* SetActivePresetRequest */
+namespace AddThermostatSuggestion {
+inline constexpr uint32_t Id = 0x07;
+} /* AddThermostatSuggestion */
+namespace RemoveThermostatSuggestion {
+inline constexpr uint32_t Id = 0x08;
+} /* RemoveThermostatSuggestion */
 } /* command */
 
 } /* thermostat */

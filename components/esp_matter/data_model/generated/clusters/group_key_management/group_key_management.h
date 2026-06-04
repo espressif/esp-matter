@@ -21,20 +21,11 @@ namespace esp_matter {
 namespace cluster {
 namespace group_key_management {
 
-namespace feature {
-namespace groupcast {
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-} /* groupcast */
-
-} /* feature */
-
 namespace attribute {
 attribute_t *create_group_key_map(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 attribute_t *create_group_table(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 attribute_t *create_max_groups_per_fabric(cluster_t *cluster, uint16_t value);
 attribute_t *create_max_group_keys_per_fabric(cluster_t *cluster, uint16_t value);
-attribute_t *create_groupcast_adoption(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 } /* attribute */
 
 namespace command {

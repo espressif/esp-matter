@@ -48,6 +48,9 @@ inline constexpr uint32_t Id = 0x40;
 namespace Vision {
 inline constexpr uint32_t Id = 0x80;
 } /* Vision */
+namespace OccupancyEvent {
+inline constexpr uint32_t Id = 0x200;
+} /* OccupancyEvent */
 } /* feature */
 
 namespace attribute {
@@ -94,6 +97,12 @@ namespace PhysicalContactUnoccupiedToOccupiedThreshold {
 inline constexpr uint32_t Id = 0x0032;
 } /* PhysicalContactUnoccupiedToOccupiedThreshold */
 } /* attribute */
+
+namespace event {
+namespace OccupancyChanged {
+inline constexpr uint32_t Id = 0x00;
+} /* OccupancyChanged */
+} /* event */
 
 } /* occupancy_sensing */
 } /* cluster */

@@ -21,6 +21,46 @@ namespace esp_matter {
 namespace cluster {
 namespace joint_fabric_datastore {
 
+namespace attribute {
+attribute_t *create_anchor_root_ca(cluster_t *cluster, uint8_t * value, uint16_t length);
+attribute_t *create_anchor_node_id(cluster_t *cluster, uint64_t value);
+attribute_t *create_anchor_vendor_id(cluster_t *cluster, uint16_t value);
+attribute_t *create_friendly_name(cluster_t *cluster, char * value, uint16_t length);
+attribute_t *create_group_key_set_list(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_group_list(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_node_list(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_admin_list(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_status(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_endpoint_group_id_list(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_endpoint_binding_list(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_node_key_set_list(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_node_acl_list(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_node_endpoint_list(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+} /* attribute */
+
+namespace command {
+command_t *create_add_key_set(cluster_t *cluster);
+command_t *create_update_key_set(cluster_t *cluster);
+command_t *create_remove_key_set(cluster_t *cluster);
+command_t *create_add_group(cluster_t *cluster);
+command_t *create_update_group(cluster_t *cluster);
+command_t *create_remove_group(cluster_t *cluster);
+command_t *create_add_admin(cluster_t *cluster);
+command_t *create_update_admin(cluster_t *cluster);
+command_t *create_remove_admin(cluster_t *cluster);
+command_t *create_add_pending_node(cluster_t *cluster);
+command_t *create_refresh_node(cluster_t *cluster);
+command_t *create_update_node(cluster_t *cluster);
+command_t *create_remove_node(cluster_t *cluster);
+command_t *create_update_endpoint_for_node(cluster_t *cluster);
+command_t *create_add_group_id_to_endpoint_for_node(cluster_t *cluster);
+command_t *create_remove_group_id_from_endpoint_for_node(cluster_t *cluster);
+command_t *create_add_binding_to_endpoint_for_node(cluster_t *cluster);
+command_t *create_remove_binding_from_endpoint_for_node(cluster_t *cluster);
+command_t *create_add_acl_to_node(cluster_t *cluster);
+command_t *create_remove_acl_from_node(cluster_t *cluster);
+} /* command */
+
 typedef struct config {
     config() {}
 } config_t;
