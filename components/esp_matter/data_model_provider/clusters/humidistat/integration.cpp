@@ -12,19 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
-
-#include <app/clusters/closure-control-server/ClosureControlClusterDelegate.h>
+#include <app/ClusterCallbacks.h>
 #include <lib/core/DataModelTypes.h>
 
-namespace chip {
-namespace app {
-namespace Clusters {
-namespace ClosureControl {
+// Humidistat is a new cluster — stub init/shutdown until device type support is added.
+void ESPMatterHumidistatClusterServerInitCallback(chip::EndpointId) {}
+void ESPMatterHumidistatClusterServerShutdownCallback(chip::EndpointId, ClusterShutdownType) {}
 
-void MatterClosureControlSetDelegate(EndpointId endpointId, ClosureControlClusterDelegate &delegate);
-
-} // namespace ClosureControl
-} // namespace Clusters
-} // namespace app
-} // namespace chip
+void MatterHumidistatPluginServerInitCallback() {}

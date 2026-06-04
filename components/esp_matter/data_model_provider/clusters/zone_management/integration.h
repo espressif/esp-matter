@@ -14,17 +14,24 @@
 
 #pragma once
 
-#include <app/clusters/closure-control-server/ClosureControlClusterDelegate.h>
+#include <app/clusters/zone-management-server/CodegenIntegration.h>
+#include <app/clusters/zone-management-server/Delegate.h>
+#include <app/clusters/zone-management-server/ZoneManagementCluster.h>
 #include <lib/core/DataModelTypes.h>
 
 namespace chip {
 namespace app {
 namespace Clusters {
-namespace ClosureControl {
+namespace ZoneManagement {
 
-void MatterClosureControlSetDelegate(EndpointId endpointId, ClosureControlClusterDelegate &delegate);
+void MatterZoneManagementSetDelegate(EndpointId endpointId, Delegate *delegate);
 
-} // namespace ClosureControl
+void MatterZoneManagementSetConfig(EndpointId endpointId, uint8_t maxUserDefinedZones, uint8_t maxZones,
+                                   uint8_t sensitivityMax, const TwoDCartesianVertexStruct &twoDCartesianMax);
+
+void MatterZoneManagementSetFeatures(EndpointId endpointId, BitFlags<Feature> features);
+
+} // namespace ZoneManagement
 } // namespace Clusters
 } // namespace app
 } // namespace chip

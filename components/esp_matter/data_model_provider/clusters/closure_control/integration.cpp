@@ -18,6 +18,7 @@
 
 #include <app/ClusterCallbacks.h>
 #include <app/clusters/closure-control-server/ClosureControlCluster.h>
+#include <clusters/ClosureControl/Attributes.h>
 #include <clusters/ClosureControl/ClusterId.h>
 #include <data_model/esp_matter_data_model.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
@@ -39,8 +40,6 @@ DefaultTimerDelegate gTimerDelegate;
 
 std::unordered_map<EndpointId, LazyRegisteredServerCluster<ClosureControlCluster>> gServers;
 std::unordered_map<EndpointId, ClosureControlClusterDelegate *> gDelegates;
-std::unordered_map<EndpointId, ClusterConformance> gConformanceOverride;
-std::unordered_map<EndpointId, ClusterInitParameters> gInitParamsOverride;
 
 } // namespace
 
@@ -49,28 +48,12 @@ namespace app {
 namespace Clusters {
 namespace ClosureControl {
 
-void MatterClosureControlSetDelegate(EndpointId endpointId, ClosureControlClusterDelegate  &delegate)
+void MatterClosureControlSetDelegate(EndpointId endpointId, ClosureControlClusterDelegate &delegate)
 {
     auto it = gServers.find(endpointId);
     VerifyOrReturn(it == gServers.end() || !it->second.IsConstructed(),
                    ChipLogError(AppServer, "ClosureControl: cluster already initialized; cannot set delegate"));
     gDelegates[endpointId] = &delegate;
-}
-
-void MatterClosureControlSetConformance(EndpointId endpointId, const ClusterConformance  &conformance)
-{
-    auto it = gServers.find(endpointId);
-    VerifyOrReturn(it == gServers.end() || !it->second.IsConstructed(),
-                   ChipLogError(AppServer, "ClosureControl: cluster already initialized; cannot set conformance"));
-    gConformanceOverride[endpointId] = conformance;
-}
-
-void MatterClosureControlSetInitParams(EndpointId endpointId, const ClusterInitParameters  &initParams)
-{
-    auto it = gServers.find(endpointId);
-    VerifyOrReturn(it == gServers.end() || !it->second.IsConstructed(),
-                   ChipLogError(AppServer, "ClosureControl: cluster already initialized; cannot set init params"));
-    gInitParamsOverride[endpointId] = initParams;
 }
 
 } // namespace ClosureControl
@@ -83,7 +66,7 @@ void ESPMatterClosureControlClusterServerInitCallback(EndpointId endpointId)
     VerifyOrReturn(cluster::get(endpointId, ClosureControl::Id) != nullptr,
                    ChipLogError(AppServer, "ClosureControl: cluster missing in esp-matter data model for endpoint %u", endpointId));
     if (!gServers[endpointId].IsConstructed()) {
-        ClosureControlClusterDelegate * delegate = nullptr;
+        ClosureControlClusterDelegate *delegate = nullptr;
         {
             auto it = gDelegates.find(endpointId);
             VerifyOrReturn(it != gDelegates.end() && it->second != nullptr,
@@ -93,23 +76,48 @@ void ESPMatterClosureControlClusterServerInitCallback(EndpointId endpointId)
             delegate = it->second;
         }
 
-        ClusterConformance conformance;
-        auto confIt = gConformanceOverride.find(endpointId);
-        if (confIt != gConformanceOverride.end()) {
-            conformance = confIt->second;
-        } else {
-            conformance.FeatureMap() = BitFlags<ClosureControl::Feature>(read_feature_map_u32(endpointId, ClosureControl::Id));
-        }
-        VerifyOrReturn(conformance.IsValid(),
-                       ChipLogError(AppServer, "ClosureControl: invalid conformance or feature map on ep %u", endpointId));
+        // Read feature map from esp-matter data model
+        BitFlags<ClosureControl::Feature> features(read_feature_map_u32(endpointId, ClosureControl::Id));
 
-        ClusterInitParameters initParams;
-        auto initIt = gInitParamsOverride.find(endpointId);
-        if (initIt != gInitParamsOverride.end()) {
-            initParams = initIt->second;
+        // Build Config from esp-matter data model
+        ClosureControlCluster::Config config(endpointId, *delegate, gTimerDelegate);
+
+        if (features.Has(Feature::kPositioning)) {
+            config.WithPositioning();
         }
-        ClosureControlCluster::Context context{ *delegate, gTimerDelegate, conformance, initParams };
-        gServers[endpointId].Create(endpointId, context);
+        if (features.Has(Feature::kMotionLatching)) {
+            config.WithMotionLatching({});
+        }
+        if (features.Has(Feature::kInstantaneous)) {
+            config.WithInstantaneous();
+        }
+        if (features.Has(Feature::kSpeed)) {
+            config.WithSpeed();
+        }
+        if (features.Has(Feature::kVentilation)) {
+            config.WithVentilation();
+        }
+        if (features.Has(Feature::kPedestrian)) {
+            config.WithPedestrian();
+        }
+        if (features.Has(Feature::kCalibration)) {
+            config.WithCalibration();
+        }
+        if (features.Has(Feature::kProtection)) {
+            config.WithProtection();
+        }
+        if (features.Has(Feature::kManuallyOperable)) {
+            config.WithManuallyOperable();
+        }
+        if (endpoint::is_attribute_enabled(endpointId, ClosureControl::Id, Attributes::CountdownTime::Id)) {
+            config.WithCountdownTime();
+        }
+
+        // MainState, OverallCurrentState, LatchControlModes are MANAGED_INTERNALLY —
+        // no reliable values in esp-matter store. Use Config defaults; the code-driven
+        // cluster initializes them properly via Startup().
+
+        gServers[endpointId].Create(config);
     }
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(
                          gServers[endpointId].Registration());

@@ -14,17 +14,14 @@
 
 #pragma once
 
-#include <app/clusters/closure-control-server/ClosureControlClusterDelegate.h>
-#include <lib/core/DataModelTypes.h>
+#include <app/clusters/flow-measurement-server/FlowMeasurementCluster.h>
 
-namespace chip {
-namespace app {
-namespace Clusters {
-namespace ClosureControl {
+namespace chip::app::Clusters::FlowMeasurement {
 
-void MatterClosureControlSetDelegate(EndpointId endpointId, ClosureControlClusterDelegate &delegate);
+/// Returns the cluster instance registered on the given endpoint, nullptr otherwise
+FlowMeasurementCluster * FindClusterOnEndpoint(EndpointId endpointId);
 
-} // namespace ClosureControl
-} // namespace Clusters
-} // namespace app
-} // namespace chip
+/// Convenience helper to set new measured value
+CHIP_ERROR SetMeasuredValue(EndpointId endpointId, DataModel::Nullable<uint16_t> measuredValue);
+
+} // namespace chip::app::Clusters::FlowMeasurement

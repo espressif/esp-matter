@@ -15,20 +15,22 @@
 #pragma once
 
 #include <app/clusters/electrical-energy-measurement-server/ElectricalEnergyMeasurementCluster.h>
+#include <app/data-model/Nullable.h>
 
 namespace chip::app::Clusters::ElectricalEnergyMeasurement {
 
-bool NotifyCumulativeEnergyMeasured(EndpointId endpointId, const Optional<Structs::EnergyMeasurementStruct::Type>  &energyImported,
-                                    const Optional<Structs::EnergyMeasurementStruct::Type>  &energyExported);
+bool NotifyCumulativeEnergyMeasured(EndpointId endpointId,
+                                    const DataModel::Nullable<Structs::EnergyMeasurementStruct::Type> &energyImported,
+                                    const DataModel::Nullable<Structs::EnergyMeasurementStruct::Type> &energyExported);
 
-bool NotifyPeriodicEnergyMeasured(EndpointId endpointId, const Optional<Structs::EnergyMeasurementStruct::Type>  &energyImported,
-                                  const Optional<Structs::EnergyMeasurementStruct::Type>  &energyExported);
+bool NotifyPeriodicEnergyMeasured(EndpointId endpointId,
+                                  const DataModel::Nullable<Structs::EnergyMeasurementStruct::Type> &energyImported,
+                                  const DataModel::Nullable<Structs::EnergyMeasurementStruct::Type> &energyExported);
 
-CHIP_ERROR SetMeasurementAccuracy(EndpointId endpointId, const Structs::MeasurementAccuracyStruct::Type  &accuracy);
+CHIP_ERROR SetMeasurementAccuracy(EndpointId endpointId, const Structs::MeasurementAccuracyStruct::Type &accuracy);
 
-CHIP_ERROR SetCumulativeReset(EndpointId endpointId, const Optional<Structs::CumulativeEnergyResetStruct::Type>  &cumulativeReset);
-
-const ElectricalEnergyMeasurement::MeasurementData * MeasurementDataForEndpoint(EndpointId endpointId);
+CHIP_ERROR SetCumulativeReset(EndpointId endpointId,
+                              const DataModel::Nullable<Structs::CumulativeEnergyResetStruct::Type> &cumulativeReset);
 
 ElectricalEnergyMeasurementCluster *GetClusterInstance(EndpointId endpointId);
 }

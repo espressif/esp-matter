@@ -14,17 +14,17 @@
 
 #pragma once
 
-#include <app/clusters/closure-control-server/ClosureControlClusterDelegate.h>
+#include <app/clusters/closure-dimension-server/ClosureDimensionClusterDelegate.h>
 #include <lib/core/DataModelTypes.h>
 
 namespace chip {
 namespace app {
 namespace Clusters {
-namespace ClosureControl {
+namespace ClosureDimension {
 
-void MatterClosureControlSetDelegate(EndpointId endpointId, ClosureControlClusterDelegate &delegate);
+void MatterClosureDimensionSetDelegate(EndpointId endpointId, ClosureDimensionClusterDelegate &delegate);
 
-} // namespace ClosureControl
+} // namespace ClosureDimension
 } // namespace Clusters
 } // namespace app
 } // namespace chip

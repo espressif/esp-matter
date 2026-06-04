@@ -14,17 +14,17 @@
 
 #pragma once
 
-#include <app/clusters/closure-control-server/ClosureControlClusterDelegate.h>
+#include <app/clusters/commissioner-control-server/Delegate.h>
 #include <lib/core/DataModelTypes.h>
 
 namespace chip {
 namespace app {
 namespace Clusters {
-namespace ClosureControl {
+namespace CommissionerControl {
 
-void MatterClosureControlSetDelegate(EndpointId endpointId, ClosureControlClusterDelegate &delegate);
+void MatterCommissionerControlSetDelegate(EndpointId endpointId, Delegate *delegate);
 
-} // namespace ClosureControl
+} // namespace CommissionerControl
 } // namespace Clusters
 } // namespace app
 } // namespace chip

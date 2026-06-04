@@ -15,8 +15,10 @@
 #include <app-common/zap-generated/attributes/Accessors.h>
 #include <app/clusters/groupcast/GroupcastCluster.h>
 #include <app/clusters/groupcast/GroupcastContext.h>
+#include <access/AccessControl.h>
 #include <app/server/Server.h>
 #include <clusters/Groupcast/Enums.h>
+#include <transport/raw/GroupcastTesting.h>
 #include <credentials/GroupDataProvider.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
 #include <lib/support/CodeUtils.h>
@@ -43,14 +45,16 @@ void ESPMatterGroupcastClusterServerInitCallback(chip::EndpointId endpointId)
         Credentials::GroupDataProvider * groupDataProvider = Credentials::GetGroupDataProvider();
         VerifyOrDie(groupDataProvider != nullptr);
 
-        BitFlags<Groupcast::Feature> features;
-        features.Set(Groupcast::Feature::kListener);
+        BitFlags<chip::app::Clusters::Groupcast::Feature> features;
+        features.Set(chip::app::Clusters::Groupcast::Feature::kListener);
 
         gServer.Create(
         GroupcastContext{
             .fabricTable       = Server::GetInstance().GetFabricTable(),
             .groupDataProvider = *groupDataProvider,
             .timerDelegate     = sTimerDelegate,
+            .accessControl     = Access::GetAccessControl(),
+            .testing           = chip::Groupcast::GetTesting(),
         },
         features);
     }

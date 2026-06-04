@@ -18,10 +18,12 @@
 #include "esp_matter_data_model_provider.h"
 #include <unordered_map>
 #include "app/clusters/electrical-energy-measurement-server/ElectricalEnergyMeasurementCluster.h"
+#include "app/clusters/electrical-energy-measurement-server/ElectricalEnergyMeasurementDelegate.h"
 #include "app/server-cluster/ServerClusterInterfaceRegistry.h"
 #include "clusters/ElectricalEnergyMeasurement/Enums.h"
 #include <lib/support/CodeUtils.h>
 #include <lib/support/logging/CHIPLogging.h>
+#include <platform/DefaultTimerDelegate.h>
 
 using namespace chip;
 using namespace chip::app;
@@ -31,6 +33,33 @@ using namespace chip::app::Clusters::ElectricalEnergyMeasurement::Structs;
 
 namespace {
 std::unordered_map<EndpointId, LazyRegisteredServerCluster<ElectricalEnergyMeasurementCluster>> gServers;
+
+// Fallback delegate when the app does not provide one via config_t.delegate.
+// The upstream Config requires a Delegate& (reference, cannot be null).
+// This no-op is safe because energy readings are pushed via CumulativeEnergySnapshot /
+// PeriodicEnergySnapshot rather than polled through the delegate.
+class NoOpEEMDelegate : public ElectricalEnergyMeasurement::Delegate {
+public:
+    DataModel::Nullable<int64_t> GetCumulativeEnergyImported() override
+    {
+        return DataModel::NullNullable;
+    }
+    DataModel::Nullable<int64_t> GetCumulativeEnergyExported() override
+    {
+        return DataModel::NullNullable;
+    }
+    DataModel::Nullable<int64_t> GetPeriodicEnergyImported() override
+    {
+        return DataModel::NullNullable;
+    }
+    DataModel::Nullable<int64_t> GetPeriodicEnergyExported() override
+    {
+        return DataModel::NullNullable;
+    }
+};
+
+NoOpEEMDelegate gNoOpDelegate;
+DefaultTimerDelegate gDefaultTimerDelegate;
 
 uint32_t get_feature_map(esp_matter::cluster_t *cluster)
 {
@@ -57,14 +86,6 @@ ElectricalEnergyMeasurementCluster *GetClusterInstance(EndpointId endpointId)
     return &it->second.Cluster();
 }
 
-const ElectricalEnergyMeasurement::MeasurementData *MeasurementDataForEndpoint(EndpointId endpointId)
-{
-    ElectricalEnergyMeasurementCluster *cluster = GetClusterInstance(endpointId);
-    VerifyOrReturnValue(cluster != nullptr, nullptr);
-
-    return cluster->GetMeasurementData();
-}
-
 CHIP_ERROR SetMeasurementAccuracy(EndpointId endpointId, const Structs::MeasurementAccuracyStruct::Type &accuracy)
 {
     ElectricalEnergyMeasurementCluster *cluster = GetClusterInstance(endpointId);
@@ -73,7 +94,7 @@ CHIP_ERROR SetMeasurementAccuracy(EndpointId endpointId, const Structs::Measurem
 }
 
 CHIP_ERROR SetCumulativeReset(EndpointId endpointId,
-                              const Optional<Structs::CumulativeEnergyResetStruct::Type> &cumulativeReset)
+                              const DataModel::Nullable<Structs::CumulativeEnergyResetStruct::Type> &cumulativeReset)
 {
     ElectricalEnergyMeasurementCluster *cluster = GetClusterInstance(endpointId);
     VerifyOrReturnError(cluster != nullptr, CHIP_ERROR_NOT_FOUND);
@@ -81,8 +102,8 @@ CHIP_ERROR SetCumulativeReset(EndpointId endpointId,
 }
 
 bool NotifyCumulativeEnergyMeasured(EndpointId endpointId,
-                                    const Optional<Structs::EnergyMeasurementStruct::Type> &energyImported,
-                                    const Optional<Structs::EnergyMeasurementStruct::Type> &energyExported)
+                                    const DataModel::Nullable<Structs::EnergyMeasurementStruct::Type> &energyImported,
+                                    const DataModel::Nullable<Structs::EnergyMeasurementStruct::Type> &energyExported)
 {
     ElectricalEnergyMeasurementCluster *cluster = GetClusterInstance(endpointId);
 
@@ -94,8 +115,8 @@ bool NotifyCumulativeEnergyMeasured(EndpointId endpointId,
 }
 
 bool NotifyPeriodicEnergyMeasured(EndpointId endpointId,
-                                  const Optional<Structs::EnergyMeasurementStruct::Type> &energyImported,
-                                  const Optional<Structs::EnergyMeasurementStruct::Type> &energyExported)
+                                  const DataModel::Nullable<Structs::EnergyMeasurementStruct::Type> &energyImported,
+                                  const DataModel::Nullable<Structs::EnergyMeasurementStruct::Type> &energyExported)
 {
     ElectricalEnergyMeasurementCluster *cluster = GetClusterInstance(endpointId);
 
@@ -110,8 +131,8 @@ bool NotifyPeriodicEnergyMeasured(EndpointId endpointId,
 
 void ESPMatterElectricalEnergyMeasurementClusterServerInitCallback(EndpointId endpoint)
 {
+    static const MeasurementAccuracyStruct::Type kDefaultAccuracy = {};
     if (!gServers[endpoint].IsConstructed()) {
-        const MeasurementAccuracyStruct::Type kDefaultAccuracy = {};
 
         esp_matter::cluster_t *cluster = esp_matter::cluster::get(endpoint, ElectricalEnergyMeasurement::Id);
         VerifyOrReturn(cluster != nullptr,
@@ -119,19 +140,24 @@ void ESPMatterElectricalEnergyMeasurementClusterServerInitCallback(EndpointId en
                                     "ElectricalEnergyMeasurement: cluster missing in esp-matter data model for endpoint %u",
                                     endpoint));
 
-        BitMask<ElectricalEnergyMeasurement::OptionalAttributes> optionalAttrs;
-        if (esp_matter::attribute::get(cluster, Attributes::CumulativeEnergyReset::Id)) {
-            optionalAttrs.SetField(OptionalAttributes::kOptionalAttributeCumulativeEnergyReset, 1);
-        } else {
-            optionalAttrs.Clear(OptionalAttributes::kOptionalAttributeCumulativeEnergyReset);
-        }
+        auto optionalAttrs = ElectricalEnergyMeasurementCluster::OptionalAttributesSet()
+                             .Set<Attributes::CumulativeEnergyReset::Id>(
+                                 esp_matter::attribute::get(cluster, Attributes::CumulativeEnergyReset::Id) != nullptr);
 
-        gServers[endpoint].Create(ElectricalEnergyMeasurementCluster::Config{
+        // Use app-provided delegate (set via config_t.delegate), fall back to no-op
+        void *delegate_ptr = esp_matter::cluster::get_delegate_impl(cluster);
+        ElectricalEnergyMeasurement::Delegate *delegate_p =
+            delegate_ptr ? static_cast<ElectricalEnergyMeasurement::Delegate *>(delegate_ptr) : &gNoOpDelegate;
+
+        const ElectricalEnergyMeasurementCluster::Config config{
             .endpointId         = endpoint,
             .featureFlags       = BitMask<ElectricalEnergyMeasurement::Feature>(get_feature_map(cluster)),
             .optionalAttributes = optionalAttrs,
             .accuracyStruct     = kDefaultAccuracy,
-        });
+            .delegate           = *delegate_p,
+            .timerDelegate      = gDefaultTimerDelegate,
+        };
+        gServers[endpoint].Create(config);
     }
     CHIP_ERROR err =
         esp_matter::data_model::provider::get_instance().registry().Register(gServers[endpoint].Registration());

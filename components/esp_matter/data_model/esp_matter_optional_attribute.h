@@ -66,6 +66,22 @@ namespace wifi_network_diagnostics {
 esp_err_t create_optional_attributes(cluster_t *cluster);
 } /* wifi_network_diagnostics */
 
+namespace temperature_measurement {
+esp_err_t create_optional_attributes(cluster_t *cluster);
+} /* temperature_measurement */
+
+namespace flow_measurement {
+esp_err_t create_optional_attributes(cluster_t *cluster);
+} /* flow_measurement */
+
+namespace pressure_measurement {
+esp_err_t create_optional_attributes(cluster_t *cluster);
+} /* pressure_measurement */
+
+namespace relative_humidity_measurement {
+esp_err_t create_optional_attributes(cluster_t *cluster);
+} /* relative_humidity_measurement */
+
 } /* cluster */
 } /* esp_matter */
 

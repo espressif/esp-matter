@@ -13,14 +13,21 @@
 // limitations under the License.
 
 #include <inttypes.h>
+#include <algorithm>
+#include <unordered_map>
 #include <esp_matter_delegate_callbacks.h>
 #include <esp_matter_core.h>
 #include <esp_matter_feature.h>
 #include <esp_matter_data_model_priv.h>
+#include <data_model_provider/esp_matter_data_model_provider.h>
 #include <app/clusters/mode-base-server/mode-base-server.h>
 #include <clusters/EnergyEvse/ClusterId.h>
 #include <clusters/energy_evse/integration.h>
 #include <app/clusters/microwave-oven-control-server/microwave-oven-control-server.h>
+#include <app/clusters/microwave-oven-control-server/MicrowaveOvenControlCluster.h>
+#include <app/clusters/microwave-oven-control-server/IntegrationDelegate.h>
+#include <app/data-model-provider/MetadataTypes.h>
+#include <lib/support/ReadOnlyBuffer.h>
 #include <app/clusters/operational-state-server/operational-state-server.h>
 #include <app/clusters/resource-monitoring-server/resource-monitoring-server.h>
 #include <app/clusters/fan-control-server/fan-control-server.h>
@@ -34,14 +41,19 @@
 #include <app/clusters/dishwasher-alarm-server/dishwasher-alarm-server.h>
 #include <app/clusters/keypad-input-server/keypad-input-server.h>
 #include <app/clusters/mode-select-server/supported-modes-manager.h>
-#include <app/clusters/thread-border-router-management-server/thread-border-router-management-server.h>
+#include <app/clusters/thread-border-router-management-server/ThreadBorderRouterManagementCluster.h>
+#include <app/clusters/thread-border-router-management-server/ThreadBorderRouterManagementDelegate.h>
+#include <app/clusters/general-commissioning-server/BreadCrumbTracker.h>
+#include <app/server-cluster/ServerClusterInterfaceRegistry.h>
+#include <data_model_provider/esp_matter_data_model_provider.h>
 #include <app/clusters/water-heater-management-server/water-heater-management-server.h>
 #include <app/clusters/energy-preference-server/energy-preference-server.h>
-#include <app/clusters/commissioner-control-server/commissioner-control-server.h>
+#include <clusters/commissioner_control/integration.h>
 #include <app/clusters/actions-server/actions-server.h>
-#include <app/clusters/thermostat-server/thermostat-server.h>
+#include <app/clusters/thermostat-server/ThermostatCluster.h>
 #include <app/clusters/diagnostic-logs-server/diagnostic-logs-server.h>
 #include <app/clusters/closure-dimension-server/closure-dimension-server.h>
+#include <clusters/closure_dimension/integration.h>
 #include <app/clusters/application-launcher-server/application-launcher-server.h>
 #include <app/clusters/account-login-server/account-login-server.h>
 #include <app/clusters/audio-output-server/audio-output-server.h>
@@ -73,6 +85,7 @@
 #include <clusters/camera_av_stream_management/integration.h>
 #include <clusters/webrtc_transport_provider/integration.h>
 #include <clusters/chime/integration.h>
+#include <clusters/microwave_oven_control/integration.h>
 #include <clusters/tls_client_management/integration.h>
 #include <clusters/tls_certificate_management/integration.h>
 
@@ -273,14 +286,34 @@ void EnergyEvseDelegateInitCB(void *delegate, uint16_t endpoint_id)
     (void)energyEvseInstance->Init();
 }
 
-static void MicrowaveOvenControlShutdownCB(void *managed_instance, uint16_t /*endpoint_id*/)
+void ElectricalEnergyMeasurementDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    delete static_cast<MicrowaveOvenControl::Instance*>(managed_instance);
+    // Delegate is stored on the cluster by set_delegate_and_init_callback().
+    // The integration's ESPMatterElectricalEnergyMeasurementClusterServerInitCallback
+    // reads it via get_delegate_impl() and passes it to the code-driven cluster's Config.
 }
 
 static void OperationalStateShutdownCB(void *managed_instance, uint16_t /*endpoint_id*/)
 {
     delete static_cast<OperationalState::Instance*>(managed_instance);
+}
+
+struct MicrowaveOvenControlBundle {
+    EspMatterMicrowaveOvenIntegrationDelegate integrationDelegate;
+    chip::app::LazyRegisteredServerCluster<chip::app::Clusters::MicrowaveOvenControlCluster> cluster;
+};
+
+static std::unordered_map<chip::EndpointId, MicrowaveOvenControlBundle *> gMicrowaveOvenControlBundles;
+
+static void MicrowaveOvenControlShutdownCB(void *managed_instance, uint16_t endpoint_id)
+{
+    auto *bundle = static_cast<MicrowaveOvenControlBundle*>(managed_instance);
+    if (bundle && bundle->cluster.IsConstructed()) {
+        LogErrorOnFailure(esp_matter::data_model::provider::get_instance().registry().Unregister(&bundle->cluster.Cluster()));
+        bundle->cluster.Destroy();
+    }
+    gMicrowaveOvenControlBundles.erase(endpoint_id);
+    delete bundle;
 }
 
 void MicrowaveOvenControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -310,16 +343,33 @@ void MicrowaveOvenControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
         set_delegate_shutdown_callback_and_managed_instance(os_cl, OperationalStateShutdownCB, operationalStateInstance);
     }
 
-    // MicrowaveOvenControl instance.
-    MicrowaveOvenControl::Instance *microwaveOvenControlInstance = static_cast<MicrowaveOvenControl::Instance*>(get_delegate_managed_instance(moc_cl));
-    if (!microwaveOvenControlInstance) {
-        MicrowaveOvenControl::Delegate *microwave_oven_control_delegate = static_cast<MicrowaveOvenControl::Delegate*>(delegate);
+    // Create MicrowaveOvenControl code-driven cluster.
+    auto *bundle = static_cast<MicrowaveOvenControlBundle*>(get_delegate_managed_instance(moc_cl));
+    if (!bundle) {
+        auto *appDelegate = static_cast<MicrowaveOvenControl::AppDelegate*>(delegate);
+        bundle = new MicrowaveOvenControlBundle();
+        bundle->integrationDelegate.SetDependencies(operationalStateInstance, microwaveOvenModeInstance);
+
         uint32_t feature_map = get_feature_map_value(endpoint_id, MicrowaveOvenControl::Id);
-        microwaveOvenControlInstance = new MicrowaveOvenControl::Instance(microwave_oven_control_delegate, endpoint_id, MicrowaveOvenControl::Id, feature_map,
-                                                                          *operationalStateInstance, *microwaveOvenModeInstance);
-        set_delegate_shutdown_callback_and_managed_instance(moc_cl, MicrowaveOvenControlShutdownCB, microwaveOvenControlInstance);
+        chip::app::Clusters::MicrowaveOvenControlCluster::Config config{
+            .feature = chip::BitMask<MicrowaveOvenControl::Feature>(feature_map),
+            .optionalAttributeSet = {},
+            .supportsAddMoreTime = true,
+            .integrationDelegate = bundle->integrationDelegate,
+            .appDelegate = *appDelegate,
+        };
+        bundle->cluster.Create(endpoint_id, config);
+
+        CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(bundle->cluster.Registration());
+        if (err != CHIP_NO_ERROR) {
+            ChipLogError(AppServer, "MicrowaveOvenControl register failed ep %u: %" CHIP_ERROR_FORMAT, endpoint_id, err.Format());
+            bundle->cluster.Destroy();
+            delete bundle;
+            return;
+        }
+        gMicrowaveOvenControlBundles[endpoint_id] = bundle;
+        set_delegate_shutdown_callback_and_managed_instance(moc_cl, MicrowaveOvenControlShutdownCB, bundle);
     }
-    (void)microwaveOvenControlInstance->Init();
 }
 
 void OperationalStateDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -498,9 +548,39 @@ void ModeSelectDelegateInitCB(void *delegate, uint16_t endpoint_id)
     ModeSelect::setSupportedModesManager(supported_modes_manager);
 }
 
+namespace {
+
+// BreadCrumbTracker for TBR management.
+// TODO: Forward to GeneralCommissioning cluster once cross-cluster include paths are resolved.
+class EspMatterBreadcrumbTracker : public BreadCrumbTracker {
+public:
+    void SetBreadCrumb(uint64_t v) override
+    {
+        // Breadcrumb is a commissioning debug aid — TBR cluster functions correctly without it.
+    }
+};
+
+static EspMatterBreadcrumbTracker sBreadcrumbTracker;
+
+struct TbrManagedInstance {
+    chip::app::RegisteredServerCluster<ThreadBorderRouterManagementCluster> cluster;
+
+    TbrManagedInstance(chip::EndpointId endpointId, const ThreadBorderRouterManagementCluster::Config &config)
+        : cluster(endpointId, config)
+    {}
+};
+
+} // namespace
+
 static void ThreadBorderRouterManagementShutdownCB(void *managed_instance, uint16_t /*endpoint_id*/)
 {
-    chip::Platform::Delete(static_cast<ThreadBorderRouterManagement::ServerInstance*>(managed_instance));
+    auto *inst = static_cast<TbrManagedInstance *>(managed_instance);
+    inst->cluster.Cluster().Shutdown(chip::app::ClusterShutdownType::kClusterShutdown);
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&inst->cluster.Cluster());
+    if (err != CHIP_NO_ERROR) {
+        ChipLogError(AppServer, "Failed to unregister TBR cluster: %" CHIP_ERROR_FORMAT, err.Format());
+    }
+    chip::Platform::Delete(inst);
 }
 
 void ThreadBorderRouterManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -508,22 +588,19 @@ void ThreadBorderRouterManagementDelegateInitCB(void *delegate, uint16_t endpoin
     assert(delegate != nullptr);
     cluster_t *cl = cluster::get(endpoint_id, ThreadBorderRouterManagement::Id);
     VerifyOrReturn(cl != nullptr);
-    ThreadBorderRouterManagement::ServerInstance *server_instance =
-        static_cast<ThreadBorderRouterManagement::ServerInstance*>(get_delegate_managed_instance(cl));
-    if (!server_instance) {
-        /* Get the attribute */
-        attribute_t *attribute = attribute::get(endpoint_id, ThreadBorderRouterManagement::Id, Globals::Attributes::FeatureMap::Id);
-        assert(attribute != nullptr);
-        /* Update the value if the attribute already exists */
-        esp_matter_attr_val_t val;
-        attribute::get_val(attribute, &val);
-        bool pan_change_supported = (val.val.u32 & thread_border_router_management::feature::pan_change::get_id()) ? true : false;
-        ThreadBorderRouterManagement::Delegate *thread_br_delegate = static_cast<ThreadBorderRouterManagement::Delegate *>(delegate);
-        assert(thread_br_delegate->GetPanChangeSupported() == pan_change_supported);
-        server_instance = chip::Platform::New<ThreadBorderRouterManagement::ServerInstance>(endpoint_id, thread_br_delegate, chip::Server::GetInstance().GetFailSafeContext());
-        set_delegate_shutdown_callback_and_managed_instance(cl, ThreadBorderRouterManagementShutdownCB, server_instance);
+    TbrManagedInstance *inst = static_cast<TbrManagedInstance *>(get_delegate_managed_instance(cl));
+    if (!inst) {
+        auto *tbr_delegate = static_cast<ThreadBorderRouterManagementDelegate *>(delegate);
+        ThreadBorderRouterManagementCluster::Config config(
+            *tbr_delegate, chip::Server::GetInstance().GetFailSafeContext(),
+            sBreadcrumbTracker, chip::DeviceLayer::PlatformMgr());
+        inst = chip::Platform::New<TbrManagedInstance>(endpoint_id, config);
+        set_delegate_shutdown_callback_and_managed_instance(cl, ThreadBorderRouterManagementShutdownCB, inst);
     }
-    (void)server_instance->Init();
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(inst->cluster.Registration());
+    if (err != CHIP_NO_ERROR) {
+        ChipLogError(AppServer, "Failed to register TBR cluster: %" CHIP_ERROR_FORMAT, err.Format());
+    }
 }
 
 void ServiceAreaDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -562,27 +639,12 @@ void EnergyPreferenceDelegateInitCB(void *delegate, uint16_t endpoint_id)
     EnergyPreference::SetDelegate(energy_preference_delegate);
 }
 
-static void CommissionerControlShutdownCB(void *managed_instance, uint16_t /*endpoint_id*/)
-{
-    delete static_cast<CommissionerControl::CommissionerControlServer*>(managed_instance);
-}
-
 void CommissionerControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    if (delegate == nullptr) {
-        return;
-    }
-    cluster_t *cl = cluster::get(endpoint_id, CommissionerControl::Id);
-    VerifyOrReturn(cl != nullptr);
-    CommissionerControl::CommissionerControlServer *commissioner_control_instance =
-        static_cast<CommissionerControl::CommissionerControlServer*>(get_delegate_managed_instance(cl));
-    if (!commissioner_control_instance) {
-        CommissionerControl::Delegate *commissioner_control_delegate = static_cast<CommissionerControl::Delegate*>(delegate);
-        commissioner_control_instance =
-            new CommissionerControl::CommissionerControlServer(commissioner_control_delegate, endpoint_id);
-        set_delegate_shutdown_callback_and_managed_instance(cl, CommissionerControlShutdownCB, commissioner_control_instance);
-    }
-    (void)commissioner_control_instance->Init();
+    VerifyOrReturn(delegate != nullptr);
+    // Pass delegate to integration.cpp which creates CommissionerControlCluster
+    CommissionerControl::MatterCommissionerControlSetDelegate(
+        endpoint_id, static_cast<CommissionerControl::Delegate *>(delegate));
 }
 
 static void ActionsShutdownCB(void *managed_instance, uint16_t /*endpoint_id*/)
@@ -660,34 +722,11 @@ void ClosureControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
     // set_init_and_shutdown_callbacks() on the generated cluster.
 }
 
-struct ClosureDimensionBundle {
-    ClosureDimension::MatterContext *context;
-    ClosureDimension::Interface *interface;
-};
-
-static void ClosureDimensionShutdownCB(void *managed_instance, uint16_t /*endpoint_id*/)
-{
-    ClosureDimensionBundle *bundle = static_cast<ClosureDimensionBundle*>(managed_instance);
-    (void)bundle->interface->Shutdown();
-    delete bundle->interface;
-    delete bundle->context;
-    delete bundle;
-}
-
 void ClosureDimensionDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     VerifyOrReturn(delegate != nullptr);
-    cluster_t *cl = cluster::get(endpoint_id, ClosureDimension::Id);
-    VerifyOrReturn(cl != nullptr);
-    ClosureDimensionBundle *bundle = static_cast<ClosureDimensionBundle*>(get_delegate_managed_instance(cl));
-    if (!bundle) {
-        auto *cd_delegate = static_cast<ClosureDimension::DelegateBase*>(delegate);
-        bundle = new ClosureDimensionBundle();
-        bundle->context = new ClosureDimension::MatterContext(endpoint_id);
-        bundle->interface = new ClosureDimension::Interface(endpoint_id, *cd_delegate, *bundle->context);
-        set_delegate_shutdown_callback_and_managed_instance(cl, ClosureDimensionShutdownCB, bundle);
-    }
-    (void)bundle->interface->Init();
+    auto *cd_delegate = static_cast<ClosureDimension::ClosureDimensionClusterDelegate*>(delegate);
+    ClosureDimension::MatterClosureDimensionSetDelegate(static_cast<chip::EndpointId>(endpoint_id), *cd_delegate);
 }
 
 void PushAvStreamTransportDelegateInitCB(void *delegate, uint16_t endpoint_id)
@@ -899,7 +938,6 @@ void WakeOnLanDelegateInitCB(void *delegate, uint16_t endpoint_id)
     WakeOnLan::Delegate *wake_on_lan_delegate = static_cast<WakeOnLan::Delegate *>(delegate);
     WakeOnLan::SetDefaultDelegate(endpoint_id, wake_on_lan_delegate);
 }
-
 void TlsClientManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     VerifyOrReturn(delegate != nullptr);
