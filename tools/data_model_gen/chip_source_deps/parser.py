@@ -13,13 +13,12 @@
 # limitations under the License.
 import os
 import logging
-import subprocess
 from utils.config import ARTIFACTS_DIR, FileNames
-from utils.helper import write_to_file
 from utils.exceptions import ConfigurationError, CodeGenerationError
-from chip_source_deps.cluster_mapping import normalize_cluster_name
 from chip_source_deps.cluster_mapping import (
+    process_cluster_files,
     generate_delegate_cluster_mapping,
+    generate_migrated_clusters,
     generated_plugin_init_cb_cluster_mapping,
 )
 from chip_source_deps.zap_filter import generate_zap_filter_list
@@ -28,74 +27,6 @@ from chip_source_deps.internally_managed_attributes import (
 )
 
 logger = logging.getLogger(__name__)
-
-
-def _find_migrated_cluster_dirs(root_dir: str) -> set[str]:
-    """Return the set of top-level cluster directories under ``root_dir`` that
-    contain a header declaring a class inheriting ``DefaultServerCluster``.
-    """
-    result = subprocess.run(
-        ["grep", "-rl", "--include=*.h", "public DefaultServerCluster", root_dir],
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    if result.returncode >= 2:
-        raise RuntimeError(f"grep failed ({result.returncode}): {result.stderr}")
-
-    abs_root = os.path.abspath(root_dir)
-    cluster_dirs: set[str] = set()
-    for header_path in result.stdout.splitlines():
-        rel = os.path.relpath(header_path, abs_root)
-        top = rel.split(os.sep, 1)[0]
-        if top and top != "..":
-            cluster_dirs.add(os.path.join(abs_root, top))
-    return cluster_dirs
-
-
-def generate_migrated_clusters(root_dir) -> tuple[bool, str]:
-    """Find all migrated clusters and write them to ``Artifacts/migrated_clusters.json``.
-
-    The JSON holds two lists:
-      - ``migrated_cluster``: clusters using ``DefaultServerCluster`` at the
-        cluster top level; these feed data_model_gen.
-      - ``migrated_cluster_with_codegen_impl``: clusters that own a ``codegen/``
-        subdir; they have legacy implementation as it is and are skipped by data_model_gen.
-
-    Args:
-        root_dir: The root directory to search in.
-    Returns:
-        True if successful, False otherwise
-    """
-    migrated_clusters = set()
-    migrated_clusters_with_codegen_impl = set()
-
-    try:
-        for cluster_dir in _find_migrated_cluster_dirs(root_dir):
-            cluster_name = normalize_cluster_name(os.path.basename(cluster_dir))
-            if not cluster_name:
-                continue
-            if os.path.isdir(os.path.join(cluster_dir, "codegen")):
-                migrated_clusters_with_codegen_impl.add(cluster_name)
-            else:
-                migrated_clusters.add(cluster_name)
-
-        payload = {
-            "migrated_cluster": sorted(migrated_clusters),
-            "migrated_cluster_with_codegen_impl": sorted(
-                migrated_clusters_with_codegen_impl
-            ),
-        }
-
-        os.makedirs(ARTIFACTS_DIR, exist_ok=True)
-        artifact_path = os.path.join(ARTIFACTS_DIR, FileNames.MIGRATED_CLUSTERS.value)
-
-        if write_to_file(artifact_path, payload, "json"):
-            logger.info(f"Successfully written Migrated Clusters to {artifact_path}")
-            return True, None
-        return False, f"Error writing to {artifact_path}"
-    except Exception as e:
-        return False, f"Error generating migrated clusters: {str(e)}"
 
 
 def generate_requirements(esp_matter_path, output_dir):
@@ -155,6 +86,9 @@ def generate_requirements(esp_matter_path, output_dir):
         FileNames.ZAP_FILTER_LIST: os.path.join(
             output_dir, FileNames.ZAP_FILTER_LIST.value
         ),
+        FileNames.MIGRATED_CLUSTERS: os.path.join(
+            ARTIFACTS_DIR, FileNames.MIGRATED_CLUSTERS.value
+        ),
     }
 
     logger.debug(
@@ -181,14 +115,33 @@ def generate_requirements(esp_matter_path, output_dir):
             suggestion="Check CHIP cluster server sources and zcl.json format.",
         )
 
+    result = process_cluster_files(root_cluster_server_dir)
+
     logger.debug("Generating delegate clusters...")
     is_generated, error_message = generate_delegate_cluster_mapping(
-        root_cluster_server_dir, file_paths[FileNames.DELEGATE_CLUSTERS]
+        root_cluster_server_dir,
+        file_paths[FileNames.DELEGATE_CLUSTERS],
+        result["delegate_clusters"],
     )
     if not is_generated:
         raise CodeGenerationError(
             error_message,
             file_path=file_paths[FileNames.DELEGATE_CLUSTERS],
+            context="generate_requirements",
+            suggestion=f"Check {root_cluster_server_dir} and write permissions.",
+        )
+
+    logger.debug("Generating migrated clusters...")
+    os.makedirs(ARTIFACTS_DIR, exist_ok=True)
+    is_generated, error_message = generate_migrated_clusters(
+        root_cluster_server_dir,
+        file_paths[FileNames.MIGRATED_CLUSTERS],
+        result["migrated_clusters"],
+    )
+    if not is_generated:
+        raise CodeGenerationError(
+            error_message,
+            file_path=file_paths[FileNames.MIGRATED_CLUSTERS],
             context="generate_requirements",
             suggestion=f"Check {root_cluster_server_dir} and write permissions.",
         )
@@ -215,16 +168,6 @@ def generate_requirements(esp_matter_path, output_dir):
             file_path=file_paths[FileNames.ZAP_FILTER_LIST],
             context="generate_requirements",
             suggestion=f"Check {header_files_dir} and write permissions.",
-        )
-
-    logger.debug("Finding migrated clusters...")
-    is_generated, error_message = generate_migrated_clusters(root_cluster_server_dir)
-    if not is_generated:
-        raise CodeGenerationError(
-            error_message,
-            file_path=os.path.join(ARTIFACTS_DIR, FileNames.MIGRATED_CLUSTERS.value),
-            context="generate_requirements",
-            suggestion=f"Check {root_cluster_server_dir} and write permissions.",
         )
 
     return True

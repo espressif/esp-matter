@@ -157,10 +157,12 @@ class TestDataModelVersionDiscovery(unittest.TestCase):
 
     def test_version_sort_key_orders_numeric_parts(self):
         self.assertLess(
-            specification_version_sort_key("1.5.1"), specification_version_sort_key("1.6")
+            specification_version_sort_key("1.5.1"),
+            specification_version_sort_key("1.6"),
         )
         self.assertLess(
-            specification_version_sort_key("1.4.1"), specification_version_sort_key("1.4.2")
+            specification_version_sort_key("1.4.1"),
+            specification_version_sort_key("1.4.2"),
         )
 
 

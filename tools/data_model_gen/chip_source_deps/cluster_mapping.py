@@ -14,122 +14,109 @@
 
 import logging
 import os
-import re
 
 from utils.helper import convert_to_snake_case, write_to_file
 from utils.helper import esp_name
 from chip_source_deps.server_files_config import (
     local_mappings,
-    parser,
     PLUGIN_CB_PATTERN,
-    DELEGATE_METHODS,
-    DELEGATE_VARIABLE_NAMES,
+    DELEGATE_MEMBER_RE,
+    DELEGATE_METHOD_RE,
+    SKIP_DELEGATE_RE,
+    delegate_skip_list,
 )
 
 logger = logging.getLogger(__name__)
 
 
-def normalize_cluster_name(cluster_name, type="file"):
-    """Normalize a cluster name from a filename or a string
+def _get_cluster_name_prefix(name: str) -> str:
+    """Strip path, extension, and common cluster directory/file suffixes."""
+    basename = os.path.basename(name)
+    common_suffixes = ("-server", "-cluster", "Cluster")
+    basename = basename.rsplit(".", 1)[0]
+    for suffix in common_suffixes:
+        basename = basename.replace(suffix, "")
+    return basename
 
-    :param cluster_name: The cluster name to normalize.
-    :param type: The type of the cluster name.
-    :returns: Normalized cluster name
 
+def normalize_cluster_name(name: str) -> str:
+    """Normalize a cluster name from a directory path, source filename, or identifier.
+
+    e.g. on-off-server -> on_off, LevelControlCluster.cpp -> level_control
     """
-    if type == "file":
-        cluster_name = os.path.basename(cluster_name).split(".")[0]
-        cluster_name = cluster_name.replace("-server", "").lower()
-        cluster_name = esp_name(cluster_name)
-        cluster_name = local_mappings.get(cluster_name, cluster_name)
-        return cluster_name
-
-    cluster_name = convert_to_snake_case(cluster_name)
-    cluster_name = local_mappings.get(cluster_name, cluster_name)
-    cluster_name = cluster_name.replace(" ", "_")
-    cluster_name = esp_name(cluster_name)
-
-    return cluster_name
+    prefix = _get_cluster_name_prefix(name)
+    normalized = convert_to_snake_case(prefix)
+    normalized = local_mappings.get(normalized, normalized)
+    return esp_name(normalized)
 
 
-def check_if_delegate_method_available(node, code_bytes):
-    """Check if delegate is available in the given file using tree-sitter.
+def process_cluster_files(root_dir):
+    """Analyze cluster files in a single directory traversal."""
 
-    :param node: The AST node to search from
-    :param code_bytes: The source code as bytes
-    :returns: True if delegate method is available, False otherwise.
-    """
-    if node.type == "function_declarator" or node.type == "declaration":
-        text = code_bytes[node.start_byte : node.end_byte].decode(
-            "utf8", errors="ignore"
-        )
-        if any(method in text for method in DELEGATE_METHODS):
-            return True
-    if node.type == "class_specifier":
-        for child in node.children:
-            if child.type == "field_declaration_list":
-                for field_declaration in child.children:
-                    text = code_bytes[
-                        field_declaration.start_byte : field_declaration.end_byte
-                    ].decode("utf8", errors="ignore")
-                    if any(method in text for method in DELEGATE_METHODS):
-                        return True
-                    if any(variable in text for variable in DELEGATE_VARIABLE_NAMES):
-                        return True
-    for child in node.children:
-        if check_if_delegate_method_available(child, code_bytes):
-            return True
-    return False
-
-
-def find_delegate_server_files(root_dir):
-    """Find all delegate files in the given directory using tree-sitter.
-
-    :param root_dir:
-    :returns: cluster list with delegate.
-    :rtype: Two sets
-
-    """
-    delegate_server_files = set()
+    migrated_clusters = set()
+    migrated_clusters_with_codegen_impl = set()
+    delegate_clusters = set()
 
     for dirpath, dirnames, filenames in os.walk(root_dir):
-        if "codegen" in dirnames:
-            scan_dir = os.path.join(dirpath, "codegen")
+        has_codegen = "codegen" in dirnames
+        scan_dir = os.path.join(dirpath, "codegen") if has_codegen else dirpath
+        cluster_name = normalize_cluster_name(dirpath)
+
+        if has_codegen:
             filenames = os.listdir(scan_dir)
             dirnames[:] = []
-        else:
-            scan_dir = dirpath
-        for filename in filenames:
+            migrated_clusters_with_codegen_impl.add(cluster_name)
+
+        is_migrated = cluster_name in migrated_clusters
+        for filename in [f for f in filenames if f.endswith(".h")]:
             full_path = os.path.join(scan_dir, filename)
-
-            # Check for delegate callback in server files
-            if "-delegate.h" in filename.lower():
-                cluster_name = normalize_cluster_name(dirpath, type="file")
-                delegate_server_files.add(cluster_name)
-            elif filename and filename.endswith(".h"):
-                with open(full_path, "r") as f:
+            try:
+                with open(full_path, "r", encoding="utf-8") as f:
                     content = f.read()
-                    tree = parser.parse(bytes(content, "utf8"))
-                    root = tree.root_node
-                    code_bytes = bytes(content, "utf8")
-                    if check_if_delegate_method_available(root, code_bytes):
-                        cluster_name = normalize_cluster_name(dirpath, type="file")
-                        delegate_server_files.add(cluster_name)
+            except Exception as e:
+                logger.warning(f"Failed reading {full_path}: {e}")
+                continue
+            if (
+                not has_codegen
+                and not is_migrated
+                and "public DefaultServerCluster" in content
+            ):
+                migrated_clusters.add(cluster_name)
+                is_migrated = True
+            if cluster_name not in delegate_clusters:
+                for line in content.splitlines():
+                    stripped = line.strip()
+                    if SKIP_DELEGATE_RE.search(stripped):
+                        continue
+                    if DELEGATE_MEMBER_RE.search(stripped) or DELEGATE_METHOD_RE.search(
+                        stripped
+                    ):
+                        if cluster_name not in delegate_skip_list:
+                            delegate_clusters.add(cluster_name)
+                        break
 
-    return sorted(list(delegate_server_files))
+    return {
+        "migrated_clusters": {
+            "migrated_cluster": sorted(migrated_clusters),
+            "migrated_cluster_with_codegen_impl": sorted(
+                migrated_clusters_with_codegen_impl
+            ),
+        },
+        "delegate_clusters": sorted(delegate_clusters),
+    }
 
 
 def generate_delegate_cluster_mapping(
-    root_dir, delegate_cluster_json_file_path
+    root_dir, delegate_cluster_json_file_path, delegate_server_files
 ) -> tuple[bool, str]:
     """Generate cluster mapping list for clusters with delegate
 
     :param root_dir: The root directory to search for server files.
     :param delegate_cluster_json_file_path: The path to the JSON file for delegate clusters.
+    :param delegate_server_files: The list of delegate server files.
     :returns: True if successful, False otherwise.
     """
     try:
-        delegate_server_files = find_delegate_server_files(root_dir)
         if write_to_file(
             delegate_cluster_json_file_path, delegate_server_files, "json"
         ):
@@ -142,35 +129,29 @@ def generate_delegate_cluster_mapping(
         return False, f"Error generating delegate cluster mapping: {str(e)}"
 
 
-def find_plugin_init_callbacks(node, code_bytes):
-    """Find all MatterXXXPluginServerInitCallback function declarations using tree-sitter.
+def generate_migrated_clusters(
+    root_dir, migrated_clusters_json_file_path, migrated_clusters
+) -> tuple[bool, str]:
+    """Generate migrated clusters
 
-    :param node: The AST node to search from
-    :param code_bytes: The source code as bytes
-    :returns: List of cluster names
+    :param root_dir: The root directory to search for server files.
+    :param migrated_clusters_json_file_path: The path to the JSON file for migrated clusters.
+    :param migrated_clusters: The list of migrated clusters.
+    :returns: True if successful, False otherwise.
     """
-    clusters = []
-
-    if node.type == "function_declarator" or node.type == "declaration":
-        text = code_bytes[node.start_byte : node.end_byte].decode(
-            "utf8", errors="ignore"
-        )
-
-        pattern = re.compile(PLUGIN_CB_PATTERN)
-        match = pattern.search(text)
-        if match:
-            cluster_name = match.group(1)
-            snake_case = normalize_cluster_name(cluster_name, type="string")
-            clusters.append(snake_case)
-
-    for child in node.children:
-        clusters.extend(find_plugin_init_callbacks(child, code_bytes))
-
-    return clusters
+    try:
+        if write_to_file(migrated_clusters_json_file_path, migrated_clusters, "json"):
+            logger.info(
+                f"Successfully written Migrated Clusters to {migrated_clusters_json_file_path}"
+            )
+            return True, None
+        return False, f"Error writing to {migrated_clusters_json_file_path}"
+    except Exception as e:
+        return False, f"Error generating migrated clusters: {str(e)}"
 
 
 def extract_cluster_names(header_file_path):
-    """Extract cluster names from plugin init callback functions using tree-sitter.
+    """Extract cluster names from MatterXXXPluginServerInitCallback declarations.
 
     :param header_file_path: Path to the header file
     :returns: List of cluster names
@@ -182,11 +163,10 @@ def extract_cluster_names(header_file_path):
         logger.error(f"Error reading file {header_file_path}: {e}")
         return []
 
-    tree = parser.parse(bytes(content, "utf8"))
-    root = tree.root_node
-    code_bytes = bytes(content, "utf8")
-
-    return find_plugin_init_callbacks(root, code_bytes)
+    clusters = []
+    for match in PLUGIN_CB_PATTERN.finditer(content):
+        clusters.append(normalize_cluster_name(match.group(1)))
+    return clusters
 
 
 def generated_plugin_init_cb_cluster_mapping(

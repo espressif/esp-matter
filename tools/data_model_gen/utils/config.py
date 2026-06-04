@@ -48,7 +48,9 @@ _DATA_MODEL_VERSION_DIR = re.compile(r"^\d+(?:\.\d+)*$")
 
 def get_chip_data_model_root(esp_matter_path: str) -> str:
     """Path to the CHIP `data_model` directory for the connectedhomeip submodule."""
-    return os.path.join(esp_matter_path, "connectedhomeip", "connectedhomeip", "data_model")
+    return os.path.join(
+        esp_matter_path, "connectedhomeip", "connectedhomeip", "data_model"
+    )
 
 
 def specification_version_sort_key(version: str) -> Tuple[int, ...]:

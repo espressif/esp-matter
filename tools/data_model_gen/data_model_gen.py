@@ -303,9 +303,7 @@ def main(
                 f"Unknown data model revision {chip_version!r}",
                 file_path=global_config.get_chip_data_model_root(esp_dir),
                 context="main",
-                suggestion=(
-                    "Use one of: " + ", ".join(available_versions)
-                ),
+                suggestion=("Use one of: " + ", ".join(available_versions)),
             )
 
         if not cluster_dir or not device_dir:
