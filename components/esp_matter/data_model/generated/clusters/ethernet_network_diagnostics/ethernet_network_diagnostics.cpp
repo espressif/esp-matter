@@ -87,22 +87,22 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 namespace attribute {
 attribute_t *create_phy_rate(cluster_t *cluster, nullable<uint8_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, PHYRate::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_enum8(0), esp_matter_nullable_enum8(9));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PHYRate::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(nullable<uint8_t>(9), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_full_duplex(cluster_t *cluster, nullable<bool> value)
 {
-    return esp_matter::attribute::create(cluster, FullDuplex::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_bool(value));
+    return esp_matter::attribute::create(cluster, FullDuplex::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_packet_rx_count(cluster_t *cluster, uint64_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(packet_counts), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, PacketRxCount::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint64(0), esp_matter_uint64(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PacketRxCount::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint64_t>(0)), esp_matter_attr_val(static_cast<uint64_t>(4294967294)));
     return attribute;
 }
 
@@ -110,8 +110,8 @@ attribute_t *create_packet_tx_count(cluster_t *cluster, uint64_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(packet_counts), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, PacketTxCount::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint64(0), esp_matter_uint64(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PacketTxCount::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint64_t>(0)), esp_matter_attr_val(static_cast<uint64_t>(4294967294)));
     return attribute;
 }
 
@@ -119,8 +119,8 @@ attribute_t *create_tx_err_count(cluster_t *cluster, uint64_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(error_counts), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, TxErrCount::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint64(0), esp_matter_uint64(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, TxErrCount::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint64_t>(0)), esp_matter_attr_val(static_cast<uint64_t>(4294967294)));
     return attribute;
 }
 
@@ -128,8 +128,8 @@ attribute_t *create_collision_count(cluster_t *cluster, uint64_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(error_counts), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, CollisionCount::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint64(0), esp_matter_uint64(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, CollisionCount::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint64_t>(0)), esp_matter_attr_val(static_cast<uint64_t>(4294967294)));
     return attribute;
 }
 
@@ -137,20 +137,20 @@ attribute_t *create_overrun_count(cluster_t *cluster, uint64_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(error_counts), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, OverrunCount::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint64(0), esp_matter_uint64(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, OverrunCount::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint64_t>(0)), esp_matter_attr_val(static_cast<uint64_t>(4294967294)));
     return attribute;
 }
 
 attribute_t *create_carrier_detect(cluster_t *cluster, nullable<bool> value)
 {
-    return esp_matter::attribute::create(cluster, CarrierDetect::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_bool(value));
+    return esp_matter::attribute::create(cluster, CarrierDetect::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_time_since_reset(cluster_t *cluster, uint64_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, TimeSinceReset::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint64(0), esp_matter_uint64(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, TimeSinceReset::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint64_t>(0)), esp_matter_attr_val(static_cast<uint64_t>(4294967294)));
     return attribute;
 }
 

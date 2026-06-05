@@ -212,15 +212,15 @@ esp_err_t add(cluster_t *cluster)
 namespace attribute {
 attribute_t *create_local_temperature(cluster_t *cluster, nullable<int16_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, LocalTemperature::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int16(-32768), esp_matter_nullable_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, LocalTemperature::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int16_t>(-32768)), esp_matter_attr_val(nullable<int16_t>(32766)));
     return attribute;
 }
 
 attribute_t *create_outdoor_temperature(cluster_t *cluster, nullable<int16_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, OutdoorTemperature::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int16(-32768), esp_matter_nullable_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, OutdoorTemperature::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int16_t>(-32768)), esp_matter_attr_val(nullable<int16_t>(32766)));
     return attribute;
 }
 
@@ -228,43 +228,43 @@ attribute_t *create_occupancy(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(occupancy), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, Occupancy::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bitmap8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_bitmap8(0), esp_matter_bitmap8(1));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, Occupancy::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint8_t>(1), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
 attribute_t *create_abs_min_heat_setpoint_limit(cluster_t *cluster, int16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, AbsMinHeatSetpointLimit::Id, ATTRIBUTE_FLAG_NONE, esp_matter_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_int16(-32768), esp_matter_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, AbsMinHeatSetpointLimit::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
     return attribute;
 }
 
 attribute_t *create_abs_max_heat_setpoint_limit(cluster_t *cluster, int16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, AbsMaxHeatSetpointLimit::Id, ATTRIBUTE_FLAG_NONE, esp_matter_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_int16(-32768), esp_matter_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, AbsMaxHeatSetpointLimit::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
     return attribute;
 }
 
 attribute_t *create_abs_min_cool_setpoint_limit(cluster_t *cluster, int16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, AbsMinCoolSetpointLimit::Id, ATTRIBUTE_FLAG_NONE, esp_matter_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_int16(-32768), esp_matter_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, AbsMinCoolSetpointLimit::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
     return attribute;
 }
 
 attribute_t *create_abs_max_cool_setpoint_limit(cluster_t *cluster, int16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, AbsMaxCoolSetpointLimit::Id, ATTRIBUTE_FLAG_NONE, esp_matter_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_int16(-32768), esp_matter_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, AbsMaxCoolSetpointLimit::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
     return attribute;
 }
 
 attribute_t *create_local_temperature_calibration(cluster_t *cluster, int8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, LocalTemperatureCalibration::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_int8(-128), esp_matter_int8(126));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, LocalTemperatureCalibration::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int8_t>(-128)), esp_matter_attr_val(static_cast<int8_t>(126)));
     return attribute;
 }
 
@@ -272,8 +272,8 @@ attribute_t *create_occupied_cooling_setpoint(cluster_t *cluster, int16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(cooling), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, OccupiedCoolingSetpoint::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_int16(-32768), esp_matter_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, OccupiedCoolingSetpoint::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
     return attribute;
 }
 
@@ -281,8 +281,8 @@ attribute_t *create_occupied_heating_setpoint(cluster_t *cluster, int16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(heating), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, OccupiedHeatingSetpoint::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_int16(-32768), esp_matter_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, OccupiedHeatingSetpoint::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
     return attribute;
 }
 
@@ -290,8 +290,8 @@ attribute_t *create_unoccupied_cooling_setpoint(cluster_t *cluster, int16_t valu
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(((has_feature(cooling)) && (has_feature(occupancy))), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, UnoccupiedCoolingSetpoint::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_int16(-32768), esp_matter_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, UnoccupiedCoolingSetpoint::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
     return attribute;
 }
 
@@ -299,36 +299,36 @@ attribute_t *create_unoccupied_heating_setpoint(cluster_t *cluster, int16_t valu
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(((has_feature(heating)) && (has_feature(occupancy))), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, UnoccupiedHeatingSetpoint::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_int16(-32768), esp_matter_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, UnoccupiedHeatingSetpoint::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
     return attribute;
 }
 
 attribute_t *create_min_heat_setpoint_limit(cluster_t *cluster, int16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MinHeatSetpointLimit::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_int16(-32768), esp_matter_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, MinHeatSetpointLimit::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
     return attribute;
 }
 
 attribute_t *create_max_heat_setpoint_limit(cluster_t *cluster, int16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxHeatSetpointLimit::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_int16(-32768), esp_matter_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxHeatSetpointLimit::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
     return attribute;
 }
 
 attribute_t *create_min_cool_setpoint_limit(cluster_t *cluster, int16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MinCoolSetpointLimit::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_int16(-32768), esp_matter_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, MinCoolSetpointLimit::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
     return attribute;
 }
 
 attribute_t *create_max_cool_setpoint_limit(cluster_t *cluster, int16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxCoolSetpointLimit::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_int16(-32768), esp_matter_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxCoolSetpointLimit::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
     return attribute;
 }
 
@@ -336,134 +336,134 @@ attribute_t *create_min_setpoint_dead_band(cluster_t *cluster, int8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(auto_mode), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MinSetpointDeadBand::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_int8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_int8(0), esp_matter_int8(127));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, MinSetpointDeadBand::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int8_t>(0)), esp_matter_attr_val(static_cast<int8_t>(127)));
     return attribute;
 }
 
 attribute_t *create_remote_sensing(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, RemoteSensing::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_bitmap8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_bitmap8(0), esp_matter_bitmap8(7));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, RemoteSensing::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint8_t>(7), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
 attribute_t *create_control_sequence_of_operation(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ControlSequenceOfOperation::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(5));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ControlSequenceOfOperation::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(5), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_system_mode(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, SystemMode::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(8));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, SystemMode::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(8), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_temperature_setpoint_hold(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, TemperatureSetpointHold::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(1));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, TemperatureSetpointHold::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(1), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_temperature_setpoint_hold_duration(cluster_t *cluster, nullable<uint16_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, TemperatureSetpointHoldDuration::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint16(0), esp_matter_nullable_uint16(1440));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, TemperatureSetpointHoldDuration::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint16_t>(0)), esp_matter_attr_val(nullable<uint16_t>(1440)));
     return attribute;
 }
 
 attribute_t *create_thermostat_running_state(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ThermostatRunningState::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bitmap16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_bitmap16(0), esp_matter_bitmap16(65535));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ThermostatRunningState::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint16_t>(65535), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
 attribute_t *create_setpoint_change_source(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, SetpointChangeSource::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(2));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, SetpointChangeSource::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(2), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_setpoint_change_amount(cluster_t *cluster, nullable<int16_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, SetpointChangeAmount::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int16(-32768), esp_matter_nullable_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, SetpointChangeAmount::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int16_t>(-32768)), esp_matter_attr_val(nullable<int16_t>(32766)));
     return attribute;
 }
 
 attribute_t *create_setpoint_change_source_timestamp(cluster_t *cluster, uint32_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, SetpointChangeSourceTimestamp::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(0), esp_matter_uint32(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, SetpointChangeSourceTimestamp::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0)), esp_matter_attr_val(static_cast<uint32_t>(4294967294)));
     return attribute;
 }
 
 attribute_t *create_emergency_heat_delta(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, EmergencyHeatDelta::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(0), esp_matter_uint8(254));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, EmergencyHeatDelta::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
     return attribute;
 }
 
 attribute_t *create_ac_type(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ACType::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(4));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ACType::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(4), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_ac_capacity(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ACCapacity::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(0), esp_matter_uint16(65534));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ACCapacity::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
     return attribute;
 }
 
 attribute_t *create_ac_refrigerant_type(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ACRefrigerantType::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(3));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ACRefrigerantType::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(3), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_ac_compressor_type(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ACCompressorType::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(3));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ACCompressorType::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(3), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_ac_error_code(cluster_t *cluster, uint32_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ACErrorCode::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_bitmap32(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_bitmap32(0), esp_matter_bitmap32(4294967295));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ACErrorCode::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint32_t>(4294967295), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
 attribute_t *create_ac_louver_position(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ACLouverPosition::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(4));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ACLouverPosition::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(4), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_ac_coil_temperature(cluster_t *cluster, nullable<int16_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ACCoilTemperature::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int16(-32768), esp_matter_nullable_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ACCoilTemperature::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int16_t>(-32768)), esp_matter_attr_val(nullable<int16_t>(32766)));
     return attribute;
 }
 
 attribute_t *create_ac_capacity_format(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ACCapacityFormat::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(0));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ACCapacityFormat::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
@@ -471,29 +471,29 @@ attribute_t *create_preset_types(cluster_t *cluster, uint8_t *value, uint16_t le
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(presets), NULL);
-    return esp_matter::attribute::create(cluster, PresetTypes::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, PresetTypes::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_schedule_types(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(matter_schedule_configuration), NULL);
-    return esp_matter::attribute::create(cluster, ScheduleTypes::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, ScheduleTypes::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_number_of_presets(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(presets), NULL);
-    return esp_matter::attribute::create(cluster, NumberOfPresets::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, NumberOfPresets::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
 }
 
 attribute_t *create_number_of_schedules(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(matter_schedule_configuration), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfSchedules::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(1), esp_matter_uint8(254));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfSchedules::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(1)), esp_matter_attr_val(static_cast<uint8_t>(254)));
     return attribute;
 }
 
@@ -501,8 +501,8 @@ attribute_t *create_number_of_schedule_transitions(cluster_t *cluster, uint8_t v
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(matter_schedule_configuration), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfScheduleTransitions::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(1), esp_matter_uint8(254));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfScheduleTransitions::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(1)), esp_matter_attr_val(static_cast<uint8_t>(254)));
     return attribute;
 }
 
@@ -510,8 +510,8 @@ attribute_t *create_number_of_schedule_transition_per_day(cluster_t *cluster, nu
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(matter_schedule_configuration), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfScheduleTransitionPerDay::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint8(1), esp_matter_nullable_uint8(254));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfScheduleTransitionPerDay::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(1)), esp_matter_attr_val(nullable<uint8_t>(254)));
     return attribute;
 }
 
@@ -519,7 +519,7 @@ attribute_t *create_active_preset_handle(cluster_t *cluster, uint8_t *value, uin
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(presets), NULL);
-    return esp_matter::attribute::create(cluster, ActivePresetHandle::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_octet_str(value, length));
+    return esp_matter::attribute::create(cluster, ActivePresetHandle::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, length));
 }
 
 attribute_t *create_active_schedule_handle(cluster_t *cluster, uint8_t *value, uint16_t length)
@@ -527,27 +527,27 @@ attribute_t *create_active_schedule_handle(cluster_t *cluster, uint8_t *value, u
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(matter_schedule_configuration), NULL);
     VerifyOrReturnValue(length <= k_max_active_schedule_handle_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
-    return esp_matter::attribute::create(cluster, ActiveScheduleHandle::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_octet_str(value, length));
+    return esp_matter::attribute::create(cluster, ActiveScheduleHandle::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, length));
 }
 
 attribute_t *create_presets(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(presets), NULL);
-    return esp_matter::attribute::create(cluster, Presets::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, Presets::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_schedules(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(matter_schedule_configuration), NULL);
-    return esp_matter::attribute::create(cluster, Schedules::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, Schedules::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_setpoint_hold_expiry_timestamp(cluster_t *cluster, nullable<uint32_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, SetpointHoldExpiryTimestamp::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint32(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint32(0), esp_matter_nullable_uint32(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, SetpointHoldExpiryTimestamp::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
     return attribute;
 }
 

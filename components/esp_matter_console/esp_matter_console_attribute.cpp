@@ -25,7 +25,7 @@ static esp_err_t console_set_handler(int argc, char **argv)
     if (!attr) {
         return ESP_ERR_INVALID_ARG;
     }
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val;
     ESP_RETURN_ON_ERROR(attribute::get_val(attr, &val), TAG, "Failed to get current valure");
     switch (val.type) {
     case ESP_MATTER_VAL_TYPE_NULLABLE_BOOLEAN:
@@ -140,12 +140,12 @@ static esp_err_t console_set_handler(int argc, char **argv)
         break;
     case ESP_MATTER_VAL_TYPE_CHAR_STRING: {
         char *value = argv[3];
-        val = esp_matter_char_str(value, strlen(value));
+        val = esp_matter_attr_val(value, strlen(value));
         break;
     }
     case ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING: {
         char *value = argv[3];
-        val = esp_matter_long_char_str(value, strlen(value));
+        val = esp_matter_attr_val(value, strlen(value), true);
         break;
     }
     default:
@@ -166,7 +166,7 @@ static esp_err_t console_get_handler(int argc, char **argv)
     if (!attr) {
         return ESP_ERR_INVALID_ARG;
     }
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val;
     ESP_RETURN_ON_ERROR(esp_matter::attribute::get_val(attr, &val), TAG, "Failed to get current valure");
     /* Here, the val_print function gets called on attribute read. */
     attribute::val_print(endpoint_id, cluster_id, attribute_id, &val, true);

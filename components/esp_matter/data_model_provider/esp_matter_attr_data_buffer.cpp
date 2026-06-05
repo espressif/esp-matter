@@ -1,114 +1,98 @@
-#include "esp_matter_attr_data_buffer.h"
-#include "esp_matter_attribute_utils.h"
-#include "esp_matter_mem.h"
-#include "support/CHIPMemString.h"
-#include "support/CodeUtils.h"
+// Copyright 2025 Espressif Systems (Shanghai) PTE LTD
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#include <esp_matter_attr_data_buffer.h>
+#include <esp_matter_attribute_utils.h>
+#include <esp_matter_mem.h>
+
+#include <lib/support/CodeUtils.h>
 
 namespace esp_matter {
 namespace data_model {
 
 CHIP_ERROR attribute_data_decode_buffer::Decode(chip::TLV::TLVReader &reader)
 {
-    switch (m_attr_val.type) {
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BOOLEAN:
-        if (reader.GetType() == chip::TLV::kTLVType_Null) {
-            chip::app::NumericAttributeTraits<bool>::SetNull(*(uint8_t *)(&(m_attr_val.val.b)));
-            break;
-        }
-    // Fall through
+    switch (m_attr_val.get_storage_type()) {
     case ESP_MATTER_VAL_TYPE_BOOLEAN:
-        ReturnErrorOnFailure(reader.Get(m_attr_val.val.b));
-        break;
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8:
-        if (reader.GetType() == chip::TLV::kTLVType_Null) {
-            chip::app::NumericAttributeTraits<uint8_t>::SetNull(m_attr_val.val.u8);
-            break;
+        if (reader.GetType() == chip::TLV::kTLVType_Null && m_attr_val.is_nullable()) {
+            chip::app::NumericAttributeTraits<bool>::SetNull(*(uint8_t *)(&(m_attr_val.val.b)));
+        } else {
+            ReturnErrorOnFailure(reader.Get(m_attr_val.val.b));
         }
-    // Fall through
+        break;
     case ESP_MATTER_VAL_TYPE_UINT8:
-    case ESP_MATTER_VAL_TYPE_ENUM8:
-    case ESP_MATTER_VAL_TYPE_BITMAP8:
-        ReturnErrorOnFailure(reader.Get(m_attr_val.val.u8));
-        break;
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16:
-        if (reader.GetType() == chip::TLV::kTLVType_Null) {
-            chip::app::NumericAttributeTraits<uint16_t>::SetNull(m_attr_val.val.u16);
-            break;
+        if (reader.GetType() == chip::TLV::kTLVType_Null && m_attr_val.is_nullable()) {
+            chip::app::NumericAttributeTraits<uint8_t>::SetNull(m_attr_val.val.u8);
+        } else {
+            ReturnErrorOnFailure(reader.Get(m_attr_val.val.u8));
         }
-    // Fall through
+        break;
     case ESP_MATTER_VAL_TYPE_UINT16:
-    case ESP_MATTER_VAL_TYPE_ENUM16:
-    case ESP_MATTER_VAL_TYPE_BITMAP16:
-        ReturnErrorOnFailure(reader.Get(m_attr_val.val.u16));
-        break;
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32:
-        if (reader.GetType() == chip::TLV::kTLVType_Null) {
-            chip::app::NumericAttributeTraits<uint32_t>::SetNull(m_attr_val.val.u32);
-            break;
+        if (reader.GetType() == chip::TLV::kTLVType_Null && m_attr_val.is_nullable()) {
+            chip::app::NumericAttributeTraits<uint16_t>::SetNull(m_attr_val.val.u16);
+        } else {
+            ReturnErrorOnFailure(reader.Get(m_attr_val.val.u16));
         }
-    // Fall through
+        break;
     case ESP_MATTER_VAL_TYPE_UINT32:
-    case ESP_MATTER_VAL_TYPE_BITMAP32:
-        ReturnErrorOnFailure(reader.Get(m_attr_val.val.u32));
-        break;
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT64:
-        if (reader.GetType() == chip::TLV::kTLVType_Null) {
-            chip::app::NumericAttributeTraits<uint64_t>::SetNull(m_attr_val.val.u64);
-            break;
+        if (reader.GetType() == chip::TLV::kTLVType_Null && m_attr_val.is_nullable()) {
+            chip::app::NumericAttributeTraits<uint32_t>::SetNull(m_attr_val.val.u32);
+        } else {
+            ReturnErrorOnFailure(reader.Get(m_attr_val.val.u32));
         }
-    // Fall through
+        break;
     case ESP_MATTER_VAL_TYPE_UINT64:
-        ReturnErrorOnFailure(reader.Get(m_attr_val.val.u64));
-        break;
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT8:
-        if (reader.GetType() == chip::TLV::kTLVType_Null) {
-            chip::app::NumericAttributeTraits<int8_t>::SetNull(m_attr_val.val.i8);
-            break;
+        if (reader.GetType() == chip::TLV::kTLVType_Null && m_attr_val.is_nullable()) {
+            chip::app::NumericAttributeTraits<uint64_t>::SetNull(m_attr_val.val.u64);
+        } else {
+            ReturnErrorOnFailure(reader.Get(m_attr_val.val.u64));
         }
-    // Fall through
+        break;
     case ESP_MATTER_VAL_TYPE_INT8:
-        ReturnErrorOnFailure(reader.Get(m_attr_val.val.i8));
-        break;
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT16:
-        if (reader.GetType() == chip::TLV::kTLVType_Null) {
-            chip::app::NumericAttributeTraits<int16_t>::SetNull(m_attr_val.val.i16);
-            break;
+        if (reader.GetType() == chip::TLV::kTLVType_Null && m_attr_val.is_nullable()) {
+            chip::app::NumericAttributeTraits<int8_t>::SetNull(m_attr_val.val.i8);
+        } else {
+            ReturnErrorOnFailure(reader.Get(m_attr_val.val.i8));
         }
-    // Fall through
+        break;
     case ESP_MATTER_VAL_TYPE_INT16:
-        ReturnErrorOnFailure(reader.Get(m_attr_val.val.i16));
-        break;
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT32:
-        if (reader.GetType() == chip::TLV::kTLVType_Null) {
-            chip::app::NumericAttributeTraits<int32_t>::SetNull(m_attr_val.val.i32);
-            break;
+        if (reader.GetType() == chip::TLV::kTLVType_Null && m_attr_val.is_nullable()) {
+            chip::app::NumericAttributeTraits<int16_t>::SetNull(m_attr_val.val.i16);
+        } else {
+            ReturnErrorOnFailure(reader.Get(m_attr_val.val.i16));
         }
-    // Fall through
+        break;
     case ESP_MATTER_VAL_TYPE_INT32:
-        ReturnErrorOnFailure(reader.Get(m_attr_val.val.i32));
-        break;
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT64:
-        if (reader.GetType() == chip::TLV::kTLVType_Null) {
-            chip::app::NumericAttributeTraits<int64_t>::SetNull(m_attr_val.val.i64);
-            break;
+        if (reader.GetType() == chip::TLV::kTLVType_Null && m_attr_val.is_nullable()) {
+            chip::app::NumericAttributeTraits<int32_t>::SetNull(m_attr_val.val.i32);
+        } else {
+            ReturnErrorOnFailure(reader.Get(m_attr_val.val.i32));
         }
-    // Fall through
+        break;
     case ESP_MATTER_VAL_TYPE_INT64:
-        ReturnErrorOnFailure(reader.Get(m_attr_val.val.i64));
-        break;
-    case ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT:
-        if (reader.GetType() == chip::TLV::kTLVType_Null) {
-            chip::app::NumericAttributeTraits<float>::SetNull(m_attr_val.val.f);
-            break;
+        if (reader.GetType() == chip::TLV::kTLVType_Null && m_attr_val.is_nullable()) {
+            chip::app::NumericAttributeTraits<int64_t>::SetNull(m_attr_val.val.i64);
+        } else {
+            ReturnErrorOnFailure(reader.Get(m_attr_val.val.i64));
         }
-    // Fall through
+        break;
     case ESP_MATTER_VAL_TYPE_FLOAT:
-        ReturnErrorOnFailure(reader.Get(m_attr_val.val.f));
+        if (reader.GetType() == chip::TLV::kTLVType_Null && m_attr_val.is_nullable()) {
+            chip::app::NumericAttributeTraits<float>::SetNull(m_attr_val.val.f);
+        } else {
+            ReturnErrorOnFailure(reader.Get(m_attr_val.val.f));
+        }
         break;
     case ESP_MATTER_VAL_TYPE_CHAR_STRING:
     case ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING: {
@@ -162,106 +146,76 @@ CHIP_ERROR attribute_data_decode_buffer::Decode(chip::TLV::TLVReader &reader)
 
 CHIP_ERROR attribute_data_encode_buffer::Encode(chip::TLV::TLVWriter &writer, chip::TLV::Tag tag) const
 {
-    switch (m_attr_val.type) {
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BOOLEAN:
-        if (chip::app::NumericAttributeTraits<bool>::IsNullValue(m_attr_val.val.b)) {
-            ReturnErrorOnFailure(writer.PutNull(tag));
-            break;
-        }
-    // Fall through
+    switch (m_attr_val.get_storage_type()) {
     case ESP_MATTER_VAL_TYPE_BOOLEAN:
-        ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.b));
-        break;
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8:
-        if (chip::app::NumericAttributeTraits<uint8_t>::IsNullValue(m_attr_val.val.u8)) {
+        if (m_attr_val.is_nullable() && chip::app::NumericAttributeTraits<bool>::IsNullValue(m_attr_val.val.b)) {
             ReturnErrorOnFailure(writer.PutNull(tag));
-            break;
+        } else {
+            ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.b));
         }
-    // Fall through
+        break;
     case ESP_MATTER_VAL_TYPE_UINT8:
-    case ESP_MATTER_VAL_TYPE_ENUM8:
-    case ESP_MATTER_VAL_TYPE_BITMAP8:
-        ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.u8));
-        break;
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16:
-        if (chip::app::NumericAttributeTraits<uint16_t>::IsNullValue(m_attr_val.val.u16)) {
+        if (m_attr_val.is_nullable() && chip::app::NumericAttributeTraits<uint8_t>::IsNullValue(m_attr_val.val.u8)) {
             ReturnErrorOnFailure(writer.PutNull(tag));
-            break;
+        } else {
+            ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.u8));
         }
-    // Fall through
+        break;
     case ESP_MATTER_VAL_TYPE_UINT16:
-    case ESP_MATTER_VAL_TYPE_ENUM16:
-    case ESP_MATTER_VAL_TYPE_BITMAP16:
-        ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.u16));
-        break;
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32:
-        if (chip::app::NumericAttributeTraits<uint32_t>::IsNullValue(m_attr_val.val.u32)) {
+        if (m_attr_val.is_nullable() && chip::app::NumericAttributeTraits<uint16_t>::IsNullValue(m_attr_val.val.u16)) {
             ReturnErrorOnFailure(writer.PutNull(tag));
-            break;
+        } else {
+            ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.u16));
         }
-    // Fall through
+        break;
     case ESP_MATTER_VAL_TYPE_UINT32:
-    case ESP_MATTER_VAL_TYPE_BITMAP32:
-        ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.u32));
-        break;
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT64:
-        if (chip::app::NumericAttributeTraits<uint64_t>::IsNullValue(m_attr_val.val.u64)) {
+        if (m_attr_val.is_nullable() && chip::app::NumericAttributeTraits<uint32_t>::IsNullValue(m_attr_val.val.u32)) {
             ReturnErrorOnFailure(writer.PutNull(tag));
-            break;
+        } else {
+            ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.u32));
         }
-    // Fall through
+        break;
     case ESP_MATTER_VAL_TYPE_UINT64:
-        ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.u64));
-        break;
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT8:
-        if (chip::app::NumericAttributeTraits<int8_t>::IsNullValue(m_attr_val.val.i8)) {
+        if (m_attr_val.is_nullable() && chip::app::NumericAttributeTraits<uint64_t>::IsNullValue(m_attr_val.val.u64)) {
             ReturnErrorOnFailure(writer.PutNull(tag));
-            break;
+        } else {
+            ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.u64));
         }
-    // Fall through
+        break;
     case ESP_MATTER_VAL_TYPE_INT8:
-        ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.i8));
-        break;
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT16:
-        if (chip::app::NumericAttributeTraits<int16_t>::IsNullValue(m_attr_val.val.i16)) {
+        if (m_attr_val.is_nullable() && chip::app::NumericAttributeTraits<int8_t>::IsNullValue(m_attr_val.val.i8)) {
             ReturnErrorOnFailure(writer.PutNull(tag));
-            break;
+        } else {
+            ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.i8));
         }
-    // Fall through
+        break;
     case ESP_MATTER_VAL_TYPE_INT16:
-        ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.i16));
-        break;
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT32:
-        if (chip::app::NumericAttributeTraits<int32_t>::IsNullValue(m_attr_val.val.i32)) {
+        if (m_attr_val.is_nullable() && chip::app::NumericAttributeTraits<int16_t>::IsNullValue(m_attr_val.val.i16)) {
             ReturnErrorOnFailure(writer.PutNull(tag));
-            break;
+        } else {
+            ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.i16));
         }
-    // Fall through
+        break;
     case ESP_MATTER_VAL_TYPE_INT32:
-        ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.i32));
-        break;
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT64:
-        if (chip::app::NumericAttributeTraits<int64_t>::IsNullValue(m_attr_val.val.i64)) {
+        if (m_attr_val.is_nullable() && chip::app::NumericAttributeTraits<int32_t>::IsNullValue(m_attr_val.val.i32)) {
             ReturnErrorOnFailure(writer.PutNull(tag));
-            break;
+        } else {
+            ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.i32));
         }
-    // Fall through
+        break;
     case ESP_MATTER_VAL_TYPE_INT64:
-        ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.i64));
-        break;
-    case ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT:
-        if (chip::app::NumericAttributeTraits<float>::IsNullValue(m_attr_val.val.f)) {
+        if (m_attr_val.is_nullable() && chip::app::NumericAttributeTraits<int64_t>::IsNullValue(m_attr_val.val.i64)) {
             ReturnErrorOnFailure(writer.PutNull(tag));
-            break;
+        } else {
+            ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.i64));
         }
-    // Fall through
+        break;
     case ESP_MATTER_VAL_TYPE_FLOAT:
-        ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.f));
+        if (m_attr_val.is_nullable() && chip::app::NumericAttributeTraits<float>::IsNullValue(m_attr_val.val.f)) {
+            ReturnErrorOnFailure(writer.PutNull(tag));
+        } else {
+            ReturnErrorOnFailure(writer.Put(tag, m_attr_val.val.f));
+        }
         break;
     case ESP_MATTER_VAL_TYPE_CHAR_STRING:
     case ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING: {

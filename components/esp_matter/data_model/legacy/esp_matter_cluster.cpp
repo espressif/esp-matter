@@ -634,6 +634,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
 
         /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
         global::attribute::create_cluster_revision(cluster, 0);
         attribute::create_membership(cluster, NULL, 0, 0);
         attribute::create_max_membership_count(cluster, config->max_membership_count);

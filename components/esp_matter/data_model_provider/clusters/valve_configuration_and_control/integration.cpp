@@ -42,7 +42,7 @@ DataModel::Nullable<uint32_t> ReadNullableU32(EndpointId endpointId, AttributeId
     if (attr == nullptr) {
         return DataModel::NullNullable;
     }
-    esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
+    esp_matter_attr_val_t val;
     if (attribute::get_val_internal(attr, &val) != ESP_OK) {
         return DataModel::NullNullable;
     }

@@ -269,7 +269,7 @@ static void app_driver_button_toggle_cb(void *arg, void *data)
 
     attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
 
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val;
     attribute::get_val(attribute, &val);
     val.val.b = !val.val.b;
     attribute::update(endpoint_id, cluster_id, attribute_id, &val);
@@ -307,7 +307,7 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
     esp_err_t err = ESP_OK;
     void *priv_data = endpoint::get_priv_data(endpoint_id);
     led_driver_handle_t handle = (led_driver_handle_t)priv_data;
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val;
 
     /* Setting brightness */
     attribute_t *attribute = attribute::get(endpoint_id, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id);

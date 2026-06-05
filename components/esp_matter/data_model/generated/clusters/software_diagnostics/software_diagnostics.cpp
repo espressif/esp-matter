@@ -66,20 +66,20 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 namespace attribute {
 attribute_t *create_thread_metrics(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ThreadMetrics::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, ThreadMetrics::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_current_heap_free(cluster_t *cluster, uint64_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentHeapFree::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint64(0), esp_matter_uint64(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentHeapFree::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint64_t>(0)), esp_matter_attr_val(static_cast<uint64_t>(4294967294)));
     return attribute;
 }
 
 attribute_t *create_current_heap_used(cluster_t *cluster, uint64_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentHeapUsed::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint64(0), esp_matter_uint64(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentHeapUsed::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint64_t>(0)), esp_matter_attr_val(static_cast<uint64_t>(4294967294)));
     return attribute;
 }
 
@@ -87,8 +87,8 @@ attribute_t *create_current_heap_high_watermark(cluster_t *cluster, uint64_t val
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(watermarks), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentHeapHighWatermark::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint64(0), esp_matter_uint64(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentHeapHighWatermark::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint64_t>(0)), esp_matter_attr_val(static_cast<uint64_t>(4294967294)));
     return attribute;
 }
 

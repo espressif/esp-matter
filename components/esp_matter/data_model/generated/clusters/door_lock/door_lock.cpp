@@ -391,50 +391,50 @@ esp_err_t add(cluster_t *cluster)
 namespace attribute {
 attribute_t *create_lock_state(cluster_t *cluster, nullable<uint8_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, LockState::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_enum8(0), esp_matter_nullable_enum8(3));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, LockState::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(nullable<uint8_t>(3), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_lock_type(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, LockType::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(11));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, LockType::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(11), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_actuator_enabled(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, ActuatorEnabled::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+    return esp_matter::attribute::create(cluster, ActuatorEnabled::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_door_state(cluster_t *cluster, nullable<uint8_t> value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(door_position_sensor), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, DoorState::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_enum8(0), esp_matter_nullable_enum8(5));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, DoorState::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(nullable<uint8_t>(5), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_door_open_events(cluster_t *cluster, uint32_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, DoorOpenEvents::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint32(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(0), esp_matter_uint32(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, DoorOpenEvents::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0)), esp_matter_attr_val(static_cast<uint32_t>(4294967294)));
     return attribute;
 }
 
 attribute_t *create_door_closed_events(cluster_t *cluster, uint32_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, DoorClosedEvents::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint32(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(0), esp_matter_uint32(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, DoorClosedEvents::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0)), esp_matter_attr_val(static_cast<uint32_t>(4294967294)));
     return attribute;
 }
 
 attribute_t *create_open_period(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, OpenPeriod::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(0), esp_matter_uint16(65534));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, OpenPeriod::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
     return attribute;
 }
 
@@ -442,8 +442,8 @@ attribute_t *create_number_of_pin_users_supported(cluster_t *cluster, uint16_t v
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(pin_credential), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfPINUsersSupported::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(0), esp_matter_uint16(65534));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfPINUsersSupported::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
     return attribute;
 }
 
@@ -451,8 +451,8 @@ attribute_t *create_number_of_week_day_schedules_supported_per_user(cluster_t *c
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(weekday_access_schedules), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfWeekDaySchedulesSupportedPerUser::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(0), esp_matter_uint8(253));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfWeekDaySchedulesSupportedPerUser::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(253)));
     return attribute;
 }
 
@@ -460,8 +460,8 @@ attribute_t *create_number_of_year_day_schedules_supported_per_user(cluster_t *c
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(year_day_access_schedules), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfYearDaySchedulesSupportedPerUser::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(0), esp_matter_uint8(253));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfYearDaySchedulesSupportedPerUser::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(253)));
     return attribute;
 }
 
@@ -469,8 +469,8 @@ attribute_t *create_number_of_holiday_schedules_supported(cluster_t *cluster, ui
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(holiday_schedules), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfHolidaySchedulesSupported::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(0), esp_matter_uint8(253));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfHolidaySchedulesSupported::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(253)));
     return attribute;
 }
 
@@ -478,8 +478,8 @@ attribute_t *create_max_pin_code_length(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(pin_credential), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxPINCodeLength::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(0), esp_matter_uint8(254));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxPINCodeLength::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
     return attribute;
 }
 
@@ -487,83 +487,83 @@ attribute_t *create_min_pin_code_length(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(pin_credential), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MinPINCodeLength::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(0), esp_matter_uint8(254));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, MinPINCodeLength::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
     return attribute;
 }
 
 attribute_t *create_language(cluster_t *cluster, char *value, uint16_t length)
 {
     VerifyOrReturnValue(length <= k_max_language_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
-    return esp_matter::attribute::create(cluster, Language::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_char_str(value, length), k_max_language_length + 1);
+    return esp_matter::attribute::create(cluster, Language::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value, length), k_max_language_length + 1);
 }
 
 attribute_t *create_led_settings(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, LEDSettings::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(2));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, LEDSettings::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(2), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_auto_relock_time(cluster_t *cluster, uint32_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, AutoRelockTime::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint32(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(0), esp_matter_uint32(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, AutoRelockTime::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0)), esp_matter_attr_val(static_cast<uint32_t>(4294967294)));
     return attribute;
 }
 
 attribute_t *create_sound_volume(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, SoundVolume::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(3));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, SoundVolume::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(3), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_operating_mode(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, OperatingMode::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(4));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, OperatingMode::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(4), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_supported_operating_modes(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, SupportedOperatingModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bitmap16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_bitmap16(0), esp_matter_bitmap16(65535));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, SupportedOperatingModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint16_t>(65535), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
 attribute_t *create_default_configuration_register(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, DefaultConfigurationRegister::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bitmap16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_bitmap16(0), esp_matter_bitmap16(65535));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, DefaultConfigurationRegister::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint16_t>(65535), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
 attribute_t *create_enable_local_programming(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, EnableLocalProgramming::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_bool(value));
+    return esp_matter::attribute::create(cluster, EnableLocalProgramming::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_enable_one_touch_locking(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, EnableOneTouchLocking::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_bool(value));
+    return esp_matter::attribute::create(cluster, EnableOneTouchLocking::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_enable_inside_status_led(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, EnableInsideStatusLED::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_bool(value));
+    return esp_matter::attribute::create(cluster, EnableInsideStatusLED::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_enable_privacy_mode_button(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, EnablePrivacyModeButton::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_bool(value));
+    return esp_matter::attribute::create(cluster, EnablePrivacyModeButton::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_local_programming_features(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, LocalProgrammingFeatures::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_bitmap8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_bitmap8(0), esp_matter_bitmap8(15));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, LocalProgrammingFeatures::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint8_t>(15), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
@@ -571,70 +571,70 @@ attribute_t *create_require_pin_for_remote_operation(cluster_t *cluster, bool va
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(((has_feature(credential_over_the_air_access)) && (has_feature(pin_credential))), NULL);
-    return esp_matter::attribute::create(cluster, RequirePINforRemoteOperation::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_bool(value));
+    return esp_matter::attribute::create(cluster, RequirePINforRemoteOperation::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_aliro_reader_verification_key(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(aliro_provisioning), NULL);
-    return esp_matter::attribute::create(cluster, AliroReaderVerificationKey::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_octet_str(value, length));
+    return esp_matter::attribute::create(cluster, AliroReaderVerificationKey::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, length));
 }
 
 attribute_t *create_aliro_reader_group_identifier(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(aliro_provisioning), NULL);
-    return esp_matter::attribute::create(cluster, AliroReaderGroupIdentifier::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_octet_str(value, length));
+    return esp_matter::attribute::create(cluster, AliroReaderGroupIdentifier::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, length));
 }
 
 attribute_t *create_aliro_reader_group_sub_identifier(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(aliro_provisioning), NULL);
-    return esp_matter::attribute::create(cluster, AliroReaderGroupSubIdentifier::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_octet_str(value, length));
+    return esp_matter::attribute::create(cluster, AliroReaderGroupSubIdentifier::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length));
 }
 
 attribute_t *create_aliro_expedited_transaction_supported_protocol_versions(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(aliro_provisioning), NULL);
-    return esp_matter::attribute::create(cluster, AliroExpeditedTransactionSupportedProtocolVersions::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, AliroExpeditedTransactionSupportedProtocolVersions::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_aliro_group_resolving_key(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(aliro_bleuwb), NULL);
-    return esp_matter::attribute::create(cluster, AliroGroupResolvingKey::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_octet_str(value, length));
+    return esp_matter::attribute::create(cluster, AliroGroupResolvingKey::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, length));
 }
 
 attribute_t *create_aliro_supported_bleuwb_protocol_versions(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(aliro_bleuwb), NULL);
-    return esp_matter::attribute::create(cluster, AliroSupportedBLEUWBProtocolVersions::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, AliroSupportedBLEUWBProtocolVersions::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_aliro_ble_advertising_version(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(aliro_bleuwb), NULL);
-    return esp_matter::attribute::create(cluster, AliroBLEAdvertisingVersion::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, AliroBLEAdvertisingVersion::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
 }
 
 attribute_t *create_number_of_aliro_credential_issuer_keys_supported(cluster_t *cluster, uint16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(aliro_provisioning), NULL);
-    return esp_matter::attribute::create(cluster, NumberOfAliroCredentialIssuerKeysSupported::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
+    return esp_matter::attribute::create(cluster, NumberOfAliroCredentialIssuerKeysSupported::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
 }
 
 attribute_t *create_number_of_aliro_endpoint_keys_supported(cluster_t *cluster, uint16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(aliro_provisioning), NULL);
-    return esp_matter::attribute::create(cluster, NumberOfAliroEndpointKeysSupported::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
+    return esp_matter::attribute::create(cluster, NumberOfAliroEndpointKeysSupported::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
 }
 
 } /* attribute */

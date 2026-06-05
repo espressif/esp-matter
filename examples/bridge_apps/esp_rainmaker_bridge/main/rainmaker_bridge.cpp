@@ -51,7 +51,7 @@ static esp_err_t attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uin
 {
     esp_err_t err = ESP_OK;
     attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val;
     attribute::get_val(attribute, &val);
 
     if (cluster_id == OnOff::Id) {
@@ -289,7 +289,7 @@ static esp_err_t rainmaker_bridge_update_online_state(const char* node_id, uint1
     esp_err_t err = ESP_OK;
     bool connection_status = false;
     attribute_t *attribute = attribute::get(endpoint_id, BridgedDeviceBasicInformation::Id, BridgedDeviceBasicInformation::Attributes::Reachable::Id);
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val;
     attribute::get_val(attribute, &val);
 
     err = esp_rainmaker_api_get_node_connection_status(node_id, &connection_status);
@@ -428,7 +428,7 @@ esp_err_t rainmaker_bridge_attribute_update(uint16_t endpoint_id, uint32_t clust
     } else if (cluster_id == LevelControl::Id) {
         if (attribute_id == LevelControl::Attributes::CurrentLevel::Id) {
             attribute_t *attribute = attribute::get(endpoint_id, OnOff::Id, OnOff::Attributes::OnOff::Id);
-            esp_matter_attr_val_t val_onoff = esp_matter_invalid(NULL);
+            esp_matter_attr_val_t val_onoff;
             attribute::get_val(attribute, &val_onoff);
             if (val_onoff.val.b == false) {
                 return ESP_OK;

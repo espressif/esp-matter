@@ -24,6 +24,16 @@ struct callback_record_t {
     uint32_t cluster_id;
     uint32_t attribute_id;
     esp_matter_attr_val_t val;
+    void reset()
+    {
+        called = false;
+        type = esp_matter::attribute::PRE_UPDATE;
+        endpoint_id = 0;
+        cluster_id = 0;
+        attribute_id = 0;
+        val = esp_matter_attr_val();
+    }
+
 };
 
 static callback_record_t cb_pre_update;
@@ -31,8 +41,8 @@ static callback_record_t cb_post_update;
 
 static void reset_callback_records()
 {
-    memset(&cb_pre_update, 0, sizeof(cb_pre_update));
-    memset(&cb_post_update, 0, sizeof(cb_post_update));
+    cb_pre_update.reset();
+    cb_post_update.reset();
 }
 
 static esp_err_t test_attribute_callback(attribute::callback_type_t type, uint16_t endpoint_id,
@@ -108,7 +118,7 @@ TEST_CASE("report returns ESP_ERR_INVALID_ARG for invalid endpoint", "[report][i
 {
     setup_for_update_report();
 
-    esp_matter_attr_val_t val = esp_matter_bool(true);
+    esp_matter_attr_val_t val = esp_matter_attr_val(true);
     esp_err_t err = attribute::report(chip::kInvalidEndpointId, OnOff::Id, OnOff::Attributes::OnOff::Id, &val);
     TEST_ASSERT_EQUAL(ESP_ERR_INVALID_ARG, err);
 
@@ -119,7 +129,7 @@ TEST_CASE("report returns ESP_ERR_INVALID_ARG for invalid cluster", "[report][in
 {
     setup_for_update_report();
 
-    esp_matter_attr_val_t val = esp_matter_bool(true);
+    esp_matter_attr_val_t val = esp_matter_attr_val(true);
     esp_err_t err = attribute::report(test_endpoint_id, chip::kInvalidClusterId, OnOff::Attributes::OnOff::Id, &val);
     TEST_ASSERT_EQUAL(ESP_ERR_INVALID_ARG, err);
 
@@ -130,7 +140,7 @@ TEST_CASE("report returns ESP_ERR_INVALID_ARG for invalid attribute", "[report][
 {
     setup_for_update_report();
 
-    esp_matter_attr_val_t val = esp_matter_bool(true);
+    esp_matter_attr_val_t val = esp_matter_attr_val(true);
     esp_err_t err = attribute::report(test_endpoint_id, OnOff::Id, chip::kInvalidAttributeId, &val);
     TEST_ASSERT_EQUAL(ESP_ERR_INVALID_ARG, err);
 
@@ -141,7 +151,7 @@ TEST_CASE("report bool updates stored value", "[report][bool]")
 {
     setup_for_update_report();
 
-    esp_matter_attr_val_t val = esp_matter_bool(true);
+    esp_matter_attr_val_t val = esp_matter_attr_val(true);
     esp_err_t err = attribute::report(test_endpoint_id, OnOff::Id, OnOff::Attributes::OnOff::Id, &val);
     TEST_ASSERT_EQUAL(ESP_OK, err);
 
@@ -151,7 +161,7 @@ TEST_CASE("report bool updates stored value", "[report][bool]")
     TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_BOOLEAN, retrieved.type);
     TEST_ASSERT_EQUAL(true, retrieved.val.b);
 
-    val = esp_matter_bool(false);
+    val = esp_matter_attr_val(false);
     err = attribute::report(test_endpoint_id, OnOff::Id, OnOff::Attributes::OnOff::Id, &val);
     TEST_ASSERT_EQUAL(ESP_OK, err);
 
@@ -166,7 +176,7 @@ TEST_CASE("report nullable uint8 updates stored value", "[report][nullable][uint
 {
     setup_for_update_report();
 
-    esp_matter_attr_val_t val = esp_matter_nullable_uint8(150);
+    esp_matter_attr_val_t val = esp_matter_attr_val(nullable<uint8_t>(150));
     esp_err_t err = attribute::report(test_endpoint_id, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id, &val);
     TEST_ASSERT_EQUAL(ESP_OK, err);
 
@@ -185,7 +195,7 @@ TEST_CASE("report same value returns ESP_OK", "[report][no_change]")
 {
     setup_for_update_report();
 
-    esp_matter_attr_val_t val = esp_matter_bool(false);
+    esp_matter_attr_val_t val = esp_matter_attr_val(false);
     esp_err_t err = attribute::report(test_endpoint_id, OnOff::Id, OnOff::Attributes::OnOff::Id, &val);
     TEST_ASSERT_EQUAL(ESP_OK, err);
 
@@ -204,7 +214,7 @@ TEST_CASE("report does not call attribute callbacks", "[report][callback]")
     setup_for_update_report();
     reset_callback_records();
 
-    esp_matter_attr_val_t val = esp_matter_nullable_uint8(42);
+    esp_matter_attr_val_t val = esp_matter_attr_val(nullable<uint8_t>(42));
     esp_err_t err = attribute::report(test_endpoint_id, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id, &val);
     TEST_ASSERT_EQUAL(ESP_OK, err);
 
@@ -223,7 +233,7 @@ TEST_CASE("update calls PRE_UPDATE and POST_UPDATE callbacks", "[update][callbac
     setup_for_update_report();
     reset_callback_records();
 
-    esp_matter_attr_val_t val = esp_matter_bool(true);
+    esp_matter_attr_val_t val = esp_matter_attr_val(true);
     esp_err_t err = attribute::update(test_endpoint_id, OnOff::Id, OnOff::Attributes::OnOff::Id, &val);
     TEST_ASSERT_EQUAL(ESP_OK, err);
 
@@ -251,7 +261,7 @@ TEST_CASE("update calls callbacks with correct value for nullable uint8", "[upda
     setup_for_update_report();
     reset_callback_records();
 
-    esp_matter_attr_val_t val = esp_matter_nullable_uint8(77);
+    esp_matter_attr_val_t val = esp_matter_attr_val(nullable<uint8_t>(77));
     esp_err_t err = attribute::update(test_endpoint_id, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id, &val);
     TEST_ASSERT_EQUAL(ESP_OK, err);
 
@@ -274,7 +284,7 @@ TEST_CASE("update and report both store the value correctly", "[update][report_p
 {
     setup_for_update_report();
 
-    esp_matter_attr_val_t val = esp_matter_nullable_uint8(55);
+    esp_matter_attr_val_t val = esp_matter_attr_val(nullable<uint8_t>(55));
     esp_err_t err = attribute::update(test_endpoint_id, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id, &val);
     TEST_ASSERT_EQUAL(ESP_OK, err);
 
@@ -283,7 +293,7 @@ TEST_CASE("update and report both store the value correctly", "[update][report_p
     TEST_ASSERT_EQUAL(ESP_OK, err);
     TEST_ASSERT_EQUAL(55, after_update.val.u8);
 
-    val = esp_matter_nullable_uint8(88);
+    val = esp_matter_attr_val(nullable<uint8_t>(88));
     err = attribute::report(test_endpoint_id, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id, &val);
     TEST_ASSERT_EQUAL(ESP_OK, err);
 

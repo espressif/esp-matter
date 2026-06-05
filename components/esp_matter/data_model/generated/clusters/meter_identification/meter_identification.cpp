@@ -63,29 +63,29 @@ esp_err_t add(cluster_t *cluster)
 namespace attribute {
 attribute_t *create_meter_type(cluster_t *cluster, nullable<uint8_t> value)
 {
-    return esp_matter::attribute::create(cluster, MeterType::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
+    return esp_matter::attribute::create(cluster, MeterType::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
 }
 
 attribute_t *create_point_of_delivery(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, PointOfDelivery::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_char_str(value, length));
+    return esp_matter::attribute::create(cluster, PointOfDelivery::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, length));
 }
 
 attribute_t *create_meter_serial_number(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, MeterSerialNumber::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_char_str(value, length));
+    return esp_matter::attribute::create(cluster, MeterSerialNumber::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, length));
 }
 
 attribute_t *create_protocol_version(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, ProtocolVersion::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_char_str(value, length));
+    return esp_matter::attribute::create(cluster, ProtocolVersion::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, length));
 }
 
 attribute_t *create_power_threshold(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(power_threshold), NULL);
-    return esp_matter::attribute::create(cluster, PowerThreshold::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, PowerThreshold::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, length, count));
 }
 
 } /* attribute */

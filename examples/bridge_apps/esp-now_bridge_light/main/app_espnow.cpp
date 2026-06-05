@@ -61,7 +61,7 @@ static void espnow_ctrl_onoff(espnow_addr_t src_addr, bool status)
 
     attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
 
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val;
     attribute::get_val(attribute, &val);
     if (val.type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
         val.val.b = status;
@@ -103,7 +103,7 @@ static void espnow_event_handler(void* handler_args, esp_event_base_t base, int3
 
     attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
 
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val;
 
     switch (id) {
     case ESP_EVENT_ESPNOW_CTRL_BIND: {

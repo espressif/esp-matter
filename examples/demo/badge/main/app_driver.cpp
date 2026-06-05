@@ -70,7 +70,7 @@ static void app_driver_button_toggle_cb(void *arg, void *data)
 
     attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
 
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val;
     attribute::get_val(attribute, &val);
     val.val.b = !val.val.b;
     attribute::update(endpoint_id, cluster_id, attribute_id, &val);
@@ -82,7 +82,7 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
     if (cluster_id == BADGE_CLUSTER_ID) {
         char vcard_data[MAX_VCARD_ATTR][MAX_ATTR_SIZE];
         memset(vcard_data, '\0', sizeof(MAX_VCARD_ATTR * MAX_ATTR_SIZE));
-        esp_matter_attr_val_t _val = esp_matter_invalid(NULL);
+        esp_matter_attr_val_t _val;
         attribute_t *attribute = NULL;
 
         uint32_t _attribute_id = NAME_ATTRIBUTE_ID;
@@ -129,7 +129,7 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
     void *priv_data = endpoint::get_priv_data(endpoint_id);
     led_indicator_handle_t handle = (led_indicator_handle_t)priv_data;
     attribute_t *attribute = NULL;
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val;
 
     attribute = attribute::get(0x0, BADGE_CLUSTER_ID, NAME_ATTRIBUTE_ID);
     attribute::get_val(attribute, &val);
@@ -139,7 +139,7 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
         int i = 0;
         uint32_t attribute_id = NAME_ATTRIBUTE_ID;
         do {
-            esp_matter_attr_val_t _val = esp_matter_invalid(NULL);
+            esp_matter_attr_val_t _val;
             attribute = attribute::get(0x0, BADGE_CLUSTER_ID, attribute_id);
             attribute::get_val(attribute, &_val);
             memcpy(vcard_data[i], _val.val.a.b, _val.val.a.s);

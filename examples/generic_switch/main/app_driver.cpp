@@ -30,7 +30,7 @@ static const char *TAG = "app_driver";
 
 static void driver_set_switch_current_position(uint16_t endpoint_id, uint8_t position)
 {
-    esp_matter_attr_val_t val = esp_matter_uint8(position);
+    esp_matter_attr_val_t val(position);
     esp_err_t err = esp_matter::attribute::update(endpoint_id, Switch::Id, Switch::Attributes::CurrentPosition::Id, &val);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Switch CurrentPosition update failed: %s", esp_err_to_name(err));
@@ -107,7 +107,7 @@ static void app_driver_button_multipress_ongoing(void *arg, void *data)
 
     attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
 
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val;
     attribute::get_val(attribute, &val);
 
     uint32_t feature_map = val.val.u32;
@@ -135,7 +135,7 @@ static void app_driver_button_multipress_complete(void *arg, void *data)
 
     attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
 
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val;
     attribute::get_val(attribute, &val);
     uint8_t multipress_max = val.val.u8;
     int total_number_of_presses_counted = (current_number_of_presses_counted > multipress_max) ? 0 : current_number_of_presses_counted;

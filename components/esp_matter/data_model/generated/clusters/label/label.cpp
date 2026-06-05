@@ -44,7 +44,7 @@ namespace label {
 namespace attribute {
 attribute_t *create_label_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, LabelList::Id, ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, LabelList::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length, count));
 }
 
 } /* attribute */

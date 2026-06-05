@@ -381,17 +381,12 @@ esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, uint32_t 
  */
 static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_attr_bounds_t bounds)
 {
-    switch (val.type) {
-    case ESP_MATTER_VAL_TYPE_UINT8:
-    case ESP_MATTER_VAL_TYPE_ENUM8:
-    case ESP_MATTER_VAL_TYPE_BITMAP8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8: {
-        using Traits = chip::app::NumericAttributeTraits<uint8_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.u8)) {
-            return 0;
-        }
+    if (val.is_null()) {
+        return 0;
+    }
+
+    switch (val.get_storage_type()) {
+    case ESP_MATTER_VAL_TYPE_UINT8: {
         if (val.val.u8 < bounds.min.val.u8) {
             return -1;
         } else if (val.val.u8 > bounds.max.val.u8) {
@@ -399,16 +394,7 @@ static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_at
         }
         return 0;
     }
-    case ESP_MATTER_VAL_TYPE_UINT16:
-    case ESP_MATTER_VAL_TYPE_ENUM16:
-    case ESP_MATTER_VAL_TYPE_BITMAP16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16: {
-        using Traits = chip::app::NumericAttributeTraits<uint16_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.u16)) {
-            return 0;
-        }
+    case ESP_MATTER_VAL_TYPE_UINT16: {
         if (val.val.u16 < bounds.min.val.u16) {
             return -1;
         } else if (val.val.u16 > bounds.max.val.u16) {
@@ -416,14 +402,7 @@ static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_at
         }
         return 0;
     }
-    case ESP_MATTER_VAL_TYPE_UINT32:
-    case ESP_MATTER_VAL_TYPE_BITMAP32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32: {
-        using Traits = chip::app::NumericAttributeTraits<uint32_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.u32)) {
-            return 0;
-        }
+    case ESP_MATTER_VAL_TYPE_UINT32: {
         if (val.val.u32 < bounds.min.val.u32) {
             return -1;
         } else if (val.val.u32 > bounds.max.val.u32) {
@@ -431,12 +410,7 @@ static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_at
         }
         return 0;
     }
-    case ESP_MATTER_VAL_TYPE_UINT64:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT64: {
-        using Traits = chip::app::NumericAttributeTraits<uint64_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.u64)) {
-            return 0;
-        }
+    case ESP_MATTER_VAL_TYPE_UINT64: {
         if (val.val.u64 < bounds.min.val.u64) {
             return -1;
         } else if (val.val.u64 > bounds.max.val.u64) {
@@ -444,12 +418,7 @@ static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_at
         }
         return 0;
     }
-    case ESP_MATTER_VAL_TYPE_INT8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT8: {
-        using Traits = chip::app::NumericAttributeTraits<int8_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.i8)) {
-            return 0;
-        }
+    case ESP_MATTER_VAL_TYPE_INT8: {
         if (val.val.i8 < bounds.min.val.i8) {
             return -1;
         } else if (val.val.i8 > bounds.max.val.i8) {
@@ -457,12 +426,7 @@ static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_at
         }
         return 0;
     }
-    case ESP_MATTER_VAL_TYPE_INT16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT16: {
-        using Traits = chip::app::NumericAttributeTraits<int16_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.i16)) {
-            return 0;
-        }
+    case ESP_MATTER_VAL_TYPE_INT16: {
         if (val.val.i16 < bounds.min.val.i16) {
             return -1;
         } else if (val.val.i16 > bounds.max.val.i16) {
@@ -470,12 +434,7 @@ static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_at
         }
         return 0;
     }
-    case ESP_MATTER_VAL_TYPE_INT32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT32: {
-        using Traits = chip::app::NumericAttributeTraits<int32_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.i32)) {
-            return 0;
-        }
+    case ESP_MATTER_VAL_TYPE_INT32: {
         if (val.val.i32 < bounds.min.val.i32) {
             return -1;
         } else if (val.val.i32 > bounds.max.val.i32) {
@@ -483,12 +442,7 @@ static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_at
         }
         return 0;
     }
-    case ESP_MATTER_VAL_TYPE_INT64:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT64: {
-        using Traits = chip::app::NumericAttributeTraits<int64_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.i64)) {
-            return 0;
-        }
+    case ESP_MATTER_VAL_TYPE_INT64: {
         if (val.val.i64 < bounds.min.val.i64) {
             return -1;
         } else if (val.val.i64 > bounds.max.val.i64) {
@@ -496,12 +450,7 @@ static int compare_attr_val_with_bounds(esp_matter_attr_val_t val, esp_matter_at
         }
         return 0;
     }
-    case ESP_MATTER_VAL_TYPE_FLOAT:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT: {
-        using Traits = chip::app::NumericAttributeTraits<float>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.f)) {
-            return 0;
-        }
+    case ESP_MATTER_VAL_TYPE_FLOAT: {
         if (val.val.f < bounds.min.val.f) {
             return -1;
         } else if (val.val.f > bounds.max.val.f) {
@@ -708,8 +657,9 @@ static void deferred_attribute_write(chip::System::Layer *layer, void *attribute
     _attribute_t *current_attribute = (_attribute_t *)attribute_ptr;
     ESP_LOGI(TAG, "Store the deferred attribute 0x%" PRIx32 " of cluster 0x%" PRIX32 " on endpoint 0x%" PRIx16,
              current_attribute->attribute_id, current_attribute->cluster_id, current_attribute->endpoint_id);
+    const esp_matter_attr_val_t new_val(current_attribute->attribute_val_type, current_attribute->attribute_val);
     store_val_in_nvs(current_attribute->endpoint_id, current_attribute->cluster_id, current_attribute->attribute_id,
-    {current_attribute->attribute_val_type, current_attribute->attribute_val});
+                     new_val);
 }
 
 esp_err_t set_val_internal(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_callbacks)

@@ -31,7 +31,6 @@ using namespace esp_matter;
 
 namespace {
 std::unordered_map<EndpointId, LazyRegisteredServerCluster<PushAvStreamTransportServer>> gServers;
-
 } // namespace
 
 void ESPMatterPushAvStreamTransportClusterServerInitCallback(EndpointId endpointId)

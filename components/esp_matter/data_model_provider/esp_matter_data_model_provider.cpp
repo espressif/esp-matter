@@ -32,6 +32,8 @@
 #include <app/data-model-provider/MetadataTypes.h>
 #include <app/util/attribute-storage.h>
 #include <app/util/attribute-table.h>
+#include <app/persistence/AttributePersistenceProviderInstance.h>
+#include <app/persistence/DefaultAttributePersistenceProvider.h>
 #include <clusters/shared/GlobalIds.h>
 #include <lib/core/CHIPError.h>
 #include <lib/core/DataModelTypes.h>
@@ -61,13 +63,13 @@ class TestOnlyAttributeValueDecoderAccessor {
 public:
     explicit TestOnlyAttributeValueDecoderAccessor(AttributeValueDecoder  &decoder) : mDecoder(decoder) {}
 
-    const TLV::TLVReader  &GetReader()
+    const TLV::TLVReader &GetReader()
     {
         return mDecoder.mReader;
     }
 
 private:
-    AttributeValueDecoder  &mDecoder;
+    AttributeValueDecoder &mDecoder;
 };
 
 } // namespace app
@@ -333,19 +335,20 @@ ActionReturnStatus provider::ReadAttribute(const ReadAttributeRequest &request, 
                                                AttributeAccessInterfaceRegistry::Instance().Get(request.path.mEndpointId, request.path.mClusterId), encoder);
     VerifyOrReturnError(!aai_result.has_value(), *aai_result);
 
-    esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
-    VerifyOrReturnValue(attribute::get_val_internal(attribute, &val) == ESP_OK, Protocols::InteractionModel::Status::Failure);
+    esp_matter_attr_val_t val;
+    VerifyOrReturnValue(attribute::get_val_internal(attribute, &val) == ESP_OK,
+                        Protocols::InteractionModel::Status::Failure);
     attribute_data_encode_buffer data_buffer(val);
     return encoder.Encode(data_buffer);
 }
 
 ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request, AttributeValueDecoder &decoder)
 {
-    attribute_t *attribute = attribute::get(request.path.mEndpointId, request.path.mClusterId,
-                                            request.path.mAttributeId);
+    attribute_t *attribute =
+        attribute::get(request.path.mEndpointId, request.path.mClusterId, request.path.mAttributeId);
 
     // Decode the new value once - copy TLV reader to leave original decoder intact for mRegistry/AAI
-    esp_matter_attr_val_t new_val = esp_matter_invalid(nullptr);
+    esp_matter_attr_val_t new_val;
 
     VerifyOrReturnValue(attribute, Protocols::InteractionModel::Status::UnsupportedAttribute);
 
@@ -359,18 +362,16 @@ ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request
     if (decoder_copy.Decode(data_buffer) == CHIP_NO_ERROR) {
         new_val = data_buffer.get_attr_val();
         // PRE_UPDATE callback
-        if (attribute::execute_callback(attribute::PRE_UPDATE, request.path.mEndpointId,
-                                        request.path.mClusterId, request.path.mAttributeId,
-                                        &new_val) != ESP_OK) {
+        if (attribute::execute_callback(attribute::PRE_UPDATE, request.path.mEndpointId, request.path.mClusterId,
+                                        request.path.mAttributeId, &new_val) != ESP_OK) {
             return Protocols::InteractionModel::Status::Failure;
         }
     }
 
     // Helper to execute POST_UPDATE callback
     auto execute_post_update = [&]() {
-
-        attribute::execute_callback(attribute::POST_UPDATE, request.path.mEndpointId,
-                                    request.path.mClusterId, request.path.mAttributeId, &new_val);
+        attribute::execute_callback(attribute::POST_UPDATE, request.path.mEndpointId, request.path.mClusterId,
+                                    request.path.mAttributeId, &new_val);
     };
 
     // mRegistry handles its own storage
@@ -552,12 +553,14 @@ CHIP_ERROR provider::ServerClusters(EndpointId endpointId, ReadOnlyBufferBuilder
         if (cluster::get_flags(cluster) & CLUSTER_FLAG_SERVER) {
             ServerClusterEntry entry;
             entry.clusterId = cluster::get_id(cluster);
-            if (auto *server_cluster = mRegistry.Get(ConcreteClusterPath(endpointId, entry.clusterId)); server_cluster != nullptr) {
+            if (auto *server_cluster = mRegistry.Get(ConcreteClusterPath(endpointId, entry.clusterId));
+                    server_cluster != nullptr) {
                 entry.flags = server_cluster->GetClusterFlags(ConcreteClusterPath(endpointId, entry.clusterId));
                 entry.dataVersion = server_cluster->GetDataVersion(ConcreteClusterPath(endpointId, entry.clusterId));
             } else {
                 entry.flags.ClearAll();
-                VerifyOrReturnError(cluster::get_data_version(cluster, entry.dataVersion) == ESP_OK, CHIP_ERROR_INTERNAL);
+                VerifyOrReturnError(cluster::get_data_version(cluster, entry.dataVersion) == ESP_OK,
+                                    CHIP_ERROR_INTERNAL);
             }
             ReturnErrorOnFailure(builder.Append(entry));
         }

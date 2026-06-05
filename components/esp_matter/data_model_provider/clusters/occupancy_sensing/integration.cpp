@@ -42,7 +42,7 @@ OccupancySensing::Feature getFeature(EndpointId endpointId)
 {
     esp_matter::attribute_t *attr =
         esp_matter::attribute::get(endpointId, OccupancySensing::Id, Globals::Attributes::FeatureMap::Id);
-    esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
+    esp_matter_attr_val_t val;
     if (attr && esp_matter::attribute::get_val_internal(attr, &val) == ESP_OK &&
             val.type == ESP_MATTER_VAL_TYPE_BITMAP32) {
         return static_cast<OccupancySensing::Feature>(val.val.u32);

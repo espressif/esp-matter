@@ -32,7 +32,7 @@ uint32_t get_feature_map(esp_matter::cluster_t *cluster)
 {
     esp_matter::attribute_t *attribute = esp_matter::attribute::get(cluster, Globals::Attributes::FeatureMap::Id);
     if (attribute) {
-        esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
+        esp_matter_attr_val_t val;
         if (esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK &&
                 val.type == ESP_MATTER_VAL_TYPE_BITMAP32) {
             return val.val.u32;

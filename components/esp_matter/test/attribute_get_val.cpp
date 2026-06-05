@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
+#include "esp_matter_attribute_utils.h"
 #include <unity.h>
 #include <esp_matter.h>
 #include <esp_matter_core.h>
@@ -121,7 +122,7 @@ TEST_CASE("get_val bool - OnOff", "[get_val][esp_matter_managed][bool]")
 
     attribute_t *attr = attribute::get(test_endpoint_id, OnOff::Id, OnOff::Attributes::OnOff::Id);
     TEST_ASSERT_NOT_NULL(attr);
-    esp_matter_attr_val_t setable_val = esp_matter_bool(true);
+    esp_matter_attr_val_t setable_val = esp_matter_attr_val(true);
     esp_err_t err = attribute::set_val(attr, &setable_val);
     TEST_ASSERT_EQUAL(ESP_OK, err);
 
@@ -131,7 +132,7 @@ TEST_CASE("get_val bool - OnOff", "[get_val][esp_matter_managed][bool]")
     TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_BOOLEAN, true_val.type);
     TEST_ASSERT_EQUAL(true, true_val.val.b);
 
-    setable_val = esp_matter_bool(false);
+    setable_val = esp_matter_attr_val(false);
     err = attribute::set_val(attr, &setable_val);
     TEST_ASSERT_EQUAL(ESP_OK, err);
 
@@ -150,7 +151,7 @@ TEST_CASE("get_val uint8 - ColorMode", "[get_val][esp_matter_managed][uint8]")
 
     attribute_t *attr = attribute::get(test_endpoint_id, ColorControl::Id, ColorControl::Attributes::ColorMode::Id);
     TEST_ASSERT_NOT_NULL(attr);
-    esp_matter_attr_val_t setable_val = esp_matter_enum8(0);
+    esp_matter_attr_val_t setable_val = esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum);
     esp_err_t err = attribute::set_val(attr, &setable_val);
     TEST_ASSERT_EQUAL(ESP_OK, err);
 
@@ -160,7 +161,7 @@ TEST_CASE("get_val uint8 - ColorMode", "[get_val][esp_matter_managed][uint8]")
     TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_ENUM8, retrieved_val.type);
     TEST_ASSERT_EQUAL(0, retrieved_val.val.u8);
 
-    setable_val = esp_matter_enum8(1);
+    setable_val = esp_matter_attr_val(static_cast<uint8_t>(1), esp_matter_attr_val::uint_sub_type::k_enum);
     err = attribute::set_val(attr, &setable_val);
     TEST_ASSERT_EQUAL(ESP_OK, err);
     err = attribute::get_val(attr, &retrieved_val);
@@ -168,7 +169,7 @@ TEST_CASE("get_val uint8 - ColorMode", "[get_val][esp_matter_managed][uint8]")
     TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_ENUM8, retrieved_val.type);
     TEST_ASSERT_EQUAL(1, retrieved_val.val.u8);
 
-    setable_val = esp_matter_enum8(2);
+    setable_val = esp_matter_attr_val(static_cast<uint8_t>(2), esp_matter_attr_val::uint_sub_type::k_enum);
     err = attribute::set_val(attr, &setable_val);
     TEST_ASSERT_EQUAL(ESP_OK, err);
     err = attribute::get_val(attr, &retrieved_val);
@@ -177,7 +178,7 @@ TEST_CASE("get_val uint8 - ColorMode", "[get_val][esp_matter_managed][uint8]")
     TEST_ASSERT_EQUAL(2, retrieved_val.val.u8);
 
     // Invalid enum value (ColorMode valid range is 0-2)
-    setable_val = esp_matter_enum8(3);
+    setable_val = esp_matter_attr_val(static_cast<uint8_t>(3), esp_matter_attr_val::uint_sub_type::k_enum);
     err = attribute::set_val(attr, &setable_val);
     TEST_ASSERT_EQUAL(ESP_ERR_INVALID_ARG, err);
 
@@ -218,7 +219,7 @@ TEST_CASE("get_val nullable uint8 - CurrentLevel", "[get_val][esp_matter_managed
 
     attribute_t *attr = attribute::get(test_endpoint_id, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id);
     TEST_ASSERT_NOT_NULL(attr);
-    esp_matter_attr_val_t setable_val = esp_matter_nullable_uint8(test_current_level);
+    esp_matter_attr_val_t setable_val = esp_matter_attr_val(nullable<uint8_t>(test_current_level));
     esp_err_t err = attribute::set_val(attr, &setable_val);
     TEST_ASSERT_EQUAL(ESP_OK, err);
     esp_matter_attr_val_t retrieved_val;
@@ -228,7 +229,7 @@ TEST_CASE("get_val nullable uint8 - CurrentLevel", "[get_val][esp_matter_managed
     nullable<uint8_t> data(retrieved_val.val.u8);
     TEST_ASSERT_FALSE(data.is_null());
     TEST_ASSERT_EQUAL(test_current_level, data.value());
-    setable_val = esp_matter_nullable_uint8(nullable<uint8_t>());
+    setable_val = esp_matter_attr_val(nullable<uint8_t>());
     err = attribute::set_val(attr, &setable_val);
     TEST_ASSERT_EQUAL(ESP_OK, err);
     err = attribute::get_val(test_endpoint_id, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id, &retrieved_val);
@@ -250,7 +251,7 @@ TEST_CASE("get_val nullable uint16 - StartUpColorTemperatureMireds", "[get_val][
     // this is nvs type value, so it may screw up our tests if ran without clearing the nvs
     // hence, always set and verify the value
 
-    esp_matter_attr_val_t setable_val = esp_matter_nullable_uint16(test_color_temp);
+    esp_matter_attr_val_t setable_val = esp_matter_attr_val(nullable<uint16_t>(test_color_temp));
     esp_err_t err = attribute::set_val(attr, &setable_val);
     TEST_ASSERT_TRUE(err == ESP_OK || err == ESP_ERR_NOT_FINISHED);
 
@@ -262,7 +263,7 @@ TEST_CASE("get_val nullable uint16 - StartUpColorTemperatureMireds", "[get_val][
     TEST_ASSERT_FALSE(data.is_null());
     TEST_ASSERT_EQUAL(test_color_temp, data.value());
 
-    setable_val = esp_matter_nullable_uint16(nullable<uint16_t>());
+    setable_val = esp_matter_attr_val(nullable<uint16_t>());
     err = attribute::set_val(attr, &setable_val);
     TEST_ASSERT_EQUAL(ESP_OK, err);
 

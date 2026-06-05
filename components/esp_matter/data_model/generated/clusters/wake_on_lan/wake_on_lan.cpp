@@ -46,12 +46,12 @@ namespace wake_on_lan {
 namespace attribute {
 attribute_t *create_mac_address(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, MACAddress::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_char_str(value, length));
+    return esp_matter::attribute::create(cluster, MACAddress::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length));
 }
 
 attribute_t *create_link_local_address(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, LinkLocalAddress::Id, ATTRIBUTE_FLAG_NONE, esp_matter_octet_str(value, length));
+    return esp_matter::attribute::create(cluster, LinkLocalAddress::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length));
 }
 
 } /* attribute */

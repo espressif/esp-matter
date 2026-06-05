@@ -86,7 +86,7 @@ static uint32_t get_feature_map_value(uint16_t endpoint_id, uint32_t cluster_id)
     attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
     VerifyOrReturnError(attribute, 0);
 
-    esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
+    esp_matter_attr_val_t val;
     VerifyOrReturnError(attribute::get_val_internal(attribute, &val) == ESP_OK, 0);
     return val.val.u32;
 }
@@ -515,7 +515,7 @@ void ThreadBorderRouterManagementDelegateInitCB(void *delegate, uint16_t endpoin
         attribute_t *attribute = attribute::get(endpoint_id, ThreadBorderRouterManagement::Id, Globals::Attributes::FeatureMap::Id);
         assert(attribute != nullptr);
         /* Update the value if the attribute already exists */
-        esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
+        esp_matter_attr_val_t val;
         attribute::get_val(attribute, &val);
         bool pan_change_supported = (val.val.u32 & thread_border_router_management::feature::pan_change::get_id()) ? true : false;
         ThreadBorderRouterManagement::Delegate *thread_br_delegate = static_cast<ThreadBorderRouterManagement::Delegate *>(delegate);

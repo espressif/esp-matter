@@ -376,14 +376,14 @@ esp_err_t add(cluster_t *cluster)
 namespace attribute {
 attribute_t *create_enabled(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, Enabled::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+    return esp_matter::attribute::create(cluster, Enabled::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_on_demand_ratings(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(on_demand_content_rating), NULL);
-    return esp_matter::attribute::create(cluster, OnDemandRatings::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, OnDemandRatings::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_on_demand_rating_threshold(cluster_t *cluster, char *value, uint16_t length)
@@ -391,14 +391,14 @@ attribute_t *create_on_demand_rating_threshold(cluster_t *cluster, char *value, 
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(on_demand_content_rating), NULL);
     VerifyOrReturnValue(length <= k_max_on_demand_rating_threshold_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
-    return esp_matter::attribute::create(cluster, OnDemandRatingThreshold::Id, ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length), k_max_on_demand_rating_threshold_length + 1);
+    return esp_matter::attribute::create(cluster, OnDemandRatingThreshold::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length), k_max_on_demand_rating_threshold_length + 1);
 }
 
 attribute_t *create_scheduled_content_ratings(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(scheduled_content_rating), NULL);
-    return esp_matter::attribute::create(cluster, ScheduledContentRatings::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, ScheduledContentRatings::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_scheduled_content_rating_threshold(cluster_t *cluster, char *value, uint16_t length)
@@ -406,15 +406,15 @@ attribute_t *create_scheduled_content_rating_threshold(cluster_t *cluster, char 
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(scheduled_content_rating), NULL);
     VerifyOrReturnValue(length <= k_max_scheduled_content_rating_threshold_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
-    return esp_matter::attribute::create(cluster, ScheduledContentRatingThreshold::Id, ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length), k_max_scheduled_content_rating_threshold_length + 1);
+    return esp_matter::attribute::create(cluster, ScheduledContentRatingThreshold::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length), k_max_scheduled_content_rating_threshold_length + 1);
 }
 
 attribute_t *create_screen_daily_time(cluster_t *cluster, uint32_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(screen_time), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ScreenDailyTime::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(0), esp_matter_uint32(86400));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ScreenDailyTime::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0)), esp_matter_attr_val(static_cast<uint32_t>(86400)));
     return attribute;
 }
 
@@ -422,8 +422,8 @@ attribute_t *create_remaining_screen_time(cluster_t *cluster, uint32_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(screen_time), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, RemainingScreenTime::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(0), esp_matter_uint32(86400));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, RemainingScreenTime::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0)), esp_matter_attr_val(static_cast<uint32_t>(86400)));
     return attribute;
 }
 
@@ -431,28 +431,28 @@ attribute_t *create_block_unrated(cluster_t *cluster, bool value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(block_unrated), NULL);
-    return esp_matter::attribute::create(cluster, BlockUnrated::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+    return esp_matter::attribute::create(cluster, BlockUnrated::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_block_channel_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(block_channels), NULL);
-    return esp_matter::attribute::create(cluster, BlockChannelList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, BlockChannelList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_block_application_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(block_applications), NULL);
-    return esp_matter::attribute::create(cluster, BlockApplicationList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, BlockApplicationList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_block_content_time_window(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(block_content_time_window), NULL);
-    return esp_matter::attribute::create(cluster, BlockContentTimeWindow::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, BlockContentTimeWindow::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 } /* attribute */
