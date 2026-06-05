@@ -932,26 +932,38 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_color_mode(cluster, config->color_mode);
         attribute::create_options(cluster, config->options);
         attribute::create_number_of_primaries(cluster, config->number_of_primaries);
-        attribute::create_primary_1_x(cluster, config->primary_1_x);
-        attribute::create_primary_1_y(cluster, config->primary_1_y);
-        attribute::create_primary_1_intensity(cluster, config->primary_1_intensity);
-        attribute::create_primary_2_x(cluster, config->primary_2_x);
-        attribute::create_primary_2_y(cluster, config->primary_2_y);
-        attribute::create_primary_2_intensity(cluster, config->primary_2_intensity);
-        attribute::create_primary_3_x(cluster, config->primary_3_x);
-        attribute::create_primary_3_y(cluster, config->primary_3_y);
-        attribute::create_primary_3_intensity(cluster, config->primary_3_intensity);
-        attribute::create_primary_4_x(cluster, config->primary_4_x);
-        attribute::create_primary_4_y(cluster, config->primary_4_y);
-        attribute::create_primary_4_intensity(cluster, config->primary_4_intensity);
-        attribute::create_primary_5_x(cluster, config->primary_5_x);
-        attribute::create_primary_5_y(cluster, config->primary_5_y);
-        attribute::create_primary_5_intensity(cluster, config->primary_5_intensity);
-        attribute::create_primary_6_x(cluster, config->primary_6_x);
-        attribute::create_primary_6_y(cluster, config->primary_6_y);
-        attribute::create_primary_6_intensity(cluster, config->primary_6_intensity);
         attribute::create_enhanced_color_mode(cluster, config->enhanced_color_mode);
         attribute::create_color_capabilities(cluster, config->color_capabilities);
+        if (config->number_of_primaries.value_or(0) > 0) {
+            attribute::create_primary_1_x(cluster, config->primary_1_x);
+            attribute::create_primary_1_y(cluster, config->primary_1_y);
+            attribute::create_primary_1_intensity(cluster, config->primary_1_intensity);
+        }
+        if (config->number_of_primaries.value_or(0) > 1) {
+            attribute::create_primary_2_x(cluster, config->primary_2_x);
+            attribute::create_primary_2_y(cluster, config->primary_2_y);
+            attribute::create_primary_2_intensity(cluster, config->primary_2_intensity);
+        }
+        if (config->number_of_primaries.value_or(0) > 2) {
+            attribute::create_primary_3_x(cluster, config->primary_3_x);
+            attribute::create_primary_3_y(cluster, config->primary_3_y);
+            attribute::create_primary_3_intensity(cluster, config->primary_3_intensity);
+        }
+        if (config->number_of_primaries.value_or(0) > 3) {
+            attribute::create_primary_4_x(cluster, config->primary_4_x);
+            attribute::create_primary_4_y(cluster, config->primary_4_y);
+            attribute::create_primary_4_intensity(cluster, config->primary_4_intensity);
+        }
+        if (config->number_of_primaries.value_or(0) > 4) {
+            attribute::create_primary_5_x(cluster, config->primary_5_x);
+            attribute::create_primary_5_y(cluster, config->primary_5_y);
+            attribute::create_primary_5_intensity(cluster, config->primary_5_intensity);
+        }
+        if (config->number_of_primaries.value_or(0) > 5) {
+            attribute::create_primary_6_x(cluster, config->primary_6_x);
+            attribute::create_primary_6_y(cluster, config->primary_6_y);
+            attribute::create_primary_6_intensity(cluster, config->primary_6_intensity);
+        }
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {

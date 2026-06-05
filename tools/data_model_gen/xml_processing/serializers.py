@@ -216,7 +216,11 @@ class ClusterSerializer:
     def to_dict(cluster):
         attribute_map = {}
         for attr in cluster.get_attributes():
-            attribute_map[attr.name] = attr.get_id()
+            attribute_map[attr.name] = {
+                "id": attr.get_id(),
+                "func_name": safe_get_attr(attr, "func_name") or attr.name,
+                "nullable": bool(safe_get_attr(attr, "is_nullable")),
+            }
 
         command_map = {}
         for cmd in cluster.get_commands():

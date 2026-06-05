@@ -71,7 +71,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace basic_information {
 typedef struct config {
     char node_label[k_max_node_label_length + 1];
-    config() : node_label{0} {}
+    char unique_id[k_max_unique_id_length + 1];
+    config() : node_label{0}, unique_id{0} {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -283,9 +284,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace level_control {
 typedef struct config {
     nullable<uint8_t> current_level;
+    uint8_t min_level;
+    uint8_t max_level;
     nullable<uint8_t> on_level;
     uint8_t options;
-    config() : current_level(), on_level(), options(0) {}
+    config() : current_level(), min_level(1), max_level(254), on_level(), options(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

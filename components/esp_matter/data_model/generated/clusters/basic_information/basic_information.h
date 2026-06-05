@@ -79,10 +79,11 @@ typedef struct config {
     char hardware_version_string[k_max_hardware_version_string_length + 1];
     uint32_t software_version;
     char software_version_string[k_max_software_version_string_length + 1];
+    char unique_id[k_max_unique_id_length + 1];
     uint32_t specification_version;
     uint16_t max_paths_per_invoke;
     uint32_t configuration_version;
-    config() : data_model_revision(0), vendor_name{0}, vendor_id(0), product_name{0}, product_id(0), node_label{0}, location{0}, hardware_version(0), hardware_version_string{0}, software_version(0), software_version_string{0}, specification_version(0), max_paths_per_invoke(1), configuration_version(1) {}
+    config() : data_model_revision(0), vendor_name{0}, vendor_id(0), product_name{0}, product_id(0), node_label{0}, location{0}, hardware_version(0), hardware_version_string{0}, software_version(0), software_version_string{0}, unique_id{0}, specification_version(0), max_paths_per_invoke(1), configuration_version(1) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

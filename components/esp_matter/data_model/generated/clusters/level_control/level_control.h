@@ -66,9 +66,11 @@ command_t *create_stop_with_on_off(cluster_t *cluster);
 
 typedef struct config {
     nullable<uint8_t> current_level;
+    uint8_t min_level;
+    uint8_t max_level;
     uint8_t options;
     nullable<uint8_t> on_level;
-    config() : current_level(0), options(0), on_level(0) {}
+    config() : current_level(0), min_level(1), max_level(254), options(0), on_level(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

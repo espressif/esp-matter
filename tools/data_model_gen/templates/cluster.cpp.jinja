@@ -119,6 +119,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         {% include "common.attribute.cpp.jinja" %}
         {% endfilter %}
         {% endif %}
+        {% for condition, comp_attrs in cluster.get_comparison_conditional_attributes() %}
+        if ({{ condition }}) {
+            {% set attrs = comp_attrs %}
+            {% filter indent(12, true) %}
+            {% include "common.attribute.cpp.jinja" %}
+            {% endfilter %}
+        }
+        {% endfor %}
         {% if cluster.has_choice_features() and cluster.get_features() | length > 0 %}
 
         {% filter indent(8, true) %}

@@ -136,7 +136,7 @@ constexpr uint16_t cluster_revision = 6;
 } // namespace on_off
 
 namespace level_control {
-constexpr uint16_t cluster_revision = 6;
+constexpr uint16_t cluster_revision = 7;
 } // namespace level_control
 
 namespace color_control {

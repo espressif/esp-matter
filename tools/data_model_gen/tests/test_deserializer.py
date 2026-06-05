@@ -332,6 +332,7 @@ DEVICE_WITH_OPTIONAL_CHOICE_DATA = [
 def _make_mock_cluster(name, id_):
     """Create a minimal mock Cluster object for the lookup table."""
     from code_generation.elements import Cluster
+
     cluster = Cluster(name=name, id=id_, revision=1, is_mandatory=False)
     cluster.attributes = []
     cluster.features = []
@@ -343,8 +344,12 @@ def _make_mock_cluster(name, id_):
 # Create mock cluster lookup table for optional choice tests
 MOCK_CLUSTER_LOOKUP = {
     "power_topology": _make_mock_cluster("Power Topology", "0x009C"),
-    "electrical_power_measurement": _make_mock_cluster("Electrical Power Measurement", "0x0090"),
-    "electrical_energy_measurement": _make_mock_cluster("Electrical Energy Measurement", "0x0091"),
+    "electrical_power_measurement": _make_mock_cluster(
+        "Electrical Power Measurement", "0x0090"
+    ),
+    "electrical_energy_measurement": _make_mock_cluster(
+        "Electrical Energy Measurement", "0x0091"
+    ),
 }
 
 
@@ -361,18 +366,26 @@ class TestDeviceDeserializerOptionalChoice(unittest.TestCase):
 
     def test_device_has_optional_choice_clusters(self):
         """Device with O.a+ clusters should report has_optional_choice_clusters() == True."""
-        devices = DeviceDeserializer().deserialize(self.device_json_path, MOCK_CLUSTER_LOOKUP)
+        devices = DeviceDeserializer().deserialize(
+            self.device_json_path, MOCK_CLUSTER_LOOKUP
+        )
         self.assertEqual(len(devices), 1)
         self.assertTrue(devices[0].has_optional_choice_clusters())
 
     def test_optional_choice_cluster_parsed(self):
         """Clusters with optional_choice should have the attribute set."""
-        devices = DeviceDeserializer().deserialize(self.device_json_path, MOCK_CLUSTER_LOOKUP)
+        devices = DeviceDeserializer().deserialize(
+            self.device_json_path, MOCK_CLUSTER_LOOKUP
+        )
         device = devices[0]
 
         # Find the EPM cluster
         epm_cluster = next(
-            (c for c in device.clusters if "electrical_power_measurement" in c.esp_name),
+            (
+                c
+                for c in device.clusters
+                if "electrical_power_measurement" in c.esp_name
+            ),
             None,
         )
         self.assertIsNotNone(epm_cluster)
@@ -383,7 +396,9 @@ class TestDeviceDeserializerOptionalChoice(unittest.TestCase):
 
     def test_mandatory_cluster_no_optional_choice(self):
         """Mandatory cluster should not have optional_choice set."""
-        devices = DeviceDeserializer().deserialize(self.device_json_path, MOCK_CLUSTER_LOOKUP)
+        devices = DeviceDeserializer().deserialize(
+            self.device_json_path, MOCK_CLUSTER_LOOKUP
+        )
         device = devices[0]
 
         # Find the Power Topology cluster
@@ -397,7 +412,9 @@ class TestDeviceDeserializerOptionalChoice(unittest.TestCase):
 
     def test_get_unique_optional_choice_clusters(self):
         """get_unique_optional_choice_clusters should return the O.a+ clusters."""
-        devices = DeviceDeserializer().deserialize(self.device_json_path, MOCK_CLUSTER_LOOKUP)
+        devices = DeviceDeserializer().deserialize(
+            self.device_json_path, MOCK_CLUSTER_LOOKUP
+        )
         device = devices[0]
 
         unique_oa = device.get_unique_optional_choice_clusters()
@@ -408,7 +425,9 @@ class TestDeviceDeserializerOptionalChoice(unittest.TestCase):
 
     def test_get_optional_choice_clusters_grouped(self):
         """get_optional_choice_clusters should group clusters by choice marker."""
-        devices = DeviceDeserializer().deserialize(self.device_json_path, MOCK_CLUSTER_LOOKUP)
+        devices = DeviceDeserializer().deserialize(
+            self.device_json_path, MOCK_CLUSTER_LOOKUP
+        )
         device = devices[0]
 
         groups = device.get_optional_choice_clusters()
