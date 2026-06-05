@@ -1,7 +1,13 @@
 dependencies:
-  espressif/esp_rainmaker:
-    version: "~1.7.9" # Will update to latest version after the esp_rcp_update update to latest version.
-  espressif/qrcode:
-    version: "*"
   espressif/button:
     version: "^4"
+  espressif/cjson:
+    version: "^1.7.19~2"
+  espressif/esp_rainmaker:
+    version: "^1.13.0"
+  espressif/esp_rcp_update:
+    version: "^1.6.1"
+  espressif/qrcode:
+    version: "*"
+  espressif/rmaker_app_network:
+    version: "^1.4.4"
