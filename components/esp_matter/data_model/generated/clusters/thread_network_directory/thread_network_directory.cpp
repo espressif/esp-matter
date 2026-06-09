@@ -44,17 +44,17 @@ namespace thread_network_directory {
 namespace attribute {
 attribute_t *create_preferred_extended_pan_id(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, PreferredExtendedPanID::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_octet_str(value, length));
+    return esp_matter::attribute::create(cluster, PreferredExtendedPanID::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, length));
 }
 
 attribute_t *create_thread_networks(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ThreadNetworks::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, ThreadNetworks::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_thread_network_table_size(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ThreadNetworkTableSize::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, ThreadNetworkTableSize::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
 }
 
 } /* attribute */

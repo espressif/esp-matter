@@ -44,7 +44,7 @@ namespace power_source_configuration {
 namespace attribute {
 attribute_t *create_sources(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, Sources::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, Sources::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, length, count));
 }
 
 } /* attribute */

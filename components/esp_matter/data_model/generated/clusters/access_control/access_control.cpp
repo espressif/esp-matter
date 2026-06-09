@@ -91,34 +91,34 @@ esp_err_t add(cluster_t *cluster)
 namespace attribute {
 attribute_t *create_acl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ACL::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, ACL::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_extension(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(extension), NULL);
-    return esp_matter::attribute::create(cluster, Extension::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, Extension::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_subjects_per_access_control_entry(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, SubjectsPerAccessControlEntry::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(4), esp_matter_uint16(65534));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, SubjectsPerAccessControlEntry::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(4)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
     return attribute;
 }
 
 attribute_t *create_targets_per_access_control_entry(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, TargetsPerAccessControlEntry::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(3), esp_matter_uint16(65534));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, TargetsPerAccessControlEntry::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(3)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
     return attribute;
 }
 
 attribute_t *create_access_control_entries_per_fabric(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, AccessControlEntriesPerFabric::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(4), esp_matter_uint16(65534));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, AccessControlEntriesPerFabric::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(4)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
     return attribute;
 }
 
@@ -127,7 +127,7 @@ attribute_t *create_commissioning_arl(cluster_t *cluster, uint8_t *value, uint16
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(managed_device), NULL);
-    return esp_matter::attribute::create(cluster, CommissioningARL::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, CommissioningARL::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 #endif // CHIP_CONFIG_USE_ACCESS_RESTRICTIONS
 
@@ -136,7 +136,7 @@ attribute_t *create_arl(cluster_t *cluster, uint8_t *value, uint16_t length, uin
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(managed_device), NULL);
-    return esp_matter::attribute::create(cluster, ARL::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, ARL::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 #endif // CHIP_CONFIG_USE_ACCESS_RESTRICTIONS
 

@@ -163,29 +163,29 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 namespace attribute {
 attribute_t *create_fan_mode(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, FanMode::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(6));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, FanMode::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(6), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_fan_mode_sequence(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, FanModeSequence::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(5));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, FanModeSequence::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(5), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_percent_setting(cluster_t *cluster, nullable<uint8_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, PercentSetting::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint8(0), esp_matter_nullable_uint8(100));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PercentSetting::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0)), esp_matter_attr_val(nullable<uint8_t>(100)));
     return attribute;
 }
 
 attribute_t *create_percent_current(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, PercentCurrent::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(0), esp_matter_uint8(100));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PercentCurrent::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(100)));
     return attribute;
 }
 
@@ -193,8 +193,8 @@ attribute_t *create_speed_max(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(multi_speed), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, SpeedMax::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(1), esp_matter_uint8(100));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, SpeedMax::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(1)), esp_matter_attr_val(static_cast<uint8_t>(100)));
     return attribute;
 }
 
@@ -202,8 +202,8 @@ attribute_t *create_speed_setting(cluster_t *cluster, nullable<uint8_t> value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(multi_speed), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, SpeedSetting::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint8(0), esp_matter_nullable_uint8(254));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, SpeedSetting::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0)), esp_matter_attr_val(nullable<uint8_t>(254)));
     return attribute;
 }
 
@@ -211,8 +211,8 @@ attribute_t *create_speed_current(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(multi_speed), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, SpeedCurrent::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(0), esp_matter_uint8(254));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, SpeedCurrent::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
     return attribute;
 }
 
@@ -220,8 +220,8 @@ attribute_t *create_rock_support(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(rocking), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, RockSupport::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bitmap8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_bitmap8(0), esp_matter_bitmap8(7));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, RockSupport::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint8_t>(7), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
@@ -229,8 +229,8 @@ attribute_t *create_rock_setting(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(rocking), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, RockSetting::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_bitmap8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_bitmap8(0), esp_matter_bitmap8(7));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, RockSetting::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint8_t>(7), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
@@ -238,8 +238,8 @@ attribute_t *create_wind_support(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(wind), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, WindSupport::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bitmap8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_bitmap8(0), esp_matter_bitmap8(3));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, WindSupport::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint8_t>(3), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
@@ -247,8 +247,8 @@ attribute_t *create_wind_setting(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(wind), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, WindSetting::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_bitmap8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_bitmap8(0), esp_matter_bitmap8(3));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, WindSetting::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint8_t>(3), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
@@ -256,8 +256,8 @@ attribute_t *create_airflow_direction(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(airflow_direction), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, AirflowDirection::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(1));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, AirflowDirection::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(1), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 

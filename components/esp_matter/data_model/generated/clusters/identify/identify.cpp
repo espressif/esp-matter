@@ -45,15 +45,15 @@ namespace identify {
 namespace attribute {
 attribute_t *create_identify_time(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, IdentifyTime::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(0), esp_matter_uint16(65534));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, IdentifyTime::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
     return attribute;
 }
 
 attribute_t *create_identify_type(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, IdentifyType::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(5));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, IdentifyType::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(5), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 

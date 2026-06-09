@@ -123,35 +123,35 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 namespace attribute {
 attribute_t *create_status(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, Status::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(3));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, Status::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(3), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_order(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, Order::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(0), esp_matter_uint8(254));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, Order::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
     return attribute;
 }
 
 attribute_t *create_description(cluster_t *cluster, char *value, uint16_t length)
 {
     VerifyOrReturnValue(length <= k_max_description_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
-    return esp_matter::attribute::create(cluster, Description::Id, ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length), k_max_description_length + 1);
+    return esp_matter::attribute::create(cluster, Description::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length), k_max_description_length + 1);
 }
 
 attribute_t *create_wired_assessed_input_voltage(cluster_t *cluster, nullable<uint32_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, WiredAssessedInputVoltage::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint32(0), esp_matter_nullable_uint32(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, WiredAssessedInputVoltage::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
     return attribute;
 }
 
 attribute_t *create_wired_assessed_input_frequency(cluster_t *cluster, nullable<uint16_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, WiredAssessedInputFrequency::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint16(0), esp_matter_nullable_uint16(65534));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, WiredAssessedInputFrequency::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint16_t>(0)), esp_matter_attr_val(nullable<uint16_t>(65534)));
     return attribute;
 }
 
@@ -159,60 +159,60 @@ attribute_t *create_wired_current_type(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(wired), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, WiredCurrentType::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(1));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, WiredCurrentType::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(1), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_wired_assessed_current(cluster_t *cluster, nullable<uint32_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, WiredAssessedCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint32(0), esp_matter_nullable_uint32(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, WiredAssessedCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
     return attribute;
 }
 
 attribute_t *create_wired_nominal_voltage(cluster_t *cluster, uint32_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, WiredNominalVoltage::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(0), esp_matter_uint32(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, WiredNominalVoltage::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0)), esp_matter_attr_val(static_cast<uint32_t>(4294967294)));
     return attribute;
 }
 
 attribute_t *create_wired_maximum_current(cluster_t *cluster, uint32_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, WiredMaximumCurrent::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(0), esp_matter_uint32(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, WiredMaximumCurrent::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0)), esp_matter_attr_val(static_cast<uint32_t>(4294967294)));
     return attribute;
 }
 
 attribute_t *create_wired_present(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, WiredPresent::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+    return esp_matter::attribute::create(cluster, WiredPresent::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_active_wired_faults(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ActiveWiredFaults::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, ActiveWiredFaults::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_bat_voltage(cluster_t *cluster, nullable<uint32_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, BatVoltage::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint32(0), esp_matter_nullable_uint32(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, BatVoltage::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
     return attribute;
 }
 
 attribute_t *create_bat_percent_remaining(cluster_t *cluster, nullable<uint8_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, BatPercentRemaining::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint8(0), esp_matter_nullable_uint8(200));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, BatPercentRemaining::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0)), esp_matter_attr_val(nullable<uint8_t>(200)));
     return attribute;
 }
 
 attribute_t *create_bat_time_remaining(cluster_t *cluster, nullable<uint32_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, BatTimeRemaining::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint32(0), esp_matter_nullable_uint32(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, BatTimeRemaining::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
     return attribute;
 }
 
@@ -220,8 +220,8 @@ attribute_t *create_bat_charge_level(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(battery), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, BatChargeLevel::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(2));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, BatChargeLevel::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(2), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
@@ -229,26 +229,26 @@ attribute_t *create_bat_replacement_needed(cluster_t *cluster, bool value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(battery), NULL);
-    return esp_matter::attribute::create(cluster, BatReplacementNeeded::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+    return esp_matter::attribute::create(cluster, BatReplacementNeeded::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_bat_replaceability(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(battery), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, BatReplaceability::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(3));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, BatReplaceability::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(3), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_bat_present(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, BatPresent::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+    return esp_matter::attribute::create(cluster, BatPresent::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_active_bat_faults(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ActiveBatFaults::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, ActiveBatFaults::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_bat_replacement_description(cluster_t *cluster, char *value, uint16_t length)
@@ -256,39 +256,39 @@ attribute_t *create_bat_replacement_description(cluster_t *cluster, char *value,
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(replaceable), NULL);
     VerifyOrReturnValue(length <= k_max_bat_replacement_description_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
-    return esp_matter::attribute::create(cluster, BatReplacementDescription::Id, ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length), k_max_bat_replacement_description_length + 1);
+    return esp_matter::attribute::create(cluster, BatReplacementDescription::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length), k_max_bat_replacement_description_length + 1);
 }
 
 attribute_t *create_bat_common_designation(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, BatCommonDesignation::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(80));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, BatCommonDesignation::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(80), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_bat_ansi_designation(cluster_t *cluster, char *value, uint16_t length)
 {
     VerifyOrReturnValue(length <= k_max_bat_ansi_designation_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
-    return esp_matter::attribute::create(cluster, BatANSIDesignation::Id, ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length), k_max_bat_ansi_designation_length + 1);
+    return esp_matter::attribute::create(cluster, BatANSIDesignation::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length), k_max_bat_ansi_designation_length + 1);
 }
 
 attribute_t *create_bat_iec_designation(cluster_t *cluster, char *value, uint16_t length)
 {
     VerifyOrReturnValue(length <= k_max_bat_iec_designation_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
-    return esp_matter::attribute::create(cluster, BatIECDesignation::Id, ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length), k_max_bat_iec_designation_length + 1);
+    return esp_matter::attribute::create(cluster, BatIECDesignation::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length), k_max_bat_iec_designation_length + 1);
 }
 
 attribute_t *create_bat_approved_chemistry(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, BatApprovedChemistry::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(32));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, BatApprovedChemistry::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(32), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_bat_capacity(cluster_t *cluster, uint32_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, BatCapacity::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint32(0), esp_matter_uint32(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, BatCapacity::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0)), esp_matter_attr_val(static_cast<uint32_t>(4294967294)));
     return attribute;
 }
 
@@ -296,8 +296,8 @@ attribute_t *create_bat_quantity(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(replaceable), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, BatQuantity::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(0), esp_matter_uint8(254));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, BatQuantity::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
     return attribute;
 }
 
@@ -305,15 +305,15 @@ attribute_t *create_bat_charge_state(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(rechargeable), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, BatChargeState::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(3));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, BatChargeState::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(3), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_bat_time_to_full_charge(cluster_t *cluster, nullable<uint32_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, BatTimeToFullCharge::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint32(0), esp_matter_nullable_uint32(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, BatTimeToFullCharge::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
     return attribute;
 }
 
@@ -321,24 +321,24 @@ attribute_t *create_bat_functional_while_charging(cluster_t *cluster, bool value
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(rechargeable), NULL);
-    return esp_matter::attribute::create(cluster, BatFunctionalWhileCharging::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+    return esp_matter::attribute::create(cluster, BatFunctionalWhileCharging::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_bat_charging_current(cluster_t *cluster, nullable<uint32_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, BatChargingCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_uint32(0), esp_matter_nullable_uint32(4294967294));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, BatChargingCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
     return attribute;
 }
 
 attribute_t *create_active_bat_charge_faults(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ActiveBatChargeFaults::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, ActiveBatChargeFaults::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_endpoint_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, EndpointList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, EndpointList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 } /* attribute */

@@ -1,3 +1,15 @@
+# 5-June-2026
+### API Changes: Integer attribute value type is deprecated
+
+The integer attribute value type `ESP_MATTER_VAL_TYPE_INTEGER` and `ESP_MATTER_VAL_TYPE_NULLABLE_INTEGER` was marked as deprecated.
+
+### Features: Add member functions for esp_matter_val_t and esp_matter_attr_val_t
+
+- Add constructors for `esp_matter_val_t` and `esp_matter_attr_val_t`
+
+- Add `is_nullable()`, `is_null()`, `get_base_type()`, `get_storage_type()` for `esp_matter_attr_val_t` which help easier management of attribute value
+
+
 # 3-June-2026
 
 ## O.a+ Cluster Builder Pattern

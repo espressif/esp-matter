@@ -45,7 +45,7 @@ namespace boolean_state {
 namespace attribute {
 attribute_t *create_state_value(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, StateValue::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+    return esp_matter::attribute::create(cluster, StateValue::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 } /* attribute */

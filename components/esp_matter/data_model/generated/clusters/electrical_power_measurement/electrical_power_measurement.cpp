@@ -133,102 +133,102 @@ esp_err_t add(cluster_t *cluster)
 namespace attribute {
 attribute_t *create_power_mode(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerMode::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(0), esp_matter_enum8(2));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerMode::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(2), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_number_of_measurement_types(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfMeasurementTypes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint8(0), esp_matter_uint8(32));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfMeasurementTypes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(32)));
     return attribute;
 }
 
 attribute_t *create_accuracy(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, Accuracy::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, Accuracy::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_ranges(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, Ranges::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, Ranges::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_voltage(cluster_t *cluster, nullable<int64_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, Voltage::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int64(-4611686018427387904), esp_matter_nullable_int64(4611686018427387904));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, Voltage::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(-4611686018427387904)), esp_matter_attr_val(nullable<int64_t>(4611686018427387904)));
     return attribute;
 }
 
 attribute_t *create_active_current(cluster_t *cluster, nullable<int64_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ActiveCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int64(-4611686018427387904), esp_matter_nullable_int64(4611686018427387904));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ActiveCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(-4611686018427387904)), esp_matter_attr_val(nullable<int64_t>(4611686018427387904)));
     return attribute;
 }
 
 attribute_t *create_reactive_current(cluster_t *cluster, nullable<int64_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ReactiveCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int64(-4611686018427387904), esp_matter_nullable_int64(4611686018427387904));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ReactiveCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(-4611686018427387904)), esp_matter_attr_val(nullable<int64_t>(4611686018427387904)));
     return attribute;
 }
 
 attribute_t *create_apparent_current(cluster_t *cluster, nullable<int64_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ApparentCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int64(-4611686018427387904), esp_matter_nullable_int64(4611686018427387904));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ApparentCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(-4611686018427387904)), esp_matter_attr_val(nullable<int64_t>(4611686018427387904)));
     return attribute;
 }
 
 attribute_t *create_active_power(cluster_t *cluster, nullable<int64_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ActivePower::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int64(-4611686018427387904), esp_matter_nullable_int64(4611686018427387904));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ActivePower::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(-4611686018427387904)), esp_matter_attr_val(nullable<int64_t>(4611686018427387904)));
     return attribute;
 }
 
 attribute_t *create_reactive_power(cluster_t *cluster, nullable<int64_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ReactivePower::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int64(-4611686018427387904), esp_matter_nullable_int64(4611686018427387904));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ReactivePower::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(-4611686018427387904)), esp_matter_attr_val(nullable<int64_t>(4611686018427387904)));
     return attribute;
 }
 
 attribute_t *create_apparent_power(cluster_t *cluster, nullable<int64_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ApparentPower::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int64(-4611686018427387904), esp_matter_nullable_int64(4611686018427387904));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ApparentPower::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(-4611686018427387904)), esp_matter_attr_val(nullable<int64_t>(4611686018427387904)));
     return attribute;
 }
 
 attribute_t *create_rms_voltage(cluster_t *cluster, nullable<int64_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, RMSVoltage::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int64(-4611686018427387904), esp_matter_nullable_int64(4611686018427387904));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, RMSVoltage::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(-4611686018427387904)), esp_matter_attr_val(nullable<int64_t>(4611686018427387904)));
     return attribute;
 }
 
 attribute_t *create_rms_current(cluster_t *cluster, nullable<int64_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, RMSCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int64(-4611686018427387904), esp_matter_nullable_int64(4611686018427387904));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, RMSCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(-4611686018427387904)), esp_matter_attr_val(nullable<int64_t>(4611686018427387904)));
     return attribute;
 }
 
 attribute_t *create_rms_power(cluster_t *cluster, nullable<int64_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, RMSPower::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int64(-4611686018427387904), esp_matter_nullable_int64(4611686018427387904));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, RMSPower::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(-4611686018427387904)), esp_matter_attr_val(nullable<int64_t>(4611686018427387904)));
     return attribute;
 }
 
 attribute_t *create_frequency(cluster_t *cluster, nullable<int64_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, Frequency::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int64(0), esp_matter_nullable_int64(1000000));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, Frequency::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(0)), esp_matter_attr_val(nullable<int64_t>(1000000)));
     return attribute;
 }
 
@@ -236,27 +236,27 @@ attribute_t *create_harmonic_currents(cluster_t *cluster, uint8_t *value, uint16
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(harmonics), NULL);
-    return esp_matter::attribute::create(cluster, HarmonicCurrents::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, HarmonicCurrents::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_harmonic_phases(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(power_quality), NULL);
-    return esp_matter::attribute::create(cluster, HarmonicPhases::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, HarmonicPhases::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_power_factor(cluster_t *cluster, nullable<int64_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerFactor::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int64(-10000), esp_matter_nullable_int64(10000));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerFactor::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(-10000)), esp_matter_attr_val(nullable<int64_t>(10000)));
     return attribute;
 }
 
 attribute_t *create_neutral_current(cluster_t *cluster, nullable<int64_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, NeutralCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int64(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int64(-4611686018427387904), esp_matter_nullable_int64(4611686018427387904));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, NeutralCurrent::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(-4611686018427387904)), esp_matter_attr_val(nullable<int64_t>(4611686018427387904)));
     return attribute;
 }
 

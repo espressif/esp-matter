@@ -65,32 +65,32 @@ esp_err_t add(cluster_t *cluster)
 namespace attribute {
 attribute_t *create_border_router_name(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, BorderRouterName::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_char_str(value, length));
+    return esp_matter::attribute::create(cluster, BorderRouterName::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length));
 }
 
 attribute_t *create_border_agent_id(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, BorderAgentID::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_octet_str(value, length));
+    return esp_matter::attribute::create(cluster, BorderAgentID::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length));
 }
 
 attribute_t *create_thread_version(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ThreadVersion::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint16(value));
+    return esp_matter::attribute::create(cluster, ThreadVersion::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
 }
 
 attribute_t *create_interface_enabled(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, InterfaceEnabled::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_bool(value));
+    return esp_matter::attribute::create(cluster, InterfaceEnabled::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_active_dataset_timestamp(cluster_t *cluster, nullable<uint64_t> value)
 {
-    return esp_matter::attribute::create(cluster, ActiveDatasetTimestamp::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint64(value));
+    return esp_matter::attribute::create(cluster, ActiveDatasetTimestamp::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_pending_dataset_timestamp(cluster_t *cluster, nullable<uint64_t> value)
 {
-    return esp_matter::attribute::create(cluster, PendingDatasetTimestamp::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint64(value));
+    return esp_matter::attribute::create(cluster, PendingDatasetTimestamp::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 } /* attribute */

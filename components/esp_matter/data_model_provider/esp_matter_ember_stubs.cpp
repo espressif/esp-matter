@@ -52,14 +52,13 @@ esp_matter::endpoint_t *get_endpoint_at_index(uint16_t index)
 
 Status get_raw_data_buffer_from_attr_val(const esp_matter_attr_val_t &val, uint8_t *dataPtr, uint16_t readLength)
 {
-    switch (val.type) {
-    case ESP_MATTER_VAL_TYPE_BOOLEAN:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BOOLEAN: {
+    switch (val.get_storage_type()) {
+    case ESP_MATTER_VAL_TYPE_BOOLEAN: {
         if (readLength < sizeof(bool) || !dataPtr) {
             return chip::Protocols::InteractionModel::Status::ResourceExhausted;
         }
         using Traits = chip::app::NumericAttributeTraits<bool>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(*(uint8_t *)(&(val.val.b)))) {
+        if (val.is_null()) {
             Traits::SetNull(*(uint8_t *)dataPtr);
         } else {
             Traits::WorkingToStorage(val.val.b, *dataPtr);
@@ -67,13 +66,12 @@ Status get_raw_data_buffer_from_attr_val(const esp_matter_attr_val_t &val, uint8
         break;
     }
 
-    case ESP_MATTER_VAL_TYPE_FLOAT:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT: {
+    case ESP_MATTER_VAL_TYPE_FLOAT: {
         if (readLength < sizeof(float) || !dataPtr) {
             return chip::Protocols::InteractionModel::Status::ResourceExhausted;
         }
         using Traits = chip::app::NumericAttributeTraits<float>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.f)) {
+        if (val.is_null()) {
             Traits::SetNull(*(float *)dataPtr);
         } else {
             Traits::WorkingToStorage(val.val.f, *(float *)dataPtr);
@@ -108,30 +106,24 @@ Status get_raw_data_buffer_from_attr_val(const esp_matter_attr_val_t &val, uint8
         break;
     }
 
-    case ESP_MATTER_VAL_TYPE_INT8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT8: {
+    case ESP_MATTER_VAL_TYPE_INT8: {
         if (readLength < sizeof(int8_t) || !dataPtr) {
             return chip::Protocols::InteractionModel::Status::ResourceExhausted;
         }
         using Traits = chip::app::NumericAttributeTraits<int8_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.i8)) {
+        if (val.is_null()) {
             Traits::SetNull(*(int8_t *)dataPtr);
         } else {
             Traits::WorkingToStorage(val.val.i8, *(int8_t *)dataPtr);
         }
         break;
     }
-    case ESP_MATTER_VAL_TYPE_BITMAP8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8:
-    case ESP_MATTER_VAL_TYPE_ENUM8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8:
-    case ESP_MATTER_VAL_TYPE_UINT8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT8: {
+    case ESP_MATTER_VAL_TYPE_UINT8: {
         if (readLength < sizeof(uint8_t) || !dataPtr) {
             return chip::Protocols::InteractionModel::Status::ResourceExhausted;
         }
         using Traits = chip::app::NumericAttributeTraits<uint8_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.u8)) {
+        if (val.is_null()) {
             Traits::SetNull(*dataPtr);
         } else {
             Traits::WorkingToStorage(val.val.u8, *dataPtr);
@@ -139,13 +131,12 @@ Status get_raw_data_buffer_from_attr_val(const esp_matter_attr_val_t &val, uint8
         break;
     }
 
-    case ESP_MATTER_VAL_TYPE_INT16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT16: {
+    case ESP_MATTER_VAL_TYPE_INT16: {
         if (readLength < sizeof(int16_t) || !dataPtr) {
             return chip::Protocols::InteractionModel::Status::ResourceExhausted;
         }
         using Traits = chip::app::NumericAttributeTraits<int16_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.i16)) {
+        if (val.is_null()) {
             Traits::SetNull(*(int16_t *)dataPtr);
         } else {
             Traits::WorkingToStorage(val.val.i16, *(int16_t *)dataPtr);
@@ -153,17 +144,12 @@ Status get_raw_data_buffer_from_attr_val(const esp_matter_attr_val_t &val, uint8
         break;
     }
 
-    case ESP_MATTER_VAL_TYPE_BITMAP16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16:
-    case ESP_MATTER_VAL_TYPE_ENUM16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16:
-    case ESP_MATTER_VAL_TYPE_UINT16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT16: {
+    case ESP_MATTER_VAL_TYPE_UINT16: {
         if (readLength < sizeof(uint16_t) || !dataPtr) {
             return chip::Protocols::InteractionModel::Status::ResourceExhausted;
         }
         using Traits = chip::app::NumericAttributeTraits<uint16_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.u16)) {
+        if (val.is_null()) {
             Traits::SetNull(*(uint16_t *)dataPtr);
         } else {
             Traits::WorkingToStorage(val.val.u16, *(uint16_t *)dataPtr);
@@ -171,13 +157,12 @@ Status get_raw_data_buffer_from_attr_val(const esp_matter_attr_val_t &val, uint8
         break;
     }
 
-    case ESP_MATTER_VAL_TYPE_INT32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT32: {
+    case ESP_MATTER_VAL_TYPE_INT32: {
         if (readLength < sizeof(int32_t) || !dataPtr) {
             return chip::Protocols::InteractionModel::Status::ResourceExhausted;
         }
         using Traits = chip::app::NumericAttributeTraits<int32_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.i32)) {
+        if (val.is_null()) {
             Traits::SetNull(*(int32_t *)dataPtr);
         } else {
             Traits::WorkingToStorage(val.val.i32, *(int32_t *)dataPtr);
@@ -185,15 +170,12 @@ Status get_raw_data_buffer_from_attr_val(const esp_matter_attr_val_t &val, uint8
         break;
     }
 
-    case ESP_MATTER_VAL_TYPE_BITMAP32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32:
-    case ESP_MATTER_VAL_TYPE_UINT32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT32: {
+    case ESP_MATTER_VAL_TYPE_UINT32: {
         if (readLength < sizeof(uint32_t) || !dataPtr) {
             return chip::Protocols::InteractionModel::Status::ResourceExhausted;
         }
         using Traits = chip::app::NumericAttributeTraits<uint32_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.u32)) {
+        if (val.is_null()) {
             Traits::SetNull(*(uint32_t *)dataPtr);
         } else {
             Traits::WorkingToStorage(val.val.u32, *(uint32_t *)dataPtr);
@@ -201,13 +183,12 @@ Status get_raw_data_buffer_from_attr_val(const esp_matter_attr_val_t &val, uint8
         break;
     }
 
-    case ESP_MATTER_VAL_TYPE_INT64:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT64: {
+    case ESP_MATTER_VAL_TYPE_INT64: {
         if (readLength < sizeof(int64_t) || !dataPtr) {
             return chip::Protocols::InteractionModel::Status::ResourceExhausted;
         }
         using Traits = chip::app::NumericAttributeTraits<int64_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.i64)) {
+        if (val.is_null()) {
             Traits::SetNull(*(int64_t *)dataPtr);
         } else {
             Traits::WorkingToStorage(val.val.i64, *(int64_t *)dataPtr);
@@ -215,13 +196,12 @@ Status get_raw_data_buffer_from_attr_val(const esp_matter_attr_val_t &val, uint8
         break;
     }
 
-    case ESP_MATTER_VAL_TYPE_UINT64:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT64: {
+    case ESP_MATTER_VAL_TYPE_UINT64: {
         if (readLength < sizeof(uint8_t) || !dataPtr) {
             return chip::Protocols::InteractionModel::Status::ResourceExhausted;
         }
         using Traits = chip::app::NumericAttributeTraits<uint64_t>;
-        if ((val.type & ESP_MATTER_VAL_NULLABLE_BASE) && Traits::IsNullValue(val.val.u64)) {
+        if (val.is_null()) {
             Traits::SetNull(*(uint64_t *)dataPtr);
         } else {
             Traits::WorkingToStorage(val.val.u64, *(uint64_t *)dataPtr);
@@ -243,7 +223,7 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         using Traits = chip::app::NumericAttributeTraits<bool>;
         Traits::StorageType attribute_value;
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
-        val = esp_matter_bool(attribute_value);
+        val = esp_matter_attr_val((bool)attribute_value);
         break;
     }
 
@@ -251,9 +231,9 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         uint8_t data_count = 0;
         memcpy(&data_count, &value[0], sizeof(uint8_t));
         if (is_nullable && data_count == UINT8_MAX) {
-            val = esp_matter_char_str(nullptr, data_count);
+            val = esp_matter_attr_val((char *)nullptr, data_count);
         } else if (data_count < UINT8_MAX) {
-            val = esp_matter_char_str((char *)(value + sizeof(uint8_t)), data_count);
+            val = esp_matter_attr_val((char *)(value + sizeof(uint8_t)), data_count);
         }
         break;
     }
@@ -262,9 +242,9 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         uint16_t data_count = 0;
         memcpy(&data_count, &value[0], sizeof(uint16_t));
         if (is_nullable && data_count == UINT16_MAX) {
-            val = esp_matter_char_str(nullptr, data_count);
+            val = esp_matter_attr_val((char *)nullptr, data_count, true);
         } else if (data_count < UINT16_MAX) {
-            val = esp_matter_long_char_str((char *)(value + sizeof(uint16_t)), data_count);
+            val = esp_matter_attr_val((char *)(value + sizeof(uint16_t)), data_count, true);
         }
         break;
     }
@@ -278,9 +258,9 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         uint8_t data_count = 0;
         memcpy(&data_count, &value[0], sizeof(uint8_t));
         if (is_nullable && data_count == UINT8_MAX) {
-            val = esp_matter_char_str(nullptr, data_count);
+            val = esp_matter_attr_val((uint8_t *)nullptr, data_count);
         } else if (data_count < UINT8_MAX) {
-            val = esp_matter_octet_str((value + sizeof(uint8_t)), data_count);
+            val = esp_matter_attr_val((value + sizeof(uint8_t)), data_count);
         }
         break;
     }
@@ -289,9 +269,9 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         uint16_t data_count = 0;
         memcpy(&data_count, &value[0], sizeof(uint16_t));
         if (is_nullable && data_count == UINT16_MAX) {
-            val = esp_matter_char_str(nullptr, data_count);
+            val = esp_matter_attr_val((uint8_t *)nullptr, data_count, true);
         } else if (data_count < UINT16_MAX) {
-            val = esp_matter_long_octet_str((value + sizeof(uint16_t)), data_count);
+            val = esp_matter_attr_val((value + sizeof(uint16_t)), data_count, true);
         }
         break;
     }
@@ -302,12 +282,12 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
         if (is_nullable) {
             if (Traits::IsNullValue(attribute_value)) {
-                val = esp_matter_nullable_int8(nullable<int8_t>());
+                val = esp_matter_attr_val(nullable<int8_t>());
             } else {
-                val = esp_matter_nullable_int8(attribute_value);
+                val = esp_matter_attr_val(nullable<int8_t>(attribute_value));
             }
         } else {
-            val = esp_matter_int8(attribute_value);
+            val = esp_matter_attr_val(attribute_value);
         }
         break;
     }
@@ -323,12 +303,12 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
         if (is_nullable) {
             if (Traits::IsNullValue(attribute_value)) {
-                val = esp_matter_nullable_uint8(nullable<uint8_t>());
+                val = esp_matter_attr_val(nullable<uint8_t>());
             } else {
-                val = esp_matter_nullable_uint8(attribute_value);
+                val = esp_matter_attr_val(nullable<uint8_t>(attribute_value));
             }
         } else {
-            val = esp_matter_uint8(attribute_value);
+            val = esp_matter_attr_val(attribute_value);
         }
         break;
     }
@@ -340,12 +320,12 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
         if (is_nullable) {
             if (Traits::IsNullValue(attribute_value)) {
-                val = esp_matter_nullable_int16(nullable<int16_t>());
+                val = esp_matter_attr_val(nullable<int16_t>());
             } else {
-                val = esp_matter_nullable_int16(attribute_value);
+                val = esp_matter_attr_val(nullable<int16_t>(attribute_value));
             }
         } else {
-            val = esp_matter_int16(attribute_value);
+            val = esp_matter_attr_val(attribute_value);
         }
         break;
     }
@@ -361,12 +341,12 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
         if (is_nullable) {
             if (Traits::IsNullValue(attribute_value)) {
-                val = esp_matter_nullable_uint16(nullable<uint16_t>());
+                val = esp_matter_attr_val(nullable<uint16_t>());
             } else {
-                val = esp_matter_nullable_uint16(attribute_value);
+                val = esp_matter_attr_val(nullable<uint16_t>(attribute_value));
             }
         } else {
-            val = esp_matter_uint16(attribute_value);
+            val = esp_matter_attr_val(attribute_value);
         }
         break;
     }
@@ -378,12 +358,12 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
         if (is_nullable) {
             if (Traits::IsNullValue(attribute_value)) {
-                val = esp_matter_nullable_int32(nullable<int32_t>());
+                val = esp_matter_attr_val(nullable<int32_t>());
             } else {
-                val = esp_matter_nullable_int32(attribute_value);
+                val = esp_matter_attr_val(nullable<int32_t>(attribute_value));
             }
         } else {
-            val = esp_matter_int32(attribute_value);
+            val = esp_matter_attr_val(attribute_value);
         }
         break;
     }
@@ -405,12 +385,12 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
         if (is_nullable) {
             if (Traits::IsNullValue(attribute_value)) {
-                val = esp_matter_nullable_uint32(nullable<uint32_t>());
+                val = esp_matter_attr_val(nullable<uint32_t>());
             } else {
-                val = esp_matter_nullable_uint32(attribute_value);
+                val = esp_matter_attr_val(nullable<uint32_t>(attribute_value));
             }
         } else {
-            val = esp_matter_uint32(attribute_value);
+            val = esp_matter_attr_val(attribute_value);
         }
         break;
     }
@@ -427,12 +407,12 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
         if (is_nullable) {
             if (Traits::IsNullValue(attribute_value)) {
-                val = esp_matter_nullable_int64(nullable<int64_t>());
+                val = esp_matter_attr_val(nullable<int64_t>());
             } else {
-                val = esp_matter_nullable_int64(attribute_value);
+                val = esp_matter_attr_val(nullable<int64_t>(attribute_value));
             }
         } else {
-            val = esp_matter_int64(attribute_value);
+            val = esp_matter_attr_val(attribute_value);
         }
         break;
     }
@@ -453,12 +433,12 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
         if (is_nullable) {
             if (Traits::IsNullValue(attribute_value)) {
-                val = esp_matter_nullable_uint64(nullable<uint64_t>());
+                val = esp_matter_attr_val(nullable<uint64_t>());
             } else {
-                val = esp_matter_nullable_uint64(attribute_value);
+                val = esp_matter_attr_val(nullable<uint64_t>(attribute_value));
             }
         } else {
-            val = esp_matter_uint64(attribute_value);
+            val = esp_matter_attr_val(attribute_value);
         }
         break;
     }
@@ -471,12 +451,12 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
         if (is_nullable) {
             if (Traits::IsNullValue(attribute_value)) {
-                val = esp_matter_nullable_enum8(nullable<uint8_t>());
+                val = esp_matter_attr_val(nullable<uint8_t>(), esp_matter_attr_val::uint_sub_type::k_enum);
             } else {
-                val = esp_matter_nullable_enum8(attribute_value);
+                val = esp_matter_attr_val(nullable<uint8_t>(attribute_value), esp_matter_attr_val::uint_sub_type::k_enum);
             }
         } else {
-            val = esp_matter_enum8(attribute_value);
+            val = esp_matter_attr_val(attribute_value, esp_matter_attr_val::uint_sub_type::k_enum);
         }
         break;
     }
@@ -487,12 +467,12 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         memcpy((uint16_t *)&attribute_value, value, sizeof(Traits::StorageType));
         if (is_nullable) {
             if (Traits::IsNullValue(attribute_value)) {
-                val = esp_matter_nullable_enum16(nullable<uint16_t>());
+                val = esp_matter_attr_val(nullable<uint16_t>(), esp_matter_attr_val::uint_sub_type::k_enum);
             } else {
-                val = esp_matter_nullable_enum16(attribute_value);
+                val = esp_matter_attr_val(nullable<uint16_t>(attribute_value), esp_matter_attr_val::uint_sub_type::k_enum);
             }
         } else {
-            val = esp_matter_enum16(attribute_value);
+            val = esp_matter_attr_val(attribute_value, esp_matter_attr_val::uint_sub_type::k_enum);
         }
         break;
     }
@@ -503,12 +483,12 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
         if (is_nullable) {
             if (Traits::IsNullValue(attribute_value)) {
-                val = esp_matter_nullable_bitmap8(nullable<uint8_t>());
+                val = esp_matter_attr_val(nullable<uint8_t>(), esp_matter_attr_val::uint_sub_type::k_bitmap);
             } else {
-                val = esp_matter_nullable_bitmap8(attribute_value);
+                val = esp_matter_attr_val(nullable<uint8_t>(attribute_value), esp_matter_attr_val::uint_sub_type::k_bitmap);
             }
         } else {
-            val = esp_matter_bitmap8(attribute_value);
+            val = esp_matter_attr_val(attribute_value, esp_matter_attr_val::uint_sub_type::k_bitmap);
         }
         break;
     }
@@ -519,12 +499,12 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
         if (is_nullable) {
             if (Traits::IsNullValue(attribute_value)) {
-                val = esp_matter_nullable_bitmap16(nullable<uint16_t>());
+                val = esp_matter_attr_val(nullable<uint16_t>(), esp_matter_attr_val::uint_sub_type::k_bitmap);
             } else {
-                val = esp_matter_nullable_bitmap16(attribute_value);
+                val = esp_matter_attr_val(nullable<uint16_t>(attribute_value), esp_matter_attr_val::uint_sub_type::k_bitmap);
             }
         } else {
-            val = esp_matter_bitmap16(attribute_value);
+            val = esp_matter_attr_val(attribute_value, esp_matter_attr_val::uint_sub_type::k_bitmap);
         }
         break;
     }
@@ -535,12 +515,12 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
         if (is_nullable) {
             if (Traits::IsNullValue(attribute_value)) {
-                val = esp_matter_nullable_bitmap32(nullable<uint32_t>());
+                val = esp_matter_attr_val(nullable<uint32_t>(), esp_matter_attr_val::uint_sub_type::k_bitmap);
             } else {
-                val = esp_matter_nullable_bitmap32(attribute_value);
+                val = esp_matter_attr_val(nullable<uint32_t>(attribute_value), esp_matter_attr_val::uint_sub_type::k_bitmap);
             }
         } else {
-            val = esp_matter_bitmap32(attribute_value);
+            val = esp_matter_attr_val(attribute_value, esp_matter_attr_val::uint_sub_type::k_bitmap);
         }
         break;
     }
@@ -551,18 +531,18 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
         memcpy((float *)&attribute_value, value, sizeof(Traits::StorageType));
         if (is_nullable) {
             if (Traits::IsNullValue(attribute_value)) {
-                val = esp_matter_nullable_float(nullable<float>());
+                val = esp_matter_attr_val(nullable<float>());
             } else {
-                val = esp_matter_nullable_float(attribute_value);
+                val = esp_matter_attr_val(nullable<float>(attribute_value));
             }
         } else {
-            val = esp_matter_float(attribute_value);
+            val = esp_matter_attr_val(attribute_value);
         }
         break;
     }
 
     default:
-        val = esp_matter_invalid(NULL);
+        val = esp_matter_attr_val();
         break;
     }
     if (val.type == ESP_MATTER_VAL_TYPE_INVALID) {
@@ -573,46 +553,26 @@ Status get_attr_val_from_raw_data_buffer(uint8_t *value, EmberAfAttributeType da
 
 EmberAfDefaultAttributeValue get_default_attr_value_from_val(esp_matter_attr_val_t *val)
 {
-    switch (val->type) {
+    switch (val->get_storage_type()) {
     case ESP_MATTER_VAL_TYPE_BOOLEAN:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BOOLEAN:
         return EmberAfDefaultAttributeValue((uint16_t)val->val.b);
     case ESP_MATTER_VAL_TYPE_FLOAT:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT:
         return EmberAfDefaultAttributeValue((uint8_t *)&val->val.f);
     case ESP_MATTER_VAL_TYPE_INT8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT8:
         return EmberAfDefaultAttributeValue((uint16_t)val->val.i8);
-    case ESP_MATTER_VAL_TYPE_BITMAP8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8:
-    case ESP_MATTER_VAL_TYPE_ENUM8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8:
     case ESP_MATTER_VAL_TYPE_UINT8:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT8:
         return EmberAfDefaultAttributeValue((uint16_t)val->val.u8);
     case ESP_MATTER_VAL_TYPE_INT16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT16:
         return EmberAfDefaultAttributeValue((uint16_t)val->val.i16);
-    case ESP_MATTER_VAL_TYPE_BITMAP16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16:
-    case ESP_MATTER_VAL_TYPE_ENUM16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM16:
     case ESP_MATTER_VAL_TYPE_UINT16:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT16:
         return EmberAfDefaultAttributeValue((uint16_t)val->val.u16);
     case ESP_MATTER_VAL_TYPE_INT32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT32:
         return EmberAfDefaultAttributeValue((uint8_t *)&val->val.i32);
-    case ESP_MATTER_VAL_TYPE_BITMAP32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32:
     case ESP_MATTER_VAL_TYPE_UINT32:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT32:
         return EmberAfDefaultAttributeValue((uint8_t *)&val->val.u32);
     case ESP_MATTER_VAL_TYPE_INT64:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_INT64:
         return EmberAfDefaultAttributeValue((uint8_t *)&val->val.i64);
     case ESP_MATTER_VAL_TYPE_UINT64:
-    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT64:
         return EmberAfDefaultAttributeValue((uint8_t *)&val->val.u64);
     default:
         break;
@@ -738,7 +698,7 @@ chip::Protocols::InteractionModel::Status emberAfReadAttribute(chip::EndpointId 
     if (!attribute) {
         return chip::Protocols::InteractionModel::Status::UnsupportedAttribute;
     }
-    esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
+    esp_matter_attr_val_t val;
     if (esp_matter::attribute::get_val_internal(attribute, &val) != ESP_OK) {
         return chip::Protocols::InteractionModel::Status::Failure;
     }
@@ -800,7 +760,7 @@ Status emberAfWriteAttribute(const chip::app::ConcreteAttributePath &path, const
         return status;
     }
 
-    esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
+    esp_matter_attr_val_t val;
     status = get_attr_val_from_raw_data_buffer(input.dataPtr, input.dataType, val,
                                                esp_matter::attribute::get_flags(attribute) &
                                                esp_matter::ATTRIBUTE_FLAG_NULLABLE);
@@ -842,7 +802,7 @@ const EmberAfAttributeMetadata *emberAfLocateAttributeMetadata(chip::EndpointId 
 
     esp_matter::attribute_t *attribute = esp_matter::attribute::get(endpointId, clusterId, attributeId);
     if (attribute) {
-        esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
+        esp_matter_attr_val_t val;
         if (esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK) {
             s_metadata.attributeId = attributeId;
             s_metadata.attributeType = get_ember_attr_type_from_val_type(val.type);

@@ -45,29 +45,29 @@ namespace temperature_measurement {
 namespace attribute {
 attribute_t *create_measured_value(cluster_t *cluster, nullable<int16_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int16(-32768), esp_matter_nullable_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, MeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int16_t>(-32768)), esp_matter_attr_val(nullable<int16_t>(32766)));
     return attribute;
 }
 
 attribute_t *create_min_measured_value(cluster_t *cluster, nullable<int16_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MinMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int16(-27315), esp_matter_nullable_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, MinMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int16_t>(-27315)), esp_matter_attr_val(nullable<int16_t>(32766)));
     return attribute;
 }
 
 attribute_t *create_max_measured_value(cluster_t *cluster, nullable<int16_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_int16(-32768), esp_matter_nullable_int16(32766));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int16_t>(-32768)), esp_matter_attr_val(nullable<int16_t>(32766)));
     return attribute;
 }
 
 attribute_t *create_tolerance(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(0), esp_matter_uint16(2048));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(2048)));
     return attribute;
 }
 

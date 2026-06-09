@@ -64,25 +64,25 @@ esp_err_t add(cluster_t *cluster)
 namespace attribute {
 attribute_t *create_group_key_map(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, GroupKeyMap::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, GroupKeyMap::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_group_table(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, GroupTable::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, GroupTable::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_max_groups_per_fabric(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxGroupsPerFabric::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(0), esp_matter_uint16(65534));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxGroupsPerFabric::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
     return attribute;
 }
 
 attribute_t *create_max_group_keys_per_fabric(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxGroupKeysPerFabric::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(1), esp_matter_uint16(65535));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxGroupKeysPerFabric::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(1)), esp_matter_attr_val(static_cast<uint16_t>(65535)));
     return attribute;
 }
 
@@ -90,7 +90,7 @@ attribute_t *create_groupcast_adoption(cluster_t *cluster, uint8_t *value, uint1
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(groupcast), NULL);
-    return esp_matter::attribute::create(cluster, GroupcastAdoption::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, GroupcastAdoption::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, length, count));
 }
 
 } /* attribute */

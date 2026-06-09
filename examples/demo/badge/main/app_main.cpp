@@ -170,7 +170,7 @@ esp_err_t change_badge_name(int argc, char **argv)
         uint32_t cluster_id = BADGE_CLUSTER_ID;
         uint32_t attribute_id = NAME_ATTRIBUTE_ID;
         for (int i = 0; i < MAX_VCARD_ATTR; i++) {
-            esp_matter_attr_val_t val = esp_matter_long_char_str(vcard_data[i], strlen(vcard_data[i]));
+            esp_matter_attr_val_t val = esp_matter_attr_val(vcard_data[i], strlen(vcard_data[i]));
             attribute::report(endpoint_id, cluster_id, attribute_id, &val);
             attribute_id++;
         }
@@ -240,7 +240,7 @@ static esp_err_t update_badge_command_info(const ConcreteCommandPath &command_pa
         uint32_t cluster_id = BADGE_CLUSTER_ID;
         uint32_t attribute_id;
         size_t size = config_value.size() < 32 ? config_value.size() : 32;
-        esp_matter_attr_val_t val = esp_matter_long_char_str((char*)config_value.data(), size);
+        esp_matter_attr_val_t val = esp_matter_attr_val((char*)config_value.data(), size);
         switch (TagNumFromTag(tag)) {
         case NAME:
             attribute_id = NAME_ATTRIBUTE_ID;
@@ -319,11 +319,11 @@ extern "C" void app_main()
     ABORT_APP_ON_FAILURE(badge_cluster != nullptr, ESP_LOGE(TAG, "Failed to create badge cluster"));
 
     /* Create custom attributes in badge cluster for retrieving the vcard properties */
-    attribute::create(badge_cluster, NAME_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_long_char_str("", MAX_ATTR_SIZE));
-    attribute::create(badge_cluster, CONTACT_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_long_char_str("", MAX_ATTR_SIZE));
-    attribute::create(badge_cluster, EMAIL_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_long_char_str("", MAX_ATTR_SIZE));
-    attribute::create(badge_cluster, EVENT_NAME_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_long_char_str("", MAX_ATTR_SIZE));
-    attribute::create(badge_cluster, COMPANY_NAME_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_long_char_str("", MAX_ATTR_SIZE));
+    attribute::create(badge_cluster, NAME_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val("", MAX_ATTR_SIZE));
+    attribute::create(badge_cluster, CONTACT_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val("", MAX_ATTR_SIZE));
+    attribute::create(badge_cluster, EMAIL_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val("", MAX_ATTR_SIZE));
+    attribute::create(badge_cluster, EVENT_NAME_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val("", MAX_ATTR_SIZE));
+    attribute::create(badge_cluster, COMPANY_NAME_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val("", MAX_ATTR_SIZE));
 
     uint32_t custom_command_id = 0x00;
     command::create(badge_cluster, custom_command_id, COMMAND_FLAG_ACCEPTED | COMMAND_FLAG_CUSTOM, update_badge_command_info);

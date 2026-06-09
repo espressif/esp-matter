@@ -48,7 +48,7 @@ bool read_attribute_raw_value(chip::EndpointId endpointId, chip::ClusterId clust
 
     attribute_t *attr = attribute::get(endpointId, clusterId, attributeId);
     VerifyOrReturnValue(attr != nullptr, false);
-    esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
+    esp_matter_attr_val_t val;
     VerifyOrReturnValue(attribute::get_val_internal(attr, &val) == ESP_OK, false);
 
     if constexpr(std::is_same_v<T, bool>) {

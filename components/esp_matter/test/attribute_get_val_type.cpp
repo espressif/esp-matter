@@ -81,7 +81,7 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
 
     // Test 1: Boolean
     {
-        esp_matter_attr_val_t val = esp_matter_bool(true);
+        esp_matter_attr_val_t val = esp_matter_attr_val(true);
         attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
         TEST_ASSERT_NOT_NULL(attr);
 
@@ -93,22 +93,9 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
         TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_BOOLEAN, type);
     }
 
-    // Test 2: Integer (32-bit signed)
+    // Test 2: Float
     {
-        esp_matter_attr_val_t val = esp_matter_int(42);
-        attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
-        TEST_ASSERT_NOT_NULL(attr);
-
-        esp_matter_val_type_t type = attribute::get_val_type(attr);
-        TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_INTEGER, type);
-
-        type = attribute::get_val_type(test_endpoint_id, test_cluster_id, attr_id - 1);
-        TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_INTEGER, type);
-    }
-
-    // Test 3: Float
-    {
-        esp_matter_attr_val_t val = esp_matter_float(3.14f);
+        esp_matter_attr_val_t val = esp_matter_attr_val(static_cast<float>(3.14f));
         attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
         TEST_ASSERT_NOT_NULL(attr);
 
@@ -119,9 +106,9 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
         TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_FLOAT, type);
     }
 
-    // Test 4: INT8
+    // Test 3: INT8
     {
-        esp_matter_attr_val_t val = esp_matter_int8(-128);
+        esp_matter_attr_val_t val = esp_matter_attr_val(static_cast<int8_t>(-128));
         attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
         TEST_ASSERT_NOT_NULL(attr);
 
@@ -132,9 +119,9 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
         TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_INT8, type);
     }
 
-    // Test 5: UINT8
+    // Test 4: UINT8
     {
-        esp_matter_attr_val_t val = esp_matter_uint8(255);
+        esp_matter_attr_val_t val = esp_matter_attr_val(static_cast<uint8_t>(255));
         attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
         TEST_ASSERT_NOT_NULL(attr);
 
@@ -145,9 +132,9 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
         TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_UINT8, type);
     }
 
-    // Test 6: INT16
+    // Test 5: INT16
     {
-        esp_matter_attr_val_t val = esp_matter_int16(-32768);
+        esp_matter_attr_val_t val = esp_matter_attr_val(static_cast<int16_t>(-32768));
         attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
         TEST_ASSERT_NOT_NULL(attr);
 
@@ -158,9 +145,9 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
         TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_INT16, type);
     }
 
-    // Test 7: UINT16
+    // Test 6: UINT16
     {
-        esp_matter_attr_val_t val = esp_matter_uint16(65535);
+        esp_matter_attr_val_t val = esp_matter_attr_val(static_cast<uint16_t>(65535));
         attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
         TEST_ASSERT_NOT_NULL(attr);
 
@@ -171,9 +158,9 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
         TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_UINT16, type);
     }
 
-    // Test 8: INT32
+    // Test 7: INT32
     {
-        esp_matter_attr_val_t val = esp_matter_int32(-2147483648);
+        esp_matter_attr_val_t val = esp_matter_attr_val(static_cast<int32_t>(-2147483648));
         attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
         TEST_ASSERT_NOT_NULL(attr);
 
@@ -184,9 +171,9 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
         TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_INT32, type);
     }
 
-    // Test 9: UINT32
+    // Test 8: UINT32
     {
-        esp_matter_attr_val_t val = esp_matter_uint32(0xFFFFFFFF);
+        esp_matter_attr_val_t val = esp_matter_attr_val(static_cast<uint32_t>(0xFFFFFFFF));
         attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
         TEST_ASSERT_NOT_NULL(attr);
 
@@ -197,9 +184,9 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
         TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_UINT32, type);
     }
 
-    // Test 10: INT64
+    // Test 9: INT64
     {
-        esp_matter_attr_val_t val = esp_matter_int64(-9223372036854775807LL);
+        esp_matter_attr_val_t val = esp_matter_attr_val(static_cast<int64_t>(-9223372036854775807LL));
         attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
         TEST_ASSERT_NOT_NULL(attr);
 
@@ -210,9 +197,9 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
         TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_INT64, type);
     }
 
-    // Test 11: UINT64
+    // Test 10: UINT64
     {
-        esp_matter_attr_val_t val = esp_matter_uint64(0xFFFFFFFFFFFFFFFFULL);
+        esp_matter_attr_val_t val = esp_matter_attr_val(static_cast<uint64_t>(0xFFFFFFFFFFFFFFFFULL));
         attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
         TEST_ASSERT_NOT_NULL(attr);
 
@@ -223,9 +210,9 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
         TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_UINT64, type);
     }
 
-    // Test 12: ENUM8
+    // Test 11: ENUM8
     {
-        esp_matter_attr_val_t val = esp_matter_enum8(5);
+        esp_matter_attr_val_t val = esp_matter_attr_val(static_cast<uint8_t>(5), esp_matter_attr_val::uint_sub_type::k_enum);
         attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
         TEST_ASSERT_NOT_NULL(attr);
 
@@ -236,9 +223,9 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
         TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_ENUM8, type);
     }
 
-    // Test 13: ENUM16
+    // Test 12: ENUM16
     {
-        esp_matter_attr_val_t val = esp_matter_enum16(1000);
+        esp_matter_attr_val_t val = esp_matter_attr_val(static_cast<uint16_t>(1000), esp_matter_attr_val::uint_sub_type::k_enum);
         attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
         TEST_ASSERT_NOT_NULL(attr);
 
@@ -249,9 +236,9 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
         TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_ENUM16, type);
     }
 
-    // Test 14: BITMAP8
+    // Test 13: BITMAP8
     {
-        esp_matter_attr_val_t val = esp_matter_bitmap8(0xAB);
+        esp_matter_attr_val_t val = esp_matter_attr_val(static_cast<uint8_t>(0xAB), esp_matter_attr_val::uint_sub_type::k_bitmap);
         attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
         TEST_ASSERT_NOT_NULL(attr);
 
@@ -262,9 +249,9 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
         TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_BITMAP8, type);
     }
 
-    // Test 15: BITMAP16
+    // Test 14: BITMAP16
     {
-        esp_matter_attr_val_t val = esp_matter_bitmap16(0xABCD);
+        esp_matter_attr_val_t val = esp_matter_attr_val(static_cast<uint16_t>(0xABCD), esp_matter_attr_val::uint_sub_type::k_bitmap);
         attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
         TEST_ASSERT_NOT_NULL(attr);
 
@@ -275,9 +262,9 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
         TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_BITMAP16, type);
     }
 
-    // Test 16: BITMAP32
+    // Test 15: BITMAP32
     {
-        esp_matter_attr_val_t val = esp_matter_bitmap32(0xABCD1234);
+        esp_matter_attr_val_t val = esp_matter_attr_val(static_cast<uint32_t>(0xABCD1234), esp_matter_attr_val::uint_sub_type::k_bitmap);
         attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
         TEST_ASSERT_NOT_NULL(attr);
 
@@ -288,10 +275,10 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
         TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_BITMAP32, type);
     }
 
-    // Test 17: CHAR_STRING
+    // Test 16: CHAR_STRING
     {
         char test_str[] = "TestString";
-        esp_matter_attr_val_t val = esp_matter_char_str(test_str, strlen(test_str));
+        esp_matter_attr_val_t val = esp_matter_attr_val(test_str, strlen(test_str));
         attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
         TEST_ASSERT_NOT_NULL(attr);
 
@@ -302,10 +289,10 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
         TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_CHAR_STRING, type);
     }
 
-    // Test 18: OCTET_STRING
+    // Test 17: OCTET_STRING
     {
         uint8_t test_octets[] = {0x01, 0x02, 0x03, 0x04};
-        esp_matter_attr_val_t val = esp_matter_octet_str(test_octets, sizeof(test_octets));
+        esp_matter_attr_val_t val = esp_matter_attr_val(test_octets, sizeof(test_octets));
         attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
         TEST_ASSERT_NOT_NULL(attr);
 
@@ -316,7 +303,7 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
         TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_OCTET_STRING, type);
     }
 
-    // Test 19: ARRAY
+    // Test 18: ARRAY
     {
         // apparently our internal impl wants this to be malloced,
         // otherwise at the time of destruction, we will try to free a stack allocated buffer
@@ -324,7 +311,7 @@ TEST_CASE("get_val_type for all primitive types", "[get_val_type][all_types]")
         TEST_ASSERT_NOT_NULL(test_array);
         test_array[0] = 1; test_array[1] = 2; test_array[2] = 3;
 
-        esp_matter_attr_val_t val = esp_matter_array(test_array, 3 * sizeof(uint8_t), 3);
+        esp_matter_attr_val_t val = esp_matter_attr_val(test_array, (uint16_t)3 * sizeof(uint8_t), (uint16_t)3);
         attribute_t *attr = attribute::create(test_cluster, attr_id++, ATTRIBUTE_FLAG_NONE, val);
         TEST_ASSERT_NOT_NULL(attr);
 
@@ -344,7 +331,7 @@ TEST_CASE("get_val_type persists after attribute update", "[get_val_type][persis
 
     uint32_t attr_id = 100;
     // Create a UINT8 attribute
-    esp_matter_attr_val_t initial_val = esp_matter_uint8(10);
+    esp_matter_attr_val_t initial_val = esp_matter_attr_val(static_cast<uint8_t>(10));
     attribute_t *attr = attribute::create(test_cluster, attr_id, ATTRIBUTE_FLAG_NONE, initial_val);
     TEST_ASSERT_NOT_NULL(attr);
 
@@ -353,7 +340,7 @@ TEST_CASE("get_val_type persists after attribute update", "[get_val_type][persis
     TEST_ASSERT_EQUAL(ESP_MATTER_VAL_TYPE_UINT8, type);
 
     // Update value
-    esp_matter_attr_val_t new_val = esp_matter_uint8(200);
+    esp_matter_attr_val_t new_val = esp_matter_attr_val(static_cast<uint8_t>(200));
     esp_err_t err = attribute::set_val(attr, &new_val);
     TEST_ASSERT_EQUAL(ESP_OK, err);
 
@@ -374,19 +361,19 @@ TEST_CASE("get_val_type for multiple attributes in same cluster", "[get_val_type
     setup_for_get_val_type();
 
     // Create attributes with different types
-    esp_matter_attr_val_t bool_val = esp_matter_bool(false);
+    esp_matter_attr_val_t bool_val = esp_matter_attr_val(false);
     attribute_t *bool_attr = attribute::create(test_cluster, 1, ATTRIBUTE_FLAG_NONE, bool_val);
     TEST_ASSERT_NOT_NULL(bool_attr);
 
-    esp_matter_attr_val_t uint8_val = esp_matter_uint8(42);
+    esp_matter_attr_val_t uint8_val = esp_matter_attr_val(static_cast<uint8_t>(42));
     attribute_t *uint8_attr = attribute::create(test_cluster, 2, ATTRIBUTE_FLAG_NONE, uint8_val);
     TEST_ASSERT_NOT_NULL(uint8_attr);
 
-    esp_matter_attr_val_t uint16_val = esp_matter_uint16(1234);
+    esp_matter_attr_val_t uint16_val = esp_matter_attr_val(static_cast<uint16_t>(1234));
     attribute_t *uint16_attr = attribute::create(test_cluster, 3, ATTRIBUTE_FLAG_NONE, uint16_val);
     TEST_ASSERT_NOT_NULL(uint16_attr);
 
-    esp_matter_attr_val_t int32_val = esp_matter_int32(-9999);
+    esp_matter_attr_val_t int32_val = esp_matter_attr_val(static_cast<int32_t>(-9999));
     attribute_t *int32_attr = attribute::create(test_cluster, 4, ATTRIBUTE_FLAG_NONE, int32_val);
     TEST_ASSERT_NOT_NULL(int32_attr);
 

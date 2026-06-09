@@ -76,13 +76,13 @@ namespace attribute {
 attribute_t *create_cluster_revision(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, chip::app::Clusters::Globals::Attributes::ClusterRevision::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_feature_map(cluster_t *cluster, uint32_t value)
 {
     return esp_matter::attribute::create(cluster, chip::app::Clusters::Globals::Attributes::FeatureMap::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_bitmap32(value));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
 }
 } // namespace attribute
 } // namespace global
@@ -97,7 +97,7 @@ esp_err_t update_feature_map(cluster_t *cluster, uint32_t value)
     VerifyOrReturnError(attribute, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Feature map attribute cannot be null"));
 
     /* Update the value if the attribute already exists */
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val;
     attribute::get_val(attribute, &val);
     val.val.u32 |= value;
     /* Here we can't call attribute::update() since the chip stack would not have started yet, since we are
@@ -107,7 +107,7 @@ esp_err_t update_feature_map(cluster_t *cluster, uint32_t value)
 
 uint32_t get_feature_map_value(cluster_t *cluster)
 {
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val;
     attribute_t *attribute = attribute::get(cluster, chip::app::Clusters::Globals::Attributes::FeatureMap::Id);
 
     VerifyOrReturnValue(attribute, 0, ESP_LOGE(TAG, "Feature map attribute cannot be null"));

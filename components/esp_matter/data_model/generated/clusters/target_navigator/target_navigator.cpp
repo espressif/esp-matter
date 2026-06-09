@@ -57,12 +57,12 @@ namespace target_navigator {
 namespace attribute {
 attribute_t *create_target_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, TargetList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, TargetList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_current_target(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, CurrentTarget::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, CurrentTarget::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
 }
 
 } /* attribute */

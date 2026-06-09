@@ -144,6 +144,71 @@ class TestCodegenAttribute(unittest.TestCase):
         a = _make_attr("Temp", "0x0001")
         self.assertFalse(a.is_complex)
 
+    def test_get_attr_val_expr_bool(self):
+        a = _make_attr("OnOff", "0x0000", type_="bool")
+        a.converted_type = "bool"
+        self.assertEqual(a.get_attr_val_expr("value"), "esp_matter_attr_val(value)")
+
+    def test_get_attr_val_expr_nullable_uint8(self):
+        a = _make_attr("Level", "0x0000", type_="uint8")
+        a.converted_type = "uint8_t"
+        a.is_nullable = True
+        self.assertEqual(a.get_attr_val_expr("value"), "esp_matter_attr_val(value)")
+        self.assertEqual(
+            a.get_attr_val_expr("0"),
+            "esp_matter_attr_val(nullable<uint8_t>(0))",
+        )
+
+    def test_get_attr_val_expr_uint16_bounds(self):
+        a = _make_attr("TargetsPerAccessControlEntry", "0x0000", type_="uint16")
+        a.converted_type = "uint16_t"
+        self.assertEqual(
+            a.get_attr_val_expr("65534"),
+            "esp_matter_attr_val(static_cast<uint16_t>(65534))",
+        )
+
+    def test_get_attr_val_expr_enum8(self):
+        a = _make_attr("Mode", "0x0000", type_="enum8")
+        a.converted_type = "uint8_t"
+        self.assertEqual(
+            a.get_attr_val_expr("value"),
+            "esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum)",
+        )
+
+    def test_get_attr_val_expr_nullable_enum8_bounds(self):
+        a = _make_attr("StartUpOnOff", "0x0000", type_="enum8")
+        a.converted_type = "uint8_t"
+        a.is_nullable = True
+        self.assertEqual(
+            a.get_attr_val_expr("0"),
+            "esp_matter_attr_val(nullable<uint8_t>(0), "
+            "esp_matter_attr_val::uint_sub_type::k_enum)",
+        )
+
+    def test_get_attr_val_expr_bitmap32(self):
+        a = _make_attr("FeatureMap", "0x0000", type_="bitmap32")
+        a.converted_type = "uint32_t"
+        self.assertEqual(
+            a.get_attr_val_expr("value"),
+            "esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap)",
+        )
+
+    def test_get_attr_val_expr_string(self):
+        a = _make_attr("Name", "0x0000", type_="string")
+        a.converted_type = "char *"
+        self.assertEqual(
+            a.get_attr_val_expr("value"),
+            "esp_matter_attr_val(value, length)",
+        )
+
+    def test_get_attr_val_expr_list(self):
+        a = _make_attr("List", "0x0000", type_="list")
+        a.converted_type = "uint8_t *"
+        self.assertEqual(
+            a.get_attr_val_expr("value"),
+            "esp_matter_attr_val(value, length, count)",
+        )
+
 
 # ---------------------------------------------------------------------------
 # Command (codegen)

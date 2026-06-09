@@ -52,7 +52,7 @@ chip::Protocols::InteractionModel::Status FanDelegateImpl::HandleStep(chip::app:
     static int8_t max_speed = HIGH_MODE_PERCENT_MAX;
     int8_t tmp = 0;
 
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val;
     get_attribute(app_endpoint_id, FanControl::Id, FanControl::Attributes::PercentSetting::Id, &val);
     tmp = val.val.u8;
 
@@ -86,12 +86,12 @@ chip::Protocols::InteractionModel::Status FanDelegateImpl::HandleStep(chip::app:
 
 static esp_err_t app_driver_fan_set_mode(fan_driver_handle_t handle, esp_matter_attr_val_t *val)
 {
-    ESP_LOGI(TAG, "Mode received value = %d ", val->val.i);
+    ESP_LOGI(TAG, "Mode received value = %u ", val->val.u8);
     hal_bldc_set_wind(0);
-    if (val->val.i == 0) {
+    if (val->val.u8 == 0) {
         hal_stepper_motor_set_rock(0);
     }
-    hal_bldc_set_fanmode(val->val.i);
+    hal_bldc_set_fanmode(val->val.u8);
 
     return ESP_OK;
 }
@@ -99,25 +99,25 @@ static esp_err_t app_driver_fan_set_mode(fan_driver_handle_t handle, esp_matter_
 static esp_err_t app_driver_fan_set_percent(fan_driver_handle_t handle, esp_matter_attr_val_t *val)
 {
     hal_bldc_set_wind(0);
-    ESP_LOGI(TAG, "Percent received value = %d ", val->val.i);
-    hal_bldc_set_percent_speed(val->val.i);
+    ESP_LOGI(TAG, "Percent received value = %u ", val->val.u8);
+    hal_bldc_set_percent_speed(val->val.u8);
 
     return ESP_OK;
 }
 
 static esp_err_t app_driver_fan_set_rock(fan_driver_handle_t handle, esp_matter_attr_val_t *val)
 {
-    ESP_LOGI(TAG, "Shake received value = %d ", val->val.i);
-    return hal_stepper_motor_set_rock(val->val.i);
+    ESP_LOGI(TAG, "Shake received value = %u ", val->val.u8);
+    return hal_stepper_motor_set_rock(val->val.u8);
 }
 
 static esp_err_t app_driver_fan_set_wind(fan_driver_handle_t handle, esp_matter_attr_val_t *val)
 {
-    ESP_LOGI(TAG, "Wind received value = %d", val->val.i);
-    hal_bldc_set_wind(val->val.i);
+    ESP_LOGI(TAG, "Wind received value = %u", val->val.u8);
+    hal_bldc_set_wind(val->val.u8);
     /* When exit nature wind mode, set fan speed value to the pre-set percent-setting */
-    if (val->val.i != 2) {
-        esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    if (val->val.u8 != 2) {
+        esp_matter_attr_val_t val;
         get_attribute(app_endpoint_id, FanControl::Id, FanControl::Attributes::PercentSetting::Id, &val);
         attribute::update(app_endpoint_id, FanControl::Id, FanControl::Attributes::PercentSetting::Id, &val);
     }
@@ -202,7 +202,7 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
 
         if (cluster_id == FanControl::Id) {
             if (attribute_id == FanControl::Attributes::FanMode::Id) {
-                esp_matter_attr_val_t val_a = esp_matter_invalid(NULL);
+                esp_matter_attr_val_t val_a;
                 get_attribute(endpoint_id, FanControl::Id, Attributes::PercentSetting::Id, &val_a);
                 /* When FanMode attribute change , should check the present setting value, if this value not match
                    FanMode, need write the present setting value to corresponding value. Now we set it to the max
@@ -243,7 +243,7 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
                 set_attribute(endpoint_id, FanControl::Id, FanControl::Attributes::SpeedCurrent::Id, val_a);
                 err = app_driver_fan_set_mode(handle, val);
             } else if (attribute_id == FanControl::Attributes::PercentSetting::Id) {
-                esp_matter_attr_val_t val_b = esp_matter_invalid(NULL);
+                esp_matter_attr_val_t val_b;
                 get_attribute(endpoint_id, FanControl::Id, Attributes::FanMode::Id, &val_b);
                 if (!check_if_mode_percent_match(val_b.val.u8, val->val.u8)) {
                     if (val->val.u8 >= HIGH_MODE_PERCENT_MIN) {

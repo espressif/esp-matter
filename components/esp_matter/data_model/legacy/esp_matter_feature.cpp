@@ -38,7 +38,7 @@ static esp_err_t update_feature_map(cluster_t *cluster, uint32_t value)
     VerifyOrReturnError(attribute, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Feature map attribute cannot be null"));
 
     /* Update the value if the attribute already exists */
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val;
     VerifyOrReturnError(attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
     val.val.u32 |= value;
     /* Here we can't call attribute::update() since the chip stack would not have started yet, since we are
@@ -48,7 +48,7 @@ static esp_err_t update_feature_map(cluster_t *cluster, uint32_t value)
 
 static uint32_t get_feature_map_value(cluster_t *cluster)
 {
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val;
     attribute_t *attribute = attribute::get(cluster, Globals::Attributes::FeatureMap::Id);
 
     VerifyOrReturnValue(attribute, 0, ESP_LOGE(TAG, "Feature map attribute cannot be null"));
@@ -613,7 +613,7 @@ static esp_err_t update_color_capability(cluster_t *cluster, uint16_t value)
     VerifyOrReturnError(attribute, ESP_FAIL, ESP_LOGE(TAG, "The color capability attribute is NULL"));
 
     /* Update the value if the attribute already exists */
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attr_val_t val;
     VerifyOrReturnError(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
     val.val.u16 |= value;
     /* Here we can't call attribute::update() since the chip stack would not have started yet, since we are
@@ -833,7 +833,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         // We should update config_status attribute as position_aware_lift feature is added
         uint8_t set_third_bit = 1 << 3;
         attribute_t *attribute = esp_matter::attribute::get(cluster, WindowCovering::Attributes::ConfigStatus::Id);
-        esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+        esp_matter_attr_val_t val;
         VerifyOrReturnError(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
         val.val.u8 = val.val.u8 | set_third_bit;
         return esp_matter::attribute::set_val_internal(attribute, &val, false);
@@ -867,7 +867,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         // We should update config_status attribute as position_aware_tilt feature is added
         uint8_t set_fourth_bit = 1 << 4;
         attribute_t *attribute = esp_matter::attribute::get(cluster, WindowCovering::Attributes::ConfigStatus::Id);
-        esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+        esp_matter_attr_val_t val;
         VerifyOrReturnError(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
         val.val.u8 = val.val.u8 | set_fourth_bit;
         return esp_matter::attribute::set_val_internal(attribute, &val, false);

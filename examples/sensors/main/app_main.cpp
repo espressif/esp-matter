@@ -41,7 +41,7 @@ static void temp_sensor_notification(uint16_t endpoint_id, float temp, void *use
                                                  TemperatureMeasurement::Id,
                                                  TemperatureMeasurement::Attributes::MeasuredValue::Id);
 
-        esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+        esp_matter_attr_val_t val;
         attribute::get_val(attribute, &val);
         val.val.i16 = static_cast<int16_t>(temp * 100);
 
@@ -60,7 +60,7 @@ static void humidity_sensor_notification(uint16_t endpoint_id, float humidity, v
                                                  RelativeHumidityMeasurement::Id,
                                                  RelativeHumidityMeasurement::Attributes::MeasuredValue::Id);
 
-        esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+        esp_matter_attr_val_t val;
         attribute::get_val(attribute, &val);
         val.val.u16 = static_cast<uint16_t>(humidity * 100);
 
@@ -76,7 +76,7 @@ static void occupancy_sensor_notification(uint16_t endpoint_id, bool occupancy, 
                                                  OccupancySensing::Id,
                                                  OccupancySensing::Attributes::Occupancy::Id);
 
-        esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+        esp_matter_attr_val_t val;
         attribute::get_val(attribute, &val);
         val.val.b = occupancy;
 

@@ -109,12 +109,12 @@ esp_err_t add(cluster_t *cluster)
 namespace attribute {
 attribute_t *create_input_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, InputList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, InputList::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_current_input(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, CurrentInput::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, CurrentInput::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
 }
 
 } /* attribute */

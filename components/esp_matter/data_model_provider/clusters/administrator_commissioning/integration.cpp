@@ -41,7 +41,7 @@ void ESPMatterAdministratorCommissioningClusterServerInitCallback(EndpointId end
         esp_matter::attribute_t *attribute = esp_matter::attribute::get(endpointId, AdministratorCommissioning::Id,
                                                                         Globals::Attributes::FeatureMap::Id);
         VerifyOrReturn(attribute != nullptr);
-        esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
+        esp_matter_attr_val_t val;
         VerifyOrReturn(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK);
         VerifyOrReturn(val.type == ESP_MATTER_VAL_TYPE_BITMAP32);
 

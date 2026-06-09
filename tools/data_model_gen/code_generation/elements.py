@@ -376,6 +376,35 @@ class Attribute(BaseAttribute):
         """Get the conformance condition"""
         return self.conformance.get_mandatory_condition()
 
+    def get_attr_val_expr(self, value_expr: str) -> str:
+        """Get the C++ expression that constructs an esp_matter_attr_val."""
+        if self.type == "string":
+            return f"esp_matter_attr_val({value_expr}, length)"
+        if self.type == "octstr":
+            return f"esp_matter_attr_val({value_expr}, length)"
+        if self.type == "list":
+            return f"esp_matter_attr_val({value_expr}, length, count)"
+
+        expr = value_expr
+        if value_expr != "value":
+            if self.is_nullable:
+                expr = f"nullable<{self.get_type()}>({value_expr})"
+            else:
+                expr = f"static_cast<{self.get_type()}>({value_expr})"
+
+        if self.type.startswith("enum"):
+            return (
+                f"esp_matter_attr_val({expr}, "
+                "esp_matter_attr_val::uint_sub_type::k_enum)"
+            )
+        if self.type.startswith("bitmap"):
+            return (
+                f"esp_matter_attr_val({expr}, "
+                "esp_matter_attr_val::uint_sub_type::k_bitmap)"
+            )
+
+        return f"esp_matter_attr_val({expr})"
+
 
 class Command(BaseCommand):
     """Command class that inherits from BaseCommand"""

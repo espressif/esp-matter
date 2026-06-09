@@ -143,7 +143,7 @@ static esp_err_t status_attribute_update(bool status)
     uint16_t endpoint_id = cluster::rainmaker::endpoint_id;
     uint32_t cluster_id = cluster::rainmaker::Id;
     uint32_t attribute_id = cluster::rainmaker::attribute::status::Id;
-    esp_matter_attr_val_t val = esp_matter_bool(status);
+    esp_matter_attr_val_t val = esp_matter_attr_val(status);
     return attribute::update(endpoint_id, cluster_id, attribute_id, &val);
 }
 
@@ -155,7 +155,7 @@ static esp_err_t rmaker_node_id_attribute_update(char *rmaker_node_id)
     uint16_t endpoint_id = cluster::rainmaker::endpoint_id;
     uint32_t cluster_id = cluster::rainmaker::Id;
     uint32_t attribute_id = cluster::rainmaker::attribute::rmaker_node_id::Id;
-    esp_matter_attr_val_t val = esp_matter_char_str(rmaker_node_id, strlen(rmaker_node_id));
+    esp_matter_attr_val_t val = esp_matter_attr_val(rmaker_node_id, strlen(rmaker_node_id));
     return attribute::update(endpoint_id, cluster_id, attribute_id, &val);
 }
 
@@ -164,7 +164,7 @@ static esp_err_t challenge_response_attribute_update(char *challenge_response)
     uint16_t endpoint_id = cluster::rainmaker::endpoint_id;
     uint32_t cluster_id = cluster::rainmaker::Id;
     uint32_t attribute_id = cluster::rainmaker::attribute::challenge_response::Id;
-    esp_matter_attr_val_t val = esp_matter_char_str(challenge_response, strlen(challenge_response));
+    esp_matter_attr_val_t val = esp_matter_attr_val(challenge_response, strlen(challenge_response));
     return attribute::update(endpoint_id, cluster_id, attribute_id, &val);
 }
 
@@ -390,24 +390,24 @@ static esp_err_t custom_cluster_create()
 
     /* Create custom status attribute */
     /* Update the value of the attribute after esp_rmaker_node_init() is done */
-    attribute::create(cluster, cluster::rainmaker::attribute::status::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bool(false));
+    attribute::create(cluster, cluster::rainmaker::attribute::status::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(false));
 
     /* Create custom rmaker_node_id attribute */
     /* Update the value of the attribute after esp_rmaker_node_init() is done */
     char rmaker_node_id[ESP_MATTER_RAINMAKER_MAX_NODE_ID_LEN] = {0};
     attribute::create(cluster, cluster::rainmaker::attribute::rmaker_node_id::Id, ATTRIBUTE_FLAG_NONE,
-                      esp_matter_char_str(rmaker_node_id, strlen(rmaker_node_id)), sizeof(rmaker_node_id));
+                      esp_matter_attr_val(rmaker_node_id, strlen(rmaker_node_id)), sizeof(rmaker_node_id));
 
     /* Create custom challenge_response attribute */
     /* Update the value of the attribute after sign_data command is called */
     char challenge_response[ESP_MATTER_RAINMAKER_MAX_CHALLENGE_RESPONSE_LEN] = {0};
     attribute::create(cluster, cluster::rainmaker::attribute::challenge_response::Id, ATTRIBUTE_FLAG_NONE,
-                      esp_matter_char_str(challenge_response, strlen(challenge_response)), sizeof(challenge_response));
+                      esp_matter_attr_val(challenge_response, strlen(challenge_response)), sizeof(challenge_response));
 
     /* Create custom challenge attribute */
     char challenge[ESP_MATTER_RAINMAKER_MAX_CHALLENGE_LEN] = {0};
     attribute::create(cluster, cluster::rainmaker::attribute::challenge::Id, ATTRIBUTE_FLAG_WRITABLE,
-                      esp_matter_char_str(challenge, strlen(challenge)), sizeof(challenge));
+                      esp_matter_attr_val(challenge, strlen(challenge)), sizeof(challenge));
 
     /* Create custom configuration command */
     command::create(cluster, cluster::rainmaker::command::configuration::Id,

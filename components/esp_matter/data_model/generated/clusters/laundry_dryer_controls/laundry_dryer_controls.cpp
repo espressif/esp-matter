@@ -46,13 +46,13 @@ namespace laundry_dryer_controls {
 namespace attribute {
 attribute_t *create_supported_dryness_levels(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, SupportedDrynessLevels::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, SupportedDrynessLevels::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_selected_dryness_level(cluster_t *cluster, nullable<uint8_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, SelectedDrynessLevel::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_nullable_enum8(0), esp_matter_nullable_enum8(3));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, SelectedDrynessLevel::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(nullable<uint8_t>(3), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 

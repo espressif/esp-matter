@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <esp_matter_attribute_utils.h>
-#include <esp_matter_data_model_priv.h>
+#include "integration.h"
 #include <data_model/esp_matter_data_model.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
-#include "integration.h"
+#include <esp_matter_attribute_utils.h>
+#include <esp_matter_data_model_priv.h>
 
 #include <app/ClusterCallbacks.h>
+#include <app/InteractionModelEngine.h>
 #include <app/clusters/general-diagnostics-server/GeneralDiagnosticsCluster.h>
 #include <app/server-cluster/ServerClusterInterfaceRegistry.h>
 #include <clusters/GeneralDiagnostics/ClusterId.h>
-#include <app/InteractionModelEngine.h>
 #include <clusters/GeneralDiagnostics/Enums.h>
 #include <lib/support/BitFlags.h>
 #include <lib/support/CodeUtils.h>
@@ -103,7 +103,7 @@ void ESPMatterGeneralDiagnosticsClusterServerInitCallback(EndpointId endpointId)
             attrSet.Set<GeneralDiagnostics::Attributes::ActiveNetworkFaults::Id>();
         }
         attribute_t *feature = attribute::get(endpointId, GeneralDiagnostics::Id, Globals::Attributes::FeatureMap::Id);
-        esp_matter_attr_val_t feature_val = esp_matter_invalid(nullptr);
+        esp_matter_attr_val_t feature_val;
         VerifyOrReturn(attribute::get_val_internal(feature, &feature_val) == ESP_OK &&
                        feature_val.type == ESP_MATTER_VAL_TYPE_BITMAP32);
         BitFlags<GeneralDiagnostics::Feature> featureFlags(feature_val.val.u32);
@@ -157,9 +157,13 @@ void ESPMatterGeneralDiagnosticsClusterServerShutdownCallback(EndpointId endpoin
     }
 }
 
-void MatterGeneralDiagnosticsPluginServerInitCallback() {}
+void MatterGeneralDiagnosticsPluginServerInitCallback()
+{
+}
 
-void MatterGeneralDiagnosticsPluginServerShutdownCallback() {}
+void MatterGeneralDiagnosticsPluginServerShutdownCallback()
+{
+}
 
 namespace chip::app::Clusters::GeneralDiagnostics {
 void GlobalNotifyDeviceReboot(GeneralDiagnostics::BootReasonEnum bootReason)
