@@ -1,0 +1,11 @@
+# Generating FirmwareBuildTime.h
+execute_process(
+    COMMAND date "+%s"
+    OUTPUT_VARIABLE BUILD_SECONDS
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+math(EXPR BUILD_SECONDS "${BUILD_SECONDS} - (946684800)")
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/FirmwareBuildTime.h
+"#pragma once\n
+#define CHIP_DEVICE_CONFIG_FIRMWARE_BUILD_TIME_MATTER_EPOCH_S ${BUILD_SECONDS}
+")
