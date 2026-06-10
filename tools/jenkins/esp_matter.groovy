@@ -71,6 +71,35 @@ def firmware_build() {
     echo "CONFIG_FACTORY_DEVICE_INSTANCE_INFO_PROVIDER=y" >> sdkconfig.defaults
     echo "CONFIG_ENABLE_MEMORY_PROFILING=y" >> sdkconfig.defaults
 
+    # Secure boot v2 + flash encryption (release mode) for the secure firmware variant.
+    # idf.py signs the bootloader and app at build time using the generated key.
+    # SecureBootOTA is the same image with a higher version, used to test OTA onto
+    # a device already running the SecureBoot (base) build.
+    if [ "${FIRMWARE_TYPE}" = "SecureBoot" ] || [ "${FIRMWARE_TYPE}" = "SecureBootOTA" ]; then
+        echo "secure_boot: enabled (v2)" >> ${REPOS_PATH}/build_details.txt
+        echo "flash_encryption: enabled (release mode)" >> ${REPOS_PATH}/build_details.txt
+        # Fixed signing key (Jenkins credential), so daily builds stay OTA-compatible
+        # with boards already provisioned with this key's public hash.
+        cp "${SECURE_BOOT_KEY}" secure_boot_signing_key.pem
+        echo "CONFIG_SECURE_BOOT=y" >> sdkconfig.defaults
+        echo 'CONFIG_SECURE_BOOT_SIGNING_KEY="secure_boot_signing_key.pem"' >> sdkconfig.defaults
+        echo "CONFIG_SECURE_FLASH_ENC_ENABLED=y" >> sdkconfig.defaults
+        echo "CONFIG_SECURE_FLASH_ENCRYPTION_MODE_RELEASE=y" >> sdkconfig.defaults
+        # Trim NimBLE features the Matter accessory (BLE peripheral / GATT server)
+        # does not use. Reclaims ~64KB of flash so the signed secure variant fits
+        # the OTA partition (verified on esp32c3: app 0x1d1000, 3% free).
+        echo "CONFIG_BT_NIMBLE_MEM_OPTIMIZATION=n" >> sdkconfig.defaults
+        echo "CONFIG_BT_NIMBLE_STATIC_TO_DYNAMIC=n" >> sdkconfig.defaults
+        echo "CONFIG_BT_NIMBLE_PRINT_ERR_NAME=n" >> sdkconfig.defaults
+        echo "CONFIG_BT_NIMBLE_RECONFIG_MTU=n" >> sdkconfig.defaults
+        echo "CONFIG_BT_NIMBLE_CPFD_CAFD=n" >> sdkconfig.defaults
+        echo "CONFIG_BT_NIMBLE_EXTRA_ADV_FIELDS=n" >> sdkconfig.defaults
+        echo "CONFIG_BT_NIMBLE_HS_PVCY=n" >> sdkconfig.defaults
+        echo "CONFIG_BT_NIMBLE_GATT_CLIENT=n" >> sdkconfig.defaults
+        echo "CONFIG_BT_NIMBLE_SPS_SERVICE=n" >> sdkconfig.defaults
+        echo "CONFIG_BT_NIMBLE_UTIL_API=n" >> sdkconfig.defaults
+    fi
+
     idf.py set-target ${chip}
     if [ "${FIRMWARE_TYPE}" = "OTA" ]; then
        MIN_PROJECT_VER=10
@@ -80,6 +109,15 @@ def firmware_build() {
        echo "OTA Project Version Number: ${OTA_PROJECT_VER}" >> ${REPOS_PATH}/build_details.txt
        echo "OTA Project Version String: ${OTA_PROJECT_VER_STRING}" >> ${REPOS_PATH}/build_details.txt
        idf.py -DCLI_PROJECT_VER=${OTA_PROJECT_VER_STRING} -DCLI_PROJECT_VER_NUMBER=${OTA_PROJECT_VER} build
+    elif [ "${FIRMWARE_TYPE}" = "SecureBoot" ] || [ "${FIRMWARE_TYPE}" = "SecureBootOTA" ]; then
+       # Base image = BUILD_NUMBER. OTA image = BUILD_NUMBER+1 so a device running
+       # the base build sees the OTA build as newer and applies it.
+       SB_PROJECT_VER=${BUILD_NUMBER}
+       [ "${FIRMWARE_TYPE}" = "SecureBootOTA" ] && SB_PROJECT_VER=$((BUILD_NUMBER + 1))
+       SB_PROJECT_VER_STRING="${SB_PROJECT_VER}.0"
+       echo "${FIRMWARE_TYPE} Project Version Number: ${SB_PROJECT_VER}" >> ${REPOS_PATH}/build_details.txt
+       echo "${FIRMWARE_TYPE} Project Version String: ${SB_PROJECT_VER_STRING}" >> ${REPOS_PATH}/build_details.txt
+       idf.py -DCLI_PROJECT_VER=${SB_PROJECT_VER_STRING} -DCLI_PROJECT_VER_NUMBER=${SB_PROJECT_VER} build
     else
        idf.py build
     fi

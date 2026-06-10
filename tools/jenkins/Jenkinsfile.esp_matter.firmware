@@ -77,6 +77,24 @@ pipeline {
                         esp_matter.firmware_build()
                         esp_matter.firmware_build_save()
 
+                        // Secure boot v2 + flash encryption (release mode) firmware,
+                        // for setup automation and release testing.
+                        // Uses a fixed signing key (Jenkins secret-file credential) so
+                        // daily OTA builds stay compatible with already-provisioned boards.
+                        if (params.product in ['all_device_types_app', 'light']) {
+                            withCredentials([file(credentialsId: 'esp_matter_secure_boot_signing_key', variable: 'SECURE_BOOT_KEY')]) {
+                                env.FIRMWARE_TYPE = "SecureBoot"
+                                esp_matter.firmware_build()
+                                esp_matter.firmware_build_save()
+
+                                // Same source + signing key, version bumped by 1, so it
+                                // can be OTA'd onto a device running the SecureBoot build.
+                                env.FIRMWARE_TYPE = "SecureBootOTA"
+                                esp_matter.firmware_build()
+                                esp_matter.firmware_build_save()
+                            }
+                        }
+
                     }
                 }
             }

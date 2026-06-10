@@ -14,3 +14,7 @@ tools/chip-tool/
 .DS_Store
 pytest_embedded_log
 cppcheck_report.txt
+
+# Secure boot signing keys - never commit private keys
+secure_boot_signing_key.pem
+*_signing_key.pem
