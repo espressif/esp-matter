@@ -1946,7 +1946,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster_t *descriptor_cluster = cluster::get(endpoint, Descriptor::Id);
     descriptor::feature::tag_list::add(descriptor_cluster);
 
-    config->power_source_device.power_source.feature_flags = cluster::power_source::feature::battery::get_id() | cluster::power_source::feature::wired::get_id();
+    config->power_source_device.power_source.feature_flags = cluster::power_source::feature::battery::get_id();
     endpoint::power_source::add(endpoint, &config->power_source_device);
 
     cluster_t *power_source_cluster = cluster::get(endpoint, PowerSource::Id);
