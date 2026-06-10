@@ -582,6 +582,7 @@ int create(uint8_t device_type_index)
         }
         case ESP_MATTER_HEAT_PUMP: {
             esp_matter::endpoint::heat_pump::config_t heat_pump_config;
+            heat_pump_config.electrical_energy_measurement.feature_flags = esp_matter::cluster::electrical_energy_measurement::feature::exported_energy::get_id() | esp_matter::cluster::electrical_energy_measurement::feature::cumulative_energy::get_id();
             endpoint = esp_matter::endpoint::heat_pump::create(node, &heat_pump_config, ENDPOINT_FLAG_NONE, NULL);
             break;
         }
