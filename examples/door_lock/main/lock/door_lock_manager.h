@@ -40,7 +40,7 @@ static constexpr uint8_t kMaxCredentialsPerUser      = 10;
 static constexpr uint8_t kMaxWeekdaySchedulesPerUser = 10;
 static constexpr uint8_t kMaxYeardaySchedulesPerUser = 10;
 static constexpr uint8_t kMaxHolidaySchedules        = 10;
-static constexpr uint8_t kMaxCredentialSize          = 8;
+static constexpr uint8_t kMaxCredentialSize          = 65;
 
 static constexpr uint8_t kMaxCredentials = kMaxUsers * kMaxCredentialsPerUser;
 } // namespace ResourceRanges
@@ -111,8 +111,10 @@ public:
     CHIP_ERROR Init(chip::app::DataModel::Nullable<chip::app::Clusters::DoorLock::DlLockState> state,
                     ESP32DoorLock::LockInitParams::LockParam lockParam);
 
-    bool Lock(chip::EndpointId endpointId, const Optional<chip::ByteSpan>  &pin, OperationErrorEnum  &err);
-    bool Unlock(chip::EndpointId endpointId, const Optional<chip::ByteSpan>  &pin, OperationErrorEnum  &err);
+    bool ValidatePIN(chip::EndpointId endpointId, const Optional<chip::ByteSpan>  &pin, OperationErrorEnum  &err) const;
+
+    void Lock(chip::EndpointId endpointId, app::Clusters::DoorLock::OperationSourceEnum source);
+    void Unlock(chip::EndpointId endpointId, app::Clusters::DoorLock::OperationSourceEnum source);
 
     bool GetUser(chip::EndpointId endpointId, uint16_t userIndex, EmberAfPluginDoorLockUserInfo  &user);
     bool SetUser(chip::EndpointId endpointId, uint16_t userIndex, chip::FabricIndex creator, chip::FabricIndex modifier,
@@ -145,12 +147,10 @@ public:
 
     bool IsValidUserIndex(uint16_t userIndex);
     bool IsValidCredentialIndex(uint16_t credentialIndex, CredentialTypeEnum type);
+    uint16_t CredentialStorageIndex(uint16_t credentialIndex, CredentialTypeEnum type) const;
     bool IsValidWeekdayScheduleIndex(uint8_t scheduleIndex);
     bool IsValidYeardayScheduleIndex(uint8_t scheduleIndex);
     bool IsValidHolidayScheduleIndex(uint8_t scheduleIndex);
-
-    bool setLockState(chip::EndpointId endpointId, DlLockState lockState, const Optional<chip::ByteSpan>  &pin,
-                      OperationErrorEnum  &err);
     const char * lockStateToString(DlLockState lockState) const;
 
     bool ReadConfigValues();

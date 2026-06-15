@@ -25,6 +25,9 @@
 
 #include <app/server/CommissioningWindowManager.h>
 #include <app/server/Server.h>
+#ifdef CONFIG_ENABLE_ALIRO_OVER_NFC
+#include <aliro_door_lock_delegate.h>
+#endif
 
 static const char *TAG = "app_main";
 uint16_t door_lock_endpoint_id = 0;
@@ -168,6 +171,11 @@ extern "C" void app_main()
     ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
 
     door_lock::config_t door_lock_config;
+#ifdef CONFIG_ENABLE_ALIRO_OVER_NFC
+    AliroDoorLockDelegate::Instance().Init();
+    door_lock_config.door_lock.delegate = &AliroDoorLockDelegate::Instance();
+#endif
+    door_lock_config.door_lock.lock_state = chip::to_underlying(DoorLock::DlLockState::kLocked);
     cluster::door_lock::feature::credential_over_the_air_access::config_t cota_config;
     cluster::door_lock::feature::pin_credential::config_t pin_credential_config;
     cluster::door_lock::feature::user::config_t user_config;
@@ -178,6 +186,9 @@ extern "C" void app_main()
     cluster::door_lock::feature::credential_over_the_air_access::add(door_lock_cluster, &cota_config);
     cluster::door_lock::feature::pin_credential::add(door_lock_cluster, &pin_credential_config);
     cluster::door_lock::feature::user::add(door_lock_cluster, &user_config);
+#ifdef CONFIG_ENABLE_ALIRO_OVER_NFC
+    cluster::door_lock::feature::aliro_provisioning::add(door_lock_cluster);
+#endif
     cluster::door_lock::attribute::create_auto_relock_time(door_lock_cluster, 5);
 
     door_lock_endpoint_id = endpoint::get_id(endpoint);

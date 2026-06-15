@@ -1,0 +1,9 @@
+menu "Example Configuration"
+
+    config ENABLE_ALIRO_OVER_NFC
+        bool "Enable Aliro-over-NFC feature"
+        default n
+        help
+            Enable this option to enable Aliro-over-NFC feature for DoorLock cluster.
+
+endmenu
