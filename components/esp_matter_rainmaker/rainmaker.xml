@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-Copyright (c) 2023 Project CHIP Authors
+Copyright (c) 2023-2026 Espressif Systems (Shanghai) PTE LTD
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -25,22 +25,12 @@ limitations under the License.
 
     <description>Attributes and commands for rainmaker cluster.</description>
 
-    <globalAttribute side="either" code="0xFFFD" value="2"/>
+    <globalAttribute side="either" code="0xFFFD" value="3"/>
 
     <attribute side="server" code="0x0000" define="STATUS" type="boolean" default="0">Status</attribute>
     <attribute side="server" code="0x0001" define="RMAKER_NODE_ID" type="char_string" length="40">RmakerNodeId</attribute>
     <attribute side="server" code="0x0002" define="CHALLENGE_RESPONSE" type="char_string" length="150">ChallengeResponse</attribute>
     <attribute side="server" code="0x0003" define="CHALLENGE" type="char_string" length="40" writable="true">Challenge</attribute>
-
-    <command source="client" code="0x00" name="Configuration" optional="false">
-      <description>Configuration command.</description>
-      <arg name="ConfigurationArg" type="char_string"/>
-    </command>
-
-    <command source="client" code="0x01" name="SignData" optional="false">
-      <description>SignData command.</description>
-      <arg name="SignDataArg" type="char_string"/>
-    </command>
 
   </cluster>
 </configurator>
