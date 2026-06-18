@@ -88,6 +88,12 @@ variables:
    - cd ${ESP_MATTER_PATH}
    - . ./export.sh
 
+# Cap ninja -j (see tools/ci/ninja_shim/ninja); override with NINJA_JOBS.
+.setup_ninja_shim: &setup_ninja_shim
+  - export NINJA_JOBS="${NINJA_JOBS:-6}"
+  - export REAL_NINJA="$(command -v ninja)"
+  - export PATH="${ESP_MATTER_PATH}/tools/ci/ninja_shim:$PATH"
+
 .setup_rainmaker: &setup_rainmaker
   - cd ${CI_PROJECT_DIR}
   - git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/espressif/esp-rainmaker.git
@@ -259,6 +265,7 @@ build_image:
     - *setup_matter
     # update caches only when setup succeed
     - *update_build_caches
+    - *setup_ninja_shim
   variables:
     REPOS_PATH: "$CI_PROJECT_DIR/repos"
     IDF_CCACHE_ENABLE: 1
@@ -280,6 +287,7 @@ build_image:
     - cd ${ESP_MATTER_PATH}
     - mkdir -p ${REPOS_PATH}
     - *update_build_caches
+    - *setup_ninja_shim
   variables:
     REPOS_PATH: "$CI_PROJECT_DIR/repos"
     IDF_CCACHE_ENABLE: 1
@@ -376,6 +384,9 @@ build_override_sdkconfig_examples:
   resource_group: build_override_sdkconfig_examples
   extends:
         - .build_examples_template
+  tags:
+    - build
+    - BuildSH-ruby51 [30]
   script:
     - *build_external_platform_example
     - *build_esp32c6_thread_example
@@ -390,6 +401,7 @@ build_zap_light_example:
   script:
     - cd ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip
     - source ./scripts/activate.sh
+    - *setup_ninja_shim
 
     - cd ${ESP_MATTER_PATH}/examples/zap_light
     - idf.py set-target esp32c3 build
@@ -399,6 +411,11 @@ build_esp_matter_examples:
   resource_group: build_esp_matter_examples_${CI_NODE_INDEX}
   extends:
         - .build_examples_template
+  tags:
+    - build
+    - BuildSH-ruby51 [30]
+  variables:
+    NINJA_JOBS: "12"
   artifacts:
     paths:
       - "examples/**/build*/size.json"
@@ -439,6 +456,11 @@ build_nopytest_remaining_examples_manual:
   resource_group: build_nopytest_remaining_examples_manual_${CI_NODE_INDEX}
   extends:
         - .build_examples_template
+  tags:
+    - build
+    - BuildSH-ruby51 [30]
+  variables:
+    NINJA_JOBS: "12"
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
       when: on_success
