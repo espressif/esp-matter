@@ -1,8 +1,10 @@
 /*
- * SPDX-FileCopyrightText: 2026 Espressif Systems (Shanghai) CO LTD
- *
- * SPDX-License-Identifier: Apache-2.0
- */
+   This example code is in the Public Domain (or CC0 licensed, at your option.)
+
+   Unless required by applicable law or agreed to in writing, this
+   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+   CONDITIONS OF ANY KIND, either express or implied.
+*/
 
 #pragma once
 #include "camera-avstream-controller.h"
@@ -52,8 +54,8 @@ struct AudioStream {
     bool IsCompatible(const AudioStreamStruct  &inputParams) const
     {
         return (audioStreamParams.audioCodec == inputParams.audioCodec &&
-                audioStreamParams.channelCount == inputParams.channelCount &&
-                audioStreamParams.sampleRate == inputParams.sampleRate && audioStreamParams.bitDepth == inputParams.bitDepth);
+                audioStreamParams.channelCount >= inputParams.channelCount &&
+                audioStreamParams.sampleRate >= inputParams.sampleRate && audioStreamParams.bitDepth >= inputParams.bitDepth);
     }
 };
 
@@ -67,7 +69,7 @@ struct SnapshotStream {
     IsCompatible(const chip::app::Clusters::CameraAvStreamManagement::CameraAVStreamManagementDelegate::SnapshotStreamAllocateArgs &
                  inputParams) const
     {
-        return (snapshotStreamParams.imageCodec == inputParams.imageCodec && snapshotStreamParams.quality == inputParams.quality &&
+        return (snapshotStreamParams.imageCodec == inputParams.imageCodec &&
                 snapshotStreamParams.frameRate <= inputParams.maxFrameRate &&
                 snapshotStreamParams.minResolution.width <= inputParams.minResolution.width &&
                 snapshotStreamParams.minResolution.height <= inputParams.minResolution.height &&
@@ -193,7 +195,7 @@ public:
         // Get snapshot capabilities
         virtual std::vector<SnapshotCapabilitiesStruct>  &GetSnapshotCapabilities() = 0;
 
-        // Get the maximum network bandwidth(mbps) that the camera would consume
+        // Get the maximum network bandwidth(bps) that the camera would consume
         // for transmission of its media streams.
         virtual uint32_t GetMaxNetworkBandwidth() = 0;
 

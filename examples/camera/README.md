@@ -1,7 +1,11 @@
 # Matter Camera
 
-This example demonstrates Matter camera using a two-chip split architecture,
-where signaling and media streaming are separated across two processors
+This example creates a Camera device using the ESP Matter data model.
+
+# Split Mode Camera Example
+
+This example demonstrates a **two-chip split architecture** for ESP32
+Camera, where signaling and media streaming are separated across two processors
 for optimal power efficiency.
 
 ## Architecture Overview
@@ -12,9 +16,8 @@ The split mode consists of two separate firmware images:
 
 -   **Role**: Matter camera with WebRTC signaling integration
 -   **Responsibilities**:
-    -   Matter stack execution
     -   WebRTC signaling
-    -   Bridge communication with media_adapter
+    -   Bridge communication with media adapter
     -   Always-on connectivity for instant responsiveness
 
 ### 2. **media_adapter** (ESP32-P4)
@@ -26,8 +29,14 @@ The split mode consists of two separate firmware images:
     -   Video/audio capture and encoding
     -   WebRTC media streaming
     -   Power-optimized operation (sleeps when not streaming)
-    -   Receives signaling commands via bridge from matter_camera
+    -   Receives signaling commands via bridge from esp32_camera
 
+## Hardware Requirements
+
+-   **ESP32-P4 Function EV Board** (required)
+    -   Contains both ESP32-P4 and ESP32-C6 processors
+    -   Built-in camera support
+    -   SDIO communication between processors
 
 ## System Architecture
 
@@ -55,28 +64,28 @@ The split mode consists of two separate firmware images:
 
 ### Prerequisites
 
+-   IDF version: v5.5.4
 -   [ESP32-P4 Function EV Board](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/user_guide.html)
--   [ESP-IDF v5.5.1](https://github.com/espressif/esp-idf/releases/tag/v5.5.1)
 -   [Amazon Kinesis Video Streams WebRTC SDK repository](https://github.com/awslabs/amazon-kinesis-video-streams-webrtc-sdk-c/tree/beta-reference-esp-port)
 
-
-**Important**: This requires flashing two separate firmwares on
-ESP32-C6 and ESP32-P4 of `ESP32-P4 Function EV Board`
-
-### Setup Camera example (ESP32-C6)
-
-See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) to setup esp-idf and esp-matter
-
-Build and flash
-
+```
+git clone https://github.com/awslabs/amazon-kinesis-video-streams-webrtc-sdk-c.git
+git checkout beta-reference-esp-port
+git submodule update --init --depth 1
+export KVS_SDK_PATH=/path/to/amazon-kinesis-video-streams-webrtc-sdk-c
+```
+### Build and Flash Instructions
+**Note**: This requires **TWO separate firmware flashes** on the same
+ESP32-P4 Function EV Board.
+#### Step 1: Flash camera example (ESP32-C6)
+This handles WebRTC signaling and Matter integration.
 ```bash
-cd esp-matter/examples/camera
 idf.py set-target esp32c6
 idf.py build
 idf.py -p [PORT] flash monitor
 ```
 
-**NOTE**:
+*__NOTE__*:
 - ESP32-C6 does not have an onboard UART port. You will need to use [ESP-Prog](https://docs.espressif.com/projects/esp-iot-solution/en/latest/hw-reference/ESP-Prog_guide.html) board or any other JTAG.
 - Use following Pin Connections:
 
@@ -88,18 +97,10 @@ idf.py -p [PORT] flash monitor
 | EN       | EN       |
 | GND      | GND      |
 
-### Setup Media adapter (ESP32-P4)
+#### Step 2: Flash media_adapter (ESP32-P4)
 
-Clone and setup the WebRTC SDK
-
-```bash
-git clone https://github.com/awslabs/amazon-kinesis-video-streams-webrtc-sdk-c.git
-git checkout beta-reference-esp-port
-git submodule update --init --depth 1
-export KVS_SDK_PATH=/path/to/amazon-kinesis-video-streams-webrtc-sdk-c
-```
-
-Build and flash
+This handles video/audio streaming. The firmware is the `streaming_only` example
+from the KVS SDK.
 
 ```bash
 cd ${KVS_SDK_PATH}/esp_port/examples/streaming_only
@@ -121,6 +122,3 @@ ESP32-P4 Function EV Board, the `ota_1` partition (see
 [`partitions.csv`](partitions.csv)) is disabled and the size of the `ota_0`
 partition is increased. This prevents the firmware from performing OTA updates.
 Hence, this configuration is not recommended for production use.
-
-### Testing
-You can use any Matter based camera controller app to view the video feed. Alternatively, you can also use the [camera controller example](https://github.com/project-chip/connectedhomeip/tree/master/examples/camera-controller) from the connnectedhomeip repository.

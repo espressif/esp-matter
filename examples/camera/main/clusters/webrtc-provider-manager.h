@@ -1,20 +1,11 @@
 /*
- *
- *    Copyright (c) 2025 Project CHIP Authors
- *    All rights reserved.
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
+   This example code is in the Public Domain (or CC0 licensed, at your option.)
+
+   Unless required by applicable law or agreed to in writing, this
+   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+   CONDITIONS OF ANY KIND, either express or implied.
+*/
+
 #pragma once
 
 #include "camera-device-interface.h"
@@ -22,7 +13,6 @@
 #include <app/CASESessionManager.h>
 #include <app/clusters/webrtc-transport-provider-server/WebRTCTransportProviderCluster.h>
 #include <map>
-#include <vector>
 #include <webrtc-transport.h>
 
 namespace chip {
@@ -53,19 +43,16 @@ public:
 
     void SetWebRTCTransportProvider(WebRTCTransportProviderCluster * webRTCTransportProvider);
 
-    CHIP_ERROR HandleSolicitOffer(const OfferRequestArgs  &args,
-                                  chip::app::Clusters::WebRTCTransportProvider::WebRTCSessionStruct  &outSession,
+    CHIP_ERROR HandleSolicitOffer(const OfferRequestArgs  &args, WebRTCSessionStruct  &outSession,
                                   bool  &outDeferredOffer) override;
 
-    CHIP_ERROR
-    HandleProvideOffer(const ProvideOfferRequestArgs  &args,
-                       chip::app::Clusters::WebRTCTransportProvider::WebRTCSessionStruct  &outSession) override;
+    CHIP_ERROR HandleProvideOffer(const ProvideOfferRequestArgs  &args, WebRTCSessionStruct  &outSession) override;
 
     CHIP_ERROR HandleProvideAnswer(uint16_t sessionId, const std::string  &sdpAnswer) override;
 
     CHIP_ERROR HandleProvideICECandidates(uint16_t sessionId, const std::vector<ICECandidateStruct>  &candidates) override;
 
-    CHIP_ERROR HandleEndSession(uint16_t sessionId, chip::app::Clusters::WebRTCTransportProvider::WebRTCEndReasonEnum reasonCode) override;
+    CHIP_ERROR HandleEndSession(uint16_t sessionId, WebRTCEndReasonEnum reasonCode) override;
 
     CHIP_ERROR ValidateStreamUsage(StreamUsageEnum streamUsage, chip::Optional<std::vector<uint16_t>>  &videoStreams,
                                    chip::Optional<std::vector<uint16_t>>  &audioStreams) override;
@@ -129,8 +116,6 @@ private:
     CHIP_ERROR AcquireAudioVideoStreams(uint16_t sessionId);
 
     CHIP_ERROR ReleaseAudioVideoStreams(uint16_t sessionId);
-
-    void CleanupSession(uint16_t sessionId);
 
     static void OnDeviceConnected(void * context, chip::Messaging::ExchangeManager  &exchangeMgr,
                                   const chip::SessionHandle  &sessionHandle);

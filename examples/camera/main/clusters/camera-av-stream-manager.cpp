@@ -1,27 +1,17 @@
 /*
- *
- *    Copyright (c) 2025 Project CHIP Authors
- *    All rights reserved.
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
+   This example code is in the Public Domain (or CC0 licensed, at your option.)
+
+   Unless required by applicable law or agreed to in writing, this
+   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+   CONDITIONS OF ANY KIND, either express or implied.
+*/
+
 #include <app-common/zap-generated/attributes/Accessors.h>
 #include <app-common/zap-generated/ids/Attributes.h>
 #include <app-common/zap-generated/ids/Clusters.h>
 #include <camera-av-stream-manager.h>
 #include <fstream>
 #include <iostream>
-#include <lib/core/CHIPError.h>
 #include <lib/support/logging/CHIPLogging.h>
 #include <set>
 
@@ -48,6 +38,9 @@ void CameraAVStreamManager::SetCameraDeviceHAL(CameraDeviceInterface * aCameraDe
 CHIP_ERROR CameraAVStreamManager::ValidateStreamUsage(StreamUsageEnum streamUsage, Optional<std::vector<uint16_t>>  &videoStreams,
                                                       Optional<std::vector<uint16_t>>  &audioStreams)
 {
+    // The server ensures that at least one stream Id has a value, and that there are streams allocated
+    // If stream id(s) are provided, it's sufficient to have verified that the provided usage is supported by the camera.
+    // If the vector is empty, look for a stream ID that matches the usage. A match does not need to be exact.
     bool exactlyMatchedVideoStream = false;
     bool looselyMatchedVideoStream = false;
     uint16_t looseVideoStreamID    = 0;
@@ -55,6 +48,7 @@ CHIP_ERROR CameraAVStreamManager::ValidateStreamUsage(StreamUsageEnum streamUsag
     bool looselyMatchedAudioStream = false;
     uint16_t looseAudioStreamID    = 0;
 
+    // Is the requested stream usage supported by the camera?
     auto myStreamUsages = GetCameraAVStreamManagementCluster()->GetSupportedStreamUsages();
     auto it             = std::find(myStreamUsages.begin(), myStreamUsages.end(), streamUsage);
     if (it == myStreamUsages.end()) {
@@ -66,6 +60,7 @@ CHIP_ERROR CameraAVStreamManager::ValidateStreamUsage(StreamUsageEnum streamUsag
         const std::vector<VideoStreamStruct>  &allocatedVideoStreams =
             GetCameraAVStreamManagementCluster()->GetAllocatedVideoStreams();
 
+        // If video streams vector is empty, auto-select a video stream. Exact usage match is preferred.
         if (videoStreams.Value().empty()) {
             for (const auto  &stream : allocatedVideoStreams) {
                 if (stream.streamUsage == streamUsage) {
@@ -78,6 +73,8 @@ CHIP_ERROR CameraAVStreamManager::ValidateStreamUsage(StreamUsageEnum streamUsag
                 looseVideoStreamID        = stream.videoStreamID;
             }
         } else {
+            // We've been provided with stream ID(s), and we know the stream usage is supported by the camera, classify as an exact
+            // match
             exactlyMatchedVideoStream = true;
         }
     }
@@ -86,6 +83,7 @@ CHIP_ERROR CameraAVStreamManager::ValidateStreamUsage(StreamUsageEnum streamUsag
         const std::vector<AudioStreamStruct>  &allocatedAudioStreams =
             GetCameraAVStreamManagementCluster()->GetAllocatedAudioStreams();
 
+        // If audio streams vector is empty, auto-select an audio stream. Exact usage match is preferred.
         if (audioStreams.Value().empty()) {
             for (const auto  &stream : allocatedAudioStreams) {
                 if (stream.streamUsage == streamUsage) {
@@ -98,10 +96,13 @@ CHIP_ERROR CameraAVStreamManager::ValidateStreamUsage(StreamUsageEnum streamUsag
                 looseAudioStreamID        = stream.audioStreamID;
             }
         } else {
+            // We've been provided with stream ID(s), and we know the stream usage is supported by the camera, classify as an exact
+            // match
             exactlyMatchedAudioStream = true;
         }
     }
 
+    // If we have a loose match and no exact match, update the provided stream IDs with the loose match values
     if (looselyMatchedAudioStream && !exactlyMatchedAudioStream) {
         audioStreams.Value().push_back(looseAudioStreamID);
     }
@@ -194,6 +195,7 @@ CHIP_ERROR CameraAVStreamManager::ValidateVideoStreams(const std::vector<uint16_
 {
     const std::vector<VideoStreamStruct>  &allocatedVideoStreams = GetCameraAVStreamManagementCluster()->GetAllocatedVideoStreams();
 
+    // Check if each videoStreamId exists in allocated streams
     for (uint16_t videoStreamId : videoStreams) {
         bool found = false;
         for (const auto  &stream : allocatedVideoStreams) {
@@ -216,6 +218,7 @@ CHIP_ERROR CameraAVStreamManager::ValidateAudioStreams(const std::vector<uint16_
 {
     const std::vector<AudioStreamStruct>  &allocatedAudioStreams = GetCameraAVStreamManagementCluster()->GetAllocatedAudioStreams();
 
+    // Check if each audioStreamId exists in allocated streams
     for (uint16_t audioStreamId : audioStreams) {
         bool found = false;
         for (const auto  &stream : allocatedAudioStreams) {
@@ -319,7 +322,7 @@ Protocols::InteractionModel::Status CameraAVStreamManager::VideoStreamAllocate(c
             mCameraDeviceHAL->GetCameraHALInterface().SetViewport(stream, mCameraDeviceHAL->GetCameraHALInterface().GetViewport());
 
             // Set the current frame rate attribute from HAL
-            TEMPORARY_RETURN_IGNORED GetCameraAVStreamManagementCluster()->SetCurrentFrameRate(
+            GetCameraAVStreamManagementCluster()->SetCurrentFrameRate(
                 mCameraDeviceHAL->GetCameraHALInterface().GetCurrentFrameRate());
 
             return Status::Success;
@@ -335,11 +338,9 @@ void CameraAVStreamManager::OnVideoStreamAllocated(const VideoStreamStruct  &all
     switch (action) {
     case StreamAllocationAction::kNewAllocation:
         ChipLogProgress(Camera, "Starting new video stream with ID: %u", allocatedStream.videoStreamID);
-        // mCameraDeviceHAL->GetCameraHALInterface().StartVideoStream(allocatedStream);
 
         // Set the current frame rate attribute from HAL once stream has started
-        TEMPORARY_RETURN_IGNORED GetCameraAVStreamManagementCluster()->SetCurrentFrameRate(
-            mCameraDeviceHAL->GetCameraHALInterface().GetCurrentFrameRate());
+        GetCameraAVStreamManagementCluster()->SetCurrentFrameRate(mCameraDeviceHAL->GetCameraHALInterface().GetCurrentFrameRate());
         break;
 
     case StreamAllocationAction::kModification:
@@ -643,8 +644,6 @@ Protocols::InteractionModel::Status CameraAVStreamManager::CaptureSnapshot(const
 {
     if (mCameraDeviceHAL->GetCameraHALInterface().CaptureSnapshot(streamID, resolution, outImageSnapshot) == CameraError::SUCCESS) {
         return Status::Success;
-    } else {
-        return Status::Failure;
     }
 
     return Status::Failure;
@@ -700,9 +699,65 @@ CameraAVStreamManager::AllocatedAudioStreamsLoaded()
 CHIP_ERROR
 CameraAVStreamManager::AllocatedSnapshotStreamsLoaded()
 {
-    ChipLogError(Camera, "Allocated snapshot streams could not be loaded: %" CHIP_ERROR_FORMAT,
-                 CHIP_ERROR_NOT_IMPLEMENTED.Format());
-    return CHIP_ERROR_NOT_IMPLEMENTED;
+    const std::vector<SnapshotStreamStruct>  &persistedStreams =
+        GetCameraAVStreamManagementCluster()->GetAllocatedSnapshotStreams();
+    auto  &halStreams = mCameraDeviceHAL->GetCameraHALInterface().GetAvailableSnapshotStreams();
+    std::set<uint16_t> halStreamIds;
+
+    // Keep a set of the streamIDs provided by HAL
+    for (const auto  &halStream : halStreams) {
+        halStreamIds.insert(halStream.snapshotStreamParams.snapshotStreamID);
+    }
+
+    for (auto  &halStream : halStreams) {
+        auto it = std::find_if(persistedStreams.begin(), persistedStreams.end(), [&](const SnapshotStreamStruct & persistedStream) {
+            return persistedStream.snapshotStreamID == halStream.snapshotStreamParams.snapshotStreamID;
+        });
+
+        if (it != persistedStreams.end()) {
+            // Found in persisted streams, mark as allocated in HAL
+            halStream.isAllocated = true;
+
+            ChipLogProgress(Camera, "HAL Snapshot Stream ID %u marked as allocated from persisted state.",
+                            halStream.snapshotStreamParams.snapshotStreamID);
+        }
+    }
+
+    // Allocate missing Persisted Streams
+
+    for (const auto  &persistedStream : persistedStreams) {
+        if (halStreamIds.find(persistedStream.snapshotStreamID) == halStreamIds.end()) {
+            ChipLogProgress(Camera, "Persisted Snapshot Stream ID %u not found in HAL, attempting to allocate.",
+                            persistedStream.snapshotStreamID);
+
+            // Convert SnapshotStreamStruct to SnapshotStreamAllocateArgs
+            CameraAVStreamManagementDelegate::SnapshotStreamAllocateArgs snapshotStreamArgs;
+
+            snapshotStreamArgs.imageCodec       = persistedStream.imageCodec;
+            snapshotStreamArgs.maxFrameRate     = persistedStream.frameRate;
+            snapshotStreamArgs.minResolution    = persistedStream.minResolution;
+            snapshotStreamArgs.maxResolution    = persistedStream.maxResolution;
+            snapshotStreamArgs.quality          = persistedStream.quality;
+            snapshotStreamArgs.encodedPixels    = false;
+            snapshotStreamArgs.hardwareEncoder  = false;
+            snapshotStreamArgs.watermarkEnabled = persistedStream.watermarkEnabled;
+            snapshotStreamArgs.OSDEnabled       = persistedStream.OSDEnabled;
+
+            uint16_t streamID = persistedStream.snapshotStreamID; // Use the persisted ID
+
+            CameraError halErr = mCameraDeviceHAL->GetCameraHALInterface().AllocateSnapshotStream(snapshotStreamArgs, streamID);
+
+            if (halErr == CameraError::SUCCESS) {
+                ChipLogProgress(Camera, "Successfully allocated HAL Snapshot Stream for persisted ID %u.", streamID);
+            } else {
+                ChipLogError(Camera, "Failed to allocate HAL Snapshot Stream for persisted ID %u. HAL Error: %d",
+                             persistedStream.snapshotStreamID, static_cast<int>(halErr));
+                return CHIP_ERROR_INTERNAL;
+            }
+        }
+    }
+
+    return CHIP_NO_ERROR;
 }
 
 CHIP_ERROR
@@ -731,9 +786,11 @@ CameraAVStreamManager::PersistentAttributesLoadedCallback()
     return CHIP_NO_ERROR;
 }
 
-CHIP_ERROR CameraAVStreamManager::OnTransportAcquireAudioVideoStreams(const std::vector<uint16_t>  &audioStreams,
-                                                                      const std::vector<uint16_t>  &videoStreams)
+CHIP_ERROR
+CameraAVStreamManager::OnTransportAcquireAudioVideoStreams(const std::vector<uint16_t>  &audioStreams,
+                                                           const std::vector<uint16_t>  &videoStreams)
 {
+    // Update the available audio streams in the HAL
     for (uint16_t audioStreamID : audioStreams) {
         for (AudioStream  &stream : mCameraDeviceHAL->GetCameraHALInterface().GetAvailableAudioStreams()) {
             if (stream.audioStreamParams.audioStreamID == audioStreamID && stream.isAllocated) {
@@ -746,12 +803,14 @@ CHIP_ERROR CameraAVStreamManager::OnTransportAcquireAudioVideoStreams(const std:
             }
         }
 
+        // Update the counts in the SDK allocated stream attributes
         if (GetCameraAVStreamManagementCluster()->UpdateAudioStreamRefCount(audioStreamID, /* shouldIncrement = */ true) !=
                 CHIP_NO_ERROR) {
             ChipLogError(Camera, "Failed to increment audio stream %u ref count in SDK", audioStreamID);
         }
     }
 
+    // Update the available video streams in the HAL
     for (uint16_t videoStreamID : videoStreams) {
         for (VideoStream  &stream : mCameraDeviceHAL->GetCameraHALInterface().GetAvailableVideoStreams()) {
             if (stream.videoStreamParams.videoStreamID == videoStreamID && stream.isAllocated) {
@@ -764,6 +823,7 @@ CHIP_ERROR CameraAVStreamManager::OnTransportAcquireAudioVideoStreams(const std:
             }
         }
 
+        // Update the counts in the SDK allocated stream attributes
         if (GetCameraAVStreamManagementCluster()->UpdateVideoStreamRefCount(videoStreamID, /* shouldIncrement = */ true) !=
                 CHIP_NO_ERROR) {
             ChipLogError(Camera, "Failed to increment video stream %u ref count in SDK", videoStreamID);
@@ -773,45 +833,44 @@ CHIP_ERROR CameraAVStreamManager::OnTransportAcquireAudioVideoStreams(const std:
     return CHIP_NO_ERROR;
 }
 
-CHIP_ERROR CameraAVStreamManager::OnTransportReleaseAudioVideoStreams(const std::vector<uint16_t>  &audioStreams,
-                                                                      const std::vector<uint16_t>  &videoStreams)
+CHIP_ERROR
+CameraAVStreamManager::OnTransportReleaseAudioVideoStreams(const std::vector<uint16_t>  &audioStreams,
+                                                           const std::vector<uint16_t>  &videoStreams)
 {
+    // Update the available audio streams in the HAL
     for (uint16_t audioStreamID : audioStreams) {
         for (AudioStream  &stream : mCameraDeviceHAL->GetCameraHALInterface().GetAvailableAudioStreams()) {
             if (stream.audioStreamParams.audioStreamID == audioStreamID && stream.isAllocated) {
                 if (stream.audioStreamParams.referenceCount > 0) {
                     stream.audioStreamParams.referenceCount--;
                 } else {
-                    ChipLogError(Camera,
-                                 "Attempted to decrement audio stream %u ref count when it "
-                                 "was already 0",
-                                 audioStreamID);
+                    ChipLogError(Camera, "Attempted to decrement audio stream %u ref count when it was already 0", audioStreamID);
                 }
                 break;
             }
         }
 
+        // Update the counts in the SDK allocated stream attributes
         if (GetCameraAVStreamManagementCluster()->UpdateAudioStreamRefCount(audioStreamID, /* shouldIncrement = */ false) !=
                 CHIP_NO_ERROR) {
             ChipLogError(Camera, "Failed to decrement audio stream %u ref count in SDK", audioStreamID);
         }
     }
 
+    // Update the available video streams in the HAL
     for (uint16_t videoStreamID : videoStreams) {
         for (VideoStream  &stream : mCameraDeviceHAL->GetCameraHALInterface().GetAvailableVideoStreams()) {
             if (stream.videoStreamParams.videoStreamID == videoStreamID && stream.isAllocated) {
                 if (stream.videoStreamParams.referenceCount > 0) {
                     stream.videoStreamParams.referenceCount--;
                 } else {
-                    ChipLogError(Camera,
-                                 "Attempted to decrement video stream %u ref count when it "
-                                 "was already 0",
-                                 videoStreamID);
+                    ChipLogError(Camera, "Attempted to decrement video stream %u ref count when it was already 0", videoStreamID);
                 }
                 break;
             }
         }
 
+        // Update the counts in the SDK allocated stream attributes
         if (GetCameraAVStreamManagementCluster()->UpdateVideoStreamRefCount(videoStreamID, /* shouldIncrement = */ false) !=
                 CHIP_NO_ERROR) {
             ChipLogError(Camera, "Failed to decrement video stream %u ref count in SDK", videoStreamID);
