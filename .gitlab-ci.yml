@@ -705,6 +705,7 @@ build_light_esp32h2_idf_v6:
       - mkdir -p ${REPOS_PATH}
       - *setup_matter
       - *update_build_caches
+      - *setup_ninja_shim
     variables:
       REPOS_PATH: "$CI_PROJECT_DIR/repos"
       IDF_CCACHE_ENABLE: 1
