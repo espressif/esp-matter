@@ -56,6 +56,7 @@ attribute_t *create_interconnect_co_alarm(cluster_t *cluster, uint8_t value);
 attribute_t *create_contamination_state(cluster_t *cluster, uint8_t value);
 attribute_t *create_smoke_sensitivity_level(cluster_t *cluster, uint8_t value);
 attribute_t *create_expiry_date(cluster_t *cluster, uint32_t value);
+attribute_t *create_unmounted(cluster_t *cluster, bool value);
 } /* attribute */
 
 namespace command {

@@ -21,27 +21,8 @@ namespace esp_matter {
 namespace cluster {
 namespace groupcast {
 
-namespace feature {
-namespace listener {
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-} /* listener */
-
-namespace sender {
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-} /* sender */
-
-namespace per_group {
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-} /* per_group */
-
-} /* feature */
-
 typedef struct config {
-    uint32_t feature_flags;
-    config() : feature_flags(0) {}
+    config() {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

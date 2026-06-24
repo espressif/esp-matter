@@ -21,9 +21,21 @@ namespace esp_matter {
 namespace cluster {
 namespace boolean_state {
 
+namespace feature {
+namespace change_event {
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* change_event */
+
+} /* feature */
+
 namespace attribute {
 attribute_t *create_state_value(cluster_t *cluster, bool value);
 } /* attribute */
+
+namespace event {
+event_t *create_state_change(cluster_t *cluster);
+} /* event */
 
 typedef struct config {
     bool state_value;

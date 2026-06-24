@@ -27,6 +27,7 @@
 #include <closure_dimension_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
 using chip::app::CommandHandler;
@@ -50,12 +51,13 @@ uint32_t get_id()
     return Positioning::Id;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    VerifyOrReturnError(config, ESP_ERR_INVALID_ARG);
     update_feature_map(cluster, get_id());
-    attribute::create_resolution(cluster, 0);
-    attribute::create_step_value(cluster, 0);
+    attribute::create_resolution(cluster, config->resolution);
+    attribute::create_step_value(cluster, config->step_value);
     command::create_step(cluster);
 
     return ESP_OK;
@@ -68,11 +70,12 @@ uint32_t get_id()
     return MotionLatching::Id;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    VerifyOrReturnError(config, ESP_ERR_INVALID_ARG);
     update_feature_map(cluster, get_id());
-    attribute::create_latch_control_modes(cluster, 0);
+    attribute::create_latch_control_modes(cluster, config->latch_control_modes);
 
     return ESP_OK;
 }
@@ -84,13 +87,14 @@ uint32_t get_id()
     return Unit::Id;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    VerifyOrReturnError(config, ESP_ERR_INVALID_ARG);
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnError(has_feature(positioning), ESP_ERR_INVALID_ARG);
     update_feature_map(cluster, get_id());
-    attribute::create_unit(cluster, 0);
+    attribute::create_unit(cluster, config->unit);
     attribute::create_unit_range(cluster, NULL, 0, 0);
 
     return ESP_OK;
@@ -138,13 +142,14 @@ uint32_t get_id()
     return Translation::Id;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    VerifyOrReturnError(config, ESP_ERR_INVALID_ARG);
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnError(has_feature(positioning), ESP_ERR_INVALID_ARG);
     update_feature_map(cluster, get_id());
-    attribute::create_translation_direction(cluster, 0);
+    attribute::create_translation_direction(cluster, config->translation_direction);
 
     return ESP_OK;
 }
@@ -156,14 +161,15 @@ uint32_t get_id()
     return Rotation::Id;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    VerifyOrReturnError(config, ESP_ERR_INVALID_ARG);
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnError(has_feature(positioning), ESP_ERR_INVALID_ARG);
     update_feature_map(cluster, get_id());
-    attribute::create_rotation_axis(cluster, 0);
-    attribute::create_overflow(cluster, 0);
+    attribute::create_rotation_axis(cluster, config->rotation_axis);
+    attribute::create_overflow(cluster, config->overflow);
 
     return ESP_OK;
 }
@@ -175,13 +181,14 @@ uint32_t get_id()
     return Modulation::Id;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    VerifyOrReturnError(config, ESP_ERR_INVALID_ARG);
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnError(has_feature(positioning), ESP_ERR_INVALID_ARG);
     update_feature_map(cluster, get_id());
-    attribute::create_modulation_type(cluster, 0);
+    attribute::create_modulation_type(cluster, config->modulation_type);
 
     return ESP_OK;
 }
@@ -204,21 +211,27 @@ attribute_t *create_resolution(cluster_t *cluster, uint16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(positioning), NULL);
-    return esp_matter::attribute::create(cluster, Resolution::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, Resolution::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
+    return attribute;
 }
 
 attribute_t *create_step_value(cluster_t *cluster, uint16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(positioning), NULL);
-    return esp_matter::attribute::create(cluster, StepValue::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, StepValue::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
+    return attribute;
 }
 
 attribute_t *create_unit(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(unit), NULL);
-    return esp_matter::attribute::create(cluster, Unit::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, Unit::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(1), esp_matter_attr_val::uint_sub_type::k_enum));
+    return attribute;
 }
 
 attribute_t *create_unit_range(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -239,35 +252,45 @@ attribute_t *create_translation_direction(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(translation), NULL);
-    return esp_matter::attribute::create(cluster, TranslationDirection::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, TranslationDirection::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(11), esp_matter_attr_val::uint_sub_type::k_enum));
+    return attribute;
 }
 
 attribute_t *create_rotation_axis(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(rotation), NULL);
-    return esp_matter::attribute::create(cluster, RotationAxis::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, RotationAxis::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(10), esp_matter_attr_val::uint_sub_type::k_enum));
+    return attribute;
 }
 
 attribute_t *create_overflow(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(rotation), NULL);
-    return esp_matter::attribute::create(cluster, Overflow::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, Overflow::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(10), esp_matter_attr_val::uint_sub_type::k_enum));
+    return attribute;
 }
 
 attribute_t *create_modulation_type(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(modulation), NULL);
-    return esp_matter::attribute::create(cluster, ModulationType::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ModulationType::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(4), esp_matter_attr_val::uint_sub_type::k_enum));
+    return attribute;
 }
 
 attribute_t *create_latch_control_modes(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(motion_latching), NULL);
-    return esp_matter::attribute::create(cluster, LatchControlModes::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, LatchControlModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint8_t>(3), esp_matter_attr_val::uint_sub_type::k_bitmap));
+    return attribute;
 }
 
 } /* attribute */
@@ -324,25 +347,25 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             VALIDATE_FEATURES_EXACT_ONE("Translation,Rotation,Modulation",
                                         feature::translation::get_id(), feature::rotation::get_id(), feature::modulation::get_id());
             if (feature_map & feature::translation::get_id()) {
-                VerifyOrReturnValue(feature::translation::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+                VerifyOrReturnValue(feature::translation::add(cluster, &(config->features.translation)) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
             }
             if (feature_map & feature::rotation::get_id()) {
-                VerifyOrReturnValue(feature::rotation::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+                VerifyOrReturnValue(feature::rotation::add(cluster, &(config->features.rotation)) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
             }
             if (feature_map & feature::modulation::get_id()) {
-                VerifyOrReturnValue(feature::modulation::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+                VerifyOrReturnValue(feature::modulation::add(cluster, &(config->features.modulation)) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
             }
         }
         VALIDATE_FEATURES_AT_LEAST_ONE("Positioning,MotionLatching",
                                        feature::positioning::get_id(), feature::motion_latching::get_id());
         if (feature_map & feature::positioning::get_id()) {
-            VerifyOrReturnValue(feature::positioning::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            VerifyOrReturnValue(feature::positioning::add(cluster, &(config->features.positioning)) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
         if (feature_map & feature::motion_latching::get_id()) {
-            VerifyOrReturnValue(feature::motion_latching::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            VerifyOrReturnValue(feature::motion_latching::add(cluster, &(config->features.motion_latching)) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
         if (feature_map & feature::unit::get_id()) {
-            VerifyOrReturnValue(feature::unit::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            VerifyOrReturnValue(feature::unit::add(cluster, &(config->features.unit)) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
         if (feature_map & feature::limitation::get_id()) {
             VerifyOrReturnValue(feature::limitation::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
@@ -351,6 +374,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             VerifyOrReturnValue(feature::speed::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
         command::create_set_target(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterClosureDimensionClusterServerInitCallback,
+                                                 ESPMatterClosureDimensionClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {

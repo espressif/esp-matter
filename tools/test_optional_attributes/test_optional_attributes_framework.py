@@ -97,7 +97,20 @@ class TestOptionalAttributes(MatterBaseTest):
         ],
         Clusters.WiFiNetworkDiagnostics: [
             Clusters.WiFiNetworkDiagnostics.Attributes.CurrentMaxRate,
-        ]
+        ],
+        Clusters.TemperatureMeasurement: [
+            Clusters.TemperatureMeasurement.Attributes.Tolerance,
+        ],
+        Clusters.FlowMeasurement: [
+            Clusters.FlowMeasurement.Attributes.Tolerance,
+        ],
+        Clusters.PressureMeasurement: [
+            Clusters.PressureMeasurement.Attributes.Tolerance,
+            Clusters.PressureMeasurement.Attributes.ScaledTolerance,
+        ],
+        Clusters.RelativeHumidityMeasurement: [
+            Clusters.RelativeHumidityMeasurement.Attributes.Tolerance,
+        ],
     }
 
     # Add EndpointUniqueId dynamically if it exists

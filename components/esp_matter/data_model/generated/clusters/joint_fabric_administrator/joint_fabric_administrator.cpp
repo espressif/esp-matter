@@ -41,6 +41,63 @@ namespace esp_matter {
 namespace cluster {
 namespace joint_fabric_administrator {
 
+namespace attribute {
+attribute_t *create_administrator_fabric_index(cluster_t *cluster, nullable<uint8_t> value)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, AdministratorFabricIndex::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(1)), esp_matter_attr_val(nullable<uint8_t>(254)));
+    return attribute;
+}
+
+} /* attribute */
+namespace command {
+command_t *create_icaccsr_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ICACCSRRequest::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_icaccsr_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ICACCSRResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_add_icac(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, AddICAC::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_icac_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ICACResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_open_joint_commissioning_window(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, OpenJointCommissioningWindow::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_transfer_anchor_request(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TransferAnchorRequest::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_transfer_anchor_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TransferAnchorResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_transfer_anchor_complete(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, TransferAnchorComplete::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_announce_joint_fabric_administrator(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, AnnounceJointFabricAdministrator::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+} /* command */
+
 const function_generic_t *function_list = NULL;
 
 const int function_flags = CLUSTER_FLAG_NONE;
@@ -61,6 +118,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
+        attribute::create_administrator_fabric_index(cluster, config->administrator_fabric_index);
+        command::create_icaccsr_request(cluster);
+        command::create_icaccsr_response(cluster);
+        command::create_add_icac(cluster);
+        command::create_icac_response(cluster);
+        command::create_open_joint_commissioning_window(cluster);
+        command::create_transfer_anchor_request(cluster);
+        command::create_transfer_anchor_response(cluster);
+        command::create_transfer_anchor_complete(cluster);
+        command::create_announce_joint_fabric_administrator(cluster);
     }
 
     return cluster;

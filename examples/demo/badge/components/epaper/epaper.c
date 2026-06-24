@@ -339,7 +339,7 @@ void iot_epaper_draw_string(epaper_handle_t dev, int x, int y, const char* text,
 }
 
 /**
- *  @brief: this draws a charactor on the frame buffer but not refresh
+ *  @brief: this draws a character on the frame buffer but not refresh
  */
 void iot_epaper_draw_char(epaper_handle_t dev, int x, int y, char ascii_char, epaper_font_t* font, int colored)
 {

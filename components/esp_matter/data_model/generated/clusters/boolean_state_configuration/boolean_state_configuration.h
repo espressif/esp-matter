@@ -61,6 +61,11 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 } /* sensitivity_level */
 
+namespace fault_events {
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* fault_events */
+
 } /* feature */
 
 namespace attribute {
@@ -81,6 +86,7 @@ command_t *create_enable_disable_alarm(cluster_t *cluster);
 
 namespace event {
 event_t *create_alarms_state_changed(cluster_t *cluster);
+event_t *create_sensor_fault(cluster_t *cluster);
 } /* event */
 
 typedef struct config {

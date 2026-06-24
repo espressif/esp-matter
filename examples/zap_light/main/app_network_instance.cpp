@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
+#include "support/CodeUtils.h"
 #include <sdkconfig.h>
 
 #include <lib/core/CHIPConfig.h>
@@ -49,12 +50,12 @@ static_assert(CONFIG_THREAD_NETWORK_ENDPOINT_ID != CONFIG_ETHERNET_NETWORK_ENDPO
 void init_network_driver()
 {
 #if CHIP_DEVICE_CONFIG_WIFI_NETWORK_DRIVER
-    sWiFiNetworkCommissioningInstance.Init();
+    LogErrorOnFailure(sWiFiNetworkCommissioningInstance.Init());
 #endif // CHIP_DEVICE_CONFIG_WIFI_NETWORK_DRIVER
 #if CHIP_DEVICE_CONFIG_ETHERNET_NETWORK_DRIVER
-    sEthernetNetworkCommissioningInstance.Init();
+    LogErrorOnFailure(sEthernetNetworkCommissioningInstance.Init());
 #endif // CHIP_DEVICE_CONFIG_ETHERNET_NETWORK_DRIVER
 #ifdef CONFIG_THREAD_NETWORK_COMMISSIONING_DRIVER
-    sThreadNetworkDriver.Init();
+    LogErrorOnFailure(sThreadNetworkDriver.Init());
 #endif // CONFIG_THREAD_NETWORK_COMMISSIONING_DRIVER
 }

@@ -9,8 +9,10 @@ include(${CHIP_ROOT}/src/app/chip_data_model.cmake)
 chip_configure_data_model(${COMPONENT_LIB}
     ZAP_FILE ${CHIP_ROOT}/examples/lighting-app/lighting-common/lighting-app.zap)
 
-add_prebuilt_library(matterlib "${CMAKE_BINARY_DIR}/esp-idf/chip/lib/libCHIP.a"
-                     REQUIRES esp_matter main)
+if(NOT TARGET matterlib)
+    add_prebuilt_library(matterlib "${CMAKE_BINARY_DIR}/esp-idf/chip/lib/libCHIP.a"
+                         REQUIRES esp_matter main)
+endif()
 target_link_libraries(${COMPONENT_LIB} INTERFACE matterlib)
 
 target_compile_options(${COMPONENT_LIB} PRIVATE "-DCHIP_HAVE_CONFIG_H")

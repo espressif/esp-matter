@@ -19,20 +19,14 @@
 
 namespace esp_matter {
 namespace cluster {
-namespace thread_border_router_diagnostics {
-
-namespace attribute {
-attribute_t *create_br_status(cluster_t *cluster, uint8_t value);
-attribute_t *create_active_tbr_faults_list(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
-} /* attribute */
+namespace ambient_context_sensing {
 
 typedef struct config {
-    uint8_t br_status;
-    config() : br_status(0) {}
+    config() {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
-} /* thread_border_router_diagnostics */
+} /* ambient_context_sensing */
 } /* cluster */
 } /* esp_matter */

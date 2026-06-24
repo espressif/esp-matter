@@ -3141,10 +3141,10 @@ attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> va
                                          ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
-attribute_t *create_tolerance(cluster_t *cluster, nullable<uint16_t> value)
+attribute_t *create_tolerance(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, RelativeHumidityMeasurement::Attributes::Tolerance::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
 }
 
 } /* attribute */
@@ -5039,13 +5039,13 @@ attribute_t *create_target_state(cluster_t *cluster, uint8_t *value, uint16_t le
 attribute_t *create_resolution(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::Resolution::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
 }
 
 attribute_t *create_step_value(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::StepValue::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
 }
 
 attribute_t *create_unit(cluster_t *cluster, uint8_t value)

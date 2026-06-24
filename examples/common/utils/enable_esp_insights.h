@@ -49,6 +49,6 @@ void enable_insights(const char * insights_auth_key)
         ESP_LOGE("Insights", "Failed to initialize ESP Insights, err:0x%x", ret);
     }
 
-    chip::DeviceLayer::PlatformMgr().ScheduleWork(register_backend, reinterpret_cast<intptr_t>(nullptr));
+    LogErrorOnFailure(chip::DeviceLayer::PlatformMgr().ScheduleWork(register_backend, reinterpret_cast<intptr_t>(nullptr)));
 }
 #endif // CONFIG_ENABLE_ESP_INSIGHTS_TRACE

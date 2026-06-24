@@ -16,6 +16,8 @@
 #include <esp_matter_attribute_utils.h>
 #include <esp_matter_data_model_priv.h>
 #include <app/clusters/time-synchronization-server/TimeSynchronizationCluster.h>
+#include <app/InteractionModelEngine.h>
+#include <app/server/Server.h>
 #include <app/server-cluster/ServerClusterInterfaceRegistry.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
 #include <esp_matter_data_model.h>
@@ -95,7 +97,13 @@ void ESPMatterTimeSynchronizationClusterServerInitCallback(EndpointId endpointId
                        ChipLogError(AppServer,
                                     "TimeSynchronization: cluster missing or invalid esp-matter data model for endpoint %u",
                                     endpointId));
-        gServer.Create(endpointId, featureMap, attrSet, startupConfig);
+        TimeSynchronizationCluster::Context tsContext{
+            .fabricTable            = Server::GetInstance().GetFabricTable(),
+            .caseSessionManager     = *Server::GetInstance().GetCASESessionManager(),
+            .platformManager        = DeviceLayer::PlatformMgr(),
+            .interactionModelEngine = *InteractionModelEngine::GetInstance(),
+        };
+        gServer.Create(endpointId, featureMap, attrSet, startupConfig, tsContext);
     }
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
     if (err != CHIP_NO_ERROR) {

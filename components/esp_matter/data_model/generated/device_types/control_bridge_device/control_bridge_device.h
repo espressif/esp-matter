@@ -29,7 +29,7 @@
 #include <esp_matter_core.h>
 
 #define ESP_MATTER_CONTROL_BRIDGE_DEVICE_TYPE_ID 0x0840
-#define ESP_MATTER_CONTROL_BRIDGE_DEVICE_TYPE_VERSION 4
+#define ESP_MATTER_CONTROL_BRIDGE_DEVICE_TYPE_VERSION 3
 
 namespace esp_matter {
 namespace endpoint {

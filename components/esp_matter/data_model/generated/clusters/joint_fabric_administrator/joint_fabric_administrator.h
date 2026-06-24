@@ -21,8 +21,25 @@ namespace esp_matter {
 namespace cluster {
 namespace joint_fabric_administrator {
 
+namespace attribute {
+attribute_t *create_administrator_fabric_index(cluster_t *cluster, nullable<uint8_t> value);
+} /* attribute */
+
+namespace command {
+command_t *create_icaccsr_request(cluster_t *cluster);
+command_t *create_icaccsr_response(cluster_t *cluster);
+command_t *create_add_icac(cluster_t *cluster);
+command_t *create_icac_response(cluster_t *cluster);
+command_t *create_open_joint_commissioning_window(cluster_t *cluster);
+command_t *create_transfer_anchor_request(cluster_t *cluster);
+command_t *create_transfer_anchor_response(cluster_t *cluster);
+command_t *create_transfer_anchor_complete(cluster_t *cluster);
+command_t *create_announce_joint_fabric_administrator(cluster_t *cluster);
+} /* command */
+
 typedef struct config {
-    config() {}
+    nullable<uint8_t> administrator_fabric_index;
+    config() : administrator_fabric_index(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

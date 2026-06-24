@@ -780,7 +780,7 @@ namespace attribute {
 attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value);
 attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value);
 attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value);
-attribute_t *create_tolerance(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_tolerance(cluster_t *cluster, uint16_t value);
 } /* attribute */
 } /* relative_humidity_measurement */
 

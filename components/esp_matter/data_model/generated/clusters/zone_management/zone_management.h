@@ -33,8 +33,12 @@ esp_err_t add(cluster_t *cluster);
 } /* per_zone_sensitivity */
 
 namespace user_defined {
+typedef struct config {
+    uint8_t max_user_defined_zones;
+    config() : max_user_defined_zones(0) {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* user_defined */
 
 namespace focus_zones {
@@ -69,7 +73,10 @@ event_t *create_zone_stopped(cluster_t *cluster);
 } /* event */
 
 typedef struct config {
-    config() {}
+    uint8_t max_zones;
+    uint8_t sensitivity_max;
+    uint8_t sensitivity;
+    config() : max_zones(0), sensitivity_max(0), sensitivity(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

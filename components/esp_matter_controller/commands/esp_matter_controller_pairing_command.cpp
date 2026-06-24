@@ -80,8 +80,8 @@ void pairing_command::OnCommissioningFailure(
         }
     }
     if (m_device_is_icd) {
-        controller_instance.get_icd_client_storage().DeleteEntry(
-                               ScopedNodeId(peerId.GetNodeId(), controller_instance.get_fabric_index()));
+        LogErrorOnFailure(controller_instance.get_icd_client_storage().DeleteEntry(
+                              ScopedNodeId(peerId.GetNodeId(), controller_instance.get_fabric_index())));
     }
 }
 
@@ -138,7 +138,7 @@ void pairing_command::OnDiscoveredDevice(const Dnssd::CommissionNodeData &nodeDa
                             .SetICDMonitoredSubject(commissioner_node_id)
                             .SetICDSymmetricKey(m_icd_symmetric_key);
     }
-    controller_instance.get_commissioner()->PairDevice(m_remote_node_id, params, commissioning_params);
+    LogErrorOnFailure(controller_instance.get_commissioner()->PairDevice(m_remote_node_id, params, commissioning_params));
 }
 
 esp_err_t pairing_command::pairing_on_network(NodeId node_id, uint32_t pincode)
@@ -173,7 +173,7 @@ esp_err_t pairing_command::pairing_ble_wifi(NodeId node_id, uint32_t pincode, ui
     ByteSpan pwdSpan(reinterpret_cast<const uint8_t *>(pwd), strlen(pwd));
     CommissioningParameters commissioning_params =
         CommissioningParameters().SetWiFiCredentials(Controller::WiFiCredentials(nameSpan, pwdSpan));
-    controller_instance.get_commissioner()->PairDevice(node_id, params, commissioning_params);
+    LogErrorOnFailure(controller_instance.get_commissioner()->PairDevice(node_id, params, commissioning_params));
     return ESP_OK;
 }
 
@@ -197,7 +197,7 @@ esp_err_t pairing_command::pairing_ble_thread(NodeId node_id, uint32_t pincode, 
                             .SetICDMonitoredSubject(commissioner_node_id)
                             .SetICDSymmetricKey(pairing_command::get_instance().m_icd_symmetric_key);
     }
-    controller_instance.get_commissioner()->PairDevice(node_id, params, commissioning_params);
+    LogErrorOnFailure(controller_instance.get_commissioner()->PairDevice(node_id, params, commissioning_params));
     return ESP_OK;
 }
 #endif
@@ -218,8 +218,8 @@ esp_err_t pairing_command::pairing_code(NodeId nodeId, const char *payload)
                             .SetICDSymmetricKey(pairing_command::get_instance().m_icd_symmetric_key);
     }
     controller_instance.get_commissioner()->RegisterPairingDelegate(&pairing_command::get_instance());
-    controller_instance.get_commissioner()->PairDevice(nodeId, payload, commissioning_params,
-                                                       DiscoveryType::kDiscoveryNetworkOnly);
+    LogErrorOnFailure(controller_instance.get_commissioner()->PairDevice(nodeId, payload, commissioning_params,
+                                                                         DiscoveryType::kDiscoveryNetworkOnly));
     return ESP_OK;
 }
 
@@ -242,7 +242,7 @@ esp_err_t pairing_command::pairing_code_thread(NodeId nodeId, const char *payloa
                             .SetICDSymmetricKey(pairing_command::get_instance().m_icd_symmetric_key);
     }
     controller_instance.get_commissioner()->RegisterPairingDelegate(&pairing_command::get_instance());
-    controller_instance.get_commissioner()->PairDevice(nodeId, payload, commissioning_params, DiscoveryType::kAll);
+    LogErrorOnFailure(controller_instance.get_commissioner()->PairDevice(nodeId, payload, commissioning_params, DiscoveryType::kAll));
 
     return ESP_OK;
 }
@@ -258,7 +258,7 @@ esp_err_t pairing_command::pairing_code_wifi(NodeId nodeId, const char *ssid, co
     ESP_RETURN_ON_FALSE(controller_instance.get_commissioner()->GetPairingDelegate() == nullptr, ESP_ERR_INVALID_STATE,
                         TAG, "There is already a pairing process");
     controller_instance.get_commissioner()->RegisterPairingDelegate(&pairing_command::get_instance());
-    controller_instance.get_commissioner()->PairDevice(nodeId, payload, commissioning_params, DiscoveryType::kAll);
+    LogErrorOnFailure(controller_instance.get_commissioner()->PairDevice(nodeId, payload, commissioning_params, DiscoveryType::kAll));
 
     return ESP_OK;
 }
@@ -287,7 +287,7 @@ esp_err_t pairing_command::pairing_code_wifi_thread(NodeId nodeId, const char *s
                             .SetICDSymmetricKey(pairing_command::get_instance().m_icd_symmetric_key);
     }
     controller_instance.get_commissioner()->RegisterPairingDelegate(&pairing_command::get_instance());
-    controller_instance.get_commissioner()->PairDevice(nodeId, payload, commissioning_params, DiscoveryType::kAll);
+    LogErrorOnFailure(controller_instance.get_commissioner()->PairDevice(nodeId, payload, commissioning_params, DiscoveryType::kAll));
 
     return ESP_OK;
 }

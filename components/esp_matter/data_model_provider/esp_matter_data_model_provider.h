@@ -99,7 +99,7 @@ public:
                                 ReadOnlyBufferBuilder<AcceptedCommandEntry> &builder) override;
     CHIP_ERROR Attributes(const ConcreteClusterPath &path, ReadOnlyBufferBuilder<AttributeEntry> &builder) override;
 
-    void Temporary_ReportAttributeChanged(const AttributePathParams &path) override;
+    void ReportAttributeChanged(const AttributePathParams &path);
 
 private:
     Status CheckDataModelPath(EndpointId endpointId);

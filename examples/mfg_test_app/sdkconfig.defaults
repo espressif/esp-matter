@@ -30,3 +30,7 @@ CONFIG_ENABLE_WIFI_AP=n
 
 # Disable Matter server as the test app doesn't start Matter server
 CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER=n
+CONFIG_NVS_SEC_KEY_PROTECT_USING_FLASH_ENC=y
+
+# disable groupcast cluster until verified
+CONFIG_SUPPORT_GROUPCAST_CLUSTER=n

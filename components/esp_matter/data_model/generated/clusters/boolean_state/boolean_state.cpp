@@ -42,6 +42,25 @@ namespace esp_matter {
 namespace cluster {
 namespace boolean_state {
 
+namespace feature {
+namespace change_event {
+uint32_t get_id()
+{
+    return ChangeEvent::Id;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    update_feature_map(cluster, get_id());
+    event::create_state_change(cluster);
+
+    return ESP_OK;
+}
+} /* change_event */
+
+} /* feature */
+
 namespace attribute {
 attribute_t *create_state_value(cluster_t *cluster, bool value)
 {
@@ -49,6 +68,14 @@ attribute_t *create_state_value(cluster_t *cluster, bool value)
 }
 
 } /* attribute */
+
+namespace event {
+event_t *create_state_change(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, StateChange::Id);
+}
+
+} /* event */
 
 static void create_default_binding_cluster(endpoint_t *endpoint)
 {

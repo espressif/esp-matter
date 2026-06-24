@@ -313,7 +313,7 @@ static esp_err_t controller_udc_handler(int argc, char **argv)
                                             .SetDiscriminator(state->GetLongDiscriminator())
                                             .SetPeerAddress(state->GetPeerAddress());
         do {
-            chip::Crypto::DRBG_get_bytes(reinterpret_cast<uint8_t *>(&gRemoteId), sizeof(gRemoteId));
+            LogErrorOnFailure(chip::Crypto::DRBG_get_bytes(reinterpret_cast<uint8_t *>(&gRemoteId), sizeof(gRemoteId)));
         } while (!chip::IsOperationalNodeId(gRemoteId));
 
         ESP_RETURN_ON_FALSE(instance.get_commissioner()->PairDevice(gRemoteId, params) == CHIP_NO_ERROR, ESP_FAIL, TAG,

@@ -12,26 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* THIS IS A GENERATED FILE, DO NOT EDIT */
+#include <app/ClusterCallbacks.h>
+#include <lib/core/DataModelTypes.h>
 
-#pragma once
-#include <esp_matter_data_model.h>
+// Humidistat is a new cluster — stub init/shutdown until device type support is added.
+void ESPMatterHumidistatClusterServerInitCallback(chip::EndpointId) {}
+void ESPMatterHumidistatClusterServerShutdownCallback(chip::EndpointId, ClusterShutdownType) {}
 
-namespace esp_matter {
-namespace cluster {
-namespace thread_border_router_diagnostics {
-
-inline constexpr uint32_t Id = 0x0454;
-
-namespace attribute {
-namespace BrStatus {
-inline constexpr uint32_t Id = 0x0000;
-} /* BrStatus */
-namespace ActiveTbrFaultsList {
-inline constexpr uint32_t Id = 0x0001;
-} /* ActiveTbrFaultsList */
-} /* attribute */
-
-} /* thread_border_router_diagnostics */
-} /* cluster */
-} /* esp_matter */
+void MatterHumidistatPluginServerInitCallback() {}

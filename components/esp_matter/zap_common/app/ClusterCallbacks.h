@@ -123,6 +123,9 @@ void ESPMatterDishwasherModeClusterServerShutdownCallback(EndpointId endpoint, C
 void ESPMatterDoorLockClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterDoorLockClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
+void ESPMatterDynamicLightingClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterDynamicLightingClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
+
 void ESPMatterEcosystemInformationClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterEcosystemInformationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
@@ -179,6 +182,9 @@ void ESPMatterGroupsClusterServerShutdownCallback(EndpointId endpoint, ClusterSh
 
 void ESPMatterHepaFilterMonitoringClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterHepaFilterMonitoringClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
+
+void ESPMatterHumidistatClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterHumidistatClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
 void ESPMatterIcdManagementClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterIcdManagementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
@@ -240,6 +246,9 @@ void ESPMatterModeSelectClusterServerShutdownCallback(EndpointId endpoint, Clust
 void ESPMatterNetworkCommissioningClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterNetworkCommissioningClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
+void ESPMatterNetworkIdentityManagementClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterNetworkIdentityManagementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
+
 void ESPMatterNitrogenDioxideConcentrationMeasurementClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterNitrogenDioxideConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
@@ -290,6 +299,9 @@ void ESPMatterPowerTopologyClusterServerShutdownCallback(EndpointId endpoint, Cl
 
 void ESPMatterPressureMeasurementClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterPressureMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
+
+void ESPMatterProximityRangingClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterProximityRangingClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
 void ESPMatterProxyConfigurationClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterProxyConfigurationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);

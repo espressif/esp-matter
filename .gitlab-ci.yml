@@ -28,7 +28,7 @@ variables:
     IDF_CHECKOUT_REF: "v5.5.4"
     # This variable represents the short hash of the connectedhomeip submodule.
     # Note: Do change this short hash on submodule update MRs.
-    CHIP_SHORT_HASH: "107f97a98"
+    CHIP_SHORT_HASH: "c992539e7"
     DOCKER_IMAGE_NAME: "espressif/chip-idf"
 
 .add_gitlab_ssh_key: &add_gitlab_ssh_key |
@@ -253,6 +253,7 @@ build_image:
       # Change the idf version here in case of idf version change MR.
       - IDF_VERSION:
           - "v5.5.4"
+          - "v6.0"
 
 .build_examples_template:
   stage: build
@@ -683,6 +684,36 @@ build_upstream_examples:
     script:
         - *build_matter_examples
 
+build_light_esp32h2_idf_v6:
+    resource_group: build_light_esp32h2_idf_v6
+    stage: build
+    image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_v6.0
+    rules:
+      - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
+    tags:
+      - build
+      - brew
+    needs:
+      - job: build_image
+        optional: true
+      - job: pre_commit_check
+    before_script:
+      - *add_gitlab_ssh_key
+      - *get_build_caches
+      - *setup_idf
+      - cd ${ESP_MATTER_PATH}
+      - mkdir -p ${REPOS_PATH}
+      - *setup_matter
+      - *update_build_caches
+      - *setup_ninja_shim
+    variables:
+      REPOS_PATH: "$CI_PROJECT_DIR/repos"
+      IDF_CCACHE_ENABLE: 1
+    script:
+      - cd ${ESP_MATTER_PATH}/examples/light
+      - idf.py set-target esp32h2
+      - idf.py build
+
 build_managed_component_light:
     resource_group: build_managed_component_light
     extends:
@@ -883,14 +914,13 @@ data_model_gen_unit_tests:
     - build
 
 data_model_gen_check:
-  image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
+  image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
   stage: pre_check
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
   script:
-    # Link CHIP submodule from Docker image cache
-    - rm -rf ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip
-    - ln -s ${CHIP_SUBMODULE_PATH} ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip
+    # Clone CHIP submodule (shallow) for data model generation
+    - git submodule update --init --depth 1 connectedhomeip/connectedhomeip
     # Install data_model_gen dependencies and pre-commit
     - pip install -r ${ESP_MATTER_PATH}/tools/data_model_gen/requirements.txt
     - pip install pre-commit

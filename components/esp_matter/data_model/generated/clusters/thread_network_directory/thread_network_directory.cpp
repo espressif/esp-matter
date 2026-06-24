@@ -26,6 +26,7 @@
 #include <thread_network_directory_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
 using chip::app::CommandHandler;
@@ -44,7 +45,7 @@ namespace thread_network_directory {
 namespace attribute {
 attribute_t *create_preferred_extended_pan_id(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, PreferredExtendedPanID::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, length));
+    return esp_matter::attribute::create(cluster, PreferredExtendedPanID::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, length));
 }
 
 attribute_t *create_thread_networks(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -54,7 +55,9 @@ attribute_t *create_thread_networks(cluster_t *cluster, uint8_t *value, uint16_t
 
 attribute_t *create_thread_network_table_size(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ThreadNetworkTableSize::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ThreadNetworkTableSize::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
+    return attribute;
 }
 
 } /* attribute */
@@ -107,13 +110,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
-        attribute::create_preferred_extended_pan_id(cluster, NULL, 0);
+        attribute::create_preferred_extended_pan_id(cluster, config->preferred_extended_pan_id, sizeof(config->preferred_extended_pan_id));
+        attribute::create_thread_network_table_size(cluster, config->thread_network_table_size);
         attribute::create_thread_networks(cluster, NULL, 0, 0);
-        attribute::create_thread_network_table_size(cluster, 0);
         command::create_add_network(cluster);
         command::create_remove_network(cluster);
         command::create_get_operational_dataset(cluster);
         command::create_operational_dataset_response(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterThreadNetworkDirectoryClusterServerInitCallback,
+                                                 ESPMatterThreadNetworkDirectoryClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {

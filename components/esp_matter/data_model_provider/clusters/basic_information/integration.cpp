@@ -33,9 +33,9 @@ bool IsAttrEnabled(uint32_t attrId)
     return esp_matter::attribute::get(kRootEndpointId, BasicInformation::Id, attrId);
 }
 
-BasicInformationCluster::OptionalAttributesSet GetOptionalAttrsSet()
+BasicInformationOptionalAttributesSet GetOptionalAttrsSet()
 {
-    BasicInformationCluster::OptionalAttributesSet optionalAttributeSet;
+    BasicInformationOptionalAttributesSet optionalAttributeSet;
     return optionalAttributeSet.Set<ManufacturingDate::Id>(IsAttrEnabled(ManufacturingDate::Id))
            .Set<PartNumber::Id>(IsAttrEnabled(PartNumber::Id))
            .Set<ProductURL::Id>(IsAttrEnabled(ProductURL::Id))
@@ -53,16 +53,11 @@ void ESPMatterBasicInformationClusterServerInitCallback(EndpointId endpointId)
     // We implement the cluster as a singleton on the root endpoint.
     VerifyOrReturn(endpointId == kRootEndpointId);
     if (!gServer.IsConstructed()) {
-        BasicInformationCluster::OptionalAttributesSet optionalAttributeSet = GetOptionalAttrsSet();
+        BasicInformationOptionalAttributesSet optionalAttributeSet = GetOptionalAttrsSet();
         DeviceLayer::DeviceInstanceInfoProvider * provider = DeviceLayer::GetDeviceInstanceInfoProvider();
         VerifyOrDie(provider != nullptr);
-        BasicInformationCluster::Context context = {
-            .deviceInstanceInfoProvider = *provider,
-            .configurationManager       = DeviceLayer::ConfigurationMgr(),
-            .platformManager            = DeviceLayer::PlatformMgr(),
-            .subscriptionsPerFabric     = InteractionModelEngine::GetInstance()->GetMinGuaranteedSubscriptionsPerFabric()
-        };
-        gServer.Create(optionalAttributeSet, context);
+        gServer.Create(optionalAttributeSet, *provider, DeviceLayer::ConfigurationMgr(), DeviceLayer::PlatformMgr(),
+                       InteractionModelEngine::GetInstance()->GetMinGuaranteedSubscriptionsPerFabric());
     }
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
     if (err != CHIP_NO_ERROR) {

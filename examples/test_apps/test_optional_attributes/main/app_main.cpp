@@ -198,6 +198,28 @@ extern "C" void app_main()
     }
     cluster::wifi_network_diagnostics::create_optional_attributes(cluster::get(root_endpoint, WiFiNetworkDiagnostics::Id));
 
+    // 10. Temperature Measurement
+    cluster::temperature_measurement::config_t temp_config;
+    cluster::temperature_measurement::create(root_endpoint, &temp_config, CLUSTER_FLAG_SERVER);
+    cluster::temperature_measurement::create_optional_attributes(cluster::get(root_endpoint, TemperatureMeasurement::Id));
+
+    // 11. Flow Measurement
+    cluster::flow_measurement::config_t flow_config;
+    cluster::flow_measurement::create(root_endpoint, &flow_config, CLUSTER_FLAG_SERVER);
+    cluster::flow_measurement::create_optional_attributes(cluster::get(root_endpoint, FlowMeasurement::Id));
+
+    // 12. Pressure Measurement (with Extended feature for ScaledTolerance)
+    cluster::pressure_measurement::config_t pressure_config;
+    cluster::pressure_measurement::create(root_endpoint, &pressure_config, CLUSTER_FLAG_SERVER);
+    cluster::pressure_measurement::feature::extended::config_t extended_config;
+    cluster::pressure_measurement::feature::extended::add(cluster::get(root_endpoint, PressureMeasurement::Id), &extended_config);
+    cluster::pressure_measurement::create_optional_attributes(cluster::get(root_endpoint, PressureMeasurement::Id));
+
+    // 13. Relative Humidity Measurement
+    cluster::relative_humidity_measurement::config_t rh_config;
+    cluster::relative_humidity_measurement::create(root_endpoint, &rh_config, CLUSTER_FLAG_SERVER);
+    cluster::relative_humidity_measurement::create_optional_attributes(cluster::get(root_endpoint, RelativeHumidityMeasurement::Id));
+
     /* Matter start */
     err = esp_matter::start(app_event_cb);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));

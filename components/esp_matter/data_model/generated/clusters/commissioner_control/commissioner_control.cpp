@@ -27,6 +27,7 @@
 #include <commissioner_control_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
 using chip::app::CommandHandler;
@@ -108,6 +109,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         command::create_reverse_open_commissioning_window(cluster);
         /* Events */
         event::create_commissioning_request_result(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterCommissionerControlClusterServerInitCallback,
+                                                 ESPMatterCommissionerControlClusterServerShutdownCallback);
     }
 
     return cluster;

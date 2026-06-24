@@ -15,10 +15,15 @@
 #include <esp_log.h>
 #include <string.h>
 
+#include <platform/KvsPersistentStorageDelegate.h>
+#include <platform/KeyValueStoreManager.h>
 #include <app/clusters/ota-requestor/BDXDownloader.h>
 #include <app/clusters/ota-requestor/DefaultOTARequestor.h>
 #include <app/clusters/ota-requestor/ExtendedOTARequestorDriver.h>
 #include <app/clusters/ota-requestor/DefaultOTARequestorStorage.h>
+#include <app/clusters/ota-requestor/DefaultOTARequestorEventGenerator.h>
+#include <app/clusters/ota-requestor/OTARequestorAttributes.h>
+#include <app/clusters/ota-requestor/CodegenIntegration.h>
 #ifdef CONFIG_CHIP_ENABLE_EXTERNAL_PLATFORM
 #ifndef EXTERNAL_ESP32OTAIMAGEPROCESSORIMPL_HEADER
 #error "Please define EXTERNAL_ESP32OTAIMAGEPROCESSORIMPL_HEADER in your external platform gn/cmake file"
@@ -114,6 +119,9 @@ DefaultOTARequestorStorage gRequestorStorage;
 ExtendedOTARequestorDriver gRequestorUser;
 BDXDownloader gDownloader;
 OTAImageProcessorImpl gImageProcessor;
+// OTARequestorAttributes and event generator are owned by the integration layer
+// (data_model_provider/clusters/ota_software_update_requestor/integration.cpp)
+// and accessed via chip::GetOTARequestorAttributes() / chip::GetDefaultOTARequestorEventGenerator().
 
 static esp_matter_ota_requestor_impl_t s_ota_requestor_impl = {
     .driver = &gRequestorUser,
@@ -162,9 +170,21 @@ void esp_matter_ota_requestor_start(void)
     VerifyOrReturn(chip::GetRequestorInstance() == nullptr);
 
     chip::SetRequestorInstance(&gRequestorCore);
-    gRequestorStorage.Init(Server::GetInstance().GetPersistentStorage());
 
-    if (gRequestorCore.Init(Server::GetInstance(), gRequestorStorage, *s_ota_requestor_impl.driver, gDownloader) != CHIP_NO_ERROR) {
+    // Server::GetPersistentStorage() may not be available yet at this point in boot.
+    // Use the initParams storage delegate which is set up before Server::Init().
+    static chip::KvsPersistentStorageDelegate sOtaStorageDelegate;
+    chip::DeviceLayer::PersistedStorage::KeyValueStoreManager &kvsManager =
+        chip::DeviceLayer::PersistedStorage::KeyValueStoreMgr();
+    CHIP_ERROR err = sOtaStorageDelegate.Init(&kvsManager);
+    if (err != CHIP_NO_ERROR) {
+        ESP_LOGE("OTARequestor", "Failed to init OTARequestor storage delegate: %" CHIP_ERROR_FORMAT, err.Format());
+        return;
+    }
+    gRequestorStorage.Init(sOtaStorageDelegate);
+
+    if (gRequestorCore.Init(Server::GetInstance(), gRequestorStorage, *s_ota_requestor_impl.driver, gDownloader,
+                            chip::GetOTARequestorAttributes(), chip::GetDefaultOTARequestorEventGenerator()) != CHIP_NO_ERROR) {
         ESP_LOGE("OTARequestor", "Failed to init OTARequestor core");
         return;
     }
@@ -208,3 +228,6 @@ esp_err_t esp_matter_ota_requestor_set_config(const esp_matter_ota_config_t  &co
     return ESP_ERR_NOT_SUPPORTED;
 #endif // CONFIG_ENABLE_OTA_REQUESTOR
 }
+
+// Weak plugin init stub — overridden by upstream CodegenIntegration.cpp when ZAP build path is used
+__attribute__((weak)) void MatterOtaSoftwareUpdateRequestorPluginServerInitCallback() {}

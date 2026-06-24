@@ -180,6 +180,13 @@ attribute_t *create_max_paths_per_invoke(cluster_t *cluster, uint16_t value)
     return attribute;
 }
 
+attribute_t *create_configuration_version(cluster_t *cluster, uint32_t value)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ConfigurationVersion::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(1)), esp_matter_attr_val(static_cast<uint32_t>(4294967294)));
+    return attribute;
+}
+
 } /* attribute */
 
 namespace event {
@@ -239,6 +246,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_software_version_string(cluster, config->software_version_string, sizeof(config->software_version_string));
         attribute::create_specification_version(cluster, config->specification_version);
         attribute::create_max_paths_per_invoke(cluster, config->max_paths_per_invoke);
+        attribute::create_configuration_version(cluster, config->configuration_version);
         attribute::create_capability_minima(cluster, NULL, 0, 0);
         /* Events */
         event::create_start_up(cluster);

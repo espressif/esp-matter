@@ -23,12 +23,6 @@ namespace group_key_management {
 
 inline constexpr uint32_t Id = 0x003F;
 
-namespace feature {
-namespace Groupcast {
-inline constexpr uint32_t Id = 0x2;
-} /* Groupcast */
-} /* feature */
-
 namespace attribute {
 namespace GroupKeyMap {
 inline constexpr uint32_t Id = 0x0000;
@@ -42,9 +36,6 @@ inline constexpr uint32_t Id = 0x0002;
 namespace MaxGroupKeysPerFabric {
 inline constexpr uint32_t Id = 0x0003;
 } /* MaxGroupKeysPerFabric */
-namespace GroupcastAdoption {
-inline constexpr uint32_t Id = 0x0004;
-} /* GroupcastAdoption */
 } /* attribute */
 
 namespace command {

@@ -78,7 +78,7 @@ extern "C" void app_main()
     node_t *node = node::create(&node_config, NULL, NULL);
     static chip::KvsPersistentStorageDelegate tbr_storage_delegate;
     chip::DeviceLayer::PersistedStorage::KeyValueStoreManager  &kvsManager = chip::DeviceLayer::PersistedStorage::KeyValueStoreMgr();
-    tbr_storage_delegate.Init(&kvsManager);
+    LogErrorOnFailure(tbr_storage_delegate.Init(&kvsManager));
     GenericOpenThreadBorderRouterDelegate *delegate = chip::Platform::New<GenericOpenThreadBorderRouterDelegate>(&tbr_storage_delegate);
     char threadBRName[] = "Espressif-ThreadBR";
     delegate->SetThreadBorderRouterName(chip::CharSpan(threadBRName));

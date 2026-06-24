@@ -41,3 +41,6 @@ CONFIG_LWIP_IPV6_NUM_ADDRESSES=6
 
 # Increase matter console stack size
 CONFIG_ESP_MATTER_CONSOLE_TASK_STACK=3072
+
+# disable groupcast cluster until verified
+CONFIG_SUPPORT_GROUPCAST_CLUSTER=n

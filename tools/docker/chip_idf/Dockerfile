@@ -38,7 +38,7 @@ RUN apt-get update && apt-get install -y python3-virtualenv
 # Setup the ESP-IDF
 WORKDIR /opt/espressif/esp-idf
 RUN set -x \
-    && ./install.sh --disable-gdbgui --disable-docs \
+    && ./install.sh --disable-docs \
     && rm -rf ${IDF_TOOLS_PATH}/dist \
     && rm -rf /root/.cache \
     && : # last line

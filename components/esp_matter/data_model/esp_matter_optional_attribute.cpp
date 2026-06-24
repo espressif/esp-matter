@@ -179,6 +179,51 @@ esp_err_t create_optional_attributes(cluster_t *cluster)
 }
 } /* wifi_network_diagnostics */
 
+namespace temperature_measurement {
+esp_err_t create_optional_attributes(cluster_t *cluster)
+{
+    ESP_RETURN_ON_FALSE(cluster, ESP_ERR_INVALID_ARG, TAG, "Cluster cannot be NULL");
+
+    ESP_RETURN_ON_FALSE(temperature_measurement::attribute::create_tolerance(cluster, 0), ESP_ERR_NO_MEM, TAG, "Failed to create tolerance");
+
+    return ESP_OK;
+}
+} /* temperature_measurement */
+
+namespace flow_measurement {
+esp_err_t create_optional_attributes(cluster_t *cluster)
+{
+    ESP_RETURN_ON_FALSE(cluster, ESP_ERR_INVALID_ARG, TAG, "Cluster cannot be NULL");
+
+    ESP_RETURN_ON_FALSE(flow_measurement::attribute::create_tolerance(cluster, 0, 0, 0), ESP_ERR_NO_MEM, TAG, "Failed to create tolerance");
+
+    return ESP_OK;
+}
+} /* flow_measurement */
+
+namespace pressure_measurement {
+esp_err_t create_optional_attributes(cluster_t *cluster)
+{
+    ESP_RETURN_ON_FALSE(cluster, ESP_ERR_INVALID_ARG, TAG, "Cluster cannot be NULL");
+
+    ESP_RETURN_ON_FALSE(pressure_measurement::attribute::create_tolerance(cluster, 0, 0, 0), ESP_ERR_NO_MEM, TAG, "Failed to create tolerance");
+    ESP_RETURN_ON_FALSE(pressure_measurement::attribute::create_scaled_tolerance(cluster, 0, 0, 0), ESP_ERR_NO_MEM, TAG, "Failed to create scaled_tolerance");
+
+    return ESP_OK;
+}
+} /* pressure_measurement */
+
+namespace relative_humidity_measurement {
+esp_err_t create_optional_attributes(cluster_t *cluster)
+{
+    ESP_RETURN_ON_FALSE(cluster, ESP_ERR_INVALID_ARG, TAG, "Cluster cannot be NULL");
+
+    ESP_RETURN_ON_FALSE(relative_humidity_measurement::attribute::create_tolerance(cluster, 0), ESP_ERR_NO_MEM, TAG, "Failed to create tolerance");
+
+    return ESP_OK;
+}
+} /* relative_humidity_measurement */
+
 } /* cluster */
 } /* esp_matter */
 #endif /* CONFIG_ESP_MATTER_ENABLE_OPTIONAL_ATTRIBUTES */

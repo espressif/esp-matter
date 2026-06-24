@@ -138,6 +138,11 @@ static void verify_cluster_lifecycle_no_heap_leak(chip::ClusterId cluster_id,
 // - TlsClientManagement
 // - WebRTCTransportProvider
 
+// Uses unordered_map that retains entries after endpoint destroy — leaks by design.
+// - ClosureDimension
+// - CommissionerControl
+// - ZoneManagement
+
 // Requires an upstream server constructor that is not linked into this unit-test app build.
 // - ThreadNetworkDiagnostics
 
@@ -194,6 +199,21 @@ static cluster_t *create_soil_measurement_cluster(endpoint_t *endpoint, cluster:
     return cluster::soil_measurement::create(endpoint, config, flags);
 }
 
+static cluster_t *create_closure_dimension_cluster(endpoint_t *endpoint, cluster::closure_dimension::config_t *config,
+                                                   uint8_t flags)
+{
+    config->feature_flags = cluster::closure_dimension::feature::positioning::get_id() |
+                            cluster::closure_dimension::feature::translation::get_id();
+    return cluster::closure_dimension::create(endpoint, config, flags);
+}
+
+static cluster_t *create_microwave_oven_control_cluster(endpoint_t *endpoint,
+                                                        cluster::microwave_oven_control::config_t *config, uint8_t flags)
+{
+    config->feature_flags = cluster::microwave_oven_control::feature::power_as_number::get_id();
+    return cluster::microwave_oven_control::create(endpoint, config, flags);
+}
+
 static cluster_t *create_switch_cluster(endpoint_t *endpoint, cluster::switch_cluster::config_t *config, uint8_t flags)
 {
     config->number_of_positions = 2;
@@ -225,6 +245,8 @@ TEST_CLUSTER_LIFECYCLE("BooleanStateConfiguration", chip::app::Clusters::Boolean
                        cluster::boolean_state_configuration::config_t, cluster::boolean_state_configuration::create)
 TEST_CLUSTER_LIFECYCLE("BridgedDeviceBasicInformation", chip::app::Clusters::BridgedDeviceBasicInformation::Id,
                        cluster::bridged_device_basic_information::config_t, cluster::bridged_device_basic_information::create)
+// ClosureDimension: see IGNORED section (unordered_map leak)
+// CommissionerControl: see IGNORED section (unordered_map leak)
 TEST_CLUSTER_LIFECYCLE("Descriptor", chip::app::Clusters::Descriptor::Id, cluster::descriptor::config_t,
                        cluster::descriptor::create)
 TEST_CLUSTER_LIFECYCLE("ElectricalEnergyMeasurement", chip::app::Clusters::ElectricalEnergyMeasurement::Id,
@@ -233,11 +255,15 @@ TEST_CLUSTER_LIFECYCLE("EthernetNetworkDiagnostics", chip::app::Clusters::Ethern
                        cluster::ethernet_network_diagnostics::config_t, cluster::ethernet_network_diagnostics::create)
 TEST_CLUSTER_LIFECYCLE("FixedLabel", chip::app::Clusters::FixedLabel::Id, cluster::fixed_label::config_t,
                        cluster::fixed_label::create)
+TEST_CLUSTER_LIFECYCLE("FlowMeasurement", chip::app::Clusters::FlowMeasurement::Id,
+                       cluster::flow_measurement::config_t, cluster::flow_measurement::create)
 TEST_CLUSTER_LIFECYCLE("Groups", chip::app::Clusters::Groups::Id, cluster::groups::config_t, cluster::groups::create)
 TEST_CLUSTER_LIFECYCLE("HepaFilterMonitoring", chip::app::Clusters::HepaFilterMonitoring::Id,
                        cluster::hepa_filter_monitoring::config_t, cluster::hepa_filter_monitoring::create)
 TEST_CLUSTER_LIFECYCLE("IlluminanceMeasurement", chip::app::Clusters::IlluminanceMeasurement::Id,
                        cluster::illuminance_measurement::config_t, cluster::illuminance_measurement::create)
+TEST_CLUSTER_LIFECYCLE("MicrowaveOvenControl", chip::app::Clusters::MicrowaveOvenControl::Id,
+                       cluster::microwave_oven_control::config_t, create_microwave_oven_control_cluster)
 TEST_CLUSTER_LIFECYCLE("NetworkCommissioning", chip::app::Clusters::NetworkCommissioning::Id,
                        cluster::network_commissioning::config_t, cluster::network_commissioning::create)
 TEST_CLUSTER_LIFECYCLE("Identify", chip::app::Clusters::Identify::Id, cluster::identify::config_t,
@@ -246,10 +272,16 @@ TEST_CLUSTER_LIFECYCLE("OccupancySensing", chip::app::Clusters::OccupancySensing
                        cluster::occupancy_sensing::config_t, create_occupancy_sensing_cluster)
 TEST_CLUSTER_LIFECYCLE("OtaSoftwareUpdateProvider", chip::app::Clusters::OtaSoftwareUpdateProvider::Id,
                        cluster::ota_software_update_provider::config_t, cluster::ota_software_update_provider::create)
+TEST_CLUSTER_LIFECYCLE("OtaSoftwareUpdateRequestor", chip::app::Clusters::OtaSoftwareUpdateRequestor::Id,
+                       cluster::ota_software_update_requestor::config_t, cluster::ota_software_update_requestor::create)
 TEST_CLUSTER_LIFECYCLE("PowerSource", chip::app::Clusters::PowerSource::Id, cluster::power_source::config_t,
                        create_power_source_cluster)
+TEST_CLUSTER_LIFECYCLE("PressureMeasurement", chip::app::Clusters::PressureMeasurement::Id,
+                       cluster::pressure_measurement::config_t, cluster::pressure_measurement::create)
 TEST_CLUSTER_LIFECYCLE("PushAvStreamTransport", chip::app::Clusters::PushAvStreamTransport::Id,
                        cluster::push_av_stream_transport::config_t, cluster::push_av_stream_transport::create)
+TEST_CLUSTER_LIFECYCLE("RelativeHumidityMeasurement", chip::app::Clusters::RelativeHumidityMeasurement::Id,
+                       cluster::relative_humidity_measurement::config_t, cluster::relative_humidity_measurement::create)
 TEST_CLUSTER_LIFECYCLE("ScenesManagement", chip::app::Clusters::ScenesManagement::Id,
                        cluster::scenes_management::config_t, cluster::scenes_management::create)
 TEST_CLUSTER_LIFECYCLE("SoilMeasurement", chip::app::Clusters::SoilMeasurement::Id, cluster::soil_measurement::config_t,
@@ -260,9 +292,14 @@ TEST_CLUSTER_LIFECYCLE("TemperatureControl", chip::app::Clusters::TemperatureCon
                        cluster::temperature_control::config_t, create_temperature_control_cluster)
 TEST_CLUSTER_LIFECYCLE("TemperatureMeasurement", chip::app::Clusters::TemperatureMeasurement::Id,
                        cluster::temperature_measurement::config_t, cluster::temperature_measurement::create)
+TEST_CLUSTER_LIFECYCLE("ThreadBorderRouterManagement", chip::app::Clusters::ThreadBorderRouterManagement::Id,
+                       cluster::thread_border_router_management::config_t, cluster::thread_border_router_management::create)
+TEST_CLUSTER_LIFECYCLE("ThreadNetworkDirectory", chip::app::Clusters::ThreadNetworkDirectory::Id,
+                       cluster::thread_network_directory::config_t, cluster::thread_network_directory::create)
 TEST_CLUSTER_LIFECYCLE("UserLabel", chip::app::Clusters::UserLabel::Id, cluster::user_label::config_t,
                        cluster::user_label::create)
 TEST_CLUSTER_LIFECYCLE("ValveConfigurationAndControl", chip::app::Clusters::ValveConfigurationAndControl::Id,
                        cluster::valve_configuration_and_control::config_t, cluster::valve_configuration_and_control::create)
 TEST_CLUSTER_LIFECYCLE("WiFiNetworkDiagnostics", chip::app::Clusters::WiFiNetworkDiagnostics::Id,
                        cluster::wifi_network_diagnostics::config_t, cluster::wifi_network_diagnostics::create)
+// ZoneManagement: see IGNORED section (unordered_map leak)

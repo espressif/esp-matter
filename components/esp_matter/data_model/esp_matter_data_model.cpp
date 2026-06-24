@@ -34,6 +34,7 @@
 #include <app/clusters/identify-server/identify-server.h>
 #include <app/data-model-provider/MetadataTypes.h>
 #include <app/data-model-provider/Provider.h>
+#include <app/reporting/reporting.h>
 #include <app/server/Server.h>
 #include <app/util/attribute-storage.h>
 #include <app/util/endpoint-config-api.h>
@@ -305,7 +306,7 @@ esp_err_t enable(endpoint_t *endpoint)
         esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
         invoke_init_callbacks_internal(endpoint);
         // Mark the endpoint as dirty so that the data model provider will report the attribute changes.
-        MatterReportingAttributeChangeCallback(endpoint::get_id(endpoint));
+        MatterReportingAttributeChangeCallback(endpoint::get_id(endpoint), chip::app::DataModel::EndpointChangeType::kAdded);
         report_parts_list_change_internal(endpoint);
     }
     return ESP_OK;
@@ -1030,14 +1031,14 @@ esp_err_t set_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_
 
     uint16_t flags = get_flags(attr);
 
-    if (!(flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY)) {
-        // this updates the value of attribute in the esp-matter storage
-        return attribute::set_val_internal(attr, val, call_callbacks);
-    }
-
     // we can use DataModelProvider::WriteAttribute API for writable attributes
     if (flags & ATTRIBUTE_FLAG_WRITABLE) {
         return set_val_via_write_attribute(endpoint_id, cluster_id, attribute_id, val);
+    }
+
+    if (!(flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY)) {
+        // this updates the value of attribute in the esp-matter storage
+        return attribute::set_val_internal(attr, val, call_callbacks);
     }
 
     // TODO: If not writable, we could use the cluster-specific setter API to update the value

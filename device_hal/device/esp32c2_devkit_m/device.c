@@ -11,7 +11,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License
 
-#include <esp_log.h>
 #include <iot_button.h>
 #include <button_gpio.h>
 #include <driver/gpio.h>
@@ -20,8 +19,6 @@
 #define LED_GPIO_PIN GPIO_NUM_8
 #define LED_CHANNEL 0 /* RMT_CHANNEL_0 */
 #define BUTTON_GPIO_PIN GPIO_NUM_9
-
-static const char *TAG = "device";
 
 led_driver_config_t led_driver_get_config()
 {

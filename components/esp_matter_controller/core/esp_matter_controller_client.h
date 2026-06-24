@@ -31,7 +31,7 @@
 #include <credentials/PersistentStorageOpCertStore.h>
 #include <credentials/attestation_verifier/DeviceAttestationVerifier.h>
 #include <crypto/PersistentStorageOperationalKeystore.h>
-#include <crypto/RawKeySessionKeystore.h>
+#include <crypto/DefaultSessionKeystore.h>
 #include <lib/core/CHIPError.h>
 #include <lib/core/CHIPPersistentStorageDelegate.h>
 #include <lib/core/DataModelTypes.h>
@@ -240,7 +240,7 @@ private:
             }
 
             if (mSystemState->TransportMgr()->MulticastGroupJoinLeave(
-                        chip::Transport::PeerAddress::Multicast(fabric->GetFabricId(), new_group.group_id), true) !=
+                        chip::Transport::PeerAddress::BuildMatterPerGroupMulticastAddress(fabric->GetFabricId(), new_group.group_id), true) !=
                     CHIP_NO_ERROR) {
                 ChipLogError(AppServer, "Unable to listen to group");
             }
@@ -260,8 +260,8 @@ private:
                 return;
             }
 
-            mSystemState->TransportMgr()->MulticastGroupJoinLeave(
-                chip::Transport::PeerAddress::Multicast(fabric->GetFabricId(), old_group.group_id), false);
+            LogErrorOnFailure(mSystemState->TransportMgr()->MulticastGroupJoinLeave(
+                                  chip::Transport::PeerAddress::BuildMatterPerGroupMulticastAddress(fabric->GetFabricId(), old_group.group_id), false));
         };
 
     private:
@@ -274,7 +274,7 @@ private:
     controller_storage_delegate m_default_storage;
     chip::PersistentStorageOperationalKeystore m_operational_keystore;
     chip::Credentials::PersistentStorageOpCertStore m_operational_cert_store;
-    chip::Crypto::RawKeySessionKeystore m_session_key_store;
+    chip::Crypto::DefaultSessionKeystore m_session_key_store;
     chip::Credentials::GroupDataProviderImpl m_group_data_provider{k_max_groups_per_fabric,
              k_max_group_keys_per_fabric};
     GroupDataProviderListener m_group_data_provider_listener;
@@ -307,9 +307,9 @@ class ESPCommissionerCallback : public CommissionerCallback {
                                             .SetDiscriminator(longDiscriminator)
                                             .SetPeerAddress(peerAddress);
         do {
-            chip::Crypto::DRBG_get_bytes(reinterpret_cast<uint8_t *>(&gRemoteId), sizeof(gRemoteId));
+            LogErrorOnFailure(chip::Crypto::DRBG_get_bytes(reinterpret_cast<uint8_t *>(&gRemoteId), sizeof(gRemoteId)));
         } while (!chip::IsOperationalNodeId(gRemoteId));
-        matter_controller_client::get_instance().get_commissioner()->PairDevice(gRemoteId, params);
+        LogErrorOnFailure(matter_controller_client::get_instance().get_commissioner()->PairDevice(gRemoteId, params));
     }
 };
 #endif

@@ -51,3 +51,5 @@ CONFIG_ESP_MATTER_CONSOLE_TASK_STACK=3072
 
 # Increase timer stack size
 CONFIG_FREERTOS_TIMER_TASK_STACK_DEPTH=4096
+# disable groupcast cluster until verified
+CONFIG_SUPPORT_GROUPCAST_CLUSTER=n

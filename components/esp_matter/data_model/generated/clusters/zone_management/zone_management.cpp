@@ -26,6 +26,7 @@
 #include <zone_management_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
 using chip::app::CommandHandler;
@@ -89,13 +90,14 @@ uint32_t get_id()
     return UserDefined::Id;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    VerifyOrReturnError(config, ESP_ERR_INVALID_ARG);
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnError(has_feature(two_dimensional_cartesian_zone), ESP_ERR_INVALID_ARG);
     update_feature_map(cluster, get_id());
-    attribute::create_max_user_defined_zones(cluster, 0);
+    attribute::create_max_user_defined_zones(cluster, config->max_user_defined_zones);
     command::create_create_two_d_cartesian_zone(cluster);
     command::create_create_two_d_cartesian_zone_response(cluster);
     command::create_update_two_d_cartesian_zone(cluster);
@@ -129,12 +131,16 @@ attribute_t *create_max_user_defined_zones(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(user_defined), NULL);
-    return esp_matter::attribute::create(cluster, MaxUserDefinedZones::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxUserDefinedZones::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(5)), esp_matter_attr_val(static_cast<uint8_t>(254)));
+    return attribute;
 }
 
 attribute_t *create_max_zones(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, MaxZones::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxZones::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(1)), esp_matter_attr_val(static_cast<uint8_t>(254)));
+    return attribute;
 }
 
 attribute_t *create_zones(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -149,14 +155,18 @@ attribute_t *create_triggers(cluster_t *cluster, uint8_t *value, uint16_t length
 
 attribute_t *create_sensitivity_max(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, SensitivityMax::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, SensitivityMax::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(2)), esp_matter_attr_val(static_cast<uint8_t>(10)));
+    return attribute;
 }
 
 attribute_t *create_sensitivity(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(!(has_feature(per_zone_sensitivity)), NULL);
-    return esp_matter::attribute::create(cluster, Sensitivity::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, Sensitivity::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(1)), esp_matter_attr_val(static_cast<uint8_t>(254)));
+    return attribute;
 }
 
 attribute_t *create_two_d_cartesian_max(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -247,16 +257,19 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
-        attribute::create_max_zones(cluster, 0);
+        attribute::create_max_zones(cluster, config->max_zones);
+        attribute::create_sensitivity_max(cluster, config->sensitivity_max);
+        attribute::create_sensitivity(cluster, config->sensitivity);
         attribute::create_zones(cluster, NULL, 0, 0);
         attribute::create_triggers(cluster, NULL, 0, 0);
-        attribute::create_sensitivity_max(cluster, 0);
-        attribute::create_sensitivity(cluster, 0);
         command::create_create_or_update_trigger(cluster);
         command::create_remove_trigger(cluster);
         /* Events */
         event::create_zone_triggered(cluster);
         event::create_zone_stopped(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterZoneManagementClusterServerInitCallback,
+                                                 ESPMatterZoneManagementClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {

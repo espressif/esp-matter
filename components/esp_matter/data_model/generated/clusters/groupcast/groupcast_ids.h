@@ -23,18 +23,6 @@ namespace groupcast {
 
 inline constexpr uint32_t Id = 0x0065;
 
-namespace feature {
-namespace Listener {
-inline constexpr uint32_t Id = 0x1;
-} /* Listener */
-namespace Sender {
-inline constexpr uint32_t Id = 0x2;
-} /* Sender */
-namespace PerGroup {
-inline constexpr uint32_t Id = 0x4;
-} /* PerGroup */
-} /* feature */
-
 } /* groupcast */
 } /* cluster */
 } /* esp_matter */

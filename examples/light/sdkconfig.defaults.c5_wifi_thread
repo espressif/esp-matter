@@ -73,3 +73,6 @@ CONFIG_ESP_ERR_TO_NAME_LOOKUP=n
 # Set endpoint id for Thread and Wi-Fi, depending on the secondary network interface endpoint id.
 CONFIG_THREAD_NETWORK_ENDPOINT_ID=2
 CONFIG_WIFI_NETWORK_ENDPOINT_ID=0
+
+# disable groupcast cluster until verified
+CONFIG_SUPPORT_GROUPCAST_CLUSTER=n

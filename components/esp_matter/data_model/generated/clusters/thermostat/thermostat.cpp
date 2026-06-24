@@ -72,6 +72,28 @@ static esp_err_t esp_matter_command_callback_set_active_preset_request(const Con
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_add_thermostat_suggestion(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                                       void *opaque_ptr)
+{
+    chip::app::Clusters::Thermostat::Commands::AddThermostatSuggestion::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfThermostatClusterAddThermostatSuggestionCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_remove_thermostat_suggestion(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                                          void *opaque_ptr)
+{
+    chip::app::Clusters::Thermostat::Commands::RemoveThermostatSuggestion::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfThermostatClusterRemoveThermostatSuggestionCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 namespace esp_matter {
 namespace cluster {
 namespace thermostat {
@@ -206,6 +228,30 @@ esp_err_t add(cluster_t *cluster)
     return ESP_OK;
 }
 } /* presets */
+
+namespace thermostat_suggestions {
+uint32_t get_id()
+{
+    return ThermostatSuggestions::Id;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    uint32_t feature_map = get_feature_map_value(cluster);
+    VerifyOrReturnError(has_feature(presets), ESP_ERR_INVALID_ARG);
+    update_feature_map(cluster, get_id());
+    attribute::create_max_thermostat_suggestions(cluster, 0);
+    attribute::create_thermostat_suggestions(cluster, NULL, 0, 0);
+    attribute::create_current_thermostat_suggestion(cluster, NULL, 0, 0);
+    attribute::create_thermostat_suggestion_not_following_reason(cluster, 0);
+    command::create_add_thermostat_suggestion_response(cluster);
+    command::create_add_thermostat_suggestion(cluster);
+    command::create_remove_thermostat_suggestion(cluster);
+
+    return ESP_OK;
+}
+} /* thermostat_suggestions */
 
 } /* feature */
 
@@ -551,11 +597,46 @@ attribute_t *create_setpoint_hold_expiry_timestamp(cluster_t *cluster, nullable<
     return attribute;
 }
 
+attribute_t *create_max_thermostat_suggestions(cluster_t *cluster, uint8_t value)
+{
+    uint32_t feature_map = get_feature_map_value(cluster);
+    VerifyOrReturnValue(has_feature(thermostat_suggestions), NULL);
+    return esp_matter::attribute::create(cluster, MaxThermostatSuggestions::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value));
+}
+
+attribute_t *create_thermostat_suggestions(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    uint32_t feature_map = get_feature_map_value(cluster);
+    VerifyOrReturnValue(has_feature(thermostat_suggestions), NULL);
+    return esp_matter::attribute::create(cluster, ThermostatSuggestions::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, length, count));
+}
+
+attribute_t *create_current_thermostat_suggestion(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    uint32_t feature_map = get_feature_map_value(cluster);
+    VerifyOrReturnValue(has_feature(thermostat_suggestions), NULL);
+    return esp_matter::attribute::create(cluster, CurrentThermostatSuggestion::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, length, count));
+}
+
+attribute_t *create_thermostat_suggestion_not_following_reason(cluster_t *cluster, nullable<uint16_t> value)
+{
+    uint32_t feature_map = get_feature_map_value(cluster);
+    VerifyOrReturnValue(has_feature(thermostat_suggestions), NULL);
+    return esp_matter::attribute::create(cluster, ThermostatSuggestionNotFollowingReason::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+}
+
 } /* attribute */
 namespace command {
 command_t *create_setpoint_raise_lower(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, SetpointRaiseLower::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_setpoint_raise_lower);
+}
+
+command_t *create_add_thermostat_suggestion_response(cluster_t *cluster)
+{
+    uint32_t feature_map = get_feature_map_value(cluster);
+    VerifyOrReturnValue(has_feature(thermostat_suggestions), NULL);
+    return esp_matter::command::create(cluster, AddThermostatSuggestionResponse::Id, COMMAND_FLAG_GENERATED, NULL);
 }
 
 command_t *create_set_active_schedule_request(cluster_t *cluster)
@@ -570,6 +651,20 @@ command_t *create_set_active_preset_request(cluster_t *cluster)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(presets), NULL);
     return esp_matter::command::create(cluster, SetActivePresetRequest::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_set_active_preset_request);
+}
+
+command_t *create_add_thermostat_suggestion(cluster_t *cluster)
+{
+    uint32_t feature_map = get_feature_map_value(cluster);
+    VerifyOrReturnValue(has_feature(thermostat_suggestions), NULL);
+    return esp_matter::command::create(cluster, AddThermostatSuggestion::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_add_thermostat_suggestion);
+}
+
+command_t *create_remove_thermostat_suggestion(cluster_t *cluster)
+{
+    uint32_t feature_map = get_feature_map_value(cluster);
+    VerifyOrReturnValue(has_feature(thermostat_suggestions), NULL);
+    return esp_matter::command::create(cluster, RemoveThermostatSuggestion::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_remove_thermostat_suggestion);
 }
 
 } /* command */
@@ -639,6 +734,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
         if (feature_map & feature::presets::get_id()) {
             VerifyOrReturnValue(feature::presets::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
+        if (feature_map & feature::thermostat_suggestions::get_id()) {
+            VerifyOrReturnValue(feature::thermostat_suggestions::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
         command::create_setpoint_raise_lower(cluster);
     }

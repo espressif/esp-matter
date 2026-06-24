@@ -36,7 +36,7 @@ using namespace esp_matter;
 using namespace esp_matter::cluster;
 
 static const char *TAG = "groups_cluster";
-constexpr uint16_t cluster_revision = 5;
+constexpr uint16_t cluster_revision = 4;
 
 namespace esp_matter {
 namespace cluster {

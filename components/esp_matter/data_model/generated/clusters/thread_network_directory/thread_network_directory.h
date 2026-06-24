@@ -21,6 +21,7 @@ namespace esp_matter {
 namespace cluster {
 namespace thread_network_directory {
 
+const uint8_t k_max_preferred_extended_pan_id_length = 8u;
 namespace attribute {
 attribute_t *create_preferred_extended_pan_id(cluster_t *cluster, uint8_t * value, uint16_t length);
 attribute_t *create_thread_networks(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
@@ -35,7 +36,9 @@ command_t *create_operational_dataset_response(cluster_t *cluster);
 } /* command */
 
 typedef struct config {
-    config() {}
+    uint8_t preferred_extended_pan_id[k_max_preferred_extended_pan_id_length];
+    uint8_t thread_network_table_size;
+    config() : preferred_extended_pan_id{0}, thread_network_table_size(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

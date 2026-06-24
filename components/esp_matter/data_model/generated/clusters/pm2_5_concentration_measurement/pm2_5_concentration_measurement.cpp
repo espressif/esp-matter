@@ -35,7 +35,7 @@ using namespace esp_matter;
 using namespace esp_matter::cluster;
 
 static const char *TAG = "pm2_5_concentration_measurement_cluster";
-constexpr uint16_t cluster_revision = 4;
+constexpr uint16_t cluster_revision = 5;
 
 namespace esp_matter {
 namespace cluster {

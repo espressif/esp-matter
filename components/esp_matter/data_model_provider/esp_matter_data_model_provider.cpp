@@ -402,8 +402,8 @@ ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request
     if (aai_result.has_value()) {
         if (*aai_result == CHIP_NO_ERROR) {
             cluster::increase_data_version(cluster);
-            AttributePathParams path(request.path.mEndpointId, request.path.mClusterId, request.path.mAttributeId);
-            mContext->dataModelChangeListener.MarkDirty(path);
+            NotifyAttributeChanged(ConcreteAttributePath(request.path.mEndpointId, request.path.mClusterId, request.path.mAttributeId),
+                                   chip::app::DataModel::AttributeChangeType::kReportable);
             execute_post_update();
         }
         return *aai_result;
@@ -427,8 +427,8 @@ ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request
     if (err == ESP_OK) {
         // Increase data version and mark dirty when the attribute is changed
         cluster::increase_data_version(cluster);
-        AttributePathParams path(request.path.mEndpointId, request.path.mClusterId, request.path.mAttributeId);
-        mContext->dataModelChangeListener.MarkDirty(path);
+        NotifyAttributeChanged(ConcreteAttributePath(request.path.mEndpointId, request.path.mClusterId, request.path.mAttributeId),
+                               chip::app::DataModel::AttributeChangeType::kReportable);
     }
     execute_post_update();
     return Protocols::InteractionModel::Status::Success;
@@ -695,7 +695,7 @@ CHIP_ERROR provider::Attributes(const ConcreteClusterPath &path, ReadOnlyBufferB
     return CHIP_NO_ERROR;
 }
 
-void provider::Temporary_ReportAttributeChanged(const AttributePathParams &path)
+void provider::ReportAttributeChanged(const AttributePathParams &path)
 {
     VerifyOrReturn(!path.HasWildcardEndpointId());
     // If the cluster is not wildcard, increase the data version
@@ -704,7 +704,8 @@ void provider::Temporary_ReportAttributeChanged(const AttributePathParams &path)
         VerifyOrReturn(cluster != nullptr);
         VerifyOrReturn(cluster::increase_data_version(cluster) == ESP_OK);
     }
-    mContext->dataModelChangeListener.MarkDirty(path);
+    NotifyAttributeChanged(ConcreteAttributePath(path.mEndpointId, path.mClusterId, path.mAttributeId),
+                           DataModel::AttributeChangeType::kReportable);
 }
 
 Status provider::CheckDataModelPath(EndpointId endpointId)

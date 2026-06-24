@@ -36,11 +36,7 @@ CHIP_ERROR ChimeServer::Init()
         return CHIP_NO_ERROR;
     }
 
-    SafeAttributePersistenceProvider * provider = GetSafeAttributePersistenceProvider();
-    VerifyOrReturnError(provider != nullptr, CHIP_ERROR_INCORRECT_STATE);
-
-    ChimeCluster::Context context{ .delegate = *mDelegate, .safeAttributePersistenceProvider = *provider };
-    mCluster.Create(mEndpointId, context);
+    mCluster.Create(mEndpointId, *mDelegate);
 
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(mCluster.Registration());
     if (err != CHIP_NO_ERROR) {

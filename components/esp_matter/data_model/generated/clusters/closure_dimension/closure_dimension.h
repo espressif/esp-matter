@@ -23,18 +23,31 @@ namespace closure_dimension {
 
 namespace feature {
 namespace positioning {
+typedef struct config {
+    uint16_t resolution;
+    uint16_t step_value;
+    config() : resolution(0), step_value(0) {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* positioning */
 
 namespace motion_latching {
+typedef struct config {
+    uint8_t latch_control_modes;
+    config() : latch_control_modes(0) {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* motion_latching */
 
 namespace unit {
+typedef struct config {
+    uint8_t unit;
+    config() : unit(0) {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* unit */
 
 namespace limitation {
@@ -48,18 +61,31 @@ esp_err_t add(cluster_t *cluster);
 } /* speed */
 
 namespace translation {
+typedef struct config {
+    uint8_t translation_direction;
+    config() : translation_direction(0) {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* translation */
 
 namespace rotation {
+typedef struct config {
+    uint8_t rotation_axis;
+    uint8_t overflow;
+    config() : rotation_axis(0), overflow(0) {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* rotation */
 
 namespace modulation {
+typedef struct config {
+    uint8_t modulation_type;
+    config() : modulation_type(0) {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* modulation */
 
 } /* feature */
@@ -86,6 +112,14 @@ command_t *create_step(cluster_t *cluster);
 
 typedef struct config {
     void *delegate;
+    struct {
+        feature::positioning::config_t positioning;
+        feature::motion_latching::config_t motion_latching;
+        feature::unit::config_t unit;
+        feature::translation::config_t translation;
+        feature::rotation::config_t rotation;
+        feature::modulation::config_t modulation;
+    } features;
     uint32_t feature_flags;
     config() : delegate(nullptr), feature_flags(0) {}
 } config_t;

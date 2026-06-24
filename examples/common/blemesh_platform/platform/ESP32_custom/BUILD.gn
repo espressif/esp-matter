@@ -107,6 +107,9 @@ group("platform_buildconfig") {
 static_library("ESP32_custom") {
   sources = [
     "${chip_root}/src/platform/SingletonConfigurationManager.cpp",
+    "${chip_root}/src/platform/ESP32/DiagnosticDataProviderImpl_LwIP.cpp",
+    "${chip_root}/src/platform/ESP32/ESP32Utils_LwIP.cpp",
+    "${chip_root}/src/platform/ESP32/PlatformManagerImpl_LwIP.cpp",
     "CHIPDevicePlatformConfig.h",
     "CHIPDevicePlatformEvent.h",
     "ConfigurationManagerImpl.cpp",

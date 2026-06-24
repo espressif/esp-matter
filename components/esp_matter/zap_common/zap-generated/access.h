@@ -35,6 +35,8 @@
     0x00000101, /* Cluster: Door Lock, Attribute: AliroGroupResolvingKey, Privilege: administer */ \
     0x00000101, /* Cluster: Door Lock, Attribute: AliroSupportedBLEUWBProtocolVersions, Privilege: administer */ \
     0x00000101, /* Cluster: Door Lock, Attribute: AliroBLEAdvertisingVersion, Privilege: administer */ \
+    0x00000450, /* Cluster: Network Identity Management, Attribute: ActiveNetworkIdentities, Privilege: manage */ \
+    0x00000450, /* Cluster: Network Identity Management, Attribute: Clients, Privilege: manage */ \
     0x00000451, /* Cluster: Wi-Fi Network Management, Attribute: PassphraseSurrogate, Privilege: manage */ \
     0x0000050D, /* Cluster: Application Basic, Attribute: AllowedVendorList, Privilege: administer */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: HDRModeEnabled, Privilege: manage */ \
@@ -57,6 +59,7 @@
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: LocalSnapshotRecordingEnabled, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: StatusLightEnabled, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: StatusLightBrightness, Privilege: manage */ \
+    0x00000551, /* Cluster: Camera AV Stream Management, Attribute: ImageRotationDiscreteAngles, Privilege: manage */ \
     0x00000553, /* Cluster: WebRTC Transport Provider, Attribute: CurrentSessions, Privilege: manage */ \
     0x00000554, /* Cluster: WebRTC Transport Requestor, Attribute: CurrentSessions, Privilege: administer */ \
     0x00000750, /* Cluster: Ecosystem Information, Attribute: DeviceDirectory, Privilege: manage */ \
@@ -108,6 +111,8 @@
     0x00000084, /* Cluster: Door Lock, Attribute: AliroGroupResolvingKey, Privilege: administer */ \
     0x00000085, /* Cluster: Door Lock, Attribute: AliroSupportedBLEUWBProtocolVersions, Privilege: administer */ \
     0x00000086, /* Cluster: Door Lock, Attribute: AliroBLEAdvertisingVersion, Privilege: administer */ \
+    0x00000000, /* Cluster: Network Identity Management, Attribute: ActiveNetworkIdentities, Privilege: manage */ \
+    0x00000001, /* Cluster: Network Identity Management, Attribute: Clients, Privilege: manage */ \
     0x00000001, /* Cluster: Wi-Fi Network Management, Attribute: PassphraseSurrogate, Privilege: manage */ \
     0x00000007, /* Cluster: Application Basic, Attribute: AllowedVendorList, Privilege: administer */ \
     0x0000000D, /* Cluster: Camera AV Stream Management, Attribute: HDRModeEnabled, Privilege: manage */ \
@@ -130,6 +135,7 @@
     0x00000026, /* Cluster: Camera AV Stream Management, Attribute: LocalSnapshotRecordingEnabled, Privilege: manage */ \
     0x00000027, /* Cluster: Camera AV Stream Management, Attribute: StatusLightEnabled, Privilege: manage */ \
     0x00000028, /* Cluster: Camera AV Stream Management, Attribute: StatusLightBrightness, Privilege: manage */ \
+    0x00000029, /* Cluster: Camera AV Stream Management, Attribute: ImageRotationDiscreteAngles, Privilege: manage */ \
     0x00000000, /* Cluster: WebRTC Transport Provider, Attribute: CurrentSessions, Privilege: manage */ \
     0x00000000, /* Cluster: WebRTC Transport Requestor, Attribute: CurrentSessions, Privilege: administer */ \
     0x00000000, /* Cluster: Ecosystem Information, Attribute: DeviceDirectory, Privilege: manage */ \
@@ -181,6 +187,8 @@
     chip::Access::Privilege::kAdminister, /* Cluster: Door Lock, Attribute: AliroGroupResolvingKey, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Door Lock, Attribute: AliroSupportedBLEUWBProtocolVersions, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Door Lock, Attribute: AliroBLEAdvertisingVersion, Privilege: administer */ \
+    chip::Access::Privilege::kManage, /* Cluster: Network Identity Management, Attribute: ActiveNetworkIdentities, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Network Identity Management, Attribute: Clients, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Wi-Fi Network Management, Attribute: PassphraseSurrogate, Privilege: manage */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Application Basic, Attribute: AllowedVendorList, Privilege: administer */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: HDRModeEnabled, Privilege: manage */ \
@@ -203,6 +211,7 @@
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: LocalSnapshotRecordingEnabled, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: StatusLightEnabled, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: StatusLightBrightness, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: ImageRotationDiscreteAngles, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: WebRTC Transport Provider, Attribute: CurrentSessions, Privilege: manage */ \
     chip::Access::Privilege::kAdminister, /* Cluster: WebRTC Transport Requestor, Attribute: CurrentSessions, Privilege: administer */ \
     chip::Access::Privilege::kManage, /* Cluster: Ecosystem Information, Attribute: DeviceDirectory, Privilege: manage */ \
@@ -345,6 +354,7 @@
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: LocalSnapshotRecordingEnabled, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: StatusLightEnabled, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: StatusLightBrightness, Privilege: manage */ \
+    0x00000551, /* Cluster: Camera AV Stream Management, Attribute: ImageRotationDiscreteAngles, Privilege: manage */ \
     0xFFF1FC05, /* Cluster: Unit Testing, Attribute: UnsupportedAttributeRequiringAdminPrivilege, Privilege: administer */ \
 }
 
@@ -465,6 +475,7 @@
     0x00000026, /* Cluster: Camera AV Stream Management, Attribute: LocalSnapshotRecordingEnabled, Privilege: manage */ \
     0x00000027, /* Cluster: Camera AV Stream Management, Attribute: StatusLightEnabled, Privilege: manage */ \
     0x00000028, /* Cluster: Camera AV Stream Management, Attribute: StatusLightBrightness, Privilege: manage */ \
+    0x00000029, /* Cluster: Camera AV Stream Management, Attribute: ImageRotationDiscreteAngles, Privilege: manage */ \
     0x000000FE, /* Cluster: Unit Testing, Attribute: UnsupportedAttributeRequiringAdminPrivilege, Privilege: administer */ \
 }
 
@@ -585,6 +596,7 @@
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: LocalSnapshotRecordingEnabled, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: StatusLightEnabled, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: StatusLightBrightness, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: ImageRotationDiscreteAngles, Privilege: manage */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Unit Testing, Attribute: UnsupportedAttributeRequiringAdminPrivilege, Privilege: administer */ \
 }
 
@@ -675,6 +687,11 @@
     0x00000201, /* Cluster: Thermostat, Command: AddThermostatSuggestion, Privilege: manage */ \
     0x00000201, /* Cluster: Thermostat, Command: RemoveThermostatSuggestion, Privilege: manage */ \
     0x00000201, /* Cluster: Thermostat, Command: AtomicRequest, Privilege: manage */ \
+    0x00000450, /* Cluster: Network Identity Management, Command: AddClient, Privilege: manage */ \
+    0x00000450, /* Cluster: Network Identity Management, Command: RemoveClient, Privilege: manage */ \
+    0x00000450, /* Cluster: Network Identity Management, Command: QueryIdentity, Privilege: manage */ \
+    0x00000450, /* Cluster: Network Identity Management, Command: ImportAdminSecret, Privilege: administer */ \
+    0x00000450, /* Cluster: Network Identity Management, Command: ExportAdminSecret, Privilege: administer */ \
     0x00000451, /* Cluster: Wi-Fi Network Management, Command: NetworkPassphraseRequest, Privilege: manage */ \
     0x00000452, /* Cluster: Thread Border Router Management, Command: GetActiveDatasetRequest, Privilege: manage */ \
     0x00000452, /* Cluster: Thread Border Router Management, Command: GetPendingDatasetRequest, Privilege: manage */ \
@@ -844,6 +861,11 @@
     0x00000007, /* Cluster: Thermostat, Command: AddThermostatSuggestion, Privilege: manage */ \
     0x00000008, /* Cluster: Thermostat, Command: RemoveThermostatSuggestion, Privilege: manage */ \
     0x000000FE, /* Cluster: Thermostat, Command: AtomicRequest, Privilege: manage */ \
+    0x00000000, /* Cluster: Network Identity Management, Command: AddClient, Privilege: manage */ \
+    0x00000002, /* Cluster: Network Identity Management, Command: RemoveClient, Privilege: manage */ \
+    0x00000003, /* Cluster: Network Identity Management, Command: QueryIdentity, Privilege: manage */ \
+    0x00000040, /* Cluster: Network Identity Management, Command: ImportAdminSecret, Privilege: administer */ \
+    0x00000041, /* Cluster: Network Identity Management, Command: ExportAdminSecret, Privilege: administer */ \
     0x00000000, /* Cluster: Wi-Fi Network Management, Command: NetworkPassphraseRequest, Privilege: manage */ \
     0x00000000, /* Cluster: Thread Border Router Management, Command: GetActiveDatasetRequest, Privilege: manage */ \
     0x00000001, /* Cluster: Thread Border Router Management, Command: GetPendingDatasetRequest, Privilege: manage */ \
@@ -1013,6 +1035,11 @@
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Command: AddThermostatSuggestion, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Command: RemoveThermostatSuggestion, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Command: AtomicRequest, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Network Identity Management, Command: AddClient, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Network Identity Management, Command: RemoveClient, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Network Identity Management, Command: QueryIdentity, Privilege: manage */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Network Identity Management, Command: ImportAdminSecret, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Network Identity Management, Command: ExportAdminSecret, Privilege: administer */ \
     chip::Access::Privilege::kManage, /* Cluster: Wi-Fi Network Management, Command: NetworkPassphraseRequest, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thread Border Router Management, Command: GetActiveDatasetRequest, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thread Border Router Management, Command: GetPendingDatasetRequest, Privilege: manage */ \

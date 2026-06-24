@@ -42,3 +42,6 @@ CONFIG_ENABLE_WIFI_AP=n
 
 # Enable HKDF in mbedtls
 CONFIG_MBEDTLS_HKDF_C=y
+
+# disable groupcast cluster until verified
+CONFIG_SUPPORT_GROUPCAST_CLUSTER=n

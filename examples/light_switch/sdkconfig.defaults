@@ -46,3 +46,6 @@ CONFIG_LWIP_IPV6_NUM_ADDRESSES=6
 
 # Buttons
 CONFIG_BSP_BUTTONS_NUM=1
+
+# disable groupcast cluster until verified
+CONFIG_SUPPORT_GROUPCAST_CLUSTER=n

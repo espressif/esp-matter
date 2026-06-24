@@ -16,7 +16,6 @@
 
 #include <app/clusters/chime-server/ChimeCluster.h>
 #include <app/server-cluster/ServerClusterInterfaceRegistry.h>
-#include <app/SafeAttributePersistenceProvider.h>
 #include <lib/support/CodeUtils.h>
 
 namespace chip::app::Clusters::Chime {
@@ -93,7 +92,7 @@ private:
     EndpointId mEndpointId;
     ChimeDelegate * mDelegate;
 
-    // Constructed in Init() once SafeAttributePersistenceProvider is available.
+    // Constructed in Init().
     chip::app::LazyRegisteredServerCluster<ChimeCluster> mCluster;
 };
 } // namespace chip::app::Clusters::Chime

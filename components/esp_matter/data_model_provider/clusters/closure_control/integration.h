@@ -22,14 +22,7 @@ namespace app {
 namespace Clusters {
 namespace ClosureControl {
 
-struct ClusterConformance;
-struct ClusterInitParameters;
-
-void MatterClosureControlSetDelegate(EndpointId endpointId, ClosureControlClusterDelegate  &delegate);
-
-void MatterClosureControlSetConformance(EndpointId endpointId, const ClusterConformance  &conformance);
-
-void MatterClosureControlSetInitParams(EndpointId endpointId, const ClusterInitParameters  &initParams);
+void MatterClosureControlSetDelegate(EndpointId endpointId, ClosureControlClusterDelegate &delegate);
 
 } // namespace ClosureControl
 } // namespace Clusters

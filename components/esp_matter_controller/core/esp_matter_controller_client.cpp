@@ -92,7 +92,7 @@ esp_err_t matter_controller_client::init(NodeId node_id, FabricId fabric_id, uin
                         CHIP_NO_ERROR,
                         ESP_FAIL, TAG, "Failed to initialize DeviceControllerFactory");
     auto *system_state = chip::Controller::DeviceControllerFactory::GetInstance().GetSystemState();
-    m_group_data_provider_listener.Init(system_state);
+    LogErrorOnFailure(m_group_data_provider_listener.Init(system_state));
     auto engine = chip::app::InteractionModelEngine::GetInstance();
     ESP_RETURN_ON_FALSE(engine, ESP_ERR_INVALID_STATE, TAG, "No interaction model engine");
     ESP_RETURN_ON_FALSE(m_icd_check_in_delegate.Init(&m_icd_client_storage, engine) == CHIP_NO_ERROR, ESP_FAIL, TAG,
@@ -169,7 +169,7 @@ esp_err_t matter_controller_client::setup_commissioner()
     // Initialize Group Data, including IPK
     chip::FabricIndex fabric_index = m_device_commissioner.GetFabricIndex();
     ESP_RETURN_ON_FALSE(fabric_index != chip::kUndefinedFabricIndex, ESP_FAIL, TAG, "Invalid Fabric Index");
-    m_icd_client_storage.UpdateFabricList(fabric_index);
+    LogErrorOnFailure(m_icd_client_storage.UpdateFabricList(fabric_index));
     uint8_t compressed_fabric_id[sizeof(uint64_t)] = {0};
     chip::MutableByteSpan compressed_fabric_id_span(compressed_fabric_id);
     ESP_RETURN_ON_FALSE(m_device_commissioner.GetCompressedFabricIdBytes(compressed_fabric_id_span) == CHIP_NO_ERROR,
@@ -262,7 +262,7 @@ esp_err_t matter_controller_client::setup_controller(chip::MutableByteSpan &ipk,
 
     chip::FabricIndex fabric_index = m_device_controller.GetFabricIndex();
     if (fabric_index != chip::kUndefinedFabricIndex) {
-        m_icd_client_storage.UpdateFabricList(fabric_index);
+        LogErrorOnFailure(m_icd_client_storage.UpdateFabricList(fabric_index));
     }
     if (fabric_index != chip::kUndefinedFabricIndex && !ipk.empty()) {
         // If we have created fabric in SetupController and IPK input is not empty, initialize Group Data with IPK.

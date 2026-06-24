@@ -23,7 +23,7 @@
 
 #include <app-common/zap-generated/attribute-type.h>
 #include <app/AttributePathParams.h>
-#include <app/InteractionModelEngine.h>
+#include <app/reporting/reporting.h>
 #include <app/util/MarkAttributeDirty.h>
 #include <app/util/attribute-storage.h>
 #include <app/util/attribute-table.h>
@@ -724,8 +724,7 @@ Status emberAfWriteAttribute(chip::EndpointId endpointId, chip::ClusterId cluste
                              uint8_t *value, EmberAfAttributeType dataType)
 {
     return emberAfWriteAttribute(chip::app::ConcreteAttributePath(endpointId, clusterId, attributeId),
-                                 EmberAfWriteDataInput(value, dataType).SetChangeListener(
-                                     &chip::app::InteractionModelEngine::GetInstance()->GetReportingEngine()));
+                                 EmberAfWriteDataInput(value, dataType));
 }
 
 Status emberAfWriteAttribute(const chip::app::ConcreteAttributePath &path, const EmberAfWriteDataInput &input)
@@ -775,13 +774,7 @@ Status emberAfWriteAttribute(const chip::app::ConcreteAttributePath &path, const
     if (status == Status::Success) {
         if (input.markDirty == chip::app::MarkAttributeDirty::kYes ||
                 ((err == ESP_OK) && (input.markDirty != chip::app::MarkAttributeDirty::kNo))) {
-            if (input.changeListener) {
-                input.changeListener->MarkDirty(
-                         chip::app::AttributePathParams(path.mEndpointId, path.mClusterId, path.mAttributeId));
-            } else {
-                chip::app::InteractionModelEngine::GetInstance()->GetReportingEngine().MarkDirty(
-                    chip::app::AttributePathParams(path.mEndpointId, path.mClusterId, path.mAttributeId));
-            }
+            MatterReportingAttributeChangeCallback(path.mEndpointId, path.mClusterId, path.mAttributeId);
         }
     }
 

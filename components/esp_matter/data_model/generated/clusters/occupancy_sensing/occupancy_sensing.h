@@ -77,6 +77,11 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 } /* vision */
 
+namespace occupancy_event {
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* occupancy_event */
+
 } /* feature */
 
 namespace attribute {
@@ -95,6 +100,10 @@ attribute_t *create_physical_contact_occupied_to_unoccupied_delay(cluster_t *clu
 attribute_t *create_physical_contact_unoccupied_to_occupied_delay(cluster_t *cluster, uint16_t value);
 attribute_t *create_physical_contact_unoccupied_to_occupied_threshold(cluster_t *cluster, uint8_t value);
 } /* attribute */
+
+namespace event {
+event_t *create_occupancy_changed(cluster_t *cluster);
+} /* event */
 
 typedef struct config {
     uint8_t occupancy;

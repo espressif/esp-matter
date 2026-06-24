@@ -23,9 +23,9 @@ static constexpr char *TAG = "app_driver";
 static void app_driver_button_toggle_cb(void *arg, void *data)
 {
     // The device will stay active mode for Active Mode Threshold
-    chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t) {
+    LogErrorOnFailure(chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t) {
         chip::app::ICDNotifier::GetInstance().NotifyNetworkActivityNotification();
-    });
+    }));
 }
 
 app_driver_handle_t app_driver_button_init()
