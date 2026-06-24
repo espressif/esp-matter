@@ -1,0 +1,11 @@
+#!/bin/sh
+# ninja wrapper: inject `-j ${NINJA_JOBS}` so ninja does not run its default
+# cpu_cores+2 (~130) compiles and OOM-kill the job under the 8 GiB per-job cap.
+# idf.py v5.5.4 calls bare `ninja` and has no IDF_PY_BUILD_JOBS, so we shim it
+# via PATH; REAL_NINJA is captured before this dir is on PATH (no recursion).
+# Set NINJA_SHIM_DEBUG=1 to log the forwarded command. Drop once IDF supports
+# IDF_PY_BUILD_JOBS.
+if [ -n "${NINJA_SHIM_DEBUG:-}" ]; then
+  echo "[ninja-shim] ${REAL_NINJA:-/usr/bin/ninja} -j ${NINJA_JOBS:-2} $*" >&2
+fi
+exec "${REAL_NINJA:-/usr/bin/ninja}" -j "${NINJA_JOBS:-2}" "$@"
