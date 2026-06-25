@@ -14,7 +14,7 @@
 import logging
 from xml.etree.ElementTree import Element
 
-from .conformance_parser import parse_conformance
+from .conformance_parser import parse_conformance, is_mandatory
 from .element_parser_base import ClusterElementBaseParser
 from .elements import Event
 from utils.helper import safe_get_attr
@@ -62,7 +62,7 @@ class EventParser(ClusterElementBaseParser):
         event = Event(
             id=elem.get("id"),
             name=elem.get("name"),
-            is_mandatory=elem.find("mandatoryConform") is not None,
+            is_mandatory=is_mandatory(elem),
         )
         event.conformance = parse_conformance(elem, self.feature_map)
         return event

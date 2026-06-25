@@ -15,7 +15,7 @@
 from __future__ import annotations
 import logging
 from abc import ABC, abstractmethod
-from typing import Dict, Optional, Any, List
+from typing import Dict, Optional, Any, List, Tuple
 from utils.conformance import (
     ConformanceDecision,
     get_conformance_type,
@@ -188,6 +188,56 @@ class NotExpr(Expr):
         self.operand.iterate(iterator)
 
 
+class ComparisonExpr(Expr):
+    """Runtime comparison of a config attribute value against a literal."""
+
+    def __init__(self, config_name: str, literal: int, is_nullable: bool, operator: str):
+        self.config_name = config_name
+        self.literal = literal
+        self.is_nullable = is_nullable
+        self.operator = operator
+
+    def __call__(self) -> str:
+        if self.is_nullable:
+            return (
+                f"config->{self.config_name}.value_or(0) {self.operator} {self.literal}"
+            )
+        return f"config->{self.config_name} {self.operator} {self.literal}"
+
+    def iterate(self, iterator: ExprIterator):
+        pass
+
+
+class GreaterThanExpr(ComparisonExpr):
+    def __init__(self, config_name: str, literal: int, is_nullable: bool):
+        super().__init__(config_name, literal, is_nullable, ">")
+
+
+class GreaterOrEqualExpr(ComparisonExpr):
+    def __init__(self, config_name: str, literal: int, is_nullable: bool):
+        super().__init__(config_name, literal, is_nullable, ">=")
+
+
+class LessThanExpr(ComparisonExpr):
+    def __init__(self, config_name: str, literal: int, is_nullable: bool):
+        super().__init__(config_name, literal, is_nullable, "<")
+
+
+class LessOrEqualExpr(ComparisonExpr):
+    def __init__(self, config_name: str, literal: int, is_nullable: bool):
+        super().__init__(config_name, literal, is_nullable, "<=")
+
+
+class EqualExpr(ComparisonExpr):
+    def __init__(self, config_name: str, literal: int, is_nullable: bool):
+        super().__init__(config_name, literal, is_nullable, "==")
+
+
+class NotEqualExpr(ComparisonExpr):
+    def __init__(self, config_name: str, literal: int, is_nullable: bool):
+        super().__init__(config_name, literal, is_nullable, "!=")
+
+
 class WrapperExpr(Expr):
     def __init__(self, operand: Expr):
         self.operand = operand
@@ -232,6 +282,33 @@ class OtherwiseExpr(Expr):
             op.iterate(iterator)
 
 
+COMPARISON_EXPR_CLASSES = {
+    ConformanceTAG.GREATER.value: GreaterThanExpr,
+    ConformanceTAG.GREATER_OR_EQUAL.value: GreaterOrEqualExpr,
+    ConformanceTAG.LESS_THAN.value: LessThanExpr,
+    ConformanceTAG.LESS_OR_EQUAL.value: LessOrEqualExpr,
+    ConformanceTAG.EQUAL.value: EqualExpr,
+    ConformanceTAG.NOT_EQUAL.value: NotEqualExpr,
+}
+
+COMPARISON_OPERATOR_TAGS = list(COMPARISON_EXPR_CLASSES.keys())
+
+
+def _parse_comparison_expr(comp_key: str, obj: dict) -> Expr:
+    """Build the ComparisonExpr for a matched comparison tag, or NonExpr on bad data."""
+    comp = obj[comp_key]
+    if not (isinstance(comp, dict) and "func_name" in comp):
+        logger.debug(
+            f"Comparison term '{comp_key}' missing func_name (likely non-attribute operand), skipping: {obj}"
+        )
+        return NonExpr()
+    return COMPARISON_EXPR_CLASSES[comp_key](
+        config_name=comp["func_name"],
+        literal=comp.get(ConformanceTAG.LITERAL.value, 0),
+        is_nullable=comp.get("nullable", False),
+    )
+
+
 def parse_expr(obj: dict) -> Expr:
     """Parse the conformance dictionary and return the corresponding Expr object.
     :param obj: The conformance expression in dictionary format.
@@ -269,13 +346,29 @@ def parse_expr(obj: dict) -> Expr:
     elif ConformanceTAG.OR.value in obj:
         return OrExpr([parse_expr(x) for x in obj[ConformanceTAG.OR.value]])
 
-    elif ConformanceTAG.GREATER.value in obj:
-        logger.debug(f"Greater than condition not supported: {obj}")
-        return NonExpr()
-
     else:
+        for comp_key in COMPARISON_OPERATOR_TAGS:
+            if comp_key in obj:
+                return _parse_comparison_expr(comp_key, obj)
         logger.debug(f"Unknown conformance expression: {obj}")
         return NonExpr()
+
+
+def _collect_command_names(condition) -> List[str]:
+    """Recursively collect all command names from a condition dict."""
+    if not isinstance(condition, dict):
+        return []
+    cmd = condition.get(ConformanceTAG.COMMAND.value)
+    if cmd:
+        return [cmd]
+    names = []
+    for value in condition.values():
+        if isinstance(value, list):
+            for item in value:
+                names.extend(_collect_command_names(item))
+        elif isinstance(value, dict):
+            names.extend(_collect_command_names(value))
+    return names
 
 
 def parse_choice(conformance: Dict[str, Any]) -> Optional[Choice]:
@@ -373,6 +466,57 @@ class Conformance(BaseConformance, Expr):
             if self.type == ConformanceDecision.MANDATORY and self.condition
             else None
         )
+
+    def _get_comparison_info(self) -> Optional[Tuple[str, int, Optional[str]]]:
+        """Traverse the OTHERWISE mandatory comparison branch once.
+        Returns (expr_str, literal, config_name) or None if not a comparison conformance.
+        """
+        if self.type != ConformanceDecision.OTHERWISE or not self.conformance:
+            return None
+        condition = self.conformance.get(ConformanceTAG.CONDITION.value, {})
+        if not isinstance(condition, dict):
+            return None
+        mandatory = condition.get(MANDATORY_CONFORM)
+        if not isinstance(mandatory, dict):
+            return None
+        for comp_key in COMPARISON_OPERATOR_TAGS:
+            if comp_key not in mandatory:
+                continue
+            comp = mandatory[comp_key]
+            if not isinstance(comp, dict) or "func_name" not in comp:
+                return None
+            expr_str = parse_expr(mandatory)()
+            if not expr_str:
+                return None
+            return (
+                expr_str,
+                comp.get(ConformanceTAG.LITERAL.value, 0),
+                comp.get("func_name"),
+            )
+        return None
+
+    def get_comparison_condition_info(self) -> Optional[Tuple[str, int]]:
+        """Return (condition_expr_string, literal_value) for OTHERWISE+comparison conformance."""
+        info = self._get_comparison_info()
+        return (info[0], info[1]) if info else None
+
+    def get_comparison_ref_config_name(self) -> Optional[str]:
+        """Return the config_name of the attribute referenced in a comparison condition."""
+        info = self._get_comparison_info()
+        return info[2] if info else None
+
+    def get_mandatory_ref_command_names(self) -> List[str]:
+        """Return the command names referenced in the mandatory condition.
+        Used to promote response commands to mandatory when their request command is mandatory.
+        Handles simple {command: X} and boolean OR/AND compositions.
+        Returns an empty list if this is not a command-conditional mandatory conformance.
+        """
+        if self.type != ConformanceDecision.MANDATORY or not self.conformance:
+            return []
+        condition = self.conformance.get(ConformanceTAG.CONDITION.value)
+        if not isinstance(condition, dict):
+            return []
+        return _collect_command_names(condition)
 
     def get_optional_condition(self) -> Expr:
         """Get the conformance condition for optional/otherwise conformance."""

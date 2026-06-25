@@ -283,8 +283,9 @@ attribute_t *create_reachable(cluster_t *cluster, bool value)
 
 attribute_t *create_unique_id(cluster_t *cluster, char *value, uint16_t length)
 {
+    VerifyOrReturnValue(length <= k_max_unique_id_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
     return esp_matter::attribute::create(cluster, BasicInformation::Attributes::UniqueID::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY,
-                                         esp_matter_attr_val(value, length));
+                                         esp_matter_attr_val(value, length), k_max_unique_id_length);
 }
 
 attribute_t *create_product_appearance(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -1439,6 +1440,7 @@ attribute_t *create_reachable(cluster_t *cluster, bool value)
 
 attribute_t *create_unique_id(cluster_t *cluster, char *value, uint16_t length)
 {
+    VerifyOrReturnValue(length <= k_max_unique_id_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
     return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::UniqueID::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_attr_val(value, length), k_max_unique_id_length);
 }

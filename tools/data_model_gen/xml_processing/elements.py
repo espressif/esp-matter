@@ -549,6 +549,7 @@ class Cluster(BaseCluster):
 
     def _get_mandatory_elements(self, elements):
         """Helper to filter mandatory elements with no conformance condition."""
+        cluster_revision = convert_to_int(self.revision, default=None)
         result = []
         for elem in elements:
             if not elem.is_mandatory:
@@ -556,11 +557,12 @@ class Cluster(BaseCluster):
             conformance = getattr(elem, "conformance", None)
             if conformance is None:
                 continue
-            condition = (
-                conformance.get("condition") if isinstance(conformance, dict) else None
-            )
-            if condition is None:
-                result.append(elem)
+            if cluster_revision is not None and hasattr(
+                conformance, "is_mandatory_at_revision"
+            ):
+                if not conformance.is_mandatory_at_revision(cluster_revision):
+                    continue
+            result.append(elem)
         return (
             sorted(result, key=lambda x: (int(x.get_id(), 16), x.name))
             if result

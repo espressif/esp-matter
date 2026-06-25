@@ -176,7 +176,9 @@ class TestXmlDeviceOptionalChoiceClusters(unittest.TestCase):
     def test_has_optional_choice_clusters_true(self):
         """Device with O.a+ clusters returns True."""
         device = XmlDevice(id="0x0510", name="Electrical_Sensor", revision=1)
-        c1 = _make_xml_cluster("EPM", "0x0090", optional_choice={"choice": "a", "more": True, "min": 1})
+        c1 = _make_xml_cluster(
+            "EPM", "0x0090", optional_choice={"choice": "a", "more": True, "min": 1}
+        )
         c2 = _make_xml_cluster("PowerTopology", "0x009C", is_mandatory=True)
         device.clusters = {c1, c2}
         self.assertTrue(device.has_optional_choice_clusters())
@@ -191,8 +193,12 @@ class TestXmlDeviceOptionalChoiceClusters(unittest.TestCase):
     def test_get_optional_choice_clusters_grouped(self):
         """O.a+ clusters should be grouped by choice marker."""
         device = XmlDevice(id="0x0510", name="Electrical_Sensor", revision=1)
-        c1 = _make_xml_cluster("EPM", "0x0090", optional_choice={"choice": "a", "more": True, "min": 1})
-        c2 = _make_xml_cluster("EEM", "0x0091", optional_choice={"choice": "a", "more": True, "min": 1})
+        c1 = _make_xml_cluster(
+            "EPM", "0x0090", optional_choice={"choice": "a", "more": True, "min": 1}
+        )
+        c2 = _make_xml_cluster(
+            "EEM", "0x0091", optional_choice={"choice": "a", "more": True, "min": 1}
+        )
         c3 = _make_xml_cluster("PowerTopology", "0x009C", is_mandatory=True)
         device.clusters = {c1, c2, c3}
 
@@ -203,8 +209,12 @@ class TestXmlDeviceOptionalChoiceClusters(unittest.TestCase):
     def test_get_optional_choice_clusters_sorted(self):
         """Clusters within each choice group should be sorted by ID."""
         device = XmlDevice(id="0x0510", name="Electrical_Sensor", revision=1)
-        c1 = _make_xml_cluster("EEM", "0x0091", optional_choice={"choice": "a", "more": True, "min": 1})
-        c2 = _make_xml_cluster("EPM", "0x0090", optional_choice={"choice": "a", "more": True, "min": 1})
+        c1 = _make_xml_cluster(
+            "EEM", "0x0091", optional_choice={"choice": "a", "more": True, "min": 1}
+        )
+        c2 = _make_xml_cluster(
+            "EPM", "0x0090", optional_choice={"choice": "a", "more": True, "min": 1}
+        )
         device.clusters = {c1, c2}
 
         groups = device.get_optional_choice_clusters()
@@ -223,7 +233,9 @@ class TestCodegenDeviceOptionalChoiceClusters(unittest.TestCase):
     def test_has_optional_choice_clusters_true(self):
         """Device with O.a+ clusters returns True."""
         device = CodegenDevice(id="0x0510", name="Electrical_Sensor", revision=1)
-        c1 = _make_codegen_cluster("EPM", "0x0090", optional_choice={"choice": "a", "more": True, "min": 1})
+        c1 = _make_codegen_cluster(
+            "EPM", "0x0090", optional_choice={"choice": "a", "more": True, "min": 1}
+        )
         c2 = _make_codegen_cluster("PowerTopology", "0x009C", is_mandatory=True)
         device.clusters = [c1, c2]
         self.assertTrue(device.has_optional_choice_clusters())
@@ -238,8 +250,12 @@ class TestCodegenDeviceOptionalChoiceClusters(unittest.TestCase):
     def test_get_optional_choice_clusters_grouped(self):
         """O.a+ clusters should be grouped by choice marker."""
         device = CodegenDevice(id="0x0510", name="Electrical_Sensor", revision=1)
-        c1 = _make_codegen_cluster("EPM", "0x0090", optional_choice={"choice": "a", "more": True, "min": 1})
-        c2 = _make_codegen_cluster("EEM", "0x0091", optional_choice={"choice": "a", "more": True, "min": 1})
+        c1 = _make_codegen_cluster(
+            "EPM", "0x0090", optional_choice={"choice": "a", "more": True, "min": 1}
+        )
+        c2 = _make_codegen_cluster(
+            "EEM", "0x0091", optional_choice={"choice": "a", "more": True, "min": 1}
+        )
         c3 = _make_codegen_cluster("PowerTopology", "0x009C", is_mandatory=True)
         device.clusters = [c1, c2, c3]
 
@@ -250,8 +266,12 @@ class TestCodegenDeviceOptionalChoiceClusters(unittest.TestCase):
     def test_get_unique_optional_choice_clusters(self):
         """get_unique_optional_choice_clusters returns flattened unique list."""
         device = CodegenDevice(id="0x0510", name="Electrical_Sensor", revision=1)
-        c1 = _make_codegen_cluster("EPM", "0x0090", optional_choice={"choice": "a", "more": True, "min": 1})
-        c2 = _make_codegen_cluster("EEM", "0x0091", optional_choice={"choice": "a", "more": True, "min": 1})
+        c1 = _make_codegen_cluster(
+            "EPM", "0x0090", optional_choice={"choice": "a", "more": True, "min": 1}
+        )
+        c2 = _make_codegen_cluster(
+            "EEM", "0x0091", optional_choice={"choice": "a", "more": True, "min": 1}
+        )
         device.clusters = [c1, c2]
 
         unique = device.get_unique_optional_choice_clusters()
@@ -263,8 +283,12 @@ class TestCodegenDeviceOptionalChoiceClusters(unittest.TestCase):
     def test_get_unique_optional_choice_clusters_deduplicates(self):
         """Duplicate clusters should be deduplicated."""
         device = CodegenDevice(id="0x0510", name="Electrical_Sensor", revision=1)
-        c1 = _make_codegen_cluster("EPM", "0x0090", optional_choice={"choice": "a", "more": True, "min": 1})
-        c2 = _make_codegen_cluster("EPM", "0x0090", optional_choice={"choice": "a", "more": True, "min": 1})
+        c1 = _make_codegen_cluster(
+            "EPM", "0x0090", optional_choice={"choice": "a", "more": True, "min": 1}
+        )
+        c2 = _make_codegen_cluster(
+            "EPM", "0x0090", optional_choice={"choice": "a", "more": True, "min": 1}
+        )
         device.clusters = [c1, c2]
 
         unique = device.get_unique_optional_choice_clusters()
@@ -282,7 +306,9 @@ class TestDeviceSerializerOptionalChoice(unittest.TestCase):
     def test_serialize_cluster_with_optional_choice(self):
         """Cluster with optional_choice should include it in serialized output."""
         device = XmlDevice(id="0x0510", name="Electrical_Sensor", revision=1)
-        cluster = _make_xml_cluster("EPM", "0x0090", optional_choice={"choice": "a", "more": True, "min": 1})
+        cluster = _make_xml_cluster(
+            "EPM", "0x0090", optional_choice={"choice": "a", "more": True, "min": 1}
+        )
         cluster.attribute_name_list = []
         cluster.feature_name_list = []
         cluster.command_name_list = []
@@ -312,8 +338,6 @@ class TestDeviceSerializerOptionalChoice(unittest.TestCase):
         self.assertNotIn("optional_choice", clusters[0])
 
 
-
-
 # ---------------------------------------------------------------------------
 # Integration test: Full device with O.a+ clusters
 # ---------------------------------------------------------------------------
@@ -327,16 +351,20 @@ class TestElectricalSensorLikeDevice(unittest.TestCase):
         device = CodegenDevice(id="0x0510", name="Electrical_Sensor", revision=1)
 
         # Mandatory cluster (use name that produces "power_topology" in esp_name)
-        power_topology = _make_codegen_cluster("Power Topology", "0x009C", is_mandatory=True)
+        power_topology = _make_codegen_cluster(
+            "Power Topology", "0x009C", is_mandatory=True
+        )
 
         # O.a+ clusters
         epm = _make_codegen_cluster(
-            "Electrical Power Measurement", "0x0090",
-            optional_choice={"choice": "a", "more": True, "min": 1}
+            "Electrical Power Measurement",
+            "0x0090",
+            optional_choice={"choice": "a", "more": True, "min": 1},
         )
         eem = _make_codegen_cluster(
-            "Electrical Energy Measurement", "0x0091",
-            optional_choice={"choice": "a", "more": True, "min": 1}
+            "Electrical Energy Measurement",
+            "0x0091",
+            optional_choice={"choice": "a", "more": True, "min": 1},
         )
 
         device.clusters = [power_topology, epm, eem]
@@ -366,12 +394,14 @@ class TestCookSurfaceLikeDevice(unittest.TestCase):
 
         # O.a+ clusters
         temp_control = _make_codegen_cluster(
-            "TemperatureControl", "0x0056",
-            optional_choice={"choice": "a", "more": True, "min": 1}
+            "TemperatureControl",
+            "0x0056",
+            optional_choice={"choice": "a", "more": True, "min": 1},
         )
         temp_measurement = _make_codegen_cluster(
-            "TemperatureMeasurement", "0x0402",
-            optional_choice={"choice": "a", "more": True, "min": 1}
+            "TemperatureMeasurement",
+            "0x0402",
+            optional_choice={"choice": "a", "more": True, "min": 1},
         )
 
         device.clusters = [temp_control, temp_measurement]

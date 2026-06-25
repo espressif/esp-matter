@@ -161,6 +161,8 @@ typedef struct config {
     uint8_t color_mode;
     uint8_t options;
     nullable<uint8_t> number_of_primaries;
+    uint8_t enhanced_color_mode;
+    uint16_t color_capabilities;
     uint16_t primary_1_x;
     uint16_t primary_1_y;
     nullable<uint8_t> primary_1_intensity;
@@ -179,9 +181,7 @@ typedef struct config {
     uint16_t primary_6_x;
     uint16_t primary_6_y;
     nullable<uint8_t> primary_6_intensity;
-    uint8_t enhanced_color_mode;
-    uint16_t color_capabilities;
-    config() : color_mode(0), options(0), number_of_primaries(0), primary_1_x(0), primary_1_y(0), primary_1_intensity(0), primary_2_x(0), primary_2_y(0), primary_2_intensity(0), primary_3_x(0), primary_3_y(0), primary_3_intensity(0), primary_4_x(0), primary_4_y(0), primary_4_intensity(0), primary_5_x(0), primary_5_y(0), primary_5_intensity(0), primary_6_x(0), primary_6_y(0), primary_6_intensity(0), enhanced_color_mode(0), color_capabilities(0) {}
+    config() : color_mode(0), options(0), number_of_primaries(0), enhanced_color_mode(0), color_capabilities(0), primary_1_x(0), primary_1_y(0), primary_1_intensity(0), primary_2_x(0), primary_2_y(0), primary_2_intensity(0), primary_3_x(0), primary_3_y(0), primary_3_intensity(0), primary_4_x(0), primary_4_y(0), primary_4_intensity(0), primary_5_x(0), primary_5_y(0), primary_5_intensity(0), primary_6_x(0), primary_6_y(0), primary_6_intensity(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

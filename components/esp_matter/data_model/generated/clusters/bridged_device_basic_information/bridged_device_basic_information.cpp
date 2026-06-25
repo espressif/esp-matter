@@ -228,6 +228,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
         attribute::create_reachable(cluster, config->reachable);
+        attribute::create_unique_id(cluster, config->unique_id, sizeof(config->unique_id));
         /* Events */
         event::create_reachable_changed(cluster);
 

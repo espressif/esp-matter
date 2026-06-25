@@ -14,7 +14,7 @@
 import logging
 from xml.etree.ElementTree import Element
 
-from .conformance_parser import parse_conformance
+from .conformance_parser import parse_conformance, is_mandatory
 from .element_parser_base import ClusterElementBaseParser
 from .elements import Cluster, Command
 from utils.helper import safe_get_attr
@@ -70,7 +70,7 @@ class CommandParser(ClusterElementBaseParser):
             name=name,
             direction=elem.get("direction"),
             response=elem.get("response"),
-            is_mandatory=elem.find("mandatoryConform") is not None,
+            is_mandatory=is_mandatory(elem),
         )
         if safe_get_attr(self.cluster, "command_handler_available") or safe_get_attr(
             self.cluster, "is_migrated_cluster"

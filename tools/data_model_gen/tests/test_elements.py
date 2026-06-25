@@ -20,6 +20,8 @@ import os
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from xml_processing.elements import Device, Cluster, Attribute, Command, Event, Feature  # noqa: E402
+from xml_processing.conformance_parser import Conformance  # noqa: E402
+from utils.conformance import ConformanceDecision  # noqa: E402
 
 
 class TestAttribute(unittest.TestCase):
@@ -426,6 +428,203 @@ class TestCluster(unittest.TestCase):
         c.features.add(feat)
         feats = c.get_features()
         self.assertEqual(len(feats), 1)
+
+
+def _make_attribute_comparison_conformance(operator_key):
+    """Build an OTHERWISE Conformance with an attribute-comparison mandatory branch."""
+    conf = Conformance(feature_map={})
+    conf.type = ConformanceDecision.OTHERWISE
+    conf.condition = {
+        "mandatory": {operator_key: {"attribute": "SomeAttr", "literal": 0}},
+        "optional": True,
+    }
+    return conf
+
+
+def _make_revision_conformance(operator_key, threshold):
+    """Build an OTHERWISE Conformance with a revision-gated mandatory branch."""
+    conf = Conformance(feature_map={})
+    conf.type = ConformanceDecision.OTHERWISE
+    conf.condition = {
+        "mandatory": {operator_key: {"revision": True, "literal": threshold}},
+        "optional": True,
+    }
+    return conf
+
+
+def _make_mandatory_conformance():
+    conf = Conformance(feature_map={})
+    conf.type = ConformanceDecision.MANDATORY
+    conf.condition = None
+    return conf
+
+
+def _make_attr(name, id_, is_mandatory, conformance):
+    attr = Attribute(
+        name=name, id=id_, type_="uint8", default_value="0", is_mandatory=is_mandatory
+    )
+    attr.conformance = conformance
+    return attr
+
+
+def _make_cmd(name, id_, is_mandatory, conformance):
+    cmd = Command(
+        name=name,
+        id=id_,
+        direction="commandToServer",
+        response="Y",
+        is_mandatory=is_mandatory,
+    )
+    cmd.conformance = conformance
+    return cmd
+
+
+def _make_evt(name, id_, is_mandatory, conformance):
+    evt = Event(name=name, id=id_, is_mandatory=is_mandatory)
+    evt.conformance = conformance
+    return evt
+
+
+class TestClusterRevisionFiltering(unittest.TestCase):
+    """get_mandatory_attributes/commands/events must honour is_mandatory_at_revision()."""
+
+    def _cluster(self, revision):
+        return Cluster(name="TestCluster", id="0x0001", revision=revision)
+
+    def test_revision_gated_attr_excluded_below_threshold(self):
+        c = self._cluster(3)
+        c.attributes.add(
+            _make_attr(
+                "GatedAttr",
+                "0x0001",
+                True,
+                _make_revision_conformance("greater_or_equal", 4),
+            )
+        )
+        self.assertEqual(c.get_mandatory_attributes(), [])
+
+    def test_revision_gated_attr_included_at_or_above_threshold(self):
+        for rev in (4, 7):
+            with self.subTest(revision=rev):
+                c = self._cluster(rev)
+                c.attributes.add(
+                    _make_attr(
+                        "GatedAttr",
+                        "0x0001",
+                        True,
+                        _make_revision_conformance("greater_or_equal", 4),
+                    )
+                )
+                self.assertEqual(len(c.get_mandatory_attributes()), 1)
+
+    def test_unconditional_mandatory_always_included(self):
+        c = self._cluster(1)
+        c.attributes.add(
+            _make_attr("AlwaysAttr", "0x0001", True, _make_mandatory_conformance())
+        )
+        c.commands.add(
+            _make_cmd("AlwaysCmd", "0x0001", True, _make_mandatory_conformance())
+        )
+        c.events.add(
+            _make_evt("AlwaysEvt", "0x0001", True, _make_mandatory_conformance())
+        )
+        self.assertEqual(len(c.get_mandatory_attributes()), 1)
+        self.assertEqual(len(c.get_mandatory_commands()), 1)
+        self.assertEqual(len(c.get_mandatory_events()), 1)
+
+    def test_non_mandatory_never_included(self):
+        c = self._cluster(10)
+        c.attributes.add(
+            _make_attr("OptAttr", "0x0001", False, _make_mandatory_conformance())
+        )
+        self.assertEqual(c.get_mandatory_attributes(), [])
+
+    def test_greater_than_operator_boundary(self):
+        """'greater' excludes at boundary, includes above."""
+        c_at = self._cluster(4)
+        c_at.attributes.add(
+            _make_attr(
+                "GatedAttr", "0x0001", True, _make_revision_conformance("greater", 4)
+            )
+        )
+        self.assertEqual(c_at.get_mandatory_attributes(), [])
+
+        c_above = self._cluster(5)
+        c_above.attributes.add(
+            _make_attr(
+                "GatedAttr", "0x0001", True, _make_revision_conformance("greater", 4)
+            )
+        )
+        self.assertEqual(len(c_above.get_mandatory_attributes()), 1)
+
+    def test_attribute_comparison_conditional_excluded_from_mandatory(self):
+        """OTHERWISE+attribute-comparison excluded from attrs, commands, and events."""
+        c = self._cluster(5)
+        c.attributes.add(
+            _make_attr(
+                "GatedAttr",
+                "0x0001",
+                True,
+                _make_attribute_comparison_conformance("greater"),
+            )
+        )
+        c.commands.add(
+            _make_cmd(
+                "GatedCmd",
+                "0x0001",
+                True,
+                _make_attribute_comparison_conformance("greater"),
+            )
+        )
+        c.events.add(
+            _make_evt(
+                "GatedEvt",
+                "0x0001",
+                True,
+                _make_attribute_comparison_conformance("greater"),
+            )
+        )
+        self.assertEqual(c.get_mandatory_attributes(), [])
+        self.assertEqual(c.get_mandatory_commands(), [])
+        self.assertEqual(c.get_mandatory_events(), [])
+
+    def test_result_sorted_by_id(self):
+        c = self._cluster(5)
+        c.attributes.add(_make_attr("B", "0x0002", True, _make_mandatory_conformance()))
+        c.attributes.add(_make_attr("A", "0x0001", True, _make_mandatory_conformance()))
+        result = c.get_mandatory_attributes()
+        self.assertEqual(result[0].get_id(), "0x0001")
+        self.assertEqual(result[1].get_id(), "0x0002")
+
+    def test_commands_and_events_respect_revision_filtering(self):
+        """Revision gating works for commands and events (smoke test)."""
+        c_below = self._cluster(3)
+        c_below.commands.add(
+            _make_cmd(
+                "Cmd", "0x0001", True, _make_revision_conformance("greater_or_equal", 4)
+            )
+        )
+        c_below.events.add(
+            _make_evt(
+                "Evt", "0x0001", True, _make_revision_conformance("greater_or_equal", 4)
+            )
+        )
+        self.assertEqual(c_below.get_mandatory_commands(), [])
+        self.assertEqual(c_below.get_mandatory_events(), [])
+
+        c_at = self._cluster(4)
+        c_at.commands.add(
+            _make_cmd(
+                "Cmd", "0x0001", True, _make_revision_conformance("greater_or_equal", 4)
+            )
+        )
+        c_at.events.add(
+            _make_evt(
+                "Evt", "0x0001", True, _make_revision_conformance("greater_or_equal", 4)
+            )
+        )
+        self.assertEqual(len(c_at.get_mandatory_commands()), 1)
+        self.assertEqual(len(c_at.get_mandatory_events()), 1)
 
 
 if __name__ == "__main__":

@@ -32,6 +32,24 @@ const {{ attribute.get_default_value_type() }} k_max_{{ attribute.func_name }}_l
 {% include "attribute.h.jinja" | indent(4) %}
 {% include "command.h.jinja" | indent(4) %}
 {% include "event.h.jinja" | indent(4) %}
+{% macro attr_field(attribute, init_list) %}
+{% if not attribute.is_internally_managed %}
+    {% if attribute.type == "string" %}
+    {% set _ = init_list.append(attribute.func_name ~ "{" ~ 0 ~ "}") %}
+    char {{ attribute.func_name }}[k_max_{{ attribute.func_name }}_length + 1];
+    {% elif attribute.type == "octstr" %}
+    {% set _ = init_list.append(attribute.func_name ~ "{" ~ 0 ~ "}") %}
+    uint8_t {{ attribute.func_name }}[k_max_{{ attribute.func_name }}_length];
+    {% elif attribute.type == "list" %}
+    {% elif attribute.is_nullable %}
+    {% set _ = init_list.append(attribute.func_name ~ "(" ~ attribute.get_default_value() ~ ")") %}
+    nullable<{{ attribute.get_type() }}> {{ attribute.func_name }};
+    {% else %}
+    {% set _ = init_list.append(attribute.func_name ~ "(" ~ attribute.get_default_value() ~ ")") %}
+    {{ attribute.get_type() }} {{ attribute.func_name }};
+    {% endif %}
+{% endif %}
+{% endmacro %}
 {% set init_list = [] %}
 {% set feature_list = cluster.get_features() if cluster.has_choice_features() else [] %}
 {% set config_features = [] %}
@@ -43,22 +61,12 @@ const {{ attribute.get_default_value_type() }} k_max_{{ attribute.func_name }}_l
 {% if cluster.id != "0xffff" %}
 typedef struct config {
     {% for attribute in cluster.get_mandatory_attributes() %}
-    {% if not attribute.is_internally_managed %}
-        {% if attribute.type == "string" %}
-        {% set _ = init_list.append(attribute.func_name ~ "{" ~ 0 ~ "}") %}
-    char {{ attribute.func_name }}[k_max_{{ attribute.func_name }}_length + 1];
-        {% elif attribute.type == "octstr" %}
-        {% set _ = init_list.append(attribute.func_name ~ "{" ~ 0 ~ "}") %}
-    uint8_t {{ attribute.func_name }}[k_max_{{ attribute.func_name }}_length];
-        {% elif attribute.type == "list" %}
-        {% elif attribute.is_nullable %}
-        {% set _ = init_list.append(attribute.func_name ~ "(" ~ attribute.get_default_value() ~ ")") %}
-    nullable<{{ attribute.get_type() }}> {{ attribute.func_name }};
-        {% else %}
-        {% set _ = init_list.append(attribute.func_name ~ "(" ~ attribute.get_default_value() ~ ")") %}
-    {{ attribute.get_type() }} {{ attribute.func_name }};
-        {% endif %}
-    {% endif %}
+{{ attr_field(attribute, init_list) -}}
+    {% endfor %}
+    {% for condition, comp_attrs in cluster.get_comparison_conditional_attributes() %}
+    {% for attribute in comp_attrs %}
+{{ attr_field(attribute, init_list) -}}
+    {% endfor %}
     {% endfor %}
     {% if cluster.delegate_init_callback and cluster.id != "0xffff" %}
     void *delegate;

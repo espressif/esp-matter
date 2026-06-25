@@ -28,6 +28,10 @@ import xml.etree.ElementTree as ET  # noqa: E402
 import json  # noqa: E402
 from xml_processing.conformance_parser import (  # noqa: E402
     parse_conformance,
+    parse_comparison_term,
+    is_mandatory,
+    replace_references,
+    COMPARISON_TERMS,
     Conformance,
     is_restricted_by_conformance,
     match_conformance_items,
@@ -689,6 +693,377 @@ class TestConformanceParsing(unittest.TestCase):
         conformance = parse_conformance(elem, feature_map)
         self.assertEqual(conformance.type, ConformanceDecision.MANDATORY)
         self.assertEqual(conformance.condition, {"feature": "occupancy"})
+
+
+class TestComparisonTermParsing(unittest.TestCase):
+    """Test parse_comparison_term() for all 6 comparison operators."""
+
+    _OPERATORS = [
+        ("greaterTerm", "greater"),
+        ("greaterOrEqualTerm", "greater_or_equal"),
+        ("lessTerm", "less_than"),
+        ("lessOrEqualTerm", "less_or_equal"),
+        ("equalTerm", "equal"),
+        ("notEqualTerm", "not_equal"),
+    ]
+
+    def test_all_operators_attribute_literal(self):
+        """All 6 operators produce the correct key; literal is stored as int."""
+        for xml_tag, op_key in self._OPERATORS:
+            with self.subTest(op=op_key):
+                xml = f"<{xml_tag}><attribute name='Attr'/><literal value='3'/></{xml_tag}>"
+                result = parse_comparison_term(ET.fromstring(xml))
+                self.assertIsNotNone(result)
+                self.assertIn(op_key, result)
+                self.assertIsInstance(result[op_key]["literal"], int)
+                self.assertEqual(result[op_key]["literal"], 3)
+
+    def test_field_operand_returns_none(self):
+        """<field> instead of <attribute> → None."""
+        xml = "<greaterOrEqualTerm><field name='ClusterRevision'/><literal value='3'/></greaterOrEqualTerm>"
+        self.assertIsNone(parse_comparison_term(ET.fromstring(xml)))
+
+    def test_missing_attribute_returns_none(self):
+        xml = "<greaterTerm><literal value='0'/></greaterTerm>"
+        self.assertIsNone(parse_comparison_term(ET.fromstring(xml)))
+
+    def test_missing_literal_returns_none(self):
+        xml = "<greaterTerm><attribute name='NumberOfPrimaries'/></greaterTerm>"
+        self.assertIsNone(parse_comparison_term(ET.fromstring(xml)))
+
+    def test_revision_comparison_all_operators(self):
+        """All 6 operators with revision children: stores revision flag, threshold, no attribute key."""
+        for xml_tag, op_key in self._OPERATORS:
+            with self.subTest(op=op_key):
+                xml = f"<{xml_tag}><revision value='current'/><revision value='4'/></{xml_tag}>"
+                result = parse_comparison_term(ET.fromstring(xml))
+                self.assertIsNotNone(result)
+                self.assertIn(op_key, result)
+                comp = result[op_key]
+                self.assertTrue(comp["revision"])
+                self.assertIsInstance(comp["literal"], int)
+                self.assertEqual(comp["literal"], 4)
+                self.assertNotIn("attribute", comp)
+
+    def test_revision_only_current_returns_none(self):
+        """Revision with no threshold child → None."""
+        xml = "<greaterOrEqualTerm><revision value='current'/></greaterOrEqualTerm>"
+        self.assertIsNone(parse_comparison_term(ET.fromstring(xml)))
+
+
+class TestIsMandatoryWithComparisonTerms(unittest.TestCase):
+    """Test is_mandatory() with comparison terms in otherwiseConform."""
+
+    def _wrap_in_attr(self, xml_tag):
+        return ET.fromstring(
+            f"""<attribute name="Primary1X">
+                <otherwiseConform>
+                    <mandatoryConform>
+                        <{xml_tag}>
+                            <attribute name="NumberOfPrimaries"/>
+                            <literal value="0"/>
+                        </{xml_tag}>
+                    </mandatoryConform>
+                    <optionalConform/>
+                </otherwiseConform>
+            </attribute>"""
+        )
+
+    def test_all_comparison_operators_flagged_as_mandatory(self):
+        """All 6 comparison operators inside otherwiseConform/mandatoryConform are mandatory."""
+        for xml_tag in [
+            "greaterTerm",
+            "greaterOrEqualTerm",
+            "lessTerm",
+            "lessOrEqualTerm",
+            "equalTerm",
+            "notEqualTerm",
+        ]:
+            with self.subTest(xml_tag=xml_tag):
+                self.assertTrue(is_mandatory(self._wrap_in_attr(xml_tag)))
+
+    def test_unconditional_mandatory_is_mandatory(self):
+        elem = ET.fromstring("<attribute name='Attr'><mandatoryConform/></attribute>")
+        self.assertTrue(is_mandatory(elem))
+
+    def test_optional_is_not_mandatory(self):
+        elem = ET.fromstring("<attribute name='Attr'><optionalConform/></attribute>")
+        self.assertFalse(is_mandatory(elem))
+
+
+class TestReplaceReferencesWithComparisons(unittest.TestCase):
+    """Test replace_references() augments comparison terms with func_name/nullable."""
+
+    ATTR_MAP = {
+        "NumberOfPrimaries": {
+            "id": "0x0010",
+            "func_name": "number_of_primaries",
+            "nullable": True,
+        }
+    }
+
+    def test_all_operators_get_augmented(self):
+        """All 6 operator keys get func_name/nullable from the attribute map."""
+        for op_key in [
+            "greater",
+            "greater_or_equal",
+            "less_than",
+            "less_or_equal",
+            "equal",
+            "not_equal",
+        ]:
+            with self.subTest(op=op_key):
+                condition = {op_key: {"attribute": "NumberOfPrimaries", "literal": 2}}
+                result = replace_references(condition, self.ATTR_MAP)
+                self.assertEqual(result[op_key]["func_name"], "number_of_primaries")
+                self.assertTrue(result[op_key]["nullable"])
+                self.assertEqual(result[op_key]["literal"], 2)
+                self.assertEqual(result[op_key]["attribute"], "NumberOfPrimaries")
+
+    def test_non_nullable_attribute(self):
+        attr_map = {
+            "MyAttr": {"id": "0x0001", "func_name": "my_attr", "nullable": False}
+        }
+        condition = {"greater": {"attribute": "MyAttr", "literal": 0}}
+        result = replace_references(condition, attr_map)
+        self.assertFalse(result["greater"]["nullable"])
+
+    def test_attribute_not_in_map_returns_original(self):
+        condition = {"greater": {"attribute": "UnknownAttr", "literal": 0}}
+        result = replace_references(condition, self.ATTR_MAP)
+        self.assertNotIn("func_name", result.get("greater", {}))
+
+
+class TestOtherwiseWithComparisonConformance(unittest.TestCase):
+    """End-to-end parse_conformance() for otherwise+comparison pattern."""
+
+    def _parse_primary_attr(self, xml_tag="greaterTerm", literal="0"):
+        xml = f"""<attribute id="0x0011" name="Primary1X">
+            <otherwiseConform>
+                <mandatoryConform>
+                    <{xml_tag}>
+                        <attribute name="NumberOfPrimaries"/>
+                        <literal value="{literal}"/>
+                    </{xml_tag}>
+                </mandatoryConform>
+                <optionalConform/>
+            </otherwiseConform>
+        </attribute>"""
+        return parse_conformance(ET.fromstring(xml), {})
+
+    def test_parse_structure(self):
+        """type=OTHERWISE, condition has mandatory/optional keys, mandatory branch has comparison key."""
+        result = self._parse_primary_attr("greaterTerm", "3")
+        self.assertEqual(result.type, ConformanceDecision.OTHERWISE)
+        self.assertIn("mandatory", result.condition)
+        self.assertIn("optional", result.condition)
+        mandatory = result.condition["mandatory"]
+        self.assertIsInstance(mandatory, dict)
+        self.assertIn("greater", mandatory)
+        self.assertEqual(mandatory["greater"]["literal"], 3)
+        self.assertEqual(mandatory["greater"]["attribute"], "NumberOfPrimaries")
+
+    def test_not_skipped_by_is_restricted_by_conformance(self):
+        """Comparison-conditional attributes must NOT be filtered out."""
+        xml = """<attribute id="0x0011" name="Primary1X">
+            <otherwiseConform>
+                <mandatoryConform>
+                    <greaterTerm>
+                        <attribute name="NumberOfPrimaries"/>
+                        <literal value="0"/>
+                    </greaterTerm>
+                </mandatoryConform>
+                <optionalConform/>
+            </otherwiseConform>
+        </attribute>"""
+        self.assertFalse(is_restricted_by_conformance({}, ET.fromstring(xml)))
+
+    def test_all_operators_produce_correct_key(self):
+        """Each XML comparison tag maps to the expected ConformanceTAG key."""
+        expected_keys = {
+            "greaterTerm": "greater",
+            "greaterOrEqualTerm": "greater_or_equal",
+            "lessTerm": "less_than",
+            "lessOrEqualTerm": "less_or_equal",
+            "equalTerm": "equal",
+            "notEqualTerm": "not_equal",
+        }
+        for xml_tag, expected_key in expected_keys.items():
+            with self.subTest(xml_tag=xml_tag):
+                result = self._parse_primary_attr(xml_tag, "0")
+                self.assertIn(expected_key, result.condition["mandatory"])
+
+
+class TestComparisonConformanceSerialization(unittest.TestCase):
+    """to_dict() preserves comparison terms and augments them with attribute_map."""
+
+    _XML = """<otherwiseConform>
+        <mandatoryConform>
+            <greaterTerm>
+                <attribute name="NumberOfPrimaries"/>
+                <literal value="3"/>
+            </greaterTerm>
+        </mandatoryConform>
+        <optionalConform/>
+    </otherwiseConform>"""
+    _ATTR_MAP = {
+        "NumberOfPrimaries": {
+            "id": "0x0010",
+            "func_name": "number_of_primaries",
+            "nullable": True,
+        }
+    }
+
+    def test_to_dict_with_attribute_map(self):
+        """to_dict with attr_map preserves comparison key, literal, func_name, and nullable."""
+        d = Conformance({}).parse(ET.fromstring(self._XML)).to_dict(self._ATTR_MAP)
+        comp = d["condition"]["mandatory"]["greater"]
+        self.assertEqual(comp["func_name"], "number_of_primaries")
+        self.assertTrue(comp["nullable"])
+        self.assertEqual(comp["literal"], 3)
+
+    def test_to_dict_is_json_serializable(self):
+        d = Conformance({}).parse(ET.fromstring(self._XML)).to_dict(self._ATTR_MAP)
+        self.assertIsNotNone(json.dumps(d))
+
+
+class TestRevisionConformance(unittest.TestCase):
+    """Tests for Conformance.is_mandatory_at_revision() and the full XML→bool pipeline."""
+
+    def _parse_revision_attr(self, xml_tag, threshold):
+        xml = f"""<attribute id="0x1234" name="RevAttr">
+            <otherwiseConform>
+                <mandatoryConform>
+                    <{xml_tag}>
+                        <revision value="current"/>
+                        <revision value="{threshold}"/>
+                    </{xml_tag}>
+                </mandatoryConform>
+                <optionalConform/>
+            </otherwiseConform>
+        </attribute>"""
+        return parse_conformance(ET.fromstring(xml), {})
+
+    def test_parse_structure(self):
+        """Parsed conformance: type=OTHERWISE, revision flag set, threshold stored."""
+        conf = self._parse_revision_attr("greaterOrEqualTerm", 7)
+        self.assertEqual(conf.type, ConformanceDecision.OTHERWISE)
+        mandatory = conf.condition["mandatory"]
+        self.assertIn("greater_or_equal", mandatory)
+        self.assertTrue(mandatory["greater_or_equal"]["revision"])
+        self.assertEqual(mandatory["greater_or_equal"]["literal"], 7)
+
+    def test_gte_below_threshold_is_not_mandatory(self):
+        conf = self._parse_revision_attr("greaterOrEqualTerm", 4)
+        self.assertFalse(conf.is_mandatory_at_revision(3))
+
+    def test_gte_at_threshold_is_mandatory(self):
+        conf = self._parse_revision_attr("greaterOrEqualTerm", 4)
+        self.assertTrue(conf.is_mandatory_at_revision(4))
+
+    def test_gte_above_threshold_is_mandatory(self):
+        conf = self._parse_revision_attr("greaterOrEqualTerm", 4)
+        self.assertTrue(conf.is_mandatory_at_revision(7))
+
+    def test_all_operators_boundary(self):
+        """Each operator evaluates at its boundary correctly."""
+        cases = [
+            ("greaterTerm", "greater", 4, False, 5, True),
+            ("greaterOrEqualTerm", "greater_or_equal", 4, True, 3, False),
+            ("lessTerm", "less_than", 4, False, 3, True),
+            ("lessOrEqualTerm", "less_or_equal", 4, True, 5, False),
+            ("equalTerm", "equal", 4, True, 3, False),
+            ("notEqualTerm", "not_equal", 4, False, 3, True),
+        ]
+        for xml_tag, op_key, rev_true, exp_true, rev_false, exp_false in cases:
+            with self.subTest(op=op_key):
+                conf = self._parse_revision_attr(xml_tag, 4)
+                self.assertEqual(
+                    conf.is_mandatory_at_revision(rev_true),
+                    exp_true,
+                    f"{op_key}: revision={rev_true} should be {exp_true}",
+                )
+                self.assertEqual(
+                    conf.is_mandatory_at_revision(rev_false),
+                    exp_false,
+                    f"{op_key}: revision={rev_false} should be {exp_false}",
+                )
+
+    def test_mandatory_type_always_true(self):
+        xml = "<attribute name='A'><mandatoryConform/></attribute>"
+        conf = parse_conformance(ET.fromstring(xml), {})
+        self.assertTrue(conf.is_mandatory_at_revision(1))
+        self.assertTrue(conf.is_mandatory_at_revision(100))
+
+    def test_otherwise_with_attribute_comparison_returns_false(self):
+        """OTHERWISE+attribute-comparison is only mandatory at runtime — returns False statically."""
+        xml = """<attribute name='Primary1X'>
+            <otherwiseConform>
+                <mandatoryConform>
+                    <greaterTerm>
+                        <attribute name="NumberOfPrimaries"/>
+                        <literal value="0"/>
+                    </greaterTerm>
+                </mandatoryConform>
+                <optionalConform/>
+            </otherwiseConform>
+        </attribute>"""
+        conf = parse_conformance(ET.fromstring(xml), {})
+        self.assertFalse(conf.is_mandatory_at_revision(1))
+        self.assertFalse(conf.is_mandatory_at_revision(100))
+
+    def test_attribute_comparison_all_operators_return_false(self):
+        """All 6 operators with an attribute operand return False (not statically evaluable)."""
+        for xml_tag in [
+            "greaterTerm",
+            "greaterOrEqualTerm",
+            "lessTerm",
+            "lessOrEqualTerm",
+            "equalTerm",
+            "notEqualTerm",
+        ]:
+            with self.subTest(xml_tag=xml_tag):
+                xml = f"""<attribute name='A'>
+                    <otherwiseConform>
+                        <mandatoryConform>
+                            <{xml_tag}>
+                                <attribute name="SomeAttr"/>
+                                <literal value="0"/>
+                            </{xml_tag}>
+                        </mandatoryConform>
+                        <optionalConform/>
+                    </otherwiseConform>
+                </attribute>"""
+                conf = parse_conformance(ET.fromstring(xml), {})
+                self.assertFalse(conf.is_mandatory_at_revision(5))
+
+    def test_otherwise_with_feature_mandatory_always_true(self):
+        """Feature-gated mandatory (non-comparison) passes through as True."""
+        xml = """<attribute name='A'>
+            <otherwiseConform>
+                <mandatoryConform><feature name="LT"/></mandatoryConform>
+                <optionalConform/>
+            </otherwiseConform>
+        </attribute>"""
+        conf = parse_conformance(
+            ET.fromstring(xml), {"LT": MockFeature("Lighting", "LT")}
+        )
+        self.assertTrue(conf.is_mandatory_at_revision(1))
+
+    def test_is_mandatory_xml_helper_flags_revision_pattern(self):
+        """is_mandatory() (XML-level helper) returns True for revision-gated pattern."""
+        xml = """<attribute name='RevAttr'>
+            <otherwiseConform>
+                <mandatoryConform>
+                    <greaterOrEqualTerm>
+                        <revision value="current"/>
+                        <revision value="4"/>
+                    </greaterOrEqualTerm>
+                </mandatoryConform>
+                <optionalConform/>
+            </otherwiseConform>
+        </attribute>"""
+        self.assertTrue(is_mandatory(ET.fromstring(xml)))
 
 
 def run_tests():

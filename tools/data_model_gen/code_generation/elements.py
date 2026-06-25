@@ -126,9 +126,15 @@ class Cluster(BaseCluster):
         - if it is marked as mandatory in the cluster JSON file
         - has no conformance condition or there is no NOT TERM present in the conformance condition
         NOTE: NOT TERM indicate we have to create attribute by default while creating the cluster
+        Attributes with runtime comparison conditions are excluded and handled separately.
         """
         mandatory_attributes = []
         for attr in self.get_attributes():
+            if (
+                attr.conformance
+                and attr.conformance.get_comparison_condition_info() is not None
+            ):
+                continue
             if attr.is_mandatory and (
                 attr.conformance.get_mandatory_condition() is None
                 or attr.conformance.is_not_term_present
@@ -136,20 +142,71 @@ class Cluster(BaseCluster):
                 mandatory_attributes.append(attr)
         return mandatory_attributes
 
+    def get_comparison_conditional_attributes(self):
+        """Get attributes whose creation depends on a runtime comparison condition.
+        Returns a list of (condition_expr_string, [attributes]) tuples, ordered by literal value.
+        Only includes groups where the referenced attribute is unconditionally mandatory —
+        if the dependency is not in config the comparison would reference a missing field.
+        """
+        mandatory_config_names: set = set()
+        comparison_pending: List[Tuple] = []
+
+        for attr in self.get_attributes():
+            if not attr.conformance:
+                continue
+            info = attr.conformance._get_comparison_info()
+            if info is not None:
+                comparison_pending.append((attr, *info))
+            elif attr.is_mandatory and (
+                attr.conformance.get_mandatory_condition() is None
+                or attr.conformance.is_not_term_present
+            ):
+                mandatory_config_names.add(attr.func_name)
+
+        groups: Dict[str, Tuple] = {}  # condition_expr → (literal, [attributes])
+        for attr, expr_str, literal, ref_config_name in comparison_pending:
+            if ref_config_name and ref_config_name not in mandatory_config_names:
+                continue
+            if expr_str not in groups:
+                groups[expr_str] = (literal, [])
+            groups[expr_str][1].append(attr)
+        sorted_groups = sorted(groups.items(), key=lambda kv: kv[1][0])
+        return [
+            (expr, sorted(attrs, key=get_id_name_lambda()))
+            for expr, (_, attrs) in sorted_groups
+        ]
+
     def get_mandatory_commands(self):
-        """Get the list of mandatory commands
-        Command is mandatory:
-        - if it is marked as mandatory in the cluster JSON file
-        - has no conformance condition or there is no NOT TERM present in the conformance condition
-        NOTE: NOT TERM indicate we have to create command by default while creating the cluster
+        """Get the list of mandatory commands.
+        A command is mandatory if it is marked as mandatory AND either:
+        - has no conformance condition, or
+        - has a NOT TERM present in the conformance condition (create by default).
+        Additionally, response commands whose conformance requires another command are
+        considered mandatory when that referenced command is already mandatory.
         """
         mandatory_commands = []
+        response_candidates: List[Tuple] = []  # (cmd, [ref_cmd_names])
+
         for cmd in self.get_commands():
-            if cmd.is_mandatory and (
+            if not cmd.is_mandatory:
+                continue
+            if cmd.conformance.get_comparison_condition_info() is not None:
+                continue
+            if (
                 cmd.conformance.get_mandatory_condition() is None
                 or cmd.conformance.is_not_term_present
             ):
                 mandatory_commands.append(cmd)
+            else:
+                ref_names = cmd.conformance.get_mandatory_ref_command_names()
+                if ref_names:
+                    response_candidates.append((cmd, ref_names))
+
+        mandatory_names = {c.name for c in mandatory_commands}
+        for cmd, ref_names in response_candidates:
+            if any(name in mandatory_names for name in ref_names):
+                mandatory_commands.append(cmd)
+
         return mandatory_commands
 
     def get_mandatory_events(self):
@@ -161,7 +218,11 @@ class Cluster(BaseCluster):
         """
         mandatory_events = []
         for event in self.get_events():
-            if event.is_mandatory and (
+            if not event.is_mandatory:
+                continue
+            if event.conformance.get_comparison_condition_info() is not None:
+                continue
+            if (
                 event.conformance.get_mandatory_condition() is None
                 or event.conformance.is_not_term_present
             ):

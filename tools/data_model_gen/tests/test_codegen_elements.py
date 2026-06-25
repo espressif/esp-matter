@@ -32,7 +32,7 @@ from code_generation.elements import (  # noqa: E402
     get_choice_group,
     get_id_name_lambda,
 )
-from code_generation.conformance_codegen import ConformanceDecision  # noqa: E402
+from code_generation.conformance_codegen import Conformance, ConformanceDecision  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
@@ -486,6 +486,255 @@ class TestGetChoiceGroup(unittest.TestCase):
             "mandatory_parent", ConformanceDecision.OTHERWISE, [f]
         )
         self.assertEqual(result, [])
+
+
+def _make_comparison_conformance(op_key, func_name, literal, nullable=True):
+    """Return a codegen Conformance for an otherwise+comparison attribute."""
+    return Conformance(
+        {
+            "type": "otherwise",
+            "condition": {
+                "mandatory": {
+                    op_key: {
+                        "attribute": "NumberOfPrimaries",
+                        "literal": literal,
+                        "func_name": func_name,
+                        "nullable": nullable,
+                    }
+                },
+                "optional": True,
+            },
+        }
+    )
+
+
+class TestComparisonConditionalAttributes(unittest.TestCase):
+    """Test Cluster.get_mandatory_attributes() and get_comparison_conditional_attributes()."""
+
+    # The referenced attribute (e.g. NumberOfPrimaries) must be unconditionally mandatory
+    # in the cluster for comparison-conditional attributes to be included.
+    _REF_ATTR_NAME = "NumberOfPrimaries"
+    _REF_ATTR_ID = "0x0010"
+    _REF_FUNC_NAME = "number_of_primaries"
+
+    def _make_plain_mandatory_attr(self, name, id_):
+        a = _make_attr(name, id_, mandatory=True)
+        # Default conformance from Attribute.__init__ is Conformance() → NOT_APPLICABLE
+        return a
+
+    def _make_ref_attr(self):
+        """Create the unconditionally mandatory referenced attribute (NumberOfPrimaries)."""
+        return self._make_plain_mandatory_attr(self._REF_ATTR_NAME, self._REF_ATTR_ID)
+
+    def _make_comparison_attr(self, name, id_, op_key, literal, ref_config_name=None):
+        """Create an attribute whose creation is guarded by a runtime comparison.
+
+        ref_config_name is the config_name of the *referenced* attribute (e.g. NumberOfPrimaries),
+        not the attribute being created.  All attributes with the same op_key + literal +
+        ref_config_name will share the same condition expression and land in the same group.
+        """
+        if ref_config_name is None:
+            ref_config_name = self._REF_FUNC_NAME
+        a = _make_attr(name, id_, mandatory=True)
+        a.conformance = _make_comparison_conformance(op_key, ref_config_name, literal)
+        return a
+
+    def test_get_mandatory_attributes_excludes_comparison_conditional(self):
+        """Comparison-conditional attributes must NOT appear in get_mandatory_attributes()."""
+        c = _make_cluster()
+        plain = self._make_plain_mandatory_attr("Plain", "0x0001")
+        ref = self._make_ref_attr()
+        conditional = self._make_comparison_attr("Primary1X", "0x0011", "greater", 0)
+        c.attributes = [plain, ref, conditional]
+
+        mandatory = c.get_mandatory_attributes()
+        names = [a.name for a in mandatory]
+        self.assertIn("Plain", names)
+        self.assertNotIn("Primary1X", names)
+
+    def test_get_comparison_conditional_attributes_returns_grouped(self):
+        """Comparison-conditional attributes appear in get_comparison_conditional_attributes()."""
+        c = _make_cluster()
+        ref = self._make_ref_attr()
+        conditional = self._make_comparison_attr("Primary1X", "0x0011", "greater", 0)
+        c.attributes = [ref, conditional]
+
+        groups = c.get_comparison_conditional_attributes()
+        self.assertEqual(len(groups), 1)
+        _expr, attrs = groups[0]
+        self.assertEqual(len(attrs), 1)
+        self.assertEqual(attrs[0].name, "Primary1X")
+
+    def test_get_comparison_conditional_attributes_groups_by_condition(self):
+        """Attributes sharing the same condition expression are grouped together."""
+        c = _make_cluster()
+        ref = self._make_ref_attr()
+        a1 = self._make_comparison_attr("Primary1X", "0x0011", "greater", 0)
+        a2 = self._make_comparison_attr("Primary1Y", "0x0012", "greater", 0)
+        a3 = self._make_comparison_attr("Primary2X", "0x0015", "greater", 1)
+        c.attributes = [ref, a1, a2, a3]
+
+        groups = c.get_comparison_conditional_attributes()
+        # a1/a2 share literal=0, a3 has literal=1 → 2 groups
+        self.assertEqual(len(groups), 2)
+
+    def test_get_comparison_conditional_attributes_sorted_by_literal(self):
+        """Groups are ordered by ascending literal value."""
+        c = _make_cluster()
+        ref = self._make_ref_attr()
+        a_lit5 = self._make_comparison_attr("Primary6X", "0x0020", "greater", 5)
+        a_lit0 = self._make_comparison_attr("Primary1X", "0x0011", "greater", 0)
+        c.attributes = [ref, a_lit5, a_lit0]
+
+        groups = c.get_comparison_conditional_attributes()
+        self.assertEqual(len(groups), 2)
+        _expr0, attrs0 = groups[0]
+        _expr5, attrs5 = groups[1]
+        self.assertIn("Primary1X", [a.name for a in attrs0])
+        self.assertIn("Primary6X", [a.name for a in attrs5])
+
+    def test_get_comparison_conditional_attributes_attrs_sorted_by_id(self):
+        """Attributes within a group are sorted by ID."""
+        c = _make_cluster()
+        ref = self._make_ref_attr()
+        a1 = self._make_comparison_attr("Primary1X", "0x0011", "greater", 0)
+        a2 = self._make_comparison_attr("Primary1Y", "0x0012", "greater", 0)
+        a3 = self._make_comparison_attr("Primary1Intensity", "0x0013", "greater", 0)
+        c.attributes = [ref, a3, a1, a2]
+
+        groups = c.get_comparison_conditional_attributes()
+        self.assertEqual(len(groups), 1)
+        _, attrs = groups[0]
+        self.assertEqual([a.get_id() for a in attrs], ["0x0011", "0x0012", "0x0013"])
+
+    def test_condition_expression_string_in_group_key(self):
+        """The condition expression string contains the operator and literal."""
+        c = _make_cluster()
+        ref = self._make_ref_attr()
+        conditional = self._make_comparison_attr("Primary1X", "0x0011", "greater", 0)
+        c.attributes = [ref, conditional]
+
+        groups = c.get_comparison_conditional_attributes()
+        self.assertEqual(len(groups), 1)
+        expr, _ = groups[0]
+        self.assertIn(">", expr)
+        self.assertIn("0", expr)
+
+    def test_skipped_when_referenced_attribute_not_mandatory(self):
+        """Comparison-conditional attributes are skipped if the referenced attribute is not mandatory."""
+        c = _make_cluster()
+        conditional = self._make_comparison_attr("Primary1X", "0x0011", "greater", 0)
+        c.attributes = [conditional]
+        self.assertEqual(len(c.get_comparison_conditional_attributes()), 0)
+
+
+def _make_response_conformance(ref_cmd_name):
+    """Return a codegen Conformance for a response command: mandatory if ref_cmd_name is present."""
+    return Conformance(
+        {
+            "type": "mandatory",
+            "condition": {"command": ref_cmd_name, "flag": "COMMAND_FLAG_ACCEPTED"},
+        }
+    )
+
+
+def _make_or_response_conformance(ref_cmd_names):
+    """Return a Conformance for a response that is mandatory if ANY listed command is present."""
+    return Conformance(
+        {
+            "type": "mandatory",
+            "condition": {
+                "or": [
+                    {"command": n, "flag": "COMMAND_FLAG_ACCEPTED"}
+                    for n in ref_cmd_names
+                ]
+            },
+        }
+    )
+
+
+class TestResponseCommandPromotion(unittest.TestCase):
+    """Test Cluster.get_mandatory_commands() promotes response commands."""
+
+    def _make_req_cmd(self, name, id_, mandatory=True):
+        c = _make_cmd(name, id_, mandatory=mandatory)
+        return c
+
+    def _make_resp_cmd(self, name, id_, ref_cmd_name):
+        """Response command: mandatory if ref_cmd_name is present."""
+        c = _make_cmd(name, id_, mandatory=True, direction="responseFromServer")
+        c.conformance = _make_response_conformance(ref_cmd_name)
+        return c
+
+    def test_response_included_when_request_is_mandatory(self):
+        """Response command is promoted when its request command is unconditionally mandatory."""
+        c = _make_cluster()
+        req = self._make_req_cmd("ChangeToMode", "0x0000")
+        resp = self._make_resp_cmd("ChangeToModeResponse", "0x0001", "ChangeToMode")
+        c.commands = [req, resp]
+
+        mandatory = c.get_mandatory_commands()
+        names = [cmd.name for cmd in mandatory]
+        self.assertIn("ChangeToMode", names)
+        self.assertIn("ChangeToModeResponse", names)
+
+    def test_response_excluded_when_request_is_optional(self):
+        """Response command is NOT promoted when its request command is optional."""
+        c = _make_cluster()
+        req = self._make_req_cmd("CopyScene", "0x0040", mandatory=False)
+        resp = self._make_resp_cmd("CopySceneResponse", "0x0040", "CopyScene")
+        c.commands = [req, resp]
+
+        mandatory = c.get_mandatory_commands()
+        names = [cmd.name for cmd in mandatory]
+        self.assertNotIn("CopyScene", names)
+        self.assertNotIn("CopySceneResponse", names)
+
+    def test_or_response_included_when_any_request_is_mandatory(self):
+        """Response with OR condition is promoted when at least one referenced command is mandatory."""
+        c = _make_cluster()
+        req_a = self._make_req_cmd("Pause", "0x0000", mandatory=True)
+        req_b = self._make_req_cmd("Stop", "0x0001", mandatory=False)
+        resp = _make_cmd(
+            "OperationalCommandResponse",
+            "0x0004",
+            mandatory=True,
+            direction="responseFromServer",
+        )
+        resp.conformance = _make_or_response_conformance(["Pause", "Stop"])
+        c.commands = [req_a, req_b, resp]
+
+        mandatory = c.get_mandatory_commands()
+        names = [cmd.name for cmd in mandatory]
+        self.assertIn("Pause", names)
+        self.assertIn("OperationalCommandResponse", names)
+
+    def test_or_response_excluded_when_no_request_is_mandatory(self):
+        """Response with OR condition is NOT promoted when no referenced command is mandatory."""
+        c = _make_cluster()
+        req_a = self._make_req_cmd("Pause", "0x0000", mandatory=False)
+        req_b = self._make_req_cmd("Stop", "0x0001", mandatory=False)
+        resp = _make_cmd(
+            "OperationalCommandResponse",
+            "0x0004",
+            mandatory=True,
+            direction="responseFromServer",
+        )
+        resp.conformance = _make_or_response_conformance(["Pause", "Stop"])
+        c.commands = [req_a, req_b, resp]
+
+        mandatory = c.get_mandatory_commands()
+        names = [cmd.name for cmd in mandatory]
+        self.assertNotIn("OperationalCommandResponse", names)
+
+    def test_unconditionally_mandatory_response_always_included(self):
+        """Response commands with unconditional mandatoryConform are unaffected by promotion logic."""
+        c = _make_cluster()
+        resp = self._make_req_cmd("AddSceneResponse", "0x0000")  # plain mandatory
+        c.commands = [resp]
+
+        mandatory = c.get_mandatory_commands()
+        self.assertIn("AddSceneResponse", [cmd.name for cmd in mandatory])
 
 
 if __name__ == "__main__":

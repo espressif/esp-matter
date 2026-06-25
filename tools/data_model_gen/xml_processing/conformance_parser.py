@@ -43,6 +43,24 @@ BOOLEAN_TERMS = {
     "notTerm": ConformanceTAG.NOT.value,
 }
 
+COMPARISON_OPS = {
+    ConformanceTAG.GREATER.value: lambda r, t: r > t,
+    ConformanceTAG.GREATER_OR_EQUAL.value: lambda r, t: r >= t,
+    ConformanceTAG.LESS_THAN.value: lambda r, t: r < t,
+    ConformanceTAG.LESS_OR_EQUAL.value: lambda r, t: r <= t,
+    ConformanceTAG.EQUAL.value: lambda r, t: r == t,
+    ConformanceTAG.NOT_EQUAL.value: lambda r, t: r != t,
+}
+
+COMPARISON_TERMS = {
+    "greaterTerm": ConformanceTAG.GREATER.value,
+    "greaterOrEqualTerm": ConformanceTAG.GREATER_OR_EQUAL.value,
+    "lessTerm": ConformanceTAG.LESS_THAN.value,
+    "lessOrEqualTerm": ConformanceTAG.LESS_OR_EQUAL.value,
+    "equalTerm": ConformanceTAG.EQUAL.value,
+    "notEqualTerm": ConformanceTAG.NOT_EQUAL.value,
+}
+
 
 def get_restricted_tags():
     if config.allow_provisional():
@@ -169,6 +187,35 @@ class Conformance(BaseConformance):
             return False
         return feature_name in self.get_dependent_features(self.condition)
 
+    def is_mandatory_at_revision(self, cluster_revision: int) -> bool:
+        """Return True if this element should be mandatory for the given cluster revision.
+
+        For OTHERWISE conformance with a revision-gated mandatoryConform, evaluates
+        the stored comparison against cluster_revision. Returns True for all other
+        conformance types (they are not revision-conditional).
+        """
+        if self.type != ConformanceDecision.OTHERWISE:
+            return True
+        if not isinstance(self.condition, dict):
+            return True
+        mandatory_cond = self.condition.get(ConformanceDecision.MANDATORY.to_string())
+        if mandatory_cond is None:
+            return True
+        if isinstance(mandatory_cond, dict):
+            for op_key, op_fn in COMPARISON_OPS.items():
+                if op_key in mandatory_cond:
+                    comp = mandatory_cond[op_key]
+                    if not isinstance(comp, dict):
+                        return False
+                    if comp.get(ConformanceTAG.REVISION.value):
+                        threshold = comp.get(ConformanceTAG.LITERAL.value)
+                        if threshold is not None:
+                            return op_fn(cluster_revision, threshold)
+                    else:
+                        # attribute-comparison: only evaluable at runtime, not statically mandatory
+                        return False
+        return True
+
     def is_disallowed(self):
         """Check if the conformance is disallowed or depends on unavailable features."""
         if self.type.value in [
@@ -208,9 +255,8 @@ def is_mandatory(conformance_elem: Element) -> bool:
         return True
     otherwise_mandatory = conformance_elem.find("otherwiseConform/mandatoryConform")
     if otherwise_mandatory is not None:
-        return (
-            len(otherwise_mandatory) == 0
-            or otherwise_mandatory.find("greaterTerm") is not None
+        return len(otherwise_mandatory) == 0 or any(
+            otherwise_mandatory.find(tag) is not None for tag in COMPARISON_TERMS
         )
     return False
 
@@ -233,6 +279,34 @@ def replace_references(condition, reference_map):
                 }
             else:
                 return {ConformanceTAG.COMMAND.value: cmd_name}
+        # Handle comparison terms: look up attribute func_name and nullable
+        for comp_key in COMPARISON_TERMS.values():
+            if comp_key in condition:
+                comp_expr = condition[comp_key]
+                if not isinstance(comp_expr, dict):
+                    break
+                ref_attr = comp_expr.get(ConformanceTAG.ATTRIBUTE.value)
+                if not ref_attr:
+                    return condition
+                if ref_attr not in reference_map:
+                    logger.warning(
+                        f"Comparison term references attribute '{ref_attr}' which is not in the "
+                        "attribute map; comparison-conditional attribute will not be generated."
+                    )
+                    return condition
+                attr_detail = reference_map[ref_attr]
+                if isinstance(attr_detail, dict):
+                    return {
+                        comp_key: {
+                            ConformanceTAG.ATTRIBUTE.value: ref_attr,
+                            ConformanceTAG.LITERAL.value: comp_expr.get(
+                                ConformanceTAG.LITERAL.value
+                            ),
+                            "func_name": attr_detail.get("func_name", ""),
+                            "nullable": attr_detail.get("nullable", False),
+                        }
+                    }
+                return condition
         return {
             key: replace_references(value, reference_map)
             for key, value in condition.items()
@@ -268,13 +342,65 @@ def parse_condition(elem, feature_map):
     """
     if elem.tag in BOOLEAN_TERMS:
         return parse_boolean_term(elem, feature_map)
+    if elem.tag in COMPARISON_TERMS:
+        return parse_comparison_term(elem)
     return parse_element_reference(elem, feature_map)
+
+
+def parse_comparison_term(term_elem):
+    """
+    Parse a comparison condition (e.g., greaterThan, greaterOrEqual, lessThan).
+
+    Returns:
+        {operator: {"attribute": attr_name, "literal": literal_value}}
+            when the operands are an Attribute and a Literal.
+        {operator: {"revision": True, "literal": threshold}}
+            when the operands are a Revision and a Literal.
+        None
+            for all other operand combinations (e.g., Field vs. Literal,
+            Attribute vs. Attribute, or unsupported operand types).
+    """
+    operator = COMPARISON_TERMS[term_elem.tag]
+
+    revision_elems = term_elem.findall("revision")
+    if revision_elems:
+        threshold = next(
+            (
+                int(r.get("value"))
+                for r in revision_elems
+                if r.get("value") != "current"
+            ),
+            None,
+        )
+        if threshold is not None:
+            return {
+                operator: {
+                    ConformanceTAG.REVISION.value: True,
+                    ConformanceTAG.LITERAL.value: threshold,
+                }
+            }
+        return None
+
+    attr_elem = term_elem.find("attribute")
+    literal_elem = term_elem.find("literal")
+    if attr_elem is not None and literal_elem is not None:
+        attr_name = attr_elem.get("name")
+        try:
+            literal_value = int(literal_elem.get("value", "0"))
+        except (ValueError, TypeError):
+            return None
+        return {
+            operator: {
+                ConformanceTAG.ATTRIBUTE.value: attr_name,
+                ConformanceTAG.LITERAL.value: literal_value,
+            }
+        }
+    return None
 
 
 def parse_boolean_term(term_elem, feature_map):
     """
     Parse a boolean terms.
-    NOTE: Greater and Equal terms are not supported as no use in esp-matter.
     """
     term_type = BOOLEAN_TERMS[term_elem.tag]
     operands = parse_children(term_elem, feature_map)

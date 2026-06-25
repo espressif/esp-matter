@@ -70,6 +70,7 @@ attribute_t *create_arl(cluster_t *cluster, uint8_t *value, uint16_t length, uin
 
 namespace basic_information {
 constexpr uint8_t k_max_node_label_length = 32;
+constexpr uint8_t k_max_unique_id_length = 32;
 
 namespace attribute {
 attribute_t *create_data_model_revision(cluster_t *cluster, uint16_t value);

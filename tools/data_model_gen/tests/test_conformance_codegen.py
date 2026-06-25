@@ -331,6 +331,266 @@ class TestEdgeCases(unittest.TestCase):
         self.assertIn("has_feature(lighting)", result)
 
 
+class TestComparisonConditionExpressions(unittest.TestCase):
+    """Test all 6 comparison operators generate correct C++ conditional strings."""
+
+    _OPS = [
+        ("greater", ">"),
+        ("greater_or_equal", ">="),
+        ("less_than", "<"),
+        ("less_or_equal", "<="),
+        ("equal", "=="),
+        ("not_equal", "!="),
+    ]
+
+    def _make_conf(self, op_key, func_name="num_primaries", literal=5, nullable=False):
+        return {
+            "type": "otherwise",
+            "condition": {
+                "mandatory": {
+                    op_key: {
+                        "attribute": "NumberOfPrimaries",
+                        "literal": literal,
+                        "func_name": func_name,
+                        "nullable": nullable,
+                    }
+                },
+                "optional": True,
+            },
+        }
+
+    def test_all_operators_non_nullable(self):
+        """Each operator produces the correct C++ comparison string for non-nullable attributes."""
+        for op_key, sym in self._OPS:
+            with self.subTest(op=op_key):
+                result = Conformance(self._make_conf(op_key))()
+                self.assertIn(f"config->num_primaries {sym} 5", result)
+
+    def test_all_operators_nullable(self):
+        """Nullable attribute uses .value_or(0) in the generated expression."""
+        for op_key, sym in self._OPS:
+            with self.subTest(op=op_key):
+                result = Conformance(self._make_conf(op_key, nullable=True))()
+                self.assertIn(f"config->num_primaries.value_or(0) {sym} 5", result)
+
+    def test_literal_zero(self):
+        result = Conformance(self._make_conf("greater", literal=0))()
+        self.assertIn("config->num_primaries > 0", result)
+
+    def test_missing_func_name_yields_none(self):
+        """Comparison dict without func_name → NonExpr → None output."""
+        conf = {
+            "type": "otherwise",
+            "condition": {
+                "mandatory": {
+                    "greater": {"attribute": "NumberOfPrimaries", "literal": 0}
+                },
+                "optional": True,
+            },
+        }
+        self.assertIsNone(Conformance(conf)())
+
+
+class TestGetComparisonConditionInfo(unittest.TestCase):
+    """Test Conformance.get_comparison_condition_info()."""
+
+    def _make_conf(
+        self, op_key, func_name="number_of_primaries", literal=0, nullable=True
+    ):
+        return {
+            "type": "otherwise",
+            "condition": {
+                "mandatory": {
+                    op_key: {
+                        "attribute": "NumberOfPrimaries",
+                        "literal": literal,
+                        "func_name": func_name,
+                        "nullable": nullable,
+                    }
+                },
+                "optional": True,
+            },
+        }
+
+    def test_returns_none_for_non_comparison_types(self):
+        """Returns None for mandatory, optional, feature-gated, and unconditional OTHERWISE."""
+        cases = [
+            {"type": "mandatory", "condition": {"feature": "lighting"}},
+            {"type": "optional"},
+            {
+                "type": "otherwise",
+                "condition": {"mandatory": {"feature": "lighting"}, "optional": True},
+            },
+            {"type": "otherwise", "condition": {"mandatory": True, "optional": True}},
+        ]
+        for conf in cases:
+            with self.subTest(type=conf.get("type")):
+                self.assertIsNone(Conformance(conf).get_comparison_condition_info())
+
+    def test_returns_none_when_func_name_missing(self):
+        """Comparison term without func_name → None."""
+        conf = {
+            "type": "otherwise",
+            "condition": {
+                "mandatory": {
+                    "greater": {"attribute": "NumberOfPrimaries", "literal": 0}
+                },
+                "optional": True,
+            },
+        }
+        self.assertIsNone(Conformance(conf).get_comparison_condition_info())
+
+    def test_all_operators_return_non_none(self):
+        """All 6 comparison operators return a non-None (expr_str, literal) tuple."""
+        for op in [
+            "greater",
+            "greater_or_equal",
+            "less_than",
+            "less_or_equal",
+            "equal",
+            "not_equal",
+        ]:
+            with self.subTest(op=op):
+                result = Conformance(
+                    self._make_conf(op)
+                ).get_comparison_condition_info()
+                self.assertIsNotNone(result)
+
+    def test_nullable_attribute_uses_value_or(self):
+        expr_str, _ = Conformance(
+            self._make_conf("greater", nullable=True)
+        ).get_comparison_condition_info()
+        self.assertIn(".value_or(0)", expr_str)
+
+    def test_non_nullable_attribute_no_value_or(self):
+        expr_str, _ = Conformance(
+            self._make_conf("greater", nullable=False)
+        ).get_comparison_condition_info()
+        self.assertNotIn("value_or", expr_str)
+
+    def test_color_control_primary_1x_pattern(self):
+        """Integration: full otherwise+comparison pattern produces correct expr and literal."""
+        conf = {
+            "type": "otherwise",
+            "condition": {
+                "mandatory": {
+                    "greater": {
+                        "attribute": "NumberOfPrimaries",
+                        "literal": 0,
+                        "func_name": "number_of_primaries",
+                        "nullable": True,
+                    }
+                },
+                "optional": True,
+            },
+        }
+        expr_str, literal = Conformance(conf).get_comparison_condition_info()
+        self.assertEqual(expr_str, "config->number_of_primaries.value_or(0) > 0")
+        self.assertEqual(literal, 0)
+
+
+class TestGetComparisonRefConfigName(unittest.TestCase):
+    """Test Conformance.get_comparison_ref_config_name()."""
+
+    def _make_conf(self, op_key, func_name="number_of_primaries"):
+        return {
+            "type": "otherwise",
+            "condition": {
+                "mandatory": {
+                    op_key: {
+                        "attribute": "NumberOfPrimaries",
+                        "literal": 0,
+                        "func_name": func_name,
+                        "nullable": True,
+                    }
+                },
+                "optional": True,
+            },
+        }
+
+    def test_returns_func_name_for_all_operators(self):
+        for op in [
+            "greater",
+            "greater_or_equal",
+            "less_than",
+            "less_or_equal",
+            "equal",
+            "not_equal",
+        ]:
+            with self.subTest(op=op):
+                result = Conformance(self._make_conf(op)).get_comparison_ref_config_name()
+                self.assertEqual(result, "number_of_primaries")
+
+    def test_returns_none_for_non_comparison(self):
+        """Returns None for mandatory type, feature-gated otherwise, and no func_name."""
+        cases = [
+            {"type": "mandatory", "condition": {"feature": "lighting"}},
+            {
+                "type": "otherwise",
+                "condition": {"mandatory": {"feature": "lighting"}, "optional": True},
+            },
+            {
+                "type": "otherwise",
+                "condition": {
+                    "mandatory": {
+                        "greater": {"attribute": "NumberOfPrimaries", "literal": 0}
+                    },
+                    "optional": True,
+                },
+            },
+        ]
+        for conf in cases:
+            with self.subTest(conf=conf.get("type")):
+                self.assertIsNone(Conformance(conf).get_comparison_ref_config_name())
+
+
+class TestGetMandatoryRefCommandNames(unittest.TestCase):
+    """Test Conformance.get_mandatory_ref_command_names()."""
+
+    def test_returns_empty_for_non_command_conditions(self):
+        """Returns [] for otherwise type, optional, feature condition, and None conformance."""
+        cases = [
+            {
+                "type": "otherwise",
+                "condition": {
+                    "mandatory": {"command": "X", "flag": "COMMAND_FLAG_ACCEPTED"},
+                    "optional": True,
+                },
+            },
+            {"type": "optional"},
+            {"type": "mandatory", "condition": {"feature": "lighting"}},
+        ]
+        for conf in cases:
+            with self.subTest(type=conf.get("type")):
+                self.assertEqual(
+                    Conformance(conf).get_mandatory_ref_command_names(), []
+                )
+        self.assertEqual(Conformance(None).get_mandatory_ref_command_names(), [])
+
+    def test_returns_command_name_for_simple_condition(self):
+        conf = {
+            "type": "mandatory",
+            "condition": {"command": "ChangeToMode", "flag": "COMMAND_FLAG_ACCEPTED"},
+        }
+        self.assertEqual(
+            Conformance(conf).get_mandatory_ref_command_names(), ["ChangeToMode"]
+        )
+
+    def test_returns_all_names_for_or_condition(self):
+        conf = {
+            "type": "mandatory",
+            "condition": {
+                "or": [
+                    {"command": "Pause", "flag": "COMMAND_FLAG_ACCEPTED"},
+                    {"command": "Stop", "flag": "COMMAND_FLAG_ACCEPTED"},
+                    {"command": "Start", "flag": "COMMAND_FLAG_ACCEPTED"},
+                ]
+            },
+        }
+        names = Conformance(conf).get_mandatory_ref_command_names()
+        self.assertEqual(sorted(names), ["Pause", "Start", "Stop"])
+
+
 def run_tests():
     """Run all tests with verbose output"""
     loader = unittest.TestLoader()

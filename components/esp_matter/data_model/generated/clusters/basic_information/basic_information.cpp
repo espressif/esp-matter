@@ -244,6 +244,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_hardware_version_string(cluster, config->hardware_version_string, sizeof(config->hardware_version_string));
         attribute::create_software_version(cluster, config->software_version);
         attribute::create_software_version_string(cluster, config->software_version_string, sizeof(config->software_version_string));
+        attribute::create_unique_id(cluster, config->unique_id, sizeof(config->unique_id));
         attribute::create_specification_version(cluster, config->specification_version);
         attribute::create_max_paths_per_invoke(cluster, config->max_paths_per_invoke);
         attribute::create_configuration_version(cluster, config->configuration_version);

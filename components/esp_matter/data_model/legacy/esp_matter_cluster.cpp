@@ -249,7 +249,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_hardware_version_string(cluster, NULL, 0);
         attribute::create_software_version(cluster, 0);
         attribute::create_software_version_string(cluster, NULL, 0);
-        attribute::create_unique_id(cluster, NULL, 0);
         attribute::create_capability_minima(cluster, NULL, 0, 0);
         attribute::create_specification_version(cluster, 0);
         attribute::create_max_paths_per_invoke(cluster, 0);
@@ -260,6 +259,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         if (config) {
             attribute::create_node_label(cluster, config->node_label, strlen(config->node_label));
+            attribute::create_unique_id(cluster, config->unique_id, sizeof(config->unique_id));
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -1250,6 +1250,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         if (config) {
             attribute::create_current_level(cluster, config->current_level);
+            attribute::create_min_level(cluster, config->min_level);
+            attribute::create_max_level(cluster, config->max_level);
             attribute::create_on_level(cluster, config->on_level);
             attribute::create_options(cluster, config->options);
         } else {
