@@ -699,6 +699,38 @@ The default configuration disables all unused clusters.
     enabling LTO can result in around ~90 KB of flash savings, though it also increases stack usage by ~1700 bytes.
 
 
+Moving BSS Segments to PSRAM to Reduce Memory Usage
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The BSS section of ``libCHIP.a`` and ``libesp_matter.a`` libraries can consume significant internal memory.
+For devices with PSRAM, such as Matter Controller or Thread Border Router applications, you can move the BSS segments to PSRAM to significantly reduce the internal memory footprint.
+
+To move the BSS segments of ``libCHIP.a`` and ``libesp_matter.a`` into PSRAM:
+
+1. Enable the ``CONFIG_ESP_ALLOW_BSS_SEG_EXTERNAL_MEMORY`` option in menuconfig.
+
+2. Create a ``linker.lf`` file in your project's main component, you can check the example
+   :project_file:`linker.lf <examples/all_device_types_app/main/linker.lf>`.
+
+3. Register the linker fragment in your main component's ``CMakeLists.txt``. See the reference
+   :project_file:`CMakeLists.txt <examples/all_device_types_app/main/CMakeLists.txt>`:
+
+   ::
+
+       set(ldfragments linker.lf)
+       idf_component_register(
+           ...
+           LDFRAGMENTS "${ldfragments}")
+
+The linker then places the BSS segments of both libraries in PSRAM instead of internal RAM.
+You can apply the same ``linker.lf`` pattern to other application libraries as needed.
+
+.. note::
+
+   If you are using the ESP Matter component from the Component Registry, update the ``archive``
+   name in ``linker.lf`` to ``libespressif__esp_matter.a``. See :ref:`ESP Matter Component <esp-matter-component>`.
+
+
 References for further optimizations
 ------------------------------------
 
