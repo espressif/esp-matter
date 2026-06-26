@@ -252,7 +252,7 @@ constexpr uint16_t cluster_revision = 3;
 } // namespace flow_measurement
 
 namespace pump_configuration_and_control {
-constexpr uint16_t cluster_revision = 3;
+constexpr uint16_t cluster_revision = 5;
 } // namespace pump_configuration_and_control
 
 namespace mode_select {
