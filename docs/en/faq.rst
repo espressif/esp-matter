@@ -85,6 +85,53 @@ My device is not responding to commands:
    -  The steps you followed to reproduce the issue.
    -  The complete device logs taken over UART.
 
+mDNS advertising failures: ESP-IDF mdns vs CHIP Minimal mDNS conflict
+-----------------------------------------------------------------------
+
+Rainmaker+Matter device logs show mDNS / DNS-SD advertising errors such as:
+
+   ::
+
+      I (7785) chip[DIS]: Updating services using commissioning mode 0
+      E (7785) chip[DIS]: Failed to initialize advertiser: 3000008
+      E (7795) chip[DIS]: Failed to remove advertised services: 3
+      E (7795) chip[DIS]: Failed to advertise operational node: ...
+      E (7815) chip[DIS]: Failed to finalize service update: 3
+
+What is happening:
+
+-  Error ``3000008`` in the log is the hex value ``0x03000008``. This encodes an LwIP ``ERR_USE`` error: UDP port `5353`
+   is already in use on the same network interface.
+-  Error ``3`` is ``CHIP_ERROR_INCORRECT_STATE``. It is a follow-on error because the mDNS
+   advertiser failed to initialize and later ``RemoveServices`` / ``Advertise`` /
+   ``FinalizeServiceUpdate`` calls are rejected.
+
+Why ESP-IDF mdns and CHIP Minimal mDNS conflict:
+
+-  The ESP-IDF ``mdns`` component (used by ESP RainMaker Local Control, on-network
+   challenge-response, and other features on Wi-Fi/Ethernet) binds a UDP socket on port
+   **5353** when ``mdns_init()`` is called.
+-  When ``CONFIG_USE_MINIMAL_MDNS`` is enabled, Matter uses CHIP **Minimal mDNS**, which also
+   tries to bind UDP port **5353** through LwIP on the same interface.
+-  Only one listener can bind port 5353 on a given network interface. Whichever stack binds
+   first prevents the other from binding the same port, and the second initialization fails
+   with ``ERR_USE``.
+-  ``CONFIG_USE_MINIMAL_MDNS`` defaults to ``y``. Any firmware that also links the ESP-IDF
+   ``mdns`` component (not only RainMaker + Matter) can hit this conflict unless Minimal mDNS
+   is disabled.
+
+This is especially common in **ESP RainMaker + Matter** firmware on Wi-Fi/Ethernet because
+RainMaker may call ``mdns_init()`` before Matter starts DNS-SD advertising.
+
+Recommended configuration for RainMaker + Matter:
+
+-  Set ``CONFIG_USE_MINIMAL_MDNS=n`` (menuconfig: **Component config → CHIP Core → General
+   Options → Use the minimal mDNS implementation shipped in the CHIP library**).
+-  Matter will then use **Platform mDNS** (``EspDnssdInit()``). Both stacks use the same
+   ESP-IDF ``mdns`` component (``mdns_init()`` is safe to call more than once). A single UDP
+   socket on port 5353 is shared. Each side registers its own service records via
+   ``mdns_service_add()`` (e.g. ``_matter._tcp``, ``_matterc._udp``, ``_esp_local_ctrl._tcp``)
+   without competing for the port.
 
 Onboard LED not working
 -----------------------
@@ -308,7 +355,7 @@ ESP32-C2 log garbled, unable to perform Matter commissioning and other abnormal 
 
 When encountering the above issues, the following possible causes may exist:
 1. Incorrect baud rate settings. See `UART console baud rate`_
-2. Incorrect XTAL crystal frequency settings. The default XTAL crystal frequency in the SDK examples is 26 Mhz, if the ESP32-C2 board used for testing is 40 MHz, please change the configuration as `CONFIG_XTAL_FREQ_40=y`. See `Main XTAL frequency`_ You can check the XTAL frequency with this command. 
+2. Incorrect XTAL crystal frequency settings. The default XTAL crystal frequency in the SDK examples is 26 Mhz, if the ESP32-C2 board used for testing is 40 MHz, please change the configuration as `CONFIG_XTAL_FREQ_40=y`. See `Main XTAL frequency`_ You can check the XTAL frequency with this command.
 
    ::
 
@@ -391,7 +438,7 @@ To move the BSS segments of libCHIP.a and libesp_matter.a into external RAM:
 
 1. Enable the ``CONFIG_ESP_ALLOW_BSS_SEG_EXTERNAL_MEMORY`` option in menuconfig.
 
-2. Create a ``linker.lf`` file in your project's main component, you can check the the example 
+2. Create a ``linker.lf`` file in your project's main component, you can check the the example
    :project_file:`linker.lf <examples/all_device_types_app/main/linker.lf>` file.
 
 3. Modify your main component's ``CMakeLists.txt`` to include:
