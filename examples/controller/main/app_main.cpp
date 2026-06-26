@@ -33,6 +33,15 @@
 #include <app/server/Server.h>
 #include <credentials/FabricTable.h>
 
+#ifdef CONFIG_CUSTOM_REVOKED_DAC_CHAIN_CHECK
+#include <esp_matter_da_revocation_delegate.h>
+#include <revocation_set/json_set_da_revocation_delegate.h>
+extern const uint8_t revocation_set_json_start[] asm("_binary_revocation_set_json_start");
+extern const uint8_t revocation_set_json_end[] asm("_binary_revocation_set_json_end");
+static chip::Credentials::json_set_da_revocation_delegate s_custom_delegate((const char *)revocation_set_json_start,
+                                                                            (const char *)revocation_set_json_end);
+#endif
+
 static const char *TAG = "app_main";
 uint16_t switch_endpoint_id = 0;
 
@@ -125,6 +134,9 @@ extern "C" void app_main()
 #if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
     esp_matter::controller::matter_controller_client::get_instance().init(112233, 1, 5580);
+#ifdef CONFIG_CUSTOM_REVOKED_DAC_CHAIN_CHECK
+    chip::Credentials::set_custom_da_revocation_delegate(&s_custom_delegate);
+#endif
     esp_matter::controller::matter_controller_client::get_instance().setup_commissioner();
 #endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 }

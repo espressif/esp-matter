@@ -303,17 +303,35 @@ The commissioner offers four options for the Attestation Trust Storage which is 
 
   Use two hardcoded PAA certificates (Chip-Test-PAA-FFF1-Cert&Chip-Test-PAA-NoVID-Cert) in the firmware.
 
-- ``Attestation Trust Store - Spiffs``
+- ``Attestation Trust Store - SPIFFS``
 
-  Read the PAA root certificates from the spiffs partition. The PAA der files should be placed in ``paa_cert`` directory so that they can be flashed into the spiffs partition of the controller.
+  Read the PAA root certificates from the SPIFFS partition. Please refer to the `SPIFFS FileSystem <https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/storage/spiffs.html>`__ to configure the SPIFFS partition and directory. After this, please configure the partition label in menuconfig ``Components`` -> ``ESP Matter Controller`` -> ``SPIFFS Attestation Trust Store Partition Label``.
 
 - ``Attestation Trust Store - DCL``
 
-  Fetch the PAA root certificates from the DCL MainNet/TestNet. The commissioner will fetch PAA certificates from DCL during commissioning and use the fetched PAA certificates to verifying the DAC chains of commissioned end-devices.
+  Read the PAA root certificates from the DCL(Distributed Compliance Ledger). You can choose to use `MainNet <https://webui.dcl.csa-iot.org/>`__ or `TestNet <https://testnet.iotledger.io/>`__ by calling ``chip::Credentials::dcl_attestation_trust_store::get_instance().SetDCLNetType()``.
 
 - ``Attestation Trust Store - Custom``
 
-  Use the custom Attestation Trust Storage. You should call ``set_custom_attestation_trust_store()`` to set the custom Attestation Trust Store before setting up the commissioner.
+  Read the PAA root certificates with the custom method. You should call ``chip::Credentials::set_custom_attestation_trust_store()`` before ``esp_matter::controller::matter_controller_client::setup_commissioner()`` to set the custom attestation trust store.
+
+Revoked DAC Chain Check
+^^^^^^^^^^^^^^^^^^^^^^^
+The commissioner can check whether the DAC chain on the commissionee is revoked during commissioning. This feature is available when the ``Enable matter commissioner`` option is enabled in menuconfig. You can configure the DAC Revocation Delegate in menuconfig ``Components`` -> ``ESP Matter Controller`` -> ``Check for Revoked DAC Chain``.
+
+- ``Revoked DAC Chain Check - None``
+  None check for revoked DAC chain.
+
+- ``Revoked DAC Chain Check - DCL Revocation Points``
+  Check the Revoked DAC chain with the revocation points on DCL. The controller will fetch revocation points from DCL. You can choose to use `MainNet <https://webui.dcl.csa-iot.org/>`__ or `TestNet <https://testnet.iotledger.io/>`__ by calling ``chip::Credentials::dcl_revocation_point_da_revocation_delegate::get_instance().set_dcl_net_type()``.
+
+- ``Revoked DAC Chain Check - Custom``
+  Check the Revoked DAC chain with the custom method. You should call ``chip::Credentials::set_custom_dac_revocation_delegate()`` before ``esp_matter::controller::matter_controller_client::setup_commissioner()`` to set the custom DAC revocation delegate.
+
+Certification Declaration Verification
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The commissoner can commission a device that is not certified and using test CD signed by `Test CD signing Cert <https://github.com/project-chip/connectedhomeip/blob/master/credentials/test/certification-declaration/Chip-Test-CD-Signing-Cert.pem>`__. This feature is available when the ``Enable matter commissioner`` option is enabled in menuconfig. You can modify this setting in menuconfig ``Components`` -> ``ESP Matter Controller`` -> ``Support Test Certification Declaration``. If the option is not enable, only certified device can be commissioned by the commissioner.
 
 NOC Issuer
 ~~~~~~~~~~

@@ -33,9 +33,9 @@ menu "ESP Matter Controller"
                 Use the two hardcoded PAA certificates(Chip-Test-PAA-FFF1-Cert&Chip-Test-PAA-NoVID-Cert) in the firmware.
 
         config SPIFFS_ATTESTATION_TRUST_STORE
-            bool "Attestation Trust Store - Spiffs"
+            bool "Attestation Trust Store - SPIFFS"
             help
-                Read the PAA root certificates from the spiffs partition
+                Read the PAA root certificates from the SPIFFS partition
 
         config DCL_ATTESTATION_TRUST_STORE
             bool "Attestation Trust Store - DCL"
@@ -46,6 +46,46 @@ menu "ESP Matter Controller"
             bool "Attestation Trust Store - Custom"
             help
                 Use the custom Attestation Trust Store
+
+    endchoice
+
+    config SPIFFS_ATTESTATION_TRUST_STORE_PARTITION_LABEL
+        string "SPIFFS Attestation Trust Store Partition Label"
+        depends on SPIFFS_ATTESTATION_TRUST_STORE
+        default "paa_cert"
+        help
+            Partition Label of the SPIFFS partition to store the PAA certificates
+
+    config ESP_MATTER_COMMISSIONER_SUPPORT_TEST_CD
+        bool "Support Test Certification Declaration"
+        depends on ESP_MATTER_COMMISSIONER_ENABLE
+        default y
+        help
+            This option determines whether the commissioner supports Test CD. If this option is set to false, the
+            commissioner will return CertificationDeclarationNoCertificateFound when commissioning a device using
+            Test CD.
+
+    choice ESP_MATTER_COMMISSIONER_REVOKED_DAC_CHAIN_CHECK
+        prompt "Check for Revoked DAC Chain"
+        depends on ESP_MATTER_COMMISSIONER_ENABLE
+        default NONE_REVOKED_DAC_CHAIN_CHECK
+        help
+            This option determines how the commissioner checks revoked DAC chains during commissioning.
+
+        config NONE_REVOKED_DAC_CHAIN_CHECK
+            bool "Revoked DAC Chain Check - None"
+            help
+                None check for revoked DAC chain
+
+        config DCL_REVOCATION_POINTS_REVOKED_DAC_CHAIN_CHECK
+            bool "Revoked DAC Chain Check - DCL Revocation Points"
+            help
+                Use the DCL Revocation Points to check revoked DAC chain
+
+        config CUSTOM_REVOKED_DAC_CHAIN_CHECK
+            bool "Revoked DAC Chain Check - Custom"
+            help
+                Use the custom method to check revoked DAC chain
 
     endchoice
 
