@@ -97,5 +97,14 @@ uint32_t get_feature_map_value(cluster_t *cluster);
  */
 cluster_t *ABORT_CLUSTER_CREATE(cluster_t *cluster);
 
+/** Create the default binding cluster on an endpoint
+ *
+ * Application clusters with a client role get a binding cluster created alongside them. This adds
+ * the binding cluster once per endpoint, doing nothing if one is already present.
+ *
+ * @param[in] endpoint Endpoint handle.
+ */
+void create_default_binding_cluster(endpoint_t *endpoint);
+
 } // namespace cluster
 } // namespace esp_matter

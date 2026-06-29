@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* This is a Generated File */
+/* THIS IS A GENERATED FILE, DO NOT EDIT */
 
 #pragma once
 #include <esp_matter_data_model.h>
@@ -29,13 +29,13 @@
 #include <icd_management.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
 #include <wi_fi_network_diagnostics.h>
-#endif
+#endif // CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
 #include <thread_network_diagnostics.h>
-#endif
+#endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
 #if defined(CONFIG_SUPPORT_GROUPCAST_CLUSTER)
 #include <groupcast.h>
-#endif
+#endif // defined(CONFIG_SUPPORT_GROUPCAST_CLUSTER)
 
 #include <esp_matter_core.h>
 

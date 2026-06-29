@@ -19,8 +19,6 @@
 #include <esp_matter.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
-#include <app-common/zap-generated/callback.h>
-#include <app/InteractionModelEngine.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
 #include <ecosystem_information.h>
 #include <ecosystem_information_ids.h>
@@ -28,13 +26,10 @@
 #include <esp_matter_data_model_priv.h>
 
 using namespace chip::app::Clusters;
-using chip::app::CommandHandler;
-using chip::app::DataModel::Decode;
-using chip::TLV::TLVReader;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 
-static const char *TAG = "ecosystem_information_cluster";
+static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 1;
 
 namespace esp_matter {

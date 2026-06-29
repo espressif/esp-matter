@@ -1,26 +1,9 @@
-// Copyright 2026 Espressif Systems (Shanghai) PTE LTD
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-/* This is a Generated File */
+{{ file_header }}
 
 #pragma once
 #include <esp_matter_data_model.h>
 
 #include <descriptor.h>
-{% if device.binding_cluster_available() %}
-#include <binding.h>
-{% endif %}
 {% for cluster in device.get_unique_mandatory_clusters() %}
 #include <{{ cluster.esp_name }}.h>
 {% endfor %}
@@ -28,13 +11,9 @@
 #include <{{ cluster.esp_name }}.h>
 {% endfor %}
 {% for cluster in device.extra_clusters %}
-{% if cluster.has_special_config() %}
-#if {{ cluster.get_special_config() }}
-{% endif %}
+{{ guard_open(cluster) -}}
 #include <{{ cluster.esp_name }}.h>
-{% if cluster.has_special_config() %}
-#endif
-{% endif %}
+{{ guard_close(cluster) -}}
 {% endfor %}
 
 #include <esp_matter_core.h>
@@ -43,10 +22,8 @@
 #define ESP_MATTER_{{ device.esp_name | upper }}_DEVICE_TYPE_VERSION {{device.revision }}
 
 {% if device.has_optional_choice_clusters() %}
-{% set bit_index = [0] %}
 {% for cluster in device.get_unique_optional_choice_clusters() %}
-#define {{ device.esp_name | upper }}_OPTIONAL_CLUSTER_{{ cluster.esp_name | upper }}  (1 << {{ bit_index[0] }})
-{% set _ = bit_index.append(bit_index.pop() + 1) %}
+#define {{ device.esp_name | upper }}_OPTIONAL_CLUSTER_{{ cluster.esp_name | upper }}  (1 << {{ loop.index0 }})
 {% endfor %}
 {% endif %}
 
@@ -54,58 +31,38 @@ namespace esp_matter {
 namespace endpoint {
 namespace {{ device.esp_name }} {
 
-{% set init_list = [] %}
-
 typedef struct config {
     cluster::descriptor::config_t descriptor;
-    {% if device.binding_cluster_available() %}
-    cluster::binding::config_t binding;
-    {% endif %}
+{# mandatory clusters #}
     {% for cluster in device.get_unique_mandatory_clusters() %}
-{% if cluster.has_special_config() %}
-#if {{ cluster.get_special_config() }}
-{% endif %}
+{{ guard_open(cluster) -}}
     {% if cluster.server_cluster %}
     cluster::{{ cluster.esp_name }}::config_t {{ cluster.esp_name }};
+{# config for device mandatory attributes #}
     {% for attribute in cluster.device_mandatory_attributes %}
-    {% if not attribute.is_complex and not attribute.is_internally_managed %}
-        {% set _ = init_list.append(attribute.func_name ~ "(" ~ attribute.get_default_value() ~ ")") %}
-    {% endif %}
     {% if not attribute.is_internally_managed %}
-        {% if attribute.type == "string" %}
-    char {{ attribute.func_name }}[k_max_{{ attribute.func_name }}_length + 1];
-        {% elif attribute.type == "octstr" %}
-    uint8_t {{ attribute.func_name }}[k_max_{{ attribute.func_name }}_length];
-        {% elif attribute.type == "list" %}
-        {% elif attribute.is_nullable %}
-    nullable<{{ attribute.get_type() }}> {{ attribute.func_name }};
-        {% else %}
-    {{ attribute.get_type() }} {{ attribute.func_name }};
-        {% endif %}
+{{ attr_member(attribute, '    ') -}}
     {% endif %}
     {% endfor %}
+{# config for device mandatory features #}
     {% for mandatory_feature in cluster.device_mandatory_features %}
     {% if not cluster.device_has_choice_features and mandatory_feature.get_externally_managed_attributes() | length > 0 %}
-{% if mandatory_feature.has_special_config() %}
-#if {{ mandatory_feature.get_special_config() }}
-{% endif %}
+{{ guard_open(mandatory_feature) -}}
 cluster::{{ cluster.esp_name }}::feature::{{ mandatory_feature.func_name }}::config_t {{cluster.esp_name}}_{{ mandatory_feature.func_name }};
-{% if mandatory_feature.has_special_config() %}
-#endif // {{ mandatory_feature.get_special_config() }}
-{% endif %}
+{{ guard_close(mandatory_feature) -}}
     {% endif %}
     {% endfor %}
     {% endif %}
-{% if cluster.has_special_config() %}
-#endif // {{ cluster.get_special_config() }}
-{% endif %}
+{{ guard_close(cluster) -}}
     {% endfor %}
+{# optional choice clusters #}
 {% if device.has_optional_choice_clusters() %}
 {% for cluster in device.get_unique_optional_choice_clusters() %}
     cluster::{{ cluster.esp_name }}::config_t {{ cluster.esp_name }};
 {% endfor %}
     uint32_t optional_clusters_mask;
 
+{# set optional clusters mask #}
 {% for cluster in device.get_unique_optional_choice_clusters() %}
     cluster::{{ cluster.esp_name }}::config_t &with_{{ cluster.esp_name }}()
     {
@@ -114,17 +71,14 @@ cluster::{{ cluster.esp_name }}::feature::{{ mandatory_feature.func_name }}::con
     }
 
 {% endfor %}
-{% set _ = init_list.insert(0, "optional_clusters_mask(0)") %}
 {% endif %}
+{# extra clusters #}
 {% for cluster in device.extra_clusters %}
-{% if cluster.has_special_config() %}
-#if {{ cluster.get_special_config() }}
-{% endif %}
+{{ guard_open(cluster) -}}
     cluster::{{ cluster.esp_name }}::config_t {{ cluster.esp_name }};
-{% if cluster.has_special_config() %}
-#endif // {{ cluster.get_special_config() }}
-{% endif %}
+{{ guard_close(cluster) -}}
 {% endfor %}
+    {% set init_list = device.get_config_init_list() %}
     {% if init_list %}
     config() : {{ init_list | join(", ") }} {}
     {% endif %}
@@ -134,8 +88,9 @@ uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
-{% if device.esp_name == "bridged_node"%}
-endpoint_t *resume(node_t *node, config_t *config, uint8_t flags, uint16_t endpoint_id, void *priv_data);
+{% if device.esp_name == "bridged_node" %}
+{% from "exceptions/bridged_node.jinja" import declarations with context %}
+{{ declarations() }}
 {% endif %}
 } /* {{ device.esp_name }} */
 } /* endpoint */

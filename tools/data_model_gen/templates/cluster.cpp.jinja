@@ -1,29 +1,19 @@
-// Copyright 2026 Espressif Systems (Shanghai) PTE LTD
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-/* THIS IS A GENERATED FILE, DO NOT EDIT */
+{{ file_header }}
 
 #include <esp_log.h>
 #include <esp_matter_core.h>
 #include <esp_matter.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
+{% if cluster.needs_callback_header() %}
 #include <app-common/zap-generated/callback.h>
-#include <app/InteractionModelEngine.h>
+{% endif %}
+{% if cluster.plugin_server_init_callback != None %}
 #include <zap_common/app/PluginApplicationCallbacks.h>
+{% endif %}
 {% if "mode" in cluster.esp_name %}
-#include <app/clusters/mode-base-server/mode-base-cluster-objects.h>
+{% from "exceptions/mode.jinja" import cluster_includes with context %}
+{{ cluster_includes() }}
 {% endif %}
 {% if cluster.delegate_init_callback_available %}
 #include <esp_matter_delegate_callbacks.h>
@@ -36,23 +26,25 @@
 #include <app/ClusterCallbacks.h>
 {% endif %}
 
-{# Switch cluster Exceptions #}
 {% if cluster.esp_name == "switch_cluster" %}
-#include <app/clusters/switch-server/switch-server.h>
-
-using chip::EndpointId;
+{% from "exceptions/switch_cluster.jinja" import cluster_includes with context %}
+{{ cluster_includes() }}
 {% endif %}
 using namespace chip::app::Clusters;
+{% if cluster.has_command_callbacks() %}
 using chip::app::CommandHandler;
 using chip::app::DataModel::Decode;
 using chip::TLV::TLVReader;
+{% endif %}
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 {% if cluster.delegate_init_callback_available %}
 using namespace esp_matter::cluster::delegate_cb;
 {% endif %}
 
-static const char *TAG = "{{ cluster.esp_name }}_cluster";
+{% if cluster.needs_log_tag() %}
+static const char *TAG = "esp_matter_cluster";
+{% endif %}
 constexpr uint16_t cluster_revision = {{ cluster.get_revision() }};
 {% include "command_callback.cpp.jinja" | indent(4) %}
 
@@ -65,14 +57,6 @@ namespace {{ cluster.esp_name }} {
 {% include "command.cpp.jinja" | indent(4) %}
 {% include "event.cpp.jinja" | indent(4) %}
 
-{% if cluster.role == "application" and not cluster.is_derived_cluster and cluster.id != "0xffff" %}
-static void create_default_binding_cluster(endpoint_t *endpoint)
-{
-    binding::config_t config;
-    binding::create(endpoint, &config, CLUSTER_FLAG_SERVER);
-}
-
-{% endif %}
 {% if cluster.id != "0xffff" %}
 {% if cluster.callback_functions | length > 0 %}
 const function_generic_t function_list[] = {
@@ -90,9 +74,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = esp_matter::cluster::create(endpoint, {{ cluster.esp_name }}::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, {{ cluster.esp_name }}::Id));
-{% if cluster.has_special_config() %}
-#if {{ cluster.get_special_config() }}
-{% endif %}
+{{ guard_open(cluster) -}}
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
         {% if cluster.delegate_init_callback %}
@@ -132,24 +114,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         {% endfilter %}
         {% endif %}
         {% for command in cluster.get_mandatory_commands() %}
-{% if command.has_special_config() %}
-#if {{ command.get_special_config() }}
-{% endif %}
+{{ guard_open(command) -}}
         command::create_{{ command.func_name | lower }}(cluster);
-{% if command.has_special_config() %}
-#endif // {{ command.get_special_config() }}
-{% endif %}
+{{ guard_close(command) -}}
         {% endfor %}
         {% if cluster.get_mandatory_events() | length > 0 %}
         /* Events */
         {% for event in cluster.get_mandatory_events() %}
-{% if event.has_special_config() %}
-#if {{ event.get_special_config() }}
-{% endif %}
+{{ guard_open(event) -}}
         event::create_{{ event.func_name | lower }}(cluster);
-{% if event.has_special_config() %}
-#endif // {{ event.get_special_config() }}
-{% endif %}
+{{ guard_close(event) -}}
         {% endfor %}
         {% endif %}
         {% if cluster.is_migrated_cluster %}
@@ -158,10 +132,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
                                                  {{ cluster.get_cluster_shutdown_callback() }});
         {% endif %}
     }
-{% if cluster.has_special_config() %}
-#endif // {{ cluster.get_special_config() }}
-{% endif %}
-
+{{ guard_close(cluster) }}
     {% if cluster.role == "application" and not cluster.is_derived_cluster and not cluster.name == "Binding" %}
     if (flags & CLUSTER_FLAG_CLIENT) {
         create_default_binding_cluster(endpoint);

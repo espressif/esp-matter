@@ -1,0 +1,9 @@
+{#
+  Hand-written exception for the root_node device type.
+  includes()  -> ICD configuration header (server builds only) in the device .cpp
+#}
+{% macro includes() -%}
+#if CHIP_CONFIG_ENABLE_ICD_SERVER
+#include <esp_matter_icd_configuration.h>
+#endif // CHIP_CONFIG_ENABLE_ICD_SERVER
+{%- endmacro %}

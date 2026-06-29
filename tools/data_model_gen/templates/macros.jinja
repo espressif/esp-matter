@@ -1,0 +1,41 @@
+{#
+  Shared Jinja macros for the data model templates.
+#}
+
+{# guard_open / guard_close wrap a generated element in the C preprocessor conditional declared by its "special config" (e.g. a Kconfig symbol).
+  Usage:
+      {{ guard_open(attr) -}}
+      ... element body ...
+      {{ guard_close(attr) -}}
+#}
+{% macro guard_open(e) -%}
+{% if e.has_special_config() %}
+#if {{ e.get_special_config() }}
+{% endif %}
+{%- endmacro %}
+{% macro guard_close(e) -%}
+{% if e.has_special_config() %}
+#endif // {{ e.get_special_config() }}
+{% endif %}
+{%- endmacro %}
+
+{#
+    Emits the C++ member declaration for an attribute based on its type.
+    List attributes emit nothing because their storage is handled elsewhere.
+    `indent` is prepended to the generated declaration. Constructor
+    initialization is the caller's responsibility.
+    Usage:
+    {{ attr_member(attr, '    ') -}}
+#}
+{% macro attr_member(attr, indent='') -%}
+{% if attr.type == "string" %}
+{{ indent }}char {{ attr.func_name }}[k_max_{{ attr.func_name }}_length + 1];
+{% elif attr.type == "octstr" %}
+{{ indent }}uint8_t {{ attr.func_name }}[k_max_{{ attr.func_name }}_length];
+{% elif attr.type == "list" %}
+{% elif attr.is_nullable %}
+{{ indent }}nullable<{{ attr.get_type() }}> {{ attr.func_name }};
+{% else %}
+{{ indent }}{{ attr.get_type() }} {{ attr.func_name }};
+{% endif %}
+{%- endmacro %}

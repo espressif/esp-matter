@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* This is a Generated File */
+/* THIS IS A GENERATED FILE, DO NOT EDIT */
 
 #include <esp_log.h>
 #include <esp_matter.h>
@@ -22,6 +22,8 @@
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 using namespace esp_matter::endpoint;
+
+static const char *TAG = "esp_matter_endpoint";
 
 namespace esp_matter {
 namespace endpoint {
@@ -39,12 +41,12 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = esp_matter::endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE("mounted_on_off_control", "Failed to create endpoint"));
+    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Failed to create endpoint. device_type_id: 0x%08" PRIX32, get_device_type_id()));
 
     cluster_t *descriptor_cluster = descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    VerifyOrReturnValue(descriptor_cluster != nullptr, NULL, ESP_LOGE("mounted_on_off_control", "Failed to create descriptor cluster"));
+    VerifyOrReturnValue(descriptor_cluster != nullptr, NULL, ESP_LOGE(TAG, "Failed to create descriptor cluster. device_type_id: 0x%08" PRIX32, get_device_type_id()));
 
-    VerifyOrReturnValue(add(endpoint, config) == ESP_OK, NULL, ESP_LOGE("mounted_on_off_control", "Failed to add device type"));
+    VerifyOrReturnValue(add(endpoint, config) == ESP_OK, NULL, ESP_LOGE(TAG, "Failed to add device type. device_type_id: 0x%08" PRIX32, get_device_type_id()));
     return endpoint;
 }
 
@@ -54,14 +56,14 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     VerifyOrReturnError(err == ESP_OK, err);
 
     cluster_t *identify = cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
-    VerifyOrReturnValue(identify != NULL, ESP_FAIL, ESP_LOGE("mounted_on_off_control", "Failed to create cluster: identify"));
+    VerifyOrReturnValue(identify != NULL, ESP_FAIL, ESP_LOGE(TAG, "Failed to create cluster: identify. device_type_id: 0x%08" PRIX32, get_device_type_id()));
     cluster::identify::command::create_trigger_effect(identify);
     cluster::groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     cluster_t *on_off = cluster::on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER);
-    VerifyOrReturnValue(on_off != NULL, ESP_FAIL, ESP_LOGE("mounted_on_off_control", "Failed to create cluster: on_off"));
+    VerifyOrReturnValue(on_off != NULL, ESP_FAIL, ESP_LOGE(TAG, "Failed to create cluster: on_off. device_type_id: 0x%08" PRIX32, get_device_type_id()));
     cluster::on_off::feature::lighting::add(on_off, &(config->on_off_lighting));
     cluster_t *scenes_management = cluster::scenes_management::create(endpoint, &(config->scenes_management), CLUSTER_FLAG_SERVER);
-    VerifyOrReturnValue(scenes_management != NULL, ESP_FAIL, ESP_LOGE("mounted_on_off_control", "Failed to create cluster: scenes_management"));
+    VerifyOrReturnValue(scenes_management != NULL, ESP_FAIL, ESP_LOGE(TAG, "Failed to create cluster: scenes_management. device_type_id: 0x%08" PRIX32, get_device_type_id()));
     cluster::scenes_management::command::create_copy_scene(scenes_management);
     return ESP_OK;
 }

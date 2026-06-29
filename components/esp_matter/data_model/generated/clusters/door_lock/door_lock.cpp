@@ -20,7 +20,6 @@
 
 #include <app-common/zap-generated/cluster-enums.h>
 #include <app-common/zap-generated/callback.h>
-#include <app/InteractionModelEngine.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
 #include <esp_matter_delegate_callbacks.h>
 #include <door_lock.h>
@@ -36,7 +35,7 @@ using namespace esp_matter;
 using namespace esp_matter::cluster;
 using namespace esp_matter::cluster::delegate_cb;
 
-static const char *TAG = "door_lock_cluster";
+static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 10;
 
 static esp_err_t esp_matter_command_callback_lock_door(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
@@ -494,7 +493,7 @@ attribute_t *create_min_pin_code_length(cluster_t *cluster, uint8_t value)
 
 attribute_t *create_language(cluster_t *cluster, char *value, uint16_t length)
 {
-    VerifyOrReturnValue(length <= k_max_language_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_language_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound. cluster_id: 0x%08" PRIX32, door_lock::Id));
     return esp_matter::attribute::create(cluster, Language::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value, length), k_max_language_length + 1);
 }
 
@@ -785,12 +784,6 @@ event_t *create_lock_operation_error(cluster_t *cluster)
 }
 
 } /* event */
-
-static void create_default_binding_cluster(endpoint_t *endpoint)
-{
-    binding::config_t config;
-    binding::create(endpoint, &config, CLUSTER_FLAG_SERVER);
-}
 
 const function_generic_t function_list[] = {
     (function_generic_t)MatterDoorLockClusterServerAttributeChangedCallback,

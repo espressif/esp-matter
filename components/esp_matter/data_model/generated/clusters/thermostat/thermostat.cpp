@@ -20,7 +20,6 @@
 
 #include <app-common/zap-generated/cluster-enums.h>
 #include <app-common/zap-generated/callback.h>
-#include <app/InteractionModelEngine.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
 #include <esp_matter_delegate_callbacks.h>
 #include <thermostat.h>
@@ -36,7 +35,7 @@ using namespace esp_matter;
 using namespace esp_matter::cluster;
 using namespace esp_matter::cluster::delegate_cb;
 
-static const char *TAG = "thermostat_cluster";
+static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 11;
 
 static esp_err_t esp_matter_command_callback_setpoint_raise_lower(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
@@ -572,7 +571,7 @@ attribute_t *create_active_schedule_handle(cluster_t *cluster, uint8_t *value, u
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(matter_schedule_configuration), NULL);
-    VerifyOrReturnValue(length <= k_max_active_schedule_handle_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_active_schedule_handle_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound. cluster_id: 0x%08" PRIX32, thermostat::Id));
     return esp_matter::attribute::create(cluster, ActiveScheduleHandle::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, length));
 }
 
@@ -668,12 +667,6 @@ command_t *create_remove_thermostat_suggestion(cluster_t *cluster)
 }
 
 } /* command */
-
-static void create_default_binding_cluster(endpoint_t *endpoint)
-{
-    binding::config_t config;
-    binding::create(endpoint, &config, CLUSTER_FLAG_SERVER);
-}
 
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfThermostatClusterServerInitCallback,

@@ -1,18 +1,4 @@
-// Copyright 2026 Espressif Systems (Shanghai) PTE LTD
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-/* THIS IS A GENERATED FILE, DO NOT EDIT */
+{{ file_header }}
 
 #pragma once
 #include <esp_matter_data_model.h>
@@ -21,6 +7,7 @@ namespace esp_matter {
 namespace cluster {
 namespace {{ cluster.esp_name }} {
 
+{# declare constants for string and octstr attributes #}
 {% for attribute in cluster.get_attributes() %}
 {% if not attribute.is_internally_managed %}
 {% if attribute.type == "string" or attribute.type == "octstr" %}
@@ -32,61 +19,38 @@ const {{ attribute.get_default_value_type() }} k_max_{{ attribute.func_name }}_l
 {% include "attribute.h.jinja" | indent(4) %}
 {% include "command.h.jinja" | indent(4) %}
 {% include "event.h.jinja" | indent(4) %}
-{% macro attr_field(attribute, init_list) %}
-{% if not attribute.is_internally_managed %}
-    {% if attribute.type == "string" %}
-    {% set _ = init_list.append(attribute.func_name ~ "{" ~ 0 ~ "}") %}
-    char {{ attribute.func_name }}[k_max_{{ attribute.func_name }}_length + 1];
-    {% elif attribute.type == "octstr" %}
-    {% set _ = init_list.append(attribute.func_name ~ "{" ~ 0 ~ "}") %}
-    uint8_t {{ attribute.func_name }}[k_max_{{ attribute.func_name }}_length];
-    {% elif attribute.type == "list" %}
-    {% elif attribute.is_nullable %}
-    {% set _ = init_list.append(attribute.func_name ~ "(" ~ attribute.get_default_value() ~ ")") %}
-    nullable<{{ attribute.get_type() }}> {{ attribute.func_name }};
-    {% else %}
-    {% set _ = init_list.append(attribute.func_name ~ "(" ~ attribute.get_default_value() ~ ")") %}
-    {{ attribute.get_type() }} {{ attribute.func_name }};
-    {% endif %}
-{% endif %}
-{% endmacro %}
-{% set init_list = [] %}
 {% set feature_list = cluster.get_features() if cluster.has_choice_features() else [] %}
-{% set config_features = [] %}
-{% for feature in feature_list %}
-    {% if feature.get_externally_managed_attributes() | length > 0 %}
-        {% do config_features.append(feature) %}
-    {% endif %}
-{% endfor %}
 {% if cluster.id != "0xffff" %}
+{# declare config for cluster #}
 typedef struct config {
     {% for attribute in cluster.get_mandatory_attributes() %}
-{{ attr_field(attribute, init_list) -}}
+    {% if not attribute.is_internally_managed %}
+{{ attr_member(attribute, '    ') -}}
+    {% endif %}
     {% endfor %}
+{# declare config for comparison conditional attributes decided at runtime #}
     {% for condition, comp_attrs in cluster.get_comparison_conditional_attributes() %}
     {% for attribute in comp_attrs %}
-{{ attr_field(attribute, init_list) -}}
+    {% if not attribute.is_internally_managed %}
+{{ attr_member(attribute, '    ') -}}
+    {% endif %}
     {% endfor %}
     {% endfor %}
     {% if cluster.delegate_init_callback and cluster.id != "0xffff" %}
     void *delegate;
     {% endif %}
+{# declare config struct for features if cluster has (O.a, O.a+) features #}
     {% if feature_list %}
-    {% if config_features %}
+    {% if cluster.get_config_features() %}
     struct {
-        {% for feature in config_features %}
+        {% for feature in cluster.get_config_features() %}
         feature::{{ feature.func_name | lower }}::config_t {{ feature.func_name | lower }};
         {% endfor %}
     } features;
     {% endif %}
     uint32_t feature_flags;
     {% endif %}
-    {% if cluster.delegate_init_callback and cluster.id != "0xffff" %}
-    {% set _ = init_list.append("delegate(nullptr)") %}
-    {% endif %}
-    {% if cluster.has_choice_features() %}
-    {% set _ = init_list.append("feature_flags(0)") %}
-    {% endif %}
+    {% set init_list = cluster.get_config_init_list() %}
     config(){% if init_list %} : {{ init_list | join(", ") }}{% endif %} {}
 } config_t;
 

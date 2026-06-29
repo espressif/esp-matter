@@ -44,23 +44,11 @@ class Device(BaseDevice):
     def __init__(self, id, name, revision):
         super().__init__(id=id, name=name, revision=revision)
         self.clusters = set()
-        self.features = set()
-        self.commands = set()
-        self.attributes = set()
         self.classification = {}
         self.conformance = None
         self.filename = self.esp_name + "_device"
         self.revision_history = []
         self.conditions = []
-
-    def add_feature(self, feature: str):
-        self.features.add(feature)
-
-    def add_command(self, command: str):
-        self.commands.add(command)
-
-    def add_attribute(self, attribute: str):
-        self.attributes.add(attribute)
 
     def get_clusters(self) -> List[BaseCluster]:
         return sorted(
@@ -210,9 +198,6 @@ class Command(BaseCommand):
 
     def set_access(self, access):
         self.access = access
-
-    def set_conformance(self, conformance):
-        self.conformance = conformance
 
     def add_field(self, field):
         self.fields.append(field)

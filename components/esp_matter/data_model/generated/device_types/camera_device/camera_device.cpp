@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* This is a Generated File */
+/* THIS IS A GENERATED FILE, DO NOT EDIT */
 
 #include <esp_log.h>
 #include <esp_matter.h>
@@ -22,6 +22,8 @@
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 using namespace esp_matter::endpoint;
+
+static const char *TAG = "esp_matter_endpoint";
 
 namespace esp_matter {
 namespace endpoint {
@@ -39,12 +41,12 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = esp_matter::endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE("camera", "Failed to create endpoint"));
+    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Failed to create endpoint. device_type_id: 0x%08" PRIX32, get_device_type_id()));
 
     cluster_t *descriptor_cluster = descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    VerifyOrReturnValue(descriptor_cluster != nullptr, NULL, ESP_LOGE("camera", "Failed to create descriptor cluster"));
+    VerifyOrReturnValue(descriptor_cluster != nullptr, NULL, ESP_LOGE(TAG, "Failed to create descriptor cluster. device_type_id: 0x%08" PRIX32, get_device_type_id()));
 
-    VerifyOrReturnValue(add(endpoint, config) == ESP_OK, NULL, ESP_LOGE("camera", "Failed to add device type"));
+    VerifyOrReturnValue(add(endpoint, config) == ESP_OK, NULL, ESP_LOGE(TAG, "Failed to add device type. device_type_id: 0x%08" PRIX32, get_device_type_id()));
     return endpoint;
 }
 
@@ -59,8 +61,6 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     cluster::camera_av_stream_management::create(endpoint, &(config->camera_av_stream_management), CLUSTER_FLAG_SERVER);
     cluster::webrtc_transport_provider::create(endpoint, &(config->webrtc_transport_provider), CLUSTER_FLAG_SERVER);
     cluster::webrtc_transport_requestor::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
-    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
-
     return ESP_OK;
 }
 

@@ -15,6 +15,7 @@
 #include <esp_matter_attribute_utils.h>
 #include <esp_matter_core.h>
 #include <esp_matter_data_model_utils.h>
+#include <binding.h>
 
 static const char *TAG = "data_model";
 
@@ -122,6 +123,15 @@ cluster_t *ABORT_CLUSTER_CREATE(cluster_t *cluster)
     esp_matter::cluster::destroy(cluster);
     assert(false);
     return NULL;
+}
+
+void create_default_binding_cluster(endpoint_t *endpoint)
+{
+    // Only add the default binding cluster if the endpoint does not already have one.
+    VerifyOrReturn(!get(endpoint, chip::app::Clusters::Binding::Id));
+    ESP_LOGI(TAG, "Creating default binding cluster");
+    binding::config_t config;
+    binding::create(endpoint, &config, CLUSTER_FLAG_SERVER);
 }
 
 } // namespace cluster

@@ -1,0 +1,7 @@
+{#
+  Hand-written exception for mode clusters.
+    cluster_includes()  -> includes mode-base cluster objects header in the cluster .cpp
+#}
+{% macro cluster_includes() -%}
+#include <app/clusters/mode-base-server/mode-base-cluster-objects.h>
+{%- endmacro %}

@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* This is a Generated File */
+/* THIS IS A GENERATED FILE, DO NOT EDIT */
 
 #pragma once
 #include <esp_matter_data_model.h>
 
 #include <descriptor.h>
-#include <binding.h>
 #include <identify.h>
 #include <switch_cluster.h>
 #include <chime.h>
@@ -34,7 +33,6 @@ namespace doorbell {
 
 typedef struct config {
     cluster::descriptor::config_t descriptor;
-    cluster::binding::config_t binding;
     cluster::identify::config_t identify;
     cluster::switch_cluster::config_t switch_cluster;
 } config_t;

@@ -77,25 +77,6 @@ class AttributeType:
                 suggestion="Check that the type is defined in the cluster data types or attribute type map.",
             )
 
-    def get_attribute_category(self) -> str:
-        """Get the attribute category for a given type string
-
-        Returns:
-            The attribute category.
-        """
-        if self.type_str in self._basic_types:
-            return "PRIMITIVE"
-        elif self.type_str in self._string_type:
-            return "STRING"
-        elif self.type_str in self._array_type:
-            return "ARRAY"
-        elif self.type_str in self._enum_type:
-            return "ENUM"
-        elif self.type_str in self._bitmap_type:
-            return "BITMAP"
-        else:
-            return "UNKNOWN"
-
 
 attribute_type_map = {
     "alarm_base": {

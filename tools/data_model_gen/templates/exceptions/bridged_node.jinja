@@ -1,0 +1,21 @@
+{#
+  Hand-written exceptions for the bridged_node device type.
+    resume method declarations()  -> resume() prototype in the endpoint namespace (.h)
+    resume method definitions()   -> resume() definition in the endpoint namespace (.cpp)
+#}
+{% macro declarations() -%}
+endpoint_t *resume(node_t *node, config_t *config, uint8_t flags, uint16_t endpoint_id, void *priv_data);
+{%- endmacro %}
+{% macro definitions() -%}
+endpoint_t *resume(node_t *node, config_t *config, uint8_t flags, uint16_t endpoint_id, void *priv_data)
+{
+    esp_matter::endpoint_t *endpoint = esp_matter::endpoint::resume(node, flags | ENDPOINT_FLAG_DESTROYABLE, endpoint_id, priv_data);
+    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Failed to create endpoint. device_type_id: 0x%08" PRIX32, get_device_type_id()));
+
+    cluster_t *descriptor_cluster = descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
+    VerifyOrReturnValue(descriptor_cluster != nullptr, NULL, ESP_LOGE(TAG, "Failed to create descriptor cluster. device_type_id: 0x%08" PRIX32, get_device_type_id()));
+
+    VerifyOrReturnValue(ESP_OK == add(endpoint, config), NULL, ESP_LOGE(TAG, "Failed to add cluster. device_type_id: 0x%08" PRIX32, get_device_type_id()));
+    return endpoint;
+}
+{%- endmacro %}

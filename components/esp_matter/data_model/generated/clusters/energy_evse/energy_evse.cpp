@@ -19,8 +19,6 @@
 #include <esp_matter.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
-#include <app-common/zap-generated/callback.h>
-#include <app/InteractionModelEngine.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
 #include <esp_matter_delegate_callbacks.h>
 #include <energy_evse.h>
@@ -30,14 +28,11 @@
 #include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
-using chip::app::CommandHandler;
-using chip::app::DataModel::Decode;
-using chip::TLV::TLVReader;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 using namespace esp_matter::cluster::delegate_cb;
 
-static const char *TAG = "energy_evse_cluster";
+static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 4;
 
 namespace esp_matter {
@@ -288,7 +283,7 @@ attribute_t *create_vehicle_id(cluster_t *cluster, char *value, uint16_t length)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(plug_and_charge), NULL);
-    VerifyOrReturnValue(length <= k_max_vehicle_id_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_vehicle_id_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound. cluster_id: 0x%08" PRIX32, energy_evse::Id));
     return esp_matter::attribute::create(cluster, VehicleID::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, length), k_max_vehicle_id_length + 1);
 }
 
@@ -408,12 +403,6 @@ event_t *create_rfid(cluster_t *cluster)
 }
 
 } /* event */
-
-static void create_default_binding_cluster(endpoint_t *endpoint)
-{
-    binding::config_t config;
-    binding::create(endpoint, &config, CLUSTER_FLAG_SERVER);
-}
 
 const function_generic_t *function_list = NULL;
 

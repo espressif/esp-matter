@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* This is a Generated File */
+/* THIS IS A GENERATED FILE, DO NOT EDIT */
 
 #pragma once
 #include <esp_matter_data_model.h>

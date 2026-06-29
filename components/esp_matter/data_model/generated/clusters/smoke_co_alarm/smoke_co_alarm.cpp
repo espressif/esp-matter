@@ -20,7 +20,6 @@
 
 #include <app-common/zap-generated/cluster-enums.h>
 #include <app-common/zap-generated/callback.h>
-#include <app/InteractionModelEngine.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
 #include <smoke_co_alarm.h>
 #include <smoke_co_alarm_ids.h>
@@ -34,7 +33,7 @@ using chip::TLV::TLVReader;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 
-static const char *TAG = "smoke_co_alarm_cluster";
+static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 2;
 
 static esp_err_t esp_matter_command_callback_self_test_request(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
@@ -258,12 +257,6 @@ event_t *create_all_clear(cluster_t *cluster)
 }
 
 } /* event */
-
-static void create_default_binding_cluster(endpoint_t *endpoint)
-{
-    binding::config_t config;
-    binding::create(endpoint, &config, CLUSTER_FLAG_SERVER);
-}
 
 const function_generic_t *function_list = NULL;
 

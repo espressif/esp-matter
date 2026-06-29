@@ -19,8 +19,6 @@
 #include <esp_matter.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
-#include <app-common/zap-generated/callback.h>
-#include <app/InteractionModelEngine.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
 #include <descriptor.h>
 #include <descriptor_ids.h>
@@ -29,13 +27,10 @@
 #include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
-using chip::app::CommandHandler;
-using chip::app::DataModel::Decode;
-using chip::TLV::TLVReader;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 
-static const char *TAG = "descriptor_cluster";
+static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 3;
 
 namespace esp_matter {
@@ -92,7 +87,7 @@ attribute_t *create_tag_list(cluster_t *cluster, uint8_t *value, uint16_t length
 #if CHIP_CONFIG_USE_ENDPOINT_UNIQUE_ID
 attribute_t *create_endpoint_unique_id(cluster_t *cluster, char *value, uint16_t length)
 {
-    VerifyOrReturnValue(length <= k_max_endpoint_unique_id_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_endpoint_unique_id_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound. cluster_id: 0x%08" PRIX32, descriptor::Id));
     return esp_matter::attribute::create(cluster, EndpointUniqueID::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length), k_max_endpoint_unique_id_length + 1);
 }
 #endif // CHIP_CONFIG_USE_ENDPOINT_UNIQUE_ID

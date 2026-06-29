@@ -3,15 +3,9 @@ namespace event {
     {% for event in cluster.get_events() %}
 event_t *create_{{ event.func_name | lower }}(cluster_t *cluster);
     {% endfor %}
-    {# Exceptions for switch cluster #}
     {% if cluster.esp_name == "switch_cluster" %}
-esp_err_t send_switch_latched(chip::EndpointId endpoint, uint8_t new_position);
-esp_err_t send_initial_press(chip::EndpointId endpoint, uint8_t new_position);
-esp_err_t send_long_press(chip::EndpointId endpoint, uint8_t new_position);
-esp_err_t send_short_release(chip::EndpointId endpoint, uint8_t previous_position);
-esp_err_t send_long_release(chip::EndpointId endpoint, uint8_t previous_position);
-esp_err_t send_multi_press_ongoing(chip::EndpointId endpoint, uint8_t new_position, uint8_t count);
-esp_err_t send_multi_press_complete(chip::EndpointId endpoint, uint8_t new_position, uint8_t count);
+{% from "exceptions/switch_cluster.jinja" import event_declarations with context %}
+{{ event_declarations() }}
     {% endif %}
 } /* event */
 

@@ -19,8 +19,6 @@
 #include <esp_matter.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
-#include <app-common/zap-generated/callback.h>
-#include <app/InteractionModelEngine.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
 #include <localization_configuration.h>
 #include <localization_configuration_ids.h>
@@ -29,13 +27,10 @@
 #include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
-using chip::app::CommandHandler;
-using chip::app::DataModel::Decode;
-using chip::TLV::TLVReader;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 
-static const char *TAG = "localization_configuration_cluster";
+static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 1;
 
 namespace esp_matter {
@@ -45,7 +40,7 @@ namespace localization_configuration {
 namespace attribute {
 attribute_t *create_active_locale(cluster_t *cluster, char *value, uint16_t length)
 {
-    VerifyOrReturnValue(length <= k_max_active_locale_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_active_locale_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound. cluster_id: 0x%08" PRIX32, localization_configuration::Id));
     return esp_matter::attribute::create(cluster, ActiveLocale::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, length), k_max_active_locale_length + 1);
 }
 

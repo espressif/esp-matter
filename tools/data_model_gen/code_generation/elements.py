@@ -140,6 +140,38 @@ class Cluster(SpecialConfigElement, BaseCluster):
         """Get the list of features sorted by ID and name"""
         return sorted(self.features, key=get_id_name_lambda())
 
+    def has_command_callbacks(self):
+        """True if any command has a generated command callback.
+
+        Gates the command-callback-only using declarations
+        (CommandHandler/Decode/TLVReader) in the cluster source.
+        """
+        return any(command.has_callback for command in self.commands)
+
+    def needs_callback_header(self):
+        """True if the cluster references symbols from zap-generated callback.h.
+
+        callback.h declares the emberAf*/Matter* cluster callbacks used both by
+        command callbacks and by function_list entries (e.g. ServerInitCallback,
+        ServerAttributeChangedCallback). Gates the callback.h include.
+        """
+        return self.has_command_callbacks() or bool(
+            getattr(self, "callback_functions", None)
+        )
+
+    def needs_log_tag(self):
+        """True if generated cluster source emits ESP_LOGE using TAG."""
+        if self.id != "0xffff":
+            return True
+        for attr in self.get_attributes():
+            if (
+                attr.type in ("string", "octstr")
+                and attr.get_default_value() not in (0, "0", "null", "NULL")
+                and not attr.is_internally_managed
+            ):
+                return True
+        return False
+
     def get_mandatory_attributes(self):
         """Get the list of mandatory attributes
         Attribute is mandatory:
@@ -439,6 +471,36 @@ class Cluster(SpecialConfigElement, BaseCluster):
                 elements["events"].append(event)
         return elements
 
+    def get_config_features(self):
+        """Returns features that contribute a member to the cluster config struct.
+        Features present in the cluster config struct only if the corresponding cluster has choice features [O.a, O.a+]
+        """
+        if not self.has_choice_features():
+            return []
+        return [
+            feature
+            for feature in self.get_features()
+            if feature.get_externally_managed_attributes()
+        ]
+
+    def get_config_init_list(self):
+        """Cluster config struct initialization list"""
+        parts = []
+        for attr in self.get_mandatory_attributes():
+            expr = attr.get_config_init_expr()
+            if expr:
+                parts.append(expr)
+        for _condition, comp_attrs in self.get_comparison_conditional_attributes():
+            for attr in comp_attrs:
+                expr = attr.get_config_init_expr()
+                if expr:
+                    parts.append(expr)
+        if self.delegate_init_callback and self.id != "0xffff":
+            parts.append("delegate(nullptr)")
+        if self.has_choice_features() and len(self.get_features()) > 0:
+            parts.append("feature_flags(0)")
+        return parts
+
 
 class Attribute(SpecialConfigElement, BaseAttribute):
     """Attribute class that inherits from BaseAttribute"""
@@ -529,6 +591,21 @@ class Attribute(SpecialConfigElement, BaseAttribute):
 
         return f"esp_matter_attr_val({expr})"
 
+    def get_config_init_expr(self):
+        """Attribute config struct initialization expression
+
+        Returns:
+        - None for attributes that get no initializer (internally managed,
+          or list types)
+        - String/octstr members are fixed-size arrays and are value-initialized with ``{0}``
+        - All others are initialized from their default value
+        """
+        if self.is_internally_managed or self.type == "list":
+            return None
+        if self.type in ("string", "octstr"):
+            return f"{self.func_name}{{0}}"
+        return f"{self.func_name}({self.get_default_value()})"
+
 
 class Command(SpecialConfigElement, BaseCommand):
     """Command class that inherits from BaseCommand"""
@@ -586,6 +663,14 @@ class Feature(SpecialConfigElement, BaseFeature):
         """Get the conformance condition"""
         return self.conformance.get_optional_condition()
 
+    def get_config_init_list(self):
+        """Feature config struct initialization list"""
+        return [
+            f"{attr.func_name}({attr.get_default_value()})"
+            for attr in self.get_attributes()
+            if not attr.is_complex and not attr.is_internally_managed
+        ]
+
 
 class Event(SpecialConfigElement, BaseEvent):
     """Event class that inherits from BaseEvent"""
@@ -623,10 +708,6 @@ class Device(BaseDevice):
             key=lambda x: (convert_to_int(x.get_id()), not x.server_cluster),
         )
 
-    def binding_cluster_available(self) -> bool:
-        """Check if a binding cluster is available"""
-        return any(cluster.client_cluster for cluster in self.get_mandatory_clusters())
-
     def get_mandatory_clusters(self):
         """Mandatory clusters from XML plus platform-specific extras."""
         return [
@@ -643,9 +724,8 @@ class Device(BaseDevice):
         """Get unique clusters (no duplicates) sorted by ID"""
         unique_clusters = []
         seen_names = set()
-        # Add the descriptor and binding clusters to the set of seen names as they are always present
+        # Add the descriptor clusters to the set of seen names as they are always present
         seen_names.add("descriptor")
-        seen_names.add("binding")
         sorted_clusters = self.get_clusters()
         for cluster in sorted_clusters:
             if cluster.esp_name not in seen_names:
@@ -691,3 +771,22 @@ class Device(BaseDevice):
     def has_optional_choice_clusters(self) -> bool:
         """Check if device has any O.a+ clusters."""
         return len(self.get_optional_choice_clusters()) > 0
+
+    def get_config_init_list(self):
+        """Device config struct initialization list
+
+        - Each mandatory server cluster contributes its non-complex, externally managed attributes (initialized from their default value)
+        - When the device has optional-choice clusters, `optional_clusters_mask(0)` is prepended
+        """
+        parts = []
+        for cluster in self.get_unique_mandatory_clusters():
+            if not cluster.server_cluster:
+                continue
+            for attribute in cluster.device_mandatory_attributes:
+                if not attribute.is_complex and not attribute.is_internally_managed:
+                    parts.append(
+                        f"{attribute.func_name}({attribute.get_default_value()})"
+                    )
+        if self.has_optional_choice_clusters():
+            parts.insert(0, "optional_clusters_mask(0)")
+        return parts

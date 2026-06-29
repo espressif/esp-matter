@@ -1,9 +1,7 @@
 {% if cluster.get_attributes() | length > 0 %}
 namespace attribute {
 {% for attr in cluster.get_attributes() %}
-{% if attr.has_special_config() %}
-#if {{ attr.get_special_config() }}
-{% endif %}
+{{ guard_open(attr) -}}
 {% set has_bounds = attr.type not in ["list", "string", "octstr"] and attr.get_max_value() is not none and attr.get_min_value() is not none and not attr.is_internally_managed %}
 attribute_t *create_{{ attr.func_name }}(cluster_t *cluster{% if attr.type in ["string", "octstr"] %}, {{ "char *" if attr.type == "string" else "uint8_t *" }}value, uint16_t length{% elif attr.type == "list" %}, uint8_t *value, uint16_t length, uint16_t count{% elif attr.is_nullable %}, nullable<{{ attr.get_type() }}> value{% else %}, {{ attr.get_type() }} value{% endif %})
 {
@@ -14,7 +12,7 @@ attribute_t *create_{{ attr.func_name }}(cluster_t *cluster{% if attr.type in ["
     VerifyOrReturnValue({{ attr.get_conformance_condition() }}, NULL);
     {% endif %}
     {% if attr.type in ["string", "octstr"] and attr.get_default_value() not in [0, "0", 'null', "NULL"] and not attr.is_internally_managed %}
-    VerifyOrReturnValue(length <= k_max_{{ attr.func_name }}_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_{{ attr.func_name }}_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound. cluster_id: 0x%08" PRIX32, {{ cluster.esp_name }}::Id));
     {% endif %}
     {% if has_bounds %}
     attribute_t *attribute = esp_matter::attribute::create(cluster, {{ attr.chip_name }}::Id, {{ attr.get_flag() }}, {{ attr.get_attr_val_expr("value") }}{% if attr.type == "string" and not attr.is_internally_managed %}, k_max_{{ attr.func_name }}_length + 1{% endif %});
@@ -24,10 +22,7 @@ attribute_t *create_{{ attr.func_name }}(cluster_t *cluster{% if attr.type in ["
     return esp_matter::attribute::create(cluster, {{ attr.chip_name }}::Id, {{ attr.get_flag() }}, {{ attr.get_attr_val_expr("value") }}{% if attr.type == "string" and not attr.is_internally_managed %}, k_max_{{ attr.func_name }}_length + 1{% endif %});
     {% endif %}
 }
-{% if attr.has_special_config() %}
-#endif // {{ attr.get_special_config() }}
-{% endif %}
-
+{{ guard_close(attr) }}
 {% endfor %}
 } /* attribute */
 {% endif %}
