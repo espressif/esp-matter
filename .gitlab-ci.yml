@@ -893,11 +893,15 @@ cppcheck:
     - apt-get update -qq && apt-get install -y -qq cppcheck > /dev/null 2>&1
   script:
     - ${ESP_MATTER_PATH}/tools/ci/run_cppcheck.sh
-  artifacts:
-    paths:
-      - cppcheck_report.txt
-    expire_in: 1 week
-    when: always
+  after_script:
+    - |
+      if [ -f cppcheck_report.txt ]; then
+        echo "------------------------------------------------------------"
+        echo "cppcheck_report.txt"
+        echo "------------------------------------------------------------"
+        cat cppcheck_report.txt
+        echo "------------------------------------------------------------"
+      fi
   tags:
     - build
 

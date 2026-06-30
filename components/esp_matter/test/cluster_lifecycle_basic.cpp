@@ -105,16 +105,19 @@ static void verify_cluster_lifecycle_no_heap_leak(chip::ClusterId cluster_id,
 // -----------------------------------------------------------------------------
 
 // Empty generated/provider init and shutdown callbacks
+// keep-sorted start sticky_comments=no
 // - Chime
 // - DeviceEnergyManagement
-// - EnergyEvse
 // - ElectricalPowerMeasurement
+// - EnergyEvse
 // - PowerTopology
 // - WebRTCTransportProvider
 // - WebRTCTransportRequestor
+// keep-sorted end
 
 // Root endpoint singleton providers. These clusters are initialized as node-wide/root endpoint services, so a
 // destroyable dynamic endpoint does not exercise their real ownership or teardown path.
+// keep-sorted start sticky_comments=no
 // - AccessControl
 // - AdministratorCommissioning
 // - BasicInformation
@@ -130,13 +133,16 @@ static void verify_cluster_lifecycle_no_heap_leak(chip::ClusterId cluster_id,
 // - TimeFormatLocalization
 // - TimeSynchronization
 // - UnitLocalization
+// keep-sorted end
 
 // Requires an application delegate.
-// - ClosureControl
+// keep-sorted start sticky_comments=no
 // - CameraAvStreamManagement
+// - ClosureControl
 // - TlsCertificateManagement
 // - TlsClientManagement
 // - WebRTCTransportProvider
+// keep-sorted end
 
 // Uses unordered_map that retains entries after endpoint destroy — leaks by design.
 // - ClosureDimension
@@ -144,10 +150,14 @@ static void verify_cluster_lifecycle_no_heap_leak(chip::ClusterId cluster_id,
 // - ZoneManagement
 
 // Requires an upstream server constructor that is not linked into this unit-test app build.
+// keep-sorted start sticky_comments=no
 // - ThreadNetworkDiagnostics
+// keep-sorted end
 
 // Shared provider implementation exercised by the concrete Resource Monitoring clusters below.
+// keep-sorted start sticky_comments=no
 // - ResourceMonitor: ActivatedCarbonFilterMonitoring, HepaFilterMonitoring
+// keep-sorted end
 
 // -----------------------------------------------------------------------------
 // TESTS
