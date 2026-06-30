@@ -54,7 +54,7 @@ The Prerequisites for ESP-IDF:
 
 .. only:: esp32c5 or esp32c61
 
-    - For ``ESP32C5`` and ``ESP32C61``, the IDF version should be `v5.5.1 <https://github.com/espressif/esp-idf/tree/v5.5.1>`__ or newer.
+    - For ``ESP32C5`` and ``ESP32C61``, the IDF version should be `v5.5.5 <https://github.com/espressif/esp-idf/tree/v5.5.5>`__ or newer.
 
 .. note::
 
@@ -68,7 +68,7 @@ The Prerequisites for ESP-IDF:
       ::
 
          git clone --recursive https://github.com/espressif/esp-idf.git
-         cd esp-idf; git checkout v5.4.1; git submodule update --init --recursive;
+         cd esp-idf; git checkout v5.5.5; git submodule update --init --recursive;
          ./install.sh
          cd ..
 
@@ -79,7 +79,7 @@ The Prerequisites for ESP-IDF:
       ::
 
          git clone --recursive https://github.com/espressif/esp-idf.git
-         cd esp-idf; git checkout v5.5.1; git submodule update --init --recursive;
+         cd esp-idf; git checkout v5.5.5; git submodule update --init --recursive;
          ./install.sh
          cd ..
 
