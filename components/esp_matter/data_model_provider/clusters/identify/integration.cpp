@@ -24,7 +24,9 @@
 #include <app/clusters/identify-server/identify-server.h>
 #include <app/server-cluster/DefaultServerCluster.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
+#include <esp_matter_data_model.h>
 #include <esp_matter_data_model_priv.h>
+#include <lib/support/CHIPMem.h>
 #include <esp_matter_identify.h>
 #include <lib/support/CodeUtils.h>
 #include <lib/support/logging/TextOnlyLogging.h>
@@ -57,6 +59,8 @@ Identify *GetLegacyIdentifyInstance(EndpointId endpoint)
 
 class IdentifyLegacyDelegate : public IdentifyDelegate {
 public:
+    explicit IdentifyLegacyDelegate(EndpointId endpoint) : mEndpoint(endpoint) {}
+
     void OnIdentifyStart(IdentifyCluster &cluster) override
     {
         Identify *identify = GetLegacyIdentifyInstance(cluster.GetPaths()[0].mEndpointId);
@@ -90,11 +94,46 @@ public:
     }
     bool IsTriggerEffectEnabled() const override
     {
-        return true;
+        return esp_matter::command::get(mEndpoint, Id, Commands::TriggerEffect::Id) != nullptr;
     }
+
+    EndpointId mEndpoint;
+    IdentifyLegacyDelegate *mNext = nullptr;
 };
 
-IdentifyLegacyDelegate gLegacyDelegate;
+IdentifyLegacyDelegate *sIdentifyDelegateList = nullptr;
+
+IdentifyLegacyDelegate *GetOrCreateIdentifyDelegate(EndpointId endpoint)
+{
+    for (IdentifyLegacyDelegate *delegate = sIdentifyDelegateList; delegate != nullptr; delegate = delegate->mNext) {
+        if (delegate->mEndpoint == endpoint) {
+            return delegate;
+        }
+    }
+    IdentifyLegacyDelegate *delegate = chip::Platform::New<IdentifyLegacyDelegate>(endpoint);
+    if (delegate != nullptr) {
+        delegate->mNext = sIdentifyDelegateList;
+        sIdentifyDelegateList = delegate;
+    }
+    return delegate;
+}
+
+void FreeIdentifyDelegate(EndpointId endpoint)
+{
+    IdentifyLegacyDelegate *previous = nullptr;
+    for (IdentifyLegacyDelegate *delegate = sIdentifyDelegateList; delegate != nullptr;
+            previous = delegate, delegate = delegate->mNext) {
+        if (delegate->mEndpoint == endpoint) {
+            if (previous == nullptr) {
+                sIdentifyDelegateList = delegate->mNext;
+            } else {
+                previous->mNext = delegate->mNext;
+            }
+            chip::Platform::Delete(delegate);
+            return;
+        }
+    }
+}
 
 inline void RegisterLegacyIdentify(Identify *inst)
 {
@@ -147,7 +186,7 @@ Identify::Identify(EndpointId endpoint, onIdentifyStartCb onIdentifyStart, onIde
     , mCluster(
         chip::app::Clusters::IdentifyCluster::Config(endpoint, timerDelegate ? * timerDelegate : sDefaultTimerDelegate)
         .WithIdentifyType(identifyType)
-        .WithDelegate(&gLegacyDelegate)
+        .WithDelegate(GetOrCreateIdentifyDelegate(endpoint))
         .WithEffectIdentifier(effectIdentifier)
         .WithEffectVariant(effectVariant))
 {
@@ -156,6 +195,7 @@ Identify::Identify(EndpointId endpoint, onIdentifyStartCb onIdentifyStart, onIde
 
 Identify::~Identify()
 {
+    FreeIdentifyDelegate(mCluster.Cluster().GetPaths()[0].mEndpointId);
     UnregisterLegacyIdentify(this);
 }
 
