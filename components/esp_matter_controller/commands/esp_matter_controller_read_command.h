@@ -52,7 +52,8 @@ public:
                  ScopedMemoryBufferWithSize<EventPathParams> &&event_paths, attribute_report_cb_t attribute_cb,
                  read_done_cb_t read_cb_done, event_report_cb_t event_cb,
                  on_connect_failure_cb_t connect_fail_cb = nullptr,
-                 on_error_callback error_cb = nullptr)
+                 on_error_callback error_cb = nullptr,
+                 bool fabric_filtered = false)
         : m_node_id(node_id)
         , m_buffered_read_cb(*this)
         , m_attr_paths(std::move(attr_paths))
@@ -64,8 +65,10 @@ public:
         , event_data_cb(event_cb)
         , m_on_connect_failure_cb(connect_fail_cb)
         , m_on_error_cb(error_cb)
+        , m_fabric_filtered(fabric_filtered)
     {
     }
+
     /** Constructor for command with single path.
      * @note 0xFFFF could be used as wildcard EndpointId
      * @note 0xFFFFFFFF could be used as wildcard ClusterId/AttributeId/EventId
@@ -74,7 +77,8 @@ public:
                  read_command_type_t command_type, attribute_report_cb_t attribute_cb, read_done_cb_t read_cb_done,
                  event_report_cb_t event_cb,
                  on_connect_failure_cb_t connect_fail_cb = nullptr,
-                 on_error_callback error_cb = nullptr)
+                 on_error_callback error_cb = nullptr,
+                 bool fabric_filtered = false)
         : m_node_id(node_id)
         , m_buffered_read_cb(*this)
         , on_device_connected_cb(on_device_connected_fcn, this)
@@ -84,6 +88,7 @@ public:
         , event_data_cb(event_cb)
         , m_on_connect_failure_cb(connect_fail_cb)
         , m_on_error_cb(error_cb)
+        , m_fabric_filtered(fabric_filtered)
     {
         if (command_type == READ_ATTRIBUTE) {
             m_attr_paths.Alloc(1);
@@ -135,6 +140,8 @@ private:
 
     on_connect_failure_cb_t m_on_connect_failure_cb;
     on_error_callback m_on_error_cb;
+
+    bool m_fabric_filtered;
 };
 
 /** Send read command with multiple attribute paths

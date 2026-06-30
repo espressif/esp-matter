@@ -350,6 +350,9 @@ esp_err_t send_group_request(const uint8_t fabric_index, const CommandPathParams
 namespace read {
 esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams *attr_path, size_t attr_path_size,
                        EventPathParams *event_path, size_t event_path_size, ReadClient::Callback &callback);
+                       
+esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams *attr_path, size_t attr_path_size,
+                       EventPathParams *event_path, size_t event_path_size, ReadClient::Callback &callback, bool fabric_filtered);
 } // namespace read
 
 /** Attribute write API
