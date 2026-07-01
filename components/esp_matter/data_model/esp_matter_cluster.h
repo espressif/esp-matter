@@ -15,8 +15,8 @@
 #pragma once
 
 #include <esp_matter_attribute.h>
-#include <esp_matter_feature.h>
 #include <esp_matter_data_model.h>
+#include <esp_matter_feature.h>
 #include <stdint.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
@@ -69,155 +69,188 @@ typedef struct config {
     // Empty config for API consistency
 } config_t;
 
-} /* common */
+} // namespace common
 
 namespace descriptor {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* descriptor */
+} // namespace descriptor
 
 namespace actions {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    config()
+        : delegate(nullptr)
+    {
+    }
 } config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* actions */
+} // namespace actions
 
 namespace access_control {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* access_control */
+} // namespace access_control
 
 namespace basic_information {
 typedef struct config {
     char node_label[k_max_node_label_length + 1];
-    config() : node_label{0} {}
+    config()
+        : node_label{0}
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* basic_information */
+} // namespace basic_information
 
 namespace binding {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* binding */
+} // namespace binding
 
 namespace ota_software_update_provider {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    config()
+        : delegate(nullptr)
+    {
+    }
 } config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* ota_software_update_provider */
+} // namespace ota_software_update_provider
 
 namespace ota_software_update_requestor {
 typedef struct config {
     bool update_possible;
     uint8_t update_state;
     nullable<uint8_t> update_state_progress;
-    config() : update_possible(true), update_state(0), update_state_progress() {}
+    config()
+        : update_possible(true)
+        , update_state(0)
+        , update_state_progress()
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* ota_software_update_requestor */
+} // namespace ota_software_update_requestor
 
 namespace general_commissioning {
 typedef struct config {
     uint64_t breadcrumb;
-    config() : breadcrumb(0) {}
+    config()
+        : breadcrumb(0)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* general_commissioning */
+} // namespace general_commissioning
 
 #ifndef CONFIG_CUSTOM_NETWORK_CONFIG
 namespace network_commissioning {
 typedef struct config {
     uint32_t feature_map;
-    config() :
+    config()
+        :
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI
-        feature_map(chip::to_underlying(chip::app::Clusters::NetworkCommissioning::Feature::kWiFiNetworkInterface)) {}
+        feature_map(chip::to_underlying(chip::app::Clusters::NetworkCommissioning::Feature::kWiFiNetworkInterface))
+    {
+    }
 #elif CHIP_DEVICE_CONFIG_ENABLE_THREAD
-        feature_map(chip::to_underlying(chip::app::Clusters::NetworkCommissioning::Feature::kThreadNetworkInterface)) {}
+        feature_map(chip::to_underlying(chip::app::Clusters::NetworkCommissioning::Feature::kThreadNetworkInterface))
+    {
+    }
 #else
-        feature_map(chip::to_underlying(chip::app::Clusters::NetworkCommissioning::Feature::kEthernetNetworkInterface)) {}
+        feature_map(chip::to_underlying(chip::app::Clusters::NetworkCommissioning::Feature::kEthernetNetworkInterface))
+    {
+    }
 #endif
 } config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* network_commissioning */
+} // namespace network_commissioning
 #endif // CONFIG_CUSTOM_NETWORK_CONFIG
 
 namespace diagnostic_logs {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    config()
+        : delegate(nullptr)
+    {
+    }
 } config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* diagnostic_logs */
+} // namespace diagnostic_logs
 
 namespace general_diagnostics {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* general_diagnostics */
+} // namespace general_diagnostics
 
 namespace software_diagnostics {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* software_diagnostics */
+} // namespace software_diagnostics
 
 namespace administrator_commissioning {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* administrator_commissioning */
+} // namespace administrator_commissioning
 
 namespace operational_credentials {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* operational_credentials */
+} // namespace operational_credentials
 
 namespace group_key_management {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, uint8_t flags);
-} /* group_key_management */
+} // namespace group_key_management
 
 namespace wifi_network_diagnostics {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* wifi_network_diagnostics */
+} // namespace wifi_network_diagnostics
 
 namespace thread_network_diagnostics {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* thread_network_diagnostics */
+} // namespace thread_network_diagnostics
 
 namespace ethernet_network_diagnostics {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* ethernet_network_diagnostics */
+} // namespace ethernet_network_diagnostics
 
 namespace time_synchronization {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    config()
+        : delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* time_synchronization */
+} // namespace time_synchronization
 
 namespace unit_localization {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* unit_localization */
+} // namespace unit_localization
 
 namespace bridged_device_basic_information {
 typedef struct config {
     bool reachable;
-    config() : reachable(true) {}
+    config()
+        : reachable(true)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* bridged_device_basic_information */
+} // namespace bridged_device_basic_information
 
 namespace power_source {
 typedef struct config {
@@ -231,70 +264,91 @@ typedef struct config {
         feature::replaceable::config_t replaceable;
     } features;
     uint32_t feature_flags;
-	config() : status(0), order(0), description{0}, feature_flags(0) {}
+    config()
+        : status(0)
+        , order(0)
+        , description{0}
+        , feature_flags(0)
+    {
+    }
 } config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* power_source */
+} // namespace power_source
 
 namespace icd_management {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* icd_management */
+} // namespace icd_management
 
 namespace user_label {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* user_label */
+} // namespace user_label
 
 namespace fixed_label {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* fixed_label */
+} // namespace fixed_label
 
 namespace identify {
 typedef struct config {
     uint16_t identify_time;
     uint8_t identify_type;
-    config() : identify_time(0), identify_type(0) {}
+    config()
+        : identify_time(0)
+        , identify_type(0)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* identify */
+} // namespace identify
 
 namespace groups {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 uint8_t get_server_cluster_count();
-} /* groups */
+} // namespace groups
 
 namespace scenes_management {
 typedef struct config {
     uint16_t scene_table_size;
-    config() : scene_table_size(16) {}
+    config()
+        : scene_table_size(16)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* scenes_management */
+} // namespace scenes_management
 
 namespace on_off {
 typedef struct config {
     bool on_off;
-    config() : on_off(false) {}
+    config()
+        : on_off(false)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* on_off */
+} // namespace on_off
 
 namespace level_control {
 typedef struct config {
     nullable<uint8_t> current_level;
     nullable<uint8_t> on_level;
     uint8_t options;
-    config() : current_level(), on_level(), options(0) {}
+    config()
+        : current_level()
+        , on_level()
+        , options(0)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* level_control */
+} // namespace level_control
 
 namespace color_control {
 typedef struct config {
@@ -303,12 +357,18 @@ typedef struct config {
     uint8_t enhanced_color_mode;
     uint16_t color_capabilities;
     nullable<uint8_t> number_of_primaries;
-    config() : color_mode(1), color_control_options(0), enhanced_color_mode(1),
-               color_capabilities(0), number_of_primaries(0) {}
+    config()
+        : color_mode(1)
+        , color_control_options(0)
+        , enhanced_color_mode(1)
+        , color_capabilities(0)
+        , number_of_primaries(0)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* color_control */
+} // namespace color_control
 
 namespace fan_control {
 typedef struct config {
@@ -317,11 +377,18 @@ typedef struct config {
     nullable<uint8_t> percent_setting;
     uint8_t percent_current;
     void *delegate;
-    config() : fan_mode(0), fan_mode_sequence(2), percent_setting(0), percent_current(0), delegate(nullptr) {}
+    config()
+        : fan_mode(0)
+        , fan_mode_sequence(2)
+        , percent_setting(0)
+        , percent_current(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* fan_control */
+} // namespace fan_control
 
 namespace thermostat {
 typedef struct config {
@@ -339,45 +406,59 @@ typedef struct config {
         feature::matter_schedule_configuration::config_t matter_schedule_configuration;
     } features;
     uint32_t feature_flags;
-    config() : local_temperature(), control_sequence_of_operation(4), system_mode(1), delegate(nullptr), feature_flags(0) {}
+    config()
+        : local_temperature()
+        , control_sequence_of_operation(4)
+        , system_mode(1)
+        , delegate(nullptr)
+        , feature_flags(0)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* thermostat */
+} // namespace thermostat
 
 namespace thermostat_user_interface_configuration {
 typedef struct config {
     uint8_t temperature_display_mode;
     uint8_t keypad_lockout;
-    config() : temperature_display_mode(0), keypad_lockout(0) {}
+    config()
+        : temperature_display_mode(0)
+        , keypad_lockout(0)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* thermostat_user_interface_configuration */
+} // namespace thermostat_user_interface_configuration
 
 namespace air_quality {
 using config_t = common::config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* air_quality */
+} // namespace air_quality
 
 namespace resource_monitoring {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    config()
+        : delegate(nullptr)
+    {
+    }
 } config_t;
 
-} /* resource_monitoring */
+} // namespace resource_monitoring
 
 namespace hepa_filter_monitoring {
 using config_t = resource_monitoring::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* hepa_filter_monitoring */
+} // namespace hepa_filter_monitoring
 
 namespace activated_carbon_filter_monitoring {
 using config_t = resource_monitoring::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* activated_carbon_filter_monitoring */
+} // namespace activated_carbon_filter_monitoring
 
 namespace concentration_measurement {
 typedef struct config {
@@ -390,80 +471,91 @@ typedef struct config {
     } features;
     uint32_t feature_flags;
     void *delegate;
-    config() : measurement_medium(0), feature_flags(0) {}
+    config()
+        : measurement_medium(0)
+        , feature_flags(0)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t cluster_id);
-} /* concentration_measurement */
+} // namespace concentration_measurement
 
 namespace carbon_monoxide_concentration_measurement {
 using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* carbon_monoxide_concentration_measurement */
+} // namespace carbon_monoxide_concentration_measurement
 
 namespace carbon_dioxide_concentration_measurement {
 using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* carbon_dioxide_concentration_measurement */
+} // namespace carbon_dioxide_concentration_measurement
 
 namespace nitrogen_dioxide_concentration_measurement {
 using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* nitrogen_dioxide_concentration_measurement */
+} // namespace nitrogen_dioxide_concentration_measurement
 
 namespace ozone_concentration_measurement {
 using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* ozone_concentration_measurement */
+} // namespace ozone_concentration_measurement
 
 namespace formaldehyde_concentration_measurement {
 using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* formaldehyde_concentration_measurement */
+} // namespace formaldehyde_concentration_measurement
 
 namespace pm1_concentration_measurement {
 using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* pm1_concentration_measurement */
+} // namespace pm1_concentration_measurement
 
 namespace pm25_concentration_measurement {
 using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* pm25_concentration_measurement */
+} // namespace pm25_concentration_measurement
 
 namespace pm10_concentration_measurement {
 using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* pm10_concentration_measurement */
+} // namespace pm10_concentration_measurement
 
 namespace radon_concentration_measurement {
 using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* radon_concentration_measurement */
+} // namespace radon_concentration_measurement
 
 namespace total_volatile_organic_compounds_concentration_measurement {
 using config_t = concentration_measurement::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* total_volatile_organic_compounds_concentration_measurement */
+} // namespace total_volatile_organic_compounds_concentration_measurement
 
 namespace operational_state {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    config()
+        : delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* operational_state */
+} // namespace operational_state
 
 namespace laundry_washer_mode {
 typedef struct config {
     uint8_t current_mode;
     void *delegate;
-    config() : current_mode(0), delegate(nullptr) {}
+    config()
+        : current_mode(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* laundry_washer_mode */
+} // namespace laundry_washer_mode
 
 namespace laundry_washer_controls {
 typedef struct config {
@@ -473,49 +565,67 @@ typedef struct config {
     } features;
     uint32_t feature_flags;
     void *delegate;
-    config() : feature_flags(0), delegate(nullptr) {}
+    config()
+        : feature_flags(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* laundry_washer_controls */
+} // namespace laundry_washer_controls
 
 namespace laundry_dryer_controls {
 typedef struct config {
     nullable<uint8_t> selected_dryness_level;
     void *delegate;
-    config() : selected_dryness_level(0), delegate(nullptr) {}
+    config()
+        : selected_dryness_level(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* laundry_dryer_controls */
+} // namespace laundry_dryer_controls
 
 namespace dish_washer_mode {
 typedef struct config {
     uint8_t current_mode;
     void *delegate;
-    config() : current_mode(0), delegate(nullptr) {}
+    config()
+        : current_mode(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* dish_washer_mode */
+} // namespace dish_washer_mode
 
 namespace dish_washer_alarm {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    config()
+        : delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* dish_washer_alarm */
+} // namespace dish_washer_alarm
 
 namespace smoke_co_alarm {
 typedef struct config {
     uint32_t feature_flags;
-    config() : feature_flags(0) {}
+    config()
+        : feature_flags(0)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* smoke_co_alarm */
+} // namespace smoke_co_alarm
 
 namespace door_lock {
 typedef struct config {
@@ -525,11 +635,19 @@ typedef struct config {
     uint8_t operating_mode;
     uint16_t supported_operating_modes;
     void *delegate;
-    config() : lock_state(0), lock_type(0), actuator_enabled(0), operating_mode(0), supported_operating_modes(0xFFF6), delegate(nullptr) {}
+    config()
+        : lock_state(0)
+        , lock_type(0)
+        , actuator_enabled(0)
+        , operating_mode(0)
+        , supported_operating_modes(0xFFF6)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* door_lock */
+} // namespace door_lock
 
 namespace window_covering {
 typedef struct config {
@@ -544,11 +662,20 @@ typedef struct config {
     } features;
     uint32_t feature_flags;
     void *delegate;
-    config(uint8_t end_product_type = 0) : type(0), config_status(0), operational_status(0), end_product_type(end_product_type), mode(0), feature_flags(0), delegate(nullptr) {}
+    config(uint8_t end_product_type = 0)
+        : type(0)
+        , config_status(0)
+        , operational_status(0)
+        , end_product_type(end_product_type)
+        , mode(0)
+        , feature_flags(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* window_covering */
+} // namespace window_covering
 
 namespace switch_cluster {
 typedef struct config {
@@ -558,33 +685,48 @@ typedef struct config {
         feature::momentary_switch_multi_press::config_t momentary_switch_multi_press;
     } features;
     uint32_t feature_flags;
-    config() : number_of_positions(2), current_position(0), feature_flags(0) {}
+    config()
+        : number_of_positions(2)
+        , current_position(0)
+        , feature_flags(0)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* switch_cluster */
+} // namespace switch_cluster
 
 namespace temperature_measurement {
 typedef struct config {
     nullable<int16_t> measured_value;
     nullable<int16_t> min_measured_value;
     nullable<int16_t> max_measured_value;
-    config() : measured_value(), min_measured_value(), max_measured_value() {}
+    config()
+        : measured_value()
+        , min_measured_value()
+        , max_measured_value()
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* temperature_measurement */
+} // namespace temperature_measurement
 
 namespace relative_humidity_measurement {
 typedef struct config {
     nullable<uint16_t> measured_value;
     nullable<uint16_t> min_measured_value;
     nullable<uint16_t> max_measured_value;
-    config() : measured_value(), min_measured_value(), max_measured_value() {}
+    config()
+        : measured_value()
+        , min_measured_value()
+        , max_measured_value()
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* relative_humidity_measurement */
+} // namespace relative_humidity_measurement
 
 namespace occupancy_sensing {
 typedef struct config {
@@ -592,81 +734,113 @@ typedef struct config {
     uint8_t occupancy_sensor_type;
     uint8_t occupancy_sensor_type_bitmap;
     uint32_t feature_flags;
-    config() : occupancy(0), occupancy_sensor_type(0),
-               occupancy_sensor_type_bitmap(0), feature_flags(0) {}
+    config()
+        : occupancy(0)
+        , occupancy_sensor_type(0)
+        , occupancy_sensor_type_bitmap(0)
+        , feature_flags(0)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* occupancy_sensing */
+} // namespace occupancy_sensing
 
 namespace boolean_state {
 typedef struct config {
     bool state_value;
-    config() : state_value(0) {}
+    config()
+        : state_value(0)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* boolean_state */
+} // namespace boolean_state
 
 namespace boolean_state_configuration {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    config()
+        : delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* boolean_state */
+} // namespace boolean_state_configuration
 
 namespace localization_configuration {
 typedef struct config {
     char active_locale[k_max_active_locale_length + 1];
-    config() : active_locale{0} {}
+    config()
+        : active_locale{0}
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* localization_configuration_cluster */
+} // namespace localization_configuration
 
 namespace time_format_localization {
 typedef struct config {
     uint8_t hour_format;
-    config() : hour_format(0) {}
+    config()
+        : hour_format(0)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* time_format_localization */
+} // namespace time_format_localization
 
 namespace illuminance_measurement {
 typedef struct config {
     nullable<uint16_t> measured_value;
     nullable<uint16_t> min_measured_value;
     nullable<uint16_t> max_measured_value;
-    config() : measured_value(0), min_measured_value(), max_measured_value() {}
+    config()
+        : measured_value(0)
+        , min_measured_value()
+        , max_measured_value()
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* illuminance_measurement */
+} // namespace illuminance_measurement
 
 namespace pressure_measurement {
 typedef struct config {
     nullable<int16_t> measured_value;
     nullable<int16_t> min_measured_value;
     nullable<int16_t> max_measured_value;
-    config() : measured_value(), min_measured_value(), max_measured_value() {}
+    config()
+        : measured_value()
+        , min_measured_value()
+        , max_measured_value()
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* pressure_measurement */
+} // namespace pressure_measurement
 
 namespace flow_measurement {
 typedef struct config {
     nullable<uint16_t> measured_value;
     nullable<uint16_t> min_measured_value;
     nullable<uint16_t> max_measured_value;
-    config() : measured_value(), min_measured_value(), max_measured_value() {}
+    config()
+        : measured_value()
+        , min_measured_value()
+        , max_measured_value()
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* flow_measurement */
+} // namespace flow_measurement
 
 namespace pump_configuration_and_control {
 typedef struct config {
@@ -688,16 +862,22 @@ typedef struct config {
         feature::constant_temperature::config_t constant_temperature;
     } features;
     uint32_t feature_flags;
-    config(
-        nullable<int16_t> max_pressure = nullable<int16_t>(),
-        nullable<uint16_t> max_speed = nullable<uint16_t>(),
-        nullable<uint16_t> max_flow = nullable<uint16_t>()
-    ) : max_pressure(max_pressure), max_speed(max_speed), max_flow(max_flow),
-        effective_operation_mode(0), effective_control_mode(0), capacity(), operation_mode(0), feature_flags(0) {}
+    config(nullable<int16_t> max_pressure = nullable<int16_t>(), nullable<uint16_t> max_speed = nullable<uint16_t>(),
+           nullable<uint16_t> max_flow = nullable<uint16_t>())
+        : max_pressure(max_pressure)
+        , max_speed(max_speed)
+        , max_flow(max_flow)
+        , effective_operation_mode(0)
+        , effective_control_mode(0)
+        , capacity()
+        , operation_mode(0)
+        , feature_flags(0)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* pump_configuration_and_control */
+} // namespace pump_configuration_and_control
 
 namespace mode_select {
 typedef struct config {
@@ -705,11 +885,17 @@ typedef struct config {
     const nullable<uint16_t> standard_namespace;
     uint8_t current_mode;
     void *delegate;
-    config() : description{0}, standard_namespace(), current_mode(0), delegate(nullptr) {}
+    config()
+        : description{0}
+        , standard_namespace()
+        , current_mode(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* mode_select */
+} // namespace mode_select
 
 namespace temperature_control {
 typedef struct config {
@@ -719,135 +905,185 @@ typedef struct config {
         feature::temperature_step::config_t temperature_step;
     } features;
     uint32_t feature_flags;
-    config() : feature_flags(0) {}
+    config()
+        : feature_flags(0)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* temperature_control */
+} // namespace temperature_control
 
 namespace refrigerator_alarm {
 typedef struct config {
     uint32_t mask;
     uint32_t state;
     uint32_t supported;
-    config() : mask(1), state(0), supported(1) {}
+    config()
+        : mask(1)
+        , state(0)
+        , supported(1)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* refrigerator_alarm */
+} // namespace refrigerator_alarm
 
 namespace refrigerator_and_tcc_mode {
 typedef struct config {
     uint8_t current_mode;
     void *delegate;
-    config() : current_mode(0), delegate(nullptr) {}
+    config()
+        : current_mode(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* refrigerator_and_tcc_mode */
+} // namespace refrigerator_and_tcc_mode
 
 namespace rvc_run_mode {
 typedef struct config {
     uint8_t current_mode;
     void *delegate;
-    config() : current_mode(0), delegate(nullptr) {}
+    config()
+        : current_mode(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* rvc_run_mode */
+} // namespace rvc_run_mode
 
 namespace rvc_clean_mode {
 typedef struct config {
     uint8_t current_mode;
     void *delegate;
-    config() : current_mode(0), delegate(nullptr) {}
+    config()
+        : current_mode(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* rvc_clean_mode */
+} // namespace rvc_clean_mode
 
 namespace microwave_oven_mode {
 typedef struct config {
     uint8_t current_mode;
     void *delegate;
-    config() : current_mode(0), delegate(nullptr) {}
+    config()
+        : current_mode(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* microwave_oven_mode */
+} // namespace microwave_oven_mode
 
 namespace microwave_oven_control {
 typedef struct config {
     uint32_t feature_flags;
     void *delegate;
-    config() : feature_flags(0), delegate(nullptr) {}
+    config()
+        : feature_flags(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* microwave_oven_control */
+} // namespace microwave_oven_control
 
 namespace rvc_operational_state {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* rvc_operational_state */
+} // namespace rvc_operational_state
 
 namespace keypad_input {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    config()
+        : delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* keypad_input */
+} // namespace keypad_input
 
 namespace power_topology {
 typedef struct config {
     uint32_t feature_flags;
     void *delegate;
-    config() : feature_flags(0), delegate(nullptr) {}
+    config()
+        : feature_flags(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* power_topology */
+} // namespace power_topology
 
 namespace electrical_power_measurement {
 typedef struct config {
     uint32_t feature_flags;
     void *delegate;
-    config() : feature_flags(0), delegate(nullptr) {}
+    config()
+        : feature_flags(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* electrical_power_measurement */
+} // namespace electrical_power_measurement
 
 namespace electrical_energy_measurement {
 typedef struct config {
     uint32_t feature_flags;
     void *delegate;
-    config() : feature_flags(0), delegate(nullptr) {}
+    config()
+        : feature_flags(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* electrical_energy_measurement */
+} // namespace electrical_energy_measurement
 
 namespace energy_evse_mode {
 typedef struct config {
     uint8_t current_mode;
     void *delegate;
-    config() : current_mode(0), delegate(nullptr) {}
+    config()
+        : current_mode(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* energy_evse_mode */
+} // namespace energy_evse_mode
 
 namespace energy_evse {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    config()
+        : delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* energy_evse */
+} // namespace energy_evse
 
 namespace valve_configuration_and_control {
 typedef struct config {
@@ -856,67 +1092,90 @@ typedef struct config {
     nullable<uint8_t> current_state;
     nullable<uint8_t> target_state;
     void *delegate;
-    config() : open_duration(), default_open_duration(), current_state(), target_state(), delegate(nullptr) {}
+    config()
+        : open_duration()
+        , default_open_duration()
+        , current_state()
+        , target_state()
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* valve_configuration_and_control */
+} // namespace valve_configuration_and_control
 
 namespace device_energy_management {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    config()
+        : delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* device_energy_management */
+} // namespace device_energy_management
 
 namespace device_energy_management_mode {
 typedef struct config {
     uint8_t current_mode;
     void *delegate;
-    config() : current_mode(0), delegate(nullptr) {}
+    config()
+        : current_mode(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* device_energy_management_mode */
+} // namespace device_energy_management_mode
 
 namespace application_basic {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    config()
+        : delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* application_basic */
+} // namespace application_basic
 
 namespace thread_border_router_management {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    config()
+        : delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* thread_border_router_management */
+} // namespace thread_border_router_management
 
 namespace wifi_network_management {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* wifi_network_management */
+} // namespace wifi_network_management
 
 namespace thread_network_directory {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* thread_network_directory */
+} // namespace thread_network_directory
 
 namespace service_area {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    config()
+        : delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* service_area */
+} // namespace service_area
 
 namespace water_heater_management {
 typedef struct config {
@@ -924,21 +1183,31 @@ typedef struct config {
     uint8_t heat_demand;
     uint8_t boost_state;
     void *delegate;
-    config() : heater_types(0), heat_demand(0), boost_state(0), delegate(nullptr) {}
+    config()
+        : heater_types(0)
+        , heat_demand(0)
+        , boost_state(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* water_heater_management */
+} // namespace water_heater_management
 
 namespace water_heater_mode {
 typedef struct config {
     uint8_t current_mode;
     void *delegate;
-    config() : current_mode(0), delegate(nullptr) {}
+    config()
+        : current_mode(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* water_heater_mode */
+} // namespace water_heater_mode
 
 namespace energy_preference {
 typedef struct config {
@@ -948,136 +1217,183 @@ typedef struct config {
     } features;
     uint32_t feature_flags;
     void *delegate;
-    config() : feature_flags(0), delegate(nullptr) {}
+    config()
+        : feature_flags(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* energy_preference */
+} // namespace energy_preference
 
 namespace commissioner_control {
 typedef struct config {
     uint32_t supported_device_categories;
     void *delegate;
-    config() : supported_device_categories(0), delegate(nullptr) {}
+    config()
+        : supported_device_categories(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* commissioner_control */
+} // namespace commissioner_control
 
 namespace ecosystem_information {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* ecosystem_information */
+} // namespace ecosystem_information
 
 namespace camera_av_stream_management {
 typedef struct config {
     uint32_t max_content_buffer_size;
     uint32_t max_network_bandwidth;
     uint32_t feature_flags;
-    config()  : max_content_buffer_size(0), max_network_bandwidth(0), feature_flags(0) {}
+    void *delegate;
+    config()
+        : max_content_buffer_size(0)
+        , max_network_bandwidth(0)
+        , feature_flags(0)
+        , delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-}/*camera av stream management*/
+} // namespace camera_av_stream_management
 
 namespace webrtc_transport_provider {
-using config_t = common::config_t;
+typedef struct config {
+    void *delegate;
+    config()
+        : delegate(nullptr)
+    {
+    }
+} config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-}/*webrtc transport provider*/
+} // namespace webrtc_transport_provider
 
 namespace webrtc_transport_requestor {
 using config_t = common::config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-}/*webrtc transport requestor*/
-
+} // namespace webrtc_transport_requestor
 
 namespace chime {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    config()
+        : delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* chime */
+} // namespace chime
 
 namespace closure_control {
 typedef struct config {
     void *delegate;
     uint32_t feature_flags;
-    config() : delegate(nullptr), feature_flags(0) {}
+    config()
+        : delegate(nullptr)
+        , feature_flags(0)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* closure_control */
+} // namespace closure_control
 
 namespace closure_dimension {
 typedef struct config {
     void *delegate;
     uint32_t feature_flags = 0;
-    config() : delegate(nullptr), feature_flags(0) {}
+    config()
+        : delegate(nullptr)
+        , feature_flags(0)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* closure_dimension */
+} // namespace closure_dimension
 
 namespace camera_av_settings_user_level_management {
 typedef struct config {
     uint32_t feature_flags;
-    config() : feature_flags(0) {}
+    config()
+        : feature_flags(0)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* camera_av_settings_user_level_management */
+} // namespace camera_av_settings_user_level_management
 
 namespace push_av_stream_transport {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    config()
+        : delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* push_av_stream_transport */
+} // namespace push_av_stream_transport
 
 namespace commodity_tariff {
 typedef struct config {
     void *delegate;
     uint32_t feature_flags;
-    config() : delegate(nullptr), feature_flags(0) {}
+    config()
+        : delegate(nullptr)
+        , feature_flags(0)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* commodity_tariff */
+} // namespace commodity_tariff
 
 namespace commodity_price {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    config()
+        : delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* commodity_price */
+} // namespace commodity_price
 
 namespace commodity_metering {
 using config_t = common::config_t;
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* commodity_metering */
+} // namespace commodity_metering
 
 namespace electrical_grid_conditions {
 typedef struct config {
     void *delegate;
-    config() : delegate(nullptr) {}
+    config()
+        : delegate(nullptr)
+    {
+    }
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* electrical_grid_conditions */
+} // namespace electrical_grid_conditions
 
 namespace meter_identification {
 using config_t = common::config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* meter_identification */
+} // namespace meter_identification
 
-} /* cluster */
-} /* esp_matter */
+} // namespace cluster
+} // namespace esp_matter
