@@ -427,34 +427,6 @@ Please refer to the `advance setup`_ section in the programming guide.
 This has been demonstrated in the `blemesh_bridge`_ examples.
 
 
-Moving BSS Segments to PSRAM to Reduce Memory Usage
-----------------------------------------------------
-
-The BSS section of libesp_matter.a and libCHIP.a can consume significant internal memory.
-For devices with PSRAM, you can move the BSS segments to external memory to significantly
-reduce the internal memory footprint.
-
-To move the BSS segments of libCHIP.a and libesp_matter.a into external RAM:
-
-1. Enable the ``CONFIG_ESP_ALLOW_BSS_SEG_EXTERNAL_MEMORY`` option in menuconfig.
-
-2. Create a ``linker.lf`` file in your project's main component, you can check the the example
-   :project_file:`linker.lf <examples/all_device_types_app/main/linker.lf>` file.
-
-3. Modify your main component's ``CMakeLists.txt`` to include:
-
-   ::
-
-       set(ldfragments linker.lf)
-       idf_component_register(
-           ...
-           LDFRAGMENTS "${ldfragments}")
-
-This configuration will move the BSS segments to PSRAM when ``CONFIG_ESP_ALLOW_BSS_SEG_EXTERNAL_MEMORY`` is enabled,
-significantly reducing the internal memory usage of your application.
-
-Please check `#1123`_ for relevant discussion on Github issue.
-
 TC-SC-4.9 (Route Information Option / RIO) failure
 --------------------------------------------------
 
@@ -481,8 +453,8 @@ For example, to update ``DefaultOTAProviders`` attribute in ``OTASoftwareUpdateR
           request->AddDefaultOtaProvider(provider);
       }
 
-A1.18 Devices with custom means of network configuration (CustomNetworkConfig)
-------------------------------------------------------------------------------
+Devices with custom means of network configuration (CustomNetworkConfig)
+------------------------------------------------------------------------
 
 Some devices configure their network through custom means — such as a rich user interface,
 manufacturer-specific provisioning, custom commissioning flows, or a future IP-compliant
@@ -517,7 +489,6 @@ To enable this in the ESP-Matter SDK:
 .. _Main XTAL frequency: https://docs.espressif.com/projects/esp-idf/en/latest/esp32c2/api-reference/kconfig-reference.html#main-xtal-config
 
 .. _Github issue: https://github.com/espressif/esp-matter/issues/new?template=issue-template.md
-.. _`#1123`: https://github.com/espressif/esp-matter/issues/1123
 .. _`#1126`: https://github.com/espressif/esp-matter/issues/1126
 .. _`#1128`: https://github.com/espressif/esp-matter/issues/1128
 .. _`#13303`: https://github.com/project-chip/connectedhomeip/issues/13303

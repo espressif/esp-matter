@@ -208,8 +208,10 @@ Ccache caches the previous compilations and speeds up recompilation in subsequen
 Above can also be added to your shell’s profile file (.profile, .bashrc, .zprofile, etc.)
 to enable ccache every time you open a new terminal.
 
-ESP Matter Component (experimental)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. _esp-matter-component:
+
+ESP Matter Component
+~~~~~~~~~~~~~~~~~~~~
 
 You can check the component in `Espressif Component Registry <https://components.espressif.com/components/espressif/esp_matter>`__.
 
