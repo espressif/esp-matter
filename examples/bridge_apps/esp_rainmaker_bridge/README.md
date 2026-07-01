@@ -6,7 +6,7 @@ The Matter Bridge device runs on ESP32-S3.
 
 See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
 
-💡 Important:  `create_bridge_devices` callback can be used to add data model elements (e.g., attributes, commands, etc.) to the bridge endpoint.
+💡 Important: `create_bridge_devices` callback can be used to add data model elements (e.g., attributes, commands, etc.) to the bridge endpoint.
 
 ## 1. Additional Environment Setup
 
@@ -24,7 +24,7 @@ idf.py set-target esp32s3
 idf.py -p <port> build flash
 ```
 
-For ***ESP Thread Border Router/Zigbee Gateway Board*** with Thread Border Router:
+For **_ESP Thread Border Router/Zigbee Gateway Board_** with Thread Border Router:
 
 ```
 cd ${ESP_MATTER_PATH}/examples/bridge_apps/esp_rainmaker_bridge
@@ -79,7 +79,9 @@ I (16364) app_network: Provisioning will auto stop after 30 minute(s).
 
 #### 2.1.2 Update Rainmaker Controller Params
 
-After successful Bridge pairing, it is necessary to use the parameter update function to grant the Bridge the Rainmaker controller permission. This enables the Bridge to have the authority to control other Rainmaker devices.
+During pairing setup, the app should ask you to select a group and perform an authentication. This enables the Bridge to have the authority to control other Rainmaker devices.
+
+You can also this manually by using the parameter update function in device menu.
 
 ![main](./docs/1_setup.png)
 
@@ -87,9 +89,11 @@ After successful Bridge pairing, it is necessary to use the parameter update fun
 
 If you need to bridge a Rainmaker over Thread device, you must update the Thread Border Router dataset after the Bridge is successfully paired.
 
-![main](./docs/1_setup.png)  ![main](./docs/3_dataset.png)
+![main](./docs/1_setup.png) ![main](./docs/3_dataset.png)
 
 ### 2.2 Pair Rainmaker end devices using Rainmaker App
+
+💡 Important: The RainMaker end device must have groups service (`CONFIG_EXAMPLE_GROUPS_SERVICE=y`) and connectivity service (`CONFIG_EXAMPLE_CONNECTIVITY_SERVICE=y`) enabled.
 
 Follow this [guide](https://github.com/espressif/esp-rainmaker/blob/master/README.md) to set up a Rainmaker device.
 
@@ -117,24 +121,21 @@ Now you can control the Rainmaker device using chip-tool.
 
 The following is the Memory and Flash Usage.
 
--   `Bootup` == Device just finished booting up. Device is not
-    commissioned or connected to wifi yet.
--   `After Commissioning` == Device is connected to wifi and is also
-    commissioned and is rebooted.
--   `After Adding a Bridged device` == A Rainmaker Color Light is added
-    on the Bridge.
--   device used: ESP32-S3-DevKitC-1
--   tested on:
-    [d0faa92c](https://github.com/espressif/esp-matter/commit/d0faa92c9336205de21a4b325c956893736c4d64)
-    (2025-12-11)
--   IDF: v5.4.1 [4c2820d3](https://github.com/espressif/esp-idf/tree/v5.4.1)
+- `Bootup` == Device just finished booting up. Device is not
+  commissioned or connected to wifi yet.
+- `After Commissioning` == Device is connected to wifi and is also
+  commissioned and is rebooted.
+- `After Adding a Bridged device` == A Rainmaker Color Light is added
+  on the Bridge.
+- device used: ESP Thread Border Router/Zigbee Gateway Board
+- IDF: v5.5.3
 
-|                         | Bootup | After Rainmaker Commissioning | After Matter Commissioning | After Adding a Bridged device |
-|:-                       |:-:     |:-:                            |:-:                         |:-:                            |
-|**Free Internal Memory** |165KB   |168KB                          |170KB                       |170KB                          |
-|**Free SPIRAM Memory** |1886KB   |1823KB                          |1858KB                       |1853KB                          |
+|                          | Bootup | After Rainmaker Commissioning | After Matter Commissioning | After Adding a Bridged device |
+| :----------------------- | :----: | :---------------------------: | :------------------------: | :---------------------------: |
+| **Free Internal Memory** | 306KB  |             229KB             |           176KB            |             172KB             |
+| **Free SPIRAM Memory**   | 1952KB |            1888KB             |           1726KB           |            1652KB             |
 
-**Flash Usage**: Firmware binary size: 1.98MB
+**Flash Usage (OTBR build)**: Firmware binary size: 1.99 MiB (`0x1fce30` bytes).
 
 This should give you a good idea about the amount of free memory that is
 available for you to run your application's code.

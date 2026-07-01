@@ -1,0 +1,7 @@
+dependencies:
+  espressif/cjson:
+    version: "^1.7.19~2"
+  espressif/esp_rainmaker:
+    version: "^1.13.0"
+  espressif/rmaker_user_api:
+    version: "^1.0.0"
