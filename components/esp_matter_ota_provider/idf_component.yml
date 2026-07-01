@@ -1,3 +1,4 @@
 ## IDF Component Manager Manifest File
 dependencies:
-  espressif/json_parser: "~1.0.0"
+  espressif/cjson:
+    version: "^1.7.19"

@@ -82,28 +82,12 @@ else()
                                   "esp_matter_ota.cpp")
 endif(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
 
-
-
-set(REQUIRES_LIST       chip bt esp_matter_console nvs_flash app_update esp_secure_cert_mgr mbedtls esp_system openthread)
-
-# IDF v6.0 removed the built-in json component; use espressif__cjson from the component registry.
-# For older IDF versions, use the built-in json component.
-if("${IDF_VERSION_MAJOR}.${IDF_VERSION_MINOR}" VERSION_GREATER_EQUAL "6.0")
-    list(APPEND REQUIRES_LIST espressif__cjson)
-else()
-    list(APPEND REQUIRES_LIST json)
-endif()
-
-set(PRIV_REQUIRES_LIST "")
-if (CONFIG_OPENTHREAD_BORDER_ROUTER AND CONFIG_AUTO_UPDATE_RCP AND CONFIG_ENABLE_OTA_REQUESTOR)
-    list(APPEND PRIV_REQUIRES_LIST esp_rcp_update)
-endif()
+set(REQUIRES_LIST   chip bt nvs_flash app_update esp_secure_cert_mgr mbedtls esp_system openthread espressif__cjson)
 
 idf_component_register( SRC_DIRS        ${SRC_DIRS_LIST}
                         INCLUDE_DIRS    ${INCLUDE_DIRS_LIST}
                         EXCLUDE_SRCS    ${EXCLUDE_SRCS_LIST}
                         PRIV_INCLUDE_DIRS ${PRIV_INCLUDE_DIRS_LIST}
-                        PRIV_REQUIRES   ${PRIV_REQUIRES_LIST}
                         REQUIRES        ${REQUIRES_LIST})
 
 # This has been added to fix the error and should be removed once fixed:

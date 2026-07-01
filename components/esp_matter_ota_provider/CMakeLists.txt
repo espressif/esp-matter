@@ -12,7 +12,7 @@ endif()
 idf_component_register(SRCS "${srcs}"
                        INCLUDE_DIRS "${include_dirs}"
                        PRIV_INCLUDE_DIRS "${priv_include_dirs}"
-                       REQUIRES esp_matter esp_http_client json_parser)
+                       REQUIRES esp_matter esp_http_client)
 
 if (CONFIG_ESP_MATTER_OTA_PROVIDER_ENABLED)
     target_compile_options(${COMPONENT_LIB} PRIVATE "-Wstringop-truncation" "-Wstringop-overflow")

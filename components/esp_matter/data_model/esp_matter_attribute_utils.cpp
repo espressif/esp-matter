@@ -20,7 +20,6 @@
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_attribute_utils.h>
-#include <esp_matter_console.h>
 #include <esp_matter_core.h>
 #include <esp_matter_data_model.h>
 #include <esp_matter_data_model_priv.h>

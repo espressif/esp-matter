@@ -7,7 +7,7 @@ if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
 endif()
 idf_component_register(SRC_DIRS        ${src_dirs_list}
                        INCLUDE_DIRS    ${include_dirs_list}
-                       REQUIRES        esp_matter)
+                       REQUIRES        esp_matter esp_matter_console)
 
 if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
     target_compile_options(${COMPONENT_LIB} PRIVATE "-Wstringop-truncation" "-Wstringop-overflow")

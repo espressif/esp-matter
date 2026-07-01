@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cJSON.h>
 #include <cstdio>
 #include <cstring>
 #include <esp_check.h>
@@ -19,7 +20,6 @@
 #include <esp_log.h>
 #include <esp_matter_mem.h>
 #include <esp_spiffs.h>
-#include <json_parser.h>
 
 #include <attestation_verification_utils.h>
 #include <esp_matter_da_revocation_check.h>
@@ -54,71 +54,75 @@ static void parse_revocation_points_response(http_resp_t *resp, void *ctx)
     }
     ESP_LOGD(TAG, "response data: %s", (char *)resp->data);
     resp_ctx->err = ESP_FAIL;
-    jparse_ctx_t jctx;
-    if (json_parse_start(&jctx, (char *)resp->data, resp->size) != 0) {
-        ESP_LOGE(TAG, "Failed to parse the http response json on json_parse_start");
+    cJSON *root = cJSON_ParseWithLength((char *)resp->data, resp->size);
+    if (!root) {
+        ESP_LOGE(TAG, "Failed to parse the http response json");
         return;
     }
-    if (json_obj_get_object(&jctx, "pkiRevocationDistributionPointsByIssuerSubjectKeyID") == 0) {
-        int points_num = 0;
-        bool get_signer_cert = false;
+    cJSON *revocation_points =
+        cJSON_GetObjectItemCaseSensitive(root, "pkiRevocationDistributionPointsByIssuerSubjectKeyID");
+    if (cJSON_IsObject(revocation_points)) {
         // TODO: There might be multiple points
-        if (json_obj_get_array(&jctx, "points", &points_num) == 0 && points_num == 1) {
-            if (json_arr_get_object(&jctx, 0) == 0) {
-                int crl_signer_cert_len, crl_signer_delegator_len, crl_url_len;
-                if (json_obj_get_strlen(&jctx, "crlSignerCertificate", &crl_signer_cert_len) == 0) {
+        cJSON *points = cJSON_GetObjectItemCaseSensitive(revocation_points, "points");
+        if (cJSON_IsArray(points) && cJSON_GetArraySize(points) == 1) {
+            cJSON *point = cJSON_GetArrayItem(points, 0);
+            if (cJSON_IsObject(point)) {
+                bool get_signer_cert = false;
+                cJSON *crl_signer_cert = cJSON_GetObjectItemCaseSensitive(point, "crlSignerCertificate");
+                cJSON *data_url = cJSON_GetObjectItemCaseSensitive(point, "dataURL");
+                cJSON *crl_signer_delegator = cJSON_GetObjectItemCaseSensitive(point, "crlSignerDelegator");
+                const char *crl_signer_cert_value = cJSON_GetStringValue(crl_signer_cert);
+                const char *data_url_value = cJSON_GetStringValue(data_url);
+                const char *crl_signer_delegator_value = cJSON_GetStringValue(crl_signer_delegator);
+                if (crl_signer_cert_value) {
+                    size_t crl_signer_cert_len = strlen(crl_signer_cert_value);
                     char *crl_signer_cert_pem = (char *)esp_matter_mem_calloc(crl_signer_cert_len + 1, 1);
                     if (crl_signer_cert_pem) {
-                        if (json_obj_get_string(&jctx, "crlSignerCertificate", crl_signer_cert_pem,
-                                                crl_signer_cert_len + 1) == 0) {
-                            remove_backslash_n(crl_signer_cert_pem);
-                            size_t der_cert_len = resp_ctx->out_crl_signer_cert.size();
-                            if (convert_pem_to_der(crl_signer_cert_pem, resp_ctx->out_crl_signer_cert.data(),
-                                                   &der_cert_len) == ESP_OK) {
-                                resp_ctx->out_crl_signer_cert.reduce_size(der_cert_len);
-                                get_signer_cert = true;
-                            }
+                        memcpy(crl_signer_cert_pem, crl_signer_cert_value, crl_signer_cert_len);
+                        remove_backslash_n(crl_signer_cert_pem);
+                        size_t der_cert_len = resp_ctx->out_crl_signer_cert.size();
+                        if (convert_pem_to_der(crl_signer_cert_pem, resp_ctx->out_crl_signer_cert.data(),
+                                               &der_cert_len) == ESP_OK) {
+                            resp_ctx->out_crl_signer_cert.reduce_size(der_cert_len);
+                            get_signer_cert = true;
                         }
                         esp_matter_mem_free(crl_signer_cert_pem);
                     }
                 }
-                if (json_obj_get_strlen(&jctx, "dataURL", &crl_url_len) == 0) {
+                if (data_url_value) {
+                    size_t crl_url_len = strlen(data_url_value);
                     if (crl_url_len < resp_ctx->out_crl_url.size()) {
-                        if (json_obj_get_string(&jctx, "dataURL", resp_ctx->out_crl_url.data(),
-                                                resp_ctx->out_crl_url.size()) == 0) {
-                            if (get_signer_cert) {
-                                resp_ctx->err = ESP_OK;
-                            }
+                        memcpy(resp_ctx->out_crl_url.data(), data_url_value, crl_url_len);
+                        resp_ctx->out_crl_url.data()[crl_url_len] = 0;
+                        if (get_signer_cert) {
+                            resp_ctx->err = ESP_OK;
                         }
                     }
                 }
-                if (json_obj_get_strlen(&jctx, "crlSignerDelegator", &crl_signer_delegator_len) == 0) {
+                if (crl_signer_delegator_value) {
+                    size_t crl_signer_delegator_len = strlen(crl_signer_delegator_value);
                     if (crl_signer_delegator_len == 0) {
                         resp_ctx->out_crl_signer_delegator.reduce_size(0);
                     } else {
-                        char *crl_signer_delegator_pem = (char *)esp_matter_mem_calloc(crl_signer_delegator_len, 1);
+                        char *crl_signer_delegator_pem =
+                            (char *)esp_matter_mem_calloc(crl_signer_delegator_len + 1, 1);
                         if (crl_signer_delegator_pem) {
-                            if (json_obj_get_string(&jctx, "crlSignerDelegator", crl_signer_delegator_pem,
-                                                    crl_signer_delegator_len) == 0) {
-                                remove_backslash_n(crl_signer_delegator_pem);
-                                size_t der_cert_len = resp_ctx->out_crl_signer_cert.size();
-                                if (convert_pem_to_der(crl_signer_delegator_pem,
-                                                       resp_ctx->out_crl_signer_delegator.data(),
-                                                       &der_cert_len) == ESP_OK) {
-                                    resp_ctx->out_crl_signer_delegator.reduce_size(der_cert_len);
-                                }
+                            memcpy(crl_signer_delegator_pem, crl_signer_delegator_value, crl_signer_delegator_len);
+                            remove_backslash_n(crl_signer_delegator_pem);
+                            size_t der_cert_len = resp_ctx->out_crl_signer_cert.size();
+                            if (convert_pem_to_der(crl_signer_delegator_pem,
+                                                   resp_ctx->out_crl_signer_delegator.data(),
+                                                   &der_cert_len) == ESP_OK) {
+                                resp_ctx->out_crl_signer_delegator.reduce_size(der_cert_len);
                             }
                             esp_matter_mem_free(crl_signer_delegator_pem);
                         }
                     }
                 }
-                json_arr_leave_object(&jctx);
             }
-            json_obj_leave_array(&jctx);
         }
-        json_obj_leave_object(&jctx);
     }
-    json_parse_end(&jctx);
+    cJSON_Delete(root);
 }
 
 typedef struct download_crl_ctx {

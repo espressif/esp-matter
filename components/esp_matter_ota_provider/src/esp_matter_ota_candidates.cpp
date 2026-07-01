@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <inttypes.h>
 #include <algorithm>
+#include <cJSON.h>
 #include <esp_check.h>
 #include <esp_crt_bundle.h>
 #include <esp_err.h>
@@ -28,12 +28,12 @@
 #include <freertos/semphr.h>
 #include <freertos/task.h>
 #include <functional>
-#include <json_parser.h>
+#include <inttypes.h>
 
+#include <lib/core/DataModelTypes.h>
 #include <lib/support/ScopedMemoryBuffer.h>
 
 #include <string.h>
-#include "core/DataModelTypes.h"
 
 using chip::Platform::ScopedMemoryBufferWithSize;
 
@@ -126,8 +126,7 @@ static esp_err_t _query_software_version_array(const uint16_t vendor_id, const u
         return ESP_ERR_INVALID_ARG;
     }
     esp_err_t ret = ESP_OK;
-    int sw_ver_count = 0, sw_ver_index = 0, sw_ver_tmp;
-    ;
+    int sw_ver_count = 0, sw_ver_index = 0;
     char url[100];
     snprintf(url, sizeof(url), "%s/%d/%d", dcl_rest_url, vendor_id, product_id);
     esp_http_client_config_t config = {
@@ -140,7 +139,7 @@ static esp_err_t _query_software_version_array(const uint16_t vendor_id, const u
     esp_http_client_handle_t client = NULL;
     ScopedMemoryBufferWithSize<char> http_payload;
     int http_len, http_status_code;
-    jparse_ctx_t jctx;
+    cJSON *root = nullptr;
 
     client = esp_http_client_init(&config);
     if (!client) {
@@ -171,32 +170,35 @@ static esp_err_t _query_software_version_array(const uint16_t vendor_id, const u
     ESP_LOGD(TAG, "http_response:\n%s", http_payload.Get());
 
     // Parse the response payload
-    ESP_GOTO_ON_FALSE(json_parse_start(&jctx, http_payload.Get(), http_len) == 0, ESP_FAIL, close, TAG,
-                      "Failed to parse the http response json on json_parse_start");
-    if (json_obj_get_object(&jctx, "modelVersions") == 0) {
-        if (json_obj_get_array(&jctx, "softwareVersions", &sw_ver_count) == 0 && sw_ver_count > 0) {
+    ESP_GOTO_ON_FALSE(http_len > 0, ESP_FAIL, close, TAG, "Invalid http response length");
+    root = cJSON_ParseWithLength(http_payload.Get(), http_len);
+    ESP_GOTO_ON_FALSE(root, ESP_FAIL, close, TAG, "Failed to parse the http response json");
+    {
+        cJSON *model_versions = cJSON_GetObjectItemCaseSensitive(root, "modelVersions");
+        cJSON *software_versions = cJSON_GetObjectItemCaseSensitive(model_versions, "softwareVersions");
+        sw_ver_count = cJSON_GetArraySize(software_versions);
+        if (cJSON_IsObject(model_versions) && cJSON_IsArray(software_versions) && sw_ver_count > 0) {
             *software_version_array = (uint32_t *)esp_matter_mem_calloc(sw_ver_count, sizeof(uint32_t));
             if (*software_version_array) {
                 software_version_count = sw_ver_count;
                 for (sw_ver_index = 0; sw_ver_index < sw_ver_count; ++sw_ver_index) {
-                    if (json_arr_get_int(&jctx, sw_ver_index, &sw_ver_tmp) == 0) {
-                        (*software_version_array)[sw_ver_index] = sw_ver_tmp;
+                    cJSON *software_version = cJSON_GetArrayItem(software_versions, sw_ver_index);
+                    if (cJSON_IsNumber(software_version)) {
+                        ESP_RETURN_ON_FALSE(software_version->valuedouble >= 0 && software_version->valuedouble <= UINT32_MAX,
+                                            ESP_ERR_INVALID_ARG, TAG, "Invalid range");
+                        (*software_version_array)[sw_ver_index] = static_cast<uint32_t>(software_version->valuedouble);
                     } else {
-                        (*software_version_array)[sw_ver_index] = 0;
+                        ret = ESP_ERR_INVALID_ARG;
                     }
                 }
             } else {
                 ret = ESP_ERR_NO_MEM;
             }
-            json_obj_leave_array(&jctx);
         } else {
             ret = ESP_FAIL;
         }
-        json_obj_leave_object(&jctx);
-    } else {
-        ret = ESP_FAIL;
     }
-    json_parse_end(&jctx);
+    cJSON_Delete(root);
 
 close:
     esp_http_client_close(client);
@@ -232,9 +234,8 @@ static esp_err_t _query_ota_candidate(model_version_t *model, uint32_t new_softw
     esp_http_client_handle_t client = NULL;
     ScopedMemoryBufferWithSize<char> http_payload;
     int http_len, http_status_code;
-    int max_applicable_software_version, min_applicable_software_version, cd_version_number, string_len;
-    bool software_version_valid;
-    jparse_ctx_t jctx;
+    uint32_t max_applicable_software_version, min_applicable_software_version;
+    cJSON *root = nullptr;
 
     client = esp_http_client_init(&config);
     ESP_RETURN_ON_FALSE(client, ESP_FAIL, TAG, "Failed to initialise HTTP Client.");
@@ -261,45 +262,49 @@ static esp_err_t _query_ota_candidate(model_version_t *model, uint32_t new_softw
     }
     ESP_LOGD(TAG, "http_response:\n%s", http_payload.Get());
 
-    ESP_GOTO_ON_FALSE(json_parse_start(&jctx, http_payload.Get(), http_len) == 0, ESP_FAIL, close, TAG,
-                      "Failed to parse the http response json on json_parse_start");
-    if (json_obj_get_object(&jctx, "modelVersion") == 0) {
-        if (json_obj_get_int(&jctx, "maxApplicableSoftwareVersion", &max_applicable_software_version) == 0 &&
-                json_obj_get_int(&jctx, "minApplicableSoftwareVersion", &min_applicable_software_version) == 0 &&
-                json_obj_get_bool(&jctx, "softwareVersionValid", &software_version_valid) == 0 && software_version_valid &&
-                max_applicable_software_version >= current_software_version &&
-                min_applicable_software_version <= current_software_version &&
-                new_software_version > current_software_version) {
-            model->max_applicable_software_version = max_applicable_software_version;
-            model->min_applicable_software_version = min_applicable_software_version;
-            model->software_version = new_software_version;
-            if (json_obj_get_int(&jctx, "cdVersionNumber", &cd_version_number) == 0) {
-                model->cd_version_number = cd_version_number;
+    ESP_GOTO_ON_FALSE(http_len > 0, ESP_FAIL, close, TAG, "Invalid http response length");
+    root = cJSON_ParseWithLength(http_payload.Get(), http_len);
+    ESP_GOTO_ON_FALSE(root, ESP_FAIL, close, TAG, "Failed to parse the http response json");
+    {
+        ret = ESP_ERR_NOT_FINISHED;
+        cJSON *model_version = cJSON_GetObjectItemCaseSensitive(root, "modelVersion");
+        cJSON *max_applicable = cJSON_GetObjectItemCaseSensitive(model_version, "maxApplicableSoftwareVersion");
+        cJSON *min_applicable = cJSON_GetObjectItemCaseSensitive(model_version, "minApplicableSoftwareVersion");
+        cJSON *software_valid = cJSON_GetObjectItemCaseSensitive(model_version, "softwareVersionValid");
+        if (cJSON_IsObject(model_version) && cJSON_IsNumber(max_applicable) && cJSON_IsNumber(min_applicable) &&
+                cJSON_IsBool(software_valid) && cJSON_IsTrue(software_valid)) {
+            max_applicable_software_version =
+                max_applicable->valuedouble >= 0 && max_applicable->valuedouble < UINT32_MAX ? static_cast<uint32_t>(max_applicable->valuedouble) : 0;
+            min_applicable_software_version =
+                min_applicable->valuedouble >= 0 && min_applicable->valuedouble < UINT32_MAX ? static_cast<uint32_t>(min_applicable->valuedouble) : 0;
+            if (max_applicable_software_version >= current_software_version &&
+                    min_applicable_software_version <= current_software_version &&
+                    new_software_version > current_software_version) {
+                model->max_applicable_software_version = max_applicable_software_version;
+                model->min_applicable_software_version = min_applicable_software_version;
+                model->software_version = new_software_version;
+                cJSON *cd_version = cJSON_GetObjectItemCaseSensitive(model_version, "cdVersionNumber");
+                if (cJSON_IsNumber(cd_version)) {
+                    model->cd_version_number = cd_version->valueint;
+                }
+                cJSON *software_version_string = cJSON_GetObjectItemCaseSensitive(model_version, "softwareVersionString");
+                const char *software_version_string_value = cJSON_GetStringValue(software_version_string);
+                if (software_version_string_value) {
+                    strlcpy(model->software_version_str, software_version_string_value, sizeof(model->software_version_str));
+                }
+                cJSON *ota_url = cJSON_GetObjectItemCaseSensitive(model_version, "otaUrl");
+                const char *ota_url_value = cJSON_GetStringValue(ota_url);
+                if (ota_url_value) {
+                    strlcpy(model->ota_url, ota_url_value, sizeof(model->ota_url));
+                }
+                ret = ESP_OK;
             }
-            if (json_obj_get_strlen(&jctx, "softwareVersionString", &string_len) == 0 &&
-                    json_obj_get_string(&jctx, "softwareVersionString", model->software_version_str,
-                                        sizeof(model->software_version_str)) == 0) {
-                string_len = string_len < sizeof(model->software_version_str) - 1
-                             ? string_len
-                             : sizeof(model->software_version_str) - 1;
-                model->software_version_str[string_len] = 0;
-            }
-            if (json_obj_get_strlen(&jctx, "otaUrl", &string_len) == 0 &&
-                    json_obj_get_string(&jctx, "otaUrl", model->ota_url, sizeof(model->ota_url)) == 0) {
-                string_len = string_len < sizeof(model->ota_url) - 1
-                             ? string_len
-                             : sizeof(model->ota_url) - 1;
-                model->ota_url[string_len] = 0;
-            }
-        } else {
-            ESP_LOGI(TAG, "This result is not valid for software version %ld, skip it", current_software_version);
-            ret = ESP_ERR_NOT_FINISHED;
         }
-        json_obj_leave_object(&jctx);
-    } else {
-        ret = ESP_FAIL;
+        if (ret == ESP_ERR_NOT_FINISHED) {
+            ESP_LOGI(TAG, "This result is not valid for software version %ld, skip it", current_software_version);
+        }
     }
-    json_parse_end(&jctx);
+    cJSON_Delete(root);
 
 close:
     esp_http_client_close(client);
