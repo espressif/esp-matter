@@ -26,6 +26,7 @@
 #include <refrigerator_and_temperature_controlled_cabinet_mode_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
 using namespace esp_matter;
@@ -92,6 +93,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_supported_modes(cluster, NULL, 0, 0);
         command::create_change_to_mode(cluster);
         command::create_change_to_mode_response(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterRefrigeratorAndTemperatureControlledCabinetModeClusterServerInitCallback,
+                                                 ESPMatterRefrigeratorAndTemperatureControlledCabinetModeClusterServerShutdownCallback);
     }
 
     return cluster;

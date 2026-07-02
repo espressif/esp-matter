@@ -26,6 +26,7 @@
 #include <microwave_oven_mode_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
 using namespace esp_matter;
@@ -76,6 +77,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterMicrowaveOvenModeClusterServerInitCallback,
+                                                 ESPMatterMicrowaveOvenModeClusterServerShutdownCallback);
     }
 
     return cluster;

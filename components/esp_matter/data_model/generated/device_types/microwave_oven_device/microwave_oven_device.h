@@ -36,6 +36,8 @@ typedef struct config {
     cluster::microwave_oven_mode::config_t microwave_oven_mode;
     cluster::microwave_oven_control::config_t microwave_oven_control;
     cluster::operational_state::config_t operational_state;
+    nullable<uint32_t> countdown_time;
+    config() : countdown_time() {}
 } config_t;
 
 uint32_t get_device_type_id();

@@ -42,8 +42,10 @@ event_t *create_operation_completion(cluster_t *cluster);
 } /* event */
 
 typedef struct config {
+    nullable<uint8_t> current_phase;
+    uint8_t operational_state;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : current_phase(0), operational_state(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

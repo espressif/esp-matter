@@ -25,7 +25,7 @@
 #include <esp_matter_core.h>
 
 #define ESP_MATTER_PUMP_DEVICE_TYPE_ID 0x0303
-#define ESP_MATTER_PUMP_DEVICE_TYPE_VERSION 3
+#define ESP_MATTER_PUMP_DEVICE_TYPE_VERSION 4
 
 namespace esp_matter {
 namespace endpoint {

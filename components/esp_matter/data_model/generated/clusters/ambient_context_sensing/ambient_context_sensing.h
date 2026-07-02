@@ -22,7 +22,8 @@ namespace cluster {
 namespace ambient_context_sensing {
 
 typedef struct config {
-    config() {}
+    void *delegate;
+    config() : delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

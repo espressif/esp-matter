@@ -24,7 +24,7 @@
 #include <esp_matter_core.h>
 
 #define ESP_MATTER_ON_OFF_LIGHT_SWITCH_DEVICE_TYPE_ID 0x0103
-#define ESP_MATTER_ON_OFF_LIGHT_SWITCH_DEVICE_TYPE_VERSION 3
+#define ESP_MATTER_ON_OFF_LIGHT_SWITCH_DEVICE_TYPE_VERSION 4
 
 namespace esp_matter {
 namespace endpoint {

@@ -32,12 +32,16 @@ inline constexpr uint32_t Id = 0x0001;
 } /* CurrentPhase */
 namespace CountdownTime {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint32_t Min = 0;
+inline constexpr uint32_t Max = 259200;
 } /* CountdownTime */
 namespace OperationalStateList {
 inline constexpr uint32_t Id = 0x0003;
 } /* OperationalStateList */
 namespace OperationalState {
 inline constexpr uint32_t Id = 0x0004;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* OperationalState */
 namespace OperationalError {
 inline constexpr uint32_t Id = 0x0005;

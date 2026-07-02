@@ -23,7 +23,7 @@
 #include <esp_matter_core.h>
 
 #define ESP_MATTER_CLOSURE_CONTROLLER_DEVICE_TYPE_ID 0x023E
-#define ESP_MATTER_CLOSURE_CONTROLLER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_CLOSURE_CONTROLLER_DEVICE_TYPE_VERSION 2
 
 namespace esp_matter {
 namespace endpoint {
