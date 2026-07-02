@@ -35,7 +35,7 @@ variables:
     MATTER_ZIGBEE_LIGHT_IDF_REF: "73b55e893ffb9761f8cae911ccb05f186f03d22b"
     # This variable represents the short hash of the connectedhomeip submodule.
     # Note: Do change this short hash on submodule update MRs.
-    CHIP_SHORT_HASH: "efefc94fee"
+    CHIP_SHORT_HASH: "9dc6ceb89c"
     DOCKER_IMAGE_NAME: "espressif/chip-idf"
 
 .add_gitlab_ssh_key: &add_gitlab_ssh_key |
