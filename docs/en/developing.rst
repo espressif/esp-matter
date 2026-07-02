@@ -52,16 +52,16 @@ The Prerequisites for ESP-IDF:
 
 - Please get the `Prerequisites for ESP-IDF`_. For beginners, please check `step by step installation guide`_ for esp-idf.
 
-.. only:: esp32c5 or esp32c61
+.. only:: esp32s31 or esp32h21 or esp32h4
 
-    - For ``ESP32C5`` and ``ESP32C61``, the IDF version should be `v5.5.4 <https://github.com/espressif/esp-idf/tree/v5.5.4>`__ or newer.
+    - For ``ESP32S31``, ``ESP32H21``, and ``ESP32H4``, the IDF version should be `e9da155 <https://github.com/espressif/esp-idf/tree/e9da155>`__ or newer.
 
 .. note::
 
     ``git clone`` command accepts the optional argument ``--jobs N``, which can significantly speed up the
     process by parallelizing submodule cloning. Consider using this option when cloning repositories.
 
-.. only:: not esp32c5 and not esp32c61
+.. only:: not esp32s31 and not esp32h21 and not esp32h4
 
    Cloning esp-idf:
 
@@ -72,14 +72,14 @@ The Prerequisites for ESP-IDF:
          ./install.sh
          cd ..
 
-.. only:: esp32c5 or esp32c61
+.. only:: esp32s31 or esp32h21 or esp32h4
 
    Cloning esp-idf:
 
       ::
 
          git clone --recursive https://github.com/espressif/esp-idf.git
-         cd esp-idf; git checkout v5.5.4; git submodule update --init --recursive;
+         cd esp-idf; git checkout e9da155; git submodule update --init --recursive;
          ./install.sh
          cd ..
 
@@ -298,6 +298,24 @@ Choose IDF target.
    ::
 
       idf.py set-target esp32p4
+
+.. only:: esp32s31
+
+   ::
+
+      idf.py --preview set-target esp32s31
+
+.. only:: esp32h21
+
+   ::
+
+      idf.py --preview set-target esp32h21
+
+.. only:: esp32h4
+
+   ::
+
+      idf.py --preview set-target esp32h4
 
 -  If IDF target has not been set explicitly, then ``esp32`` is
    considered as default.

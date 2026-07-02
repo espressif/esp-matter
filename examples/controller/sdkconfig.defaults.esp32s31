@@ -1,0 +1,10 @@
+CONFIG_IDF_TARGET="esp32s31"
+
+# Enable ble controller
+CONFIG_ENABLE_ESP32_BLE_CONTROLLER=y
+
+# Disable using ble for commissioning
+CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING=n
+
+# Disable Matter server
+CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER=n

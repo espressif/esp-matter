@@ -195,28 +195,28 @@ typedef struct {
     cluster::identify::config_t identify;
 } app_base_config;
 
-typedef struct : app_base_config {
+struct app_with_group_config : app_base_config {
     cluster::groups::config_t groups;
-} app_with_group_config;
+};
 
-typedef struct : app_base_config {
+struct app_client_config : app_base_config {
     cluster::binding::config_t binding;
-} app_client_config;
+};
 
-typedef struct : app_with_group_config {
+struct on_off_with_lighting_config : app_with_group_config {
     cluster::on_off::config_t on_off;
     cluster::on_off::feature::lighting::config_t on_off_lighting;
     cluster::scenes_management::config_t scenes_management;
-} on_off_with_lighting_config;
+};
 
-typedef struct : app_with_group_config {
+struct on_off_config : app_with_group_config {
     cluster::scenes_management::config_t scenes_management;
     cluster::on_off::config_t on_off;
-} on_off_config;
+};
 
-typedef struct : app_base_config {
+struct app_with_bool_state_config : app_base_config {
     cluster::boolean_state::config_t boolean_state;
-} app_with_bool_state_config;
+};
 
 typedef struct {
     cluster::descriptor::config_t descriptor;

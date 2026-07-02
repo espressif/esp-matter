@@ -21,7 +21,7 @@
 #include <app/clusters/ota-requestor/OTARequestorUserConsentDelegate.h>
 #include <platform/OTAImageProcessor.h>
 
-typedef struct {
+typedef struct esp_matter_ota_requestor_impl {
     // ota requestor driver
     chip::DeviceLayer::ExtendedOTARequestorDriver *driver = nullptr;
     // user consent
@@ -30,7 +30,7 @@ typedef struct {
     chip::OTAImageProcessorInterface *image_processor = nullptr;
 } esp_matter_ota_requestor_impl_t;
 
-typedef struct {
+typedef struct esp_matter_ota_config {
     /**
      * Timeout (in seconds) for querying default OTA Providers
      * Default querying interval is 86400 seconds (24 Hrs)
