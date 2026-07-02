@@ -56,7 +56,9 @@ attribute_t *create_product_url(cluster_t *cluster, char * value, uint16_t lengt
 attribute_t *create_product_label(cluster_t *cluster, char * value, uint16_t length);
 attribute_t *create_serial_number(cluster_t *cluster, char * value, uint16_t length);
 attribute_t *create_reachable(cluster_t *cluster, bool value);
+#if CHIP_CONFIG_USE_ENDPOINT_UNIQUE_ID
 attribute_t *create_unique_id(cluster_t *cluster, char * value, uint16_t length);
+#endif // CHIP_CONFIG_USE_ENDPOINT_UNIQUE_ID
 attribute_t *create_product_appearance(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 } /* attribute */
 

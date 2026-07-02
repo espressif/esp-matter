@@ -18,6 +18,8 @@ import logging
 
 from .elements import Attribute, Command, Event, Feature, Cluster, Device
 from .conformance_codegen import FeatureConformance, Conformance
+from .element_configs import apply_cluster_special_configs, apply_device_cluster_configs
+from .element_overrides import apply_device_type_overrides
 
 logger = logging.getLogger(__name__)
 
@@ -65,6 +67,7 @@ class ClusterDeserializer:
             cluster_data.get("features", []), cluster
         )
 
+        apply_cluster_special_configs(cluster)
         return cluster
 
     def _set_cluster_properties(
@@ -293,7 +296,10 @@ class DeviceDeserializer:
             name=device_data["name"],
             revision=device_data["revision"],
         )
+
         device.clusters = clusters
+        apply_device_type_overrides(device, cluster_lookup_table)
+        apply_device_cluster_configs(device)
         return device
 
     def _deserialize_device_clusters(
@@ -327,7 +333,7 @@ class DeviceDeserializer:
                 cluster_feature_names = cluster_data.get("features", [])
                 cluster_command_names = cluster_data.get("commands", [])
                 cluster_event_names = cluster_data.get("events", [])
-                cluster.has_choice_features = (
+                cluster.device_has_choice_features = (
                     True
                     if len(cluster_feature_names) > 0
                     and cluster_obj.has_choice_features()

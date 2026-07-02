@@ -32,7 +32,9 @@ namespace thread_border_router {
 
 typedef struct config {
     cluster::descriptor::config_t descriptor;
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
     cluster::thread_network_diagnostics::config_t thread_network_diagnostics;
+#endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
     cluster::thread_border_router_management::config_t thread_border_router_management;
 } config_t;
 

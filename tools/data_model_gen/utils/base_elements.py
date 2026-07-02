@@ -19,7 +19,6 @@ from utils.overrides import (
     normalize_cluster_display_name,
     normalize_device_type_name,
     normalize_feature_name,
-    get_special_config_for_element,
 )
 from utils.helper import chip_name, convert_to_snake_case, esp_name
 
@@ -36,19 +35,9 @@ class BaseElement(ABC):
         self.chip_name = chip_name(name)
         self.func_name = convert_to_snake_case(name)
 
-        self.special_config = get_special_config_for_element(
-            element_name=self.func_name, cluster_id=None, element_id=self.id
-        )
-
     def get_id(self):
         """Get the ID of the element"""
         return self.id
-
-    def has_special_config(self) -> bool:
-        return self.special_config is not None
-
-    def get_special_config(self) -> str:
-        return self.special_config if self.has_special_config() else None
 
 
 class BaseClusterElement(BaseElement):

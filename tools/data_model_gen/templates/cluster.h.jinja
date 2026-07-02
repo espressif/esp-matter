@@ -84,7 +84,7 @@ typedef struct config {
     {% if cluster.delegate_init_callback and cluster.id != "0xffff" %}
     {% set _ = init_list.append("delegate(nullptr)") %}
     {% endif %}
-    {% if cluster.has_choice_features() and cluster.get_features() | length > 0 %}
+    {% if cluster.has_choice_features() %}
     {% set _ = init_list.append("feature_flags(0)") %}
     {% endif %}
     config(){% if init_list %} : {{ init_list | join(", ") }}{% endif %} {}

@@ -270,6 +270,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = esp_matter::cluster::create(endpoint, network_commissioning::Id, flags);
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, network_commissioning::Id));
+#if !defined(CONFIG_CUSTOM_NETWORK_CONFIG)
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
         static const auto plugin_server_init_cb = CALL_ONCE(MatterNetworkCommissioningPluginServerInitCallback);
@@ -305,6 +306,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterNetworkCommissioningClusterServerInitCallback,
                                                  ESPMatterNetworkCommissioningClusterServerShutdownCallback);
     }
+#endif // !defined(CONFIG_CUSTOM_NETWORK_CONFIG)
 
     return cluster;
 }

@@ -53,7 +53,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
     VerifyOrReturnError(err == ESP_OK, err);
 
-    config->camera_av_stream_management.feature_flags |= cluster::camera_av_stream_management::feature::audio::get_id() | cluster::camera_av_stream_management::feature::video::get_id() | cluster::camera_av_stream_management::feature::snapshot::get_id();
+    config->camera_av_stream_management.feature_flags |= cluster::camera_av_stream_management::feature::audio::get_id();
+    config->camera_av_stream_management.feature_flags |= cluster::camera_av_stream_management::feature::video::get_id();
+    config->camera_av_stream_management.feature_flags |= cluster::camera_av_stream_management::feature::snapshot::get_id();
     cluster::camera_av_stream_management::create(endpoint, &(config->camera_av_stream_management), CLUSTER_FLAG_SERVER);
     cluster::webrtc_transport_provider::create(endpoint, &(config->webrtc_transport_provider), CLUSTER_FLAG_SERVER);
     cluster::webrtc_transport_requestor::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);

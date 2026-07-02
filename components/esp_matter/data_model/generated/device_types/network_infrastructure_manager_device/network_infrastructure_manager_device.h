@@ -34,7 +34,9 @@ namespace network_infrastructure_manager {
 
 typedef struct config {
     cluster::descriptor::config_t descriptor;
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
     cluster::thread_network_diagnostics::config_t thread_network_diagnostics;
+#endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
     cluster::wi_fi_network_management::config_t wi_fi_network_management;
     cluster::thread_border_router_management::config_t thread_border_router_management;
     cluster::thread_network_directory::config_t thread_network_directory;

@@ -40,7 +40,6 @@ typedef struct config {
     cluster::identify::config_t identify;
     cluster::switch_cluster::config_t switch_cluster;
     cluster::camera_av_stream_management::config_t camera_av_stream_management;
-    cluster::camera_av_stream_management::feature::audio::config_t camera_av_stream_management_audio;
     cluster::webrtc_transport_provider::config_t webrtc_transport_provider;
 } config_t;
 

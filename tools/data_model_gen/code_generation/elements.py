@@ -89,7 +89,21 @@ def get_choice_group(
     return result
 
 
-class Cluster(BaseCluster):
+class SpecialConfigElement:
+    """Base Class for code-generation elements with preprocessor guard config."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.special_config = None
+
+    def has_special_config(self) -> bool:
+        return self.special_config is not None
+
+    def get_special_config(self):
+        return self.special_config if self.has_special_config() else None
+
+
+class Cluster(SpecialConfigElement, BaseCluster):
     """Cluster class that inherits from BaseCluster"""
 
     def __init__(self, name, id, revision, is_mandatory):
@@ -103,6 +117,12 @@ class Cluster(BaseCluster):
         self.is_base_cluster = False
         # O.a+ conformance (optional with choice)
         self.optional_choice = None
+        self.device_has_choice_features = False
+        self.device_mandatory_attributes = []
+        self.device_mandatory_features = []
+        self.device_mandatory_commands = []
+        self.device_mandatory_events = []
+        self.is_device_extra = False
 
     def get_attributes(self):
         """Get the list of attributes sorted by ID and name"""
@@ -262,6 +282,49 @@ class Cluster(BaseCluster):
             or len(self.get_all_at_least_one_features()) > 0
         )
 
+    def get_device_feature_flags_groups(self) -> List[Dict]:
+        """Groups the choice features of the cluster by choice marker from device_mandatory_features list.
+
+        grouped features are emitted under a single #if/#elif chain.
+        All other features use independent #if blocks.
+        e.g.
+         #if CHIP_DEVICE_CONFIG_ENABLE_WIFI
+            feature_flags |= feature::wi_fi_network_interface::get_id();
+        #elif CHIP_DEVICE_CONFIG_ENABLE_THREAD
+            feature_flags |= feature::thread_network_interface::get_id();
+        +#elif CHIP_DEVICE_CONFIG_ENABLE_ETHERNET
+            feature_flags |= feature::ethernet_network_interface::get_id();
+        #endif
+        """
+        if not self.device_mandatory_features:
+            return []
+
+        exact_one_by_marker: Dict[str, list] = {}
+        assigned = set()
+        for feature in self.device_mandatory_features:
+            if feature.conformance and feature.conformance.is_exact_one():
+                marker = feature.conformance.choice.marker
+                exact_one_by_marker.setdefault(marker, []).append(feature)
+
+        groups = []
+        for features in exact_one_by_marker.values():
+            sorted_features = sorted(features, key=get_id_name_lambda())
+            assigned.update(feature.func_name for feature in sorted_features)
+            constraint = "exact_one" if len(sorted_features) > 1 else "independent"
+            groups.append({"constraint": constraint, "features": sorted_features})
+
+        for feature in sorted(
+            (
+                item
+                for item in self.device_mandatory_features
+                if item.func_name not in assigned
+            ),
+            key=get_id_name_lambda(),
+        ):
+            groups.append({"constraint": "independent", "features": [feature]})
+
+        return groups
+
     def get_otherwise_choice_groups(self) -> List[Dict]:
         return get_choice_group(
             "mandatory_parent", ConformanceDecision.OTHERWISE, self.features
@@ -377,7 +440,7 @@ class Cluster(BaseCluster):
         return elements
 
 
-class Attribute(BaseAttribute):
+class Attribute(SpecialConfigElement, BaseAttribute):
     """Attribute class that inherits from BaseAttribute"""
 
     def __init__(self, name, id, type_, is_mandatory, default_value):
@@ -467,7 +530,7 @@ class Attribute(BaseAttribute):
         return f"esp_matter_attr_val({expr})"
 
 
-class Command(BaseCommand):
+class Command(SpecialConfigElement, BaseCommand):
     """Command class that inherits from BaseCommand"""
 
     def __init__(self, name, id, is_mandatory, direction, response):
@@ -492,7 +555,7 @@ class Command(BaseCommand):
         return self.conformance.get_mandatory_condition()
 
 
-class Feature(BaseFeature):
+class Feature(SpecialConfigElement, BaseFeature):
     """Feature class that inherits from BaseFeature"""
 
     def __init__(self, name, id, code, is_mandatory):
@@ -524,7 +587,7 @@ class Feature(BaseFeature):
         return self.conformance.get_optional_condition()
 
 
-class Event(BaseEvent):
+class Event(SpecialConfigElement, BaseEvent):
     """Event class that inherits from BaseEvent"""
 
     def __init__(self, name, id, is_mandatory):
@@ -542,7 +605,8 @@ class Device(BaseDevice):
 
     def __init__(self, id, name, revision):
         super().__init__(id=id, name=name, revision=revision)
-        self.clusters = []  # List of Cluster objects
+        self.clusters = []
+        self.extra_clusters = []
 
     def get_device_type_id(self):
         """Return the device type ID"""
@@ -564,8 +628,10 @@ class Device(BaseDevice):
         return any(cluster.client_cluster for cluster in self.get_mandatory_clusters())
 
     def get_mandatory_clusters(self):
-        """Get all mandatory clusters"""
-        return [cluster for cluster in self.clusters if cluster.is_mandatory]
+        """Mandatory clusters from XML plus platform-specific extras."""
+        return [
+            cluster for cluster in self.clusters if cluster.is_mandatory
+        ] + self.extra_clusters
 
     def get_unique_mandatory_clusters(self):
         """Get all unique mandatory clusters"""

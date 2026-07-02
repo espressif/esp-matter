@@ -32,7 +32,6 @@ namespace temperature_controlled_cabinet {
 typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::temperature_control::config_t temperature_control;
-    cluster::temperature_control::feature::temperature_number::config_t temperature_control_temperature_number;
 } config_t;
 
 uint32_t get_device_type_id();

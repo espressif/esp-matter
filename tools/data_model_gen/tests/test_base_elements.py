@@ -97,16 +97,6 @@ class TestBaseElement(unittest.TestCase):
         )
         self.assertIn("Attribute", attr.name)
 
-    def test_special_config(self):
-        elem = ConcreteElement(name="icd_management", id="0x0001", element_type="Test")
-        self.assertTrue(elem.has_special_config())
-        self.assertEqual(elem.get_special_config(), "CHIP_CONFIG_ENABLE_ICD_SERVER")
-
-    def test_no_special_config(self):
-        elem = ConcreteElement(name="Thermostat", id="0x0001", element_type="Test")
-        self.assertFalse(elem.has_special_config())
-        self.assertIsNone(elem.get_special_config())
-
     def test_name_required(self):
         with self.assertRaises(AssertionError):
             ConcreteElement(name="", id="0x0001", element_type="Test")

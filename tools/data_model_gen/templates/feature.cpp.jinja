@@ -25,11 +25,9 @@ esp_err_t add(cluster_t *cluster{% if has_config %}, config_t *config{% endif %}
     update_feature_map(cluster, get_id());
     {# --- Attributes --- #}
     {% set attrs = feature.get_attributes() %}
-    {% if attrs | length > 0 %}
     {% filter indent(4, true) %}
     {% include "common.attribute.cpp.jinja" %}
     {% endfilter %}
-    {% endif %}
     {# --- Commands --- #}
     {% for command in feature.get_commands() %}
 {% if command.has_special_config() %}
@@ -52,7 +50,6 @@ esp_err_t add(cluster_t *cluster{% if has_config %}, config_t *config{% endif %}
     {% endfor %}
     {% set elements = cluster.get_destroyable_elements(feature.func_name) %}
     {% set d_attrs = elements["attributes"] %}
-    {% if d_attrs | length > 0 %}
     {% for d_attr in d_attrs %}
     attribute_t *{{ d_attr.func_name }} =
         esp_matter::attribute::get(cluster, attribute::{{ d_attr.chip_name }}::Id);
@@ -60,25 +57,20 @@ esp_err_t add(cluster_t *cluster{% if has_config %}, config_t *config{% endif %}
         esp_matter::attribute::destroy(cluster, {{ d_attr.func_name }});
     }
     {% endfor %}
-    {% endif %}
     {% set d_commands = elements["commands"] %}
-    {% if d_commands | length > 0 %}
     {% for d_command in d_commands %}
     command_t *{{ d_command.func_name }} = esp_matter::command::get(cluster, command::{{ d_command.chip_name }}::Id, {{ d_command.get_flag() }});
     if ({{ d_command.func_name }}) {
         esp_matter::command::destroy(cluster, {{ d_command.func_name }});
     }
     {% endfor %}
-    {% endif %}
     {% set d_events = elements["events"] %}
-    {% if d_events | length > 0 %}
     {% for d_event in d_events %}
     event_t *{{ d_event.func_name }} = esp_matter::event::get(cluster, event::{{ d_event.chip_name }}::Id);
     if ({{ d_event.func_name }}) {
         esp_matter::event::destroy(cluster, {{ d_event.func_name }});
     }
     {% endfor %}
-    {% endif %}
 
     return ESP_OK;
 }

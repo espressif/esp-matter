@@ -518,7 +518,9 @@ class TestGetComparisonRefConfigName(unittest.TestCase):
             "not_equal",
         ]:
             with self.subTest(op=op):
-                result = Conformance(self._make_conf(op)).get_comparison_ref_config_name()
+                result = Conformance(
+                    self._make_conf(op)
+                ).get_comparison_ref_config_name()
                 self.assertEqual(result, "number_of_primaries")
 
     def test_returns_none_for_non_comparison(self):

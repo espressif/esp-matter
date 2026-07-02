@@ -31,7 +31,6 @@ from xml_processing.conformance_parser import (  # noqa: E402
     parse_comparison_term,
     is_mandatory,
     replace_references,
-    COMPARISON_TERMS,
     Conformance,
     is_restricted_by_conformance,
     match_conformance_items,
