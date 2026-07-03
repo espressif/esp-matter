@@ -530,6 +530,18 @@ function(get_supported_esp_matter_cluster_dirs source_dirs)
 	if(CONFIG_SUPPORT_MICROWAVE_OVEN_CONTROL_CLUSTER)
 		list(APPEND temp_list "data_model_provider/clusters/microwave_oven_control")
 	endif()
+	if(CONFIG_SUPPORT_DEVICE_ENERGY_MANAGEMENT_MODE_CLUSTER OR
+	   CONFIG_SUPPORT_DISHWASHER_MODE_CLUSTER OR
+	   CONFIG_SUPPORT_ENERGY_EVSE_MODE_CLUSTER OR
+	   CONFIG_SUPPORT_LAUNDRY_WASHER_MODE_CLUSTER OR
+	   CONFIG_SUPPORT_MICROWAVE_OVEN_MODE_CLUSTER OR
+	   CONFIG_SUPPORT_OVEN_MODE_CLUSTER OR
+	   CONFIG_SUPPORT_REFRIGERATOR_AND_TEMPERATURE_CONTROLLED_CABINET_MODE_CLUSTER OR
+	   CONFIG_SUPPORT_RVC_CLEAN_MODE_CLUSTER OR
+	   CONFIG_SUPPORT_RVC_RUN_MODE_CLUSTER OR
+	   CONFIG_SUPPORT_WATER_HEATER_MODE_CLUSTER)
+		list(APPEND temp_list "data_model_provider/clusters/mode_base")
+	endif()
 	if(CONFIG_SUPPORT_NETWORK_COMMISSIONING_CLUSTER)
 		list(APPEND temp_list "data_model_provider/clusters/network_commissioning")
 	endif()
@@ -541,6 +553,9 @@ function(get_supported_esp_matter_cluster_dirs source_dirs)
 	endif()
 	if(CONFIG_SUPPORT_OPERATIONAL_CREDENTIALS_CLUSTER)
 		list(APPEND temp_list "data_model_provider/clusters/operational_credentials")
+	endif()
+	if(CONFIG_SUPPORT_OPERATIONAL_STATE_CLUSTER)
+		list(APPEND temp_list "data_model_provider/clusters/operational_state")
 	endif()
 	if(CONFIG_SUPPORT_OTA_SOFTWARE_UPDATE_PROVIDER_CLUSTER)
 		list(APPEND temp_list "data_model_provider/clusters/ota_software_update_provider")
@@ -563,7 +578,8 @@ function(get_supported_esp_matter_cluster_dirs source_dirs)
 	if(CONFIG_SUPPORT_RELATIVE_HUMIDITY_MEASUREMENT_CLUSTER)
 		list(APPEND temp_list "data_model_provider/clusters/relative_humidity_measurement")
 	endif()
-	if(CONFIG_SUPPORT_ACTIVATED_CARBON_FILTER_MONITORING_CLUSTER OR CONFIG_SUPPORT_HEPA_FILTER_MONITORING_CLUSTER)
+	if(CONFIG_SUPPORT_ACTIVATED_CARBON_FILTER_MONITORING_CLUSTER OR
+	   CONFIG_SUPPORT_HEPA_FILTER_MONITORING_CLUSTER)
 		list(APPEND temp_list "data_model_provider/clusters/resource_monitor")
 	endif()
 	if(CONFIG_SUPPORT_SCENES_CLUSTER)

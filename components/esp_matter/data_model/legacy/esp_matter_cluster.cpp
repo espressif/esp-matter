@@ -1319,11 +1319,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 } /* color_control */
 
 namespace fan_control {
-const function_generic_t function_list[] = {
-    (function_generic_t)MatterFanControlClusterServerAttributeChangedCallback,
-    (function_generic_t)MatterFanControlClusterServerPreAttributeChangedCallback,
-};
-const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -1337,7 +1334,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
         static const auto plugin_server_init_cb = CALL_ONCE(MatterFanControlPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
-        set_add_bounds_callback(cluster, fan_control::add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
         cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterFanControlClusterServerInitCallback,
                                                  ESPMatterFanControlClusterServerShutdownCallback);
@@ -1355,6 +1351,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterFanControlClusterServerInitCallback,
+                                                 ESPMatterFanControlClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -1992,6 +1991,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         if (has(feature::co_alarm::get_id())) {
             feature::co_alarm::add(cluster);
         }
+
+        static const auto plugin_server_init_cb = CALL_ONCE(MatterSmokeCoAlarmPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, plugin_server_init_cb);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterSmokeCoAlarmClusterServerInitCallback,
+                                                 ESPMatterSmokeCoAlarmClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {

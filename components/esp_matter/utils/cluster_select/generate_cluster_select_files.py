@@ -60,6 +60,18 @@ OPENTHREAD_CLUSTERS = {
 # Keep exceptions here for directories that are shared or whose names differ
 # from the corresponding cluster name in zap_cluster_list.json.
 ESP_MATTER_CLUSTER_DIR_OVERRIDES = {
+    "mode_base": (
+        "DEVICE_ENERGY_MANAGEMENT_MODE_CLUSTER",
+        "DISHWASHER_MODE_CLUSTER",
+        "ENERGY_EVSE_MODE_CLUSTER",
+        "LAUNDRY_WASHER_MODE_CLUSTER",
+        "MICROWAVE_OVEN_MODE_CLUSTER",
+        "OVEN_MODE_CLUSTER",
+        "REFRIGERATOR_AND_TEMPERATURE_CONTROLLED_CABINET_MODE_CLUSTER",
+        "RVC_CLEAN_MODE_CLUSTER",
+        "RVC_RUN_MODE_CLUSTER",
+        "WATER_HEATER_MODE_CLUSTER",
+    ),
     "resource_monitor": (
         "ACTIVATED_CARBON_FILTER_MONITORING_CLUSTER",
         "HEPA_FILTER_MONITORING_CLUSTER",
@@ -127,7 +139,7 @@ def generate_cluster_select_cmake(cluster_list, esp_matter_cluster_dirs, output_
         )
         cmake_file.write("\tset(temp_list )\n")
         for directory, clusters in esp_matter_cluster_dirs.items():
-            conditions = " OR ".join(
+            conditions = " OR\n\t   ".join(
                 f"CONFIG_SUPPORT_{cluster}" for cluster in clusters
             )
             cmake_file.write(f"\tif({conditions})\n")
