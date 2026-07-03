@@ -163,3 +163,7 @@ CONFIG_SUPPORT_ZONE_MANAGEMENT_CLUSTER=n
 
 # disable groupcast cluster until verified
 CONFIG_SUPPORT_GROUPCAST_CLUSTER=n
+
+# Exclude newly added clusters (Matter 1.5/1.6) that are not used by the light device type
+CONFIG_SUPPORT_AMBIENT_CONTEXT_SENSING_CLUSTER=n
+CONFIG_SUPPORT_CAMERA_AV_STREAM_MANAGEMENT_CLUSTER=n
