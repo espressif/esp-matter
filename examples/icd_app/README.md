@@ -26,7 +26,7 @@ The device is configured as a Short Idle Time(SIT) ICD with the following parame
 | ICD Idle Mode Duration    | 60s    |
 | ICD Active Mode Threshold | 1000ms |
 
-It can also be configured as a Long Idle Time(LIT) ICD with the following parameters by the sdkconfig files `sdkconfig.defaults.esp32h2.lit` or `sdkconfig.defaults.esp32c6.lit`.
+It can also be configured as a Long Idle Time(LIT) ICD with the following parameters by the sdkconfig file `sdkconfig.defaults.lit`.
 
 | Parameter                 | Value   |
 |---------------------------|---------|
@@ -38,11 +38,11 @@ It can also be configured as a Long Idle Time(LIT) ICD with the following parame
 
 - ESP32-H2:
 ```
-idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults.esp32h2.lit" set-target esp32h2 build
+idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.lit" set-target esp32h2 build
 ```
 - ESP32-C6:
 ```
-idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults.esp32c6.lit" set-target esp32c6 build
+idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.lit" set-target esp32c6 build
 ```
 
 **Note**: According to the Matter 1.4 specification, "A LIT ICD SHALL operate as a SIT ICD if it doesn’t have at least one registration with any client on any fabric in the ICD Management cluster." In such case, a LIT ICD shall not set its Slow Polling Interval higher than the maximum allowed for a SIT ICD.

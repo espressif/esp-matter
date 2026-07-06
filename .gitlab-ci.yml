@@ -153,7 +153,7 @@ variables:
 
 .build_lit_icd_example: &build_lit_icd_example
     - cd $ESP_MATTER_PATH/examples/icd_app
-    - idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults.esp32c6.lit" set-target esp32c6 build
+    - idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.lit" set-target esp32c6 build
 
 cancel_redundant_pipelines:
   stage: cleanup
