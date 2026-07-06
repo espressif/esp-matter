@@ -1,30 +1,21 @@
 /*
- *
- *    Copyright (c) 2025 Project CHIP Authors
- *    All rights reserved.
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
+   This example code is in the Public Domain (or CC0 licensed, at your option.)
+
+   Unless required by applicable law or agreed to in writing, this
+   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+   CONDITIONS OF ANY KIND, either express or implied.
+*/
+
 #pragma once
 
 #include "webrtc-abstract.h"
 #include <lib/core/DataModelTypes.h>
 #include <lib/core/ScopedNodeId.h>
-#include <vector>
 
 using OnTransportLocalDescriptionCallback = std::function<void(const std::string  &sdp, SDPType type, const int16_t sessionId)>;
 using OnTransportConnectionStateCallback  = std::function<void(bool connected, const int16_t sessionId)>;
 
+// Derived class for WebRTC transport
 class WebrtcTransport {
 public:
     enum class CommandType : uint8_t {
@@ -126,6 +117,11 @@ public:
 
     void SetRequestArgs(const RequestArgs  &args);
     RequestArgs  &GetRequestArgs();
+
+    // SFrame End-to-End Encryption configuration (optional)
+    // For transport types that support SFrame (e.g., WebRTC), this will contain the encryption config.
+    // For transport types that don't support SFrame (e.g., PushAV), this will remain empty (!HasValue()).
+    chip::Optional<chip::app::Clusters::WebRTCTransportProvider::Structs::SFrameStruct::Type> sFrameConfig;
 
 private:
     CommandType mCommandType = CommandType::kUndefined;

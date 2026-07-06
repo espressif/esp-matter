@@ -1,20 +1,11 @@
 /*
- *
- *    Copyright (c) 2025 Project CHIP Authors
- *    All rights reserved.
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
+   This example code is in the Public Domain (or CC0 licensed, at your option.)
+
+   Unless required by applicable law or agreed to in writing, this
+   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+   CONDITIONS OF ANY KIND, either express or implied.
+*/
+
 #include "camera-device.h"
 #include "webrtc-provider-manager.h"
 #include <iomanip>
@@ -33,7 +24,6 @@ using namespace Camera;
 
 static const char * TAG = "webrtc-kvs_esp_port_utils";
 
-static size_t gSDPLength = CONFIG_MAX_LARGE_BUFFER_SIZE_BYTES;
 static char peerClientId[SS_MAX_SIGNALING_CLIENT_ID_LEN + 1];
 
 extern CameraDevice gCameraDevice;
@@ -140,77 +130,56 @@ std::string json_escape(const std::string  &input)
     return output;
 }
 
-static int extract_sdp(const char * json, char * sdp_buf, size_t sdp_buf_len)
+// Extracts the string value of the given top-level JSON key into out_buf (null-terminated, clamped to out_buf_len).
+// Returns 0 on success, -1 if the input is invalid, the JSON cannot be parsed, or the key is not found.
+static int extract_json_field(const char * json, const char * key, char * out_buf, size_t out_buf_len)
 {
-    if (json == nullptr || sdp_buf == nullptr || sdp_buf_len == 0) {
-        ChipLogError(Camera, "extract_sdp failed");
+    if (json == nullptr || key == nullptr || out_buf == nullptr || out_buf_len == 0) {
+        ChipLogError(Camera, "extract_json_field: invalid arguments for key '%s'", key ? key : "(null)");
         return -1;
     }
 
     jsmn_parser parser;
     jsmntok_t tokens[64];
-    int ret;
 
     jsmn_init(&parser);
-    ret = jsmn_parse(&parser, json, strlen(json), tokens, sizeof(tokens) / sizeof(tokens[0]));
+    int ret = jsmn_parse(&parser, json, strlen(json), tokens, sizeof(tokens) / sizeof(tokens[0]));
     if (ret < 0) {
-        printf("Failed to parse JSON: %d\n", ret);
+        ChipLogError(Camera, "Failed to parse JSON: %d", ret);
         return -1;
     }
 
-    for (int i = 1; i < ret; i++) {
-        if (tokens[i].type == JSMN_STRING && strncmp(json + tokens[i].start, "sdp", tokens[i].end - tokens[i].start) == 0) {
-            int len = tokens[i + 1].end - tokens[i + 1].start;
-            if (len >= sdp_buf_len) {
-                len = sdp_buf_len - 1;
-            }
-            strncpy(sdp_buf, json + tokens[i + 1].start, len);
-            sdp_buf[len] = '\0';
-            return 0;
+    size_t key_len = strlen(key);
+    for (int i = 1; i + 1 < ret; i++) {
+        if (tokens[i].type != JSMN_STRING) {
+            continue;
         }
+        size_t name_len = static_cast<size_t>(tokens[i].end - tokens[i].start);
+        if (name_len != key_len || strncmp(json + tokens[i].start, key, key_len) != 0) {
+            continue;
+        }
+
+        int tok_len = tokens[i + 1].end - tokens[i + 1].start;
+        if (tok_len < 0) {
+            return -1;
+        }
+        // Clamp to the destination buffer, leaving room for the null terminator.
+        size_t copy_len = static_cast<size_t>(tok_len);
+        if (copy_len > out_buf_len - 1) {
+            copy_len = out_buf_len - 1;
+        }
+        memcpy(out_buf, json + tokens[i + 1].start, copy_len);
+        out_buf[copy_len] = '\0';
+        return 0;
     }
 
-    return -1; // SDP not found
+    return -1; // key not found
 }
 
-static int extract_candidate(const char * json, char * sdp_buf, size_t sdp_buf_len)
-{
-    // Sanity checks for input parameters
-    if (json == nullptr || sdp_buf == nullptr || sdp_buf_len == 0) {
-        ChipLogError(Camera, "extract_candidate failed");
-        return -1;
-    }
-
-    jsmn_parser parser;
-    jsmntok_t tokens[64];
-    int ret;
-
-    jsmn_init(&parser);
-    ret = jsmn_parse(&parser, json, strlen(json), tokens, sizeof(tokens) / sizeof(tokens[0]));
-    if (ret < 0) {
-        printf("Failed to parse JSON: %d\n", ret);
-        return -1;
-    }
-
-    for (int i = 1; i < ret; i++) {
-        if (tokens[i].type == JSMN_STRING && strncmp(json + tokens[i].start, "candidate", tokens[i].end - tokens[i].start) == 0) {
-            int len = tokens[i + 1].end - tokens[i + 1].start;
-            if (len >= sdp_buf_len) {
-                len = sdp_buf_len - 1;
-            }
-            strncpy(sdp_buf, json + tokens[i + 1].start, len);
-            sdp_buf[len] = '\0';
-            return 0;
-        }
-    }
-
-    return -1; // Candidate not found
-}
-
-void webrtc_bridge_message_received_cb(void * data, int len)
+void webrtc_bridge_message_received_cb(const void * data, int len)
 {
     // handle message
-    printf("Received Message from P4-Streamer: \n%.*s\n", len, (char *) data);
+    ChipLogProgress(Camera, "Received Message from P4-Streamer: %.*s", len, (const char *) data);
 
     // Use nothrow to check for allocation failure
     std::unique_ptr<signaling_msg_t> msg(new (std::nothrow) signaling_msg_t());
@@ -221,22 +190,35 @@ void webrtc_bridge_message_received_cb(void * data, int len)
 
     deserialize_signaling_message((const char *) data, len, msg.get());
 
-    char sdp_buf[gSDPLength];
+    if (msg->payload == nullptr || msg->payloadLen == 0) {
+        ChipLogError(Camera, "webrtc_bridge_message_received_cb: message has no payload");
+        return;
+    }
+
+    // The extracted SDP/candidate is a substring of the JSON payload, so the payload length
+    // (+1 for the null terminator) is a safe upper bound for the output buffer.
+    size_t sdp_buf_len = msg->payloadLen + 1;
+    char * sdp_buf     = (char *) heap_caps_malloc_prefer(sdp_buf_len, 2, MALLOC_CAP_8BIT | MALLOC_CAP_SPIRAM, MALLOC_CAP_INTERNAL);
+    if (sdp_buf == nullptr) {
+        ChipLogError(Camera, "webrtc_bridge_message_received_cb: failed to allocate sdp_buf");
+        return;
+    }
+
     switch (msg->messageType) {
     case SIGNALING_MSG_TYPE_OFFER:
-        if (extract_sdp(msg->payload, sdp_buf, sizeof(sdp_buf)) == 0) {
-            ESP_LOGD(TAG, "Extracted SDP:\n%s\n", sdp_buf);
-        }
-        break;
     case SIGNALING_MSG_TYPE_ANSWER:
-        if (extract_sdp(msg->payload, sdp_buf, sizeof(sdp_buf)) == 0) {
-            ESP_LOGD(TAG, "Extracted SDP:\n%s\n", sdp_buf);
+        if (extract_json_field(msg->payload, "sdp", sdp_buf, sdp_buf_len) != 0) {
+            ESP_LOGE(TAG, "Failed to extract SDP from payload");
+            goto cleanup;
         }
+        ESP_LOGD(TAG, "Extracted SDP:\n%s\n", sdp_buf);
         break;
     case SIGNALING_MSG_TYPE_ICE_CANDIDATE:
-        if (extract_candidate(msg->payload, sdp_buf, sizeof(sdp_buf)) == 0) {
-            ESP_LOGD(TAG, "Extracted Candidate:\n%s\n", sdp_buf);
+        if (extract_json_field(msg->payload, "candidate", sdp_buf, sdp_buf_len) != 0) {
+            ESP_LOGE(TAG, "Failed to extract candidate from payload");
+            goto cleanup;
         }
+        ESP_LOGD(TAG, "Extracted Candidate:\n%s\n", sdp_buf);
         break;
     default:
         ESP_LOGE(TAG, "Unknown message type\n");
@@ -247,11 +229,11 @@ void webrtc_bridge_message_received_cb(void * data, int len)
     {
         uint16_t sessionId = 0;
         snprintf(peerClientId, sizeof(peerClientId), "%s", msg->peerClientId);
-        printf("Peer Client ID: \n%s\n", peerClientId);
+        ChipLogProgress(Camera, "Peer Client ID: %s", peerClientId);
 
         sessionId = static_cast<uint16_t>(strtoul(peerClientId, nullptr, 0)); // base 0 auto-detects "0x"
 
-        printf("Session ID: %u\n", sessionId);
+        ChipLogProgress(Camera, "Session ID: %u", sessionId);
 
         std::string unescaped_msg = json_unescape(std::string(sdp_buf));
 
@@ -264,12 +246,12 @@ void webrtc_bridge_message_received_cb(void * data, int len)
                 WebrtcTransport * transport = webrtcMgr->GetTransport(sessionId);
                 if (transport != nullptr) {
                     transport->OnLocalDescription(unescaped_msg, SDPType::Offer);
-                    printf("Set SDP Offer to WebRTCProviderManager\n");
+                    ChipLogProgress(Camera, "Set SDP Offer to WebRTCProviderManager");
                 } else {
-                    printf("Transport is not found for sessionID: %u\n", sessionId);
+                    ChipLogError(Camera, "Transport is not found for sessionID: %u", sessionId);
                 }
             } else {
-                printf("Delegate is not of type WebRTCProviderManager\n");
+                ChipLogError(Camera, "Delegate is not of type WebRTCProviderManager");
             }
         } else if (msg->messageType == SIGNALING_MSG_TYPE_ANSWER) {
             WebRTCTransportProvider::Delegate  &delegateRef = gCameraDevice.GetWebRTCProviderDelegate();
@@ -278,13 +260,12 @@ void webrtc_bridge_message_received_cb(void * data, int len)
                 WebrtcTransport * transport = webrtcMgr->GetTransport(sessionId);
                 if (transport != nullptr) {
                     transport->OnLocalDescription(unescaped_msg, SDPType::Answer);
-                    printf("Set SDP Answer to WebRTCProviderManager\n");
+                    ChipLogProgress(Camera, "Set SDP Answer to WebRTCProviderManager");
                 } else {
-                    printf("Transport is not found for sessionID: %u\n", sessionId);
+                    ChipLogError(Camera, "Transport is not found for sessionID: %u", sessionId);
                 }
-                printf("Set SDP Answer to WebRTCProviderManager\n");
             } else {
-                printf("Delegate is not of type WebRTCProviderManager\n");
+                ChipLogError(Camera, "Delegate is not of type WebRTCProviderManager");
             }
         } else if (msg->messageType == SIGNALING_MSG_TYPE_ICE_CANDIDATE) {
             WebRTCTransportProvider::Delegate  &delegateRef = gCameraDevice.GetWebRTCProviderDelegate();
@@ -293,13 +274,12 @@ void webrtc_bridge_message_received_cb(void * data, int len)
                 WebrtcTransport * transport = webrtcMgr->GetTransport(sessionId);
                 if (transport != nullptr) {
                     transport->OnICECandidate(unescaped_msg); // todo: session id based
-                    printf("Set Candidate to WebRTCProviderManager\n");
+                    ChipLogProgress(Camera, "Set Candidate to WebRTCProviderManager");
                 } else {
-                    printf("Transport is not found for sessionID: %u\n", sessionId);
+                    ChipLogError(Camera, "Transport is not found for sessionID: %u", sessionId);
                 }
-                printf("Set Candidate to WebRTCProviderManager\n");
             } else {
-                printf("Delegate is not of type WebRTCProviderManager\n");
+                ChipLogError(Camera, "Delegate is not of type WebRTCProviderManager");
             }
         }
     }
@@ -307,6 +287,9 @@ void webrtc_bridge_message_received_cb(void * data, int len)
 cleanup:
     if (msg->payload) {
         free(msg->payload);
+    }
+    if (sdp_buf) {
+        heap_caps_free(sdp_buf);
     }
 }
 

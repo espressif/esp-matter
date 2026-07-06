@@ -1,32 +1,21 @@
 /*
- *
- *    Copyright (c) 2025 Project CHIP Authors
- *    All rights reserved.
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
+   This example code is in the Public Domain (or CC0 licensed, at your option.)
+
+   Unless required by applicable law or agreed to in writing, this
+   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+   CONDITIONS OF ANY KIND, either express or implied.
+*/
+
 #include "webrtc-abstract.h"
+#include <app-common/zap-generated/cluster-objects.h>
+#include <lib/core/Optional.h>
 #include <lib/support/logging/CHIPLogging.h>
 #include <webrtc-transport.h>
 
 WebrtcTransport::WebrtcTransport()
 {
     ChipLogProgress(Camera, "WebrtcTransport created");
-    mRequestArgs.sessionId             = 0;
-    mRequestArgs.peerNodeId          = 0;
-    mRequestArgs.fabricIndex         = 0;
-    mRequestArgs.originatingEndpointId = 0;
-    mRequestArgs.peerId              = chip::ScopedNodeId();
+    mRequestArgs = {}; // Default initialize request arguments
 }
 
 WebrtcTransport::~WebrtcTransport()
@@ -179,12 +168,7 @@ void WebrtcTransport::OnConnectionStateChanged(bool connected)
 
 void WebrtcTransport::OnTrack(std::shared_ptr<WebRTCTrack> track)
 {
-    ChipLogProgress(Camera, "Track received for sessionID: %u, type: %s", mRequestArgs.sessionId, track->GetType().c_str());
-    if (track->GetType() == "video") {
-        ChipLogProgress(Camera, "Video track updated from remote peer");
-        SetVideoTrack(track);
-    } else if (track->GetType() == "audio") {
-        ChipLogProgress(Camera, "audio track updated from remote peer");
-        SetAudioTrack(track);
-    }
+    // Only logging the track addition here as it's not used in the current implementation. In future, we can add functionality to
+    // handle
+    ChipLogProgress(Camera, "Remote track added for the sessionID: %u, type: %s", mRequestArgs.sessionId, track->GetType().c_str());
 }

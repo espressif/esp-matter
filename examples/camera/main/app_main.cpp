@@ -26,15 +26,21 @@
 #include <app/clusters/time-synchronization-server/DefaultTimeSyncDelegate.h>
 #endif
 
+#include <data_model_provider/clusters/webrtc_transport_provider/integration.h>
+
 #include "camera-app.h"
 #include "camera-device.h"
 
+#include "network_coprocessor.h"
 #include "esp_webrtc_time.h"
 #include "esp_work_queue.h"
+// #include "host_power_save.h"
 #include "signaling_serializer.h"
 #include "webrtc_bridge.h"
 
-extern "C" void network_coprocessor_init();
+#ifdef CONFIG_SLAVE_LWIP_ENABLED
+#define CONFIG_ESP_HOSTED_NETWORK_SPLIT_ENABLED 1
+#endif
 
 static const char *TAG = "app_main";
 uint16_t camera_endpoint_id = 0;
@@ -46,6 +52,7 @@ using namespace chip::app::Clusters;
 using namespace Camera;
 
 CameraDevice gCameraDevice;
+extern std::unique_ptr<CameraApp> gCameraApp;
 
 constexpr auto k_timeout_seconds = 300;
 
@@ -160,54 +167,30 @@ app_attribute_update_cb(attribute::callback_type_t type, uint16_t endpoint_id,
     return err;
 }
 
-#ifdef CONFIG_SLAVE_LWIP_ENABLED
-static void create_slave_sta_netif(uint8_t dhcp_at_slave)
+#ifdef CONFIG_ESP_HOSTED_NETWORK_SPLIT_ENABLED
+static esp_netif_t * sta_netif = NULL;
+
+static esp_netif_t* create_slave_sta_netif(void)
 {
     /* Create "almost" default station, but with un-flagged DHCP client */
-    esp_netif_inherent_config_t netif_cfg;
+    /* Use static to ensure the config persists after function returns */
+    static esp_netif_inherent_config_t netif_cfg;
     memcpy(&netif_cfg, ESP_NETIF_BASE_DEFAULT_WIFI_STA, sizeof(netif_cfg));
-
-    if (!dhcp_at_slave) {
-        netif_cfg.flags =
-            (esp_netif_flags_t)(netif_cfg.flags & ~ESP_NETIF_DHCP_CLIENT);
-    }
 
     esp_netif_config_t cfg_sta = {
         .base = &netif_cfg,
         .stack = ESP_NETIF_NETSTACK_DEFAULT_WIFI_STA,
     };
     esp_netif_t *netif_sta = esp_netif_new(&cfg_sta);
+    ESP_LOGI(TAG, "Created netif_sta: %p (if_key: %s)", netif_sta, netif_cfg.if_key);
     assert(netif_sta);
 
     ESP_ERROR_CHECK(esp_netif_attach_wifi_station(netif_sta));
     ESP_ERROR_CHECK(esp_wifi_set_default_wifi_sta_handlers());
 
-    if (!dhcp_at_slave) {
-        ESP_ERROR_CHECK(esp_netif_dhcpc_stop(netif_sta));
-    }
-
-    // slave_sta_netif = netif_sta;
+    return netif_sta;
 }
 #endif
-
-void sdp_mem_dump()
-{
-    printf("\tDescription\tInternal\tSPIRAM\n");
-    printf("Total Memory\t\t%d\t\t%d\n",
-           heap_caps_get_total_size(MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL),
-           heap_caps_get_total_size(MALLOC_CAP_SPIRAM));
-    printf("Current Free Memory\t%d\t\t%d\n",
-           heap_caps_get_free_size(MALLOC_CAP_8BIT) -
-           heap_caps_get_free_size(MALLOC_CAP_SPIRAM),
-           heap_caps_get_free_size(MALLOC_CAP_SPIRAM));
-    printf(
-        "Largest Free Block\t%d\t\t%d\n",
-        heap_caps_get_largest_free_block(MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL),
-        heap_caps_get_largest_free_block(MALLOC_CAP_SPIRAM));
-    printf("Min. Ever Free Size\t%d\t\t%d\n",
-           heap_caps_get_minimum_free_size(MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL),
-           heap_caps_get_minimum_free_size(MALLOC_CAP_SPIRAM));
-}
 
 extern "C" void app_main()
 {
@@ -219,12 +202,15 @@ extern "C" void app_main()
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
 
-#ifdef CONFIG_SLAVE_LWIP_ENABLED
-    create_slave_sta_netif(true);
+#ifdef CONFIG_ESP_HOSTED_NETWORK_SPLIT_ENABLED
+    /* Create and register the netif with "WIFI_STA_DEF" key */
+    sta_netif = create_slave_sta_netif();
 #endif
 
     signaling_serializer_init();
     network_coprocessor_init();
+
+    // host_power_save_init(NULL);
 
     esp_work_queue_init();
     esp_work_queue_start();
@@ -234,6 +220,9 @@ extern "C" void app_main()
     /* Initialize driver */
     app_driver_handle_t button_handle = app_driver_button_init();
     app_reset_button_register(button_handle);
+
+    //Initializes Camera HAL
+    gCameraDevice.Init();
 
     /* Create a Matter node and add the mandatory Root Node device type on
      * endpoint 0 */
@@ -246,6 +235,7 @@ extern "C" void app_main()
                          ESP_LOGE(TAG, "Failed to create Matter node"));
 
     camera::config_t cam_config;
+    CameraAvStreamManagement::CameraAvStreamManagementConfig avsm_config;
 
 #if CONFIG_ENABLE_SNTP_TIME_SYNC
     static chip::app::Clusters::TimeSynchronization::DefaultTimeSyncDelegate
@@ -275,6 +265,13 @@ extern "C" void app_main()
     camera_endpoint_id = endpoint::get_id(endpoint);
     ESP_LOGI(TAG, "Camera created with endpoint_id %d", camera_endpoint_id);
 
+    CameraAppInit(&gCameraDevice, avsm_config);
+
+    CameraAvStreamManagement::SetConfig(camera_endpoint_id, avsm_config);
+    CameraAvStreamManagement::SetDelegate(camera_endpoint_id, &gCameraDevice.GetCameraAVStreamMgmtDelegate());
+
+    WebRTCTransportProvider::SetDelegate(camera_endpoint_id, &gCameraDevice.GetWebRTCProviderDelegate());
+
     /* Matter start */
     err = esp_matter::start(app_event_cb);
     ABORT_APP_ON_FAILURE(err == ESP_OK,
@@ -283,8 +280,19 @@ extern "C" void app_main()
     ESP_LOGW("Camera", "ESP Matter Camera App: ApplicationInit()");
 
     lock::ScopedChipStackLock lock(portMAX_DELAY);
-    gCameraDevice.Init();
-    CameraAppInit(&gCameraDevice);
+    CHIP_ERROR avsm_err = gCameraApp.get()->InitializeCameraAVStreamMgmt();
+    if (avsm_err != CHIP_NO_ERROR) {
+        ChipLogError(Camera, "Failed to initialize CameraAVStreamManagementServer on endpoint %u: %" CHIP_ERROR_FORMAT, camera_endpoint_id,
+                     avsm_err.Format());
+    }
+
+    WebRTCTransportProvider::WebRTCTransportProviderCluster * server = WebRTCTransportProvider::GetServer(camera_endpoint_id);
+    if (server == nullptr) {
+        ChipLogError(Camera, "WebRTCTransportProviderCluster not found for endpoint %u", camera_endpoint_id);
+        return;
+    }
+
+    gCameraDevice.SetWebRTCTransportProvider(server);
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter::console::diagnostics_register_commands();
