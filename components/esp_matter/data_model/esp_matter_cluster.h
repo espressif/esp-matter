@@ -338,6 +338,8 @@ namespace level_control {
 typedef struct config {
     nullable<uint8_t> current_level;
     nullable<uint8_t> on_level;
+    uint8_t min_level;
+    uint8_t max_level;
     uint8_t options;
     config()
         : current_level()

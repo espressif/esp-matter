@@ -1286,6 +1286,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_cluster_revision(cluster, cluster_revision);
         if (config) {
             attribute::create_current_level(cluster, config->current_level);
+            attribute::create_min_level(cluster, config->min_level);
+            attribute::create_max_level(cluster, config->max_level);
             attribute::create_on_level(cluster, config->on_level);
             attribute::create_options(cluster, config->options);
         } else {
@@ -1809,6 +1811,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+        mode_base::attribute::create_supported_modes(cluster, nullptr, 0, 0);
         if (config) {
             mode_base::attribute::create_current_mode(cluster, config->current_mode);
         } else {
@@ -1937,6 +1940,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+        mode_base::attribute::create_supported_modes(cluster, nullptr, 0, 0);
         if (config) {
             mode_base::attribute::create_current_mode(cluster, config->current_mode);
         } else {
@@ -3393,6 +3397,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     /* Commands */
     command::create_disable(cluster);
     command::create_enable_charging(cluster);
+
+    /* Events */
+    event::create_ev_connected(cluster);
+    event::create_ev_not_detected(cluster);
+    event::create_energy_transfer_started(cluster);
+    event::create_energy_transfer_stopped(cluster);
+    event::create_fault(cluster);
 
     return cluster;
 }
