@@ -9,23 +9,9 @@ namespace {{ feature.func_name | lower }} {
 {% if has_config %}
 typedef struct config {
     {% for attr in ext_attrs %}
-        {% if attr.type == "string" %}
-    char {{ attr.func_name }}[k_max_{{ attr.func_name }}_length + 1];
-        {% elif attr.type == "octstr" %}
-    uint8_t {{ attr.func_name }}[k_max_{{ attr.func_name }}_length];
-        {% elif attr.type == "list" %}
-        {% elif attr.is_nullable %}
-    nullable<{{ attr.get_type() }}> {{ attr.func_name }};
-        {% else %}
-    {{ attr.get_type() }} {{ attr.func_name }};
-        {% endif %}
+{{ attr_member(attr, '    ') -}}
     {% endfor %}
-    {% set init_items = [] %}
-    {% for attr in feature.get_attributes() %}
-        {% if not attr.is_complex and not attr.is_internally_managed %}
-            {% set _ = init_items.append(attr.func_name ~ "(" ~ attr.get_default_value() ~ ")") %}
-        {% endif %}
-    {% endfor %}
+    {% set init_items = feature.get_config_init_list() %}
     {% if init_items %}
     config() : {{ init_items | join(", ") }} {}
     {% else %}

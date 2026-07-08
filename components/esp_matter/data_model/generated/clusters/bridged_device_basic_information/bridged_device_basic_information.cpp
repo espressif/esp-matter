@@ -20,7 +20,6 @@
 
 #include <app-common/zap-generated/cluster-enums.h>
 #include <app-common/zap-generated/callback.h>
-#include <app/InteractionModelEngine.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
 #include <bridged_device_basic_information.h>
 #include <bridged_device_basic_information_ids.h>
@@ -29,13 +28,10 @@
 #include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
-using chip::app::CommandHandler;
-using chip::app::DataModel::Decode;
-using chip::TLV::TLVReader;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 
-static const char *TAG = "bridged_device_basic_information_cluster";
+static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 6;
 
 namespace esp_matter {
@@ -65,7 +61,7 @@ esp_err_t add(cluster_t *cluster)
 namespace attribute {
 attribute_t *create_vendor_name(cluster_t *cluster, char *value, uint16_t length)
 {
-    VerifyOrReturnValue(length <= k_max_vendor_name_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_vendor_name_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound. cluster_id: 0x%08" PRIX32, bridged_device_basic_information::Id));
     return esp_matter::attribute::create(cluster, VendorName::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length), k_max_vendor_name_length + 1);
 }
 
@@ -78,7 +74,7 @@ attribute_t *create_vendor_id(cluster_t *cluster, uint16_t value)
 
 attribute_t *create_product_name(cluster_t *cluster, char *value, uint16_t length)
 {
-    VerifyOrReturnValue(length <= k_max_product_name_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_product_name_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound. cluster_id: 0x%08" PRIX32, bridged_device_basic_information::Id));
     return esp_matter::attribute::create(cluster, ProductName::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length), k_max_product_name_length + 1);
 }
 
@@ -91,7 +87,7 @@ attribute_t *create_product_id(cluster_t *cluster, uint16_t value)
 
 attribute_t *create_node_label(cluster_t *cluster, char *value, uint16_t length)
 {
-    VerifyOrReturnValue(length <= k_max_node_label_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_node_label_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound. cluster_id: 0x%08" PRIX32, bridged_device_basic_information::Id));
     return esp_matter::attribute::create(cluster, NodeLabel::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, length), k_max_node_label_length + 1);
 }
 
@@ -126,25 +122,25 @@ attribute_t *create_manufacturing_date(cluster_t *cluster, char *value, uint16_t
 
 attribute_t *create_part_number(cluster_t *cluster, char *value, uint16_t length)
 {
-    VerifyOrReturnValue(length <= k_max_part_number_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_part_number_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound. cluster_id: 0x%08" PRIX32, bridged_device_basic_information::Id));
     return esp_matter::attribute::create(cluster, PartNumber::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length), k_max_part_number_length + 1);
 }
 
 attribute_t *create_product_url(cluster_t *cluster, char *value, uint16_t length)
 {
-    VerifyOrReturnValue(length <= k_max_product_url_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_product_url_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound. cluster_id: 0x%08" PRIX32, bridged_device_basic_information::Id));
     return esp_matter::attribute::create(cluster, ProductURL::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length), k_max_product_url_length + 1);
 }
 
 attribute_t *create_product_label(cluster_t *cluster, char *value, uint16_t length)
 {
-    VerifyOrReturnValue(length <= k_max_product_label_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_product_label_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound. cluster_id: 0x%08" PRIX32, bridged_device_basic_information::Id));
     return esp_matter::attribute::create(cluster, ProductLabel::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length), k_max_product_label_length + 1);
 }
 
 attribute_t *create_serial_number(cluster_t *cluster, char *value, uint16_t length)
 {
-    VerifyOrReturnValue(length <= k_max_serial_number_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_serial_number_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound. cluster_id: 0x%08" PRIX32, bridged_device_basic_information::Id));
     return esp_matter::attribute::create(cluster, SerialNumber::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length), k_max_serial_number_length + 1);
 }
 
@@ -156,7 +152,7 @@ attribute_t *create_reachable(cluster_t *cluster, bool value)
 #if CHIP_CONFIG_USE_ENDPOINT_UNIQUE_ID
 attribute_t *create_unique_id(cluster_t *cluster, char *value, uint16_t length)
 {
-    VerifyOrReturnValue(length <= k_max_unique_id_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_unique_id_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound. cluster_id: 0x%08" PRIX32, bridged_device_basic_information::Id));
     return esp_matter::attribute::create(cluster, UniqueID::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length), k_max_unique_id_length + 1);
 }
 #endif // CHIP_CONFIG_USE_ENDPOINT_UNIQUE_ID

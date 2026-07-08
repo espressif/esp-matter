@@ -1,9 +1,7 @@
 {% if cluster.get_commands() | length > 0 %}
 namespace command {
 {% for command in cluster.get_commands() %}
-{% if command.has_special_config() %}
-#if {{ command.get_special_config() }}
-{% endif %}
+{{ guard_open(command) -}}
 command_t *create_{{ command.func_name | lower }}(cluster_t *cluster)
 {
     {% if command.get_conformance_condition() %}
@@ -14,10 +12,7 @@ command_t *create_{{ command.func_name | lower }}(cluster_t *cluster)
     {% endif %}
     return esp_matter::command::create(cluster, {{ command.chip_name }}::Id, {{ command.get_flag() }}, {% if command.has_callback %}esp_matter_command_callback_{{ command.func_name | lower }}{% else %}NULL{% endif %});
 }
-{% if command.has_special_config() %}
-#endif // {{ command.get_special_config() }}
-{% endif %}
-
+{{ guard_close(command) }}
 {% endfor %}
 } /* command */
 {% endif %}

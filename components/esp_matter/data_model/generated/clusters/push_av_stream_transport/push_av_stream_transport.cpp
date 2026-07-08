@@ -19,8 +19,6 @@
 #include <esp_matter.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
-#include <app-common/zap-generated/callback.h>
-#include <app/InteractionModelEngine.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
 #include <esp_matter_delegate_callbacks.h>
 #include <push_av_stream_transport.h>
@@ -30,14 +28,11 @@
 #include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
-using chip::app::CommandHandler;
-using chip::app::DataModel::Decode;
-using chip::TLV::TLVReader;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 using namespace esp_matter::cluster::delegate_cb;
 
-static const char *TAG = "push_av_stream_transport_cluster";
+static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 2;
 
 namespace esp_matter {
@@ -129,12 +124,6 @@ event_t *create_push_transport_end(cluster_t *cluster)
 }
 
 } /* event */
-
-static void create_default_binding_cluster(endpoint_t *endpoint)
-{
-    binding::config_t config;
-    binding::create(endpoint, &config, CLUSTER_FLAG_SERVER);
-}
 
 const function_generic_t *function_list = NULL;
 

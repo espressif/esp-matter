@@ -30,23 +30,15 @@ esp_err_t add(cluster_t *cluster{% if has_config %}, config_t *config{% endif %}
     {% endfilter %}
     {# --- Commands --- #}
     {% for command in feature.get_commands() %}
-{% if command.has_special_config() %}
-#if {{ command.get_special_config() }}
-{% endif %}
+{{ guard_open(command) -}}
     command::create_{{ command.func_name }}(cluster);
-{% if command.has_special_config() %}
-#endif // {{ command.get_special_config() }}
-{% endif %}
+{{ guard_close(command) -}}
     {% endfor %}
     {# --- Events --- #}
     {% for event in feature.get_events() %}
-{% if event.has_special_config() %}
-#if {{ event.get_special_config() }}
-{% endif %}
+{{ guard_open(event) -}}
     event::create_{{ event.func_name }}(cluster);
-{% if event.has_special_config() %}
-#endif // {{ event.get_special_config() }}
-{% endif %}
+{{ guard_close(event) -}}
     {% endfor %}
     {% set elements = cluster.get_destroyable_elements(feature.func_name) %}
     {% set d_attrs = elements["attributes"] %}

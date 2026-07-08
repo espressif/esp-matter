@@ -16,24 +16,18 @@
 {# --- Config-dependent attributes --- #}
 {% if config_attrs | length > 0 %}
 {% for a in config_attrs %}
-{% if a.has_special_config() %}
-#if {{ a.get_special_config() }}
-{% endif %}
+{{ guard_open(a) -}}
     {% if a.type in ["string", "octstr"] %}
 attribute::create_{{ a.func_name }}(cluster, config->{{ a.func_name }}, sizeof(config->{{ a.func_name }}));
     {% else %}
 attribute::create_{{ a.func_name }}(cluster, config->{{ a.func_name }});
     {% endif %}
-{% if a.has_special_config() %}
-#endif // {{ a.get_special_config() }}
-{% endif %}
+{{ guard_close(a) -}}
 {% endfor %}
 {% endif %}
 {# --- Default attributes (no config) --- #}
 {% for a in default_attrs %}
-{% if a.has_special_config() %}
-#if {{ a.get_special_config() }}
-{% endif %}
+{{ guard_open(a) -}}
     {% if a.type == "list" %}
 attribute::create_{{ a.func_name }}(cluster, NULL, 0, 0);
     {% elif a.type in ["string", "octstr"] %}
@@ -47,7 +41,5 @@ attribute::create_{{ a.func_name }}(cluster, "{{ a.get_default_value() }}", size
     {% else %}
 attribute::create_{{ a.func_name }}(cluster, {{ a.get_default_value() }});
     {% endif %}
-{% if a.has_special_config() %}
-#endif // {{ a.get_special_config() }}
-{% endif %}
+{{ guard_close(a) -}}
 {% endfor %}

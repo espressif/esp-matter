@@ -19,9 +19,6 @@
 #include <esp_matter.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
-#include <app-common/zap-generated/callback.h>
-#include <app/InteractionModelEngine.h>
-#include <zap_common/app/PluginApplicationCallbacks.h>
 #include <webrtc_transport_requestor.h>
 #include <webrtc_transport_requestor_ids.h>
 #include <binding.h>
@@ -29,13 +26,10 @@
 #include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
-using chip::app::CommandHandler;
-using chip::app::DataModel::Decode;
-using chip::TLV::TLVReader;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 
-static const char *TAG = "webrtc_transport_requestor_cluster";
+static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 2;
 
 namespace esp_matter {
@@ -71,12 +65,6 @@ command_t *create_end(cluster_t *cluster)
 }
 
 } /* command */
-
-static void create_default_binding_cluster(endpoint_t *endpoint)
-{
-    binding::config_t config;
-    binding::create(endpoint, &config, CLUSTER_FLAG_SERVER);
-}
 
 const function_generic_t *function_list = NULL;
 

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* This is a Generated File */
+/* THIS IS A GENERATED FILE, DO NOT EDIT */
 
 #include <esp_log.h>
 #include <esp_matter.h>
@@ -22,6 +22,8 @@
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 using namespace esp_matter::endpoint;
+
+static const char *TAG = "esp_matter_endpoint";
 
 namespace esp_matter {
 namespace endpoint {
@@ -39,12 +41,12 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = esp_matter::endpoint::create(node, flags, priv_data);
-    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE("power_source", "Failed to create endpoint"));
+    VerifyOrReturnValue(endpoint != nullptr, NULL, ESP_LOGE(TAG, "Failed to create endpoint. device_type_id: 0x%08" PRIX32, get_device_type_id()));
 
     cluster_t *descriptor_cluster = descriptor::create(endpoint, &(config->descriptor), CLUSTER_FLAG_SERVER);
-    VerifyOrReturnValue(descriptor_cluster != nullptr, NULL, ESP_LOGE("power_source", "Failed to create descriptor cluster"));
+    VerifyOrReturnValue(descriptor_cluster != nullptr, NULL, ESP_LOGE(TAG, "Failed to create descriptor cluster. device_type_id: 0x%08" PRIX32, get_device_type_id()));
 
-    VerifyOrReturnValue(add(endpoint, config) == ESP_OK, NULL, ESP_LOGE("power_source", "Failed to add device type"));
+    VerifyOrReturnValue(add(endpoint, config) == ESP_OK, NULL, ESP_LOGE(TAG, "Failed to add device type. device_type_id: 0x%08" PRIX32, get_device_type_id()));
     return endpoint;
 }
 

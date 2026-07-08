@@ -31,6 +31,24 @@ def format_filter(value, fmt):
     return fmt.format(value)
 
 
+# Common file header for all generated files
+FILE_HEADER = """// Copyright 2026 Espressif Systems (Shanghai) PTE LTD
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/* THIS IS A GENERATED FILE, DO NOT EDIT */"""
+
+
 env = Environment(
     loader=FileSystemLoader(template_dir),
     trim_blocks=True,
@@ -38,6 +56,14 @@ env = Environment(
     extensions=["jinja2.ext.do"],
 )
 env.filters["format_filter"] = format_filter
+env.globals["file_header"] = FILE_HEADER
+
+# Expose the shared template macros (guard_open / guard_close) as globals so
+# every template can use them without an explicit {% import %} line.
+_macros = env.get_template("macros.jinja").module
+env.globals["guard_open"] = _macros.guard_open
+env.globals["guard_close"] = _macros.guard_close
+env.globals["attr_member"] = _macros.attr_member
 
 
 CLUSTER_CPP_TEMPLATE = "cluster.cpp.jinja"
@@ -203,26 +229,7 @@ def generate_header_file(output_file_path: str, objects: List[str]):
     :param objects: A list of cluster or device names.
     """
     os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
-    header_content = [
-        """// Copyright 2026 Espressif Systems (Shanghai) PTE LTD
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-/* THIS IS A GENERATED FILE, DO NOT EDIT */
-
-#pragma once
-"""
-    ]
+    header_content = [f"{FILE_HEADER}\n\n#pragma once\n"]
     sorted_objects = sorted(objects)
 
     for object_name in sorted_objects:

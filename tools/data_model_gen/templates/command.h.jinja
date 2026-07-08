@@ -1,13 +1,9 @@
 {% if cluster.get_commands() | length > 0 %}
 namespace command {
     {% for command in cluster.get_commands() %}
-{% if command.has_special_config() %}
-#if {{ command.get_special_config() }}
-{% endif %}
+{{ guard_open(command) -}}
 command_t *create_{{ command.func_name | lower }}(cluster_t *cluster);
-{% if command.has_special_config() %}
-#endif // {{ command.get_special_config() }}
-{% endif %}
+{{ guard_close(command) -}}
     {% endfor %}
 } /* command */
 

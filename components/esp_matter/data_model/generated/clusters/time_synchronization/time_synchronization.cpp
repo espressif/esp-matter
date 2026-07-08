@@ -19,8 +19,6 @@
 #include <esp_matter.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
-#include <app-common/zap-generated/callback.h>
-#include <app/InteractionModelEngine.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
 #include <esp_matter_delegate_callbacks.h>
 #include <time_synchronization.h>
@@ -30,14 +28,11 @@
 #include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
-using chip::app::CommandHandler;
-using chip::app::DataModel::Decode;
-using chip::TLV::TLVReader;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 using namespace esp_matter::cluster::delegate_cb;
 
-static const char *TAG = "time_synchronization_cluster";
+static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 2;
 
 namespace esp_matter {
@@ -162,7 +157,7 @@ attribute_t *create_default_ntp(cluster_t *cluster, char *value, uint16_t length
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(ntp_client), NULL);
-    VerifyOrReturnValue(length <= k_max_default_ntp_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_default_ntp_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound. cluster_id: 0x%08" PRIX32, time_synchronization::Id));
     return esp_matter::attribute::create(cluster, DefaultNTP::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, length), k_max_default_ntp_length + 1);
 }
 

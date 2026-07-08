@@ -14,63 +14,9 @@ event_t *create_{{ event.func_name | lower }}(cluster_t *cluster)
 }
 
 {% endfor %}
-{# Exceptions for switch cluster #}
 {% if cluster.esp_name == "switch_cluster" %}
-esp_err_t send_switch_latched(EndpointId endpoint, uint8_t new_position)
-{
-    chip::app::Clusters::SwitchCluster * cluster = chip::app::Clusters::Switch::FindClusterOnEndpoint(endpoint);
-    VerifyOrReturnError(cluster != nullptr, ESP_ERR_INVALID_STATE);
-    (void) cluster->OnSwitchLatch(new_position);
-    return ESP_OK;
-}
-
-esp_err_t send_initial_press(EndpointId endpoint, uint8_t new_position)
-{
-    chip::app::Clusters::SwitchCluster * cluster = chip::app::Clusters::Switch::FindClusterOnEndpoint(endpoint);
-    VerifyOrReturnError(cluster != nullptr, ESP_ERR_INVALID_STATE);
-    (void) cluster->OnInitialPress(new_position);
-    return ESP_OK;
-}
-
-esp_err_t send_long_press(EndpointId endpoint, uint8_t new_position)
-{
-    chip::app::Clusters::SwitchCluster * cluster = chip::app::Clusters::Switch::FindClusterOnEndpoint(endpoint);
-    VerifyOrReturnError(cluster != nullptr, ESP_ERR_INVALID_STATE);
-    (void) cluster->OnLongPress(new_position);
-    return ESP_OK;
-}
-
-esp_err_t send_short_release(EndpointId endpoint, uint8_t previous_position)
-{
-    chip::app::Clusters::SwitchCluster * cluster = chip::app::Clusters::Switch::FindClusterOnEndpoint(endpoint);
-    VerifyOrReturnError(cluster != nullptr, ESP_ERR_INVALID_STATE);
-    (void) cluster->OnShortRelease(previous_position);
-    return ESP_OK;
-}
-
-esp_err_t send_long_release(EndpointId endpoint, uint8_t previous_position)
-{
-    chip::app::Clusters::SwitchCluster * cluster = chip::app::Clusters::Switch::FindClusterOnEndpoint(endpoint);
-    VerifyOrReturnError(cluster != nullptr, ESP_ERR_INVALID_STATE);
-    (void) cluster->OnLongRelease(previous_position);
-    return ESP_OK;
-}
-
-esp_err_t send_multi_press_ongoing(EndpointId endpoint, uint8_t new_position, uint8_t count)
-{
-    chip::app::Clusters::SwitchCluster * cluster = chip::app::Clusters::Switch::FindClusterOnEndpoint(endpoint);
-    VerifyOrReturnError(cluster != nullptr, ESP_ERR_INVALID_STATE);
-    (void) cluster->OnMultiPressOngoing(new_position, count);
-    return ESP_OK;
-}
-
-esp_err_t send_multi_press_complete(EndpointId endpoint, uint8_t new_position, uint8_t count)
-{
-    chip::app::Clusters::SwitchCluster * cluster = chip::app::Clusters::Switch::FindClusterOnEndpoint(endpoint);
-    VerifyOrReturnError(cluster != nullptr, ESP_ERR_INVALID_STATE);
-    (void) cluster->OnMultiPressComplete(new_position, count);
-    return ESP_OK;
-}
+{% from "exceptions/switch_cluster.jinja" import event_definitions with context %}
+{{ event_definitions() }}
 {% endif %}
 } /* event */
 {% endif %}

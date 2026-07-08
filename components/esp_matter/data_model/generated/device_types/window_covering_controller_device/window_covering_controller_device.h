@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* This is a Generated File */
+/* THIS IS A GENERATED FILE, DO NOT EDIT */
 
 #pragma once
 #include <esp_matter_data_model.h>
 
 #include <descriptor.h>
-#include <binding.h>
 #include <window_covering.h>
 
 #include <esp_matter_core.h>
@@ -32,7 +31,6 @@ namespace window_covering_controller {
 
 typedef struct config {
     cluster::descriptor::config_t descriptor;
-    cluster::binding::config_t binding;
 } config_t;
 
 uint32_t get_device_type_id();

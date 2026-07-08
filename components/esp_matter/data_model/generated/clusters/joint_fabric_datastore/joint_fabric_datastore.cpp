@@ -20,7 +20,6 @@
 
 #include <app-common/zap-generated/cluster-enums.h>
 #include <app-common/zap-generated/callback.h>
-#include <app/InteractionModelEngine.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
 #include <joint_fabric_datastore.h>
 #include <joint_fabric_datastore_ids.h>
@@ -34,7 +33,7 @@ using chip::TLV::TLVReader;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 
-static const char *TAG = "joint_fabric_datastore_cluster";
+static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 1;
 
 static esp_err_t esp_matter_command_callback_add_key_set(const ConcreteCommandPath &command_path, TLVReader &tlv_data,

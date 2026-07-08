@@ -1,9 +1,7 @@
 {% if cluster.get_attributes() | length > 0 %}
 namespace attribute {
 {% for attr in cluster.get_attributes() %}
-{% if attr.has_special_config() %}
-#if {{ attr.get_special_config() }}
-{% endif %}
+{{ guard_open(attr) -}}
     {% if attr.type == 'string' %}
 attribute_t *create_{{ attr.func_name }}(cluster_t *cluster, char * value, uint16_t length);
     {% elif attr.type == 'octstr' %}
@@ -15,9 +13,7 @@ attribute_t *create_{{ attr.func_name }}(cluster_t *cluster, nullable<{{ attr.ge
     {% else %}
 attribute_t *create_{{ attr.func_name }}(cluster_t *cluster, {{ attr.get_type() }} value);
     {% endif %}
-{% if attr.has_special_config() %}
-#endif // {{ attr.get_special_config() }}
-{% endif %}
+{{ guard_close(attr) -}}
 {% endfor %}
 } /* attribute */
 

@@ -390,6 +390,21 @@ class TestCodegenCluster(unittest.TestCase):
         c = _make_cluster()
         self.assertEqual(c.get_standalone_choice_groups(), [])
 
+    def test_needs_log_tag_with_create(self):
+        c = _make_cluster(id_="0x0001")
+        self.assertTrue(c.needs_log_tag())
+
+    def test_needs_log_tag_base_cluster_without_logs(self):
+        c = _make_cluster(id_="0xffff")
+        c.attributes = [_make_attr("Mode", "0x0001", type_="uint8")]
+        self.assertFalse(c.needs_log_tag())
+
+    def test_needs_log_tag_bounded_string_attribute(self):
+        c = _make_cluster(id_="0xffff")
+        attr = _make_attr("Name", "0x0001", type_="string", default='"default"')
+        c.attributes = [attr]
+        self.assertTrue(c.needs_log_tag())
+
 
 # ---------------------------------------------------------------------------
 # Device (codegen)
@@ -430,23 +445,6 @@ class TestCodegenDevice(unittest.TestCase):
         d.clusters = [c1, c2]
         unique = d.get_unique_clusters()
         self.assertEqual(len(unique), 1)
-
-    def test_binding_cluster_available(self):
-        d = Device(id="0x0100", name="Test", revision=1)
-        c = _make_cluster("Test", "0x0006")
-        c.client_cluster = True
-        c.is_mandatory = True
-        d.clusters = [c]
-        self.assertTrue(d.binding_cluster_available())
-
-    def test_no_binding_cluster(self):
-        d = Device(id="0x0100", name="Test", revision=1)
-        c = _make_cluster("Test", "0x0006")
-        c.server_cluster = True
-        c.client_cluster = False
-        c.is_mandatory = True
-        d.clusters = [c]
-        self.assertFalse(d.binding_cluster_available())
 
     def test_filename(self):
         d = Device(id="0x0100", name="Temperature Sensor", revision=1)

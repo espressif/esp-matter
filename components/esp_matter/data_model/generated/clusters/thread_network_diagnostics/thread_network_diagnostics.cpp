@@ -19,8 +19,6 @@
 #include <esp_matter.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
-#include <app-common/zap-generated/callback.h>
-#include <app/InteractionModelEngine.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
 #include <thread_network_diagnostics.h>
 #include <thread_network_diagnostics_ids.h>
@@ -29,13 +27,10 @@
 #include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
-using chip::app::CommandHandler;
-using chip::app::DataModel::Decode;
-using chip::TLV::TLVReader;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 
-static const char *TAG = "thread_network_diagnostics_cluster";
+static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 3;
 
 namespace esp_matter {
@@ -125,7 +120,7 @@ attribute_t *create_routing_role(cluster_t *cluster, nullable<uint8_t> value)
 
 attribute_t *create_network_name(cluster_t *cluster, char *value, uint16_t length)
 {
-    VerifyOrReturnValue(length <= k_max_network_name_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_network_name_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound. cluster_id: 0x%08" PRIX32, thread_network_diagnostics::Id));
     return esp_matter::attribute::create(cluster, NetworkName::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, length), k_max_network_name_length + 1);
 }
 

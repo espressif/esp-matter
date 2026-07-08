@@ -90,6 +90,17 @@ idf_component_register( SRC_DIRS        ${SRC_DIRS_LIST}
                         PRIV_INCLUDE_DIRS ${PRIV_INCLUDE_DIRS_LIST}
                         REQUIRES        ${REQUIRES_LIST})
 
+# Precompile the shared esp_matter/CHIP headers to avoid reparsing them in every
+# source file.
+if(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER AND CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
+    target_precompile_headers(${COMPONENT_LIB} PRIVATE
+        <esp_matter.h>
+        <esp_matter_core.h>
+        <app-common/zap-generated/cluster-enums.h>
+        <app-common/zap-generated/callback.h>
+    )
+endif()
+
 # This has been added to fix the error and should be removed once fixed:
 # esp-matter/connectedhomeip/connectedhomeip/src/app/EventManagement.cpp:467:23: error: 'writer' is
 # used uninitialized in this function

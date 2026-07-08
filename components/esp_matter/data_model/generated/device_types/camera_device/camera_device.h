@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* This is a Generated File */
+/* THIS IS A GENERATED FILE, DO NOT EDIT */
 
 #pragma once
 #include <esp_matter_data_model.h>
 
 #include <descriptor.h>
-#include <binding.h>
 #include <camera_av_stream_management.h>
 #include <webrtc_transport_provider.h>
 
@@ -33,7 +32,6 @@ namespace camera {
 
 typedef struct config {
     cluster::descriptor::config_t descriptor;
-    cluster::binding::config_t binding;
     cluster::camera_av_stream_management::config_t camera_av_stream_management;
     cluster::webrtc_transport_provider::config_t webrtc_transport_provider;
 } config_t;

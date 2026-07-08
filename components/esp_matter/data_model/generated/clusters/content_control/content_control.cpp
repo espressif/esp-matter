@@ -20,7 +20,6 @@
 
 #include <app-common/zap-generated/cluster-enums.h>
 #include <app-common/zap-generated/callback.h>
-#include <app/InteractionModelEngine.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
 #include <esp_matter_delegate_callbacks.h>
 #include <content_control.h>
@@ -36,7 +35,7 @@ using namespace esp_matter;
 using namespace esp_matter::cluster;
 using namespace esp_matter::cluster::delegate_cb;
 
-static const char *TAG = "content_control_cluster";
+static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 1;
 
 static esp_err_t esp_matter_command_callback_update_pin(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
@@ -390,7 +389,7 @@ attribute_t *create_on_demand_rating_threshold(cluster_t *cluster, char *value, 
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(on_demand_content_rating), NULL);
-    VerifyOrReturnValue(length <= k_max_on_demand_rating_threshold_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_on_demand_rating_threshold_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound. cluster_id: 0x%08" PRIX32, content_control::Id));
     return esp_matter::attribute::create(cluster, OnDemandRatingThreshold::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length), k_max_on_demand_rating_threshold_length + 1);
 }
 
@@ -405,7 +404,7 @@ attribute_t *create_scheduled_content_rating_threshold(cluster_t *cluster, char 
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(scheduled_content_rating), NULL);
-    VerifyOrReturnValue(length <= k_max_scheduled_content_rating_threshold_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
+    VerifyOrReturnValue(length <= k_max_scheduled_content_rating_threshold_length + 1, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound. cluster_id: 0x%08" PRIX32, content_control::Id));
     return esp_matter::attribute::create(cluster, ScheduledContentRatingThreshold::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length), k_max_scheduled_content_rating_threshold_length + 1);
 }
 
@@ -590,12 +589,6 @@ event_t *create_entering_block_content_time_window(cluster_t *cluster)
 }
 
 } /* event */
-
-static void create_default_binding_cluster(endpoint_t *endpoint)
-{
-    binding::config_t config;
-    binding::create(endpoint, &config, CLUSTER_FLAG_SERVER);
-}
 
 const function_generic_t *function_list = NULL;
 
