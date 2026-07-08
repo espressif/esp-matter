@@ -20,7 +20,10 @@ void door_lock_init()
 void emberAfDoorLockClusterInitCallback(EndpointId endpoint)
 {
     DoorLockServer::Instance().InitServer(endpoint);
-    BoltLockMgr().InitLockState();
+    DoorLockServer::Instance().SetLockState(endpoint, chip::app::Clusters::DoorLock::DlLockState::kLocked);
+    if (BoltLockMgr().InitLockState() != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "BoltLockMgr().InitLockState failed");
+    }
 }
 
 bool emberAfPluginDoorLockOnDoorLockCommand(chip::EndpointId endpointId, const Nullable<chip::FabricIndex>  &fabricIdx,
@@ -28,7 +31,10 @@ bool emberAfPluginDoorLockOnDoorLockCommand(chip::EndpointId endpointId, const N
                                             OperationErrorEnum  &err)
 {
     ESP_LOGI(TAG, "Door Lock App: Lock Command endpoint=%d", endpointId);
-    bool status = BoltLockMgr().Lock(endpointId, pinCode, err);
+    bool status = BoltLockMgr().ValidatePIN(endpointId, pinCode, err);
+    if (status) {
+        BoltLockMgr().Lock(endpointId, app::Clusters::DoorLock::OperationSourceEnum::kRemote);
+    }
     return status;
 }
 
@@ -37,7 +43,10 @@ bool emberAfPluginDoorLockOnDoorUnlockCommand(chip::EndpointId endpointId, const
                                               OperationErrorEnum  &err)
 {
     ESP_LOGI(TAG, "Door Lock App: Unlock Command endpoint=%d", endpointId);
-    bool status = BoltLockMgr().Unlock(endpointId, pinCode, err);
+    bool status = BoltLockMgr().ValidatePIN(endpointId, pinCode, err);
+    if (status) {
+        BoltLockMgr().Unlock(endpointId, app::Clusters::DoorLock::OperationSourceEnum::kRemote);
+    }
     return status;
 }
 

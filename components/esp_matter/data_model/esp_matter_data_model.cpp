@@ -257,12 +257,6 @@ void invoke_init_callbacks_internal(endpoint_t *endpoint)
 {
     cluster_t *cluster = cluster::get_first(endpoint);
     while (cluster) {
-        /* Delegate server init callback */
-        cluster::delegate_init_callback_t delegate_init_callback = cluster::get_delegate_init_callback(cluster);
-        if (delegate_init_callback) {
-            delegate_init_callback(cluster::get_delegate_impl(cluster), endpoint::get_id(endpoint));
-        }
-
         /* Add bounds callback */
         cluster::add_bounds_callback_t add_bounds_callback = cluster::get_add_bounds_callback(cluster);
         if (add_bounds_callback) {
@@ -291,6 +285,13 @@ void invoke_init_callbacks_internal(endpoint_t *endpoint)
                 init_function(endpoint::get_id(endpoint));
             }
         }
+
+        /* Delegate server init callback */
+        cluster::delegate_init_callback_t delegate_init_callback = cluster::get_delegate_init_callback(cluster);
+        if (delegate_init_callback) {
+            delegate_init_callback(cluster::get_delegate_impl(cluster), endpoint::get_id(endpoint));
+        }
+
         cluster = cluster::get_next(cluster);
     }
 }

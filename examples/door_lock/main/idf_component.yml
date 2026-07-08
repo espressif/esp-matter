@@ -8,3 +8,5 @@ dependencies:
     version: "^3"
   espressif/led_strip:
     version: "^2.0.0"
+  espressif/esp_aliro_lib:
+    version: "^1.0.1"
