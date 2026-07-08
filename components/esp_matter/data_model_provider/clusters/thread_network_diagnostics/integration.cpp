@@ -15,6 +15,7 @@
 #include <esp_matter_data_model_priv.h>
 
 #include <app/ClusterCallbacks.h>
+#include <app/clusters/thread-network-diagnostics-server/DirectThreadNetworkDiagnosticsProvider.h>
 #include <app/clusters/thread-network-diagnostics-server/ThreadNetworkDiagnosticsCluster.h>
 #include <app/server-cluster/ServerClusterInterfaceRegistry.h>
 #include <clusters/ThreadNetworkDiagnostics/ClusterId.h>
@@ -34,6 +35,12 @@ namespace {
 
 std::unordered_map<EndpointId, LazyRegisteredServerCluster<ThreadNetworkDiagnosticsCluster>> gServers;
 
+ThreadNetworkDiagnostics::DirectThreadNetworkDiagnosticsProvider  &GetDirectProvider()
+{
+    static ThreadNetworkDiagnostics::DirectThreadNetworkDiagnosticsProvider sDirectProvider;
+    return sDirectProvider;
+}
+
 } // namespace
 
 void ESPMatterThreadNetworkDiagnosticsClusterServerInitCallback(EndpointId endpointId)
@@ -48,7 +55,7 @@ void ESPMatterThreadNetworkDiagnosticsClusterServerInitCallback(EndpointId endpo
         const auto cluster_type = rawFeatureMap == 0 ? ThreadNetworkDiagnosticsCluster::ClusterType::kMinimal
                                   : ThreadNetworkDiagnosticsCluster::ClusterType::kFull;
 
-        gServers[endpointId].Create(endpointId, cluster_type);
+        gServers[endpointId].Create(endpointId, cluster_type, GetDirectProvider());
     }
 
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(

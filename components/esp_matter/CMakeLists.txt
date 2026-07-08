@@ -38,6 +38,12 @@ if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
         list(APPEND SRC_DIRS_LIST "${MATTER_SDK_PATH}/src/app/clusters/on-off-server/codegen"
                                   "${MATTER_SDK_PATH}/src/app/clusters/level-control/codegen")
 
+        # operational-state-server uses the legacy Instance pattern (not code-driven
+        # ServerCluster). Its implementation lives in CodegenIntegration.cpp which the
+        # glob above excludes. Un-exclude it — delegate callbacks create Instance directly.
+        list(REMOVE_ITEM EXCLUDE_SRCS_LIST
+            "${MATTER_SDK_PATH}/src/app/clusters/operational-state-server/CodegenIntegration.cpp")
+
         file(GLOB ESP_MATTER_CLUSTER_DIRS_LIST "data_model_provider/clusters/*")
         foreach(ESP_MATTER_CLUSTER_DIR ${ESP_MATTER_CLUSTER_DIRS_LIST})
             list(APPEND SRC_DIRS_LIST ${ESP_MATTER_CLUSTER_DIR})

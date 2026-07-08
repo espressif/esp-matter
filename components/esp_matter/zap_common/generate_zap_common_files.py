@@ -158,7 +158,7 @@ def generate_cluster_callbacks_cpp(xml_files, output_dir):
             cpp_file.write('{\n')
             cpp_file.write('    // Default empty implementation\n')
             cpp_file.write('}\n\n')
-            cpp_file.write('__attribute__((weak)) void ESPMatter{}ClusterServerShutdownCallback(EndpointId endpoint)\n'.format(
+            cpp_file.write('__attribute__((weak)) void ESPMatter{}ClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)\n'.format(
                 cluster_name))
             cpp_file.write('{\n')
             cpp_file.write('    // Default empty implementation\n')

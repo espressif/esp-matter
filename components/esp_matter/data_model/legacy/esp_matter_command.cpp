@@ -443,17 +443,6 @@ static esp_err_t esp_matter_command_callback_step_color(const ConcreteCommandPat
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_command_callback_self_test_request(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                               void *opaque_ptr)
-{
-    chip::app::Clusters::SmokeCoAlarm::Commands::SelfTestRequest::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfSmokeCoAlarmClusterSelfTestRequestCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
 static esp_err_t esp_matter_command_callback_lock_door(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                        void *opaque_ptr)
 {
@@ -790,16 +779,6 @@ static esp_err_t esp_matter_command_callback_change_to_mode(const ConcreteComman
     CHIP_ERROR error = Decode(tlv_data, command_data);
     if (error == CHIP_NO_ERROR) {
         emberAfModeSelectClusterChangeToModeCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_fan_step(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::FanControl::Commands::Step::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfFanControlClusterStepCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
     return ESP_OK;
 }
@@ -2016,8 +1995,7 @@ namespace command {
 
 command_t *create_self_test_request(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, SmokeCoAlarm::Commands::SelfTestRequest::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_self_test_request);
+    return esp_matter::command::create(cluster, SmokeCoAlarm::Commands::SelfTestRequest::Id, COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 } /* command */
@@ -2253,8 +2231,7 @@ namespace fan_control {
 namespace command {
 command_t *create_step(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, FanControl::Commands::Step::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_fan_step);
+    return esp_matter::command::create(cluster, FanControl::Commands::Step::Id, COMMAND_FLAG_ACCEPTED, nullptr);
 }
 
 } /* command */

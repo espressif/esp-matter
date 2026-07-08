@@ -259,7 +259,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         if (config) {
             attribute::create_node_label(cluster, config->node_label, strlen(config->node_label));
-            attribute::create_unique_id(cluster, config->unique_id, sizeof(config->unique_id));
+            attribute::create_unique_id(cluster, config->unique_id, strlen(config->unique_id));
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -909,7 +909,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
         attribute::create_reachable(cluster, config->reachable);
-        attribute::create_unique_id(cluster, config->unique_id, sizeof(config->unique_id));
+        attribute::create_unique_id(cluster, config->unique_id, strlen(config->unique_id));
         /* Events */
         event::create_reachable_changed(cluster);
 
@@ -1339,6 +1339,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         set_add_bounds_callback(cluster, fan_control::add_bounds_cb);
         add_function_list(cluster, function_list, function_flags);
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterFanControlClusterServerInitCallback,
+                                                 ESPMatterFanControlClusterServerShutdownCallback);
 
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
@@ -2001,6 +2003,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     event::create_end_of_service(cluster);
     event::create_self_test_complete(cluster);
     event::create_all_clear(cluster);
+
+    cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterSmokeCoAlarmClusterServerInitCallback,
+                                             ESPMatterSmokeCoAlarmClusterServerShutdownCallback);
 
     return cluster;
 }
