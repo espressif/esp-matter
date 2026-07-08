@@ -27,6 +27,9 @@ void ESPMatterAirQualityClusterServerShutdownCallback(EndpointId endpoint, Clust
 void ESPMatterAmbientContextSensingClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterAmbientContextSensingClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
+void ESPMatterAmbientSensingUnionClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterAmbientSensingUnionClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
+
 void ESPMatterApplicationBasicClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterApplicationBasicClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
@@ -35,6 +38,9 @@ void ESPMatterApplicationLauncherClusterServerShutdownCallback(EndpointId endpoi
 
 void ESPMatterAudioOutputClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterAudioOutputClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
+
+void ESPMatterAvAnalysisClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterAvAnalysisClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
 void ESPMatterBallastConfigurationClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterBallastConfigurationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
@@ -129,6 +135,12 @@ void ESPMatterDynamicLightingClusterServerShutdownCallback(EndpointId endpoint, 
 void ESPMatterEcosystemInformationClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterEcosystemInformationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
+void ESPMatterElectricalAlarmClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterElectricalAlarmClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
+
+void ESPMatterElectricalDistributionClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterElectricalDistributionClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
+
 void ESPMatterElectricalEnergyMeasurementClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterElectricalEnergyMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
@@ -137,6 +149,9 @@ void ESPMatterElectricalGridConditionsClusterServerShutdownCallback(EndpointId e
 
 void ESPMatterElectricalPowerMeasurementClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterElectricalPowerMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
+
+void ESPMatterElectricalProtectionAlarmClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterElectricalProtectionAlarmClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
 void ESPMatterEnergyEvseClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterEnergyEvseClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
@@ -354,6 +369,9 @@ void ESPMatterServiceAreaClusterServerShutdownCallback(EndpointId endpoint, Clus
 void ESPMatterSmokeCoAlarmClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterSmokeCoAlarmClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
+void ESPMatterSmokeConcentrationMeasurementClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterSmokeConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
+
 void ESPMatterSoftwareDiagnosticsClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterSoftwareDiagnosticsClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
@@ -368,6 +386,9 @@ void ESPMatterTargetNavigatorClusterServerShutdownCallback(EndpointId endpoint, 
 
 void ESPMatterTemperatureControlClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterTemperatureControlClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
+
+void ESPMatterTemperatureControlledCabinetTopologyClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterTemperatureControlledCabinetTopologyClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
 void ESPMatterTemperatureMeasurementClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterTemperatureMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);

@@ -22,7 +22,7 @@ __attribute__((weak)) void ESPMatterAccessControlClusterServerInitCallback(Endpo
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterAccessControlClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterAccessControlClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -32,7 +32,7 @@ __attribute__((weak)) void ESPMatterAccountLoginClusterServerInitCallback(Endpoi
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterAccountLoginClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterAccountLoginClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -42,7 +42,7 @@ __attribute__((weak)) void ESPMatterActionsClusterServerInitCallback(EndpointId 
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterActionsClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterActionsClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -52,7 +52,7 @@ __attribute__((weak)) void ESPMatterActivatedCarbonFilterMonitoringClusterServer
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterActivatedCarbonFilterMonitoringClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterActivatedCarbonFilterMonitoringClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -62,7 +62,7 @@ __attribute__((weak)) void ESPMatterAdministratorCommissioningClusterServerInitC
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterAdministratorCommissioningClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterAdministratorCommissioningClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -72,7 +72,7 @@ __attribute__((weak)) void ESPMatterAirQualityClusterServerInitCallback(Endpoint
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterAirQualityClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterAirQualityClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -82,7 +82,17 @@ __attribute__((weak)) void ESPMatterAmbientContextSensingClusterServerInitCallba
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterAmbientContextSensingClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterAmbientContextSensingClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterAmbientSensingUnionClusterServerInitCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterAmbientSensingUnionClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -92,7 +102,7 @@ __attribute__((weak)) void ESPMatterApplicationBasicClusterServerInitCallback(En
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterApplicationBasicClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterApplicationBasicClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -102,7 +112,7 @@ __attribute__((weak)) void ESPMatterApplicationLauncherClusterServerInitCallback
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterApplicationLauncherClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterApplicationLauncherClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -112,7 +122,17 @@ __attribute__((weak)) void ESPMatterAudioOutputClusterServerInitCallback(Endpoin
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterAudioOutputClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterAudioOutputClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterAvAnalysisClusterServerInitCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterAvAnalysisClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -122,7 +142,7 @@ __attribute__((weak)) void ESPMatterBallastConfigurationClusterServerInitCallbac
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterBallastConfigurationClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterBallastConfigurationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -132,7 +152,7 @@ __attribute__((weak)) void ESPMatterBasicInformationClusterServerInitCallback(En
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterBasicInformationClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterBasicInformationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -142,7 +162,7 @@ __attribute__((weak)) void ESPMatterBindingClusterServerInitCallback(EndpointId 
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterBindingClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterBindingClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -152,7 +172,7 @@ __attribute__((weak)) void ESPMatterBooleanStateClusterServerInitCallback(Endpoi
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterBooleanStateClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterBooleanStateClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -162,7 +182,7 @@ __attribute__((weak)) void ESPMatterBooleanStateConfigurationClusterServerInitCa
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterBooleanStateConfigurationClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterBooleanStateConfigurationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -172,7 +192,7 @@ __attribute__((weak)) void ESPMatterBridgedDeviceBasicInformationClusterServerIn
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterBridgedDeviceBasicInformationClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterBridgedDeviceBasicInformationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -182,7 +202,7 @@ __attribute__((weak)) void ESPMatterCameraAvSettingsUserLevelManagementClusterSe
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterCameraAvSettingsUserLevelManagementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterCameraAvSettingsUserLevelManagementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -192,7 +212,7 @@ __attribute__((weak)) void ESPMatterCameraAvStreamManagementClusterServerInitCal
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterCameraAvStreamManagementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterCameraAvStreamManagementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -202,7 +222,7 @@ __attribute__((weak)) void ESPMatterCarbonDioxideConcentrationMeasurementCluster
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterCarbonDioxideConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterCarbonDioxideConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -212,7 +232,7 @@ __attribute__((weak)) void ESPMatterCarbonMonoxideConcentrationMeasurementCluste
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterCarbonMonoxideConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterCarbonMonoxideConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -222,7 +242,7 @@ __attribute__((weak)) void ESPMatterChannelClusterServerInitCallback(EndpointId 
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterChannelClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterChannelClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -232,7 +252,7 @@ __attribute__((weak)) void ESPMatterChimeClusterServerInitCallback(EndpointId en
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterChimeClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterChimeClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -242,7 +262,7 @@ __attribute__((weak)) void ESPMatterClosureControlClusterServerInitCallback(Endp
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterClosureControlClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterClosureControlClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -252,7 +272,7 @@ __attribute__((weak)) void ESPMatterClosureDimensionClusterServerInitCallback(En
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterClosureDimensionClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterClosureDimensionClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -262,7 +282,7 @@ __attribute__((weak)) void ESPMatterColorControlClusterServerInitCallback(Endpoi
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterColorControlClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterColorControlClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -272,7 +292,7 @@ __attribute__((weak)) void ESPMatterCommissionerControlClusterServerInitCallback
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterCommissionerControlClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterCommissionerControlClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -282,7 +302,7 @@ __attribute__((weak)) void ESPMatterCommodityMeteringClusterServerInitCallback(E
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterCommodityMeteringClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterCommodityMeteringClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -292,7 +312,7 @@ __attribute__((weak)) void ESPMatterCommodityPriceClusterServerInitCallback(Endp
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterCommodityPriceClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterCommodityPriceClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -302,7 +322,7 @@ __attribute__((weak)) void ESPMatterCommodityTariffClusterServerInitCallback(End
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterCommodityTariffClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterCommodityTariffClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -312,7 +332,7 @@ __attribute__((weak)) void ESPMatterContentAppObserverClusterServerInitCallback(
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterContentAppObserverClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterContentAppObserverClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -322,7 +342,7 @@ __attribute__((weak)) void ESPMatterContentControlClusterServerInitCallback(Endp
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterContentControlClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterContentControlClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -332,7 +352,7 @@ __attribute__((weak)) void ESPMatterContentLauncherClusterServerInitCallback(End
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterContentLauncherClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterContentLauncherClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -342,7 +362,7 @@ __attribute__((weak)) void ESPMatterDescriptorClusterServerInitCallback(Endpoint
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterDescriptorClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterDescriptorClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -352,7 +372,7 @@ __attribute__((weak)) void ESPMatterDeviceEnergyManagementClusterServerInitCallb
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterDeviceEnergyManagementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterDeviceEnergyManagementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -362,7 +382,7 @@ __attribute__((weak)) void ESPMatterDeviceEnergyManagementModeClusterServerInitC
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterDeviceEnergyManagementModeClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterDeviceEnergyManagementModeClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -372,7 +392,7 @@ __attribute__((weak)) void ESPMatterDiagnosticLogsClusterServerInitCallback(Endp
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterDiagnosticLogsClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterDiagnosticLogsClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -382,7 +402,7 @@ __attribute__((weak)) void ESPMatterDishwasherAlarmClusterServerInitCallback(End
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterDishwasherAlarmClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterDishwasherAlarmClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -392,7 +412,7 @@ __attribute__((weak)) void ESPMatterDishwasherModeClusterServerInitCallback(Endp
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterDishwasherModeClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterDishwasherModeClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -402,7 +422,7 @@ __attribute__((weak)) void ESPMatterDoorLockClusterServerInitCallback(EndpointId
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterDoorLockClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterDoorLockClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -412,7 +432,7 @@ __attribute__((weak)) void ESPMatterDynamicLightingClusterServerInitCallback(End
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterDynamicLightingClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterDynamicLightingClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -422,7 +442,27 @@ __attribute__((weak)) void ESPMatterEcosystemInformationClusterServerInitCallbac
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterEcosystemInformationClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterEcosystemInformationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterElectricalAlarmClusterServerInitCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterElectricalAlarmClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterElectricalDistributionClusterServerInitCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterElectricalDistributionClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -432,7 +472,7 @@ __attribute__((weak)) void ESPMatterElectricalEnergyMeasurementClusterServerInit
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterElectricalEnergyMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterElectricalEnergyMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -442,7 +482,7 @@ __attribute__((weak)) void ESPMatterElectricalGridConditionsClusterServerInitCal
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterElectricalGridConditionsClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterElectricalGridConditionsClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -452,7 +492,17 @@ __attribute__((weak)) void ESPMatterElectricalPowerMeasurementClusterServerInitC
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterElectricalPowerMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterElectricalPowerMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterElectricalProtectionAlarmClusterServerInitCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterElectricalProtectionAlarmClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -462,7 +512,7 @@ __attribute__((weak)) void ESPMatterEnergyEvseClusterServerInitCallback(Endpoint
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterEnergyEvseClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterEnergyEvseClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -472,7 +522,7 @@ __attribute__((weak)) void ESPMatterEnergyEvseModeClusterServerInitCallback(Endp
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterEnergyEvseModeClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterEnergyEvseModeClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -482,7 +532,7 @@ __attribute__((weak)) void ESPMatterEnergyPreferenceClusterServerInitCallback(En
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterEnergyPreferenceClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterEnergyPreferenceClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -492,7 +542,7 @@ __attribute__((weak)) void ESPMatterEthernetNetworkDiagnosticsClusterServerInitC
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterEthernetNetworkDiagnosticsClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterEthernetNetworkDiagnosticsClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -502,7 +552,7 @@ __attribute__((weak)) void ESPMatterFanControlClusterServerInitCallback(Endpoint
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterFanControlClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterFanControlClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -512,7 +562,7 @@ __attribute__((weak)) void ESPMatterFaultInjectionClusterServerInitCallback(Endp
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterFaultInjectionClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterFaultInjectionClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -522,7 +572,7 @@ __attribute__((weak)) void ESPMatterFixedLabelClusterServerInitCallback(Endpoint
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterFixedLabelClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterFixedLabelClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -532,7 +582,7 @@ __attribute__((weak)) void ESPMatterFlowMeasurementClusterServerInitCallback(End
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterFlowMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterFlowMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -542,7 +592,7 @@ __attribute__((weak)) void ESPMatterFormaldehydeConcentrationMeasurementClusterS
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterFormaldehydeConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterFormaldehydeConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -552,7 +602,7 @@ __attribute__((weak)) void ESPMatterGeneralCommissioningClusterServerInitCallbac
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterGeneralCommissioningClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterGeneralCommissioningClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -562,7 +612,7 @@ __attribute__((weak)) void ESPMatterGeneralDiagnosticsClusterServerInitCallback(
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterGeneralDiagnosticsClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterGeneralDiagnosticsClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -572,7 +622,7 @@ __attribute__((weak)) void ESPMatterGroupKeyManagementClusterServerInitCallback(
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterGroupKeyManagementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterGroupKeyManagementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -582,7 +632,7 @@ __attribute__((weak)) void ESPMatterGroupcastClusterServerInitCallback(EndpointI
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterGroupcastClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterGroupcastClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -592,7 +642,7 @@ __attribute__((weak)) void ESPMatterGroupsClusterServerInitCallback(EndpointId e
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterGroupsClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterGroupsClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -602,7 +652,7 @@ __attribute__((weak)) void ESPMatterHepaFilterMonitoringClusterServerInitCallbac
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterHepaFilterMonitoringClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterHepaFilterMonitoringClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -612,7 +662,7 @@ __attribute__((weak)) void ESPMatterHumidistatClusterServerInitCallback(Endpoint
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterHumidistatClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterHumidistatClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -622,7 +672,7 @@ __attribute__((weak)) void ESPMatterIcdManagementClusterServerInitCallback(Endpo
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterIcdManagementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterIcdManagementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -632,7 +682,7 @@ __attribute__((weak)) void ESPMatterIdentifyClusterServerInitCallback(EndpointId
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterIdentifyClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterIdentifyClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -642,7 +692,7 @@ __attribute__((weak)) void ESPMatterIlluminanceMeasurementClusterServerInitCallb
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterIlluminanceMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterIlluminanceMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -652,7 +702,7 @@ __attribute__((weak)) void ESPMatterJointFabricAdministratorClusterServerInitCal
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterJointFabricAdministratorClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterJointFabricAdministratorClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -662,7 +712,7 @@ __attribute__((weak)) void ESPMatterJointFabricDatastoreClusterServerInitCallbac
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterJointFabricDatastoreClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterJointFabricDatastoreClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -672,7 +722,7 @@ __attribute__((weak)) void ESPMatterKeypadInputClusterServerInitCallback(Endpoin
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterKeypadInputClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterKeypadInputClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -682,7 +732,7 @@ __attribute__((weak)) void ESPMatterLaundryDryerControlsClusterServerInitCallbac
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterLaundryDryerControlsClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterLaundryDryerControlsClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -692,7 +742,7 @@ __attribute__((weak)) void ESPMatterLaundryWasherControlsClusterServerInitCallba
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterLaundryWasherControlsClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterLaundryWasherControlsClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -702,7 +752,7 @@ __attribute__((weak)) void ESPMatterLaundryWasherModeClusterServerInitCallback(E
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterLaundryWasherModeClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterLaundryWasherModeClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -712,7 +762,7 @@ __attribute__((weak)) void ESPMatterLevelControlClusterServerInitCallback(Endpoi
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterLevelControlClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterLevelControlClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -722,7 +772,7 @@ __attribute__((weak)) void ESPMatterLocalizationConfigurationClusterServerInitCa
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterLocalizationConfigurationClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterLocalizationConfigurationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -732,7 +782,7 @@ __attribute__((weak)) void ESPMatterLowPowerClusterServerInitCallback(EndpointId
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterLowPowerClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterLowPowerClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -742,7 +792,7 @@ __attribute__((weak)) void ESPMatterMediaInputClusterServerInitCallback(Endpoint
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterMediaInputClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterMediaInputClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -752,7 +802,7 @@ __attribute__((weak)) void ESPMatterMediaPlaybackClusterServerInitCallback(Endpo
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterMediaPlaybackClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterMediaPlaybackClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -762,7 +812,7 @@ __attribute__((weak)) void ESPMatterMessagesClusterServerInitCallback(EndpointId
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterMessagesClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterMessagesClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -772,7 +822,7 @@ __attribute__((weak)) void ESPMatterMeterIdentificationClusterServerInitCallback
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterMeterIdentificationClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterMeterIdentificationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -782,7 +832,7 @@ __attribute__((weak)) void ESPMatterMicrowaveOvenControlClusterServerInitCallbac
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterMicrowaveOvenControlClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterMicrowaveOvenControlClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -792,7 +842,7 @@ __attribute__((weak)) void ESPMatterMicrowaveOvenModeClusterServerInitCallback(E
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterMicrowaveOvenModeClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterMicrowaveOvenModeClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -802,7 +852,7 @@ __attribute__((weak)) void ESPMatterModeSelectClusterServerInitCallback(Endpoint
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterModeSelectClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterModeSelectClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -812,7 +862,7 @@ __attribute__((weak)) void ESPMatterNetworkCommissioningClusterServerInitCallbac
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterNetworkCommissioningClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterNetworkCommissioningClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -822,7 +872,7 @@ __attribute__((weak)) void ESPMatterNetworkIdentityManagementClusterServerInitCa
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterNetworkIdentityManagementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterNetworkIdentityManagementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -832,7 +882,7 @@ __attribute__((weak)) void ESPMatterNitrogenDioxideConcentrationMeasurementClust
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterNitrogenDioxideConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterNitrogenDioxideConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -842,7 +892,7 @@ __attribute__((weak)) void ESPMatterOccupancySensingClusterServerInitCallback(En
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterOccupancySensingClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterOccupancySensingClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -852,7 +902,7 @@ __attribute__((weak)) void ESPMatterOnOffClusterServerInitCallback(EndpointId en
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterOnOffClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterOnOffClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -862,7 +912,7 @@ __attribute__((weak)) void ESPMatterOperationalCredentialsClusterServerInitCallb
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterOperationalCredentialsClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterOperationalCredentialsClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -872,7 +922,7 @@ __attribute__((weak)) void ESPMatterOperationalStateClusterServerInitCallback(En
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterOperationalStateClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterOperationalStateClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -882,7 +932,7 @@ __attribute__((weak)) void ESPMatterOtaSoftwareUpdateProviderClusterServerInitCa
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterOtaSoftwareUpdateProviderClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterOtaSoftwareUpdateProviderClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -892,7 +942,7 @@ __attribute__((weak)) void ESPMatterOtaSoftwareUpdateRequestorClusterServerInitC
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterOtaSoftwareUpdateRequestorClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterOtaSoftwareUpdateRequestorClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -902,7 +952,7 @@ __attribute__((weak)) void ESPMatterOvenCavityOperationalStateClusterServerInitC
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterOvenCavityOperationalStateClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterOvenCavityOperationalStateClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -912,7 +962,7 @@ __attribute__((weak)) void ESPMatterOvenModeClusterServerInitCallback(EndpointId
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterOvenModeClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterOvenModeClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -922,7 +972,7 @@ __attribute__((weak)) void ESPMatterOzoneConcentrationMeasurementClusterServerIn
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterOzoneConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterOzoneConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -932,7 +982,7 @@ __attribute__((weak)) void ESPMatterPm10ConcentrationMeasurementClusterServerIni
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterPm10ConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterPm10ConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -942,7 +992,7 @@ __attribute__((weak)) void ESPMatterPm1ConcentrationMeasurementClusterServerInit
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterPm1ConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterPm1ConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -952,7 +1002,7 @@ __attribute__((weak)) void ESPMatterPm25ConcentrationMeasurementClusterServerIni
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterPm25ConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterPm25ConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -962,7 +1012,7 @@ __attribute__((weak)) void ESPMatterPowerSourceClusterServerInitCallback(Endpoin
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterPowerSourceClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterPowerSourceClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -972,7 +1022,7 @@ __attribute__((weak)) void ESPMatterPowerSourceConfigurationClusterServerInitCal
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterPowerSourceConfigurationClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterPowerSourceConfigurationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -982,7 +1032,7 @@ __attribute__((weak)) void ESPMatterPowerTopologyClusterServerInitCallback(Endpo
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterPowerTopologyClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterPowerTopologyClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -992,7 +1042,7 @@ __attribute__((weak)) void ESPMatterPressureMeasurementClusterServerInitCallback
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterPressureMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterPressureMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1002,7 +1052,7 @@ __attribute__((weak)) void ESPMatterProximityRangingClusterServerInitCallback(En
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterProximityRangingClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterProximityRangingClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1012,7 +1062,7 @@ __attribute__((weak)) void ESPMatterProxyConfigurationClusterServerInitCallback(
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterProxyConfigurationClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterProxyConfigurationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1022,7 +1072,7 @@ __attribute__((weak)) void ESPMatterProxyDiscoveryClusterServerInitCallback(Endp
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterProxyDiscoveryClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterProxyDiscoveryClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1032,7 +1082,7 @@ __attribute__((weak)) void ESPMatterProxyValidClusterServerInitCallback(Endpoint
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterProxyValidClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterProxyValidClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1042,7 +1092,7 @@ __attribute__((weak)) void ESPMatterPulseWidthModulationClusterServerInitCallbac
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterPulseWidthModulationClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterPulseWidthModulationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1052,7 +1102,7 @@ __attribute__((weak)) void ESPMatterPumpConfigurationAndControlClusterServerInit
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterPumpConfigurationAndControlClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterPumpConfigurationAndControlClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1062,7 +1112,7 @@ __attribute__((weak)) void ESPMatterPushAvStreamTransportClusterServerInitCallba
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterPushAvStreamTransportClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterPushAvStreamTransportClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1072,7 +1122,7 @@ __attribute__((weak)) void ESPMatterRadonConcentrationMeasurementClusterServerIn
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterRadonConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterRadonConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1082,7 +1132,7 @@ __attribute__((weak)) void ESPMatterRefrigeratorAlarmClusterServerInitCallback(E
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterRefrigeratorAlarmClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterRefrigeratorAlarmClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1092,7 +1142,7 @@ __attribute__((weak)) void ESPMatterRefrigeratorAndTemperatureControlledCabinetM
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterRefrigeratorAndTemperatureControlledCabinetModeClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterRefrigeratorAndTemperatureControlledCabinetModeClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1102,7 +1152,7 @@ __attribute__((weak)) void ESPMatterRelativeHumidityMeasurementClusterServerInit
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterRelativeHumidityMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterRelativeHumidityMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1112,7 +1162,7 @@ __attribute__((weak)) void ESPMatterRvcCleanModeClusterServerInitCallback(Endpoi
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterRvcCleanModeClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterRvcCleanModeClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1122,7 +1172,7 @@ __attribute__((weak)) void ESPMatterRvcOperationalStateClusterServerInitCallback
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterRvcOperationalStateClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterRvcOperationalStateClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1132,7 +1182,7 @@ __attribute__((weak)) void ESPMatterRvcRunModeClusterServerInitCallback(Endpoint
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterRvcRunModeClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterRvcRunModeClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1142,7 +1192,7 @@ __attribute__((weak)) void ESPMatterSampleMeiClusterServerInitCallback(EndpointI
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterSampleMeiClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterSampleMeiClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1152,7 +1202,7 @@ __attribute__((weak)) void ESPMatterScenesManagementClusterServerInitCallback(En
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterScenesManagementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterScenesManagementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1162,7 +1212,7 @@ __attribute__((weak)) void ESPMatterServiceAreaClusterServerInitCallback(Endpoin
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterServiceAreaClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterServiceAreaClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1172,7 +1222,17 @@ __attribute__((weak)) void ESPMatterSmokeCoAlarmClusterServerInitCallback(Endpoi
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterSmokeCoAlarmClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterSmokeCoAlarmClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterSmokeConcentrationMeasurementClusterServerInitCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterSmokeConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1182,7 +1242,7 @@ __attribute__((weak)) void ESPMatterSoftwareDiagnosticsClusterServerInitCallback
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterSoftwareDiagnosticsClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterSoftwareDiagnosticsClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1192,7 +1252,7 @@ __attribute__((weak)) void ESPMatterSoilMeasurementClusterServerInitCallback(End
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterSoilMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterSoilMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1202,7 +1262,7 @@ __attribute__((weak)) void ESPMatterSwitchClusterServerInitCallback(EndpointId e
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterSwitchClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterSwitchClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1212,7 +1272,7 @@ __attribute__((weak)) void ESPMatterTargetNavigatorClusterServerInitCallback(End
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterTargetNavigatorClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterTargetNavigatorClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1222,7 +1282,17 @@ __attribute__((weak)) void ESPMatterTemperatureControlClusterServerInitCallback(
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterTemperatureControlClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterTemperatureControlClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterTemperatureControlledCabinetTopologyClusterServerInitCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterTemperatureControlledCabinetTopologyClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1232,7 +1302,7 @@ __attribute__((weak)) void ESPMatterTemperatureMeasurementClusterServerInitCallb
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterTemperatureMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterTemperatureMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1242,7 +1312,7 @@ __attribute__((weak)) void ESPMatterThermostatClusterServerInitCallback(Endpoint
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterThermostatClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterThermostatClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1252,7 +1322,7 @@ __attribute__((weak)) void ESPMatterThermostatUserInterfaceConfigurationClusterS
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterThermostatUserInterfaceConfigurationClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterThermostatUserInterfaceConfigurationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1262,7 +1332,7 @@ __attribute__((weak)) void ESPMatterThreadBorderRouterManagementClusterServerIni
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterThreadBorderRouterManagementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterThreadBorderRouterManagementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1272,7 +1342,7 @@ __attribute__((weak)) void ESPMatterThreadNetworkDiagnosticsClusterServerInitCal
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterThreadNetworkDiagnosticsClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterThreadNetworkDiagnosticsClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1282,7 +1352,7 @@ __attribute__((weak)) void ESPMatterThreadNetworkDirectoryClusterServerInitCallb
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterThreadNetworkDirectoryClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterThreadNetworkDirectoryClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1292,7 +1362,7 @@ __attribute__((weak)) void ESPMatterTimeFormatLocalizationClusterServerInitCallb
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterTimeFormatLocalizationClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterTimeFormatLocalizationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1302,7 +1372,7 @@ __attribute__((weak)) void ESPMatterTimeSynchronizationClusterServerInitCallback
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterTimeSynchronizationClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterTimeSynchronizationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1312,7 +1382,7 @@ __attribute__((weak)) void ESPMatterTlsCertificateManagementClusterServerInitCal
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterTlsCertificateManagementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterTlsCertificateManagementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1322,7 +1392,7 @@ __attribute__((weak)) void ESPMatterTlsClientManagementClusterServerInitCallback
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterTlsClientManagementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterTlsClientManagementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1332,7 +1402,7 @@ __attribute__((weak)) void ESPMatterTotalVolatileOrganicCompoundsConcentrationMe
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterTotalVolatileOrganicCompoundsConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterTotalVolatileOrganicCompoundsConcentrationMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1342,7 +1412,7 @@ __attribute__((weak)) void ESPMatterUnitLocalizationClusterServerInitCallback(En
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterUnitLocalizationClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterUnitLocalizationClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1352,7 +1422,7 @@ __attribute__((weak)) void ESPMatterUnitTestingClusterServerInitCallback(Endpoin
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterUnitTestingClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterUnitTestingClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1362,7 +1432,7 @@ __attribute__((weak)) void ESPMatterUserLabelClusterServerInitCallback(EndpointI
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterUserLabelClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterUserLabelClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1372,7 +1442,7 @@ __attribute__((weak)) void ESPMatterValveConfigurationAndControlClusterServerIni
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterValveConfigurationAndControlClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterValveConfigurationAndControlClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1382,7 +1452,7 @@ __attribute__((weak)) void ESPMatterWakeOnLanClusterServerInitCallback(EndpointI
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterWakeOnLanClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterWakeOnLanClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1392,7 +1462,7 @@ __attribute__((weak)) void ESPMatterWaterHeaterManagementClusterServerInitCallba
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterWaterHeaterManagementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterWaterHeaterManagementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1402,7 +1472,7 @@ __attribute__((weak)) void ESPMatterWaterHeaterModeClusterServerInitCallback(End
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterWaterHeaterModeClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterWaterHeaterModeClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1412,7 +1482,7 @@ __attribute__((weak)) void ESPMatterWaterTankLevelMonitoringClusterServerInitCal
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterWaterTankLevelMonitoringClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterWaterTankLevelMonitoringClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1422,7 +1492,7 @@ __attribute__((weak)) void ESPMatterWebRTCTransportProviderClusterServerInitCall
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterWebRTCTransportProviderClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterWebRTCTransportProviderClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1432,7 +1502,7 @@ __attribute__((weak)) void ESPMatterWebRTCTransportRequestorClusterServerInitCal
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterWebRTCTransportRequestorClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterWebRTCTransportRequestorClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1442,7 +1512,7 @@ __attribute__((weak)) void ESPMatterWiFiNetworkDiagnosticsClusterServerInitCallb
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterWiFiNetworkDiagnosticsClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterWiFiNetworkDiagnosticsClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1452,7 +1522,7 @@ __attribute__((weak)) void ESPMatterWiFiNetworkManagementClusterServerInitCallba
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterWiFiNetworkManagementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterWiFiNetworkManagementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1462,7 +1532,7 @@ __attribute__((weak)) void ESPMatterWindowCoveringClusterServerInitCallback(Endp
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterWindowCoveringClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterWindowCoveringClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
@@ -1472,7 +1542,7 @@ __attribute__((weak)) void ESPMatterZoneManagementClusterServerInitCallback(Endp
     // Default empty implementation
 }
 
-__attribute__((weak)) void ESPMatterZoneManagementClusterServerShutdownCallback(EndpointId endpoint)
+__attribute__((weak)) void ESPMatterZoneManagementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }

@@ -23,13 +23,22 @@ namespace water_heater_management {
 
 namespace feature {
 namespace energy_management {
+typedef struct config {
+    uint16_t tank_volume;
+    int64_t estimated_heat_required;
+    config() : tank_volume(0), estimated_heat_required(0) {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* energy_management */
 
 namespace tank_percent {
+typedef struct config {
+    uint8_t tank_percentage;
+    config() : tank_percentage(0) {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* tank_percent */
 
 } /* feature */
@@ -54,8 +63,11 @@ event_t *create_boost_ended(cluster_t *cluster);
 } /* event */
 
 typedef struct config {
+    uint8_t heater_types;
+    uint8_t heat_demand;
+    uint8_t boost_state;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : heater_types(0), heat_demand(0), boost_state(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

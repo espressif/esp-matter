@@ -19,35 +19,21 @@
 #include <esp_matter.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
-#include <app-common/zap-generated/callback.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
 #include <esp_matter_delegate_callbacks.h>
 #include <fan_control.h>
 #include <fan_control_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
-using chip::app::CommandHandler;
-using chip::app::DataModel::Decode;
-using chip::TLV::TLVReader;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 using namespace esp_matter::cluster::delegate_cb;
 
 static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 6;
-
-static esp_err_t esp_matter_command_callback_step(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                  void *opaque_ptr)
-{
-    chip::app::Clusters::FanControl::Commands::Step::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfFanControlClusterStepCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
 
 namespace esp_matter {
 namespace cluster {
@@ -262,17 +248,14 @@ command_t *create_step(cluster_t *cluster)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(step), NULL);
-    return esp_matter::command::create(cluster, Step::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_step);
+    return esp_matter::command::create(cluster, Step::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 } /* command */
 
-const function_generic_t function_list[] = {
-    (function_generic_t)MatterFanControlClusterServerAttributeChangedCallback,
-    (function_generic_t)MatterFanControlClusterServerPreAttributeChangedCallback,
-};
+const function_generic_t *function_list = NULL;
 
-const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -298,6 +281,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_fan_mode_sequence(cluster, config->fan_mode_sequence);
         attribute::create_percent_setting(cluster, config->percent_setting);
         attribute::create_percent_current(cluster, config->percent_current);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterFanControlClusterServerInitCallback,
+                                                 ESPMatterFanControlClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {

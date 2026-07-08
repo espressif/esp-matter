@@ -35,21 +35,29 @@ inline constexpr uint32_t Id = 0x2;
 namespace attribute {
 namespace HeaterTypes {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 31;
 } /* HeaterTypes */
 namespace HeatDemand {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 31;
 } /* HeatDemand */
 namespace TankVolume {
 inline constexpr uint32_t Id = 0x0002;
 } /* TankVolume */
 namespace EstimatedHeatRequired {
 inline constexpr uint32_t Id = 0x0003;
+inline constexpr int64_t Min = 0;
+inline constexpr int64_t Max = 2147483647;
 } /* EstimatedHeatRequired */
 namespace TankPercentage {
 inline constexpr uint32_t Id = 0x0004;
 } /* TankPercentage */
 namespace BoostState {
 inline constexpr uint32_t Id = 0x0005;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 1;
 } /* BoostState */
 } /* attribute */
 

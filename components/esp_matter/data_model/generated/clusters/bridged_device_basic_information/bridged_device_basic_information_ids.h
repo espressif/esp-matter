@@ -81,6 +81,11 @@ inline constexpr uint32_t Id = 0x0012;
 namespace ProductAppearance {
 inline constexpr uint32_t Id = 0x0014;
 } /* ProductAppearance */
+namespace ConfigurationVersion {
+inline constexpr uint32_t Id = 0x0018;
+inline constexpr uint32_t Min = 1;
+inline constexpr uint32_t Max = 4294967295;
+} /* ConfigurationVersion */
 } /* attribute */
 
 namespace command {

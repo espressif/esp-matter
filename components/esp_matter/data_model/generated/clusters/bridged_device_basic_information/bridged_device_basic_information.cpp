@@ -154,6 +154,13 @@ attribute_t *create_product_appearance(cluster_t *cluster, uint8_t *value, uint1
     return esp_matter::attribute::create(cluster, ProductAppearance::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
+attribute_t *create_configuration_version(cluster_t *cluster, uint32_t value)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ConfigurationVersion::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(ConfigurationVersion::Min)), esp_matter_attr_val(static_cast<uint32_t>(ConfigurationVersion::Max)));
+    return attribute;
+}
+
 } /* attribute */
 namespace command {
 command_t *create_keep_active(cluster_t *cluster)

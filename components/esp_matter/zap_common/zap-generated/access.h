@@ -62,6 +62,7 @@
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: ImageRotationDiscreteAngles, Privilege: manage */ \
     0x00000553, /* Cluster: WebRTC Transport Provider, Attribute: CurrentSessions, Privilege: manage */ \
     0x00000554, /* Cluster: WebRTC Transport Requestor, Attribute: CurrentSessions, Privilege: administer */ \
+    0x00000557, /* Cluster: AV Analysis, Attribute: TrackingEnabled, Privilege: manage */ \
     0x00000750, /* Cluster: Ecosystem Information, Attribute: DeviceDirectory, Privilege: manage */ \
     0x00000750, /* Cluster: Ecosystem Information, Attribute: LocationDirectory, Privilege: manage */ \
     0x00000751, /* Cluster: Commissioner Control, Attribute: SupportedDeviceCategories, Privilege: manage */ \
@@ -138,6 +139,7 @@
     0x00000029, /* Cluster: Camera AV Stream Management, Attribute: ImageRotationDiscreteAngles, Privilege: manage */ \
     0x00000000, /* Cluster: WebRTC Transport Provider, Attribute: CurrentSessions, Privilege: manage */ \
     0x00000000, /* Cluster: WebRTC Transport Requestor, Attribute: CurrentSessions, Privilege: administer */ \
+    0x00000005, /* Cluster: AV Analysis, Attribute: TrackingEnabled, Privilege: manage */ \
     0x00000000, /* Cluster: Ecosystem Information, Attribute: DeviceDirectory, Privilege: manage */ \
     0x00000001, /* Cluster: Ecosystem Information, Attribute: LocationDirectory, Privilege: manage */ \
     0x00000000, /* Cluster: Commissioner Control, Attribute: SupportedDeviceCategories, Privilege: manage */ \
@@ -214,6 +216,7 @@
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: ImageRotationDiscreteAngles, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: WebRTC Transport Provider, Attribute: CurrentSessions, Privilege: manage */ \
     chip::Access::Privilege::kAdminister, /* Cluster: WebRTC Transport Requestor, Attribute: CurrentSessions, Privilege: administer */ \
+    chip::Access::Privilege::kManage, /* Cluster: AV Analysis, Attribute: TrackingEnabled, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Ecosystem Information, Attribute: DeviceDirectory, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Ecosystem Information, Attribute: LocationDirectory, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Commissioner Control, Attribute: SupportedDeviceCategories, Privilege: manage */ \
@@ -355,6 +358,7 @@
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: StatusLightEnabled, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: StatusLightBrightness, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: ImageRotationDiscreteAngles, Privilege: manage */ \
+    0x00000557, /* Cluster: AV Analysis, Attribute: TrackingEnabled, Privilege: manage */ \
     0xFFF1FC05, /* Cluster: Unit Testing, Attribute: UnsupportedAttributeRequiringAdminPrivilege, Privilege: administer */ \
 }
 
@@ -476,6 +480,7 @@
     0x00000027, /* Cluster: Camera AV Stream Management, Attribute: StatusLightEnabled, Privilege: manage */ \
     0x00000028, /* Cluster: Camera AV Stream Management, Attribute: StatusLightBrightness, Privilege: manage */ \
     0x00000029, /* Cluster: Camera AV Stream Management, Attribute: ImageRotationDiscreteAngles, Privilege: manage */ \
+    0x00000005, /* Cluster: AV Analysis, Attribute: TrackingEnabled, Privilege: manage */ \
     0x000000FE, /* Cluster: Unit Testing, Attribute: UnsupportedAttributeRequiringAdminPrivilege, Privilege: administer */ \
 }
 
@@ -597,6 +602,7 @@
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: StatusLightEnabled, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: StatusLightBrightness, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: ImageRotationDiscreteAngles, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: AV Analysis, Attribute: TrackingEnabled, Privilege: manage */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Unit Testing, Attribute: UnsupportedAttributeRequiringAdminPrivilege, Privilege: administer */ \
 }
 
@@ -622,7 +628,6 @@
     0x00000031, /* Cluster: Network Commissioning, Command: RemoveNetwork, Privilege: administer */ \
     0x00000031, /* Cluster: Network Commissioning, Command: ConnectNetwork, Privilege: administer */ \
     0x00000031, /* Cluster: Network Commissioning, Command: ReorderNetwork, Privilege: administer */ \
-    0x00000031, /* Cluster: Network Commissioning, Command: QueryIdentity, Privilege: administer */ \
     0x00000033, /* Cluster: General Diagnostics, Command: TestEventTrigger, Privilege: manage */ \
     0x00000033, /* Cluster: General Diagnostics, Command: PayloadTestRequest, Privilege: manage */ \
     0x00000034, /* Cluster: Software Diagnostics, Command: ResetWatermarks, Privilege: manage */ \
@@ -796,7 +801,6 @@
     0x00000004, /* Cluster: Network Commissioning, Command: RemoveNetwork, Privilege: administer */ \
     0x00000006, /* Cluster: Network Commissioning, Command: ConnectNetwork, Privilege: administer */ \
     0x00000008, /* Cluster: Network Commissioning, Command: ReorderNetwork, Privilege: administer */ \
-    0x00000009, /* Cluster: Network Commissioning, Command: QueryIdentity, Privilege: administer */ \
     0x00000000, /* Cluster: General Diagnostics, Command: TestEventTrigger, Privilege: manage */ \
     0x00000003, /* Cluster: General Diagnostics, Command: PayloadTestRequest, Privilege: manage */ \
     0x00000000, /* Cluster: Software Diagnostics, Command: ResetWatermarks, Privilege: manage */ \
@@ -970,7 +974,6 @@
     chip::Access::Privilege::kAdminister, /* Cluster: Network Commissioning, Command: RemoveNetwork, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Network Commissioning, Command: ConnectNetwork, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Network Commissioning, Command: ReorderNetwork, Privilege: administer */ \
-    chip::Access::Privilege::kAdminister, /* Cluster: Network Commissioning, Command: QueryIdentity, Privilege: administer */ \
     chip::Access::Privilege::kManage, /* Cluster: General Diagnostics, Command: TestEventTrigger, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: General Diagnostics, Command: PayloadTestRequest, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Software Diagnostics, Command: ResetWatermarks, Privilege: manage */ \

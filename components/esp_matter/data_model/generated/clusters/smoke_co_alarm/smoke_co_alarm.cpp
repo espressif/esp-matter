@@ -19,33 +19,21 @@
 #include <esp_matter.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
-#include <app-common/zap-generated/callback.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
+#include <esp_matter_delegate_callbacks.h>
 #include <smoke_co_alarm.h>
 #include <smoke_co_alarm_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
-using chip::app::CommandHandler;
-using chip::app::DataModel::Decode;
-using chip::TLV::TLVReader;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
+using namespace esp_matter::cluster::delegate_cb;
 
 static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 2;
-
-static esp_err_t esp_matter_command_callback_self_test_request(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                               void *opaque_ptr)
-{
-    chip::app::Clusters::SmokeCoAlarm::Commands::SelfTestRequest::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfSmokeCoAlarmClusterSelfTestRequestCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
 
 namespace esp_matter {
 namespace cluster {
@@ -189,7 +177,7 @@ attribute_t *create_unmounted(cluster_t *cluster, bool value)
 namespace command {
 command_t *create_self_test_request(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, SelfTestRequest::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_self_test_request);
+    return esp_matter::command::create(cluster, SelfTestRequest::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 } /* command */
@@ -266,6 +254,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, smoke_co_alarm::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
+        if (config->delegate != nullptr) {
+            static const auto delegate_init_cb = SmokeCoAlarmDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
         static const auto plugin_server_init_cb = CALL_ONCE(MatterSmokeCoAlarmPluginServerInitCallback);
         set_plugin_server_init_callback(cluster, plugin_server_init_cb);
         add_function_list(cluster, function_list, function_flags);
@@ -297,6 +289,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         event::create_end_of_service(cluster);
         event::create_self_test_complete(cluster);
         event::create_all_clear(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterSmokeCoAlarmClusterServerInitCallback,
+                                                 ESPMatterSmokeCoAlarmClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
