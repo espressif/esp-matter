@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cJSON.h>
 #include <esp_check.h>
 #include <esp_crt_bundle.h>
 #include <esp_http_client.h>
@@ -20,7 +21,6 @@
 #include <esp_matter_controller_utils.h>
 #include <esp_matter_mem.h>
 #include <esp_spiffs.h>
-#include <json_parser.h>
 #include <mbedtls/base64.h>
 
 #include <attestation_verification_utils.h>
@@ -167,49 +167,45 @@ static void parse_paa_response(http_resp_t *resp, void *ctx)
     if (resp_ctx == nullptr) {
         return;
     }
-    jparse_ctx_t jctx;
-    int certificates_count, certs_count, paa_str_len;
     size_t paa_der_len = resp_ctx->outPaaDerBuffer.size();
-    char *paa_pem_buffer;
+    cJSON *root = nullptr;
 
     resp_ctx->err = CHIP_ERROR_CA_CERT_NOT_FOUND;
     // Parse the response payload
     ESP_LOGD(TAG, "response data: %s", (char *)resp->data);
-    if (json_parse_start(&jctx, (char *)resp->data, resp->size) != 0) {
-        ESP_LOGE(TAG, "Failed to parse the http response json on json_parse_start");
+    root = cJSON_ParseWithLength((char *)resp->data, resp->size);
+    if (!root) {
+        ESP_LOGE(TAG, "Failed to parse the http response json");
         return;
     }
-    if (json_obj_get_array(&jctx, "approvedCertificates", &certificates_count) != 0 || certificates_count != 1) {
+    cJSON *approved_certificates = cJSON_GetObjectItemCaseSensitive(root, "approvedCertificates");
+    if (!cJSON_IsArray(approved_certificates) || cJSON_GetArraySize(approved_certificates) != 1) {
         ESP_LOGE(TAG, "Failed to get the PAA response");
-        json_parse_end(&jctx);
+        cJSON_Delete(root);
         return;
     }
-    if (json_arr_get_object(&jctx, 0) == 0) {
-        if (json_obj_get_array(&jctx, "certs", &certs_count) == 0 && certs_count == 1) {
-            if (json_arr_get_object(&jctx, 0) == 0) {
-                if (json_obj_get_strlen(&jctx, "pemCert", &paa_str_len) == 0) {
-                    paa_pem_buffer = (char *)esp_matter_mem_calloc(paa_str_len + 1, 1);
-                    if (paa_pem_buffer) {
-                        if (json_obj_get_string(&jctx, "pemCert", paa_pem_buffer, paa_str_len + 1) == 0) {
-                            remove_backslash_n(paa_pem_buffer);
-                            esp_err_t ret =
-                                convert_pem_to_der(paa_pem_buffer, resp_ctx->outPaaDerBuffer.data(), &paa_der_len);
-                            if (ret == ESP_OK) {
-                                resp_ctx->outPaaDerBuffer.reduce_size(paa_der_len);
-                                resp_ctx->err = CHIP_NO_ERROR;
-                            }
-                        }
-                        esp_matter_mem_free(paa_pem_buffer);
-                    }
+    cJSON *approved_certificate = cJSON_GetArrayItem(approved_certificates, 0);
+    cJSON *certs = cJSON_GetObjectItemCaseSensitive(approved_certificate, "certs");
+    if (cJSON_IsObject(approved_certificate) && cJSON_IsArray(certs) && cJSON_GetArraySize(certs) == 1) {
+        cJSON *cert = cJSON_GetArrayItem(certs, 0);
+        cJSON *pem_cert = cJSON_GetObjectItemCaseSensitive(cert, "pemCert");
+        const char *pem_cert_value = cJSON_GetStringValue(pem_cert);
+        if (cJSON_IsObject(cert) && pem_cert_value) {
+            size_t paa_str_len = strlen(pem_cert_value);
+            char *paa_pem_buffer = (char *)esp_matter_mem_calloc(paa_str_len + 1, 1);
+            if (paa_pem_buffer) {
+                memcpy(paa_pem_buffer, pem_cert_value, paa_str_len);
+                remove_backslash_n(paa_pem_buffer);
+                esp_err_t ret = convert_pem_to_der(paa_pem_buffer, resp_ctx->outPaaDerBuffer.data(), &paa_der_len);
+                if (ret == ESP_OK) {
+                    resp_ctx->outPaaDerBuffer.reduce_size(paa_der_len);
+                    resp_ctx->err = CHIP_NO_ERROR;
                 }
-                json_arr_leave_object(&jctx);
+                esp_matter_mem_free(paa_pem_buffer);
             }
-            json_obj_leave_object(&jctx);
         }
-        json_arr_leave_object(&jctx);
     }
-    json_obj_leave_object(&jctx);
-    json_parse_end(&jctx);
+    cJSON_Delete(root);
 }
 
 CHIP_ERROR dcl_attestation_trust_store::GetProductAttestationAuthorityCert(const ByteSpan &skid,

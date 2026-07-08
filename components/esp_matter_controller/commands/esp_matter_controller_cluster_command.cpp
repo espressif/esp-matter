@@ -19,7 +19,6 @@
 #include <esp_matter_controller_cluster_command.h>
 #include <esp_matter_controller_utils.h>
 #include <esp_matter_mem.h>
-#include <json_parser.h>
 #include <tlv_to_json.h>
 
 #include <app/server/Server.h>

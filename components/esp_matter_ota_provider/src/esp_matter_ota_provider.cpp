@@ -20,7 +20,6 @@
 #include <esp_matter_mem.h>
 #include <esp_matter_ota_candidates.h>
 #include <esp_matter_ota_provider.h>
-#include <json_parser.h>
 
 #include <app/server/Server.h>
 #include <platform/PlatformManager.h>
@@ -92,7 +91,7 @@ void EspOtaProvider::SendQueryImageResponse(OTAQueryStatus status)
 {
     auto commandHandleRef = std::move(mAsyncCommandHandle);
     auto commandHandle = commandHandleRef.Get();
-    if (commandHandle == nullptr || commandHandle->GetExchangeContext()->GetSessionHandle()->GetPeer() != mPeerNodeId) {
+    if (commandHandle == nullptr) {
         ESP_LOGE(TAG, "Invalid commandHandle, cannot send QueryImageResponse");
         return;
     }

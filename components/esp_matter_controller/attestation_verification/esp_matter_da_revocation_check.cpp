@@ -114,7 +114,7 @@ static bool check_crl_akid(const mbedtls_x509_crl *crl, const ByteSpan &akid)
                 ESP_LOGE(TAG, "Failed to parse AuthorityKeyIdentifier: -0x%04x", -ret);
                 break;
             }
-            if ((ret = mbedtls_asn1_get_tag(&akid_p, akid_p + seq_len, &len, MBEDTLS_ASN1_CONTEXT_SPECIFIC | 0)) == 0) {
+            if (mbedtls_asn1_get_tag(&akid_p, akid_p + seq_len, &len, MBEDTLS_ASN1_CONTEXT_SPECIFIC) == 0) {
                 return akid.data_equal(ByteSpan(akid_p, len));
             }
         }

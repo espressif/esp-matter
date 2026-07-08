@@ -29,7 +29,7 @@ void remove_backslash_n(char *str)
 {
     char *src = str, *dst = str;
     while (*src) {
-        if (*src == '\\' && *(src + 1) == 'n' && *(src + 1) != '\0') {
+        if (*src == '\\' && *(src + 1) == 'n') {
             src += 2;
         } else {
             *dst++ = *src++;
