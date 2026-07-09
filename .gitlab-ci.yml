@@ -566,14 +566,33 @@ pytest_esp32c6_esp_matter_dut:
     - cd connectedhomeip/connectedhomeip
     - source out/py-env/bin/activate
     - cd ${ESP_MATTER_PATH}
+    - pip install -r tools/ci/requirements-pytest.txt
+    - pytest examples/ --target esp32c6 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml
+  tags: ["esp32c6", "esp_matter_dut"]
+
+pytest_esp32c6_certification:
+  stage: target_test
+  image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' ||  $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
+  needs:
+    - build_esp_matter_examples_pytest_C6
+    - pytest_esp32c6_esp_matter_dut
+  script:
+    - cd ${ESP_MATTER_PATH}
+    - rm -rf connectedhomeip/connectedhomeip
+    - ln -s ${CHIP_SUBMODULE_PATH} connectedhomeip/connectedhomeip
+    - cd connectedhomeip/connectedhomeip
+    - source out/py-env/bin/activate
+    - cd ${ESP_MATTER_PATH}
     - cp ${ESP_MATTER_PATH}/tools/ci/extended_color_light_wifi_pics_code.txt $ESP_MATTER_PATH/connectedhomeip/connectedhomeip/src/python_testing/
     - pip install -r tools/ci/requirements-pytest.txt
     - python3 -c "import os; os.environ['TEST_CHUNK'] = '$TEST_CHUNK'"
     - |
       if [ $CI_PIPELINE_SOURCE == "merge_request_event" ]; then
-        pytest examples/ --target esp32c6 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml --certification-json=$ESP_MATTER_PATH/tools/ci/certification_test_commands.json --ci-branch $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
+        pytest examples/ --target esp32c6 -m esp_matter_certification --junitxml=XUNIT_RESULT.xml --certification-json=$ESP_MATTER_PATH/tools/ci/certification_test_commands.json --ci-branch $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
       else
-        pytest examples/ --target esp32c6 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml --certification-json=$ESP_MATTER_PATH/tools/ci/certification_test_commands.json
+        pytest examples/ --target esp32c6 -m esp_matter_certification --junitxml=XUNIT_RESULT.xml --certification-json=$ESP_MATTER_PATH/tools/ci/certification_test_commands.json
       fi
   tags: ["esp32c6", "esp_matter_dut"]
   parallel:

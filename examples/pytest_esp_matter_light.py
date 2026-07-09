@@ -116,7 +116,7 @@ def test_matter_commissioning_c2(dut:Dut) -> None:
 )
 
 # Matter over wifi commissioning
-def test_matter_commissioning_c6(dut:Dut, certification_tests: str, ci_branch: str) -> None:
+def test_matter_commissioning_c6(dut:Dut) -> None:
     light = dut
     # BLE start advertising
     light.expect(r'Configuring CHIPoBLE advertising', timeout=20)
@@ -141,14 +141,24 @@ def test_matter_commissioning_c6(dut:Dut, certification_tests: str, ci_branch: s
     command = CHIP_TOOL_EXE + ' onoff toggle 1 1'
     out_str = subprocess.getoutput(command)
     print(out_str)
-
-    light.write('matter esp factoryreset')
-    time.sleep(10)
-    run_python_certification_tests(light, certification_tests, ci_branch)
-
     result = re.findall(r'Run command failure', str(out_str))
     if len(result) != 0:
       assert False
+
+
+@pytest.mark.esp32c6
+@pytest.mark.esp_matter_certification
+@pytest.mark.parametrize(
+    ' count, app_path, target, erase_all', [
+        ( 1, pytest_build_dir, 'esp32c6', 'y'),
+    ],
+    indirect=True,
+)
+
+def test_matter_certification_c6(dut:Dut, certification_tests: str, ci_branch: str) -> None:
+    dut.expect(r'Configuring CHIPoBLE advertising', timeout=20)
+    time.sleep(5)
+    run_python_certification_tests(dut, certification_tests, ci_branch)
 
 
 # get the host interface name
