@@ -68,9 +68,13 @@ inline constexpr uint32_t Id = 0x0004;
 } /* ScheduledContentRatingThreshold */
 namespace ScreenDailyTime {
 inline constexpr uint32_t Id = 0x0005;
+inline constexpr uint32_t Min = 0;
+inline constexpr uint32_t Max = 86400;
 } /* ScreenDailyTime */
 namespace RemainingScreenTime {
 inline constexpr uint32_t Id = 0x0006;
+inline constexpr uint32_t Min = 0;
+inline constexpr uint32_t Max = 86400;
 } /* RemainingScreenTime */
 namespace BlockUnrated {
 inline constexpr uint32_t Id = 0x0007;

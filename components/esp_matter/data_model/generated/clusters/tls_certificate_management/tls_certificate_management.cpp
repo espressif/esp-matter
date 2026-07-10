@@ -41,7 +41,7 @@ namespace attribute {
 attribute_t *create_max_root_certificates(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, MaxRootCertificates::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(5)), esp_matter_attr_val(static_cast<uint8_t>(254)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(MaxRootCertificates::Min)), esp_matter_attr_val(static_cast<uint8_t>(MaxRootCertificates::Max)));
     return attribute;
 }
 
@@ -53,7 +53,7 @@ attribute_t *create_provisioned_root_certificates(cluster_t *cluster, uint8_t *v
 attribute_t *create_max_client_certificates(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, MaxClientCertificates::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(2)), esp_matter_attr_val(static_cast<uint8_t>(254)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(MaxClientCertificates::Min)), esp_matter_attr_val(static_cast<uint8_t>(MaxClientCertificates::Max)));
     return attribute;
 }
 

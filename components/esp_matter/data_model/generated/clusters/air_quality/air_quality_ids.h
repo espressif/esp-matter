@@ -41,6 +41,8 @@ inline constexpr uint32_t Id = 0x8;
 namespace attribute {
 namespace AirQuality {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 6;
 } /* AirQuality */
 } /* attribute */
 

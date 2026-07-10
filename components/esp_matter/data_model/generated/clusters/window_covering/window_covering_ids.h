@@ -41,6 +41,8 @@ inline constexpr uint32_t Id = 0x10;
 namespace attribute {
 namespace Type {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 10;
 } /* Type */
 namespace NumberOfActuationsLift {
 inline constexpr uint32_t Id = 0x0005;
@@ -50,6 +52,8 @@ inline constexpr uint32_t Id = 0x0006;
 } /* NumberOfActuationsTilt */
 namespace ConfigStatus {
 inline constexpr uint32_t Id = 0x0007;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 127;
 } /* ConfigStatus */
 namespace CurrentPositionLiftPercentage {
 inline constexpr uint32_t Id = 0x0008;
@@ -59,6 +63,8 @@ inline constexpr uint32_t Id = 0x0009;
 } /* CurrentPositionTiltPercentage */
 namespace OperationalStatus {
 inline constexpr uint32_t Id = 0x000A;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 7;
 } /* OperationalStatus */
 namespace TargetPositionLiftPercent100ths {
 inline constexpr uint32_t Id = 0x000B;
@@ -68,18 +74,28 @@ inline constexpr uint32_t Id = 0x000C;
 } /* TargetPositionTiltPercent100ths */
 namespace EndProductType {
 inline constexpr uint32_t Id = 0x000D;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 24;
 } /* EndProductType */
 namespace CurrentPositionLiftPercent100ths {
 inline constexpr uint32_t Id = 0x000E;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 10000;
 } /* CurrentPositionLiftPercent100ths */
 namespace CurrentPositionTiltPercent100ths {
 inline constexpr uint32_t Id = 0x000F;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 10000;
 } /* CurrentPositionTiltPercent100ths */
 namespace Mode {
 inline constexpr uint32_t Id = 0x0017;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 15;
 } /* Mode */
 namespace SafetyStatus {
 inline constexpr uint32_t Id = 0x001A;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 4095;
 } /* SafetyStatus */
 } /* attribute */
 

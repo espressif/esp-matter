@@ -89,7 +89,7 @@ typedef struct config {
         feature::thread_network_interface::config_t thread_network_interface;
     } features;
     uint32_t feature_flags;
-    config() : max_networks(0), interface_enabled(true), last_networking_status(0), last_network_id{0}, last_connect_error_value(0), feature_flags(0) {}
+    config() : max_networks(1), interface_enabled(true), last_networking_status(0), last_network_id{0}, last_connect_error_value(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

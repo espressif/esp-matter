@@ -47,9 +47,13 @@ inline constexpr uint32_t Id = 0x0002;
 } /* MaxTemperature */
 namespace Step {
 inline constexpr uint32_t Id = 0x0003;
+inline constexpr int16_t Min = 1;
+inline constexpr int16_t Max = 32767;
 } /* Step */
 namespace SelectedTemperatureLevel {
 inline constexpr uint32_t Id = 0x0004;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 31;
 } /* SelectedTemperatureLevel */
 namespace SupportedTemperatureLevels {
 inline constexpr uint32_t Id = 0x0005;

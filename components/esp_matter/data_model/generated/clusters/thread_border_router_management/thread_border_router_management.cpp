@@ -71,9 +71,7 @@ attribute_t *create_border_agent_id(cluster_t *cluster, uint8_t *value, uint16_t
 
 attribute_t *create_thread_version(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ThreadVersion::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, ThreadVersion::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_interface_enabled(cluster_t *cluster, bool value)
@@ -83,16 +81,12 @@ attribute_t *create_interface_enabled(cluster_t *cluster, bool value)
 
 attribute_t *create_active_dataset_timestamp(cluster_t *cluster, nullable<uint64_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ActiveDatasetTimestamp::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint64_t>(0)), esp_matter_attr_val(nullable<uint64_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, ActiveDatasetTimestamp::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_pending_dataset_timestamp(cluster_t *cluster, nullable<uint64_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, PendingDatasetTimestamp::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint64_t>(0)), esp_matter_attr_val(nullable<uint64_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, PendingDatasetTimestamp::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 } /* attribute */

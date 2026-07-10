@@ -59,6 +59,8 @@ inline constexpr uint32_t Id = 0x0001;
 } /* OutdoorTemperature */
 namespace Occupancy {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 1;
 } /* Occupancy */
 namespace AbsMinHeatSetpointLimit {
 inline constexpr uint32_t Id = 0x0003;
@@ -101,27 +103,43 @@ inline constexpr uint32_t Id = 0x0018;
 } /* MaxCoolSetpointLimit */
 namespace MinSetpointDeadBand {
 inline constexpr uint32_t Id = 0x0019;
+inline constexpr int8_t Min = 0;
+inline constexpr int8_t Max = 127;
 } /* MinSetpointDeadBand */
 namespace RemoteSensing {
 inline constexpr uint32_t Id = 0x001A;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 7;
 } /* RemoteSensing */
 namespace ControlSequenceOfOperation {
 inline constexpr uint32_t Id = 0x001B;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 5;
 } /* ControlSequenceOfOperation */
 namespace SystemMode {
 inline constexpr uint32_t Id = 0x001C;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 8;
 } /* SystemMode */
 namespace TemperatureSetpointHold {
 inline constexpr uint32_t Id = 0x0023;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 1;
 } /* TemperatureSetpointHold */
 namespace TemperatureSetpointHoldDuration {
 inline constexpr uint32_t Id = 0x0024;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 1440;
 } /* TemperatureSetpointHoldDuration */
 namespace ThermostatRunningState {
 inline constexpr uint32_t Id = 0x0029;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 65535;
 } /* ThermostatRunningState */
 namespace SetpointChangeSource {
 inline constexpr uint32_t Id = 0x0030;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* SetpointChangeSource */
 namespace SetpointChangeAmount {
 inline constexpr uint32_t Id = 0x0031;
@@ -134,27 +152,39 @@ inline constexpr uint32_t Id = 0x003A;
 } /* EmergencyHeatDelta */
 namespace ACType {
 inline constexpr uint32_t Id = 0x0040;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 4;
 } /* ACType */
 namespace ACCapacity {
 inline constexpr uint32_t Id = 0x0041;
 } /* ACCapacity */
 namespace ACRefrigerantType {
 inline constexpr uint32_t Id = 0x0042;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* ACRefrigerantType */
 namespace ACCompressorType {
 inline constexpr uint32_t Id = 0x0043;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* ACCompressorType */
 namespace ACErrorCode {
 inline constexpr uint32_t Id = 0x0044;
+inline constexpr uint32_t Min = 0;
+inline constexpr uint32_t Max = 4294967295;
 } /* ACErrorCode */
 namespace ACLouverPosition {
 inline constexpr uint32_t Id = 0x0045;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 4;
 } /* ACLouverPosition */
 namespace ACCoilTemperature {
 inline constexpr uint32_t Id = 0x0046;
 } /* ACCoilTemperature */
 namespace ACCapacityFormat {
 inline constexpr uint32_t Id = 0x0047;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 0;
 } /* ACCapacityFormat */
 namespace PresetTypes {
 inline constexpr uint32_t Id = 0x0048;
@@ -167,12 +197,18 @@ inline constexpr uint32_t Id = 0x004A;
 } /* NumberOfPresets */
 namespace NumberOfSchedules {
 inline constexpr uint32_t Id = 0x004B;
+inline constexpr uint8_t Min = 1;
+inline constexpr uint8_t Max = 255;
 } /* NumberOfSchedules */
 namespace NumberOfScheduleTransitions {
 inline constexpr uint32_t Id = 0x004C;
+inline constexpr uint8_t Min = 1;
+inline constexpr uint8_t Max = 255;
 } /* NumberOfScheduleTransitions */
 namespace NumberOfScheduleTransitionPerDay {
 inline constexpr uint32_t Id = 0x004D;
+inline constexpr uint8_t Min = 1;
+inline constexpr uint8_t Max = 255;
 } /* NumberOfScheduleTransitionPerDay */
 namespace ActivePresetHandle {
 inline constexpr uint32_t Id = 0x004E;

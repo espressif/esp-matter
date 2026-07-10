@@ -32,9 +32,13 @@ inline constexpr uint32_t Id = 0x0001;
 } /* UpdatePossible */
 namespace UpdateState {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 8;
 } /* UpdateState */
 namespace UpdateStateProgress {
 inline constexpr uint32_t Id = 0x0003;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 100;
 } /* UpdateStateProgress */
 } /* attribute */
 

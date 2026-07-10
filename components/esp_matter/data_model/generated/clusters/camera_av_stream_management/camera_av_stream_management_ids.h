@@ -89,6 +89,8 @@ inline constexpr uint32_t Id = 0x0008;
 } /* SpeakerCapabilities */
 namespace TwoWayTalkSupport {
 inline constexpr uint32_t Id = 0x0009;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* TwoWayTalkSupport */
 namespace SnapshotCapabilities {
 inline constexpr uint32_t Id = 0x000A;
@@ -128,9 +130,13 @@ inline constexpr uint32_t Id = 0x0015;
 } /* HardPrivacyModeOn */
 namespace NightVision {
 inline constexpr uint32_t Id = 0x0016;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* NightVision */
 namespace NightVisionIllum {
 inline constexpr uint32_t Id = 0x0017;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* NightVisionIllum */
 namespace Viewport {
 inline constexpr uint32_t Id = 0x0018;
@@ -143,6 +149,8 @@ inline constexpr uint32_t Id = 0x001A;
 } /* SpeakerVolumeLevel */
 namespace SpeakerMaxLevel {
 inline constexpr uint32_t Id = 0x001B;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 254;
 } /* SpeakerMaxLevel */
 namespace SpeakerMinLevel {
 inline constexpr uint32_t Id = 0x001C;
@@ -155,6 +163,8 @@ inline constexpr uint32_t Id = 0x001E;
 } /* MicrophoneVolumeLevel */
 namespace MicrophoneMaxLevel {
 inline constexpr uint32_t Id = 0x001F;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 254;
 } /* MicrophoneMaxLevel */
 namespace MicrophoneMinLevel {
 inline constexpr uint32_t Id = 0x0020;
@@ -164,6 +174,8 @@ inline constexpr uint32_t Id = 0x0021;
 } /* MicrophoneAGCEnabled */
 namespace ImageRotation {
 inline constexpr uint32_t Id = 0x0022;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 359;
 } /* ImageRotation */
 namespace ImageFlipHorizontal {
 inline constexpr uint32_t Id = 0x0023;

@@ -35,6 +35,8 @@ inline constexpr uint32_t Id = 0x2;
 namespace attribute {
 namespace PHYRate {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 9;
 } /* PHYRate */
 namespace FullDuplex {
 inline constexpr uint32_t Id = 0x0001;

@@ -44,6 +44,8 @@ inline constexpr uint32_t Id = 0x0000;
 } /* Channel */
 namespace RoutingRole {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 6;
 } /* RoutingRole */
 namespace NetworkName {
 inline constexpr uint32_t Id = 0x0002;
@@ -71,15 +73,23 @@ inline constexpr uint32_t Id = 0x0009;
 } /* PartitionId */
 namespace Weighting {
 inline constexpr uint32_t Id = 0x000A;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 255;
 } /* Weighting */
 namespace DataVersion {
 inline constexpr uint32_t Id = 0x000B;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 255;
 } /* DataVersion */
 namespace StableDataVersion {
 inline constexpr uint32_t Id = 0x000C;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 255;
 } /* StableDataVersion */
 namespace LeaderRouterId {
 inline constexpr uint32_t Id = 0x000D;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 62;
 } /* LeaderRouterId */
 namespace DetachedRoleCount {
 inline constexpr uint32_t Id = 0x000E;

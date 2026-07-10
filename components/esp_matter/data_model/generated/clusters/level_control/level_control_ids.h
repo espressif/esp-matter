@@ -41,12 +41,18 @@ inline constexpr uint32_t Id = 0x0001;
 } /* RemainingTime */
 namespace MinLevel {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 254;
 } /* MinLevel */
 namespace MaxLevel {
 inline constexpr uint32_t Id = 0x0003;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 254;
 } /* MaxLevel */
 namespace Options {
 inline constexpr uint32_t Id = 0x000F;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* Options */
 namespace OnOffTransitionTime {
 inline constexpr uint32_t Id = 0x0010;
@@ -62,6 +68,8 @@ inline constexpr uint32_t Id = 0x0013;
 } /* OffTransitionTime */
 namespace DefaultMoveRate {
 inline constexpr uint32_t Id = 0x0014;
+inline constexpr uint8_t Min = 1;
+inline constexpr uint8_t Max = 255;
 } /* DefaultMoveRate */
 namespace StartUpCurrentLevel {
 inline constexpr uint32_t Id = 0x4000;

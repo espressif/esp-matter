@@ -41,9 +41,13 @@ inline constexpr uint32_t Id = 0x0000;
 } /* Condition */
 namespace DegradationDirection {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 1;
 } /* DegradationDirection */
 namespace ChangeIndication {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* ChangeIndication */
 namespace InPlaceIndicator {
 inline constexpr uint32_t Id = 0x0003;

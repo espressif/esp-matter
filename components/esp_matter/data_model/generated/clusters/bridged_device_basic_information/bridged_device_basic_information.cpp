@@ -67,9 +67,7 @@ attribute_t *create_vendor_name(cluster_t *cluster, char *value, uint16_t length
 
 attribute_t *create_vendor_id(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, VendorID::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, VendorID::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_product_name(cluster_t *cluster, char *value, uint16_t length)
@@ -80,9 +78,7 @@ attribute_t *create_product_name(cluster_t *cluster, char *value, uint16_t lengt
 
 attribute_t *create_product_id(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ProductID::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, ProductID::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_node_label(cluster_t *cluster, char *value, uint16_t length)
@@ -93,9 +89,7 @@ attribute_t *create_node_label(cluster_t *cluster, char *value, uint16_t length)
 
 attribute_t *create_hardware_version(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, HardwareVersion::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, HardwareVersion::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_hardware_version_string(cluster_t *cluster, char *value, uint16_t length)
@@ -105,9 +99,7 @@ attribute_t *create_hardware_version_string(cluster_t *cluster, char *value, uin
 
 attribute_t *create_software_version(cluster_t *cluster, uint32_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, SoftwareVersion::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0)), esp_matter_attr_val(static_cast<uint32_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, SoftwareVersion::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_software_version_string(cluster_t *cluster, char *value, uint16_t length)

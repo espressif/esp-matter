@@ -26,6 +26,8 @@ inline constexpr uint32_t Id = 0x0751;
 namespace attribute {
 namespace SupportedDeviceCategories {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint32_t Min = 0;
+inline constexpr uint32_t Max = 4294967295;
 } /* SupportedDeviceCategories */
 } /* attribute */
 

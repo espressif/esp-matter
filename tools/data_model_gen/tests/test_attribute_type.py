@@ -157,6 +157,30 @@ class TestAttributeTypeMap(unittest.TestCase):
                     f"{cluster}.{attr_name} type should be str or dict",
                 )
 
+    def test_color_temp_physical_max_mireds_has_default(self):
+        """color_temp_physical_max_mireds should have a sensible default value."""
+        self.assertIn("color_control", attribute_type_map)
+        self.assertIn(
+            "color_temp_physical_max_mireds", attribute_type_map["color_control"]
+        )
+        override = attribute_type_map["color_control"]["color_temp_physical_max_mireds"]
+        self.assertIn("default", override)
+        # Default should be > 0 to avoid divide-by-zero in rate calculations
+        self.assertGreater(override["default"], 0)
+        # Default should be 65279 (max valid value per Matter spec)
+        self.assertEqual(override["default"], 65279)
+
+    def test_color_temp_physical_min_mireds_has_default(self):
+        """color_temp_physical_min_mireds should have min=1 default value."""
+        self.assertIn("color_control", attribute_type_map)
+        self.assertIn(
+            "color_temp_physical_min_mireds", attribute_type_map["color_control"]
+        )
+        override = attribute_type_map["color_control"]["color_temp_physical_min_mireds"]
+        self.assertIn("default", override)
+        # Default should be 1 (min valid value per Matter spec)
+        self.assertEqual(override["default"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()

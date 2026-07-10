@@ -47,24 +47,36 @@ inline constexpr uint32_t Id = 0x0000;
 } /* CurrentSensitivityLevel */
 namespace SupportedSensitivityLevels {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint8_t Min = 2;
+inline constexpr uint8_t Max = 10;
 } /* SupportedSensitivityLevels */
 namespace DefaultSensitivityLevel {
 inline constexpr uint32_t Id = 0x0002;
 } /* DefaultSensitivityLevel */
 namespace AlarmsActive {
 inline constexpr uint32_t Id = 0x0003;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* AlarmsActive */
 namespace AlarmsSuppressed {
 inline constexpr uint32_t Id = 0x0004;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* AlarmsSuppressed */
 namespace AlarmsEnabled {
 inline constexpr uint32_t Id = 0x0005;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* AlarmsEnabled */
 namespace AlarmsSupported {
 inline constexpr uint32_t Id = 0x0006;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* AlarmsSupported */
 namespace SensorFault {
 inline constexpr uint32_t Id = 0x0007;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 1;
 } /* SensorFault */
 } /* attribute */
 

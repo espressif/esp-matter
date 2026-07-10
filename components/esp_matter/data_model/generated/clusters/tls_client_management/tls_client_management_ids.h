@@ -26,6 +26,8 @@ inline constexpr uint32_t Id = 0x0802;
 namespace attribute {
 namespace MaxProvisioned {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint8_t Min = 5;
+inline constexpr uint8_t Max = 254;
 } /* MaxProvisioned */
 namespace ProvisionedEndpoints {
 inline constexpr uint32_t Id = 0x0001;

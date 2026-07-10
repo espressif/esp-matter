@@ -44,12 +44,18 @@ inline constexpr uint32_t Id = 0x10;
 namespace attribute {
 namespace State {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 6;
 } /* State */
 namespace SupplyState {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 5;
 } /* SupplyState */
 namespace FaultState {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 16;
 } /* FaultState */
 namespace ChargingEnabledUntil {
 inline constexpr uint32_t Id = 0x0003;
@@ -59,21 +65,31 @@ inline constexpr uint32_t Id = 0x0004;
 } /* DischargingEnabledUntil */
 namespace CircuitCapacity {
 inline constexpr uint32_t Id = 0x0005;
+inline constexpr int64_t Min = 0;
+inline constexpr int64_t Max = 2147483647;
 } /* CircuitCapacity */
 namespace MinimumChargeCurrent {
 inline constexpr uint32_t Id = 0x0006;
+inline constexpr int64_t Min = 0;
+inline constexpr int64_t Max = 2147483647;
 } /* MinimumChargeCurrent */
 namespace MaximumChargeCurrent {
 inline constexpr uint32_t Id = 0x0007;
+inline constexpr int64_t Min = 0;
+inline constexpr int64_t Max = 2147483647;
 } /* MaximumChargeCurrent */
 namespace MaximumDischargeCurrent {
 inline constexpr uint32_t Id = 0x0008;
+inline constexpr int64_t Min = 0;
+inline constexpr int64_t Max = 2147483647;
 } /* MaximumDischargeCurrent */
 namespace UserMaximumChargeCurrent {
 inline constexpr uint32_t Id = 0x0009;
 } /* UserMaximumChargeCurrent */
 namespace RandomizationDelayWindow {
 inline constexpr uint32_t Id = 0x000A;
+inline constexpr uint32_t Min = 0;
+inline constexpr uint32_t Max = 86400;
 } /* RandomizationDelayWindow */
 namespace NextChargeStartTime {
 inline constexpr uint32_t Id = 0x0023;
@@ -83,6 +99,8 @@ inline constexpr uint32_t Id = 0x0024;
 } /* NextChargeTargetTime */
 namespace NextChargeRequiredEnergy {
 inline constexpr uint32_t Id = 0x0025;
+inline constexpr int64_t Min = 0;
+inline constexpr int64_t Max = 2147483647;
 } /* NextChargeRequiredEnergy */
 namespace NextChargeTargetSoC {
 inline constexpr uint32_t Id = 0x0026;
@@ -95,6 +113,8 @@ inline constexpr uint32_t Id = 0x0030;
 } /* StateOfCharge */
 namespace BatteryCapacity {
 inline constexpr uint32_t Id = 0x0031;
+inline constexpr int64_t Min = 0;
+inline constexpr int64_t Max = 2147483647;
 } /* BatteryCapacity */
 namespace VehicleID {
 inline constexpr uint32_t Id = 0x0032;
@@ -107,9 +127,13 @@ inline constexpr uint32_t Id = 0x0041;
 } /* SessionDuration */
 namespace SessionEnergyCharged {
 inline constexpr uint32_t Id = 0x0042;
+inline constexpr int64_t Min = 0;
+inline constexpr int64_t Max = 2147483647;
 } /* SessionEnergyCharged */
 namespace SessionEnergyDischarged {
 inline constexpr uint32_t Id = 0x0043;
+inline constexpr int64_t Min = 0;
+inline constexpr int64_t Max = 2147483647;
 } /* SessionEnergyDischarged */
 } /* attribute */
 

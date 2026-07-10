@@ -160,7 +160,7 @@ attribute_t *create_supported_streaming_protocols(cluster_t *cluster, uint8_t va
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(url_playback), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, SupportedStreamingProtocols::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint8_t>(3), esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(SupportedStreamingProtocols::Min), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint8_t>(SupportedStreamingProtocols::Max), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 

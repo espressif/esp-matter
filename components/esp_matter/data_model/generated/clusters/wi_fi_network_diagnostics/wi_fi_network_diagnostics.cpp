@@ -89,28 +89,26 @@ attribute_t *create_bssid(cluster_t *cluster, uint8_t *value, uint16_t length)
 attribute_t *create_security_type(cluster_t *cluster, nullable<uint8_t> value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, SecurityType::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(nullable<uint8_t>(5), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(SecurityType::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(nullable<uint8_t>(SecurityType::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_wi_fi_version(cluster_t *cluster, nullable<uint8_t> value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, WiFiVersion::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(nullable<uint8_t>(6), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(WiFiVersion::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(nullable<uint8_t>(WiFiVersion::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_channel_number(cluster_t *cluster, nullable<uint16_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ChannelNumber::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint16_t>(0)), esp_matter_attr_val(nullable<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, ChannelNumber::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_rssi(cluster_t *cluster, nullable<int8_t> value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, RSSI::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int8_t>(-120)), esp_matter_attr_val(nullable<int8_t>(0)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int8_t>(RSSI::Min)), esp_matter_attr_val(nullable<int8_t>(RSSI::Max)));
     return attribute;
 }
 
@@ -118,70 +116,54 @@ attribute_t *create_beacon_lost_count(cluster_t *cluster, nullable<uint32_t> val
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(error_counts), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, BeaconLostCount::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, BeaconLostCount::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_beacon_rx_count(cluster_t *cluster, nullable<uint32_t> value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(packet_counts), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, BeaconRxCount::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, BeaconRxCount::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_packet_multicast_rx_count(cluster_t *cluster, nullable<uint32_t> value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(packet_counts), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, PacketMulticastRxCount::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, PacketMulticastRxCount::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_packet_multicast_tx_count(cluster_t *cluster, nullable<uint32_t> value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(packet_counts), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, PacketMulticastTxCount::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, PacketMulticastTxCount::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_packet_unicast_rx_count(cluster_t *cluster, nullable<uint32_t> value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(packet_counts), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, PacketUnicastRxCount::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, PacketUnicastRxCount::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_packet_unicast_tx_count(cluster_t *cluster, nullable<uint32_t> value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(packet_counts), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, PacketUnicastTxCount::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, PacketUnicastTxCount::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_current_max_rate(cluster_t *cluster, nullable<uint64_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentMaxRate::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint64_t>(0)), esp_matter_attr_val(nullable<uint64_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, CurrentMaxRate::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_overrun_count(cluster_t *cluster, nullable<uint64_t> value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(error_counts), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, OverrunCount::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint64_t>(0)), esp_matter_attr_val(nullable<uint64_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, OverrunCount::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 } /* attribute */

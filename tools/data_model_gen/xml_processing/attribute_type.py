@@ -107,6 +107,60 @@ attribute_type_map = {
             "min": "0",
             "max": "65535",
         },
+        "current_x": {
+            "type": "uint16",
+            "min": 0,
+            "max": 65279,
+            "default": 24939,
+        },
+        "current_y": {
+            "type": "uint16",
+            "min": 0,
+            "max": 65279,
+            "default": 24701,
+        },
+        "color_mode": {
+            "type": "enum8",
+            "min": 0,
+            "max": 2,
+            "default": 1,
+        },
+        "enhanced_color_mode": {
+            "type": "enum8",
+            "min": 0,
+            "max": 3,
+            "default": 1,
+        },
+        "color_temperature_mireds": {
+            "type": "uint16",
+            "min": 1,
+            "max": 65279,
+            "default": 250,
+        },
+        "color_temp_physical_min_mireds": {
+            "type": "uint16",
+            "min": 1,
+            "max": 65279,
+            "default": 1,
+        },
+        "color_temp_physical_max_mireds": {
+            "type": "uint16",
+            "min": 1,
+            "max": 65279,
+            "default": 65279,
+        },
+        "couple_color_temp_to_level_min_mireds": {
+            "type": "uint16",
+            "min": 0,
+            "max": 65534,
+            "default": 1,
+        },
+        "start_up_color_temperature_mireds": {
+            "type": "uint16",
+            "min": 1,
+            "max": 65279,
+            "default": 250,
+        },
     },
     "network_commissioning": {
         "supported_thread_features": {

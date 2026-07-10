@@ -35,18 +35,26 @@ inline constexpr uint32_t Id = 0x4;
 namespace attribute {
 namespace CookTime {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint32_t Min = 1;
+inline constexpr uint32_t Max = 4294967295;
 } /* CookTime */
 namespace MaxCookTime {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint32_t Min = 1;
+inline constexpr uint32_t Max = 86400;
 } /* MaxCookTime */
 namespace PowerSetting {
 inline constexpr uint32_t Id = 0x0002;
 } /* PowerSetting */
 namespace MinPower {
 inline constexpr uint32_t Id = 0x0003;
+inline constexpr uint8_t Min = 1;
+inline constexpr uint8_t Max = 99;
 } /* MinPower */
 namespace MaxPower {
 inline constexpr uint32_t Id = 0x0004;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 100;
 } /* MaxPower */
 namespace PowerStep {
 inline constexpr uint32_t Id = 0x0005;

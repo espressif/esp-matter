@@ -22,21 +22,25 @@ from utils.exceptions import XmlParseError
 
 logger = logging.getLogger(__name__)
 
+# Named per-type integer limits (avoid magic numbers below).
+INT8_MIN, INT8_MAX = -(2**7), 2**7 - 1
+INT16_MIN, INT16_MAX = -(2**15), 2**15 - 1
+INT32_MIN, INT32_MAX = -(2**31), 2**31 - 1
+UINT8_MAX = 2**8 - 1
+UINT16_MAX = 2**16 - 1
+UINT32_MAX = 2**32 - 1
+
+# NOTE: 64-bit types are capped to the 32-bit range to avoid esp-idf compiler warnings
+# on 64-bit literal bounds.
 INT_BOUNDS = {
-    "int8": (-(2**7), 2**7 - 2),
-    "int16": (-(2**15), 2**15 - 2),
-    "int32": (-(2**31), 2**31 - 2),
-    "int64": (
-        -(2**31),
-        2**31 - 2,
-    ),  # NOTE: getting esp-idf compiler warnings for int64 bounds, so we are using int32 bounds for now
-    "uint8": (0, 2**8 - 2),
-    "uint16": (0, 2**16 - 2),
-    "uint32": (0, 2**32 - 2),
-    "uint64": (
-        0,
-        2**32 - 2,
-    ),  # NOTE: getting esp-idf compiler warnings for uint64 bounds, so we are using uint32 bounds for now
+    "int8": (INT8_MIN, INT8_MAX),
+    "int16": (INT16_MIN, INT16_MAX),
+    "int32": (INT32_MIN, INT32_MAX),
+    "int64": (INT32_MIN, INT32_MAX),
+    "uint8": (0, UINT8_MAX),
+    "uint16": (0, UINT16_MAX),
+    "uint32": (0, UINT32_MAX),
+    "uint64": (0, UINT32_MAX),
 }
 
 
@@ -184,6 +188,11 @@ def _normalize_bounds(attr) -> None:
 
 
 def _default_bounds_by_type(attr) -> None:
+    """Set the default bounds for the attribute based on the type. Only fill a missing
+    side from the type range when the other side is a real (spec-derived) constraint."""
+    if attr.min_value is None and attr.max_value is None:
+        return
+
     bounds = INT_BOUNDS.get(attr.type)
     if not bounds:
         return

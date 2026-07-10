@@ -280,18 +280,14 @@ attribute_t *create_max_concurrent_encoders(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(((has_feature(video)) || (has_feature(snapshot))), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxConcurrentEncoders::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, MaxConcurrentEncoders::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_max_encoded_pixel_rate(cluster_t *cluster, uint32_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(((has_feature(video)) || (has_feature(snapshot))), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxEncodedPixelRate::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0)), esp_matter_attr_val(static_cast<uint32_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, MaxEncodedPixelRate::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_video_sensor_params(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -324,9 +320,7 @@ attribute_t *create_rate_distortion_trade_off_points(cluster_t *cluster, uint8_t
 
 attribute_t *create_max_content_buffer_size(cluster_t *cluster, uint32_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxContentBufferSize::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0)), esp_matter_attr_val(static_cast<uint32_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, MaxContentBufferSize::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_microphone_capabilities(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -348,7 +342,7 @@ attribute_t *create_two_way_talk_support(cluster_t *cluster, uint8_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(speaker), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, TwoWayTalkSupport::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(2), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(TwoWayTalkSupport::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(TwoWayTalkSupport::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
@@ -361,18 +355,14 @@ attribute_t *create_snapshot_capabilities(cluster_t *cluster, uint8_t *value, ui
 
 attribute_t *create_max_network_bandwidth(cluster_t *cluster, uint32_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxNetworkBandwidth::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0)), esp_matter_attr_val(static_cast<uint32_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, MaxNetworkBandwidth::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_current_frame_rate(cluster_t *cluster, uint16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(video), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentFrameRate::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, CurrentFrameRate::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_hdr_mode_enabled(cluster_t *cluster, bool value)
@@ -437,14 +427,14 @@ attribute_t *create_night_vision(cluster_t *cluster, uint8_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(night_vision), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, NightVision::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(2), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(NightVision::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(NightVision::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_night_vision_illum(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, NightVisionIllum::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(2), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(NightVisionIllum::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(NightVisionIllum::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
@@ -466,9 +456,7 @@ attribute_t *create_speaker_volume_level(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(speaker), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, SpeakerVolumeLevel::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, SpeakerVolumeLevel::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_speaker_max_level(cluster_t *cluster, uint8_t value)
@@ -476,7 +464,7 @@ attribute_t *create_speaker_max_level(cluster_t *cluster, uint8_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(speaker), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, SpeakerMaxLevel::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(SpeakerMaxLevel::Min)), esp_matter_attr_val(static_cast<uint8_t>(SpeakerMaxLevel::Max)));
     return attribute;
 }
 
@@ -484,9 +472,7 @@ attribute_t *create_speaker_min_level(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(speaker), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, SpeakerMinLevel::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, SpeakerMinLevel::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_microphone_muted(cluster_t *cluster, bool value)
@@ -500,9 +486,7 @@ attribute_t *create_microphone_volume_level(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(audio), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MicrophoneVolumeLevel::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, MicrophoneVolumeLevel::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_microphone_max_level(cluster_t *cluster, uint8_t value)
@@ -510,7 +494,7 @@ attribute_t *create_microphone_max_level(cluster_t *cluster, uint8_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(audio), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, MicrophoneMaxLevel::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(MicrophoneMaxLevel::Min)), esp_matter_attr_val(static_cast<uint8_t>(MicrophoneMaxLevel::Max)));
     return attribute;
 }
 
@@ -518,9 +502,7 @@ attribute_t *create_microphone_min_level(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(audio), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MicrophoneMinLevel::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, MicrophoneMinLevel::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_microphone_agc_enabled(cluster_t *cluster, bool value)
@@ -531,7 +513,7 @@ attribute_t *create_microphone_agc_enabled(cluster_t *cluster, bool value)
 attribute_t *create_image_rotation(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, ImageRotation::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(359)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(ImageRotation::Min)), esp_matter_attr_val(static_cast<uint16_t>(ImageRotation::Max)));
     return attribute;
 }
 

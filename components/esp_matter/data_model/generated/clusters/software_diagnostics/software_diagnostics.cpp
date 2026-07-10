@@ -66,25 +66,19 @@ attribute_t *create_thread_metrics(cluster_t *cluster, uint8_t *value, uint16_t 
 
 attribute_t *create_current_heap_free(cluster_t *cluster, uint64_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentHeapFree::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint64_t>(0)), esp_matter_attr_val(static_cast<uint64_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, CurrentHeapFree::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_current_heap_used(cluster_t *cluster, uint64_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentHeapUsed::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint64_t>(0)), esp_matter_attr_val(static_cast<uint64_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, CurrentHeapUsed::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_current_heap_high_watermark(cluster_t *cluster, uint64_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(watermarks), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentHeapHighWatermark::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint64_t>(0)), esp_matter_attr_val(static_cast<uint64_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, CurrentHeapHighWatermark::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 } /* attribute */

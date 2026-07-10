@@ -40,31 +40,31 @@ from utils.exceptions import XmlParseError  # noqa: E402
 
 
 class TestIntBounds(unittest.TestCase):
-    """Test INT_BOUNDS constant correctness."""
+    """INT_BOUNDS holds the full usable range per integer type."""
 
     def test_uint8_bounds(self):
-        self.assertEqual(INT_BOUNDS["uint8"], (0, 254))
+        self.assertEqual(INT_BOUNDS["uint8"], (0, 255))
 
     def test_uint16_bounds(self):
-        self.assertEqual(INT_BOUNDS["uint16"], (0, 65534))
+        self.assertEqual(INT_BOUNDS["uint16"], (0, 65535))
 
     def test_uint32_bounds(self):
-        self.assertEqual(INT_BOUNDS["uint32"], (0, 2**32 - 2))
+        self.assertEqual(INT_BOUNDS["uint32"], (0, 2**32 - 1))
 
     def test_uint64_bounds(self):
-        self.assertEqual(INT_BOUNDS["uint64"], (0, 2**32 - 2))
+        self.assertEqual(INT_BOUNDS["uint64"], (0, 2**32 - 1))
 
     def test_int8_bounds(self):
-        self.assertEqual(INT_BOUNDS["int8"], (-128, 126))
+        self.assertEqual(INT_BOUNDS["int8"], (-128, 127))
 
     def test_int16_bounds(self):
-        self.assertEqual(INT_BOUNDS["int16"], (-32768, 32766))
+        self.assertEqual(INT_BOUNDS["int16"], (-32768, 32767))
 
     def test_int32_bounds(self):
-        self.assertEqual(INT_BOUNDS["int32"], (-(2**31), 2**31 - 2))
+        self.assertEqual(INT_BOUNDS["int32"], (-(2**31), 2**31 - 1))
 
     def test_int64_bounds(self):
-        self.assertEqual(INT_BOUNDS["int64"], (-(2**31), 2**31 - 2))
+        self.assertEqual(INT_BOUNDS["int64"], (-(2**31), 2**31 - 1))
 
 
 class TestResolveAttributeType(unittest.TestCase):
@@ -153,23 +153,27 @@ class TestDefaultBoundsByType(unittest.TestCase):
         a.max_value = max_val
         return a
 
-    def test_uint8_default_bounds(self):
+    def test_no_bounds_when_fully_unconstrained(self):
+        # No explicit min/max in XML -> no synthesized bounds (avoid redundant
+        # full-type-range add_bounds; the C type already limits the value).
         attr = self._make_attr("uint8")
         _default_bounds_by_type(attr)
-        self.assertEqual(attr.min_value, 0)
-        self.assertEqual(attr.max_value, 254)
+        self.assertIsNone(attr.min_value)
+        self.assertIsNone(attr.max_value)
 
-    def test_uint32_default_bounds(self):
-        attr = self._make_attr("uint32")
+    def test_fills_missing_max_from_type_when_min_given(self):
+        # A real min constraint present -> fill max from the full type range.
+        attr = self._make_attr("uint8", min_val=5)
         _default_bounds_by_type(attr)
-        self.assertEqual(attr.min_value, 0)
-        self.assertEqual(attr.max_value, 2**32 - 2)
+        self.assertEqual(attr.min_value, 5)
+        self.assertEqual(attr.max_value, 255)
 
-    def test_int16_default_bounds(self):
-        attr = self._make_attr("int16")
+    def test_fills_missing_min_from_type_when_max_given(self):
+        # A real max constraint present -> fill min from the type range.
+        attr = self._make_attr("int16", max_val=100)
         _default_bounds_by_type(attr)
         self.assertEqual(attr.min_value, -32768)
-        self.assertEqual(attr.max_value, 32766)
+        self.assertEqual(attr.max_value, 100)
 
     def test_preserves_existing_bounds(self):
         attr = self._make_attr("uint16", min_val=10, max_val=100)
@@ -317,12 +321,23 @@ class TestResolveAttributeBounds(unittest.TestCase):
         self.assertEqual(attr.min_value, 0)
         self.assertEqual(attr.max_value, 7)  # 2^3 - 1
 
-    def test_uint8_default_bounds(self):
+    def test_uint8_unconstrained_no_bounds(self):
+        # No <constraint> in XML -> no bounds synthesized (redundant type-range removed)
         attr = self._make_attr("uint8")
         elem = Element("attribute", type="uint8")
         resolve_attribute_bounds(attr, elem, {})
-        self.assertEqual(attr.min_value, 0)
-        self.assertEqual(attr.max_value, 254)
+        self.assertIsNone(attr.min_value)
+        self.assertIsNone(attr.max_value)
+
+    def test_uint8_min_constraint_fills_max(self):
+        # Explicit min constraint -> keep min, fill max from type range
+        attr = self._make_attr("uint8")
+        elem = Element("attribute", type="uint8")
+        constraint = SubElement(elem, "constraint")
+        SubElement(constraint, "min", value="1")
+        resolve_attribute_bounds(attr, elem, {})
+        self.assertEqual(attr.min_value, 1)
+        self.assertEqual(attr.max_value, 255)
 
 
 class TestInferTypeByCount(unittest.TestCase):

@@ -52,7 +52,7 @@ typedef struct config {
     uint8_t supported_fabrics;
     uint8_t commissioned_fabrics;
     uint8_t current_fabric_index;
-    config() : supported_fabrics(0), commissioned_fabrics(0), current_fabric_index(0) {}
+    config() : supported_fabrics(5), commissioned_fabrics(0), current_fabric_index(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

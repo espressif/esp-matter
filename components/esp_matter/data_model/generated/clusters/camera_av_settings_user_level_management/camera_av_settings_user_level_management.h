@@ -32,7 +32,7 @@ typedef struct config {
     int16_t pan_min;
     int16_t pan_max;
     uint8_t movement_state;
-    config() : pan_min(0), pan_max(0), movement_state(0) {}
+    config() : pan_min(0), pan_max(1), movement_state(0) {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -43,7 +43,7 @@ typedef struct config {
     int16_t tilt_min;
     int16_t tilt_max;
     uint8_t movement_state;
-    config() : tilt_min(0), tilt_max(0), movement_state(0) {}
+    config() : tilt_min(0), tilt_max(1), movement_state(0) {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -53,7 +53,7 @@ namespace mechanical_zoom {
 typedef struct config {
     uint8_t zoom_max;
     uint8_t movement_state;
-    config() : zoom_max(0), movement_state(0) {}
+    config() : zoom_max(2), movement_state(0) {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);

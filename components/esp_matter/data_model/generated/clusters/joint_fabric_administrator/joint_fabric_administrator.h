@@ -39,7 +39,7 @@ command_t *create_announce_joint_fabric_administrator(cluster_t *cluster);
 
 typedef struct config {
     nullable<uint8_t> administrator_fabric_index;
-    config() : administrator_fabric_index(0) {}
+    config() : administrator_fabric_index(1) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

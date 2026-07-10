@@ -91,7 +91,7 @@ attribute_t *create_spin_speed_current(cluster_t *cluster, nullable<uint8_t> val
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(spin), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, SpinSpeedCurrent::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0)), esp_matter_attr_val(nullable<uint8_t>(15)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(SpinSpeedCurrent::Min)), esp_matter_attr_val(nullable<uint8_t>(SpinSpeedCurrent::Max)));
     return attribute;
 }
 
@@ -100,7 +100,7 @@ attribute_t *create_number_of_rinses(cluster_t *cluster, uint8_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(rinse), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfRinses::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(3), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(NumberOfRinses::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(NumberOfRinses::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 

@@ -38,9 +38,13 @@ inline constexpr uint32_t Id = 0x0000;
 } /* SpinSpeeds */
 namespace SpinSpeedCurrent {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 15;
 } /* SpinSpeedCurrent */
 namespace NumberOfRinses {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* NumberOfRinses */
 namespace SupportedRinses {
 inline constexpr uint32_t Id = 0x0003;

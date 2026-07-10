@@ -193,18 +193,14 @@ attribute_t *create_on_time(cluster_t *cluster, uint16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(lighting), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, OnTime::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, OnTime::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_off_wait_time(cluster_t *cluster, uint16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(lighting), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, OffWaitTime::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, OffWaitTime::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_start_up_on_off(cluster_t *cluster, nullable<uint8_t> value)
@@ -212,7 +208,7 @@ attribute_t *create_start_up_on_off(cluster_t *cluster, nullable<uint8_t> value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(lighting), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, StartUpOnOff::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(nullable<uint8_t>(2), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(StartUpOnOff::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(nullable<uint8_t>(StartUpOnOff::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 

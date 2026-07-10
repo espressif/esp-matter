@@ -413,7 +413,7 @@ attribute_t *create_screen_daily_time(cluster_t *cluster, uint32_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(screen_time), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, ScreenDailyTime::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0)), esp_matter_attr_val(static_cast<uint32_t>(86400)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(ScreenDailyTime::Min)), esp_matter_attr_val(static_cast<uint32_t>(ScreenDailyTime::Max)));
     return attribute;
 }
 
@@ -422,7 +422,7 @@ attribute_t *create_remaining_screen_time(cluster_t *cluster, uint32_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(screen_time), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, RemainingScreenTime::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0)), esp_matter_attr_val(static_cast<uint32_t>(86400)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(RemainingScreenTime::Min)), esp_matter_attr_val(static_cast<uint32_t>(RemainingScreenTime::Max)));
     return attribute;
 }
 

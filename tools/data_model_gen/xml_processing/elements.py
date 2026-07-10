@@ -368,8 +368,31 @@ class Attribute(BaseAttribute):
         return "uint32_t"
 
     def get_default_value(self):
-        """Get the default value of the attribute"""
-        return self._convert_default_values()
+        """Get the default value of the attribute, clamped into its constraint range"""
+        return self._clamp_to_bounds(self._convert_default_values())
+
+    def _clamp_to_bounds(self, value):
+        """Bring a numeric default into the attribute's [min_value, max_value] range.
+
+        If the computed default falls outside the constraint (e.g. an unparsable spec
+        default like "MS" that fell back to 0 while min is 1), it is clamped to the
+        nearest bound so the emitted default is always spec-constraint compliant.
+
+        Only numeric scalar attributes are clamped; for string/octstr/list the
+        min/max represent lengths and ``value`` is a length, so they are left as-is.
+        """
+        if self.type in ("bool", "string", "octstr", "list"):
+            return value
+        int_value = convert_to_int(value)
+        if int_value is None:
+            return value
+        min_value = convert_to_int(self.min_value)
+        max_value = convert_to_int(self.max_value)
+        if min_value is not None and int_value < min_value:
+            return min_value
+        if max_value is not None and int_value > max_value:
+            return max_value
+        return value
 
     def get_type(self):
         """Get the ESP type for the attribute"""
@@ -415,6 +438,12 @@ class Attribute(BaseAttribute):
             first_part = self.default_value.split(" ")[0]
             if first_part.isdigit():
                 return int(first_part)
+
+        # If no explicit default value, use min_value as default if available.
+        # This ensures spec-compliant defaults when constraint min > 0.
+        min_value = convert_to_int(self.min_value)
+        if self.default_value is None and min_value is not None and min_value > 0:
+            return min_value
 
         return convert_to_int(self.default_value, default="0")
 

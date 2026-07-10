@@ -50,6 +50,8 @@ inline constexpr uint32_t Id = 0x4002;
 } /* OffWaitTime */
 namespace StartUpOnOff {
 inline constexpr uint32_t Id = 0x4003;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* StartUpOnOff */
 } /* attribute */
 

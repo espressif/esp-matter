@@ -92,9 +92,13 @@ inline constexpr uint32_t Id = 0x0015;
 } /* SpecificationVersion */
 namespace MaxPathsPerInvoke {
 inline constexpr uint32_t Id = 0x0016;
+inline constexpr uint16_t Min = 1;
+inline constexpr uint16_t Max = 65535;
 } /* MaxPathsPerInvoke */
 namespace ConfigurationVersion {
 inline constexpr uint32_t Id = 0x0018;
+inline constexpr uint32_t Min = 1;
+inline constexpr uint32_t Max = 4294967295;
 } /* ConfigurationVersion */
 } /* attribute */
 

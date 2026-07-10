@@ -59,7 +59,7 @@ namespace xy {
 typedef struct config {
     uint16_t current_x;
     uint16_t current_y;
-    config() : current_x(0), current_y(0) {}
+    config() : current_x(24939), current_y(24701) {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -72,7 +72,7 @@ typedef struct config {
     uint16_t color_temp_physical_max_mireds;
     uint16_t couple_color_temp_to_level_min_mireds;
     nullable<uint16_t> start_up_color_temperature_mireds;
-    config() : color_temperature_mireds(0), color_temp_physical_min_mireds(0), color_temp_physical_max_mireds(0), couple_color_temp_to_level_min_mireds(0), start_up_color_temperature_mireds(0) {}
+    config() : color_temperature_mireds(250), color_temp_physical_min_mireds(1), color_temp_physical_max_mireds(65279), couple_color_temp_to_level_min_mireds(1), start_up_color_temperature_mireds(250) {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -181,7 +181,7 @@ typedef struct config {
     uint16_t primary_6_x;
     uint16_t primary_6_y;
     nullable<uint8_t> primary_6_intensity;
-    config() : color_mode(0), options(0), number_of_primaries(0), enhanced_color_mode(0), color_capabilities(0), primary_1_x(0), primary_1_y(0), primary_1_intensity(0), primary_2_x(0), primary_2_y(0), primary_2_intensity(0), primary_3_x(0), primary_3_y(0), primary_3_intensity(0), primary_4_x(0), primary_4_y(0), primary_4_intensity(0), primary_5_x(0), primary_5_y(0), primary_5_intensity(0), primary_6_x(0), primary_6_y(0), primary_6_intensity(0) {}
+    config() : color_mode(1), options(0), number_of_primaries(0), enhanced_color_mode(1), color_capabilities(0), primary_1_x(0), primary_1_y(0), primary_1_intensity(0), primary_2_x(0), primary_2_y(0), primary_2_intensity(0), primary_3_x(0), primary_3_y(0), primary_3_intensity(0), primary_4_x(0), primary_4_y(0), primary_4_intensity(0), primary_5_x(0), primary_5_y(0), primary_5_intensity(0), primary_6_x(0), primary_6_y(0), primary_6_intensity(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

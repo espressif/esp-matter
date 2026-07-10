@@ -32,6 +32,8 @@ inline constexpr uint32_t Id = 0x1;
 namespace attribute {
 namespace NameSupport {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 1;
 } /* NameSupport */
 } /* attribute */
 

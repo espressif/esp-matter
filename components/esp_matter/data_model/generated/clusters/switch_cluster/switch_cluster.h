@@ -45,7 +45,7 @@ esp_err_t add(cluster_t *cluster);
 namespace momentary_switch_multi_press {
 typedef struct config {
     uint8_t multi_press_max;
-    config() : multi_press_max(0) {}
+    config() : multi_press_max(2) {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -88,7 +88,7 @@ typedef struct config {
         feature::momentary_switch_multi_press::config_t momentary_switch_multi_press;
     } features;
     uint32_t feature_flags;
-    config() : number_of_positions(0), current_position(0), feature_flags(0) {}
+    config() : number_of_positions(2), current_position(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

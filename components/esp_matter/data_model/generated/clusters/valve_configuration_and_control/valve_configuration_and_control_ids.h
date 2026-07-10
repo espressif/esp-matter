@@ -35,9 +35,13 @@ inline constexpr uint32_t Id = 0x2;
 namespace attribute {
 namespace OpenDuration {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint32_t Min = 1;
+inline constexpr uint32_t Max = 4294967295;
 } /* OpenDuration */
 namespace DefaultOpenDuration {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint32_t Min = 1;
+inline constexpr uint32_t Max = 4294967295;
 } /* DefaultOpenDuration */
 namespace AutoCloseTime {
 inline constexpr uint32_t Id = 0x0002;
@@ -47,9 +51,13 @@ inline constexpr uint32_t Id = 0x0003;
 } /* RemainingDuration */
 namespace CurrentState {
 inline constexpr uint32_t Id = 0x0004;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* CurrentState */
 namespace TargetState {
 inline constexpr uint32_t Id = 0x0005;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* TargetState */
 namespace CurrentLevel {
 inline constexpr uint32_t Id = 0x0006;
@@ -59,12 +67,18 @@ inline constexpr uint32_t Id = 0x0007;
 } /* TargetLevel */
 namespace DefaultOpenLevel {
 inline constexpr uint32_t Id = 0x0008;
+inline constexpr uint8_t Min = 1;
+inline constexpr uint8_t Max = 100;
 } /* DefaultOpenLevel */
 namespace ValveFault {
 inline constexpr uint32_t Id = 0x0009;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 65535;
 } /* ValveFault */
 namespace LevelStep {
 inline constexpr uint32_t Id = 0x000A;
+inline constexpr uint8_t Min = 1;
+inline constexpr uint8_t Max = 50;
 } /* LevelStep */
 } /* attribute */
 

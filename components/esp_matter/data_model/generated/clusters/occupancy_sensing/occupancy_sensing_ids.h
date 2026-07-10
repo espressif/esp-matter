@@ -56,12 +56,18 @@ inline constexpr uint32_t Id = 0x200;
 namespace attribute {
 namespace Occupancy {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 1;
 } /* Occupancy */
 namespace OccupancySensorType {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* OccupancySensorType */
 namespace OccupancySensorTypeBitmap {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 7;
 } /* OccupancySensorTypeBitmap */
 namespace HoldTime {
 inline constexpr uint32_t Id = 0x0003;
@@ -77,6 +83,8 @@ inline constexpr uint32_t Id = 0x0011;
 } /* PIRUnoccupiedToOccupiedDelay */
 namespace PIRUnoccupiedToOccupiedThreshold {
 inline constexpr uint32_t Id = 0x0012;
+inline constexpr uint8_t Min = 1;
+inline constexpr uint8_t Max = 254;
 } /* PIRUnoccupiedToOccupiedThreshold */
 namespace UltrasonicOccupiedToUnoccupiedDelay {
 inline constexpr uint32_t Id = 0x0020;
@@ -86,6 +94,8 @@ inline constexpr uint32_t Id = 0x0021;
 } /* UltrasonicUnoccupiedToOccupiedDelay */
 namespace UltrasonicUnoccupiedToOccupiedThreshold {
 inline constexpr uint32_t Id = 0x0022;
+inline constexpr uint8_t Min = 1;
+inline constexpr uint8_t Max = 254;
 } /* UltrasonicUnoccupiedToOccupiedThreshold */
 namespace PhysicalContactOccupiedToUnoccupiedDelay {
 inline constexpr uint32_t Id = 0x0030;
@@ -95,6 +105,8 @@ inline constexpr uint32_t Id = 0x0031;
 } /* PhysicalContactUnoccupiedToOccupiedDelay */
 namespace PhysicalContactUnoccupiedToOccupiedThreshold {
 inline constexpr uint32_t Id = 0x0032;
+inline constexpr uint8_t Min = 1;
+inline constexpr uint8_t Max = 254;
 } /* PhysicalContactUnoccupiedToOccupiedThreshold */
 } /* attribute */
 

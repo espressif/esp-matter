@@ -35,6 +35,8 @@ inline constexpr uint32_t Id = 0x0002;
 } /* MaxGroupsPerFabric */
 namespace MaxGroupKeysPerFabric {
 inline constexpr uint32_t Id = 0x0003;
+inline constexpr uint16_t Min = 1;
+inline constexpr uint16_t Max = 65535;
 } /* MaxGroupKeysPerFabric */
 } /* attribute */
 

@@ -542,6 +542,15 @@ class Attribute(SpecialConfigElement, BaseAttribute):
             return self.get_default_value()
         return self.max_value
 
+    def has_bounds(self):
+        """Whether this attribute emits add_bounds (and Min/Max id constants)."""
+        return (
+            self.type not in ("list", "string", "octstr")
+            and not self.is_internally_managed
+            and self.get_min_value() is not None
+            and self.get_max_value() is not None
+        )
+
     def get_default_value(self):
         """Get the default value"""
         return self.default_value

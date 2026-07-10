@@ -41,9 +41,13 @@ inline constexpr uint32_t Id = 0x8;
 namespace attribute {
 namespace MaxUserDefinedZones {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint8_t Min = 5;
+inline constexpr uint8_t Max = 255;
 } /* MaxUserDefinedZones */
 namespace MaxZones {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint8_t Min = 1;
+inline constexpr uint8_t Max = 255;
 } /* MaxZones */
 namespace Zones {
 inline constexpr uint32_t Id = 0x0002;
@@ -53,9 +57,13 @@ inline constexpr uint32_t Id = 0x0003;
 } /* Triggers */
 namespace SensitivityMax {
 inline constexpr uint32_t Id = 0x0004;
+inline constexpr uint8_t Min = 2;
+inline constexpr uint8_t Max = 10;
 } /* SensitivityMax */
 namespace Sensitivity {
 inline constexpr uint32_t Id = 0x0005;
+inline constexpr uint8_t Min = 1;
+inline constexpr uint8_t Max = 255;
 } /* Sensitivity */
 namespace TwoDCartesianMax {
 inline constexpr uint32_t Id = 0x0006;

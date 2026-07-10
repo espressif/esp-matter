@@ -83,18 +83,28 @@ inline constexpr uint32_t Id = 0x000A;
 } /* MaxConstFlow */
 namespace MinConstTemp {
 inline constexpr uint32_t Id = 0x000B;
+inline constexpr int16_t Min = -27315;
+inline constexpr int16_t Max = 32767;
 } /* MinConstTemp */
 namespace MaxConstTemp {
 inline constexpr uint32_t Id = 0x000C;
+inline constexpr int16_t Min = -27315;
+inline constexpr int16_t Max = 32767;
 } /* MaxConstTemp */
 namespace PumpStatus {
 inline constexpr uint32_t Id = 0x0010;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 511;
 } /* PumpStatus */
 namespace EffectiveOperationMode {
 inline constexpr uint32_t Id = 0x0011;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* EffectiveOperationMode */
 namespace EffectiveControlMode {
 inline constexpr uint32_t Id = 0x0012;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 5;
 } /* EffectiveControlMode */
 namespace Capacity {
 inline constexpr uint32_t Id = 0x0013;
@@ -113,9 +123,13 @@ inline constexpr uint32_t Id = 0x0017;
 } /* LifetimeEnergyConsumed */
 namespace OperationMode {
 inline constexpr uint32_t Id = 0x0020;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* OperationMode */
 namespace ControlMode {
 inline constexpr uint32_t Id = 0x0021;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 5;
 } /* ControlMode */
 } /* attribute */
 
