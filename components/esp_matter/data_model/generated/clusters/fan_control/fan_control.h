@@ -27,7 +27,7 @@ typedef struct config {
     uint8_t speed_max;
     nullable<uint8_t> speed_setting;
     uint8_t speed_current;
-    config() : speed_max(0), speed_setting(0), speed_current(0) {}
+    config() : speed_max(1), speed_setting(0), speed_current(0) {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);

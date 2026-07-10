@@ -103,27 +103,21 @@ attribute_t *create_temperature_setpoint(cluster_t *cluster, int16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(temperature_number), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, TemperatureSetpoint::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, TemperatureSetpoint::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_min_temperature(cluster_t *cluster, int16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(temperature_number), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MinTemperature::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, MinTemperature::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_max_temperature(cluster_t *cluster, int16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(temperature_number), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxTemperature::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, MaxTemperature::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_step(cluster_t *cluster, int16_t value)
@@ -131,7 +125,7 @@ attribute_t *create_step(cluster_t *cluster, int16_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(temperature_step), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, Step::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(1)), esp_matter_attr_val(static_cast<int16_t>(32766)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(Step::Min)), esp_matter_attr_val(static_cast<int16_t>(Step::Max)));
     return attribute;
 }
 
@@ -140,7 +134,7 @@ attribute_t *create_selected_temperature_level(cluster_t *cluster, uint8_t value
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(temperature_level), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, SelectedTemperatureLevel::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(31)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(SelectedTemperatureLevel::Min)), esp_matter_attr_val(static_cast<uint8_t>(SelectedTemperatureLevel::Max)));
     return attribute;
 }
 

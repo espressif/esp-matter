@@ -2,7 +2,7 @@
 namespace attribute {
 {% for attr in cluster.get_attributes() %}
 {{ guard_open(attr) -}}
-{% set has_bounds = attr.type not in ["list", "string", "octstr"] and attr.get_max_value() is not none and attr.get_min_value() is not none and not attr.is_internally_managed %}
+{% set has_bounds = attr.has_bounds() %}
 attribute_t *create_{{ attr.func_name }}(cluster_t *cluster{% if attr.type in ["string", "octstr"] %}, {{ "char *" if attr.type == "string" else "uint8_t *" }}value, uint16_t length{% elif attr.type == "list" %}, uint8_t *value, uint16_t length, uint16_t count{% elif attr.is_nullable %}, nullable<{{ attr.get_type() }}> value{% else %}, {{ attr.get_type() }} value{% endif %})
 {
     {% if attr.get_conformance_condition() %}
@@ -16,7 +16,7 @@ attribute_t *create_{{ attr.func_name }}(cluster_t *cluster{% if attr.type in ["
     {% endif %}
     {% if has_bounds %}
     attribute_t *attribute = esp_matter::attribute::create(cluster, {{ attr.chip_name }}::Id, {{ attr.get_flag() }}, {{ attr.get_attr_val_expr("value") }}{% if attr.type == "string" and not attr.is_internally_managed %}, k_max_{{ attr.func_name }}_length + 1{% endif %});
-    esp_matter::attribute::add_bounds(attribute, {{ attr.get_attr_val_expr(attr.get_min_value()) }}, {{ attr.get_attr_val_expr(attr.get_max_value()) }});
+    esp_matter::attribute::add_bounds(attribute, {{ attr.get_attr_val_expr(attr.chip_name ~ "::Min") }}, {{ attr.get_attr_val_expr(attr.chip_name ~ "::Max") }});
     return attribute;
     {% else %}
     return esp_matter::attribute::create(cluster, {{ attr.chip_name }}::Id, {{ attr.get_flag() }}, {{ attr.get_attr_val_expr("value") }}{% if attr.type == "string" and not attr.is_internally_managed %}, k_max_{{ attr.func_name }}_length + 1{% endif %});

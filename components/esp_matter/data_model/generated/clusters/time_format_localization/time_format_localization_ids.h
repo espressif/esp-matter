@@ -32,9 +32,13 @@ inline constexpr uint32_t Id = 0x1;
 namespace attribute {
 namespace HourFormat {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* HourFormat */
 namespace ActiveCalendarType {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 12;
 } /* ActiveCalendarType */
 namespace SupportedCalendarTypes {
 inline constexpr uint32_t Id = 0x0002;

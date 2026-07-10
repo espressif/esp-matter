@@ -29,15 +29,21 @@ inline constexpr uint32_t Id = 0x0000;
 } /* MeasuredValue */
 namespace MinMeasuredValue {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint16_t Min = 1;
+inline constexpr uint16_t Max = 65533;
 } /* MinMeasuredValue */
 namespace MaxMeasuredValue {
 inline constexpr uint32_t Id = 0x0002;
 } /* MaxMeasuredValue */
 namespace Tolerance {
 inline constexpr uint32_t Id = 0x0003;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 2048;
 } /* Tolerance */
 namespace LightSensorType {
 inline constexpr uint32_t Id = 0x0004;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 1;
 } /* LightSensorType */
 } /* attribute */
 

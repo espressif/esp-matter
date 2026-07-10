@@ -74,7 +74,7 @@ typedef struct config {
     uint8_t number_of_schedule_transitions;
     nullable<uint8_t> number_of_schedule_transition_per_day;
     uint8_t active_schedule_handle[k_max_active_schedule_handle_length];
-    config() : number_of_schedules(0), number_of_schedule_transitions(0), number_of_schedule_transition_per_day(0) {}
+    config() : number_of_schedules(1), number_of_schedule_transitions(1), number_of_schedule_transition_per_day(1) {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);

@@ -65,7 +65,7 @@ typedef struct config {
     uint16_t subjects_per_access_control_entry;
     uint16_t targets_per_access_control_entry;
     uint16_t access_control_entries_per_fabric;
-    config() : subjects_per_access_control_entry(0), targets_per_access_control_entry(0), access_control_entries_per_fabric(0) {}
+    config() : subjects_per_access_control_entry(4), targets_per_access_control_entry(3), access_control_entries_per_fabric(4) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

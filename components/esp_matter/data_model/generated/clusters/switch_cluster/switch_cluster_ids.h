@@ -47,12 +47,16 @@ inline constexpr uint32_t Id = 0x20;
 namespace attribute {
 namespace NumberOfPositions {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint8_t Min = 2;
+inline constexpr uint8_t Max = 255;
 } /* NumberOfPositions */
 namespace CurrentPosition {
 inline constexpr uint32_t Id = 0x0001;
 } /* CurrentPosition */
 namespace MultiPressMax {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint8_t Min = 2;
+inline constexpr uint8_t Max = 255;
 } /* MultiPressMax */
 } /* attribute */
 

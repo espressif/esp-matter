@@ -29,6 +29,8 @@ inline constexpr uint32_t Id = 0x0000;
 } /* IdentifyTime */
 namespace IdentifyType {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 5;
 } /* IdentifyType */
 } /* attribute */
 

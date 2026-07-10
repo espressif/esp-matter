@@ -44,9 +44,13 @@ inline constexpr uint32_t Id = 0x0000;
 } /* UTCTime */
 namespace Granularity {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 4;
 } /* Granularity */
 namespace TimeSource {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 16;
 } /* TimeSource */
 namespace TrustedTimeSource {
 inline constexpr uint32_t Id = 0x0003;
@@ -65,15 +69,21 @@ inline constexpr uint32_t Id = 0x0007;
 } /* LocalTime */
 namespace TimeZoneDatabase {
 inline constexpr uint32_t Id = 0x0008;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* TimeZoneDatabase */
 namespace NTPServerAvailable {
 inline constexpr uint32_t Id = 0x0009;
 } /* NTPServerAvailable */
 namespace TimeZoneListMaxSize {
 inline constexpr uint32_t Id = 0x000A;
+inline constexpr uint8_t Min = 1;
+inline constexpr uint8_t Max = 2;
 } /* TimeZoneListMaxSize */
 namespace DSTOffsetListMaxSize {
 inline constexpr uint32_t Id = 0x000B;
+inline constexpr uint8_t Min = 1;
+inline constexpr uint8_t Max = 255;
 } /* DSTOffsetListMaxSize */
 namespace SupportsDNSResolve {
 inline constexpr uint32_t Id = 0x000C;

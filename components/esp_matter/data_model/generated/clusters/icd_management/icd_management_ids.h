@@ -41,6 +41,8 @@ inline constexpr uint32_t Id = 0x8;
 namespace attribute {
 namespace IdleModeDuration {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint32_t Min = 1;
+inline constexpr uint32_t Max = 64800;
 } /* IdleModeDuration */
 namespace ActiveModeDuration {
 inline constexpr uint32_t Id = 0x0001;
@@ -56,18 +58,26 @@ inline constexpr uint32_t Id = 0x0004;
 } /* ICDCounter */
 namespace ClientsSupportedPerFabric {
 inline constexpr uint32_t Id = 0x0005;
+inline constexpr uint16_t Min = 1;
+inline constexpr uint16_t Max = 65535;
 } /* ClientsSupportedPerFabric */
 namespace UserActiveModeTriggerHint {
 inline constexpr uint32_t Id = 0x0006;
+inline constexpr uint32_t Min = 0;
+inline constexpr uint32_t Max = 131071;
 } /* UserActiveModeTriggerHint */
 namespace UserActiveModeTriggerInstruction {
 inline constexpr uint32_t Id = 0x0007;
 } /* UserActiveModeTriggerInstruction */
 namespace OperatingMode {
 inline constexpr uint32_t Id = 0x0008;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 1;
 } /* OperatingMode */
 namespace MaximumCheckInBackoff {
 inline constexpr uint32_t Id = 0x0009;
+inline constexpr uint32_t Min = 0;
+inline constexpr uint32_t Max = 64800;
 } /* MaximumCheckInBackoff */
 } /* attribute */
 

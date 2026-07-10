@@ -50,15 +50,13 @@ attribute_t *create_group_table(cluster_t *cluster, uint8_t *value, uint16_t len
 
 attribute_t *create_max_groups_per_fabric(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxGroupsPerFabric::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, MaxGroupsPerFabric::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_max_group_keys_per_fabric(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, MaxGroupKeysPerFabric::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(1)), esp_matter_attr_val(static_cast<uint16_t>(65535)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(MaxGroupKeysPerFabric::Min)), esp_matter_attr_val(static_cast<uint16_t>(MaxGroupKeysPerFabric::Max)));
     return attribute;
 }
 

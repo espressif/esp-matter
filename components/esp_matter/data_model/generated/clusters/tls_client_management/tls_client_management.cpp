@@ -41,7 +41,7 @@ namespace attribute {
 attribute_t *create_max_provisioned(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, MaxProvisioned::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(5)), esp_matter_attr_val(static_cast<uint8_t>(254)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(MaxProvisioned::Min)), esp_matter_attr_val(static_cast<uint8_t>(MaxProvisioned::Max)));
     return attribute;
 }
 

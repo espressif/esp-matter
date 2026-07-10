@@ -84,14 +84,14 @@ namespace attribute {
 attribute_t *create_cook_time(cluster_t *cluster, uint32_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, CookTime::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(1)), esp_matter_attr_val(static_cast<uint32_t>(4294967294)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(CookTime::Min)), esp_matter_attr_val(static_cast<uint32_t>(CookTime::Max)));
     return attribute;
 }
 
 attribute_t *create_max_cook_time(cluster_t *cluster, uint32_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, MaxCookTime::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(1)), esp_matter_attr_val(static_cast<uint32_t>(86400)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(MaxCookTime::Min)), esp_matter_attr_val(static_cast<uint32_t>(MaxCookTime::Max)));
     return attribute;
 }
 
@@ -99,9 +99,7 @@ attribute_t *create_power_setting(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(power_as_number), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerSetting::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, PowerSetting::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_min_power(cluster_t *cluster, uint8_t value)
@@ -109,7 +107,7 @@ attribute_t *create_min_power(cluster_t *cluster, uint8_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(power_number_limits), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, MinPower::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(1)), esp_matter_attr_val(static_cast<uint8_t>(99)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(MinPower::Min)), esp_matter_attr_val(static_cast<uint8_t>(MinPower::Max)));
     return attribute;
 }
 
@@ -118,7 +116,7 @@ attribute_t *create_max_power(cluster_t *cluster, uint8_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(power_number_limits), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, MaxPower::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(100)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(MaxPower::Min)), esp_matter_attr_val(static_cast<uint8_t>(MaxPower::Max)));
     return attribute;
 }
 
@@ -126,16 +124,12 @@ attribute_t *create_power_step(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(power_number_limits), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, PowerStep::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, PowerStep::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_watt_rating(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, WattRating::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, WattRating::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 } /* attribute */

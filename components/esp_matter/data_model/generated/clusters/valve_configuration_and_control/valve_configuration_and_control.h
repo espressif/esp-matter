@@ -74,7 +74,7 @@ typedef struct config {
     nullable<uint8_t> current_state;
     nullable<uint8_t> target_state;
     void *delegate;
-    config() : open_duration(0), default_open_duration(0), remaining_duration(0), current_state(0), target_state(0), delegate(nullptr) {}
+    config() : open_duration(1), default_open_duration(1), remaining_duration(0), current_state(0), target_state(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

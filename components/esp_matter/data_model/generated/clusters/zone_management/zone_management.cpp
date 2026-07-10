@@ -127,14 +127,14 @@ attribute_t *create_max_user_defined_zones(cluster_t *cluster, uint8_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(user_defined), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, MaxUserDefinedZones::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(5)), esp_matter_attr_val(static_cast<uint8_t>(254)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(MaxUserDefinedZones::Min)), esp_matter_attr_val(static_cast<uint8_t>(MaxUserDefinedZones::Max)));
     return attribute;
 }
 
 attribute_t *create_max_zones(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, MaxZones::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(1)), esp_matter_attr_val(static_cast<uint8_t>(254)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(MaxZones::Min)), esp_matter_attr_val(static_cast<uint8_t>(MaxZones::Max)));
     return attribute;
 }
 
@@ -151,7 +151,7 @@ attribute_t *create_triggers(cluster_t *cluster, uint8_t *value, uint16_t length
 attribute_t *create_sensitivity_max(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, SensitivityMax::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(2)), esp_matter_attr_val(static_cast<uint8_t>(10)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(SensitivityMax::Min)), esp_matter_attr_val(static_cast<uint8_t>(SensitivityMax::Max)));
     return attribute;
 }
 
@@ -160,7 +160,7 @@ attribute_t *create_sensitivity(cluster_t *cluster, uint8_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(!(has_feature(per_zone_sensitivity)), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, Sensitivity::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(1)), esp_matter_attr_val(static_cast<uint8_t>(254)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(Sensitivity::Min)), esp_matter_attr_val(static_cast<uint8_t>(Sensitivity::Max)));
     return attribute;
 }
 

@@ -59,24 +59,34 @@ inline constexpr uint32_t Id = 0x0003;
 } /* PeakMeasuredValue */
 namespace PeakMeasuredValueWindow {
 inline constexpr uint32_t Id = 0x0004;
+inline constexpr uint32_t Min = 0;
+inline constexpr uint32_t Max = 604800;
 } /* PeakMeasuredValueWindow */
 namespace AverageMeasuredValue {
 inline constexpr uint32_t Id = 0x0005;
 } /* AverageMeasuredValue */
 namespace AverageMeasuredValueWindow {
 inline constexpr uint32_t Id = 0x0006;
+inline constexpr uint32_t Min = 0;
+inline constexpr uint32_t Max = 604800;
 } /* AverageMeasuredValueWindow */
 namespace Uncertainty {
 inline constexpr uint32_t Id = 0x0007;
 } /* Uncertainty */
 namespace MeasurementUnit {
 inline constexpr uint32_t Id = 0x0008;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 7;
 } /* MeasurementUnit */
 namespace MeasurementMedium {
 inline constexpr uint32_t Id = 0x0009;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* MeasurementMedium */
 namespace LevelValue {
 inline constexpr uint32_t Id = 0x000A;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 4;
 } /* LevelValue */
 } /* attribute */
 

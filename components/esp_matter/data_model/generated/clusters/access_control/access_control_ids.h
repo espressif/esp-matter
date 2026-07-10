@@ -41,12 +41,18 @@ inline constexpr uint32_t Id = 0x0001;
 } /* Extension */
 namespace SubjectsPerAccessControlEntry {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint16_t Min = 4;
+inline constexpr uint16_t Max = 65534;
 } /* SubjectsPerAccessControlEntry */
 namespace TargetsPerAccessControlEntry {
 inline constexpr uint32_t Id = 0x0003;
+inline constexpr uint16_t Min = 3;
+inline constexpr uint16_t Max = 65534;
 } /* TargetsPerAccessControlEntry */
 namespace AccessControlEntriesPerFabric {
 inline constexpr uint32_t Id = 0x0004;
+inline constexpr uint16_t Min = 4;
+inline constexpr uint16_t Max = 65534;
 } /* AccessControlEntriesPerFabric */
 namespace CommissioningARL {
 inline constexpr uint32_t Id = 0x0005;

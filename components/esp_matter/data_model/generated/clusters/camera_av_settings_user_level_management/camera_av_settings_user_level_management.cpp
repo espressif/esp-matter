@@ -157,9 +157,7 @@ attribute_t *create_max_presets(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(mechanical_presets), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxPresets::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, MaxPresets::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_mptz_presets(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -181,7 +179,7 @@ attribute_t *create_zoom_max(cluster_t *cluster, uint8_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(mechanical_zoom), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, ZoomMax::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(2)), esp_matter_attr_val(static_cast<uint8_t>(100)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(ZoomMax::Min)), esp_matter_attr_val(static_cast<uint8_t>(ZoomMax::Max)));
     return attribute;
 }
 
@@ -190,7 +188,7 @@ attribute_t *create_tilt_min(cluster_t *cluster, int16_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(mechanical_tilt), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, TiltMin::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-180)), esp_matter_attr_val(static_cast<int16_t>(0)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(TiltMin::Min)), esp_matter_attr_val(static_cast<int16_t>(TiltMin::Max)));
     return attribute;
 }
 
@@ -199,7 +197,7 @@ attribute_t *create_tilt_max(cluster_t *cluster, int16_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(mechanical_tilt), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, TiltMax::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(1)), esp_matter_attr_val(static_cast<int16_t>(180)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(TiltMax::Min)), esp_matter_attr_val(static_cast<int16_t>(TiltMax::Max)));
     return attribute;
 }
 
@@ -208,7 +206,7 @@ attribute_t *create_pan_min(cluster_t *cluster, int16_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(mechanical_pan), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, PanMin::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-180)), esp_matter_attr_val(static_cast<int16_t>(0)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(PanMin::Min)), esp_matter_attr_val(static_cast<int16_t>(PanMin::Max)));
     return attribute;
 }
 
@@ -217,7 +215,7 @@ attribute_t *create_pan_max(cluster_t *cluster, int16_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(mechanical_pan), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, PanMax::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(1)), esp_matter_attr_val(static_cast<int16_t>(180)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(PanMax::Min)), esp_matter_attr_val(static_cast<int16_t>(PanMax::Max)));
     return attribute;
 }
 
@@ -226,7 +224,7 @@ attribute_t *create_movement_state(cluster_t *cluster, uint8_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(((has_feature(mechanical_pan)) || (has_feature(mechanical_tilt)) || (has_feature(mechanical_zoom))), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, MovementState::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(1), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(MovementState::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(MovementState::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 

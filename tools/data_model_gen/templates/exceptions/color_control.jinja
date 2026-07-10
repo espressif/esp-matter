@@ -1,0 +1,29 @@
+{#
+  Hand-written exceptions for the color control cluster.
+    color_cap_definitions() -> update_color_capability() method definition
+    color_cap_call()        -> update_color_capability() method call
+#}
+{% macro color_cap_definitions() -%}
+static esp_err_t update_color_capability(cluster_t *cluster, uint16_t value)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+
+    /* Get the attribute */
+    attribute_t *attribute = esp_matter::attribute::get(cluster, ColorControl::Attributes::ColorCapabilities::Id);
+
+    /* Print error log if it does not exist */
+    VerifyOrReturnError(attribute, ESP_FAIL, ESP_LOGE(TAG, "The color capability attribute is NULL"));
+
+    /* Update the value if the attribute already exists */
+    esp_matter_attr_val_t val;
+    VerifyOrReturnError(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
+    val.val.u16 |= value;
+    /* Here we can't call attribute::update() since the chip stack would not have started yet, since we are
+    still creating the data model. So, we are directly using attribute::set_val_internal(). */
+    return esp_matter::attribute::set_val_internal(attribute, &val, false);
+}
+{%- endmacro %}
+
+{% macro color_cap_call() -%}
+update_color_capability(cluster, get_id());
+{%- endmacro %}

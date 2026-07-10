@@ -55,7 +55,7 @@ namespace sensitivity_level {
 typedef struct config {
     uint8_t current_sensitivity_level;
     uint8_t supported_sensitivity_levels;
-    config() : current_sensitivity_level(0), supported_sensitivity_levels(0) {}
+    config() : current_sensitivity_level(0), supported_sensitivity_levels(2) {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);

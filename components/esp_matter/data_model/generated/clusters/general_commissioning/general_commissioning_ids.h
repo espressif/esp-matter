@@ -38,9 +38,13 @@ inline constexpr uint32_t Id = 0x0001;
 } /* BasicCommissioningInfo */
 namespace RegulatoryConfig {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* RegulatoryConfig */
 namespace LocationCapability {
 inline constexpr uint32_t Id = 0x0003;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* LocationCapability */
 namespace SupportsConcurrentConnection {
 inline constexpr uint32_t Id = 0x0004;

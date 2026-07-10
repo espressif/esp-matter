@@ -50,9 +50,7 @@ attribute_t *create_thread_networks(cluster_t *cluster, uint8_t *value, uint16_t
 
 attribute_t *create_thread_network_table_size(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ThreadNetworkTableSize::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, ThreadNetworkTableSize::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 } /* attribute */

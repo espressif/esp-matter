@@ -65,29 +65,23 @@ attribute_t *create_network_interfaces(cluster_t *cluster, uint8_t *value, uint1
 
 attribute_t *create_reboot_count(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, RebootCount::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, RebootCount::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_up_time(cluster_t *cluster, uint64_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, UpTime::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint64_t>(0)), esp_matter_attr_val(static_cast<uint64_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, UpTime::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_total_operational_hours(cluster_t *cluster, uint32_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, TotalOperationalHours::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0)), esp_matter_attr_val(static_cast<uint32_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, TotalOperationalHours::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_boot_reason(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, BootReason::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(6), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(BootReason::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(BootReason::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 

@@ -127,22 +127,20 @@ esp_err_t add(cluster_t *cluster)
 namespace attribute {
 attribute_t *create_utc_time(cluster_t *cluster, nullable<uint64_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, UTCTime::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint64_t>(0)), esp_matter_attr_val(nullable<uint64_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, UTCTime::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_granularity(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Granularity::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(4), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(Granularity::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(Granularity::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_time_source(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, TimeSource::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(16), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(TimeSource::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(TimeSource::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
@@ -179,9 +177,7 @@ attribute_t *create_local_time(cluster_t *cluster, nullable<uint64_t> value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(time_zone), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, LocalTime::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint64_t>(0)), esp_matter_attr_val(nullable<uint64_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, LocalTime::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_time_zone_database(cluster_t *cluster, uint8_t value)
@@ -189,7 +185,7 @@ attribute_t *create_time_zone_database(cluster_t *cluster, uint8_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(time_zone), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, TimeZoneDatabase::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(2), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(TimeZoneDatabase::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(TimeZoneDatabase::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
@@ -205,7 +201,7 @@ attribute_t *create_time_zone_list_max_size(cluster_t *cluster, uint8_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(time_zone), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, TimeZoneListMaxSize::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(1)), esp_matter_attr_val(static_cast<uint8_t>(2)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(TimeZoneListMaxSize::Min)), esp_matter_attr_val(static_cast<uint8_t>(TimeZoneListMaxSize::Max)));
     return attribute;
 }
 
@@ -214,7 +210,7 @@ attribute_t *create_dst_offset_list_max_size(cluster_t *cluster, uint8_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(time_zone), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, DSTOffsetListMaxSize::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(1)), esp_matter_attr_val(static_cast<uint8_t>(254)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(DSTOffsetListMaxSize::Min)), esp_matter_attr_val(static_cast<uint8_t>(DSTOffsetListMaxSize::Max)));
     return attribute;
 }
 

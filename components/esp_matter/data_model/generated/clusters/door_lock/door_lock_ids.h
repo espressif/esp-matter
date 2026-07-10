@@ -56,15 +56,21 @@ inline constexpr uint32_t Id = 0x4000;
 namespace attribute {
 namespace LockState {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* LockState */
 namespace LockType {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 11;
 } /* LockType */
 namespace ActuatorEnabled {
 inline constexpr uint32_t Id = 0x0002;
 } /* ActuatorEnabled */
 namespace DoorState {
 inline constexpr uint32_t Id = 0x0003;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 5;
 } /* DoorState */
 namespace DoorOpenEvents {
 inline constexpr uint32_t Id = 0x0004;
@@ -80,12 +86,18 @@ inline constexpr uint32_t Id = 0x0012;
 } /* NumberOfPINUsersSupported */
 namespace NumberOfWeekDaySchedulesSupportedPerUser {
 inline constexpr uint32_t Id = 0x0014;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 253;
 } /* NumberOfWeekDaySchedulesSupportedPerUser */
 namespace NumberOfYearDaySchedulesSupportedPerUser {
 inline constexpr uint32_t Id = 0x0015;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 253;
 } /* NumberOfYearDaySchedulesSupportedPerUser */
 namespace NumberOfHolidaySchedulesSupported {
 inline constexpr uint32_t Id = 0x0016;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 253;
 } /* NumberOfHolidaySchedulesSupported */
 namespace MaxPINCodeLength {
 inline constexpr uint32_t Id = 0x0017;
@@ -98,21 +110,31 @@ inline constexpr uint32_t Id = 0x0021;
 } /* Language */
 namespace LEDSettings {
 inline constexpr uint32_t Id = 0x0022;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* LEDSettings */
 namespace AutoRelockTime {
 inline constexpr uint32_t Id = 0x0023;
 } /* AutoRelockTime */
 namespace SoundVolume {
 inline constexpr uint32_t Id = 0x0024;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* SoundVolume */
 namespace OperatingMode {
 inline constexpr uint32_t Id = 0x0025;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 4;
 } /* OperatingMode */
 namespace SupportedOperatingModes {
 inline constexpr uint32_t Id = 0x0026;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 65535;
 } /* SupportedOperatingModes */
 namespace DefaultConfigurationRegister {
 inline constexpr uint32_t Id = 0x0027;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 65535;
 } /* DefaultConfigurationRegister */
 namespace EnableLocalProgramming {
 inline constexpr uint32_t Id = 0x0028;
@@ -128,6 +150,8 @@ inline constexpr uint32_t Id = 0x002B;
 } /* EnablePrivacyModeButton */
 namespace LocalProgrammingFeatures {
 inline constexpr uint32_t Id = 0x002C;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 15;
 } /* LocalProgrammingFeatures */
 namespace RequirePINforRemoteOperation {
 inline constexpr uint32_t Id = 0x0033;

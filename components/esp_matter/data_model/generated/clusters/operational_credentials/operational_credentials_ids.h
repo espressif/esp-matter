@@ -32,6 +32,8 @@ inline constexpr uint32_t Id = 0x0001;
 } /* Fabrics */
 namespace SupportedFabrics {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint8_t Min = 5;
+inline constexpr uint8_t Max = 254;
 } /* SupportedFabrics */
 namespace CommissionedFabrics {
 inline constexpr uint32_t Id = 0x0003;

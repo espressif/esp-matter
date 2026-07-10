@@ -29,6 +29,8 @@ inline constexpr uint32_t Id = 0x0000;
 } /* SupportedDrynessLevels */
 namespace SelectedDrynessLevel {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* SelectedDrynessLevel */
 } /* attribute */
 

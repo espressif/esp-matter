@@ -250,6 +250,24 @@ namespace cluster {
 namespace color_control {
 
 namespace feature {
+static esp_err_t update_color_capability(cluster_t *cluster, uint16_t value)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+
+    /* Get the attribute */
+    attribute_t *attribute = esp_matter::attribute::get(cluster, ColorControl::Attributes::ColorCapabilities::Id);
+
+    /* Print error log if it does not exist */
+    VerifyOrReturnError(attribute, ESP_FAIL, ESP_LOGE(TAG, "The color capability attribute is NULL"));
+
+    /* Update the value if the attribute already exists */
+    esp_matter_attr_val_t val;
+    VerifyOrReturnError(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
+    val.val.u16 |= value;
+    /* Here we can't call attribute::update() since the chip stack would not have started yet, since we are
+    still creating the data model. So, we are directly using attribute::set_val_internal(). */
+    return esp_matter::attribute::set_val_internal(attribute, &val, false);
+}
 namespace hue_saturation {
 uint32_t get_id()
 {
@@ -261,6 +279,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
     VerifyOrReturnError(config, ESP_ERR_INVALID_ARG);
     update_feature_map(cluster, get_id());
+    update_color_capability(cluster, get_id());
     attribute::create_current_hue(cluster, config->current_hue);
     attribute::create_current_saturation(cluster, config->current_saturation);
     command::create_move_to_hue(cluster);
@@ -287,6 +306,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
     VerifyOrReturnError(config, ESP_ERR_INVALID_ARG);
     update_feature_map(cluster, get_id());
+    update_color_capability(cluster, get_id());
     attribute::create_enhanced_current_hue(cluster, config->enhanced_current_hue);
     command::create_enhanced_move_to_hue(cluster);
     command::create_enhanced_move_hue(cluster);
@@ -308,6 +328,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
     VerifyOrReturnError(config, ESP_ERR_INVALID_ARG);
     update_feature_map(cluster, get_id());
+    update_color_capability(cluster, get_id());
     attribute::create_color_loop_active(cluster, config->color_loop_active);
     attribute::create_color_loop_direction(cluster, config->color_loop_direction);
     attribute::create_color_loop_time(cluster, config->color_loop_time);
@@ -330,6 +351,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
     VerifyOrReturnError(config, ESP_ERR_INVALID_ARG);
     update_feature_map(cluster, get_id());
+    update_color_capability(cluster, get_id());
     attribute::create_current_x(cluster, config->current_x);
     attribute::create_current_y(cluster, config->current_y);
     command::create_move_to_color(cluster);
@@ -352,6 +374,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
     VerifyOrReturnError(config, ESP_ERR_INVALID_ARG);
     update_feature_map(cluster, get_id());
+    update_color_capability(cluster, get_id());
     attribute::create_color_temperature_mireds(cluster, config->color_temperature_mireds);
     attribute::create_color_temp_physical_min_mireds(cluster, config->color_temp_physical_min_mireds);
     attribute::create_color_temp_physical_max_mireds(cluster, config->color_temp_physical_max_mireds);
@@ -374,7 +397,7 @@ attribute_t *create_current_hue(cluster_t *cluster, uint8_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(hue_saturation), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentHue::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(CurrentHue::Min)), esp_matter_attr_val(static_cast<uint8_t>(CurrentHue::Max)));
     return attribute;
 }
 
@@ -383,14 +406,14 @@ attribute_t *create_current_saturation(cluster_t *cluster, uint8_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(hue_saturation), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentSaturation::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(CurrentSaturation::Min)), esp_matter_attr_val(static_cast<uint8_t>(CurrentSaturation::Max)));
     return attribute;
 }
 
 attribute_t *create_remaining_time(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, RemainingTime::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(RemainingTime::Min)), esp_matter_attr_val(static_cast<uint16_t>(RemainingTime::Max)));
     return attribute;
 }
 
@@ -399,7 +422,7 @@ attribute_t *create_current_x(cluster_t *cluster, uint16_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(xy), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentX::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(CurrentX::Min)), esp_matter_attr_val(static_cast<uint16_t>(CurrentX::Max)));
     return attribute;
 }
 
@@ -408,14 +431,14 @@ attribute_t *create_current_y(cluster_t *cluster, uint16_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(xy), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentY::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(CurrentY::Min)), esp_matter_attr_val(static_cast<uint16_t>(CurrentY::Max)));
     return attribute;
 }
 
 attribute_t *create_drift_compensation(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, DriftCompensation::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(4), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(DriftCompensation::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(DriftCompensation::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
@@ -430,247 +453,227 @@ attribute_t *create_color_temperature_mireds(cluster_t *cluster, uint16_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(color_temperature), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, ColorTemperatureMireds::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(ColorTemperatureMireds::Min)), esp_matter_attr_val(static_cast<uint16_t>(ColorTemperatureMireds::Max)));
     return attribute;
 }
 
 attribute_t *create_color_mode(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, ColorMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(2), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(ColorMode::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(ColorMode::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_options(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Options::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint8_t>(1), esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(Options::Min), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint8_t>(Options::Max), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
 attribute_t *create_number_of_primaries(cluster_t *cluster, nullable<uint8_t> value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfPrimaries::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0)), esp_matter_attr_val(nullable<uint8_t>(6)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(NumberOfPrimaries::Min)), esp_matter_attr_val(nullable<uint8_t>(NumberOfPrimaries::Max)));
     return attribute;
 }
 
 attribute_t *create_primary_1_x(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Primary1X::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(Primary1X::Min)), esp_matter_attr_val(static_cast<uint16_t>(Primary1X::Max)));
     return attribute;
 }
 
 attribute_t *create_primary_1_y(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Primary1Y::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(Primary1Y::Min)), esp_matter_attr_val(static_cast<uint16_t>(Primary1Y::Max)));
     return attribute;
 }
 
 attribute_t *create_primary_1_intensity(cluster_t *cluster, nullable<uint8_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, Primary1Intensity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0)), esp_matter_attr_val(nullable<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, Primary1Intensity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_primary_2_x(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Primary2X::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(Primary2X::Min)), esp_matter_attr_val(static_cast<uint16_t>(Primary2X::Max)));
     return attribute;
 }
 
 attribute_t *create_primary_2_y(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Primary2Y::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(Primary2Y::Min)), esp_matter_attr_val(static_cast<uint16_t>(Primary2Y::Max)));
     return attribute;
 }
 
 attribute_t *create_primary_2_intensity(cluster_t *cluster, nullable<uint8_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, Primary2Intensity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0)), esp_matter_attr_val(nullable<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, Primary2Intensity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_primary_3_x(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Primary3X::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(Primary3X::Min)), esp_matter_attr_val(static_cast<uint16_t>(Primary3X::Max)));
     return attribute;
 }
 
 attribute_t *create_primary_3_y(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Primary3Y::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(Primary3Y::Min)), esp_matter_attr_val(static_cast<uint16_t>(Primary3Y::Max)));
     return attribute;
 }
 
 attribute_t *create_primary_3_intensity(cluster_t *cluster, nullable<uint8_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, Primary3Intensity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0)), esp_matter_attr_val(nullable<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, Primary3Intensity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_primary_4_x(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Primary4X::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(Primary4X::Min)), esp_matter_attr_val(static_cast<uint16_t>(Primary4X::Max)));
     return attribute;
 }
 
 attribute_t *create_primary_4_y(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Primary4Y::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(Primary4Y::Min)), esp_matter_attr_val(static_cast<uint16_t>(Primary4Y::Max)));
     return attribute;
 }
 
 attribute_t *create_primary_4_intensity(cluster_t *cluster, nullable<uint8_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, Primary4Intensity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0)), esp_matter_attr_val(nullable<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, Primary4Intensity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_primary_5_x(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Primary5X::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(Primary5X::Min)), esp_matter_attr_val(static_cast<uint16_t>(Primary5X::Max)));
     return attribute;
 }
 
 attribute_t *create_primary_5_y(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Primary5Y::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(Primary5Y::Min)), esp_matter_attr_val(static_cast<uint16_t>(Primary5Y::Max)));
     return attribute;
 }
 
 attribute_t *create_primary_5_intensity(cluster_t *cluster, nullable<uint8_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, Primary5Intensity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0)), esp_matter_attr_val(nullable<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, Primary5Intensity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_primary_6_x(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Primary6X::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(Primary6X::Min)), esp_matter_attr_val(static_cast<uint16_t>(Primary6X::Max)));
     return attribute;
 }
 
 attribute_t *create_primary_6_y(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Primary6Y::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(Primary6Y::Min)), esp_matter_attr_val(static_cast<uint16_t>(Primary6Y::Max)));
     return attribute;
 }
 
 attribute_t *create_primary_6_intensity(cluster_t *cluster, nullable<uint8_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, Primary6Intensity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0)), esp_matter_attr_val(nullable<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, Primary6Intensity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_white_point_x(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, WhitePointX::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(WhitePointX::Min)), esp_matter_attr_val(static_cast<uint16_t>(WhitePointX::Max)));
     return attribute;
 }
 
 attribute_t *create_white_point_y(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, WhitePointY::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(WhitePointY::Min)), esp_matter_attr_val(static_cast<uint16_t>(WhitePointY::Max)));
     return attribute;
 }
 
 attribute_t *create_color_point_rx(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, ColorPointRX::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(ColorPointRX::Min)), esp_matter_attr_val(static_cast<uint16_t>(ColorPointRX::Max)));
     return attribute;
 }
 
 attribute_t *create_color_point_ry(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, ColorPointRY::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(ColorPointRY::Min)), esp_matter_attr_val(static_cast<uint16_t>(ColorPointRY::Max)));
     return attribute;
 }
 
 attribute_t *create_color_point_r_intensity(cluster_t *cluster, nullable<uint8_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ColorPointRIntensity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0)), esp_matter_attr_val(nullable<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, ColorPointRIntensity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_color_point_gx(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, ColorPointGX::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(ColorPointGX::Min)), esp_matter_attr_val(static_cast<uint16_t>(ColorPointGX::Max)));
     return attribute;
 }
 
 attribute_t *create_color_point_gy(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, ColorPointGY::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(ColorPointGY::Min)), esp_matter_attr_val(static_cast<uint16_t>(ColorPointGY::Max)));
     return attribute;
 }
 
 attribute_t *create_color_point_g_intensity(cluster_t *cluster, nullable<uint8_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ColorPointGIntensity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0)), esp_matter_attr_val(nullable<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, ColorPointGIntensity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_color_point_bx(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, ColorPointBX::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(ColorPointBX::Min)), esp_matter_attr_val(static_cast<uint16_t>(ColorPointBX::Max)));
     return attribute;
 }
 
 attribute_t *create_color_point_by(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, ColorPointBY::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(ColorPointBY::Min)), esp_matter_attr_val(static_cast<uint16_t>(ColorPointBY::Max)));
     return attribute;
 }
 
 attribute_t *create_color_point_b_intensity(cluster_t *cluster, nullable<uint8_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ColorPointBIntensity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0)), esp_matter_attr_val(nullable<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, ColorPointBIntensity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_enhanced_current_hue(cluster_t *cluster, uint16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(enhanced_hue), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, EnhancedCurrentHue::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, EnhancedCurrentHue::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_enhanced_color_mode(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, EnhancedColorMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(3), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(EnhancedColorMode::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(EnhancedColorMode::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
@@ -679,7 +682,7 @@ attribute_t *create_color_loop_active(cluster_t *cluster, uint8_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(color_loop), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, ColorLoopActive::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(1)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(ColorLoopActive::Min)), esp_matter_attr_val(static_cast<uint8_t>(ColorLoopActive::Max)));
     return attribute;
 }
 
@@ -688,7 +691,7 @@ attribute_t *create_color_loop_direction(cluster_t *cluster, uint8_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(color_loop), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, ColorLoopDirection::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(1), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(ColorLoopDirection::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(ColorLoopDirection::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
@@ -696,33 +699,27 @@ attribute_t *create_color_loop_time(cluster_t *cluster, uint16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(color_loop), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ColorLoopTime::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, ColorLoopTime::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_color_loop_start_enhanced_hue(cluster_t *cluster, uint16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(color_loop), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ColorLoopStartEnhancedHue::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, ColorLoopStartEnhancedHue::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_color_loop_stored_enhanced_hue(cluster_t *cluster, uint16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(color_loop), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ColorLoopStoredEnhancedHue::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, ColorLoopStoredEnhancedHue::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_color_capabilities(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, ColorCapabilities::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint16_t>(65535), esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(ColorCapabilities::Min), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint16_t>(ColorCapabilities::Max), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
@@ -731,7 +728,7 @@ attribute_t *create_color_temp_physical_min_mireds(cluster_t *cluster, uint16_t 
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(color_temperature), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, ColorTempPhysicalMinMireds::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(1)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(ColorTempPhysicalMinMireds::Min)), esp_matter_attr_val(static_cast<uint16_t>(ColorTempPhysicalMinMireds::Max)));
     return attribute;
 }
 
@@ -740,7 +737,7 @@ attribute_t *create_color_temp_physical_max_mireds(cluster_t *cluster, uint16_t 
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(color_temperature), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, ColorTempPhysicalMaxMireds::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(ColorTempPhysicalMaxMireds::Min)), esp_matter_attr_val(static_cast<uint16_t>(ColorTempPhysicalMaxMireds::Max)));
     return attribute;
 }
 
@@ -749,7 +746,7 @@ attribute_t *create_couple_color_temp_to_level_min_mireds(cluster_t *cluster, ui
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(color_temperature), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, CoupleColorTempToLevelMinMireds::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(CoupleColorTempToLevelMinMireds::Min)), esp_matter_attr_val(static_cast<uint16_t>(CoupleColorTempToLevelMinMireds::Max)));
     return attribute;
 }
 
@@ -758,7 +755,7 @@ attribute_t *create_start_up_color_temperature_mireds(cluster_t *cluster, nullab
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(color_temperature), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, StartUpColorTemperatureMireds::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint16_t>(1)), esp_matter_attr_val(nullable<uint16_t>(65279)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint16_t>(StartUpColorTemperatureMireds::Min)), esp_matter_attr_val(nullable<uint16_t>(StartUpColorTemperatureMireds::Max)));
     return attribute;
 }
 

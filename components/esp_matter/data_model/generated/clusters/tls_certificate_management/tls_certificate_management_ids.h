@@ -26,12 +26,16 @@ inline constexpr uint32_t Id = 0x0801;
 namespace attribute {
 namespace MaxRootCertificates {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint8_t Min = 5;
+inline constexpr uint8_t Max = 254;
 } /* MaxRootCertificates */
 namespace ProvisionedRootCertificates {
 inline constexpr uint32_t Id = 0x0001;
 } /* ProvisionedRootCertificates */
 namespace MaxClientCertificates {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint8_t Min = 2;
+inline constexpr uint8_t Max = 254;
 } /* MaxClientCertificates */
 namespace ProvisionedClientCertificates {
 inline constexpr uint32_t Id = 0x0003;

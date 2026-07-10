@@ -35,18 +35,28 @@ inline constexpr uint32_t Id = 0x2;
 namespace attribute {
 namespace ExpressedState {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 9;
 } /* ExpressedState */
 namespace SmokeState {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* SmokeState */
 namespace COState {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* COState */
 namespace BatteryAlert {
 inline constexpr uint32_t Id = 0x0003;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* BatteryAlert */
 namespace DeviceMuted {
 inline constexpr uint32_t Id = 0x0004;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 1;
 } /* DeviceMuted */
 namespace TestInProgress {
 inline constexpr uint32_t Id = 0x0005;
@@ -56,18 +66,28 @@ inline constexpr uint32_t Id = 0x0006;
 } /* HardwareFaultAlert */
 namespace EndOfServiceAlert {
 inline constexpr uint32_t Id = 0x0007;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 1;
 } /* EndOfServiceAlert */
 namespace InterconnectSmokeAlarm {
 inline constexpr uint32_t Id = 0x0008;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* InterconnectSmokeAlarm */
 namespace InterconnectCOAlarm {
 inline constexpr uint32_t Id = 0x0009;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* InterconnectCOAlarm */
 namespace ContaminationState {
 inline constexpr uint32_t Id = 0x000A;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* ContaminationState */
 namespace SmokeSensitivityLevel {
 inline constexpr uint32_t Id = 0x000B;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* SmokeSensitivityLevel */
 namespace ExpiryDate {
 inline constexpr uint32_t Id = 0x000C;

@@ -91,9 +91,7 @@ attribute_t *create_current_energy_balance(cluster_t *cluster, uint8_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(energy_balance), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentEnergyBalance::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, CurrentEnergyBalance::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_energy_priorities(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -114,9 +112,7 @@ attribute_t *create_current_low_power_mode_sensitivity(cluster_t *cluster, uint8
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(low_power_mode_sensitivity), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentLowPowerModeSensitivity::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, CurrentLowPowerModeSensitivity::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 } /* attribute */

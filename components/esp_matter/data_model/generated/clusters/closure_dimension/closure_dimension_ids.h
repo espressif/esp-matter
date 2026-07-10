@@ -65,6 +65,8 @@ inline constexpr uint32_t Id = 0x0003;
 } /* StepValue */
 namespace Unit {
 inline constexpr uint32_t Id = 0x0004;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 1;
 } /* Unit */
 namespace UnitRange {
 inline constexpr uint32_t Id = 0x0005;
@@ -74,18 +76,28 @@ inline constexpr uint32_t Id = 0x0006;
 } /* LimitRange */
 namespace TranslationDirection {
 inline constexpr uint32_t Id = 0x0007;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 11;
 } /* TranslationDirection */
 namespace RotationAxis {
 inline constexpr uint32_t Id = 0x0008;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 10;
 } /* RotationAxis */
 namespace Overflow {
 inline constexpr uint32_t Id = 0x0009;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 10;
 } /* Overflow */
 namespace ModulationType {
 inline constexpr uint32_t Id = 0x000A;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 4;
 } /* ModulationType */
 namespace LatchControlModes {
 inline constexpr uint32_t Id = 0x000B;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* LatchControlModes */
 } /* attribute */
 

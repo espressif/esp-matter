@@ -35,27 +35,41 @@ inline constexpr uint32_t Id = 0x0000;
 } /* MeasuredValue */
 namespace MinMeasuredValue {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr int16_t Min = -32768;
+inline constexpr int16_t Max = 32766;
 } /* MinMeasuredValue */
 namespace MaxMeasuredValue {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr int16_t Min = -32768;
+inline constexpr int16_t Max = 32767;
 } /* MaxMeasuredValue */
 namespace Tolerance {
 inline constexpr uint32_t Id = 0x0003;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 2048;
 } /* Tolerance */
 namespace ScaledValue {
 inline constexpr uint32_t Id = 0x0010;
 } /* ScaledValue */
 namespace MinScaledValue {
 inline constexpr uint32_t Id = 0x0011;
+inline constexpr int16_t Min = -32768;
+inline constexpr int16_t Max = 32766;
 } /* MinScaledValue */
 namespace MaxScaledValue {
 inline constexpr uint32_t Id = 0x0012;
+inline constexpr int16_t Min = -32768;
+inline constexpr int16_t Max = 32767;
 } /* MaxScaledValue */
 namespace ScaledTolerance {
 inline constexpr uint32_t Id = 0x0013;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 2048;
 } /* ScaledTolerance */
 namespace Scale {
 inline constexpr uint32_t Id = 0x0014;
+inline constexpr int8_t Min = -127;
+inline constexpr int8_t Max = 127;
 } /* Scale */
 } /* attribute */
 

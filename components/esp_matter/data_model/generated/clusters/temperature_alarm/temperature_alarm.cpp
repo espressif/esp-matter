@@ -244,7 +244,7 @@ namespace attribute {
 attribute_t *create_mask(cluster_t *cluster, uint32_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Mask::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint32_t>(4294967295), esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(Mask::Min), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint32_t>(Mask::Max), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
@@ -253,21 +253,21 @@ attribute_t *create_latch(cluster_t *cluster, uint32_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(reset), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, Latch::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint32_t>(4294967295), esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(Latch::Min), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint32_t>(Latch::Max), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
 attribute_t *create_state(cluster_t *cluster, uint32_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, State::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint32_t>(4294967295), esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(State::Min), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint32_t>(State::Max), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
 attribute_t *create_supported(cluster_t *cluster, uint32_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Supported::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint32_t>(4294967295), esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(Supported::Min), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint32_t>(Supported::Max), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
@@ -275,54 +275,42 @@ attribute_t *create_critical_over_temperature_threshold(cluster_t *cluster, int1
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(over_temperature), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, CriticalOverTemperatureThreshold::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, CriticalOverTemperatureThreshold::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_major_over_temperature_threshold(cluster_t *cluster, int16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(((has_feature(over_temperature)) && (has_feature(major_threshold))), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MajorOverTemperatureThreshold::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, MajorOverTemperatureThreshold::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_minor_over_temperature_threshold(cluster_t *cluster, int16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(((has_feature(over_temperature)) && (has_feature(minor_threshold))), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MinorOverTemperatureThreshold::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, MinorOverTemperatureThreshold::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_minor_under_temperature_threshold(cluster_t *cluster, int16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(((has_feature(under_temperature)) && (has_feature(minor_threshold))), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MinorUnderTemperatureThreshold::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, MinorUnderTemperatureThreshold::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_major_under_temperature_threshold(cluster_t *cluster, int16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(((has_feature(under_temperature)) && (has_feature(major_threshold))), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MajorUnderTemperatureThreshold::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, MajorUnderTemperatureThreshold::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_critical_under_temperature_threshold(cluster_t *cluster, int16_t value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(under_temperature), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, CriticalUnderTemperatureThreshold::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int16_t>(-32768)), esp_matter_attr_val(static_cast<int16_t>(32766)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, CriticalUnderTemperatureThreshold::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 } /* attribute */

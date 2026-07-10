@@ -51,15 +51,13 @@ attribute_t *create_fabrics(cluster_t *cluster, uint8_t *value, uint16_t length,
 attribute_t *create_supported_fabrics(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, SupportedFabrics::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(5)), esp_matter_attr_val(static_cast<uint8_t>(254)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(SupportedFabrics::Min)), esp_matter_attr_val(static_cast<uint8_t>(SupportedFabrics::Max)));
     return attribute;
 }
 
 attribute_t *create_commissioned_fabrics(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, CommissionedFabrics::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, CommissionedFabrics::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_trusted_root_certificates(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -69,9 +67,7 @@ attribute_t *create_trusted_root_certificates(cluster_t *cluster, uint8_t *value
 
 attribute_t *create_current_fabric_index(cluster_t *cluster, uint8_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentFabricIndex::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0)), esp_matter_attr_val(static_cast<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, CurrentFabricIndex::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 } /* attribute */

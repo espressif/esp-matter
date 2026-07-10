@@ -38,15 +38,21 @@ inline constexpr uint32_t Id = 0x0000;
 } /* BSSID */
 namespace SecurityType {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 5;
 } /* SecurityType */
 namespace WiFiVersion {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 6;
 } /* WiFiVersion */
 namespace ChannelNumber {
 inline constexpr uint32_t Id = 0x0003;
 } /* ChannelNumber */
 namespace RSSI {
 inline constexpr uint32_t Id = 0x0004;
+inline constexpr int8_t Min = -120;
+inline constexpr int8_t Max = 0;
 } /* RSSI */
 namespace BeaconLostCount {
 inline constexpr uint32_t Id = 0x0005;

@@ -1,6 +1,10 @@
 {% set features = cluster.get_features() %}
 {% if features | length > 0 %}
 namespace feature {
+{% if cluster.esp_name == "color_control" %}
+{% from "exceptions/color_control.jinja" import color_cap_definitions with context %}
+{{ color_cap_definitions() }}
+{% endif %}
 {% for feature in features %}
 namespace {{ feature.func_name | lower }} {
 uint32_t get_id()
@@ -23,6 +27,10 @@ esp_err_t add(cluster_t *cluster{% if has_config %}, config_t *config{% endif %}
     VerifyOrReturnError({{ feature.get_conformance_condition() }}, ESP_ERR_INVALID_ARG);
 {% endif %}
     update_feature_map(cluster, get_id());
+{% if cluster.esp_name == "color_control" %}
+    {% from "exceptions/color_control.jinja" import color_cap_call with context %}
+    {{ color_cap_call() }}
+{% endif %}
     {# --- Attributes --- #}
     {% set attrs = feature.get_attributes() %}
     {% filter indent(4, true) %}

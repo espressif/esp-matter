@@ -44,9 +44,13 @@ inline constexpr uint32_t Id = 0x10;
 namespace attribute {
 namespace PowerMode {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* PowerMode */
 namespace NumberOfMeasurementTypes {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 32;
 } /* NumberOfMeasurementTypes */
 namespace Accuracy {
 inline constexpr uint32_t Id = 0x0002;
@@ -56,36 +60,58 @@ inline constexpr uint32_t Id = 0x0003;
 } /* Ranges */
 namespace Voltage {
 inline constexpr uint32_t Id = 0x0004;
+inline constexpr int64_t Min = -4611686018427387904;
+inline constexpr int64_t Max = 4611686018427387904;
 } /* Voltage */
 namespace ActiveCurrent {
 inline constexpr uint32_t Id = 0x0005;
+inline constexpr int64_t Min = -4611686018427387904;
+inline constexpr int64_t Max = 4611686018427387904;
 } /* ActiveCurrent */
 namespace ReactiveCurrent {
 inline constexpr uint32_t Id = 0x0006;
+inline constexpr int64_t Min = -4611686018427387904;
+inline constexpr int64_t Max = 4611686018427387904;
 } /* ReactiveCurrent */
 namespace ApparentCurrent {
 inline constexpr uint32_t Id = 0x0007;
+inline constexpr int64_t Min = -4611686018427387904;
+inline constexpr int64_t Max = 4611686018427387904;
 } /* ApparentCurrent */
 namespace ActivePower {
 inline constexpr uint32_t Id = 0x0008;
+inline constexpr int64_t Min = -4611686018427387904;
+inline constexpr int64_t Max = 4611686018427387904;
 } /* ActivePower */
 namespace ReactivePower {
 inline constexpr uint32_t Id = 0x0009;
+inline constexpr int64_t Min = -4611686018427387904;
+inline constexpr int64_t Max = 4611686018427387904;
 } /* ReactivePower */
 namespace ApparentPower {
 inline constexpr uint32_t Id = 0x000A;
+inline constexpr int64_t Min = -4611686018427387904;
+inline constexpr int64_t Max = 4611686018427387904;
 } /* ApparentPower */
 namespace RMSVoltage {
 inline constexpr uint32_t Id = 0x000B;
+inline constexpr int64_t Min = -4611686018427387904;
+inline constexpr int64_t Max = 4611686018427387904;
 } /* RMSVoltage */
 namespace RMSCurrent {
 inline constexpr uint32_t Id = 0x000C;
+inline constexpr int64_t Min = -4611686018427387904;
+inline constexpr int64_t Max = 4611686018427387904;
 } /* RMSCurrent */
 namespace RMSPower {
 inline constexpr uint32_t Id = 0x000D;
+inline constexpr int64_t Min = -4611686018427387904;
+inline constexpr int64_t Max = 4611686018427387904;
 } /* RMSPower */
 namespace Frequency {
 inline constexpr uint32_t Id = 0x000E;
+inline constexpr int64_t Min = 0;
+inline constexpr int64_t Max = 1000000;
 } /* Frequency */
 namespace HarmonicCurrents {
 inline constexpr uint32_t Id = 0x000F;
@@ -95,9 +121,13 @@ inline constexpr uint32_t Id = 0x0010;
 } /* HarmonicPhases */
 namespace PowerFactor {
 inline constexpr uint32_t Id = 0x0011;
+inline constexpr int64_t Min = -10000;
+inline constexpr int64_t Max = 10000;
 } /* PowerFactor */
 namespace NeutralCurrent {
 inline constexpr uint32_t Id = 0x0012;
+inline constexpr int64_t Min = -4611686018427387904;
+inline constexpr int64_t Max = 4611686018427387904;
 } /* NeutralCurrent */
 } /* attribute */
 

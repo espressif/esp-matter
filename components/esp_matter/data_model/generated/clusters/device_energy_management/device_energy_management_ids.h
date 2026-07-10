@@ -50,12 +50,16 @@ inline constexpr uint32_t Id = 0x40;
 namespace attribute {
 namespace ESAType {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 14;
 } /* ESAType */
 namespace ESACanGenerate {
 inline constexpr uint32_t Id = 0x0001;
 } /* ESACanGenerate */
 namespace ESAState {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 4;
 } /* ESAState */
 namespace AbsMinPower {
 inline constexpr uint32_t Id = 0x0003;
@@ -71,6 +75,8 @@ inline constexpr uint32_t Id = 0x0006;
 } /* Forecast */
 namespace OptOutState {
 inline constexpr uint32_t Id = 0x0007;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* OptOutState */
 } /* attribute */
 

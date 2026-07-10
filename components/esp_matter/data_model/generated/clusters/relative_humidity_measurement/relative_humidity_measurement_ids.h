@@ -29,12 +29,18 @@ inline constexpr uint32_t Id = 0x0000;
 } /* MeasuredValue */
 namespace MinMeasuredValue {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 9999;
 } /* MinMeasuredValue */
 namespace MaxMeasuredValue {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 10000;
 } /* MaxMeasuredValue */
 namespace Tolerance {
 inline constexpr uint32_t Id = 0x0003;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 2048;
 } /* Tolerance */
 } /* attribute */
 

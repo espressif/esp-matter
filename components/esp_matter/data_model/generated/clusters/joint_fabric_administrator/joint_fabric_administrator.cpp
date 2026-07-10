@@ -40,7 +40,7 @@ namespace attribute {
 attribute_t *create_administrator_fabric_index(cluster_t *cluster, nullable<uint8_t> value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, AdministratorFabricIndex::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(1)), esp_matter_attr_val(nullable<uint8_t>(254)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(AdministratorFabricIndex::Min)), esp_matter_attr_val(nullable<uint8_t>(AdministratorFabricIndex::Max)));
     return attribute;
 }
 

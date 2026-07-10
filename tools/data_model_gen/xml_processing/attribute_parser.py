@@ -109,8 +109,9 @@ class AttributeParser(ClusterElementBaseParser):
             return
         override_attr = attribute_type_map[cluster_name][attr.func_name]
         attr.type = override_attr["type"]
-        attr.min_value = override_attr.get("min")
-        attr.max_value = override_attr.get("max")
+        attr.min_value = override_attr.get("min", None)
+        attr.max_value = override_attr.get("max", None)
+        attr.default_value = str(override_attr.get("default", None))
 
     def _set_internally_managed(self, attr: Attribute) -> None:
         if attr.type == "list":

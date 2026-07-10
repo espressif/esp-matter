@@ -26,12 +26,18 @@ inline constexpr uint32_t Id = 0x0057;
 namespace attribute {
 namespace Mask {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint32_t Min = 0;
+inline constexpr uint32_t Max = 4294967295;
 } /* Mask */
 namespace State {
 inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint32_t Min = 0;
+inline constexpr uint32_t Max = 4294967295;
 } /* State */
 namespace Supported {
 inline constexpr uint32_t Id = 0x0003;
+inline constexpr uint32_t Min = 0;
+inline constexpr uint32_t Max = 4294967295;
 } /* Supported */
 } /* attribute */
 

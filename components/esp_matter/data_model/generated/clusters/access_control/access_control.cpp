@@ -99,21 +99,21 @@ attribute_t *create_extension(cluster_t *cluster, uint8_t *value, uint16_t lengt
 attribute_t *create_subjects_per_access_control_entry(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, SubjectsPerAccessControlEntry::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(4)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(SubjectsPerAccessControlEntry::Min)), esp_matter_attr_val(static_cast<uint16_t>(SubjectsPerAccessControlEntry::Max)));
     return attribute;
 }
 
 attribute_t *create_targets_per_access_control_entry(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, TargetsPerAccessControlEntry::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(3)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(TargetsPerAccessControlEntry::Min)), esp_matter_attr_val(static_cast<uint16_t>(TargetsPerAccessControlEntry::Max)));
     return attribute;
 }
 
 attribute_t *create_access_control_entries_per_fabric(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, AccessControlEntriesPerFabric::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(4)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(AccessControlEntriesPerFabric::Min)), esp_matter_attr_val(static_cast<uint16_t>(AccessControlEntriesPerFabric::Max)));
     return attribute;
 }
 

@@ -38,6 +38,8 @@ inline constexpr uint32_t Id = 0x4;
 namespace attribute {
 namespace MaxNetworks {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint8_t Min = 1;
+inline constexpr uint8_t Max = 255;
 } /* MaxNetworks */
 namespace Networks {
 inline constexpr uint32_t Id = 0x0001;
@@ -53,6 +55,8 @@ inline constexpr uint32_t Id = 0x0004;
 } /* InterfaceEnabled */
 namespace LastNetworkingStatus {
 inline constexpr uint32_t Id = 0x0005;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 12;
 } /* LastNetworkingStatus */
 namespace LastNetworkID {
 inline constexpr uint32_t Id = 0x0006;
@@ -65,6 +69,8 @@ inline constexpr uint32_t Id = 0x0008;
 } /* SupportedWiFiBands */
 namespace SupportedThreadFeatures {
 inline constexpr uint32_t Id = 0x0009;
+inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Max = 65535;
 } /* SupportedThreadFeatures */
 namespace ThreadVersion {
 inline constexpr uint32_t Id = 0x000A;

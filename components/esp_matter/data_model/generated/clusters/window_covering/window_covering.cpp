@@ -184,49 +184,41 @@ namespace attribute {
 attribute_t *create_type(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Type::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(10), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(Type::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(Type::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_number_of_actuations_lift(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfActuationsLift::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, NumberOfActuationsLift::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_number_of_actuations_tilt(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, NumberOfActuationsTilt::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, NumberOfActuationsTilt::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_config_status(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, ConfigStatus::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint8_t>(127), esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(ConfigStatus::Min), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint8_t>(ConfigStatus::Max), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
 attribute_t *create_current_position_lift_percentage(cluster_t *cluster, nullable<uint8_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentPositionLiftPercentage::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0)), esp_matter_attr_val(nullable<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, CurrentPositionLiftPercentage::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_current_position_tilt_percentage(cluster_t *cluster, nullable<uint8_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentPositionTiltPercentage::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0)), esp_matter_attr_val(nullable<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, CurrentPositionTiltPercentage::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_operational_status(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, OperationalStatus::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint8_t>(7), esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(OperationalStatus::Min), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint8_t>(OperationalStatus::Max), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
@@ -234,24 +226,20 @@ attribute_t *create_target_position_lift_percent_100ths(cluster_t *cluster, null
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(((has_feature(lift)) && (has_feature(position_aware_lift))), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, TargetPositionLiftPercent100ths::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint16_t>(0)), esp_matter_attr_val(nullable<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, TargetPositionLiftPercent100ths::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_target_position_tilt_percent_100ths(cluster_t *cluster, nullable<uint16_t> value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(((has_feature(tilt)) && (has_feature(position_aware_tilt))), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, TargetPositionTiltPercent100ths::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint16_t>(0)), esp_matter_attr_val(nullable<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, TargetPositionTiltPercent100ths::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_end_product_type(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, EndProductType::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(24), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(EndProductType::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(EndProductType::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
@@ -260,7 +248,7 @@ attribute_t *create_current_position_lift_percent_100ths(cluster_t *cluster, nul
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(((has_feature(lift)) && (has_feature(position_aware_lift))), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentPositionLiftPercent100ths::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint16_t>(0)), esp_matter_attr_val(nullable<uint16_t>(10000)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint16_t>(CurrentPositionLiftPercent100ths::Min)), esp_matter_attr_val(nullable<uint16_t>(CurrentPositionLiftPercent100ths::Max)));
     return attribute;
 }
 
@@ -269,21 +257,21 @@ attribute_t *create_current_position_tilt_percent_100ths(cluster_t *cluster, nul
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(((has_feature(tilt)) && (has_feature(position_aware_tilt))), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, CurrentPositionTiltPercent100ths::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint16_t>(0)), esp_matter_attr_val(nullable<uint16_t>(10000)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint16_t>(CurrentPositionTiltPercent100ths::Min)), esp_matter_attr_val(nullable<uint16_t>(CurrentPositionTiltPercent100ths::Max)));
     return attribute;
 }
 
 attribute_t *create_mode(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Mode::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint8_t>(15), esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(Mode::Min), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint8_t>(Mode::Max), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 
 attribute_t *create_safety_status(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, SafetyStatus::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint16_t>(4095), esp_matter_attr_val::uint_sub_type::k_bitmap));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(SafetyStatus::Min), esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(static_cast<uint16_t>(SafetyStatus::Max), esp_matter_attr_val::uint_sub_type::k_bitmap));
     return attribute;
 }
 

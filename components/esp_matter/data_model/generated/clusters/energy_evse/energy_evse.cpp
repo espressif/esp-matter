@@ -140,58 +140,54 @@ namespace attribute {
 attribute_t *create_state(cluster_t *cluster, nullable<uint8_t> value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, State::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(nullable<uint8_t>(6), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(State::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(nullable<uint8_t>(State::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_supply_state(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, SupplyState::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(5), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(SupplyState::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(SupplyState::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_fault_state(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, FaultState::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(16), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(FaultState::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(FaultState::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
 attribute_t *create_charging_enabled_until(cluster_t *cluster, nullable<uint32_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ChargingEnabledUntil::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, ChargingEnabledUntil::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_discharging_enabled_until(cluster_t *cluster, nullable<uint32_t> value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(v_2_x), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, DischargingEnabledUntil::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, DischargingEnabledUntil::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_circuit_capacity(cluster_t *cluster, int64_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, CircuitCapacity::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int64_t>(0)), esp_matter_attr_val(static_cast<int64_t>(2147483646)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int64_t>(CircuitCapacity::Min)), esp_matter_attr_val(static_cast<int64_t>(CircuitCapacity::Max)));
     return attribute;
 }
 
 attribute_t *create_minimum_charge_current(cluster_t *cluster, int64_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, MinimumChargeCurrent::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int64_t>(0)), esp_matter_attr_val(static_cast<int64_t>(2147483646)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int64_t>(MinimumChargeCurrent::Min)), esp_matter_attr_val(static_cast<int64_t>(MinimumChargeCurrent::Max)));
     return attribute;
 }
 
 attribute_t *create_maximum_charge_current(cluster_t *cluster, int64_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, MaximumChargeCurrent::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int64_t>(0)), esp_matter_attr_val(static_cast<int64_t>(2147483646)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int64_t>(MaximumChargeCurrent::Min)), esp_matter_attr_val(static_cast<int64_t>(MaximumChargeCurrent::Max)));
     return attribute;
 }
 
@@ -200,21 +196,19 @@ attribute_t *create_maximum_discharge_current(cluster_t *cluster, int64_t value)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(v_2_x), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, MaximumDischargeCurrent::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int64_t>(0)), esp_matter_attr_val(static_cast<int64_t>(2147483646)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int64_t>(MaximumDischargeCurrent::Min)), esp_matter_attr_val(static_cast<int64_t>(MaximumDischargeCurrent::Max)));
     return attribute;
 }
 
 attribute_t *create_user_maximum_charge_current(cluster_t *cluster, int64_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, UserMaximumChargeCurrent::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<int64_t>(-2147483648)), esp_matter_attr_val(static_cast<int64_t>(2147483646)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, UserMaximumChargeCurrent::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_randomization_delay_window(cluster_t *cluster, uint32_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, RandomizationDelayWindow::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(0)), esp_matter_attr_val(static_cast<uint32_t>(86400)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint32_t>(RandomizationDelayWindow::Min)), esp_matter_attr_val(static_cast<uint32_t>(RandomizationDelayWindow::Max)));
     return attribute;
 }
 
@@ -222,18 +216,14 @@ attribute_t *create_next_charge_start_time(cluster_t *cluster, nullable<uint32_t
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(charging_preferences), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, NextChargeStartTime::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, NextChargeStartTime::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_next_charge_target_time(cluster_t *cluster, nullable<uint32_t> value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(charging_preferences), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, NextChargeTargetTime::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, NextChargeTargetTime::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_next_charge_required_energy(cluster_t *cluster, nullable<int64_t> value)
@@ -241,7 +231,7 @@ attribute_t *create_next_charge_required_energy(cluster_t *cluster, nullable<int
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(charging_preferences), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, NextChargeRequiredEnergy::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(0)), esp_matter_attr_val(nullable<int64_t>(2147483646)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(NextChargeRequiredEnergy::Min)), esp_matter_attr_val(nullable<int64_t>(NextChargeRequiredEnergy::Max)));
     return attribute;
 }
 
@@ -249,25 +239,19 @@ attribute_t *create_next_charge_target_soc(cluster_t *cluster, nullable<uint8_t>
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(charging_preferences), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, NextChargeTargetSoC::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0)), esp_matter_attr_val(nullable<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, NextChargeTargetSoC::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_approximate_ev_efficiency(cluster_t *cluster, nullable<uint16_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ApproximateEVEfficiency::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint16_t>(0)), esp_matter_attr_val(nullable<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, ApproximateEVEfficiency::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_state_of_charge(cluster_t *cluster, nullable<uint8_t> value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(so_c_reporting), NULL);
-    attribute_t *attribute = esp_matter::attribute::create(cluster, StateOfCharge::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0)), esp_matter_attr_val(nullable<uint8_t>(254)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, StateOfCharge::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_battery_capacity(cluster_t *cluster, nullable<int64_t> value)
@@ -275,7 +259,7 @@ attribute_t *create_battery_capacity(cluster_t *cluster, nullable<int64_t> value
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(so_c_reporting), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, BatteryCapacity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(0)), esp_matter_attr_val(nullable<int64_t>(2147483646)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(BatteryCapacity::Min)), esp_matter_attr_val(nullable<int64_t>(BatteryCapacity::Max)));
     return attribute;
 }
 
@@ -289,22 +273,18 @@ attribute_t *create_vehicle_id(cluster_t *cluster, char *value, uint16_t length)
 
 attribute_t *create_session_id(cluster_t *cluster, nullable<uint32_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, SessionID::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, SessionID::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_session_duration(cluster_t *cluster, nullable<uint32_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, SessionDuration::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(0)), esp_matter_attr_val(nullable<uint32_t>(4294967294)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, SessionDuration::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_session_energy_charged(cluster_t *cluster, nullable<int64_t> value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, SessionEnergyCharged::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(0)), esp_matter_attr_val(nullable<int64_t>(2147483646)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(SessionEnergyCharged::Min)), esp_matter_attr_val(nullable<int64_t>(SessionEnergyCharged::Max)));
     return attribute;
 }
 
@@ -313,7 +293,7 @@ attribute_t *create_session_energy_discharged(cluster_t *cluster, nullable<int64
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(v_2_x), NULL);
     attribute_t *attribute = esp_matter::attribute::create(cluster, SessionEnergyDischarged::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(0)), esp_matter_attr_val(nullable<int64_t>(2147483646)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<int64_t>(SessionEnergyDischarged::Min)), esp_matter_attr_val(nullable<int64_t>(SessionEnergyDischarged::Max)));
     return attribute;
 }
 

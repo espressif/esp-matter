@@ -41,6 +41,8 @@ inline constexpr uint32_t Id = 0x8;
 namespace attribute {
 namespace Status {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* Status */
 namespace Order {
 inline constexpr uint32_t Id = 0x0001;
@@ -56,6 +58,8 @@ inline constexpr uint32_t Id = 0x0004;
 } /* WiredAssessedInputFrequency */
 namespace WiredCurrentType {
 inline constexpr uint32_t Id = 0x0005;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 1;
 } /* WiredCurrentType */
 namespace WiredAssessedCurrent {
 inline constexpr uint32_t Id = 0x0006;
@@ -77,18 +81,24 @@ inline constexpr uint32_t Id = 0x000B;
 } /* BatVoltage */
 namespace BatPercentRemaining {
 inline constexpr uint32_t Id = 0x000C;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 200;
 } /* BatPercentRemaining */
 namespace BatTimeRemaining {
 inline constexpr uint32_t Id = 0x000D;
 } /* BatTimeRemaining */
 namespace BatChargeLevel {
 inline constexpr uint32_t Id = 0x000E;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
 } /* BatChargeLevel */
 namespace BatReplacementNeeded {
 inline constexpr uint32_t Id = 0x000F;
 } /* BatReplacementNeeded */
 namespace BatReplaceability {
 inline constexpr uint32_t Id = 0x0010;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* BatReplaceability */
 namespace BatPresent {
 inline constexpr uint32_t Id = 0x0011;
@@ -101,6 +111,8 @@ inline constexpr uint32_t Id = 0x0013;
 } /* BatReplacementDescription */
 namespace BatCommonDesignation {
 inline constexpr uint32_t Id = 0x0014;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 80;
 } /* BatCommonDesignation */
 namespace BatANSIDesignation {
 inline constexpr uint32_t Id = 0x0015;
@@ -110,6 +122,8 @@ inline constexpr uint32_t Id = 0x0016;
 } /* BatIECDesignation */
 namespace BatApprovedChemistry {
 inline constexpr uint32_t Id = 0x0017;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 32;
 } /* BatApprovedChemistry */
 namespace BatCapacity {
 inline constexpr uint32_t Id = 0x0018;
@@ -119,6 +133,8 @@ inline constexpr uint32_t Id = 0x0019;
 } /* BatQuantity */
 namespace BatChargeState {
 inline constexpr uint32_t Id = 0x001A;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* BatChargeState */
 namespace BatTimeToFullCharge {
 inline constexpr uint32_t Id = 0x001B;

@@ -56,9 +56,13 @@ inline constexpr uint32_t Id = 0x100;
 namespace attribute {
 namespace CountdownTime {
 inline constexpr uint32_t Id = 0x0000;
+inline constexpr uint32_t Min = 0;
+inline constexpr uint32_t Max = 259200;
 } /* CountdownTime */
 namespace MainState {
 inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 7;
 } /* MainState */
 namespace CurrentErrorList {
 inline constexpr uint32_t Id = 0x0002;
@@ -71,6 +75,8 @@ inline constexpr uint32_t Id = 0x0004;
 } /* OverallTargetState */
 namespace LatchControlModes {
 inline constexpr uint32_t Id = 0x0005;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 3;
 } /* LatchControlModes */
 } /* attribute */
 

@@ -36,7 +36,7 @@ typedef struct config {
     uint8_t min_power;
     uint8_t max_power;
     uint8_t power_step;
-    config() : min_power(0), max_power(0), power_step(0) {}
+    config() : min_power(1), max_power(0), power_step(0) {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -68,7 +68,7 @@ typedef struct config {
         feature::power_number_limits::config_t power_number_limits;
     } features;
     uint32_t feature_flags;
-    config() : cook_time(0), max_cook_time(0), delegate(nullptr), feature_flags(0) {}
+    config() : cook_time(1), max_cook_time(1), delegate(nullptr), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

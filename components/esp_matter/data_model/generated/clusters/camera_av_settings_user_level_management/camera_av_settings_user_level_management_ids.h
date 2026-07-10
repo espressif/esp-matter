@@ -56,21 +56,33 @@ inline constexpr uint32_t Id = 0x0003;
 } /* DPTZStreams */
 namespace ZoomMax {
 inline constexpr uint32_t Id = 0x0004;
+inline constexpr uint8_t Min = 2;
+inline constexpr uint8_t Max = 100;
 } /* ZoomMax */
 namespace TiltMin {
 inline constexpr uint32_t Id = 0x0005;
+inline constexpr int16_t Min = -180;
+inline constexpr int16_t Max = 0;
 } /* TiltMin */
 namespace TiltMax {
 inline constexpr uint32_t Id = 0x0006;
+inline constexpr int16_t Min = 1;
+inline constexpr int16_t Max = 180;
 } /* TiltMax */
 namespace PanMin {
 inline constexpr uint32_t Id = 0x0007;
+inline constexpr int16_t Min = -180;
+inline constexpr int16_t Max = 0;
 } /* PanMin */
 namespace PanMax {
 inline constexpr uint32_t Id = 0x0008;
+inline constexpr int16_t Min = 1;
+inline constexpr int16_t Max = 180;
 } /* PanMax */
 namespace MovementState {
 inline constexpr uint32_t Id = 0x0009;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 1;
 } /* MovementState */
 } /* attribute */
 

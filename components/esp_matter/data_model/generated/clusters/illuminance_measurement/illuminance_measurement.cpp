@@ -40,36 +40,32 @@ namespace illuminance_measurement {
 namespace attribute {
 attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint16_t>(0)), esp_matter_attr_val(nullable<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, MeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, MinMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint16_t>(1)), esp_matter_attr_val(nullable<uint16_t>(65533)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint16_t>(MinMeasuredValue::Min)), esp_matter_attr_val(nullable<uint16_t>(MinMeasuredValue::Max)));
     return attribute;
 }
 
 attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, MaxMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint16_t>(0)), esp_matter_attr_val(nullable<uint16_t>(65534)));
-    return attribute;
+    return esp_matter::attribute::create(cluster, MaxMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_tolerance(cluster_t *cluster, uint16_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(0)), esp_matter_attr_val(static_cast<uint16_t>(2048)));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint16_t>(Tolerance::Min)), esp_matter_attr_val(static_cast<uint16_t>(Tolerance::Max)));
     return attribute;
 }
 
 attribute_t *create_light_sensor_type(cluster_t *cluster, nullable<uint8_t> value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, LightSensorType::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(0), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(nullable<uint8_t>(1), esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint8_t>(LightSensorType::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(nullable<uint8_t>(LightSensorType::Max), esp_matter_attr_val::uint_sub_type::k_enum));
     return attribute;
 }
 
