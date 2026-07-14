@@ -24,7 +24,7 @@ The split mode consists of two separate firmware images:
 
 -   **Role**: Media streaming device
 -   **Implementation**: Uses the `streaming_only` example from
-    `${KVS_SDK_PATH}/esp_port/examples/streaming_only`
+    `${KVS_SDK_PATH}/examples/streaming_only`
 -   **Responsibilities**:
     -   Video/audio capture and encoding
     -   WebRTC media streaming
@@ -66,13 +66,11 @@ The split mode consists of two separate firmware images:
 
 -   IDF version: v5.5.4
 -   [ESP32-P4 Function EV Board](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/user_guide.html)
--   [Amazon Kinesis Video Streams WebRTC SDK repository](https://github.com/awslabs/amazon-kinesis-video-streams-webrtc-sdk-c/tree/beta-reference-esp-port)
+-   [ESP-IDF Port of Amazon Kinesis Video Streams WebRTC SDK repository](https://github.com/espressif/esp-port-for-amazon-kvs-sdk)
 
 ```
-git clone https://github.com/awslabs/amazon-kinesis-video-streams-webrtc-sdk-c.git
-git checkout beta-reference-esp-port
-git submodule update --init --depth 1
-export KVS_SDK_PATH=/path/to/amazon-kinesis-video-streams-webrtc-sdk-c
+git clone --recursive https://github.com/espressif/esp-port-for-amazon-kvs-sdk
+export KVS_SDK_PATH=/path/to/esp-port-for-amazon-kvs-sdk
 ```
 ### Build and Flash Instructions
 **Note**: This requires **TWO separate firmware flashes** on the same
@@ -103,7 +101,7 @@ This handles video/audio streaming. The firmware is the `streaming_only` example
 from the KVS SDK.
 
 ```bash
-cd ${KVS_SDK_PATH}/esp_port/examples/streaming_only
+cd ${KVS_SDK_PATH}/examples/streaming_only
 idf.py set-target esp32p4
 idf.py menuconfig
 # Go to Component config -> ESP System Settings -> Channel for console output

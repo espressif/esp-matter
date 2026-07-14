@@ -31,16 +31,12 @@
 #include "camera-app.h"
 #include "camera-device.h"
 
-#include "network_coprocessor.h"
+#include "esp_hosted_coprocessor.h"
 #include "esp_webrtc_time.h"
 #include "esp_work_queue.h"
 // #include "host_power_save.h"
 #include "signaling_serializer.h"
 #include "webrtc_bridge.h"
-
-#ifdef CONFIG_SLAVE_LWIP_ENABLED
-#define CONFIG_ESP_HOSTED_NETWORK_SPLIT_ENABLED 1
-#endif
 
 static const char *TAG = "app_main";
 uint16_t camera_endpoint_id = 0;
@@ -208,7 +204,7 @@ extern "C" void app_main()
 #endif
 
     signaling_serializer_init();
-    network_coprocessor_init();
+    esp_hosted_coprocessor_init();
 
     // host_power_save_init(NULL);
 
