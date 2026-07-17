@@ -208,7 +208,7 @@ constexpr uint16_t cluster_revision = 3;
 } // namespace total_volatile_organic_compounds_concentration_measurement
 
 namespace operational_state {
-constexpr uint16_t cluster_revision = 2;
+constexpr uint16_t cluster_revision = 3;
 } // namespace operational_state
 
 namespace laundry_washer_mode {
@@ -240,7 +240,7 @@ constexpr uint16_t cluster_revision = 9;
 } // namespace door_lock
 
 namespace window_covering {
-constexpr uint16_t cluster_revision = 5;
+constexpr uint16_t cluster_revision = 6;
 } // namespace window_covering
 
 namespace switch_cluster {
@@ -268,11 +268,11 @@ constexpr uint16_t cluster_revision = 1;
 } // namespace boolean_state_configuration
 
 namespace localization_configuration {
-constexpr uint16_t cluster_revision = 4;
+constexpr uint16_t cluster_revision = 1;
 } // namespace localization_configuration
 
 namespace time_format_localization {
-constexpr uint16_t cluster_revision = 4;
+constexpr uint16_t cluster_revision = 1;
 } // namespace time_format_localization
 
 namespace illuminance_measurement {
@@ -288,7 +288,7 @@ constexpr uint16_t cluster_revision = 3;
 } // namespace flow_measurement
 
 namespace pump_configuration_and_control {
-constexpr uint16_t cluster_revision = 3;
+constexpr uint16_t cluster_revision = 4;
 } // namespace pump_configuration_and_control
 
 namespace mode_select {
@@ -320,7 +320,7 @@ constexpr uint16_t cluster_revision = 1;
 } // namespace water_heater_mode
 
 namespace microwave_oven_mode {
-constexpr uint16_t cluster_revision = 1;
+constexpr uint16_t cluster_revision = 2;
 } // namespace microwave_oven_mode
 
 namespace microwave_oven_control {
@@ -405,4 +405,3 @@ constexpr uint16_t cluster_revision = 1;
 
 } // namespace cluster
 } // namespace esp_matter
-
