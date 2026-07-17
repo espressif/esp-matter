@@ -344,6 +344,8 @@ typedef struct config {
     config()
         : current_level()
         , on_level()
+        , min_level(1)
+        , max_level(254)
         , options(0)
     {
     }
