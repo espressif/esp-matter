@@ -142,13 +142,28 @@ void ESPMatterCameraAvStreamManagementClusterServerInitCallback(EndpointId endpo
         BitFlags<Feature> features(GetFeatureMap(endpointId));
         BitFlags<OptionalAttribute> optionalAttrs = GetOptionalAttributes(endpointId);
 
-        gServers[endpointId].Create(CameraAVStreamManagementCluster::Context{ *provider }, *config->delegate, endpointId, features,
-                                    optionalAttrs,
-                                    config->maxConcurrentEncoders, config->maxEncodedPixelRate, config->videoSensorParams,
-                                    config->nightVisionUsesInfrared, config->minViewPortRes, config->rateDistortionTradeOffPoints,
-                                    config->maxContentBufferSize, config->microphoneCapabilities, config->speakerCapabilities,
-                                    config->twoWayTalkSupport, config->snapshotCapabilities, config->maxNetworkBandwidth,
-                                    config->supportedStreamUsages, config->streamUsagePriorities);
+        CameraAVStreamManagementCluster::InitArguments initArgs{
+            .context                      = CameraAVStreamManagementCluster::Context{ *provider },
+            .delegate                     = *config->delegate,
+            .endpointId                   = endpointId,
+            .features                     = features,
+            .optionalAttrs                = optionalAttrs,
+            .maxConcurrentEncoders        = config->maxConcurrentEncoders,
+            .maxEncodedPixelRate          = config->maxEncodedPixelRate,
+            .videoSensorParams            = config->videoSensorParams,
+            .nightVisionUsesInfrared      = config->nightVisionUsesInfrared,
+            .minViewPort                  = config->minViewPortRes,
+            .rateDistortionTradeOffPoints = config->rateDistortionTradeOffPoints,
+            .maxContentBufferSize         = config->maxContentBufferSize,
+            .microphoneCapabilities       = config->microphoneCapabilities,
+            .spkrCapabilities             = config->speakerCapabilities,
+            .twoWayTalkSupport            = config->twoWayTalkSupport,
+            .snapshotCapabilities         = config->snapshotCapabilities,
+            .maxNetworkBandwidth          = config->maxNetworkBandwidth,
+            .supportedStreamUsages        = config->supportedStreamUsages,
+            .streamUsagePriorities        = config->streamUsagePriorities,
+        };
+        gServers[endpointId].Create(std::move(initArgs));
     }
 
     CHIP_ERROR err = data_model::provider::get_instance().registry().Register(gServers[endpointId].Registration());

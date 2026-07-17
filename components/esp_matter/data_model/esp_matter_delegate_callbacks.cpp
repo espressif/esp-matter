@@ -31,6 +31,7 @@
 #include <app/clusters/operational-state-server/operational-state-server.h>
 #include <app/clusters/resource-monitoring-server/resource-monitoring-server.h>
 #include <app/clusters/fan-control-server/fan-control-server.h>
+#include <app/clusters/smoke-co-alarm-server/SmokeCoAlarmCluster.h>
 #include <app/clusters/laundry-dryer-controls-server/laundry-dryer-controls-server.h>
 #include <app/clusters/valve-configuration-and-control-server/valve-configuration-and-control-server.h>
 #include <app/clusters/door-lock-server/door-lock-server.h>
@@ -90,6 +91,15 @@
 #include <clusters/tls_certificate_management/integration.h>
 
 using namespace chip::app::Clusters;
+
+namespace chip {
+namespace app {
+namespace Clusters {
+void SetSmokeCoAlarmDefaultDelegate(EndpointId endpointId, SmokeCoAlarmDelegate * delegate);
+}
+}
+} // namespace chip::app::Clusters
+
 namespace esp_matter {
 namespace cluster {
 
@@ -393,6 +403,13 @@ void FanControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
     FanControl::SetDefaultDelegate(endpoint_id, fan_control_delegate);
 }
 
+void SmokeCoAlarmDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    SmokeCoAlarmDelegate *smoke_co_alarm_delegate = static_cast<SmokeCoAlarmDelegate*>(delegate);
+    SetSmokeCoAlarmDefaultDelegate(endpoint_id, smoke_co_alarm_delegate);
+}
+
 void HepaFilterMonitoringDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     VerifyOrReturn(delegate != nullptr);
@@ -624,7 +641,7 @@ void WaterHeaterManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
     if (!wHtrInstance) {
         WaterHeaterManagement::Delegate *whtr_delegate = static_cast<WaterHeaterManagement::Delegate*>(delegate);
         uint32_t feature_map = get_feature_map_value(endpoint_id, WaterHeaterManagement::Id);
-        wHtrInstance = new WaterHeaterManagement::Instance(endpoint_id, *whtr_delegate, chip::BitMask<WaterHeaterManagement::Feature, uint32_t>(feature_map));
+        wHtrInstance = new WaterHeaterManagement::Instance(endpoint_id, *whtr_delegate, static_cast<WaterHeaterManagement::Feature>(feature_map));
         set_delegate_shutdown_callback_and_managed_instance(cl, WaterHeaterManagementShutdownCB, wHtrInstance);
     }
     (void)wHtrInstance->Init();

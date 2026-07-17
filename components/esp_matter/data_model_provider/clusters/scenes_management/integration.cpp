@@ -87,6 +87,10 @@ void ScenesServer::RegisterSceneHandler(EndpointId aEndpointId, scenes::SceneHan
 
     if (!IsHandlerRegistered(aEndpointId, handler)) {
         sceneTable->RegisterHandler(handler);
+        ChipLogProgress(AppServer, "SCENE_DEBUG: RegisterSceneHandler ep=%u handler=%p listEmpty=%d",
+                        aEndpointId, handler, sceneTable->mHandlerList.Empty());
+    } else {
+        ChipLogProgress(AppServer, "SCENE_DEBUG: RegisterSceneHandler ep=%u handler=%p ALREADY registered", aEndpointId, handler);
     }
 }
 

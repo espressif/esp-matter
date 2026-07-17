@@ -19,6 +19,7 @@
 #include <app/clusters/ota-requestor/OTARequestorAttributes.h>
 #include <app/clusters/ota-requestor/OTARequestorCluster.h>
 #include <app/clusters/ota-requestor/OTARequestorInterface.h>
+#include <app/server/Server.h>
 #include <clusters/OtaSoftwareUpdateRequestor/ClusterId.h>
 #include <data_model/esp_matter_data_model.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
@@ -116,7 +117,7 @@ void ESPMatterOtaSoftwareUpdateRequestorClusterServerInitCallback(EndpointId end
     if (!gServer.IsConstructed()) {
         gInternalOnSetRequestorInstance = OnSetGlobalOtaRequestorInstance;
 
-        gServer.Create(endpointId, gCommandForwarder, gAttributes);
+        gServer.Create(endpointId, gCommandForwarder, gAttributes, Server::GetInstance().GetFabricTable());
         gEventForwarder.SetDestination(&gServer.Cluster());
     }
 

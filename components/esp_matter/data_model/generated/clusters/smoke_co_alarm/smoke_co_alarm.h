@@ -83,12 +83,13 @@ typedef struct config {
     bool test_in_progress;
     bool hardware_fault_alert;
     uint8_t end_of_service_alert;
+    void *delegate;
     struct {
         feature::smoke_alarm::config_t smoke_alarm;
         feature::co_alarm::config_t co_alarm;
     } features;
     uint32_t feature_flags;
-    config() : expressed_state(0), battery_alert(0), test_in_progress(false), hardware_fault_alert(false), end_of_service_alert(0), feature_flags(0) {}
+    config() : expressed_state(0), battery_alert(0), test_in_progress(false), hardware_fault_alert(false), end_of_service_alert(0), delegate(nullptr), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
