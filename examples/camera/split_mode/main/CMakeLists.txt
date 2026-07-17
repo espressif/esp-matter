@@ -1,5 +1,5 @@
-set(SRC_DIRS_LIST "." "clusters" "common" "webrtc")
-set(PRIV_INCLUDE_DIRS_LIST "." "clusters" "common" "webrtc")
+set(SRC_DIRS_LIST "." "cluster-delegates" "../../common" "webrtc")
+set(PRIV_INCLUDE_DIRS_LIST "." "cluster-delegates" "../../common" "webrtc")
 
 idf_component_register(SRC_DIRS          ${SRC_DIRS_LIST}
                        PRIV_INCLUDE_DIRS  ${PRIV_INCLUDE_DIRS_LIST} "${ESP_MATTER_PATH}/examples/common/utils")
