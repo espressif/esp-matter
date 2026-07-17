@@ -10,3 +10,7 @@ dependencies:
     version: "^2.0.0"
   espressif/esp_aliro_lib:
     version: "^1.0.1"
+  m5nfc:
+    git: https://github.com/espressif/esp-aliro.git
+    path: examples/aliro_reader/components/m5nfc
+    version: 0d00697342a8a13a13e0fb53f76e370c88845891
