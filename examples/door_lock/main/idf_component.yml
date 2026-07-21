@@ -14,3 +14,5 @@ dependencies:
     git: https://github.com/espressif/esp-aliro.git
     path: examples/aliro_reader/components/m5nfc
     version: 0d00697342a8a13a13e0fb53f76e370c88845891
+    rules:
+      - if: "target in [esp32, esp32s3, esp32c3, esp32c6, esp32h2, esp32p4]"
