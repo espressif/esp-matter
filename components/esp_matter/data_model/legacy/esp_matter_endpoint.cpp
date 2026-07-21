@@ -2087,9 +2087,9 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
                                                          &(config->camera_av_stream_management),
                                                          CLUSTER_FLAG_SERVER
                                                      );
-    camera_av_stream_management::feature::video::add(camera_av_stream_management_cluster);
-    camera_av_stream_management::feature::audio::add(camera_av_stream_management_cluster);
-    camera_av_stream_management::feature::snapshot::add(camera_av_stream_management_cluster);
+    camera_av_stream_management::feature::video::add(camera_av_stream_management_cluster, &config->camera_av_stream_management.features.video);
+    camera_av_stream_management::feature::audio::add(camera_av_stream_management_cluster, &config->camera_av_stream_management.features.audio);
+    camera_av_stream_management::feature::snapshot::add(camera_av_stream_management_cluster, &config->camera_av_stream_management.features.snapshot);
     cluster::webrtc_transport_provider::create(
         endpoint,
         &(config->webrtc_transport_provider),
