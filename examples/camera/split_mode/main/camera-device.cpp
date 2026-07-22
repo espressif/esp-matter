@@ -11,6 +11,7 @@
 
 #include <cstring>
 
+#include "bridge_cmd_defs.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
@@ -29,50 +30,53 @@ static QueueHandle_t s_snapshot_queue           = nullptr;
 static constexpr int SNAPSHOT_QUEUE_SIZE        = 1;
 static constexpr TickType_t SNAPSHOT_TIMEOUT_MS = pdMS_TO_TICKS(5000);
 
-/* Bridge binary handler: invoked when the peer (streaming device) replies
- * with BRIDGE_CMD_SNAPSHOT_RESPONSE. The webrtc_bridge owns `data` and frees
- * it after this callback returns, so we must copy the payload before queueing
- * it for the consumer thread waiting in CaptureSnapshot. An empty payload
- * signals that the peer failed to capture. */
-static void snapshot_response_cb(uint8_t cmd_id, const uint8_t * data, size_t len)
+/* Bridge command response handler: invoked from the bridge_cmd work-queue when
+ * the peer (streaming device) replies to BRIDGE_CMD_GET_SNAPSHOT. Ownership of
+ * `resp_data` transfers to this callback (bridge_cmd_handle_response frees the
+ * work item but NOT resp_data), so we hand the pointer to the queue and free it
+ * in CaptureSnapshot after copying. An empty payload signals a peer failure. */
+static void snapshot_response_cb(uint32_t cmd_id, uint32_t req_id, esp_err_t status, uint8_t * resp_data, size_t resp_len)
 {
     (void) cmd_id;
+    (void) req_id;
 
     if (!s_snapshot_queue) {
         ESP_LOGE("snapshot_response_cb", "Snapshot queue not initialized");
+        free(resp_data);
         return;
     }
 
     SnapshotData snapshot = {};
+    snapshot.status       = status;
 
-    if (data == nullptr || len == 0) {
+    if (status != ESP_OK) {
+        ESP_LOGE("snapshot_response_cb", "Snapshot request failed: %s", esp_err_to_name(status));
+        xQueueSend(s_snapshot_queue, &snapshot, 0);
+        free(resp_data);
+        return;
+    }
+
+    if (resp_data == nullptr || resp_len == 0) {
         ESP_LOGE("snapshot_response_cb", "Empty snapshot response (peer capture failed)");
         snapshot.status = ESP_ERR_INVALID_RESPONSE;
         xQueueSend(s_snapshot_queue, &snapshot, 0);
+        free(resp_data);
         return;
     }
 
-    if (len >= 2 && data[0] == 0xFF && data[1] == 0xD8) {
-        ESP_LOGI("snapshot_response_cb", "Valid JPEG snapshot received: %zu bytes", len);
+    if (resp_len >= 2 && resp_data[0] == 0xFF && resp_data[1] == 0xD8) {
+        ESP_LOGI("snapshot_response_cb", "Valid JPEG snapshot received: %zu bytes", resp_len);
     } else {
-        ESP_LOGW("snapshot_response_cb", "Snapshot data received but JPEG header not found (%zu bytes)", len);
+        ESP_LOGW("snapshot_response_cb", "Snapshot data received but JPEG header not found (%zu bytes)", resp_len);
     }
 
-    uint8_t * copy = static_cast<uint8_t *>(malloc(len));
-    if (!copy) {
-        ESP_LOGE("snapshot_response_cb", "OOM copying %zu-byte snapshot", len);
-        snapshot.status = ESP_ERR_NO_MEM;
-        xQueueSend(s_snapshot_queue, &snapshot, 0);
-        return;
-    }
-    memcpy(copy, data, len);
-    snapshot.data   = copy;
-    snapshot.len    = len;
-    snapshot.status = ESP_OK;
+    /* Transfer buffer ownership to the queue; freed in CaptureSnapshot. */
+    snapshot.data = resp_data;
+    snapshot.len  = resp_len;
 
     if (xQueueSend(s_snapshot_queue, &snapshot, 0) != pdTRUE) {
         ESP_LOGE("snapshot_response_cb", "Failed to send snapshot to queue");
-        free(copy);
+        free(resp_data);
     }
 }
 
@@ -107,9 +111,13 @@ void CameraDevice::Init()
         }
     }
 
-    /* The webrtc_bridge itself is started from app_main(); we just need to hook
-     * the binary cmd id we react to. Snapshot responses arrive as BRIDGE_CMD_SNAPSHOT_RESPONSE. */
-    webrtc_bridge_register_binary_handler(BRIDGE_CMD_SNAPSHOT_RESPONSE, snapshot_response_cb);
+    /* The webrtc_bridge itself is started from app_main(); initialize the bridge
+     * command framework and register our response handler. Snapshot replies arrive
+     * as responses to BRIDGE_CMD_GET_SNAPSHOT. */
+    if (bridge_cmd_init() != ESP_OK) {
+        ESP_LOGE("CameraDevice::Init", "Failed to initialize bridge command subsystem");
+    }
+    bridge_cmd_register_response_handler(BRIDGE_CMD_GET_SNAPSHOT, snapshot_response_cb);
 }
 
 CameraError CameraDevice::InitializeCameraDevice()
@@ -206,9 +214,16 @@ CameraError CameraDevice::CaptureSnapshot(const chip::app::DataModel::Nullable<u
         }
     }
 
-    /* Wire payload for BRIDGE_CMD_SNAPSHOT_REQUEST is a single byte: JPEG quality (1-100). */
-    const uint8_t quality = s_last_quality;
-    webrtc_bridge_send_binary_cmd(BRIDGE_CMD_SNAPSHOT_REQUEST, &quality, sizeof(quality));
+    /* Request a JPEG snapshot from the streaming device. The peer replies via the
+     * response handler registered on BRIDGE_CMD_GET_SNAPSHOT. */
+    bridge_cmd_snapshot_req_t req = {
+        .quality = s_last_quality,
+    };
+    esp_err_t err = bridge_cmd_send(BRIDGE_CMD_GET_SNAPSHOT, (const uint8_t *) &req, sizeof(req));
+    if (err != ESP_OK) {
+        ESP_LOGE("CameraDevice::CaptureSnapshot", "Failed to send snapshot request: %s", esp_err_to_name(err));
+        return CameraError::ERROR_CAPTURE_SNAPSHOT_FAILED;
+    }
 
     SnapshotData snapshot;
     if (xQueueReceive(s_snapshot_queue, &snapshot, SNAPSHOT_TIMEOUT_MS) != pdTRUE) {

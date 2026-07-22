@@ -31,12 +31,17 @@
 #include "camera-app.h"
 #include "camera-device.h"
 
-#include "network_coprocessor.h"
 #include "esp_webrtc_time.h"
 #include "esp_work_queue.h"
-// #include "host_power_save.h"
-#include "signaling_serializer.h"
-#include "webrtc_bridge.h"
+
+#include "webrtc_init.h"
+
+#if CONFIG_ESP_HOSTED_ENABLE_BT_NIMBLE
+/* On P4 the BLE controller lives on the C6 co-processor and is driven over the
+ * esp_hosted VHCI transport; it must be explicitly brought up before BLE
+ * provisioning (NimBLE cannot init a local controller on the P4). */
+#include "esp_hosted.h"
+#endif
 
 #ifdef CONFIG_SLAVE_LWIP_ENABLED
 #define CONFIG_ESP_HOSTED_NETWORK_SPLIT_ENABLED 1
@@ -56,12 +61,18 @@ extern std::unique_ptr<CameraApp> gCameraApp;
 
 constexpr auto k_timeout_seconds = 300;
 
+static bool is_wifi_connected = false;
+
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
     switch (event->Type) {
     case chip::DeviceLayer::DeviceEventType::kInterfaceIpAddressChanged:
         ESP_LOGI(TAG, "Interface IP Address changed");
         esp_webrtc_time_sntp_time_sync_no_wait();
+        if (!is_wifi_connected) {
+            is_wifi_connected = true;
+            webrtc_init();
+        }
         break;
 
     case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
@@ -167,31 +178,6 @@ app_attribute_update_cb(attribute::callback_type_t type, uint16_t endpoint_id,
     return err;
 }
 
-#ifdef CONFIG_ESP_HOSTED_NETWORK_SPLIT_ENABLED
-static esp_netif_t * sta_netif = NULL;
-
-static esp_netif_t* create_slave_sta_netif(void)
-{
-    /* Create "almost" default station, but with un-flagged DHCP client */
-    /* Use static to ensure the config persists after function returns */
-    static esp_netif_inherent_config_t netif_cfg;
-    memcpy(&netif_cfg, ESP_NETIF_BASE_DEFAULT_WIFI_STA, sizeof(netif_cfg));
-
-    esp_netif_config_t cfg_sta = {
-        .base = &netif_cfg,
-        .stack = ESP_NETIF_NETSTACK_DEFAULT_WIFI_STA,
-    };
-    esp_netif_t *netif_sta = esp_netif_new(&cfg_sta);
-    ESP_LOGI(TAG, "Created netif_sta: %p (if_key: %s)", netif_sta, netif_cfg.if_key);
-    assert(netif_sta);
-
-    ESP_ERROR_CHECK(esp_netif_attach_wifi_station(netif_sta));
-    ESP_ERROR_CHECK(esp_wifi_set_default_wifi_sta_handlers());
-
-    return netif_sta;
-}
-#endif
-
 extern "C" void app_main()
 {
     esp_err_t err = ESP_OK;
@@ -199,27 +185,32 @@ extern "C" void app_main()
     /* Initialize the ESP NVS layer */
     nvs_flash_init();
 
-    ESP_ERROR_CHECK(esp_netif_init());
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
-
-#ifdef CONFIG_ESP_HOSTED_NETWORK_SPLIT_ENABLED
-    /* Create and register the netif with "WIFI_STA_DEF" key */
-    sta_netif = create_slave_sta_netif();
-#endif
-
-    signaling_serializer_init();
-    network_coprocessor_init();
-
-    // host_power_save_init(NULL);
-
-    esp_work_queue_init();
+    // Initialize work queue with larger stack size for WebRTC callbacks
+    // The default 16KB is insufficient for deep call chains in kvs_initializePeerConnection
+    // WebRTC operations require significant stack space for peer connection initialization
+    esp_work_queue_config_t work_queue_config = ESP_WORK_QUEUE_CONFIG_DEFAULT();
+    work_queue_config.stack_size = 48 * 1024; // Increase to 48KB for WebRTC operations
+    esp_work_queue_init_with_config(&work_queue_config);
     esp_work_queue_start();
-
-    webrtc_bridge_start();
 
     /* Initialize driver */
     app_driver_handle_t button_handle = app_driver_button_init();
     app_reset_button_register(button_handle);
+
+#if CONFIG_ESP_HOSTED_ENABLE_BT_NIMBLE
+    /* On P4 the BLE controller lives on the C6 co-processor and is reached over
+     * the esp_hosted VHCI transport. Bring it up here (at the example layer,
+     * before BLE provisioning starts) since NimBLE cannot init a local
+     * controller on the P4. It is left up after provisioning: the only safe
+     * teardown signal (NimBLE fully stopped) isn't exposed by app_network, and
+     * deinit'ing earlier races the NimBLE host shutdown. */
+    if (esp_hosted_bt_controller_init() != ESP_OK) {
+        ESP_LOGW(TAG, "Failed to init co-processor BT controller");
+    }
+    if (esp_hosted_bt_controller_enable() != ESP_OK) {
+        ESP_LOGW(TAG, "Failed to enable co-processor BT controller");
+    }
+#endif
 
     //Initializes Camera HAL
     gCameraDevice.Init();
@@ -240,7 +231,6 @@ extern "C" void app_main()
 #if CONFIG_ENABLE_SNTP_TIME_SYNC
     static chip::app::Clusters::TimeSynchronization::DefaultTimeSyncDelegate
     time_sync_delegate;
-    // cam_config.time_synchronization.delegate = &time_sync_delegate;
 #endif
 
     // endpoint handles can be used to add/modify clusters.

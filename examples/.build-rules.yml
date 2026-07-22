@@ -135,7 +135,13 @@ examples/bridge_apps/esp_rainmaker_bridge:
       temporary: true
       reason: the other targets are not tested yet
 
-examples/camera:
+examples/camera/split_mode:
+  enable:
+    - if: IDF_TARGET in [""]
+      temporary: true
+      reason: Another CI has been added
+
+examples/camera/standalone:
   enable:
     - if: IDF_TARGET in [""]
       temporary: true
