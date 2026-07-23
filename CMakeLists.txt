@@ -80,10 +80,6 @@ set(EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/AttributePathExpandIterator-Ch
                       "${MATTER_SDK_PATH}/src/app/AttributePathExpandIterator-DataModel.cpp"
                       "${MATTER_SDK_PATH}/src/app/data-model-provider/StringBuilderAdapters.cpp"
                       "${MATTER_SDK_PATH}/src/app/GenericEventManagementTestEventTriggerHandler.cpp"
-                      "${MATTER_SDK_PATH}/src/app/server/DefaultTermsAndConditionsProvider.cpp"
-                      "${MATTER_SDK_PATH}/src/app/server/JointFabricAdministrator.cpp"
-                      "${MATTER_SDK_PATH}/src/app/server/JointFabricDatastore.cpp"
-                      "${MATTER_SDK_PATH}/src/app/server/TermsAndConditionsManager.cpp"
                       "${MATTER_SDK_PATH}/src/controller/ExamplePersistentStorage.cpp"
                       "${MATTER_SDK_PATH}/src/credentials/attestation_verifier/FileAttestationTrustStore.cpp"
                       "${MATTER_SDK_PATH}/src/credentials/attestation_verifier/TestDACRevocationDelegateImpl.cpp"
@@ -158,18 +154,20 @@ if(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
         list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/network-commissioning/CodegenInstance.cpp"
                                       "${MATTER_SDK_PATH}/src/app/clusters/general-commissioning-server/TemporaryTestCoupling.cpp")
     endif(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
-    set(UTIL_FILES "${MATTER_SDK_PATH}/src/app/util/MatterCallbacks.cpp"
-                   "${MATTER_SDK_PATH}/src/app/util/attribute-metadata.cpp"
-                   "${MATTER_SDK_PATH}/src/app/util/ember-strings.cpp")
-    collect_exclude_files("${MATTER_SDK_PATH}/src/app/util" "${UTIL_FILES}" ESP_MATTER_EXCLUDE_FILES)
-    list(APPEND EXCLUDE_SRCS_LIST "${ESP_MATTER_EXCLUDE_FILES}")
 else()
     list(APPEND EXCLUDE_SRCS_LIST "${ESP_COMPONENTS_PATH}/esp_matter/esp_matter_identify.cpp"
-                                  "${ESP_COMPONENTS_PATH}/esp_matter/esp_matter_ota.cpp")
-    set(UTIL_FILES "${MATTER_SDK_PATH}/src/app/util/MatterCallbacks.cpp")
-    collect_exclude_files("${MATTER_SDK_PATH}/src/app/util" "${UTIL_FILES}" ESP_MATTER_EXCLUDE_FILES)
-    list(APPEND EXCLUDE_SRCS_LIST "${ESP_MATTER_EXCLUDE_FILES}")
+                                  "${ESP_COMPONENTS_PATH}/esp_matter/esp_matter_ota.cpp"
+                                  "${MATTER_SDK_PATH}/src/app/server/DefaultTermsAndConditionsProvider.cpp"
+                                  "${MATTER_SDK_PATH}/src/app/server/JointFabricAdministrator.cpp"
+                                  "${MATTER_SDK_PATH}/src/app/server/JointFabricDatastore.cpp"
+                                  "${MATTER_SDK_PATH}/src/app/server/TermsAndConditionsManager.cpp")
 endif()
+
+set(UTIL_FILES "${MATTER_SDK_PATH}/src/app/util/MatterCallbacks.cpp"
+               "${MATTER_SDK_PATH}/src/app/util/attribute-metadata.cpp"
+               "${MATTER_SDK_PATH}/src/app/util/ember-strings.cpp")
+collect_exclude_files("${MATTER_SDK_PATH}/src/app/util" "${UTIL_FILES}" ESP_MATTER_EXCLUDE_FILES)
+list(APPEND EXCLUDE_SRCS_LIST "${ESP_MATTER_EXCLUDE_FILES}")
 
 list(APPEND ESP_MATTER_SRC_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter"
                                      "${ESP_COMPONENTS_PATH}/esp_matter/utils"
