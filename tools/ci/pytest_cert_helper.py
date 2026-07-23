@@ -132,6 +132,7 @@ def run_python_certification_tests(dut:Dut, certification_tests:str, ci_branch:s
 
     results_table = PrettyTable()
     results_table.field_names = ["Test Case", "Result"]
+    failed_tests = []
 
     test_chunk_key = os.getenv("TEST_CHUNK", "1")
     selected_commands = command_chunks.get(test_chunk_key, [])
@@ -144,9 +145,14 @@ def run_python_certification_tests(dut:Dut, certification_tests:str, ci_branch:s
         result = execute_test_command(full_command, light)
         test_case_marker = "PASS" if result else "FAIL"
         results_table.add_row([test_case_name, test_case_marker])
+        if not result:
+            failed_tests.append(test_case_name)
         print("Resetting the device for the next test case...")
         light.write('matter esp factoryreset')
         time.sleep(10)
 
     markdown_content = generate_markdown_results(results_table, chunk_id=test_chunk_key)
     update_mr_description_with_results(markdown_content, chunk_id=test_chunk_key)
+    if failed_tests:
+        failed_tests_str = ", ".join(failed_tests)
+        raise AssertionError(f"Certification test(s) failed: {failed_tests_str}")
