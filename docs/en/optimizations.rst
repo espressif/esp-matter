@@ -742,7 +742,7 @@ References for further optimizations
   functions from IRAM to flash may result in increased execution time
 
 
-.. _`v5.5.4`: https://github.com/espressif/esp-idf/tree/v5.5.4
+.. _`v5.5.5`: https://github.com/espressif/esp-idf/tree/v5.5.5
 .. _`v5.4.1`: https://github.com/espressif/esp-idf/tree/v5.4.1
 .. _`6a77422`: https://github.com/espressif/esp-matter/tree/6a77422
 .. _`light`: https://github.com/espressif/esp-matter/tree/6a77422/examples/light

@@ -25,10 +25,10 @@ variables:
     MATTER_CACHE_DIR: /cache/matter_build
     # This variable represents the latest idf version supported for the target branch.
     # Note: Do change this variable in case of idf version change MR.
-    IDF_CHECKOUT_REF: "v5.5.4"
+    IDF_CHECKOUT_REF: "v5.5.5"
     # This variable represents the short hash of the connectedhomeip submodule.
     # Note: Do change this short hash on submodule update MRs.
-    CHIP_SHORT_HASH: "efefc94fee"
+    CHIP_SHORT_HASH: "d46cc8c28"
     DOCKER_IMAGE_NAME: "espressif/chip-idf"
 
 .add_gitlab_ssh_key: &add_gitlab_ssh_key |
@@ -252,7 +252,7 @@ build_image:
     matrix:
       # Change the idf version here in case of idf version change MR.
       - IDF_VERSION:
-          - "v5.5.4"
+          - "v5.5.5"
           - "v6.0"
 
 .build_examples_template:
