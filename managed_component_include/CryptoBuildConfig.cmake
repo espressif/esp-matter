@@ -1,0 +1,39 @@
+# Generating crypto/CryptoBuildConfig.h
+# IDF v6+ uses PSA crypto (mbedTLS 4.x); earlier IDF keeps mbedtls.
+if (IDF_VERSION_MAJOR GREATER_EQUAL 6)
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/crypto/CryptoBuildConfig.h
+"#pragma once\n
+#include <sdkconfig.h>\n
+#define CHIP_CRYPTO_MBEDTLS 0
+#define CHIP_CRYPTO_PSA 1
+#define CHIP_CRYPTO_SPAKE2P_MBEDTLS 1
+#define CHIP_CRYPTO_SPAKE2P_PSA 0
+#define CHIP_CRYPTO_SPAKE2P_CUSTOM 0
+#define CHIP_CRYPTO_PSA_AEAD_SINGLE_PART 1
+#define CHIP_CRYPTO_KEYSTORE_PSA 1
+#define CHIP_CRYPTO_KEYSTORE_RAW 0
+#define CHIP_CRYPTO_KEYSTORE_APP 0
+#define CHIP_CRYPTO_OPENSSL 0
+#define CHIP_CRYPTO_BORINGSSL 0
+#define CHIP_CRYPTO_PLATFORM 0
+#define CHIP_OP_KEYSTORE_ELE 0
+")
+else()
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/crypto/CryptoBuildConfig.h
+"#pragma once\n
+#include <sdkconfig.h>\n
+#define CHIP_CRYPTO_MBEDTLS 1
+#define CHIP_CRYPTO_PSA 0
+#define CHIP_CRYPTO_SPAKE2P_MBEDTLS 1
+#define CHIP_CRYPTO_SPAKE2P_PSA 0
+#define CHIP_CRYPTO_SPAKE2P_CUSTOM 0
+#define CHIP_CRYPTO_PSA_AEAD_SINGLE_PART 0
+#define CHIP_CRYPTO_KEYSTORE_PSA 0
+#define CHIP_CRYPTO_KEYSTORE_RAW 1
+#define CHIP_CRYPTO_KEYSTORE_APP 0
+#define CHIP_CRYPTO_OPENSSL 0
+#define CHIP_CRYPTO_BORINGSSL 0
+#define CHIP_CRYPTO_PLATFORM 0
+#define CHIP_OP_KEYSTORE_ELE 0
+")
+endif()
