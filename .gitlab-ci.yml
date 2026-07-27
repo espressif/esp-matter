@@ -26,6 +26,8 @@ variables:
     # This variable represents the latest idf version supported for the target branch.
     # Note: Do change this variable in case of idf version change MR.
     IDF_CHECKOUT_REF: "v5.5.4"
+    # Minimum IDF commit for examples/matter_zigbee_light (OpenThread 1.4 event callback support).
+    MATTER_ZIGBEE_LIGHT_IDF_REF: "73b55e893ffb9761f8cae911ccb05f186f03d22b"
     # This variable represents the short hash of the connectedhomeip submodule.
     # Note: Do change this short hash on submodule update MRs.
     CHIP_SHORT_HASH: "efefc94fee"
@@ -79,6 +81,17 @@ variables:
   - export PYTHONPATH=${IDF_PATH}/tools/ci/python_packages/:${PYTHONPATH}
   - pip install python-gitlab
   - cd ${IDF_PATH}
+
+.upgrade_idf_for_matter_zigbee_light: &upgrade_idf_for_matter_zigbee_light
+  - cd ${IDF_PATH}
+  - git fetch origin ${MATTER_ZIGBEE_LIGHT_IDF_REF} --depth=1
+  - git checkout FETCH_HEAD
+  - git submodule update --init --recursive --depth 1
+  # Docker entrypoint exports IDF v6.0; drop the stale venv before installing IDF 6.2 deps.
+  - OLD_IDF_PYTHON_ENV_PATH="${IDF_PYTHON_ENV_PATH:-}"
+  - unset IDF_PYTHON_ENV_PATH
+  - if [ -n "${OLD_IDF_PYTHON_ENV_PATH}" ]; then rm -rf "${OLD_IDF_PYTHON_ENV_PATH}"; fi
+  - ./install.sh --disable-docs
 
 .setup_matter: &setup_matter
    - cd ${ESP_MATTER_PATH}
@@ -730,6 +743,37 @@ build_light_esp32h2_idf_v6:
       IDF_CCACHE_ENABLE: 1
     script:
       - cd ${ESP_MATTER_PATH}/examples/light
+      - idf.py set-target esp32h2
+      - idf.py build
+
+build_matter_zigbee_light_esp32h2:
+    resource_group: build_matter_zigbee_light_esp32h2
+    stage: build
+    image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_v6.0
+    rules:
+      - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
+    tags:
+      - build
+      - brew
+    needs:
+      - job: build_image
+        optional: true
+      - job: pre_commit_check
+    before_script:
+      - *add_gitlab_ssh_key
+      - *get_build_caches
+      - *upgrade_idf_for_matter_zigbee_light
+      - *setup_idf
+      - cd ${ESP_MATTER_PATH}
+      - mkdir -p ${REPOS_PATH}
+      - *setup_matter
+      - *update_build_caches
+      - *setup_ninja_shim
+    variables:
+      REPOS_PATH: "$CI_PROJECT_DIR/repos"
+      IDF_CCACHE_ENABLE: 1
+    script:
+      - cd ${ESP_MATTER_PATH}/examples/matter_zigbee_light
       - idf.py set-target esp32h2
       - idf.py build
 
