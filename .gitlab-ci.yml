@@ -101,8 +101,8 @@ variables:
 
 .setup_kvs_sdk: &setup_kvs_sdk
   - cd ${CI_PROJECT_DIR}
-  - git clone -b beta-reference-esp-port --single-branch --depth 1 --recurse-submodules https://github.com/awslabs/amazon-kinesis-video-streams-webrtc-sdk-c.git
-  - export KVS_SDK_PATH=${CI_PROJECT_DIR}/amazon-kinesis-video-streams-webrtc-sdk-c
+  - git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/espressif/esp-port-for-amazon-kvs-sdk.git
+  - export KVS_SDK_PATH=${CI_PROJECT_DIR}/esp-port-for-amazon-kvs-sdk
 
 .build_matter_examples: &build_matter_examples
     - export MATTER_EXAMPLES_PATH=$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/examples
@@ -728,7 +728,7 @@ build_managed_component_light:
         - idf.py build
 
 build_esp_matter_camera_example:
-  resource_group: build_esp_matter_camera_example
+  resource_group: build_esp_matter_camera_examples
   extends:
         - .build_examples_template
   before_script:
@@ -737,10 +737,13 @@ build_esp_matter_camera_example:
     - *setup_kvs_sdk
     - *setup_ninja_shim
   variables:
-    KVS_SDK_PATH: ${CI_PROJECT_DIR}/amazon-kinesis-video-streams-webrtc-sdk-c
+    KVS_SDK_PATH: ${CI_PROJECT_DIR}/esp-port-for-amazon-kvs-sdk
   script:
-    - cd ${ESP_MATTER_PATH}/examples/camera
+    - cd ${ESP_MATTER_PATH}/examples/camera/split_mode
     - idf.py set-target esp32c6
+    - idf.py build
+    - cd ${ESP_MATTER_PATH}/examples/camera/standalone
+    - idf.py set-target esp32p4
     - idf.py build
 
 # This job is allowed to fail due to a circular dependency with esp-rainmaker.

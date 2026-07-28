@@ -1,124 +1,93 @@
-# Matter Camera
+# ESP Matter Camera Examples
 
-This example creates a Camera device using the ESP Matter data model.
+This directory contains ESP Matter camera examples that demonstrate building Matter cameras using ESP chipsets with [AWS Kinesis Video Streams](https://docs.aws.amazon.com/kinesisvideostreams-webrtc-dg/latest/devguide/what-is-kvswebrtc.html) (KVS) [WebRTC SDK](https://github.com/espressif/esp-port-for-amazon-kvs-sdk) integration
 
-# Split Mode Camera Example
+**Key Features of the ESP Matter Camera:**
+- Complete WebRTC stack with STUN and TURN capabilities
+- KVS peer connection with media streaming
 
-This example demonstrates a **two-chip split architecture** for ESP32
-Camera, where signaling and media streaming are separated across two processors
-for optimal power efficiency.
+## Available Examples
 
-## Architecture Overview
+### 1. Standalone Mode (`standalone/`)
 
-The split mode consists of two separate firmware images:
+Complete WebRTC implementation including both signaling and media streaming on a single device.
 
-### 1. **matter_camera** (ESP32-C6)
+**Use Case:**
+- Single device deployment
+- Direct camera streaming with WebRTC
+- Faster Peer connection setup
 
--   **Role**: Matter camera with WebRTC signaling integration
--   **Responsibilities**:
-    -   WebRTC signaling
-    -   Bridge communication with media adapter
-    -   Always-on connectivity for instant responsiveness
+**Supported Devices:**
+- ESP32-P4 (FHD live streaming)
 
-### 2. **media_adapter** (ESP32-P4)
+[Learn more →](standalone/README.md)
 
--   **Role**: Media streaming device
--   **Implementation**: Uses the `streaming_only` example from
-    `${KVS_SDK_PATH}/esp_port/examples/streaming_only`
--   **Responsibilities**:
-    -   Video/audio capture and encoding
-    -   WebRTC media streaming
-    -   Power-optimized operation (sleeps when not streaming)
-    -   Receives signaling commands via bridge from esp32_camera
+### 2. Split Mode (`split_mode/`)
 
-## Hardware Requirements
+Split architecture where streaming is handled by a separate MCU and Signaling is handled by the ESP Matter Camera.
 
--   **ESP32-P4 Function EV Board** (required)
-    -   Contains both ESP32-P4 and ESP32-C6 processors
-    -   Built-in camera support
-    -   SDIO communication between processors
+**Use Case:**
+- Distributed architecture (signaling on one device, streaming on another)
+- This enables manufactures to swap streaming implementation swiftly
+- Power-optimized deployments
 
-## System Architecture
+**Supported Devices:**
+  - ESP32-P4 Function Ev Board
+    - ESP32-C6 (ESP Matter signaling integration)
+    - ESP32-P4 (streaming side - uses KVS streaming_only example)
 
-```
-┌─────────────────┐      SDIO Bridge     ┌─────────────────┐
-│    ESP32-C6     │◄────────────────────►│    ESP32-P4     │
-│ (matter_camera) │      Communication   │ (media_adapter) │
-│                 │                      │                 │
-│ ┌─────────────┐ │                      │ ┌─────────────┐ │
-│ │             │ │                      │ │ H.264       │ │
-│ │   Matter    │ │                      │ │ Encoder     │ │
-│ │             │ │                      │ │             │ │
-│ │  Signaling  │ │                      │ │ Camera      │ │
-│ │             │ │                      │ │ Interface   │ │
-│ └─────────────┘ │                      │ └─────────────┘ │
-└─────────────────┘                      └─────────────────┘
-        ▲                                        ▲
-        │                                        │
-        ▼                                        ▼
-   (Signaling)                              Video/Audio
-                                             Hardware
-```
+[Learn more →](split_mode/README.md)
 
-## Quick Start
+## Prerequisites
 
-### Prerequisites
+- **IDF version**: v5.5.4
+- **Amazon Kinesis Video Streams WebRTC SDK**: [ESP-IDF Port of Amazon Kinesis Video Streams WebRTC SDK](https://github.com/espressif/esp-port-for-amazon-kvs-sdk)
 
--   IDF version: v5.5.4
--   [ESP32-P4 Function EV Board](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/user_guide.html)
--   [Amazon Kinesis Video Streams WebRTC SDK repository](https://github.com/awslabs/amazon-kinesis-video-streams-webrtc-sdk-c/tree/beta-reference-esp-port)
+  ```bash
+  git clone --recursive git@github.com:espressif/esp-port-for-amazon-kvs-sdk.git
+  export KVS_SDK_PATH=/path/to/esp-port-for-amazon-kvs-sdk
+  ```
+
+## Getting Started
+
+1. Choose the appropriate example based on your use case:
+   - Device for complete experience → **Standalone Mode**
+   - Distributed setup with power saving feature → **Split Mode**
+
+2. Follow the detailed instructions in the respective example's README:
+   - [Standalone Mode README](standalone/README.md)
+   - [Split Mode README](split_mode/README.md)
+
+## Architecture
+
+### Standalone Mode
 
 ```
-git clone https://github.com/awslabs/amazon-kinesis-video-streams-webrtc-sdk-c.git
-git checkout beta-reference-esp-port
-git submodule update --init --depth 1
-export KVS_SDK_PATH=/path/to/amazon-kinesis-video-streams-webrtc-sdk-c
-```
-### Build and Flash Instructions
-**Note**: This requires **TWO separate firmware flashes** on the same
-ESP32-P4 Function EV Board.
-#### Step 1: Flash camera example (ESP32-C6)
-This handles WebRTC signaling and Matter integration.
-```bash
-idf.py set-target esp32c6
-idf.py build
-idf.py -p [PORT] flash monitor
+┌────────────────────────────────┐      ┌─────────────────────────────┐
+│         ESP32-P4               │ SDIO │         ESP32-C6            │
+│                                │◄────►│     (Network Adapter)       │
+│  ┌──────────────────────────┐  │      └─────────────────────────────┘
+│  │   ESP Matter Camera      │  │
+│  │   (Standalone Mode)      │  │
+│  ├──────────────────────────┤  │
+│  │  • Signaling             │  │
+│  │  • Media Streaming       │  │
+│  │  • Audio/Video Capture   │  │     
+│  └──────────────────────────┘  │
+└────────────────────────────────┘
 ```
 
-*__NOTE__*:
-- ESP32-C6 does not have an onboard UART port. You will need to use [ESP-Prog](https://docs.espressif.com/projects/esp-iot-solution/en/latest/hw-reference/ESP-Prog_guide.html) board or any other JTAG.
-- Use following Pin Connections:
+### Split Mode
 
-| ESP32-C6 (J2/Prog-C6) | ESP-Prog |
-|----------|----------|
-| IO0      | IO9      |
-| TX0      | TXD0     |
-| RX0      | RXD0     |
-| EN       | EN       |
-| GND      | GND      |
-
-#### Step 2: Flash media_adapter (ESP32-P4)
-
-This handles video/audio streaming. The firmware is the `streaming_only` example
-from the KVS SDK.
-
-```bash
-cd ${KVS_SDK_PATH}/esp_port/examples/streaming_only
-idf.py set-target esp32p4
-idf.py menuconfig
-# Go to Component config -> ESP System Settings -> Channel for console output
-# (X) USB Serial/JTAG Controller # For ESP32-P4 Function_EV_Board V1.2 OR V1.5
-# (X) Default: UART0 # For ESP32-P4 Function_EV_Board V1.4
-idf.py build
-idf.py -p [PORT] flash monitor
 ```
-
-**Note**: If the console selection is wrong, you will only see the initial
-bootloader logs. Please change the console as instructed above and reflash the
-app to see the complete logs.
-
-**Note**: Currently, due to flash size limitations of ESP32-C6 onboard the
-ESP32-P4 Function EV Board, the `ota_1` partition (see
-[`partitions.csv`](partitions.csv)) is disabled and the size of the `ota_0`
-partition is increased. This prevents the firmware from performing OTA updates.
-Hence, this configuration is not recommended for production use.
+┌────────────────────────────────┐      ┌─────────────────────────────┐
+│         ESP32-C6               │ SDIO │         ESP32-P4            │
+│      (ESP Matter Camera)       │◄────►│     (Streaming Device)      │
+│  ┌──────────────────────────┐  │      ├─────────────────────────────┤
+│  │   Camera Split Mode      │  │      │                             │
+│  ├──────────────────────────┤  │      │   • Media Streaming         │
+│  │   • Signaling            │  │      │   • Audio/Video Capture     │
+│  │                          │  |      |   • Audio Playback          │
+│  └──────────────────────────┘  │      └─────────────────────────────┘
+└────────────────────────────────┘
+```
