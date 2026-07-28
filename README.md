@@ -21,6 +21,20 @@ Espressif's SDK for Matter is the official Matter development framework for ESP3
 
 [Supported Device Types](SUPPORTED_DEVICE_TYPES.md)
 
+## Espressif Matter Services
+
+Beyond the SDK, Espressif offers production services to help you take a Matter product to mass production:
+
+- Matter Pre-Provisioning Service — secure provisioning of device identity (DAC, PAI, and unique commissioning data), offered in three flavours:
+  - Espressif factory — ready-to-use modules pre-provisioned on our line
+  - Customer factory — provision on your own line using Espressif's factory tool
+  - In the field — deliver DACs to already-deployed devices over the air
+
+- Certification Assistance — help taking your product through CSA Matter certification
+
+See [Espressif Matter Services](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/espressif_services.html)
+for details, or contact matter-pki@espressif.com / sales@espressif.com.
+
 ## Supported Matter specification versions
 
 |                                              Matter Specification Version                                              |                               Supported Branch                                |
