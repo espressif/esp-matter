@@ -54,6 +54,39 @@ OPENTHREAD_CLUSTERS = {
 }
 
 
+# Provider directory names normally map to CONFIG_SUPPORT_<DIRECTORY>_CLUSTER.
+# Keep exceptions here for directories that are shared or whose names differ
+# from the corresponding cluster name in zap_cluster_list.json.
+ESP_MATTER_CLUSTER_DIR_OVERRIDES = {
+    'resource_monitor': (
+        'ACTIVATED_CARBON_FILTER_MONITORING_CLUSTER',
+        'HEPA_FILTER_MONITORING_CLUSTER',
+    ),
+    'scenes_management': ('SCENES_CLUSTER',),
+    'switch_cluster': ('SWITCH_CLUSTER',),
+    'webrtc_transport_provider': ('WEB_RTC_TRANSPORT_PROVIDER_CLUSTER',),
+    'webrtc_transport_requestor': ('WEB_RTC_TRANSPORT_REQUESTOR_CLUSTER',),
+    'wifi_network_diagnostic': ('WIFI_NETWORK_DIAGNOSTICS_CLUSTER',),
+}
+
+
+def get_esp_matter_cluster_dirs(cluster_list):
+    cluster_root = os.path.join(BASE_PATH, 'components/esp_matter/data_model_provider/clusters')
+    result = {}
+    for entry in sorted(os.scandir(cluster_root), key=lambda item: item.name):
+        if not entry.is_dir():
+            continue
+        clusters = ESP_MATTER_CLUSTER_DIR_OVERRIDES.get(
+            entry.name, (f'{entry.name.upper()}_CLUSTER',))
+        unknown_clusters = set(clusters) - set(cluster_list)
+        if unknown_clusters:
+            raise ValueError(
+                f'No cluster implementation data for provider directory {entry.name}: '
+                f'{", ".join(sorted(unknown_clusters))}')
+        result[entry.name] = clusters
+    return result
+
+
 def generate_cluster_select_kconfig(cluster_list, output_dir):
     with open(os.path.join(output_dir, 'Kconfig.in'), 'w') as kconfig_file:
         write_file_header(kconfig_file)
@@ -67,7 +100,7 @@ def generate_cluster_select_kconfig(cluster_list, output_dir):
             kconfig_file.writelines(lines)
 
 
-def generate_cluster_select_cmake(cluster_list, output_dir):
+def generate_cluster_select_cmake(cluster_list, esp_matter_cluster_dirs, output_dir):
     with open(os.path.join(output_dir, 'cluster_dir.cmake'), 'w') as cmake_file:
         write_file_header(cmake_file)
         cmake_file.write('function(get_supported_cluster_dirs source_dirs)\n')
@@ -80,7 +113,19 @@ def generate_cluster_select_cmake(cluster_list, output_dir):
             cmake_file.write('\tendif()\n')
 
         cmake_file.write('\tset(${source_dirs} ${temp_list} PARENT_SCOPE)\n')
-        cmake_file.write('endfunction()')
+        cmake_file.write('endfunction()\n')
+
+        cmake_file.write('\nfunction(get_supported_esp_matter_cluster_dirs source_dirs)\n')
+        cmake_file.write('\tset(temp_list )\n')
+        for directory, clusters in esp_matter_cluster_dirs.items():
+            conditions = ' OR '.join(f'CONFIG_SUPPORT_{cluster}' for cluster in clusters)
+            cmake_file.write(f'\tif({conditions})\n')
+            cmake_file.write(
+                f'\t\tlist(APPEND temp_list "data_model_provider/clusters/{directory}")\n')
+            cmake_file.write('\tendif()\n')
+
+        cmake_file.write('\tset(${source_dirs} ${temp_list} PARENT_SCOPE)\n')
+        cmake_file.write('endfunction()\n')
 
 
 def main():
@@ -98,8 +143,9 @@ def main():
     args = parser.parse_args()
 
     cluster_list = load_json(args.cluster_implementation_data)
+    esp_matter_cluster_dirs = get_esp_matter_cluster_dirs(cluster_list)
     generate_cluster_select_kconfig(cluster_list, args.output_dir)
-    generate_cluster_select_cmake(cluster_list, args.output_dir)
+    generate_cluster_select_cmake(cluster_list, esp_matter_cluster_dirs, args.output_dir)
 
 
 if __name__ == "__main__":

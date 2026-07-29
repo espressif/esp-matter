@@ -321,6 +321,51 @@ Reduce the chip device event queue size can reduce IRAM size usage, lead to free
       On Bootup, 42504, 6528
       Post Commissioning, 108184, 6604
 
+Decrease pools size in Matter stack
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Users can provide a project-specific configuration header file by setting the `CONFIG_CHIP_PROJECT_CONFIG` option in menuconfig.
+This configuration file can be used to define the sizes of certain Matter stack resource pools.
+
+::
+
+    #define CHIP_CONFIG_SECURE_SESSION_POOL_SIZE 16
+    #define CHIP_CONFIG_UNAUTHENTICATED_CONNECTION_POOL_SIZE 2
+    #define CHIP_CONFIG_DEVICE_MAX_ACTIVE_DEVICES 1
+    #define CHIP_CONFIG_DEVICE_MAX_ACTIVE_CASE_CLIENTS 1
+    #define CHIP_IM_MAX_NUM_COMMAND_HANDLER   2
+    #define CHIP_IM_MAX_NUM_WRITE_HANDLER     2
+    #define CHIP_IM_MAX_NUM_TIMED_HANDLER     2
+    #define CHIP_IM_MAX_REPORTS_IN_FLIGHT     2
+    #define CHIP_IM_SERVER_MAX_NUM_DIRTY_SET  4
+
+.. only:: esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,176455, 3032
+      Used Flash,1576294,106
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 47324, 3068
+      Post Commissioning, 81028, 3052
+
+.. only:: not esp32h2
+
+    .. csv-table:: Static memory stats
+      :header: "", "Size", "Decreased by"
+
+      Used D/IRAM,192048,3032
+      Used Flash,1476854,106
+
+    .. csv-table:: Dynamic memory stats
+      :header: "", "Free Heap", "Increased by"
+
+      On Bootup, 38776, 2800
+      Post Commissioning, 104584, 3004
 
 Relocate certain code from IRAM to flash memory
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

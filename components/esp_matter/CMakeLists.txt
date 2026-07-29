@@ -44,10 +44,8 @@ if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
         list(REMOVE_ITEM EXCLUDE_SRCS_LIST
             "${MATTER_SDK_PATH}/src/app/clusters/operational-state-server/CodegenIntegration.cpp")
 
-        file(GLOB ESP_MATTER_CLUSTER_DIRS_LIST "data_model_provider/clusters/*")
-        foreach(ESP_MATTER_CLUSTER_DIR ${ESP_MATTER_CLUSTER_DIRS_LIST})
-            list(APPEND SRC_DIRS_LIST ${ESP_MATTER_CLUSTER_DIR})
-        endforeach()
+        get_supported_esp_matter_cluster_dirs(ESP_MATTER_CLUSTER_DIRS_LIST)
+        list(APPEND SRC_DIRS_LIST ${ESP_MATTER_CLUSTER_DIRS_LIST})
 
         list(APPEND SRC_DIRS_LIST "data_model"
                                   "data_model_provider"
