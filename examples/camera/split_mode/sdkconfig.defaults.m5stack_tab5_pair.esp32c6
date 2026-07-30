@@ -1,5 +1,5 @@
 #
-# rmaker_split_camera C6 build config when pairing with the M5Stack Tab5 host
+# esp matter split_mode camera C6 build config when pairing with the M5Stack Tab5 host
 # (P4 + on-board ESP32-C6-MINI-1U). Layered on top of
 # sdkconfig.defaults + sdkconfig.defaults.esp32c6.
 #

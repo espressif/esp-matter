@@ -65,7 +65,7 @@ The split mode consists of two separate firmware images:
 ### Prerequisites
 
 -   IDF version: v5.5.4
--   [ESP32-P4 Function EV Board](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/user_guide.html)
+-   [ESP32-P4 Function EV Board](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/user_guide.html) or [M5Stack Tab5](https://shop.m5stack.com/products/m5stack-tab5-iot-development-kit-esp32-p4)
 -   [ESP-IDF Port of Amazon Kinesis Video Streams WebRTC SDK repository](https://github.com/espressif/esp-port-for-amazon-kvs-sdk)
 
 ```
@@ -77,8 +77,17 @@ export KVS_SDK_PATH=/path/to/esp-port-for-amazon-kvs-sdk
 ESP32-P4 Function EV Board.
 #### Step 1: Flash camera example (ESP32-C6)
 This handles WebRTC signaling and Matter integration.
+
+#### For ESP32-P4 Function EV Board:
 ```bash
 idf.py set-target esp32c6
+idf.py build
+idf.py -p [PORT] flash monitor
+```
+#### For M5Stack Tab5:
+
+```bash
+idf.py -D 'SDKCONFIG_DEFAULTS=sdkconfig.defaults;sdkconfig.defaults.esp32c6;sdkconfig.defaults.m5stack_tab5_pair.esp32c6' set-target esp32c6
 idf.py build
 idf.py -p [PORT] flash monitor
 ```

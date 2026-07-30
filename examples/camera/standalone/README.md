@@ -27,7 +27,7 @@ In standalone mode, the entire camera application runs on the ESP32-P4: Matter c
 ### Prerequisites
 
 -   IDF version: v5.5.4
--   [ESP32-P4 Function EV Board](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/user_guide.html)
+-   [ESP32-P4 Function EV Board](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/user_guide.html) or [M5Stack Tab5](https://shop.m5stack.com/products/m5stack-tab5-iot-development-kit-esp32-p4)
 -   [ESP-IDF Port of Amazon Kinesis Video Streams WebRTC SDK repository](https://github.com/espressif/esp-port-for-amazon-kvs-sdk)
 
 ```bash
@@ -37,9 +37,22 @@ In standalone mode, the entire camera application runs on the ESP32-P4: Matter c
 ### Build and Flash Instructions
 
 Go to the example directory and follow the steps below:
+
+#### For ESP32-P4 Function EV Board:
+
 ```bash
     cd esp-matter/examples/camera/standalone
     idf.py set-target esp32p4
+    idf.py menuconfig
+    # Go to Component config -> ESP System Settings -> Channel for console output
+    # (X) USB Serial/JTAG Controller # For ESP32-P4 Function_EV_Board V1.2 OR V1.5
+    # (X) Default: UART0 # For ESP32-P4 Function_EV_Board V1.4
+```
+#### For M5Stack Tab5:
+
+```bash
+    cd esp-matter/examples/camera/standalone
+    idf.py -D 'SDKCONFIG_DEFAULTS=sdkconfig.defaults;sdkconfig.defaults.esp32p4;sdkconfig.defaults.m5stack_tab5.esp32p4' set-target esp32p4
     idf.py menuconfig
     # Go to Component config -> ESP System Settings -> Channel for console output
     # (X) USB Serial/JTAG Controller # For ESP32-P4 Function_EV_Board V1.2 OR V1.5
