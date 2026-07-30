@@ -26,7 +26,7 @@
 #include <app/clusters/time-synchronization-server/DefaultTimeSyncDelegate.h>
 #endif
 
-#include <data_model_provider/clusters/webrtc_transport_provider/integration.h>
+#include <data_model_provider/clusters/webrtc_transport_provider_integration.h>
 
 #include "camera-app.h"
 #include "camera-device.h"

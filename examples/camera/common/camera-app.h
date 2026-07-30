@@ -14,7 +14,7 @@
 #include <app/util/config.h>
 #include <cstring>
 #include <data-model-providers/codegen/CodegenDataModelProvider.h>
-#include <data_model_provider/clusters/camera_av_stream_management/integration.h>
+#include <data_model_provider/clusters/camera_av_stream_management_integration.h>
 #include <protocols/interaction_model/StatusCode.h>
 #include <utility>
 

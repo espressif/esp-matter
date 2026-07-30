@@ -26,7 +26,7 @@
 #include <app/clusters/time-synchronization-server/DefaultTimeSyncDelegate.h>
 #endif
 
-#include <data_model_provider/clusters/webrtc_transport_provider/integration.h>
+#include <data_model_provider/clusters/webrtc_transport_provider_integration.h>
 
 #include "camera-app.h"
 #include "camera-device.h"
@@ -187,19 +187,22 @@ extern "C" void app_main()
     app_driver_handle_t button_handle = app_driver_button_init();
     app_reset_button_register(button_handle);
 
+    /* Bring the esp_hosted transport up before esp_matter::start(): Wi-Fi init
+     * runs remote calls to the slave and fails if the link is not up yet. */
+    err = esp_hosted_connect_to_slave();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to connect to slave, err:%d", err);
+    }
+
 #if CONFIG_ESP_HOSTED_ENABLE_BT_NIMBLE
-    /* On P4 the BLE controller lives on the C6 co-processor and is reached over
-     * the esp_hosted VHCI transport. Bring it up here (at the example layer,
-     * before BLE provisioning starts) since NimBLE cannot init a local
-     * controller on the P4. It is left up after provisioning: the only safe
-     * teardown signal (NimBLE fully stopped) isn't exposed by app_network, and
-     * deinit'ing earlier races the NimBLE host shutdown. */
-    if (esp_hosted_bt_controller_init() != ESP_OK) {
-        ESP_LOGW(TAG, "Failed to init co-processor BT controller");
-    }
-    if (esp_hosted_bt_controller_enable() != ESP_OK) {
-        ESP_LOGW(TAG, "Failed to enable co-processor BT controller");
-    }
+    /* BLEManagerImpl owns the slave BT controller lifecycle and its init
+     * requires the controller in IDLE state. A host-only reboot does not reset
+     * the slave, which cleans up its Wi-Fi state on host reconnect but not BT,
+     * so the controller may still be running from the previous host session.
+     * Tear it down here so BLEManagerImpl can take over; both calls fail
+     * harmlessly on a freshly booted slave. */
+    esp_hosted_bt_controller_disable();
+    esp_hosted_bt_controller_deinit(false);
 #endif
 
     // Initializes Camera HAL
