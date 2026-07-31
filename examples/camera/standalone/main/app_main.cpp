@@ -187,6 +187,7 @@ extern "C" void app_main()
     app_driver_handle_t button_handle = app_driver_button_init();
     app_reset_button_register(button_handle);
 
+#if CONFIG_ESP_HOSTED_ENABLE_BT_NIMBLE
     /* Bring the esp_hosted transport up before esp_matter::start(): Wi-Fi init
      * runs remote calls to the slave and fails if the link is not up yet. */
     err = esp_hosted_connect_to_slave();
@@ -194,7 +195,6 @@ extern "C" void app_main()
         ESP_LOGE(TAG, "Failed to connect to slave, err:%d", err);
     }
 
-#if CONFIG_ESP_HOSTED_ENABLE_BT_NIMBLE
     /* BLEManagerImpl owns the slave BT controller lifecycle and its init
      * requires the controller in IDLE state. A host-only reboot does not reset
      * the slave, which cleans up its Wi-Fi state on host reconnect but not BT,
