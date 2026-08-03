@@ -1431,6 +1431,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         if (has(feature::presets::get_id())) {
             feature::presets::add(cluster);
         }
+
+        // matter_schedule_configuration and presets contains the attributes with T i.e. atomic quality
+        // hence, we need to create the atomic request and response commands
+        if (has(feature::matter_schedule_configuration::get_id()) || has(feature::presets::get_id())) {
+            command::create_atomic_request(cluster);
+            command::create_atomic_response(cluster);
+        }
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
@@ -1439,13 +1446,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     /* Commands */
     command::create_setpoint_raise_lower(cluster);
-
-    // matter_schedule_configuration and presets contains the attributes with T i.e. atomic quality
-    // hence, we need to create the atomic request and response commands
-    if (has(feature::matter_schedule_configuration::get_id()) || has(feature::presets::get_id())) {
-        command::create_atomic_request(cluster);
-        command::create_atomic_response(cluster);
-    }
 
     return cluster;
 }
