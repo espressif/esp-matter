@@ -76,14 +76,8 @@ fi
 
 echo_log "Installing python dependencies for Matter"
 
-# Install python dependencies based on idf version
-if [[ $(git -C $IDF_PATH describe) == v4.4* ]]; then
-  echo_log "Installing requirements from requirements_idf_v4.4.txt"
-  python3 -m pip install -r ${ESP_MATTER_PATH}/requirements_idf_v4.4.txt >/dev/null
-else
-  echo_log "Installing requirements from requirements.txt"
-  python3 -m pip install -r ${ESP_MATTER_PATH}/requirements.txt > /dev/null
-fi
+echo_log "Installing requirements from requirements.txt"
+python3 -m pip install -r ${ESP_MATTER_PATH}/requirements.txt > /dev/null
 
 
 if [ $BUILD_PYTHON = true ]; then
