@@ -68,7 +68,7 @@ The Prerequisites for ESP-IDF:
       ::
 
          git clone --recursive https://github.com/espressif/esp-idf.git
-         cd esp-idf; git checkout v5.5.4; git submodule update --init --recursive;
+         cd esp-idf; git checkout v6.0.2; git submodule update --init --recursive;
          ./install.sh
          cd ..
 
