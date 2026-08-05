@@ -12,6 +12,10 @@ set(INCLUDE_DIRS_LIST   "."
 # TODO: This file has compilation errors
 set(EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/closure-control-server/closure-control-server.cpp")
 list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/general-commissioning-server/TemporaryTestCoupling.cpp")
+# Stray file from an incorrect upstream backport (project-chip/connectedhomeip#72830):
+# the master-only SCI implementation was added without its header, which does not exist
+# on the v1.4.2-branch. It is not part of the upstream GN build either.
+list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/webrtc-transport-requestor-server/WebRTCTransportRequestorCluster.cpp")
 
 if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
     list(APPEND SRC_DIRS_LIST    "${MATTER_SDK_PATH}/src/app/server"
