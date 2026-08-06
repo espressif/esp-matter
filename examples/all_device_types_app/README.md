@@ -77,10 +77,9 @@ This example's partition table and sdkconfig.default are already modified
 
 On boot-up esp-idf console starts. In order to create a device user have to use console command.
 
--   Use `create --device_type` to list all supported device types.
--   Use `create --device_type=on_off_light` to create light device.
--   To delete existing device perform `matter esp factoryreset`.
--   To add new device, say fan or any other device type use `create --device_type=fan`.
+-   Use `create <device_type>` to create a device. Run `create` without arguments to list all supported device types.
+-   Use `change <device_type>` to switch to a different device type. This saves the selection and reboots the device with stable endpoint IDs.
+-   To factory reset the device use `matter esp factoryreset`.
 
 Setup OTBR for a device
 

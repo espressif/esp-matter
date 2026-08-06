@@ -249,7 +249,7 @@ extern "C" void app_main()
         semaphoreHandle = xSemaphoreCreateBinary();
         ABORT_APP_ON_FAILURE(semaphoreHandle != nullptr, ESP_LOGE(TAG, "Failed to create semaphore"));
 
-        ESP_LOGI(TAG, "\r\n\r\nEnter command: create --device_type to get started");
+        ESP_LOGI(TAG, "\r\n\r\nEnter command: create <device_type> to get started");
         example::console::init();
 
         xSemaphoreTake(semaphoreHandle, portMAX_DELAY);
@@ -297,6 +297,8 @@ extern "C" void app_main()
     esp_matter::console::diagnostics_register_commands();
     esp_matter::console::wifi_register_commands();
     esp_matter::console::factoryreset_register_commands();
+    esp_matter::console::attribute_register_commands();
+    example::console::register_change_device_commands();
     esp_matter::console::init();
 #ifdef CONFIG_OPENTHREAD_CLI
     esp_matter::console::otcli_register_commands();
