@@ -33,3 +33,14 @@ idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.esp32c6.aliro" set-target esp32c6 build
 
 After commissioning with Apple Home app, the Home app will automatically add a Key to the Apple Wallet, which can be used for unlocking the door.
 ![home_key_add](./img/home_key_add.jpeg) ![unlock](./img/unlock_page.jpeg)
+
+### Local Controls and Status
+
+On the M5Stack NanoC6 and NanoH2, press the front button to toggle the lock state. The RGB LED indicates the current state:
+
+- Red: locked
+- Green: unlocked or unlatched
+- Amber: not fully locked
+- Off: unknown state
+
+The button is connected to GPIO9. The NanoC6 RGB LED uses GPIO20 with its power enabled on GPIO19; the NanoH2 RGB LED uses GPIO11 with its power enabled on GPIO10. The separate blue LED is not used.
