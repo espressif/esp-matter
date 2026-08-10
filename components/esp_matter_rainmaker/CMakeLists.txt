@@ -4,7 +4,7 @@ set(REQUIRES_LIST       esp_matter)
 idf_build_get_property(rainmaker_enabled RAINMAKER_ENABLED)
 if (${rainmaker_enabled})
     list(APPEND SRCS_LIST       esp_matter_rainmaker.cpp)
-    list(APPEND REQUIRES_LIST   esp_rainmaker)
+    list(APPEND REQUIRES_LIST   esp_rainmaker esp_matter_console)
 endif()
 
 idf_component_register(SRCS             ${SRCS_LIST}
