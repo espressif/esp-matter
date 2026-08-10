@@ -118,6 +118,35 @@ TEST_CASE("jsontlv optionally renders readable byte strings", "[jsontlv][tlv_to_
     cJSON_Delete(json);
 }
 
+TEST_CASE("jsontlv optionally renders hexadecimal tag keys", "[jsontlv][tlv_to_json]")
+{
+    esp_matter::tlv_to_json_options options;
+    options.tag_format = esp_matter::tlv_json_tag_format::hexadecimal;
+
+    cJSON *json = nullptr;
+    esp_err_t err = roundtrip_json_tree(
+                        R"({"2:OBJ":{"4:BOOL":false,"1:U8":7},"1:ARR-OBJ":[{"254:U8":2}]})", &json, options);
+    TEST_ASSERT_EQUAL(ESP_OK, err);
+    TEST_ASSERT_NOT_NULL(json);
+
+    cJSON *array = cJSON_GetObjectItemCaseSensitive(json, "0x1");
+    TEST_ASSERT_TRUE(cJSON_IsArray(array));
+    cJSON *fabric_index = cJSON_GetObjectItemCaseSensitive(cJSON_GetArrayItem(array, 0), "0xFE");
+    TEST_ASSERT_TRUE(cJSON_IsNumber(fabric_index));
+    TEST_ASSERT_EQUAL_INT(2, fabric_index->valueint);
+
+    cJSON *object = cJSON_GetObjectItemCaseSensitive(json, "0x2");
+    TEST_ASSERT_TRUE(cJSON_IsObject(object));
+    cJSON *number = cJSON_GetObjectItemCaseSensitive(object, "0x1");
+    cJSON *boolean = cJSON_GetObjectItemCaseSensitive(object, "0x4");
+    TEST_ASSERT_TRUE(cJSON_IsNumber(number));
+    TEST_ASSERT_TRUE(cJSON_IsBool(boolean));
+    TEST_ASSERT_EQUAL_INT(7, number->valueint);
+    TEST_ASSERT_FALSE(cJSON_IsTrue(boolean));
+
+    cJSON_Delete(json);
+}
+
 TEST_CASE("jsontlv roundtrip container and ordering cases", "[jsontlv][roundtrip]")
 {
     expect_roundtrip(
