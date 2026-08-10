@@ -751,6 +751,7 @@ build_managed_component_light:
     resource_group: build_managed_component_light
     extends:
         - .build_managed_component_light_example
+    image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_v5.5.4
     needs:
       - job: build_image
         optional: true
