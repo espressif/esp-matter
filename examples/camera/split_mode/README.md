@@ -64,7 +64,7 @@ The split mode consists of two separate firmware images:
 
 ### Prerequisites
 
--   IDF version: v6.0.2
+-   IDF version: v5.5.4
 -   [ESP32-P4 Function EV Board](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/user_guide.html)
 -   [ESP-IDF Port of Amazon Kinesis Video Streams WebRTC SDK repository](https://github.com/espressif/esp-port-for-amazon-kvs-sdk)
 

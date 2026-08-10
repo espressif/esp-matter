@@ -266,6 +266,7 @@ build_image:
       # Change the idf version here in case of idf version change MR.
       - IDF_VERSION:
           - "v6.0.2"
+          - "v5.5.4"
 
 .build_examples_template:
   stage: build
@@ -763,6 +764,7 @@ build_esp_matter_camera_example:
   resource_group: build_esp_matter_camera_examples
   extends:
         - .build_examples_template
+  image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_v5.5.4
   before_script:
     - *setup_idf
     - *setup_matter
