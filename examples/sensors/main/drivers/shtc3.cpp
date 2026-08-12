@@ -18,8 +18,8 @@
 
 static const char * TAG = "shtc3";
 
-#define I2C_MASTER_SCL_IO CONFIG_SHTC3_I2C_SCL_PIN
-#define I2C_MASTER_SDA_IO CONFIG_SHTC3_I2C_SDA_PIN
+#define I2C_MASTER_SCL_IO static_cast<gpio_num_t>(CONFIG_SHTC3_I2C_SCL_PIN)
+#define I2C_MASTER_SDA_IO static_cast<gpio_num_t>(CONFIG_SHTC3_I2C_SDA_PIN)
 #define I2C_MASTER_NUM I2C_NUM_0    /*!< I2C port number for master dev */
 #define I2C_MASTER_FREQ_HZ 100000   /*!< I2C master clock frequency */
 
