@@ -28,7 +28,7 @@ variables:
     IDF_CHECKOUT_REF: "v5.5.5"
     # This variable represents the short hash of the connectedhomeip submodule.
     # Note: Do change this short hash on submodule update MRs.
-    CHIP_SHORT_HASH: "2c2e3a94d0"
+    CHIP_SHORT_HASH: "392b307067"
     DOCKER_IMAGE_NAME: "espressif/chip-idf"
 
 .add_gitlab_ssh_key: &add_gitlab_ssh_key |
@@ -774,5 +774,16 @@ check_typos:
       if [ -n "$FILES" ]; then
         ./tools/check_typos.sh $FILES
       fi
+
+    # piggy-backing it here in check-typos to not waste compute
+    # Label release branched MRs with versioned labels
+    # e.g. release/v1.5 -> v1.5
+    - |
+      case "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" in release/*)
+        curl -sf -X PUT -H "PRIVATE-TOKEN: $GITLAB_MR_COMMENT_TOKEN" \
+          "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID?add_labels=${CI_MERGE_REQUEST_TARGET_BRANCH_NAME#release/}" \
+          > /dev/null && echo "Added label ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME#release/}" || echo "Labeling failed (non-fatal)"
+      esac
+
   tags:
     - build
