@@ -347,6 +347,15 @@ Choose IDF target.
             idf.py -C managed_components/espressif__esp_hosted/slave/ -B build_slave set-target esp32c6
             idf.py -C managed_components/espressif__esp_hosted/slave/ -B build_slave build flash monitor
 
+   - Ethernet configuration for ESP32-P4
+
+        There is an RJ45 Ethernet port on `ESP32-P4 Function_EV_Board <https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/index.html>`__.
+        To run Matter over Ethernet, refer to the `sdkconfig.eth.esp32p4` under the `all_device_types_app` example directory:
+
+        ::
+
+            idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.eth.esp32p4" set-target esp32p4 build
+
 .. only:: esp32c5 or esp32c6
 
     -  {IDF_TARGET_NAME} supports both the Wi-Fi and IEEE 802.15.4 radio, so you can run Wi-Fi or Thread matter example on it.
