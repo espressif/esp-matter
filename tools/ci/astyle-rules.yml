@@ -16,4 +16,3 @@ not_formatted:
   check: false
   include:
     - "/components/esp_matter/zap_common/"
-    - "/examples/demo/badge/components/"

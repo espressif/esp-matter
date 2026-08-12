@@ -57,18 +57,6 @@ examples/bridge_apps/zigbee_bridge:
       temporary: true
       reason: the other targets are not tested yet
 
-examples/room_air_conditioner:
-  enable:
-    - if: IDF_TARGET in ["esp32", "esp32c3", "esp32c2", "esp32c6", "esp32h2"]
-      temporary: true
-      reason: the other targets are not tested yet
-
-examples/refrigerator:
-  enable:
-    - if: IDF_TARGET in ["esp32", "esp32c3", "esp32c2", "esp32c6", "esp32h2"]
-      temporary: true
-      reason: the other targets are not tested yet
-
 examples/all_device_types_app:
   enable:
     - if: IDF_TARGET in ["esp32", "esp32c3", "esp32h2", "esp32c2"]
@@ -84,12 +72,6 @@ examples/mfg_test_app:
 examples/icd_app:
   enable:
     - if: IDF_TARGET in ["esp32h2", "esp32c6"]
-      temporary: true
-      reason: the other targets are not tested yet
-
-examples/demo/badge:
-   enable:
-    - if: IDF_TARGET in ["esp32"]
       temporary: true
       reason: the other targets are not tested yet
 
