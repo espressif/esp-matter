@@ -28,7 +28,7 @@ variables:
     IDF_CHECKOUT_REF: "v5.4.1"
     # This variable represents the short hash of the connectedhomeip submodule.
     # Note: Do change this short hash on submodule update MRs.
-    CHIP_SHORT_HASH: "bc661692ad"
+    CHIP_SHORT_HASH: "a6892983d6"
     DOCKER_IMAGE_NAME: "espressif/chip-idf"
 
 .add_gitlab_ssh_key: &add_gitlab_ssh_key |
@@ -239,7 +239,6 @@ build_image:
     matrix:
       # Change the idf version here in case of idf version change MR.
       - IDF_VERSION:
-          - "v4.4.3"
           - "v5.4.1"
 
 .build_examples_template:
@@ -485,41 +484,6 @@ build_nopytest_remaining_examples_manual:
       --parallel-count ${CI_NODE_TOTAL:-1}
       --parallel-index ${CI_NODE_INDEX:-1}
   parallel: 2
-
-
-build_esp_matter_examples_idf_v4_4:
-  resource_group: build_esp_matter_examples_idf_v4_4
-  extends:
-        - .build_examples_template
-  image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
-  artifacts:
-    paths:
-      - "examples/**/build*/size.json"
-      - "examples/**/build*/build_log.txt"
-      - "examples/**/build*/*.map"
-      - "examples/**/build*/*.bin"
-      - "examples/**/build*/flasher_args.json"
-      - "examples/**/build*/config/sdkconfig.json"
-      - "examples/**/build*/bootloader/*.bin"
-      - "examples/**/build*/partition_table/*.bin"
-    when: always
-    expire_in: 4 days
-  script:
-    - cd ${ESP_MATTER_PATH}
-    # idf v4.4 requires jinja < 3.1 so lets install the dependencies for idf v4.4
-    - pip install -r requirements_idf_v4.4.txt
-    # hack the construct==2.10.54 to make it work with idf-v4.4, Python3.12
-    # imp is not present in Python3.12 so remove it
-    - wget https://files.pythonhosted.org/packages/30/2f/e2e6bad1b80f744cf5c2a6d622e3dee698b43e6c040f980ae0ac0edd5e54/construct-2.10.54.tar.gz
-    - tar -xvzf construct-2.10.54.tar.gz
-    - sed -i 's/, imp$//g' construct-2.10.54/construct/core.py
-    - python3 -m pip install ./construct-2.10.54
-    - rm -rf construct-2.10.54*
-    - cd ${ESP_MATTER_PATH}/examples/light
-    - idf.py set-target esp32c3
-    - idf.py build
-  variables:
-    IDF_CHECKOUT_REF: "v4.4.3"
 
 
 build_esp_matter_examples_pytest_C3:
@@ -775,5 +739,16 @@ check_typos:
       if [ -n "$FILES" ]; then
         ./tools/check_typos.sh $FILES
       fi
+
+    # piggy-backing it here in check-typos to not waste compute
+    # Label release branched MRs with versioned labels
+    # e.g. release/v1.5 -> v1.5
+    - |
+      case "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" in release/*)
+        curl -sf -X PUT -H "PRIVATE-TOKEN: $GITLAB_MR_COMMENT_TOKEN" \
+          "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID?add_labels=${CI_MERGE_REQUEST_TARGET_BRANCH_NAME#release/}" \
+          > /dev/null && echo "Added label ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME#release/}" || echo "Labeling failed (non-fatal)"
+      esac
+
   tags:
     - build
