@@ -63,7 +63,7 @@ examples/all_device_types_app:
       temporary: true
       reason: the other targets are not tested yet
 
-examples/mfg_test_app:
+examples/test_apps/mfg_test_app:
   enable:
     - if: IDF_TARGET in ["esp32c3", "esp32c2", "esp32c6", "esp32h2"]
       temporary: true
@@ -129,7 +129,7 @@ examples/camera/standalone:
       temporary: true
       reason: Another CI has been added
 
-examples/unit_test_app:
+examples/test_apps/unit_test_app:
   enable:
     - if: IDF_TARGET in ["esp32c3"]
       temporary: true

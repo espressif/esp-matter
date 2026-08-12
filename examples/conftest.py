@@ -52,7 +52,7 @@ def item_marker_names(item: Item) -> List[str]:
 @pytest.fixture(scope='session', autouse=True)
 def session_tempdir() -> str:
     _tmpdir = os.path.join(
-        os.path.dirname(__file__),
+        os.path.dirname(os.path.dirname(__file__)),
         'pytest_embedded_log',
         datetime.now().strftime('%Y-%m-%d_%H-%M-%S'),
     )

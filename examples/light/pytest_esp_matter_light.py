@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: CC0-1.0
 
-import pathlib
 import pytest
 import time
 import re
@@ -13,13 +12,15 @@ import os
 import yaml
 import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../tools/ci')))
+ESP_MATTER_PATH = os.environ["ESP_MATTER_PATH"]
+
+sys.path.append(os.path.abspath(os.path.join(ESP_MATTER_PATH, "tools", "ci")))
 from pytest_cert_helper import *
 from gitlab_api import GitLabAPI
 
-CURRENT_DIR_LIGHT = str(pathlib.Path(__file__).parent)+'/light'
-CHIP_TOOL_EXE = str(pathlib.Path(__file__).parent)+ '/../connectedhomeip/connectedhomeip/out/host/chip-tool'
-OT_BR_EXAMPLE_PATH = str(pathlib.Path(__file__).parent)+'/thread_border_router'
+CURRENT_DIR_LIGHT = os.path.join(ESP_MATTER_PATH, 'examples', 'light')
+CHIP_TOOL_EXE = os.path.join(ESP_MATTER_PATH, 'connectedhomeip', 'connectedhomeip', 'out', 'host', 'chip-tool')
+OT_BR_EXAMPLE_PATH = os.path.join(ESP_MATTER_PATH, 'examples', 'thread_border_router')
 OT_DATASET_HEXSTR = '0e08000000000001000035060004001fffe00708fdb824be22185de50c0402a0f7f8051020112014020519772011201402051977030d41706f6c6c6f6e54687265616404101fefc90ee1637d47ca75f87ec24f9403000300000f0208201120140205197701022201'
 pytest_build_dir = CURRENT_DIR_LIGHT
 pytest_matter_thread_dir = CURRENT_DIR_LIGHT+'|'+OT_BR_EXAMPLE_PATH

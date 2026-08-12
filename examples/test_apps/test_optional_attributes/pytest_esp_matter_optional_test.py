@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: CC0-1.0
 
-import pathlib
 import pytest
 import time
 import re
@@ -9,13 +8,14 @@ from pytest_embedded import Dut
 import os
 import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../tools/ci')))
+ESP_MATTER_PATH = os.environ["ESP_MATTER_PATH"]
+
+sys.path.append(os.path.join(ESP_MATTER_PATH, 'tools', 'ci'))
 from gitlab_api import GitLabAPI
 
-CURRENT_DIR = str(pathlib.Path(__file__).parent) + '/test_optional_attributes'
-ESP_MATTER_PATH = str(pathlib.Path(__file__).parent.parent.parent)
-TEST_SCRIPT_PATH = str(pathlib.Path(__file__).parent.parent.parent / 'tools' / 'test_optional_attributes' / 'test_optional_attributes_framework.py')
-PAA_CERTS_PATH = str(pathlib.Path(__file__).parent.parent.parent / 'connectedhomeip' / 'connectedhomeip' / 'credentials' / 'development' / 'paa-root-certs')
+CURRENT_DIR = os.path.join(ESP_MATTER_PATH, 'examples', 'test_apps', 'test_optional_attributes')
+TEST_SCRIPT_PATH = os.path.join(ESP_MATTER_PATH, 'tools', 'test_optional_attributes', 'test_optional_attributes_framework.py')
+PAA_CERTS_PATH = os.path.join(ESP_MATTER_PATH, 'connectedhomeip', 'connectedhomeip', 'credentials', 'development', 'paa-root-certs')
 
 pytest_build_dir = CURRENT_DIR
 

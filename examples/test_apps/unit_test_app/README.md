@@ -14,7 +14,7 @@ Further reads:
 
 1. Build the application:
 ```bash
-cd examples/unit_test_app
+cd examples/test_apps/unit_test_app
 idf.py build
 ```
 
@@ -49,7 +49,7 @@ source $IDF_PATH/export.sh  # re-source to pick up the new tool in PATH
 ### Build and Run
 
 ```bash
-cd examples/unit_test_app
+cd examples/test_apps/unit_test_app
 idf.py -DSDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.qemu" set-target esp32c3 build
 
 # Run all QEMU test groups (each gets a fresh QEMU reboot)
