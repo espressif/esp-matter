@@ -20,8 +20,18 @@
 
 namespace esp_matter {
 
+enum class tlv_json_tag_format {
+    /* Include the TLV type in each key, e.g. `"1:U8": 42` or `"2:OBJ": {...}`. */
+    type_qualified,
+    /* Render only the hexadecimal tag number, e.g. `"0x1": 42` or `"0x2": {...}`. */
+    hexadecimal,
+};
+
 struct tlv_to_json_options {
+    /* Render printable UTF-8 byte strings as text; other byte strings remain Base64-encoded. */
     bool human_readable_bytes = false;
+    /* Select the format used for TLV tags in JSON object keys. */
+    tlv_json_tag_format tag_format = tlv_json_tag_format::type_qualified;
 };
 
 /** Convert TLV data model payload to cJSON.

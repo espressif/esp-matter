@@ -103,15 +103,20 @@ static esp_err_t tlv_element_type_to_type_str(TLVElementType type, const char **
 }
 
 static esp_err_t create_json_name(TLV::Tag tag, TLVElementType type, TLVElementType sub_type, char *json_name,
-                                  size_t json_name_size)
+                                  size_t json_name_size, const tlv_to_json_options &options)
 {
     ESP_RETURN_ON_FALSE(tag != TLV::AnonymousTag(), ESP_ERR_INVALID_ARG, TAG, "Anonymous tag is not supported");
     ESP_RETURN_ON_FALSE(json_name, ESP_ERR_INVALID_ARG, TAG, "json name cannot be NULL");
 
+    uint64_t tag_number = TLV::TagNumFromTag(tag);
+    if (options.tag_format == tlv_json_tag_format::hexadecimal) {
+        snprintf(json_name, json_name_size, "0x%" PRIX64, tag_number);
+        return ESP_OK;
+    }
+
     const char *type_str = nullptr;
     ESP_RETURN_ON_ERROR(tlv_element_type_to_type_str(type, &type_str), TAG, "Unsupported tlv element type");
 
-    uint64_t tag_number = TLV::TagNumFromTag(tag);
     if (type == TLVElementType::Array) {
         const char *sub_type_str = nullptr;
         ESP_RETURN_ON_ERROR(tlv_element_type_to_type_str(sub_type, &sub_type_str), TAG, "Unsupported array subtype");
@@ -248,7 +253,7 @@ static esp_err_t encode_tlv_object(TLV::TLVReader &reader, cJSON **json, const t
                           "Failed to encode tlv node");
 
         char json_name[64] = { 0 };
-        ESP_GOTO_ON_ERROR(create_json_name(child_tag, child_type, child_sub_type, json_name, sizeof(json_name)),
+        ESP_GOTO_ON_ERROR(create_json_name(child_tag, child_type, child_sub_type, json_name, sizeof(json_name), options),
                           cleanup, TAG, "Failed to create json name");
 
         cJSON_AddItemToObject(json_obj, json_name, json_obj_child);
