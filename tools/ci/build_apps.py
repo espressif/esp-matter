@@ -70,7 +70,6 @@ NO_PYTEST_REMAINING_APPS = [
     {"target": "esp32h2", "name": "door_lock"},
     {"target": "esp32s3", "name": "ota_provider"},
     {"target": "esp32c3", "name": "sensors"},
-    {"target": "esp32"  , "name": "demo/badge"},
 ]
 MANIFEST_FILES = [
     str(PROJECT_ROOT / 'examples' / '.build-rules.yml'),

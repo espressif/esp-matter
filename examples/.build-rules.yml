@@ -75,12 +75,6 @@ examples/icd_app:
       temporary: true
       reason: the other targets are not tested yet
 
-examples/demo/badge:
-   enable:
-    - if: IDF_TARGET in ["esp32"]
-      temporary: true
-      reason: the other targets are not tested yet
-
 examples/managed_component_light:
    enable:
     - if: IDF_TARGET in [""]
