@@ -42,7 +42,7 @@ typedef struct config {
     bool update_possible;
     uint8_t update_state;
     nullable<uint8_t> update_state_progress;
-    config() : update_possible(true), update_state(0), update_state_progress(0) {}
+    config() : update_possible(true), update_state(0), update_state_progress() {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

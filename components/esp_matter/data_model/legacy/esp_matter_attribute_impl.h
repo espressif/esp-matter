@@ -855,7 +855,7 @@ namespace attribute {
 attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max);
 attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max);
 attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value, nullable<uint16_t> min, nullable<uint16_t> max);
-attribute_t *create_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
+attribute_t *create_tolerance(cluster_t *cluster, uint16_t value);
 attribute_t *create_light_sensor_type(cluster_t *cluster, nullable<uint8_t> value, nullable<uint8_t> min, nullable<uint8_t> max);
 } /* attribute */
 } /* illuminance_measurement */
@@ -866,11 +866,11 @@ namespace attribute {
 attribute_t *create_measured_value(cluster_t *cluster, nullable<int16_t> value);
 attribute_t *create_min_measured_value(cluster_t *cluster, nullable<int16_t> value);
 attribute_t *create_max_measured_value(cluster_t *cluster, nullable<int16_t> value);
-attribute_t *create_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
+attribute_t *create_tolerance(cluster_t *cluster, uint16_t value);
 attribute_t *create_scaled_value(cluster_t *cluster, nullable<int16_t> value);
 attribute_t *create_min_scaled_value(cluster_t *cluster, nullable<int16_t> value);
 attribute_t *create_max_scaled_value(cluster_t *cluster, nullable<int16_t> value);
-attribute_t *create_scaled_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
+attribute_t *create_scaled_tolerance(cluster_t *cluster, uint16_t value);
 attribute_t *create_scale(cluster_t *cluster, int8_t value);
 } /* attribute */
 } /* pressure_measurement */
@@ -881,7 +881,7 @@ namespace attribute {
 attribute_t *create_measured_value(cluster_t *cluster, nullable<uint16_t> value);
 attribute_t *create_min_measured_value(cluster_t *cluster, nullable<uint16_t> value);
 attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> value);
-attribute_t *create_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
+attribute_t *create_tolerance(cluster_t *cluster, uint16_t value);
 } /* attribute */
 } /* flow_measurement */
 

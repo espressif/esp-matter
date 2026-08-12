@@ -19,7 +19,7 @@
 
 namespace esp_matter {
 namespace cluster {
-namespace wi_fi_network_management {
+namespace wifi_network_management {
 
 inline constexpr uint32_t Id = 0x0451;
 
@@ -41,6 +41,6 @@ inline constexpr uint32_t Id = 0x01;
 } /* NetworkPassphraseResponse */
 } /* command */
 
-} /* wi_fi_network_management */
+} /* wifi_network_management */
 } /* cluster */
 } /* esp_matter */

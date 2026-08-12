@@ -363,6 +363,19 @@ class TestCodegenCluster(unittest.TestCase):
         self.assertIn("OnOff", cb)
         self.assertIn("Shutdown", cb)
 
+    def test_cluster_callback_preserves_acronym_casing(self):
+        # The callback name is derived directly from chip_name, which keeps mixed-case
+        # acronyms (WebRTC) intact so the emitted symbol matches the CHIP-cased handler.
+        c = _make_cluster(name="WebRTC Transport Provider", id_="0x0553")
+        self.assertEqual(
+            c.get_cluster_init_callback(),
+            "ESPMatterWebRTCTransportProviderClusterServerInitCallback",
+        )
+        self.assertEqual(
+            c.get_cluster_shutdown_callback(),
+            "ESPMatterWebRTCTransportProviderClusterServerShutdownCallback",
+        )
+
     def test_get_response_command(self):
         c = _make_cluster()
         cmd = _make_cmd("GetResponse", "0x0001")

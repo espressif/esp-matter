@@ -25,7 +25,7 @@ namespace feature {
 namespace spin {
 typedef struct config {
     nullable<uint8_t> spin_speed_current;
-    config() : spin_speed_current(0) {}
+    config() : spin_speed_current() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);

@@ -127,7 +127,7 @@ class TestNormalizeClusterName(unittest.TestCase):
             ("/clusters/door-lock-server", "door_lock"),
             ("occupancy-sensor-server.cpp", "occupancy_sensor"),
             ("GeneralDiagnosticsCluster.cpp", "general_diagnostics"),
-            ("WiFiNetworkManagement", "wi_fi_network_management"),
+            ("WiFiNetworkManagement", "wifi_network_management"),
         ]
         for name, expected in cases:
             with self.subTest(name=name, expected=expected):

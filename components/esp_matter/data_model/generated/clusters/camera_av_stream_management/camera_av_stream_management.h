@@ -190,6 +190,7 @@ command_t *create_capture_snapshot_response(cluster_t *cluster);
 typedef struct config {
     uint32_t max_content_buffer_size;
     uint32_t max_network_bandwidth;
+    void *delegate;
     struct {
         feature::audio::config_t audio;
         feature::video::config_t video;
@@ -201,7 +202,7 @@ typedef struct config {
         feature::night_vision::config_t night_vision;
     } features;
     uint32_t feature_flags;
-    config() : max_content_buffer_size(0), max_network_bandwidth(0), feature_flags(0) {}
+    config() : max_content_buffer_size(0), max_network_bandwidth(0), delegate(nullptr), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

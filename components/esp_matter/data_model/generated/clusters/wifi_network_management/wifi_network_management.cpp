@@ -20,8 +20,8 @@
 
 #include <app-common/zap-generated/cluster-enums.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
-#include <wi_fi_network_management.h>
-#include <wi_fi_network_management_ids.h>
+#include <wifi_network_management.h>
+#include <wifi_network_management_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
 #include <app/ClusterCallbacks.h>
@@ -35,7 +35,7 @@ constexpr uint16_t cluster_revision = 1;
 
 namespace esp_matter {
 namespace cluster {
-namespace wi_fi_network_management {
+namespace wifi_network_management {
 
 namespace attribute {
 attribute_t *create_ssid(cluster_t *cluster, uint8_t *value, uint16_t length)
@@ -68,8 +68,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = esp_matter::cluster::create(endpoint, wi_fi_network_management::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, wi_fi_network_management::Id));
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, wifi_network_management::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, wifi_network_management::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
         static const auto plugin_server_init_cb = CALL_ONCE(MatterWiFiNetworkManagementPluginServerInitCallback);
@@ -97,6 +97,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 
-} /* wi_fi_network_management */
+} /* wifi_network_management */
 } /* cluster */
 } /* esp_matter */

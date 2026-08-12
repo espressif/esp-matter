@@ -19,7 +19,7 @@
 
 namespace esp_matter {
 namespace cluster {
-namespace wi_fi_network_management {
+namespace wifi_network_management {
 
 const uint8_t k_max_ssid_length = 32u;
 namespace attribute {
@@ -35,11 +35,11 @@ command_t *create_network_passphrase_response(cluster_t *cluster);
 typedef struct config {
     uint8_t ssid[k_max_ssid_length];
     nullable<uint64_t> passphrase_surrogate;
-    config() : ssid{0}, passphrase_surrogate(0) {}
+    config() : ssid{0}, passphrase_surrogate() {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
-} /* wi_fi_network_management */
+} /* wifi_network_management */
 } /* cluster */
 } /* esp_matter */

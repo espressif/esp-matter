@@ -24,7 +24,6 @@ from utils.base_elements import (
     BaseCluster,
 )
 from utils.overrides import (
-    should_skip_delegate_callback,
     should_skip_plugin_callback,
     should_include_delegate_callback,
 )
@@ -439,12 +438,7 @@ class Attribute(BaseAttribute):
             if first_part.isdigit():
                 return int(first_part)
 
-        # If no explicit default value, use min_value as default if available.
-        # This ensures spec-compliant defaults when constraint min > 0.
-        min_value = convert_to_int(self.min_value)
-        if self.default_value is None and min_value is not None and min_value > 0:
-            return min_value
-
+        # _clamp_to_bounds() applies the accurate min/max constraints to the default value.
         return convert_to_int(self.default_value, default="0")
 
     def get_max_value(self):
@@ -521,19 +515,13 @@ class Cluster(BaseCluster):
         """Get the plugin server init callback for the cluster"""
         if not self.plugin_init_cb_available or should_skip_plugin_callback(self.id):
             return None
-        if "_cluster" in self.name.lower():
-            cluster_name = self.name.split("_Cluster")[0]
-            return f"Matter{cluster_name}PluginServerInitCallback"
-        else:
-            return f"Matter{self.chip_name}PluginServerInitCallback"
+        return self.plugin_server_init_callback
 
     def get_delegate_init_callback(self):
         """Get the delegate init callback for the cluster"""
-        if self.delegate_init_callback_available and not should_skip_delegate_callback(
+        if self.delegate_init_callback_available or should_include_delegate_callback(
             self.id
         ):
-            return f"{self.chip_name}DelegateInitCB"
-        if should_include_delegate_callback(self.id):
             return f"{self.chip_name}DelegateInitCB"
         return None
 

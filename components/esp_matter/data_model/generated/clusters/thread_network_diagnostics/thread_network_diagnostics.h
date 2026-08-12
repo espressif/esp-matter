@@ -139,7 +139,7 @@ typedef struct config {
     nullable<uint16_t> stable_data_version;
     nullable<uint8_t> leader_router_id;
     uint8_t channel_page_0_mask[k_max_channel_page_0_mask_length];
-    config() : channel(0), routing_role(0), network_name{0}, pan_id(0), extended_pan_id(0), mesh_local_prefix{0}, partition_id(0), weighting(0), data_version(0), stable_data_version(0), leader_router_id(0), channel_page_0_mask{0} {}
+    config() : channel(), routing_role(), network_name{0}, pan_id(), extended_pan_id(), mesh_local_prefix{0}, partition_id(), weighting(), data_version(), stable_data_version(), leader_router_id(), channel_page_0_mask{0} {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

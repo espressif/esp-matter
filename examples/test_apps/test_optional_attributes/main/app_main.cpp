@@ -165,7 +165,8 @@ extern "C" void app_main()
 
     // 4. Ethernet Network Diagnostics
     // Note: Usually only one of Ethernet or WiFi diagnostics should be present, but for test purpose we try adding.
-    cluster::ethernet_network_diagnostics::create(root_endpoint, nullptr, CLUSTER_FLAG_SERVER);
+    cluster::ethernet_network_diagnostics::config_t eth_diag_config;
+    cluster::ethernet_network_diagnostics::create(root_endpoint, &eth_diag_config, CLUSTER_FLAG_SERVER);
     cluster::ethernet_network_diagnostics::create_optional_attributes(cluster::get(root_endpoint, EthernetNetworkDiagnostics::Id));
 
     // 5. Occupancy Sensing
@@ -174,10 +175,9 @@ extern "C" void app_main()
     cluster::occupancy_sensing::create(root_endpoint, &occupancy_config, CLUSTER_FLAG_SERVER);
     cluster::occupancy_sensing::create_optional_attributes(cluster::get(root_endpoint, OccupancySensing::Id));
 
-    // 6. Resource Monitoring
-    cluster::resource_monitoring::config_t resource_config; // Assuming generic config or specific like HepaFilter
-    // Resource Monitoring is usually a base for specific clusters like HEPA Filter Monitoring.
-    // We'll create HepaFilterMonitoring as an example of ResourceMonitoring
+    // 6. Resource Monitoring: create HepaFilterMonitoring as an example.
+    // Use the concrete cluster's config_t; the generated data model has no resource_monitoring::config_t.
+    cluster::hepa_filter_monitoring::config_t resource_config;
     cluster::hepa_filter_monitoring::create(root_endpoint, &resource_config, CLUSTER_FLAG_SERVER);
     cluster::resource_monitoring::create_optional_attributes(cluster::get(root_endpoint, HepaFilterMonitoring::Id));
 
@@ -194,7 +194,8 @@ extern "C" void app_main()
     // 9. Wifi Network Diagnostics
     // Usually created by root_node::create if config enabled, but we ensure it's here and add optionals
     if (!cluster::get(root_endpoint, WiFiNetworkDiagnostics::Id)) {
-        cluster::wifi_network_diagnostics::create(root_endpoint, nullptr, CLUSTER_FLAG_SERVER);
+        cluster::wifi_network_diagnostics::config_t wifi_diag_config;
+        cluster::wifi_network_diagnostics::create(root_endpoint, &wifi_diag_config, CLUSTER_FLAG_SERVER);
     }
     cluster::wifi_network_diagnostics::create_optional_attributes(cluster::get(root_endpoint, WiFiNetworkDiagnostics::Id));
 

@@ -91,7 +91,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     }
 #endif // CHIP_CONFIG_ENABLE_ICD_SERVER
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
-    cluster::wi_fi_network_diagnostics::create(endpoint, &(config->wi_fi_network_diagnostics), CLUSTER_FLAG_SERVER);
+    cluster::wifi_network_diagnostics::create(endpoint, &(config->wifi_network_diagnostics), CLUSTER_FLAG_SERVER);
 #endif // CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
     cluster::thread_network_diagnostics::create(endpoint, &(config->thread_network_diagnostics), CLUSTER_FLAG_SERVER);

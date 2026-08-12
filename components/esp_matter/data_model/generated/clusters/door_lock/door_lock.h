@@ -47,7 +47,7 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 namespace door_position_sensor {
 typedef struct config {
     nullable<uint8_t> door_state;
-    config() : door_state(0) {}
+    config() : door_state() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -170,7 +170,7 @@ typedef struct config {
     uint8_t operating_mode;
     uint16_t supported_operating_modes;
     void *delegate;
-    config() : lock_state(0), lock_type(0), actuator_enabled(false), operating_mode(0), supported_operating_modes(0), delegate(nullptr) {}
+    config() : lock_state(), lock_type(0), actuator_enabled(false), operating_mode(0), supported_operating_modes(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

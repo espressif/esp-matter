@@ -56,7 +56,9 @@ class ClusterParseContext:
         internally_managed_attributes: dict,
     ):
         self.delegate_clusters = delegate_clusters
-        self.plugin_init_cb_clusters = plugin_init_cb_clusters
+        self.plugin_init_cb_clusters = (
+            plugin_init_cb_clusters if isinstance(plugin_init_cb_clusters, dict) else {}
+        )
         self.migrated_clusters = migrated_clusters
         self.zap_filter_list = zap_filter_list
         self.internally_managed_attributes = internally_managed_attributes

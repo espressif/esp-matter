@@ -89,6 +89,7 @@
 #include <clusters/microwave_oven_control/integration.h>
 #include <clusters/tls_client_management/integration.h>
 #include <clusters/tls_certificate_management/integration.h>
+#include <clusters/zone_management/integration.h>
 
 using namespace chip::app::Clusters;
 
@@ -955,6 +956,7 @@ void WakeOnLanDelegateInitCB(void *delegate, uint16_t endpoint_id)
     WakeOnLan::Delegate *wake_on_lan_delegate = static_cast<WakeOnLan::Delegate *>(delegate);
     WakeOnLan::SetDefaultDelegate(endpoint_id, wake_on_lan_delegate);
 }
+
 void TlsClientManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     VerifyOrReturn(delegate != nullptr);
@@ -980,6 +982,21 @@ void WebRTCTransportProviderDelegateInitCB(void *delegate, uint16_t endpoint_id)
     WebRTCTransportProvider::SetDelegate(
         endpoint_id,
         static_cast<chip::app::Clusters::WebRTCTransportProvider::Delegate *>(delegate));
+}
+
+void ZoneManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    ZoneManagement::MatterZoneManagementSetDelegate(
+        endpoint_id,
+        static_cast<chip::app::Clusters::ZoneManagement::Delegate *>(delegate));
+}
+
+void CameraAvSettingsUserLevelManagementDelegateInitCB(void * /* delegate */, uint16_t /* endpoint_id */)
+{
+}
+void WebRTCTransportRequestorDelegateInitCB(void * /* delegate */, uint16_t /* endpoint_id */)
+{
 }
 } // namespace delegate_cb
 } // namespace cluster

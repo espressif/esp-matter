@@ -364,6 +364,8 @@ class TestCluster(unittest.TestCase):
     def test_plugin_server_init_callback(self):
         c = self._make_cluster(name="OnOff")
         c.plugin_init_cb_available = True
+        # The exact CHIP symbol is captured from the plugin callback header during parsing.
+        c.plugin_server_init_callback = "MatterOnOffPluginServerInitCallback"
         cb = c.get_plugin_server_init_callback()
         self.assertIn("MatterOnOffPluginServerInitCallback", cb)
 

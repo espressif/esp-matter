@@ -29,7 +29,7 @@ attribute_t *create_selected_dryness_level(cluster_t *cluster, nullable<uint8_t>
 typedef struct config {
     nullable<uint8_t> selected_dryness_level;
     void *delegate;
-    config() : selected_dryness_level(0), delegate(nullptr) {}
+    config() : selected_dryness_level(), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

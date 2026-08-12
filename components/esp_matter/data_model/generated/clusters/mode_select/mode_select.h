@@ -26,7 +26,7 @@ namespace feature {
 namespace on_off {
 typedef struct config {
     nullable<uint8_t> on_mode;
-    config() : on_mode(0) {}
+    config() : on_mode() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -52,7 +52,7 @@ typedef struct config {
     nullable<uint16_t> standard_namespace;
     uint8_t current_mode;
     void *delegate;
-    config() : description{0}, standard_namespace(0), current_mode(0), delegate(nullptr) {}
+    config() : description{0}, standard_namespace(), current_mode(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

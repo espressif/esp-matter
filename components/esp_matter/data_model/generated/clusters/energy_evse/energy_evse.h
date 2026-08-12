@@ -29,7 +29,7 @@ typedef struct config {
     nullable<uint32_t> next_charge_target_time;
     nullable<int64_t> next_charge_required_energy;
     nullable<uint8_t> next_charge_target_soc;
-    config() : next_charge_start_time(0), next_charge_target_time(0), next_charge_required_energy(0), next_charge_target_soc(0) {}
+    config() : next_charge_start_time(), next_charge_target_time(), next_charge_required_energy(), next_charge_target_soc() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -39,7 +39,7 @@ namespace so_c_reporting {
 typedef struct config {
     nullable<uint8_t> state_of_charge;
     nullable<int64_t> battery_capacity;
-    config() : state_of_charge(0), battery_capacity(0) {}
+    config() : state_of_charge(), battery_capacity() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -64,7 +64,7 @@ typedef struct config {
     nullable<uint32_t> discharging_enabled_until;
     int64_t maximum_discharge_current;
     nullable<int64_t> session_energy_discharged;
-    config() : discharging_enabled_until(0), maximum_discharge_current(0), session_energy_discharged(0) {}
+    config() : discharging_enabled_until(), maximum_discharge_current(0), session_energy_discharged() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -130,7 +130,7 @@ typedef struct config {
     nullable<uint32_t> session_duration;
     nullable<int64_t> session_energy_charged;
     void *delegate;
-    config() : state(0), supply_state(0), fault_state(0), charging_enabled_until(0), circuit_capacity(0), minimum_charge_current(0), maximum_charge_current(0), session_id(0), session_duration(0), session_energy_charged(0), delegate(nullptr) {}
+    config() : state(), supply_state(0), fault_state(0), charging_enabled_until(), circuit_capacity(0), minimum_charge_current(0), maximum_charge_current(0), session_id(), session_duration(), session_energy_charged(), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
