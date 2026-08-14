@@ -32,6 +32,12 @@
 #include <credentials/FabricTable.h>
 #include <platform/KvsPersistentStorageDelegate.h>
 
+#if CONFIG_ENABLE_NETWORK_INFRASTRUCTURE_MANAGER
+#include <app/clusters/thread-network-directory-server/CodegenIntegration.h>
+#include <app/clusters/wifi-network-management-server/CodegenIntegration.h>
+#include <optional>
+#endif
+
 static const char *TAG = "app_main";
 
 using namespace esp_matter;
@@ -39,6 +45,30 @@ using namespace esp_matter::attribute;
 using namespace esp_matter::endpoint;
 using namespace chip::app::Clusters;
 using chip::app::Clusters::ThreadBorderRouterManagement::GenericOpenThreadBorderRouterDelegate;
+
+#if CONFIG_ENABLE_NETWORK_INFRASTRUCTURE_MANAGER
+// WiFiNetworkManagement and ThreadNetworkDirectory (unlike ThreadBorderRouterManagement) are not
+// auto-instantiated by the ZAP/attribute-storage framework - the application must instantiate and
+// register them itself. This mirrors the pattern documented in
+// <app/clusters/wifi-network-management-server/CodegenIntegration.h> and
+// <app/clusters/thread-network-directory-server/CodegenIntegration.h>.
+//
+// TODO: WiFiNetworkManagementServer::SetNetworkCredentials() still needs to be called with the
+// actual Wi-Fi STA SSID/passphrase once available (e.g. after Network Commissioning completes) -
+// left as a follow-up since this example does not otherwise expose that state.
+static std::optional<WiFiNetworkManagementServer> gWiFiNetworkManagementServer;
+static std::optional<DefaultThreadNetworkDirectoryServer> gThreadNetworkDirectoryServer;
+
+void emberAfWiFiNetworkManagementClusterInitCallback(chip::EndpointId endpoint)
+{
+    SuccessOrDie(gWiFiNetworkManagementServer.emplace(endpoint).Init());
+}
+
+void emberAfThreadNetworkDirectoryClusterInitCallback(chip::EndpointId endpoint)
+{
+    SuccessOrDie(gThreadNetworkDirectoryServer.emplace(endpoint).Init());
+}
+#endif // CONFIG_ENABLE_NETWORK_INFRASTRUCTURE_MANAGER
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
