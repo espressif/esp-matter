@@ -186,6 +186,15 @@ namespace app {
 namespace Clusters {
 namespace FanControl {
 
+FanControlCluster * FindClusterOnEndpoint(EndpointId endpointId)
+{
+    auto it = gServers.find(endpointId);
+    if (it == gServers.end() || !it->second.server.IsConstructed()) {
+        return nullptr;
+    }
+    return &it->second.server.Cluster();
+}
+
 void SetDefaultDelegate(EndpointId endpointId, Delegate * delegate)
 {
     auto it = gServers.find(endpointId);
