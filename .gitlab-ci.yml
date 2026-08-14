@@ -946,6 +946,15 @@ pre_commit_check:
         echo "No files changed, skipping pre-commit"
       fi
 
+    # Label release branched MRs with versioned labels
+    # e.g. release/v1.5 -> v1.5
+    - |
+      case "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" in release/*)
+        curl -sf -X PUT -H "PRIVATE-TOKEN: $GITLAB_MR_COMMENT_TOKEN" \
+          "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID?add_labels=${CI_MERGE_REQUEST_TARGET_BRANCH_NAME#release/}" \
+          > /dev/null && echo "Added label ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME#release/}" || echo "Labeling failed (non-fatal)"
+      esac
+
   tags:
     - build
 
