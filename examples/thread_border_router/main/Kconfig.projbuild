@@ -1,0 +1,16 @@
+menu "Thread Border Router Example"
+
+    config ENABLE_NETWORK_INFRASTRUCTURE_MANAGER
+        bool "Use the Network Infrastructure Manager device type instead of Thread Border Router"
+        default n
+        help
+            The "Network Infrastructure Manager" (NIM) Matter device type is a superset of
+            "Thread Border Router": it exposes the same ThreadBorderRouterManagement cluster
+            (and ThreadNetworkDiagnostics, if Thread is enabled), plus WiFiNetworkManagement
+            and ThreadNetworkDirectory.
+
+            Enable this to advertise the endpoint as a Network Infrastructure Manager instead
+            of a plain Thread Border Router. Left disabled by default to preserve this
+            example's existing behavior.
+
+endmenu

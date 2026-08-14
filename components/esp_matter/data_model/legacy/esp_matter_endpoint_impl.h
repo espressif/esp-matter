@@ -146,6 +146,8 @@
 
 #define ESP_MATTER_THREAD_BORDER_ROUTER_DEVICE_TYPE_ID 0x0091
 #define ESP_MATTER_THREAD_BORDER_ROUTER_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_NETWORK_INFRASTRUCTURE_MANAGER_DEVICE_TYPE_ID 0x0090
+#define ESP_MATTER_NETWORK_INFRASTRUCTURE_MANAGER_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_HEAT_PUMP_DEVICE_TYPE_ID 0x0309
 #define ESP_MATTER_HEAT_PUMP_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_THERMOSTAT_CONTROLLER_DEVICE_TYPE_ID 0x030A
@@ -1013,6 +1015,21 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 esp_err_t add(endpoint_t *endpoint, config_t *config);
 } /* thread_border_router */
+
+namespace network_infrastructure_manager {
+typedef struct config {
+    cluster::descriptor::config_t descriptor;
+    cluster::thread_network_diagnostics::config_t thread_network_diagnostics;
+    cluster::wifi_network_management::config_t wifi_network_management;
+    cluster::thread_border_router_management::config_t thread_border_router_management;
+    cluster::thread_network_directory::config_t thread_network_directory;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+esp_err_t add(endpoint_t *endpoint, config_t *config);
+} /* network_infrastructure_manager */
 
 #ifndef CONFIG_CUSTOM_NETWORK_CONFIG
 namespace secondary_network_interface {

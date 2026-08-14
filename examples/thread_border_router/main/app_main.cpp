@@ -86,9 +86,15 @@ extern "C" void app_main()
         ESP_LOGE(TAG, "Failed to create thread_border_router delegate");
         return;
     }
+#if CONFIG_ENABLE_NETWORK_INFRASTRUCTURE_MANAGER
+    network_infrastructure_manager::config_t tbr_config;
+    tbr_config.thread_border_router_management.delegate = delegate;
+    endpoint_t *tbr_endpoint = network_infrastructure_manager::create(node, &tbr_config, ENDPOINT_FLAG_NONE, NULL);
+#else
     thread_border_router::config_t tbr_config;
     tbr_config.thread_border_router_management.delegate = delegate;
     endpoint_t *tbr_endpoint = thread_border_router::create(node, &tbr_config, ENDPOINT_FLAG_NONE, NULL);
+#endif
     if (!node || !tbr_endpoint) {
         ESP_LOGE(TAG, "Failed to create data model");
         return;
