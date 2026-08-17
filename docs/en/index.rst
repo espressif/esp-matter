@@ -24,6 +24,7 @@ Table of Contents
    Matter Controller <controller>
    Matter Certification <certification>
    Production Considerations <production>
+   Espressif Matter Services <espressif_services>
    Security Considerations <security>
    RAM and Flash Optimizations <optimizations>
    API Reference <api-reference/index>
