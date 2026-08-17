@@ -35,4 +35,4 @@ provided for pre-provisioning purposes.
 
 - Build the firmware and provide the signed application binary (`build/mfg_test_app.bin`) to Espressif.
 
-- Please use esp-idf [v5.1](https://github.com/espressif/esp-idf/tree/v5.1).
+- Please use esp-idf [v6.0.2](https://github.com/espressif/esp-idf/tree/v6.0.2).

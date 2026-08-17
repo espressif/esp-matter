@@ -20,6 +20,7 @@
 #include <lib/core/CHIPError.h>
 #include <lib/support/BitFlags.h>
 #include <lib/support/CHIPMemString.h>
+#include <lib/support/CodeUtils.h>
 #include <messaging/ExchangeContext.h>
 #include <messaging/Flags.h>
 #include <protocols/bdx/BdxTransferSession.h>
@@ -129,7 +130,7 @@ void OtaBdxSender::HandleTransferSessionOutput(TransferSession::OutputEvent &eve
             http_downloader_abort(mHttpDownloader);
         }
         if (http_downloader_start(&config, &mHttpDownloader) != ESP_OK) {
-            mTransfer.AbortTransfer(StatusCode::kUnknown);
+            LogErrorOnFailure(mTransfer.AbortTransfer(StatusCode::kUnknown));
         }
         break;
     }
@@ -139,7 +140,7 @@ void OtaBdxSender::HandleTransferSessionOutput(TransferSession::OutputEvent &eve
 
         chip::System::PacketBufferHandle blockBuf = chip::System::PacketBufferHandle::New(bytesToRead);
         if (blockBuf.IsNull()) {
-            mTransfer.AbortTransfer(StatusCode::kUnknown);
+            LogErrorOnFailure(mTransfer.AbortTransfer(StatusCode::kUnknown));
             return;
         }
         // Read http response
@@ -147,13 +148,13 @@ void OtaBdxSender::HandleTransferSessionOutput(TransferSession::OutputEvent &eve
             http_downloader_read(mHttpDownloader, reinterpret_cast<char *>(blockBuf->Start()), bytesToRead);
         if (bytes_read < 0) {
             ESP_LOGE(TAG, "http_downloader_read failed");
-            mTransfer.AbortTransfer(StatusCode::kUnknown);
+            LogErrorOnFailure(mTransfer.AbortTransfer(StatusCode::kUnknown));
             break;
         }
         if (mOtaImageSize == 0 && mNumBytesSent == 0) {
             if (ParseOtaImageHeader(blockBuf->Start(), static_cast<size_t>(bytes_read)) != ESP_OK) {
                 ESP_LOGE(TAG, "Failed to Parse OTA image header");
-                mTransfer.AbortTransfer(StatusCode::kUnknown);
+                LogErrorOnFailure(mTransfer.AbortTransfer(StatusCode::kUnknown));
                 break;
             }
         }
@@ -166,7 +167,7 @@ void OtaBdxSender::HandleTransferSessionOutput(TransferSession::OutputEvent &eve
 
         if (CHIP_NO_ERROR != mTransfer.PrepareBlock(blockData)) {
             ESP_LOGE(TAG, "PrepareBlock failed: %" CHIP_ERROR_FORMAT, err.Format());
-            mTransfer.AbortTransfer(StatusCode::kUnknown);
+            LogErrorOnFailure(mTransfer.AbortTransfer(StatusCode::kUnknown));
         }
         break;
     }
