@@ -39,8 +39,8 @@ public:
 
     static void SetSlowPollingInterval(Milliseconds32 pollInterval)
     {
-        ICDConfigurationData::GetInstance().SetSlowPollingInterval(pollInterval);
-        if (pollInterval >= Milliseconds32(15000)) {
+        LogErrorOnFailure(ICDConfigurationData::GetInstance().SetSlowPollingInterval(pollInterval));
+        if (pollInterval > Milliseconds32(15000)) {
             // Active Threshold SHALL NOT be smaller than 5 seconds for LIT ICD.
             ICDConfigurationData::GetInstance().SetICDMode(ICDConfigurationData::ICDMode::LIT);
             if (ICDConfigurationData::GetInstance().mActiveThreshold < Milliseconds32(5000)) {
