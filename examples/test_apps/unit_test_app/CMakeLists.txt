@@ -6,7 +6,7 @@ set(PROJECT_VER_NUMBER 1)
 set(ESP_MATTER_PATH $ENV{ESP_MATTER_PATH})
 set(MATTER_SDK_PATH ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip)
 
-set(EXTRA_COMPONENT_DIRS "${CMAKE_CURRENT_LIST_DIR}/../../components"
+set(EXTRA_COMPONENT_DIRS "${ESP_MATTER_PATH}/components"
                          "${MATTER_SDK_PATH}/config/esp32/components")
 
 # Set the components to include the tests for.

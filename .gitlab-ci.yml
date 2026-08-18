@@ -469,7 +469,7 @@ build_esp_matter_examples:
     expire_in: 15 days
   script:
      # mfg_test_app needs an secure boot signing key, generating one here
-    - cd ${ESP_MATTER_PATH}/examples/mfg_test_app
+    - cd ${ESP_MATTER_PATH}/examples/test_apps/mfg_test_app
     - openssl genrsa -out secure_boot_signing_key.pem 3072
 
     - cd ${ESP_MATTER_PATH}/examples/light
@@ -658,16 +658,16 @@ build_unit_test_app_qemu:
     - .build_examples_template
   artifacts:
     paths:
-      - "examples/unit_test_app/build/*.bin"
-      - "examples/unit_test_app/build/flasher_args.json"
-      - "examples/unit_test_app/build/config/sdkconfig.json"
-      - "examples/unit_test_app/build/bootloader/*.bin"
-      - "examples/unit_test_app/build/partition_table/*.bin"
-      - "examples/unit_test_app/build/build_log.txt"
+      - "examples/test_apps/unit_test_app/build/*.bin"
+      - "examples/test_apps/unit_test_app/build/flasher_args.json"
+      - "examples/test_apps/unit_test_app/build/config/sdkconfig.json"
+      - "examples/test_apps/unit_test_app/build/bootloader/*.bin"
+      - "examples/test_apps/unit_test_app/build/partition_table/*.bin"
+      - "examples/test_apps/unit_test_app/build/build_log.txt"
     when: always
     expire_in: 4 days
   script:
-    - cd ${ESP_MATTER_PATH}/examples/unit_test_app
+    - cd ${ESP_MATTER_PATH}/examples/test_apps/unit_test_app
     - idf.py set-target esp32c3 build
 
 pytest_unit_test_app_qemu:
@@ -693,7 +693,7 @@ pytest_unit_test_app_qemu:
     - python ${IDF_PATH}/tools/idf_tools.py install qemu-riscv32
     - eval "$(python ${IDF_PATH}/tools/idf_tools.py export)"
     - pip install -r tools/ci/requirements-pytest.txt
-    - pytest examples/unit_test_app/pytest_unit_test_app.py
+    - pytest examples/test_apps/unit_test_app/pytest_unit_test_app.py
       --target esp32c3
       -m qemu
       --embedded-services idf,qemu
