@@ -74,7 +74,7 @@ WORKDIR /opt/espressif
 RUN set -x \
     && git clone --depth=1 --branch=${IDF_CHECKOUT_REF} --recurse-submodules --shallow-submodules ${IDF_CLONE_URL} ${IDF_PATH} \
     && cd ${IDF_PATH} \
-    && ./install.sh --disable-gdbgui --disable-pytest --disable-ci --disable-docs \
+    && ./install.sh --disable-ci --disable-docs \
     && git rev-parse --short HEAD > /opt/espressif/esp-idf-commit.txt \
     # remove the archives from the tools path
     && rm -rf ${IDF_TOOLS_PATH}/dist \
