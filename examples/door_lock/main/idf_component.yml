@@ -5,7 +5,9 @@ dependencies:
       - if: "idf_version >=5.0"
       - if: "target in [esp32c2]"
   esp_bsp_devkit:
-    version: "^3"
+    version: "^3.0.3"
+  espressif/led_indicator:
+    version: "2.0.2"
   espressif/led_strip:
     version: "^3"
   espressif/esp_aliro_lib:

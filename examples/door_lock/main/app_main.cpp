@@ -132,17 +132,20 @@ static esp_err_t app_identification_cb(identification::callback_type_t type, uin
 // handle the desired attributes and return an appropriate error code. If the attribute
 // is not of your interest, please do not return an error code and strictly return ESP_OK.
 static esp_err_t app_attribute_update_cb(attribute::callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
-                                         uint32_t attribute_id, esp_matter_attr_val_t *val, void *priv_data)
+                                         uint32_t attribute_id, esp_matter_attr_val_t *val,
+                                         [[maybe_unused]] void *priv_data)
 {
     esp_err_t err = ESP_OK;
 
-    if (type == PRE_UPDATE) {
-        /* Driver update */
-        app_driver_handle_t driver_handle = (app_driver_handle_t)priv_data;
-        err = app_driver_attribute_update(driver_handle, endpoint_id, cluster_id, attribute_id, val);
+    if (type == POST_UPDATE) {
+        /* Reflect the committed state without rejecting the Matter update on a driver error. */
+        err = app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to update driver, err:%s", esp_err_to_name(err));
+        }
     }
 
-    return err;
+    return ESP_OK;
 }
 
 extern "C" void app_main()
@@ -207,6 +210,13 @@ extern "C" void app_main()
     /* Matter start */
     err = esp_matter::start(app_event_cb);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
+
+    err = app_driver_init(door_lock_endpoint_id);
+    ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to initialize application driver, err:%d", err));
+    err = app_driver_set_defaults();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to set RGB LED state, err:%d", err);
+    }
 
     /* do nothing now */
     door_lock_init();

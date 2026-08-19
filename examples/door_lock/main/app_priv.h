@@ -15,16 +15,22 @@
 #include "esp_openthread_types.h"
 #endif
 
-typedef void *app_driver_handle_t;
-
-/** Initialize the button driver
+/** Initialize the application driver
  *
- * This initializes the button driver associated with the selected board.
+ * This initializes the button and optional RGB LED associated with the selected board.
  *
- * @return Handle on success.
- * @return NULL in case of failure.
+ * @param[in] endpoint_id Door Lock endpoint ID.
+ * @return ESP_OK on success.
+ * @return error in case of failure.
  */
-app_driver_handle_t app_driver_button_init();
+esp_err_t app_driver_init(uint16_t endpoint_id);
+
+/** Apply the current Door Lock state to the RGB LED.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t app_driver_set_defaults();
 
 /** Driver Update
  *
@@ -39,8 +45,8 @@ app_driver_handle_t app_driver_button_init();
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_t endpoint_id, uint32_t cluster_id,
-                                      uint32_t attribute_id, esp_matter_attr_val_t *val);
+esp_err_t app_driver_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
+                                      esp_matter_attr_val_t *val);
 
 /** The definition and invocation of this function are intended to resolve the issue:
  * unable to link and call the callback functions defined in the door_lock_callbacks.cpp file.
