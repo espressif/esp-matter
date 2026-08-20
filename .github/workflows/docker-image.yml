@@ -27,7 +27,6 @@ on:
 
 env:
   DOCKERHUB_REPO: ${{ github.repository }}
-  REQUIRED_IDF_VERSION: v5.5.5
 
 jobs:
   build:
@@ -37,6 +36,12 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
+        platform: [linux/amd64, linux/arm64]
+        idf: &idf_versions
+          - version: v5.5.5
+            default: true
+          - version: v6.0.2
+            default: false
         # Platforms to build the image for
         # Using native runners for each architecture to avoid slow QEMU emulation
         include:
@@ -90,7 +95,7 @@ jobs:
           build-args: |
             ESP_MATTER_CLONE_URL=${{ github.server_url }}/${{ github.repository }}.git
             ESP_MATTER_CHECKOUT_REF=${{ github.ref_name }}
-            IDF_CHECKOUT_REF=${{ env.REQUIRED_IDF_VERSION }}
+            IDF_CHECKOUT_REF=${{ matrix.idf.version }}
 
       - name: Export digest
         run: |
@@ -101,7 +106,7 @@ jobs:
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
-          name: digests-${{ env.PLATFORM_PAIR }}
+          name: digests-${{ matrix.idf.version }}-${{ env.PLATFORM_PAIR }}
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
@@ -110,6 +115,9 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build
+    strategy:
+      matrix:
+        idf: *idf_versions
     steps:
       # Depending on the branch/tag, set TAG_NAME (used when tagging the image).
       #
@@ -131,7 +139,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: /tmp/digests
-          pattern: digests-*
+          pattern: digests-${{ matrix.idf.version }}-*
           merge-multiple: true
 
       - name: Set up Docker Buildx
@@ -143,8 +151,8 @@ jobs:
         with:
           images: ${{ env.DOCKERHUB_REPO }}
           tags: |
-            ${{ env.TAG_NAME }}
-            ${{ env.TAG_NAME }}_idf_${{ env.REQUIRED_IDF_VERSION }}
+            type=raw,value=${{ env.TAG_NAME }},enable=${{ matrix.idf.default }}
+            ${{ env.TAG_NAME }}_idf_${{ matrix.idf.version }}
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
