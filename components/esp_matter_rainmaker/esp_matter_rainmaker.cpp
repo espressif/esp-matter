@@ -1,4 +1,4 @@
-// Copyright 2023 Espressif Systems (Shanghai) PTE LTD
+// Copyright 2023-2026 Espressif Systems (Shanghai) PTE LTD
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
 #include <esp_matter_rainmaker.h>
 #include <esp_rmaker_core.h>
 #include <esp_rmaker_user_mapping.h>
+#include <app/server/Server.h>
 #include <app/util/attribute-storage.h>
 #include <app/AttributeAccessInterface.h>
 #include <app/AttributeAccessInterfaceRegistry.h>
@@ -34,7 +35,7 @@
 using namespace chip::app;
 using namespace chip::app::Clusters;
 
-#define RAINMAKER_CLUSTER_REVISION 2
+#define RAINMAKER_CLUSTER_REVISION 3
 
 static const char *TAG = "esp_matter_rainmaker";
 
@@ -70,16 +71,6 @@ static constexpr chip::AttributeId Id = 0x00000003;
 } /* challenge */
 
 } /* attribute */
-
-namespace command {
-namespace configuration {
-[[deprecated("Configuration command is deprecated and will be removed in future.")]]
-static constexpr chip::CommandId Id = 0x00000000;
-} /* configuration */
-namespace sign_data {
-static constexpr chip::CommandId Id = 0x00000001;
-} /* sign_data */
-} /* command */
 
 } /* rainmaker */
 } /* cluster */
@@ -136,7 +127,7 @@ static void register_commands()
     esp_matter::console::add_commands(&command, 1);
     init_done = true;
 }
-#endif
+#endif // CONFIG_ENABLE_CHIP_SHELL
 
 static esp_err_t status_attribute_update(bool status)
 {
@@ -183,146 +174,40 @@ static void user_node_association_event_handler(void *arg, esp_event_base_t even
     }
 }
 
-// RainMaker cluster, has two commands: "configuration" and "sign message."
-// The "configuration" command has been deprecated, and the iOS app uses "sign message" command for user node
-// association.
-//
-// As per Matter specification, the payload for an invoke command should be encapsulated in a TLV structure, and each
-// argument should be encoded using a context-specific tag.
-//
-// However, the iOS app continues to send the payload without the TLV structure and context-specific tag. Future
-// versions of iOS will support both methods of RainMaker user-node association and so, no specific action is required from
-// firmware developers.
-//
-// On the other hand, the "config_command_callback()" correctly parses the payload. It initially extracts the TLV
-// structure and then examines the context-specific tag before decoding the actual argument, which is of type octet
-// string.
-static esp_err_t config_command_callback(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
+static esp_err_t sign_node_id_and_update_challenge_response(chip::FabricIndex fabric_index)
 {
-    /* Get ids */
-    uint16_t endpoint_id = command_path.mEndpointId;
-    uint32_t cluster_id = command_path.mClusterId;
-    uint32_t command_id = command_path.mCommandId;
-
-    /* Return if this is not the rainmaker configuration command */
-    if (endpoint_id != cluster::rainmaker::endpoint_id || cluster_id != cluster::rainmaker::Id ||
-            command_id != cluster::rainmaker::command::configuration::Id) {
-        ESP_LOGE(TAG, "Got rainmaker command callback for some other command. This should not happen.");
-        return ESP_FAIL;
-    }
-    ESP_LOGI(TAG, "RainMaker configuration command callback");
-    static int command_count = ESP_MATTER_RAINMAKER_COMMAND_LIMIT;
-    if (command_count <= 0) {
-        ESP_LOGE(TAG, "This command has reached a limit. Please reboot to try again.");
-        return ESP_FAIL;
-    }
-    command_count--;
-
-    /* Parse the tlv data */
-
-    if (chip::TLV::kTLVType_Structure != tlv_data.GetType()) {
-        return ESP_FAIL;
-    }
-    chip::TLV::TLVType mOuter;
-    if (CHIP_NO_ERROR != tlv_data.EnterContainer(mOuter)) {
-        return ESP_FAIL;
-    }
-    if (CHIP_NO_ERROR != tlv_data.Next()) {
-        return ESP_FAIL;
-    }
-    chip::TLV::Tag tag = tlv_data.GetTag();
-    if (!IsContextTag(tag)) {
-        return ESP_FAIL;
-    }
-    // check tag number, since this has only one argument, checking against 0
-    if (0 != TagNumFromTag(tag)) {
-        return ESP_FAIL;
-    }
-    // decode the octet string argument
-    chip::CharSpan config_value;
-    if (CHIP_NO_ERROR != DataModel::Decode(tlv_data, config_value)) {
-        return ESP_FAIL;
-    }
-
-    const char *data = config_value.data();
-    int size = config_value.size();
-    if (!data || size <= 0) {
-        ESP_LOGE(TAG, "Command data not found or was not decoded correctly. The expected data is a string or the"
-                 "format is \"<user_id>::<secret_key>\"");
-        return ESP_FAIL;
-    }
-
-    if (CHIP_NO_ERROR != tlv_data.ExitContainer(mOuter)) {
-        return ESP_FAIL;
-    }
-
-    /* The expected format of the data is "<user_id>::<secret_key>" */
-    char ch = ':';
-    char *check_first = (char *)memchr(data, (int)ch, size);
-    char *check_second = NULL;
-    if (check_first && (size >= (int)((check_first + 1) - data))) {
-        check_second = (char *)memchr(check_first + 1, (int)ch, size - (check_first - data + 1));
-    }
-    if (!check_first || !check_second || check_second != check_first + 1) {
-        ESP_LOGE(TAG, "\"::\" not found in the received data. The expected format is \"<user_id>::<secret_key>\"");
-        return ESP_FAIL;
-    }
-
-    /* Get sizes */
-    int user_id_index = 0;
-    int user_id_len = (int)((char *)memchr(data, (int)ch, size) - data); /* (first ':') - (start of string) */
-    int secret_key_index = (int)(&data[user_id_len] - data) + 2; /* (user id end) - (start of string) + 2 */
-    int secret_key_len = size - secret_key_index;
-    if (user_id_len <= 0 || user_id_len >= ESP_MATTER_RAINMAKER_MAX_DATA_LEN || secret_key_len <= 0 ||
-            secret_key_len >= ESP_MATTER_RAINMAKER_MAX_DATA_LEN) {
-        ESP_LOGE(TAG, "User id or secret key length invalid: user_id_len: %d, secret_key_len: %d",
-                 user_id_len, secret_key_len);
-        return ESP_FAIL;
-    }
-
-    /* Copy the data. This done to make the strings NULL terminated. */
-    char user_id[ESP_MATTER_RAINMAKER_MAX_DATA_LEN] = {0};
-    char secret_key[ESP_MATTER_RAINMAKER_MAX_DATA_LEN] = {0};
-    strncpy(user_id, &data[user_id_index], user_id_len);
-    strncpy(secret_key, &data[secret_key_index], secret_key_len);
-    ESP_LOGI(TAG, "user_id: %s, secret_key: %s", user_id, secret_key);
-
-    /* Call the rainmaker API */
-    if (strlen(user_id) > 0 && strlen(secret_key) > 0) {
-        esp_rmaker_start_user_node_mapping(user_id, secret_key);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t sign_and_update_challenge_response(chip::CharSpan challenge_span)
-{
-    if (challenge_span.size() >= ESP_MATTER_RAINMAKER_MAX_CHALLENGE_LEN) {
-        return ESP_ERR_INVALID_ARG;
-    }
-
     static int sign_count = ESP_MATTER_RAINMAKER_COMMAND_LIMIT;
     if (sign_count <= 0) {
         ESP_LOGE(TAG, "Signing limit reached. Please reboot to try again.");
         return ESP_FAIL;
     }
+
+    // Never sign external/arbitrary data. Always sign the Matter operational node ID for the accessing fabric.
+    const auto *fabric_info = chip::Server::GetInstance().GetFabricTable().FindFabricWithIndex(fabric_index);
+    if (!fabric_info) {
+        ESP_LOGE(TAG, "Fabric index %u not found", fabric_index);
+        return ESP_ERR_INVALID_STATE;
+    }
+
+    chip::NodeId node_id = fabric_info->GetNodeId();
+    ESP_LOGD(TAG, "fabric_index: %u, node_id: 0x" ChipLogFormatX64, fabric_index, ChipLogValueX64(node_id));
+
+    char node_id_str[24];
+    snprintf(node_id_str, sizeof(node_id_str), ChipLogFormatX64, ChipLogValueX64(node_id));
+    ESP_LOGD(TAG, "Signing node_id_str: '%s' (len: %u)", node_id_str, (unsigned)strlen(node_id_str));
+
     sign_count--;
 
-    /* Copy the data. This is done to make the strings NULL terminated. */
-    char challenge[ESP_MATTER_RAINMAKER_MAX_CHALLENGE_LEN] = {0};
-
-    uint8_t bytes_to_copy = std::min(sizeof(challenge), challenge_span.size());
-    strncpy(challenge, challenge_span.data(), bytes_to_copy);
-    challenge[bytes_to_copy] = 0;
-    ESP_LOGI(TAG, "challenge: %s", challenge);
-
-    // sign the data here
     char *challenge_response = NULL;
     size_t outlen = 0;
 
-    esp_err_t err = esp_rmaker_node_auth_sign_msg((void *)challenge, challenge_span.size(), (void **)&challenge_response, &outlen);
+    esp_err_t err = esp_rmaker_node_auth_sign_msg((void *)node_id_str, strlen(node_id_str),
+                                                  (void **)&challenge_response, &outlen);
     if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to sign node_id: %s", node_id_str);
         return err;
     }
+
     if (!challenge_response) {
         return ESP_ERR_INVALID_STATE;
     }
@@ -330,47 +215,6 @@ static esp_err_t sign_and_update_challenge_response(chip::CharSpan challenge_spa
     err = challenge_response_attribute_update(challenge_response);
     free(challenge_response);
     return err;
-}
-
-static esp_err_t sign_data_command_callback(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
-{
-    /* Get ids */
-    uint16_t endpoint_id = command_path.mEndpointId;
-    uint32_t cluster_id = command_path.mClusterId;
-    uint32_t command_id = command_path.mCommandId;
-
-    /* Return if this is not the rainmaker sign_data command */
-    if (endpoint_id != cluster::rainmaker::endpoint_id || cluster_id != cluster::rainmaker::Id ||
-            command_id != cluster::rainmaker::command::sign_data::Id) {
-        ESP_LOGE(TAG, "Got rainmaker command callback for some other command. This should not happen.");
-        return ESP_FAIL;
-    }
-    ESP_LOGI(TAG, "RainMaker sign_data command callback");
-    static int command_count = ESP_MATTER_RAINMAKER_COMMAND_LIMIT;
-    if (command_count <= 0) {
-        ESP_LOGE(TAG, "This command has reached a limit. Please reboot to try again.");
-        return ESP_FAIL;
-    }
-    command_count--;
-
-    // In an invoke interaction, the payload should be enclosed within an anonymous struct,
-    // and each argument must be specified using a context-specific tag.
-    // The following code parses the data without context-specific tags, which is incorrect and needs correction.
-    // TODO: CON-820
-
-    /* Parse the tlv data */
-    chip::CharSpan config_value;
-    if (CHIP_NO_ERROR != DataModel::Decode(tlv_data, config_value)) {
-        ESP_LOGE(TAG, "Failed to decode sign_data command payload");
-        return ESP_FAIL;
-    }
-    if (!config_value.data() || config_value.size() <= 0) {
-        ESP_LOGE(TAG, "Command data not found or was not decoded correctly. The expected data is a string or the"
-                 "format is \"<data>\"");
-        return ESP_FAIL;
-    }
-
-    return sign_and_update_challenge_response(config_value);
 }
 
 // This creates a server cluster
@@ -409,16 +253,11 @@ static esp_err_t custom_cluster_create()
     attribute::create(cluster, cluster::rainmaker::attribute::challenge::Id, ATTRIBUTE_FLAG_WRITABLE,
                       esp_matter_attr_val(challenge, strlen(challenge)), sizeof(challenge));
 
-    /* Create custom configuration command */
-    command::create(cluster, cluster::rainmaker::command::configuration::Id,
-                    COMMAND_FLAG_ACCEPTED | COMMAND_FLAG_CUSTOM, config_command_callback);
-
-    /* Create custom sign_data command */
-    command::create(cluster, cluster::rainmaker::command::sign_data::Id,
-                    COMMAND_FLAG_ACCEPTED | COMMAND_FLAG_CUSTOM, sign_data_command_callback);
-
     return ESP_OK;
 }
+
+// Enable this to log the incoming challenge payload for debugging
+#define LOG_INCOMING_PAYLOAD 0
 
 class RainmakerAttrAccess : public AttributeAccessInterface {
 public:
@@ -437,14 +276,18 @@ public:
                                                     cluster::rainmaker::attribute::challenge::Id);
 
         if (challengeAttrPath.MatchesConcreteAttributePath(aPath)) {
-            chip::CharSpan challenge;
-            CHIP_ERROR c_err = aDecoder.Decode(challenge);
-            if (c_err != CHIP_NO_ERROR) {
-                ESP_LOGE(TAG, "Failed to decode challenge, err:%" CHIP_ERROR_FORMAT, c_err.Format());
-                return c_err;
+#if LOG_INCOMING_PAYLOAD
+            chip::CharSpan incoming;
+            CHIP_ERROR decode_err = aDecoder.Decode(incoming);
+            if (decode_err == CHIP_NO_ERROR && incoming.data()) {
+                ESP_LOGI(TAG, "Challenge write: incoming payload (%u bytes): %.*s",
+                         (unsigned)incoming.size(), (int)incoming.size(), incoming.data());
+            } else {
+                ESP_LOGI(TAG, "Challenge write: no payload or decode failed");
             }
-
-            return (ESP_OK == sign_and_update_challenge_response(challenge)) ? CHIP_NO_ERROR : CHIP_ERROR_INCORRECT_STATE;
+#endif // LOG_INCOMING_PAYLOAD
+            chip::FabricIndex fabric_index = aDecoder.GetSubjectDescriptor().fabricIndex;
+            return (ESP_OK == sign_node_id_and_update_challenge_response(fabric_index)) ? CHIP_NO_ERROR : CHIP_ERROR_INCORRECT_STATE;
         }
 
         return CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE;
