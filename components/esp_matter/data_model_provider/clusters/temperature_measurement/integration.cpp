@@ -35,6 +35,26 @@ namespace {
 std::unordered_map<EndpointId, LazyRegisteredServerCluster<TemperatureMeasurementCluster>> gServers;
 } // namespace
 
+namespace chip::app::Clusters::TemperatureMeasurement {
+
+TemperatureMeasurementCluster * FindClusterOnEndpoint(EndpointId endpointId)
+{
+    auto it = gServers.find(endpointId);
+    if (it == gServers.end() || !it->second.IsConstructed()) {
+        return nullptr;
+    }
+    return &it->second.Cluster();
+}
+
+CHIP_ERROR SetMeasuredValue(EndpointId endpointId, DataModel::Nullable<int16_t> measuredValue)
+{
+    auto * cluster = FindClusterOnEndpoint(endpointId);
+    VerifyOrReturnError(cluster != nullptr, CHIP_ERROR_NOT_FOUND);
+    return cluster->SetMeasuredValue(measuredValue);
+}
+
+} // namespace chip::app::Clusters::TemperatureMeasurement
+
 void ESPMatterTemperatureMeasurementClusterServerInitCallback(EndpointId endpointId)
 {
     VerifyOrReturn(cluster::get(endpointId, TemperatureMeasurement::Id) != nullptr,
