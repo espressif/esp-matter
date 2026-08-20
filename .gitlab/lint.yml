@@ -1,0 +1,15 @@
+# Python linting for the repo (ruff). git ls-files only yields tracked files, so
+# the connectedhomeip submodule and managed_components are naturally excluded.
+
+python_lint:
+  image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
+  stage: pre_check
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
+  script:
+    # ruff pinned to 0.15.22; 0.16.x introduces stricter star-import handling (see ruff.toml)
+    - pip install ruff==0.15.22
+    - git ls-files '*.py' | xargs ruff check
+    - git ls-files '*.py' | xargs ruff format --check
+  tags:
+    - build
