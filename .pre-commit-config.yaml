@@ -15,3 +15,11 @@ repos:
   hooks:
   - id: codespell
     args: ['--config=.codespellrc', '--write-changes']
+
+# Keep rev in sync with the ruff pin in .gitlab/lint.yml
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.15.22
+  hooks:
+  - id: ruff-check
+    args: ['--fix']
+  - id: ruff-format

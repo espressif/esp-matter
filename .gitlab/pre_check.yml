@@ -1,5 +1,9 @@
 # Jobs of the pre_check stage: fast source-level checks, no build artifacts.
 
+# pre_commit_check runs the ruff hooks only on files changed in the MR.
+# So an MR that bumps the ruff pin or edits ruff.toml can leave new violations
+# in untouched files, and an unrelated MR touching those files later takes the hit.
+# This job checks the whole repo, so the config-changing MR fails instead.
 python_lint:
   image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
   stage: pre_check
@@ -7,6 +11,7 @@ python_lint:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
   script:
     # ruff pinned to 0.15.22; 0.16.x introduces stricter star-import handling (see ruff.toml)
+    # Keep rev in sync with the ruff pin in .pre-commit-config.yaml
     - pip install ruff==0.15.22
     - git ls-files '*.py' | xargs ruff check
     - git ls-files '*.py' | xargs ruff format --check
