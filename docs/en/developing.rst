@@ -4,10 +4,19 @@ Developing with the SDK
 Please refer the :project_file:`Release Notes <RELEASE_NOTES.md>` to know more about
 the releases
 
-ESP-IDF Setup
--------------
+You can develop with ESP-IDF and ESP-Matter in either of the following ways:
 
-This section talks about setting up ESP-IDF.
+- Set up ESP-IDF and ESP-Matter on the host.
+- Use the official Docker image, which already includes both.
+
+.. _setup-on-the-host:
+
+Setup on the Host
+-----------------
+
+.. note::
+
+    Skip this step if you prefer to use the Docker image. See :ref:`using-docker-image`.
 
 Host Setup
 ~~~~~~~~~~
@@ -45,8 +54,11 @@ For using VSCode for development, please check `Developing in WSL <https://code.
 
    Using CHIP-tool in WSL <using_chip_tool>
 
-Getting the Repository
-~~~~~~~~~~~~~~~~~~~~~~
+.. _getting-the-repository:
+.. _getting-the-repositories:
+
+ESP-IDF
+~~~~~~~
 
 The Prerequisites for ESP-IDF:
 
@@ -83,29 +95,40 @@ The Prerequisites for ESP-IDF:
          ./install.sh
          cd ..
 
-Configuring the Environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ESP Matter
+~~~~~~~~~~
 
-This should be done each time a new terminal is opened
+There are two options to setup ESP-Matter. Choose one according to your needs:
+
+- ESP Matter component: SDK only, added with ``idf.py add-dependency``. Lighter setup for product applications; no clone of the esp-matter repository or host tools.
+- ESP Matter repository: SDK, examples, and host tools (CHIP-tool, CHIP-cert, ZAP, ...). Use this for full development, commissioning, certification, and data-model work.
+
+.. _esp-matter-component:
+
+ESP Matter Component
+^^^^^^^^^^^^^^^^^^^^
+
+You can check the component in `Espressif Component Registry <https://components.espressif.com/components/espressif/esp_matter>`__.
+
+To add the esp_matter component to your project, run:
 
 ::
 
-   cd esp-idf; source ./export.sh; cd ..
+   idf.py add-dependency "espressif/esp_matter^1.4.0"
 
+An example with esp_matter component is offered:
 
-ESP Matter Setup
-----------------
+-  :project_file:`Managed Component Light <examples/managed_component_light/README.md>`
 
-There are two options to setup esp-matter, you can select one according to demand:
+.. note::
 
-- ESP matter repository, including esp-matter SDK and tools (e.g., CHIP-tool, CHIP-cert, ZAP, ...).
-- ESP matter component, including esp-matter SDK.
+    To use this component, the version of IDF component management should be ``1.4.*`` or ``>= 2.0``.
+    Use ``compote version`` to show the version. Use ``pip install 'idf-component-manager~=1.4.0'``
+    or ``pip install 'idf-component-manager~=2.0.0'`` to install.
+
 
 ESP-Matter Repository
-~~~~~~~~~~~~~~~~~~~~~
-
-Getting the Repository
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
 
 The Prerequisites for Matter:
 
@@ -186,7 +209,7 @@ To clone the esp-matter repository with all the submodules, use the following co
 
 
 Configuring the Environment
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This should be done each time a new terminal is opened
 
@@ -208,28 +231,61 @@ Ccache caches the previous compilations and speeds up recompilation in subsequen
 Above can also be added to your shell’s profile file (.profile, .bashrc, .zprofile, etc.)
 to enable ccache every time you open a new terminal.
 
-.. _esp-matter-component:
+.. _using-docker-image:
 
-ESP Matter Component
-~~~~~~~~~~~~~~~~~~~~
-
-You can check the component in `Espressif Component Registry <https://components.espressif.com/components/espressif/esp_matter>`__.
-
-To add the esp_matter component to your project, run:
-
-::
-
-   idf.py add-dependency "espressif/esp_matter^1.4.0"
-
-An example with esp_matter component is offered:
-
--  :project_file:`Managed Component Light <examples/managed_component_light/README.md>`
+Using Docker Image
+------------------
 
 .. note::
 
-    To use this component, the version of IDF component management should be ``1.4.*`` or ``>= 2.0``.
-    Use ``compote version`` to show the version. Use ``pip install 'idf-component-manager~=1.4.0'``
-    or ``pip install 'idf-component-manager~=2.0.0'`` to install.
+    Skip this step if you have already set up ESP-IDF and ESP-Matter on the host.
+
+The official image ``espressif/esp-matter`` on `Docker Hub`_ already contains ESP-IDF,
+ESP-Matter, and host tools such as ``chip-tool`` and ``chip-cert``. The container
+entrypoint sources the IDF and ESP-Matter environment, so you can run ``idf.py``
+without extra setup.
+
+By default, use the ``latest`` tag:
+
+::
+
+   docker pull espressif/esp-matter:latest
+
+You can pin another release if needed, for example v1.6:
+
+::
+
+   docker pull espressif/esp-matter:release-v1.6
+
+Build an example that is already in the image:
+
+::
+
+   docker run --rm -it espressif/esp-matter:latest \
+       idf.py -C examples/light build
+
+Build a project on the host by mounting the current directory:
+
+::
+
+   docker run --rm -it -v $PWD:/project -w /project \
+       espressif/esp-matter:latest \
+       idf.py build
+
+Open an interactive shell (IDF and ESP-Matter are already exported):
+
+::
+
+   docker run --rm -it -v $PWD:/project -w /project \
+       espressif/esp-matter:latest
+
+See :project_file:`tools/docker/README.md` for build arguments if you need to
+build a custom image.
+
+.. _build-and-flash:
+
+Build and Flash
+---------------
 
 Building Applications
 ~~~~~~~~~~~~~~~~~~~~~
@@ -381,7 +437,6 @@ Choose IDF target.
     ::
 
       pip install -r $IDF_PATH/requirements.txt
-
 
 Commissioning and Control
 -------------------------
@@ -1566,6 +1621,7 @@ Example Usage
 
   If the example uses ESP-Matter APIs to define its data model, the custom data model should be created and added to the data model using the esp-matter APIs, following the instructions in `Adding custom data model fields <./developing.html#adding-custom-data-model-fields>`__
 
+.. _`Docker Hub`: https://hub.docker.com/r/espressif/esp-matter
 .. _`step by step installation guide`: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/linux-macos-setup.html
 .. _`Prerequisites for ESP-IDF`: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/index.html#installation
 .. _`Prerequisites for Matter`: https://github.com/project-chip/connectedhomeip/tree/master/docs/guides/BUILDING.md#prerequisites
