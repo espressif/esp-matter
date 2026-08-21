@@ -33,4 +33,7 @@ CHIP_ERROR SetCumulativeReset(EndpointId endpointId,
                               const DataModel::Nullable<Structs::CumulativeEnergyResetStruct::Type> &cumulativeReset);
 
 ElectricalEnergyMeasurementCluster *GetClusterInstance(EndpointId endpointId);
+
+/// Alias for GetClusterInstance matching the upstream CodegenIntegration API name
+ElectricalEnergyMeasurementCluster *FindElectricalEnergyMeasurementClusterOnEndpoint(EndpointId endpointId);
 }

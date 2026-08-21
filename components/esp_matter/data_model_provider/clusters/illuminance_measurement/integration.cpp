@@ -35,6 +35,33 @@ namespace {
 std::unordered_map<EndpointId, LazyRegisteredServerCluster<IlluminanceMeasurementCluster>> gServers;
 } // namespace
 
+namespace chip::app::Clusters::IlluminanceMeasurement {
+
+IlluminanceMeasurementCluster * FindClusterOnEndpoint(EndpointId endpointId)
+{
+    auto it = gServers.find(endpointId);
+    if (it == gServers.end() || !it->second.IsConstructed()) {
+        return nullptr;
+    }
+    return &it->second.Cluster();
+}
+
+CHIP_ERROR SetMeasuredValue(EndpointId endpointId, DataModel::Nullable<uint16_t> measuredValue)
+{
+    auto * cluster = FindClusterOnEndpoint(endpointId);
+    VerifyOrReturnError(cluster != nullptr, CHIP_ERROR_NOT_FOUND);
+    return cluster->SetMeasuredValue(measuredValue);
+}
+
+CHIP_ERROR SetMeasuredValueRange(EndpointId endpointId, DataModel::Nullable<uint16_t> minMeasuredValue, DataModel::Nullable<uint16_t> maxMeasuredValue)
+{
+    auto * cluster = FindClusterOnEndpoint(endpointId);
+    VerifyOrReturnError(cluster != nullptr, CHIP_ERROR_NOT_FOUND);
+    return cluster->SetMeasuredValueRange(minMeasuredValue, maxMeasuredValue);
+}
+
+} // namespace chip::app::Clusters::IlluminanceMeasurement
+
 void ESPMatterIlluminanceMeasurementClusterServerInitCallback(EndpointId endpointId)
 {
     VerifyOrReturn(cluster::get(endpointId, IlluminanceMeasurement::Id) != nullptr,

@@ -26,6 +26,19 @@ std::unordered_map<EndpointId, LazyRegisteredServerCluster<BooleanStateCluster>>
 
 } // namespace
 
+namespace chip::app::Clusters::BooleanState {
+
+BooleanStateCluster * FindClusterOnEndpoint(EndpointId endpointId)
+{
+    auto it = gServers.find(endpointId);
+    if (it == gServers.end() || !it->second.IsConstructed()) {
+        return nullptr;
+    }
+    return &it->second.Cluster();
+}
+
+} // namespace chip::app::Clusters::BooleanState
+
 void ESPMatterBooleanStateClusterServerInitCallback(EndpointId endpointId)
 {
     if (!gServers[endpointId].IsConstructed()) {

@@ -53,6 +53,13 @@ CHIP_ERROR SetMeasuredValue(EndpointId endpointId, DataModel::Nullable<int16_t> 
     return cluster->SetMeasuredValue(measuredValue);
 }
 
+CHIP_ERROR SetMeasuredValueRange(EndpointId endpointId, DataModel::Nullable<int16_t> minMeasuredValue, DataModel::Nullable<int16_t> maxMeasuredValue)
+{
+    auto * cluster = FindClusterOnEndpoint(endpointId);
+    VerifyOrReturnError(cluster != nullptr, CHIP_ERROR_NOT_FOUND);
+    return cluster->SetMeasuredValueRange(minMeasuredValue, maxMeasuredValue);
+}
+
 } // namespace chip::app::Clusters::TemperatureMeasurement
 
 void ESPMatterTemperatureMeasurementClusterServerInitCallback(EndpointId endpointId)

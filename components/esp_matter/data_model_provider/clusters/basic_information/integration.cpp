@@ -83,3 +83,13 @@ void ESPMatterBasicInformationClusterServerShutdownCallback(EndpointId endpointI
 void MatterBasicInformationPluginServerInitCallback() {}
 
 void MatterBasicInformationPluginServerShutdownCallback() {}
+
+namespace chip::app::Clusters::BasicInformation {
+
+BasicInformationCluster * GetClusterInstance()
+{
+    VerifyOrReturnValue(gServer.IsConstructed(), nullptr);
+    return &gServer.Cluster();
+}
+
+} // namespace chip::app::Clusters::BasicInformation

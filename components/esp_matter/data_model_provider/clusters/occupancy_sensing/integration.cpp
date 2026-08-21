@@ -52,6 +52,19 @@ OccupancySensing::Feature getFeature(EndpointId endpointId)
 
 } // namespace
 
+namespace chip::app::Clusters::OccupancySensing {
+
+OccupancySensingCluster * FindClusterOnEndpoint(EndpointId endpointId)
+{
+    auto it = gServers.find(endpointId);
+    if (it == gServers.end() || !it->second.IsConstructed()) {
+        return nullptr;
+    }
+    return &it->second.Cluster();
+}
+
+} // namespace chip::app::Clusters::OccupancySensing
+
 void ESPMatterOccupancySensingClusterServerInitCallback(EndpointId endpointId)
 {
     if (!gServers[endpointId].IsConstructed()) {
