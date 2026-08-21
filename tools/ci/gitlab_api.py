@@ -6,6 +6,7 @@ import os
 import requests
 import logging
 
+
 class GitLabAPI:
     def __init__(self):
         self.gitlab_api_url = os.getenv("CI_API_V4_URL")
@@ -16,8 +17,15 @@ class GitLabAPI:
         self.ci_commit_ref_name = os.getenv("CI_COMMIT_REF_NAME")
         self.ci_gitlab_pytest_ssid = os.getenv("CI_GITLAB_PYTEST_SSID")
         self.ci_gitlab_pytest_passphrase = os.getenv("CI_GITLAB_PYTEST_PASSPHRASE")
-        
-        if not all([self.gitlab_api_url, self.gitlab_token, self.ci_project_id, self.ci_pipeline_id]):
+
+        if not all(
+            [
+                self.gitlab_api_url,
+                self.gitlab_token,
+                self.ci_project_id,
+                self.ci_pipeline_id,
+            ]
+        ):
             raise ValueError("Required GitLab environment variables are not set")
 
     def fetch_merge_request_description(self):
@@ -43,8 +51,10 @@ class GitLabAPI:
         response.raise_for_status()
         pipelines = response.json()
         if not pipelines:
-            raise ValueError(f"No pipeline found for commit: {commit_sha} on branch: {branch_name}.")
-        return pipelines[0]['id']
+            raise ValueError(
+                f"No pipeline found for commit: {commit_sha} on branch: {branch_name}."
+            )
+        return pipelines[0]["id"]
 
     def fetch_merge_request_diff_versions(self):
         url = f"{self.gitlab_api_url}/projects/{self.ci_project_id}/merge_requests/{self.ci_merge_request_iid}/versions"
@@ -80,9 +90,9 @@ class GitLabAPI:
         headers = {"PRIVATE-TOKEN": self.gitlab_token}
         with requests.get(url, headers=headers, stream=True) as response:
             response.raise_for_status()
-            with open(output_file, 'wb') as f:
+            with open(output_file, "wb") as f:
                 for chunk in response.iter_content(chunk_size=8192):
-                    f.write(chunk) 
+                    f.write(chunk)
 
     def cancel_pipeline(self, pipeline_id):
         url = f"{self.gitlab_api_url}/projects/{self.ci_project_id}/pipelines/{pipeline_id}/cancel"
@@ -92,4 +102,6 @@ class GitLabAPI:
         if response.status_code == 200:
             print(f"Successfully cancelled Pipeline ID: {pipeline_id}")
         else:
-            print(f"Failed to cancel Pipeline ID: {pipeline_id}, Status Code: {response.status_code}")
+            print(
+                f"Failed to cancel Pipeline ID: {pipeline_id}, Status Code: {response.status_code}"
+            )

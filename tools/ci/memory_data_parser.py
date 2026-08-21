@@ -4,12 +4,20 @@
 
 import subprocess
 
+
 class StaticMemoryParser:
     @staticmethod
     def execute_idf_size_command(old_file_path, new_file_path):
         try:
             result = subprocess.run(
-                ["python", "-m", "esp_idf_size", "--diff", old_file_path, new_file_path],
+                [
+                    "python",
+                    "-m",
+                    "esp_idf_size",
+                    "--diff",
+                    old_file_path,
+                    new_file_path,
+                ],
                 capture_output=True,
                 text=True,
                 check=True,
@@ -17,6 +25,7 @@ class StaticMemoryParser:
             return result.stdout
         except subprocess.CalledProcessError as e:
             raise
+
 
 class DynamicMemoryParser:
     @staticmethod
@@ -39,8 +48,13 @@ class DynamicMemoryParser:
                 largest_free_block = line.split()[-1]
             elif "Min. Ever Free Size" in line:
                 min_ever_free_size = line.split()[-1]
-                parsed_logs.append([current_state, current_free_mem, largest_free_block, min_ever_free_size])
-        
+                parsed_logs.append(
+                    [
+                        current_state,
+                        current_free_mem,
+                        largest_free_block,
+                        min_ever_free_size,
+                    ]
+                )
+
         return parsed_logs
-
-

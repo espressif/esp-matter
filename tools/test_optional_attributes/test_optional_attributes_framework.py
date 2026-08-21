@@ -19,8 +19,8 @@ from matter.testing.decorators import async_test_body
 from matter.testing.matter_testing import MatterBaseTest
 from matter.testing.runner import default_matter_test_main
 
-class TestOptionalAttributes(MatterBaseTest):
 
+class TestOptionalAttributes(MatterBaseTest):
     # Mapping of Cluster Object to list of Attribute Objects to check
     # We use the actual Cluster objects from matter.clusters
     OPTIONAL_ATTRIBUTES = {
@@ -38,11 +38,11 @@ class TestOptionalAttributes(MatterBaseTest):
         Clusters.BooleanStateConfiguration: [
             # TODO:Intentionally skip DefaultSensitivityLevel, AlarmsEnabled, optional features conformance.
             # Clusters.BooleanStateConfiguration.Attributes.DefaultSensitivityLevel,
-            #Clusters.BooleanStateConfiguration.Attributes.AlarmsEnabled,
+            # Clusters.BooleanStateConfiguration.Attributes.AlarmsEnabled,
             Clusters.BooleanStateConfiguration.Attributes.SensorFault,
         ],
         Clusters.Descriptor: [
-            # Clusters.Descriptor.Attributes.EndpointUniqueId 
+            # Clusters.Descriptor.Attributes.EndpointUniqueId
             # Note: EndpointUniqueId might not be available in all older versions of the controller definitions
             # We will check dynamically if possible, or skip if attribute object doesn't exist
         ],
@@ -114,8 +114,10 @@ class TestOptionalAttributes(MatterBaseTest):
     }
 
     # Add EndpointUniqueId dynamically if it exists
-    if hasattr(Clusters.Descriptor.Attributes, 'EndpointUniqueId'):
-        OPTIONAL_ATTRIBUTES[Clusters.Descriptor].append(Clusters.Descriptor.Attributes.EndpointUniqueId)
+    if hasattr(Clusters.Descriptor.Attributes, "EndpointUniqueId"):
+        OPTIONAL_ATTRIBUTES[Clusters.Descriptor].append(
+            Clusters.Descriptor.Attributes.EndpointUniqueId
+        )
 
     @async_test_body
     async def test_optional_attributes(self):
@@ -124,7 +126,7 @@ class TestOptionalAttributes(MatterBaseTest):
         # We assume endpoint 1 for most application clusters, or we can probe the endpoint.
         # For simplicity in this test, we might iterate endpoints or just default to 1.
         # Better: Read the descriptor to find endpoints.
-        
+
         logging.info(f"Reading from Node ID: {node_id}")
 
         # 1. Get List of Endpoints
@@ -133,7 +135,7 @@ class TestOptionalAttributes(MatterBaseTest):
             attribute=Clusters.Descriptor.Attributes.PartsList,
             dev_ctrl=dev_ctrl,
             node_id=node_id,
-            endpoint=0
+            endpoint=0,
         )
         endpoints = [0] + list(endpoint_list)
         logging.info(f"Found Endpoints: {endpoints}")
@@ -143,7 +145,7 @@ class TestOptionalAttributes(MatterBaseTest):
 
         for cluster_class, attributes in self.OPTIONAL_ATTRIBUTES.items():
             cluster_name = cluster_class.__name__
-            
+
             # Find which endpoint has this cluster
             target_endpoint = None
             for ep in endpoints:
@@ -153,14 +155,16 @@ class TestOptionalAttributes(MatterBaseTest):
                     attribute=Clusters.Descriptor.Attributes.ServerList,
                     dev_ctrl=dev_ctrl,
                     node_id=node_id,
-                    endpoint=ep
+                    endpoint=ep,
                 )
                 if cluster_class.id in server_list:
                     target_endpoint = ep
                     break
-            
+
             if target_endpoint is None:
-                logging.warning(f"Cluster {cluster_name} not found on any endpoint. Skipping attributes.")
+                logging.warning(
+                    f"Cluster {cluster_name} not found on any endpoint. Skipping attributes."
+                )
                 continue
 
             logging.info(f"Checking {cluster_name} on Endpoint {target_endpoint}")
@@ -187,7 +191,7 @@ class TestOptionalAttributes(MatterBaseTest):
                         attribute=attribute_def,
                         dev_ctrl=dev_ctrl,
                         node_id=node_id,
-                        endpoint=target_endpoint
+                        endpoint=target_endpoint,
                     )
                     successes.append(f"{cluster_name}::{attr_name} = {val}")
                     logging.info(f"  [PASS] {attr_name}: {val}")
@@ -200,11 +204,12 @@ class TestOptionalAttributes(MatterBaseTest):
         logging.info("Test Results:")
         logging.info(f"Passed: {len(successes)}")
         logging.info(f"Failed: {len(failures)}")
-        
+
         if failures:
             for f in failures:
                 logging.error(f"  {f}")
             asserts.fail("Some optional attributes failed to read.")
+
 
 if __name__ == "__main__":
     default_matter_test_main()
