@@ -3,10 +3,13 @@
 # SPDX-License-Identifier: CC0-1.0
 
 import argparse
-import logging
 import glob
-from memory_data_parser import StaticMemoryParser, DynamicMemoryParser
+import logging
+import subprocess
+
+import requests
 from gitlab_api import GitLabAPI
+from memory_data_parser import DynamicMemoryParser, StaticMemoryParser
 from results_formatter import ResultsFormatter
 
 
@@ -58,8 +61,13 @@ def process_static_memory(gitlab_api, formatter, chip, example, ref_map_file, jo
         gitlab_api.update_merge_request_description(description)
 
         return True
-    except Exception as e:
-        logging.error(f"Error processing static memory: {str(e)}")
+    except (
+        requests.RequestException,
+        subprocess.CalledProcessError,
+        OSError,
+        ValueError,
+    ) as e:
+        logging.error(f"Error processing static memory: {e!s}")
         return False
 
 
@@ -84,8 +92,13 @@ def process_dynamic_memory(gitlab_api, formatter, chip, example, log_file):
         else:
             logging.warning("No heap dump data found in the log file.")
             return False
-    except Exception as e:
-        logging.error(f"Error processing dynamic memory: {str(e)}")
+    except (
+        requests.RequestException,
+        subprocess.CalledProcessError,
+        OSError,
+        ValueError,
+    ) as e:
+        logging.error(f"Error processing dynamic memory: {e!s}")
         return False
 
 

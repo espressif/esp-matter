@@ -2,15 +2,17 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+import json
+import os
 import pathlib
 import re
 import subprocess
-from pytest_embedded import Dut
-import os
-from prettytable import PrettyTable
-import json
 import time
+
+import requests
 from gitlab_api import GitLabAPI
+from prettytable import PrettyTable
+from pytest_embedded import Dut
 from results_formatter import ResultsFormatter
 
 PYTEST_PATH = str(
@@ -135,7 +137,7 @@ def update_mr_description_with_results(markdown_content, chunk_id=None):
         )
         gitlab_api.update_merge_request_description(updated_description)
         print("Successfully updated MR description with test results.")
-    except Exception as e:
+    except requests.RequestException as e:
         print(f"Failed to update MR description: {e}")
 
 

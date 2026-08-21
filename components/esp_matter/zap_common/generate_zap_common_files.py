@@ -18,14 +18,14 @@
 Script to generate files under zap_common directory
 """
 
-import os
-import xml.etree.ElementTree as ET
 import argparse
-import logging
-import sys
 import glob
+import logging
+import os
 import re
-from datetime import date
+import sys
+import xml.etree.ElementTree as ET
+from datetime import datetime, timezone
 
 # These clusters are not implemented in current connectedhomeip repo
 EXCLUDE_CLUSTERS = ["Demand Response Load Control", "Timer"]
@@ -101,7 +101,7 @@ def get_clusters_from_xml_files(xml_files):
 
 def word_format(word):
     capitalized_word = word.capitalize()
-    if capitalized_word in WORD_FORMAT_LIST.keys():
+    if capitalized_word in WORD_FORMAT_LIST:
         return WORD_FORMAT_LIST[capitalized_word]
     else:
         return capitalized_word
@@ -124,12 +124,10 @@ def generate_plugin_application_callbacks_h(xml_files, output_dir):
         header_file.write("#pragma once\n")
         clusters = get_clusters_from_xml_files(xml_files)
         clusters.sort(key=get_formatted_cluster_name)
-        for cluster in clusters:
-            header_file.write(
-                "void Matter{}PluginServerInitCallback();\n".format(
-                    format_cluster_name(get_cluster_name(cluster))
-                )
-            )
+        header_file.writelines(
+            f"void Matter{format_cluster_name(get_cluster_name(cluster))}PluginServerInitCallback();\n"
+            for cluster in clusters
+        )
 
 
 def generate_cluster_callbacks_h(xml_files, output_dir):
@@ -143,21 +141,17 @@ def generate_cluster_callbacks_h(xml_files, output_dir):
         clusters.sort(key=get_formatted_cluster_name)
         for cluster in clusters:
             header_file.write(
-                "void ESPMatter{}ClusterServerInitCallback(EndpointId endpoint);\n".format(
-                    format_cluster_name(get_cluster_name(cluster))
-                )
+                f"void ESPMatter{format_cluster_name(get_cluster_name(cluster))}ClusterServerInitCallback(EndpointId endpoint);\n"
             )
             header_file.write(
-                "void ESPMatter{}ClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);\n\n".format(
-                    format_cluster_name(get_cluster_name(cluster))
-                )
+                f"void ESPMatter{format_cluster_name(get_cluster_name(cluster))}ClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);\n\n"
             )
 
 
 def generate_cluster_callbacks_cpp(xml_files, output_dir):
     with open(os.path.join(output_dir, "app/ClusterCallbacks.cpp"), "w") as cpp_file:
         cpp_file.write(
-            f"// Copyright 2025-{date.today().year} Espressif Systems (Shanghai) PTE LTD\n"
+            f"// Copyright 2025-{datetime.now(timezone.utc).year} Espressif Systems (Shanghai) PTE LTD\n"
         )
         cpp_file.write("//\n")
         cpp_file.write(
@@ -193,17 +187,13 @@ def generate_cluster_callbacks_cpp(xml_files, output_dir):
         for cluster in clusters:
             cluster_name = format_cluster_name(get_cluster_name(cluster))
             cpp_file.write(
-                "__attribute__((weak)) void ESPMatter{}ClusterServerInitCallback(EndpointId endpoint)\n".format(
-                    cluster_name
-                )
+                f"__attribute__((weak)) void ESPMatter{cluster_name}ClusterServerInitCallback(EndpointId endpoint)\n"
             )
             cpp_file.write("{\n")
             cpp_file.write("    // Default empty implementation\n")
             cpp_file.write("}\n\n")
             cpp_file.write(
-                "__attribute__((weak)) void ESPMatter{}ClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)\n".format(
-                    cluster_name
-                )
+                f"__attribute__((weak)) void ESPMatter{cluster_name}ClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)\n"
             )
             cpp_file.write("{\n")
             cpp_file.write("    // Default empty implementation\n")
@@ -213,9 +203,9 @@ def generate_cluster_callbacks_cpp(xml_files, output_dir):
 def get_attribute_read_privilege(attribute):
     for element in attribute:
         if element.tag == "access" and element.attrib["op"] == "read":
-            if "privilege" in element.attrib.keys():
+            if "privilege" in element.attrib:
                 return element.attrib["privilege"]
-            elif "role" in element.attrib.keys():
+            elif "role" in element.attrib:
                 return element.attrib["role"]
     return "view"
 
@@ -223,9 +213,9 @@ def get_attribute_read_privilege(attribute):
 def get_attribute_write_privilege(attribute):
     for element in attribute:
         if element.tag == "access" and element.attrib["op"] == "write":
-            if "privilege" in element.attrib.keys():
+            if "privilege" in element.attrib:
                 return element.attrib["privilege"]
-            elif "role" in element.attrib.keys():
+            elif "role" in element.attrib:
                 return element.attrib["role"]
     return "operate"
 
@@ -242,9 +232,9 @@ def get_attribute_name(attribute):
 def get_command_invoke_privilege(command):
     for element in command:
         if element.tag == "access" and element.attrib["op"] == "invoke":
-            if "privilege" in element.attrib.keys():
+            if "privilege" in element.attrib:
                 return element.attrib["privilege"]
-            elif "role" in element.attrib.keys():
+            elif "role" in element.attrib:
                 return element.attrib["role"]
     return "operate"
 
@@ -252,9 +242,9 @@ def get_command_invoke_privilege(command):
 def get_event_read_privilege(event):
     for element in event:
         if element.tag == "access" and element.attrib["op"] == "read":
-            if "privilege" in element.attrib.keys():
+            if "privilege" in element.attrib:
                 return element.attrib["privilege"]
-            elif "role" in element.attrib.keys():
+            elif "role" in element.attrib:
                 return element.attrib["role"]
     return "view"
 
@@ -347,53 +337,27 @@ def get_privileges(clusters):
 
 def get_privileges_array(privileges, array_type, interaction_type, object_type):
     if array_type == "cluster":
-        array = "// Parallel array data (*cluster*, {}, privilege) for {} {}\n".format(
-            object_type, interaction_type, object_type
-        )
+        array = f"// Parallel array data (*cluster*, {object_type}, privilege) for {interaction_type} {object_type}\n"
     elif array_type == "attribute" or array_type == "command" or array_type == "event":
-        array = "// Parallel array data (cluster, *{}*, privilege) for {} {}\n".format(
-            object_type, interaction_type, object_type
-        )
+        array = f"// Parallel array data (cluster, *{object_type}*, privilege) for {interaction_type} {object_type}\n"
     elif array_type == "privilege":
-        array = "// Parallel array data (cluster, {}, *privilege*) for {} {}\n".format(
-            object_type, interaction_type, object_type
-        )
+        array = f"// Parallel array data (cluster, {object_type}, *privilege*) for {interaction_type} {object_type}\n"
     else:
         logging.error("Invalid array_type")
         sys.exit(1)
 
-    array += "#define GENERATED_ACCESS_{}_{}__{} {{ \\\n".format(
-        interaction_type.upper(), object_type.upper(), array_type.upper()
-    )
+    array += f"#define GENERATED_ACCESS_{interaction_type.upper()}_{object_type.upper()}__{array_type.upper()} {{ \\\n"
     for privilege in privileges:
         if array_type == "cluster":
-            array += "    {}, /* Cluster: {}, {}: {}, Privilege: {} */ \\\n".format(
-                privilege[0],
-                privilege[1],
-                object_type.capitalize(),
-                privilege[3],
-                privilege[4],
-            )
+            array += f"    {privilege[0]}, /* Cluster: {privilege[1]}, {object_type.capitalize()}: {privilege[3]}, Privilege: {privilege[4]} */ \\\n"
         elif (
             array_type == "attribute"
             or array_type == "command"
             or array_type == "event"
         ):
-            array += "    {}, /* Cluster: {}, {}: {}, Privilege: {} */ \\\n".format(
-                privilege[2],
-                privilege[1],
-                object_type.capitalize(),
-                privilege[3],
-                privilege[4],
-            )
+            array += f"    {privilege[2]}, /* Cluster: {privilege[1]}, {object_type.capitalize()}: {privilege[3]}, Privilege: {privilege[4]} */ \\\n"
         elif array_type == "privilege":
-            array += "    chip::Access::Privilege::k{}, /* Cluster: {}, {}: {}, Privilege: {} */ \\\n".format(
-                privilege[4].capitalize(),
-                privilege[1],
-                object_type.capitalize(),
-                privilege[3],
-                privilege[4],
-            )
+            array += f"    chip::Access::Privilege::k{privilege[4].capitalize()}, /* Cluster: {privilege[1]}, {object_type.capitalize()}: {privilege[3]}, Privilege: {privilege[4]} */ \\\n"
 
     array += "}\n"
     array += "\n"

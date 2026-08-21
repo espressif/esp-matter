@@ -1,22 +1,18 @@
 # SPDX-License-Identifier: CC0-1.0
 
-import pytest
-import time
-import re
-import pexpect
-import subprocess
-import netifaces
-from typing import Tuple
-from pytest_embedded import Dut
 import os
+import re
+import subprocess
+import time
+
+import netifaces
+import pytest
 import yaml
-import sys
+from gitlab_api import GitLabAPI
+from pytest_cert_helper import run_python_certification_tests
+from pytest_embedded import Dut
 
 ESP_MATTER_PATH = os.environ["ESP_MATTER_PATH"]
-
-sys.path.append(os.path.abspath(os.path.join(ESP_MATTER_PATH, "tools", "ci")))
-from pytest_cert_helper import *
-from gitlab_api import GitLabAPI
 
 CURRENT_DIR_LIGHT = os.path.join(ESP_MATTER_PATH, "examples", "light")
 CHIP_TOOL_EXE = os.path.join(
@@ -293,7 +289,7 @@ def fixture_Init_interface() -> bool:
 )
 
 # Matter over thread commissioning
-def test_matter_commissioning_h2(dut: Tuple[Dut, Dut]) -> None:
+def test_matter_commissioning_h2(dut: tuple[Dut, Dut]) -> None:
     ot_br = dut[1]
     light = dut[0]
     # For matter over thread commissioning need to reset host interface

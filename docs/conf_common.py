@@ -1,5 +1,6 @@
-from esp_docs.conf_docs import *  # noqa: F403,F401
 import subprocess
+
+from esp_docs.conf_docs import *
 
 languages = ["en"]
 idf_targets = [
@@ -34,7 +35,7 @@ try:
         .decode("utf-8")
         .strip()
     )
-except:
+except (subprocess.CalledProcessError, OSError):
     current_commit = "main"  # Fallback if git command fails
 
 # do not check for anchors

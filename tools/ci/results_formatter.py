@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: CC0-1.0
 
 import re
+
 from tabulate import tabulate
 
 

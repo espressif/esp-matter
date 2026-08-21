@@ -1,17 +1,15 @@
 # SPDX-License-Identifier: CC0-1.0
 
-import pytest
-import time
+import os
 import re
 import subprocess
+import time
+
+import pytest
+from gitlab_api import GitLabAPI
 from pytest_embedded import Dut
-import os
-import sys
 
 ESP_MATTER_PATH = os.environ["ESP_MATTER_PATH"]
-
-sys.path.append(os.path.join(ESP_MATTER_PATH, "tools", "ci"))
-from gitlab_api import GitLabAPI
 
 CURRENT_DIR = os.path.join(
     ESP_MATTER_PATH, "examples", "test_apps", "test_optional_attributes"

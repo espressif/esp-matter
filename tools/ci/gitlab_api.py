@@ -2,9 +2,10 @@
 
 # SPDX-License-Identifier: CC0-1.0
 
-import os
-import requests
 import logging
+import os
+
+import requests
 
 
 class GitLabAPI:
@@ -91,8 +92,7 @@ class GitLabAPI:
         with requests.get(url, headers=headers, stream=True) as response:
             response.raise_for_status()
             with open(output_file, "wb") as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    f.write(chunk)
+                f.writelines(response.iter_content(chunk_size=8192))
 
     def cancel_pipeline(self, pipeline_id):
         url = f"{self.gitlab_api_url}/projects/{self.ci_project_id}/pipelines/{pipeline_id}/cancel"

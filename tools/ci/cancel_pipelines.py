@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: CC0-1.0
 
 import re
-import os
+
 import requests
 from gitlab_api import GitLabAPI
 

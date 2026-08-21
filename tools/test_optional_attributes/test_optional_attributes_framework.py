@@ -13,17 +13,19 @@
 # limitations under the License.
 
 import logging
-from mobly import asserts
+import typing
+
 import matter.clusters as Clusters
 from matter.testing.decorators import async_test_body
 from matter.testing.matter_testing import MatterBaseTest
 from matter.testing.runner import default_matter_test_main
+from mobly import asserts
 
 
 class TestOptionalAttributes(MatterBaseTest):
     # Mapping of Cluster Object to list of Attribute Objects to check
     # We use the actual Cluster objects from matter.clusters
-    OPTIONAL_ATTRIBUTES = {
+    OPTIONAL_ATTRIBUTES: typing.ClassVar = {
         Clusters.BasicInformation: [
             Clusters.BasicInformation.Attributes.ManufacturingDate,
             Clusters.BasicInformation.Attributes.PartNumber,
@@ -169,20 +171,6 @@ class TestOptionalAttributes(MatterBaseTest):
 
             logging.info(f"Checking {cluster_name} on Endpoint {target_endpoint}")
 
-            # Read AttributeList to verify presence
-            # AttributeList is global attribute 0xFFFB
-            # We can use the generated cluster object for this if available, or just standard read
-            try:
-                # Using the standard read to get the list of supported attributes
-                # We can't always rely on the high-level object for 'AttributeList' if it's not generated
-                # typically it is in Globals?
-                # Actually, standard read returns the decoded structure.
-                # Let's try reading the specific attribute and catch errors.
-                pass
-            except Exception as e:
-                logging.error(f"Failed to prepare check for {cluster_name}: {e}")
-                continue
-
             for attribute_def in attributes:
                 attr_name = attribute_def.__name__
                 try:
@@ -195,9 +183,9 @@ class TestOptionalAttributes(MatterBaseTest):
                     )
                     successes.append(f"{cluster_name}::{attr_name} = {val}")
                     logging.info(f"  [PASS] {attr_name}: {val}")
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001 -- any read failure is a test result
                     # If it fails, it might be UnsupportedAttribute if not implemented
-                    failures.append(f"{cluster_name}::{attr_name} - {str(e)}")
+                    failures.append(f"{cluster_name}::{attr_name} - {e!s}")
                     logging.error(f"  [FAIL] {attr_name}: {e}")
 
         logging.info("-" * 40)

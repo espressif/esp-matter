@@ -15,9 +15,13 @@
 
 import logging
 import os
+import sys
 import xml.etree.ElementTree as ET
+from collections.abc import Callable
 from datetime import datetime
-from typing import Callable, List, Optional, Tuple
+
+# Make the shared CI helpers (tools/ci) importable from all pytest scripts
+sys.path.append(os.path.join(os.environ.get("ESP_MATTER_PATH", ""), "tools", "ci"))
 
 import pytest
 from _pytest.config import Config, ExitCode
@@ -31,18 +35,17 @@ from _pytest.terminal import TerminalReporter
 from pytest_embedded.plugin import multi_dut_argument, multi_dut_fixture
 from pytest_embedded.utils import find_by_suffix
 
-
 DEFAULT_SDKCONFIG = "default"
 
 
 ##################
 # Help Functions #
 ##################
-def format_case_id(target: Optional[str], config: Optional[str], case: str) -> str:
+def format_case_id(target: str | None, config: str | None, case: str) -> str:
     return f"{target}.{config}.{case}"
 
 
-def item_marker_names(item: Item) -> List[str]:
+def item_marker_names(item: Item) -> list[str]:
     return [marker.name for marker in item.iter_markers()]
 
 
@@ -54,7 +57,7 @@ def session_tempdir() -> str:
     _tmpdir = os.path.join(
         os.path.dirname(os.path.dirname(__file__)),
         "pytest_embedded_log",
-        datetime.now().strftime("%Y-%m-%d_%H-%M-%S"),
+        datetime.now().astimezone().strftime("%Y-%m-%d_%H-%M-%S"),
     )
     os.makedirs(_tmpdir, exist_ok=True)
     return _tmpdir
@@ -78,7 +81,7 @@ def test_case_name(request: FixtureRequest, target: str, config: str) -> str:
 
 @pytest.fixture
 @multi_dut_fixture
-def build_dir(app_path: str, target: Optional[str], config: Optional[str]) -> str:
+def build_dir(app_path: str, target: str | None, config: str | None) -> str:
     """
     Check local build dir with the following priority:
 
@@ -191,20 +194,20 @@ def pytest_unconfigure(config: Config) -> None:
 class IdfPytestEmbedded:
     def __init__(
         self,
-        target: Optional[str] = None,
+        target: str | None = None,
     ):
         # CLI options to filter the test cases
         self.target = target
-        self._failed_cases: List[
-            Tuple[str, bool, bool]
+        self._failed_cases: list[
+            tuple[str, bool, bool]
         ] = []  # (test_case_name, is_known_failure_cases, is_xfail)
 
     @property
-    def failed_cases(self) -> List[str]:
+    def failed_cases(self) -> list[str]:
         return [case for case, is_xfail in self._failed_cases if not is_xfail]
 
     @property
-    def xfail_cases(self) -> List[str]:
+    def xfail_cases(self) -> list[str]:
         return [case for case, is_xfail in self._failed_cases if is_xfail]
 
     @pytest.hookimpl(tryfirst=True)
@@ -214,7 +217,7 @@ class IdfPytestEmbedded:
             session.config.option.target = self.target
 
     @pytest.hookimpl(tryfirst=True)
-    def pytest_collection_modifyitems(self, items: List[Function]) -> None:
+    def pytest_collection_modifyitems(self, items: list[Function]) -> None:
         # sort by file path and callspec.config
         # implement like this since this is a limitation of pytest, couldn't get fixture values while collecting
         # https://github.com/pytest-dev/pytest/discussions/9689
@@ -238,7 +241,7 @@ class IdfPytestEmbedded:
 
     def pytest_runtest_makereport(
         self, item: Function, call: CallInfo[None]
-    ) -> Optional[TestReport]:
+    ) -> TestReport | None:
         report = TestReport.from_item_and_call(item, call)
         if report.outcome == "failed":
             test_case_name = item.funcargs.get("test_case_name", "")
@@ -276,9 +279,8 @@ class IdfPytestEmbedded:
             xml.write(junit)
 
     def pytest_sessionfinish(self, session: Session, exitstatus: int) -> None:
-        if exitstatus != 0:
-            if exitstatus == ExitCode.NO_TESTS_COLLECTED:
-                session.exitstatus = 0
+        if exitstatus != 0 and exitstatus == ExitCode.NO_TESTS_COLLECTED:
+            session.exitstatus = 0
 
     def pytest_terminal_summary(self, terminalreporter: TerminalReporter) -> None:
         if self.xfail_cases:

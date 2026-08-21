@@ -5,14 +5,13 @@
 # This file is used in CI generate binary files for different kinds of apps
 
 import argparse
+import logging
 import sys
 from pathlib import Path
-from typing import List
 
-import logging
+from idf_build_apps import App, build_apps, find_apps, setup_logging
 
 idf_build_apps_logger = logging.getLogger("idf_build_apps")
-from idf_build_apps import App, build_apps, find_apps, setup_logging
 
 # from idf_ci_utils import IDF_PATH, get_pytest_app_paths, get_pytest_cases, get_ttfw_app_paths
 
@@ -115,10 +114,10 @@ def _is_no_pytest_remaining_app(app: App) -> bool:
 
 
 def get_cmake_apps(
-    paths: List[str],
+    paths: list[str],
     target: str,
-    config_rules_str: List[str],
-) -> List[App]:
+    config_rules_str: list[str],
+) -> list[App]:
     apps = find_apps(
         paths,
         recursive=True,
