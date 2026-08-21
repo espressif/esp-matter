@@ -1,10 +1,23 @@
-# Developer Guide
+# Contributing Guide
 
 This guide covers the development workflow and tooling for contributors to esp-matter.
 
+## Submitting Changes
+
+1. Fork the repository and create a topic branch from `main`.
+2. Make your changes, following the [commit message](#commit-messages) convention below.
+3. Make sure the [pre-commit hooks](#pre-commit-hooks) pass — they enforce the code style and other checks.
+4. Open a pull request against `main`.
+
+## Commit Messages
+
+- Prefix the subject with the component or area being changed, e.g. `components/esp_matter: fix attribute persistence` or `examples/light: update default config`.
+- Keep the subject concise; add a body explaining *why* when it isn't obvious.
+
 ## Pre-commit Hooks
 
-The repository uses [pre-commit](https://pre-commit.com/) to run automated checks before each commit. Following hooks are configured:
+The repository uses [pre-commit](https://pre-commit.com/) to run automated checks before each commit.
+The following hooks are configured:
 
 1. astyle_py — C/C++ Code Formatter
 
