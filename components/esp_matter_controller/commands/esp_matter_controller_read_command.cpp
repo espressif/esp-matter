@@ -41,7 +41,8 @@ void read_command::on_device_connected_fcn(void *context, ExchangeManager &excha
     chip::OperationalDeviceProxy device_proxy(&exchangeMgr, sessionHandle);
     esp_err_t err = interaction::read::send_request(&device_proxy, cmd->m_attr_paths.Get(),
                                                     cmd->m_attr_paths.AllocatedSize(), cmd->m_event_paths.Get(),
-                                                    cmd->m_event_paths.AllocatedSize(), cmd->m_buffered_read_cb);
+                                                    cmd->m_event_paths.AllocatedSize(), cmd->m_buffered_read_cb,
+                                                    cmd->m_fabric_filtered);
     if (err != ESP_OK) {
         chip::Platform::Delete(cmd);
     }
