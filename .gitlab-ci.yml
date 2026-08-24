@@ -810,9 +810,7 @@ build_docs:
     artifacts:
         when: always
         paths:
-            - docs/_build/*/*/*.txt
-            - docs/_build/*/*/html/*
-            - docs/_build/*/*/latex/*
+            - docs_build.tgz
         expire_in: 1 days
     script:
         - cd docs
@@ -820,6 +818,18 @@ build_docs:
         - build-docs -bs html latex -t esp32 esp32s3 esp32c2 esp32c3 esp32c6 esp32h2 esp32p4 esp32c5 esp32c61 esp32s31 esp32h21 esp32h4 -l en
         # disable link checks for now, as it is failing due to some links taking longer time to respond
         # - build-docs -t esp32 -l en linkcheck
+        # Per-target HTML duplicates large identical _static files (fonts/css).
+        # Hardlink them and drop latex intermediates so the artifact stays under the coordinator limit.
+        - |
+          REF="${CI_PROJECT_DIR}/docs/_build/en/esp32/html/_static"
+          for d in ${CI_PROJECT_DIR}/docs/_build/en/*/html/_static; do
+            [ "$d" -ef "$REF" ] && continue
+            rm -rf "$d"
+            cp -al "$REF" "$d"
+          done
+          find ${CI_PROJECT_DIR}/docs/_build -path '*/latex/*' ! -name '*.pdf' ! -type d -delete
+          tar --exclude='*/xml' --exclude='*/xml_in' --exclude='*/doctrees' --exclude='*/inc' --exclude='*/man' --exclude='*/_sources' \
+              -czf ${CI_PROJECT_DIR}/docs_build.tgz -C ${CI_PROJECT_DIR} docs/_build
 
 .deploy_docs_template:
     stage: docs
@@ -831,6 +841,7 @@ build_docs:
     variables:
         ESP_DOCS_LATEST_BRANCH_NAME: "main"
     script:
+        - tar -xzf ${CI_PROJECT_DIR}/docs_build.tgz -C ${CI_PROJECT_DIR}
         - source ${CI_PROJECT_DIR}/docs/utils.sh
         - add_doc_server_ssh_keys $DOCS_DEPLOY_PRIVATEKEY $DOCS_DEPLOY_SERVER $DOCS_DEPLOY_SERVER_USER
         - export GIT_VER=$(git describe --always)
