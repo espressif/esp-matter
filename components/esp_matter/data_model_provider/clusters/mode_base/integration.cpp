@@ -18,6 +18,7 @@
 #include <app/clusters/mode-base-server/mode-base-cluster-objects.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
 #include <lib/support/CodeUtils.h>
+#include <lib/support/IntrusiveList.h>
 #include <lib/support/logging/CHIPLogging.h>
 #include <platform/DiagnosticDataProvider.h>
 
@@ -53,6 +54,11 @@ Instance::~Instance()
 
 CHIP_ERROR Instance::Init()
 {
+    // Endpoint re-enable invokes the delegate init callback again. The cluster survives a
+    // non-permanent shutdown (no shutdown callback is registered for mode clusters), so a
+    // second Init() has nothing to re-create or re-register.
+    VerifyOrReturnError(!mCluster.IsConstructed(), CHIP_NO_ERROR);
+
     std::optional<uint32_t> clusterRevision;
     for (const auto  &entry : kAliasedClusters) {
         if (entry.id == mClusterPath.mClusterId) {

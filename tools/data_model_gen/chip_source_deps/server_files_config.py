@@ -74,6 +74,8 @@ local_mappings = {
 
 # List of clusters to skip for delegate scanning
 delegate_skip_list = [
+    # requires a TimerDelegate besides the app delegate; no esp-matter integration yet
+    "ambient_context_sensing",
     "ota_software_update_requestor",
     "bridged_device_basic_information",
     "identify",
