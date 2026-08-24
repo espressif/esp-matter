@@ -284,4 +284,16 @@ menu "ESP Matter"
 
     endmenu
 
+    # Upstream reads this config config/esp32/components/chip/CMakeLists.txt but never declares the option.
+    # TODO: upstream the declaration into config/esp32/components/chip/Kconfig and drop this
+    # once the submodule pin contains it (double declaration would warn).
+    config CHIP_ENABLE_GROUPCAST
+        bool "Enable groupcast support in the Matter core"
+        default y
+        help
+            Passes chip_config_enable_groupcast to the CHIP core build. The server then
+            registers the group auxiliary access control delegate and the Access Control
+            cluster reports the Auxiliary feature, which the root node device type requires
+            when the Groupcast cluster with the Listener feature is enabled on it.
+
 endmenu
