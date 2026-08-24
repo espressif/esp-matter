@@ -11,10 +11,10 @@ dependencies:
   espressif/led_strip:
     version: "^3"
   espressif/esp_aliro_lib:
-    version: "^1.0.1"
+    version: "^1.2.0"
   m5nfc:
     git: https://github.com/espressif/esp-aliro.git
     path: examples/aliro_reader/components/m5nfc
-    version: 0d00697342a8a13a13e0fb53f76e370c88845891
+    version: db6bc8ea93854b730b9163d2472dfa7bff86a280
     rules:
       - if: "target in [esp32, esp32s3, esp32c3, esp32c6, esp32h2, esp32p4]"

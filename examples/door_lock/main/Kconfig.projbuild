@@ -6,4 +6,18 @@ menu "Example Configuration"
         help
             Enable this option to enable Aliro-over-NFC feature for DoorLock cluster.
 
+    config M5NANO_BOARD
+        bool "Use an M5Stack Nano board"
+        default n
+        depends on IDF_TARGET_ESP32C6 || IDF_TARGET_ESP32H2
+        help
+            Enable board-specific handling for M5Stack NanoC6 and NanoH2,
+            including the RGB LED power-enable GPIO.
+
+    config M5NANO_STATUS_LED_POWER_GPIO
+        int
+        depends on M5NANO_BOARD
+        default 19 if IDF_TARGET_ESP32C6
+        default 10 if IDF_TARGET_ESP32H2
+
 endmenu

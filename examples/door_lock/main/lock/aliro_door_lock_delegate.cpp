@@ -21,7 +21,8 @@
 #include <platform/PlatformManager.h>
 
 #include "aliro_door_lock_delegate.h"
-#include "door_lock_manager.h"
+#include "bolt_lock_manager.h"
+#include "door_lock_capabilities.h"
 
 using namespace chip;
 using namespace chip::DeviceLayer::Internal;
@@ -33,7 +34,6 @@ constexpr uint8_t kAliroProtocolVersion[] = {0x01, 0x00};
 constexpr size_t kAliroKeyPEMBufMax = 256;
 constexpr size_t kAliroVerificationKeyLen = 65;
 constexpr size_t kAliroSigningKeyLen = 32;
-extern uint16_t door_lock_endpoint_id;
 
 const ESP32Config::Key kAliroGroupId = { ESP32Config::kConfigNamespace_ChipConfig, "aliro-grp-id"};
 const ESP32Config::Key kAliroVerificationKey = { ESP32Config::kConfigNamespace_ChipConfig, "aliro-pub-key" };
@@ -103,12 +103,12 @@ uint8_t AliroDoorLockDelegate::GetAliroBLEAdvertisingVersion()
 
 uint16_t AliroDoorLockDelegate::GetNumberOfAliroCredentialIssuerKeysSupported()
 {
-    return 8;
+    return DoorLockCapabilities::kAliroCredentialIssuerKeySlots;
 }
 
 uint16_t AliroDoorLockDelegate::GetNumberOfAliroEndpointKeysSupported()
 {
-    return 8;
+    return DoorLockCapabilities::kAliroEndpointKeySlots;
 }
 
 CHIP_ERROR AliroDoorLockDelegate::SetAliroReaderConfig(const ByteSpan  &signingKey, const ByteSpan  &verificationKey,
@@ -203,7 +203,7 @@ void AliroDoorLockDelegate::NfcDetectTask(void *delegate)
             ESP_LOGI("Aliro", "Aliro NFC transaction completed successfully in %lld ms", (long long)session_time_ms);
             // UnLock the door lock
             (void) DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t) {
-                BoltLockMgr().Unlock(door_lock_endpoint_id, OperationSourceEnum::kAliro);
+                BoltLockManager::Instance().Unlock(OperationSourceEnum::kAliro);
             });
         } else {
             ESP_LOGW("Aliro", "Aliro NFC transaction failed after %lld ms: %s", (long long)session_time_ms,
