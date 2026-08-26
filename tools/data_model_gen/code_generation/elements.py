@@ -408,7 +408,7 @@ class Cluster(SpecialConfigElement, BaseCluster):
         return [f for f in self.get_features() if f not in final_choice_set]
 
     def get_cluster_init_callback(self):
-        """Get the cluster init callback name   """
+        """Get the cluster init callback name"""
         return f"ESPMatter{self.chip_name}ClusterServerInitCallback"
 
     def get_cluster_shutdown_callback(self):
@@ -548,8 +548,7 @@ class Attribute(SpecialConfigElement, BaseAttribute):
         )
 
     def get_default_value(self):
-        """Get the default value.
-        """
+        """Get the default value."""
         if self.default_value == "null":
             min_value = convert_to_int(self.min_value)
             return str(min_value) if (min_value is not None and min_value > 0) else "0"
