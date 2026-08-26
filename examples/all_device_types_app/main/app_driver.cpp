@@ -31,6 +31,7 @@ using namespace esp_matter::endpoint;
 static const char *TAG = "app_driver";
 extern uint16_t app_endpoint_id;
 
+#if CONFIG_IDF_TARGET_ESP32 || CONFIG_IDF_TARGET_ESP32S3
 static void get_attribute(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
     attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
@@ -38,7 +39,6 @@ static void get_attribute(uint16_t endpoint_id, uint32_t cluster_id, uint32_t at
     attribute::get_val(attribute, val);
 }
 
-#if CONFIG_IDF_TARGET_ESP32 || CONFIG_IDF_TARGET_ESP32S3
 chip::Protocols::InteractionModel::Status FanDelegateImpl::HandleStep(chip::app::Clusters::FanControl::StepDirectionEnum aDirection, bool aWrap, bool aLowestOff)
 {
     uint8_t lowest = 0;
