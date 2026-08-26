@@ -29,7 +29,7 @@ typedef struct config {
     uint8_t time_zone_database;
     uint8_t time_zone_list_max_size;
     uint8_t dst_offset_list_max_size;
-    config() : local_time(0), time_zone_database(0), time_zone_list_max_size(1), dst_offset_list_max_size(1) {}
+    config() : local_time(), time_zone_database(0), time_zone_list_max_size(1), dst_offset_list_max_size(1) {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -98,7 +98,7 @@ typedef struct config {
     nullable<uint64_t> utc_time;
     uint8_t granularity;
     void *delegate;
-    config() : utc_time(0), granularity(0), delegate(nullptr) {}
+    config() : utc_time(), granularity(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

@@ -205,7 +205,7 @@ class TestApplyDeviceTypeElementOverrides(unittest.TestCase):
         self.assertEqual(
             [cluster.esp_name for cluster in device.extra_clusters],
             [
-                "wi_fi_network_diagnostics",
+                "wifi_network_diagnostics",
                 "thread_network_diagnostics",
                 "groupcast",
             ],
@@ -253,7 +253,7 @@ class TestApplyDeviceTypeElementOverrides(unittest.TestCase):
         self.assertFalse(thread_diag.is_device_extra)
         self.assertEqual(
             [cluster.esp_name for cluster in device.extra_clusters],
-            ["wi_fi_network_diagnostics", "thread_network_diagnostics"],
+            ["wifi_network_diagnostics", "thread_network_diagnostics"],
         )
 
         template_clusters = device.get_mandatory_clusters()
@@ -261,7 +261,7 @@ class TestApplyDeviceTypeElementOverrides(unittest.TestCase):
             [cluster.esp_name for cluster in template_clusters],
             [
                 "basic_information",
-                "wi_fi_network_diagnostics",
+                "wifi_network_diagnostics",
                 "thread_network_diagnostics",
             ],
         )

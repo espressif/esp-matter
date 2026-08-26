@@ -31,7 +31,7 @@ namespace lighting {
 typedef struct config {
     uint16_t remaining_time;
     nullable<uint8_t> start_up_current_level;
-    config() : remaining_time(0), start_up_current_level(0) {}
+    config() : remaining_time(0), start_up_current_level() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -70,7 +70,7 @@ typedef struct config {
     uint8_t max_level;
     uint8_t options;
     nullable<uint8_t> on_level;
-    config() : current_level(0), min_level(1), max_level(254), options(0), on_level(0) {}
+    config() : current_level(), min_level(1), max_level(254), options(0), on_level() {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

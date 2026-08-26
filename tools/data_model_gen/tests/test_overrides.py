@@ -26,12 +26,9 @@ from utils.overrides import (  # noqa: E402
     normalize_element_name,
     is_cpp_reserved_word,
     should_skip_cluster_command_callbacks,
-    should_skip_delegate_callback,
     should_include_delegate_callback,
     should_skip_plugin_callback,
     should_skip_internally_managed_flag,
-    get_overridden_cluster_init_callback_name,
-    get_overridden_cluster_shutdown_callback_name,
 )
 
 
@@ -174,14 +171,6 @@ class TestSkipLists(unittest.TestCase):
     def test_no_skip_command_callback(self):
         self.assertFalse(should_skip_cluster_command_callbacks("0x0006"))  # on_off
 
-    def test_skip_delegate_callback(self):
-        self.assertTrue(
-            should_skip_delegate_callback("0x0553")
-        )  # webrtc_transport_provider
-
-    def test_no_skip_delegate_callback(self):
-        self.assertFalse(should_skip_delegate_callback("0x0201"))  # thermostat
-
     def test_include_delegate_callback(self):
         self.assertTrue(should_include_delegate_callback("0x0050"))  # mode_select
 
@@ -223,26 +212,6 @@ class TestInternallyManagedSkip(unittest.TestCase):
                 "0x0201", "0x0001"
             )  # thermostat, unknown_attr
         )
-
-
-class TestCallbackNameOverrides(unittest.TestCase):
-    """Test WebRTC callback name overrides."""
-
-    def test_webrtc_provider_init(self):
-        result = get_overridden_cluster_init_callback_name(
-            "0x0553", "WebrtcTransportProvider"
-        )
-        self.assertIn("WebRTC", result)
-
-    def test_webrtc_requestor_shutdown(self):
-        result = get_overridden_cluster_shutdown_callback_name(
-            "0x0554", "WebrtcTransportRequestor"
-        )
-        self.assertIn("WebRTC", result)
-
-    def test_no_override(self):
-        result = get_overridden_cluster_init_callback_name("0x0201", "Thermostat")
-        self.assertEqual(result, "ESPMatterThermostatClusterServerInitCallback")
 
 
 if __name__ == "__main__":

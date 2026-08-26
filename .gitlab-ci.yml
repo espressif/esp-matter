@@ -708,6 +708,63 @@ pytest_unit_test_app_qemu:
     expire_in: 4 days
   tags: ["host_test"]
 
+build_unit_test_app_qemu_generated:
+  resource_group: build_unit_test_app_qemu_generated
+  extends:
+    - .build_examples_template
+  artifacts:
+    paths:
+      - "examples/test_apps/unit_test_app/build/*.bin"
+      - "examples/test_apps/unit_test_app/build/flasher_args.json"
+      - "examples/test_apps/unit_test_app/build/config/sdkconfig.json"
+      - "examples/test_apps/unit_test_app/build/bootloader/*.bin"
+      - "examples/test_apps/unit_test_app/build/partition_table/*.bin"
+      - "examples/test_apps/unit_test_app/build/build_log.txt"
+    when: always
+    expire_in: 4 days
+  script:
+    - cd ${ESP_MATTER_PATH}/examples/test_apps/unit_test_app
+    - echo "CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL=y" >> sdkconfig.defaults
+    - idf.py set-target esp32c3 build
+
+pytest_unit_test_app_qemu_generated:
+  stage: target_test
+  image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
+  needs:
+    - build_unit_test_app_qemu_generated
+  before_script:
+    - *add_gitlab_ssh_key
+    - *get_build_caches
+    - *setup_idf
+    - cd ${ESP_MATTER_PATH}
+    - mkdir -p ${REPOS_PATH}
+    - *setup_matter
+    - *update_build_caches
+  variables:
+    REPOS_PATH: "$CI_PROJECT_DIR/repos"
+  script:
+    - cd ${ESP_MATTER_PATH}
+    - apt-get update && apt-get install -y -q libslirp0
+    - python ${IDF_PATH}/tools/idf_tools.py install qemu-riscv32
+    - eval "$(python ${IDF_PATH}/tools/idf_tools.py export)"
+    - pip install -r tools/ci/requirements-pytest.txt
+    - pytest examples/test_apps/unit_test_app/pytest_unit_test_app.py
+      --target esp32c3
+      -m qemu
+      --embedded-services idf,qemu
+      --junitxml=XUNIT_RESULT.xml
+      --qemu-extra-args="-global driver=timer.esp32c3.timg,property=wdt_disable,value=true"
+  artifacts:
+    paths:
+      - "pytest_embedded_log/"
+    reports:
+      junit: XUNIT_RESULT.xml
+    when: always
+    expire_in: 4 days
+  tags: ["host_test"]
+
 build_upstream_examples:
     resource_group: build_upstream_examples
     extends:

@@ -20,8 +20,8 @@
 
 #include <app-common/zap-generated/cluster-enums.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
-#include <wi_fi_network_diagnostics.h>
-#include <wi_fi_network_diagnostics_ids.h>
+#include <wifi_network_diagnostics.h>
+#include <wifi_network_diagnostics_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
 #include <app/ClusterCallbacks.h>
@@ -35,7 +35,7 @@ constexpr uint16_t cluster_revision = 1;
 
 namespace esp_matter {
 namespace cluster {
-namespace wi_fi_network_diagnostics {
+namespace wifi_network_diagnostics {
 
 namespace feature {
 namespace packet_counts {
@@ -201,8 +201,8 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = esp_matter::cluster::create(endpoint, wi_fi_network_diagnostics::Id, flags);
-    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, wi_fi_network_diagnostics::Id));
+    cluster_t *cluster = esp_matter::cluster::create(endpoint, wifi_network_diagnostics::Id, flags);
+    VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, wifi_network_diagnostics::Id));
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
@@ -230,6 +230,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 
-} /* wi_fi_network_diagnostics */
+} /* wifi_network_diagnostics */
 } /* cluster */
 } /* esp_matter */

@@ -29,7 +29,7 @@ typedef struct config {
     uint16_t tc_acknowledgements;
     bool tc_acknowledgements_required;
     nullable<uint32_t> tc_update_deadline;
-    config() : tc_accepted_version(0), tc_min_required_version(0), tc_acknowledgements(0), tc_acknowledgements_required(true), tc_update_deadline(0) {}
+    config() : tc_accepted_version(0), tc_min_required_version(0), tc_acknowledgements(0), tc_acknowledgements_required(true), tc_update_deadline() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);

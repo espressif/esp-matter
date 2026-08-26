@@ -26,7 +26,7 @@ namespace constant_pressure {
 typedef struct config {
     nullable<int16_t> min_const_pressure;
     nullable<int16_t> max_const_pressure;
-    config() : min_const_pressure(0), max_const_pressure(0) {}
+    config() : min_const_pressure(), max_const_pressure() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -36,7 +36,7 @@ namespace compensated_pressure {
 typedef struct config {
     nullable<int16_t> min_comp_pressure;
     nullable<int16_t> max_comp_pressure;
-    config() : min_comp_pressure(0), max_comp_pressure(0) {}
+    config() : min_comp_pressure(), max_comp_pressure() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -46,7 +46,7 @@ namespace constant_flow {
 typedef struct config {
     nullable<uint16_t> min_const_flow;
     nullable<uint16_t> max_const_flow;
-    config() : min_const_flow(0), max_const_flow(0) {}
+    config() : min_const_flow(), max_const_flow() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -56,7 +56,7 @@ namespace constant_speed {
 typedef struct config {
     nullable<uint16_t> min_const_speed;
     nullable<uint16_t> max_const_speed;
-    config() : min_const_speed(0), max_const_speed(0) {}
+    config() : min_const_speed(), max_const_speed() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -66,7 +66,7 @@ namespace constant_temperature {
 typedef struct config {
     nullable<int16_t> min_const_temp;
     nullable<int16_t> max_const_temp;
-    config() : min_const_temp(0), max_const_temp(0) {}
+    config() : min_const_temp(), max_const_temp() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -84,7 +84,7 @@ typedef struct config {
     nullable<uint16_t> max_const_flow;
     nullable<int16_t> min_const_temp;
     nullable<int16_t> max_const_temp;
-    config() : min_const_pressure(0), max_const_pressure(0), min_comp_pressure(0), max_comp_pressure(0), min_const_speed(0), max_const_speed(0), min_const_flow(0), max_const_flow(0), min_const_temp(0), max_const_temp(0) {}
+    config() : min_const_pressure(), max_const_pressure(), min_comp_pressure(), max_comp_pressure(), min_const_speed(), max_const_speed(), min_const_flow(), max_const_flow(), min_const_temp(), max_const_temp() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -160,7 +160,7 @@ typedef struct config {
         feature::automatic::config_t automatic;
     } features;
     uint32_t feature_flags;
-    config() : max_pressure(0), max_speed(0), max_flow(0), effective_operation_mode(0), effective_control_mode(0), capacity(0), operation_mode(0), feature_flags(0) {}
+    config() : max_pressure(), max_speed(), max_flow(), effective_operation_mode(0), effective_control_mode(0), capacity(), operation_mode(0), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

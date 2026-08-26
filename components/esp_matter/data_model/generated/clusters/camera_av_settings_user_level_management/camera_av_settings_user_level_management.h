@@ -94,6 +94,7 @@ command_t *create_dptz_relative_move(cluster_t *cluster);
 } /* command */
 
 typedef struct config {
+    void *delegate;
     struct {
         feature::mechanical_pan::config_t mechanical_pan;
         feature::mechanical_tilt::config_t mechanical_tilt;
@@ -101,7 +102,7 @@ typedef struct config {
         feature::mechanical_presets::config_t mechanical_presets;
     } features;
     uint32_t feature_flags;
-    config() : feature_flags(0) {}
+    config() : delegate(nullptr), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

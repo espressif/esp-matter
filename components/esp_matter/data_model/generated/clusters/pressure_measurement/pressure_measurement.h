@@ -28,7 +28,7 @@ typedef struct config {
     nullable<int16_t> min_scaled_value;
     nullable<int16_t> max_scaled_value;
     int8_t scale;
-    config() : scaled_value(0), min_scaled_value(0), max_scaled_value(0), scale(0) {}
+    config() : scaled_value(), min_scaled_value(), max_scaled_value(), scale(0) {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -52,7 +52,7 @@ typedef struct config {
     nullable<int16_t> measured_value;
     nullable<int16_t> min_measured_value;
     nullable<int16_t> max_measured_value;
-    config() : measured_value(0), min_measured_value(0), max_measured_value(0) {}
+    config() : measured_value(), min_measured_value(), max_measured_value() {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

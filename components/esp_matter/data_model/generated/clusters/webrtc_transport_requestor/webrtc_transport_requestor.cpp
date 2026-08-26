@@ -19,6 +19,7 @@
 #include <esp_matter.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
+#include <esp_matter_delegate_callbacks.h>
 #include <webrtc_transport_requestor.h>
 #include <webrtc_transport_requestor_ids.h>
 #include <binding.h>
@@ -28,6 +29,7 @@
 using namespace chip::app::Clusters;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
+using namespace esp_matter::cluster::delegate_cb;
 
 static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 2;
@@ -76,6 +78,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     VerifyOrReturnValue(cluster, NULL, ESP_LOGE(TAG, "Could not create cluster. cluster_id: 0x%08" PRIX32, webrtc_transport_requestor::Id));
     if (flags & CLUSTER_FLAG_SERVER) {
         VerifyOrReturnValue(config != NULL, ABORT_CLUSTER_CREATE(cluster));
+        if (config->delegate != nullptr) {
+            static const auto delegate_init_cb = WebRTCTransportRequestorDelegateInitCB;
+            set_delegate_and_init_callback(cluster, delegate_init_cb, config->delegate);
+        }
         add_function_list(cluster, function_list, function_flags);
 
         /* Attributes managed internally */

@@ -36,7 +36,8 @@ command_t *create_end_session(cluster_t *cluster);
 } /* command */
 
 typedef struct config {
-    config() {}
+    void *delegate;
+    config() : delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

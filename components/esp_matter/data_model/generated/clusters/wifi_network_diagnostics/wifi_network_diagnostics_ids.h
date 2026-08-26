@@ -19,7 +19,7 @@
 
 namespace esp_matter {
 namespace cluster {
-namespace wi_fi_network_diagnostics {
+namespace wifi_network_diagnostics {
 
 inline constexpr uint32_t Id = 0x0036;
 
@@ -98,6 +98,6 @@ inline constexpr uint32_t Id = 0x02;
 } /* ConnectionStatus */
 } /* event */
 
-} /* wi_fi_network_diagnostics */
+} /* wifi_network_diagnostics */
 } /* cluster */
 } /* esp_matter */

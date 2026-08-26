@@ -136,8 +136,14 @@ esp_err_t create_optional_attributes(cluster_t *cluster)
 {
     ESP_RETURN_ON_FALSE(cluster, ESP_ERR_INVALID_ARG, TAG, "Cluster cannot be NULL");
 
+#if CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL
+    // Generated data model has no shared resource_monitoring cluster namespace.
+    ESP_RETURN_ON_FALSE(hepa_filter_monitoring::attribute::create_in_place_indicator(cluster, false), ESP_ERR_NO_MEM, TAG, "Failed to create in_place_indicator");
+    ESP_RETURN_ON_FALSE(hepa_filter_monitoring::attribute::create_last_changed_time(cluster, nullable<uint32_t>()), ESP_ERR_NO_MEM, TAG, "Failed to create last_changed_time");
+#else
     ESP_RETURN_ON_FALSE(resource_monitoring::attribute::create_in_place_indicator(cluster, false), ESP_ERR_NO_MEM, TAG, "Failed to create in_place_indicator");
     ESP_RETURN_ON_FALSE(resource_monitoring::attribute::create_last_changed_time(cluster, nullable<uint8_t>()), ESP_ERR_NO_MEM, TAG, "Failed to create last_changed_time");
+#endif // CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL
 
     return ESP_OK;
 }
@@ -195,7 +201,7 @@ esp_err_t create_optional_attributes(cluster_t *cluster)
 {
     ESP_RETURN_ON_FALSE(cluster, ESP_ERR_INVALID_ARG, TAG, "Cluster cannot be NULL");
 
-    ESP_RETURN_ON_FALSE(flow_measurement::attribute::create_tolerance(cluster, 0, 0, 0), ESP_ERR_NO_MEM, TAG, "Failed to create tolerance");
+    ESP_RETURN_ON_FALSE(flow_measurement::attribute::create_tolerance(cluster, 0), ESP_ERR_NO_MEM, TAG, "Failed to create tolerance");
 
     return ESP_OK;
 }
@@ -206,8 +212,8 @@ esp_err_t create_optional_attributes(cluster_t *cluster)
 {
     ESP_RETURN_ON_FALSE(cluster, ESP_ERR_INVALID_ARG, TAG, "Cluster cannot be NULL");
 
-    ESP_RETURN_ON_FALSE(pressure_measurement::attribute::create_tolerance(cluster, 0, 0, 0), ESP_ERR_NO_MEM, TAG, "Failed to create tolerance");
-    ESP_RETURN_ON_FALSE(pressure_measurement::attribute::create_scaled_tolerance(cluster, 0, 0, 0), ESP_ERR_NO_MEM, TAG, "Failed to create scaled_tolerance");
+    ESP_RETURN_ON_FALSE(pressure_measurement::attribute::create_tolerance(cluster, 0), ESP_ERR_NO_MEM, TAG, "Failed to create tolerance");
+    ESP_RETURN_ON_FALSE(pressure_measurement::attribute::create_scaled_tolerance(cluster, 0), ESP_ERR_NO_MEM, TAG, "Failed to create scaled_tolerance");
 
     return ESP_OK;
 }

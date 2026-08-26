@@ -68,6 +68,8 @@ local_mappings = {
     "group_key_mgmt": "group_key_management",
     "bindings": "binding",
     "boolean_state": "boolean_state_configuration",
+    "wi_fi_network_diagnostics": "wifi_network_diagnostics",
+    "wi_fi_network_management": "wifi_network_management",
 }
 
 # List of clusters to skip for delegate scanning

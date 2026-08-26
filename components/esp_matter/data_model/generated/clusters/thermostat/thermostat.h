@@ -74,7 +74,7 @@ typedef struct config {
     uint8_t number_of_schedule_transitions;
     nullable<uint8_t> number_of_schedule_transition_per_day;
     uint8_t active_schedule_handle[k_max_active_schedule_handle_length];
-    config() : number_of_schedules(1), number_of_schedule_transitions(1), number_of_schedule_transition_per_day(1) {}
+    config() : number_of_schedules(1), number_of_schedule_transitions(1), number_of_schedule_transition_per_day() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -167,7 +167,7 @@ typedef struct config {
         feature::matter_schedule_configuration::config_t matter_schedule_configuration;
     } features;
     uint32_t feature_flags;
-    config() : local_temperature(0), control_sequence_of_operation(0), system_mode(0), delegate(nullptr), feature_flags(0) {}
+    config() : local_temperature(), control_sequence_of_operation(0), system_mode(0), delegate(nullptr), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

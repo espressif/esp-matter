@@ -21,6 +21,18 @@ from utils.overrides import normalize_element_name
 logger = logging.getLogger(__name__)
 
 
+def _chip_name_word(word):
+    """Title-case a single word using CHIP's convention.
+
+    All-caps acronyms and plain lowercase words are title-cased to match CHIP
+    (AV -> Av, LAN -> Lan, tls -> Tls), while mixed-case acronyms are preserved as-is
+    (WebRTC -> WebRTC, WiFi -> WiFi).
+    """
+    if word.isupper() or word.islower():
+        return word.capitalize()
+    return word[0].upper() + word[1:]
+
+
 def chip_name(name):
     """Convert a name to as per the chip naming convention e.g. On/Off -> OnOff
 
@@ -32,7 +44,7 @@ def chip_name(name):
     if re.match(r"^[A-Z][a-zA-Z0-9]+$", name):
         return name
     name = re.sub(r"[^a-zA-Z0-9]", " ", name)
-    words = [word.capitalize() for word in name.split()]
+    words = [_chip_name_word(word) for word in name.split()]
     name = "".join(words)
     name = name.replace("DishWasher", "Dishwasher")
     return name

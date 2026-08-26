@@ -124,7 +124,8 @@ TEST_CASE("get_val bool - OnOff", "[get_val][esp_matter_managed][bool]")
     TEST_ASSERT_NOT_NULL(attr);
     esp_matter_attr_val_t setable_val = esp_matter_attr_val(true);
     esp_err_t err = attribute::set_val(attr, &setable_val);
-    TEST_ASSERT_EQUAL(ESP_OK, err);
+    // set_val returns ESP_ERR_NOT_FINISHED when the value is unchanged (setup seeds this value).
+    TEST_ASSERT_TRUE(err == ESP_OK || err == ESP_ERR_NOT_FINISHED);
 
     esp_matter_attr_val_t true_val;
     err = attribute::get_val(attr, &true_val);
@@ -221,7 +222,8 @@ TEST_CASE("get_val nullable uint8 - CurrentLevel", "[get_val][esp_matter_managed
     TEST_ASSERT_NOT_NULL(attr);
     esp_matter_attr_val_t setable_val = esp_matter_attr_val(nullable<uint8_t>(test_current_level));
     esp_err_t err = attribute::set_val(attr, &setable_val);
-    TEST_ASSERT_EQUAL(ESP_OK, err);
+    // set_val returns ESP_ERR_NOT_FINISHED when the value is unchanged (setup seeds this value).
+    TEST_ASSERT_TRUE(err == ESP_OK || err == ESP_ERR_NOT_FINISHED);
     esp_matter_attr_val_t retrieved_val;
     err = attribute::get_val(test_endpoint_id, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id, &retrieved_val);
     TEST_ASSERT_EQUAL(ESP_OK, err);

@@ -196,6 +196,18 @@ static cluster_t *create_power_source_cluster(endpoint_t *endpoint, cluster::pow
     return cluster::power_source::create(endpoint, config, flags);
 }
 
+static cluster_t *create_network_commissioning_cluster(endpoint_t *endpoint,
+                                                       cluster::network_commissioning::config_t *config,
+                                                       uint8_t flags)
+{
+    // The generated data model requires exactly one network-interface feature to be selected;
+    // the legacy config_t already defaults feature_map to a valid interface.
+#if CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL
+    config->feature_flags = cluster::network_commissioning::feature::ethernet_network_interface::get_id();
+#endif // CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL
+    return cluster::network_commissioning::create(endpoint, config, flags);
+}
+
 static cluster_t *create_soil_measurement_cluster(endpoint_t *endpoint, cluster::soil_measurement::config_t *config,
                                                   uint8_t flags)
 {
@@ -236,7 +248,7 @@ static cluster_t *create_temperature_control_cluster(endpoint_t *endpoint,
                                                      uint8_t flags)
 {
     config->features.temperature_number.min_temperature = 0;
-    config->features.temperature_number.temp_setpoint = 50;
+    config->features.temperature_number.temperature_setpoint = 50;
     config->features.temperature_number.max_temperature = 100;
     config->feature_flags = cluster::temperature_control::feature::temperature_number::get_id();
     return cluster::temperature_control::create(endpoint, config, flags);
@@ -275,7 +287,7 @@ TEST_CLUSTER_LIFECYCLE("IlluminanceMeasurement", chip::app::Clusters::Illuminanc
 TEST_CLUSTER_LIFECYCLE("MicrowaveOvenControl", chip::app::Clusters::MicrowaveOvenControl::Id,
                        cluster::microwave_oven_control::config_t, create_microwave_oven_control_cluster)
 TEST_CLUSTER_LIFECYCLE("NetworkCommissioning", chip::app::Clusters::NetworkCommissioning::Id,
-                       cluster::network_commissioning::config_t, cluster::network_commissioning::create)
+                       cluster::network_commissioning::config_t, create_network_commissioning_cluster)
 TEST_CLUSTER_LIFECYCLE("Identify", chip::app::Clusters::Identify::Id, cluster::identify::config_t,
                        cluster::identify::create)
 TEST_CLUSTER_LIFECYCLE("OccupancySensing", chip::app::Clusters::OccupancySensing::Id,

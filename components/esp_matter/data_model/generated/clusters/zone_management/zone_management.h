@@ -76,7 +76,8 @@ typedef struct config {
     uint8_t max_zones;
     uint8_t sensitivity_max;
     uint8_t sensitivity;
-    config() : max_zones(1), sensitivity_max(2), sensitivity(1) {}
+    void *delegate;
+    config() : max_zones(1), sensitivity_max(2), sensitivity(1), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
