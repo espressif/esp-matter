@@ -1,0 +1,121 @@
+# Jobs of the pre_check stage: fast source-level checks, no build artifacts.
+
+# pre_commit_check runs the ruff hooks only on files changed in the MR.
+# So an MR that bumps the ruff pin or edits ruff.toml can leave new violations
+# in untouched files, and an unrelated MR touching those files later takes the hit.
+# This job checks the whole repo, so the config-changing MR fails instead.
+python_lint:
+  image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
+  stage: pre_check
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
+  script:
+    # ruff pinned to 0.15.22; 0.16.x introduces stricter star-import handling (see ruff.toml)
+    # Keep rev in sync with the ruff pin in .pre-commit-config.yaml
+    - pip install ruff==0.15.22
+    - git ls-files '*.py' | xargs ruff check
+    - git ls-files '*.py' | xargs ruff format --check
+  tags:
+    - build
+
+pre_commit_check:
+  image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
+  stage: pre_check
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
+  script:
+    - pip install pre-commit
+    - git fetch origin main
+    - pre-commit install-hooks
+    - |
+      # Get the base commit for comparison
+      BASE_COMMIT=$(git merge-base origin/main HEAD)
+      # Run pre-commit on changed files
+      FILES=$(git diff --name-only --diff-filter=ACMRT ${BASE_COMMIT}...HEAD)
+      if [ -n "$FILES" ]; then
+        echo "Running pre-commit on changed files:"
+        echo "$FILES"
+        # Convert newline-separated files to space-separated and pass to pre-commit
+        echo "$FILES" | xargs pre-commit run --files
+      else
+        echo "No files changed, skipping pre-commit"
+      fi
+
+    # Label release branched MRs with versioned labels
+    # e.g. release/v1.5 -> v1.5
+    - |
+      case "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" in release/*)
+        curl -sf -X PUT -H "PRIVATE-TOKEN: $GITLAB_MR_COMMENT_TOKEN" \
+          "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID?add_labels=${CI_MERGE_REQUEST_TARGET_BRANCH_NAME#release/}" \
+          > /dev/null && echo "Added label ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME#release/}" || echo "Labeling failed (non-fatal)"
+      esac
+
+  tags:
+    - build
+
+cppcheck:
+  image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
+  stage: pre_check
+  allow_failure: true
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq cppcheck > /dev/null 2>&1
+  script:
+    - ${ESP_MATTER_PATH}/tools/ci/run_cppcheck.sh
+  after_script:
+    - |
+      if [ -f cppcheck_report.txt ]; then
+        echo "------------------------------------------------------------"
+        echo "cppcheck_report.txt"
+        echo "------------------------------------------------------------"
+        cat cppcheck_report.txt
+        echo "------------------------------------------------------------"
+      fi
+  tags:
+    - build
+
+# checks the committed code against re-generating the data model, formatting the code and runs the unit tests
+data_model_gen_checks:
+  image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
+  stage: pre_check
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
+  script:
+    # Regenerate data model from scratch
+    - git submodule update --init --depth 1 connectedhomeip/connectedhomeip
+    - pip install -r ${ESP_MATTER_PATH}/tools/data_model_gen/requirements.txt
+    - pip install pre-commit
+    - cd ${ESP_MATTER_PATH}/tools/data_model_gen
+    - python data_model_gen.py --clean --no-colored-logs
+
+    # Format generated code with pre-commit hooks
+    - cd ${ESP_MATTER_PATH}
+    - pre-commit install-hooks
+    - find components/esp_matter/data_model/generated -name '*.cpp' -o -name '*.h' | xargs pre-commit run --files || true
+
+    # Fail if generated+formatted files differ from what is committed
+    - |
+      UNTRACKED=$(git ls-files --others --exclude-standard components/esp_matter/data_model/generated/)
+      if ! git diff --quiet components/esp_matter/data_model/generated/ || [ -n "$UNTRACKED" ]; then
+        echo "ERROR: Generated data model code is out of date or not properly formatted."
+        echo ""
+        echo "To fix: run the following locally and commit the result:"
+        echo "  cd tools/data_model_gen && python data_model_gen.py --clean"
+        echo "  pre-commit run --files \$(find components/esp_matter/data_model/generated -name '*.cpp' -o -name '*.h')"
+        echo ""
+        git diff --stat components/esp_matter/data_model/generated/
+        if [ -n "$UNTRACKED" ]; then
+          echo "Untracked files:"
+          echo "$UNTRACKED"
+        fi
+        exit 1
+      fi
+      echo "Generated data model files are up to date and properly formatted."
+
+    # run data model generation unit tests
+    - cd ${ESP_MATTER_PATH}/tools/data_model_gen
+    - python tests/run_tests.py -v
+
+  tags:
+    - build

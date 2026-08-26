@@ -1,0 +1,91 @@
+# Jobs of the docker_build stage.
+# images are built and hosted at https://hub.docker.com/r/espressif/chip-idf
+
+build_image:
+  stage: docker_build
+  image: espressif/dind:1
+  tags:
+    - amd64
+    - dind
+    - internet
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "main"
+      changes:
+        - tools/docker/chip_idf/**/*
+      variables:
+        DOCKERFILE_CHANGED: "1"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "main"
+      variables:
+        DOCKERFILE_CHANGED: "0"
+  before_script:
+    - mkdir -p $HOME/.docker
+    - echo $DOCKER_AUTH_CONFIG > $HOME/.docker/config.json
+  script:
+    - cd ${ESP_MATTER_PATH}
+    - chip_head_commit=$(git rev-parse HEAD:connectedhomeip/connectedhomeip)
+    - chip_head_in_readme=$(awk -F'[][]' '/commit \[.* of connectedhomeip/{print $2}' README.md)
+
+    # Check both conditions and collect errors
+    - validation_error=0
+    - |
+      if echo "$chip_head_commit" | grep -q "^${chip_head_in_readme}"; then
+          echo "README.md is in sync with the connectedhomeip submodule"
+      else
+          echo "ERROR:Please update the README.md file with the latest commit hash of the connectedhomeip submodule"
+          validation_error=1
+      fi
+
+    - |
+      if echo "${chip_head_commit}" | grep -q "^${CHIP_SHORT_HASH}"; then
+          echo "The CHIP_SHORT_HASH variable is set to correct value. Matches with current head commit"
+      else
+          echo "ERROR: The CHIP_SHORT_HASH seems to be incorrect or you have updated the submodule but not the CHIP_SHORT_HASH variable above"
+          validation_error=1
+      fi
+
+    # Validate if we have the latest ZAP common and cluster select files
+    # python3 is not installed in dind image, so we need to install it
+    - apk add --no-cache python3
+    # update the submodule to so that script runs based on that submodule
+    - git submodule update --init --depth 1 connectedhomeip/connectedhomeip
+    - python3 components/esp_matter/zap_common/generate_zap_common_files.py
+    - python3 components/esp_matter/utils/cluster_select/generate_cluster_select_files.py
+    - |
+      if git diff --quiet components/esp_matter/zap_common; then
+          echo "ZAP common files are up to date."
+      else
+          echo "ERROR: ZAP common files are not up to date."
+          echo "       Please run ./components/esp_matter/zap_common/generate_zap_common_files.py and commit the changes."
+          validation_error=1
+      fi
+    - |
+      if git diff --quiet components/esp_matter/utils/cluster_select; then
+          echo "Cluster select files are up to date."
+      else
+          echo "ERROR: Cluster select files are not up to date."
+          echo "       Please run ./components/esp_matter/utils/cluster_select/generate_cluster_select_files.py and commit the changes."
+          validation_error=1
+      fi
+
+    # Exit with collected error status
+    - if [ $validation_error -ne 0 ]; then exit 1; fi
+
+    - TAG="chip_${CHIP_SHORT_HASH}_idf_${IDF_VERSION}"
+    - echo $TAG
+    - |
+      echo "DOCKERFILE_CHANGED=$DOCKERFILE_CHANGED"
+      url="https://hub.docker.com/v2/repositories/${DOCKER_IMAGE_NAME}/tags/${TAG}"
+      if [ "$DOCKERFILE_CHANGED" != "1" ] && wget -q --spider "$url"; then
+          echo "No Differences detected. The docker image with ${TAG} is present in docker hub. Skipping docker build "
+      else
+          echo "Triggering docker build due to: dockerfile_changed=$DOCKERFILE_CHANGED or tag not present on docker hub"
+          cd ${ESP_MATTER_PATH}/tools/docker/chip_idf
+          docker build --build-arg CHIP_CHECKOUT_REF=${chip_head_commit} --build-arg IDF_CHECKOUT_REF=${IDF_VERSION} --tag ${DOCKER_IMAGE_NAME}:${TAG} .
+          docker push ${DOCKER_IMAGE_NAME}:${TAG}
+      fi
+  parallel:
+    matrix:
+      # Change the idf version here in case of idf version change MR.
+      - IDF_VERSION:
+          - "v6.0.2"
+          - "v5.5.4"

@@ -1,163 +1,178 @@
 # SPDX-License-Identifier: CC0-1.0
 
-import pytest
-import time
-import re
-import pexpect
-import subprocess
-import netifaces
-from typing import Tuple
-from pytest_embedded import Dut
 import os
+import re
+import subprocess
+import time
+
+import netifaces
+import pytest
 import yaml
-import sys
+from gitlab_api import GitLabAPI
+from pytest_cert_helper import run_python_certification_tests
+from pytest_embedded import Dut
 
 ESP_MATTER_PATH = os.environ["ESP_MATTER_PATH"]
 
-sys.path.append(os.path.abspath(os.path.join(ESP_MATTER_PATH, "tools", "ci")))
-from pytest_cert_helper import *
-from gitlab_api import GitLabAPI
-
-CURRENT_DIR_LIGHT = os.path.join(ESP_MATTER_PATH, 'examples', 'light')
-CHIP_TOOL_EXE = os.path.join(ESP_MATTER_PATH, 'connectedhomeip', 'connectedhomeip', 'out', 'host', 'chip-tool')
-OT_BR_EXAMPLE_PATH = os.path.join(ESP_MATTER_PATH, 'examples', 'thread_border_router')
-OT_DATASET_HEXSTR = '0e08000000000001000035060004001fffe00708fdb824be22185de50c0402a0f7f8051020112014020519772011201402051977030d41706f6c6c6f6e54687265616404101fefc90ee1637d47ca75f87ec24f9403000300000f0208201120140205197701022201'
+CURRENT_DIR_LIGHT = os.path.join(ESP_MATTER_PATH, "examples", "light")
+CHIP_TOOL_EXE = os.path.join(
+    ESP_MATTER_PATH, "connectedhomeip", "connectedhomeip", "out", "host", "chip-tool"
+)
+OT_BR_EXAMPLE_PATH = os.path.join(ESP_MATTER_PATH, "examples", "thread_border_router")
+OT_DATASET_HEXSTR = "0e08000000000001000035060004001fffe00708fdb824be22185de50c0402a0f7f8051020112014020519772011201402051977030d41706f6c6c6f6e54687265616404101fefc90ee1637d47ca75f87ec24f9403000300000f0208201120140205197701022201"
 pytest_build_dir = CURRENT_DIR_LIGHT
-pytest_matter_thread_dir = CURRENT_DIR_LIGHT+'|'+OT_BR_EXAMPLE_PATH
+pytest_matter_thread_dir = CURRENT_DIR_LIGHT + "|" + OT_BR_EXAMPLE_PATH
 
 gitlab_api = GitLabAPI()
 PYTEST_SSID = gitlab_api.ci_gitlab_pytest_ssid
 PYTEST_PASSPHRASE = gitlab_api.ci_gitlab_pytest_passphrase
 
+
 @pytest.mark.esp32c3
 @pytest.mark.esp_matter_dut
 @pytest.mark.parametrize(
-    ' count, app_path, target, erase_all', [
-        ( 1, pytest_build_dir, 'esp32c3', 'y'),
+    " count, app_path, target, erase_all",
+    [
+        (1, pytest_build_dir, "esp32c3", "y"),
     ],
     indirect=True,
 )
 
 # Matter over wifi commissioning
-def test_matter_commissioning_c3(dut:Dut) -> None:
+def test_matter_commissioning_c3(dut: Dut) -> None:
     light = dut
     # BLE start advertising
-    light.expect(r'Configuring CHIPoBLE advertising', timeout=20)
+    light.expect(r"Configuring CHIPoBLE advertising", timeout=20)
     # Start commissioning
     time.sleep(5)
-    command = CHIP_TOOL_EXE + f" pairing ble-wifi 1 {PYTEST_SSID} {PYTEST_PASSPHRASE} 20202021 3840"
+    command = (
+        CHIP_TOOL_EXE
+        + f" pairing ble-wifi 1 {PYTEST_SSID} {PYTEST_PASSPHRASE} 20202021 3840"
+    )
     out_str = subprocess.getoutput(command)
     print(out_str)
-    result = re.findall(r'Run command failure', str(out_str))
+    result = re.findall(r"Run command failure", str(out_str))
     if len(result) != 0:
-      assert False
+        assert False
     # Use toggle command to turn-off the light
     time.sleep(3)
-    command = CHIP_TOOL_EXE + ' onoff toggle 1 1'
+    command = CHIP_TOOL_EXE + " onoff toggle 1 1"
     out_str = subprocess.getoutput(command)
     print(out_str)
-    result = re.findall(r'Run command failure', str(out_str))
+    result = re.findall(r"Run command failure", str(out_str))
     if len(result) != 0:
-      assert False
+        assert False
     # Use toggle command to turn-on the light
     time.sleep(5)
-    command = CHIP_TOOL_EXE + ' onoff toggle 1 1'
+    command = CHIP_TOOL_EXE + " onoff toggle 1 1"
     out_str = subprocess.getoutput(command)
     print(out_str)
-    result = re.findall(r'Run command failure', str(out_str))
+    result = re.findall(r"Run command failure", str(out_str))
     if len(result) != 0:
-      assert False
+        assert False
+
 
 @pytest.mark.esp32c2
 @pytest.mark.esp_matter_dut
 @pytest.mark.parametrize(
-    ' count, app_path, target, erase_all', [
-        ( 1, pytest_build_dir, 'esp32c2', 'y'),
+    " count, app_path, target, erase_all",
+    [
+        (1, pytest_build_dir, "esp32c2", "y"),
     ],
     indirect=True,
 )
 
 # Matter over wifi commissioning
-def test_matter_commissioning_c2(dut:Dut) -> None:
+def test_matter_commissioning_c2(dut: Dut) -> None:
     light = dut
     # BLE start advertising
-    light.expect(r'Configuring CHIPoBLE advertising', timeout=20)
+    light.expect(r"Configuring CHIPoBLE advertising", timeout=20)
     # Start commissioning
     time.sleep(5)
-    command = CHIP_TOOL_EXE + f" pairing ble-wifi 1 {PYTEST_SSID} {PYTEST_PASSPHRASE} 20202021 3840"
+    command = (
+        CHIP_TOOL_EXE
+        + f" pairing ble-wifi 1 {PYTEST_SSID} {PYTEST_PASSPHRASE} 20202021 3840"
+    )
     out_str = subprocess.getoutput(command)
     print(out_str)
-    result = re.findall(r'Run command failure', str(out_str))
+    result = re.findall(r"Run command failure", str(out_str))
     if len(result) != 0:
-      assert False
+        assert False
     # Use toggle command to turn-off the light
     time.sleep(3)
-    command = CHIP_TOOL_EXE + ' onoff toggle 1 1'
+    command = CHIP_TOOL_EXE + " onoff toggle 1 1"
     out_str = subprocess.getoutput(command)
     print(out_str)
-    result = re.findall(r'Run command failure', str(out_str))
+    result = re.findall(r"Run command failure", str(out_str))
     if len(result) != 0:
-      assert False
+        assert False
     # Use toggle command to turn-on the light
     time.sleep(5)
-    command = CHIP_TOOL_EXE + ' onoff toggle 1 1'
+    command = CHIP_TOOL_EXE + " onoff toggle 1 1"
     out_str = subprocess.getoutput(command)
     print(out_str)
-    result = re.findall(r'Run command failure', str(out_str))
+    result = re.findall(r"Run command failure", str(out_str))
     if len(result) != 0:
-      assert False
+        assert False
+
 
 @pytest.mark.esp32c6
 @pytest.mark.esp_matter_dut
 @pytest.mark.parametrize(
-    ' count, app_path, target, erase_all', [
-        ( 1, pytest_build_dir, 'esp32c6', 'y'),
+    " count, app_path, target, erase_all",
+    [
+        (1, pytest_build_dir, "esp32c6", "y"),
     ],
     indirect=True,
 )
 
 # Matter over wifi commissioning
-def test_matter_commissioning_c6(dut:Dut) -> None:
+def test_matter_commissioning_c6(dut: Dut) -> None:
     light = dut
     # BLE start advertising
-    light.expect(r'Configuring CHIPoBLE advertising', timeout=20)
+    light.expect(r"Configuring CHIPoBLE advertising", timeout=20)
     # Start commissioning
     time.sleep(5)
-    command = CHIP_TOOL_EXE + f" pairing ble-wifi 1 {PYTEST_SSID} {PYTEST_PASSPHRASE} 20202021 3840"
+    command = (
+        CHIP_TOOL_EXE
+        + f" pairing ble-wifi 1 {PYTEST_SSID} {PYTEST_PASSPHRASE} 20202021 3840"
+    )
     out_str = subprocess.getoutput(command)
     print(out_str)
-    result = re.findall(r'Run command failure', str(out_str))
+    result = re.findall(r"Run command failure", str(out_str))
     if len(result) != 0:
-      assert False
+        assert False
     # Use toggle command to turn-off the light
     time.sleep(3)
-    command = CHIP_TOOL_EXE + ' onoff toggle 1 1'
+    command = CHIP_TOOL_EXE + " onoff toggle 1 1"
     out_str = subprocess.getoutput(command)
     print(out_str)
-    result = re.findall(r'Run command failure', str(out_str))
+    result = re.findall(r"Run command failure", str(out_str))
     if len(result) != 0:
-      assert False
+        assert False
     # Use toggle command to turn-on the light
     time.sleep(5)
-    command = CHIP_TOOL_EXE + ' onoff toggle 1 1'
+    command = CHIP_TOOL_EXE + " onoff toggle 1 1"
     out_str = subprocess.getoutput(command)
     print(out_str)
-    result = re.findall(r'Run command failure', str(out_str))
+    result = re.findall(r"Run command failure", str(out_str))
     if len(result) != 0:
-      assert False
+        assert False
 
 
 @pytest.mark.esp32c6
 @pytest.mark.esp_matter_certification
 @pytest.mark.parametrize(
-    ' count, app_path, target, erase_all', [
-        ( 1, pytest_build_dir, 'esp32c6', 'y'),
+    " count, app_path, target, erase_all",
+    [
+        (1, pytest_build_dir, "esp32c6", "y"),
     ],
     indirect=True,
 )
-
-def test_matter_certification_c6(dut:Dut, certification_tests: str, ci_branch: str) -> None:
-    dut.expect(r'Configuring CHIPoBLE advertising', timeout=20)
+def test_matter_certification_c6(
+    dut: Dut, certification_tests: str, ci_branch: str
+) -> None:
+    dut.expect(r"Configuring CHIPoBLE advertising", timeout=20)
     time.sleep(5)
     run_python_certification_tests(dut, certification_tests, ci_branch)
 
@@ -167,17 +182,21 @@ def get_host_interface_name() -> str:
     home_dir = os.path.expanduser("~")
     config_path = os.path.join(home_dir, "config", "env_config.yml")
     if os.path.exists(config_path):
-        with open(config_path, 'r') as file:
+        with open(config_path, "r") as file:
             config = yaml.safe_load(file)
         interface_name = config.get("interface_name")
         if interface_name:
             return str(interface_name)
         else:
-            print("Warning: Configuration file found but 'interface_name' is not defined.")
-  
+            print(
+                "Warning: Configuration file found but 'interface_name' is not defined."
+            )
+
     if "eth1" in netifaces.interfaces():
         return "eth1"
-    raise Exception("No valid network interface found. Please ensure 'eth1' exists or configure 'interface_name' in config/env_config file.")
+    raise Exception(
+        "No valid network interface found. Please ensure 'eth1' exists or configure 'interface_name' in config/env_config file."
+    )
 
 
 # reset host interface
@@ -185,10 +204,10 @@ def reset_host_interface() -> None:
     interface_name = get_host_interface_name()
     flag = False
     try:
-        command = 'ifconfig ' + interface_name + ' down'
+        command = "ifconfig " + interface_name + " down"
         subprocess.call(command, shell=True, timeout=5)
         time.sleep(1)
-        command = 'ifconfig ' + interface_name + ' up'
+        command = "ifconfig " + interface_name + " up"
         subprocess.call(command, shell=True, timeout=10)
         time.sleep(1)
         flag = True
@@ -202,13 +221,17 @@ def set_interface_sysctl_options() -> None:
     interface_name = get_host_interface_name()
     flag = False
     try:
-        command = 'sysctl -w net/ipv6/conf/' + interface_name + '/accept_ra=2'
+        command = "sysctl -w net/ipv6/conf/" + interface_name + "/accept_ra=2"
         subprocess.call(command, shell=True, timeout=5)
         time.sleep(1)
-        command = 'sysctl -w net/ipv6/conf/' + interface_name + '/accept_ra_rt_info_max_plen=128'
+        command = (
+            "sysctl -w net/ipv6/conf/"
+            + interface_name
+            + "/accept_ra_rt_info_max_plen=128"
+        )
         subprocess.call(command, shell=True, timeout=5)
         time.sleep(1)
-        command = 'sysctl -w net.ipv6.conf.all.forwarding=1'
+        command = "sysctl -w net.ipv6.conf.all.forwarding=1"
         subprocess.call(command, shell=True, timeout=5)
         time.sleep(1)
         flag = True
@@ -222,13 +245,21 @@ def init_interface_ipv6_address() -> None:
     interface_name = get_host_interface_name()
     flag = False
     try:
-        command = 'ip -6 route | grep ' + interface_name + " | grep ra | awk {'print $1'} | xargs -I {} ip -6 route del {}"
+        command = (
+            "ip -6 route | grep "
+            + interface_name
+            + " | grep ra | awk {'print $1'} | xargs -I {} ip -6 route del {}"
+        )
         subprocess.call(command, shell=True, timeout=5)
         time.sleep(0.5)
         subprocess.call(command, shell=True, timeout=5)
         time.sleep(1)
-        command = 'ip -6 address show dev ' + interface_name + \
-            " scope global | grep 'inet6' | awk {'print $2'} | xargs -I {} ip -6 addr del {} dev " + interface_name
+        command = (
+            "ip -6 address show dev "
+            + interface_name
+            + " scope global | grep 'inet6' | awk {'print $2'} | xargs -I {} ip -6 addr del {} dev "
+            + interface_name
+        )
         subprocess.call(command, shell=True, timeout=5)
         time.sleep(1)
         flag = True
@@ -238,7 +269,7 @@ def init_interface_ipv6_address() -> None:
 
 
 def fixture_Init_interface() -> bool:
-    print('Init interface')
+    print("Init interface")
     init_interface_ipv6_address()
     reset_host_interface()
     time.sleep(30)
@@ -250,72 +281,86 @@ def fixture_Init_interface() -> bool:
 @pytest.mark.esp32s3
 @pytest.mark.esp_matter_dut
 @pytest.mark.parametrize(
-    'count, app_path, target, erase_all', [
-        ( 2, pytest_matter_thread_dir, 'esp32h2|esp32s3', 'y|y'),
+    "count, app_path, target, erase_all",
+    [
+        (2, pytest_matter_thread_dir, "esp32h2|esp32s3", "y|y"),
     ],
     indirect=True,
 )
 
 # Matter over thread commissioning
-def test_matter_commissioning_h2(dut:Tuple[Dut, Dut]) -> None:
+def test_matter_commissioning_h2(dut: tuple[Dut, Dut]) -> None:
     ot_br = dut[1]
     light = dut[0]
     # For matter over thread commissioning need to reset host interface
     fixture_Init_interface()
     # BLE start advertising
-    light.expect(r'Configuring CHIPoBLE advertising', timeout=20)
-    ot_br.expect(r'Configuring CHIPoBLE advertising', timeout=20)
+    light.expect(r"Configuring CHIPoBLE advertising", timeout=20)
+    ot_br.expect(r"Configuring CHIPoBLE advertising", timeout=20)
     # Start commissioning OTBR
     time.sleep(2)
-    command = CHIP_TOOL_EXE + f" pairing ble-wifi 1 {PYTEST_SSID} {PYTEST_PASSPHRASE} 20202021 3584"
+    command = (
+        CHIP_TOOL_EXE
+        + f" pairing ble-wifi 1 {PYTEST_SSID} {PYTEST_PASSPHRASE} 20202021 3584"
+    )
     out_str = subprocess.getoutput(command)
     print(out_str)
-    result = re.findall(r'Run command failure', str(out_str))
+    result = re.findall(r"Run command failure", str(out_str))
     if len(result) != 0:
-      assert False
+        assert False
     # Set the active dataset and start Thread network
     time.sleep(2)
-    command = CHIP_TOOL_EXE + ' generalcommissioning arm-fail-safe 180 1 1 0'
+    command = CHIP_TOOL_EXE + " generalcommissioning arm-fail-safe 180 1 1 0"
     out_str = subprocess.getoutput(command)
     print(out_str)
-    result = re.findall(r'Run command failure', str(out_str))
+    result = re.findall(r"Run command failure", str(out_str))
     if len(result) != 0:
-      assert False
+        assert False
     time.sleep(2)
-    command = CHIP_TOOL_EXE + ' threadborderroutermanagement set-active-dataset-request hex:' + OT_DATASET_HEXSTR + ' 1 1 --timedInteractionTimeoutMs 2000'
+    command = (
+        CHIP_TOOL_EXE
+        + " threadborderroutermanagement set-active-dataset-request hex:"
+        + OT_DATASET_HEXSTR
+        + " 1 1 --timedInteractionTimeoutMs 2000"
+    )
     out_str = subprocess.getoutput(command)
     print(out_str)
-    result = re.findall(r'Run command failure', str(out_str))
+    result = re.findall(r"Run command failure", str(out_str))
     if len(result) != 0:
-      assert False
+        assert False
     time.sleep(2)
-    command = CHIP_TOOL_EXE + ' generalcommissioning commissioning-complete 1 0'
+    command = CHIP_TOOL_EXE + " generalcommissioning commissioning-complete 1 0"
     out_str = subprocess.getoutput(command)
     print(out_str)
-    result = re.findall(r'Run command failure', str(out_str))
+    result = re.findall(r"Run command failure", str(out_str))
     if len(result) != 0:
-      assert False
+        assert False
     # Start commissioning Light
     time.sleep(2)
-    command = CHIP_TOOL_EXE + ' pairing ble-thread 2 hex:' + OT_DATASET_HEXSTR +' 20202021 3840'
+    command = (
+        CHIP_TOOL_EXE
+        + " pairing ble-thread 2 hex:"
+        + OT_DATASET_HEXSTR
+        + " 20202021 3840"
+    )
     out_str = subprocess.getoutput(command)
     print(out_str)
-    result = re.findall(r'Run command failure', str(out_str))
+    result = re.findall(r"Run command failure", str(out_str))
     if len(result) != 0:
-      assert False
+        assert False
     # Use toggle command to turn-off the light
     time.sleep(2)
-    command = CHIP_TOOL_EXE + ' onoff toggle 2 1'
+    command = CHIP_TOOL_EXE + " onoff toggle 2 1"
     out_str = subprocess.getoutput(command)
     print(out_str)
-    result = re.findall(r'Run command failure', str(out_str))
+    result = re.findall(r"Run command failure", str(out_str))
     if len(result) != 0:
-      assert False
+        assert False
     # Use toggle command to turn-on the light
     time.sleep(2)
-    command = CHIP_TOOL_EXE + ' onoff toggle 2 1'
+    command = CHIP_TOOL_EXE + " onoff toggle 2 1"
     out_str = subprocess.getoutput(command)
     print(out_str)
-    result = re.findall(r'Run command failure', str(out_str))
+    result = re.findall(r"Run command failure", str(out_str))
     if len(result) != 0:
-      assert False
+        assert False

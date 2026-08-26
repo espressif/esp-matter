@@ -1,0 +1,13 @@
+# Keep the ruff version in sync with the pin in .gitlab/lint.yml (ruff==0.15.22)
+
+[lint]
+ignore = [
+    "LOG015",  # root-logger-call: logging via the root logger is fine for CLI/CI scripts
+    "TRY002",  # raise-vanilla-class: plain Exception is fine for test/CI scripts
+]
+
+[lint.per-file-ignores]
+# Sphinx/esp-docs conf pattern: config names (extensions, html_context, ...) come
+# from `import *` which ruff 0.15.x cannot resolve statically (0.16+ can — drop
+# this section when the ruff pin is bumped)
+"docs/*" = ["F403", "F405"]
