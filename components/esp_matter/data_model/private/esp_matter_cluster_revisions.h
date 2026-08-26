@@ -76,7 +76,7 @@ constexpr uint16_t cluster_revision = 2;
 } // namespace operational_credentials
 
 namespace group_key_management {
-constexpr uint16_t cluster_revision = 3;
+constexpr uint16_t cluster_revision = 4;
 } // namespace group_key_management
 
 namespace wifi_network_diagnostics {
