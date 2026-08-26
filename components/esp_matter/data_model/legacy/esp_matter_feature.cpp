@@ -1930,7 +1930,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         update_feature_map(cluster, get_id());
 
         /* Attributes not managed internally */
-        attribute::create_temperature_setpoint(cluster, config->temp_setpoint);
+        attribute::create_temperature_setpoint(cluster, config->temperature_setpoint);
         attribute::create_min_temperature(cluster, config->min_temperature);
         attribute::create_max_temperature(cluster, config->max_temperature);
     } else {

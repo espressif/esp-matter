@@ -46,6 +46,17 @@ class TestChipName(unittest.TestCase):
     def test_hyphen_separated(self):
         self.assertEqual(chip_name("Wi-Fi"), "WiFi")
 
+    def test_preserves_mixed_case_acronyms(self):
+        # Mixed-case acronyms are preserved as-is (they match CHIP), while all-caps
+        # acronyms are title-cased (AV -> Av) the same way CHIP names them.
+        self.assertEqual(chip_name("WiFi Network Diagnostics"), "WiFiNetworkDiagnostics")
+        self.assertEqual(
+            chip_name("WebRTC Transport Provider"), "WebRTCTransportProvider"
+        )
+        self.assertEqual(
+            chip_name("Camera AV Stream Management"), "CameraAvStreamManagement"
+        )
+
     def test_dishwasher_special_case(self):
         self.assertEqual(chip_name("Dish Washer Mode"), "DishwasherMode")
 

@@ -1,21 +1,33 @@
 # SPDX-License-Identifier: CC0-1.0
 
-import pytest
-import time
+import os
 import re
 import subprocess
+import time
+
+import pytest
+from gitlab_api import GitLabAPI
 from pytest_embedded import Dut
-import os
-import sys
 
 ESP_MATTER_PATH = os.environ["ESP_MATTER_PATH"]
 
-sys.path.append(os.path.join(ESP_MATTER_PATH, 'tools', 'ci'))
-from gitlab_api import GitLabAPI
-
-CURRENT_DIR = os.path.join(ESP_MATTER_PATH, 'examples', 'test_apps', 'test_optional_attributes')
-TEST_SCRIPT_PATH = os.path.join(ESP_MATTER_PATH, 'tools', 'test_optional_attributes', 'test_optional_attributes_framework.py')
-PAA_CERTS_PATH = os.path.join(ESP_MATTER_PATH, 'connectedhomeip', 'connectedhomeip', 'credentials', 'development', 'paa-root-certs')
+CURRENT_DIR = os.path.join(
+    ESP_MATTER_PATH, "examples", "test_apps", "test_optional_attributes"
+)
+TEST_SCRIPT_PATH = os.path.join(
+    ESP_MATTER_PATH,
+    "tools",
+    "test_optional_attributes",
+    "test_optional_attributes_framework.py",
+)
+PAA_CERTS_PATH = os.path.join(
+    ESP_MATTER_PATH,
+    "connectedhomeip",
+    "connectedhomeip",
+    "credentials",
+    "development",
+    "paa-root-certs",
+)
 
 pytest_build_dir = CURRENT_DIR
 
@@ -27,13 +39,14 @@ PYTEST_PASSPHRASE = gitlab_api.ci_gitlab_pytest_passphrase
 @pytest.mark.esp32c3
 @pytest.mark.esp_matter_dut
 @pytest.mark.parametrize(
-    'count, app_path, target, erase_all', [
-        (1, pytest_build_dir, 'esp32c3', 'y'),
+    "count, app_path, target, erase_all",
+    [
+        (1, pytest_build_dir, "esp32c3", "y"),
     ],
     indirect=True,
 )
 def test_optional_attributes_c3(dut: Dut) -> None:
-    dut.expect(r'Configuring CHIPoBLE advertising', timeout=20)
+    dut.expect(r"Configuring CHIPoBLE advertising", timeout=20)
     time.sleep(5)
 
     command = (
@@ -50,11 +63,13 @@ def test_optional_attributes_c3(dut: Dut) -> None:
     out_str = subprocess.getoutput(command)
     print(out_str)
 
-    passed = re.search(r'Passed:\s+(\d+)', out_str)
-    failed = re.search(r'Failed:\s+(\d+)', out_str)
+    passed = re.search(r"Passed:\s+(\d+)", out_str)
+    failed = re.search(r"Failed:\s+(\d+)", out_str)
 
     if failed and int(failed.group(1)) > 0:
-        assert False, f"Optional attributes test failed. {failed.group(1)} failures detected."
+        assert False, (
+            f"Optional attributes test failed. {failed.group(1)} failures detected."
+        )
 
     if not passed or int(passed.group(1)) == 0:
         assert False, "Optional attributes test did not report any passed results."

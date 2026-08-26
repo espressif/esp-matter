@@ -135,8 +135,11 @@ class ClusterParser:
         )
         if cluster.esp_name in context.delegate_clusters:
             cluster.delegate_init_callback_available = True
-        if cluster.esp_name in context.plugin_init_cb_clusters:
+        # Keyed by the (possibly overridden) esp_name; the value is the exact CHIP callback symbol.
+        plugin_init_cb = context.plugin_init_cb_clusters.get(cluster.esp_name)
+        if plugin_init_cb is not None:
             cluster.plugin_init_cb_available = True
+            cluster.plugin_server_init_callback = plugin_init_cb
         if cluster.esp_name in context.migrated_clusters:
             cluster.is_migrated_cluster = True
 

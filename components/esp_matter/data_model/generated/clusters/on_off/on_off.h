@@ -28,7 +28,7 @@ typedef struct config {
     uint16_t on_time;
     uint16_t off_wait_time;
     nullable<uint8_t> start_up_on_off;
-    config() : global_scene_control(false), on_time(0), off_wait_time(0), start_up_on_off(0) {}
+    config() : global_scene_control(false), on_time(0), off_wait_time(0), start_up_on_off() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);

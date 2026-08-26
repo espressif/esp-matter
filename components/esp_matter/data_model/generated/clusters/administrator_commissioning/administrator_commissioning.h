@@ -45,7 +45,7 @@ typedef struct config {
     uint8_t window_status;
     nullable<uint8_t> admin_fabric_index;
     nullable<uint16_t> admin_vendor_id;
-    config() : window_status(0), admin_fabric_index(0), admin_vendor_id(0) {}
+    config() : window_status(0), admin_fabric_index(), admin_vendor_id() {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

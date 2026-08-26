@@ -26,7 +26,7 @@ namespace lift {
 typedef struct config {
     nullable<uint16_t> target_position_lift_percent_100ths;
     nullable<uint16_t> current_position_lift_percent_100ths;
-    config() : target_position_lift_percent_100ths(0), current_position_lift_percent_100ths(0) {}
+    config() : target_position_lift_percent_100ths(), current_position_lift_percent_100ths() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -36,7 +36,7 @@ namespace tilt {
 typedef struct config {
     nullable<uint16_t> target_position_tilt_percent_100ths;
     nullable<uint16_t> current_position_tilt_percent_100ths;
-    config() : target_position_tilt_percent_100ths(0), current_position_tilt_percent_100ths(0) {}
+    config() : target_position_tilt_percent_100ths(), current_position_tilt_percent_100ths() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -46,7 +46,7 @@ namespace position_aware_lift {
 typedef struct config {
     nullable<uint16_t> target_position_lift_percent_100ths;
     nullable<uint16_t> current_position_lift_percent_100ths;
-    config() : target_position_lift_percent_100ths(0), current_position_lift_percent_100ths(0) {}
+    config() : target_position_lift_percent_100ths(), current_position_lift_percent_100ths() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -56,7 +56,7 @@ namespace position_aware_tilt {
 typedef struct config {
     nullable<uint16_t> target_position_tilt_percent_100ths;
     nullable<uint16_t> current_position_tilt_percent_100ths;
-    config() : target_position_tilt_percent_100ths(0), current_position_tilt_percent_100ths(0) {}
+    config() : target_position_tilt_percent_100ths(), current_position_tilt_percent_100ths() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);

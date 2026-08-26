@@ -3,7 +3,9 @@
 # SPDX-License-Identifier: CC0-1.0
 
 import re
+
 from tabulate import tabulate
+
 
 class ResultsFormatter:
     @staticmethod
@@ -71,7 +73,12 @@ class ResultsFormatter:
 
     @staticmethod
     def format_heap_dump(parsed_logs):
-        headers = ["State", "Current Free Memory", "Largest Free Block", "Min. Ever Free Size"]
+        headers = [
+            "State",
+            "Current Free Memory",
+            "Largest Free Block",
+            "Min. Ever Free Size",
+        ]
         return tabulate(parsed_logs, headers=headers, tablefmt="grid")
 
     @staticmethod

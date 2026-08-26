@@ -36,12 +36,22 @@ class DataTypeSerializer:
 class AttributeSerializer:
     @staticmethod
     def to_dict(attr, attribute_map=None):
+        # Set default value to null if default value is absent and attribute is nullable.
+        raw_default = safe_get_attr(attr, "default_value")
+        if (
+            safe_get_attr(attr, "is_nullable")
+            and safe_get_attr(attr, "type") not in ("string", "octstr", "list", "bool")
+            and (raw_default is None or str(raw_default).strip().lower() == "null")
+        ):
+            default_value = "null"
+        else:
+            default_value = attr.get_default_value()
         return {
             "name": attr.name,
             "id": attr.get_id(),
             "type": safe_get_attr(attr, "type"),
             "converted_type": attr.get_type(),
-            "default_value": attr.get_default_value(),
+            "default_value": default_value,
             "mandatory": safe_get_attr(attr, "is_mandatory"),
             "nullable": safe_get_attr(attr, "is_nullable"),
             "flags": attr.get_flag(),

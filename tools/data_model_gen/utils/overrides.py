@@ -26,18 +26,6 @@ COMMAND_CALLBACK_SKIP: FrozenSet[int] = frozenset(
     ]
 )
 
-DELEGATE_CALLBACK_SKIP: FrozenSet[int] = frozenset(
-    [
-        0x0552,  # camera_av_settings_user_level_management
-        0x0551,  # camera_av_stream_management
-        0x0553,  # webrtc_transport_provider
-        0x0554,  # webrtc_transport_requestor
-        0x0801,  # tls_certificate_management
-        0x0802,  # tls_client_management
-        0x0550,  # zone_management
-    ]
-)
-
 # TODO: To be removed once the delegate callback is present in the codebase
 # connectedhomeip/src/app/clusters/mode-select/
 DELEGATE_CALLBACK_INCLUDE: FrozenSet[int] = frozenset(
@@ -62,6 +50,8 @@ _CLUSTER_NAME_OVERRIDE_DEFS = (
     (0x0006, "OnOff", "On/Off"),
     (0x005D, "Dishwasher Alarm", "Dish Washer Alarm"),
     (0x0059, "Dishwasher Mode", "Dish Washer Mode"),
+    (0x0036, "Wi-Fi Network Diagnostics", "WiFi Network Diagnostics"),
+    (0x0451, "Wi-Fi Network Management", "WiFi Network Management"),
 )
 
 CLUSTER_NAME_OVERRIDES: Dict[int, str] = {
@@ -151,20 +141,6 @@ SKIP_INTERNALLY_MANAGED_ATTRIBUTE_FLAG: Dict[int, FrozenSet[int]] = {
 }
 
 
-# ── Cluster callback name overrides ─────────────────────────────────────────
-# cluster_id -> (init_callback_name, shutdown_callback_name)
-CLUSTER_CALLBACK_NAME_OVERRIDES: Dict[int, Tuple[str, str]] = {
-    0x0553: (  # webrtc_transport_provider
-        "ESPMatterWebRTCTransportProviderClusterServerInitCallback",
-        "ESPMatterWebRTCTransportProviderClusterServerShutdownCallback",
-    ),
-    0x0554: (  # webrtc_transport_requestor
-        "ESPMatterWebRTCTransportRequestorClusterServerInitCallback",
-        "ESPMatterWebRTCTransportRequestorClusterServerShutdownCallback",
-    ),
-}
-
-
 # ── C++ reserved words (name-based — not cluster/element related) ───────────
 # can grow over time as we observe more reserved words in the codebase
 _RESERVED_WORDS_OBSERVED_IN_PRACTICE: FrozenSet[str] = frozenset(
@@ -231,10 +207,6 @@ def should_skip_cluster_command_callbacks(cluster_id: str) -> bool:
     return convert_to_int(cluster_id) in COMMAND_CALLBACK_SKIP
 
 
-def should_skip_delegate_callback(cluster_id: str) -> bool:
-    return convert_to_int(cluster_id) in DELEGATE_CALLBACK_SKIP
-
-
 def should_include_delegate_callback(cluster_id: str) -> bool:
     return convert_to_int(cluster_id) in DELEGATE_CALLBACK_INCLUDE
 
@@ -248,21 +220,3 @@ def should_skip_internally_managed_flag(cluster_id: str, attribute_id: str) -> b
     if cid not in SKIP_INTERNALLY_MANAGED_ATTRIBUTE_FLAG:
         return False
     return convert_to_int(attribute_id) in SKIP_INTERNALLY_MANAGED_ATTRIBUTE_FLAG[cid]
-
-
-def get_overridden_cluster_init_callback_name(cluster_id: str, chip_name: str) -> str:
-    cid = convert_to_int(cluster_id)
-    entry = CLUSTER_CALLBACK_NAME_OVERRIDES.get(cid)
-    if entry:
-        return entry[0]
-    return f"ESPMatter{chip_name}ClusterServerInitCallback"
-
-
-def get_overridden_cluster_shutdown_callback_name(
-    cluster_id: str, chip_name: str
-) -> str:
-    cid = convert_to_int(cluster_id)
-    entry = CLUSTER_CALLBACK_NAME_OVERRIDES.get(cid)
-    if entry:
-        return entry[1]
-    return f"ESPMatter{chip_name}ClusterServerShutdownCallback"

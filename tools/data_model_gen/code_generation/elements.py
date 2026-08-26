@@ -24,10 +24,6 @@ from utils.base_elements import (
 from .conformance_codegen import Conformance, ConformanceDecision, FeatureConformance
 from typing import Dict, List, Tuple
 from utils.conversion_utils import convert_to_int
-from utils.overrides import (
-    get_overridden_cluster_init_callback_name,
-    get_overridden_cluster_shutdown_callback_name,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -412,12 +408,12 @@ class Cluster(SpecialConfigElement, BaseCluster):
         return [f for f in self.get_features() if f not in final_choice_set]
 
     def get_cluster_init_callback(self):
-        """Get the cluster init callback name"""
-        return get_overridden_cluster_init_callback_name(self.id, self.chip_name)
+        """Get the cluster init callback name   """
+        return f"ESPMatter{self.chip_name}ClusterServerInitCallback"
 
     def get_cluster_shutdown_callback(self):
-        """Get the cluster shutdown callback name"""
-        return get_overridden_cluster_shutdown_callback_name(self.id, self.chip_name)
+        """Get the cluster shutdown callback name."""
+        return f"ESPMatter{self.chip_name}ClusterServerShutdownCallback"
 
     def get_response_command(self, command_name: str):
         """Get the response command for a given command name"""
@@ -552,8 +548,16 @@ class Attribute(SpecialConfigElement, BaseAttribute):
         )
 
     def get_default_value(self):
-        """Get the default value"""
+        """Get the default value.
+        """
+        if self.default_value == "null":
+            min_value = convert_to_int(self.min_value)
+            return str(min_value) if (min_value is not None and min_value > 0) else "0"
         return self.default_value
+
+    def has_null_default(self):
+        """Whether a nullable attribute's default value is null."""
+        return self.is_nullable and self.default_value == "null"
 
     def get_default_value_type(self):
         """Get the ESP type for the default value"""
@@ -613,6 +617,8 @@ class Attribute(SpecialConfigElement, BaseAttribute):
             return None
         if self.type in ("string", "octstr"):
             return f"{self.func_name}{{0}}"
+        if self.has_null_default():
+            return f"{self.func_name}()"
         return f"{self.func_name}({self.get_default_value()})"
 
 
@@ -675,7 +681,7 @@ class Feature(SpecialConfigElement, BaseFeature):
     def get_config_init_list(self):
         """Feature config struct initialization list"""
         return [
-            f"{attr.func_name}({attr.get_default_value()})"
+            attr.get_config_init_expr()
             for attr in self.get_attributes()
             if not attr.is_complex and not attr.is_internally_managed
         ]
@@ -793,9 +799,7 @@ class Device(BaseDevice):
                 continue
             for attribute in cluster.device_mandatory_attributes:
                 if not attribute.is_complex and not attribute.is_internally_managed:
-                    parts.append(
-                        f"{attribute.func_name}({attribute.get_default_value()})"
-                    )
+                    parts.append(attribute.get_config_init_expr())
         if self.has_optional_choice_clusters():
             parts.insert(0, "optional_clusters_mask(0)")
         return parts

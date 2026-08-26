@@ -81,7 +81,7 @@ typedef struct config {
     nullable<int64_t> active_power;
     void *delegate;
     uint32_t feature_flags;
-    config() : power_mode(0), number_of_measurement_types(0), active_power(0), delegate(nullptr), feature_flags(0) {}
+    config() : power_mode(0), number_of_measurement_types(0), active_power(), delegate(nullptr), feature_flags(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

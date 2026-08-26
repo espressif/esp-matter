@@ -1,3 +1,27 @@
+# 25-August-2026
+
+## Generated Data Model: Nullable attribute defaults
+
+Nullable attributes with **no default in the Matter spec** are now initialized to **null**
+(as per spec) in the generated data model. The legacy data model initialized them to **0**.
+
+Examples: `StartUpOnOff` (On/Off), `StartUpCurrentLevel` (Level Control),
+`StartUpColorTemperatureMireds` (Color Control) — all read back as `null` instead of `0`
+on a freshly created endpoint.
+
+If your application relied on `0` set the desired default explicitly at endpoint creation.
+
+## API Changes (Breaking)
+
+Some legacy APIs were changed to match the generated data model. Affected callers will
+fail to compile:
+
+- **Tolerance creators** (`flow_measurement`, `pressure_measurement`,
+  `illuminance_measurement`) now take only a value. Drop the `min`/`max` arguments; set
+  bounds via `attribute::add_bounds()` on the returned attribute.
+- **`temperature_control::feature::temperature_number`** config field `temp_setpoint`
+  renamed to `temperature_setpoint`.
+
 # 9-June-2026
 ### all_device_types_app
 - The `create` CLI syntax changed from `create --device_type=<name>` to `create <device_type>`.

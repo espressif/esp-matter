@@ -151,10 +151,10 @@ def generate_migrated_clusters(
 
 
 def extract_cluster_names(header_file_path):
-    """Extract cluster names from MatterXXXPluginServerInitCallback declarations.
+    """Extract CHIP cluster names from MatterXXXPluginServerInitCallback declarations.
 
     :param header_file_path: Path to the header file
-    :returns: List of cluster names
+    :returns: List of CHIP cluster names
     """
     try:
         with open(header_file_path, "r", encoding="utf-8") as f:
@@ -163,19 +163,16 @@ def extract_cluster_names(header_file_path):
         logger.error(f"Error reading file {header_file_path}: {e}")
         return []
 
-    clusters = []
-    for match in PLUGIN_CB_PATTERN.finditer(content):
-        clusters.append(normalize_cluster_name(match.group(1)))
-    return clusters
+    return [match.group(1) for match in PLUGIN_CB_PATTERN.finditer(content)]
 
 
 def generated_plugin_init_cb_cluster_mapping(
     header_file_path, plugin_init_cb_cluster_json_file_path
 ) -> tuple[bool, str]:
     """
-    Generate plugin init callback cluster mapping
+    Generate a mapping of cluster esp_name -> exact CHIP plugin init callback symbol.
 
-    :param header_file_path: The path to the header file.
+    :param header_file_path: The path to the plugin callback header file.
     :param plugin_init_cb_cluster_json_file_path: The path to the JSON file for plugin init callback clusters.
     :returns: True if successful, False otherwise.
 
@@ -185,8 +182,13 @@ def generated_plugin_init_cb_cluster_mapping(
             logger.warning(f"File {header_file_path} does not exist")
             return False, f"File {header_file_path} does not exist"
 
-        cluster_names = extract_cluster_names(header_file_path)
-        if write_to_file(plugin_init_cb_cluster_json_file_path, cluster_names, "json"):
+        cluster_name_to_callback = {}
+        for chip_name in extract_cluster_names(header_file_path):
+            callback = f"Matter{chip_name}PluginServerInitCallback"
+            cluster_name_to_callback[normalize_cluster_name(chip_name)] = callback
+        if write_to_file(
+            plugin_init_cb_cluster_json_file_path, cluster_name_to_callback, "json"
+        ):
             logger.info(
                 f"Successfully written Plugin Init Callback Clusters to {plugin_init_cb_cluster_json_file_path}"
             )

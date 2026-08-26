@@ -25,7 +25,7 @@ namespace feature {
 namespace time_sync {
 typedef struct config {
     nullable<uint64_t> auto_close_time;
-    config() : auto_close_time(0) {}
+    config() : auto_close_time() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -35,7 +35,7 @@ namespace level {
 typedef struct config {
     nullable<uint8_t> current_level;
     nullable<uint8_t> target_level;
-    config() : current_level(0), target_level(0) {}
+    config() : current_level(), target_level() {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -74,7 +74,7 @@ typedef struct config {
     nullable<uint8_t> current_state;
     nullable<uint8_t> target_state;
     void *delegate;
-    config() : open_duration(1), default_open_duration(1), remaining_duration(0), current_state(0), target_state(0), delegate(nullptr) {}
+    config() : open_duration(), default_open_duration(), remaining_duration(), current_state(), target_state(), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

@@ -19,7 +19,7 @@
 
 namespace esp_matter {
 namespace cluster {
-namespace wi_fi_network_diagnostics {
+namespace wifi_network_diagnostics {
 
 const uint8_t k_max_bssid_length = 6u;
 namespace feature {
@@ -80,11 +80,11 @@ typedef struct config {
     nullable<uint8_t> wi_fi_version;
     nullable<uint16_t> channel_number;
     nullable<int8_t> rssi;
-    config() : bssid{0}, security_type(0), wi_fi_version(0), channel_number(0), rssi(0) {}
+    config() : bssid{0}, security_type(), wi_fi_version(), channel_number(), rssi() {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
-} /* wi_fi_network_diagnostics */
+} /* wifi_network_diagnostics */
 } /* cluster */
 } /* esp_matter */

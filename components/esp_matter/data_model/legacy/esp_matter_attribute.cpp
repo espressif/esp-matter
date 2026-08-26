@@ -3399,12 +3399,9 @@ attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> va
     return attribute;
 }
 
-attribute_t *create_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+attribute_t *create_tolerance(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, IlluminanceMeasurement::Attributes::Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32, cluster::get_id(cluster), IlluminanceMeasurement::Attributes::Tolerance::Id));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(min), esp_matter_attr_val(max));
-    return attribute;
+    return esp_matter::attribute::create(cluster, IlluminanceMeasurement::Attributes::Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_light_sensor_type(cluster_t *cluster, nullable<uint8_t> value, nullable<uint8_t> min, nullable<uint8_t> max)
@@ -3436,12 +3433,9 @@ attribute_t *create_max_measured_value(cluster_t *cluster, nullable<int16_t> val
     return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::MaxMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
-attribute_t *create_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+attribute_t *create_tolerance(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32, cluster::get_id(cluster), PressureMeasurement::Attributes::Tolerance::Id));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(min), esp_matter_attr_val(max));
-    return attribute;
+    return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_scaled_value(cluster_t *cluster, nullable<int16_t> value)
@@ -3459,12 +3453,9 @@ attribute_t *create_max_scaled_value(cluster_t *cluster, nullable<int16_t> value
     return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::MaxScaledValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
-attribute_t *create_scaled_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+attribute_t *create_scaled_tolerance(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::ScaledTolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32, cluster::get_id(cluster), PressureMeasurement::Attributes::ScaledTolerance::Id));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(min), esp_matter_attr_val(max));
-    return attribute;
+    return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::ScaledTolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_scale(cluster_t *cluster, int8_t value)
@@ -3493,12 +3484,9 @@ attribute_t *create_max_measured_value(cluster_t *cluster, nullable<uint16_t> va
     return esp_matter::attribute::create(cluster, FlowMeasurement::Attributes::MaxMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
-attribute_t *create_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+attribute_t *create_tolerance(cluster_t *cluster, uint16_t value)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, FlowMeasurement::Attributes::Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
-    VerifyOrReturnValue(attribute, NULL, ESP_LOGE(TAG, "Could not create attribute. cluster_id: 0x%08" PRIX32 "'s  attribute_id: 0x%08" PRIX32, cluster::get_id(cluster), FlowMeasurement::Attributes::Tolerance::Id));
-    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(min), esp_matter_attr_val(max));
-    return attribute;
+    return esp_matter::attribute::create(cluster, FlowMeasurement::Attributes::Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 } /* attribute */
 } /* flow_measurement */
