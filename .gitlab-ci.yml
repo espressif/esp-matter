@@ -796,3 +796,196 @@ build_esp_rainmaker_apps:
         - echo "CONFIG_LWIP_IPV6_NUM_ADDRESSES=12" >> sdkconfig.defaults.otbr
         - idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults.otbr" -B ot_br_build set-target esp32s3 build
 
+build_docs:
+    stage: build
+    image: $CI_DOCKER_REGISTRY/esp-idf-doc-env-v5.5:3-1
+    rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
+    tags:
+        - build
+    needs:
+      - job: pre_commit_check
+    variables:
+        ESP_DOCS_LATEST_BRANCH_NAME: "main"
+    artifacts:
+        when: always
+        paths:
+            - docs_build.tgz
+        expire_in: 1 days
+    script:
+        - cd docs
+        - pip install -r requirements.txt
+        - build-docs -bs html latex -t esp32 esp32s3 esp32c2 esp32c3 esp32c6 esp32h2 esp32p4 esp32c5 esp32c61 esp32s31 esp32h21 esp32h4 -l en
+        # disable link checks for now, as it is failing due to some links taking longer time to respond
+        # - build-docs -t esp32 -l en linkcheck
+        # Per-target HTML duplicates large identical _static files (fonts/css).
+        # Hardlink them and drop latex intermediates so the artifact stays under the coordinator limit.
+        - |
+          REF="${CI_PROJECT_DIR}/docs/_build/en/esp32/html/_static"
+          for d in ${CI_PROJECT_DIR}/docs/_build/en/*/html/_static; do
+            [ "$d" -ef "$REF" ] && continue
+            rm -rf "$d"
+            cp -al "$REF" "$d"
+          done
+          find ${CI_PROJECT_DIR}/docs/_build -path '*/latex/*' ! -name '*.pdf' ! -type d -delete
+          tar --exclude='*/xml' --exclude='*/xml_in' --exclude='*/doctrees' --exclude='*/inc' --exclude='*/man' --exclude='*/_sources' \
+              -czf ${CI_PROJECT_DIR}/docs_build.tgz -C ${CI_PROJECT_DIR} docs/_build
+
+.deploy_docs_template:
+    stage: docs
+    image: $CI_DOCKER_REGISTRY/esp-idf-doc-env-v5.5:3-1
+    tags:
+        - docs
+    needs:
+        - build_docs
+    variables:
+        ESP_DOCS_LATEST_BRANCH_NAME: "main"
+    script:
+        - tar -xzf ${CI_PROJECT_DIR}/docs_build.tgz -C ${CI_PROJECT_DIR}
+        - source ${CI_PROJECT_DIR}/docs/utils.sh
+        - add_doc_server_ssh_keys $DOCS_DEPLOY_PRIVATEKEY $DOCS_DEPLOY_SERVER $DOCS_DEPLOY_SERVER_USER
+        - export GIT_VER=$(git describe --always)
+        - pip install -r ${CI_PROJECT_DIR}/docs/requirements.txt
+        - deploy-docs
+
+deploy_docs_preview:
+    extends:
+        - .deploy_docs_template
+    rules:
+      - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
+    variables:
+        TYPE: "preview"
+        DOCS_BUILD_DIR: "${CI_PROJECT_DIR}/docs/_build/"
+        DOCS_DEPLOY_PRIVATEKEY: "$DOCS_PREVIEW_DEPLOY_KEY"
+        DOCS_DEPLOY_SERVER: "$DOCS_PREVIEW_SERVER"
+        DOCS_DEPLOY_SERVER_USER: "$DOCS_PREVIEW_SERVER_USER"
+        DOCS_DEPLOY_PATH: "$DOCS_PREVIEW_PATH"
+        DOCS_DEPLOY_URL_BASE: "https://$DOCS_PREVIEW_SERVER_URL/$DOCS_PREVIEW_PATH"
+
+deploy_docs_production:
+    extends:
+        - .deploy_docs_template
+    only:
+      refs:
+        - main
+        - /^release\/v.*$/
+    variables:
+        TYPE: "preview"
+        DOCS_BUILD_DIR: "${CI_PROJECT_DIR}/docs/_build/"
+        DOCS_DEPLOY_PRIVATEKEY: "$DOCS_PROD_DEPLOY_KEY"
+        DOCS_DEPLOY_SERVER: "$DOCS_PROD_SERVER"
+        DOCS_DEPLOY_SERVER_USER: "$DOCS_PROD_SERVER_USER"
+        DOCS_DEPLOY_PATH: "$DOCS_PROD_PATH"
+        DOCS_DEPLOY_URL_BASE: "https://$DOCS_PROD_SERVER/$DOCS_PROD_PATH"
+
+pre_commit_check:
+  image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
+  stage: pre_check
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
+  script:
+    - pip install pre-commit
+    - git fetch origin main
+    - pre-commit install-hooks
+    - |
+      # Get the base commit for comparison
+      BASE_COMMIT=$(git merge-base origin/main HEAD)
+      # Run pre-commit on changed files
+      FILES=$(git diff --name-only --diff-filter=ACMRT ${BASE_COMMIT}...HEAD)
+      if [ -n "$FILES" ]; then
+        echo "Running pre-commit on changed files:"
+        echo "$FILES"
+        # Convert newline-separated files to space-separated and pass to pre-commit
+        echo "$FILES" | xargs pre-commit run --files
+      else
+        echo "No files changed, skipping pre-commit"
+      fi
+
+    # Label release branched MRs with versioned labels
+    # e.g. release/v1.5 -> v1.5
+    - |
+      case "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" in release/*)
+        curl -sf -X PUT -H "PRIVATE-TOKEN: $GITLAB_MR_COMMENT_TOKEN" \
+          "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID?add_labels=${CI_MERGE_REQUEST_TARGET_BRANCH_NAME#release/}" \
+          > /dev/null && echo "Added label ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME#release/}" || echo "Labeling failed (non-fatal)"
+      esac
+
+  tags:
+    - build
+
+cppcheck:
+  image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
+  stage: pre_check
+  allow_failure: true
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq cppcheck > /dev/null 2>&1
+  script:
+    - ${ESP_MATTER_PATH}/tools/ci/run_cppcheck.sh
+  after_script:
+    - |
+      if [ -f cppcheck_report.txt ]; then
+        echo "------------------------------------------------------------"
+        echo "cppcheck_report.txt"
+        echo "------------------------------------------------------------"
+        cat cppcheck_report.txt
+        echo "------------------------------------------------------------"
+      fi
+  tags:
+    - build
+
+data_model_gen_unit_tests:
+  image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
+  stage: pre_check
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
+  script:
+    - pip install -r ${ESP_MATTER_PATH}/tools/data_model_gen/requirements.txt
+    - cd ${ESP_MATTER_PATH}/tools/data_model_gen
+    - python tests/run_tests.py -v
+  tags:
+    - build
+
+data_model_gen_check:
+  image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
+  stage: pre_check
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
+  script:
+    # Clone CHIP submodule (shallow) for data model generation
+    - git submodule update --init --depth 1 connectedhomeip/connectedhomeip
+    # Install data_model_gen dependencies and pre-commit
+    - pip install -r ${ESP_MATTER_PATH}/tools/data_model_gen/requirements.txt
+    # pinning ruff to 0.15.22 to skip a few checks that are introduced in 0.16.x until we fix them
+    - pip install pre-commit ruff==0.15.22
+    # Regenerate data model from scratch
+    - cd ${ESP_MATTER_PATH}/tools/data_model_gen
+    # ruff check the data_model_gen directory
+    - ruff check .
+    - ruff format .
+    - python data_model_gen.py --clean --no-colored-logs
+    # Format generated code with pre-commit hooks (astyle, codespell, etc.)
+    - cd ${ESP_MATTER_PATH}
+    - pre-commit install-hooks
+    - find components/esp_matter/data_model/generated -name '*.cpp' -o -name '*.h' | xargs pre-commit run --files || true
+    # Fail if generated+formatted files differ from what is committed
+    - |
+      UNTRACKED=$(git ls-files --others --exclude-standard components/esp_matter/data_model/generated/)
+      if ! git diff --quiet components/esp_matter/data_model/generated/ || [ -n "$UNTRACKED" ]; then
+        echo "ERROR: Generated data model code is out of date or not properly formatted."
+        echo ""
+        echo "To fix: run the following locally and commit the result:"
+        echo "  cd tools/data_model_gen && python data_model_gen.py --clean"
+        echo "  pre-commit run --files \$(find components/esp_matter/data_model/generated -name '*.cpp' -o -name '*.h')"
+        echo ""
+        git diff --stat components/esp_matter/data_model/generated/
+        if [ -n "$UNTRACKED" ]; then
+          echo "Untracked files:"
+          echo "$UNTRACKED"
+        fi
+        exit 1
+      fi
+      echo "Generated data model files are up to date and properly formatted."
+  tags:
+    - build

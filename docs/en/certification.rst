@@ -36,7 +36,7 @@ Product Attestation Authority (PAA) Generation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For Matter certification testing, vendors should generate the test Product Attestation Authority (PAA) certificate, Product Attestation Intermediate (PAI), and Device Attestation Certificate (DAC), rather than using the default test PAA certificate from the connectedhomeip SDK repository. Therefore, you need to generate a PAA certificate and use it to sign the PAI certificate, which is then used to sign the DAC. The PAI certificate, DAC certificate, and DAC private key should be stored in the product under test.
-The `chip-cert <https://github.com/project-chip/connectedhomeip/blob/master/src/tools/chip-cert/README.md>`__ tool which is built in `esp-matter setup <https://github.com/espressif/esp-matter/blob/main/docs/en/developing.rst#2-esp-matter-setup>`__ process can be used to generate the PAA certificate and Certification Declaration (CD).
+The `chip-cert <https://github.com/project-chip/connectedhomeip/blob/master/src/tools/chip-cert/README.md>`__ tool which is built in `esp-matter setup <https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#setup-on-the-host>`__ process can be used to generate the PAA certificate and Certification Declaration (CD).
 
 ::
 
