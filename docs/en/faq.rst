@@ -453,6 +453,44 @@ For example, to update ``DefaultOTAProviders`` attribute in ``OTASoftwareUpdateR
           request->AddDefaultOtaProvider(provider);
       }
 
+attribute::update() returns ESP_ERR_NOT_SUPPORTED for some attributes
+----------------------------------------------------------------------
+
+Some clusters (e.g. ``TemperatureMeasurement``) have been migrated to code-driven implementations,
+where the cluster instance owns the attribute values instead of the esp-matter attribute store.
+For such clusters, calling ``esp_matter::attribute::update()`` or ``esp_matter::attribute::set_val()``
+on a **non-writable** attribute (e.g. ``MeasuredValue``) returns ``ESP_ERR_NOT_SUPPORTED``, because
+the write would land in the legacy store and never reach the controller.
+
+Earlier versions silently returned ``ESP_OK`` while the value was never actually updated;
+the error return makes this failure visible. See `#1798`_ for details.
+
+What to do instead:
+
+-  **Writable attributes** are unaffected — ``update()`` and ``set_val()`` continue to work for them.
+-  For non-writable attributes of a code-driven cluster, update the value through the cluster
+   implementation itself (its instance or delegate), similar to attributes marked
+   ``ATTRIBUTE_FLAG_MANAGED_INTERNALLY`` described above.
+   For example, to update ``MeasuredValue`` of the ``TemperatureMeasurement`` cluster, retrieve
+   the cluster instance from the provider registry and use its setter:
+
+   ::
+
+      #include <app/clusters/temperature-measurement-server/TemperatureMeasurementCluster.h>
+
+      using namespace chip::app;
+      using namespace chip::app::Clusters;
+
+      auto *cluster = esp_matter::data_model::provider::get_instance().registry().Get(
+          ConcreteClusterPath(endpoint_id, TemperatureMeasurement::Id));
+      if (cluster) {
+          static_cast<TemperatureMeasurementCluster *>(cluster)->SetMeasuredValue(
+              DataModel::MakeNullable<int16_t>(2550) /* 25.50 °C */);
+      }
+
+   As with any Matter data-model access, call this from the Matter thread or with the
+   chip stack lock held (see `Chip stack locking error ... Code is unsafe/racy`_ above).
+
 Devices with custom means of network configuration (CustomNetworkConfig)
 ------------------------------------------------------------------------
 
@@ -491,4 +529,5 @@ To enable this in the ESP-Matter SDK:
 .. _Github issue: https://github.com/espressif/esp-matter/issues/new?template=issue-template.md
 .. _`#1126`: https://github.com/espressif/esp-matter/issues/1126
 .. _`#1128`: https://github.com/espressif/esp-matter/issues/1128
+.. _`#1798`: https://github.com/espressif/esp-matter/issues/1798
 .. _`#13303`: https://github.com/project-chip/connectedhomeip/issues/13303
