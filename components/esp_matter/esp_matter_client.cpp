@@ -370,6 +370,12 @@ namespace read {
 esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams *attr_path, size_t attr_path_size,
                        EventPathParams *event_path, size_t event_path_size, ReadClient::Callback &callback)
 {
+    return send_request(remote_device, attr_path, attr_path_size, event_path, event_path_size, callback, false);
+}
+
+esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams *attr_path, size_t attr_path_size,
+                       EventPathParams *event_path, size_t event_path_size, ReadClient::Callback &callback, bool fabric_filtered)
+{
     VerifyOrReturnError(remote_device->GetSecureSession().HasValue() && !remote_device->GetSecureSession().Value()->IsGroupSession(), ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid Session Type"));
     VerifyOrReturnError((attr_path && attr_path_size != 0) || (event_path && event_path_size != 0),
                         ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid attribute path and event path"));
@@ -380,7 +386,7 @@ esp_err_t send_request(client::peer_device_t *remote_device, AttributePathParams
     params.mEventPathParamsListSize = event_path_size;
     params.mpDataVersionFilterList = nullptr;
     params.mDataVersionFilterListSize = 0;
-    params.mIsFabricFiltered = false;
+    params.mIsFabricFiltered = fabric_filtered;
 
     auto client_deleter_callback = chip::Platform::MakeUnique<client_deleter_read_callback>(callback);
     VerifyOrReturnError(client_deleter_callback, ESP_ERR_NO_MEM, ESP_LOGE(TAG, "Failed to allocate memory for client deleter callback"));
