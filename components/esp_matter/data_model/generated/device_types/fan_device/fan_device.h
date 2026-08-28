@@ -25,7 +25,7 @@
 #include <esp_matter_core.h>
 
 #define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
-#define ESP_MATTER_FAN_DEVICE_TYPE_VERSION 4
+#define ESP_MATTER_FAN_DEVICE_TYPE_VERSION 5
 
 namespace esp_matter {
 namespace endpoint {

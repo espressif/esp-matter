@@ -36,13 +36,8 @@ if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
         endforeach()
 
         list(APPEND SRC_DIRS_LIST "${MATTER_SDK_PATH}/src/app/clusters/on-off-server/codegen"
-                                  "${MATTER_SDK_PATH}/src/app/clusters/level-control/codegen")
-
-        # operational-state-server uses the legacy Instance pattern (not code-driven
-        # ServerCluster). Its implementation lives in CodegenIntegration.cpp which the
-        # glob above excludes. Un-exclude it — delegate callbacks create Instance directly.
-        list(REMOVE_ITEM EXCLUDE_SRCS_LIST
-            "${MATTER_SDK_PATH}/src/app/clusters/operational-state-server/CodegenIntegration.cpp")
+                                  "${MATTER_SDK_PATH}/src/app/clusters/level-control/codegen"
+                                  "${MATTER_SDK_PATH}/src/app/clusters/color-control-server/codegen")
 
         get_supported_esp_matter_cluster_dirs(ESP_MATTER_CLUSTER_DIRS_LIST)
         list(APPEND SRC_DIRS_LIST ${ESP_MATTER_CLUSTER_DIRS_LIST})
@@ -61,6 +56,10 @@ if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
                                            "data_model_provider/private")
 
         if(CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL)
+            # Weak no-op ESPMatter*ClusterServer{Init,Shutdown}Callback stubs referenced by the
+            # generated cluster files; provider integrations override them with strong definitions.
+            list(APPEND SRC_DIRS_LIST "zap_common/app")
+
             foreach(GENERATED_DATA_MODEL_PATH "device_types" "clusters")
                 list(APPEND SRC_DIRS_LIST "data_model/generated/${GENERATED_DATA_MODEL_PATH}")
                 list(APPEND INCLUDE_DIRS_LIST "data_model/generated/${GENERATED_DATA_MODEL_PATH}")

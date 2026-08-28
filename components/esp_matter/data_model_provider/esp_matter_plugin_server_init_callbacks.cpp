@@ -33,7 +33,6 @@ void MatterPollControlPluginServerInitCallback() {}
 void MatterProxyValidPluginServerInitCallback() {}
 void MatterProxyDiscoveryPluginServerInitCallback() {}
 void MatterProxyConfigurationPluginServerInitCallback() {}
-void MatterFanControlPluginServerInitCallback() {}
 void MatterActivatedCarbonFilterMonitoringPluginServerInitCallback() {}
 void MatterHepaFilterMonitoringPluginServerInitCallback() {}
 void MatterAirQualityPluginServerInitCallback() {}

@@ -25,6 +25,7 @@
 #include <oven_cavity_operational_state_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
 using namespace esp_matter;
@@ -46,12 +47,14 @@ attribute_t *create_phase_list(cluster_t *cluster, uint8_t *value, uint16_t leng
 
 attribute_t *create_current_phase(cluster_t *cluster, nullable<uint8_t> value)
 {
-    return esp_matter::attribute::create(cluster, CurrentPhase::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    return esp_matter::attribute::create(cluster, CurrentPhase::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_countdown_time(cluster_t *cluster, nullable<uint32_t> value)
 {
-    return esp_matter::attribute::create(cluster, CountdownTime::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, CountdownTime::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(nullable<uint32_t>(CountdownTime::Min)), esp_matter_attr_val(nullable<uint32_t>(CountdownTime::Max)));
+    return attribute;
 }
 
 attribute_t *create_operational_state_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -61,7 +64,9 @@ attribute_t *create_operational_state_list(cluster_t *cluster, uint8_t *value, u
 
 attribute_t *create_operational_state(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, OperationalState::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, OperationalState::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(OperationalState::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(OperationalState::Max), esp_matter_attr_val::uint_sub_type::k_enum));
+    return attribute;
 }
 
 attribute_t *create_operational_error(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -125,13 +130,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
+        attribute::create_current_phase(cluster, config->current_phase);
+        attribute::create_operational_state(cluster, config->operational_state);
         attribute::create_phase_list(cluster, NULL, 0, 0);
-        attribute::create_current_phase(cluster, 0);
         attribute::create_operational_state_list(cluster, NULL, 0, 0);
-        attribute::create_operational_state(cluster, 0);
         attribute::create_operational_error(cluster, NULL, 0, 0);
         /* Events */
         event::create_operational_error(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterOvenCavityOperationalStateClusterServerInitCallback,
+                                                 ESPMatterOvenCavityOperationalStateClusterServerShutdownCallback);
     }
 
     return cluster;

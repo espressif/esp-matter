@@ -107,7 +107,9 @@
     "TC_IDM_10_2": {
       "script": "TC_DeviceConformance.py",
       "test_case": "test_TC_IDM_10_2",
-      "args": "--bool-arg allow_provisional:true"
+      "args": "--bool-arg allow_provisional:true",
+      "skip_on_branch": "main",
+      "skip_reason": "v1.7 TE1 data model still marks Groupcast and ACL AUX provisional, and the core sets the provisional GroupKeyManagement GCAST feature bit; conformance cannot pass with the Groupcast cluster enabled. Unskip once the submodule pin carries the final 1.6.1 DM (chip PRs 73585/73636) and the GKM GCAST fix (chip PR 73649)."
     },
     "TC_IDM_10_1": {
       "script": "TC_DeviceBasicComposition.py",

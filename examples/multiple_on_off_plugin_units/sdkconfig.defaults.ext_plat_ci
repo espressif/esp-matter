@@ -45,7 +45,3 @@ CONFIG_ESP_SECURE_CERT_DS_PERIPHERAL=n
 CONFIG_MBEDTLS_HKDF_C=y
 
 # ESP32-DevKit Settings
-
-
-# disable groupcast cluster until verified
-CONFIG_SUPPORT_GROUPCAST_CLUSTER=n

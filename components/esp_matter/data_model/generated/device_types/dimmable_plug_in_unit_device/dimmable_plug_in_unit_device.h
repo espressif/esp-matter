@@ -27,7 +27,7 @@
 #include <esp_matter_core.h>
 
 #define ESP_MATTER_DIMMABLE_PLUG_IN_UNIT_DEVICE_TYPE_ID 0x010B
-#define ESP_MATTER_DIMMABLE_PLUG_IN_UNIT_DEVICE_TYPE_VERSION 5
+#define ESP_MATTER_DIMMABLE_PLUG_IN_UNIT_DEVICE_TYPE_VERSION 6
 
 namespace esp_matter {
 namespace endpoint {

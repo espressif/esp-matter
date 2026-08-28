@@ -26,7 +26,7 @@
 #include <esp_matter_core.h>
 
 #define ESP_MATTER_MOUNTED_ON_OFF_CONTROL_DEVICE_TYPE_ID 0x010F
-#define ESP_MATTER_MOUNTED_ON_OFF_CONTROL_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_MOUNTED_ON_OFF_CONTROL_DEVICE_TYPE_VERSION 3
 
 namespace esp_matter {
 namespace endpoint {

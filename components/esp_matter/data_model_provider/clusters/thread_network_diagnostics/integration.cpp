@@ -35,7 +35,7 @@ namespace {
 
 std::unordered_map<EndpointId, LazyRegisteredServerCluster<ThreadNetworkDiagnosticsCluster>> gServers;
 
-ThreadNetworkDiagnostics::DirectThreadNetworkDiagnosticsProvider  &GetDirectProvider()
+ThreadNetworkDiagnostics::DirectThreadNetworkDiagnosticsProvider &GetDirectProvider()
 {
     static ThreadNetworkDiagnostics::DirectThreadNetworkDiagnosticsProvider sDirectProvider;
     return sDirectProvider;

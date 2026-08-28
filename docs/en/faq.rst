@@ -512,6 +512,26 @@ To enable this in the ESP-Matter SDK:
    root node endpoint (endpoint 0). The device is expected to handle network
    configuration through its own out-of-band mechanism.
 
+Certification test TC-RR-1.1 fails with "MaxGroupKeysPerFabric must be at least 4"
+----------------------------------------------------------------------------------
+
+The Groupcast test plan update raised the certification floor for
+``MaxGroupKeysPerFabric`` to 4 (3 group key sets plus the Identity Protection
+Key), matching the connectedhomeip core default. However, the ESP32 build reads
+this limit from the ``CONFIG_MAX_GROUP_KEYS_PER_FABRIC`` option, which defaults
+to 3 in some connectedhomeip versions.
+
+If TC-RR-1.1 reports this failure, add the following to your project's
+``sdkconfig.defaults`` (or set it via menuconfig, Menu path:
+(Top) -> Component config -> CHIP Core -> General Options -> Maximum Number of Group Key Sets per Fabric):
+
+::
+
+    CONFIG_MAX_GROUP_KEYS_PER_FABRIC=4
+
+Note that raising the limit slightly increases the group key storage reserved
+per fabric.
+
 .. _bleprph: https://github.com/espressif/esp-idf/tree/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/bleprph
 .. _blecent: https://github.com/espressif/esp-idf/tree/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/blecent
 .. _bleprph_advertise(): https://github.com/espressif/esp-idf/blob/b5ac4fbdf9e9fb320bb0a98ee4fbaa18f8566f37/examples/bluetooth/nimble/bleprph/main/main.c#L146

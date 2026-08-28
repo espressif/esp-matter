@@ -23,8 +23,12 @@ namespace mode_base {
 
 namespace feature {
 namespace on_off {
+typedef struct config {
+    nullable<uint8_t> on_mode;
+    config() : on_mode() {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* on_off */
 
 } /* feature */

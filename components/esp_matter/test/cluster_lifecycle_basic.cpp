@@ -14,6 +14,7 @@
 #include "cluster_lifecycle_common.h"
 
 #include <app-common/zap-generated/ids/Clusters.h>
+#include <app/clusters/mode-base-server/mode-base-server.h>
 #include <clusters/ElectricalEnergyMeasurement/Enums.h>
 #include <clusters/OccupancySensing/Enums.h>
 #include <clusters/shared/Enums.h>
@@ -139,8 +140,11 @@ static void verify_cluster_lifecycle_no_heap_leak(chip::ClusterId cluster_id,
 // keep-sorted start sticky_comments=no
 // - CameraAvStreamManagement
 // - ClosureControl
+// - ModeBase (shared implementation exercised via RvcRunMode below; needs a delegate per derived cluster)
+// - OperationalState
 // - TlsCertificateManagement
 // - TlsClientManagement
+// - WaterHeaterManagement
 // - WebRTCTransportProvider
 // keep-sorted end
 
@@ -243,6 +247,52 @@ static cluster_t *create_switch_cluster(endpoint_t *endpoint, cluster::switch_cl
     return cluster::switch_cluster::create(endpoint, config, flags);
 }
 
+// Minimal ModeBase delegate so a mode_base-derived cluster can exercise the managed-instance
+// lifecycle (InitModeDelegate allocates the Instance; ModeBaseShutdownCB must free it on destroy).
+class TestModeBaseDelegate : public chip::app::Clusters::ModeBase::Delegate {
+public:
+    CHIP_ERROR Init() override
+    {
+        return CHIP_NO_ERROR;
+    }
+    CHIP_ERROR GetModeLabelByIndex(uint8_t mode_index, chip::MutableCharSpan &label) override
+    {
+        return CHIP_ERROR_PROVIDER_LIST_EXHAUSTED;
+    }
+    CHIP_ERROR GetModeValueByIndex(uint8_t mode_index, uint8_t &value) override
+    {
+        // ModeBase instance initialization expects at least one mode to initialize successfully.
+        VerifyOrReturnError(mode_index == 0, CHIP_ERROR_PROVIDER_LIST_EXHAUSTED);
+        value = 0;
+        return CHIP_NO_ERROR;
+    }
+    CHIP_ERROR GetModeTagsByIndex(uint8_t mode_index,
+                                  chip::app::DataModel::List<chip::app::Clusters::detail::Structs::ModeTagStruct::Type> &mode_tags) override
+    {
+        return CHIP_ERROR_PROVIDER_LIST_EXHAUSTED;
+    }
+    void HandleChangeToMode(uint8_t new_mode,
+                            chip::app::Clusters::ModeBase::Commands::ChangeToModeResponse::Type &response) override
+    {
+        response.status = chip::to_underlying(chip::app::Clusters::ModeBase::StatusCode::kSuccess);
+    }
+};
+
+static cluster_t *create_rvc_run_mode_cluster(endpoint_t *endpoint, cluster::rvc_run_mode::config_t *config,
+                                              uint8_t flags)
+{
+    static TestModeBaseDelegate mode_delegate;
+    config->delegate = &mode_delegate;
+    return cluster::rvc_run_mode::create(endpoint, config, flags);
+}
+
+static cluster_t *create_smoke_co_alarm_cluster(endpoint_t *endpoint, cluster::smoke_co_alarm::config_t *config,
+                                                uint8_t flags)
+{
+    config->feature_flags = cluster::smoke_co_alarm::feature::smoke_alarm::get_id();
+    return cluster::smoke_co_alarm::create(endpoint, config, flags);
+}
+
 static cluster_t *create_temperature_control_cluster(endpoint_t *endpoint,
                                                      cluster::temperature_control::config_t *config,
                                                      uint8_t flags)
@@ -275,6 +325,8 @@ TEST_CLUSTER_LIFECYCLE("ElectricalEnergyMeasurement", chip::app::Clusters::Elect
                        cluster::electrical_energy_measurement::config_t, create_electrical_energy_measurement_cluster)
 TEST_CLUSTER_LIFECYCLE("EthernetNetworkDiagnostics", chip::app::Clusters::EthernetNetworkDiagnostics::Id,
                        cluster::ethernet_network_diagnostics::config_t, cluster::ethernet_network_diagnostics::create)
+TEST_CLUSTER_LIFECYCLE("FanControl", chip::app::Clusters::FanControl::Id, cluster::fan_control::config_t,
+                       cluster::fan_control::create)
 TEST_CLUSTER_LIFECYCLE("FixedLabel", chip::app::Clusters::FixedLabel::Id, cluster::fixed_label::config_t,
                        cluster::fixed_label::create)
 TEST_CLUSTER_LIFECYCLE("FlowMeasurement", chip::app::Clusters::FlowMeasurement::Id,
@@ -304,8 +356,12 @@ TEST_CLUSTER_LIFECYCLE("PushAvStreamTransport", chip::app::Clusters::PushAvStrea
                        cluster::push_av_stream_transport::config_t, cluster::push_av_stream_transport::create)
 TEST_CLUSTER_LIFECYCLE("RelativeHumidityMeasurement", chip::app::Clusters::RelativeHumidityMeasurement::Id,
                        cluster::relative_humidity_measurement::config_t, cluster::relative_humidity_measurement::create)
+TEST_CLUSTER_LIFECYCLE("RvcRunMode", chip::app::Clusters::RvcRunMode::Id, cluster::rvc_run_mode::config_t,
+                       create_rvc_run_mode_cluster)
 TEST_CLUSTER_LIFECYCLE("ScenesManagement", chip::app::Clusters::ScenesManagement::Id,
                        cluster::scenes_management::config_t, cluster::scenes_management::create)
+TEST_CLUSTER_LIFECYCLE("SmokeCoAlarm", chip::app::Clusters::SmokeCoAlarm::Id, cluster::smoke_co_alarm::config_t,
+                       create_smoke_co_alarm_cluster)
 TEST_CLUSTER_LIFECYCLE("SoilMeasurement", chip::app::Clusters::SoilMeasurement::Id, cluster::soil_measurement::config_t,
                        create_soil_measurement_cluster)
 TEST_CLUSTER_LIFECYCLE("Switch", chip::app::Clusters::Switch::Id, cluster::switch_cluster::config_t,

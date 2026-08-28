@@ -4,6 +4,7 @@
         "actions",
         "administrator_commissioning",
         "air_quality",
+        "ambient_context_sensing",
         "basic_information",
         "binding",
         "boolean_state_configuration",
@@ -36,10 +37,12 @@
         "illuminance_measurement",
         "localization_configuration",
         "microwave_oven_control",
+        "mode_base",
         "network_commissioning",
         "network_identity_management",
         "occupancy_sensor",
         "operational_credentials",
+        "operational_state",
         "ota_software_update_provider",
         "ota_software_update_requestor",
         "power_topology",
@@ -73,6 +76,7 @@
         "zone_management"
     ],
     "migrated_cluster_with_codegen_impl": [
+        "color_control",
         "level_control",
         "on_off",
         "power_source"

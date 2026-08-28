@@ -90,6 +90,9 @@ void ESPMatterColorControlClusterServerShutdownCallback(EndpointId endpoint, Clu
 void ESPMatterCommissionerControlClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterCommissionerControlClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
+void ESPMatterCommissioningProxyClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterCommissioningProxyClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
+
 void ESPMatterCommodityMeteringClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterCommodityMeteringClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
@@ -392,6 +395,9 @@ void ESPMatterTemperatureControlledCabinetTopologyClusterServerShutdownCallback(
 
 void ESPMatterTemperatureMeasurementClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterTemperatureMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
+
+void ESPMatterTestHiddenManufacturerSpecificClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterTestHiddenManufacturerSpecificClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
 void ESPMatterThermostatClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterThermostatClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);

@@ -74,6 +74,9 @@ local_mappings = {
 
 # List of clusters to skip for delegate scanning
 delegate_skip_list = [
+    # ambient_context_sensing is still provisional.
+    # TODO: Add its integration and remove this entry once it is final in the spec.
+    "ambient_context_sensing",
     "ota_software_update_requestor",
     "bridged_device_basic_information",
     "identify",

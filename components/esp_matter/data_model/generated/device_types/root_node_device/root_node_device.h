@@ -40,7 +40,7 @@
 #include <esp_matter_core.h>
 
 #define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID 0x0016
-#define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_VERSION 4
+#define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_VERSION 5
 
 namespace esp_matter {
 namespace endpoint {

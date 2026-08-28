@@ -297,6 +297,16 @@ __attribute__((weak)) void ESPMatterCommissionerControlClusterServerShutdownCall
     // Default empty implementation
 }
 
+__attribute__((weak)) void ESPMatterCommissioningProxyClusterServerInitCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterCommissioningProxyClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
+{
+    // Default empty implementation
+}
+
 __attribute__((weak)) void ESPMatterCommodityMeteringClusterServerInitCallback(EndpointId endpoint)
 {
     // Default empty implementation
@@ -1303,6 +1313,16 @@ __attribute__((weak)) void ESPMatterTemperatureMeasurementClusterServerInitCallb
 }
 
 __attribute__((weak)) void ESPMatterTemperatureMeasurementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterTestHiddenManufacturerSpecificClusterServerInitCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterTestHiddenManufacturerSpecificClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }
