@@ -39,6 +39,10 @@
     0x00000450, /* Cluster: Network Identity Management, Attribute: Clients, Privilege: manage */ \
     0x00000451, /* Cluster: Wi-Fi Network Management, Attribute: PassphraseSurrogate, Privilege: manage */ \
     0x0000050D, /* Cluster: Application Basic, Attribute: AllowedVendorList, Privilege: administer */ \
+    0x00000511, /* Cluster: Media File Management, Attribute: TotalStorage, Privilege: manage */ \
+    0x00000511, /* Cluster: Media File Management, Attribute: AvailableStorage, Privilege: manage */ \
+    0x00000511, /* Cluster: Media File Management, Attribute: AvailableFiles, Privilege: manage */ \
+    0x00000511, /* Cluster: Media File Management, Attribute: SupportedMimeTypes, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: HDRModeEnabled, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: NightVision, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: NightVisionIllum, Privilege: manage */ \
@@ -116,6 +120,10 @@
     0x00000001, /* Cluster: Network Identity Management, Attribute: Clients, Privilege: manage */ \
     0x00000001, /* Cluster: Wi-Fi Network Management, Attribute: PassphraseSurrogate, Privilege: manage */ \
     0x00000007, /* Cluster: Application Basic, Attribute: AllowedVendorList, Privilege: administer */ \
+    0x00000000, /* Cluster: Media File Management, Attribute: TotalStorage, Privilege: manage */ \
+    0x00000001, /* Cluster: Media File Management, Attribute: AvailableStorage, Privilege: manage */ \
+    0x00000002, /* Cluster: Media File Management, Attribute: AvailableFiles, Privilege: manage */ \
+    0x00000003, /* Cluster: Media File Management, Attribute: SupportedMimeTypes, Privilege: manage */ \
     0x0000000D, /* Cluster: Camera AV Stream Management, Attribute: HDRModeEnabled, Privilege: manage */ \
     0x00000016, /* Cluster: Camera AV Stream Management, Attribute: NightVision, Privilege: manage */ \
     0x00000017, /* Cluster: Camera AV Stream Management, Attribute: NightVisionIllum, Privilege: manage */ \
@@ -193,6 +201,10 @@
     chip::Access::Privilege::kManage, /* Cluster: Network Identity Management, Attribute: Clients, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Wi-Fi Network Management, Attribute: PassphraseSurrogate, Privilege: manage */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Application Basic, Attribute: AllowedVendorList, Privilege: administer */ \
+    chip::Access::Privilege::kManage, /* Cluster: Media File Management, Attribute: TotalStorage, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Media File Management, Attribute: AvailableStorage, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Media File Management, Attribute: AvailableFiles, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Media File Management, Attribute: SupportedMimeTypes, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: HDRModeEnabled, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: NightVision, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: NightVisionIllum, Privilege: manage */ \
@@ -341,6 +353,12 @@
     0x00000431, /* Cluster: Ambient Context Sensing, Attribute: ObjectCountConfig, Privilege: manage */ \
     0x00000431, /* Cluster: Ambient Context Sensing, Attribute: HoldTime, Privilege: manage */ \
     0x00000453, /* Cluster: Thread Network Directory, Attribute: PreferredExtendedPanID, Privilege: manage */ \
+    0x00000512, /* Cluster: Audio Control, Attribute: MaxUserVolume, Privilege: manage */ \
+    0x00000512, /* Cluster: Audio Control, Attribute: DefaultStepSize, Privilege: manage */ \
+    0x00000512, /* Cluster: Audio Control, Attribute: SetVolumeUnmutePolicy, Privilege: manage */ \
+    0x00000512, /* Cluster: Audio Control, Attribute: IncreaseVolumeUnmutePolicy, Privilege: manage */ \
+    0x00000512, /* Cluster: Audio Control, Attribute: IncreaseVolumeUnmuteVolume, Privilege: manage */ \
+    0x00000512, /* Cluster: Audio Control, Attribute: DecreaseVolumeUnmutePolicy, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: HDRModeEnabled, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: NightVision, Privilege: manage */ \
     0x00000551, /* Cluster: Camera AV Stream Management, Attribute: NightVisionIllum, Privilege: manage */ \
@@ -463,6 +481,12 @@
     0x00000006, /* Cluster: Ambient Context Sensing, Attribute: ObjectCountConfig, Privilege: manage */ \
     0x00000009, /* Cluster: Ambient Context Sensing, Attribute: HoldTime, Privilege: manage */ \
     0x00000000, /* Cluster: Thread Network Directory, Attribute: PreferredExtendedPanID, Privilege: manage */ \
+    0x00000006, /* Cluster: Audio Control, Attribute: MaxUserVolume, Privilege: manage */ \
+    0x00000007, /* Cluster: Audio Control, Attribute: DefaultStepSize, Privilege: manage */ \
+    0x00000008, /* Cluster: Audio Control, Attribute: SetVolumeUnmutePolicy, Privilege: manage */ \
+    0x00000009, /* Cluster: Audio Control, Attribute: IncreaseVolumeUnmutePolicy, Privilege: manage */ \
+    0x0000000A, /* Cluster: Audio Control, Attribute: IncreaseVolumeUnmuteVolume, Privilege: manage */ \
+    0x0000000B, /* Cluster: Audio Control, Attribute: DecreaseVolumeUnmutePolicy, Privilege: manage */ \
     0x0000000D, /* Cluster: Camera AV Stream Management, Attribute: HDRModeEnabled, Privilege: manage */ \
     0x00000016, /* Cluster: Camera AV Stream Management, Attribute: NightVision, Privilege: manage */ \
     0x00000017, /* Cluster: Camera AV Stream Management, Attribute: NightVisionIllum, Privilege: manage */ \
@@ -585,6 +609,12 @@
     chip::Access::Privilege::kManage, /* Cluster: Ambient Context Sensing, Attribute: ObjectCountConfig, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Ambient Context Sensing, Attribute: HoldTime, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thread Network Directory, Attribute: PreferredExtendedPanID, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Audio Control, Attribute: MaxUserVolume, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Audio Control, Attribute: DefaultStepSize, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Audio Control, Attribute: SetVolumeUnmutePolicy, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Audio Control, Attribute: IncreaseVolumeUnmutePolicy, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Audio Control, Attribute: IncreaseVolumeUnmuteVolume, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Audio Control, Attribute: DecreaseVolumeUnmutePolicy, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: HDRModeEnabled, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: NightVision, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Camera AV Stream Management, Attribute: NightVisionIllum, Privilege: manage */ \
@@ -725,6 +755,8 @@
     0x0000050F, /* Cluster: Content Control, Command: RemoveBlockApplications, Privilege: manage */ \
     0x0000050F, /* Cluster: Content Control, Command: SetBlockContentTimeWindow, Privilege: manage */ \
     0x0000050F, /* Cluster: Content Control, Command: RemoveBlockContentTimeWindow, Privilege: manage */ \
+    0x00000511, /* Cluster: Media File Management, Command: AddFile, Privilege: manage */ \
+    0x00000511, /* Cluster: Media File Management, Command: DeleteFile, Privilege: manage */ \
     0x00000550, /* Cluster: Zone Management, Command: CreateTwoDCartesianZone, Privilege: manage */ \
     0x00000550, /* Cluster: Zone Management, Command: UpdateTwoDCartesianZone, Privilege: manage */ \
     0x00000550, /* Cluster: Zone Management, Command: RemoveZone, Privilege: manage */ \
@@ -899,6 +931,8 @@
     0x0000000E, /* Cluster: Content Control, Command: RemoveBlockApplications, Privilege: manage */ \
     0x0000000F, /* Cluster: Content Control, Command: SetBlockContentTimeWindow, Privilege: manage */ \
     0x00000010, /* Cluster: Content Control, Command: RemoveBlockContentTimeWindow, Privilege: manage */ \
+    0x00000000, /* Cluster: Media File Management, Command: AddFile, Privilege: manage */ \
+    0x00000002, /* Cluster: Media File Management, Command: DeleteFile, Privilege: manage */ \
     0x00000000, /* Cluster: Zone Management, Command: CreateTwoDCartesianZone, Privilege: manage */ \
     0x00000002, /* Cluster: Zone Management, Command: UpdateTwoDCartesianZone, Privilege: manage */ \
     0x00000003, /* Cluster: Zone Management, Command: RemoveZone, Privilege: manage */ \
@@ -1073,6 +1107,8 @@
     chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: RemoveBlockApplications, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: SetBlockContentTimeWindow, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: RemoveBlockContentTimeWindow, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Media File Management, Command: AddFile, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Media File Management, Command: DeleteFile, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Zone Management, Command: CreateTwoDCartesianZone, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Zone Management, Command: UpdateTwoDCartesianZone, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Zone Management, Command: RemoveZone, Privilege: manage */ \

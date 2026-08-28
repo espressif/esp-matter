@@ -128,6 +128,11 @@ attribute_t *create_tc_update_deadline(cluster_t *cluster, nullable<uint32_t> va
     return esp_matter::attribute::create(cluster, TCUpdateDeadline::Id, ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
+attribute_t *create_is_commissioning_without_power(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, IsCommissioningWithoutPower::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+}
+
 } /* attribute */
 namespace command {
 command_t *create_arm_fail_safe(cluster_t *cluster)

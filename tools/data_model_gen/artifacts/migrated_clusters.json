@@ -35,6 +35,7 @@
         "icd_management",
         "identify",
         "illuminance_measurement",
+        "laundry_washer_controls",
         "localization_configuration",
         "microwave_oven_control",
         "mode_base",
