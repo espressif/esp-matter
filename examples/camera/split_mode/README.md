@@ -31,12 +31,23 @@ The split mode consists of two separate firmware images:
     -   Power-optimized operation (sleeps when not streaming)
     -   Receives signaling commands via bridge from esp32_camera
 
-## Hardware Requirements
+## Supported Boards
 
--   **ESP32-P4 Function EV Board** (required)
-    -   Contains both ESP32-P4 and ESP32-C6 processors
-    -   Built-in camera support
-    -   SDIO communication between processors
+The following boards are supported out of the box:
+
+### [ESP32-P4 Function EV Board](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/user_guide.html)
+
+-   Contains both ESP32-P4 and ESP32-C6 processors
+-   Built-in camera support
+-   SDIO communication between processors
+-   ESP32-C6 is flashed via an external [ESP-Prog](https://docs.espressif.com/projects/esp-iot-solution/en/latest/hw-reference/ESP-Prog_guide.html)/JTAG adapter on the J2 (Prog-C6) header
+
+### [M5Stack Tab5](https://shop.m5stack.com/products/m5stack-tab5-iot-development-kit-esp32-p4)
+
+-   Contains both ESP32-P4 and ESP32-C6 processors
+-   Built-in camera and display
+-   SDIO communication between processors
+-   ESP32-C6 download interface is on the rear PCB (behind the back cover), **not** the external USB-C connector — see the [M5Stack Tab5 C6 flashing guide](https://docs.m5stack.com/en/guide/restore_factory/m5tab5_c6_wifi#2-flashing-tool)
 
 ## System Architecture
 
@@ -64,8 +75,8 @@ The split mode consists of two separate firmware images:
 
 ### Prerequisites
 
--   IDF version: v5.5.4
--   [ESP32-P4 Function EV Board](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/user_guide.html) or [M5Stack Tab5](https://shop.m5stack.com/products/m5stack-tab5-iot-development-kit-esp32-p4)
+-   IDF version: v5.5.5
+-   One of the boards listed under [Supported Boards](#supported-boards)
 -   [ESP-IDF Port of Amazon Kinesis Video Streams WebRTC SDK repository](https://github.com/espressif/esp-port-for-amazon-kvs-sdk)
 
 ```
@@ -74,7 +85,7 @@ export KVS_SDK_PATH=/path/to/esp-port-for-amazon-kvs-sdk
 ```
 ### Build and Flash Instructions
 **Note**: This requires **TWO separate firmware flashes** on the same
-ESP32-P4 Function EV Board.
+board (one for the ESP32-C6, one for the ESP32-P4).
 #### Step 1: Flash camera example (ESP32-C6)
 This handles WebRTC signaling and Matter integration.
 
@@ -92,7 +103,10 @@ idf.py build
 idf.py -p [PORT] flash monitor
 ```
 
-*__NOTE__*:
+*__NOTE__* (M5Stack Tab5):
+- The ESP32-C6 download interface is **not** exposed through the Tab5's external USB-C connector — it is located on the rear PCB, accessible after removing the back cover. See the [M5Stack Tab5 C6 flashing guide](https://docs.m5stack.com/en/guide/restore_factory/m5tab5_c6_wifi#2-flashing-tool) for the port location and flashing procedure.
+
+*__NOTE__* (ESP32-P4 Function EV Board):
 - ESP32-C6 does not have an onboard UART port. You will need to use [ESP-Prog](https://docs.espressif.com/projects/esp-iot-solution/en/latest/hw-reference/ESP-Prog_guide.html) board or any other JTAG.
 - Use following Pin Connections:
 
