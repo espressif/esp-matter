@@ -40,6 +40,7 @@ DefaultTimerDelegate gTimerDelegate;
 
 std::unordered_map<EndpointId, LazyRegisteredServerCluster<ClosureControlCluster>> gServers;
 std::unordered_map<EndpointId, ClosureControlClusterDelegate *> gDelegates;
+std::unordered_map<EndpointId, DataModel::Nullable<GenericOverallCurrentState>> gInitialOverallCurrentStates;
 
 } // namespace
 
@@ -54,6 +55,24 @@ void MatterClosureControlSetDelegate(EndpointId endpointId, ClosureControlCluste
     VerifyOrReturn(it == gServers.end() || !it->second.IsConstructed(),
                    ChipLogError(AppServer, "ClosureControl: cluster already initialized; cannot set delegate"));
     gDelegates[endpointId] = &delegate;
+}
+
+ClosureControlCluster * GetClusterInstance(EndpointId endpointId)
+{
+    auto it = gServers.find(endpointId);
+    if (it == gServers.end() || !it->second.IsConstructed()) {
+        return nullptr;
+    }
+    return &it->second.Cluster();
+}
+
+void MatterClosureControlSetInitialOverallCurrentState(EndpointId endpointId,
+                                                       const DataModel::Nullable<GenericOverallCurrentState> &overallCurrentState)
+{
+    auto it = gServers.find(endpointId);
+    VerifyOrReturn(it == gServers.end() || !it->second.IsConstructed(),
+                   ChipLogError(AppServer, "ClosureControl: cluster already initialized; cannot set initial state"));
+    gInitialOverallCurrentStates[endpointId] = overallCurrentState;
 }
 
 } // namespace ClosureControl
@@ -116,6 +135,12 @@ void ESPMatterClosureControlClusterServerInitCallback(EndpointId endpointId)
         // MainState, OverallCurrentState, LatchControlModes are MANAGED_INTERNALLY —
         // no reliable values in esp-matter store. Use Config defaults; the code-driven
         // cluster initializes them properly via Startup().
+
+        // Apply application-provided initial state, if set before construction.
+        auto stateIt = gInitialOverallCurrentStates.find(endpointId);
+        if (stateIt != gInitialOverallCurrentStates.end()) {
+            config.WithInitialOverallCurrentState(stateIt->second);
+        }
 
         gServers[endpointId].Create(config);
     }

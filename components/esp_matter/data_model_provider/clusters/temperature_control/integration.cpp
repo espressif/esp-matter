@@ -119,6 +119,29 @@ namespace app {
 namespace Clusters {
 namespace TemperatureControl {
 
+TemperatureControlCluster * FindClusterOnEndpoint(EndpointId endpointId)
+{
+    auto it = gServers.find(endpointId);
+    if (it == gServers.end() || !it->second.IsConstructed()) {
+        return nullptr;
+    }
+    return &it->second.Cluster();
+}
+
+CHIP_ERROR SetTemperatureSetpoint(EndpointId endpointId, int16_t temperatureSetpoint)
+{
+    auto * cluster = FindClusterOnEndpoint(endpointId);
+    VerifyOrReturnError(cluster != nullptr, CHIP_ERROR_INVALID_ARGUMENT);
+    return cluster->SetTemperatureSetpoint(temperatureSetpoint);
+}
+
+CHIP_ERROR SetSelectedTemperatureLevel(EndpointId endpointId, uint8_t selectedTemperatureLevel)
+{
+    auto * cluster = FindClusterOnEndpoint(endpointId);
+    VerifyOrReturnError(cluster != nullptr, CHIP_ERROR_INVALID_ARGUMENT);
+    return cluster->SetSelectedTemperatureLevel(selectedTemperatureLevel);
+}
+
 SupportedTemperatureLevelsIteratorDelegate * GetDelegate()
 {
     return TemperatureControlCluster::GetDelegate();

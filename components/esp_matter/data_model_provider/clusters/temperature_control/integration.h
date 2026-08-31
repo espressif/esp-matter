@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <app/clusters/temperature-control-server/TemperatureControlCluster.h>
 #include <app/clusters/temperature-control-server/supported-temperature-levels-manager.h>
 #include <lib/core/DataModelTypes.h>
 
@@ -22,6 +23,15 @@ namespace app {
 namespace Clusters {
 
 namespace TemperatureControl {
+
+/// Returns the cluster instance registered on the given endpoint, nullptr otherwise
+TemperatureControlCluster * FindClusterOnEndpoint(EndpointId endpointId);
+
+/// Convenience helper to set the temperature setpoint (TN feature)
+CHIP_ERROR SetTemperatureSetpoint(EndpointId endpointId, int16_t temperatureSetpoint);
+
+/// Convenience helper to set the selected temperature level (TL feature)
+CHIP_ERROR SetSelectedTemperatureLevel(EndpointId endpointId, uint8_t selectedTemperatureLevel);
 
 SupportedTemperatureLevelsIteratorDelegate * GetDelegate();
 

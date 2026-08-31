@@ -86,6 +86,12 @@ ElectricalEnergyMeasurementCluster *GetClusterInstance(EndpointId endpointId)
     return &it->second.Cluster();
 }
 
+ElectricalEnergyMeasurementCluster *FindElectricalEnergyMeasurementClusterOnEndpoint(EndpointId endpointId)
+{
+    // Alias matching the upstream CodegenIntegration API name
+    return GetClusterInstance(endpointId);
+}
+
 CHIP_ERROR SetMeasurementAccuracy(EndpointId endpointId, const Structs::MeasurementAccuracyStruct::Type &accuracy)
 {
     ElectricalEnergyMeasurementCluster *cluster = GetClusterInstance(endpointId);

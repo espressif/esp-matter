@@ -146,11 +146,67 @@ namespace app {
 namespace Clusters {
 namespace ValveConfigurationAndControl {
 
-void SetDefaultDelegate(EndpointId endpointId, Delegate * delegate)
+ValveConfigurationAndControlCluster * FindClusterOnEndpoint(EndpointId endpointId)
 {
     auto it = gServers.find(endpointId);
-    VerifyOrReturn(it != gServers.end() && it->second.IsConstructed());
-    it->second.Cluster().SetDelegate(delegate);
+    if (it == gServers.end() || !it->second.IsConstructed()) {
+        return nullptr;
+    }
+    return &it->second.Cluster();
+}
+
+void SetDefaultDelegate(EndpointId endpointId, Delegate * delegate)
+{
+    auto * cluster = FindClusterOnEndpoint(endpointId);
+    VerifyOrReturn(cluster != nullptr);
+    cluster->SetDelegate(delegate);
+}
+
+CHIP_ERROR CloseValve(EndpointId ep)
+{
+    auto * cluster = FindClusterOnEndpoint(ep);
+    VerifyOrReturnError(cluster != nullptr, CHIP_ERROR_UNINITIALIZED);
+    return cluster->CloseValve();
+}
+
+CHIP_ERROR SetValveLevel(EndpointId ep, DataModel::Nullable<Percent> level, DataModel::Nullable<uint32_t> openDuration)
+{
+    auto * cluster = FindClusterOnEndpoint(ep);
+    VerifyOrReturnError(cluster != nullptr, CHIP_ERROR_UNINITIALIZED);
+    return cluster->OpenValve(level, openDuration);
+}
+
+CHIP_ERROR UpdateCurrentLevel(EndpointId ep, Percent currentLevel)
+{
+    auto * cluster = FindClusterOnEndpoint(ep);
+    VerifyOrReturnError(cluster != nullptr, CHIP_ERROR_UNINITIALIZED);
+    cluster->UpdateCurrentLevel(currentLevel);
+    return CHIP_NO_ERROR;
+}
+
+CHIP_ERROR UpdateCurrentState(EndpointId ep, ValveConfigurationAndControl::ValveStateEnum currentState)
+{
+    auto * cluster = FindClusterOnEndpoint(ep);
+    VerifyOrReturnError(cluster != nullptr, CHIP_ERROR_UNINITIALIZED);
+    cluster->UpdateCurrentState(currentState);
+    return CHIP_NO_ERROR;
+}
+
+CHIP_ERROR EmitValveFault(EndpointId ep, BitMask<ValveConfigurationAndControl::ValveFaultBitmap> fault)
+{
+    auto * cluster = FindClusterOnEndpoint(ep);
+    VerifyOrReturnError(cluster != nullptr, CHIP_ERROR_UNINITIALIZED);
+    cluster->SetValveFault(fault);
+    return CHIP_NO_ERROR;
+}
+
+void UpdateAutoCloseTime(uint64_t time)
+{
+    for (auto  &server : gServers) {
+        if (server.second.IsConstructed()) {
+            server.second.Cluster().UpdateAutoCloseTime(time);
+        }
+    }
 }
 
 } // namespace ValveConfigurationAndControl

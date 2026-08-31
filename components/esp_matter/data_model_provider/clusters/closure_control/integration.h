@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <app/clusters/closure-control-server/ClosureControlCluster.h>
 #include <app/clusters/closure-control-server/ClosureControlClusterDelegate.h>
 #include <lib/core/DataModelTypes.h>
 
@@ -23,6 +24,14 @@ namespace Clusters {
 namespace ClosureControl {
 
 void MatterClosureControlSetDelegate(EndpointId endpointId, ClosureControlClusterDelegate &delegate);
+
+/// Returns the cluster instance registered on the given endpoint, nullptr otherwise
+ClosureControlCluster * GetClusterInstance(EndpointId endpointId);
+
+/// Sets the initial OverallCurrentState applied when the cluster is constructed.
+/// Must be called before cluster creation (i.e. before esp_matter::start()).
+void MatterClosureControlSetInitialOverallCurrentState(EndpointId endpointId,
+                                                       const DataModel::Nullable<GenericOverallCurrentState> &overallCurrentState);
 
 } // namespace ClosureControl
 } // namespace Clusters
