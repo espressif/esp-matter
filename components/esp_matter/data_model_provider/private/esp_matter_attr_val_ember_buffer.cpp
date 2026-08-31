@@ -122,7 +122,7 @@ uint16_t get_ember_attr_size_from_val(const esp_matter_attr_val_t &val)
         return (val.val.a.s == UINT8_MAX ? 0 : val.val.a.s) + 1;
     case ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING:
     case ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING:
-        return (val.val.a.s == UINT16_MAX ? 0 : val.val.a.s) + 1;
+        return (val.val.a.s == UINT16_MAX ? 0 : val.val.a.s) + 2;
     default:
         break;
     }
