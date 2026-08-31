@@ -22,25 +22,42 @@ No additional setup is required.
 ### Build
 
 ```
-idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.esp32h2.aliro" set-target esp32h2 build
+idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults.nanoh2_aliro_nfc" set-target esp32h2 build
 ```
+
 or
+
 ```
-idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.esp32c6.aliro" set-target esp32c6 build
+idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults.nanoc6_aliro_nfc" set-target esp32c6 build
 ```
 
 ### Test with Apple Home
 
-After commissioning with Apple Home app, the Home app will automatically add a Key to the Apple Wallet, which can be used for unlocking the door.
-![home_key_add](./img/home_key_add.jpeg) ![unlock](./img/unlock_page.jpeg)
+After commissioning with the Apple Home app, the Home app automatically adds a key to Apple Wallet, which can be used to unlock the door.
 
-### Local Controls and Status
+|                                     Add Home Key                                     |                                     Unlock the door                                     |
+| :----------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------: |
+| <img src="./img/home_key_add.jpeg" alt="Home Key added to Apple Wallet" width="300"> | <img src="./img/unlock_page.jpeg" alt="Unlocking the door with Apple Home" width="300"> |
 
-On the M5Stack NanoC6 and NanoH2, press the front button to toggle the lock state. The RGB LED indicates the current state:
+## 4. Local Controls and Status
+
+Press the boot button (front button on M5Stack Nano) to toggle the lock state. The RGB LED indicates the current state:
 
 - Red: locked
 - Green: unlocked or unlatched
-- Amber: not fully locked
+- Amber: locking or unlocking
 - Off: unknown state
 
-The button is connected to GPIO9. The NanoC6 RGB LED uses GPIO20 with its power enabled on GPIO19; the NanoH2 RGB LED uses GPIO11 with its power enabled on GPIO10. The separate blue LED is not used.
+## 5. Diagnostic Console
+
+The door-lock debug command is available under `matter esp dl`:
+
+```text
+matter esp dl status
+matter esp dl users
+matter esp dl pin-unlock <PIN>
+```
+
+- `status` prints aggregate user and credential capacity.
+- `users` prints user-to-credential relationships without credential data.
+- `pin-unlock` validates that the PIN belongs to an enabled user and requests a local keypad unlock.

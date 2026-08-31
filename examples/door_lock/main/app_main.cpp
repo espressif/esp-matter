@@ -19,6 +19,10 @@
 
 #include <common_macros.h>
 #include <app_priv.h>
+#include <door_lock_capabilities.h>
+#if CONFIG_ENABLE_CHIP_SHELL
+#include <door_lock_console.h>
+#endif // CONFIG_ENABLE_CHIP_SHELL
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
 #endif
@@ -128,26 +132,6 @@ static esp_err_t app_identification_cb(identification::callback_type_t type, uin
     return ESP_OK;
 }
 
-// This callback is called for every attribute update. The callback implementation shall
-// handle the desired attributes and return an appropriate error code. If the attribute
-// is not of your interest, please do not return an error code and strictly return ESP_OK.
-static esp_err_t app_attribute_update_cb(attribute::callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
-                                         uint32_t attribute_id, esp_matter_attr_val_t *val,
-                                         [[maybe_unused]] void *priv_data)
-{
-    esp_err_t err = ESP_OK;
-
-    if (type == POST_UPDATE) {
-        /* Reflect the committed state without rejecting the Matter update on a driver error. */
-        err = app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Failed to update driver, err:%s", esp_err_to_name(err));
-        }
-    }
-
-    return ESP_OK;
-}
-
 extern "C" void app_main()
 {
     esp_err_t err = ESP_OK;
@@ -170,7 +154,7 @@ extern "C" void app_main()
     node::config_t node_config;
 
     // node handle can be used to add/modify other endpoints.
-    node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
+    node_t *node = node::create(&node_config, nullptr, app_identification_cb);
     ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
 
     door_lock::config_t door_lock_config;
@@ -181,7 +165,10 @@ extern "C" void app_main()
     door_lock_config.door_lock.lock_state = chip::to_underlying(DoorLock::DlLockState::kLocked);
     cluster::door_lock::feature::credential_over_the_air_access::config_t cota_config;
     cluster::door_lock::feature::pin_credential::config_t pin_credential_config;
+    pin_credential_config.number_pin_users_supported = DoorLockCapabilities::kPinCredentialSlots;
     cluster::door_lock::feature::user::config_t user_config;
+    user_config.number_of_total_user_supported = DoorLockCapabilities::kUsers;
+    user_config.number_of_credentials_supported_per_user = DoorLockCapabilities::kCredentialsPerUser;
     // endpoint handles can be used to add/modify clusters.
     endpoint_t *endpoint = door_lock::create(node, &door_lock_config, ENDPOINT_FLAG_NONE, NULL);
     ABORT_APP_ON_FAILURE(endpoint != nullptr, ESP_LOGE(TAG, "Failed to create door lock endpoint"));
@@ -211,15 +198,12 @@ extern "C" void app_main()
     err = esp_matter::start(app_event_cb);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
 
-    err = app_driver_init(door_lock_endpoint_id);
+    err = app_driver_init();
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to initialize application driver, err:%d", err));
-    err = app_driver_set_defaults();
+    err = app_driver_set_lock_state(BoltLockManager::State::kLockingCompleted);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to set RGB LED state, err:%d", err);
     }
-
-    /* do nothing now */
-    door_lock_init();
 
 #if CONFIG_ENABLE_ENCRYPTED_OTA
     err = esp_matter_ota_requestor_encrypted_init(s_decryption_key, s_decryption_key_len);
@@ -227,6 +211,8 @@ extern "C" void app_main()
 #endif // CONFIG_ENABLE_ENCRYPTED_OTA
 
 #if CONFIG_ENABLE_CHIP_SHELL
+    err = door_lock_console_register_commands();
+    ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to register door-lock console command, err:%d", err));
     esp_matter::console::diagnostics_register_commands();
     esp_matter::console::wifi_register_commands();
     esp_matter::console::factoryreset_register_commands();
