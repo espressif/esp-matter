@@ -22,12 +22,30 @@ In standalone mode, the entire camera application runs on the ESP32-P4: Matter c
 │  └──────────────────────────┘  │
 └────────────────────────────────┘
 ```
+## Supported Boards
+
+The following boards are supported out of the box:
+
+### [ESP32-P4 Function EV Board](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/user_guide.html)
+
+-   Contains both ESP32-P4 and ESP32-C6 processors
+-   Built-in camera support
+-   SDIO communication between processors
+-   ESP32-C6 is flashed via an external [ESP-Prog](https://docs.espressif.com/projects/esp-iot-solution/en/latest/hw-reference/ESP-Prog_guide.html)/JTAG adapter on the J2 (Prog-C6) header
+
+### [M5Stack Tab5](https://shop.m5stack.com/products/m5stack-tab5-iot-development-kit-esp32-p4)
+
+-   Contains both ESP32-P4 and ESP32-C6 processors
+-   Built-in camera and display
+-   SDIO communication between processors
+-   ESP32-C6 download interface is on the rear PCB (behind the back cover), **not** the external USB-C connector — see the [M5Stack Tab5 C6 flashing guide](https://docs.m5stack.com/en/guide/restore_factory/m5tab5_c6_wifi#2-flashing-tool)
+
 ## Quick Start
 
 ### Prerequisites
 
--   IDF version: v5.5.4
--   [ESP32-P4 Function EV Board](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32p4/esp32-p4-function-ev-board/user_guide.html)
+-   IDF version: v5.5.5
+-   One of the boards listed under [Supported Boards](#supported-boards)
 -   [ESP-IDF Port of Amazon Kinesis Video Streams WebRTC SDK repository](https://github.com/espressif/esp-port-for-amazon-kvs-sdk)
 
 ```bash
@@ -37,9 +55,22 @@ In standalone mode, the entire camera application runs on the ESP32-P4: Matter c
 ### Build and Flash Instructions
 
 Go to the example directory and follow the steps below:
+
+#### For ESP32-P4 Function EV Board:
+
 ```bash
     cd esp-matter/examples/camera/standalone
     idf.py set-target esp32p4
+    idf.py menuconfig
+    # Go to Component config -> ESP System Settings -> Channel for console output
+    # (X) USB Serial/JTAG Controller # For ESP32-P4 Function_EV_Board V1.2 OR V1.5
+    # (X) Default: UART0 # For ESP32-P4 Function_EV_Board V1.4
+```
+#### For M5Stack Tab5:
+
+```bash
+    cd esp-matter/examples/camera/standalone
+    idf.py -D 'SDKCONFIG_DEFAULTS=sdkconfig.defaults;sdkconfig.defaults.esp32p4;sdkconfig.defaults.m5stack_tab5.esp32p4' set-target esp32p4
     idf.py menuconfig
     # Go to Component config -> ESP System Settings -> Channel for console output
     # (X) USB Serial/JTAG Controller # For ESP32-P4 Function_EV_Board V1.2 OR V1.5
@@ -56,6 +87,11 @@ Go to the example directory and follow the steps below:
 
 *__NOTE__*:
 - While using P4+C6 setup, please build and flash the network_adapter example from `${KVS_SDK_PATH}/examples/network_adapter` on ESP32-C6.
+
+*__NOTE__* (M5Stack Tab5):
+- The ESP32-C6 download interface is **not** exposed through the Tab5's external USB-C connector — it is located on the rear PCB, accessible after removing the back cover. See the [M5Stack Tab5 C6 flashing guide](https://docs.m5stack.com/en/guide/restore_factory/m5tab5_c6_wifi#2-flashing-tool) for the port location and flashing procedure.
+
+*__NOTE__* (ESP32-P4 Function EV Board):
 - ESP32-C6 does not have an onboard UART port. You will need to use [ESP-Prog](https://docs.espressif.com/projects/esp-iot-solution/en/latest/hw-reference/ESP-Prog_guide.html) board or any other JTAG.
 - Use following Pin Connections:
 

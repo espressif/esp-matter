@@ -1,0 +1,71 @@
+#
+# M5Stack Tab5 (ESP32-P4 + on-board ESP32-C6-MINI-1U) board build config for
+# the RainMaker standalone camera example. Layered on top of
+# sdkconfig.defaults + sdkconfig.defaults.esp32p4; override only the
+# Tab5-specific deltas here.
+#
+# Build with:
+#   idf.py -D 'SDKCONFIG_DEFAULTS=sdkconfig.defaults;sdkconfig.defaults.esp32p4;sdkconfig.defaults.m5stack_tab5.esp32p4' set-target esp32p4 build
+#
+# The on-board C6 must be flashed separately with the Tab5 slave firmware
+# (esp_hosted_mcu ESP32P4_TAB5_C6_BOARD) via the J1 header / C6 USB — there is
+# no P4<->C6 UART on Tab5 for the in-app slave flasher.
+#
+CONFIG_PARTITION_TABLE_CUSTOM=y
+
+#
+# Chip revision - Tab5 samples ship with pre-v3 P4 silicon (avoids v3-only
+# timing; without it call_start_cpu0 hangs before any console output).
+#
+CONFIG_ESP32P4_SELECTS_REV_LESS_V3=y
+CONFIG_ESP32P4_REV_MIN_0=y
+
+#
+# BSP: M5Stack Tab5. Camera sensor pins, power (I2C IO-expander enable) and
+# DSI display come from the Tab5 BSP; media_stream defines no board pins
+# (camera bring-up via the BSP's bsp_camera_start()). Tab5 has its own SDIO
+# pinout, so disable the P4 Function v12 board hint the base config sets.
+#
+CONFIG_BSP_SELECT_M5STACK_TAB5=y
+CONFIG_BSP_BOARD_TYPE_SAMPLE_V12=n
+
+#
+# esp_hosted board select: Tab5 SDIO pinout for the on-board C6
+# (CLK12/CMD13/D0-3=11/10/9/8, RESET15).
+#
+CONFIG_ESP32P4_TAB5_C6_BOARD=y
+
+#
+# Camera sensor: SC202CS (marketed SC2356 on Tab5), MIPI-CSI 1280x720 RAW8 @
+# 30fps. Disable the base-P4 sensors that do not populate on Tab5.
+#
+CONFIG_CAMERA_SC202CS=y
+CONFIG_CAMERA_SC202CS_AUTO_DETECT_MIPI_INTERFACE_SENSOR=y
+CONFIG_CAMERA_SC202CS_MIPI_RAW8_1280X720_30FPS=y
+CONFIG_CAMERA_SC2336=n
+CONFIG_CAMERA_OV2710=n
+CONFIG_CAMERA_OV5647=n
+
+#
+# Console on UART0 - Tab5 routes UART0 to an external USB-UART chip
+# (/dev/cu.usbserial-*). The P4 native USB Serial/JTAG produces silent boots
+# on Tab5, so override the base's USB-Serial-JTAG console here.
+#
+CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=n
+CONFIG_ESP_CONSOLE_UART_DEFAULT=y
+CONFIG_ESP_CONSOLE_UART_NUM=0
+CONFIG_ESP_CONSOLE_SECONDARY_NONE=y
+
+#
+# Slave flasher OFF - no P4<->C6 UART on Tab5; the on-board C6 is programmed
+# separately. Keeps the C6 firmware and slave SPIFFS partition out of the
+# P4 image.
+#
+CONFIG_SLAVE_FLASHER_ENABLE=n
+
+#
+# Inbound video player OFF for now: video_render_display's DSI render path
+# assumes the Function-EV-Board bsp_display_cfg_t; Tab5's DSI layout differs.
+# Camera (TX) streaming is unaffected. Tab5 RX render is a separate follow-up.
+#
+# CONFIG_MEDIA_STREAM_ENABLE_VIDEO_PLAYER is not set
