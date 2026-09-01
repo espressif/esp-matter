@@ -1,6 +1,6 @@
-pytest-embedded-serial-esp~=2.0
-pytest-embedded-idf~=2.0
-pytest-embedded-qemu~=2.0
+pytest-embedded-serial-esp~=2.9
+pytest-embedded-idf~=2.9
+pytest-embedded-espemu~=2.9
 pytest-timeout
 netifaces
 esptool>=5.2,<6
