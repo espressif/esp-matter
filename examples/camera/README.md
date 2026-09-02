@@ -40,7 +40,7 @@ Split architecture where streaming is handled by a separate MCU and Signaling is
 
 ## Prerequisites
 
-- **IDF version**: v5.5.4
+- **IDF version**: v5.5.5
 - **Amazon Kinesis Video Streams WebRTC SDK**: [ESP-IDF Port of Amazon Kinesis Video Streams WebRTC SDK](https://github.com/espressif/esp-port-for-amazon-kvs-sdk)
 
   ```bash

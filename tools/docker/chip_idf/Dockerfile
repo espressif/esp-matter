@@ -21,8 +21,12 @@ RUN set -x \
     && cd /tmp/esp-idf \
     && git init \
     && git remote add origin $IDF_CLONE_URL \
-    && git fetch origin --depth=1 --recurse-submodules ${IDF_CHECKOUT_REF} \
+    && git fetch origin --depth=1 ${IDF_CHECKOUT_REF} \
     && git checkout FETCH_HEAD \
+    && : # last line
+
+RUN set -x \
+    && cd /tmp/esp-idf \
     && git submodule update --init --recursive  --depth 1 \
     && : # last line
 
