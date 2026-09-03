@@ -19,6 +19,13 @@ workflow:
     - if: $CI_COMMIT_BRANCH
 
 variables:
+    # Force git to HTTP/1.1 in every job: HTTP/2 fetches to github.com get
+    # truncated on the runner egress path ("expected flush after ref listing").
+    # git >= 2.31 picks this config up from the environment, so it covers all
+    # clones in scripts, submodules, and pre-commit hook installs alike.
+    GIT_CONFIG_COUNT: "1"
+    GIT_CONFIG_KEY_0: "http.version"
+    GIT_CONFIG_VALUE_0: "HTTP/1.1"
     ESP_MATTER_PATH: "$CI_PROJECT_DIR"
     BR_PATH: "$CI_PROJECT_DIR/esp-thread-br"
     ESP_RMAKER_PATH: "$CI_PROJECT_DIR/esp-rainmaker"
