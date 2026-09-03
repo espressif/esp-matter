@@ -16,6 +16,7 @@
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_console.h>
+#include <lib/support/BytesToHex.h>
 
 #include <cstring>
 
@@ -93,6 +94,12 @@ void print_door_lock_status()
     printf("Aliro endpoint slots: %u occupied, %u available\n", occupiedEndpoints,
            DoorLockCapabilities::kAliroEndpointKeySlots - occupiedEndpoints);
 #endif // CONFIG_ENABLE_ALIRO_OVER_NFC
+#ifdef CONFIG_ENABLE_RFID_NFC
+    const uint16_t occupiedRfid =
+        count_occupied_credentials(CredentialTypeEnum::kRfid, DoorLockCapabilities::kRfidCredentialSlots);
+    printf("RFID slots: %u occupied, %u available\n", occupiedRfid,
+           DoorLockCapabilities::kRfidCredentialSlots - occupiedRfid);
+#endif // CONFIG_ENABLE_RFID_NFC
 }
 
 void print_door_lock_users()
@@ -127,8 +134,26 @@ void print_door_lock_console_help()
            "\thelp: Print help\n"
            "\tstatus: Print aggregate user and credential capacity\n"
            "\tusers: Print users and credential references without credential data\n"
-           "\tpin-unlock <PIN>: Validate an enabled user's PIN and unlock locally\n");
+           "\tpin-unlock <PIN>: Validate an enabled user's PIN and unlock locally\n"
+#ifdef CONFIG_ENABLE_RFID_NFC
+           "\trfid-unlock <hex-uid>: Validate an enabled user's RFID tag UID (e.g. 04A1B2C3) and unlock locally\n"
+#endif // CONFIG_ENABLE_RFID_NFC
+          );
 }
+
+#ifdef CONFIG_ENABLE_RFID_NFC
+bool parse_hex_uid(const char * hex, uint8_t * uid, size_t  &uidLength, size_t maxLength)
+{
+    size_t hexLen = std::strlen(hex);
+    if (hexLen == 0) {
+        return false;
+    }
+    // chip::Encoding::HexToBytes returns 0 both on a decode failure and on
+    // an empty input, but hexLen == 0 is already rejected above.
+    uidLength = Encoding::HexToBytes(hex, hexLen, uid, maxLength);
+    return uidLength != 0;
+}
+#endif // CONFIG_ENABLE_RFID_NFC
 
 esp_err_t door_lock_console_handler(int argc, char ** argv)
 {
@@ -148,12 +173,14 @@ esp_err_t door_lock_console_handler(int argc, char ** argv)
     }
     if (argc == 2 && std::strcmp(argv[0], "pin-unlock") == 0) {
         const ByteSpan pin(reinterpret_cast<const uint8_t *>(argv[1]), std::strlen(argv[1]));
-        DoorLockStorage::PinMatch match;
+        DoorLockStorage::CredentialMatch match;
         if (!DoorLockStorage::Instance().ValidatePIN(pin, match)) {
             ESP_LOGE(TAG, "Unlock rejected: source=keypad reason=invalid-credential");
             return ESP_ERR_INVALID_ARG;
         }
-        if (!BoltLockManager::Instance().Unlock(OperationSourceEnum::kKeypad)) {
+        BoltLockManager::CredentialMatch credential{ true, match.userIndex, match.credentialIndex,
+                                                     CredentialTypeEnum::kPin };
+        if (!BoltLockManager::Instance().Unlock(OperationSourceEnum::kKeypad, credential)) {
             ESP_LOGE(TAG, "Unlock rejected: source=keypad user=%u credential=pin:%u reason=actuator",
                      match.userIndex, match.credentialIndex);
             return ESP_FAIL;
@@ -162,6 +189,31 @@ esp_err_t door_lock_console_handler(int argc, char ** argv)
                  match.credentialIndex);
         return ESP_OK;
     }
+#ifdef CONFIG_ENABLE_RFID_NFC
+    if (argc == 2 && std::strcmp(argv[0], "rfid-unlock") == 0) {
+        uint8_t uid[10];
+        size_t uidLength = 0;
+        if (!parse_hex_uid(argv[1], uid, uidLength, sizeof(uid))) {
+            ESP_LOGE(TAG, "Unlock rejected: source=rfid reason=invalid-uid");
+            return ESP_ERR_INVALID_ARG;
+        }
+        DoorLockStorage::CredentialMatch match;
+        if (!DoorLockStorage::Instance().ValidateRfid(ByteSpan(uid, uidLength), match)) {
+            ESP_LOGE(TAG, "Unlock rejected: source=rfid reason=invalid-credential");
+            return ESP_ERR_INVALID_ARG;
+        }
+        BoltLockManager::CredentialMatch credential{ true, match.userIndex, match.credentialIndex,
+                                                     CredentialTypeEnum::kRfid };
+        if (!BoltLockManager::Instance().Unlock(OperationSourceEnum::kRfid, credential)) {
+            ESP_LOGE(TAG, "Unlock rejected: source=rfid user=%u credential=rfid:%u reason=actuator",
+                     match.userIndex, match.credentialIndex);
+            return ESP_FAIL;
+        }
+        ESP_LOGW(TAG, "Unlock event: source=rfid user=%u credential=rfid:%u", match.userIndex,
+                 match.credentialIndex);
+        return ESP_OK;
+    }
+#endif // CONFIG_ENABLE_RFID_NFC
 
     print_door_lock_console_help();
     return ESP_ERR_INVALID_ARG;

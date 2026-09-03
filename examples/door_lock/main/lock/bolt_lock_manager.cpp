@@ -31,35 +31,36 @@ CHIP_ERROR BoltLockManager::Init(State initialState, StateChangeCallback callbac
     return CHIP_NO_ERROR;
 }
 
-bool BoltLockManager::Lock(OperationSource source)
+bool BoltLockManager::Lock(OperationSource source, const CredentialMatch  &credential)
 {
     if (mState == State::kLockingInitiated || mState == State::kLockingCompleted) {
         return true;
     }
-    return StartMovement(State::kLockingInitiated, source);
+    return StartMovement(State::kLockingInitiated, source, credential);
 }
 
-bool BoltLockManager::Unlock(OperationSource source)
+bool BoltLockManager::Unlock(OperationSource source, const CredentialMatch  &credential)
 {
     if (mState == State::kUnlockingInitiated || mState == State::kUnlockingCompleted) {
         return true;
     }
-    return StartMovement(State::kUnlockingInitiated, source);
+    return StartMovement(State::kUnlockingInitiated, source, credential);
 }
 
-bool BoltLockManager::StartMovement(State movementState, OperationSource source)
+bool BoltLockManager::StartMovement(State movementState, OperationSource source, const CredentialMatch  &credential)
 {
     chip::DeviceLayer::SystemLayer().CancelTimer(ActuatorTimerHandler, this);
     CHIP_ERROR err = chip::DeviceLayer::SystemLayer().StartTimer(Milliseconds32(kActuatorMovementTimeMs),
                                                                  ActuatorTimerHandler, this);
     if (err != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to start actuator timer: %" CHIP_ERROR_FORMAT, err.Format());
-        SetState(mStableState, source);
+        SetState(mStableState, source, credential);
         return false;
     }
 
     mOperationSource = source;
-    SetState(movementState, source);
+    mCredential = credential;
+    SetState(movementState, source, credential);
     return true;
 }
 
@@ -71,11 +72,11 @@ void BoltLockManager::ActuatorTimerHandler(chip::System::Layer * systemLayer, vo
     switch (lock->mState) {
     case State::kLockingInitiated:
         lock->mStableState = State::kLockingCompleted;
-        lock->SetState(State::kLockingCompleted, lock->mOperationSource);
+        lock->SetState(State::kLockingCompleted, lock->mOperationSource, lock->mCredential);
         break;
     case State::kUnlockingInitiated:
         lock->mStableState = State::kUnlockingCompleted;
-        lock->SetState(State::kUnlockingCompleted, lock->mOperationSource);
+        lock->SetState(State::kUnlockingCompleted, lock->mOperationSource, lock->mCredential);
         break;
     case State::kLockingCompleted:
     case State::kUnlockingCompleted:
@@ -83,10 +84,10 @@ void BoltLockManager::ActuatorTimerHandler(chip::System::Layer * systemLayer, vo
     }
 }
 
-void BoltLockManager::SetState(State state, OperationSource source)
+void BoltLockManager::SetState(State state, OperationSource source, const CredentialMatch  &credential)
 {
     mState = state;
     if (mStateChangeCallback != nullptr) {
-        mStateChangeCallback(state, source);
+        mStateChangeCallback(state, source, credential);
     }
 }
