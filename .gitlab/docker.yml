@@ -88,4 +88,4 @@ build_image:
       # Change the idf version here in case of idf version change MR.
       - IDF_VERSION:
           - "v6.0.2"
-          - "v5.5.4"
+          - "v5.5.5"

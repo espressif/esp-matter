@@ -17,6 +17,7 @@ RUN set -x \
     && : # last line
 
 RUN set -x \
+    && git config --global http.version HTTP/1.1 \
     && mkdir -p /tmp/esp-idf \
     && cd /tmp/esp-idf \
     && git init \
@@ -50,6 +51,7 @@ WORKDIR /opt/espressif
 ENV CHIP_SUBMODULE_PATH=/opt/espressif/connectedhomeip
 
 RUN set -x \
+    && git config --global http.version HTTP/1.1 \
     && mkdir -p $CHIP_SUBMODULE_PATH \
     && cd $CHIP_SUBMODULE_PATH \
     && git init \
