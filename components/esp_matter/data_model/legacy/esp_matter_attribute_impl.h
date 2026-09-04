@@ -65,6 +65,7 @@ attribute_t *create_access_control_entries_per_fabric(cluster_t *cluster, uint16
 attribute_t *create_commissioning_arl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_arl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 #endif
+attribute_t *create_auxiliary_acl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 } /* attribute */
 } /* access_control */
 

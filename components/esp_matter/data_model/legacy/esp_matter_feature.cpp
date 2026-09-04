@@ -138,6 +138,30 @@ esp_err_t add(cluster_t *cluster)
 }
 } /* managed_device */
 
+namespace auxiliary {
+
+uint32_t get_id()
+{
+    return (uint32_t)AccessControl::Feature::kAuxiliary;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes managed internally */
+    attribute::create_auxiliary_acl(cluster, NULL, 0, 0);
+
+    event::create_auxiliary_access_updated(cluster);
+
+    return ESP_OK;
+}
+} /* auxiliary */
+
 }
 } /* access_control */
 

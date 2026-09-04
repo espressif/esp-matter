@@ -27,15 +27,13 @@
 #include <operational_credentials.h>
 #include <group_key_management.h>
 #include <icd_management.h>
+#include <groupcast.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
 #include <wifi_network_diagnostics.h>
 #endif // CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
 #include <thread_network_diagnostics.h>
 #endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
-#if defined(CONFIG_SUPPORT_GROUPCAST_CLUSTER)
-#include <groupcast.h>
-#endif // defined(CONFIG_SUPPORT_GROUPCAST_CLUSTER)
 
 #include <esp_matter_core.h>
 
@@ -70,15 +68,15 @@ typedef struct config {
     cluster::icd_management::feature::user_active_mode_trigger::config_t icd_management_user_active_mode_trigger;
 #endif // CHIP_CONFIG_ENABLE_ICD_UAT
 #endif // CHIP_CONFIG_ENABLE_ICD_SERVER
+#if defined(CONFIG_SUPPORT_GROUPCAST_CLUSTER)
+    cluster::groupcast::config_t groupcast;
+#endif // defined(CONFIG_SUPPORT_GROUPCAST_CLUSTER)
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
     cluster::wifi_network_diagnostics::config_t wifi_network_diagnostics;
 #endif // CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
     cluster::thread_network_diagnostics::config_t thread_network_diagnostics;
 #endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
-#if defined(CONFIG_SUPPORT_GROUPCAST_CLUSTER)
-    cluster::groupcast::config_t groupcast;
-#endif // defined(CONFIG_SUPPORT_GROUPCAST_CLUSTER)
 } config_t;
 
 uint32_t get_device_type_id();

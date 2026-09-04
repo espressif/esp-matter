@@ -41,6 +41,11 @@ event_t *create_fabric_restriction_review_update(cluster_t *cluster)
 {
     return esp_matter::event::create(cluster, AccessControl::Events::FabricRestrictionReviewUpdate::Id);
 }
+
+event_t *create_auxiliary_access_updated(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, AccessControl::Events::AuxiliaryAccessUpdated::Id);
+}
 } // namespace event
 } // namespace access_control
 
