@@ -2,6 +2,7 @@ include:
     - local: .gitlab/pre_check.yml
     - local: .gitlab/docker.yml
     - local: .gitlab/docs.yml
+    - local: .gitlab/backport.yml
 
 stages:
     - pre_check
