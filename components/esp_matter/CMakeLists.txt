@@ -91,7 +91,8 @@ idf_component_register( SRC_DIRS        ${SRC_DIRS_LIST}
                         INCLUDE_DIRS    ${INCLUDE_DIRS_LIST}
                         EXCLUDE_SRCS    ${EXCLUDE_SRCS_LIST}
                         PRIV_INCLUDE_DIRS ${PRIV_INCLUDE_DIRS_LIST}
-                        REQUIRES        ${REQUIRES_LIST})
+                        REQUIRES        ${REQUIRES_LIST}
+                        LDFRAGMENTS     "linker.lf")
 
 # Precompile the shared esp_matter/CHIP headers to avoid reparsing them in every
 # source file.
