@@ -175,7 +175,7 @@ variables:
 
 .build_controller_otbr_example: &build_controller_otbr_example
     - cd $ESP_MATTER_PATH/examples/controller
-    - idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults.otbr" set-target esp32s3 build
+    - idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.otbr" set-target esp32s3 build
 
 .build_lit_icd_example: &build_lit_icd_example
     - cd $ESP_MATTER_PATH/examples/icd_app
