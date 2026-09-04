@@ -1800,10 +1800,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 namespace laundry_washer_controls {
 
-const function_generic_t function_list[] = {
-    (function_generic_t)MatterLaundryWasherControlsClusterServerPreAttributeChangedCallback,
-};
-const int function_flags = CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -1838,6 +1836,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         if (has(feature::rinse::get_id())) {
             feature::rinse::add(cluster, &(config->features.rinse));
         }
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterLaundryWasherControlsClusterServerInitCallback,
+                                                 ESPMatterLaundryWasherControlsClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {
