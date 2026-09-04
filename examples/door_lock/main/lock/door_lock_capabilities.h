@@ -27,6 +27,8 @@ constexpr uint16_t kUsers = 6;
 constexpr uint8_t kCredentialsPerUser = 4;
 // Total number of PIN credential slots, shared by all users.
 constexpr uint16_t kPinCredentialSlots = 6;
+// Total number of RFID (classic NFC tag) credential slots, shared by all users.
+constexpr uint16_t kRfidCredentialSlots = 6;
 
 // Total number of Aliro credential issuer key slots.
 constexpr uint16_t kAliroCredentialIssuerKeySlots = 2;
@@ -39,6 +41,7 @@ constexpr uint16_t kAliroEndpointKeySlots = 4;
 // accommodate the largest advertised credential capacity.
 constexpr uint16_t kCredentialSlotsPerType = kPinCredentialSlots;
 static_assert(kCredentialSlotsPerType >= kPinCredentialSlots);
+static_assert(kCredentialSlotsPerType >= kRfidCredentialSlots);
 static_assert(kCredentialSlotsPerType >= kAliroCredentialIssuerKeySlots);
 static_assert(kCredentialSlotsPerType >= kAliroEndpointKeySlots);
 
