@@ -32,9 +32,6 @@ ENV IDF_TOOLS_PATH=/opt/espressif/tools
 COPY --from=build /tmp/esp-idf /opt/espressif/esp-idf
 
 ARG IDF_CHECKOUT_REF
-RUN if [ "$IDF_CHECKOUT_REF" = "v4.4.3" ]; then \
-    sed -i 's/^gdbgui==/# gdbgui ==/' /opt/espressif/esp-idf/requirements.txt; \
-    fi
 
 RUN apt-get update && apt-get install -y python3-virtualenv
 
