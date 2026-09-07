@@ -23,6 +23,9 @@ public:
     struct Limits {
         uint16_t numberOfUsers = 0;
         uint8_t numberOfCredentialsPerUser = 0;
+        uint8_t numberOfWeekdaySchedulesPerUser = 0;
+        uint8_t numberOfYeardaySchedulesPerUser = 0;
+        uint8_t numberOfHolidaySchedules = 0;
         uint16_t credentialSlotsByType[kCredentialTypeCount] = {};
     };
 
@@ -36,6 +39,8 @@ public:
     static constexpr uint8_t kMaxCredentialsPerUser = DoorLockCapabilities::kCredentialsPerUser;
     static constexpr uint16_t kMaxCredentialSlotsPerType = DoorLockCapabilities::kCredentialSlotsPerType;
     static constexpr uint8_t kMaxCredentialSize = 65;
+    static constexpr uint8_t kMaxSchedulesPerUser = 10;
+    static constexpr uint8_t kMaxHolidaySchedules = 10;
     static constexpr size_t kCredentialSlotCount = kCredentialTypeCount * kMaxCredentialSlotsPerType;
 
     static DoorLockStorage  &Instance()
@@ -57,6 +62,19 @@ public:
     bool SetCredential(uint16_t credentialIndex, chip::FabricIndex creator,
                        chip::FabricIndex modifier, DlCredentialStatus credentialStatus,
                        CredentialTypeEnum credentialType, const chip::ByteSpan  &credentialData);
+    DlStatus GetWeekdaySchedule(uint8_t scheduleIndex, uint16_t userIndex,
+                                EmberAfPluginDoorLockWeekDaySchedule  &schedule) const;
+    DlStatus SetWeekdaySchedule(uint8_t scheduleIndex, uint16_t userIndex, DlScheduleStatus status,
+                                DaysMaskMap daysMask, uint8_t startHour, uint8_t startMinute,
+                                uint8_t endHour, uint8_t endMinute);
+    DlStatus GetYeardaySchedule(uint8_t scheduleIndex, uint16_t userIndex,
+                                EmberAfPluginDoorLockYearDaySchedule  &schedule) const;
+    DlStatus SetYeardaySchedule(uint8_t scheduleIndex, uint16_t userIndex, DlScheduleStatus status,
+                                uint32_t localStartTime, uint32_t localEndTime);
+    DlStatus GetHolidaySchedule(uint8_t scheduleIndex, EmberAfPluginDoorLockHolidaySchedule  &schedule) const;
+    DlStatus SetHolidaySchedule(uint8_t scheduleIndex, DlScheduleStatus status,
+                                uint32_t localStartTime, uint32_t localEndTime,
+                                OperatingModeEnum operatingMode);
 
     struct PinMatch {
         uint16_t userIndex = 0;
@@ -105,6 +123,12 @@ private:
         uint8_t data[kMaxCredentialSize] = {};
     };
 
+    template <class Schedule>
+    struct ScheduleRecord {
+        DlScheduleStatus status = DlScheduleStatus::kAvailable;
+        Schedule schedule = {};
+    };
+
     CHIP_ERROR LoadMetadata();
     CHIP_ERROR LoadRecords();
     CHIP_ERROR RepairRelationships();
@@ -116,6 +140,8 @@ private:
     bool MakeUserKey(uint16_t userIndex, char * key, size_t keySize) const;
     bool MakeCredentialKey(CredentialTypeEnum type, uint16_t credentialIndex,
                            char * key, size_t keySize) const;
+    bool MakeScheduleKey(const char * type, uint8_t scheduleIndex, uint16_t userIndex,
+                         char * key, size_t keySize) const;
 
     bool IsValidUserRecord(const UserRecord  &user) const;
     bool IsValidCredentialRecord(const CredentialRecord  &credential,
@@ -131,5 +157,8 @@ private:
     UserRecord mUsers[kMaxUsers] = {};
     CredentialRecord mCredentials[kCredentialSlotCount] = {};
     CredentialStruct mUserCredentialViews[kMaxUsers][kMaxCredentialsPerUser] = {};
+    ScheduleRecord<EmberAfPluginDoorLockWeekDaySchedule> mWeekdaySchedules[kMaxUsers][kMaxSchedulesPerUser] = {};
+    ScheduleRecord<EmberAfPluginDoorLockYearDaySchedule> mYeardaySchedules[kMaxUsers][kMaxSchedulesPerUser] = {};
+    ScheduleRecord<EmberAfPluginDoorLockHolidaySchedule> mHolidaySchedules[kMaxHolidaySchedules] = {};
     bool mInitialized = false;
 };
