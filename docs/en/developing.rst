@@ -378,8 +378,7 @@ Choose IDF target.
 -  The default device for ``esp32``/``esp32c3`` is
    ``esp32-devkit-c``/``esp32c3-devkit-m``. If you want to use another
    device, you can export ``ESP_MATTER_DEVICE_PATH`` after choosing
-   the correct target, e.g. for ``m5stack`` device:
-   ``export ESP_MATTER_DEVICE_PATH=/path/to/esp_matter/device_hal/device/m5stack``
+   the correct target.
 
    -  If the device that you have is of a different revision, and is not
       working as expected, you can create a new device and export your
