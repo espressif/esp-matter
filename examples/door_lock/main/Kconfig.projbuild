@@ -1,10 +1,28 @@
 menu "Example Configuration"
 
-    config ENABLE_ALIRO_OVER_NFC
-        bool "Enable Aliro-over-NFC feature"
-        default n
+    choice DOOR_LOCK_NFC_FEATURE
+        prompt "NFC feature"
+        default DOOR_LOCK_NFC_FEATURE_NONE
         help
-            Enable this option to enable Aliro-over-NFC feature for DoorLock cluster.
+            The M5Unit-NFC (ST25R3916) hardware only supports one active reader
+            role at a time, so Aliro-over-NFC and the classic RFID/NFC-tag
+            credential feature are mutually exclusive.
+
+        config DOOR_LOCK_NFC_FEATURE_NONE
+            bool "None"
+
+        config ENABLE_ALIRO_OVER_NFC
+            bool "Aliro-over-NFC"
+            help
+                Enable this option to enable Aliro-over-NFC feature for DoorLock cluster.
+
+        config ENABLE_RFID_NFC
+            bool "Classic RFID/NFC-tag credential"
+            help
+                Enable this option to poll for classic NFC tags (ISO14443A/B, FeliCa,
+                ISO15693) with the M5Stack Unit NFC (ST25R3916) and unlock the door
+                when a tag's UID matches a provisioned RFID credential.
+    endchoice
 
     config M5NANO_BOARD
         bool "Use an M5Stack Nano board"

@@ -1,0 +1,22 @@
+menu "RFID NFC Reader (ST25R3916)"
+    depends on ENABLE_RFID_NFC
+
+    # RFID_-prefixed (rather than plain ST25R3916_PIN_SDA/SCL) to avoid a
+    # Kconfig symbol collision with the Aliro feature's own identically-named
+    # symbols, defined by the m5nfc component -- which the component manager
+    # fetches unconditionally on these targets regardless of which NFC
+    # feature is enabled, so both symbol sets would otherwise coexist in the
+    # merged Kconfig tree.
+    config RFID_ST25R3916_PIN_SDA
+        int "I2C SDA GPIO"
+        default 6
+
+    config RFID_ST25R3916_PIN_SCL
+        int "I2C SCL GPIO"
+        default 7
+
+    config RFID_ST25R3916_I2C_PORT
+        int "I2C port"
+        default 0
+
+endmenu
