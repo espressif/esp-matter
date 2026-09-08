@@ -288,8 +288,12 @@ static esp_err_t init_thread_stack_and_start_thread_task()
 {
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #ifdef CONFIG_ESP_MATTER_ENABLE_OPENTHREAD
-    VerifyOrReturnError(ThreadStackMgr().InitThreadStack() == CHIP_NO_ERROR, ESP_FAIL,
-                        ESP_LOGE(TAG, "Failed to initialize Thread stack"));
+    {
+        // The Matter event loop is already running; MeshCoP initialization calls RunOnTCPIP(), which requires the Matter stack lock.
+        lock::ScopedChipStackLock stack_lock(portMAX_DELAY);
+        VerifyOrReturnError(ThreadStackMgr().InitThreadStack() == CHIP_NO_ERROR, ESP_FAIL,
+                            ESP_LOGE(TAG, "Failed to initialize Thread stack"));
+    }
 #if CHIP_CONFIG_ENABLE_ICD_SERVER
     if (icd::get_icd_server_enabled()) {
         VerifyOrReturnError(ConnectivityMgr().SetThreadDeviceType(ConnectivityManager::kThreadDeviceType_SleepyEndDevice) == CHIP_NO_ERROR,

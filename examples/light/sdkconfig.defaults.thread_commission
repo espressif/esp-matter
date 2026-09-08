@@ -1,0 +1,19 @@
+# Thread MeshCoP commissioning on ESP32-H2 and ESP32-C6.
+# Load after sdkconfig.defaults and the target's Thread defaults:
+# sdkconfig.defaults.esp32h2 (automatic) or sdkconfig.defaults.c6_thread (explicit).
+
+# Enable the Thread joiner and service discovery.
+CONFIG_OPENTHREAD_JOINER=y
+CONFIG_OPENTHREAD_DNS_CLIENT=y
+CONFIG_ENABLE_EXTENDED_DISCOVERY=y
+
+# Crypto support for MeshCoP DTLS with EC-JPAKE.
+CONFIG_MBEDTLS_CMAC_C=y
+CONFIG_MBEDTLS_KEY_EXCHANGE_ECJPAKE=y
+CONFIG_MBEDTLS_SSL_PROTO_DTLS=y
+CONFIG_MBEDTLS_ECJPAKE_C=y
+
+# Enable MeshCoP commissioning without Matter-over-BLE.
+CONFIG_ENABLE_CONCURRENT_CONNECTION=n
+CONFIG_ENABLE_CHIPOBLE=n
+CONFIG_CHIP_DEVICE_ENABLE_THREAD_MESHCOP=y
