@@ -132,18 +132,11 @@ void ESPMatterCameraAvStreamManagementClusterServerInitCallback(EndpointId endpo
             return;
         }
 
-        SafeAttributePersistenceProvider * provider = GetSafeAttributePersistenceProvider();
-        if (provider == nullptr) {
-            ChipLogError(AppServer, "SafeAttributePersistenceProvider not available for endpoint %u", endpointId);
-            return;
-        }
-
         ChipLogProgress(AppServer, "Registering Camera AV Stream Management on endpoint %u", endpointId);
         BitFlags<Feature> features(GetFeatureMap(endpointId));
         BitFlags<OptionalAttribute> optionalAttrs = GetOptionalAttributes(endpointId);
 
         CameraAVStreamManagementCluster::InitArguments initArgs{
-            .context                      = CameraAVStreamManagementCluster::Context{ *provider },
             .delegate                     = *config->delegate,
             .endpointId                   = endpointId,
             .features                     = features,

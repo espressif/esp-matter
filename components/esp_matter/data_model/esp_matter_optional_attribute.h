@@ -42,6 +42,10 @@ namespace ethernet_network_diagnostics {
 esp_err_t create_optional_attributes(cluster_t *cluster);
 } /* ethernet_network_diagnostics */
 
+namespace general_commissioning {
+esp_err_t create_optional_attributes(cluster_t *cluster);
+} /* general_commissioning */
+
 namespace general_diagnostics {
 esp_err_t create_optional_attributes(cluster_t *cluster);
 } /* general_diagnostics */

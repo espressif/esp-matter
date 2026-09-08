@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-from pytest_embedded_qemu.dut import QemuDut
+from pytest_embedded.dut import Dut
 
 
-def run_group(dut: QemuDut, group: str, timeout: int = 120) -> None:
+def run_group(dut: Dut, group: str, timeout: int = 120) -> None:
     """Run all Unity cases matching a group tag, then verify no failures.
 
     pytest-embedded records Unity results without raising on failure,
@@ -23,52 +23,53 @@ def run_group(dut: QemuDut, group: str, timeout: int = 120) -> None:
 
 
 @pytest.mark.host_test
-@pytest.mark.qemu
+@pytest.mark.emu
 @pytest.mark.esp32c3
-def test_get_val(dut: QemuDut) -> None:
+def test_get_val(dut: Dut) -> None:
     run_group(dut, "get_val")
 
 
 @pytest.mark.host_test
-@pytest.mark.qemu
+@pytest.mark.emu
 @pytest.mark.esp32c3
-def test_get_val_type(dut: QemuDut) -> None:
+def test_get_val_type(dut: Dut) -> None:
     run_group(dut, "get_val_type")
 
 
 @pytest.mark.host_test
-@pytest.mark.qemu
+@pytest.mark.emu
 @pytest.mark.esp32c3
-def test_attr_val_ember_buffer(dut: QemuDut) -> None:
+def test_attr_val_ember_buffer(dut: Dut) -> None:
     run_group(dut, "attr_val_ember_buffer")
 
 
 @pytest.mark.host_test
-@pytest.mark.qemu
+@pytest.mark.emu
 @pytest.mark.esp32c3
-def test_update_report(dut: QemuDut) -> None:
+def test_update_report(dut: Dut) -> None:
     run_group(dut, "report")
     run_group(dut, "update")
 
 
 @pytest.mark.host_test
-@pytest.mark.qemu
+@pytest.mark.emu
 @pytest.mark.esp32c3
-def test_jsontlv(dut: QemuDut) -> None:
+def test_jsontlv(dut: Dut) -> None:
     run_group(dut, "jsontlv")
 
 
 @pytest.mark.host_test
-@pytest.mark.qemu
+@pytest.mark.emu
 @pytest.mark.esp32c3
-def test_lifecycle(dut: QemuDut) -> None:
-    run_group(dut, "cluster_lifecycle")
+def test_lifecycle(dut: Dut) -> None:
+    # 35 cases; headroom for loaded CI runners where emulation lags wall time
+    run_group(dut, "cluster_lifecycle", timeout=300)
 
 
 @pytest.mark.host_test
-@pytest.mark.qemu
+@pytest.mark.emu
 @pytest.mark.esp32c3
-def test_attribute_create_value_persistence(dut: QemuDut) -> None:
+def test_attribute_create_value_persistence(dut: Dut) -> None:
     """Runs TEST_CASE_MULTIPLE_STAGES cases (both stages, including across SW reset)."""
     dut.run_all_single_board_cases(
         name=["attribute::create preserves max value after reboot"],
@@ -81,7 +82,7 @@ def test_attribute_create_value_persistence(dut: QemuDut) -> None:
 
 
 @pytest.mark.host_test
-@pytest.mark.qemu
+@pytest.mark.emu
 @pytest.mark.esp32c3
-def test_optional_clusters(dut: QemuDut) -> None:
+def test_optional_clusters(dut: Dut) -> None:
     run_group(dut, "optional_clusters")

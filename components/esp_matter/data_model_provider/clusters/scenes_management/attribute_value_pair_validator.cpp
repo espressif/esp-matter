@@ -122,7 +122,7 @@ void CapAttributeValue(typename app::NumericAttributeTraits<Type>::WorkingType &
 
     // Check metadata for min and max values
     esp_matter_attr_bounds_t bounds;
-    if (esp_matter::attribute::get_bounds(attr, &bounds)) {
+    if (esp_matter::attribute::get_bounds(attr, &bounds) == ESP_OK) {
         minValue = ConvertDefaultValueToWorkingValue<Type>(bounds.min);
         maxValue = ConvertDefaultValueToWorkingValue<Type>(bounds.max);
     }

@@ -286,6 +286,13 @@ static cluster_t *create_rvc_run_mode_cluster(endpoint_t *endpoint, cluster::rvc
     return cluster::rvc_run_mode::create(endpoint, config, flags);
 }
 
+static cluster_t *create_laundry_washer_controls_cluster(endpoint_t *endpoint,
+                                                         cluster::laundry_washer_controls::config_t *config, uint8_t flags)
+{
+    config->feature_flags = cluster::laundry_washer_controls::feature::spin::get_id();
+    return cluster::laundry_washer_controls::create(endpoint, config, flags);
+}
+
 static cluster_t *create_smoke_co_alarm_cluster(endpoint_t *endpoint, cluster::smoke_co_alarm::config_t *config,
                                                 uint8_t flags)
 {
@@ -336,6 +343,8 @@ TEST_CLUSTER_LIFECYCLE("HepaFilterMonitoring", chip::app::Clusters::HepaFilterMo
                        cluster::hepa_filter_monitoring::config_t, cluster::hepa_filter_monitoring::create)
 TEST_CLUSTER_LIFECYCLE("IlluminanceMeasurement", chip::app::Clusters::IlluminanceMeasurement::Id,
                        cluster::illuminance_measurement::config_t, cluster::illuminance_measurement::create)
+TEST_CLUSTER_LIFECYCLE("LaundryWasherControls", chip::app::Clusters::LaundryWasherControls::Id,
+                       cluster::laundry_washer_controls::config_t, create_laundry_washer_controls_cluster)
 TEST_CLUSTER_LIFECYCLE("MicrowaveOvenControl", chip::app::Clusters::MicrowaveOvenControl::Id,
                        cluster::microwave_oven_control::config_t, create_microwave_oven_control_cluster)
 TEST_CLUSTER_LIFECYCLE("NetworkCommissioning", chip::app::Clusters::NetworkCommissioning::Id,

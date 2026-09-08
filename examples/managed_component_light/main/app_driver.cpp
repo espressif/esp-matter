@@ -8,15 +8,15 @@
 
 #include <esp_log.h>
 #include <stdlib.h>
-#include <string.h>
 
-#include <esp_matter.h>
 #include "bsp/esp-bsp.h"
+#include <esp_matter.h>
 
 #include <app_priv.h>
 #include <common_macros.h>
 
 using namespace chip::app::Clusters;
+using namespace chip::app::Clusters::ColorControl::Attributes;
 using namespace esp_matter;
 
 static const char *TAG = "app_driver";
@@ -89,6 +89,41 @@ static esp_err_t app_driver_light_set_temperature(led_indicator_handle_t handle,
 #endif
 }
 
+static esp_err_t app_driver_light_apply_color_mode(led_indicator_handle_t handle, uint8_t color_mode)
+{
+    esp_err_t err = ESP_OK;
+    esp_matter_attr_val_t val = {};
+
+    switch ((ColorControl::ColorMode)color_mode) {
+    case ColorControl::ColorMode::kCurrentHueAndCurrentSaturation: {
+        err = attribute::get_val(light_endpoint_id, ColorControl::Id, CurrentHue::Id, &val);
+        if (err != ESP_OK) {
+            return err;
+        }
+        err |= app_driver_light_set_hue(handle, &val);
+
+        val = {};
+        err = attribute::get_val(light_endpoint_id, ColorControl::Id, CurrentSaturation::Id, &val);
+        if (err != ESP_OK) {
+            return err;
+        }
+        err |= app_driver_light_set_saturation(handle, &val);
+        return err;
+    }
+    case ColorControl::ColorMode::kColorTemperature: {
+        err = attribute::get_val(light_endpoint_id, ColorControl::Id, ColorTemperatureMireds::Id, &val);
+        if (err != ESP_OK) {
+            return err;
+        }
+        return app_driver_light_set_temperature(handle, &val);
+    }
+    default: {
+        ESP_LOGE(TAG, "Color mode %u is not supported", color_mode);
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+    }
+}
+
 static void app_driver_button_toggle_cb(void *arg, void *data)
 {
     ESP_LOGI(TAG, "Toggle button pressed");
@@ -119,7 +154,11 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
                 err = app_driver_light_set_brightness(handle, val);
             }
         } else if (cluster_id == ColorControl::Id) {
-            if (attribute_id == ColorControl::Attributes::CurrentHue::Id) {
+            // Reapply cached color attributes because a mode switch may not change
+            // their values.
+            if (attribute_id == ColorControl::Attributes::ColorMode::Id) {
+                err = app_driver_light_apply_color_mode(handle, val->val.u8);
+            } else if (attribute_id == ColorControl::Attributes::CurrentHue::Id) {
                 err = app_driver_light_set_hue(handle, val);
             } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
                 err = app_driver_light_set_saturation(handle, val);
@@ -146,23 +185,7 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
     /* Setting color */
     attribute = attribute::get(endpoint_id, ColorControl::Id, ColorControl::Attributes::ColorMode::Id);
     attribute::get_val(attribute, &val);
-    if (val.val.u8 == (uint8_t)ColorControl::ColorMode::kCurrentHueAndCurrentSaturation) {
-        /* Setting hue */
-        attribute = attribute::get(endpoint_id, ColorControl::Id, ColorControl::Attributes::CurrentHue::Id);
-        attribute::get_val(attribute, &val);
-        err |= app_driver_light_set_hue(handle, &val);
-        /* Setting saturation */
-        attribute = attribute::get(endpoint_id, ColorControl::Id, ColorControl::Attributes::CurrentSaturation::Id);
-        attribute::get_val(attribute, &val);
-        err |= app_driver_light_set_saturation(handle, &val);
-    } else if (val.val.u8 == (uint8_t)ColorControl::ColorMode::kColorTemperature) {
-        /* Setting temperature */
-        attribute = attribute::get(endpoint_id, ColorControl::Id, ColorControl::Attributes::ColorTemperatureMireds::Id);
-        attribute::get_val(attribute, &val);
-        err |= app_driver_light_set_temperature(handle, &val);
-    } else {
-        ESP_LOGE(TAG, "Color mode not supported");
-    }
+    err |= app_driver_light_apply_color_mode(handle, val.val.u8);
 
     /* Setting power */
     attribute = attribute::get(endpoint_id, OnOff::Id, OnOff::Attributes::OnOff::Id);

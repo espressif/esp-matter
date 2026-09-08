@@ -143,6 +143,7 @@ extern "C" void app_main()
 
     // Existing clusters on Root Node - just add optional attributes
     cluster::basic_information::create_optional_attributes(cluster::get(root_endpoint, BasicInformation::Id));
+    cluster::general_commissioning::create_optional_attributes(cluster::get(root_endpoint, GeneralCommissioning::Id));
     cluster::general_diagnostics::create_optional_attributes(cluster::get(root_endpoint, GeneralDiagnostics::Id));
 
     // Create new clusters and their optional attributes

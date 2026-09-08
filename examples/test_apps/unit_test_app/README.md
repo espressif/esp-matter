@@ -29,50 +29,47 @@ Once flashed, the test menu will appear in the serial monitor. You can:
 - Enter a test number to run a specific test
 - Enter `*` to run all tests
 
-## Running Tests with QEMU (no hardware needed)
+## Running Tests with esp-emu (no hardware needed)
 
-You can run the unit tests locally under QEMU emulation without physical hardware. This is the same method used in CI.
+Same tests can also run under [esp-emu](https://github.com/espressif/esp-emulator), Espressif's lightweight RISC-V emulator, via the [pytest-embedded-espemu](https://pypi.org/project/pytest-embedded-espemu/) service. The service builds the merged flash image and launches `esp-emu` per test by itself.
 
 ### Prerequisites
 
-- Install QEMU for RISC-V (esp32c3):
+Install esp-emu:
 ```bash
-python3 -m pip install pytest-embedded-qemu
-```
-
-- Ensure the QEMU binary (`qemu-system-riscv32`) is available. Install it via ESP-IDF tools:
-```bash
-$IDF_PATH/tools/idf_tools.py install qemu-riscv32
-source $IDF_PATH/export.sh  # re-source to pick up the new tool in PATH
+curl -fsSL https://raw.githubusercontent.com/espressif/esp-emulator/main/install.sh | sh
 ```
 
 ### Build and Run
 
 ```bash
 cd examples/test_apps/unit_test_app
-idf.py -DSDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.qemu" set-target esp32c3 build
+idf.py set-target esp32c3 build
 
-# Run all QEMU test groups (each gets a fresh QEMU reboot)
 pytest pytest_unit_test_app.py \
     --target esp32c3 \
-    -m qemu \
-    --embedded-services idf,qemu \
-    --qemu-extra-args="-global driver=timer.esp32c3.timg,property=wdt_disable,value=true"
-
-# Run a single test group
-pytest pytest_unit_test_app.py \
-    --target esp32c3 \
-    -m qemu \
-    --embedded-services idf,qemu \
-    --qemu-extra-args="-global driver=timer.esp32c3.timg,property=wdt_disable,value=true" \
-    -k test_get_val
+    -m emu \
+    --embedded-services idf,espemu \
+    --espemu-extra-args="--net user,restrict=yes"
 ```
 
 ### Why multiple test functions?
 
 Each test file has its own `setup_*()` function that calls `esp_matter::start()`, and there is no teardown/stop.
-Since only one setup can succeed per boot, tests are grouped so each group runs after a fresh QEMU reboot.
-Each pytest function (eg: `test_get_val`, `test_get_val_type`, `test_update_report`) gets its own QEMU instance.
+Since only one setup can succeed per boot, tests are grouped so each group runs after a fresh emulator reboot.
+Each pytest function (eg: `test_get_val`, `test_get_val_type`, `test_update_report`) gets its own esp-emu instance.
+
+### Quick smoke test (no pytest)
+
+esp-emu can drive the Unity menu by itself — handy to check a build boots and a group passes:
+
+```bash
+idf.py merge-bin   # produces build/merged-binary.bin
+esp-emu --chip esp32c3 --firmware build/merged-binary.bin \
+    --inject-on "Press ENTER to see the list of tests" --inject '[get_val]\n' \
+    --exit-on "Enter next test" --timeout 120s | tee /tmp/unity.log
+! grep -q ":FAIL" /tmp/unity.log
+```
 
 ## Extending the Tests
 
@@ -102,8 +99,8 @@ set(TEST_COMPONENTS "esp_matter new_component" CACHE STRING "List of components 
 
 ```python
 @pytest.mark.host_test
-@pytest.mark.qemu
+@pytest.mark.emu
 @pytest.mark.esp32c3
-def test_my_unit_tests(dut: QemuDut) -> None:
+def test_my_unit_tests(dut: Dut) -> None:
     run_group(dut, 'my_test_group')
 ```

@@ -424,6 +424,12 @@ attribute_t *create_tc_update_deadline(cluster_t *cluster, nullable<uint32_t> va
     return NULL;
 }
 
+attribute_t *create_is_commissioning_without_power(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, GeneralCommissioning::Attributes::IsCommissioningWithoutPower::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+}
+
 } /* attribute */
 } /* general_commissioning */
 

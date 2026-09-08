@@ -36,6 +36,9 @@ void ESPMatterApplicationBasicClusterServerShutdownCallback(EndpointId endpoint,
 void ESPMatterApplicationLauncherClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterApplicationLauncherClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
+void ESPMatterAudioControlClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterAudioControlClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
+
 void ESPMatterAudioOutputClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterAudioOutputClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
@@ -239,6 +242,9 @@ void ESPMatterLocalizationConfigurationClusterServerShutdownCallback(EndpointId 
 
 void ESPMatterLowPowerClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterLowPowerClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
+
+void ESPMatterMediaFileManagementClusterServerInitCallback(EndpointId endpoint);
+void ESPMatterMediaFileManagementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);
 
 void ESPMatterMediaInputClusterServerInitCallback(EndpointId endpoint);
 void ESPMatterMediaInputClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType);

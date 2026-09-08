@@ -6,4 +6,4 @@ See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/de
 
 ## Prerequisites
 
-- **IDF version**: v5.5.4
+- **IDF version**: v5.5.5
