@@ -52,7 +52,11 @@ device_type_element_overrides: Dict[str, Dict[str, Dict[str, List[str]]]] = {
         },
         "0x0036": {},  # wi_fi_network_diagnostics
         "0x0035": {},  # thread_network_diagnostics
-        "0x0065": {},  # groupcast
+        "0x0065": {  # groupcast
+            "features": [
+                "0x0001",  # listener (root node requires the Listener feature by default)
+            ],
+        },
     },
     "0x0019": {  # secondary_network_interface
         "0x0031": {  # network_commissioning

@@ -158,6 +158,12 @@ attribute_t *create_arl(cluster_t *cluster, uint8_t *value, uint16_t length, uin
 }
 
 #endif
+
+attribute_t *create_auxiliary_acl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, AccessControl::Attributes::AuxiliaryACL::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
+}
 } /* attribute */
 } /* access_control */
 

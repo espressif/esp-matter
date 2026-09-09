@@ -81,6 +81,23 @@ esp_err_t add(cluster_t *cluster)
 }
 } /* managed_device */
 
+namespace auxiliary {
+uint32_t get_id()
+{
+    return Auxiliary::Id;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    update_feature_map(cluster, get_id());
+    attribute::create_auxiliary_acl(cluster, NULL, 0, 0);
+    event::create_auxiliary_access_updated(cluster);
+
+    return ESP_OK;
+}
+} /* auxiliary */
+
 } /* feature */
 
 namespace attribute {
@@ -135,6 +152,13 @@ attribute_t *create_arl(cluster_t *cluster, uint8_t *value, uint16_t length, uin
 }
 #endif // CHIP_CONFIG_USE_ACCESS_RESTRICTIONS
 
+attribute_t *create_auxiliary_acl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    uint32_t feature_map = get_feature_map_value(cluster);
+    VerifyOrReturnValue(has_feature(auxiliary), NULL);
+    return esp_matter::attribute::create(cluster, AuxiliaryACL::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
+}
+
 } /* attribute */
 namespace command {
 #if CHIP_CONFIG_USE_ACCESS_RESTRICTIONS
@@ -173,6 +197,13 @@ event_t *create_fabric_restriction_review_update(cluster_t *cluster)
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(managed_device), NULL);
     return esp_matter::event::create(cluster, FabricRestrictionReviewUpdate::Id);
+}
+
+event_t *create_auxiliary_access_updated(cluster_t *cluster)
+{
+    uint32_t feature_map = get_feature_map_value(cluster);
+    VerifyOrReturnValue(has_feature(auxiliary), NULL);
+    return esp_matter::event::create(cluster, AuxiliaryAccessUpdated::Id);
 }
 
 } /* event */

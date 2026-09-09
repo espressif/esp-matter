@@ -60,6 +60,13 @@ esp_err_t add(cluster_t *cluster);
 
 } /* managed_device */
 
+namespace auxiliary {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* auxiliary */
+
 } /* feature */
 } /* access_control */
 
