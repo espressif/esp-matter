@@ -1357,6 +1357,34 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* resource_monitoring */
 
+namespace dish_washer_alarm {
+namespace feature {
+
+namespace reset {
+
+uint32_t get_id()
+{
+    return (uint32_t)DishwasherAlarm::Feature::kReset;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    VerifyOrReturnError(config, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Config cannot be NULL"));
+
+    update_feature_map(cluster, get_id());
+
+    attribute::create_latch(cluster, config->latch);
+    command::create_reset(cluster);
+
+    return ESP_OK;
+}
+
+} /* reset */
+
+} /* feature */
+} /* dish_washer_alarm */
+
 namespace laundry_washer_controls {
 namespace feature {
 
