@@ -1756,13 +1756,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         create_default_binding_cluster(endpoint);
     }
 
-    /* Commands */
-    command::create_pause(cluster);
-    command::create_stop(cluster);
-    command::create_start(cluster);
-    command::create_resume(cluster);
-    command::create_operational_command_response(cluster);
-
     event::create_operational_error(cluster);
 
     return cluster;
