@@ -966,6 +966,15 @@ attribute_t *create_supported_temperature_levels(cluster_t *cluster, uint8_t * v
 } /* attribute */
 } /* temperature_control */
 
+namespace dish_washer_alarm {
+namespace attribute {
+attribute_t *create_mask(cluster_t *cluster, uint32_t value);
+attribute_t *create_latch(cluster_t *cluster, uint32_t value);
+attribute_t *create_state(cluster_t *cluster, uint32_t value);
+attribute_t *create_supported(cluster_t *cluster, uint32_t value);
+} /* attribute */
+} /* dish_washer_alarm */
+
 namespace refrigerator_alarm {
 namespace attribute {
 attribute_t *create_mask(cluster_t *cluster, uint32_t value);
