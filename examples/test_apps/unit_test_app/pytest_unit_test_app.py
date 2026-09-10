@@ -46,6 +46,13 @@ def test_attr_val_ember_buffer(dut: Dut) -> None:
 @pytest.mark.host_test
 @pytest.mark.emu
 @pytest.mark.esp32c3
+def test_ember_read_bounds(dut: Dut) -> None:
+    run_group(dut, "ember_read_bounds")
+
+
+@pytest.mark.host_test
+@pytest.mark.emu
+@pytest.mark.esp32c3
 def test_update_report(dut: Dut) -> None:
     run_group(dut, "report")
     run_group(dut, "update")
