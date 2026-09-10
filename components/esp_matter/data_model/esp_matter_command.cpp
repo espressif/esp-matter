@@ -2889,6 +2889,20 @@ command_t *create_reset_condition(cluster_t *cluster)
 } /* command */
 } /* resource_monitoring */
 
+namespace dish_washer_alarm {
+namespace command {
+command_t *create_reset(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DishwasherAlarm::Commands::Reset::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_modify_enabled_alarms(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DishwasherAlarm::Commands::ModifyEnabledAlarms::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+} /* command */
+} /* dish_washer_alarm */
+
 namespace mode_base {
 namespace command {
 
