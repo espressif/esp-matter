@@ -3027,10 +3027,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
     }
 
-    /* Commands */
-    mode_base::command::create_change_to_mode(cluster);
-    mode_base::command::create_change_to_mode_response(cluster);
-
     return cluster;
 }
 } /* microwave_oven_mode */
