@@ -197,7 +197,7 @@ Status get_raw_data_buffer_from_attr_val(const esp_matter_attr_val_t &val, uint8
     }
 
     case ESP_MATTER_VAL_TYPE_UINT64: {
-        if (readLength < sizeof(uint8_t) || !dataPtr) {
+        if (readLength < sizeof(uint64_t) || !dataPtr) {
             return chip::Protocols::InteractionModel::Status::ResourceExhausted;
         }
         using Traits = chip::app::NumericAttributeTraits<uint64_t>;
