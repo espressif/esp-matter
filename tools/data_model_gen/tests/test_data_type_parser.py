@@ -29,6 +29,9 @@ from xml_processing.data_type_parser import (  # noqa: E402
     _normalize_bounds,
     _bounds_from_constraint,
     _infer_type_by_count,
+    _bitmap_top_bit,
+    _bitmap_max_from_bitfields,
+    BITMAP_THRESHOLDS,
     INT_BOUNDS,
     Item,
     Enum,
@@ -307,6 +310,7 @@ class TestResolveAttributeBounds(unittest.TestCase):
         self.assertEqual(attr.max_value, 2)
 
     def test_bitmap_bounds_from_bitfields(self):
+        """Single-bit fields: max is every bit set up to the highest."""
         attr = self._make_attr("bitmap8")
         elem = Element("attribute", type="testbitmap")
         fields = [
@@ -319,7 +323,85 @@ class TestResolveAttributeBounds(unittest.TestCase):
         }
         resolve_attribute_bounds(attr, elem, data_types)
         self.assertEqual(attr.min_value, 0)
-        self.assertEqual(attr.max_value, 7)  # 2^3 - 1
+        self.assertEqual(attr.max_value, 7)
+
+    def test_bitmap_bounds_from_multibit_fields(self):
+        """Multi-bit fields: max is the bit span (0x3F), not the field count."""
+        attr = self._make_attr("bitmap8")
+        elem = Element("attribute", type="opstatus")
+        fields = [
+            Item("Global", "1", "", True),
+            Item("Lift", "3", "", True),
+            Item("Tilt", "5", "", True),
+        ]
+        data_types = {
+            "bitmaps": {
+                "opstatus": Bitmap("OperationalStatusBitmap", "bitmap8", fields)
+            }
+        }
+        resolve_attribute_bounds(attr, elem, data_types)
+        self.assertEqual(attr.min_value, 0)
+        self.assertEqual(attr.max_value, 0x3F)
+
+    def test_bitmap_bounds_single_high_bit(self):
+        """A lone high bit sets the max to its position, not the field count."""
+        attr = self._make_attr("bitmap8")
+        elem = Element("attribute", type="namesupport")
+        fields = [Item("GroupNames", "7", "", True)]
+        data_types = {
+            "bitmaps": {"namesupport": Bitmap("NameSupportBitmap", "bitmap8", fields)}
+        }
+        resolve_attribute_bounds(attr, elem, data_types)
+        self.assertEqual(attr.min_value, 0)
+        self.assertEqual(attr.max_value, 0xFF)
+
+    def test_bitmap_explicit_constraint_max_wins(self):
+        """An explicit max constraint overrides the derived bit-span max."""
+        attr = self._make_attr("bitmap8")
+        elem = Element("attribute", type="opstatus")
+        constraint = SubElement(elem, "constraint")
+        SubElement(constraint, "max", value="48")
+        fields = [
+            Item("Global", "1", "", True),
+            Item("Lift", "3", "", True),
+            Item("Tilt", "5", "", True),
+        ]
+        data_types = {"bitmaps": {"opstatus": Bitmap("OpStatus", "bitmap8", fields)}}
+        resolve_attribute_bounds(attr, elem, data_types)
+        self.assertEqual(attr.min_value, 0)
+        self.assertEqual(attr.max_value, 48)
+
+    def test_bitmap_explicit_constraint_min_wins(self):
+        """An explicit min constraint is kept; max stays derived."""
+        attr = self._make_attr("bitmap8")
+        elem = Element("attribute", type="rock")
+        constraint = SubElement(elem, "constraint")
+        SubElement(constraint, "min", value="1")
+        fields = [
+            Item("A", "0", "", True),
+            Item("B", "1", "", True),
+            Item("C", "2", "", True),
+        ]
+        data_types = {"bitmaps": {"rock": Bitmap("RockBitmap", "bitmap8", fields)}}
+        resolve_attribute_bounds(attr, elem, data_types)
+        self.assertEqual(attr.min_value, 1)
+        self.assertEqual(attr.max_value, 7)
+
+    def test_enum_explicit_constraint_max_wins(self):
+        """An explicit max constraint overrides the derived item-count max."""
+        attr = self._make_attr("enum8")
+        elem = Element("attribute", type="testenum")
+        constraint = SubElement(elem, "constraint")
+        SubElement(constraint, "max", value="1")
+        items = [
+            Item("A", "0", "", True),
+            Item("B", "1", "", True),
+            Item("C", "2", "", True),
+        ]
+        data_types = {"enums": {"testenum": Enum("TestEnum", "enum8", items)}}
+        resolve_attribute_bounds(attr, elem, data_types)
+        self.assertEqual(attr.min_value, 0)
+        self.assertEqual(attr.max_value, 1)
 
     def test_uint8_unconstrained_no_bounds(self):
         # No <constraint> in XML -> no bounds synthesized (redundant type-range removed)
@@ -357,6 +439,84 @@ class TestInferTypeByCount(unittest.TestCase):
 
     def test_medium_bitmap(self):
         self.assertEqual(_infer_type_by_count(10, "bitmap"), "bitmap16")
+
+
+class TestBitmapBitSpan(unittest.TestCase):
+    """Bitmap width and max derive from the highest occupied bit, not the field count."""
+
+    @staticmethod
+    def _fields(*top_bits):
+        return [Item(f"F{i}", str(b), "", True) for i, b in enumerate(top_bits)]
+
+    def test_top_bit_single_and_multibit(self):
+        """Top bit is the max index across single- and multi-bit fields."""
+        self.assertEqual(_bitmap_top_bit(self._fields(0, 1, 2)), 2)
+        self.assertEqual(_bitmap_top_bit(self._fields(1, 3, 5)), 5)
+
+    def test_top_bit_out_of_order_and_gapped(self):
+        """Order and gaps don't matter; top bit is the max index."""
+        self.assertEqual(_bitmap_top_bit(self._fields(7, 0, 3)), 7)
+
+    def test_top_bit_none_parseable(self):
+        """No parseable fields gives -1."""
+        self.assertEqual(_bitmap_top_bit([Item("F", None, "", True)]), -1)
+        self.assertEqual(_bitmap_top_bit([]), -1)
+
+    def test_max_matches_bit_span(self):
+        """Max is every bit set up to the top bit."""
+        self.assertEqual(_bitmap_max_from_bitfields(self._fields(1, 3, 5)), 0x3F)
+        self.assertEqual(_bitmap_max_from_bitfields(self._fields(7)), 0xFF)
+        self.assertEqual(_bitmap_max_from_bitfields(self._fields(0)), 0x1)
+
+    def test_max_empty_is_zero(self):
+        """No fields gives max 0."""
+        self.assertEqual(_bitmap_max_from_bitfields([]), 0)
+        self.assertEqual(_bitmap_max_from_bitfields([Item("F", None, "", True)]), 0)
+
+    def test_max_clamped_to_storage_type(self):
+        """Bits >= 32 clamp the max to the uint64 bound."""
+        self.assertEqual(
+            _bitmap_max_from_bitfields(self._fields(32)), INT_BOUNDS["uint64"][1]
+        )
+        self.assertEqual(
+            _bitmap_max_from_bitfields(self._fields(63)), INT_BOUNDS["uint64"][1]
+        )
+
+    def test_type_sized_by_top_bit(self):
+        """Top bit picks both the bitmap type and its uint bounds key."""
+        cases = [
+            (-1, "bitmap8", "uint8"),
+            (7, "bitmap8", "uint8"),
+            (8, "bitmap16", "uint16"),
+            (15, "bitmap16", "uint16"),
+            (16, "bitmap32", "uint32"),
+            (31, "bitmap32", "uint32"),
+            (32, "bitmap64", "uint64"),
+            (63, "bitmap64", "uint64"),
+        ]
+        for top, bmp, uint in cases:
+            self.assertEqual(
+                _infer_type_by_count(top, "bitmap", BITMAP_THRESHOLDS), bmp
+            )
+            self.assertEqual(_infer_type_by_count(top, "uint", BITMAP_THRESHOLDS), uint)
+
+    def test_max_fits_inferred_type(self):
+        """The max always fits the type it was sized to."""
+        for top in range(-1, 64):
+            fields = self._fields(top) if top >= 0 else []
+            uint_type = _infer_type_by_count(top, "uint", BITMAP_THRESHOLDS)
+            self.assertLessEqual(
+                _bitmap_max_from_bitfields(fields), INT_BOUNDS[uint_type][1]
+            )
+
+    def test_few_fields_high_bit_not_undersized(self):
+        """A high bit with few fields still picks a wide enough type."""
+        fields = self._fields(0, 20)
+        self.assertEqual(
+            _infer_type_by_count(_bitmap_top_bit(fields), "bitmap", BITMAP_THRESHOLDS),
+            "bitmap32",
+        )
+        self.assertEqual(_bitmap_max_from_bitfields(fields), 2**21 - 1)
 
 
 class TestDataClasses(unittest.TestCase):
