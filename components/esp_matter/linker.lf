@@ -1,0 +1,34 @@
+# Move the BSS segments of the Matter SDK libraries to external RAM (PSRAM) when
+# CONFIG_SPIRAM_ALLOW_BSS_SEG_EXTERNAL_MEMORY is enabled.
+#
+# This fragment is registered from two places so it applies in both layouts:
+#   - components/esp_matter/CMakeLists.txt : monorepo, where esp_matter, the
+#     controller and CHIP are separate archives (libesp_matter.a,
+#     libesp_matter_controller.a, libCHIP.a)
+#   - the repo-root CMakeLists.txt : Component Registry package, where everything
+#     is compiled into a single libespressif__esp_matter.a
+# A mapping whose archive is not part of a given build is silently ignored.
+
+[mapping:esp_matter_chip_bss]
+archive: libCHIP.a
+entries:
+    if ESP_ALLOW_BSS_SEG_EXTERNAL_MEMORY = y:
+        * (extram_bss)
+
+[mapping:esp_matter_bss]
+archive: libesp_matter.a
+entries:
+    if ESP_ALLOW_BSS_SEG_EXTERNAL_MEMORY = y:
+        * (extram_bss)
+
+[mapping:esp_matter_controller_bss]
+archive: libesp_matter_controller.a
+entries:
+    if ESP_ALLOW_BSS_SEG_EXTERNAL_MEMORY = y:
+        * (extram_bss)
+
+[mapping:esp_matter_managed_bss]
+archive: libespressif__esp_matter.a
+entries:
+    if ESP_ALLOW_BSS_SEG_EXTERNAL_MEMORY = y:
+        * (extram_bss)

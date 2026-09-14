@@ -376,7 +376,8 @@ idf_component_register(SRC_DIRS          ${SRC_DIRS_LIST}
                        EXCLUDE_SRCS      ${EXCLUDE_SRCS_LIST}
                        INCLUDE_DIRS      ${INCLUDE_DIRS_LIST}
                        PRIV_INCLUDE_DIRS ${PRIV_INCLUDE_DIRS_LIST}
-                       REQUIRES          ${REQUIRE_COMPONENTS})
+                       REQUIRES          ${REQUIRE_COMPONENTS}
+                       LDFRAGMENTS       "components/esp_matter/linker.lf")
 
 target_compile_options(${COMPONENT_LIB} PUBLIC
                        "-DCHIP_ADDRESS_RESOLVE_IMPL_INCLUDE_HEADER=<lib/address_resolve/AddressResolve_DefaultImpl.h>"
