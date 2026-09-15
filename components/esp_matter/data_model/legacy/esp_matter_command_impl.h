@@ -395,6 +395,13 @@ namespace activated_carbon_filter_monitoring {
 namespace command = resource_monitoring::command;
 } /* activated_carbon_filter_monitoring */
 
+namespace dish_washer_alarm {
+namespace command {
+command_t *create_reset(cluster_t *cluster);
+command_t *create_modify_enabled_alarms(cluster_t *cluster);
+} /* command */
+} /* dish_washer_alarm */
+
 namespace mode_base {
 namespace command {
 command_t *create_change_to_mode(cluster_t *cluster);

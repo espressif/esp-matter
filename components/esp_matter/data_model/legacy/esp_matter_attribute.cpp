@@ -3914,6 +3914,31 @@ attribute_t *create_supported_temperature_levels(cluster_t *cluster, uint8_t * v
 } /* attribute */
 } /* temperature_control */
 
+namespace dish_washer_alarm {
+namespace attribute {
+attribute_t *create_mask(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, DishwasherAlarm::Attributes::Mask::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+}
+
+attribute_t *create_latch(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, DishwasherAlarm::Attributes::Latch::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+}
+
+attribute_t *create_state(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, DishwasherAlarm::Attributes::State::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+}
+
+attribute_t *create_supported(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, DishwasherAlarm::Attributes::Supported::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+}
+
+} /* attribute */
+} /* dish_washer_alarm */
+
 namespace refrigerator_alarm {
 namespace attribute {
 attribute_t *create_mask(cluster_t *cluster, uint32_t value)
