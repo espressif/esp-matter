@@ -142,7 +142,7 @@ attribute_t *create_setpoint_hold_expiry_timestamp(cluster_t *cluster, nullable<
 attribute_t *create_max_thermostat_suggestions(cluster_t *cluster, uint8_t value);
 attribute_t *create_thermostat_suggestions(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 attribute_t *create_current_thermostat_suggestion(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
-attribute_t *create_thermostat_suggestion_not_following_reason(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_thermostat_suggestion_not_following_reason(cluster_t *cluster, nullable<uint8_t> value);
 } /* attribute */
 
 namespace command {

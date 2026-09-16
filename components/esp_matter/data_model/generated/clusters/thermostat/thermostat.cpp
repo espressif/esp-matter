@@ -575,7 +575,7 @@ attribute_t *create_current_thermostat_suggestion(cluster_t *cluster, uint8_t *v
     return esp_matter::attribute::create(cluster, CurrentThermostatSuggestion::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, length, count));
 }
 
-attribute_t *create_thermostat_suggestion_not_following_reason(cluster_t *cluster, nullable<uint16_t> value)
+attribute_t *create_thermostat_suggestion_not_following_reason(cluster_t *cluster, nullable<uint8_t> value)
 {
     uint32_t feature_map = get_feature_map_value(cluster);
     VerifyOrReturnValue(has_feature(thermostat_suggestions), NULL);
