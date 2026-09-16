@@ -64,7 +64,7 @@ inline constexpr uint32_t Id = 0x0009;
 namespace OperationalStatus {
 inline constexpr uint32_t Id = 0x000A;
 inline constexpr uint8_t Min = 0;
-inline constexpr uint8_t Max = 7;
+inline constexpr uint8_t Max = 63;
 } /* OperationalStatus */
 namespace TargetPositionLiftPercent100ths {
 inline constexpr uint32_t Id = 0x000B;

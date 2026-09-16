@@ -30,6 +30,13 @@ UINT8_MAX = 2**8 - 1
 UINT16_MAX = 2**16 - 1
 UINT32_MAX = 2**32 - 1
 
+# Data type thresholds for enum and bitmap.
+TYPE_THRESHOLDS = (8, 16, 32, 64)
+
+# Bitmaps are sized by their highest occupied bit: bits 0-7 -> 8-bit store, 8-15 -> 16-bit,
+# 16-31 -> 32-bit, >=32 -> 64-bit
+BITMAP_THRESHOLDS = (8, 16, 32)
+
 # NOTE: 64-bit types are capped to the 32-bit range to avoid esp-idf compiler warnings
 # on 64-bit literal bounds.
 INT_BOUNDS = {
@@ -106,32 +113,61 @@ def _override_type_by_default_value(attribute_elem: Element, type_str: str) -> s
 def resolve_attribute_bounds(
     attr, attribute_elem: Element, data_types_dict: dict
 ) -> None:
-    """Set attr.min_value and attr.max_value from enum, bitmap, constraint, or type defaults."""
+    """Set attr.min_value and attr.max_value from enum, bitmap, constraint, or type defaults.
+
+    An explicit <constraint> in the XML is authoritative; a side it does not set is filled
+    from the enum item count, the bitmap bit span, or the type's default range.
+    """
     attr.min_value = None
     attr.max_value = None
     data_types_dict = data_types_dict or {}
     enums = data_types_dict.get("enums") or {}
     bitmaps = data_types_dict.get("bitmaps") or {}
 
+    # A spec constraint wins over any derived enum/bitmap bound.
+    _bounds_from_constraint(attr, attribute_elem)
+
     if "enum" in (attr.type or "").lower():
         xml_type = (attribute_elem.get("type") or "").lower()
         if xml_type in enums and safe_get_attr(enums[xml_type], "items"):
-            attr.min_value = 0
-            attr.max_value = len(enums[xml_type].items) - 1
-            _bounds_to_int(attr)
+            _fill_missing_bounds(attr, 0, len(enums[xml_type].items) - 1)
             return
     if "bitmap" in (attr.type or "").lower():
         xml_type = (attribute_elem.get("type") or "").lower()
         if xml_type in bitmaps and safe_get_attr(bitmaps[xml_type], "bitfields"):
-            attr.min_value = 0
-            attr.max_value = 2 ** len(bitmaps[xml_type].bitfields) - 1
-            _bounds_to_int(attr)
+            derived_max = _bitmap_max_from_bitfields(bitmaps[xml_type].bitfields)
+            _fill_missing_bounds(attr, 0, derived_max)
             return
 
-    _bounds_from_constraint(attr, attribute_elem)
     _normalize_bounds(attr)
     _default_bounds_by_type(attr)
     _bounds_to_int(attr)
+
+
+def _fill_missing_bounds(attr, derived_min, derived_max) -> None:
+    """Keep any constraint-provided bound; fill the missing side from the derived value."""
+    if attr.min_value is None:
+        attr.min_value = derived_min
+    if attr.max_value is None:
+        attr.max_value = derived_max
+    _normalize_bounds(attr)
+    _bounds_to_int(attr)
+
+
+def _bitmap_top_bit(bitfields) -> int:
+    """Highest bit index any field occupies, or -1 if none. Sizes both width and max."""
+    bits = (convert_to_int(safe_get_attr(bf, "value")) for bf in bitfields)
+    return max((b for b in bits if b is not None), default=-1)
+
+
+def _bitmap_max_from_bitfields(bitfields) -> int:
+    """Max value a bitmap can hold: max bit calculated as 2**(top_bit + 1) - 1.
+    Clamped to the storage type's usable max from INT_BOUNDS.
+    """
+    top_bit = _bitmap_top_bit(bitfields)
+    span_max = 2 ** (top_bit + 1) - 1
+    uint_type = _infer_type_by_count(top_bit, "uint", BITMAP_THRESHOLDS)
+    return min(span_max, INT_BOUNDS[uint_type][1])
 
 
 def _bounds_from_constraint(attr, attribute_elem: Element) -> None:
@@ -286,12 +322,11 @@ class Struct:
 def _infer_type_by_count(
     count: int, type_prefix: str, thresholds: tuple = (8, 16)
 ) -> str:
-    """Infer type size based on item count. Used for both enum and bitmap."""
-    if count < thresholds[0]:
-        return f"{type_prefix}8"
-    if count < thresholds[1]:
-        return f"{type_prefix}16"
-    return f"{type_prefix}32"
+    """Infer the type width by comparing the count against the thresholds."""
+    for width, threshold in zip(TYPE_THRESHOLDS, thresholds):
+        if count < threshold:
+            return f"{type_prefix}{width}"
+    return f"{type_prefix}{TYPE_THRESHOLDS[len(thresholds)]}"
 
 
 class DataTypeParser:
@@ -343,21 +378,25 @@ class DataTypeParser:
             bitmap_name = bitmap.get("name", "").lower()
             if not bitmap_name:
                 continue
-            bitfields = bitmap.findall("bitfield")
-            base_type = _infer_type_by_count(len(bitfields), "bitmap")
+            items = [
+                Item(
+                    bf.get("name"),
+                    bf.get("bit")
+                    if bf.get("bit") is not None
+                    else bf.get("to"),  # max bit value for the field
+                    bf.get("summary"),
+                    bf.find("mandatoryConform") is not None,
+                )
+                for bf in bitmap.findall("bitfield")
+            ]
+            base_type = _infer_type_by_count(
+                _bitmap_top_bit(items), "bitmap", BITMAP_THRESHOLDS
+            )
             self.attribute_types[bitmap_name] = base_type
             self.bitmaps[bitmap_name] = Bitmap(
                 bitmap.get("name"),
                 base_type,
-                [
-                    Item(
-                        bf.get("name"),
-                        bf.get("bit"),
-                        bf.get("summary"),
-                        bf.find("mandatoryConform") is not None,
-                    )
-                    for bf in bitfields
-                ],
+                items,
             )
 
     def _parse_structs(self, data_types: Element) -> None:
