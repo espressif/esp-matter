@@ -1,5 +1,6 @@
 list(APPEND srcs_list "attribute_get_val.cpp")
 list(APPEND srcs_list "attr_val_ember_buffer.cpp")
+list(APPEND srcs_list "ember_read_attribute_bounds.cpp")
 list(APPEND srcs_list "attribute_create_value_persistence.cpp")
 list(APPEND srcs_list "attribute_get_val_type.cpp")
 list(APPEND srcs_list "attribute_report.cpp")
