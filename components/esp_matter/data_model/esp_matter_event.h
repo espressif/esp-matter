@@ -172,6 +172,12 @@ event_t *create_sensor_fault(cluster_t *cluster);
 } // namespace event
 } // namespace boolean_state_configuration
 
+namespace dish_washer_alarm {
+namespace event {
+event_t *create_notify(cluster_t *cluster);
+} // namespace event
+} // namespace dish_washer_alarm
+
 namespace operational_state {
 namespace event {
 event_t *create_operational_error(cluster_t *cluster);
