@@ -767,6 +767,27 @@ namespace activated_carbon_filter_monitoring {
 namespace feature = resource_monitoring::feature;
 } /* activated_carbon_filter_monitoring */
 
+namespace dish_washer_alarm {
+namespace feature {
+
+namespace reset {
+
+typedef struct config {
+    uint32_t latch;
+    config()
+        : latch(0)
+    {
+    }
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* reset */
+
+} /* feature */
+} /* dish_washer_alarm */
+
 namespace laundry_washer_controls {
 namespace feature {
 
