@@ -502,8 +502,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 
 namespace dish_washer_alarm {
 typedef struct config {
+    uint32_t mask;
+    uint32_t state;
+    uint32_t supported;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : mask(0), state(0), supported(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
