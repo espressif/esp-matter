@@ -20,40 +20,29 @@
 #include <lib/support/CodeUtils.h>
 #include <lib/support/logging/CHIPLogging.h>
 #include <unordered_map>
+#include <data_model/esp_matter_attribute_helpers.h>
 
 using namespace chip;
 using namespace chip::app;
 using namespace chip::app::Clusters;
+using namespace esp_matter;
 
 namespace {
 std::unordered_map<EndpointId, LazyRegisteredServerCluster<EthernetDiagnosticsServerCluster>> gServers;
 
-uint32_t get_feature_map(esp_matter::cluster_t *cluster)
-{
-    esp_matter::attribute_t *attribute = esp_matter::attribute::get(cluster, Globals::Attributes::FeatureMap::Id);
-    if (attribute) {
-        esp_matter_attr_val_t val;
-        if (esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK &&
-                val.type == ESP_MATTER_VAL_TYPE_BITMAP32) {
-            return val.val.u32;
-        }
-    }
-    return 0;
-}
-
 EthernetDiagnosticsServerCluster::OptionalAttributeSet get_attribute_set(esp_matter::cluster_t *cluster)
 {
     EthernetDiagnosticsServerCluster::OptionalAttributeSet ret;
-    if (esp_matter::attribute::get(cluster, EthernetNetworkDiagnostics::Attributes::CarrierDetect::Id)) {
+    if (is_attribute_enabled(cluster, EthernetNetworkDiagnostics::Attributes::CarrierDetect::Id)) {
         ret.Set<EthernetNetworkDiagnostics::Attributes::CarrierDetect::Id>();
     }
-    if (esp_matter::attribute::get(cluster, EthernetNetworkDiagnostics::Attributes::FullDuplex::Id)) {
+    if (is_attribute_enabled(cluster, EthernetNetworkDiagnostics::Attributes::FullDuplex::Id)) {
         ret.Set<EthernetNetworkDiagnostics::Attributes::FullDuplex::Id>();
     }
-    if (esp_matter::attribute::get(cluster, EthernetNetworkDiagnostics::Attributes::PHYRate::Id)) {
+    if (is_attribute_enabled(cluster, EthernetNetworkDiagnostics::Attributes::PHYRate::Id)) {
         ret.Set<EthernetNetworkDiagnostics::Attributes::PHYRate::Id>();
     }
-    if (esp_matter::attribute::get(cluster, EthernetNetworkDiagnostics::Attributes::TimeSinceReset::Id)) {
+    if (is_attribute_enabled(cluster, EthernetNetworkDiagnostics::Attributes::TimeSinceReset::Id)) {
         ret.Set<EthernetNetworkDiagnostics::Attributes::TimeSinceReset::Id>();
     }
     return ret;
@@ -71,7 +60,7 @@ void ESPMatterEthernetNetworkDiagnosticsClusterServerInitCallback(EndpointId end
                                     endpointId));
 
         gServers[endpointId].Create(DeviceLayer::GetDiagnosticDataProvider(),
-                                    BitFlags<EthernetNetworkDiagnostics::Feature>(get_feature_map(cluster)),
+                                    BitFlags<EthernetNetworkDiagnostics::Feature>(read_feature_map_u32(cluster)),
                                     get_attribute_set(cluster));
     }
     CHIP_ERROR err =

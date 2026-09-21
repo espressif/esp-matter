@@ -21,23 +21,16 @@
 #include "app/clusters/boolean-state-configuration-server/BooleanStateConfigurationCluster.h"
 #include "app/server-cluster/ServerClusterInterfaceRegistry.h"
 #include "clusters/BooleanStateConfiguration/Enums.h"
+#include <data_model/esp_matter_attribute_helpers.h>
 
 using namespace chip;
 using namespace chip::app;
 using namespace chip::app::Clusters;
 using namespace chip::app::Clusters::BooleanStateConfiguration;
+using namespace esp_matter;
 
 namespace {
 std::unordered_map<EndpointId, LazyRegisteredServerCluster<BooleanStateConfigurationCluster>> gServers;
-
-esp_err_t get_attr_val(esp_matter::cluster_t *cluster, uint32_t attribute_id, esp_matter_attr_val_t &val)
-{
-    esp_matter::attribute_t *attr = esp_matter::attribute::get(cluster, attribute_id);
-    if (!attr) {
-        return ESP_FAIL;
-    }
-    return esp_matter::attribute::get_val_internal(attr, &val);
-}
 
 CHIP_ERROR GetClusterConfig(EndpointId endpointId, BitMask<Feature> &featureMap, uint8_t &supportedSensitivityLevels,
                             uint8_t &defaultSensitivityLevel,
@@ -48,32 +41,29 @@ CHIP_ERROR GetClusterConfig(EndpointId endpointId, BitMask<Feature> &featureMap,
     if (!cluster) {
         return CHIP_ERROR_NOT_FOUND;
     }
+    featureMap = BitMask<BooleanStateConfiguration::Feature>(read_feature_map_u32(cluster));
     esp_matter_attr_val_t tmp_attr_val;
-    VerifyOrReturnError(get_attr_val(cluster, Globals::Attributes::FeatureMap::Id, tmp_attr_val) == ESP_OK &&
-                        tmp_attr_val.type == ESP_MATTER_VAL_TYPE_BITMAP32,
-                        CHIP_ERROR_INTERNAL);
-    featureMap = BitMask<BooleanStateConfiguration::Feature>(tmp_attr_val.val.u32);
     if (featureMap.Has(Feature::kSensitivityLevel)) {
-        VerifyOrReturnError(get_attr_val(cluster, Attributes::SupportedSensitivityLevels::Id, tmp_attr_val) == ESP_OK &&
+        VerifyOrReturnError(get_stored_attr_val(cluster, Attributes::SupportedSensitivityLevels::Id, tmp_attr_val) == ESP_OK &&
                             tmp_attr_val.type == ESP_MATTER_VAL_TYPE_UINT8,
                             CHIP_ERROR_INTERNAL);
         supportedSensitivityLevels = tmp_attr_val.val.u8;
-        if (get_attr_val(cluster, Attributes::DefaultSensitivityLevel::Id, tmp_attr_val) == ESP_OK &&
+        if (get_stored_attr_val(cluster, Attributes::DefaultSensitivityLevel::Id, tmp_attr_val) == ESP_OK &&
                 tmp_attr_val.type == ESP_MATTER_VAL_TYPE_UINT8) {
             defaultSensitivityLevel = tmp_attr_val.val.u8;
             optionalAttrSet.Set<Attributes::DefaultSensitivityLevel::Id>();
         }
     }
     if (featureMap.Has(Feature::kAudible) || featureMap.Has(Feature::kVisual)) {
-        VerifyOrReturnError(get_attr_val(cluster, Attributes::AlarmsSupported::Id, tmp_attr_val) == ESP_OK &&
+        VerifyOrReturnError(get_stored_attr_val(cluster, Attributes::AlarmsSupported::Id, tmp_attr_val) == ESP_OK &&
                             tmp_attr_val.type == ESP_MATTER_VAL_TYPE_BITMAP8,
                             CHIP_ERROR_INTERNAL);
         alarmsSupported = AlarmModeBitmap(tmp_attr_val.val.u8);
-        if (esp_matter::attribute::get(cluster, Attributes::AlarmsEnabled::Id)) {
+        if (is_attribute_enabled(cluster, Attributes::AlarmsEnabled::Id)) {
             optionalAttrSet.Set<Attributes::AlarmsEnabled::Id>();
         }
     }
-    if (esp_matter::attribute::get(cluster, Attributes::SensorFault::Id)) {
+    if (is_attribute_enabled(cluster, Attributes::SensorFault::Id)) {
         optionalAttrSet.Set<Attributes::SensorFault::Id>();
     }
     return CHIP_NO_ERROR;

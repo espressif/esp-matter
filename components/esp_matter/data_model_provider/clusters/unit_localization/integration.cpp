@@ -20,28 +20,17 @@
 #include <data_model_provider/esp_matter_data_model_provider.h>
 #include <lib/support/CodeUtils.h>
 #include <lib/support/logging/CHIPLogging.h>
+#include <data_model/esp_matter_attribute_helpers.h>
 
 using namespace chip;
 using namespace chip::app;
 using namespace chip::app::Clusters;
 using namespace chip::app::Clusters::UnitLocalization;
+using namespace esp_matter;
 
 namespace {
 
 LazyRegisteredServerCluster<UnitLocalizationServer> gServer;
-
-uint32_t get_feature_map(esp_matter::cluster_t *cluster)
-{
-    esp_matter::attribute_t *attribute = esp_matter::attribute::get(cluster, Globals::Attributes::FeatureMap::Id);
-    if (attribute) {
-        esp_matter_attr_val_t val;
-        if (esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK &&
-                val.type == ESP_MATTER_VAL_TYPE_BITMAP32) {
-            return val.val.u32;
-        }
-    }
-    return 0;
-}
 
 } // namespace
 
@@ -60,7 +49,7 @@ void ESPMatterUnitLocalizationClusterServerInitCallback(EndpointId endpointId)
                        ChipLogError(AppServer,
                                     "UnitLocalization: cluster missing in esp-matter data model for endpoint %u", endpointId));
 
-        gServer.Create(endpointId, BitFlags<UnitLocalization::Feature>(get_feature_map(cluster)));
+        gServer.Create(endpointId, BitFlags<UnitLocalization::Feature>(read_feature_map_u32(cluster)));
     }
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
     if (err != CHIP_NO_ERROR) {

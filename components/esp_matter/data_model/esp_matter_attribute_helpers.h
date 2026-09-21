@@ -26,6 +26,21 @@ namespace esp_matter {
 /** Read FeatureMap from esp-matter attribute storage for the given endpoint and cluster. */
 uint32_t read_feature_map_u32(chip::EndpointId endpointId, chip::ClusterId clusterId);
 
+/** Read FeatureMap from an already-resolved cluster handle. Returns 0 if the attribute is missing or not a bitmap32 value. */
+uint32_t read_feature_map_u32(cluster_t *cluster);
+
+/** True when the attribute exists on the cluster. */
+bool is_attribute_enabled(cluster_t *cluster, uint32_t attribute_id);
+
+/** True when the command exists on the cluster with any of the given flags (default: accepted commands). */
+bool is_command_enabled(cluster_t *cluster, uint32_t command_id, uint16_t flags = COMMAND_FLAG_ACCEPTED);
+
+/**
+ * Read an attribute's value directly from the esp-matter data model storage (via get_val_internal)
+ * into @p val. Fails if the attribute is missing or managed by CHIP SDK.
+ */
+esp_err_t get_stored_attr_val(cluster_t *cluster, uint32_t attribute_id, esp_matter_attr_val_t &val);
+
 /**
  * Read a fixed-width scalar `T` from esp-matter attribute storage for (endpoint, cluster, attribute).
  *
