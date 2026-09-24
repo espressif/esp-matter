@@ -452,6 +452,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_last_network_id(cluster, NULL, 0);
         attribute::create_last_connect_error_value(cluster, nullable<int32_t>());
 
+        VerifyOrReturnValue(validate_features(config->feature_map, feature_policy::k_exact_one,
+        "WiFiNetworkInterface,ThreadNetworkInterface,EthernetNetworkInterface", {
+            chip::to_underlying(NetworkCommissioning::Feature::kWiFiNetworkInterface),
+            chip::to_underlying(NetworkCommissioning::Feature::kThreadNetworkInterface),
+            chip::to_underlying(NetworkCommissioning::Feature::kEthernetNetworkInterface),
+        }),
+        ABORT_CLUSTER_CREATE(cluster));
+
         if (config->feature_map & chip::to_underlying(NetworkCommissioning::Feature::kWiFiNetworkInterface) ||
                 config->feature_map & chip::to_underlying(NetworkCommissioning::Feature::kThreadNetworkInterface)) {
             attribute::create_scan_max_time_seconds(cluster, 0);

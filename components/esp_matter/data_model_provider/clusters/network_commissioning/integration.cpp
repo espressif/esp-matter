@@ -17,9 +17,11 @@
 #include <app/ClusterCallbacks.h>
 #include <app/clusters/network-commissioning/NetworkCommissioningCluster.h>
 #include <app/server/Server.h>
+#include <data_model/esp_matter_attribute_helpers.h>
 #include <data_model/esp_matter_data_model.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
 #include <platform/DeviceControlServer.h>
+#include <lib/support/BitFlags.h>
 #include <lib/support/CodeUtils.h>
 #include <platform/ESP32/NetworkCommissioningDriver.h>
 #include <platform/OpenThread/GenericNetworkCommissioningThreadDriver.h>
@@ -96,43 +98,49 @@ uint16_t GetServerIndex(EndpointId endpointId)
     return UINT16_MAX;
 }
 
-bool endpointIdIsValid(EndpointId endpointId)
+bool FeatureMapIsUnique(EndpointId endpointId, uint32_t featureMap)
 {
-    bool endpointIdMatched = false;
-#ifdef CONFIG_THREAD_NETWORK_COMMISSIONING_DRIVER
-    endpointIdMatched |= endpointId == CONFIG_THREAD_NETWORK_ENDPOINT_ID;
-#endif
-#ifdef CONFIG_WIFI_NETWORK_COMMISSIONING_DRIVER
-    endpointIdMatched |= endpointId == CONFIG_WIFI_NETWORK_ENDPOINT_ID;
-#endif
-#ifdef CONFIG_ETHERNET_NETWORK_COMMISSIONING_DRIVER
-    endpointIdMatched |= endpointId == CONFIG_ETHERNET_NETWORK_ENDPOINT_ID;
-#endif
-    return endpointIdMatched;
+    esp_matter::endpoint_t *ep = esp_matter::endpoint::get_first(esp_matter::node::get());
+    while (ep) {
+        EndpointId otherId = esp_matter::endpoint::get_id(ep);
+        if (otherId != endpointId && esp_matter::cluster::get(ep, NetworkCommissioning::Id) &&
+                esp_matter::read_feature_map_u32(otherId, NetworkCommissioning::Id) == featureMap) {
+            return false;
+        }
+        ep = esp_matter::endpoint::get_next(ep);
+    }
+    return true;
 }
 
 } // namespace
 
 void ESPMatterNetworkCommissioningClusterServerInitCallback(EndpointId endpointId)
 {
-    VerifyOrReturn(endpointIdIsValid(endpointId));
     uint16_t index = GetServerIndex(endpointId);
     VerifyOrReturn(index != UINT16_MAX);
     if (!gServers[index].IsConstructed()) {
+        const uint32_t rawFeatureMap = esp_matter::read_feature_map_u32(endpointId, NetworkCommissioning::Id);
+        if (!FeatureMapIsUnique(endpointId, rawFeatureMap)) {
+            ChipLogError(AppServer,
+                         "NetworkCommissioning feature map 0x%08" PRIX32 " on endpoint %u duplicates another endpoint",
+                         rawFeatureMap, endpointId);
+            return;
+        }
+        BitFlags<NetworkCommissioning::Feature> features(rawFeatureMap);
 #ifdef CONFIG_THREAD_NETWORK_COMMISSIONING_DRIVER
-        if (endpointId == CONFIG_THREAD_NETWORK_ENDPOINT_ID) {
+        if (features.Has(NetworkCommissioning::Feature::kThreadNetworkInterface)) {
             static DeviceLayer::NetworkCommissioning::GenericThreadDriver sThreadDriver;
             gServers[index].Create(endpointId, &sThreadDriver, MakeNetworkCommissioningClusterContext());
         }
 #endif
 #ifdef CONFIG_WIFI_NETWORK_COMMISSIONING_DRIVER
-        if (endpointId == CONFIG_WIFI_NETWORK_ENDPOINT_ID) {
+        if (features.Has(NetworkCommissioning::Feature::kWiFiNetworkInterface)) {
             gServers[index].Create(endpointId, &(DeviceLayer::NetworkCommissioning::ESPWiFiDriver::GetInstance()),
                                    MakeNetworkCommissioningClusterContext());
         }
 #endif
 #ifdef CONFIG_ETHERNET_NETWORK_COMMISSIONING_DRIVER
-        if (endpointId == CONFIG_ETHERNET_NETWORK_ENDPOINT_ID) {
+        if (features.Has(NetworkCommissioning::Feature::kEthernetNetworkInterface)) {
             gServers[index].Create(endpointId, &(DeviceLayer::NetworkCommissioning::ESPEthernetDriver::GetInstance()),
                                    MakeNetworkCommissioningClusterContext());
         }
@@ -144,7 +152,6 @@ void ESPMatterNetworkCommissioningClusterServerInitCallback(EndpointId endpointI
 
 void ESPMatterNetworkCommissioningClusterServerShutdownCallback(EndpointId endpointId, ClusterShutdownType shutdownType)
 {
-    VerifyOrReturn(endpointIdIsValid(endpointId));
     uint16_t index = GetServerIndex(endpointId);
     VerifyOrReturn(index != UINT16_MAX);
     LogErrorOnFailure(esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[index].Cluster(),
