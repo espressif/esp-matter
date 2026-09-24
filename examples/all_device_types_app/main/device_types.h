@@ -69,6 +69,8 @@ enum device_type_enum {
     ESP_MATTER_ELECTRICAL_UTILITY_METER,
     ESP_MATTER_SOIL_SENSOR,
     ESP_MATTER_IRRIGATION_SYSTEM,
+    ESP_MATTER_WIFI_THREAD_LIGHT,
+    ESP_MATTER_THREAD_WIFI_LIGHT,
     ESP_MATTER_DEVICE_TYPE_MAX
 };
 
@@ -144,5 +146,7 @@ const device_type_name device_type_list[ESP_MATTER_DEVICE_TYPE_MAX] = {
     {"electrical_utility_meter", ESP_MATTER_ELECTRICAL_UTILITY_METER},
     {"soil_sensor", ESP_MATTER_SOIL_SENSOR},
     {"irrigation_system", ESP_MATTER_IRRIGATION_SYSTEM},
+    {"wifi_thread_light", ESP_MATTER_WIFI_THREAD_LIGHT},
+    {"thread_wifi_light", ESP_MATTER_THREAD_WIFI_LIGHT},
 };
 } /* namespace esp_matter */

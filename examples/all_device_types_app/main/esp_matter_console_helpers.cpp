@@ -816,6 +816,23 @@ int create(uint8_t device_type_index)
         VerifyOrReturnValue(err == ESP_OK, 1, ESP_LOGE(TAG, "Failed to add water valve endpoint"));
         break;
     }
+    case ESP_MATTER_WIFI_THREAD_LIGHT:
+    case ESP_MATTER_THREAD_WIFI_LIGHT: {
+#if CONFIG_THREAD_NETWORK_COMMISSIONING_DRIVER && CONFIG_WIFI_NETWORK_COMMISSIONING_DRIVER
+        esp_matter::endpoint::on_off_light::config_t light_config;
+        endpoint = esp_matter::endpoint::on_off_light::create(node, &light_config, ENDPOINT_FLAG_DESTROYABLE, NULL);
+        // Enable secondary network interface
+        esp_matter::endpoint::secondary_network_interface::config_t config;
+        config.network_commissioning.feature_map = device_type_index == ESP_MATTER_WIFI_THREAD_LIGHT
+                                                   ? chip::to_underlying(NetworkCommissioning::Feature::kThreadNetworkInterface)
+                                                   : chip::to_underlying(NetworkCommissioning::Feature::kWiFiNetworkInterface);
+        endpoint = esp_matter::endpoint::secondary_network_interface::create(node, &config, ENDPOINT_FLAG_DESTROYABLE, nullptr);
+#else
+        ESP_LOGE(TAG, "Both Thread and Wi-Fi station drivers should be enabled");
+        return 1;
+#endif
+        break;
+    }
     default: {
         ESP_LOGE(TAG, "Please input a valid device type");
         break;
