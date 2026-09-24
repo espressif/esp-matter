@@ -1,0 +1,43 @@
+menu "Example Configuration"
+
+    config ENABLE_MEMORY_PROFILING
+        bool "Enable Memory Profiling"
+        default n
+        help
+            Enable this option to include memory profiling features in the example.
+            This will allow you to monitor memory usage during runtime.
+
+    menu "DALI Configuration"
+
+        config DALI_RX_GPIO
+            int "DALI RX GPIO number"
+            default 5
+            help
+                GPIO connected to the DALI bus RX signal.
+
+        config DALI_TX_GPIO
+            int "DALI TX GPIO number"
+            default 4 if IDF_TARGET_ESP32 || IDF_TARGET_ESP32H2
+            default 6
+            help
+                GPIO connected to the DALI bus TX signal.
+                GPIO4 is the default on ESP32 (GPIO6 is used by the SPI flash)
+                and on ESP32-H2 (GPIO6 is not broken out on the DevKitM-1).
+
+        config DALI_TX_INVERT
+            bool "Invert DALI TX signal"
+            default y
+            help
+                Enable this if the TX hardware path performs an odd number of
+                signal inversions (e.g. an inverting bus transceiver).
+
+        config DALI_RX_INVERT
+            bool "Invert DALI RX signal"
+            default y
+            help
+                Enable this if the RX hardware path performs an odd number of
+                signal inversions (e.g. an inverting optocoupler).
+
+    endmenu
+
+endmenu
