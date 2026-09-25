@@ -77,6 +77,13 @@ bool ReadCredentialSlotLimits(DoorLockServer  &server, EndpointId endpoint,
     return true;
 }
 
+bool ReadScheduleLimits(DoorLockServer  &server, EndpointId endpoint, DoorLockStorage::Limits  &limits)
+{
+    return server.GetNumberOfWeekDaySchedulesPerUserSupported(endpoint, limits.numberOfWeekdaySchedulesPerUser) &&
+           server.GetNumberOfYearDaySchedulesPerUserSupported(endpoint, limits.numberOfYeardaySchedulesPerUser) &&
+           server.GetNumberOfHolidaySchedulesSupported(endpoint, limits.numberOfHolidaySchedules);
+}
+
 void HandleBoltStateChange(BoltLockManager::State state, BoltLockManager::OperationSource source)
 {
     DlLockState lockState = DlLockState::kNotFullyLocked;
@@ -124,6 +131,7 @@ void emberAfDoorLockClusterInitCallback(EndpointId endpoint)
     VerifyOrDie(server.GetNumberOfUserSupported(endpoint, limits.numberOfUsers));
     VerifyOrDie(server.GetNumberOfCredentialsSupportedPerUser(endpoint, limits.numberOfCredentialsPerUser));
     VerifyOrDie(ReadCredentialSlotLimits(server, endpoint, limits));
+    VerifyOrDie(ReadScheduleLimits(server, endpoint, limits));
     DoorLockStorage::Config storageConfig{ endpoint, limits, Server::GetInstance().GetPersistentStorage() };
     CHIP_ERROR err = DoorLockStorage::Instance().Init(storageConfig);
     if (err != CHIP_NO_ERROR) {
@@ -198,6 +206,47 @@ bool emberAfPluginDoorLockSetUser(EndpointId endpoint, uint16_t userIndex, Fabri
 {
     return DoorLockStorage::Instance().SetUser(userIndex, creator, modifier, userName, uniqueId, userStatus, userType,
                                                credentialRule, credentials, totalCredentials);
+}
+
+DlStatus emberAfPluginDoorLockGetSchedule(EndpointId endpoint, uint8_t scheduleIndex, uint16_t userIndex,
+                                          EmberAfPluginDoorLockWeekDaySchedule  &schedule)
+{
+    return DoorLockStorage::Instance().GetWeekdaySchedule(scheduleIndex, userIndex, schedule);
+}
+
+DlStatus emberAfPluginDoorLockGetSchedule(EndpointId endpoint, uint8_t scheduleIndex, uint16_t userIndex,
+                                          EmberAfPluginDoorLockYearDaySchedule  &schedule)
+{
+    return DoorLockStorage::Instance().GetYeardaySchedule(scheduleIndex, userIndex, schedule);
+}
+
+DlStatus emberAfPluginDoorLockGetSchedule(EndpointId endpoint, uint8_t scheduleIndex,
+                                          EmberAfPluginDoorLockHolidaySchedule  &schedule)
+{
+    return DoorLockStorage::Instance().GetHolidaySchedule(scheduleIndex, schedule);
+}
+
+DlStatus emberAfPluginDoorLockSetSchedule(EndpointId endpoint, uint8_t scheduleIndex, uint16_t userIndex,
+                                          DlScheduleStatus status, DaysMaskMap daysMask, uint8_t startHour,
+                                          uint8_t startMinute, uint8_t endHour, uint8_t endMinute)
+{
+    return DoorLockStorage::Instance().SetWeekdaySchedule(scheduleIndex, userIndex, status, daysMask, startHour,
+                                                          startMinute, endHour, endMinute);
+}
+
+DlStatus emberAfPluginDoorLockSetSchedule(EndpointId endpoint, uint8_t scheduleIndex, uint16_t userIndex,
+                                          DlScheduleStatus status, uint32_t localStartTime, uint32_t localEndTime)
+{
+    return DoorLockStorage::Instance().SetYeardaySchedule(scheduleIndex, userIndex, status, localStartTime,
+                                                          localEndTime);
+}
+
+DlStatus emberAfPluginDoorLockSetSchedule(EndpointId endpoint, uint8_t scheduleIndex, DlScheduleStatus status,
+                                          uint32_t localStartTime, uint32_t localEndTime,
+                                          OperatingModeEnum operatingMode)
+{
+    return DoorLockStorage::Instance().SetHolidaySchedule(scheduleIndex, status, localStartTime, localEndTime,
+                                                          operatingMode);
 }
 
 void emberAfPluginDoorLockOnAutoRelock(EndpointId endpoint)
