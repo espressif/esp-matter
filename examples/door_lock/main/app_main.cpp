@@ -29,6 +29,9 @@
 
 #include <app/server/CommissioningWindowManager.h>
 #include <app/server/Server.h>
+#if CONFIG_ENABLE_SNTP_TIME_SYNC
+#include <app/clusters/time-synchronization-server/DefaultTimeSyncDelegate.h>
+#endif
 #ifdef CONFIG_ENABLE_ALIRO_OVER_NFC
 #include <aliro_door_lock_delegate.h>
 #endif
@@ -156,6 +159,21 @@ extern "C" void app_main()
     // node handle can be used to add/modify other endpoints.
     node_t *node = node::create(&node_config, nullptr, app_identification_cb);
     ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
+
+#if CONFIG_ENABLE_SNTP_TIME_SYNC
+    endpoint_t *root_node_endpoint = endpoint::get_first(node);
+    ABORT_APP_ON_FAILURE(root_node_endpoint != nullptr, ESP_LOGE(TAG, "Failed to find root node endpoint"));
+
+    cluster::time_synchronization::config_t time_sync_config;
+    static chip::app::Clusters::TimeSynchronization::DefaultTimeSyncDelegate time_sync_delegate;
+    time_sync_config.delegate = &time_sync_delegate;
+    cluster_t *time_sync_cluster =
+        cluster::time_synchronization::create(root_node_endpoint, &time_sync_config, CLUSTER_FLAG_SERVER);
+    ABORT_APP_ON_FAILURE(time_sync_cluster != nullptr, ESP_LOGE(TAG, "Failed to create time synchronization cluster"));
+
+    cluster::time_synchronization::feature::time_zone::config_t time_zone_config;
+    cluster::time_synchronization::feature::time_zone::add(time_sync_cluster, &time_zone_config);
+#endif
 
     door_lock::config_t door_lock_config;
 #ifdef CONFIG_ENABLE_ALIRO_OVER_NFC

@@ -12,7 +12,11 @@ No additional setup is required.
 
 No additional setup is required.
 
-## 3. Aliro over NFC Feature
+## 3. Time Synchronization
+
+The example enables SNTP-backed Time Synchronization and exposes the Time Zone feature on the Root Node.
+
+## 4. Aliro over NFC Feature
 
 ### Hardware Required
 
@@ -39,7 +43,7 @@ After commissioning with the Apple Home app, the Home app automatically adds a k
 | :----------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------: |
 | <img src="./img/home_key_add.jpeg" alt="Home Key added to Apple Wallet" width="300"> | <img src="./img/unlock_page.jpeg" alt="Unlocking the door with Apple Home" width="300"> |
 
-## 4. Local Controls and Status
+## 5. Local Controls and Status
 
 Press the boot button (front button on M5Stack Nano) to toggle the lock state. The RGB LED indicates the current state:
 
@@ -48,7 +52,7 @@ Press the boot button (front button on M5Stack Nano) to toggle the lock state. T
 - Amber: locking or unlocking
 - Off: unknown state
 
-## 5. Diagnostic Console
+## 6. Diagnostic Console
 
 The door-lock debug command is available under `matter esp dl`:
 
