@@ -40,6 +40,18 @@ $ idf.py set-target esp32s3
 $ idf.py build
 ```
 
+### 1.4 Device Type: Thread Border Router vs. Network Infrastructure Manager
+
+By default, this example advertises itself as a **Thread Border Router** Matter device type, exposing `ThreadNetworkDiagnostics` (when Thread is enabled) and `ThreadBorderRouterManagement`.
+
+It can instead advertise as a **Network Infrastructure Manager** device type, a superset which additionally exposes `WiFiNetworkManagement` and `ThreadNetworkDirectory` on the same endpoint. Enable `CONFIG_ENABLE_NETWORK_INFRASTRUCTURE_MANAGER` via:
+
+```
+$ idf.py menuconfig
+```
+
+under **Thread Border Router Example**, then build as usual.
+
 ## 2. Post Commissioning Setup
 
 After commissioning the Border Router with chip-tool, you can set up the Thread network with ThreadBorderRouterManagement cluster.
