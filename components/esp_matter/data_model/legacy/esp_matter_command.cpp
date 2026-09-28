@@ -26,50 +26,6 @@ using chip::app::CommandHandler;
 using chip::app::DataModel::Decode;
 using chip::TLV::TLVReader;
 
-static const char *TAG = "esp_matter_command";
-
-namespace esp_matter {
-namespace command {
-
-void dispatch_single_cluster_command(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
-{
-    uint16_t endpoint_id = command_path.mEndpointId;
-    uint32_t cluster_id = command_path.mClusterId;
-    uint32_t command_id = command_path.mCommandId;
-    ESP_LOGI(TAG, "Received command 0x%08" PRIX32 " for endpoint 0x%04" PRIX16 "'s cluster 0x%08" PRIX32 "", command_id, endpoint_id, cluster_id);
-
-    cluster_t *cluster = cluster::get(endpoint_id, cluster_id);
-    VerifyOrReturn(cluster);
-    command_t *command = get(cluster, command_id, COMMAND_FLAG_ACCEPTED);
-    VerifyOrReturn(command, ESP_LOGE(TAG, "Command 0x%08" PRIX32 " not found", command_id));
-    esp_err_t err = ESP_OK;
-    TLVReader tlv_reader;
-    tlv_reader.Init(tlv_data);
-    if (command) {
-        callback_t callback = get_user_callback(command);
-        if (callback) {
-            err = callback(command_path, tlv_reader, opaque_ptr);
-        }
-        callback = get_callback(command);
-        if ((err == ESP_OK) && callback) {
-            err = callback(command_path, tlv_data, opaque_ptr);
-        }
-        int flags = get_flags(command);
-        if (flags & COMMAND_FLAG_CUSTOM) {
-            chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
-            if (!command_obj) {
-                ESP_LOGE(TAG, "Command Object cannot be NULL");
-                return;
-            }
-            command_obj->AddStatus(command_path, err == ESP_OK ? chip::Protocols::InteractionModel::Status::Success :
-                                   chip::Protocols::InteractionModel::Status::Failure);
-        }
-    }
-}
-
-} /* command */
-} /* esp_matter */
-
 static esp_err_t esp_matter_command_callback_off(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                  void *opaque_ptr)
 {

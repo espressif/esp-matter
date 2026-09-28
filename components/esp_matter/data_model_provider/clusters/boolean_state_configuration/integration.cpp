@@ -41,7 +41,7 @@ CHIP_ERROR GetClusterConfig(EndpointId endpointId, BitMask<Feature> &featureMap,
     if (!cluster) {
         return CHIP_ERROR_NOT_FOUND;
     }
-    featureMap = BitMask<BooleanStateConfiguration::Feature>(read_feature_map_u32(cluster));
+    featureMap = BitMask<BooleanStateConfiguration::Feature>(cluster::get_feature_map_value(cluster));
     esp_matter_attr_val_t tmp_attr_val;
     if (featureMap.Has(Feature::kSensitivityLevel)) {
         VerifyOrReturnError(get_stored_attr_val(cluster, Attributes::SupportedSensitivityLevels::Id, tmp_attr_val) == ESP_OK &&

@@ -122,14 +122,11 @@ TEST_CASE("read_feature_map_u32 returns the stored feature map and 0 when absent
 {
     cluster_t *cluster = setup_helpers_test_cluster();
 
-    // The test cluster has a FeatureMap attribute (created in setup); both the endpoint-id and
-    // cluster-handle overloads must return it.
+    // The test cluster has a FeatureMap attribute (created in setup).
+    TEST_ASSERT_NOT_NULL(cluster);
     TEST_ASSERT_EQUAL_UINT32(k_feature_map_value, read_feature_map_u32(s_endpoint_id, k_test_cluster_id));
-    TEST_ASSERT_EQUAL_UINT32(k_feature_map_value, read_feature_map_u32(cluster));
 
-    // The sibling cluster has no FeatureMap attribute -> both overloads fall back to 0.
-    cluster_t *no_fmap_cluster = cluster::get(s_endpoint_id, k_no_fmap_cluster_id);
-    TEST_ASSERT_NOT_NULL(no_fmap_cluster);
+    // The sibling cluster has no FeatureMap attribute -> falls back to 0.
+    TEST_ASSERT_NOT_NULL(cluster::get(s_endpoint_id, k_no_fmap_cluster_id));
     TEST_ASSERT_EQUAL_UINT32(0, read_feature_map_u32(s_endpoint_id, k_no_fmap_cluster_id));
-    TEST_ASSERT_EQUAL_UINT32(0, read_feature_map_u32(no_fmap_cluster));
 }

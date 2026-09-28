@@ -25,6 +25,7 @@
 #include <commodity_price_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <data_model/esp_matter_attribute_helpers.h>
 
 using namespace chip::app::Clusters;
 using namespace esp_matter;
@@ -89,7 +90,7 @@ command_t *create_get_detailed_price_request(cluster_t *cluster)
 
 command_t *create_get_detailed_price_response(cluster_t *cluster)
 {
-    VerifyOrReturnValue(has_command(GetDetailedPriceRequest, COMMAND_FLAG_ACCEPTED), NULL);
+    VerifyOrReturnValue(is_command_enabled(cluster, command::GetDetailedPriceRequest::Id, COMMAND_FLAG_ACCEPTED), NULL);
     return esp_matter::command::create(cluster, GetDetailedPriceResponse::Id, COMMAND_FLAG_GENERATED, NULL);
 }
 
@@ -100,7 +101,7 @@ command_t *create_get_detailed_forecast_request(cluster_t *cluster)
 
 command_t *create_get_detailed_forecast_response(cluster_t *cluster)
 {
-    VerifyOrReturnValue(has_command(GetDetailedForecastRequest, COMMAND_FLAG_ACCEPTED), NULL);
+    VerifyOrReturnValue(is_command_enabled(cluster, command::GetDetailedForecastRequest::Id, COMMAND_FLAG_ACCEPTED), NULL);
     return esp_matter::command::create(cluster, GetDetailedForecastResponse::Id, COMMAND_FLAG_GENERATED, NULL);
 }
 

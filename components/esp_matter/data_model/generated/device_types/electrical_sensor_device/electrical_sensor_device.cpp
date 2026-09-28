@@ -17,7 +17,7 @@
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_core.h>
-#include <esp_matter_macros.h>
+#include <esp_matter_data_model_priv.h>
 #include <electrical_sensor_device.h>
 
 using namespace esp_matter;

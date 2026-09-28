@@ -25,6 +25,7 @@
 #include <operational_state_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <data_model/esp_matter_attribute_helpers.h>
 #include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
@@ -98,7 +99,7 @@ command_t *create_resume(cluster_t *cluster)
 
 command_t *create_operational_command_response(cluster_t *cluster)
 {
-    VerifyOrReturnValue(((has_command(Pause, COMMAND_FLAG_ACCEPTED)) || (has_command(Stop, COMMAND_FLAG_ACCEPTED)) || (has_command(Start, COMMAND_FLAG_ACCEPTED)) || (has_command(Resume, COMMAND_FLAG_ACCEPTED))), NULL);
+    VerifyOrReturnValue(((is_command_enabled(cluster, command::Pause::Id, COMMAND_FLAG_ACCEPTED)) || (is_command_enabled(cluster, command::Stop::Id, COMMAND_FLAG_ACCEPTED)) || (is_command_enabled(cluster, command::Start::Id, COMMAND_FLAG_ACCEPTED)) || (is_command_enabled(cluster, command::Resume::Id, COMMAND_FLAG_ACCEPTED))), NULL);
     return esp_matter::command::create(cluster, OperationalCommandResponse::Id, COMMAND_FLAG_GENERATED, NULL);
 }
 

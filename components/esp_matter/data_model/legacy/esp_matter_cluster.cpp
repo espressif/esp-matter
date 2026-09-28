@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <cassert>
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_attribute_impl.h>
@@ -23,6 +22,7 @@
 #include <esp_matter_delegate_callbacks.h>
 #include <esp_matter_cluster_revisions.h>
 #include <esp_matter_attribute_bounds.h>
+#include <esp_matter_data_model_priv.h>
 
 #include <app-common/zap-generated/callback.h>
 #include <app-common/zap-generated/cluster-enums.h>
@@ -36,82 +36,13 @@ static const char *TAG = "esp_matter_cluster";
 using namespace chip::app::Clusters;
 using namespace esp_matter::cluster::delegate_cb;
 
-#define CALL_ONCE(cb)                           \
-    [](){                                       \
-        static bool is_called = false;          \
-        if (!is_called) {                       \
-            cb();                               \
-            is_called = true;                   \
-        }                                       \
-    }
-
 // convenience macro for checking if features is enabled or not
 // must be used only from the ::create() API so that it can find config
 // eg: if (has(feature::constant_pressure)) { ... }
 #define has(flags) ((config->feature_flags & flags) ? 1 : 0)
 
-namespace {
-
-// this space is for feature validation functions
-
-enum class feature_policy {
-    k_exact_one = 0,        // O.a
-    k_at_least_one = 1,     // 0.a+
-};
-
-const char feature_policy_strs[3][16] = {"Exactly one", "At least one", "At most one"};
-
-bool validate_features(uint32_t feature_flag, feature_policy policy,
-                       const char *feature_name, std::initializer_list<uint32_t> features)
-{
-    uint8_t count = 0;
-    for (uint32_t feature : features) {
-        if (feature & feature_flag) {
-            count++;
-        }
-    }
-
-    bool result = false;
-
-    switch (policy) {
-    case feature_policy::k_exact_one:
-        result = count == 1;
-        break;
-    case feature_policy::k_at_least_one:
-        result = count >= 1;
-        break;
-    }
-
-    if (!result) {
-        ESP_LOGE(TAG, "%s of the feature(s) must be supported from (%s)", feature_policy_strs[static_cast<uint8_t>(policy)], feature_name);
-    }
-
-    return result;
-}
-
-// Macros to reduce repetitive validation code
-#define VALIDATE_FEATURES_EXACT_ONE(name, ...) \
-    do { if (!validate_features(config->feature_flags, feature_policy::k_exact_one, name, {__VA_ARGS__})) \
-        return ABORT_CLUSTER_CREATE(cluster); } while(0)
-
-#define VALIDATE_FEATURES_AT_LEAST_ONE(name, ...) \
-    do { if (!validate_features(config->feature_flags, feature_policy::k_at_least_one, name, {__VA_ARGS__})) \
-        return ABORT_CLUSTER_CREATE(cluster); } while(0)
-
-} // anonymous namespace
-
 namespace esp_matter {
 namespace cluster {
-
-namespace {
-// simple API to abort cluster creation and return NULL
-cluster_t * ABORT_CLUSTER_CREATE(cluster_t *cluster)
-{
-    esp_matter::cluster::destroy(cluster);
-    assert(false);
-    return NULL;
-}
-} // anonymous namespace
 
 cluster_t *create_default_binding_cluster(endpoint_t *endpoint)
 {

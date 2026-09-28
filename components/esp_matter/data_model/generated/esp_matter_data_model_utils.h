@@ -13,18 +13,13 @@
 // limitations under the License.
 #pragma once
 #include <esp_matter_data_model.h>
-#include <esp_matter_macros.h>
 #include <esp_matter_identify.h>
 #include <root_node_device.h>
-// this space is for feature validation functions
 
-enum class feature_policy {
-    k_exact_one = 0,        // O.a
-    k_at_least_one = 1,     // 0.a+
-};
-
-bool validate_features(uint32_t feature_flag, feature_policy policy, const char *feature_name,
-                       std::initializer_list<uint32_t> features);
+// Convenience macro for checking whether a feature is enabled on a cluster. It reads a `feature_map`
+// in scope, so use it from the generated cluster code where that local exists.
+// eg: if (has_feature(lighting)) { ... }
+#define has_feature(feature_name) ((feature_map & feature::feature_name::get_id()) ? 1 : 0)
 
 namespace esp_matter {
 
@@ -64,47 +59,17 @@ attribute_t *create_feature_map(cluster_t *cluster, uint32_t value);
 } // namespace attribute
 } // namespace global
 
-/** Update feature map
- *
- * Update the feature map for the cluster.
- *
- * @param[in] cluster Cluster handle.
- * @param[in] value Feature map value.
- *
- * @return ESP_OK on success.
- * @return error in case of failure.
- */
-esp_err_t update_feature_map(cluster_t *cluster, uint32_t value);
-
-/** Get feature map value
- *
- * Get the feature map value for the cluster.
- *
- * @param[in] cluster Cluster handle.
- *
- * @return Feature map value on success.
- * @return 0 in case of failure.
- */
-uint32_t get_feature_map_value(cluster_t *cluster);
-
-/** Abort cluster creation
- * This is primarily used in cluster::create() and if somehow we failed to create cluster then it cleans up the cluster by calling cluster::destroy() and asserts.
- *
- * @param[in] cluster Cluster handle.
- *
- * @return Cluster handle on success.
- * @return NULL in case of failure.
- */
-cluster_t *ABORT_CLUSTER_CREATE(cluster_t *cluster);
-
 /** Create the default binding cluster on an endpoint
  *
  * Application clusters with a client role get a binding cluster created alongside them. This adds
  * the binding cluster once per endpoint, doing nothing if one is already present.
  *
  * @param[in] endpoint Endpoint handle.
+ *
+ * @return Binding cluster handle (existing or newly created).
+ * @return NULL in case of failure.
  */
-void create_default_binding_cluster(endpoint_t *endpoint);
+cluster_t *create_default_binding_cluster(endpoint_t *endpoint);
 
 } // namespace cluster
 } // namespace esp_matter

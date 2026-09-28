@@ -65,7 +65,7 @@ void ESPMatterTimeFormatLocalizationClusterServerInitCallback(EndpointId endpoin
         auto * deviceInfoProvider = DeviceLayer::GetDeviceInfoProvider();
         VerifyOrDie(deviceInfoProvider != nullptr);
 
-        gServer.Create(endpointId, BitFlags<TimeFormatLocalization::Feature>(read_feature_map_u32(cluster)),
+        gServer.Create(endpointId, BitFlags<TimeFormatLocalization::Feature>(esp_matter::cluster::get_feature_map_value(cluster)),
                        get_default_hour_format(cluster), get_default_calendar_type(cluster),
                        TimeFormatLocalizationCluster::Context{ .deviceInfoProvider = *deviceInfoProvider });
     }

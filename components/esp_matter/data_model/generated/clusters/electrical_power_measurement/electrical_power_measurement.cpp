@@ -25,6 +25,7 @@
 #include <electrical_power_measurement_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <data_model/esp_matter_attribute_helpers.h>
 #include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
@@ -260,7 +261,7 @@ attribute_t *create_neutral_current(cluster_t *cluster, nullable<int64_t> value)
 namespace event {
 event_t *create_measurement_period_ranges(cluster_t *cluster)
 {
-    VerifyOrReturnValue(has_attribute(Ranges), NULL);
+    VerifyOrReturnValue(is_attribute_enabled(cluster, attribute::Ranges::Id), NULL);
     return esp_matter::event::create(cluster, MeasurementPeriodRanges::Id);
 }
 

@@ -17,7 +17,7 @@
 #include <esp_matter.h>
 #include <esp_matter_endpoint_impl.h>
 #include <esp_matter_icd_configuration.h>
-#include <esp_matter_macros.h>
+#include <esp_matter_data_model_priv.h>
 
 static const char *TAG = "esp_matter_endpoint";
 

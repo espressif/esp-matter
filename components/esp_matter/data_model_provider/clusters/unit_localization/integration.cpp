@@ -49,7 +49,7 @@ void ESPMatterUnitLocalizationClusterServerInitCallback(EndpointId endpointId)
                        ChipLogError(AppServer,
                                     "UnitLocalization: cluster missing in esp-matter data model for endpoint %u", endpointId));
 
-        gServer.Create(endpointId, BitFlags<UnitLocalization::Feature>(read_feature_map_u32(cluster)));
+        gServer.Create(endpointId, BitFlags<UnitLocalization::Feature>(cluster::get_feature_map_value(cluster)));
     }
     CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Register(gServer.Registration());
     if (err != CHIP_NO_ERROR) {

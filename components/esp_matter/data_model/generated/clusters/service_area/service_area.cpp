@@ -25,6 +25,7 @@
 #include <service_area_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <data_model/esp_matter_attribute_helpers.h>
 
 using namespace chip::app::Clusters;
 using namespace esp_matter;
@@ -142,7 +143,7 @@ command_t *create_skip_area(cluster_t *cluster)
 
 command_t *create_skip_area_response(cluster_t *cluster)
 {
-    VerifyOrReturnValue(has_command(SkipArea, COMMAND_FLAG_ACCEPTED), NULL);
+    VerifyOrReturnValue(is_command_enabled(cluster, command::SkipArea::Id, COMMAND_FLAG_ACCEPTED), NULL);
     return esp_matter::command::create(cluster, SkipAreaResponse::Id, COMMAND_FLAG_GENERATED, NULL);
 }
 

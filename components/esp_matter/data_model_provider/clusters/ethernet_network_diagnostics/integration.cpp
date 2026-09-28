@@ -60,7 +60,7 @@ void ESPMatterEthernetNetworkDiagnosticsClusterServerInitCallback(EndpointId end
                                     endpointId));
 
         gServers[endpointId].Create(DeviceLayer::GetDiagnosticDataProvider(),
-                                    BitFlags<EthernetNetworkDiagnostics::Feature>(read_feature_map_u32(cluster)),
+                                    BitFlags<EthernetNetworkDiagnostics::Feature>(esp_matter::cluster::get_feature_map_value(cluster)),
                                     get_attribute_set(cluster));
     }
     CHIP_ERROR err =

@@ -41,7 +41,7 @@ esp_err_t GetClusterConfig(EndpointId endpointId, ClusterId clusterId,
     if (!cluster) {
         return ESP_FAIL;
     }
-    enabledFeatures = BitFlags<ResourceMonitoring::Feature>(read_feature_map_u32(cluster));
+    enabledFeatures = BitFlags<ResourceMonitoring::Feature>(cluster::get_feature_map_value(cluster));
     esp_matter_attr_val_t attr_val;
     if (ESP_OK == get_stored_attr_val(cluster, Attributes::DegradationDirection::Id, attr_val)) {
         VerifyOrReturnError(attr_val.type == ESP_MATTER_VAL_TYPE_ENUM8, ESP_FAIL);
