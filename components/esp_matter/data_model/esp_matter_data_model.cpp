@@ -972,7 +972,7 @@ esp_matter_val_type_t get_val_type(uint16_t endpoint_id, uint32_t cluster_id, ui
 }
 
 static esp_err_t set_val_via_write_attribute(uint16_t endpoint_id, uint32_t cluster_id,
-                                             uint32_t attribute_id, esp_matter_attr_val_t *val)
+                                             uint32_t attribute_id, esp_matter_attr_val_t *val, bool call_callbacks)
 {
     chip::Platform::ScopedMemoryBuffer<uint8_t> tlv_buffer;
     tlv_buffer.Calloc(k_max_tlv_size_to_write_attribute_value);
@@ -1009,7 +1009,7 @@ static esp_err_t set_val_via_write_attribute(uint16_t endpoint_id, uint32_t clus
     esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
 
     chip::app::DataModel::ActionReturnStatus status =
-        esp_matter::data_model::provider::get_instance().WriteAttribute(request, decoder);
+        esp_matter::data_model::provider::get_instance().WriteAttribute(request, decoder, call_callbacks);
 
     if (status.IsError()) {
         chip::app::DataModel::ActionReturnStatus::StringStorage storage;
@@ -1034,23 +1034,22 @@ esp_err_t set_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_
 
     uint16_t flags = get_flags(attr);
 
-    // Use DataModelProvider::WriteAttribute API to set writable attributes
-    if (flags & ATTRIBUTE_FLAG_WRITABLE) {
-        return set_val_via_write_attribute(endpoint_id, cluster_id, attribute_id, val);
-    }
-
-    // SCI settable attribute are not yet supported through set_val() API
+    bool writable = (flags & ATTRIBUTE_FLAG_WRITABLE);
     bool sci_served = data_model::provider::get_instance().registry().Get(
                           chip::app::ConcreteClusterPath(endpoint_id, cluster_id)) != nullptr;
-    // Internally managed attributes are not supported (This covers the attributes set using cluster specific APIs)
+    // Internally managed attributes are set using cluster specific APIs
     bool managed_internally = (flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY);
 
-    if (sci_served || managed_internally) {
-        return ESP_ERR_NOT_SUPPORTED;
+    if (!(sci_served || managed_internally)) {
+        // esp-matter-managed attribute: the esp-matter store is the source of truth.
+        return attribute::set_val_internal(attr, val, call_callbacks);
     }
 
-    // esp-matter-managed attribute: the esp-matter store is the source of truth.
-    return attribute::set_val_internal(attr, val, call_callbacks);
+    if (writable) {
+        return set_val_via_write_attribute(endpoint_id, cluster_id, attribute_id, val, call_callbacks);
+    }
+
+    return ESP_ERR_NOT_SUPPORTED;
 }
 
 esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val, bool call_callbacks)
