@@ -35,6 +35,7 @@ PROVISIONAL_CONFORM = "provisionalConform"
 MANDATORY_CONFORM = "mandatoryConform"
 DEPRECATE_CONFORM = "deprecateConform"
 DISALLOW_CONFORM = "disallowConform"
+OBSOLETE_CONFORM = "obsoleteConform"
 
 
 BOOLEAN_TERMS = {
@@ -63,15 +64,19 @@ COMPARISON_TERMS = {
 
 
 def get_restricted_tags():
+    # obsoleteConform (added in Matter 1.7) marks elements removed from the spec; always exclude
+    # them, like disallowed/deprecated, regardless of the provisional policy.
     if config.allow_provisional():
         return {
             DISALLOW_CONFORM,
             DEPRECATE_CONFORM,
+            OBSOLETE_CONFORM,
         }
     return {
         DISALLOW_CONFORM,
         DEPRECATE_CONFORM,
         PROVISIONAL_CONFORM,
+        OBSOLETE_CONFORM,
     }
 
 
@@ -222,11 +227,40 @@ class Conformance(BaseConformance):
             get_conformance_type(tag).value for tag in get_restricted_tags()
         ]:
             return True
-        features = self.get_dependent_features(self.condition)
-        return any(
-            self._get_code_from_feature_name(feature) not in self.feature_map
-            for feature in features
-        )
+        if not self.condition:
+            return False
+        return self._condition_unavailable(self.condition)
+
+    def _condition_unavailable(self, condition):
+        """True if `condition` can never be satisfied given the available feature_map.
+
+        Respects boolean structure: an OR term is unavailable only when ALL of its
+        branches are unavailable; an AND term is unavailable when ANY branch is; a bare
+        feature reference is unavailable when that feature is not in the map. `not` terms
+        and non-feature comparisons do not gate availability. (The previous implementation
+        flattened all dependent features and used any()-missing, i.e. AND semantics for
+        every operator, which wrongly dropped OR-conformant elements such as DoorLock's
+        User feature: mandatoryConform(orTerm(PIN,RID,FGP,FACE,ALIRO)) got dropped once the
+        provisional RID/FGP/FACE were removed, even though PIN/ALIRO remained.)
+        """
+        if isinstance(condition, list):
+            return any(self._condition_unavailable(c) for c in condition)
+        if not isinstance(condition, dict):
+            return False
+        feature = condition.get(ConformanceTAG.FEATURE.value)
+        if feature is not None:
+            return self._get_code_from_feature_name(feature) not in self.feature_map
+        if ConformanceTAG.OR.value in condition:
+            return all(
+                self._condition_unavailable(c)
+                for c in condition[ConformanceTAG.OR.value]
+            )
+        if ConformanceTAG.AND.value in condition:
+            return any(
+                self._condition_unavailable(c)
+                for c in condition[ConformanceTAG.AND.value]
+            )
+        return False
 
     def _get_code_from_feature_name(self, feature_name):
         for feature_code, feature in self.feature_map.items():
@@ -441,6 +475,32 @@ def parse_element_reference(ref_elem, feature_map):
     return None
 
 
+def _conformance_features_unavailable(elem, feature_map):
+    """Recursively decide whether a conformance sub-expression can never be satisfied,
+    given the available feature_map, respecting orTerm/andTerm boolean structure.
+
+    An orTerm is unavailable only when ALL of its branches are unavailable; an andTerm
+    when ANY branch is; a bare <feature> when its name is not in the map; notTerm and
+    other terms do not gate availability. This replaces a flat ".//feature" scan that
+    assumed AND semantics for every operator and therefore wrongly dropped OR-conformant
+    elements (e.g. DoorLock's User: mandatoryConform(orTerm(PIN,RID,FGP,FACE,ALIRO)) was
+    dropped once the provisional RID/FGP/FACE left the map, even though PIN/ALIRO remained).
+    """
+    tag = elem.tag
+    if tag == "feature":
+        name = elem.get("name")
+        return bool(name) and name not in feature_map
+    if tag == "notTerm":
+        return False
+    children = [c for c in elem if c.tag in ("feature", "orTerm", "andTerm", "notTerm")]
+    if not children:
+        return False
+    if tag == "orTerm":
+        return all(_conformance_features_unavailable(c, feature_map) for c in children)
+    # andTerm and wrapper elements (mandatoryConform/optionalConform/...) behave as AND
+    return any(_conformance_features_unavailable(c, feature_map) for c in children)
+
+
 def is_restricted_by_conformance(feature_map, element):
     """
     Check if the conformance is provisional, deprecated, disallowed or if depends on any disallowed feature.
@@ -490,15 +550,13 @@ def is_restricted_by_conformance(feature_map, element):
             logger.debug(f"Skipping - Zigbee specific element {element_name}")
             return True
 
-    # Checks if conformance depends on features that are not in feature map
-    all_features_list = conformance_element.findall(".//feature")
-    for feature in all_features_list:
-        feature_name = feature.get("name")
-        if feature_name and feature_name not in feature_map:
-            logger.debug(
-                f"Skipping - feature {feature_name} not in feature map for element {element_name}"
-            )
-            return True
+    # Checks if conformance depends on features that are not in the feature map,
+    # respecting orTerm/andTerm structure (an orTerm needs only one available branch).
+    if _conformance_features_unavailable(conformance_element, feature_map):
+        logger.debug(
+            f"Skipping - conformance features unavailable for element {element_name}"
+        )
+        return True
     return False
 
 

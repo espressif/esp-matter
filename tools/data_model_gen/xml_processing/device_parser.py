@@ -90,14 +90,22 @@ class DeviceParser:
         cluster.server_cluster = cluster_elem.get("side") == "server"
         cluster.client_cluster = cluster_elem.get("side") == "client"
 
-        mandatory_conform = cluster_elem.find("mandatoryConform")
+        # A cluster's conformance may be wrapped in <otherwiseConform> ("A otherwise B"),
+        # e.g. te2 CommodityTariff: mandatory under the AuxiliarySwitch condition, otherwise
+        # optional (O.a). Look inside that wrapper so the fallback branch becomes the cluster's
+        # effective conformance; a condition-gated optional cluster is still offered as optional.
+        conform_scope = cluster_elem.find("otherwiseConform")
+        if conform_scope is None:
+            conform_scope = cluster_elem
+
+        mandatory_conform = conform_scope.find("mandatoryConform")
         if (
             mandatory_conform is not None
             and mandatory_conform.find("condition") is None
         ):
             cluster.is_mandatory = True
 
-        optional_conform = cluster_elem.find("optionalConform")
+        optional_conform = conform_scope.find("optionalConform")
         if optional_conform is not None:
             choice = parse_choice(optional_conform)
             if choice is not None:

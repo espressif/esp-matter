@@ -26,6 +26,7 @@ from utils.base_elements import (
 from utils.overrides import (
     should_skip_plugin_callback,
     should_include_delegate_callback,
+    should_skip_delegate_callback,
 )
 from utils.conversion_utils import convert_to_int
 from .serializers import (
@@ -519,6 +520,8 @@ class Cluster(BaseCluster):
 
     def get_delegate_init_callback(self):
         """Get the delegate init callback for the cluster"""
+        if should_skip_delegate_callback(self.id):
+            return None
         if self.delegate_init_callback_available or should_include_delegate_callback(
             self.id
         ):
