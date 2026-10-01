@@ -79,6 +79,9 @@ public:
 
     ActionReturnStatus ReadAttribute(const ReadAttributeRequest &request, AttributeValueEncoder &encoder) override;
     ActionReturnStatus WriteAttribute(const WriteAttributeRequest &request, AttributeValueDecoder &decoder) override;
+    /// write attribute with callbacks execution control
+    ActionReturnStatus WriteAttribute(const WriteAttributeRequest &request, AttributeValueDecoder &decoder,
+                                      bool call_callbacks);
 
     void ListAttributeWriteNotification(const ConcreteAttributePath &aPath, ListWriteOperation opType,
                                         FabricIndex accessingFabric) override;
