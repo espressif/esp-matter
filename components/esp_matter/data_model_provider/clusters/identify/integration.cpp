@@ -34,12 +34,14 @@
 #include <platform/DefaultTimerDelegate.h>
 #include <tracing/macros.h>
 #include "integration.h"
+#include <data_model/esp_matter_attribute_helpers.h>
 
 namespace {
 
 using namespace chip;
 using namespace chip::app;
 using namespace chip::app::Clusters::Identify;
+using namespace esp_matter;
 
 using chip::app::Clusters::IdentifyCluster;
 using chip::app::Clusters::IdentifyDelegate;
@@ -94,7 +96,7 @@ public:
     }
     bool IsTriggerEffectEnabled() const override
     {
-        return esp_matter::command::get(mEndpoint, Id, Commands::TriggerEffect::Id) != nullptr;
+        return endpoint::is_command_enabled(mEndpoint, Id, Commands::TriggerEffect::Id);
     }
 
     EndpointId mEndpoint;
@@ -203,13 +205,9 @@ void ESPMatterIdentifyClusterServerInitCallback(EndpointId endpointId)
 {
     Identify *identify = GetLegacyIdentifyInstance(endpointId);
     if (identify == nullptr) {
-        esp_matter::attribute_t *identifyTypeAttr = esp_matter::attribute::get(
-                                                        endpointId, Id, Attributes::IdentifyType::Id);
-        VerifyOrReturn(identifyTypeAttr != nullptr,
-                       ChipLogError(AppServer, "Failed to get IdentifyType attribute for endpoint %u", endpointId));
-
         esp_matter_attr_val_t identifyType = esp_matter_invalid(nullptr);
-        esp_err_t err = esp_matter::attribute::get_val_internal(identifyTypeAttr, &identifyType);
+        esp_err_t err = get_stored_attr_val(esp_matter::cluster::get(endpointId, Id),
+                                            Attributes::IdentifyType::Id, identifyType);
         VerifyOrReturn(err == ESP_OK, ChipLogError(AppServer, "Failed to get IdentifyType value for endpoint %u - Error: %d",
                                                    endpointId, err));
         err = esp_matter::identification::init(endpointId, identifyType.val.u8);

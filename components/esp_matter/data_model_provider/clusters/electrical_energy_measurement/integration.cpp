@@ -24,12 +24,14 @@
 #include <lib/support/CodeUtils.h>
 #include <lib/support/logging/CHIPLogging.h>
 #include <platform/DefaultTimerDelegate.h>
+#include <data_model/esp_matter_attribute_helpers.h>
 
 using namespace chip;
 using namespace chip::app;
 using namespace chip::app::Clusters;
 using namespace chip::app::Clusters::ElectricalEnergyMeasurement;
 using namespace chip::app::Clusters::ElectricalEnergyMeasurement::Structs;
+using namespace esp_matter;
 
 namespace {
 std::unordered_map<EndpointId, LazyRegisteredServerCluster<ElectricalEnergyMeasurementCluster>> gServers;
@@ -60,19 +62,6 @@ public:
 
 NoOpEEMDelegate gNoOpDelegate;
 DefaultTimerDelegate gDefaultTimerDelegate;
-
-uint32_t get_feature_map(esp_matter::cluster_t *cluster)
-{
-    esp_matter::attribute_t *attribute = esp_matter::attribute::get(cluster, Globals::Attributes::FeatureMap::Id);
-    if (attribute) {
-        esp_matter_attr_val_t val;
-        if (esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK &&
-                val.type == ESP_MATTER_VAL_TYPE_BITMAP32) {
-            return val.val.u32;
-        }
-    }
-    return 0;
-}
 
 } // namespace
 
@@ -148,7 +137,7 @@ void ESPMatterElectricalEnergyMeasurementClusterServerInitCallback(EndpointId en
 
         auto optionalAttrs = ElectricalEnergyMeasurementCluster::OptionalAttributesSet()
                              .Set<Attributes::CumulativeEnergyReset::Id>(
-                                 esp_matter::attribute::get(cluster, Attributes::CumulativeEnergyReset::Id) != nullptr);
+                                 is_attribute_enabled(cluster, Attributes::CumulativeEnergyReset::Id));
 
         // Use app-provided delegate (set via config_t.delegate), fall back to no-op
         void *delegate_ptr = esp_matter::cluster::get_delegate_impl(cluster);
@@ -157,7 +146,7 @@ void ESPMatterElectricalEnergyMeasurementClusterServerInitCallback(EndpointId en
 
         const ElectricalEnergyMeasurementCluster::Config config{
             .endpointId         = endpoint,
-            .featureFlags       = BitMask<ElectricalEnergyMeasurement::Feature>(get_feature_map(cluster)),
+            .featureFlags       = BitMask<ElectricalEnergyMeasurement::Feature>(read_feature_map_u32(cluster)),
             .optionalAttributes = optionalAttrs,
             .accuracyStruct     = kDefaultAccuracy,
             .delegate           = *delegate_p,

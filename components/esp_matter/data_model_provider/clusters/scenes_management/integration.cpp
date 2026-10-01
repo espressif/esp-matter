@@ -26,6 +26,7 @@
 #include <filesystem>
 #include <unordered_map>
 #include "credentials/GroupDataProvider.h"
+#include <data_model/esp_matter_attribute_helpers.h>
 
 using SceneTable = chip::scenes::SceneTable<chip::scenes::ExtensionFieldSetsImpl>;
 
@@ -153,30 +154,19 @@ using namespace chip;
 using namespace chip::app;
 using namespace chip::app::Clusters;
 using namespace chip::app::Clusters::ScenesManagement;
+using namespace esp_matter;
 
 namespace {
-
-esp_err_t get_attr_val(esp_matter::cluster_t *cluster, AttributeId attrId, esp_matter_attr_val_t &val)
-{
-    esp_matter::attribute_t *attr = esp_matter::attribute::get(cluster, attrId);
-    if (!attr) {
-        return ESP_ERR_NOT_FOUND;
-    }
-    return esp_matter::attribute::get_val_internal(attr, &val);
-}
 
 esp_err_t GetScenesClusterContextParams(EndpointId endpointId, BitMask<ScenesManagement::Feature> &featureMap,
                                         bool &supportsCopyScene, uint16_t &tableSize)
 {
     esp_matter::cluster_t *cluster = esp_matter::cluster::get(endpointId, ScenesManagement::Id);
+    featureMap = BitMask<ScenesManagement::Feature>(read_feature_map_u32(cluster));
     esp_matter_attr_val_t attr_val;
-    ESP_RETURN_ON_ERROR(get_attr_val(cluster, Globals::Attributes::FeatureMap::Id, attr_val), "Scenes",
-                        "Failed to get feature map");
-    VerifyOrReturnValue(attr_val.type == ESP_MATTER_VAL_TYPE_BITMAP32, ESP_ERR_INVALID_ARG);
-    featureMap = BitMask<ScenesManagement::Feature>(attr_val.val.u32);
     supportsCopyScene =
-        (esp_matter::command::get(endpointId, ScenesManagement::Id, Commands::CopyScene::Id) != nullptr);
-    ESP_RETURN_ON_ERROR(get_attr_val(cluster, Attributes::SceneTableSize::Id, attr_val), "Scenes",
+        endpoint::is_command_enabled(endpointId, ScenesManagement::Id, Commands::CopyScene::Id);
+    ESP_RETURN_ON_ERROR(get_stored_attr_val(cluster, Attributes::SceneTableSize::Id, attr_val), "Scenes",
                         "Failed to get scenes table size");
     VerifyOrReturnValue(attr_val.type == ESP_MATTER_VAL_TYPE_UINT16, ESP_ERR_INVALID_ARG);
     tableSize = attr_val.val.u16;

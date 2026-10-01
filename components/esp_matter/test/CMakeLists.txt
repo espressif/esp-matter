@@ -8,8 +8,9 @@ list(APPEND srcs_list "cluster_lifecycle_basic.cpp")
 list(APPEND srcs_list "cluster_lifecycle_managed_delegate.cpp")
 list(APPEND srcs_list "test_optional_clusters_validation.cpp")
 list(APPEND srcs_list "jsontlv.cpp")
+list(APPEND srcs_list "attribute_helpers.cpp")
 
 idf_component_register(SRCS ${srcs_list}
                        INCLUDE_DIRS "."
-                       PRIV_INCLUDE_DIRS "../data_model_provider/private"
+                       PRIV_INCLUDE_DIRS "../data_model_provider/private" "../data_model/private"
                        REQUIRES unity esp_matter)

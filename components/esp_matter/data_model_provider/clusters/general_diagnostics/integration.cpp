@@ -29,6 +29,7 @@
 
 #include <app/server/Server.h>
 #include <platform/DiagnosticDataProvider.h>
+#include <data_model/esp_matter_attribute_helpers.h>
 
 using namespace chip;
 using namespace chip::app;
@@ -68,8 +69,7 @@ bool IsAttributeEnabled(EndpointId endpointId, AttributeId attributeId)
 bool IsCommandEnabled(EndpointId endpointId, CommandId commandId, uint16_t commandFlag)
 {
     cluster_t *cluster = cluster::get(endpointId, GeneralDiagnostics::Id);
-    command_t *command = command::get(cluster, commandId, commandFlag);
-    return command != nullptr;
+    return is_command_enabled(cluster, commandId, commandFlag);
 }
 
 bool IsClusterEnabled(EndpointId endpointId, ClusterId clusterId)
@@ -102,11 +102,8 @@ void ESPMatterGeneralDiagnosticsClusterServerInitCallback(EndpointId endpointId)
         if (IsAttributeEnabled(endpointId, GeneralDiagnostics::Attributes::ActiveNetworkFaults::Id)) {
             attrSet.Set<GeneralDiagnostics::Attributes::ActiveNetworkFaults::Id>();
         }
-        attribute_t *feature = attribute::get(endpointId, GeneralDiagnostics::Id, Globals::Attributes::FeatureMap::Id);
-        esp_matter_attr_val_t feature_val;
-        VerifyOrReturn(attribute::get_val_internal(feature, &feature_val) == ESP_OK &&
-                       feature_val.type == ESP_MATTER_VAL_TYPE_BITMAP32);
-        BitFlags<GeneralDiagnostics::Feature> featureFlags(feature_val.val.u32);
+        BitFlags<GeneralDiagnostics::Feature> featureFlags(
+            read_feature_map_u32(endpointId, GeneralDiagnostics::Id));
 
         if (IsCommandEnabled(endpointId, GeneralDiagnostics::Commands::PayloadTestRequest::Id, COMMAND_FLAG_ACCEPTED) ||
                 IsClusterEnabled(endpointId, TimeSynchronization::Id)) {

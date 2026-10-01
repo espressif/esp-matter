@@ -90,6 +90,7 @@
 #include <clusters/tls_client_management/integration.h>
 #include <clusters/tls_certificate_management/integration.h>
 #include <clusters/zone_management/integration.h>
+#include <data_model/esp_matter_attribute_helpers.h>
 
 using namespace chip::app::Clusters;
 
@@ -103,17 +104,6 @@ void SetSmokeCoAlarmDefaultDelegate(EndpointId endpointId, SmokeCoAlarmDelegate 
 
 namespace esp_matter {
 namespace cluster {
-
-static uint32_t get_feature_map_value(uint16_t endpoint_id, uint32_t cluster_id)
-{
-    uint32_t attribute_id = Globals::Attributes::FeatureMap::Id;
-    attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
-    VerifyOrReturnError(attribute, 0);
-
-    esp_matter_attr_val_t val;
-    VerifyOrReturnError(attribute::get_val_internal(attribute, &val) == ESP_OK, 0);
-    return val.val.u32;
-}
 
 // Cluster-specific optional attributes handlers
 chip::BitMask<EnergyEvse::OptionalAttributes> get_energy_evse_enabled_optional_attributes(uint16_t endpoint_id)
@@ -222,7 +212,7 @@ void InitModeDelegate(void *delegate, uint16_t endpoint_id, uint32_t cluster_id)
     ModeBase::Instance *modeInstance = static_cast<ModeBase::Instance*>(get_delegate_managed_instance(cl));
     if (!modeInstance) {
         ModeBase::Delegate *mode_delegate = static_cast<ModeBase::Delegate*>(delegate);
-        uint32_t feature_map = get_feature_map_value(endpoint_id, cluster_id);
+        uint32_t feature_map = read_feature_map_u32(endpoint_id, cluster_id);
         modeInstance = new ModeBase::Instance(mode_delegate, endpoint_id, cluster_id, feature_map);
         set_delegate_shutdown_callback_and_managed_instance(cl, ModeBaseShutdownCB, modeInstance);
     }
@@ -287,7 +277,7 @@ void EnergyEvseDelegateInitCB(void *delegate, uint16_t endpoint_id)
     EnergyEvse::Instance *energyEvseInstance = static_cast<EnergyEvse::Instance*>(get_delegate_managed_instance(cl));
     if (!energyEvseInstance) {
         EnergyEvse::Delegate *energy_evse_delegate = static_cast<EnergyEvse::Delegate*>(delegate);
-        uint32_t feature_map = get_feature_map_value(endpoint_id, EnergyEvse::Id);
+        uint32_t feature_map = read_feature_map_u32(endpoint_id, EnergyEvse::Id);
         chip::BitMask<EnergyEvse::OptionalAttributes> optional_attrs = get_energy_evse_enabled_optional_attributes(endpoint_id);
         chip::BitMask<EnergyEvse::OptionalCommands> optional_cmds = get_energy_evse_enabled_optional_commands(endpoint_id);
         energyEvseInstance = new EnergyEvse::Instance(endpoint_id, *energy_evse_delegate, chip::BitMask<EnergyEvse::Feature, uint32_t>(feature_map),
@@ -342,7 +332,7 @@ void MicrowaveOvenControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
     // Ensure MicrowaveOvenMode instance exists on its cluster slot.
     ModeBase::Instance *microwaveOvenModeInstance = static_cast<ModeBase::Instance*>(get_delegate_managed_instance(mom_cl));
     if (!microwaveOvenModeInstance) {
-        uint32_t fm = get_feature_map_value(endpoint_id, MicrowaveOvenMode::Id);
+        uint32_t fm = read_feature_map_u32(endpoint_id, MicrowaveOvenMode::Id);
         microwaveOvenModeInstance = new ModeBase::Instance(microwave_oven_mode_delegate, endpoint_id, MicrowaveOvenMode::Id, fm);
         set_delegate_shutdown_callback_and_managed_instance(mom_cl, ModeBaseShutdownCB, microwaveOvenModeInstance);
     }
@@ -361,7 +351,7 @@ void MicrowaveOvenControlDelegateInitCB(void *delegate, uint16_t endpoint_id)
         bundle = new MicrowaveOvenControlBundle();
         bundle->integrationDelegate.SetDependencies(operationalStateInstance, microwaveOvenModeInstance);
 
-        uint32_t feature_map = get_feature_map_value(endpoint_id, MicrowaveOvenControl::Id);
+        uint32_t feature_map = read_feature_map_u32(endpoint_id, MicrowaveOvenControl::Id);
         chip::app::Clusters::MicrowaveOvenControlCluster::Config config{
             .feature = chip::BitMask<MicrowaveOvenControl::Feature>(feature_map),
             .optionalAttributeSet = {},
@@ -454,7 +444,7 @@ void DeviceEnergyManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
     DeviceEnergyManagement::Instance *deviceEnergyManagementInstance = static_cast<DeviceEnergyManagement::Instance*>(get_delegate_managed_instance(cl));
     if (!deviceEnergyManagementInstance) {
         DeviceEnergyManagement::Delegate *device_energy_management_delegate = static_cast<DeviceEnergyManagement::Delegate*>(delegate);
-        uint32_t feature_map = get_feature_map_value(endpoint_id, DeviceEnergyManagement::Id);
+        uint32_t feature_map = read_feature_map_u32(endpoint_id, DeviceEnergyManagement::Id);
         deviceEnergyManagementInstance = new DeviceEnergyManagement::Instance(endpoint_id, *device_energy_management_delegate, chip::BitMask<DeviceEnergyManagement::Feature, uint32_t>(feature_map));
         set_delegate_shutdown_callback_and_managed_instance(cl, DeviceEnergyManagementShutdownCB, deviceEnergyManagementInstance);
     }
@@ -502,7 +492,7 @@ void PowerTopologyDelegateInitCB(void *delegate, uint16_t endpoint_id)
     PowerTopology::Instance *powerTopologyInstance = static_cast<PowerTopology::Instance*>(get_delegate_managed_instance(cl));
     if (!powerTopologyInstance) {
         PowerTopology::Delegate *power_topology_delegate = static_cast<PowerTopology::Delegate*>(delegate);
-        chip::BitMask<PowerTopology::Feature> feature_map(get_feature_map_value(endpoint_id, PowerTopology::Id));
+        chip::BitMask<PowerTopology::Feature> feature_map(read_feature_map_u32(endpoint_id, PowerTopology::Id));
         powerTopologyInstance = new PowerTopology::Instance(endpoint_id, *power_topology_delegate, feature_map);
         set_delegate_shutdown_callback_and_managed_instance(cl, PowerTopologyShutdownCB, powerTopologyInstance);
     }
@@ -522,7 +512,7 @@ void ElectricalPowerMeasurementDelegateInitCB(void *delegate, uint16_t endpoint_
     ElectricalPowerMeasurement::Instance *electricalPowerMeasurementInstance = static_cast<ElectricalPowerMeasurement::Instance*>(get_delegate_managed_instance(cl));
     if (!electricalPowerMeasurementInstance) {
         ElectricalPowerMeasurement::Delegate *electrical_power_measurement_delegate = static_cast<ElectricalPowerMeasurement::Delegate*>(delegate);
-        uint32_t feature_map = get_feature_map_value(endpoint_id, ElectricalPowerMeasurement::Id);
+        uint32_t feature_map = read_feature_map_u32(endpoint_id, ElectricalPowerMeasurement::Id);
         chip::BitMask<ElectricalPowerMeasurement::OptionalAttributes> optional_attrs = get_electrical_power_measurement_enabled_optional_attributes(endpoint_id);
         electricalPowerMeasurementInstance = new ElectricalPowerMeasurement::Instance(endpoint_id, *electrical_power_measurement_delegate,
                                                                                       chip::BitMask<ElectricalPowerMeasurement::Feature, uint32_t>(feature_map), optional_attrs);
@@ -641,7 +631,7 @@ void WaterHeaterManagementDelegateInitCB(void *delegate, uint16_t endpoint_id)
     WaterHeaterManagement::Instance *wHtrInstance = static_cast<WaterHeaterManagement::Instance*>(get_delegate_managed_instance(cl));
     if (!wHtrInstance) {
         WaterHeaterManagement::Delegate *whtr_delegate = static_cast<WaterHeaterManagement::Delegate*>(delegate);
-        uint32_t feature_map = get_feature_map_value(endpoint_id, WaterHeaterManagement::Id);
+        uint32_t feature_map = read_feature_map_u32(endpoint_id, WaterHeaterManagement::Id);
         wHtrInstance = new WaterHeaterManagement::Instance(endpoint_id, *whtr_delegate, static_cast<WaterHeaterManagement::Feature>(feature_map));
         set_delegate_shutdown_callback_and_managed_instance(cl, WaterHeaterManagementShutdownCB, wHtrInstance);
     }
@@ -767,7 +757,7 @@ void CommodityTariffDelegateInitCB(void *delegate, uint16_t endpoint_id)
     CommodityTariff::Instance *commodity_tariff_instance = static_cast<CommodityTariff::Instance*>(get_delegate_managed_instance(cl));
     if (!commodity_tariff_instance) {
         CommodityTariff::Delegate *commodity_tariff_delegate = static_cast<CommodityTariff::Delegate*>(delegate);
-        uint32_t feature_map = get_feature_map_value(endpoint_id, CommodityTariff::Id);
+        uint32_t feature_map = read_feature_map_u32(endpoint_id, CommodityTariff::Id);
         commodity_tariff_instance = new CommodityTariff::Instance(endpoint_id, *commodity_tariff_delegate, chip::BitMask<CommodityTariff::Feature, uint32_t>(feature_map));
         set_delegate_shutdown_callback_and_managed_instance(cl, CommodityTariffShutdownCB, commodity_tariff_instance);
     }
@@ -787,7 +777,7 @@ void CommodityPriceDelegateInitCB(void *delegate, uint16_t endpoint_id)
     CommodityPrice::Instance *commodity_price_instance = static_cast<CommodityPrice::Instance*>(get_delegate_managed_instance(cl));
     if (!commodity_price_instance) {
         CommodityPrice::Delegate *commodity_price_delegate = static_cast<CommodityPrice::Delegate*>(delegate);
-        uint32_t feature_map = get_feature_map_value(endpoint_id, CommodityPrice::Id);
+        uint32_t feature_map = read_feature_map_u32(endpoint_id, CommodityPrice::Id);
         commodity_price_instance = new CommodityPrice::Instance(endpoint_id, *commodity_price_delegate, chip::BitMask<CommodityPrice::Feature, uint32_t>(feature_map));
         set_delegate_shutdown_callback_and_managed_instance(cl, CommodityPriceShutdownCB, commodity_price_instance);
     }
@@ -807,7 +797,7 @@ void ElectricalGridConditionsDelegateInitCB(void *delegate, uint16_t endpoint_id
     ElectricalGridConditions::Instance *electrical_grid_conditions_instance = static_cast<ElectricalGridConditions::Instance*>(get_delegate_managed_instance(cl));
     if (!electrical_grid_conditions_instance) {
         ElectricalGridConditions::Delegate *electrical_grid_conditions_delegate = static_cast<ElectricalGridConditions::Delegate*>(delegate);
-        uint32_t feature_map = get_feature_map_value(endpoint_id, ElectricalGridConditions::Id);
+        uint32_t feature_map = read_feature_map_u32(endpoint_id, ElectricalGridConditions::Id);
         electrical_grid_conditions_instance = new ElectricalGridConditions::Instance(endpoint_id, *electrical_grid_conditions_delegate, chip::BitMask<ElectricalGridConditions::Feature, uint32_t>(feature_map));
         set_delegate_shutdown_callback_and_managed_instance(cl, ElectricalGridConditionsShutdownCB, electrical_grid_conditions_instance);
     }
@@ -826,7 +816,7 @@ void MeterIdentificationDelegateInitCB(void *delegate, uint16_t endpoint_id)
     VerifyOrReturn(cl != nullptr);
     MeterIdentification::Instance *meter_identification_instance = static_cast<MeterIdentification::Instance*>(get_delegate_managed_instance(cl));
     if (!meter_identification_instance) {
-        uint32_t feature_map = get_feature_map_value(endpoint_id, MeterIdentification::Id);
+        uint32_t feature_map = read_feature_map_u32(endpoint_id, MeterIdentification::Id);
         meter_identification_instance = new MeterIdentification::Instance(endpoint_id, chip::BitMask<MeterIdentification::Feature, uint32_t>(feature_map));
         set_delegate_shutdown_callback_and_managed_instance(cl, MeterIdentificationShutdownCB, meter_identification_instance);
     }

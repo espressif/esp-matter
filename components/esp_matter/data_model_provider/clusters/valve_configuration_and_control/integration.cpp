@@ -38,12 +38,8 @@ std::unordered_map<EndpointId, LazyRegisteredServerCluster<ValveConfigurationAnd
 
 DataModel::Nullable<uint32_t> ReadNullableU32(EndpointId endpointId, AttributeId attributeId)
 {
-    attribute_t *attr = attribute::get(endpointId, ValveConfigurationAndControl::Id, attributeId);
-    if (attr == nullptr) {
-        return DataModel::NullNullable;
-    }
     esp_matter_attr_val_t val;
-    if (attribute::get_val_internal(attr, &val) != ESP_OK) {
+    if (get_stored_attr_val(cluster::get(endpointId, ValveConfigurationAndControl::Id), attributeId, val) != ESP_OK) {
         return DataModel::NullNullable;
     }
     using Traits = chip::app::NumericAttributeTraits<uint32_t>;
@@ -69,13 +65,13 @@ ValveConfigurationAndControlCluster::OptionalAttributeSet BuildOptionalSet(Endpo
 {
     using namespace chip::app::Clusters::ValveConfigurationAndControl::Attributes;
     ValveConfigurationAndControlCluster::OptionalAttributeSet optionalSet(0);
-    if (attribute::get(endpointId, ValveConfigurationAndControl::Id, DefaultOpenLevel::Id)) {
+    if (endpoint::is_attribute_enabled(endpointId, ValveConfigurationAndControl::Id, DefaultOpenLevel::Id)) {
         optionalSet.Set<DefaultOpenLevel::Id>();
     }
-    if (attribute::get(endpointId, ValveConfigurationAndControl::Id, ValveFault::Id)) {
+    if (endpoint::is_attribute_enabled(endpointId, ValveConfigurationAndControl::Id, ValveFault::Id)) {
         optionalSet.Set<ValveFault::Id>();
     }
-    if (attribute::get(endpointId, ValveConfigurationAndControl::Id, LevelStep::Id)) {
+    if (endpoint::is_attribute_enabled(endpointId, ValveConfigurationAndControl::Id, LevelStep::Id)) {
         optionalSet.Set<LevelStep::Id>();
     }
     return optionalSet;

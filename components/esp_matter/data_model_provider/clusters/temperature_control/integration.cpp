@@ -76,8 +76,8 @@ void ESPMatterTemperatureControlClusterServerInitCallback(EndpointId endpointId)
                 read_attribute_raw_value(endpointId, TemperatureControl::Id, Attributes::SelectedTemperatureLevel::Id,
                                          selectedTemperatureLevel),
                 ChipLogError(AppServer, "TemperatureControl: SelectedTemperatureLevel read failed on ep %u", endpointId));
-            VerifyOrReturn(attribute::get(endpointId, TemperatureControl::Id,
-                                          Attributes::SupportedTemperatureLevels::Id) != nullptr,
+            VerifyOrReturn(endpoint::is_attribute_enabled(endpointId, TemperatureControl::Id,
+                                                          Attributes::SupportedTemperatureLevels::Id),
                            ChipLogError(AppServer, "TemperatureControl: SupportedTemperatureLevels missing on ep %u", endpointId));
         }
 

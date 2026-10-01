@@ -75,17 +75,14 @@ void ESPMatterPressureMeasurementClusterServerInitCallback(EndpointId endpointId
         esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
 
         // MinMeasuredValue (nullable int16)
-        attribute_t *attr = attribute::get(cluster, MinMeasuredValue::Id);
-        if (attr && attribute::get_val_internal(attr, &val) == ESP_OK && val.type == ESP_MATTER_VAL_TYPE_NULLABLE_INT16) {
+        if (get_stored_attr_val(cluster, MinMeasuredValue::Id, val) == ESP_OK && val.type == ESP_MATTER_VAL_TYPE_NULLABLE_INT16) {
             if (val.val.i16 != INT16_MIN) {
                 config.minMeasuredValue = DataModel::MakeNullable(static_cast<int16_t>(val.val.i16));
             }
         }
 
         // MaxMeasuredValue (nullable int16)
-        val = esp_matter_invalid(nullptr);
-        attr = attribute::get(cluster, MaxMeasuredValue::Id);
-        if (attr && attribute::get_val_internal(attr, &val) == ESP_OK && val.type == ESP_MATTER_VAL_TYPE_NULLABLE_INT16) {
+        if (get_stored_attr_val(cluster, MaxMeasuredValue::Id, val) == ESP_OK && val.type == ESP_MATTER_VAL_TYPE_NULLABLE_INT16) {
             if (val.val.i16 != INT16_MIN) {
                 config.maxMeasuredValue = DataModel::MakeNullable(static_cast<int16_t>(val.val.i16));
             }
@@ -93,9 +90,7 @@ void ESPMatterPressureMeasurementClusterServerInitCallback(EndpointId endpointId
 
         // Tolerance (optional, uint16)
         if (endpoint::is_attribute_enabled(endpointId, PressureMeasurement::Id, Tolerance::Id)) {
-            val = esp_matter_invalid(nullptr);
-            attr = attribute::get(cluster, Tolerance::Id);
-            if (attr && attribute::get_val_internal(attr, &val) == ESP_OK && val.type == ESP_MATTER_VAL_TYPE_UINT16) {
+            if (get_stored_attr_val(cluster, Tolerance::Id, val) == ESP_OK && val.type == ESP_MATTER_VAL_TYPE_UINT16) {
                 config.WithTolerance(val.val.u16);
             }
         }
@@ -108,21 +103,15 @@ void ESPMatterPressureMeasurementClusterServerInitCallback(EndpointId endpointId
             DataModel::Nullable<int16_t> maxScaledValue;
             int8_t scale = 0;
 
-            val = esp_matter_invalid(nullptr);
-            attr = attribute::get(cluster, MinScaledValue::Id);
-            if (attr && attribute::get_val_internal(attr, &val) == ESP_OK && val.val.i16 != INT16_MIN) {
+            if (get_stored_attr_val(cluster, MinScaledValue::Id, val) == ESP_OK && val.val.i16 != INT16_MIN) {
                 minScaledValue = DataModel::MakeNullable(static_cast<int16_t>(val.val.i16));
             }
 
-            val = esp_matter_invalid(nullptr);
-            attr = attribute::get(cluster, MaxScaledValue::Id);
-            if (attr && attribute::get_val_internal(attr, &val) == ESP_OK && val.val.i16 != INT16_MIN) {
+            if (get_stored_attr_val(cluster, MaxScaledValue::Id, val) == ESP_OK && val.val.i16 != INT16_MIN) {
                 maxScaledValue = DataModel::MakeNullable(static_cast<int16_t>(val.val.i16));
             }
 
-            val = esp_matter_invalid(nullptr);
-            attr = attribute::get(cluster, Scale::Id);
-            if (attr && attribute::get_val_internal(attr, &val) == ESP_OK) {
+            if (get_stored_attr_val(cluster, Scale::Id, val) == ESP_OK) {
                 scale = static_cast<int8_t>(val.val.i8);
             }
 
@@ -130,9 +119,7 @@ void ESPMatterPressureMeasurementClusterServerInitCallback(EndpointId endpointId
 
             // ScaledTolerance (optional, uint16, requires Extended)
             if (endpoint::is_attribute_enabled(endpointId, PressureMeasurement::Id, ScaledTolerance::Id)) {
-                val = esp_matter_invalid(nullptr);
-                attr = attribute::get(cluster, ScaledTolerance::Id);
-                if (attr && attribute::get_val_internal(attr, &val) == ESP_OK && val.type == ESP_MATTER_VAL_TYPE_UINT16) {
+                if (get_stored_attr_val(cluster, ScaledTolerance::Id, val) == ESP_OK && val.type == ESP_MATTER_VAL_TYPE_UINT16) {
                     config.WithScaledTolerance(val.val.u16);
                 }
             }

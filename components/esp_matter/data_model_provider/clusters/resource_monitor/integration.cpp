@@ -20,23 +20,16 @@
 #include <esp_matter_data_model.h>
 #include <esp_matter_data_model_priv.h>
 #include <unordered_map>
+#include <data_model/esp_matter_attribute_helpers.h>
 
 using namespace chip;
 using namespace chip::app;
 using namespace chip::app::Clusters;
 using namespace chip::app::Clusters::ResourceMonitoring;
+using namespace esp_matter;
 
 namespace {
 std::unordered_map<uint64_t, LazyRegisteredServerCluster<ResourceMonitoringCluster>> gServers;
-
-esp_err_t get_attr_val(esp_matter::cluster_t *cluster, uint32_t attribute_id, esp_matter_attr_val_t &val)
-{
-    esp_matter::attribute_t *attr = esp_matter::attribute::get(cluster, attribute_id);
-    if (!attr) {
-        return ESP_FAIL;
-    }
-    return esp_matter::attribute::get_val_internal(attr, &val);
-}
 
 esp_err_t GetClusterConfig(EndpointId endpointId, ClusterId clusterId,
                            BitFlags<ResourceMonitoring::Feature> &enabledFeatures,
@@ -48,29 +41,25 @@ esp_err_t GetClusterConfig(EndpointId endpointId, ClusterId clusterId,
     if (!cluster) {
         return ESP_FAIL;
     }
-    esp_matter_attr_val_t feature_val;
-    ESP_RETURN_ON_ERROR(get_attr_val(cluster, Globals::Attributes::FeatureMap::Id, feature_val), "TimeSync",
-                        "Failed to get feature map");
-    VerifyOrReturnError(feature_val.type == ESP_MATTER_VAL_TYPE_BITMAP32, ESP_FAIL);
-    enabledFeatures = BitFlags<ResourceMonitoring::Feature>(feature_val.val.u32);
+    enabledFeatures = BitFlags<ResourceMonitoring::Feature>(read_feature_map_u32(cluster));
     esp_matter_attr_val_t attr_val;
-    if (ESP_OK == get_attr_val(cluster, Attributes::DegradationDirection::Id, attr_val)) {
+    if (ESP_OK == get_stored_attr_val(cluster, Attributes::DegradationDirection::Id, attr_val)) {
         VerifyOrReturnError(attr_val.type == ESP_MATTER_VAL_TYPE_ENUM8, ESP_FAIL);
         aDegradationDirection = (Attributes::DegradationDirection::TypeInfo::Type)attr_val.val.u8;
     } else {
         aDegradationDirection = static_cast<Attributes::DegradationDirection::TypeInfo::Type>(0);
         ESP_LOGW("ResourceMonitoring", "Failed to get DegradationDirection, falling back to 0");
     }
-    if (esp_matter::command::get(cluster, Commands::ResetCondition::Id, esp_matter::COMMAND_FLAG_ACCEPTED)) {
+    if (is_command_enabled(cluster, Commands::ResetCondition::Id)) {
         aResetConditionCommandSupported = true;
     } else {
         aResetConditionCommandSupported = false;
     }
 
-    if (esp_matter::attribute::get(cluster, Attributes::InPlaceIndicator::Id)) {
+    if (is_attribute_enabled(cluster, Attributes::InPlaceIndicator::Id)) {
         optionalAttributeSet.Set<Attributes::InPlaceIndicator::Id>();
     }
-    if (esp_matter::attribute::get(cluster, Attributes::LastChangedTime::Id)) {
+    if (is_attribute_enabled(cluster, Attributes::LastChangedTime::Id)) {
         optionalAttributeSet.Set<Attributes::LastChangedTime::Id>();
     }
     return ESP_OK;
