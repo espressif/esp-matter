@@ -22,14 +22,13 @@ namespace chip::app::Clusters::EnergyEvse {
 class Instance {
 public:
     Instance(EndpointId aEndpointId, Delegate  &aDelegate, BitMask<Feature> aFeature, BitMask<OptionalAttributes> aOptionalAttrs,
-             BitMask<OptionalCommands> aOptionalCmds);
+             EnergyEvseCluster::OptionalCommandSet aOptionalCmds);
 
     CHIP_ERROR Init();
     void Shutdown();
 
     bool HasFeature(Feature aFeature) const;
     bool SupportsOptAttr(OptionalAttributes aOptionalAttrs) const;
-    bool SupportsOptCmd(OptionalCommands aOptionalCmds) const;
 
     StateEnum GetState() const;
     CHIP_ERROR SetState(StateEnum newValue);

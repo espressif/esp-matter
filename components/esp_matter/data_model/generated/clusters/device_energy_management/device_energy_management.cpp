@@ -33,7 +33,7 @@ using namespace esp_matter::cluster;
 using namespace esp_matter::cluster::delegate_cb;
 
 static const char *TAG = "esp_matter_cluster";
-constexpr uint16_t cluster_revision = 4;
+constexpr uint16_t cluster_revision = 5;
 
 namespace esp_matter {
 namespace cluster {
@@ -88,7 +88,7 @@ esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
     uint32_t feature_map = get_feature_map_value(cluster);
-    VerifyOrReturnError(!(has_feature(power_adjustment)), ESP_ERR_INVALID_ARG);
+    VerifyOrReturnError(((!(has_feature(power_adjustment)))), ESP_ERR_INVALID_ARG);
     update_feature_map(cluster, get_id());
     attribute::create_forecast(cluster, NULL, 0, 0);
 
@@ -351,6 +351,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_abs_max_power(cluster, config->abs_max_power);
 
         uint32_t feature_map = config->feature_flags;
+        VALIDATE_FEATURES_EXACT_ONE("PowerAdjustment",
+                                    feature::power_adjustment::get_id());
+        if (feature_map & feature::power_adjustment::get_id()) {
+            VerifyOrReturnValue(feature::power_adjustment::add(cluster, &(config->features.power_adjustment)) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+        }
         VALIDATE_FEATURES_EXACT_ONE("PowerForecastReporting,StateForecastReporting",
                                     feature::power_forecast_reporting::get_id(), feature::state_forecast_reporting::get_id());
         if (feature_map & feature::power_forecast_reporting::get_id()) {
@@ -358,9 +363,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         }
         if (feature_map & feature::state_forecast_reporting::get_id()) {
             VerifyOrReturnValue(feature::state_forecast_reporting::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
-        }
-        if (feature_map & feature::power_adjustment::get_id()) {
-            VerifyOrReturnValue(feature::power_adjustment::add(cluster, &(config->features.power_adjustment)) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
         if (feature_map & feature::start_time_adjustment::get_id()) {
             VerifyOrReturnValue(feature::start_time_adjustment::add(cluster, &(config->features.start_time_adjustment)) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));

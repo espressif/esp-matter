@@ -48,8 +48,9 @@ event_t *create_price_change(cluster_t *cluster);
 } /* event */
 
 typedef struct config {
+    uint8_t tariff_unit;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : tariff_unit(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

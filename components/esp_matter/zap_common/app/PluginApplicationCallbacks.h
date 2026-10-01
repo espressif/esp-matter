@@ -133,6 +133,7 @@ void MatterTemperatureControlledCabinetTopologyPluginServerInitCallback();
 void MatterTemperatureMeasurementPluginServerInitCallback();
 void MatterTestHiddenManufacturerSpecificPluginServerInitCallback();
 void MatterThermostatPluginServerInitCallback();
+void MatterThermostatModePluginServerInitCallback();
 void MatterThermostatUserInterfaceConfigurationPluginServerInitCallback();
 void MatterThreadBorderRouterManagementPluginServerInitCallback();
 void MatterThreadNetworkDiagnosticsPluginServerInitCallback();

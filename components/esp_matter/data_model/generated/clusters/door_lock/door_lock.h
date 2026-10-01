@@ -28,8 +28,10 @@ typedef struct config {
     uint16_t number_of_pin_users_supported;
     uint8_t max_pin_code_length;
     uint8_t min_pin_code_length;
+    uint8_t wrong_code_entry_limit;
+    uint8_t user_code_temporary_disable_time;
     bool require_pin_for_remote_operation;
-    config() : number_of_pin_users_supported(0), max_pin_code_length(0), min_pin_code_length(0), require_pin_for_remote_operation(false) {}
+    config() : number_of_pin_users_supported(0), max_pin_code_length(0), min_pin_code_length(0), wrong_code_entry_limit(1), user_code_temporary_disable_time(1), require_pin_for_remote_operation(false) {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -61,6 +63,17 @@ typedef struct config {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 } /* credential_over_the_air_access */
+
+namespace user {
+typedef struct config {
+    uint16_t number_of_total_users_supported;
+    uint8_t credential_rules_support;
+    uint8_t number_of_credentials_supported_per_user;
+    config() : number_of_total_users_supported(0), credential_rules_support(0), number_of_credentials_supported_per_user(0) {}
+} config_t;
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* user */
 
 namespace year_day_access_schedules {
 typedef struct config {
@@ -105,12 +118,15 @@ attribute_t *create_door_state(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_door_open_events(cluster_t *cluster, uint32_t value);
 attribute_t *create_door_closed_events(cluster_t *cluster, uint32_t value);
 attribute_t *create_open_period(cluster_t *cluster, uint16_t value);
+attribute_t *create_number_of_total_users_supported(cluster_t *cluster, uint16_t value);
 attribute_t *create_number_of_pin_users_supported(cluster_t *cluster, uint16_t value);
 attribute_t *create_number_of_week_day_schedules_supported_per_user(cluster_t *cluster, uint8_t value);
 attribute_t *create_number_of_year_day_schedules_supported_per_user(cluster_t *cluster, uint8_t value);
 attribute_t *create_number_of_holiday_schedules_supported(cluster_t *cluster, uint8_t value);
 attribute_t *create_max_pin_code_length(cluster_t *cluster, uint8_t value);
 attribute_t *create_min_pin_code_length(cluster_t *cluster, uint8_t value);
+attribute_t *create_credential_rules_support(cluster_t *cluster, uint8_t value);
+attribute_t *create_number_of_credentials_supported_per_user(cluster_t *cluster, uint8_t value);
 attribute_t *create_language(cluster_t *cluster, char * value, uint16_t length);
 attribute_t *create_led_settings(cluster_t *cluster, uint8_t value);
 attribute_t *create_auto_relock_time(cluster_t *cluster, uint32_t value);
@@ -123,7 +139,11 @@ attribute_t *create_enable_one_touch_locking(cluster_t *cluster, bool value);
 attribute_t *create_enable_inside_status_led(cluster_t *cluster, bool value);
 attribute_t *create_enable_privacy_mode_button(cluster_t *cluster, bool value);
 attribute_t *create_local_programming_features(cluster_t *cluster, uint8_t value);
+attribute_t *create_wrong_code_entry_limit(cluster_t *cluster, uint8_t value);
+attribute_t *create_user_code_temporary_disable_time(cluster_t *cluster, uint8_t value);
+attribute_t *create_send_pin_over_the_air(cluster_t *cluster, bool value);
 attribute_t *create_require_pin_for_remote_operation(cluster_t *cluster, bool value);
+attribute_t *create_expiring_user_timeout(cluster_t *cluster, uint16_t value);
 attribute_t *create_aliro_reader_verification_key(cluster_t *cluster, uint8_t * value, uint16_t length);
 attribute_t *create_aliro_reader_group_identifier(cluster_t *cluster, uint8_t * value, uint16_t length);
 attribute_t *create_aliro_reader_group_sub_identifier(cluster_t *cluster, uint8_t * value, uint16_t length);
@@ -151,6 +171,15 @@ command_t *create_set_holiday_schedule(cluster_t *cluster);
 command_t *create_get_holiday_schedule(cluster_t *cluster);
 command_t *create_get_holiday_schedule_response(cluster_t *cluster);
 command_t *create_clear_holiday_schedule(cluster_t *cluster);
+command_t *create_set_user(cluster_t *cluster);
+command_t *create_get_user(cluster_t *cluster);
+command_t *create_get_user_response(cluster_t *cluster);
+command_t *create_clear_user(cluster_t *cluster);
+command_t *create_set_credential(cluster_t *cluster);
+command_t *create_set_credential_response(cluster_t *cluster);
+command_t *create_get_credential_status(cluster_t *cluster);
+command_t *create_get_credential_status_response(cluster_t *cluster);
+command_t *create_clear_credential(cluster_t *cluster);
 command_t *create_unbolt_door(cluster_t *cluster);
 command_t *create_set_aliro_reader_config(cluster_t *cluster);
 command_t *create_clear_aliro_reader_config(cluster_t *cluster);
@@ -161,6 +190,7 @@ event_t *create_door_lock_alarm(cluster_t *cluster);
 event_t *create_door_state_change(cluster_t *cluster);
 event_t *create_lock_operation(cluster_t *cluster);
 event_t *create_lock_operation_error(cluster_t *cluster);
+event_t *create_lock_user_change(cluster_t *cluster);
 } /* event */
 
 typedef struct config {

@@ -19,14 +19,17 @@
 #include <esp_matter.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
+#include <esp_matter_delegate_callbacks.h>
 #include <alarm_base.h>
 #include <alarm_base_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
+using namespace esp_matter::cluster::delegate_cb;
 
 constexpr uint16_t cluster_revision = 2;
 

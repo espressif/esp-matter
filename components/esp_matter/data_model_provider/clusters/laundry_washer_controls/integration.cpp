@@ -15,7 +15,7 @@
 #include <esp_matter_data_model_priv.h>
 
 #include <app/ClusterCallbacks.h>
-#include <app/clusters/laundry-washer-controls-server/CodegenIntegration.h>
+#include <clusters/laundry_washer_controls/integration.h>
 #include <app/clusters/laundry-washer-controls-server/LaundryWasherControlsCluster.h>
 #include <app/clusters/laundry-washer-controls-server/laundry-washer-controls-delegate.h>
 #include <clusters/LaundryWasherControls/ClusterId.h>

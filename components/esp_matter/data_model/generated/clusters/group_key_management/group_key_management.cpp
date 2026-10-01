@@ -37,6 +37,24 @@ namespace esp_matter {
 namespace cluster {
 namespace group_key_management {
 
+namespace feature {
+namespace groupcast {
+uint32_t get_id()
+{
+    return Groupcast::Id;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+} /* groupcast */
+
+} /* feature */
+
 namespace attribute {
 attribute_t *create_group_key_map(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {

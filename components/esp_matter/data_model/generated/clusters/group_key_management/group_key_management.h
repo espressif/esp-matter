@@ -21,6 +21,14 @@ namespace esp_matter {
 namespace cluster {
 namespace group_key_management {
 
+namespace feature {
+namespace groupcast {
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* groupcast */
+
+} /* feature */
+
 namespace attribute {
 attribute_t *create_group_key_map(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 attribute_t *create_group_table(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);

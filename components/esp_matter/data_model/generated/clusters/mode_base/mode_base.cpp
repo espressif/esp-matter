@@ -32,7 +32,7 @@ using namespace esp_matter;
 using namespace esp_matter::cluster;
 using namespace esp_matter::cluster::delegate_cb;
 
-constexpr uint16_t cluster_revision = 2;
+constexpr uint16_t cluster_revision = 3;
 
 namespace esp_matter {
 namespace cluster {

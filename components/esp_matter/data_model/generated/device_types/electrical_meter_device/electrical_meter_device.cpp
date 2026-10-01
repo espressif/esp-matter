@@ -57,6 +57,7 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     cluster::electrical_power_measurement::create(endpoint, &(config->electrical_power_measurement), CLUSTER_FLAG_SERVER);
     cluster::electrical_energy_measurement::create(endpoint, &(config->electrical_energy_measurement), CLUSTER_FLAG_SERVER);
+    cluster::commodity_metering::create(endpoint, &(config->commodity_metering), CLUSTER_FLAG_SERVER);
     return ESP_OK;
 }
 

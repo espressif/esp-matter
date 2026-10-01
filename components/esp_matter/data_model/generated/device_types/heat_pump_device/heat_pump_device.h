@@ -22,7 +22,7 @@
 #include <esp_matter_core.h>
 
 #define ESP_MATTER_HEAT_PUMP_DEVICE_TYPE_ID 0x0309
-#define ESP_MATTER_HEAT_PUMP_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_HEAT_PUMP_DEVICE_TYPE_VERSION 2
 
 namespace esp_matter {
 namespace endpoint {

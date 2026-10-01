@@ -23,6 +23,12 @@ namespace group_key_management {
 
 inline constexpr uint32_t Id = 0x003F;
 
+namespace feature {
+namespace Groupcast {
+inline constexpr uint32_t Id = 0x2;
+} /* Groupcast */
+} /* feature */
+
 namespace attribute {
 namespace GroupKeyMap {
 inline constexpr uint32_t Id = 0x0000;

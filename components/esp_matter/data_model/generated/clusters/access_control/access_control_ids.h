@@ -30,6 +30,9 @@ inline constexpr uint32_t Id = 0x1;
 namespace ManagedDevice {
 inline constexpr uint32_t Id = 0x2;
 } /* ManagedDevice */
+namespace Auxiliary {
+inline constexpr uint32_t Id = 0x4;
+} /* Auxiliary */
 } /* feature */
 
 namespace attribute {
@@ -60,6 +63,9 @@ inline constexpr uint32_t Id = 0x0005;
 namespace ARL {
 inline constexpr uint32_t Id = 0x0006;
 } /* ARL */
+namespace AuxiliaryACL {
+inline constexpr uint32_t Id = 0x0007;
+} /* AuxiliaryACL */
 } /* attribute */
 
 namespace command {
@@ -81,6 +87,9 @@ inline constexpr uint32_t Id = 0x01;
 namespace FabricRestrictionReviewUpdate {
 inline constexpr uint32_t Id = 0x02;
 } /* FabricRestrictionReviewUpdate */
+namespace AuxiliaryAccessUpdated {
+inline constexpr uint32_t Id = 0x03;
+} /* AuxiliaryAccessUpdated */
 } /* event */
 
 } /* access_control */

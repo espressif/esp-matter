@@ -22,7 +22,7 @@
 #include <esp_matter_core.h>
 
 #define ESP_MATTER_SOLAR_POWER_DEVICE_TYPE_ID 0x0017
-#define ESP_MATTER_SOLAR_POWER_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_SOLAR_POWER_DEVICE_TYPE_VERSION 2
 
 namespace esp_matter {
 namespace endpoint {

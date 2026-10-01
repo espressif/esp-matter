@@ -17,6 +17,7 @@
 #include <esp_matter_controller_icd_client.h>
 
 #include <crypto/CHIPCryptoPAL.h>
+#include <lib/support/AutoRelease.h>
 
 static constexpr char *TAG = "icd_client";
 
@@ -27,13 +28,12 @@ namespace controller {
 esp_err_t list_registered_icd()
 {
     auto &icd_client_storage = matter_controller_client::get_instance().get_icd_client_storage();
-    auto iter = icd_client_storage.IterateICDClientInfo();
-    if (iter == nullptr) {
+    AutoRelease iter(icd_client_storage.IterateICDClientInfo());
+    if (iter.IsNull()) {
         return ESP_ERR_NO_MEM;
     }
     char icd_aes_key_hex[Crypto::kAES_CCM128_Key_Length * 2 + 1];
     char icd_hmac_key_hex[Crypto::kHMAC_CCM128_Key_Length * 2 + 1];
-    app::DefaultICDClientStorage::ICDClientInfoIteratorWrapper wrapper(iter);
     ESP_LOGI(TAG, "  +------------------------------------------------------------------------------------------------------+");
     ESP_LOGI(TAG, "  | %-100s |", "Known ICDs:");
     ESP_LOGI(TAG, "  +------------------------------------------------------------------------------------------------------+");

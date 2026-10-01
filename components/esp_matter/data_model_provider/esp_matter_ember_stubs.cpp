@@ -810,3 +810,64 @@ const EmberAfAttributeMetadata *emberAfLocateAttributeMetadata(chip::EndpointId 
     }
     return nullptr;
 }
+
+// te2 (upstream PR 73797) added Attributes::<X>::GetDefault() accessors that resolve an attribute's
+// default value through this endpoint-level hook instead of the ZAP flash tables. esp_matter has no
+// ember flash config, so back it with our own attribute store: at cluster init time (the only caller)
+// the stored value is the creation-time default. Scalars are copied into outDefault's owned storage;
+// strings are serialized into a static Pascal-prefixed buffer that rawData points at (same
+// single-threaded-Matter-context static-pointer pattern as emberAfLocateAttributeMetadata above).
+// TODO: Remove once code-driven clusters obtain their defaults without the ember accessor path.
+namespace chip {
+namespace app {
+Status emberAfGetAttributeDefaultValue(chip::EndpointId endpoint, chip::ClusterId clusterId,
+                                       chip::AttributeId attributeId, AttributeDefaultValue &outDefault)
+{
+    esp_matter::attribute_t *attribute = esp_matter::attribute::get(endpoint, clusterId, attributeId);
+    VerifyOrReturnError(attribute != nullptr, Status::UnsupportedAttribute);
+
+    esp_matter_attr_val_t val;
+    VerifyOrReturnError(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK, Status::Failure);
+
+    const EmberAfAttributeType type = get_ember_attr_type_from_val_type(val.type);
+    const uint16_t size = get_ember_attr_size_from_val(val);
+
+    // Covers every ember scalar plus short (<=255 byte) strings; long strings are not used as
+    // init-time defaults on this path. ponytail: bump if a long-string default ever needs it.
+    static uint8_t sBuffer[UINT8_MAX + 1];
+    VerifyOrReturnError(size <= sizeof(sBuffer), Status::ResourceExhausted);
+
+    Status status = get_raw_data_buffer_from_attr_val(val, sBuffer, sizeof(sBuffer));
+    VerifyOrReturnError(status == Status::Success, status);
+
+    if (emberAfIsStringAttributeType(type) || emberAfIsLongStringAttributeType(type)) {
+        // Strings are zero-copy views; SetOwnedValue rejects them, so point rawData at the buffer.
+        outDefault.rawData = chip::ByteSpan(sBuffer, size);
+        outDefault.type = type;
+        return Status::Success;
+    }
+
+    VerifyOrReturnError(outDefault.SetOwnedValue(chip::ByteSpan(sBuffer, size), type), Status::ResourceExhausted);
+    return Status::Success;
+}
+} // namespace app
+} // namespace chip
+
+// Thermostat migrated to a code-driven cluster upstream, so CHIP no longer emits its ember
+// init / pre-attribute-changed callbacks. The legacy data model still wires them into the
+// thermostat cluster function list, so provide no-op stubs. Generic attribute bounds are still
+// enforced through esp_matter's own store (see emberAfLocateAttributeMetadata above).
+// TODO: Remove these once the thermostat cluster is decoupled from ember APIs.
+void emberAfThermostatClusterServerInitCallback(chip::EndpointId) {}
+
+// Mode select migrated to a code-driven cluster upstream; its ember init now lives only in
+// mode-select-server/CodegenIntegration.cpp, which esp_matter excludes from the build. The
+// generated data model still wires it into the mode_select function list, so stub it here.
+// TODO: Remove once the generated data model stops referencing the ember init callback.
+void emberAfModeSelectClusterServerInitCallback(chip::EndpointId) {}
+
+Status MatterThermostatClusterServerPreAttributeChangedCallback(const chip::app::ConcreteAttributePath &,
+                                                                EmberAfAttributeType, uint16_t, uint8_t *)
+{
+    return Status::Success;
+}

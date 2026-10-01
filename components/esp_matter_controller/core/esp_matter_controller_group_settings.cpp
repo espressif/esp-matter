@@ -17,6 +17,8 @@
 #include <esp_matter_controller_group_settings.h>
 #include <esp_matter_controller_utils.h>
 
+#include <lib/support/AutoRelease.h>
+
 using chip::FabricIndex;
 using chip::KeysetId;
 using chip::Credentials::GroupDataProvider;
@@ -30,16 +32,14 @@ namespace group_settings {
 static bool find_keyset_id(FabricIndex fabric_index, uint16_t group_id, KeysetId &keyset_id)
 {
     GroupDataProvider *group_data_provider = chip::Credentials::GetGroupDataProvider();
-    auto iter = group_data_provider->IterateGroupKeys(fabric_index);
+    chip::AutoRelease iter(group_data_provider->IterateGroupKeys(fabric_index));
     GroupDataProvider::GroupKey group_key;
     while (iter->Next(group_key)) {
         if (group_key.group_id == group_id) {
             keyset_id = group_key.keyset_id;
-            iter->Release();
             return true;
         }
     }
-    iter->Release();
     return false;
 }
 
@@ -51,7 +51,7 @@ esp_err_t show_groups()
     ESP_LOGI(TAG, "  | Group Id   |  KeySet Id     |   Group Name                                          |");
     FabricIndex fabric_index = esp_matter::controller::matter_controller_client::get_instance().get_fabric_index();
     GroupDataProvider *group_data_provider = chip::Credentials::GetGroupDataProvider();
-    auto iter = group_data_provider->IterateGroupInfo(fabric_index);
+    chip::AutoRelease iter(group_data_provider->IterateGroupInfo(fabric_index));
     GroupDataProvider::GroupInfo group_info;
     if (iter) {
         while (iter->Next(group_info)) {
@@ -62,7 +62,6 @@ esp_err_t show_groups()
                 ESP_LOGI(TAG, "  | 0x%-12x  %-15s  %-50s |", group_info.group_id, "None", group_info.name);
             }
         }
-        iter->Release();
     }
     ESP_LOGI(TAG, "  +-------------------------------------------------------------------------------------+");
     return ESP_OK;
@@ -109,14 +108,13 @@ esp_err_t show_keysets()
     ESP_LOGI(TAG, "  +-------------------------------------------------------------------------------------+");
     ESP_LOGI(TAG, "  | KeySet Id   |   Key Policy                                                          |");
 
-    auto iter = group_data_provider->IterateKeySets(fabric_index);
+    chip::AutoRelease iter(group_data_provider->IterateKeySets(fabric_index));
     if (iter) {
         while (iter->Next(keyset)) {
             ESP_LOGI(TAG, "  | 0x%-12x  %-66s  |", keyset.keyset_id,
                      (keyset.policy == GroupDataProvider::SecurityPolicy::kCacheAndSync) ? "Cache and Sync"
                      : "Trust First");
         }
-        iter->Release();
     }
     ESP_LOGI(TAG, "  +-------------------------------------------------------------------------------------+");
     return ESP_OK;
@@ -128,9 +126,8 @@ esp_err_t bind_keyset(uint16_t group_id, uint16_t keyset_id)
     FabricIndex fabric_index = esp_matter::controller::matter_controller_client::get_instance().get_fabric_index();
     GroupDataProvider *group_data_provider = chip::Credentials::GetGroupDataProvider();
 
-    auto iter = group_data_provider->IterateGroupKeys(fabric_index);
+    chip::AutoRelease iter(group_data_provider->IterateGroupKeys(fabric_index));
     current_count = iter->Count();
-    iter->Release();
 
     if (CHIP_NO_ERROR !=
             group_data_provider->SetGroupKeyAt(fabric_index, current_count,
@@ -147,7 +144,7 @@ esp_err_t unbind_keyset(uint16_t group_id, uint16_t keyset_id)
     FabricIndex fabric_index = esp_matter::controller::matter_controller_client::get_instance().get_fabric_index();
     GroupDataProvider *group_data_provider = chip::Credentials::GetGroupDataProvider();
 
-    auto iter = group_data_provider->IterateGroupKeys(fabric_index);
+    chip::AutoRelease iter(group_data_provider->IterateGroupKeys(fabric_index));
     size_t max_count = iter->Count();
     GroupDataProvider::GroupKey group_key;
     while (iter->Next(group_key)) {
@@ -156,7 +153,6 @@ esp_err_t unbind_keyset(uint16_t group_id, uint16_t keyset_id)
         }
         index++;
     }
-    iter->Release();
     ESP_RETURN_ON_FALSE(index < max_count, ESP_ERR_NOT_FOUND, TAG, "Failed to find the group key");
     ESP_RETURN_ON_FALSE(CHIP_NO_ERROR == group_data_provider->RemoveGroupKeyAt(fabric_index, index), ESP_FAIL, TAG,
                         "Failed to remove the group key");
@@ -208,7 +204,7 @@ esp_err_t remove_keyset(uint16_t keyset_id)
 
     size_t index = 0;
     CHIP_ERROR err = CHIP_NO_ERROR;
-    auto iter = group_data_provider->IterateGroupKeys(fabric_index);
+    chip::AutoRelease iter(group_data_provider->IterateGroupKeys(fabric_index));
     GroupDataProvider::GroupKey group_key;
     while (iter->Next(group_key)) {
         if (group_key.keyset_id == keyset_id) {
@@ -219,7 +215,6 @@ esp_err_t remove_keyset(uint16_t keyset_id)
         }
         index++;
     }
-    iter->Release();
 
     if (err != CHIP_NO_ERROR) {
         return ESP_FAIL;

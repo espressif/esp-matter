@@ -14,7 +14,8 @@
 
 #include <app/ClusterCallbacks.h>
 #include <app/SafeAttributePersistenceProvider.h>
-#include <app/clusters/mode-base-server/CodegenIntegration.h>
+#include <clusters/mode_base/integration.h>
+#include <app/clusters/mode-base-server/MigrateModeBaseServerStorage.h>
 #include <app/clusters/mode-base-server/mode-base-cluster-objects.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
 #include <lib/support/CodeUtils.h>
@@ -38,6 +39,20 @@ IntrusiveList<Instance> gModeBaseInstances;
 
 } // namespace
 
+CHIP_ERROR CodegenModeBaseCluster::Startup(ServerClusterContext  &context)
+{
+    // Migrate attributes for this cluster from SafeAttribute to AttributePersistence.
+    // This is done at Startup time when the persistence providers are guaranteed to be available.
+    SafeAttributePersistenceProvider * srcProvider = GetSafeAttributePersistenceProvider();
+
+    if (srcProvider != nullptr) {
+        AttributePersistenceProvider  &dstProvider = context.attributeStorage;
+        LogErrorOnFailure(ModeBase::MigrateModeBaseServerStorage(mPath.mEndpointId, mPath.mClusterId, *srcProvider, dstProvider));
+    }
+
+    return ModeBaseCluster::Startup(context);
+}
+
 IntrusiveList<Instance>  &GetModeBaseInstanceList()
 {
     return gModeBaseInstances;
@@ -59,14 +74,27 @@ CHIP_ERROR Instance::Init()
     // second Init() has nothing to re-create or re-register.
     VerifyOrReturnError(!mCluster.IsConstructed(), CHIP_NO_ERROR);
 
-    std::optional<uint32_t> clusterRevision;
+    // The 10 aliased clusters that share the ModeBase attribute structure.
+    static constexpr ModeBase::ClusterEntry kAliasedClusters[] = {
+        ModeBase::kDeviceEnergyManagementMode,
+        ModeBase::kDishwasherMode,
+        ModeBase::kEnergyEvseMode,
+        ModeBase::kLaundryWasherMode,
+        ModeBase::kMicrowaveOvenMode,
+        ModeBase::kOvenMode,
+        ModeBase::kRefrigeratorAndTemperatureControlledCabinetMode,
+        ModeBase::kRvcCleanMode,
+        ModeBase::kRvcRunMode,
+        ModeBase::kWaterHeaterMode,
+    };
+    std::optional<ModeBase::ClusterEntry> clusterEntry;
     for (const auto  &entry : kAliasedClusters) {
         if (entry.id == mClusterPath.mClusterId) {
-            clusterRevision = entry.revision;
+            clusterEntry = entry;
             break;
         }
     }
-    VerifyOrReturnError(clusterRevision.has_value(), CHIP_ERROR_INVALID_ARGUMENT);
+    VerifyOrReturnError(clusterEntry.has_value(), CHIP_ERROR_INVALID_ARGUMENT);
 
     // No aliased ModeBase cluster supports StartUpMode or the OnOff feature (spec).
     // TODO: if one ever enables kOnOff, derive onOffValueForStartUp from StartUpOnOff via
@@ -78,19 +106,14 @@ CHIP_ERROR Instance::Init()
     mDelegate->SetInstance(this);
     ReturnErrorOnFailure(mDelegate->Init());
 
-    SafeAttributePersistenceProvider * safeAttributePersistenceProvider = GetSafeAttributePersistenceProvider();
-    VerifyOrReturnError(safeAttributePersistenceProvider != nullptr, CHIP_ERROR_INCORRECT_STATE);
-
     DeviceLayer::DiagnosticDataProvider  &diagnosticDataProvider = DeviceLayer::GetDiagnosticDataProvider();
 
-    ModeBaseCluster::Config config{ .feature                          = mFeature,
-                                    .optionalAttributeSet             = mOptionalAttributeSet,
-                                    .appDelegate                      = *mDelegate,
-                                    .onOffValueForStartUp             = onOffValueForStartUp,
-                                    .safeAttributePersistenceProvider = *safeAttributePersistenceProvider,
-                                    .diagnosticDataProvider           = diagnosticDataProvider,
-                                    .clusterRevision                  = clusterRevision.value() };
-    mCluster.Create(mClusterPath.mEndpointId, mClusterPath.mClusterId, config);
+    ModeBaseCluster::Config config{ .feature = mFeature,
+                                    .optionalAttributeSet = mOptionalAttributeSet,
+                                    .appDelegate = *mDelegate,
+                                    .onOffValueForStartUp = onOffValueForStartUp,
+                                    .diagnosticDataProvider = diagnosticDataProvider };
+    mCluster.Create(mClusterPath.mEndpointId, clusterEntry.value(), config);
     RegisterThisInstance();
     return esp_matter::data_model::provider::get_instance().registry().Register(mCluster.Registration());
 }

@@ -59,7 +59,7 @@ void ESPMatterEthernetNetworkDiagnosticsClusterServerInitCallback(EndpointId end
                                     "EthernetNetworkDiagnostics: cluster missing in esp-matter data model for endpoint %u",
                                     endpointId));
 
-        gServers[endpointId].Create(DeviceLayer::GetDiagnosticDataProvider(),
+        gServers[endpointId].Create(endpointId, DeviceLayer::GetDiagnosticDataProvider(),
                                     BitFlags<EthernetNetworkDiagnostics::Feature>(esp_matter::cluster::get_feature_map_value(cluster)),
                                     get_attribute_set(cluster));
     }

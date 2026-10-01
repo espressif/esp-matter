@@ -19,12 +19,12 @@
 #include <esp_matter.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
-#include <app-common/zap-generated/callback.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
 #include <thermostat_user_interface_configuration.h>
 #include <thermostat_user_interface_configuration_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
 using namespace esp_matter;
@@ -61,11 +61,9 @@ attribute_t *create_schedule_programming_visibility(cluster_t *cluster, uint8_t 
 
 } /* attribute */
 
-const function_generic_t function_list[] = {
-    (function_generic_t)MatterThermostatUserInterfaceConfigurationClusterServerPreAttributeChangedCallback,
-};
+const function_generic_t *function_list = NULL;
 
-const int function_flags = CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -85,6 +83,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         attribute::create_temperature_display_mode(cluster, config->temperature_display_mode);
         attribute::create_keypad_lockout(cluster, config->keypad_lockout);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterThermostatUserInterfaceConfigurationClusterServerInitCallback,
+                                                 ESPMatterThermostatUserInterfaceConfigurationClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {

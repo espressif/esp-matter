@@ -1357,6 +1357,16 @@ __attribute__((weak)) void ESPMatterThermostatClusterServerShutdownCallback(Endp
     // Default empty implementation
 }
 
+__attribute__((weak)) void ESPMatterThermostatModeClusterServerInitCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterThermostatModeClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
+{
+    // Default empty implementation
+}
+
 __attribute__((weak)) void ESPMatterThermostatUserInterfaceConfigurationClusterServerInitCallback(EndpointId endpoint)
 {
     // Default empty implementation

@@ -65,6 +65,7 @@ attribute_t *create_access_control_entries_per_fabric(cluster_t *cluster, uint16
 attribute_t *create_commissioning_arl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_arl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 #endif
+attribute_t *create_auxiliary_acl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 } /* attribute */
 } /* access_control */
 
@@ -548,6 +549,10 @@ attribute_t *create_active_schedule_handle(cluster_t *cluster, uint8_t *value, u
 attribute_t *create_presets(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 attribute_t *create_schedules(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 attribute_t *create_setpoint_hold_expiry_timestamp(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_max_thermostat_suggestions(cluster_t *cluster, uint8_t value);
+attribute_t *create_thermostat_suggestions(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_current_thermostat_suggestion(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
+attribute_t *create_thermostat_suggestion_not_following_reason(cluster_t *cluster, nullable<uint16_t> value);
 } /* attribute */
 } /* thermostat */
 
