@@ -217,6 +217,9 @@ extern "C" void app_main()
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD && CHIP_DEVICE_CONFIG_ENABLE_WIFI_STATION
     // Enable secondary network interface
     secondary_network_interface::config_t secondary_network_interface_config;
+    // By default, the root node is enabled with Wi-Fi network interface, set secondary network interface to Thread network interface here.
+    // If you want to enable Thread network interface on root node, you can set `root_node.network_commissioning.feature_map` in `node::config_t`.
+    secondary_network_interface_config.network_commissioning.feature_map = chip::to_underlying(NetworkCommissioning::Feature::kThreadNetworkInterface);
     endpoint = endpoint::secondary_network_interface::create(node, &secondary_network_interface_config, ENDPOINT_FLAG_NONE, nullptr);
     ABORT_APP_ON_FAILURE(endpoint != nullptr, ESP_LOGE(TAG, "Failed to create secondary network interface endpoint"));
 #endif

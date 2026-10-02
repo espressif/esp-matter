@@ -23,6 +23,7 @@
 
 #include <app_priv.h>
 #include <app_reset.h>
+#include "device_types.h"
 
 #include <helpers.h>
 #include <freertos/FreeRTOS.h>
@@ -36,6 +37,11 @@
 #include <esp_openthread.h>
 #include <esp_openthread_border_router.h>
 #include <esp_openthread_lock.h>
+#include <openthread/ip6.h>
+#include <openthread/thread.h>
+#endif
+#if CONFIG_WIFI_NETWORK_COMMISSIONING_DRIVER
+#include <esp_wifi.h>
 #endif
 
 #include <lib/support/CHIPMem.h>
@@ -61,6 +67,63 @@ constexpr uint16_t kRootNodeEndpointId = 0;
 #endif // CONFIG_ENABLE_ESP_DIAGNOSTICS_TRACE
 
 static const char *TAG = "app_main";
+
+#if CONFIG_THREAD_NETWORK_COMMISSIONING_DRIVER && CONFIG_WIFI_NETWORK_COMMISSIONING_DRIVER
+static bool sUnusedNetworkStackStopped = false;
+
+static void StopUnusedOpenThreadStack(void)
+{
+    otInstance *instance = esp_openthread_get_instance();
+    if (sUnusedNetworkStackStopped || instance == nullptr) {
+        return;
+    }
+
+    esp_openthread_lock_acquire(portMAX_DELAY);
+    if (otThreadGetDeviceRole(instance) != OT_DEVICE_ROLE_DISABLED) {
+        otThreadSetEnabled(instance, false);
+    }
+    if (otIp6IsEnabled(instance)) {
+        otIp6SetEnabled(instance, false);
+    }
+    esp_openthread_lock_release();
+
+    if (esp_openthread_mainloop_exit() != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to exit OpenThread mainloop");
+        return;
+    }
+
+    // TODO: Call openthread_deinit_stack() from ot_task_worker in OpenthreadLauncher after the mainloop returns.
+    // Use vTaskDelay as a temporary workaround to ensure the mainloop returns before deinit.
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+    if (openthread_deinit_stack() != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to deinitialize OpenThread stack");
+        return;
+    }
+
+    sUnusedNetworkStackStopped = true;
+    ESP_LOGI(TAG, "Wi-Fi connected, OpenThread stack stopped");
+}
+
+static void StopUnusedWiFiStack(void)
+{
+    if (sUnusedNetworkStackStopped) {
+        return;
+    }
+
+    if (chip::DeviceLayer::ConnectivityMgr().SetWiFiStationMode(
+                chip::DeviceLayer::ConnectivityManager::kWiFiStationMode_ApplicationControlled) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to set WiFi station mode to application controlled");
+        return;
+    }
+
+    if (esp_wifi_stop() != ESP_OK || esp_wifi_deinit() != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to stop and deinit Wi-Fi");
+        return;
+    }
+    sUnusedNetworkStackStopped = true;
+    ESP_LOGI(TAG, "Thread attached, Wi-Fi stack stopped");
+}
+#endif
 
 uint16_t app_endpoint_id = 0;
 // Semaphore is used to block esp_matter::start(), it will be unblock when we have
@@ -155,6 +218,20 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
         }
         break;
 
+#if CONFIG_THREAD_NETWORK_COMMISSIONING_DRIVER && CONFIG_WIFI_NETWORK_COMMISSIONING_DRIVER
+    case chip::DeviceLayer::DeviceEventType::kWiFiConnectivityChange:
+        if (event->WiFiConnectivityChange.Result == chip::DeviceLayer::kConnectivity_Established) {
+            StopUnusedOpenThreadStack();
+        }
+        break;
+
+    case chip::DeviceLayer::DeviceEventType::kThreadConnectivityChange:
+        if (event->ThreadConnectivityChange.Result == chip::DeviceLayer::kConnectivity_Established) {
+            StopUnusedWiFiStack();
+        }
+        break;
+#endif
+
     case chip::DeviceLayer::DeviceEventType::kBLEDeinitialized:
         ESP_LOGI(TAG, "BLE deinitialized and memory reclaimed");
         MEMORY_PROFILER_DUMP_HEAP_STAT("BLE deinitialized");
@@ -230,8 +307,18 @@ extern "C" void app_main()
 
     MEMORY_PROFILER_DUMP_HEAP_STAT("Bootup");
 
+    uint8_t device_type_index;
+    err = esp_matter::nvs_helpers::get_device_type_from_nvs(&device_type_index);
+
     /* Create a Matter node and add the mandatory Root Node device type on endpoint 0 */
     node::config_t node_config;
+#if CONFIG_THREAD_NETWORK_COMMISSIONING_DRIVER && CONFIG_WIFI_NETWORK_COMMISSIONING_DRIVER
+    if (err == ESP_OK) {
+        node_config.root_node.network_commissioning.feature_map = device_type_index == ESP_MATTER_WIFI_THREAD_LIGHT
+                                                                  ? chip::to_underlying(NetworkCommissioning::Feature::kWiFiNetworkInterface)
+                                                                  : chip::to_underlying(NetworkCommissioning::Feature::kThreadNetworkInterface);
+    }
+#endif
     // node handle can be used to add/modify other endpoints.
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
     ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
@@ -244,8 +331,7 @@ extern "C" void app_main()
 #endif // CONFIG_ENABLE_ESP_DIAGNOSTICS_TRACE
     MEMORY_PROFILER_DUMP_HEAP_STAT("node created");
 
-    uint8_t device_type_index;
-    if (esp_matter::nvs_helpers::get_device_type_from_nvs(&device_type_index) != ESP_OK) {
+    if (err != ESP_OK) {
         semaphoreHandle = xSemaphoreCreateBinary();
         ABORT_APP_ON_FAILURE(semaphoreHandle != nullptr, ESP_LOGE(TAG, "Failed to create semaphore"));
 
