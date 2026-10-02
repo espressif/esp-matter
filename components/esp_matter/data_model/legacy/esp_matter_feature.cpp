@@ -3553,7 +3553,7 @@ namespace tank_percent {
 
 uint32_t get_id()
 {
-    return static_cast<uint32_t>(WaterHeaterManagement::Feature::kEnergyManagement);
+    return static_cast<uint32_t>(WaterHeaterManagement::Feature::kTankPercent);
 }
 
 esp_err_t add(cluster_t *cluster)
