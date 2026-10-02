@@ -7,6 +7,7 @@
 */
 
 #include "bolt_lock_manager.h"
+#include "door_lock_capabilities.h"
 #include "door_lock_storage.h"
 #include "app_priv.h"
 #ifdef CONFIG_ENABLE_ALIRO_OVER_NFC
@@ -30,7 +31,7 @@ const char * TAG = "door_lock_callbacks";
 EndpointId sDoorLockEndpoint = kInvalidEndpointId;
 
 bool ValidateRemotePIN(EndpointId endpoint, const Optional<ByteSpan>  &pin,
-                       DoorLockStorage::PinMatch  &match, bool  &usedPin,
+                       DoorLockStorage::CredentialMatch  &match, bool  &usedPin,
                        OperationErrorEnum  &error)
 {
     usedPin = false;
@@ -74,10 +75,15 @@ bool ReadCredentialSlotLimits(DoorLockServer  &server, EndpointId endpoint,
     limits.credentialSlotsByType[to_underlying(CredentialTypeEnum::kAliroNonEvictableEndpointKey)] = endpointKeySlots;
 #endif
 
+#ifdef CONFIG_ENABLE_RFID_NFC
+    limits.credentialSlotsByType[to_underlying(CredentialTypeEnum::kRfid)] = DoorLockCapabilities::kRfidCredentialSlots;
+#endif
+
     return true;
 }
 
-void HandleBoltStateChange(BoltLockManager::State state, BoltLockManager::OperationSource source)
+void HandleBoltStateChange(BoltLockManager::State state, BoltLockManager::OperationSource source,
+                           const BoltLockManager::CredentialMatch  &credential)
 {
     DlLockState lockState = DlLockState::kNotFullyLocked;
     switch (state) {
@@ -88,6 +94,9 @@ void HandleBoltStateChange(BoltLockManager::State state, BoltLockManager::Operat
             ESP_LOGW(TAG, "Unlock event: source=button user=none credential=none");
         } else if (source == OperationSourceEnum::kAliro) {
             ESP_LOGW(TAG, "Unlock event: source=aliro user=unavailable credential=unavailable");
+        } else if (source == OperationSourceEnum::kRfid && credential.present) {
+            ESP_LOGW(TAG, "Unlock event: source=rfid user=%u credential=rfid:%u", credential.userIndex,
+                     credential.credentialIndex);
         }
         break;
     case BoltLockManager::State::kLockingCompleted:
@@ -98,7 +107,20 @@ void HandleBoltStateChange(BoltLockManager::State state, BoltLockManager::Operat
         break;
     }
 
-    if (!DoorLockServer::Instance().SetLockState(sDoorLockEndpoint, lockState, source)) {
+    // Report the credential that authorized this operation (if any) and the
+    // requesting fabric/node (for remote operations) so they appear on the
+    // emitted LockOperation event.
+    const CredentialStruct credStruct{ credential.credentialType, credential.credentialIndex };
+    const CredentialStruct credArray[] = { credStruct };
+    Nullable<uint16_t> userIndex = NullNullable;
+    Nullable<List<const LockOpCredentials>> credentials = NullNullable;
+    if (credential.present) {
+        userIndex = Nullable<uint16_t>(credential.userIndex);
+        credentials = Nullable<List<const LockOpCredentials>>(List<const LockOpCredentials>(credArray));
+    }
+    bool published = DoorLockServer::Instance().SetLockState(sDoorLockEndpoint, lockState, source, userIndex,
+                                                             credentials, credential.fabricIndex, credential.nodeId);
+    if (!published) {
         ESP_LOGE(TAG, "Failed to publish bolt state %u", to_underlying(lockState));
     }
     esp_err_t err = app_driver_set_lock_state(state);
@@ -140,23 +162,35 @@ bool emberAfPluginDoorLockOnDoorLockCommand(EndpointId endpoint, const Nullable<
                                             const Nullable<NodeId>  &nodeId, const Optional<ByteSpan>  &pin,
                                             OperationErrorEnum  &error)
 {
-    DoorLockStorage::PinMatch match;
+    DoorLockStorage::CredentialMatch match;
     bool usedPin = false;
     VerifyOrReturnValue(ValidateRemotePIN(endpoint, pin, match, usedPin, error), false);
-    return BoltLockManager::Instance().Lock(OperationSourceEnum::kRemote);
+    BoltLockManager::CredentialMatch credential;
+    if (usedPin) {
+        credential = { true, match.userIndex, match.credentialIndex, CredentialTypeEnum::kPin };
+    }
+    credential.fabricIndex = fabricIndex;
+    credential.nodeId = nodeId;
+    return BoltLockManager::Instance().Lock(OperationSourceEnum::kRemote, credential);
 }
 
 bool emberAfPluginDoorLockOnDoorUnlockCommand(EndpointId endpoint, const Nullable<FabricIndex>  &fabricIndex,
                                               const Nullable<NodeId>  &nodeId, const Optional<ByteSpan>  &pin,
                                               OperationErrorEnum  &error)
 {
-    DoorLockStorage::PinMatch match;
+    DoorLockStorage::CredentialMatch match;
     bool usedPin = false;
     if (!ValidateRemotePIN(endpoint, pin, match, usedPin, error)) {
         ESP_LOGE(TAG, "Unlock rejected: source=remote endpoint=%u reason=invalid-credential", endpoint);
         return false;
     }
-    if (!BoltLockManager::Instance().Unlock(OperationSourceEnum::kRemote)) {
+    BoltLockManager::CredentialMatch credential;
+    if (usedPin) {
+        credential = { true, match.userIndex, match.credentialIndex, CredentialTypeEnum::kPin };
+    }
+    credential.fabricIndex = fabricIndex;
+    credential.nodeId = nodeId;
+    if (!BoltLockManager::Instance().Unlock(OperationSourceEnum::kRemote, credential)) {
         ESP_LOGE(TAG, "Unlock rejected: source=remote endpoint=%u reason=actuator", endpoint);
         return false;
     }
