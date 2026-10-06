@@ -1757,7 +1757,6 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
             if (shutdown_callback) {
                 shutdown_callback(endpoint::get_id(endpoint));
             }
-            cluster = cluster::get_next(cluster);
 
             /* Shutdown function */
             uint8_t flags = cluster::get_flags(cluster);
