@@ -23,6 +23,23 @@ Protocols::InteractionModel::Status MockDeviceEnergyManagementDelegate::PowerAdj
     return Protocols::InteractionModel::Status::Success;
 }
 
+Protocols::InteractionModel::Status
+MockDeviceEnergyManagementDelegate::PowerRangeAdjustRequest(const Optional<int64_t> minPower,
+                                                            const Optional<int64_t> maxPower,
+                                                            const uint32_t duration, AdjustmentCauseEnum cause)
+{
+    // Implement your own logic here.
+    ESP_LOGE(LOG_TAG, "%s is not implemented", __func__);
+    return Protocols::InteractionModel::Status::Success;
+}
+
+Protocols::InteractionModel::Status MockDeviceEnergyManagementDelegate::CancelPowerRangeAdjustRequest()
+{
+    // Implement your own logic here.
+    ESP_LOGE(LOG_TAG, "%s is not implemented", __func__);
+    return Protocols::InteractionModel::Status::Success;
+}
+
 Protocols::InteractionModel::Status MockDeviceEnergyManagementDelegate::CancelPowerAdjustRequest()
 {
     // Implement your own logic here.
@@ -123,6 +140,13 @@ const DataModel::Nullable<Structs::ForecastStruct::Type>  &MockDeviceEnergyManag
 {
     ESP_LOGE(LOG_TAG, "%s is not implemented", __func__);
     return mForecast;
+}
+
+const DataModel::Nullable<Structs::PowerRangeAdjustStruct::Type>  &
+MockDeviceEnergyManagementDelegate::GetPowerRangeAdjustment()
+{
+    ESP_LOGE(LOG_TAG, "%s is not implemented", __func__);
+    return mPowerRangeAdjustment;
 }
 
 CHIP_ERROR MockDeviceEnergyManagementDelegate::SetESAState(ESAStateEnum esaState)
