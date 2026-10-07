@@ -43,6 +43,7 @@ for details, or contact matter-pki@espressif.com / sales@espressif.com.
 |                                                         v1.4.2                                                         | [release/v1.4.2](https://github.com/espressif/esp-matter/tree/release/v1.4.2) |
 | v1.5 ([a51f624](https://github.com/espressif/esp-matter/tree/a51f624f0735aefd0a9cfe1e0039d68de8ce24e2)), v1.5.1 (HEAD) |   [release/v1.5](https://github.com/espressif/esp-matter/tree/release/v1.5)   |
 |                                                          v1.6                                                          |   [release/v1.6](https://github.com/espressif/esp-matter/tree/release/v1.6)   |
+|                                                         v1.6.1                                                         | [release/v1.6.1](https://github.com/espressif/esp-matter/tree/release/v1.6.1) |
 |                                                 v1.7 (Ongoing effort)                                                  |           [main](https://github.com/espressif/esp-matter/tree/main)           |
 
 ## Getting the repositories
