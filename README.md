@@ -30,7 +30,7 @@ section in the ESP-Matter Programming Guide.
 
 ## Supported ESP-IDF and connectedhomeip versions
 
-- This SDK currently works with commit [392b307067] (https://github.com/project-chip/connectedhomeip/tree/392b307067) of connectedhomeip.
+- This SDK currently works with commit [9c2a63634e] (https://github.com/project-chip/connectedhomeip/tree/9c2a63634e) of connectedhomeip.
 - For Matter projects development with this SDK, it is recommended to utilize ESP-IDF [v5.5.5](https://github.com/espressif/esp-idf/tree/v5.5.5).
 - For ESP32C5 and ESP32C61, it is recommended to utilize ESP-IDF [v5.5.5](https://github.com/espressif/esp-idf/tree/v5.5.5).
 
