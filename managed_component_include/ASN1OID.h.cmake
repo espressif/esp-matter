@@ -1,5 +1,5 @@
 # Generating asn1/ASN1OID.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/asn1/ASN1OID.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/asn1/ASN1OID.h
 "#pragma once\n
 #include <cstdint>
 #include <cstddef>

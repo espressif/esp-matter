@@ -1,5 +1,5 @@
 # Generating app/AppBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/app/AppBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/app/AppBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 

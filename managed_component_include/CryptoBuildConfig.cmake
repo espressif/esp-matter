@@ -1,7 +1,7 @@
 # Generating crypto/CryptoBuildConfig.h
 # IDF v6+ uses PSA crypto (mbedTLS 4.x); earlier IDF keeps mbedtls.
 if (IDF_VERSION_MAJOR GREATER_EQUAL 6)
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/crypto/CryptoBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/crypto/CryptoBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 #define CHIP_CRYPTO_MBEDTLS 0
@@ -19,7 +19,7 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/crypto/CryptoBuildConfig.h
 #define CHIP_OP_KEYSTORE_ELE 0
 ")
 else()
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/crypto/CryptoBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/crypto/CryptoBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 #define CHIP_CRYPTO_MBEDTLS 1

@@ -666,6 +666,20 @@ target_include_directories(${COMPONENT_LIB} PRIVATE
 target_include_directories(${COMPONENT_LIB} INTERFACE
     "${MATTER_SDK_PATH}/examples/platform/esp32")
 
+# Write a generated header only when its content changes.
+function(esp_matter_write_if_changed path content)
+    if(ARGN)
+        message(FATAL_ERROR "esp_matter_write_if_changed: content for ${path} must be quoted")
+    endif()
+    if(EXISTS "${path}")
+        file(READ "${path}" old_content)
+        if("${old_content}" STREQUAL "${content}")
+            return()
+        endif()
+    endif()
+    file(WRITE "${path}" "${content}")
+endfunction()
+
 #Generate some include files
 file(GLOB cmake_generate_include_files "${CMAKE_CURRENT_LIST_DIR}/managed_component_include/*.cmake")
 foreach(cmake_file ${cmake_generate_include_files})

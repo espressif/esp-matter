@@ -1,5 +1,5 @@
 # Generating system/SystemBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/system/SystemBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/system/SystemBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 #define CONFIG_DEVICE_LAYER 1

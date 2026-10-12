@@ -1,6 +1,6 @@
 if (NOT CONFIG_CHIP_ENABLE_EXTERNAL_PLATFORM)
 # Generating platform/CHIPDeviceBuildConfig.h when external platform is not enabled.
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/platform/CHIPDeviceBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/platform/CHIPDeviceBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 

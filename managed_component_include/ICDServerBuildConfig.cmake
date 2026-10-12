@@ -1,5 +1,5 @@
 # Generating app/icd/server/ICDServerBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/app/icd/server/ICDServerBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/app/icd/server/ICDServerBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 #ifdef CONFIG_ENABLE_ICD_SERVER

@@ -1,5 +1,5 @@
 # Generating setup_payload/CHIPAdditionalDataPayloadBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/setup_payload/CHIPAdditionalDataPayloadBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/setup_payload/CHIPAdditionalDataPayloadBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 #ifdef CONFIG_ENABLE_ROTATING_DEVICE_ID

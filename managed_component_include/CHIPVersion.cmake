@@ -1,5 +1,5 @@
 # Generating CHIPVersion.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/CHIPVersion.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/CHIPVersion.h
 "/*
  *
  *    Copyright (c) 2020 Project CHIP Authors

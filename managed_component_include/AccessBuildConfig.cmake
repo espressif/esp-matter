@@ -1,5 +1,5 @@
 # Generating access/AccessBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/access/AccessBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/access/AccessBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 

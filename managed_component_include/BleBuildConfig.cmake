@@ -1,5 +1,5 @@
 # Generating ble/BleBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/ble/BleBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/ble/BleBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 #ifdef CONFIG_ENABLE_CHIPOBLE
