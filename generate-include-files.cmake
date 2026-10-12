@@ -1,3 +1,17 @@
+# Write a generated header only when its content changes.
+function(esp_matter_write_if_changed path content)
+    if(ARGN)
+        message(FATAL_ERROR "esp_matter_write_if_changed: content for ${path} must be quoted")
+    endif()
+    if(EXISTS "${path}")
+        file(READ "${path}" old_content)
+        if("${old_content}" STREQUAL "${content}")
+            return()
+        endif()
+    endif()
+    file(WRITE "${path}" "${content}")
+endfunction()
+
 # Generating FirmwareBuildTime.h
 execute_process(
     COMMAND date "+%s"
@@ -5,13 +19,15 @@ execute_process(
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 math(EXPR BUILD_SECONDS "${BUILD_SECONDS} - (946684800)")
+# Not using esp_matter_write_if_changed: the timestamp changes on every
+# configure.
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/FirmwareBuildTime.h
 "#pragma once\n
 #define CHIP_DEVICE_CONFIG_FIRMWARE_BUILD_TIME_MATTER_EPOCH_S ${BUILD_SECONDS}
 ")
 
 # Generating app/AppBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/app/AppBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/app/AppBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 
@@ -47,7 +63,7 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/app/AppBuildConfig.h
 ")
 
 # Generating app/icd/server/ICDServerBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/app/icd/server/ICDServerBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/app/icd/server/ICDServerBuildConfig.h
 "#pragma once\n
 #ifdef CONFIG_ENABLE_ICD_SERVER
 #define CHIP_CONFIG_ENABLE_ICD_SERVER 1
@@ -64,7 +80,7 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/app/icd/server/ICDServerBuildConfig.h
 ")
 
 # Generating asn1/ASN1OID.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/asn1/ASN1OID.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/asn1/ASN1OID.h
 "#pragma once\n
 #include <cstdint>
 #include <cstddef>
@@ -293,7 +309,7 @@ namespace chip {
 ")
 
 # Generating ble/BleBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/ble/BleBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/ble/BleBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 #ifdef CONFIG_ENABLE_CHIPOBLE
@@ -310,7 +326,7 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/ble/BleBuildConfig.h
 ")
 
 # Generating core/CHIPBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/core/CHIPBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/core/CHIPBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 #define CHIP_FUZZING_ENABLED 0
@@ -349,7 +365,7 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/core/CHIPBuildConfig.h
 ")
 
 # Generating crypto/CryptoBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/crypto/CryptoBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/crypto/CryptoBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 #define CHIP_CRYPTO_MBEDTLS 1
@@ -360,7 +376,7 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/crypto/CryptoBuildConfig.h
 ")
 
 # Generating inet/InetBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/inet/InetBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/inet/InetBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 #define INET_CONFIG_TEST 0
@@ -384,14 +400,14 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/inet/InetBuildConfig.h
 ")
 
 # Generating lwip/lwip_buildconfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/lwip/lwip_buildconfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/lwip/lwip_buildconfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 #define HAVE_LWIP_UDP_BIND_NETIF 1
 ")
 
 # Generating matter/tracing/build_config.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/matter/tracing/build_config.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/matter/tracing/build_config.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 #ifdef CONFIG_ENABLE_ESP_INSIGHTS_TRACE
@@ -402,7 +418,7 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/matter/tracing/build_config.h
 ")
 
 # Generating platform/CHIPDeviceBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/platform/CHIPDeviceBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/platform/CHIPDeviceBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 
@@ -466,7 +482,7 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/platform/CHIPDeviceBuildConfig.h
 ")
 
 # Generating setup_payload/CHIPAdditionalDataPayloadBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/setup_payload/CHIPAdditionalDataPayloadBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/setup_payload/CHIPAdditionalDataPayloadBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 #ifdef CONFIG_ENABLE_ROTATING_DEVICE_ID
@@ -477,7 +493,7 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/setup_payload/CHIPAdditionalDataPayloadBu
 ")
 
 # Generating system/SystemBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/system/SystemBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/system/SystemBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 #define CONFIG_DEVICE_LAYER 1
@@ -523,7 +539,7 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/system/SystemBuildConfig.h
 ")
 
 # Generating CHIPVersion.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/CHIPVersion.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/CHIPVersion.h
 "/*
  *
  *    Copyright (c) 2020 Project CHIP Authors
