@@ -37,7 +37,7 @@ namespace attestation_verification {
 static esp_err_t get_current_time(mbedtls_x509_time &time)
 {
     struct timeval tv;
-    if (gettimeofday(&tv, nullptr) == 0) {
+    if (gettimeofday(&tv, nullptr) != 0) {
         ESP_LOGW(TAG, "Failed to get current time, using 2025-1-1 as the current time");
         time.year = 2025;
         time.mon = 1;
@@ -189,7 +189,13 @@ bool is_da_cert_serial_number_revoked(const ByteSpan &da_cert, const mbedtls_x50
 {
     uint8_t serialNumberBuf[Crypto::kMaxCertificateSerialNumberLength] = {0};
     MutableByteSpan serialNumber(serialNumberBuf);
-    Crypto::ExtractSerialNumberFromX509Cert(da_cert, serialNumber);
+    // Per Matter spec, a DAC must have a serial number, if such a cert should have
+    // been rejected when the DAC was requested. If one slips through, mark it
+    // revoked rather than continue commissioning.
+    if (Crypto::ExtractSerialNumberFromX509Cert(da_cert, serialNumber) != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to extract DA cert serial number, treating cert as revoked");
+        return true;
+    }
     for (const mbedtls_x509_crl_entry *entry = &crl->entry; entry != NULL; entry = entry->next) {
         // If the certificate's serial number is in the CRL's list and current time is after the revocation date,
         // the certificate is revoked
