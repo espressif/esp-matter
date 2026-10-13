@@ -239,6 +239,9 @@ static void send_command_failure_callback(void *context, CHIP_ERROR error)
 void app_driver_client_invoke_command_callback(client::peer_device_t *peer_device, client::request_handle_t *req_handle,
                                                void *priv_data)
 {
+    if (!req_handle) {
+        return;
+    }
     if (req_handle->type == esp_matter::client::INVOKE_CMD) {
         char command_data_str[32];
         // on_off light switch should support on_off cluster and identify cluster commands sending.
@@ -246,6 +249,10 @@ void app_driver_client_invoke_command_callback(client::peer_device_t *peer_devic
             strcpy(command_data_str, "{}");
         } else if (req_handle->command_path.mClusterId == Identify::Id) {
             if (req_handle->command_path.mCommandId == Identify::Commands::Identify::Id) {
+                if (!req_handle->request_data) {
+                    ESP_LOGE(TAG, "Invalid request data");
+                    return;
+                }
                 if (((char *)req_handle->request_data)[0] != 1) {
                     ESP_LOGE(TAG, "Number of parameters error");
                     return;
@@ -291,6 +298,10 @@ void app_driver_client_group_invoke_command_callback(uint8_t fabric_index, clien
         strcpy(command_data_str, "{}");
     } else if (req_handle->command_path.mClusterId == Identify::Id) {
         if (req_handle->command_path.mCommandId == Identify::Commands::Identify::Id) {
+            if (!req_handle->request_data) {
+                ESP_LOGE(TAG, "Invalid request data");
+                return;
+            }
             if (((char *)req_handle->request_data)[0] != 1) {
                 ESP_LOGE(TAG, "Number of parameters error");
                 return;

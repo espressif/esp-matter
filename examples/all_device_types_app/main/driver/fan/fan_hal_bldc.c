@@ -80,7 +80,7 @@ esp_err_t hal_bldc_button_ctrl_init(gpio_num_t pin)
         return ESP_FAIL;
     }
 
-    if (iot_button_register_cb(btn, BUTTON_PRESS_DOWN, NULL, hal_bldc_button_ctrl, &btn) != ESP_OK) {
+    if (iot_button_register_cb(btn, BUTTON_PRESS_DOWN, NULL, hal_bldc_button_ctrl, NULL) != ESP_OK) {
         return ESP_FAIL;
     }
 
@@ -149,10 +149,12 @@ esp_err_t hal_bldc_init(dir_enum_t direction)
     }
 
     if (bldc_control_set_dir(bldc_control_handle, direction) != ESP_OK) {
+        bldc_control_deinit(bldc_control_handle);
         return ESP_FAIL;
     }
 
     if (hal_bldc_button_ctrl_init(CONFIG_POWER_BUTTON_GPIO) != ESP_OK) {
+        bldc_control_deinit(bldc_control_handle);
         return ESP_FAIL;
     }
 
@@ -163,10 +165,13 @@ esp_err_t hal_bldc_init(dir_enum_t direction)
 
     esp_timer_handle_t periodic_bldc_timer;
     if (esp_timer_create(&periodic_timer_args, &periodic_bldc_timer) != ESP_OK) {
+        bldc_control_deinit(bldc_control_handle);
         return ESP_FAIL;
     }
 
     if (esp_timer_start_periodic(periodic_bldc_timer, 1000 * 1000) != ESP_OK) {
+        esp_timer_delete(periodic_bldc_timer);
+        bldc_control_deinit(bldc_control_handle);
         return ESP_FAIL;
     }
 
@@ -225,9 +230,9 @@ esp_err_t hal_bldc_set_percent_speed(uint16_t percent)
     if (percent != 0) {
         if (motor_parameter.is_start == 0) {
             motor_parameter.is_start = 1;
-            bldc_control_start(bldc_control_handle, motor_parameter.target_speed);
+            return bldc_control_start(bldc_control_handle, motor_parameter.target_speed);
         } else {
-            bldc_control_set_speed_rpm(bldc_control_handle, motor_parameter.target_speed);
+            return bldc_control_set_speed_rpm(bldc_control_handle, motor_parameter.target_speed);
         }
     }
     return ESP_OK;
