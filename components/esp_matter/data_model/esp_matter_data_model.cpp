@@ -972,7 +972,7 @@ esp_matter_val_type_t get_val_type(uint16_t endpoint_id, uint32_t cluster_id, ui
 }
 
 static esp_err_t set_val_via_write_attribute(uint16_t endpoint_id, uint32_t cluster_id,
-                                             uint32_t attribute_id, esp_matter_attr_val_t *val)
+                                             uint32_t attribute_id, esp_matter_attr_val_t *val, bool call_callbacks)
 {
     chip::Platform::ScopedMemoryBuffer<uint8_t> tlv_buffer;
     tlv_buffer.Calloc(k_max_tlv_size_to_write_attribute_value);
@@ -1009,7 +1009,7 @@ static esp_err_t set_val_via_write_attribute(uint16_t endpoint_id, uint32_t clus
     esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
 
     chip::app::DataModel::ActionReturnStatus status =
-        esp_matter::data_model::provider::get_instance().WriteAttribute(request, decoder);
+        esp_matter::data_model::provider::get_instance().WriteAttribute(request, decoder, call_callbacks);
 
     if (status.IsError()) {
         chip::app::DataModel::ActionReturnStatus::StringStorage storage;
@@ -1024,6 +1024,8 @@ esp_err_t set_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_
                   bool call_callbacks)
 {
     VerifyOrReturnError(val && val->type != ESP_MATTER_VAL_TYPE_INVALID, ESP_ERR_INVALID_ARG);
+
+    // We only support primitive data types and complex/list types are not yet supported
     VerifyOrReturnError(val->type != ESP_MATTER_VAL_TYPE_ARRAY, ESP_ERR_NOT_SUPPORTED);
 
     attribute_t *attr = get(endpoint_id, cluster_id, attribute_id);
@@ -1032,18 +1034,21 @@ esp_err_t set_val(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_
 
     uint16_t flags = get_flags(attr);
 
-    // we can use DataModelProvider::WriteAttribute API for writable attributes
-    if (flags & ATTRIBUTE_FLAG_WRITABLE) {
-        return set_val_via_write_attribute(endpoint_id, cluster_id, attribute_id, val);
-    }
+    bool writable = (flags & ATTRIBUTE_FLAG_WRITABLE);
+    bool sci_served = data_model::provider::get_instance().registry().Get(
+                          chip::app::ConcreteClusterPath(endpoint_id, cluster_id)) != nullptr;
+    // Internally managed attributes are set using cluster specific APIs
+    bool managed_internally = (flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY);
 
-    if (!(flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY)) {
-        // this updates the value of attribute in the esp-matter storage
+    if (!(sci_served || managed_internally)) {
+        // esp-matter-managed attribute: the esp-matter store is the source of truth.
         return attribute::set_val_internal(attr, val, call_callbacks);
     }
 
-    // TODO: If not writable, we could use the cluster-specific setter API to update the value
-    //       with the code-driven effort, we can get the cluster object and call the setter API
+    if (writable) {
+        return set_val_via_write_attribute(endpoint_id, cluster_id, attribute_id, val, call_callbacks);
+    }
+
     return ESP_ERR_NOT_SUPPORTED;
 }
 
