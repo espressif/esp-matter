@@ -57,4 +57,6 @@ esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/app/icd/server/ICDServer
 #else
 #define CHIP_CONFIG_ENABLE_ICD_CHECK_IN_ON_REPORT_TIMEOUT 1
 #endif
+
+#define CHIP_CONFIG_ENABLE_ICD_DEFER_ACTIVEMODE_THREAD_ATTACH 1
 ")
