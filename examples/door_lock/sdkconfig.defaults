@@ -18,6 +18,9 @@ CONFIG_PARTITION_TABLE_OFFSET=0xC000
 # Enable chip shell
 CONFIG_ENABLE_CHIP_SHELL=y
 
+# Enable SNTP-backed Time Synchronization for access schedule evaluation.
+CONFIG_ENABLE_SNTP_TIME_SYNC=y
+
 # This example only use 2 dynamic endpoints
 CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT=2
 
