@@ -78,7 +78,7 @@ class TestAttributeConditions(unittest.TestCase):
         result = Conformance(conformance)()
 
         self.assertEqual(
-            "has_attribute(HoldTime)",
+            "is_attribute_enabled(cluster, attribute::HoldTime::Id)",
             result,
         )
 
@@ -95,7 +95,7 @@ class TestCommandConditions(unittest.TestCase):
         result = Conformance(conformance)()
 
         self.assertEqual(
-            "has_command(SetHoldTime, COMMAND_FLAG_ACCEPTED)",
+            "is_command_enabled(cluster, command::SetHoldTime::Id, COMMAND_FLAG_ACCEPTED)",
             result,
         )
 

@@ -146,7 +146,7 @@ void ESPMatterElectricalEnergyMeasurementClusterServerInitCallback(EndpointId en
 
         const ElectricalEnergyMeasurementCluster::Config config{
             .endpointId         = endpoint,
-            .featureFlags       = BitMask<ElectricalEnergyMeasurement::Feature>(read_feature_map_u32(cluster)),
+            .featureFlags       = BitMask<ElectricalEnergyMeasurement::Feature>(esp_matter::cluster::get_feature_map_value(cluster)),
             .optionalAttributes = optionalAttrs,
             .accuracyStruct     = kDefaultAccuracy,
             .delegate           = *delegate_p,

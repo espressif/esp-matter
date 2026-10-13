@@ -24,6 +24,7 @@
 #include <scenes_management_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <data_model/esp_matter_attribute_helpers.h>
 #include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
@@ -140,7 +141,7 @@ command_t *create_copy_scene(cluster_t *cluster)
 
 command_t *create_copy_scene_response(cluster_t *cluster)
 {
-    VerifyOrReturnValue(has_command(CopyScene, COMMAND_FLAG_ACCEPTED), NULL);
+    VerifyOrReturnValue(is_command_enabled(cluster, command::CopyScene::Id, COMMAND_FLAG_ACCEPTED), NULL);
     return esp_matter::command::create(cluster, CopySceneResponse::Id, COMMAND_FLAG_GENERATED, NULL);
 }
 

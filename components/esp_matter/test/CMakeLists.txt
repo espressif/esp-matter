@@ -7,6 +7,7 @@ list(APPEND srcs_list "attribute_report.cpp")
 list(APPEND srcs_list "cluster_lifecycle_basic.cpp")
 list(APPEND srcs_list "cluster_lifecycle_managed_delegate.cpp")
 list(APPEND srcs_list "test_optional_clusters_validation.cpp")
+list(APPEND srcs_list "data_model_common.cpp")
 list(APPEND srcs_list "jsontlv.cpp")
 list(APPEND srcs_list "attribute_helpers.cpp")
 

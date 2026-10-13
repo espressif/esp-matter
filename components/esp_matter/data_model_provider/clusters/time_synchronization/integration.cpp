@@ -46,7 +46,7 @@ esp_err_t GetClusterConfig(EndpointId endpointId, TimeSynchronizationCluster::Op
     if (!cluster) {
         return ESP_FAIL;
     }
-    featureMap = BitFlags<TimeSynchronization::Feature>(read_feature_map_u32(cluster));
+    featureMap = BitFlags<TimeSynchronization::Feature>(cluster::get_feature_map_value(cluster));
     esp_matter_attr_val_t attr_val;
     if (featureMap.Has(Feature::kNTPClient) || featureMap.Has(Feature::kNTPServer)) {
         ESP_RETURN_ON_ERROR(get_stored_attr_val(cluster, Attributes::SupportsDNSResolve::Id, attr_val), "TimeSync",

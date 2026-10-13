@@ -28,35 +28,6 @@ using namespace chip::app::Clusters;
 namespace esp_matter {
 namespace cluster {
 
-static esp_err_t update_feature_map(cluster_t *cluster, uint32_t value)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-
-    /* Get the attribute */
-    attribute_t *attribute = attribute::get(cluster, Globals::Attributes::FeatureMap::Id);
-
-    VerifyOrReturnError(attribute, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Feature map attribute cannot be null"));
-
-    /* Update the value if the attribute already exists */
-    esp_matter_attr_val_t val;
-    VerifyOrReturnError(attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
-    val.val.u32 |= value;
-    /* Here we can't call attribute::update() since the chip stack would not have started yet, since we are
-    still creating the data model. So, we are directly using attribute::set_val_internal(). */
-    return attribute::set_val_internal(attribute, &val, false);
-}
-
-static uint32_t get_feature_map_value(cluster_t *cluster)
-{
-    esp_matter_attr_val_t val;
-    attribute_t *attribute = attribute::get(cluster, Globals::Attributes::FeatureMap::Id);
-
-    VerifyOrReturnValue(attribute, 0, ESP_LOGE(TAG, "Feature map attribute cannot be null"));
-
-    VerifyOrReturnValue(attribute::get_val_internal(attribute, &val) == ESP_OK, 0);
-    return val.val.u32;
-}
-
 namespace descriptor {
 namespace feature {
 namespace tag_list {

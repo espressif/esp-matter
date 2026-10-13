@@ -24,6 +24,7 @@
 #include <occupancy_sensing_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <data_model/esp_matter_attribute_helpers.h>
 #include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
@@ -214,7 +215,7 @@ attribute_t *create_hold_time(cluster_t *cluster, uint16_t value)
 
 attribute_t *create_hold_time_limits(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    VerifyOrReturnValue(has_attribute(HoldTime), NULL);
+    VerifyOrReturnValue(is_attribute_enabled(cluster, attribute::HoldTime::Id), NULL);
     return esp_matter::attribute::create(cluster, HoldTimeLimits::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 

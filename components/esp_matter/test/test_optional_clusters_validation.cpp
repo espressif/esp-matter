@@ -7,7 +7,7 @@
 #include <unity.h>
 #include <esp_matter.h>
 #include <esp_matter_core.h>
-#include <esp_matter_macros.h>
+#include <esp_matter_data_model_priv.h>
 #include <esp_matter_data_model.h>
 
 #include "cluster_lifecycle_common.h"

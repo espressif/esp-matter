@@ -162,7 +162,8 @@ esp_err_t GetScenesClusterContextParams(EndpointId endpointId, BitMask<ScenesMan
                                         bool &supportsCopyScene, uint16_t &tableSize)
 {
     esp_matter::cluster_t *cluster = esp_matter::cluster::get(endpointId, ScenesManagement::Id);
-    featureMap = BitMask<ScenesManagement::Feature>(read_feature_map_u32(cluster));
+    VerifyOrReturnValue(cluster, ESP_ERR_INVALID_STATE);
+    featureMap = BitMask<ScenesManagement::Feature>(cluster::get_feature_map_value(cluster));
     esp_matter_attr_val_t attr_val;
     supportsCopyScene =
         endpoint::is_command_enabled(endpointId, ScenesManagement::Id, Commands::CopyScene::Id);
