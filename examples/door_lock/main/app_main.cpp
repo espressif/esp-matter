@@ -32,6 +32,9 @@
 #ifdef CONFIG_ENABLE_ALIRO_OVER_NFC
 #include <aliro_door_lock_delegate.h>
 #endif
+#ifdef CONFIG_ENABLE_RFID_NFC
+#include <rfid_door_lock_handler.h>
+#endif
 
 static const char *TAG = "app_main";
 uint16_t door_lock_endpoint_id = 0;
@@ -166,6 +169,10 @@ extern "C" void app_main()
     cluster::door_lock::feature::credential_over_the_air_access::config_t cota_config;
     cluster::door_lock::feature::pin_credential::config_t pin_credential_config;
     pin_credential_config.number_pin_users_supported = DoorLockCapabilities::kPinCredentialSlots;
+#ifdef CONFIG_ENABLE_RFID_NFC
+    cluster::door_lock::feature::rfid_credential::config_t rfid_credential_config;
+    rfid_credential_config.number_rfid_users_supported = DoorLockCapabilities::kRfidCredentialSlots;
+#endif
     cluster::door_lock::feature::user::config_t user_config;
     user_config.number_of_total_user_supported = DoorLockCapabilities::kUsers;
     user_config.number_of_credentials_supported_per_user = DoorLockCapabilities::kCredentialsPerUser;
@@ -178,6 +185,9 @@ extern "C" void app_main()
     cluster::door_lock::feature::user::add(door_lock_cluster, &user_config);
 #ifdef CONFIG_ENABLE_ALIRO_OVER_NFC
     cluster::door_lock::feature::aliro_provisioning::add(door_lock_cluster);
+#endif
+#ifdef CONFIG_ENABLE_RFID_NFC
+    cluster::door_lock::feature::rfid_credential::add(door_lock_cluster, &rfid_credential_config);
 #endif
     cluster::door_lock::attribute::create_auto_relock_time(door_lock_cluster, 5);
 
@@ -204,6 +214,11 @@ extern "C" void app_main()
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to set RGB LED state, err:%d", err);
     }
+
+#ifdef CONFIG_ENABLE_RFID_NFC
+    err = rfid_door_lock_init();
+    ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to initialize RFID NFC reader, err:%d", err));
+#endif
 
 #if CONFIG_ENABLE_ENCRYPTED_OTA
     err = esp_matter_ota_requestor_encrypted_init(s_decryption_key, s_decryption_key_len);

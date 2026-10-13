@@ -375,10 +375,10 @@ bool DoorLockStorage::SetCredential(uint16_t credentialIndex, FabricIndex creato
     return true;
 }
 
-bool DoorLockStorage::ValidatePIN(const ByteSpan  &pin, PinMatch  &match) const
+bool DoorLockStorage::ValidatePIN(const ByteSpan  &pin, CredentialMatch  &match) const
 {
     VerifyOrReturnValue(mInitialized, false);
-    match = PinMatch();
+    match = CredentialMatch();
     const uint16_t pinSlotCount =
         mLimits.credentialSlotsByType[to_underlying(CredentialTypeEnum::kPin)];
     for (uint16_t normalizedIndex = 0; normalizedIndex < pinSlotCount; ++normalizedIndex) {
@@ -397,6 +397,40 @@ bool DoorLockStorage::ValidatePIN(const ByteSpan  &pin, PinMatch  &match) const
             }
             for (uint8_t i = 0; i < user.credentialCount; ++i) {
                 if (user.credentials[i].credentialType == CredentialTypeEnum::kPin &&
+                        user.credentials[i].credentialIndex == credentialIndex) {
+                    match.userIndex = userIndex + 1;
+                    match.credentialIndex = credentialIndex;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    return false;
+}
+
+bool DoorLockStorage::ValidateRfid(const ByteSpan  &uid, CredentialMatch  &match) const
+{
+    VerifyOrReturnValue(mInitialized, false);
+    match = CredentialMatch();
+    const uint16_t rfidSlotCount =
+        mLimits.credentialSlotsByType[to_underlying(CredentialTypeEnum::kRfid)];
+    for (uint16_t normalizedIndex = 0; normalizedIndex < rfidSlotCount; ++normalizedIndex) {
+        const CredentialRecord  &credential =
+            mCredentials[CredentialStorageIndex(normalizedIndex, CredentialTypeEnum::kRfid)];
+        if (credential.status != DlCredentialStatus::kOccupied ||
+                !ByteSpan(credential.data, credential.dataLength).data_equal(uid)) {
+            continue;
+        }
+
+        const uint16_t credentialIndex = normalizedIndex + 1;
+        for (uint16_t userIndex = 0; userIndex < mLimits.numberOfUsers; ++userIndex) {
+            const UserRecord  &user = mUsers[userIndex];
+            if (user.status != UserStatusEnum::kOccupiedEnabled) {
+                continue;
+            }
+            for (uint8_t i = 0; i < user.credentialCount; ++i) {
+                if (user.credentials[i].credentialType == CredentialTypeEnum::kRfid &&
                         user.credentials[i].credentialIndex == credentialIndex) {
                     match.userIndex = userIndex + 1;
                     match.credentialIndex = credentialIndex;

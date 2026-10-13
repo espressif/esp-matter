@@ -58,12 +58,16 @@ public:
                        chip::FabricIndex modifier, DlCredentialStatus credentialStatus,
                        CredentialTypeEnum credentialType, const chip::ByteSpan  &credentialData);
 
-    struct PinMatch {
+    // Identifies the user owning a credential that matched a presented PIN or
+    // RFID UID, shared by ValidatePIN and ValidateRfid since both represent
+    // the same {user, credential} pairing.
+    struct CredentialMatch {
         uint16_t userIndex = 0;
         uint16_t credentialIndex = 0;
     };
 
-    bool ValidatePIN(const chip::ByteSpan  &pin, PinMatch  &match) const;
+    bool ValidatePIN(const chip::ByteSpan  &pin, CredentialMatch  &match) const;
+    bool ValidateRfid(const chip::ByteSpan  &uid, CredentialMatch  &match) const;
 
 private:
     DoorLockStorage() = default;
