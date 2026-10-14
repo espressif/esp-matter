@@ -59,7 +59,9 @@
 #include <setup_payload/AdditionalDataPayloadGenerator.h>
 #include <system/SystemTimer.h>
 
+#ifndef CONFIG_BT_CONTROLLER_DISABLED
 #include "esp_bt.h"
+#endif
 #include "esp_log.h"
 
 #if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
@@ -903,7 +905,10 @@ CHIP_ERROR BLEManagerImpl::bleprph_set_random_addr(void)
 void BLEManagerImpl::bleprph_on_sync(void)
 {
     ESP_LOGI(TAG, "BLE host-controller synced");
-    xSemaphoreGive(semaphoreHandle);
+    // A re-sync after a host reset comes after InitESPBleLayer() has deleted the semaphore.
+    if (semaphoreHandle != NULL) {
+        xSemaphoreGive(semaphoreHandle);
+    }
 }
 
 void BLEManagerImpl::bleprph_host_task(void * param)
@@ -1006,7 +1011,9 @@ void BLEManagerImpl::ClaimBLEMemory(System::Layer *, void *)
         // Free up all the space occupied by ble and add it to heap
         esp_err_t err = ESP_OK;
 
-#ifdef CONFIG_IDF_TARGET_ESP32
+#if defined(CONFIG_BT_CONTROLLER_DISABLED)
+        // The controller is on another chip (UART HCI), so there is no local controller memory.
+#elif defined(CONFIG_IDF_TARGET_ESP32)
         err = esp_bt_mem_release(ESP_BT_MODE_BTDM);
 #elif defined(CONFIG_IDF_TARGET_ESP32C2) || defined(CONFIG_IDF_TARGET_ESP32C3) || defined(CONFIG_IDF_TARGET_ESP32S3) ||            \
     defined(CONFIG_IDF_TARGET_ESP32H2) || defined(CONFIG_IDF_TARGET_ESP32C6)
