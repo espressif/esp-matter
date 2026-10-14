@@ -1,5 +1,5 @@
 # Generating matter/tracing/build_config.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/matter/tracing/build_config.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/matter/tracing/build_config.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 #ifdef CONFIG_CHIP_ENABLE_ESP_DIAGNOSTICS

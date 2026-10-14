@@ -1,5 +1,5 @@
 # Generating inet/InetBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/inet/InetBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/inet/InetBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 

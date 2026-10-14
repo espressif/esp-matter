@@ -1,5 +1,13 @@
 # Changelog for esp_matter component registry
 
+## [1.6.0~1](https://components.espressif.com/components/espressif/esp_matter/versions/1.6.0~1)
+
+#### Features
+
+- Write generated build-config headers only when changed
+- esp-matter commit: 5d9902519d97e4fc3400fa9d94bfaf853af00308
+- connectedhomeip commit: 75902a0c6f6b208d5db963a8082423465384c594
+
 ## [1.6.0](https://components.espressif.com/components/espressif/esp_matter/versions/1.6.0)
 
 #### Features
