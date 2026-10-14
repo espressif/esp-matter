@@ -1796,6 +1796,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         create_default_binding_cluster(endpoint);
     }
 
+    /* Commands */
+    mode_base::command::create_change_to_mode(cluster);
+    mode_base::command::create_change_to_mode_response(cluster);
+
     return cluster;
 }
 } /* laundry_washer_mode */
@@ -1924,6 +1928,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_CLIENT) {
         create_default_binding_cluster(endpoint);
     }
+
+    /* Commands */
+    mode_base::command::create_change_to_mode(cluster);
+    mode_base::command::create_change_to_mode_response(cluster);
 
     return cluster;
 }
