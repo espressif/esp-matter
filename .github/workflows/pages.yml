@@ -53,6 +53,7 @@ jobs:
           - {example: light, target: esp32c6, prefix: thread_matter, sdkconfig: sdkconfig.defaults.c6_thread}
           - {example: light, target: esp32h2, prefix: thread_matter}
           - {example: light_switch, target: esp32c3, prefix: wifi_matter}
+          - {example: light_switch, target: esp32c6, prefix: thread_matter, sdkconfig: sdkconfig.defaults.c6_thread}
           - {example: generic_switch, target: esp32c3, prefix: wifi_matter}
           - {example: icd_app, target: esp32c6, prefix: thread_matter}
           - {example: icd_app, target: esp32h2, prefix: thread_matter}
