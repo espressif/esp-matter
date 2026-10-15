@@ -27,8 +27,9 @@ attribute_t *create_current_mode(cluster_t *cluster, uint8_t value);
 } /* attribute */
 
 typedef struct config {
+    uint8_t current_mode;
     void *delegate;
-    config() : delegate(nullptr) {}
+    config() : current_mode(0), delegate(nullptr) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

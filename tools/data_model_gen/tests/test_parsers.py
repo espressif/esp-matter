@@ -26,6 +26,7 @@ import unittest
 import sys
 import os
 from xml.etree.ElementTree import Element, SubElement
+import xml.etree.ElementTree as ET
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from xml_processing.elements import Cluster, Attribute, Command, Event, Feature  # noqa: E402
@@ -632,6 +633,95 @@ class TestClusterParseContext(unittest.TestCase):
         ctx = self._ctx(managed={})
         result = ctx.get_internally_managed_attributes("unknown")
         self.assertEqual(result, [])
+
+
+class TestDerivedClusterInheritance(unittest.TestCase):
+    """A derived-cluster element without its own conformance reuses the parsed base element."""
+
+    BASE = """<cluster name="Mode Base">
+        <features>
+            <feature bit="1" code="COREMODES" name="CoreModes">
+                <otherwiseConform><provisionalConform/><optionalConform/></otherwiseConform>
+            </feature>
+        </features>
+        <attributes>
+            <attribute id="0x0001" name="CurrentMode" type="uint8">
+                <access read="true" readPrivilege="view"/>
+                <quality persistence="nonVolatile"/>
+                <mandatoryConform/>
+            </attribute>
+            <attribute id="0x0003" name="OnMode" type="uint8"><optionalConform/></attribute>
+        </attributes>
+        <commands>
+            <command id="0x00" name="ChangeToMode" direction="commandToServer" response="ChangeToModeResponse">
+                <mandatoryConform/>
+            </command>
+        </commands>
+    </cluster>"""
+
+    def setUp(self):
+        base_root = ET.fromstring(self.BASE)
+        base = _make_cluster(name="Mode Base")
+        base_features = FeatureParser(base_root, base, [])
+        AttributeParser(base, base_features.feature_map, []).parse(base_root)
+        CommandParser(base, base_features.feature_map).parse(base_root)
+        base_features.parse(base_root)
+        self.base = base
+        self.derived = _make_cluster(name="Derived Mode")
+        self.derived.hierarchy = "derived"
+
+    def _parse_attributes(self, xml):
+        AttributeParser(
+            self.derived, {}, [], base_attributes=list(self.base.attributes)
+        ).parse(ET.fromstring(xml))
+        return {a.name: a for a in self.derived.attributes}
+
+    def test_bare_reference_reuses_base_attribute(self):
+        attrs = self._parse_attributes(
+            '<cluster><attributes><attribute id="0x0001" name="CurrentMode"/></attributes></cluster>'
+        )
+        current_mode = attrs["CurrentMode"]
+        self.assertTrue(current_mode.is_mandatory)
+        self.assertEqual(current_mode.quality.persistence, "nonVolatile")
+
+    def test_conformance_only_override_keeps_base_quality(self):
+        attrs = self._parse_attributes(
+            """<cluster><attributes>
+                <attribute id="0x0003" name="OnMode"><mandatoryConform/></attribute>
+                <attribute id="0x0001" name="CurrentMode"><mandatoryConform/></attribute>
+            </attributes></cluster>"""
+        )
+        self.assertTrue(attrs["OnMode"].is_mandatory)
+        self.assertEqual(attrs["CurrentMode"].quality.persistence, "nonVolatile")
+
+    def test_own_conformance_override_is_kept(self):
+        attrs = self._parse_attributes(
+            '<cluster><attributes><attribute id="0x0003" name="OnMode"><disallowConform/></attribute></attributes></cluster>'
+        )
+        self.assertNotIn("OnMode", attrs)
+
+    def test_bare_reference_reuses_base_command(self):
+        CommandParser(self.derived, {}, base_commands=list(self.base.commands)).parse(
+            ET.fromstring(
+                '<cluster><commands><command id="0x00" name="ChangeToMode"/></commands></cluster>'
+            )
+        )
+        cmd = next(iter(self.derived.commands))
+        self.assertEqual(cmd.direction, "commandToServer")
+        self.assertTrue(cmd.is_mandatory)
+
+    def test_bare_reference_to_dropped_base_feature_is_dropped(self):
+        """CoreModes is provisional in the base, so a bare derived CoreModes is dropped too"""
+        self.assertEqual(len(self.base.features), 0)
+        derived_root = ET.fromstring(
+            '<cluster><features><feature bit="1" code="COREMODES" name="CoreModes"/></features></cluster>'
+        )
+        feature_parser = FeatureParser(
+            derived_root, self.derived, list(self.base.features)
+        )
+        feature_parser.parse(derived_root)
+        self.assertNotIn("COREMODES", feature_parser.feature_map)
+        self.assertEqual(len(self.derived.features), 0)
 
 
 if __name__ == "__main__":

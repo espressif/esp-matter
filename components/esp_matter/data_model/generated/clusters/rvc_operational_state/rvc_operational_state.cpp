@@ -25,6 +25,7 @@
 #include <rvc_operational_state_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <data_model/esp_matter_attribute_helpers.h>
 #include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
@@ -78,17 +79,18 @@ attribute_t *create_operational_error(cluster_t *cluster, uint8_t *value, uint16
 namespace command {
 command_t *create_pause(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Pause::Id, COMMAND_FLAG_NONE, NULL);
+    return esp_matter::command::create(cluster, Pause::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_resume(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, Resume::Id, COMMAND_FLAG_NONE, NULL);
+    return esp_matter::command::create(cluster, Resume::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_operational_command_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, OperationalCommandResponse::Id, COMMAND_FLAG_NONE, NULL);
+    VerifyOrReturnValue(((is_command_enabled(cluster, command::Pause::Id, COMMAND_FLAG_ACCEPTED)) || (is_command_enabled(cluster, command::Resume::Id, COMMAND_FLAG_ACCEPTED))), NULL);
+    return esp_matter::command::create(cluster, OperationalCommandResponse::Id, COMMAND_FLAG_GENERATED, NULL);
 }
 
 command_t *create_go_home(cluster_t *cluster)

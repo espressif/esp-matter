@@ -17,7 +17,7 @@ from typing import List
 from .conformance_parser import parse_conformance, match_conformance_items
 from .elements import Feature
 from .conformance_parser import is_restricted_by_conformance
-from .element_parser_base import ClusterElementBaseParser
+from .element_parser_base import ClusterElementBaseParser, inherits_from_base
 
 logger = logging.getLogger(__name__)
 
@@ -26,14 +26,16 @@ class FeatureParser(ClusterElementBaseParser):
     """Parses cluster features from XML and links them to attributes/commands/events via conformance."""
 
     def __init__(self, root: Element, cluster, base_features: List[Feature]):
+        super().__init__(cluster, {}, [], base_features)
         self.feature_map = self._generate_feature_map(root, base_features)
-        super().__init__(cluster, self.feature_map, [], base_features)
 
     def parse(self, root: Element):
         """Parse features from cluster XML and add it to the cluster
         NOTE: This function expect the feature map to be created and populated before calling this function
         """
         for elem in root.findall("features/feature"):
+            if inherits_from_base(self.cluster, elem):
+                continue
             elem.set("id", str(self._generate_feature_id(elem)))
             skip, reason = self.can_skip(elem)
             if skip:
@@ -67,6 +69,8 @@ class FeatureParser(ClusterElementBaseParser):
         )
         feature_map = {}
         for feature_elem in root.findall("features/feature"):
+            if inherits_from_base(self.cluster, feature_elem):
+                continue
             feature = self.create(feature_elem)
             feature_map[feature.code] = feature
         for base_feature in base_features:

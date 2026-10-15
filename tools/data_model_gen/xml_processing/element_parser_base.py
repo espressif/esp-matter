@@ -21,6 +21,16 @@ from .conformance_parser import is_restricted_by_conformance
 logger = logging.getLogger(__name__)
 
 
+def inherits_from_base(cluster, elem: Element) -> bool:
+    """True if a derived-cluster element has no conformance, i.e. it just points to the base element.
+
+    The parsed base element is then used instead of this partial XML.
+    """
+    return getattr(cluster, "hierarchy", None) == "derived" and not any(
+        child.tag.endswith("Conform") for child in elem
+    )
+
+
 class ClusterElementBaseParser(BaseElementParser):
     """Base for cluster element parsers (attribute, command, event). Shared skip and id/name logic."""
 
@@ -38,12 +48,14 @@ class ClusterElementBaseParser(BaseElementParser):
             return True, "missing name"
         if name in self.processed:
             return True, "already processed"
+        if inherits_from_base(self.cluster, elem):
+            # Not marked processed, so the base element (if kept) is added instead.
+            return True, "inherited from base cluster"
         self.processed.add(name)
 
-        base_list = self.base_elements
-        base = next((b for b in base_list if getattr(b, "name", None) == name), None)
-        if base:
-            self._fill_from_base(elem, base)
+        base_cluster = self.get_base_element(name)
+        if base_cluster:
+            self._fill_from_base(elem, base_cluster)
 
         elem_id = elem.get("id")
         if not check_valid_id(elem_id):
@@ -56,7 +68,13 @@ class ClusterElementBaseParser(BaseElementParser):
             return True, "conformance restrictions"
         return False, "Unknown reason"
 
-    def _fill_from_base(self, elem: Element, base):
+    def get_base_element(self, name):
+        """Return the parsed base element with this name, or None if the base dropped it."""
+        return next(
+            (b for b in self.base_elements if getattr(b, "name", None) == name), None
+        )
+
+    def _fill_from_base(self, elem: Element, base_cluster):
         """Fill elem from base when attribute is missing. Override in AttributeParser to also set type."""
-        if not elem.get("id", None) and getattr(base, "id", None):
-            elem.set("id", base.id)
+        if not elem.get("id", None) and getattr(base_cluster, "id", None):
+            elem.set("id", base_cluster.id)
