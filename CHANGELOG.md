@@ -1,5 +1,29 @@
 # Changelog for esp_matter component registry
 
+## [1.4.2~3](https://components.espressif.com/components/espressif/esp_matter/versions/1.4.2~3)
+
+#### Bug Fixes
+- components/esp_matter: add missing mandatory attributes/event to legacy ModeBase and DishwasherAlarm clusters
+- components/esp_matter: Fix SetSlowPollingInterval to enable LIT only if slow polling interval is greater than 15000ms as per spec
+- components/esp_matter: Remove conflicting features from battery_storage device type
+- components/esp_matter: update cluster revisions based on spec
+- components/esp_matter: exclude stray WebRTC requestor file from build
+- components/esp_matter: fix wrong feature id for WaterHeaterManagement TankPercent
+- components/esp_matter: register missing ChangeToMode commands for dish_washer_mode and laundry_washer_mode
+- components/esp_matter_controller: resolve PeerAddress ambiguity in pairing_command
+
+#### CI
+- tools/ci: use idf-ci for shared build and test dependencies
+- tests: use valid junit_logging value in pytest.ini
+- tests: preserve pytest failure for empty test selections
+- tests: report target deselections accurately
+
+#### Others
+- submodule: bump connectedhomeip to a6892983d6
+
+- esp-matter commit: 4957e8331fbbed67d7b52010458fa59eab82a921
+- connectedhomeip commit: a6892983d6d761a9a787f2e11177a85d28bd1022
+
 ## [1.4.2~2](https://components.espressif.com/components/espressif/esp_matter/versions/1.4.2~2)
 
 #### Bug Fixes

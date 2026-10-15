@@ -189,6 +189,7 @@ set(PRIV_INCLUDE_DIRS_LIST "${ESP_COMPONENTS_PATH}/esp_matter/private"
 # TODO: This file has compilation errors
 list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/closure-control-server/closure-control-server.cpp")
 list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/general-commissioning-server/TemporaryTestCoupling.cpp")
+list(APPEND EXCLUDE_SRCS_LIST "${MATTER_SDK_PATH}/src/app/clusters/webrtc-transport-requestor-server/WebRTCTransportRequestorCluster.cpp")
 
 set(CONTROLLER_SRC_DIRS_LIST )
 if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
