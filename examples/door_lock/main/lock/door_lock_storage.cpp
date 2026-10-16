@@ -58,6 +58,12 @@ CHIP_ERROR DoorLockStorage::Init(const Config  &config)
     VerifyOrReturnError(limits.numberOfCredentialsPerUser > 0 &&
                         limits.numberOfCredentialsPerUser <= kMaxCredentialsPerUser,
                         CHIP_ERROR_INVALID_ARGUMENT);
+    VerifyOrReturnError(limits.numberOfWeekdaySchedulesPerUser <= kMaxSchedulesPerUser,
+                        CHIP_ERROR_INVALID_ARGUMENT);
+    VerifyOrReturnError(limits.numberOfYeardaySchedulesPerUser <= kMaxSchedulesPerUser,
+                        CHIP_ERROR_INVALID_ARGUMENT);
+    VerifyOrReturnError(limits.numberOfHolidaySchedules <= kMaxHolidaySchedules,
+                        CHIP_ERROR_INVALID_ARGUMENT);
     VerifyOrReturnError(limits.credentialSlotsByType[to_underlying(CredentialTypeEnum::kProgrammingPIN)] == 1,
                         CHIP_ERROR_INVALID_ARGUMENT);
     for (uint16_t slotCount : limits.credentialSlotsByType) {
@@ -69,6 +75,14 @@ CHIP_ERROR DoorLockStorage::Init(const Config  &config)
     mLimits = limits;
     std::fill_n(mUsers, kMaxUsers, UserRecord());
     std::fill_n(mCredentials, kCredentialSlotCount, CredentialRecord());
+    for (size_t userIndex = 0; userIndex < kMaxUsers; ++userIndex) {
+        std::fill_n(mWeekdaySchedules[userIndex], kMaxSchedulesPerUser,
+                    ScheduleRecord<EmberAfPluginDoorLockWeekDaySchedule>());
+        std::fill_n(mYeardaySchedules[userIndex], kMaxSchedulesPerUser,
+                    ScheduleRecord<EmberAfPluginDoorLockYearDaySchedule>());
+    }
+    std::fill_n(mHolidaySchedules, kMaxHolidaySchedules,
+                ScheduleRecord<EmberAfPluginDoorLockHolidaySchedule>());
     for (size_t userIndex = 0; userIndex < kMaxUsers; ++userIndex) {
         std::fill_n(mUserCredentialViews[userIndex], kMaxCredentialsPerUser, CredentialStruct());
     }
@@ -138,6 +152,26 @@ CHIP_ERROR DoorLockStorage::LoadRecords()
                 return CHIP_ERROR_INVALID_ARGUMENT;
             }
         }
+    }
+
+    for (uint16_t userIndex = 1; userIndex <= mLimits.numberOfUsers; ++userIndex) {
+        for (uint8_t scheduleIndex = 1; scheduleIndex <= mLimits.numberOfWeekdaySchedulesPerUser; ++scheduleIndex) {
+            VerifyOrReturnError(MakeScheduleKey("ws", scheduleIndex, userIndex, key, sizeof(key)), CHIP_ERROR_INVALID_ARGUMENT);
+            bool found = false;
+            ReturnErrorOnFailure(ReadRecord(key, &mWeekdaySchedules[userIndex - 1][scheduleIndex - 1],
+                                            sizeof(mWeekdaySchedules[0][0]), found));
+        }
+        for (uint8_t scheduleIndex = 1; scheduleIndex <= mLimits.numberOfYeardaySchedulesPerUser; ++scheduleIndex) {
+            VerifyOrReturnError(MakeScheduleKey("ys", scheduleIndex, userIndex, key, sizeof(key)), CHIP_ERROR_INVALID_ARGUMENT);
+            bool found = false;
+            ReturnErrorOnFailure(ReadRecord(key, &mYeardaySchedules[userIndex - 1][scheduleIndex - 1],
+                                            sizeof(mYeardaySchedules[0][0]), found));
+        }
+    }
+    for (uint8_t scheduleIndex = 1; scheduleIndex <= mLimits.numberOfHolidaySchedules; ++scheduleIndex) {
+        VerifyOrReturnError(MakeScheduleKey("hs", scheduleIndex, 0, key, sizeof(key)), CHIP_ERROR_INVALID_ARGUMENT);
+        bool found = false;
+        ReturnErrorOnFailure(ReadRecord(key, &mHolidaySchedules[scheduleIndex - 1], sizeof(mHolidaySchedules[0]), found));
     }
 
     return CHIP_NO_ERROR;
@@ -375,6 +409,106 @@ bool DoorLockStorage::SetCredential(uint16_t credentialIndex, FabricIndex creato
     return true;
 }
 
+DlStatus DoorLockStorage::GetWeekdaySchedule(uint8_t scheduleIndex, uint16_t userIndex,
+                                             EmberAfPluginDoorLockWeekDaySchedule  &schedule) const
+{
+    VerifyOrReturnValue(mInitialized && scheduleIndex > 0 && userIndex > 0 &&
+                        scheduleIndex <= mLimits.numberOfWeekdaySchedulesPerUser &&
+                        userIndex <= mLimits.numberOfUsers,
+                        DlStatus::kFailure);
+    const auto  &record = mWeekdaySchedules[userIndex - 1][scheduleIndex - 1];
+    VerifyOrReturnValue(record.status != DlScheduleStatus::kAvailable, DlStatus::kNotFound);
+    schedule = record.schedule;
+    return DlStatus::kSuccess;
+}
+
+DlStatus DoorLockStorage::SetWeekdaySchedule(uint8_t scheduleIndex, uint16_t userIndex, DlScheduleStatus status,
+                                             DaysMaskMap daysMask, uint8_t startHour, uint8_t startMinute,
+                                             uint8_t endHour, uint8_t endMinute)
+{
+    VerifyOrReturnValue(mInitialized && scheduleIndex > 0 && userIndex > 0 &&
+                        scheduleIndex <= mLimits.numberOfWeekdaySchedulesPerUser &&
+                        userIndex <= mLimits.numberOfUsers,
+                        DlStatus::kFailure);
+    char key[PersistentStorageDelegate::kKeyLengthMax + 1];
+    VerifyOrReturnValue(MakeScheduleKey("ws", scheduleIndex, userIndex, key, sizeof(key)), DlStatus::kFailure);
+    auto  &record = mWeekdaySchedules[userIndex - 1][scheduleIndex - 1];
+    if (status == DlScheduleStatus::kAvailable) {
+        VerifyOrReturnValue(DeleteRecord(key) == CHIP_NO_ERROR, DlStatus::kFailure);
+        record = {};
+        return DlStatus::kSuccess;
+    }
+    record.status = status;
+    record.schedule = { daysMask, startHour, startMinute, endHour, endMinute };
+    VerifyOrReturnValue(WriteRecord(key, &record, sizeof(record)) == CHIP_NO_ERROR, DlStatus::kFailure);
+    return DlStatus::kSuccess;
+}
+
+DlStatus DoorLockStorage::GetYeardaySchedule(uint8_t scheduleIndex, uint16_t userIndex,
+                                             EmberAfPluginDoorLockYearDaySchedule  &schedule) const
+{
+    VerifyOrReturnValue(mInitialized && scheduleIndex > 0 && userIndex > 0 &&
+                        scheduleIndex <= mLimits.numberOfYeardaySchedulesPerUser &&
+                        userIndex <= mLimits.numberOfUsers,
+                        DlStatus::kFailure);
+    const auto  &record = mYeardaySchedules[userIndex - 1][scheduleIndex - 1];
+    VerifyOrReturnValue(record.status != DlScheduleStatus::kAvailable, DlStatus::kNotFound);
+    schedule = record.schedule;
+    return DlStatus::kSuccess;
+}
+
+DlStatus DoorLockStorage::SetYeardaySchedule(uint8_t scheduleIndex, uint16_t userIndex, DlScheduleStatus status,
+                                             uint32_t localStartTime, uint32_t localEndTime)
+{
+    VerifyOrReturnValue(mInitialized && scheduleIndex > 0 && userIndex > 0 &&
+                        scheduleIndex <= mLimits.numberOfYeardaySchedulesPerUser &&
+                        userIndex <= mLimits.numberOfUsers,
+                        DlStatus::kFailure);
+    char key[PersistentStorageDelegate::kKeyLengthMax + 1];
+    VerifyOrReturnValue(MakeScheduleKey("ys", scheduleIndex, userIndex, key, sizeof(key)), DlStatus::kFailure);
+    auto  &record = mYeardaySchedules[userIndex - 1][scheduleIndex - 1];
+    if (status == DlScheduleStatus::kAvailable) {
+        VerifyOrReturnValue(DeleteRecord(key) == CHIP_NO_ERROR, DlStatus::kFailure);
+        record = {};
+        return DlStatus::kSuccess;
+    }
+    record.status = status;
+    record.schedule = { localStartTime, localEndTime };
+    VerifyOrReturnValue(WriteRecord(key, &record, sizeof(record)) == CHIP_NO_ERROR, DlStatus::kFailure);
+    return DlStatus::kSuccess;
+}
+
+DlStatus DoorLockStorage::GetHolidaySchedule(uint8_t scheduleIndex,
+                                             EmberAfPluginDoorLockHolidaySchedule  &schedule) const
+{
+    VerifyOrReturnValue(mInitialized && scheduleIndex > 0 && scheduleIndex <= mLimits.numberOfHolidaySchedules,
+                        DlStatus::kFailure);
+    const auto  &record = mHolidaySchedules[scheduleIndex - 1];
+    VerifyOrReturnValue(record.status != DlScheduleStatus::kAvailable, DlStatus::kNotFound);
+    schedule = record.schedule;
+    return DlStatus::kSuccess;
+}
+
+DlStatus DoorLockStorage::SetHolidaySchedule(uint8_t scheduleIndex, DlScheduleStatus status,
+                                             uint32_t localStartTime, uint32_t localEndTime,
+                                             OperatingModeEnum operatingMode)
+{
+    VerifyOrReturnValue(mInitialized && scheduleIndex > 0 && scheduleIndex <= mLimits.numberOfHolidaySchedules,
+                        DlStatus::kFailure);
+    char key[PersistentStorageDelegate::kKeyLengthMax + 1];
+    VerifyOrReturnValue(MakeScheduleKey("hs", scheduleIndex, 0, key, sizeof(key)), DlStatus::kFailure);
+    auto  &record = mHolidaySchedules[scheduleIndex - 1];
+    if (status == DlScheduleStatus::kAvailable) {
+        VerifyOrReturnValue(DeleteRecord(key) == CHIP_NO_ERROR, DlStatus::kFailure);
+        record = {};
+        return DlStatus::kSuccess;
+    }
+    record.status = status;
+    record.schedule = { localStartTime, localEndTime, operatingMode };
+    VerifyOrReturnValue(WriteRecord(key, &record, sizeof(record)) == CHIP_NO_ERROR, DlStatus::kFailure);
+    return DlStatus::kSuccess;
+}
+
 bool DoorLockStorage::ValidatePIN(const ByteSpan  &pin, PinMatch  &match) const
 {
     VerifyOrReturnValue(mInitialized, false);
@@ -453,6 +587,14 @@ bool DoorLockStorage::MakeCredentialKey(CredentialTypeEnum type, uint16_t creden
                                         char * key, size_t keySize) const
 {
     return FormatKey(key, keySize, "dl/c/%u/%u", to_underlying(type), credentialIndex);
+}
+
+bool DoorLockStorage::MakeScheduleKey(const char * type, uint8_t scheduleIndex, uint16_t userIndex,
+                                      char * key, size_t keySize) const
+{
+    int length = snprintf(key, keySize, "dl/%s/%u/%u", type, scheduleIndex, userIndex);
+    return length > 0 && static_cast<size_t>(length) < keySize &&
+           static_cast<size_t>(length) <= PersistentStorageDelegate::kKeyLengthMax;
 }
 
 bool DoorLockStorage::IsValidUserRecord(const UserRecord  &user) const

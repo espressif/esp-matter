@@ -169,6 +169,11 @@ extern "C" void app_main()
     cluster::door_lock::feature::user::config_t user_config;
     user_config.number_of_total_user_supported = DoorLockCapabilities::kUsers;
     user_config.number_of_credentials_supported_per_user = DoorLockCapabilities::kCredentialsPerUser;
+    cluster::door_lock::feature::year_day_access_schedules::config_t year_day_access_schedules_config;
+    year_day_access_schedules_config.number_of_year_day_schedules_supported_per_user =
+        DoorLockCapabilities::kYeardaySchedulesPerUser;
+    cluster::door_lock::feature::holiday_schedules::config_t holiday_schedules_config;
+    holiday_schedules_config.number_of_holiday_schedules_supported = DoorLockCapabilities::kHolidaySchedules;
     // endpoint handles can be used to add/modify clusters.
     endpoint_t *endpoint = door_lock::create(node, &door_lock_config, ENDPOINT_FLAG_NONE, NULL);
     ABORT_APP_ON_FAILURE(endpoint != nullptr, ESP_LOGE(TAG, "Failed to create door lock endpoint"));
@@ -176,6 +181,9 @@ extern "C" void app_main()
     cluster::door_lock::feature::credential_over_the_air_access::add(door_lock_cluster, &cota_config);
     cluster::door_lock::feature::pin_credential::add(door_lock_cluster, &pin_credential_config);
     cluster::door_lock::feature::user::add(door_lock_cluster, &user_config);
+    cluster::door_lock::feature::weekday_access_schedules::add(door_lock_cluster);
+    cluster::door_lock::feature::year_day_access_schedules::add(door_lock_cluster, &year_day_access_schedules_config);
+    cluster::door_lock::feature::holiday_schedules::add(door_lock_cluster, &holiday_schedules_config);
 #ifdef CONFIG_ENABLE_ALIRO_OVER_NFC
     cluster::door_lock::feature::aliro_provisioning::add(door_lock_cluster);
 #endif

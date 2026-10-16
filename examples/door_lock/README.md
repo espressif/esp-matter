@@ -12,7 +12,13 @@ No additional setup is required.
 
 No additional setup is required.
 
-## 3. Aliro over NFC Feature
+## 3. Access Schedules
+
+The Week Day, Year Day, and Holiday access-schedule features support persistent create, read, and clear operations.
+
+Schedules are not yet enforced when validating a PIN credential. Configuring a schedule therefore does not currently restrict access.
+
+## 4. Aliro over NFC Feature
 
 ### Hardware Required
 
@@ -39,7 +45,7 @@ After commissioning with the Apple Home app, the Home app automatically adds a k
 | :----------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------: |
 | <img src="./img/home_key_add.jpeg" alt="Home Key added to Apple Wallet" width="300"> | <img src="./img/unlock_page.jpeg" alt="Unlocking the door with Apple Home" width="300"> |
 
-## 4. Local Controls and Status
+## 5. Local Controls and Status
 
 Press the boot button (front button on M5Stack Nano) to toggle the lock state. The RGB LED indicates the current state:
 
@@ -48,7 +54,7 @@ Press the boot button (front button on M5Stack Nano) to toggle the lock state. T
 - Amber: locking or unlocking
 - Off: unknown state
 
-## 5. Diagnostic Console
+## 6. Diagnostic Console
 
 The door-lock debug command is available under `matter esp dl`:
 
