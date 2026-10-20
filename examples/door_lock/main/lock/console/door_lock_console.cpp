@@ -10,7 +10,11 @@
 
 #include "bolt_lock_manager.h"
 #include "door_lock_capabilities.h"
+#include "door_lock_authorization.h"
 #include "door_lock_storage.h"
+#if CONFIG_ENABLE_TIME_SYNC
+#include "time_sync.h"
+#endif // CONFIG_ENABLE_TIME_SYNC
 
 #include <app/clusters/door-lock-server/door-lock-server.h>
 #include <esp_log.h>
@@ -32,24 +36,15 @@ const char * credential_type_name(CredentialTypeEnum type)
         return "programming-pin";
     case CredentialTypeEnum::kPin:
         return "pin";
-    case CredentialTypeEnum::kRfid:
-        return "rfid";
-    case CredentialTypeEnum::kFingerprint:
-        return "fingerprint";
-    case CredentialTypeEnum::kFingerVein:
-        return "finger-vein";
-    case CredentialTypeEnum::kFace:
-        return "face";
     case CredentialTypeEnum::kAliroCredentialIssuerKey:
         return "aliro-issuer";
     case CredentialTypeEnum::kAliroEvictableEndpointKey:
         return "aliro-evictable";
     case CredentialTypeEnum::kAliroNonEvictableEndpointKey:
         return "aliro-non-evictable";
-    case CredentialTypeEnum::kUnknownEnumValue:
-        return "unknown";
+    default:
+        return "not supported";
     }
-    return "unknown";
 }
 
 uint16_t count_occupied_credentials(CredentialTypeEnum type, uint16_t slotCount)
@@ -127,7 +122,10 @@ void print_door_lock_console_help()
            "\thelp: Print help\n"
            "\tstatus: Print aggregate user and credential capacity\n"
            "\tusers: Print users and credential references without credential data\n"
-           "\tpin-unlock <PIN>: Validate an enabled user's PIN and unlock locally\n");
+#if CONFIG_ENABLE_TIME_SYNC
+           "\ttime: Print UTC and synchronization readiness\n"
+#endif // CONFIG_ENABLE_TIME_SYNC
+           "\tpin-unlock <PIN>: Authorize a PIN and unlock locally\n");
 }
 
 esp_err_t door_lock_console_handler(int argc, char ** argv)
@@ -146,16 +144,35 @@ esp_err_t door_lock_console_handler(int argc, char ** argv)
         print_door_lock_users();
         return ESP_OK;
     }
+#if CONFIG_ENABLE_TIME_SYNC
+    if (argc == 1 && std::strcmp(argv[0], "time") == 0) {
+        time_t utc;
+        uint32_t generation;
+        const bool ready = TimeSync::Now(utc, generation);
+        printf("Time ready: %s\nUTC (Unix seconds): %lld\nClock generation: %lu\n",
+               ready ? "yes" : "no", static_cast<long long>(utc), static_cast<unsigned long>(generation));
+        return ESP_OK;
+    }
+#endif // CONFIG_ENABLE_TIME_SYNC
     if (argc == 2 && std::strcmp(argv[0], "pin-unlock") == 0) {
         const ByteSpan pin(reinterpret_cast<const uint8_t *>(argv[1]), std::strlen(argv[1]));
-        DoorLockStorage::PinMatch match;
-        if (!DoorLockStorage::Instance().ValidatePIN(pin, match)) {
-            ESP_LOGE(TAG, "Unlock rejected: source=keypad reason=invalid-credential");
+        DoorLockStorage::Match match;
+        OperationErrorEnum error = OperationErrorEnum::kRestricted;
+        if (!DoorLockStorage::Instance().ValidatePIN(pin, match) ||
+                !DoorLockAuthorization::Authorize(match, OperationSourceEnum::kKeypad, error)) {
+            ESP_LOGE(TAG, "Unlock rejected: source=keypad reason=authorization error=%u", static_cast<unsigned>(error));
+            DoorLockAuthorization::ReportUnlockFailure(match, OperationSourceEnum::kKeypad, error);
             return ESP_ERR_INVALID_ARG;
         }
-        if (!BoltLockManager::Instance().Unlock(OperationSourceEnum::kKeypad)) {
-            ESP_LOGE(TAG, "Unlock rejected: source=keypad user=%u credential=pin:%u reason=actuator",
-                     match.userIndex, match.credentialIndex);
+
+        BoltLockManager::Attribution attribution;
+        attribution.user = match.userIndex;
+        attribution.credential = {match.type, match.credentialIndex};
+        if (!BoltLockManager::Instance().Unlock(OperationSourceEnum::kKeypad, attribution)) {
+            ESP_LOGE(TAG, "Unlock rejected: source=keypad user=%u credential=pin:%u reason=actuator", match.userIndex,
+                     match.credentialIndex);
+            DoorLockAuthorization::ReportUnlockFailure(match, OperationSourceEnum::kKeypad,
+                                                       OperationErrorEnum::kUnspecified);
             return ESP_FAIL;
         }
         ESP_LOGW(TAG, "Unlock event: source=keypad user=%u credential=pin:%u", match.userIndex,

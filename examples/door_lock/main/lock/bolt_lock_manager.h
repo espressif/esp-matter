@@ -24,7 +24,7 @@ public:
     };
 
     using OperationSource = chip::app::Clusters::DoorLock::OperationSourceEnum;
-    using StateChangeCallback = void (*)(State state, OperationSource source);
+    using StateChangeCallback = void (*)(State state, OperationSource source, bool success);
 
     static constexpr uint32_t kActuatorMovementTimeMs = 2000;
 
@@ -43,16 +43,38 @@ public:
     {
         return mState == State::kLockingCompleted;
     }
+
+    /** Copied request identity retained for state-change events; user=0 means no credential attribution. */
+    struct Attribution {
+        uint16_t user = 0;
+        CredentialStruct credential = {};
+        chip::app::DataModel::Nullable<chip::FabricIndex> fabric;
+        chip::app::DataModel::Nullable<chip::NodeId> node;
+    };
+
+    /** Borrow state-change attribution; backing may change on the next Lock/Unlock request. */
+    const Attribution &GetAttribution() const
+    {
+        return mAttribution;
+    }
+
+    /** Request locking without credential attribution; return synchronous acceptance, not completion. */
     bool Lock(OperationSource source);
+    /** Request locking with copied attribution; timer failures are reported through the callback. */
+    bool Lock(OperationSource source, const Attribution &attribution);
+    /** Request unlocking without credential attribution; callers own authorization. */
     bool Unlock(OperationSource source);
+    /** Request unlocking with copied attribution; callers own authorization. */
+    bool Unlock(OperationSource source, const Attribution &attribution);
 
 private:
     BoltLockManager() = default;
 
-    bool StartMovement(State movementState, OperationSource source);
-    void SetState(State state, OperationSource source);
+    bool StartMovement(State movementState, OperationSource source, const Attribution &attribution);
+    void SetState(State state, OperationSource source, bool success = true);
     static void ActuatorTimerHandler(chip::System::Layer * systemLayer, void * context);
 
+    Attribution mAttribution;
     State mState = State::kLockingCompleted;
     State mStableState = State::kLockingCompleted;
     StateChangeCallback mStateChangeCallback = nullptr;

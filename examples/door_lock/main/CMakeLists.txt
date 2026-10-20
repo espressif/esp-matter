@@ -1,17 +1,21 @@
-set(EXCLUDE_SRCS_LIST)
+set(src_dirs "." "lock" "lock/storage")
 
-if (NOT CONFIG_ENABLE_ALIRO_OVER_NFC)
-    list(APPEND EXCLUDE_SRCS_LIST "lock/aliro_door_lock_delegate.cpp")
+if(CONFIG_ENABLE_ALIRO_OVER_NFC)
+    list(APPEND src_dirs "lock/aliro")
 endif()
 
-if (NOT CONFIG_ENABLE_CHIP_SHELL)
-    list(APPEND EXCLUDE_SRCS_LIST "lock/door_lock_console.cpp")
+if(CONFIG_ENABLE_TIME_SYNC)
+    list(APPEND src_dirs "lock/time")
 endif()
 
-idf_component_register(SRC_DIRS "." "./lock"
-                       EXCLUDE_SRCS ${EXCLUDE_SRCS_LIST}
+if(CONFIG_ENABLE_CHIP_SHELL)
+    list(APPEND src_dirs "lock/console")
+endif()
+
+idf_component_register(SRC_DIRS ${src_dirs}
                        PRIV_INCLUDE_DIRS
-                         "." "./lock" "${ESP_MATTER_PATH}/examples/common/utils")
+                         ${src_dirs}
+                         "${ESP_MATTER_PATH}/examples/common/utils")
 
 target_compile_options(${COMPONENT_LIB} PRIVATE "-DCHIP_HAVE_CONFIG_H")
 target_link_libraries(${COMPONENT_LIB} INTERFACE "-u retain_ember_door_lock_callbacks")
