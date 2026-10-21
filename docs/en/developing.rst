@@ -296,6 +296,37 @@ Building Applications
 -  :project_file:`Zigbee Bridge <examples/bridge_apps/zigbee_bridge/README.md>`
 -  :project_file:`BLE Mesh Bridge <examples/bridge_apps/blemesh_bridge/README.md>`
 
+.. only:: esp32h2 or esp32c6
+
+    Thread MeshCoP Commissioning
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    The :project_file:`light example <examples/light/README.md>` includes an additional
+    configuration for Thread MeshCoP commissioning. After setting up the ESP-IDF
+    and ESP-Matter environment, run the following commands from the
+    ``examples/light`` directory.
+
+    .. only:: esp32h2
+
+        For ESP32-H2:
+
+        ::
+
+            idf.py -DSDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.thread_commission" set-target esp32h2 build
+            idf.py -p <port> flash monitor
+
+    .. only:: esp32c6
+
+        For ESP32-C6:
+
+        ::
+
+            idf.py -DSDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.c6_thread;sdkconfig.defaults.thread_commission" set-target esp32c6 build
+            idf.py -p <port> flash monitor
+
+    ``sdkconfig.defaults.thread_commission`` enables the OpenThread joiner, MeshCoP
+    crypto, and Matter Thread MeshCoP commissioning, with Matter-over-BLE disabled.
+
 Flashing the Firmware
 ~~~~~~~~~~~~~~~~~~~~~
 
