@@ -2409,8 +2409,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
     VerifyOrReturnError(err == ESP_OK, err);
 
     cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
-    cluster_t *switch_cluster = cluster::switch_cluster::create(endpoint, &(config->switch_cluster), CLUSTER_FLAG_SERVER);
-    cluster::switch_cluster::feature::momentary_switch::add(switch_cluster);
+    config->switch_cluster.feature_flags |= cluster::switch_cluster::feature::momentary_switch::get_id();
+    cluster::switch_cluster::create(endpoint, &(config->switch_cluster), CLUSTER_FLAG_SERVER);
     cluster::chime::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
 
     return ESP_OK;
@@ -2441,8 +2441,8 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
     cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     cluster::switch_cluster::create(endpoint, &(config->switch_cluster), CLUSTER_FLAG_SERVER);
-    cluster_t *camera_av_stream_management = cluster::camera_av_stream_management::create(endpoint, &(config->camera_av_stream_management), CLUSTER_FLAG_SERVER);
-    cluster::camera_av_stream_management::feature::audio::add(camera_av_stream_management);
+    config->camera_av_stream_management.feature_flags |= cluster::camera_av_stream_management::feature::audio::get_id();
+    cluster::camera_av_stream_management::create(endpoint, &(config->camera_av_stream_management), CLUSTER_FLAG_SERVER);
     cluster::webrtc_transport_provider::create(endpoint, &(config->webrtc_transport_provider), CLUSTER_FLAG_SERVER);
     cluster::webrtc_transport_requestor::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
     cluster::chime::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);

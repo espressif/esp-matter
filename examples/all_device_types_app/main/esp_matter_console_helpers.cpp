@@ -52,6 +52,10 @@
 #include "mock_delegates/mock_device_energy_management_delegate.h"
 #include "mock_delegates/mock_commodity_price_delegate.h"
 #include "mock_delegates/mock_commodity_tariff_delegate.h"
+#include "mock_delegates/mock_camera_av_stream_management_delegate.h"
+#include "mock_delegates/mock_webrtc_transport_provider_delegate.h"
+#include <data_model_provider/clusters/camera_av_stream_management/integration.h>
+#include <data_model_provider/clusters/webrtc_transport_provider/integration.h>
 
 // External variables for electrical sensor initialization
 bool g_electrical_sensor_created = false;
@@ -814,6 +818,25 @@ int create(uint8_t device_type_index)
         esp_matter::endpoint::water_valve::config_t water_valve_config;
         esp_err_t err = esp_matter::endpoint::water_valve::add(endpoint, &water_valve_config);
         VerifyOrReturnValue(err == ESP_OK, 1, ESP_LOGE(TAG, "Failed to add water valve endpoint"));
+        break;
+    }
+    case ESP_MATTER_DOORBELL: {
+        esp_matter::endpoint::doorbell::config_t doorbell_config;
+        endpoint = esp_matter::endpoint::doorbell::create(node, &doorbell_config, ENDPOINT_FLAG_DESTROYABLE, NULL);
+        break;
+    }
+    case ESP_MATTER_AUDIO_DOORBELL: {
+        esp_matter::endpoint::audio_doorbell::config_t audio_doorbell_config;
+        static chip::app::Clusters::CameraAvStreamManagement::MockCameraAVStreamManagementDelegate cameraAvStreamManagementDelegate;
+        static chip::app::Clusters::WebRTCTransportProvider::MockWebRTCTransportProviderDelegate webrtcTransportProviderDelegate;
+        audio_doorbell_config.switch_cluster.feature_flags = cluster::switch_cluster::feature::momentary_switch::get_id();
+        endpoint = esp_matter::endpoint::audio_doorbell::create(node, &audio_doorbell_config, ENDPOINT_FLAG_DESTROYABLE, NULL);
+        VerifyOrReturnValue(endpoint, 1, ESP_LOGE(TAG, "Failed to create audio doorbell endpoint"));
+        uint16_t endpoint_id = endpoint::get_id(endpoint);
+        CameraAvStreamManagement::CameraAvStreamManagementConfig avsm_config;
+        avsm_config.delegate = &cameraAvStreamManagementDelegate;
+        CameraAvStreamManagement::SetConfig(endpoint_id, avsm_config);
+        WebRTCTransportProvider::SetDelegate(endpoint_id, &webrtcTransportProviderDelegate);
         break;
     }
     default: {
