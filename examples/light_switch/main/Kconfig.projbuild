@@ -1,7 +1,5 @@
 menu "Example Configuration"
 
-    visible if CUSTOM_COMMISSIONABLE_DATA_PROVIDER
-
     config DYNAMIC_PASSCODE_COMMISSIONABLE_DATA_PROVIDER
         bool "Enable Dynamic Passcode Commissionable Data Provider"
         depends on CUSTOM_COMMISSIONABLE_DATA_PROVIDER

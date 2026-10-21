@@ -49,6 +49,9 @@ app_driver_handle_t app_driver_light_init();
  */
 app_driver_handle_t app_driver_button_init();
 
+/** Submit an On/Off command to every matching binding for a local endpoint. */
+CHIP_ERROR app_driver_bound_on_off(chip::EndpointId local_endpoint, bool on);
+
 /** Driver Update
  *
  * This API should be called to update the driver for the attribute being updated.

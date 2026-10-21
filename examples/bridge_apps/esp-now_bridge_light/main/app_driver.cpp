@@ -6,17 +6,17 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
+#include <array>
 #include <stdlib.h>
 #include <string.h>
 
 #include <esp_log.h>
 #include <esp_matter.h>
+#include <esp_matter_client.h>
 #include <esp_matter_console.h>
 
 #include <app_priv.h>
 
-#include <app/server/Server.h>
-#include "app/CommandPathParams.h"
 #include <device.h>
 #include <common_macros.h>
 
@@ -27,8 +27,87 @@ using namespace esp_matter::cluster;
 static const char *TAG = "app_driver";
 extern uint16_t light_endpoint_id;
 
+static CHIP_ERROR format_command_fields(chip::ClusterId cluster_id, chip::CommandId command_id,
+                                        int parameter_count, char **parameters,
+                                        char *output, size_t output_size, bool &has_fields)
+{
+    VerifyOrReturnError(parameter_count >= 0 && parameter_count <= 10, CHIP_ERROR_INVALID_ARGUMENT);
+    for (int index = 0; index < parameter_count; ++index) {
+        VerifyOrReturnError(parameters[index][0] == '0' && parameters[index][1] == 'x' &&
+                            strlen(parameters[index] + 2) <= 10,
+                            CHIP_ERROR_INVALID_ARGUMENT);
+    }
+
+    has_fields = false;
+    if (cluster_id == OnOff::Id) {
+        return CHIP_NO_ERROR;
+    }
+    VerifyOrReturnError(cluster_id == Identify::Id && command_id == Identify::Commands::Identify::Id,
+                        CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
+    VerifyOrReturnError(parameter_count == 1, CHIP_ERROR_INVALID_ARGUMENT);
+    snprintf(output, output_size, "{\"0:OBJ\":{\"0:U16\": %ld}}", strtoul(parameters[0] + 2, nullptr, 16));
+    has_fields = true;
+    return CHIP_NO_ERROR;
+}
+
+// Four caller-owned operations preserve rapid edge-triggered button actions.
+static std::array<client::invoke_command::interaction, 4> invoke_actions;
+static client::binding::dispatcher bound_actions;
+
+static CHIP_ERROR start_invoke(chip::ScopedNodeId target,
+                               const client::invoke_command::request_t &request)
+{
+    lock::ScopedChipStackLock lock(portMAX_DELAY);
+    for (auto &action : invoke_actions) {
+        if (!action.active()) {
+            return action.start(target, request, nullptr);
+        }
+    }
+    return CHIP_ERROR_BUSY;
+}
+
+static CHIP_ERROR start_group_invoke(chip::GroupId group_id, chip::FabricIndex fabric_index,
+                                     const client::invoke_command::request_t &request)
+{
+    lock::ScopedChipStackLock lock(portMAX_DELAY);
+    for (auto &action : invoke_actions) {
+        if (!action.active()) {
+            return action.start(group_id, fabric_index, request, nullptr);
+        }
+    }
+    return CHIP_ERROR_BUSY;
+}
+
+static CHIP_ERROR start_bound_invoke(chip::EndpointId local_endpoint,
+                                     const client::invoke_command::request_t &request)
+{
+    lock::ScopedChipStackLock lock(portMAX_DELAY);
+    return bound_actions.dispatch(local_endpoint, request, nullptr);
+}
+
+static CHIP_ERROR start_bound_invoke(chip::EndpointId local_endpoint, chip::ClusterId cluster_id,
+                                     chip::CommandId command_id, int parameter_count, char **parameters)
+{
+    char json[32] = {};
+    bool has_fields;
+    ReturnErrorOnFailure(format_command_fields(cluster_id, command_id, parameter_count, parameters,
+                                               json, sizeof(json), has_fields));
+    client::json_encodable fields(json);
+    client::invoke_command::request_t request = {
+        .cluster_id = cluster_id,
+        .command_id = command_id,
+        .fields = has_fields ? &fields : nullptr,
+    };
+    return start_bound_invoke(local_endpoint, request);
+}
+
+CHIP_ERROR app_driver_bound_on_off(chip::EndpointId local_endpoint, bool on)
+{
+    return start_bound_invoke(local_endpoint, OnOff::Id,
+                              on ? OnOff::Commands::On::Id : OnOff::Commands::Off::Id, 0, nullptr);
+}
+
 #if CONFIG_ENABLE_CHIP_SHELL
-static char console_buffer[101] = {0};
 static esp_err_t app_driver_bound_console_handler(int argc, char **argv)
 {
     if (argc == 1 && strncmp(argv[0], "help", sizeof("help")) == 0) {
@@ -37,32 +116,20 @@ static esp_err_t app_driver_bound_console_handler(int argc, char **argv)
                "\tinvoke: <local_endpoint_id> <cluster_id> <command_id> parameters ... \n"
                "\t\tExample: matter esp bound invoke 0x0001 0x0008 0x0000 0x50 0x0 0x1 0x1.\n");
     } else if (argc >= 4 && strncmp(argv[0], "invoke", sizeof("invoke")) == 0) {
-        client::request_handle_t req_handle;
-        req_handle.type = esp_matter::client::INVOKE_CMD;
-        uint16_t local_endpoint_id = strtoul((const char *)&argv[1][2], NULL, 16);
-        req_handle.command_path.mClusterId = strtoul((const char *)&argv[2][2], NULL, 16);
-        req_handle.command_path.mCommandId = strtoul((const char *)&argv[3][2], NULL, 16);
+        chip::EndpointId local_endpoint_id = strtoul((const char *)&argv[1][2], nullptr, 16);
+        chip::ClusterId cluster_id = strtoul((const char *)&argv[2][2], nullptr, 16);
+        chip::CommandId command_id = strtoul((const char *)&argv[3][2], nullptr, 16);
 
-        if (argc > 4) {
-            console_buffer[0] = argc - 4;
-            for (int i = 0; i < (argc - 4); i++) {
-                if ((argv[4 + i][0] != '0') || (argv[4 + i][1] != 'x') || (strlen((const char *)&argv[4 + i][2]) > 10)) {
-                    ESP_LOGE(TAG, "Incorrect arguments. Check help for more details.");
-                    return ESP_ERR_INVALID_ARG;
-                }
-                strcpy((console_buffer + 1 + 10 * i), &argv[4 + i][2]);
-            }
-
-            req_handle.request_data = console_buffer;
+        CHIP_ERROR err = start_bound_invoke(local_endpoint_id, cluster_id, command_id,
+                                            argc - 4, argv + 4);
+        if (err != CHIP_NO_ERROR) {
+            ESP_LOGE(TAG, "Bound Invoke submission failed: %s", chip::ErrorStr(err));
+            return ESP_FAIL;
         }
-
-        client::cluster_update(local_endpoint_id, &req_handle);
     } else {
         ESP_LOGE(TAG, "Incorrect arguments. Check help for more details.");
         return ESP_ERR_INVALID_ARG;
     }
-
-    console_buffer[0] = 0;
 
     return ESP_OK;
 }
@@ -76,63 +143,47 @@ static esp_err_t app_driver_client_console_handler(int argc, char **argv)
                "\t\tExample: matter esp client invoke 0x0001 0xBC5C01 0x0001 0x0008 0x0000 0x50 0x0 0x1 0x1.\n"
                "\tinvoke-group: <fabric_index> <group_id> <cluster_id> <command_id> parameters ... \n"
                "\t\tExample: matter esp client invoke-group 0x0001 0x257 0x0008 0x0000 0x50 0x0 0x1 0x1.\n");
-    } else if (argc >= 6 && strncmp(argv[0], "invoke", sizeof("invoke")) == 0) {
-        client::request_handle_t req_handle;
-        req_handle.type = esp_matter::client::INVOKE_CMD;
-        uint8_t fabric_index = strtoul((const char *)&argv[1][2], NULL, 16);
-        uint64_t node_id = strtoull((const char *)&argv[2][2], NULL, 16);
-        req_handle.command_path = {(chip::EndpointId)strtoul((const char *)&argv[3][2], NULL, 16) /* EndpointId */,
-                                   0 /* GroupId */, strtoul((const char *)&argv[4][2], NULL, 16) /* ClusterId */,
-                                   strtoul((const char *)&argv[5][2], NULL, 16) /* CommandId */,
-                                   chip::app::CommandPathFlags::kEndpointIdValid
-                                  };
+        return ESP_OK;
+    }
 
-        if (argc > 6) {
-            console_buffer[0] = argc - 6;
-            for (int i = 0; i < (argc - 6); i++) {
-                if ((argv[6 + i][0] != '0') || (argv[6 + i][1] != 'x') || (strlen((const char *)&argv[6 + i][2]) > 10)) {
-                    ESP_LOGE(TAG, "Incorrect arguments. Check help for more details.");
-                    return ESP_ERR_INVALID_ARG;
-                }
-                strcpy((console_buffer + 1 + 10 * i), &argv[6 + i][2]);
-            }
-
-            req_handle.request_data = console_buffer;
-        }
-
-        auto &server = chip::Server::GetInstance();
-        client::connect(server.GetCASESessionManager(), fabric_index, node_id, &req_handle);
-    } else if (argc >= 5 && strncmp(argv[0], "invoke-group", sizeof("invoke-group")) == 0) {
-        client::request_handle_t req_handle;
-        req_handle.type = esp_matter::client::INVOKE_CMD;
-        uint8_t fabric_index = strtoul((const char *)&argv[1][2], NULL, 16);
-        req_handle.command_path = {
-            0 /* EndpointId */, (chip::GroupId)strtoul((const char *)&argv[2][2], NULL, 16) /* GroupId */,
-            strtoul((const char *)&argv[3][2], NULL, 16) /* ClusterId */,
-            strtoul((const char *)&argv[4][2], NULL, 16) /* CommandId */, chip::app::CommandPathFlags::kGroupIdValid
-        };
-
-        if (argc > 5) {
-            console_buffer[0] = argc - 5;
-            for (int i = 0; i < (argc - 5); i++) {
-                if ((argv[5 + i][0] != '0') || (argv[5 + i][1] != 'x') || (strlen((const char *)&argv[5 + i][2]) > 10)) {
-                    ESP_LOGE(TAG, "Incorrect arguments. Check help for more details.");
-                    return ESP_ERR_INVALID_ARG;
-                }
-                strcpy((console_buffer + 1 + 10 * i), &argv[5 + i][2]);
-            }
-
-            req_handle.request_data = console_buffer;
-        }
-
-        client::group_request_send(fabric_index, &req_handle);
-    } else {
+    const bool is_unicast = argc >= 6 && strncmp(argv[0], "invoke", sizeof("invoke")) == 0;
+    const bool is_group = argc >= 5 && strncmp(argv[0], "invoke-group", sizeof("invoke-group")) == 0;
+    if (!is_unicast && !is_group) {
         ESP_LOGE(TAG, "Incorrect arguments. Check help for more details.");
         return ESP_ERR_INVALID_ARG;
     }
 
-    console_buffer[0] = 0;
-
+    const int first_parameter = is_unicast ? 6 : 5;
+    const chip::FabricIndex fabric_index = strtoul(argv[1] + 2, nullptr, 16);
+    const chip::EndpointId endpoint_id = is_unicast ? strtoul(argv[3] + 2, nullptr, 16) : chip::kInvalidEndpointId;
+    const chip::ClusterId cluster_id = strtoul(argv[is_unicast ? 4 : 3] + 2, nullptr, 16);
+    const chip::CommandId command_id = strtoul(argv[is_unicast ? 5 : 4] + 2, nullptr, 16);
+    char json[32] = {};
+    bool has_fields;
+    CHIP_ERROR err = format_command_fields(cluster_id, command_id,
+                                           argc - first_parameter, argv + first_parameter,
+                                           json, sizeof(json), has_fields);
+    if (err != CHIP_NO_ERROR) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    client::json_encodable fields(json);
+    client::invoke_command::request_t request = {
+        .endpoint_id = endpoint_id,
+        .cluster_id = cluster_id,
+        .command_id = command_id,
+        .fields = has_fields ? &fields : nullptr,
+    };
+    if (is_unicast) {
+        const chip::NodeId node_id = strtoull(argv[2] + 2, nullptr, 16);
+        err = start_invoke(chip::ScopedNodeId(node_id, fabric_index), request);
+    } else {
+        const chip::GroupId group_id = static_cast<chip::GroupId>(strtoul(argv[2] + 2, nullptr, 16));
+        err = start_group_invoke(group_id, fabric_index, request);
+    }
+    if (err != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Invoke submission failed: %s", chip::ErrorStr(err));
+        return ESP_FAIL;
+    }
     return ESP_OK;
 }
 
@@ -159,76 +210,6 @@ static void app_driver_register_commands()
     esp_matter::console::add_commands(&client_command, 1);
 }
 #endif // CONFIG_ENABLE_CHIP_SHELL
-
-static void send_command_success_callback(void *context, const ConcreteCommandPath &command_path,
-                                          const chip::app::StatusIB &status, TLVReader *response_data)
-{
-    ESP_LOGI(TAG, "Send command success");
-}
-
-static void send_command_failure_callback(void *context, CHIP_ERROR error)
-{
-    ESP_LOGI(TAG, "Send command failure: err :%" CHIP_ERROR_FORMAT, error.Format());
-}
-
-void app_driver_client_invoke_command_callback(client::peer_device_t *peer_device, client::request_handle_t *req_handle,
-                                               void *priv_data)
-{
-    if (req_handle->type != esp_matter::client::INVOKE_CMD ||
-            !req_handle->command_path.mFlags.Has(chip::app::CommandPathFlags::kEndpointIdValid)) {
-        return;
-    }
-    char command_data_str[32];
-    if (req_handle->command_path.mClusterId == OnOff::Id) {
-        strcpy(command_data_str, "{}");
-    } else if (req_handle->command_path.mClusterId == Identify::Id) {
-        if (req_handle->command_path.mCommandId == Identify::Commands::Identify::Id) {
-            if (((char *)req_handle->request_data)[0] != 1) {
-                ESP_LOGE(TAG, "Number of parameters error");
-                return;
-            }
-            sprintf(command_data_str, "{\"0:U16\": %ld}",
-                    strtoul((const char *)(req_handle->request_data) + 1, NULL, 16));
-        } else {
-            ESP_LOGE(TAG, "Unsupported command");
-            return;
-        }
-    } else {
-        ESP_LOGE(TAG, "Unsupported cluster");
-        return;
-    }
-    client::interaction::invoke::send_request(NULL, peer_device, req_handle->command_path, command_data_str,
-                                              send_command_success_callback, send_command_failure_callback,
-                                              chip::NullOptional);
-}
-
-void app_driver_client_group_invoke_command_callback(uint8_t fabric_index, client::request_handle_t *req_handle, void *priv_data)
-{
-    if (req_handle->type != esp_matter::client::INVOKE_CMD ||
-            !req_handle->command_path.mFlags.Has(chip::app::CommandPathFlags::kGroupIdValid)) {
-        return;
-    }
-    char command_data_str[32];
-    if (req_handle->command_path.mClusterId == OnOff::Id) {
-        strcpy(command_data_str, "{}");
-    } else if (req_handle->command_path.mClusterId == Identify::Id) {
-        if (req_handle->command_path.mCommandId == Identify::Commands::Identify::Id) {
-            if (((char *)req_handle->request_data)[0] != 1) {
-                ESP_LOGE(TAG, "Number of parameters error");
-                return;
-            }
-            sprintf(command_data_str, "{\"0:U16\": %ld}",
-                    strtoul((const char *)(req_handle->request_data) + 1, NULL, 16));
-        } else {
-            ESP_LOGE(TAG, "Unsupported command");
-            return;
-        }
-    } else {
-        ESP_LOGE(TAG, "Unsupported cluster");
-        return;
-    }
-    client::interaction::invoke::send_group_request(fabric_index, req_handle->command_path, command_data_str);
-}
 
 /* Do any conversions/remapping for the actual value here */
 static esp_err_t app_driver_light_set_power(led_driver_handle_t handle, esp_matter_attr_val_t *val)
@@ -368,7 +349,6 @@ app_driver_handle_t app_driver_button_init()
 #if CONFIG_ENABLE_CHIP_SHELL
     app_driver_register_commands();
 #endif // CONFIG_ENABLE_CHIP_SHELL
-    client::set_request_callback(app_driver_client_invoke_command_callback, app_driver_client_group_invoke_command_callback, NULL);
 
     return (app_driver_handle_t)handle;
 }
