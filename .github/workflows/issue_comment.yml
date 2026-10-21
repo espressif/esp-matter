@@ -1,16 +1,24 @@
 name: Sync issue comments to JIRA
 
+permissions:
+  issues: write
+  pull-requests: write
+
 # This workflow will be triggered when new issue comment is created (including PR comments)
 on: issue_comment
+
+# Limit to single concurrent run for workflows which can create Jira issues.
+# Same concurrency group is used in new_issues.yml
+concurrency: jira_issues
 
 jobs:
   sync_issue_comments_to_jira:
     name: Sync Issue Comments to Jira
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v7
       - name: Sync issue comments to JIRA
-        uses: espressif/github-actions/sync_issues_to_jira@master
+        uses: espressif/sync-jira-actions@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JIRA_PASS: ${{ secrets.JIRA_PASS }}
