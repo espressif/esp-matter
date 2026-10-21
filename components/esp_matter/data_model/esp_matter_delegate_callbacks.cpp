@@ -38,7 +38,10 @@
 #include <app/clusters/boolean-state-configuration-server/boolean-state-configuration-server.h>
 #include <app/clusters/application-basic-server/application-basic-server.h>
 #include <app/clusters/laundry-washer-controls-server/laundry-washer-controls-server.h>
-#include <app/clusters/window-covering-server/window-covering-server.h>
+// Reused from upstream's codegen integration header (designed for the codegen data model provider);
+// esp-matter only needs the window-covering entry points declared here, not its RegisterServer path.
+#include <app/clusters/window-covering-server/CodegenIntegration.h>
+#include <app/clusters/window-covering-server/WindowCoveringDelegate.h>
 #include <app/clusters/dishwasher-alarm-server/dishwasher-alarm-server.h>
 #include <app/clusters/keypad-input-server/keypad-input-server.h>
 #include <app/clusters/mode-select-server/supported-modes-manager.h>
@@ -86,6 +89,7 @@
 #include <clusters/camera_av_stream_management/integration.h>
 #include <clusters/webrtc_transport_provider/integration.h>
 #include <clusters/chime/integration.h>
+#include <clusters/refrigerator_alarm/integration.h>
 #include <clusters/microwave_oven_control/integration.h>
 #include <clusters/tls_client_management/integration.h>
 #include <clusters/tls_certificate_management/integration.h>
@@ -186,12 +190,12 @@ chip::BitMask<ElectricalPowerMeasurement::OptionalAttributes> get_electrical_pow
 }
 
 // Cluster-specific optional commands handlers
-chip::BitMask<EnergyEvse::OptionalCommands> get_energy_evse_enabled_optional_commands(uint16_t endpoint_id)
+EnergyEvse::EnergyEvseCluster::OptionalCommandSet get_energy_evse_enabled_optional_commands(uint16_t endpoint_id)
 {
-    chip::BitMask<EnergyEvse::OptionalCommands> optional_cmds = 0;
+    EnergyEvse::EnergyEvseCluster::OptionalCommandSet optional_cmds(0);
 
     if (endpoint::is_command_enabled(endpoint_id, EnergyEvse::Id, EnergyEvse::Commands::StartDiagnostics::Id)) {
-        optional_cmds.Set(EnergyEvse::OptionalCommands::kSupportsStartDiagnostics);
+        optional_cmds.Set<EnergyEvse::Commands::StartDiagnostics::Id>();
     }
 
     return optional_cmds;
@@ -279,7 +283,7 @@ void EnergyEvseDelegateInitCB(void *delegate, uint16_t endpoint_id)
         EnergyEvse::Delegate *energy_evse_delegate = static_cast<EnergyEvse::Delegate*>(delegate);
         uint32_t feature_map = read_feature_map_u32(endpoint_id, EnergyEvse::Id);
         chip::BitMask<EnergyEvse::OptionalAttributes> optional_attrs = get_energy_evse_enabled_optional_attributes(endpoint_id);
-        chip::BitMask<EnergyEvse::OptionalCommands> optional_cmds = get_energy_evse_enabled_optional_commands(endpoint_id);
+        EnergyEvse::EnergyEvseCluster::OptionalCommandSet optional_cmds = get_energy_evse_enabled_optional_commands(endpoint_id);
         energyEvseInstance = new EnergyEvse::Instance(endpoint_id, *energy_evse_delegate, chip::BitMask<EnergyEvse::Feature, uint32_t>(feature_map),
                                                       optional_attrs, optional_cmds);
         set_delegate_shutdown_callback_and_managed_instance(cl, EnergyEvseShutdownCB, energyEvseInstance);
@@ -542,6 +546,13 @@ void DishwasherAlarmDelegateInitCB(void *delegate, uint16_t endpoint_id)
     DishwasherAlarm::SetDefaultDelegate(endpoint_id, dishwasher_alarm_delegate);
 }
 
+void RefrigeratorAlarmDelegateInitCB(void *delegate, uint16_t endpoint_id)
+{
+    VerifyOrReturn(delegate != nullptr);
+    AlarmBase::Delegate *refrigerator_alarm_delegate = static_cast<AlarmBase::Delegate*>(delegate);
+    RefrigeratorAlarm::SetDefaultDelegate(endpoint_id, refrigerator_alarm_delegate);
+}
+
 void KeypadInputDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     VerifyOrReturn(delegate != nullptr);
@@ -676,9 +687,9 @@ void ActionsDelegateInitCB(void *delegate, uint16_t endpoint_id)
 
 void ThermostatDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    VerifyOrReturn(delegate != nullptr);
-    Thermostat::Delegate *thermostat_delegate = static_cast<Thermostat::Delegate*>(delegate);
-    Thermostat::SetDefaultDelegate(endpoint_id, thermostat_delegate);
+    // TODO: The Thermostat cluster is now code driven and composed from per-feature
+    // delegates chosen at compile time; the old SetDefaultDelegate API is gone.
+    // Restore delegate wiring together with the Thermostat cluster integration.
 }
 
 void TemperatureControlDelegateInitCB(void *delegate, [[maybe_unused]] uint16_t endpoint_id)
@@ -764,24 +775,14 @@ void CommodityTariffDelegateInitCB(void *delegate, uint16_t endpoint_id)
     (void)commodity_tariff_instance->Init();
 }
 
-static void CommodityPriceShutdownCB(void *managed_instance, uint16_t /*endpoint_id*/)
-{
-    delete static_cast<CommodityPrice::Instance*>(managed_instance);
-}
-
 void CommodityPriceDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
     VerifyOrReturn(delegate != nullptr);
-    cluster_t *cl = cluster::get(endpoint_id, CommodityPrice::Id);
-    VerifyOrReturn(cl != nullptr);
-    CommodityPrice::Instance *commodity_price_instance = static_cast<CommodityPrice::Instance*>(get_delegate_managed_instance(cl));
-    if (!commodity_price_instance) {
-        CommodityPrice::Delegate *commodity_price_delegate = static_cast<CommodityPrice::Delegate*>(delegate);
-        uint32_t feature_map = read_feature_map_u32(endpoint_id, CommodityPrice::Id);
-        commodity_price_instance = new CommodityPrice::Instance(endpoint_id, *commodity_price_delegate, chip::BitMask<CommodityPrice::Feature, uint32_t>(feature_map));
-        set_delegate_shutdown_callback_and_managed_instance(cl, CommodityPriceShutdownCB, commodity_price_instance);
-    }
-    (void)commodity_price_instance->Init();
+    // The code-driven CommodityPriceCluster is created and registered by
+    // ESPMatterCommodityPriceClusterServerInitCallback; the compat Delegate carries no
+    // delegated methods, so only its endpoint binding is kept for the application.
+    CommodityPrice::Delegate *commodity_price_delegate = static_cast<CommodityPrice::Delegate*>(delegate);
+    commodity_price_delegate->SetEndpointId(endpoint_id);
 }
 
 static void ElectricalGridConditionsShutdownCB(void *managed_instance, uint16_t /*endpoint_id*/)

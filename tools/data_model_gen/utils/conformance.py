@@ -47,6 +47,7 @@ class ConformanceDecision(Enum):
     DEPRECATED = auto()
     DISALLOWED = auto()
     PROVISIONAL = auto()
+    OBSOLETE = auto()
     DESCRIBED = auto()
     NOT_APPLICABLE = auto()
 
@@ -90,6 +91,8 @@ def get_conformance_type(conformance_type: str) -> ConformanceDecision:
         return ConformanceDecision.DISALLOWED
     elif conformance_type == "provisional" or conformance_type == "provisionalConform":
         return ConformanceDecision.PROVISIONAL
+    elif conformance_type == "obsolete" or conformance_type == "obsoleteConform":
+        return ConformanceDecision.OBSOLETE
     elif conformance_type == "described" or conformance_type == "describedConform":
         return ConformanceDecision.DESCRIBED
     else:

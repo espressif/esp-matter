@@ -76,7 +76,7 @@ inline constexpr uint32_t Id = 0x0007;
 namespace MeasurementUnit {
 inline constexpr uint32_t Id = 0x0008;
 inline constexpr uint8_t Min = 0;
-inline constexpr uint8_t Max = 7;
+inline constexpr uint8_t Max = 9;
 } /* MeasurementUnit */
 namespace MeasurementMedium {
 inline constexpr uint32_t Id = 0x0009;

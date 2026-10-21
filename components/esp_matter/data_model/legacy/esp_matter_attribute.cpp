@@ -158,6 +158,12 @@ attribute_t *create_arl(cluster_t *cluster, uint8_t *value, uint16_t length, uin
 }
 
 #endif
+
+attribute_t *create_auxiliary_acl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, AccessControl::Attributes::AuxiliaryACL::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
+}
 } /* attribute */
 } /* access_control */
 
@@ -2338,6 +2344,30 @@ attribute_t *create_setpoint_hold_expiry_timestamp(cluster_t *cluster, nullable<
 {
     return esp_matter::attribute::create(cluster, Thermostat::Attributes::SetpointHoldExpiryTimestamp::Id,
                                          ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+}
+
+attribute_t *create_max_thermostat_suggestions(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::MaxThermostatSuggestions::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+}
+
+attribute_t *create_thermostat_suggestions(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::ThermostatSuggestions::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, length, count));
+}
+
+attribute_t *create_current_thermostat_suggestion(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::CurrentThermostatSuggestion::Id,
+                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, length, count));
+}
+
+attribute_t *create_thermostat_suggestion_not_following_reason(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::ThermostatSuggestionNotFollowingReason::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
 }
 
 } /* attribute */

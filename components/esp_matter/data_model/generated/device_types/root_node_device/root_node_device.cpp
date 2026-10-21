@@ -90,15 +90,16 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 #endif // CHIP_CONFIG_ENABLE_ICD_UAT
     }
 #endif // CHIP_CONFIG_ENABLE_ICD_SERVER
+#if defined(CONFIG_SUPPORT_GROUPCAST_CLUSTER)
+    config->groupcast.feature_flags |= cluster::groupcast::feature::listener::get_id();
+    cluster::groupcast::create(endpoint, &(config->groupcast), CLUSTER_FLAG_SERVER);
+#endif // defined(CONFIG_SUPPORT_GROUPCAST_CLUSTER)
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
     cluster::wifi_network_diagnostics::create(endpoint, &(config->wifi_network_diagnostics), CLUSTER_FLAG_SERVER);
 #endif // CHIP_DEVICE_CONFIG_ENABLE_WIFI && defined(CONFIG_SUPPORT_WIFI_NETWORK_DIAGNOSTICS_CLUSTER)
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
     cluster::thread_network_diagnostics::create(endpoint, &(config->thread_network_diagnostics), CLUSTER_FLAG_SERVER);
 #endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD && defined(CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER)
-#if defined(CONFIG_SUPPORT_GROUPCAST_CLUSTER)
-    cluster::groupcast::create(endpoint, &(config->groupcast), CLUSTER_FLAG_SERVER);
-#endif // defined(CONFIG_SUPPORT_GROUPCAST_CLUSTER)
     return ESP_OK;
 }
 

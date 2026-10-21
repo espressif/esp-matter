@@ -1,3 +1,18 @@
+# 11-September-2026
+
+## Data Model Feature Parity (Legacy ↔ Generated)
+
+Legacy and generated data models now expose the same feature set, per Matter 1.6 conformance.
+
+- **Removed (breaking)** deprecated/provisional/spec-removed features: `thermostat::setback`,
+  `level_control::frequency`, `push_av_stream_transport::metadata`,
+  `microwave_oven_control::power_in_watts`,
+  `door_lock::{rfid_credential, finger_credentials, face_credentials, logging, notification}`.
+- **Renamed (breaking)** `energy_evse` features: `soc_reporting` → `so_c_reporting`, `v2x` → `v_2_x`.
+- **Added** `occupancy_sensing::occupancy_event`, `boolean_state_configuration::fault_events`,
+  `thermostat::thermostat_suggestions`.
+- **Fixed** generated data model now emits the DoorLock `User` feature.
+
 # 25-August-2026
 
 ## Generated Data Model: Nullable attribute defaults

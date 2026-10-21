@@ -48,7 +48,11 @@ def load_test_commands(certification_tests: str, ci_branch: str):
     for test_case_name, test_config in test_cases.items():
         script = test_config["script"]
         args = test_config.get("args", "")
-        if ci_branch == test_config.get("skip_on_branch", ""):
+        if test_config.get("skip"):
+            print(
+                f"Skip {test_case_name}: {test_config.get('skip_reason', 'disabled')}"
+            )
+        elif ci_branch == test_config.get("skip_on_branch", ""):
             print(f"Skip {test_case_name} for {ci_branch} branch")
         else:
             if "test_case" in test_config:

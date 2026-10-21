@@ -299,6 +299,9 @@ command_t *create_set_active_schedule_request(cluster_t *cluster);
 command_t *create_set_active_preset_request(cluster_t *cluster);
 command_t *create_atomic_request(cluster_t *cluster);
 command_t *create_atomic_response(cluster_t *cluster);
+command_t *create_add_thermostat_suggestion(cluster_t *cluster);
+command_t *create_add_thermostat_suggestion_response(cluster_t *cluster);
+command_t *create_remove_thermostat_suggestion(cluster_t *cluster);
 } /* command */
 } /* thermostat */
 

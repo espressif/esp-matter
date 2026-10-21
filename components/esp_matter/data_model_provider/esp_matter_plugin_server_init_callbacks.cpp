@@ -70,3 +70,4 @@ void MatterCommodityPricePluginServerInitCallback() {}
 void MatterElectricalGridConditionsPluginServerInitCallback() {}
 void MatterSoilMeasurementPluginServerInitCallback() {}
 void MatterBooleanStateConfigurationPluginServerInitCallback() {}
+void MatterThermostatPluginServerInitCallback() {}

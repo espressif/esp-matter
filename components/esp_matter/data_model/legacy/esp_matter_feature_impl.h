@@ -60,6 +60,13 @@ esp_err_t add(cluster_t *cluster);
 
 } /* managed_device */
 
+namespace auxiliary {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* auxiliary */
+
 } /* feature */
 } /* access_control */
 
@@ -286,19 +293,6 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* lighting */
-
-namespace frequency {
-
-typedef struct config {
-    uint16_t current_frequency;
-    uint16_t min_frequency;
-    uint16_t max_frequency;
-    config() : current_frequency(0), min_frequency(0), max_frequency(0) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-} /* frequency */
 } /* feature */
 } /* level_control */
 
@@ -556,20 +550,6 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 } /* occupancy */
 
-namespace setback {
-
-typedef struct config {
-    nullable<uint8_t> occupied_setback;
-    nullable<uint8_t> occupied_setback_min;
-    nullable<uint8_t> occupied_setback_max;
-
-    config(): occupied_setback(), occupied_setback_min(), occupied_setback_max() {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-} /* setback */
-
 // Auto feature mandates the Heating and Cooling feature, while adding
 // Auto feature one must add Heating and Colling features.
 
@@ -617,6 +597,18 @@ namespace presets {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 } /* presets */
+
+namespace thermostat_suggestions {
+
+typedef struct config {
+    uint8_t max_thermostat_suggestions;
+    nullable<uint16_t> thermostat_suggestion_not_following_reason;
+    config() : max_thermostat_suggestions(5), thermostat_suggestion_not_following_reason() {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* thermostat_suggestions */
 
 } /* feature */
 } /* thermostat */
@@ -1198,6 +1190,12 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 } /* sensitivity_level */
 
+namespace fault_events {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* fault_events */
+
 } /* feature */
 } /* boolean_state_configuration */
 
@@ -1317,27 +1315,6 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 } /* pin_credential */
 
-namespace rfid_credential {
-typedef struct config {
-    uint16_t number_rfid_users_supported;
-    uint8_t max_rfid_code_length;
-    uint8_t min_rfid_code_length;
-    uint8_t wrong_code_entry_limit;
-    uint8_t user_code_temporary_disable_time;
-    config() : number_rfid_users_supported(5), max_rfid_code_length(16), min_rfid_code_length(4),
-        wrong_code_entry_limit(5), user_code_temporary_disable_time(5) {}
-} config_t;
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster, config_t *config);
-} /* rfid_credential */
-
-namespace finger_credentials {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-} /* finger_credentials */
-
 namespace weekday_access_schedules {
 
 uint32_t get_id();
@@ -1349,12 +1326,6 @@ namespace door_position_sensor {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 } /* door_position_sensor */
-
-namespace face_credentials {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-} /* face_credentials */
 
 namespace credential_over_the_air_access {
 typedef struct config {
@@ -1430,12 +1401,12 @@ esp_err_t add(cluster_t *cluster);
 
 } /* charging_preferences */
 
-namespace soc_reporting {
+namespace so_c_reporting {
 
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 
-} /* soc_reporting */
+} /* so_c_reporting */
 
 namespace plug_and_charge {
 
@@ -1451,12 +1422,12 @@ esp_err_t add(cluster_t *cluster);
 
 } /* rfid */
 
-namespace v2x {
+namespace v_2_x {
 
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 
-} /* v2x */
+} /* v_2_x */
 
 } /* feature */
 } /* energy_evse */
@@ -1469,12 +1440,6 @@ namespace power_as_number {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 } /* power_as_number */
-
-namespace power_in_watts {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-} /* power_in_watts */
 
 namespace power_number_limits {
 
@@ -1714,6 +1679,12 @@ namespace vision {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 } /* vision */
+
+namespace occupancy_event {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* occupancy_event */
 } /* feature */
 } /* occupancy_sensing */
 
@@ -2091,13 +2062,6 @@ namespace per_zone_sensitivity {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 } /* per_zone_sensitivity */
-
-/* Provisional */
-namespace metadata {
-
-uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-} /* metadata */
 
 } /* feature */
 } /* push_av_stream_transport */

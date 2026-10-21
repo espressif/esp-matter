@@ -31,6 +31,7 @@ namespace event {
 event_t *create_access_control_entry_changed(cluster_t *cluster);
 event_t *create_access_control_extension_changed(cluster_t *cluster);
 event_t *create_fabric_restriction_review_update(cluster_t *cluster);
+event_t *create_auxiliary_access_updated(cluster_t *cluster);
 } // namespace event
 } // namespace access_control
 

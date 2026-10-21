@@ -23,6 +23,67 @@ namespace groupcast {
 
 inline constexpr uint32_t Id = 0x0065;
 
+namespace feature {
+namespace Listener {
+inline constexpr uint32_t Id = 0x1;
+} /* Listener */
+namespace Sender {
+inline constexpr uint32_t Id = 0x2;
+} /* Sender */
+namespace PerGroup {
+inline constexpr uint32_t Id = 0x4;
+} /* PerGroup */
+} /* feature */
+
+namespace attribute {
+namespace Membership {
+inline constexpr uint32_t Id = 0x0000;
+} /* Membership */
+namespace MaxMembershipCount {
+inline constexpr uint32_t Id = 0x0001;
+inline constexpr uint16_t Min = 10;
+inline constexpr uint16_t Max = 65535;
+} /* MaxMembershipCount */
+namespace MaxMcastAddrCount {
+inline constexpr uint32_t Id = 0x0002;
+inline constexpr uint16_t Min = 1;
+inline constexpr uint16_t Max = 65535;
+} /* MaxMcastAddrCount */
+namespace UsedMcastAddrCount {
+inline constexpr uint32_t Id = 0x0003;
+} /* UsedMcastAddrCount */
+namespace FabricUnderTest {
+inline constexpr uint32_t Id = 0x0004;
+} /* FabricUnderTest */
+} /* attribute */
+
+namespace command {
+namespace JoinGroup {
+inline constexpr uint32_t Id = 0x00;
+} /* JoinGroup */
+namespace LeaveGroup {
+inline constexpr uint32_t Id = 0x01;
+} /* LeaveGroup */
+namespace LeaveGroupResponse {
+inline constexpr uint32_t Id = 0x02;
+} /* LeaveGroupResponse */
+namespace UpdateGroupKey {
+inline constexpr uint32_t Id = 0x03;
+} /* UpdateGroupKey */
+namespace ConfigureAuxiliaryACL {
+inline constexpr uint32_t Id = 0x04;
+} /* ConfigureAuxiliaryACL */
+namespace GroupcastTesting {
+inline constexpr uint32_t Id = 0x05;
+} /* GroupcastTesting */
+} /* command */
+
+namespace event {
+namespace GroupcastTesting {
+inline constexpr uint32_t Id = 0x00;
+} /* GroupcastTesting */
+} /* event */
+
 } /* groupcast */
 } /* cluster */
 } /* esp_matter */

@@ -19,13 +19,13 @@
 #include <esp_matter.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
-#include <app-common/zap-generated/callback.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
 #include <esp_matter_delegate_callbacks.h>
 #include <laundry_dryer_controls.h>
 #include <laundry_dryer_controls_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
 using namespace esp_matter;
@@ -54,11 +54,9 @@ attribute_t *create_selected_dryness_level(cluster_t *cluster, nullable<uint8_t>
 
 } /* attribute */
 
-const function_generic_t function_list[] = {
-    (function_generic_t)MatterLaundryDryerControlsClusterServerPreAttributeChangedCallback,
-};
+const function_generic_t *function_list = NULL;
 
-const int function_flags = CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -82,6 +80,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         attribute::create_selected_dryness_level(cluster, config->selected_dryness_level);
         attribute::create_supported_dryness_levels(cluster, NULL, 0, 0);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterLaundryDryerControlsClusterServerInitCallback,
+                                                 ESPMatterLaundryDryerControlsClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {

@@ -21,6 +21,7 @@ namespace esp_matter {
 namespace cluster {
 namespace thermostat {
 
+const uint8_t k_max_active_preset_handle_length = 16u;
 const uint8_t k_max_active_schedule_handle_length = 16u;
 namespace feature {
 namespace heating {
@@ -81,13 +82,23 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* matter_schedule_configuration */
 
 namespace presets {
+typedef struct config {
+    uint8_t number_of_presets;
+    uint8_t active_preset_handle[k_max_active_preset_handle_length];
+    config() : number_of_presets(1) {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* presets */
 
 namespace thermostat_suggestions {
+typedef struct config {
+    uint8_t max_thermostat_suggestions;
+    nullable<uint8_t> thermostat_suggestion_not_following_reason;
+    config() : max_thermostat_suggestions(5), thermostat_suggestion_not_following_reason() {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* thermostat_suggestions */
 
 } /* feature */
@@ -165,6 +176,8 @@ typedef struct config {
         feature::occupancy::config_t occupancy;
         feature::auto_mode::config_t auto_mode;
         feature::matter_schedule_configuration::config_t matter_schedule_configuration;
+        feature::presets::config_t presets;
+        feature::thermostat_suggestions::config_t thermostat_suggestions;
     } features;
     uint32_t feature_flags;
     config() : local_temperature(), control_sequence_of_operation(0), system_mode(0), delegate(nullptr), feature_flags(0) {}

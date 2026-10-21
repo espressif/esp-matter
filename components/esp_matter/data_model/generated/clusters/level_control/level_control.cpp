@@ -34,7 +34,7 @@ using namespace esp_matter;
 using namespace esp_matter::cluster;
 
 static const char *TAG = "esp_matter_cluster";
-constexpr uint16_t cluster_revision = 7;
+constexpr uint16_t cluster_revision = 8;
 
 static esp_err_t esp_matter_command_callback_move_to_level(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                            void *opaque_ptr)
@@ -279,9 +279,10 @@ command_t *create_stop_with_on_off(cluster_t *cluster)
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfLevelControlClusterServerInitCallback,
     (function_generic_t)MatterLevelControlClusterServerShutdownCallback,
+    (function_generic_t)MatterLevelControlClusterServerPreAttributeChangedCallback,
 };
 
-const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION;
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_SHUTDOWN_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {

@@ -128,7 +128,7 @@ inline constexpr uint8_t Max = 1;
 } /* TemperatureSetpointHold */
 namespace TemperatureSetpointHoldDuration {
 inline constexpr uint32_t Id = 0x0024;
-inline constexpr uint16_t Min = 0;
+inline constexpr uint16_t Min = 1;
 inline constexpr uint16_t Max = 1440;
 } /* TemperatureSetpointHoldDuration */
 namespace ThermostatRunningState {
@@ -194,6 +194,8 @@ inline constexpr uint32_t Id = 0x0049;
 } /* ScheduleTypes */
 namespace NumberOfPresets {
 inline constexpr uint32_t Id = 0x004A;
+inline constexpr uint8_t Min = 1;
+inline constexpr uint8_t Max = 255;
 } /* NumberOfPresets */
 namespace NumberOfSchedules {
 inline constexpr uint32_t Id = 0x004B;
@@ -227,6 +229,8 @@ inline constexpr uint32_t Id = 0x0052;
 } /* SetpointHoldExpiryTimestamp */
 namespace MaxThermostatSuggestions {
 inline constexpr uint32_t Id = 0x0053;
+inline constexpr uint8_t Min = 5;
+inline constexpr uint8_t Max = 255;
 } /* MaxThermostatSuggestions */
 namespace ThermostatSuggestions {
 inline constexpr uint32_t Id = 0x0054;
@@ -236,6 +240,8 @@ inline constexpr uint32_t Id = 0x0055;
 } /* CurrentThermostatSuggestion */
 namespace ThermostatSuggestionNotFollowingReason {
 inline constexpr uint32_t Id = 0x0056;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 255;
 } /* ThermostatSuggestionNotFollowingReason */
 } /* attribute */
 

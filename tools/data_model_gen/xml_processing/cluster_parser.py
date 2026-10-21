@@ -238,12 +238,17 @@ class ClusterParser:
         base_cluster_name = classification.get("baseCluster")
         if not base_cluster_name:
             return None
+
+        # As of Matter 1.7 cluster names carry a " Cluster" suffix (e.g. "Mode Base Cluster")
+        # while a derived cluster's baseCluster reference does not (e.g. "Mode Base"). Compare
+        # with the trailing "_cluster" suffix stripped so the two forms still match.
+        def _base_key(name):
+            key = esp_name(name)
+            return key[: -len("_cluster")] if key.endswith("_cluster") else key
+
+        target = _base_key(base_cluster_name)
         return next(
-            (
-                bc
-                for bc in base_clusters
-                if esp_name(bc.name) == esp_name(base_cluster_name)
-            ),
+            (bc for bc in base_clusters if _base_key(bc.name) == target),
             None,
         )
 

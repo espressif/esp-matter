@@ -145,6 +145,12 @@ static_library("ESP32_custom") {
     "${chip_root}/src/crypto",
     "${chip_root}/src/platform:platform_base",
     ":platform_buildconfig",
+
+    # DeviceAttestationCredsProvider.h (exposed via `public` above) includes
+    # clusters/OperationalCredentials/{Enums,Structs}.h as of Matter 1.7. Mirror the
+    # public_dep from upstream's src/credentials:credentials_header so GN's header check
+    # allows those includes through this target.
+    "${chip_root}/zzz_generated/app-common/clusters/OperationalCredentials:elements",
   ]
 
   if (chip_config_memory_management == "platform") {

@@ -20,6 +20,7 @@
 #include <descriptor.h>
 #include <electrical_power_measurement.h>
 #include <electrical_energy_measurement.h>
+#include <commodity_metering.h>
 
 #include <esp_matter_core.h>
 
@@ -34,6 +35,7 @@ typedef struct config {
     cluster::descriptor::config_t descriptor;
     cluster::electrical_power_measurement::config_t electrical_power_measurement;
     cluster::electrical_energy_measurement::config_t electrical_energy_measurement;
+    cluster::commodity_metering::config_t commodity_metering;
 } config_t;
 
 uint32_t get_device_type_id();

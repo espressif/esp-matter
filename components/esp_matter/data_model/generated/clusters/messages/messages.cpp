@@ -36,7 +36,7 @@ using namespace esp_matter::cluster;
 using namespace esp_matter::cluster::delegate_cb;
 
 static const char *TAG = "esp_matter_cluster";
-constexpr uint16_t cluster_revision = 3;
+constexpr uint16_t cluster_revision = 4;
 
 static esp_err_t esp_matter_command_callback_present_messages_request(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                                       void *opaque_ptr)

@@ -30,7 +30,7 @@ using namespace esp_matter;
 using namespace esp_matter::cluster;
 
 static const char *TAG = "esp_matter_cluster";
-constexpr uint16_t cluster_revision = 3;
+constexpr uint16_t cluster_revision = 4;
 
 namespace esp_matter {
 namespace cluster {
@@ -125,7 +125,7 @@ attribute_t *create_status(cluster_t *cluster, uint8_t value)
 
 attribute_t *create_order(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, Order::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
+    return esp_matter::attribute::create(cluster, Order::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_description(cluster_t *cluster, char *value, uint16_t length)

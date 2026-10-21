@@ -89,7 +89,7 @@ void ESPMatterIlluminanceMeasurementClusterServerInitCallback(EndpointId endpoin
 
         uint16_t tolerance{};
         if (optionalAttributeSet.IsSet(Tolerance::Id)) {
-            VerifyOrDie(Tolerance::GetDefault(endpointId, &tolerance) == Status::Success);
+            VerifyOrDie(Tolerance::GetDefault(endpointId, tolerance) == Status::Success);
         }
 
         DataModel::Nullable<chip::app::Clusters::IlluminanceMeasurement::LightSensorTypeEnum> lightSensorType{};

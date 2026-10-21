@@ -34,6 +34,26 @@ DELEGATE_CALLBACK_INCLUDE: FrozenSet[int] = frozenset(
     ]
 )
 
+# Clusters that upstream flags as delegate-bearing (present in delegate_clusters.json) but for
+# which esp-matter has no hand-written DelegateInitCB in esp_matter_delegate_callbacks.{h,cpp}.
+# Emitting the delegate block would reference an undeclared symbol, so suppress it; create() still
+# null-guards config->delegate, matching the pre-1.7 behaviour where these clusters had no delegate.
+# Remove an entry once esp-matter implements (and declares) that cluster's delegate callback.
+DELEGATE_CALLBACK_SKIP: FrozenSet[int] = frozenset(
+    [
+        0x0063,  # thermostat_mode
+        0x0064,  # temperature_alarm
+        0x00A1,  # electrical_alarm
+        0x00A3,  # electrical_protection_alarm
+        0x0204,  # thermostat_user_interface_configuration
+        0x0205,  # humidistat
+        0x0432,  # ambient_sensing_union
+        0x0511,  # media_file_management
+        0x0512,  # audio_control
+        0x0557,  # av_analysis
+    ]
+)
+
 PLUGIN_CALLBACK_SKIP: FrozenSet[int] = frozenset(
     [
         0x0046,  # icd_management
@@ -209,6 +229,10 @@ def should_skip_cluster_command_callbacks(cluster_id: str) -> bool:
 
 def should_include_delegate_callback(cluster_id: str) -> bool:
     return convert_to_int(cluster_id) in DELEGATE_CALLBACK_INCLUDE
+
+
+def should_skip_delegate_callback(cluster_id: str) -> bool:
+    return convert_to_int(cluster_id) in DELEGATE_CALLBACK_SKIP
 
 
 def should_skip_plugin_callback(cluster_id: str) -> bool:

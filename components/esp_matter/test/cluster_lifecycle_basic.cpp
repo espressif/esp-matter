@@ -141,6 +141,7 @@ static void verify_cluster_lifecycle_no_heap_leak(chip::ClusterId cluster_id,
 // - CameraAvStreamManagement
 // - ClosureControl
 // - ModeBase (shared implementation exercised via RvcRunMode below; needs a delegate per derived cluster)
+// - ModeSelect (code-driven; needs a SupportedModesManager registered before endpoint enable, else the provider startup dereferences an unset manager)
 // - OperationalState
 // - TlsCertificateManagement
 // - TlsClientManagement
@@ -311,6 +312,24 @@ static cluster_t *create_temperature_control_cluster(endpoint_t *endpoint,
     return cluster::temperature_control::create(endpoint, config, flags);
 }
 
+static cluster_t *create_window_covering_cluster(endpoint_t *endpoint, cluster::window_covering::config_t *config,
+                                                 uint8_t flags)
+{
+    // WindowCovering requires at least one of Lift/Tilt (O.a+); the provider init callback also
+    // reads the feature map to build the code-driven cluster config.
+    config->feature_flags = cluster::window_covering::feature::lift::get_id();
+    return cluster::window_covering::create(endpoint, config, flags);
+}
+
+static cluster_t *create_energy_preference_cluster(endpoint_t *endpoint, cluster::energy_preference::config_t *config,
+                                                   uint8_t flags)
+{
+    // EnergyPreference requires at least one of EnergyBalance/LowPowerModeSensitivity (O.a+); the
+    // provider init callback aborts construction unless a feature is present.
+    config->feature_flags = cluster::energy_preference::feature::energy_balance::get_id();
+    return cluster::energy_preference::create(endpoint, config, flags);
+}
+
 TEST_CLUSTER_LIFECYCLE("ActivatedCarbonFilterMonitoring", chip::app::Clusters::ActivatedCarbonFilterMonitoring::Id,
                        cluster::activated_carbon_filter_monitoring::config_t,
                        cluster::activated_carbon_filter_monitoring::create)
@@ -326,10 +345,14 @@ TEST_CLUSTER_LIFECYCLE("BridgedDeviceBasicInformation", chip::app::Clusters::Bri
                        cluster::bridged_device_basic_information::config_t, cluster::bridged_device_basic_information::create)
 // ClosureDimension: see IGNORED section (unordered_map leak)
 // CommissionerControl: see IGNORED section (unordered_map leak)
+TEST_CLUSTER_LIFECYCLE("CommodityPrice", chip::app::Clusters::CommodityPrice::Id, cluster::commodity_price::config_t,
+                       cluster::commodity_price::create)
 TEST_CLUSTER_LIFECYCLE("Descriptor", chip::app::Clusters::Descriptor::Id, cluster::descriptor::config_t,
                        cluster::descriptor::create)
 TEST_CLUSTER_LIFECYCLE("ElectricalEnergyMeasurement", chip::app::Clusters::ElectricalEnergyMeasurement::Id,
                        cluster::electrical_energy_measurement::config_t, create_electrical_energy_measurement_cluster)
+TEST_CLUSTER_LIFECYCLE("EnergyPreference", chip::app::Clusters::EnergyPreference::Id,
+                       cluster::energy_preference::config_t, create_energy_preference_cluster)
 TEST_CLUSTER_LIFECYCLE("EthernetNetworkDiagnostics", chip::app::Clusters::EthernetNetworkDiagnostics::Id,
                        cluster::ethernet_network_diagnostics::config_t, cluster::ethernet_network_diagnostics::create)
 TEST_CLUSTER_LIFECYCLE("FanControl", chip::app::Clusters::FanControl::Id, cluster::fan_control::config_t,
@@ -343,6 +366,8 @@ TEST_CLUSTER_LIFECYCLE("HepaFilterMonitoring", chip::app::Clusters::HepaFilterMo
                        cluster::hepa_filter_monitoring::config_t, cluster::hepa_filter_monitoring::create)
 TEST_CLUSTER_LIFECYCLE("IlluminanceMeasurement", chip::app::Clusters::IlluminanceMeasurement::Id,
                        cluster::illuminance_measurement::config_t, cluster::illuminance_measurement::create)
+TEST_CLUSTER_LIFECYCLE("LaundryDryerControls", chip::app::Clusters::LaundryDryerControls::Id,
+                       cluster::laundry_dryer_controls::config_t, cluster::laundry_dryer_controls::create)
 TEST_CLUSTER_LIFECYCLE("LaundryWasherControls", chip::app::Clusters::LaundryWasherControls::Id,
                        cluster::laundry_washer_controls::config_t, create_laundry_washer_controls_cluster)
 TEST_CLUSTER_LIFECYCLE("MicrowaveOvenControl", chip::app::Clusters::MicrowaveOvenControl::Id,
@@ -363,6 +388,8 @@ TEST_CLUSTER_LIFECYCLE("PressureMeasurement", chip::app::Clusters::PressureMeasu
                        cluster::pressure_measurement::config_t, cluster::pressure_measurement::create)
 TEST_CLUSTER_LIFECYCLE("PushAvStreamTransport", chip::app::Clusters::PushAvStreamTransport::Id,
                        cluster::push_av_stream_transport::config_t, cluster::push_av_stream_transport::create)
+TEST_CLUSTER_LIFECYCLE("RefrigeratorAlarm", chip::app::Clusters::RefrigeratorAlarm::Id,
+                       cluster::refrigerator_alarm::config_t, cluster::refrigerator_alarm::create)
 TEST_CLUSTER_LIFECYCLE("RelativeHumidityMeasurement", chip::app::Clusters::RelativeHumidityMeasurement::Id,
                        cluster::relative_humidity_measurement::config_t, cluster::relative_humidity_measurement::create)
 TEST_CLUSTER_LIFECYCLE("RvcRunMode", chip::app::Clusters::RvcRunMode::Id, cluster::rvc_run_mode::config_t,
@@ -389,4 +416,6 @@ TEST_CLUSTER_LIFECYCLE("ValveConfigurationAndControl", chip::app::Clusters::Valv
                        cluster::valve_configuration_and_control::config_t, cluster::valve_configuration_and_control::create)
 TEST_CLUSTER_LIFECYCLE("WiFiNetworkDiagnostics", chip::app::Clusters::WiFiNetworkDiagnostics::Id,
                        cluster::wifi_network_diagnostics::config_t, cluster::wifi_network_diagnostics::create)
+TEST_CLUSTER_LIFECYCLE("WindowCovering", chip::app::Clusters::WindowCovering::Id,
+                       cluster::window_covering::config_t, create_window_covering_cluster)
 // ZoneManagement: see IGNORED section (unordered_map leak)

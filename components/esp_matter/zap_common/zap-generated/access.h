@@ -327,6 +327,9 @@
     0x00000201, /* Cluster: Thermostat, Attribute: ACCapacityformat, Privilege: manage */ \
     0x00000201, /* Cluster: Thermostat, Attribute: Presets, Privilege: manage */ \
     0x00000201, /* Cluster: Thermostat, Attribute: Schedules, Privilege: manage */ \
+    0x00000201, /* Cluster: Thermostat, Attribute: AvailableSensorHandles, Privilege: manage */ \
+    0x00000201, /* Cluster: Thermostat, Attribute: EnabledSensorHandles, Privilege: manage */ \
+    0x00000201, /* Cluster: Thermostat, Attribute: SensorSchedule, Privilege: manage */ \
     0x00000204, /* Cluster: Thermostat User Interface Configuration, Attribute: KeypadLockout, Privilege: manage */ \
     0x00000204, /* Cluster: Thermostat User Interface Configuration, Attribute: ScheduleProgrammingVisibility, Privilege: manage */ \
     0x00000300, /* Cluster: Color Control, Attribute: StartUpColorTemperatureMireds, Privilege: manage */ \
@@ -455,6 +458,9 @@
     0x00000047, /* Cluster: Thermostat, Attribute: ACCapacityformat, Privilege: manage */ \
     0x00000050, /* Cluster: Thermostat, Attribute: Presets, Privilege: manage */ \
     0x00000051, /* Cluster: Thermostat, Attribute: Schedules, Privilege: manage */ \
+    0x0000005A, /* Cluster: Thermostat, Attribute: AvailableSensorHandles, Privilege: manage */ \
+    0x0000005B, /* Cluster: Thermostat, Attribute: EnabledSensorHandles, Privilege: manage */ \
+    0x0000005D, /* Cluster: Thermostat, Attribute: SensorSchedule, Privilege: manage */ \
     0x00000001, /* Cluster: Thermostat User Interface Configuration, Attribute: KeypadLockout, Privilege: manage */ \
     0x00000002, /* Cluster: Thermostat User Interface Configuration, Attribute: ScheduleProgrammingVisibility, Privilege: manage */ \
     0x00004010, /* Cluster: Color Control, Attribute: StartUpColorTemperatureMireds, Privilege: manage */ \
@@ -583,6 +589,9 @@
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Attribute: ACCapacityformat, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Attribute: Presets, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Attribute: Schedules, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Thermostat, Attribute: AvailableSensorHandles, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Thermostat, Attribute: EnabledSensorHandles, Privilege: manage */ \
+    chip::Access::Privilege::kManage, /* Cluster: Thermostat, Attribute: SensorSchedule, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat User Interface Configuration, Attribute: KeypadLockout, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat User Interface Configuration, Attribute: ScheduleProgrammingVisibility, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Color Control, Attribute: StartUpColorTemperatureMireds, Privilege: manage */ \
@@ -722,7 +731,6 @@
     0x00000201, /* Cluster: Thermostat, Command: ClearWeeklySchedule, Privilege: manage */ \
     0x00000201, /* Cluster: Thermostat, Command: AddThermostatSuggestion, Privilege: manage */ \
     0x00000201, /* Cluster: Thermostat, Command: RemoveThermostatSuggestion, Privilege: manage */ \
-    0x00000201, /* Cluster: Thermostat, Command: AtomicRequest, Privilege: manage */ \
     0x00000450, /* Cluster: Network Identity Management, Command: AddClient, Privilege: manage */ \
     0x00000450, /* Cluster: Network Identity Management, Command: RemoveClient, Privilege: manage */ \
     0x00000450, /* Cluster: Network Identity Management, Command: QueryIdentity, Privilege: manage */ \
@@ -740,6 +748,7 @@
     0x0000050B, /* Cluster: Audio Output, Command: RenameOutput, Privilege: manage */ \
     0x0000050E, /* Cluster: Account Login, Command: GetSetupPIN, Privilege: administer */ \
     0x0000050E, /* Cluster: Account Login, Command: Login, Privilege: administer */ \
+    0x0000050E, /* Cluster: Account Login, Command: GetDeviceAuthURI, Privilege: administer */ \
     0x0000050F, /* Cluster: Content Control, Command: UpdatePIN, Privilege: manage */ \
     0x0000050F, /* Cluster: Content Control, Command: ResetPIN, Privilege: administer */ \
     0x0000050F, /* Cluster: Content Control, Command: Enable, Privilege: manage */ \
@@ -898,7 +907,6 @@
     0x00000003, /* Cluster: Thermostat, Command: ClearWeeklySchedule, Privilege: manage */ \
     0x00000007, /* Cluster: Thermostat, Command: AddThermostatSuggestion, Privilege: manage */ \
     0x00000008, /* Cluster: Thermostat, Command: RemoveThermostatSuggestion, Privilege: manage */ \
-    0x000000FE, /* Cluster: Thermostat, Command: AtomicRequest, Privilege: manage */ \
     0x00000000, /* Cluster: Network Identity Management, Command: AddClient, Privilege: manage */ \
     0x00000002, /* Cluster: Network Identity Management, Command: RemoveClient, Privilege: manage */ \
     0x00000003, /* Cluster: Network Identity Management, Command: QueryIdentity, Privilege: manage */ \
@@ -916,6 +924,7 @@
     0x00000001, /* Cluster: Audio Output, Command: RenameOutput, Privilege: manage */ \
     0x00000000, /* Cluster: Account Login, Command: GetSetupPIN, Privilege: administer */ \
     0x00000002, /* Cluster: Account Login, Command: Login, Privilege: administer */ \
+    0x00000004, /* Cluster: Account Login, Command: GetDeviceAuthURI, Privilege: administer */ \
     0x00000000, /* Cluster: Content Control, Command: UpdatePIN, Privilege: manage */ \
     0x00000001, /* Cluster: Content Control, Command: ResetPIN, Privilege: administer */ \
     0x00000003, /* Cluster: Content Control, Command: Enable, Privilege: manage */ \
@@ -1074,7 +1083,6 @@
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Command: ClearWeeklySchedule, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Command: AddThermostatSuggestion, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Thermostat, Command: RemoveThermostatSuggestion, Privilege: manage */ \
-    chip::Access::Privilege::kManage, /* Cluster: Thermostat, Command: AtomicRequest, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Network Identity Management, Command: AddClient, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Network Identity Management, Command: RemoveClient, Privilege: manage */ \
     chip::Access::Privilege::kManage, /* Cluster: Network Identity Management, Command: QueryIdentity, Privilege: manage */ \
@@ -1092,6 +1100,7 @@
     chip::Access::Privilege::kManage, /* Cluster: Audio Output, Command: RenameOutput, Privilege: manage */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Account Login, Command: GetSetupPIN, Privilege: administer */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Account Login, Command: Login, Privilege: administer */ \
+    chip::Access::Privilege::kAdminister, /* Cluster: Account Login, Command: GetDeviceAuthURI, Privilege: administer */ \
     chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: UpdatePIN, Privilege: manage */ \
     chip::Access::Privilege::kAdminister, /* Cluster: Content Control, Command: ResetPIN, Privilege: administer */ \
     chip::Access::Privilege::kManage, /* Cluster: Content Control, Command: Enable, Privilege: manage */ \

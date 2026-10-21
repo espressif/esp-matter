@@ -14,6 +14,10 @@
 
 #pragma once
 
+// esp-matter implements this cluster's server in its own integration.cpp and registers it through
+// the esp_matter data-model provider registry. We reuse the cluster/Instance declarations from
+// upstream's CodegenIntegration.h (which is designed for the codegen data model provider) instead of
+// redeclaring them here; the codegen RegisterServer path itself is not used.
 #include <app/clusters/zone-management-server/CodegenIntegration.h>
 #include <app/clusters/zone-management-server/Delegate.h>
 #include <app/clusters/zone-management-server/ZoneManagementCluster.h>

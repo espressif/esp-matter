@@ -26,6 +26,7 @@
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
 #include <data_model/esp_matter_attribute_helpers.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
 using namespace esp_matter;
@@ -61,7 +62,9 @@ esp_err_t add(cluster_t *cluster)
 namespace attribute {
 attribute_t *create_tariff_unit(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, TariffUnit::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, TariffUnit::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(TariffUnit::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(TariffUnit::Max), esp_matter_attr_val::uint_sub_type::k_enum));
+    return attribute;
 }
 
 attribute_t *create_currency(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -139,9 +142,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
-        attribute::create_tariff_unit(cluster, 0);
+        attribute::create_tariff_unit(cluster, config->tariff_unit);
         attribute::create_currency(cluster, NULL, 0, 0);
         attribute::create_current_price(cluster, NULL, 0, 0);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterCommodityPriceClusterServerInitCallback,
+                                                 ESPMatterCommodityPriceClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {

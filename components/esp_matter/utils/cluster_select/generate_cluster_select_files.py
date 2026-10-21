@@ -55,6 +55,14 @@ OPENTHREAD_CLUSTERS = {
     "THREAD_NETWORK_DIRECTORY_CLUSTER",
 }
 
+# Clusters present in the Matter SDK but not yet supported by esp-matter. They default to
+# 'n' so their upstream sources are not compiled. COMMISSIONING_PROXY needs WiFi-PAF platform
+# support (ConnectivityManager::WiFiPAF*, gated by CHIP_DEVICE_CONFIG_ENABLE_WIFIPAF) that
+# ESP32 does not provide, and esp-matter has no data-model integration for it yet.
+UNSUPPORTED_CLUSTERS = {
+    "COMMISSIONING_PROXY_CLUSTER",
+}
+
 
 # Provider directory names normally map to CONFIG_SUPPORT_<DIRECTORY>_CLUSTER.
 # Keep exceptions here for directories that are shared or whose names differ
@@ -112,7 +120,9 @@ def generate_cluster_select_kconfig(cluster_list, output_dir):
             lines = [f"config SUPPORT_{cluster}\n", f'\tbool "Support {cluster}"\n']
             if cluster in OPENTHREAD_CLUSTERS:
                 lines.append("\tdepends on OPENTHREAD_ENABLED\n")
-            lines.append("\tdefault y\n")
+            lines.append(
+                "\tdefault n\n" if cluster in UNSUPPORTED_CLUSTERS else "\tdefault y\n"
+            )
             lines.append("\n")
             kconfig_file.writelines(lines)
 

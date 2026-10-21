@@ -112,21 +112,6 @@ void ScenesServer::GroupWillBeRemoved(FabricIndex aFabricIx, EndpointId aEndpoin
     TEMPORARY_RETURN_IGNORED cluster->GroupWillBeRemoved(aFabricIx, aGroupId);
 }
 
-void ScenesServer::MakeSceneInvalid(EndpointId aEndpointId, FabricIndex aFabricIx)
-{
-    ScenesManagementCluster *cluster = FindClusterOnEndpoint(aEndpointId);
-    VerifyOrReturn(cluster != nullptr);
-
-    TEMPORARY_RETURN_IGNORED cluster->MakeSceneInvalid(aFabricIx);
-}
-
-void ScenesServer::MakeSceneInvalidForAllFabrics(EndpointId aEndpointId)
-{
-    ScenesManagementCluster *cluster = FindClusterOnEndpoint(aEndpointId);
-    VerifyOrReturn(cluster != nullptr);
-    TEMPORARY_RETURN_IGNORED cluster->MakeSceneInvalidForAllFabrics();
-}
-
 void ScenesServer::StoreCurrentScene(FabricIndex aFabricIx, EndpointId aEndpointId, GroupId aGroupId, SceneId aSceneId)
 {
     ScenesManagementCluster *cluster = FindClusterOnEndpoint(aEndpointId);

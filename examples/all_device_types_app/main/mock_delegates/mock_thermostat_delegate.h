@@ -8,16 +8,16 @@
 
 #pragma once
 
+#include <app/clusters/thermostat-server/Temperature.h>
 #include <app/clusters/thermostat-server/ThermostatDelegate.h>
+#include <credentials/FabricTable.h>
 
 /*
  * Mock Thermostat Delegate Implementation
- * This file provides a mock implementation of the Thermostat::Delegate interface
- * that returns success for all methods.
- * For more details, take a look at the delegate interface in the Matter SDK.
- * 1. Delegate Interface: https://github.com/project-chip/connectedhomeip/blob/d144bbb/src/app/clusters/thermostat-server/thermostat-delegate.h
- * 2. Delegate Implementation: https://github.com/project-chip/connectedhomeip/blob/d144bbb/examples/thermostat/thermostat-common/include/thermostat-delegate-impl.h and
- *    https://github.com/project-chip/connectedhomeip/blob/d144bbb/examples/thermostat/thermostat-common/src/thermostat-delegate-impl.cpp
+ * A minimal in-memory implementation of the (refactored) Thermostat::Delegate interface.
+ * Upstream split the old monolithic delegate (presets/schedules/suggestions) into several
+ * delegates; this mock implements only the core Thermostat::Delegate control state.
+ * Reference: connectedhomeip/examples/thermostat/thermostat-common/include/thermostat-delegate-impl.h
  */
 
 namespace chip {
@@ -29,33 +29,34 @@ class MockThermostatDelegate : public Delegate {
 public:
     MockThermostatDelegate() = default;
 
-    std::optional<System::Clock::Milliseconds16> GetMaxAtomicWriteTimeout(chip::AttributeId attributeId) override;
-    CHIP_ERROR GetPresetTypeAtIndex(size_t index, Structs::PresetTypeStruct::Type  &presetType) override;
-    uint8_t GetNumberOfPresets() override;
-    CHIP_ERROR GetPresetAtIndex(size_t index, PresetStructWithOwnedMembers  &preset) override;
-    CHIP_ERROR GetActivePresetHandle(DataModel::Nullable<MutableByteSpan>  &activePresetHandle) override;
-    CHIP_ERROR SetActivePresetHandle(const DataModel::Nullable<ByteSpan>  &newActivePresetHandle) override;
-    void InitializePendingPresets() override;
-    CHIP_ERROR AppendToPendingPresetList(const PresetStructWithOwnedMembers  &preset) override;
-    CHIP_ERROR GetPendingPresetAtIndex(size_t index, PresetStructWithOwnedMembers  &preset) override;
-    CHIP_ERROR CommitPendingPresets() override;
-    void ClearPendingPresetList() override;
-    uint8_t GetMaxThermostatSuggestions() override;
-    uint8_t GetNumberOfThermostatSuggestions() override;
-    CHIP_ERROR GetThermostatSuggestionAtIndex(size_t index,
-                                              ThermostatSuggestionStructWithOwnedMembers  &thermostatSuggestion) override;
-    void GetCurrentThermostatSuggestion(
-        DataModel::Nullable<ThermostatSuggestionStructWithOwnedMembers>  &currentThermostatSuggestion) override;
-    DataModel::Nullable<ThermostatSuggestionNotFollowingReasonBitmap> GetThermostatSuggestionNotFollowingReason() override;
-    CHIP_ERROR
-    AppendToThermostatSuggestionsList(const Structs::ThermostatSuggestionStruct::Type  &thermostatSuggestion) override;
-    CHIP_ERROR RemoveFromThermostatSuggestionsList(size_t indexToRemove) override;
-    CHIP_ERROR GetUniqueID(uint8_t  &uniqueID) override;
-    CHIP_ERROR ReEvaluateCurrentSuggestion() override;
-    CHIP_ERROR GetScheduleTypeAtIndex(size_t index, Structs::ScheduleTypeStruct::Type  &scheduleType) override;
+    FabricTable &GetFabricTable() const override;
+
+    DataModel::Nullable<temperature> GetLocalTemperature() const override;
+    Protocols::InteractionModel::Status SetLocalTemperature(DataModel::Nullable<temperature> localTemperature,
+                                                            bool &changed) override;
+
+    SystemModeEnum GetSystemMode() const override;
+    Protocols::InteractionModel::Status SetSystemMode(SystemModeEnum systemMode, bool &changed) override;
+
+    ControlSequenceOfOperationEnum GetControlSequenceOfOperation() const override;
+    Protocols::InteractionModel::Status
+    SetControlSequenceOfOperation(ControlSequenceOfOperationEnum controlSequenceOfOperation, bool &changed) override;
+
+    Protocols::InteractionModel::Status GetRunningMode(ThermostatRunningModeEnum &runningMode) const override;
+    Protocols::InteractionModel::Status SetRunningMode(ThermostatRunningModeEnum runningMode, bool &changed) override;
+
+    Protocols::InteractionModel::Status GetRunningState(BitMask<RelayStateBitmap> &runningState) const override;
+    Protocols::InteractionModel::Status SetRunningState(BitMask<RelayStateBitmap> runningState, bool &changed) override;
+
+    Protocols::InteractionModel::Status SetRemoteSensing(BitMask<RemoteSensingBitmap> remoteSensing, bool &changed) override;
 
 private:
-    const char *LOG_TAG = "thermostat";
+    SystemModeEnum mSystemMode                                = SystemModeEnum::kOff;
+    ThermostatRunningModeEnum mRunningMode                    = ThermostatRunningModeEnum::kOff;
+    BitMask<RelayStateBitmap> mRunningState                   = BitMask<RelayStateBitmap>(0);
+    ControlSequenceOfOperationEnum mControlSequenceOfOperation = ControlSequenceOfOperationEnum::kCoolingAndHeating;
+    DataModel::Nullable<temperature> mLocalTemperature        = DataModel::Nullable<int16_t>();
+    BitMask<RemoteSensingBitmap> mRemoteSensing              = BitMask<RemoteSensingBitmap>(0);
 };
 
 } // namespace Thermostat

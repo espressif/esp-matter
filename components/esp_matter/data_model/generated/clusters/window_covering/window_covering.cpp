@@ -19,79 +19,21 @@
 #include <esp_matter.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
-#include <app-common/zap-generated/callback.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
 #include <esp_matter_delegate_callbacks.h>
 #include <window_covering.h>
 #include <window_covering_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
-using chip::app::CommandHandler;
-using chip::app::DataModel::Decode;
-using chip::TLV::TLVReader;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 using namespace esp_matter::cluster::delegate_cb;
 
 static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 8;
-
-static esp_err_t esp_matter_command_callback_up_or_open(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                        void *opaque_ptr)
-{
-    chip::app::Clusters::WindowCovering::Commands::UpOrOpen::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfWindowCoveringClusterUpOrOpenCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_down_or_close(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                           void *opaque_ptr)
-{
-    chip::app::Clusters::WindowCovering::Commands::DownOrClose::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfWindowCoveringClusterDownOrCloseCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_stop_motion(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                         void *opaque_ptr)
-{
-    chip::app::Clusters::WindowCovering::Commands::StopMotion::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfWindowCoveringClusterStopMotionCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_go_to_lift_percentage(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                                   void *opaque_ptr)
-{
-    chip::app::Clusters::WindowCovering::Commands::GoToLiftPercentage::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfWindowCoveringClusterGoToLiftPercentageCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_go_to_tilt_percentage(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                                   void *opaque_ptr)
-{
-    chip::app::Clusters::WindowCovering::Commands::GoToTiltPercentage::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfWindowCoveringClusterGoToTiltPercentageCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
 
 namespace esp_matter {
 namespace cluster {
@@ -279,36 +221,34 @@ attribute_t *create_safety_status(cluster_t *cluster, uint16_t value)
 namespace command {
 command_t *create_up_or_open(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, UpOrOpen::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_up_or_open);
+    return esp_matter::command::create(cluster, UpOrOpen::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_down_or_close(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, DownOrClose::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_down_or_close);
+    return esp_matter::command::create(cluster, DownOrClose::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_stop_motion(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, StopMotion::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_stop_motion);
+    return esp_matter::command::create(cluster, StopMotion::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_go_to_lift_percentage(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, GoToLiftPercentage::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_go_to_lift_percentage);
+    return esp_matter::command::create(cluster, GoToLiftPercentage::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_go_to_tilt_percentage(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, GoToTiltPercentage::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_go_to_tilt_percentage);
+    return esp_matter::command::create(cluster, GoToTiltPercentage::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 } /* command */
 
-const function_generic_t function_list[] = {
-    (function_generic_t)MatterWindowCoveringClusterServerAttributeChangedCallback,
-};
+const function_generic_t *function_list = NULL;
 
-const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -354,6 +294,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         command::create_up_or_open(cluster);
         command::create_down_or_close(cluster);
         command::create_stop_motion(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterWindowCoveringClusterServerInitCallback,
+                                                 ESPMatterWindowCoveringClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {

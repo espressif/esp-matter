@@ -184,7 +184,14 @@ def get_attributes_from_zcl(zcl_json_path, output_json_path):
     for cluster_name, attributes in attr_access_interface.items():
         cluster_key = convert_to_snake_case(cluster_name)
 
-        attr_list = sorted([attr.lower() for attr in attributes])
+        # As of Matter 1.7, zcl.json entries may be either a bare attribute name (str) or an
+        # object like {"name": "FeatureMap", "keepDefault": true}. Normalize to the name.
+        attr_list = sorted(
+            [
+                (attr["name"] if isinstance(attr, dict) else attr).lower()
+                for attr in attributes
+            ]
+        )
 
         internally_managed_attributes[cluster_key] = attr_list
 

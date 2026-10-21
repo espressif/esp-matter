@@ -56,6 +56,17 @@ class AttributeParser(ClusterElementBaseParser):
             if skip:
                 logger.debug("Skipping attribute %s: %s", elem.get("name"), reason)
                 continue
+            # A derived-cluster attribute may omit 'type', inheriting it from the base cluster.
+            # can_skip() attempts that base fill; if 'type' is still missing, the base attribute
+            # was itself dropped (e.g. provisional/restricted conformance, as with ModeBase's
+            # CoreModeTags in Matter 1.7), so this attribute is not available either. Skip it
+            # instead of failing type resolution.
+            if not elem.get("type"):
+                logger.debug(
+                    "Skipping attribute %s: no type and no available base attribute to inherit from",
+                    elem.get("name"),
+                )
+                continue
             attr = self.create(elem)
             self._apply_type_overrides(attr, elem)
             self.cluster.attributes.add(attr)
