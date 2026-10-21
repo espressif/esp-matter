@@ -15,7 +15,6 @@
 #pragma once
 
 #include <esp_matter.h>
-#include <esp_matter_client.h>
 #include <esp_matter_mem.h>
 #include <lib/core/ScopedNodeId.h>
 #include <messaging/ExchangeMgr.h>

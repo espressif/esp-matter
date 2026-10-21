@@ -33,16 +33,12 @@ The controller should support the following features:
 
 Cluster Invoking commands
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-The ``invoke-cmd`` command is used for sending cluster commands to the end-devices. It utilizes a ``cluster_command`` class to establish the sessions and send the command packets. The class constructor function could accept three callback inputs:
-
-- **Success callback**:
-  This callback will be called upon the reception of the success response. It could be used to handle the response data for the command that requires a response. Now the default success callback will print the response data for GroupKeyManagement, Groups, Scenes, Thermostat, and DoorLock clusters. If you want to handle the response data in your example, you can register your success callback when creating the ``cluster_command`` object.
-
-- **Error callback**:
-  This callback will be called upon the reception of the failure response or response timeout.
-
-- **Connect failure callback**:
-  This callback will be called upon the failure of CASE session establishment.
+The ``invoke-cmd`` command sends cluster commands to end-devices. In C++, use
+``invoke_command::interaction`` with a request and an explicit delegate pointer.
+Pass ``nullptr`` to discard successful responses while retaining failure logs.
+``OnResponse()`` receives the concrete command path, status, and optional response TLV;
+``OnDone()`` reports terminal completion. See `Ownership and callbacks`_ for
+ownership and error-handling requirements.
 
 ^^^^^^^^^^^^^^^^
 
@@ -81,16 +77,10 @@ Here are some examples of the ``command-data`` format.
 
 Read commands
 ~~~~~~~~~~~~~
-The ``read_command`` class is used for sending read commands to other end-devices. Its constructor function could accept three callback inputs:
-
-- **Attribute report callback**:
-  This callback will be called upon the reception of the attribute or status report for read-attribute commands.
-
-- **Event report callback**:
-  This callback will be called upon the reception of the event or status report for read-event commands.
-
-- **Connect failure callback**:
-  This callback will be called upon the failure of CASE session establishment.
+Use ``read_command::interaction`` with attribute and/or event path spans.
+Its delegate receives ``OnReportBegin()``, ``OnAttribute()``, ``OnEvent()``,
+``OnReportEnd(err)``, and terminal ``OnDone(err)`` callbacks. A synchronous
+``start()`` failure produces no callbacks.
 
 Read attribute commands
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -118,19 +108,11 @@ The ``read-event`` commands are used for sending the commands of reading events 
 
 Write attribute commands
 ~~~~~~~~~~~~~~~~~~~~~~~~
-The ``write-attr`` command is used for sending the commands of writing attributes on the end-device. Its constructor function could accept four callback inputs:
-
-- **Write success callback**:
-  This callback will be called upon the success of writing one attribute path.
-
-- **Write failure callback**:
-  This callback will be called upon the failure of writing one attribute path.
-
-- **Write done callback**:
-  This callback will be called when all the write interactions are finished.
-
-- **Connect failure callback**:
-  This callback will be called upon the failure of CASE session establishment.
+The ``write-attr`` command writes one whole attribute on an end-device.
+In C++, use ``write_command::interaction`` with a concrete attribute path, value
+encoder, and explicit delegate pointer. Pass ``nullptr`` to discard successful
+responses while retaining failure logs. A delegate gets the path status in
+``OnResponse()`` and terminal completion in ``OnDone(err)``.
 
 ^^^^^^^^^^^^^^^^
 
@@ -138,7 +120,7 @@ The ``write-attr`` command is used for sending the commands of writing attribute
 
   ::
 
-    matter esp controller write-attr <node-id> <endpoint-id> <cluster-ids> <attribute-ids> <attribute-value>
+    matter esp controller write-attr <node-id> <endpoint-id> <cluster-id> <attribute-id> <attribute-value>
 
 .. note::
 
@@ -166,11 +148,16 @@ For ACL attribute of AccessControl cluster, you should use the following JSON st
 
       matter esp controller write-attr <node_id> <endpoint_id> 31 0 "{\"0:ARR-OBJ\":[{\"1:U8\": 5, \"2:U8\": 2, \"3:ARR-U64\": [112233], \"4:NULL\": null}, {\"1:U8\": 4, \"2:U8\": 3, \"3:ARR-U64\": [1], \"4:NULL\": null}]}"
 
-To write multiple attributes in one commands, the ``attribute_value`` should be a JSON array. For example, to write the ACL attribute and Binding attribute above, you should use the following JSON structure as the ``attribute_value``:
+To write multiple attributes, issue separate commands. For example, write the ACL
+and Binding attributes in order with:
 
   ::
 
-    matter esp controller write-attr <node_id> <endpoint_id1>,<endpoint_id2> 31,30 0,0 "[{\"0:ARR-OBJ\":[{\"1:U8\": 5, \"2:U8\": 2, \"3:ARR-U64\": [112233], \"4:NULL\": null}, {\"1:U8\": 4, \"2:U8\": 3, \"3:ARR-U64\": [1], \"4:NULL\": null}]}, {\"0:ARR-OBJ\":[{\"1:U64\":1, \"3:U16\":1, \"4:U32\": 6}]}]"
+    matter esp controller write-attr <node_id> <endpoint_id1> 31 0 "{\"0:ARR-OBJ\":[{\"1:U8\": 5, \"2:U8\": 2, \"3:ARR-U64\": [112233], \"4:NULL\": null}, {\"1:U8\": 4, \"2:U8\": 3, \"3:ARR-U64\": [1], \"4:NULL\": null}]}"
+    matter esp controller write-attr <node_id> <endpoint_id2> 30 0 "{\"0:ARR-OBJ\":[{\"1:U64\":1, \"3:U16\":1, \"4:U32\": 6}]}"
+
+Wait for the first Write's completion before submitting the second if ordering
+is required; console submission success alone does not indicate completion.
 
 For attributes of type uint64_t or int64_t, if the absolute value is greater than (2^53), you should use string to represent number in JSON structure for precision
 
@@ -180,43 +167,54 @@ For attributes of type uint64_t or int64_t, if the absolute value is greater tha
 
 Subscribe commands
 ~~~~~~~~~~~~~~~~~~
-The ``subscribe_command`` class is used for sending subscribe commands to other end-devices. Its constructor function could accept five callback
-inputs:
-
-- **Attribute report callback**:
-  This callback will be invoked upon the reception of the attribute or status report for subscribe-attribute commands.
-
-- **Event report callback**:
-  This callback will be invoked upon the reception of the event or status report for subscribe-event commands.
-
-- **Subscription established callback**:
-  This callback will be invoked when the subscription is established successfully.
-
-- **Subscription terminated callback**:
-  This callback will be invoked when the subscription is terminated or shutdown.
-
-- **Connect failure callback**:
-  This callback will be called upon the failure of CASE session establishment.
+Use ``subscribe_command::subscription`` for remote attribute and event reports.
+Its delegate receives report callbacks and ``OnStateChanged(state, cause)`` for
+connection, retry, and termination. Keep the subscription alive until stopped
+or terminated, and perform cleanup outside its callbacks under the CHIP lock.
 
 Subscribe attribute commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The ``subs-attr`` commands are used for sending the commands of subscribing attributes on end-devices.
+The ``sub-attr`` commands are used for sending the commands of subscribing attributes on end-devices.
 
 - Send the subscribe-attribute command:
 
   ::
 
-    matter esp controller subs-attr <node-id> <endpoint-ids> <cluster-ids> <attribute-ids> <min-interval> <max-interval>
+    matter esp controller sub-attr <node-id> <endpoint-ids> <cluster-ids> <attribute-ids> <min-interval> <max-interval>
 
 Subscribe event commands
 ^^^^^^^^^^^^^^^^^^^^^^^^
-The ``subs-event`` commands are used for sending the commands of subscribing events on end-devices.
+The ``sub-event`` commands are used for sending the commands of subscribing events on end-devices.
 
 - Send the subscribe-event command:
 
   ::
 
-    matter esp controller subs-event <node-id> <endpoint-ids> <cluster-ids> <event-ids> <min-interval> <max-interval>
+    matter esp controller sub-event <node-id> <endpoint-ids> <cluster-ids> <event-ids> <min-interval> <max-interval>
+
+List and remove subscriptions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Use ``sub-list`` to display console-owned subscriptions, including entries that are
+connecting or waiting to retry. Each entry shows its fabric, node, state, and
+subscription ID when available.
+
+::
+
+    matter esp controller sub-list
+    matter esp controller sub-remove <node-id> <subscription-id>
+    matter esp controller sub-remove <node-id> all
+    matter esp controller sub-remove all
+
+Node-specific removal applies to the active fabric. The literal ``all`` must be
+provided explicitly: missing arguments, invalid IDs, and extra arguments are
+rejected without removing anything. Node and subscription IDs accept decimal or
+``0x``-prefixed hexadecimal notation.
+
+.. warning::
+
+    ``sub-remove all`` removes subscriptions across all nodes and fabrics.
+    Removal also affects subscriptions created outside the console, whereas
+    ``sub-list`` displays only console-owned subscriptions.
 
 Group settings commands
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -533,3 +531,13 @@ Call methods in CHIP context or under the stack lock. ``OnDone()`` may dispatch,
 stop or destroy the dispatcher. Other callbacks may not stop or destroy it;
 ``dispatch()`` returns ``CHIP_ERROR_INCORRECT_STATE`` during nonterminal native
 client callbacks. Subscription state callbacks may occur during ``dispatch()``.
+
+Controller console interactions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Controller commands retain the ``matter esp controller`` prefix. The supported
+subscription commands are ``sub-attr``, ``sub-event``, ``sub-list``, and
+``sub-remove``. Removal takes ``<node-id> <subscription-id>``, ``<node-id> all``,
+or ``all``. Missing arguments never imply all subscriptions. ``sub-list`` shows
+console-owned subscriptions; removal can affect other owners. Node-specific
+removal uses the active fabric, while ``sub-remove all`` covers every fabric.

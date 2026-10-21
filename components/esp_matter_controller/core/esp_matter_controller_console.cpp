@@ -15,19 +15,19 @@
  *    limitations under the License.
  */
 
-#include <inttypes.h>
+#include <commands/clusters/DataModelLogger.h>
+#include <app/InteractionModelEngine.h>
 #include <esp_check.h>
+#include <esp_matter_client.h>
 #include <esp_matter_controller_client.h>
-#include <esp_matter_controller_cluster_command.h>
 #include <esp_matter_controller_commissioning_window_opener.h>
 #include <esp_matter_controller_console.h>
 #include <esp_matter_controller_group_settings.h>
 #include <esp_matter_controller_icd_client.h>
 #include <esp_matter_controller_pairing_command.h>
-#include <esp_matter_controller_read_command.h>
-#include <esp_matter_controller_subscribe_command.h>
 #include <esp_matter_controller_utils.h>
-#include <esp_matter_controller_write_command.h>
+#include <esp_matter_core.h>
+#include <inttypes.h>
 #include <lib/core/CHIPCore.h>
 #include <lib/shell/Commands.h>
 #include <lib/shell/Engine.h>
@@ -39,6 +39,7 @@
 #include <platform/CHIPDeviceLayer.h>
 #include <protocols/secure_channel/RendezvousParameters.h>
 #include <protocols/user_directed_commissioning/UserDirectedCommissioning.h>
+#include <tlv_to_json.h>
 
 using chip::NodeId;
 using chip::Inet::IPAddress;
@@ -138,6 +139,7 @@ static esp_err_t controller_help_handler(int argc, char **argv)
     return ESP_OK;
 }
 
+#if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 static int char_to_int(char ch)
 {
     if ('A' <= ch && ch <= 'F') {
@@ -171,7 +173,6 @@ static bool convert_hex_str_to_bytes(const char *hex_str, uint8_t *bytes, uint8_
     return true;
 }
 
-#if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 static esp_err_t controller_pairing_handler(int argc, char **argv)
 {
     VerifyOrReturnError(argc >= 2 && argc <= 6, ESP_ERR_INVALID_ARG);
@@ -219,7 +220,6 @@ static esp_err_t controller_pairing_handler(int argc, char **argv)
         const char *payload = argv[2];
 
         result = controller::pairing_code(nodeId, payload);
-
     } else if (strncmp(argv[0], "code-thread", sizeof("code-thread")) == 0) {
         VerifyOrReturnError(argc == 4, ESP_ERR_INVALID_ARG);
 
@@ -233,7 +233,6 @@ static esp_err_t controller_pairing_handler(int argc, char **argv)
         }
 
         result = controller::pairing_code_thread(nodeId, payload, dataset_tlvs_buf, dataset_tlvs_len);
-
     } else if (strncmp(argv[0], "code-wifi", sizeof("code-wifi")) == 0) {
         VerifyOrReturnError(argc == 5, ESP_ERR_INVALID_ARG);
 
@@ -243,7 +242,6 @@ static esp_err_t controller_pairing_handler(int argc, char **argv)
         const char *payload = argv[4];
 
         result = controller::pairing_code_wifi(nodeId, ssid, password, payload);
-
     } else if (strncmp(argv[0], "code-wifi-thread", sizeof("code-wifi-thread")) == 0) {
         VerifyOrReturnError(argc == 6, ESP_ERR_INVALID_ARG);
 
@@ -417,6 +415,205 @@ static esp_err_t open_commissioning_window_handler(int argc, char **argv)
                node_id, is_enhanced, window_timeout, iteration, discriminator, 10000 /* timed_invoke_timeout_ms */);
 }
 
+static chip::FabricIndex active_fabric_index()
+{
+#ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
+    return controller::get_fabric_index();
+#else
+    return controller::matter_controller_client::get_instance().get_fabric_index();
+#endif
+}
+
+static CHIP_ERROR resolve_console_target(chip::NodeId node_id, client::node_target_t &target)
+{
+    return client::resolve_target(chip::ScopedNodeId(node_id, active_fabric_index()), target);
+}
+
+// The console owns each outstanding command independently. Cleanup runs after
+// callbacks unwind; if the work queue is full, the next command/completion also
+// drains this list. Queued cleanup never stores a command pointer.
+class ConsoleCommand {
+public:
+    virtual ~ConsoleCommand() = default;
+
+    static void Reap()
+    {
+        while (sCompleted != nullptr) {
+            ConsoleCommand *entry = sCompleted;
+            sCompleted = entry->mNext;
+            chip::Platform::Delete(entry);
+        }
+    }
+
+protected:
+    void Complete()
+    {
+        mNext = sCompleted;
+        sCompleted = this;
+        LogErrorOnFailure(chip::DeviceLayer::PlatformMgr().ScheduleWork(Cleanup, 0));
+    }
+
+private:
+    static void Cleanup(intptr_t)
+    {
+        Reap();
+    }
+    static ConsoleCommand *sCompleted;
+    ConsoleCommand *mNext = nullptr;
+};
+
+ConsoleCommand *ConsoleCommand::sCompleted = nullptr;
+
+class ConsoleReadDelegate final : public ConsoleCommand, public client::read_command::delegate {
+public:
+    client::read_command::interaction operation;
+    void OnAttribute(const chip::app::ConcreteDataAttributePath &path, chip::TLV::TLVReader *value, const chip::app::StatusIB &status) override
+    {
+        CHIP_ERROR err = status.ToChipError();
+        if (err != CHIP_NO_ERROR) {
+            ESP_LOGE(TAG, "Read status: 0x%" PRIx32, err.AsInteger());
+        } else {
+            LogErrorOnFailure(DataModelLogger::LogAttribute(path, value));
+        }
+    }
+
+    void OnEvent(const chip::app::EventHeader &header, chip::TLV::TLVReader *value, const chip::app::StatusIB *status) override
+    {
+        if (status != nullptr) {
+            ESP_LOGE(TAG, "Read event status: 0x%" PRIx32,
+                     status->ToChipError().AsInteger());
+        } else {
+            LogErrorOnFailure(DataModelLogger::LogEvent(header, value));
+        }
+    }
+
+    void OnDone(CHIP_ERROR err) override
+    {
+        if (err != CHIP_NO_ERROR) {
+            ESP_LOGE(TAG, "Read failed: 0x%" PRIx32, err.AsInteger());
+        }
+        Complete();
+    }
+};
+
+class ConsoleWriteDelegate final : public ConsoleCommand, public client::write_command::delegate {
+public:
+    client::write_command::interaction operation;
+    void OnResponse(const chip::app::ConcreteDataAttributePath &, const chip::app::StatusIB &status) override
+    {
+        CHIP_ERROR err = status.ToChipError();
+        if (err != CHIP_NO_ERROR) {
+            ESP_LOGE(TAG, "Write status: 0x%" PRIx32, err.AsInteger());
+        }
+    }
+
+    void OnDone(CHIP_ERROR err) override
+    {
+        if (err != CHIP_NO_ERROR) {
+            ESP_LOGE(TAG, "Write failed: 0x%" PRIx32, err.AsInteger());
+        }
+        Complete();
+    }
+};
+
+class ConsoleInvokeDelegate final
+    : public ConsoleCommand, public client::invoke_command::delegate {
+public:
+    client::invoke_command::interaction operation;
+    void OnResponse(const chip::app::ConcreteCommandPath &, const chip::app::StatusIB &status, chip::TLV::TLVReader *response) override
+    {
+        CHIP_ERROR err = status.ToChipError();
+        if (err != CHIP_NO_ERROR) {
+            ESP_LOGE(TAG, "Invoke status: 0x%" PRIx32, err.AsInteger());
+            return;
+        }
+        if (response == nullptr) {
+            ESP_LOGI(TAG, "Invoke completed without response data");
+            return;
+        }
+        cJSON *json = nullptr;
+        if (tlv_to_json(*response, &json, tlv_to_json_options{.human_readable_bytes = true}) == ESP_OK) {
+            char *text = cJSON_Print(json);
+            if (text != nullptr) {
+                ESP_LOGI(TAG, "Response JSON:\n%s", text);
+                cJSON_free(text);
+            }
+        }
+        cJSON_Delete(json);
+    }
+
+    void OnDone(CHIP_ERROR err) override
+    {
+        if (err != CHIP_NO_ERROR) {
+            ESP_LOGE(TAG, "Invoke failed: 0x%" PRIx32, err.AsInteger());
+        }
+        Complete();
+    }
+};
+
+class ConsoleSubscription;
+static ConsoleSubscription *s_subscriptions;
+
+class ConsoleSubscription final : public client::subscribe_command::delegate {
+public:
+    client::subscribe_command::subscription subscription;
+    ConsoleSubscription *next = nullptr;
+
+    void OnAttribute(const chip::app::ConcreteDataAttributePath &path, chip::TLV::TLVReader *value, const chip::app::StatusIB &status) override
+    {
+        if (status.IsSuccess()) {
+            LogErrorOnFailure(DataModelLogger::LogAttribute(path, value));
+        } else {
+            ESP_LOGE(TAG, "Subscription status: 0x%" PRIx32, status.ToChipError().AsInteger());
+        }
+    }
+
+    void OnEvent(const chip::app::EventHeader &header, chip::TLV::TLVReader *value, const chip::app::StatusIB *status) override
+    {
+        if (status != nullptr) {
+            ESP_LOGE(TAG, "Subscription event status: 0x%" PRIx32, status->ToChipError().AsInteger());
+        } else {
+            LogErrorOnFailure(DataModelLogger::LogEvent(header, value));
+        }
+    }
+
+    void OnStateChanged(client::subscribe_command::state_t state, CHIP_ERROR cause) override
+    {
+        ESP_LOGI(TAG, "Subscription state %u: 0x%" PRIx32, static_cast<unsigned>(state),
+                 cause.AsInteger());
+        if (state == client::subscribe_command::state_t::terminated && !cleanup_scheduled) {
+            CHIP_ERROR err = chip::DeviceLayer::SystemLayer().StartTimer(chip::System::Clock::kZero, Cleanup, this);
+            if (err == CHIP_NO_ERROR) {
+                cleanup_scheduled = true;
+            } else {
+                ESP_LOGE(TAG, "Failed to schedule subscription cleanup: 0x%" PRIx32, err.AsInteger());
+            }
+        }
+    }
+
+    ~ConsoleSubscription()
+    {
+        chip::DeviceLayer::SystemLayer().CancelTimer(Cleanup, this);
+    }
+
+private:
+    static void Cleanup(chip::System::Layer *, void *context)
+    {
+        auto *entry = static_cast<ConsoleSubscription *>(context);
+        ConsoleSubscription **current = &s_subscriptions;
+        while (*current != nullptr) {
+            if (*current == entry) {
+                *current = entry->next;
+                chip::Platform::Delete(entry);
+                return;
+            }
+            current = &(*current)->next;
+        }
+    }
+
+    bool cleanup_scheduled = false;
+};
+
 static esp_err_t controller_invoke_command_handler(int argc, char **argv)
 {
     if (argc < 4) {
@@ -427,165 +624,265 @@ static esp_err_t controller_invoke_command_handler(int argc, char **argv)
     uint16_t endpoint_id = string_to_uint16(argv[1]);
     uint32_t cluster_id = string_to_uint32(argv[2]);
     uint32_t command_id = string_to_uint32(argv[3]);
-
+    client::json_encodable fields(argc > 4 ? argv[4] : nullptr);
+    client::invoke_command::request_t request = {
+        .endpoint_id = endpoint_id,
+        .cluster_id = cluster_id,
+        .command_id = command_id,
+        .fields = argc > 4 ? &fields : nullptr,
+    };
     if (argc > 5) {
-        uint16_t timed_invoke_timeout_ms = string_to_uint16(argv[5]);
-        if (timed_invoke_timeout_ms > 0) {
-            return controller::send_invoke_cluster_command(node_id, endpoint_id, cluster_id, command_id, argv[4],
-                                                           chip::MakeOptional(timed_invoke_timeout_ms));
+        uint16_t timeout = string_to_uint16(argv[5]);
+        if (timeout > 0) {
+            request.options.timed_timeout_ms.SetValue(timeout);
         }
     }
 
-    return controller::send_invoke_cluster_command(node_id, endpoint_id, cluster_id, command_id,
-                                                   argc > 4 ? argv[4] : NULL);
+    esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
+    ConsoleCommand::Reap();
+    auto *command = chip::Platform::New<ConsoleInvokeDelegate>();
+    ESP_RETURN_ON_FALSE(command != nullptr, ESP_ERR_NO_MEM, TAG, "Failed to allocate Invoke");
+    CHIP_ERROR err;
+    if (chip::IsGroupId(node_id)) {
+        client::group_target_t target = {active_fabric_index(), static_cast<chip::GroupId>(node_id)};
+        err = command->operation.start(target, request, command);
+    } else {
+        client::node_target_t target;
+        err = resolve_console_target(node_id, target);
+        if (err == CHIP_NO_ERROR) {
+            err = command->operation.start(target, request, command);
+        }
+    }
+    if (err != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Invoke submission failed: 0x%" PRIx32, err.AsInteger());
+        chip::Platform::Delete(command);
+        return ESP_FAIL;
+    }
+    return ESP_OK;
 }
 
-static esp_err_t controller_read_attr_handler(int argc, char **argv)
+template <typename Path>
+static esp_err_t parse_path_columns(const char *endpoint_arg, const char *cluster_arg, const char *path_arg,
+                                    ScopedMemoryBufferWithSize<Path> &paths)
+{
+    ScopedMemoryBufferWithSize<uint16_t> endpoint_ids;
+    ScopedMemoryBufferWithSize<uint32_t> cluster_ids;
+    ScopedMemoryBufferWithSize<uint32_t> path_ids;
+    esp_err_t err = string_to_uint16_array(endpoint_arg, endpoint_ids);
+    if (err != ESP_OK) {
+        return err;
+    }
+    err = string_to_uint32_array(cluster_arg, cluster_ids);
+    if (err != ESP_OK) {
+        return err;
+    }
+    err = string_to_uint32_array(path_arg, path_ids);
+    if (err != ESP_OK) {
+        return err;
+    }
+    ESP_RETURN_ON_FALSE(endpoint_ids.AllocatedSize() == cluster_ids.AllocatedSize() &&
+                        endpoint_ids.AllocatedSize() == path_ids.AllocatedSize(),
+                        ESP_ERR_INVALID_ARG, TAG, "Path array sizes differ");
+    ESP_RETURN_ON_FALSE(paths.Alloc(endpoint_ids.AllocatedSize()), ESP_ERR_NO_MEM, TAG, "Failed to allocate paths");
+    for (size_t index = 0; index < paths.AllocatedSize(); ++index) {
+        paths[index] = Path(endpoint_ids[index], cluster_ids[index], path_ids[index]);
+    }
+    return ESP_OK;
+}
+
+template <typename Path> static esp_err_t controller_read_handler(int argc, char **argv)
 {
     if (argc != 4) {
         return ESP_ERR_INVALID_ARG;
     }
 
     uint64_t node_id = string_to_uint64(argv[0]);
-    ScopedMemoryBufferWithSize<uint16_t> endpoint_ids;
-    ScopedMemoryBufferWithSize<uint32_t> cluster_ids;
-    ScopedMemoryBufferWithSize<uint32_t> attribute_ids;
-    ESP_RETURN_ON_ERROR(string_to_uint16_array(argv[1], endpoint_ids), TAG, "Failed to parse endpoint IDs");
-    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[2], cluster_ids), TAG, "Failed to parse cluster IDs");
-    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[3], attribute_ids), TAG, "Failed to parse attribute IDs");
-
-    return controller::send_read_attr_command(node_id, endpoint_ids, cluster_ids, attribute_ids);
+    ScopedMemoryBufferWithSize<Path> paths;
+    ESP_RETURN_ON_ERROR(parse_path_columns(argv[1], argv[2], argv[3], paths), TAG, "Failed to parse paths");
+    esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
+    client::node_target_t target;
+    CHIP_ERROR err = resolve_console_target(node_id, target);
+    ESP_RETURN_ON_FALSE(err == CHIP_NO_ERROR, ESP_FAIL, TAG, "Target resolution failed");
+    client::read_command::request_t request(paths.Span());
+    ConsoleCommand::Reap();
+    auto *command = chip::Platform::New<ConsoleReadDelegate>();
+    ESP_RETURN_ON_FALSE(command != nullptr, ESP_ERR_NO_MEM, TAG, "Failed to allocate Read");
+    err = command->operation.start(target, request, *command);
+    if (err != CHIP_NO_ERROR) {
+        chip::Platform::Delete(command);
+    }
+    return err == CHIP_NO_ERROR ? ESP_OK : ESP_FAIL;
 }
 
 static esp_err_t controller_write_attr_handler(int argc, char **argv)
 {
-    if (argc < 5) {
+    if (argc < 5 || argc > 6) {
         return ESP_ERR_INVALID_ARG;
     }
 
     uint64_t node_id = string_to_uint64(argv[0]);
-    ScopedMemoryBufferWithSize<uint16_t> endpoint_ids;
-    ScopedMemoryBufferWithSize<uint32_t> cluster_ids;
-    ScopedMemoryBufferWithSize<uint32_t> attribute_ids;
-    ESP_RETURN_ON_ERROR(string_to_uint16_array(argv[1], endpoint_ids), TAG, "Failed to parse endpoint IDs");
-    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[2], cluster_ids), TAG, "Failed to parse cluster IDs");
-    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[3], attribute_ids), TAG, "Failed to parse attribute IDs");
-
-    char *attribute_val_str = argv[4];
-
-    if (argc > 5) {
-        uint16_t timed_write_timeout_ms = string_to_uint16(argv[5]);
-        if (timed_write_timeout_ms > 0) {
-            return controller::send_write_attr_command(node_id, endpoint_ids, cluster_ids, attribute_ids,
-                                                       attribute_val_str, chip::MakeOptional(timed_write_timeout_ms));
+    ScopedMemoryBufferWithSize<chip::app::ConcreteDataAttributePath> paths;
+    ESP_RETURN_ON_ERROR(parse_path_columns(argv[1], argv[2], argv[3], paths), TAG, "Failed to parse attribute paths");
+    ESP_RETURN_ON_FALSE(paths.AllocatedSize() == 1, ESP_ERR_INVALID_ARG, TAG, "Write requires one attribute path");
+    esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
+    client::node_target_t target;
+    CHIP_ERROR err = resolve_console_target(node_id, target);
+    ESP_RETURN_ON_FALSE(err == CHIP_NO_ERROR, ESP_FAIL, TAG, "Target resolution failed");
+    client::json_encodable value(argv[4]);
+    client::write_command::attribute_write_t attribute = {
+        .path = paths[0],
+        .value = &value,
+    };
+    client::write_command::request_t request = {
+        .attributes = chip::Span<const client::write_command::attribute_write_t>(&attribute, 1),
+    };
+    if (argc == 6) {
+        uint16_t timeout = string_to_uint16(argv[5]);
+        if (timeout > 0) {
+            request.options.timed_timeout_ms.SetValue(timeout);
         }
     }
-
-    return controller::send_write_attr_command(node_id, endpoint_ids, cluster_ids, attribute_ids, attribute_val_str);
+    ConsoleCommand::Reap();
+    auto *command = chip::Platform::New<ConsoleWriteDelegate>();
+    ESP_RETURN_ON_FALSE(command != nullptr, ESP_ERR_NO_MEM, TAG, "Failed to allocate Write");
+    err = command->operation.start(target, request, command);
+    if (err != CHIP_NO_ERROR) {
+        chip::Platform::Delete(command);
+    }
+    return err == CHIP_NO_ERROR ? ESP_OK : ESP_FAIL;
 }
 
-static esp_err_t controller_read_event_handler(int argc, char **argv)
+template <typename Path> static esp_err_t controller_subscribe_handler(int argc, char **argv)
 {
-    if (argc != 4) {
+    if (argc < 6 || argc > 8) {
         return ESP_ERR_INVALID_ARG;
     }
 
     uint64_t node_id = string_to_uint64(argv[0]);
-    ScopedMemoryBufferWithSize<uint16_t> endpoint_ids;
-    ScopedMemoryBufferWithSize<uint32_t> cluster_ids;
-    ScopedMemoryBufferWithSize<uint32_t> event_ids;
-    ESP_RETURN_ON_ERROR(string_to_uint16_array(argv[1], endpoint_ids), TAG, "Failed to parse endpoint IDs");
-    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[2], cluster_ids), TAG, "Failed to parse cluster IDs");
-    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[3], event_ids), TAG, "Failed to parse event IDs");
-
-    return controller::send_read_event_command(node_id, endpoint_ids, cluster_ids, event_ids);
-}
-
-static esp_err_t controller_subscribe_attr_handler(int argc, char **argv)
-{
-    if (argc < 6) {
-        return ESP_ERR_INVALID_ARG;
-    }
-
-    uint64_t node_id = string_to_uint64(argv[0]);
-    ScopedMemoryBufferWithSize<uint16_t> endpoint_ids;
-    ScopedMemoryBufferWithSize<uint32_t> cluster_ids;
-    ScopedMemoryBufferWithSize<uint32_t> attribute_ids;
-    ESP_RETURN_ON_ERROR(string_to_uint16_array(argv[1], endpoint_ids), TAG, "Failed to parse endpoint IDs");
-    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[2], cluster_ids), TAG, "Failed to parse cluster IDs");
-    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[3], attribute_ids), TAG, "Failed to parse attribute IDs");
-    uint16_t min_interval = string_to_uint16(argv[4]);
-    uint16_t max_interval = string_to_uint16(argv[5]);
-
-    bool keep_subscription = true;
+    ScopedMemoryBufferWithSize<Path> paths;
+    ESP_RETURN_ON_ERROR(parse_path_columns(argv[1], argv[2], argv[3], paths), TAG, "Failed to parse paths");
+    client::subscribe_command::options_t options = {
+        .min_interval = string_to_uint16(argv[4]),
+        .max_interval = string_to_uint16(argv[5]),
+    };
     if (argc >= 7) {
-        keep_subscription = string_to_bool(argv[6]);
+        options.keep_subscriptions = string_to_bool(argv[6]);
     }
-
-    bool auto_resubscribe = true;
     if (argc >= 8) {
-        auto_resubscribe = string_to_bool(argv[7]);
+        options.auto_resubscribe = string_to_bool(argv[7]);
     }
 
-    return controller::send_subscribe_attr_command(node_id, endpoint_ids, cluster_ids, attribute_ids, min_interval,
-                                                   max_interval, keep_subscription, auto_resubscribe);
-}
-
-static esp_err_t controller_subscribe_event_handler(int argc, char **argv)
-{
-    if (argc < 6) {
-        return ESP_ERR_INVALID_ARG;
+    esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
+    client::node_target_t target;
+    CHIP_ERROR err = resolve_console_target(node_id, target);
+    ESP_RETURN_ON_FALSE(err == CHIP_NO_ERROR, ESP_FAIL, TAG, "Target resolution failed");
+    ESP_RETURN_ON_FALSE(target.execution == client::execution_t::remote, ESP_ERR_NOT_SUPPORTED, TAG,
+                        "Subscriptions require a remote target");
+    auto *entry = chip::Platform::New<ConsoleSubscription>();
+    ESP_RETURN_ON_FALSE(entry != nullptr, ESP_ERR_NO_MEM, TAG, "Failed to allocate subscription");
+    chip::ScopedNodeId remote_target = target.node;
+    client::subscribe_command::request_t request(paths.Span(), options);
+    err = entry->subscription.start(remote_target, request, *entry);
+    if (err != CHIP_NO_ERROR) {
+        chip::Platform::Delete(entry);
+        return ESP_FAIL;
     }
-
-    uint64_t node_id = string_to_uint64(argv[0]);
-    ScopedMemoryBufferWithSize<uint16_t> endpoint_ids;
-    ScopedMemoryBufferWithSize<uint32_t> cluster_ids;
-    ScopedMemoryBufferWithSize<uint32_t> event_ids;
-    ESP_RETURN_ON_ERROR(string_to_uint16_array(argv[1], endpoint_ids), TAG, "Failed to parse endpoint IDs");
-    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[2], cluster_ids), TAG, "Failed to parse cluster IDs");
-    ESP_RETURN_ON_ERROR(string_to_uint32_array(argv[3], event_ids), TAG, "Failed to parse event IDs");
-    uint16_t min_interval = string_to_uint16(argv[4]);
-    uint16_t max_interval = string_to_uint16(argv[5]);
-
-    bool keep_subscription = true;
-    if (argc >= 7) {
-        keep_subscription = string_to_bool(argv[6]);
-    }
-
-    bool auto_resubscribe = true;
-    if (argc >= 8) {
-        auto_resubscribe = string_to_bool(argv[7]);
-    }
-    return controller::send_subscribe_event_command(node_id, endpoint_ids, cluster_ids, event_ids, min_interval,
-                                                    max_interval, keep_subscription, auto_resubscribe);
-}
-
-static esp_err_t controller_shutdown_subscription_handler(int argc, char **argv)
-{
-    if (argc != 2) {
-        return ESP_ERR_INVALID_ARG;
-    }
-    uint64_t node_id = string_to_uint64(argv[0]);
-    uint32_t subscription_id = string_to_uint32(argv[1]);
-    return controller::send_shutdown_subscription(node_id, subscription_id);
-}
-
-static esp_err_t controller_shutdown_subscriptions_handler(int argc, char **argv)
-{
-    if (argc != 1) {
-        return ESP_ERR_INVALID_ARG;
-    }
-    uint64_t node_id = string_to_uint64(argv[0]);
-    controller::send_shutdown_subscriptions(node_id);
+    entry->next = s_subscriptions;
+    s_subscriptions = entry;
     return ESP_OK;
 }
 
-static esp_err_t controller_shutdown_all_subscriptions_handler(int argc, char **argv)
+static esp_err_t controller_remove_subscription_handler(int argc, char **argv)
+{
+    if (argc < 1 || argc > 2) {
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    const bool all_nodes = strcmp(argv[0], "all") == 0;
+    const bool all_subscriptions = all_nodes || (argc == 2 && strcmp(argv[1], "all") == 0);
+    chip::NodeId node_id = chip::kUndefinedNodeId;
+    chip::SubscriptionId subscription_id = 0;
+    if (all_nodes) {
+        if (argc != 1) {
+            return ESP_ERR_INVALID_ARG;
+        }
+    } else {
+        // Reject signs, missing IDs, overflow and trailing text before any shutdown.
+        if (argc != 2 || argv[0][0] < '0' || argv[0][0] > '9' ||
+                !chip::ArgParser::ParseInt(argv[0], node_id) || !chip::IsOperationalNodeId(node_id)) {
+            return ESP_ERR_INVALID_ARG;
+        }
+        if (!all_subscriptions && (argv[1][0] < '0' || argv[1][0] > '9' ||
+                                   !chip::ArgParser::ParseInt(argv[1], subscription_id))) {
+            return ESP_ERR_INVALID_ARG;
+        }
+    }
+
+    esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
+    const chip::ScopedNodeId peer(node_id, active_fabric_index());
+    bool removed = false;
+    ConsoleSubscription **current = &s_subscriptions;
+    while (*current != nullptr) {
+        ConsoleSubscription *entry = *current;
+        const auto id = entry->subscription.id();
+        if ((all_nodes || entry->subscription.peer() == peer) &&
+                (all_subscriptions || (id.HasValue() && id.Value() == subscription_id))) {
+            *current = entry->next;
+            chip::Platform::Delete(entry);
+            removed = true;
+        } else {
+            current = &entry->next;
+        }
+    }
+
+    // Detach console owners first; engine shutdown can clear their subscription IDs.
+    auto *engine = chip::app::InteractionModelEngine::GetInstance();
+    if (all_nodes) {
+        engine->ShutdownAllSubscriptions();
+    } else if (all_subscriptions) {
+        engine->ShutdownSubscriptions(peer.GetFabricIndex(), node_id);
+    } else {
+        CHIP_ERROR err = engine->ShutdownSubscription(peer, subscription_id);
+        return removed || err == CHIP_NO_ERROR ? ESP_OK : ESP_ERR_NOT_FOUND;
+    }
+    return ESP_OK;
+}
+
+static esp_err_t controller_list_subscriptions_handler(int argc, char **argv)
 {
     if (argc != 0) {
         return ESP_ERR_INVALID_ARG;
     }
-    controller::send_shutdown_all_subscriptions();
+
+    esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
+    for (ConsoleSubscription *entry = s_subscriptions; entry != nullptr; entry = entry->next) {
+        const auto peer = entry->subscription.peer();
+        const auto id = entry->subscription.id();
+        const char *state = "terminated";
+        switch (entry->subscription.state()) {
+        case client::subscribe_command::state_t::connecting:
+            state = "connecting";
+            break;
+        case client::subscribe_command::state_t::active:
+            state = "active";
+            break;
+        case client::subscribe_command::state_t::backoff:
+            state = "backoff";
+            break;
+        case client::subscribe_command::state_t::terminated:
+            break;
+        }
+        if (id.HasValue()) {
+            ESP_LOGI(TAG, "fabric=%u node=0x%016" PRIx64 " subscription=%" PRIu32 " state=%s",
+                     static_cast<unsigned>(peer.GetFabricIndex()), peer.GetNodeId(), id.Value(), state);
+        } else {
+            ESP_LOGI(TAG, "fabric=%u node=0x%016" PRIx64 " subscription=pending state=%s",
+                     static_cast<unsigned>(peer.GetFabricIndex()), peer.GetNodeId(), state);
+        }
+    }
+    if (s_subscriptions == nullptr) {
+        ESP_LOGI(TAG, "No console-owned subscriptions");
+    }
     return ESP_OK;
 }
 
@@ -684,11 +981,12 @@ esp_err_t controller_register_commands()
         },
         {
             .name = "read-attr",
-            .description = "Read attributes of the nodes.\n"
+            .description =
+            "Read attributes of the nodes.\n"
             "\tUsage: controller read-attr <node-id> <endpoint-ids> <cluster-ids> <attr-ids>\n"
             "\tNotes: endpoint-ids can represent a single or multiple endpoints, e.g. '0' or '0,1'. "
             "And the same applies to cluster-ids, attr-ids, and event-ids.",
-            .handler = controller_read_attr_handler,
+            .handler = controller_read_handler<chip::app::AttributePathParams>,
         },
         {
             .name = "write-attr",
@@ -696,6 +994,7 @@ esp_err_t controller_register_commands()
             "Write attributes of the nodes.\n"
             "\tUsage: controller write-attr <node-id> <endpoint-ids> <cluster-ids> <attr-ids> <attr-value> [timed_write_timeout_ms]\n"
             "\tNotes: attr-value should be a JSON object that contains the attribute value JSON item."
+            " For multiple paths, use a JSON array with one object per path. "
             "You can get the format of the attr-value from "
             "https://docs.espressif.com/projects/esp-matter/en/latest/esp32/"
             "developing.html#write-attribute-commands",
@@ -705,42 +1004,41 @@ esp_err_t controller_register_commands()
             .name = "read-event",
             .description = "Read events of the nodes.\n"
             "\tUsage: controller read-event <node-id> <endpoint-ids> <cluster-ids> <event-ids>",
-            .handler = controller_read_event_handler,
+            .handler = controller_read_handler<chip::app::EventPathParams>,
         },
         {
-            .name = "subs-attr",
-            .description = "Subscribe attributes of the nodes.\n"
-            "\tUsage: controller subs-attr <node-id> <endpoint-ids> <cluster-ids> <attr-ids> "
+            .name = "sub-attr",
+            .description =
+            "Subscribe attributes of the nodes.\n"
+            "\tUsage: controller sub-attr <node-id> <endpoint-ids> <cluster-ids> <attr-ids> "
             "<min-interval> <max-interval> [keep-subscription] [auto-resubscribe]\n"
             "\tNotes: If 'keep-subscription' is 'false', existing subscriptions will be terminated for the node. "
             "If 'auto-resubscribe' is 'true', controller will auto resubscribe if subscriptions timeout",
-            .handler = controller_subscribe_attr_handler,
+            .handler = controller_subscribe_handler<chip::app::AttributePathParams>,
         },
         {
-            .name = "subs-event",
+            .name = "sub-event",
             .description = "Subscribe events of the nodes.\n"
-            "\tUsage: controller subs-event <node-id> <endpoint-ids> <cluster-ids> <event-ids> "
+            "\tUsage: controller sub-event <node-id> <endpoint-ids> <cluster-ids> <event-ids> "
             "<min-interval> <max-interval> [keep-subscription] [auto-resubscribe]\n"
-            "\tNotes: 'keep-subscription' and 'auto-resubscribe' are the same as 'subs-attr' command",
-            .handler = controller_subscribe_event_handler,
+            "\tNotes: 'keep-subscription' and 'auto-resubscribe' are the same as 'sub-attr' command",
+            .handler = controller_subscribe_handler<chip::app::EventPathParams>,
         },
         {
-            .name = "shutdown-subs",
-            .description = "Shutdown subscription for given node id and subscription id.\n"
-            "\tUsage: controller shutdown-subs <node-id> <subscription-id>",
-            .handler = controller_shutdown_subscription_handler,
+            .name = "sub-list",
+            .description = "List console-owned subscriptions, including connecting and retrying entries.\n"
+            "\tUsage: controller sub-list",
+            .handler = controller_list_subscriptions_handler,
         },
         {
-            .name = "shutdown-subss",
-            .description = "Shutdown all subscriptions for a given node.\n"
-            "\tUsage: controller shutdown-subss <node-id>",
-            .handler = controller_shutdown_subscriptions_handler,
-        },
-        {
-            .name = "shutdown-all-subss",
-            .description = "Shutdown all subscriptions to all nodes.\n"
-            "\tUsage: controller shutdown-all-subss",
-            .handler = controller_shutdown_all_subscriptions_handler,
+            .name = "sub-remove",
+            .description = "Remove one subscription, all for a node, or all globally.\n"
+            "\tUsage: controller sub-remove <node-id> <subscription-id> OR\n"
+            "\tcontroller sub-remove <node-id> all OR\n"
+            "\tcontroller sub-remove all\n"
+            "\tNotes: Node-specific removal uses the active fabric. Global removal covers all fabrics.\n"
+            "\tRemoval also affects subscriptions created outside the console.",
+            .handler = controller_remove_subscription_handler,
         },
     };
 
