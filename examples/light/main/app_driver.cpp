@@ -30,30 +30,30 @@ static uint16_t current_x = 0;
 static uint16_t current_y = 0;
 
 /* Do any conversions/remapping for the actual value here */
-static esp_err_t app_driver_light_set_power(led_driver_handle_t handle, esp_matter_attr_val_t *val)
+static esp_err_t app_driver_light_set_power(led_driver_handle_t handle, const esp_matter_attr_val_t *val)
 {
     return led_driver_set_power(handle, val->val.b);
 }
 
-static esp_err_t app_driver_light_set_brightness(led_driver_handle_t handle, esp_matter_attr_val_t *val)
+static esp_err_t app_driver_light_set_brightness(led_driver_handle_t handle, const esp_matter_attr_val_t *val)
 {
     int value = REMAP_TO_RANGE(val->val.u8, MATTER_BRIGHTNESS, STANDARD_BRIGHTNESS);
     return led_driver_set_brightness(handle, value);
 }
 
-static esp_err_t app_driver_light_set_hue(led_driver_handle_t handle, esp_matter_attr_val_t *val)
+static esp_err_t app_driver_light_set_hue(led_driver_handle_t handle, const esp_matter_attr_val_t *val)
 {
     int value = REMAP_TO_RANGE(val->val.u8, MATTER_HUE, STANDARD_HUE);
     return led_driver_set_hue(handle, value);
 }
 
-static esp_err_t app_driver_light_set_saturation(led_driver_handle_t handle, esp_matter_attr_val_t *val)
+static esp_err_t app_driver_light_set_saturation(led_driver_handle_t handle, const esp_matter_attr_val_t *val)
 {
     int value = REMAP_TO_RANGE(val->val.u8, MATTER_SATURATION, STANDARD_SATURATION);
     return led_driver_set_saturation(handle, value);
 }
 
-static esp_err_t app_driver_light_set_temperature(led_driver_handle_t handle, esp_matter_attr_val_t *val)
+static esp_err_t app_driver_light_set_temperature(led_driver_handle_t handle, const esp_matter_attr_val_t *val)
 {
     uint32_t value = REMAP_TO_RANGE_INVERSE(val->val.u16, STANDARD_TEMPERATURE_FACTOR);
     return led_driver_set_temperature(handle, value);
@@ -78,7 +78,7 @@ static esp_err_t app_driver_light_apply_color_mode(led_driver_handle_t handle, u
         err |= app_driver_light_set_hue(handle, &val);
 
         val = {};
-        err = attribute::get_val(light_endpoint_id, ColorControl::Id, CurrentSaturation::Id, &val);
+        err |= attribute::get_val(light_endpoint_id, ColorControl::Id, CurrentSaturation::Id, &val);
         if (err != ESP_OK) {
             return err;
         }
@@ -123,16 +123,23 @@ static void app_driver_button_toggle_cb(void *arg, void *data)
 
     attribute_t *attribute = attribute::get(endpoint_id, cluster_id, attribute_id);
 
-    esp_matter_attr_val_t val;
-    attribute::get_val(attribute, &val);
+    esp_matter_attr_val_t val = {};
+    if (attribute::get_val(attribute, &val) != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to get OnOff attribute value");
+        return;
+    }
     val.val.b = !val.val.b;
     attribute::update(endpoint_id, cluster_id, attribute_id, &val);
 }
 
 esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_t endpoint_id, uint32_t cluster_id,
-                                      uint32_t attribute_id, esp_matter_attr_val_t *val)
+                                      uint32_t attribute_id, const esp_matter_attr_val_t *val)
 {
     esp_err_t err = ESP_OK;
+    if (!val) {
+        ESP_LOGE(TAG, "val cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
     if (endpoint_id == light_endpoint_id) {
         led_driver_handle_t handle = (led_driver_handle_t)driver_handle;
         if (cluster_id == OnOff::Id) {
@@ -171,21 +178,21 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
     esp_err_t err = ESP_OK;
     void *priv_data = endpoint::get_priv_data(endpoint_id);
     led_driver_handle_t handle = (led_driver_handle_t)priv_data;
-    esp_matter_attr_val_t val;
+    esp_matter_attr_val_t val = {};
 
     /* Setting brightness */
     attribute_t *attribute = attribute::get(endpoint_id, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id);
-    attribute::get_val(attribute, &val);
+    ESP_RETURN_ON_ERROR(attribute::get_val(attribute, &val), TAG, "Failed to get CurrentLevel");
     err |= app_driver_light_set_brightness(handle, &val);
 
     /* Setting color */
     attribute = attribute::get(endpoint_id, ColorControl::Id, ColorControl::Attributes::ColorMode::Id);
-    attribute::get_val(attribute, &val);
+    ESP_RETURN_ON_ERROR(attribute::get_val(attribute, &val), TAG, "Failed to get ColorMode");
     err |= app_driver_light_apply_color_mode(handle, val.val.u8);
 
     /* Setting power */
     attribute = attribute::get(endpoint_id, OnOff::Id, OnOff::Attributes::OnOff::Id);
-    attribute::get_val(attribute, &val);
+    ESP_RETURN_ON_ERROR(attribute::get_val(attribute, &val), TAG, "Failed to get OnOff");
     err |= app_driver_light_set_power(handle, &val);
 
     return err;
@@ -196,6 +203,9 @@ app_driver_handle_t app_driver_light_init()
     /* Initialize led */
     led_driver_config_t config = led_driver_get_config();
     led_driver_handle_t handle = led_driver_init(&config);
+    if (!handle) {
+        ESP_LOGE(TAG, "Failed to initialize led driver");
+    }
     return (app_driver_handle_t)handle;
 }
 
@@ -211,6 +221,8 @@ app_driver_handle_t app_driver_button_init()
         return NULL;
     }
 
-    iot_button_register_cb(handle, BUTTON_PRESS_DOWN, NULL, app_driver_button_toggle_cb, NULL);
+    if (iot_button_register_cb(handle, BUTTON_PRESS_DOWN, NULL, app_driver_button_toggle_cb, NULL) != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to register button callback");
+    }
     return (app_driver_handle_t)handle;
 }
