@@ -1,5 +1,5 @@
 # Generating core/CHIPBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/core/CHIPBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/core/CHIPBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 #ifdef CONFIG_BUILD_CHIP_TESTS

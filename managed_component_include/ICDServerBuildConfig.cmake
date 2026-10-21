@@ -1,5 +1,5 @@
 # Generating app/icd/server/ICDServerBuildConfig.h
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/app/icd/server/ICDServerBuildConfig.h
+esp_matter_write_if_changed(${CMAKE_CURRENT_BINARY_DIR}/app/icd/server/ICDServerBuildConfig.h
 "#pragma once\n
 #include <sdkconfig.h>\n
 #ifdef CONFIG_ENABLE_ICD_SERVER
@@ -57,4 +57,6 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/app/icd/server/ICDServerBuildConfig.h
 #else
 #define CHIP_CONFIG_ENABLE_ICD_CHECK_IN_ON_REPORT_TIMEOUT 1
 #endif
+
+#define CHIP_CONFIG_ENABLE_ICD_DEFER_ACTIVEMODE_THREAD_ATTACH 1
 ")
