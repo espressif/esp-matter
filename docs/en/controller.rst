@@ -394,3 +394,142 @@ Access Control List Configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The Matter Commissioner should configure the ACL on the Commissionee over PASE session to grant Administer/Operator privilege over CASE authentication type for all the controllers in the Matter fabric.
+
+Client interactions
+-------------------
+
+``esp_matter`` provides the generic interaction APIs. Include
+``esp_matter_client.h`` and use the ``invoke_command``, ``read_command``,
+``write_command``, and ``subscribe_command`` namespaces under ``esp_matter::client``.
+Keep each caller-owned operation and its delegate alive until completion or
+``stop()``.
+
+Targets and authorization
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use ``chip::ScopedNodeId(node_id, fabric_index)`` for unicast destinations. The
+node must be a remote operational node, and the fabric must exist in the
+initialized Interaction Model runtime. Self-targets are rejected. For group
+Invoke and Write, use ``start(group_id, fabric_index, request, &delegate)``.
+
+Apply application authorization policy before submitting a request. The remote
+peer enforces Matter ACL checks.
+
+Ownership and callbacks
+~~~~~~~~~~~~~~~~~~~~~~~
+
+``start()`` copies path spans and encodes values and command fields before
+returning. A synchronous error rejects the request and schedules
+no delegate callbacks.
+
+Invoke and Write require an explicit delegate pointer. Pass ``nullptr`` to log
+asynchronous failures and discard successful responses, or pass a delegate
+address to receive callbacks. Read and Subscribe require a delegate. TLV readers
+are borrowed only for the callback duration.
+
+Starting another Invoke, Read, or Write releases completed state. An active
+operation rejects restart with ``CHIP_ERROR_INCORRECT_STATE`` for Invoke or
+``CHIP_ERROR_BUSY`` for Read and Write. ``stop()`` synchronously detaches the
+delegate and prevents later callbacks. Repeated calls are safe, but stopping
+cannot undo work already sent to the network.
+
+Invoke, Read, and Write allow stop, destruction, and reuse in terminal
+``OnDone()`` callbacks. Do not perform these actions in report, response, or
+subscription callbacks. Subscription states are ``connecting``, ``active``,
+``backoff``, and ``terminated``. Call ``retry_now()`` only during automatic
+resubscription backoff.
+
+Invoke and JSON fields
+~~~~~~~~~~~~~~~~~~~~~~
+
+An Invoke request with ``fields == nullptr`` encodes an empty command structure.
+``client::json_encodable`` encodes exactly one tagged JSON value, whether a
+scalar, an ``OBJ`` structure, or an ``ARR-*`` array. The encoder replaces the
+outer JSON tag with the tag supplied by the interaction. Invoke fields must be
+an ``OBJ`` value. Use ``{"0:OBJ":{}}`` for empty fields. The temporary TLV
+buffer is limited to ``chip::kMaxAppMessageLen``. For example:
+
+.. code-block:: cpp
+
+    client::json_encodable fields(R"({"0:OBJ":{"0:U8":2}})");
+    client::invoke_command::request_t request = {
+        .endpoint_id = 1,
+        .cluster_id = 6,
+        .command_id = 1,
+        .fields = &fields,
+    };
+    CHIP_ERROR err = invoke.start(target, request, &delegate);
+
+The JSON text need only remain valid through ``start()``.
+Group Invoke does not support timed or response-timeout options. Its
+``OnDone(CHIP_NO_ERROR)`` callback means the Interaction Model accepted the
+groupcast. It does not confirm that group members received it. Group Invoke
+does not call ``OnResponse()``.
+
+Read, Write, and Subscribe
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Write encoders emit the complete attribute value, including any structure or
+array container. ``client::json_encodable`` accepts, for example, ``{"0:U16":42}``,
+``{"0:OBJ":{"1:U16":42}}``, or ``{"0:ARR-U8":[1,2]}``.
+
+Read and Subscribe requests take spans of Matter attribute and event paths and
+copy them during ``start()``. Read supports wildcard paths and is fabric-filtered
+by default. Subscribe uses CHIP automatic resubscription according to its request options.
+
+Use ``write.start(group_id, fabric_index, request, &delegate)`` for Group Write.
+Group Write omits endpoints and does not support data versions, timed writes, or
+chunking. ``OnDone()`` reports dispatch after ``start()`` returns. There are
+no path responses or member acknowledgments.
+
+Write always uses a span, including the one-attribute case:
+
+.. code-block:: cpp
+
+    client::json_encodable value("{\"0:U8\":2}");
+    client::write_command::attribute_write_t attribute = {
+        .path = chip::app::ConcreteDataAttributePath(1, 6, 0x4003),
+        .value = &value,
+    };
+    client::write_command::request_t request = {
+        .attributes = chip::Span<const client::write_command::attribute_write_t>(&attribute, 1),
+    };
+    CHIP_ERROR err = write.start(target, request, &delegate);
+
+Write prepares all paths and values before accepting the request, then sends
+it through one ``WriteClient``. Complete lists use ReplaceAll and may use
+Matter chunking for non-timed requests. A timed request that requires chunking
+fails synchronously.
+
+A multi-path Write is not atomic. Inspect every ``OnResponse(path, status)``.
+Later paths may proceed after a recoverable path failure, and earlier successful
+writes are not rolled back. ``OnDone()`` reports interaction completion, not
+success for every path. Supply an explicit JSON value for each write, including
+``{"0:NULL":null}`` for null.
+
+Binding fan-out
+~~~~~~~~~~~~~~~
+
+Server applications use ``client::binding::dispatcher`` after Binding Manager
+initialization. ``dispatch(local_endpoint, request, delegate)`` accepts native
+Invoke, Read, Write and Subscribe requests selecting one concrete cluster.
+Requests are copied before return; bindings supply the fabric and remote endpoint.
+Read and Subscribe skip group bindings. Invoke and Write accept a nullable
+delegate pointer; Read and Subscribe require a delegate reference.
+
+Native callbacks identify each destination through ``source``. ``OnDone()`` is
+per destination, not aggregate completion. Dispatches may overlap on one
+dispatcher. ``stop()`` cancels all its pending dispatches and native operations
+across local endpoints, detaches delegates and suppresses later callbacks.
+Keep delegates alive until then. The next ``dispatch()`` or ``stop()`` releases
+completed handles.
+
+Removed bindings stop subscriptions; dispatched finite operations may finish.
+Fabric removal cancels affected work. New bindings apply on the next dispatch.
+SDK notifications may be replaced, CASE failures may produce no callback, and
+native start errors are logged. Returned errors do not undo dispatched work.
+
+Call methods in CHIP context or under the stack lock. ``OnDone()`` may dispatch,
+stop or destroy the dispatcher. Other callbacks may not stop or destroy it;
+``dispatch()`` returns ``CHIP_ERROR_INCORRECT_STATE`` during nonterminal native
+client callbacks. Subscription state callbacks may occur during ``dispatch()``.

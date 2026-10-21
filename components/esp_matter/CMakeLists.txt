@@ -1,10 +1,13 @@
 set(SRC_DIRS_LIST       "."
+                        "client"
+                        "client/private"
                         "utils"
                         "utils/jsontlv"
                         "${MATTER_SDK_PATH}/zzz_generated/app-common/app-common/zap-generated/attributes"
 )
 
 set(INCLUDE_DIRS_LIST   "."
+                        "client"
                         "utils"
                         "utils/jsontlv"
                         "data_model_provider"
@@ -31,13 +34,20 @@ list(APPEND INCLUDE_DIRS_LIST   "${MATTER_SDK_PATH}/third_party/pigweed/repo/pw_
                                 "${MATTER_SDK_PATH}/third_party/pigweed/repo/pw_polyfill/public")
 
 # data_model/compat carries stand-ins for headers upstream generates per app from ZAP.
-set(PRIV_INCLUDE_DIRS_LIST  "data_model/compat")
+set(PRIV_INCLUDE_DIRS_LIST "data_model/compat" "client/private")
+
+if (NOT CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
+    list(APPEND EXCLUDE_SRCS_LIST "esp_matter_identify.cpp"
+                                  "esp_matter_ota.cpp")
+endif()
 
 if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
     list(APPEND SRC_DIRS_LIST    "${MATTER_SDK_PATH}/src/app/server"
                                  "${MATTER_SDK_PATH}/src/app/reporting"
                                  "${MATTER_SDK_PATH}/src/app/persistence"
-                                 "${MATTER_SDK_PATH}/src/app/server-cluster")
+                                 "${MATTER_SDK_PATH}/src/app/server-cluster"
+                                 "client/binding")
+    list(APPEND INCLUDE_DIRS_LIST "client/binding")
     if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
         include("utils/cluster_select/cluster_dir.cmake")
         get_supported_cluster_dirs(SUPPORTED_CLUSTER_DIRS)
@@ -93,9 +103,6 @@ if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
             list(APPEND INCLUDE_DIRS_LIST "data_model/legacy")
         endif()
     endif(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
-else()
-    list(APPEND EXCLUDE_SRCS_LIST "esp_matter_identify.cpp"
-                                  "esp_matter_ota.cpp")
 endif(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
 
 set(REQUIRES_LIST   chip bt nvs_flash app_update esp_secure_cert_mgr mbedtls esp_system openthread espressif__cjson)

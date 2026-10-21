@@ -23,6 +23,7 @@
 
 #include <app/server/Dnssd.h>
 #ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
+#include <esp_matter_client_binding.h>
 #include <app/server/Server.h>
 #include <esp_matter_ota.h>
 #ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
@@ -265,7 +266,7 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
     case chip::DeviceLayer::DeviceEventType::kDnssdInitialized:
         esp_matter_ota_requestor_start();
         /* Initialize binding manager */
-        client::binding_manager_init();
+        client::binding::initialize();
         break;
 
     case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:

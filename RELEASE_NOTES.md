@@ -1,3 +1,22 @@
+# 22-October-2026
+
+## Client interaction API changes (Breaking)
+
+- `esp_matter::client` exposes Invoke, Read, Write, Subscribe, and Binding APIs through
+  `esp_matter_client.h`. Legacy client callbacks and controller-specific interaction
+  APIs are removed.
+- Keep caller-owned operations and delegates alive until completion or `stop()`.
+  Hold the CHIP stack lock when starting or stopping an operation. Synchronous
+  submission errors do not trigger delegate callbacks. Invoke, Read, and Write
+  allow stop, destruction, and reuse in `OnDone()`. Starting a new operation
+  releases completed state.
+- Group Invoke and Write use `start(group_id, fabric_index, request, &delegate)`.
+  Completion reports dispatch without member acknowledgments. Group Write does not
+  support timed writes, data versions, or chunking.
+
+See the [client interaction documentation](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/controller.html#client-interactions)
+for ownership, callback, and authorization requirements.
+
 # 11-September-2026
 
 ## Data Model Feature Parity (Legacy ↔ Generated)

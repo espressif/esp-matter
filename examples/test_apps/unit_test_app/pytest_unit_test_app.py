@@ -61,6 +61,13 @@ def test_update_report(dut: Dut) -> None:
 @pytest.mark.host_test
 @pytest.mark.emu
 @pytest.mark.esp32c3
+def test_client(dut: Dut) -> None:
+    run_group(dut, "client")
+
+
+@pytest.mark.host_test
+@pytest.mark.emu
+@pytest.mark.esp32c3
 def test_jsontlv(dut: Dut) -> None:
     run_group(dut, "jsontlv")
 
