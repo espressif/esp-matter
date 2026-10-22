@@ -178,6 +178,10 @@ static int extract_json_field(const char * json, const char * key, char * out_bu
 
 void webrtc_bridge_message_received_cb(const void * data, int len)
 {
+    if (data == nullptr || len <= 0) {
+        ChipLogError(Camera, "webrtc_bridge_message_received_cb: invalid data or length");
+        return;
+    }
     // handle message
     ChipLogProgress(Camera, "Received Message from P4-Streamer: %.*s", len, (const char *) data);
 
