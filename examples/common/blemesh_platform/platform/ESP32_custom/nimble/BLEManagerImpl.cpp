@@ -907,7 +907,9 @@ void BLEManagerImpl::bleprph_on_sync(void)
     ESP_LOGI(TAG, "BLE host-controller synced");
     // A re-sync after a host reset comes after InitESPBleLayer() has deleted the semaphore.
     if (semaphoreHandle != NULL) {
-        xSemaphoreGive(semaphoreHandle);
+        if (semaphoreHandle != NULL) {
+            xSemaphoreGive(semaphoreHandle);
+        }
     }
 }
 
@@ -1540,7 +1542,9 @@ void BLEManagerImpl::HandleC3CharRead(struct ble_gatt_char_context * param)
     uint8_t rotatingDeviceIdUniqueId[ConfigurationManager::kRotatingDeviceIDUniqueIDLength] = {};
     MutableByteSpan rotatingDeviceIdUniqueIdSpan(rotatingDeviceIdUniqueId);
 
-    err = DeviceLayer::GetDeviceInstanceInfoProvider()->GetRotatingDeviceIdUniqueId(rotatingDeviceIdUniqueIdSpan);
+    auto * deviceInstanceInfoProvider = DeviceLayer::GetDeviceInstanceInfoProvider();
+    VerifyOrExit(deviceInstanceInfoProvider != nullptr, err = CHIP_ERROR_INCORRECT_STATE);
+    err = deviceInstanceInfoProvider->GetRotatingDeviceIdUniqueId(rotatingDeviceIdUniqueIdSpan);
     SuccessOrExit(err);
     err = ConfigurationMgr().GetLifetimeCounter(additionalDataPayloadParams.rotatingDeviceIdLifetimeCounter);
     SuccessOrExit(err);

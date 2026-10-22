@@ -79,6 +79,10 @@ esp_err_t blemesh_bridge_attribute_update(uint16_t endpoint_id, uint32_t cluster
                 ESP_LOGD(TAG, "Update Bridged Device, ep: 0x%x, cluster: 0x%lx, att: 0x%lx", endpoint_id, cluster_id,
                          attribute_id);
                 blemesh_device_addr_t *dev_addr = (blemesh_device_addr_t *)bridged_device->get_dev_addr();
+                if (dev_addr == nullptr) {
+                    ESP_LOGE(TAG, "Bridged device address is NULL");
+                    return ESP_ERR_INVALID_STATE;
+                }
                 app_ble_mesh_onoff_set(dev_addr->blemesh_addr, val->val.b);
             }
         }
