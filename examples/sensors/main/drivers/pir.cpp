@@ -30,7 +30,7 @@ static void IRAM_ATTR pir_gpio_handler(void *arg)
     // we only need to notify application layer if occupancy changed
     if (occupancy != new_occupancy) {
         occupancy = new_occupancy;
-        if (s_ctx.config->cb) {
+        if (s_ctx.config && s_ctx.config->cb) {
             s_ctx.config->cb(s_ctx.config->endpoint_id, new_occupancy, s_ctx.config->user_data);
         }
     }

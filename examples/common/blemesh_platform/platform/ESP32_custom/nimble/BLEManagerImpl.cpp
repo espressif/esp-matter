@@ -907,9 +907,7 @@ void BLEManagerImpl::bleprph_on_sync(void)
     ESP_LOGI(TAG, "BLE host-controller synced");
     // A re-sync after a host reset comes after InitESPBleLayer() has deleted the semaphore.
     if (semaphoreHandle != NULL) {
-        if (semaphoreHandle != NULL) {
-            xSemaphoreGive(semaphoreHandle);
-        }
+        xSemaphoreGive(semaphoreHandle);
     }
 }
 

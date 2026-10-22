@@ -59,10 +59,7 @@ esp_err_t zigbee_bridge_attribute_update(uint16_t endpoint_id, uint32_t cluster_
                          attribute_id);
                 esp_zb_zcl_on_off_cmd_t cmd_req;
                 zigbee_device_addr_t *zigbee_device_addr = (zigbee_device_addr_t *)zigbee_device->get_dev_addr();
-                if (!zigbee_device_addr) {
-                    ESP_LOGE(TAG, "Invalid device address");
-                    return ESP_ERR_INVALID_ARG;
-                }
+                VerifyOrReturnError(zigbee_device_addr != nullptr, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Invalid device address"));
                 cmd_req.zcl_basic_cmd.dst_addr_u.addr_short = zigbee_device_addr->shortaddr;
                 cmd_req.zcl_basic_cmd.dst_endpoint = zigbee_device_addr->endpoint_id;
                 cmd_req.zcl_basic_cmd.src_endpoint = esp_matter::endpoint::get_id(matter_device->endpoint);

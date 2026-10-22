@@ -1043,10 +1043,8 @@ CHIP_ERROR WebRTCProviderManager::SendEndCommand(Messaging::ExchangeManager  &ex
 
 CHIP_ERROR WebRTCProviderManager::AcquireAudioVideoStreams(uint16_t sessionId)
 {
-    if (mCameraDevice == nullptr) {
-        ChipLogError(Camera, "CameraDeviceInterface not initialized");
-        return CHIP_ERROR_INCORRECT_STATE;
-    }
+    VerifyOrReturnError(mCameraDevice != nullptr, CHIP_ERROR_INCORRECT_STATE,
+                        ChipLogError(Camera, "CameraDeviceInterface not initialized"));
 
     WebrtcTransport * transport = GetTransport(sessionId);
     if (transport == nullptr) {
@@ -1062,10 +1060,8 @@ CHIP_ERROR WebRTCProviderManager::AcquireAudioVideoStreams(uint16_t sessionId)
 
 CHIP_ERROR WebRTCProviderManager::ReleaseAudioVideoStreams(uint16_t sessionId)
 {
-    if (mCameraDevice == nullptr) {
-        ChipLogError(Camera, "CameraDeviceInterface not initialized");
-        return CHIP_ERROR_INCORRECT_STATE;
-    }
+    VerifyOrReturnError(mCameraDevice != nullptr, CHIP_ERROR_INCORRECT_STATE,
+                        ChipLogError(Camera, "CameraDeviceInterface not initialized"));
 
     WebrtcTransport * transport = GetTransport(sessionId);
     if (transport == nullptr) {
