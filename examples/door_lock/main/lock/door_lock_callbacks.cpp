@@ -8,14 +8,16 @@
 
 #include "bolt_lock_manager.h"
 #include "door_lock_storage.h"
+#include "door_lock_authorization.h"
 #include "app_priv.h"
 #ifdef CONFIG_ENABLE_ALIRO_OVER_NFC
-#include "aliro_door_lock_delegate.h"
+#include "aliro_delegate.h"
 #endif
 
 #include <app-common/zap-generated/attributes/Accessors.h>
 #include <app/server/Server.h>
 #include <esp_log.h>
+#include <app/util/MatterCallbacks.h>
 #include <lib/core/DataModelTypes.h>
 #include <lib/support/CodeUtils.h>
 
@@ -29,15 +31,55 @@ namespace {
 const char * TAG = "door_lock_callbacks";
 EndpointId sDoorLockEndpoint = kInvalidEndpointId;
 
+// Keep an SDK proposal only during its synchronous command; never cache a whole database.
+class DoorLockCallbacks final : public FabricTable::Delegate, public DataModelCallbacks {
+    static bool IsCredentialMutation(const ConcreteCommandPath &path)
+    {
+        if (path.mClusterId != DoorLock::Id) {
+            return false;
+        }
+        switch (path.mCommandId) {
+        case DoorLock::Commands::SetUser::Id:
+        case DoorLock::Commands::ClearUser::Id:
+        case DoorLock::Commands::SetCredential::Id:
+        case DoorLock::Commands::ClearCredential::Id:
+            return true;
+        default:
+            return false;
+        }
+    }
+    CHIP_ERROR PreCommandReceived(const ConcreteCommandPath &path, const Access::SubjectDescriptor &) override
+    {
+        return !IsCredentialMutation(path) || DoorLockStorage::Instance().Ready()
+               ? CHIP_NO_ERROR : CHIP_ERROR_INCORRECT_STATE;
+    }
+    void PostCommandReceived(const ConcreteCommandPath &path, const Access::SubjectDescriptor &) override
+    {
+        if (IsCredentialMutation(path)) {
+            DoorLockStorage::Instance().DiscardPendingUser();
+        }
+    }
+    void FabricWillBeRemoved(const FabricTable &, FabricIndex) override
+    {
+        // CHIP clears creator/modifier attribution through the ordinary storage
+        // callbacks. Fabric removal does not delete Matter lock credentials.
+        if (!DoorLockStorage::Instance().Invalidate("fabric-removal")) {
+            ESP_LOGE(TAG, "Fabric invalidation failed closed");
+        }
+    }
+};
+
+DoorLockCallbacks sDoorLockCallbacks;
+
 bool ValidateRemotePIN(EndpointId endpoint, const Optional<ByteSpan>  &pin,
-                       DoorLockStorage::PinMatch  &match, bool  &usedPin,
+                       DoorLockStorage::Match  &match, bool  &usedPin,
                        OperationErrorEnum  &error)
 {
     usedPin = false;
     bool requirePin = false;
     if (DoorLock::Attributes::RequirePINforRemoteOperation::Get(endpoint, &requirePin) != Status::Success) {
-        ESP_LOGW(TAG, "Unable to read RequirePINforRemoteOperation; allowing commands without a PIN");
-        requirePin = false;
+        error = OperationErrorEnum::kRestricted;
+        return false;
     }
 
     if (!pin.HasValue()) {
@@ -45,14 +87,14 @@ bool ValidateRemotePIN(EndpointId endpoint, const Optional<ByteSpan>  &pin,
             error = OperationErrorEnum::kInvalidCredential;
             return false;
         }
-        return true;
+        return DoorLockAuthorization::ModeAllows(endpoint, OperationSourceEnum::kRemote, error);
     }
-    if (DoorLockStorage::Instance().ValidatePIN(pin.Value(), match)) {
+    error = OperationErrorEnum::kInvalidCredential;
+    if (DoorLockStorage::Instance().ValidatePIN(pin.Value(), match) &&
+            DoorLockAuthorization::Authorize(match, OperationSourceEnum::kRemote, error)) {
         usedPin = true;
         return true;
     }
-
-    error = OperationErrorEnum::kInvalidCredential;
     return false;
 }
 
@@ -77,18 +119,23 @@ bool ReadCredentialSlotLimits(DoorLockServer  &server, EndpointId endpoint,
     return true;
 }
 
-void HandleBoltStateChange(BoltLockManager::State state, BoltLockManager::OperationSource source)
+void HandleBoltStateChange(BoltLockManager::State state, BoltLockManager::OperationSource source, bool success)
 {
+    if (success && state == BoltLockManager::State::kUnlockingInitiated &&
+            (source == OperationSourceEnum::kManual || source == OperationSourceEnum::kButton)) {
+        OperatingModeEnum mode;
+        if (DoorLock::Attributes::OperatingMode::Get(sDoorLockEndpoint, &mode) == Status::Success &&
+                mode == OperatingModeEnum::kPrivacy &&
+                DoorLock::Attributes::OperatingMode::Set(sDoorLockEndpoint, OperatingModeEnum::kNormal) !=
+                Status::Success) {
+            ESP_LOGE(TAG, "Manual unlock could not restore Normal operating mode");
+        }
+    }
     DlLockState lockState = DlLockState::kNotFullyLocked;
     switch (state) {
     case BoltLockManager::State::kLockingInitiated:
         break;
     case BoltLockManager::State::kUnlockingInitiated:
-        if (source == OperationSourceEnum::kButton) {
-            ESP_LOGW(TAG, "Unlock event: source=button user=none credential=none");
-        } else if (source == OperationSourceEnum::kAliro) {
-            ESP_LOGW(TAG, "Unlock event: source=aliro user=unavailable credential=unavailable");
-        }
         break;
     case BoltLockManager::State::kLockingCompleted:
         lockState = DlLockState::kLocked;
@@ -97,8 +144,18 @@ void HandleBoltStateChange(BoltLockManager::State state, BoltLockManager::Operat
         lockState = DlLockState::kUnlocked;
         break;
     }
-
-    if (!DoorLockServer::Instance().SetLockState(sDoorLockEndpoint, lockState, source)) {
+    const BoltLockManager::Attribution &attribution = BoltLockManager::Instance().GetAttribution();
+    Nullable<uint16_t> user;
+    Nullable<DataModel::List<const CredentialStruct>> credentials;
+    if (attribution.user) {
+        user.SetNonNull(attribution.user);
+        credentials.SetNonNull(DataModel::List<const CredentialStruct>(&attribution.credential, 1));
+    }
+    bool published = success
+                     ? DoorLockServer::Instance().SetLockState(sDoorLockEndpoint, lockState, source, user,
+                                                               credentials, attribution.fabric, attribution.node)
+                     : DoorLockServer::Instance().SetLockState(sDoorLockEndpoint, lockState);
+    if (!published) {
         ESP_LOGE(TAG, "Failed to publish bolt state %u", to_underlying(lockState));
     }
     esp_err_t err = app_driver_set_lock_state(state);
@@ -124,15 +181,18 @@ void emberAfDoorLockClusterInitCallback(EndpointId endpoint)
     VerifyOrDie(server.GetNumberOfUserSupported(endpoint, limits.numberOfUsers));
     VerifyOrDie(server.GetNumberOfCredentialsSupportedPerUser(endpoint, limits.numberOfCredentialsPerUser));
     VerifyOrDie(ReadCredentialSlotLimits(server, endpoint, limits));
-    DoorLockStorage::Config storageConfig{ endpoint, limits, Server::GetInstance().GetPersistentStorage() };
-    CHIP_ERROR err = DoorLockStorage::Instance().Init(storageConfig);
+    // Matter's KVS is erased by the platform factory reset, including lock
+    // records, issuer high-water state and metadata.
+    CHIP_ERROR err = DoorLockStorage::Instance().Init(endpoint, limits, Server::GetInstance().GetPersistentStorage());
     if (err != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Door lock storage initialization failed: %" CHIP_ERROR_FORMAT, err.Format());
     }
-    VerifyOrDie(err == CHIP_NO_ERROR);
-
+    // Keep manual operation and the standard factory-reset command available
+    // when storage cannot be authorized.
     err = BoltLockManager::Instance().Init(BoltLockManager::State::kLockingCompleted, HandleBoltStateChange);
     VerifyOrDie(err == CHIP_NO_ERROR);
+    Server::GetInstance().GetFabricTable().AddFabricDelegate(&sDoorLockCallbacks);
+    DataModelCallbacks::SetInstance(&sDoorLockCallbacks);
     VerifyOrDie(server.SetLockState(endpoint, DlLockState::kLocked, OperationSourceEnum::kUnspecified));
 }
 
@@ -140,23 +200,43 @@ bool emberAfPluginDoorLockOnDoorLockCommand(EndpointId endpoint, const Nullable<
                                             const Nullable<NodeId>  &nodeId, const Optional<ByteSpan>  &pin,
                                             OperationErrorEnum  &error)
 {
-    DoorLockStorage::PinMatch match;
+    DoorLockStorage::Match match;
     bool usedPin = false;
     VerifyOrReturnValue(ValidateRemotePIN(endpoint, pin, match, usedPin, error), false);
-    return BoltLockManager::Instance().Lock(OperationSourceEnum::kRemote);
+    BoltLockManager::Attribution attribution;
+    attribution.fabric = fabricIndex;
+    attribution.node = nodeId;
+    if (usedPin) {
+        attribution.user = match.userIndex;
+        attribution.credential = {match.type, match.credentialIndex};
+    }
+    bool accepted = BoltLockManager::Instance().Lock(OperationSourceEnum::kRemote, attribution);
+    if (!accepted) {
+        error = OperationErrorEnum::kUnspecified;
+    }
+    return accepted;
 }
 
 bool emberAfPluginDoorLockOnDoorUnlockCommand(EndpointId endpoint, const Nullable<FabricIndex>  &fabricIndex,
                                               const Nullable<NodeId>  &nodeId, const Optional<ByteSpan>  &pin,
                                               OperationErrorEnum  &error)
 {
-    DoorLockStorage::PinMatch match;
+    DoorLockStorage::Match match;
     bool usedPin = false;
     if (!ValidateRemotePIN(endpoint, pin, match, usedPin, error)) {
-        ESP_LOGE(TAG, "Unlock rejected: source=remote endpoint=%u reason=invalid-credential", endpoint);
+        ESP_LOGE(TAG, "Unlock rejected: source=remote endpoint=%u reason=authorization error=%u", endpoint,
+                 to_underlying(error));
         return false;
     }
-    if (!BoltLockManager::Instance().Unlock(OperationSourceEnum::kRemote)) {
+    BoltLockManager::Attribution attribution;
+    attribution.fabric = fabricIndex;
+    attribution.node = nodeId;
+    if (usedPin) {
+        attribution.user = match.userIndex;
+        attribution.credential = {match.type, match.credentialIndex};
+    }
+    if (!BoltLockManager::Instance().Unlock(OperationSourceEnum::kRemote, attribution)) {
+        error = OperationErrorEnum::kUnspecified;
         ESP_LOGE(TAG, "Unlock rejected: source=remote endpoint=%u reason=actuator", endpoint);
         return false;
     }

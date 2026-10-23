@@ -22,6 +22,7 @@ namespace DoorLockCapabilities {
 
 // Maximum number of user records that the lock can store.
 constexpr uint16_t kUsers = 6;
+static_assert(kUsers < 0xfffe, "Reserve the all-users sentinel and avoid index wraparound");
 // Maximum number of credential references associated with one user. An
 // Aliro-and-PIN user can reference one PIN, one issuer key, and two endpoint keys.
 constexpr uint8_t kCredentialsPerUser = 4;
@@ -35,8 +36,8 @@ constexpr uint16_t kAliroCredentialIssuerKeySlots = 2;
 // enforces the limit against their combined occupied count.
 constexpr uint16_t kAliroEndpointKeySlots = 4;
 
-// Fixed storage stride reserved for every credential-type namespace. It must
-// accommodate the largest advertised credential capacity.
+// Maximum index range among credential types, not a reserved RAM stride.
+// Persistent records are read into bounded working buffers on demand.
 constexpr uint16_t kCredentialSlotsPerType = kPinCredentialSlots;
 static_assert(kCredentialSlotsPerType >= kPinCredentialSlots);
 static_assert(kCredentialSlotsPerType >= kAliroCredentialIssuerKeySlots);

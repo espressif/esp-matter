@@ -1,7 +1,17 @@
 menu "Example Configuration"
 
+    config ENABLE_TIME_SYNC
+        bool "Enable time synchronization"
+        select ENABLE_SNTP_TIME_SYNC
+        select OPENTHREAD_DNS64_CLIENT if OPENTHREAD_ENABLED
+        default n
+        help
+            Enable the UTC-only Time Synchronization cluster on endpoint 0
+            and the SNTP client.
+
     config ENABLE_ALIRO_OVER_NFC
         bool "Enable Aliro-over-NFC feature"
+        select ENABLE_TIME_SYNC
         default n
         help
             Enable this option to enable Aliro-over-NFC feature for DoorLock cluster.
