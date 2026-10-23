@@ -19,6 +19,11 @@
 
 #include <common_macros.h>
 #include <app_priv.h>
+#include <door_lock_capabilities.h>
+#include "door_lock_storage.h"
+#if CONFIG_ENABLE_CHIP_SHELL
+#include <door_lock_console.h>
+#endif // CONFIG_ENABLE_CHIP_SHELL
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
 #endif
@@ -26,8 +31,11 @@
 #include <app/server/CommissioningWindowManager.h>
 #include <app/server/Server.h>
 #ifdef CONFIG_ENABLE_ALIRO_OVER_NFC
-#include <aliro_door_lock_delegate.h>
+#include "aliro_delegate.h"
 #endif
+#if CONFIG_ENABLE_TIME_SYNC
+#include "time_sync.h"
+#endif // CONFIG_ENABLE_TIME_SYNC
 
 static const char *TAG = "app_main";
 uint16_t door_lock_endpoint_id = 0;
@@ -50,7 +58,16 @@ static const uint16_t s_decryption_key_len = decryption_key_end - decryption_key
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
+#if CONFIG_ENABLE_TIME_SYNC
+    TimeSync::OnNetworkEvent(event);
+#endif // CONFIG_ENABLE_TIME_SYNC
+
     switch (event->Type) {
+    case chip::DeviceLayer::DeviceEventType::kFactoryReset:
+        // Fence queued NFC work before Matter erases its KVS and reboots.
+        DoorLockStorage::Instance().Unavailable("factory-reset");
+        break;
+
     case chip::DeviceLayer::DeviceEventType::kInterfaceIpAddressChanged:
         ESP_LOGI(TAG, "Interface IP Address changed");
         break;
@@ -128,21 +145,29 @@ static esp_err_t app_identification_cb(identification::callback_type_t type, uin
     return ESP_OK;
 }
 
-// This callback is called for every attribute update. The callback implementation shall
-// handle the desired attributes and return an appropriate error code. If the attribute
-// is not of your interest, please do not return an error code and strictly return ESP_OK.
-static esp_err_t app_attribute_update_cb(attribute::callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
-                                         uint32_t attribute_id, esp_matter_attr_val_t *val, void *priv_data)
+static esp_err_t app_attribute_update_cb(attribute::callback_type_t type, uint16_t endpoint, uint32_t cluster,
+                                         uint32_t attribute, esp_matter_attr_val_t *value, void *)
 {
-    esp_err_t err = ESP_OK;
+    using namespace chip::app::Clusters::DoorLock;
 
-    if (type == PRE_UPDATE) {
-        /* Driver update */
-        app_driver_handle_t driver_handle = (app_driver_handle_t)priv_data;
-        err = app_driver_attribute_update(driver_handle, endpoint_id, cluster_id, attribute_id, val);
+    if (type == PRE_UPDATE && endpoint == door_lock_endpoint_id && cluster == Id &&
+            (attribute == Attributes::OperatingMode::Id || attribute == Attributes::RequirePINforRemoteOperation::Id ||
+             attribute == Attributes::ActuatorEnabled::Id)) {
+        if (attribute == Attributes::OperatingMode::Id &&
+                (value->val.u8 >= chip::to_underlying(OperatingModeEnum::kPassage) ||
+                 (value->val.u8 == chip::to_underlying(OperatingModeEnum::kPrivacy) &&
+                  !BoltLockManager::Instance().IsLocked()))) {
+            return ESP_ERR_INVALID_ARG;
+        }
+
+        DoorLockStorage &store = DoorLockStorage::Instance();
+
+        if (store.Ready() && !store.Invalidate("lock-policy")) {
+            return ESP_FAIL;
+        }
     }
 
-    return err;
+    return ESP_OK;
 }
 
 extern "C" void app_main()
@@ -170,15 +195,35 @@ extern "C" void app_main()
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
     ABORT_APP_ON_FAILURE(node != nullptr, ESP_LOGE(TAG, "Failed to create Matter node"));
 
+#if CONFIG_ENABLE_TIME_SYNC
+    endpoint_t *root_endpoint = endpoint::get_first(node);
+    ABORT_APP_ON_FAILURE(root_endpoint != nullptr, ESP_LOGE(TAG, "Failed to find root node endpoint"));
+    cluster::time_synchronization::config_t time_sync_config;
+    time_sync_config.delegate = TimeSync::GetDelegate();
+    cluster_t *time_sync_cluster = cluster::time_synchronization::create(root_endpoint, &time_sync_config,
+                                                                         CLUSTER_FLAG_SERVER);
+    ABORT_APP_ON_FAILURE(time_sync_cluster != nullptr, ESP_LOGE(TAG, "Failed to create time synchronization cluster"));
+#if !CONFIG_DISABLE_READ_CLIENT
+    ABORT_APP_ON_FAILURE(cluster::time_synchronization::feature::time_sync_client::add(time_sync_cluster) == ESP_OK,
+                         ESP_LOGE(TAG, "Failed to enable time synchronization client"));
+#endif // !CONFIG_DISABLE_READ_CLIENT
+#endif // CONFIG_ENABLE_TIME_SYNC
+
     door_lock::config_t door_lock_config;
 #ifdef CONFIG_ENABLE_ALIRO_OVER_NFC
-    AliroDoorLockDelegate::Instance().Init();
     door_lock_config.door_lock.delegate = &AliroDoorLockDelegate::Instance();
 #endif
     door_lock_config.door_lock.lock_state = chip::to_underlying(DoorLock::DlLockState::kLocked);
+    door_lock_config.door_lock.actuator_enabled = true;
+    door_lock_config.door_lock.operating_mode = 0;
+    door_lock_config.door_lock.supported_operating_modes = 0x0f; // Normal, Vacation, Privacy, NoRemoteLockUnlock.
     cluster::door_lock::feature::credential_over_the_air_access::config_t cota_config;
     cluster::door_lock::feature::pin_credential::config_t pin_credential_config;
+    pin_credential_config.number_pin_users_supported = DoorLockCapabilities::kPinCredentialSlots;
     cluster::door_lock::feature::user::config_t user_config;
+    user_config.number_of_total_user_supported = DoorLockCapabilities::kUsers;
+    user_config.number_of_credentials_supported_per_user = DoorLockCapabilities::kCredentialsPerUser;
+    user_config.credential_rules_supported = 1; // Single credential only.
     // endpoint handles can be used to add/modify clusters.
     endpoint_t *endpoint = door_lock::create(node, &door_lock_config, ENDPOINT_FLAG_NONE, NULL);
     ABORT_APP_ON_FAILURE(endpoint != nullptr, ESP_LOGE(TAG, "Failed to create door lock endpoint"));
@@ -208,15 +253,31 @@ extern "C" void app_main()
     err = esp_matter::start(app_event_cb);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
 
-    /* do nothing now */
-    door_lock_init();
+    err = app_driver_init();
+    ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to initialize application driver, err:%d", err));
+    err = app_driver_set_lock_state(BoltLockManager::State::kLockingCompleted);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to set RGB LED state, err:%d", err);
+    }
 
+#if CONFIG_ENABLE_ALIRO_OVER_NFC
+    {
+        esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
+        err = AliroDoorLockDelegate::Instance().Init();
+
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Aliro initialization failed; NFC access unavailable: %s", esp_err_to_name(err));
+        }
+    }
+#endif // CONFIG_ENABLE_ALIRO_OVER_NFC
 #if CONFIG_ENABLE_ENCRYPTED_OTA
     err = esp_matter_ota_requestor_encrypted_init(s_decryption_key, s_decryption_key_len);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to initialized the encrypted OTA, err: %d", err));
 #endif // CONFIG_ENABLE_ENCRYPTED_OTA
 
 #if CONFIG_ENABLE_CHIP_SHELL
+    err = door_lock_console_register_commands();
+    ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to register door-lock console command, err:%d", err));
     esp_matter::console::diagnostics_register_commands();
     esp_matter::console::wifi_register_commands();
     esp_matter::console::factoryreset_register_commands();
