@@ -722,6 +722,16 @@ int create(uint8_t device_type_index)
         endpoint = esp_matter::endpoint::chime::create(node, &chime_config, ENDPOINT_FLAG_DESTROYABLE, NULL);
         break;
     }
+    case ESP_MATTER_DOORBELL: {
+        esp_matter::endpoint::doorbell::config_t doorbell_config;
+        // Set the feature flag before create() so the Switch cluster's conformance check
+        // (exactly one of Latching/Momentary) passes at create time. See espressif/esp-matter#1901:
+        // doorbell::add() otherwise creates the Switch cluster with feature_flags=0 and only adds
+        // the Momentary feature afterwards, which aborts.
+        doorbell_config.switch_cluster.feature_flags = cluster::switch_cluster::feature::momentary_switch::get_id();
+        endpoint = esp_matter::endpoint::doorbell::create(node, &doorbell_config, ENDPOINT_FLAG_DESTROYABLE, NULL);
+        break;
+    }
     case ESP_MATTER_THERMOSTAT_CONTROLLER: {
         esp_matter::endpoint::thermostat_controller::config_t thermostat_controller_config;
         endpoint = esp_matter::endpoint::thermostat_controller::create(node, &thermostat_controller_config, ENDPOINT_FLAG_DESTROYABLE, NULL);
