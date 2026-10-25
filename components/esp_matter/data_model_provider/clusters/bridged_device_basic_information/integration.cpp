@@ -42,7 +42,7 @@ void EmitReachableChangedEvent(intptr_t arg)
     MATTER_TRACE_INSTANT("ReachableChanged", "BridgeBasicInfo");
 
     bool reachable = false;
-    if (Status::Success != Attributes::Reachable::GetDefault(endpointId, &reachable)) {
+    if (Status::Success != Attributes::Reachable::GetDefault(endpointId, reachable)) {
         ChipLogError(AppServer, "BridgedDeviceBasicInfo: ReachableChanged: failed to read Reachable on ep %u", endpointId);
         return;
     }

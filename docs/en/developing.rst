@@ -296,6 +296,37 @@ Building Applications
 -  :project_file:`Zigbee Bridge <examples/bridge_apps/zigbee_bridge/README.md>`
 -  :project_file:`BLE Mesh Bridge <examples/bridge_apps/blemesh_bridge/README.md>`
 
+.. only:: esp32h2 or esp32c6
+
+    Thread MeshCoP Commissioning
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    The :project_file:`light example <examples/light/README.md>` includes an additional
+    configuration for Thread MeshCoP commissioning. After setting up the ESP-IDF
+    and ESP-Matter environment, run the following commands from the
+    ``examples/light`` directory.
+
+    .. only:: esp32h2
+
+        For ESP32-H2:
+
+        ::
+
+            idf.py -DSDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.thread_commission" set-target esp32h2 build
+            idf.py -p <port> flash monitor
+
+    .. only:: esp32c6
+
+        For ESP32-C6:
+
+        ::
+
+            idf.py -DSDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.c6_thread;sdkconfig.defaults.thread_commission" set-target esp32c6 build
+            idf.py -p <port> flash monitor
+
+    ``sdkconfig.defaults.thread_commission`` enables the OpenThread joiner, MeshCoP
+    crypto, and Matter Thread MeshCoP commissioning, with Matter-over-BLE disabled.
+
 Flashing the Firmware
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -378,8 +409,7 @@ Choose IDF target.
 -  The default device for ``esp32``/``esp32c3`` is
    ``esp32-devkit-c``/``esp32c3-devkit-m``. If you want to use another
    device, you can export ``ESP_MATTER_DEVICE_PATH`` after choosing
-   the correct target, e.g. for ``m5stack`` device:
-   ``export ESP_MATTER_DEVICE_PATH=/path/to/esp_matter/device_hal/device/m5stack``
+   the correct target.
 
    -  If the device that you have is of a different revision, and is not
       working as expected, you can create a new device and export your

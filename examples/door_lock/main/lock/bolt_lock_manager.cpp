@@ -33,32 +33,43 @@ CHIP_ERROR BoltLockManager::Init(State initialState, StateChangeCallback callbac
 
 bool BoltLockManager::Lock(OperationSource source)
 {
-    if (mState == State::kLockingInitiated || mState == State::kLockingCompleted) {
-        return true;
-    }
-    return StartMovement(State::kLockingInitiated, source);
+    return Lock(source, Attribution{});
 }
 
 bool BoltLockManager::Unlock(OperationSource source)
 {
+    return Unlock(source, Attribution{});
+}
+
+bool BoltLockManager::Lock(OperationSource source, const Attribution &attribution)
+{
+    if (mState == State::kLockingInitiated || mState == State::kLockingCompleted) {
+        return true;
+    }
+    return StartMovement(State::kLockingInitiated, source, attribution);
+}
+
+bool BoltLockManager::Unlock(OperationSource source, const Attribution &attribution)
+{
     if (mState == State::kUnlockingInitiated || mState == State::kUnlockingCompleted) {
         return true;
     }
-    return StartMovement(State::kUnlockingInitiated, source);
+    return StartMovement(State::kUnlockingInitiated, source, attribution);
 }
 
-bool BoltLockManager::StartMovement(State movementState, OperationSource source)
+bool BoltLockManager::StartMovement(State movementState, OperationSource source, const Attribution &attribution)
 {
+    mOperationSource = source;
+    mAttribution = attribution;
     chip::DeviceLayer::SystemLayer().CancelTimer(ActuatorTimerHandler, this);
     CHIP_ERROR err = chip::DeviceLayer::SystemLayer().StartTimer(Milliseconds32(kActuatorMovementTimeMs),
                                                                  ActuatorTimerHandler, this);
     if (err != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to start actuator timer: %" CHIP_ERROR_FORMAT, err.Format());
-        SetState(mStableState, source);
+        SetState(mStableState, source, false);
         return false;
     }
 
-    mOperationSource = source;
     SetState(movementState, source);
     return true;
 }
@@ -83,10 +94,10 @@ void BoltLockManager::ActuatorTimerHandler(chip::System::Layer * systemLayer, vo
     }
 }
 
-void BoltLockManager::SetState(State state, OperationSource source)
+void BoltLockManager::SetState(State state, OperationSource source, bool success)
 {
     mState = state;
     if (mStateChangeCallback != nullptr) {
-        mStateChangeCallback(state, source);
+        mStateChangeCallback(state, source, success);
     }
 }

@@ -78,7 +78,7 @@ inline constexpr uint32_t Id = 0x0006;
 } /* SpeedCurrent */
 namespace RockSupport {
 inline constexpr uint32_t Id = 0x0007;
-inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Min = 1;
 inline constexpr uint8_t Max = 7;
 } /* RockSupport */
 namespace RockSetting {
@@ -88,7 +88,7 @@ inline constexpr uint8_t Max = 7;
 } /* RockSetting */
 namespace WindSupport {
 inline constexpr uint32_t Id = 0x0009;
-inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Min = 1;
 inline constexpr uint8_t Max = 3;
 } /* WindSupport */
 namespace WindSetting {

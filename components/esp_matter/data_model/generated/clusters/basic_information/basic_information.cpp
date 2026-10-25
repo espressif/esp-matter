@@ -24,6 +24,7 @@
 #include <basic_information_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <data_model/esp_matter_attribute_helpers.h>
 #include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
@@ -31,7 +32,7 @@ using namespace esp_matter;
 using namespace esp_matter::cluster;
 
 static const char *TAG = "esp_matter_cluster";
-constexpr uint16_t cluster_revision = 6;
+constexpr uint16_t cluster_revision = 7;
 
 namespace esp_matter {
 namespace cluster {
@@ -190,7 +191,7 @@ event_t *create_leave(cluster_t *cluster)
 
 event_t *create_reachable_changed(cluster_t *cluster)
 {
-    VerifyOrReturnValue(has_attribute(Reachable), NULL);
+    VerifyOrReturnValue(is_attribute_enabled(cluster, attribute::Reachable::Id), NULL);
     return esp_matter::event::create(cluster, ReachableChanged::Id);
 }
 

@@ -67,25 +67,20 @@ void ESPMatterFlowMeasurementClusterServerInitCallback(EndpointId endpointId)
         FlowMeasurementCluster::Config config;
         esp_matter_attr_val_t val = esp_matter_invalid(nullptr);
 
-        attribute_t *attr = attribute::get(cluster, MinMeasuredValue::Id);
-        if (attr && attribute::get_val_internal(attr, &val) == ESP_OK && val.type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT16) {
+        if (get_stored_attr_val(cluster, MinMeasuredValue::Id, val) == ESP_OK && val.type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT16) {
             if (val.val.u16 != UINT16_MAX) {
                 config.minMeasuredValue = DataModel::MakeNullable(val.val.u16);
             }
         }
 
-        val = esp_matter_invalid(nullptr);
-        attr = attribute::get(cluster, MaxMeasuredValue::Id);
-        if (attr && attribute::get_val_internal(attr, &val) == ESP_OK && val.type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT16) {
+        if (get_stored_attr_val(cluster, MaxMeasuredValue::Id, val) == ESP_OK && val.type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT16) {
             if (val.val.u16 != UINT16_MAX) {
                 config.maxMeasuredValue = DataModel::MakeNullable(val.val.u16);
             }
         }
 
         if (endpoint::is_attribute_enabled(endpointId, FlowMeasurement::Id, Tolerance::Id)) {
-            val = esp_matter_invalid(nullptr);
-            attr = attribute::get(cluster, Tolerance::Id);
-            if (attr && attribute::get_val_internal(attr, &val) == ESP_OK && val.type == ESP_MATTER_VAL_TYPE_UINT16) {
+            if (get_stored_attr_val(cluster, Tolerance::Id, val) == ESP_OK && val.type == ESP_MATTER_VAL_TYPE_UINT16) {
                 config.WithTolerance(val.val.u16);
             }
         }

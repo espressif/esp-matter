@@ -21,10 +21,12 @@
 #include <lib/support/Span.h>
 #include <platform/DeviceInfoProvider.h>
 #include <protocols/interaction_model/StatusCode.h>
+#include <data_model/esp_matter_attribute_helpers.h>
 
 using namespace chip;
 using namespace chip::app;
 using namespace chip::app::Clusters;
+using namespace esp_matter;
 
 namespace {
 LazyRegisteredServerCluster<LocalizationConfigurationCluster> gServer;
@@ -34,10 +36,10 @@ void ESPMatterLocalizationConfigurationClusterServerInitCallback(EndpointId endp
 {
     VerifyOrReturn(endpointId == kRootEndpointId);
     if (!gServer.IsConstructed()) {
-        esp_matter::attribute_t *active_locale = esp_matter::attribute::get(
-                                                     endpointId, LocalizationConfiguration::Id, LocalizationConfiguration::Attributes::ActiveLocale::Id);
+        esp_matter::cluster_t *cluster = esp_matter::cluster::get(endpointId, LocalizationConfiguration::Id);
         esp_matter_attr_val_t attr_val;
-        VerifyOrReturn(active_locale && esp_matter::attribute::get_val_internal(active_locale, &attr_val) == ESP_OK &&
+        VerifyOrReturn(get_stored_attr_val(cluster, LocalizationConfiguration::Attributes::ActiveLocale::Id,
+                                           attr_val) == ESP_OK &&
                        attr_val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING &&
                        attr_val.val.a.s <= LocalizationConfiguration::Attributes::ActiveLocale::TypeInfo::MaxLength(),
                        ChipLogError(AppServer, "Failed to get active locale on endpoint %u", endpointId));

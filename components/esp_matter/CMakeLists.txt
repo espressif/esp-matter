@@ -8,12 +8,30 @@ set(INCLUDE_DIRS_LIST   "."
                         "utils"
                         "utils/jsontlv"
                         "data_model_provider"
+                        # zap_common holds the app-specific ZAP headers (gen_config.h,
+                        # endpoint_config.h) that upstream's util/config.h pulls in. The
+                        # unconditionally-built Accessors.cpp reaches config.h via attribute-storage.h
+                        # (Matter 1.7 GetDefault accessors), so this must be on the path for every
+                        # build, including no-data-model configs like controller and mfg_test_app.
+                        "zap_common"
                         "${MATTER_SDK_PATH}/zzz_generated/app-common"
                         "${MATTER_SDK_PATH}/third_party/nlfaultinjection/include"
 		                "${MATTER_SDK_PATH}/third_party/uriparser/repo/include"
                         "${MATTER_SDK_PATH}/src")
 
-set(PRIV_INCLUDE_DIRS_LIST )
+# Some public cluster headers (e.g. commodity-tariff-server) use pigweed container types and
+# the chip component does not export pigweed include paths. These headers are reachable through
+# esp_matter's public MATTER_SDK_PATH/src include (e.g. an app delegate that includes the server
+# header), so the pigweed paths must be public too, not private.
+list(APPEND INCLUDE_DIRS_LIST   "${MATTER_SDK_PATH}/third_party/pigweed/repo/pw_containers/public"
+                                "${MATTER_SDK_PATH}/third_party/pigweed/repo/pw_assert/public"
+                                "${MATTER_SDK_PATH}/third_party/pigweed/repo/pw_assert/assert_compatibility_public_overrides"
+                                "${MATTER_SDK_PATH}/third_party/pigweed/repo/pw_preprocessor/public"
+                                "${MATTER_SDK_PATH}/third_party/pigweed/repo/pw_toolchain/public"
+                                "${MATTER_SDK_PATH}/third_party/pigweed/repo/pw_polyfill/public")
+
+# data_model/compat carries stand-ins for headers upstream generates per app from ZAP.
+set(PRIV_INCLUDE_DIRS_LIST  "data_model/compat")
 
 if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
     list(APPEND SRC_DIRS_LIST    "${MATTER_SDK_PATH}/src/app/server"
@@ -50,8 +68,7 @@ if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
         if (NOT CONFIG_ESP_MATTER_ENABLE_OPTIONAL_ATTRIBUTES)
             list(APPEND EXCLUDE_SRCS_LIST "data_model/esp_matter_optional_attribute.cpp")
         endif()
-        list(APPEND INCLUDE_DIRS_LIST "zap_common"
-                                      "data_model")
+        list(APPEND INCLUDE_DIRS_LIST "data_model")
         list(APPEND PRIV_INCLUDE_DIRS_LIST "data_model/private"
                                            "data_model_provider/private")
 
@@ -91,7 +108,16 @@ idf_component_register( SRC_DIRS        ${SRC_DIRS_LIST}
                         INCLUDE_DIRS    ${INCLUDE_DIRS_LIST}
                         EXCLUDE_SRCS    ${EXCLUDE_SRCS_LIST}
                         PRIV_INCLUDE_DIRS ${PRIV_INCLUDE_DIRS_LIST}
-                        REQUIRES        ${REQUIRES_LIST})
+                        REQUIRES        ${REQUIRES_LIST}
+                        LDFRAGMENTS     "linker.lf")
+
+# esp_matter_ota.cpp includes esp_rcp_ota.h (from espressif__esp_rcp_update) when the RCP-OTA path
+# is enabled. That managed component is pulled in by the example, not esp_matter, and component
+# requirements are expanded before Kconfig and before the component graph is final, so we cannot
+# gate on CONFIG_* or on BUILD_COMPONENTS at REQUIRES time. idf_component_optional_requires runs
+# after registration, when BUILD_COMPONENTS is complete, and links the component only if the app
+# actually pulled it in (a no-op for apps like light that don't use RCP OTA).
+idf_component_optional_requires(PRIVATE espressif__esp_rcp_update)
 
 # Precompile the shared esp_matter/CHIP headers to avoid reparsing them in every
 # source file.

@@ -28,35 +28,6 @@ using namespace chip::app::Clusters;
 namespace esp_matter {
 namespace cluster {
 
-static esp_err_t update_feature_map(cluster_t *cluster, uint32_t value)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-
-    /* Get the attribute */
-    attribute_t *attribute = attribute::get(cluster, Globals::Attributes::FeatureMap::Id);
-
-    VerifyOrReturnError(attribute, ESP_ERR_INVALID_STATE, ESP_LOGE(TAG, "Feature map attribute cannot be null"));
-
-    /* Update the value if the attribute already exists */
-    esp_matter_attr_val_t val;
-    VerifyOrReturnError(attribute::get_val_internal(attribute, &val) == ESP_OK, ESP_FAIL);
-    val.val.u32 |= value;
-    /* Here we can't call attribute::update() since the chip stack would not have started yet, since we are
-    still creating the data model. So, we are directly using attribute::set_val_internal(). */
-    return attribute::set_val_internal(attribute, &val, false);
-}
-
-static uint32_t get_feature_map_value(cluster_t *cluster)
-{
-    esp_matter_attr_val_t val;
-    attribute_t *attribute = attribute::get(cluster, Globals::Attributes::FeatureMap::Id);
-
-    VerifyOrReturnValue(attribute, 0, ESP_LOGE(TAG, "Feature map attribute cannot be null"));
-
-    VerifyOrReturnValue(attribute::get_val_internal(attribute, &val) == ESP_OK, 0);
-    return val.val.u32;
-}
-
 namespace descriptor {
 namespace feature {
 namespace tag_list {
@@ -137,6 +108,30 @@ esp_err_t add(cluster_t *cluster)
     return ESP_OK;
 }
 } /* managed_device */
+
+namespace auxiliary {
+
+uint32_t get_id()
+{
+    return (uint32_t)AccessControl::Feature::kAuxiliary;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes managed internally */
+    attribute::create_auxiliary_acl(cluster, NULL, 0, 0);
+
+    event::create_auxiliary_access_updated(cluster);
+
+    return ESP_OK;
+}
+} /* auxiliary */
 
 }
 } /* access_control */
@@ -573,29 +568,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
 } /* lighting */
 
-namespace frequency {
-
-uint32_t get_id()
-{
-    return (uint32_t)LevelControl::Feature::kFrequency;
-}
-
-esp_err_t add(cluster_t *cluster, config_t *config)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    /* Attributes not managed internally */
-    attribute::create_current_frequency(cluster, config->current_frequency);
-    attribute::create_min_frequency(cluster, config->min_frequency);
-    attribute::create_max_frequency(cluster, config->max_frequency);
-
-    /* Commands */
-    command::create_move_to_closest_frequency(cluster);
-
-    return ESP_OK;
-}
-} /* frequency */
 } /* feature */
 } /* level_control */
 
@@ -1333,6 +1305,34 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* resource_monitoring */
 
+namespace dish_washer_alarm {
+namespace feature {
+
+namespace reset {
+
+uint32_t get_id()
+{
+    return (uint32_t)DishwasherAlarm::Feature::kReset;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    VerifyOrReturnError(config, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Config cannot be NULL"));
+
+    update_feature_map(cluster, get_id());
+
+    attribute::create_latch(cluster, config->latch);
+    command::create_reset(cluster);
+
+    return ESP_OK;
+}
+
+} /* reset */
+
+} /* feature */
+} /* dish_washer_alarm */
+
 namespace laundry_washer_controls {
 namespace feature {
 
@@ -1485,7 +1485,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
     uint32_t occ_and_cool_feature_map = get_id() | feature::cooling::get_id();
     uint32_t occ_and_heat_feature_map = get_id() | feature::heating::get_id();
-    uint32_t occ_and_sb_feature_map = get_id() | feature::setback::get_id();
 
     if ((get_feature_map_value(cluster) & occ_and_cool_feature_map) == occ_and_cool_feature_map) {
         attribute::create_unoccupied_cooling_setpoint(cluster, config->unoccupied_cooling_setpoint);
@@ -1495,36 +1494,9 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         attribute::create_unoccupied_heating_setpoint(cluster, config->unoccupied_heating_setpoint);
     }
 
-    if ((get_feature_map_value(cluster) & occ_and_sb_feature_map) == occ_and_sb_feature_map) {
-
-        attribute::create_unoccupied_setback(cluster, config->unoccupied_setback);
-        attribute::create_unoccupied_setback_min(cluster, config->unoccupied_setback_min);
-        attribute::create_unoccupied_setback_max(cluster, config->unoccupied_setback_max);
-    }
-
     return ESP_OK;
 }
 } /* occupancy */
-
-namespace setback {
-
-uint32_t get_id()
-{
-    return (uint32_t)Thermostat::Feature::kSetback;
-}
-
-esp_err_t add(cluster_t *cluster, config_t *config)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    attribute::create_occupied_setback(cluster, config->occupied_setback);
-    attribute::create_occupied_setback_min(cluster, config->occupied_setback_min);
-    attribute::create_occupied_setback_max(cluster, config->occupied_setback_max);
-
-    return ESP_OK;
-}
-} /* setback */
 
 namespace auto_mode {
 
@@ -1612,6 +1584,40 @@ esp_err_t add(cluster_t *cluster)
     return ESP_OK;
 }
 } /* presets */
+
+namespace thermostat_suggestions {
+
+uint32_t get_id()
+{
+    return (uint32_t)Thermostat::Feature::kThermostatSuggestions;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    if (!config) {
+        ESP_LOGE(TAG, "Config cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    uint32_t feature_map = get_feature_map_value(cluster);
+    VerifyOrReturnError((feature_map & presets::get_id()), ESP_ERR_INVALID_ARG,
+                        ESP_LOGE(TAG, "Presets feature is required for Thermostat Suggestions"));
+    update_feature_map(cluster, get_id());
+
+    attribute::create_max_thermostat_suggestions(cluster, config->max_thermostat_suggestions);
+    attribute::create_thermostat_suggestion_not_following_reason(cluster, config->thermostat_suggestion_not_following_reason);
+    attribute::create_thermostat_suggestions(cluster, NULL, 0, 0);
+    attribute::create_current_thermostat_suggestion(cluster, NULL, 0, 0);
+
+    command::create_add_thermostat_suggestion_response(cluster);
+    command::create_add_thermostat_suggestion(cluster);
+    command::create_remove_thermostat_suggestion(cluster);
+    return ESP_OK;
+}
+} /* thermostat_suggestions */
 
 } /* feature */
 } /* thermostat */
@@ -2260,6 +2266,23 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 }
 } /* sensitivity_level */
 
+namespace fault_events {
+
+uint32_t get_id()
+{
+    return (uint32_t)BooleanStateConfiguration::Feature::kFaultEvents;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
+    update_feature_map(cluster, get_id());
+
+    event::create_sensor_fault(cluster);
+    return ESP_OK;
+}
+} /* fault_events */
+
 } /* feature */
 } /* boolean_state_configuration */
 
@@ -2581,86 +2604,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 }
 } /* pin_credential */
 
-namespace rfid_credential {
-
-uint32_t get_id()
-{
-    return (uint32_t)DoorLock::Feature::kRfidCredential;
-}
-
-esp_err_t add(cluster_t *cluster, config_t *config)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    /* Attributes not managed internally */
-    attribute::create_number_of_rfid_users_supported(cluster, config->number_rfid_users_supported);
-    attribute::create_max_rfid_code_length(cluster, config->max_rfid_code_length);
-    attribute::create_min_rfid_code_length(cluster, config->min_rfid_code_length);
-    attribute::create_wrong_code_entry_limit(cluster, config->wrong_code_entry_limit);
-    attribute::create_user_code_temporary_disable_time(cluster, config->user_code_temporary_disable_time);
-
-    uint32_t usr_feature_map = feature::user::get_id();
-    if (!(get_feature_map_value(cluster) & usr_feature_map)) {
-        /* todo: some commands for !USR & RID feature not define in the
-        connectedhomeip/connectedhomeip/zzz_generated/app-common/app-common/zap-generated/ids/Commands.h
-        will update when added*/
-    }
-
-    return ESP_OK;
-}
-
-} /* rfid_credential */
-
-namespace finger_credentials {
-
-uint32_t get_id()
-{
-    return (uint32_t)DoorLock::Feature::kFingerCredentials;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    uint32_t usr_feature_map = feature::user::get_id();
-    if (!(get_feature_map_value(cluster) & usr_feature_map)) {
-        /* todo: some commands for !USR & FGP feature not define in the
-        connectedhomeip/connectedhomeip/zzz_generated/app-common/app-common/zap-generated/ids/Commands.h
-        will update when added*/
-    }
-
-    return ESP_OK;
-}
-
-} /* finger_credentials */
-
-namespace logging {
-
-uint32_t get_id()
-{
-    return (uint32_t)DoorLock::Feature::kLogging;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    /* todo: all attributes for LOG feature not define in the
-    connectedhomeip/connectedhomeip/zzz_generated/app-common/app-common/zap-generated/ids/Attributes.h
-    will update when added*/
-
-    /* todo: all commands for LOG feature not define in the
-    connectedhomeip/connectedhomeip/zzz_generated/app-common/app-common/zap-generated/ids/Commands.h
-    will update when added*/
-
-    return ESP_OK;
-}
-
-} /* logging */
-
 namespace weekday_access_schedules {
 
 uint32_t get_id()
@@ -2709,23 +2652,6 @@ esp_err_t add(cluster_t *cluster)
 
 } /* door_position_sensor */
 
-namespace face_credentials {
-
-uint32_t get_id()
-{
-    return (uint32_t)DoorLock::Feature::kFaceCredentials;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    return ESP_OK;
-}
-
-} /* face_credentials */
-
 namespace credential_over_the_air_access {
 
 uint32_t get_id()
@@ -2760,11 +2686,8 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
     uint32_t pin = feature::pin_credential::get_id();
-    uint32_t rid = feature::rfid_credential::get_id();
-    uint32_t fgp = feature::finger_credentials::get_id();
-    uint32_t face = feature::face_credentials::get_id();
     uint32_t feature = get_feature_map_value(cluster);
-    VerifyOrReturnError((feature & (pin | rid | fgp | face)) != 0, ESP_FAIL, ESP_LOGE(TAG, "Should add at least one of PIN, RID, FGP and FACE feature before add USR feature"));
+    VerifyOrReturnError((feature & pin) != 0, ESP_FAIL, ESP_LOGE(TAG, "Should add PIN feature before add USR feature"));
 
     update_feature_map(cluster, get_id());
 
@@ -2791,23 +2714,6 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 }
 
 } /* user */
-
-namespace notification {
-
-uint32_t get_id()
-{
-    return (uint32_t)DoorLock::Feature::kNotification;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-
-    return ESP_OK;
-}
-
-} /* notification */
 
 namespace year_day_access_schedules {
 
@@ -3023,7 +2929,7 @@ esp_err_t add(cluster_t *cluster)
 
 } /* charging_preferences */
 
-namespace soc_reporting {
+namespace so_c_reporting {
 
 uint32_t get_id()
 {
@@ -3042,7 +2948,7 @@ esp_err_t add(cluster_t *cluster)
     return ESP_OK;
 }
 
-} /* soc_reporting */
+} /* so_c_reporting */
 
 namespace plug_and_charge {
 
@@ -3081,7 +2987,7 @@ esp_err_t add(cluster_t *cluster)
 
 } /* rfid */
 
-namespace v2x {
+namespace v_2_x {
 
 uint32_t get_id()
 {
@@ -3103,7 +3009,7 @@ esp_err_t add(cluster_t *cluster)
     return ESP_OK;
 }
 
-} /* v2x*/
+} /* v_2_x */
 
 } /* feature */
 } /* energy_evse */
@@ -3121,44 +3027,13 @@ uint32_t get_id()
 esp_err_t add(cluster_t *cluster)
 {
     VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    uint32_t power_in_watts_feature_map = feature::power_in_watts::get_id();
-    if ((get_feature_map_value(cluster) & power_in_watts_feature_map) != power_in_watts_feature_map) {
-        update_feature_map(cluster, get_id());
-        /* Attributes managed internally */
-        attribute::create_power_setting(cluster, 0);
-    } else {
-        ESP_LOGE(TAG, "Cluster shall support either PowerAsNumber or PowerInWatts feature");
-        return ESP_ERR_NOT_SUPPORTED;
-    }
+    update_feature_map(cluster, get_id());
+    /* Attributes managed internally */
+    attribute::create_power_setting(cluster, 0);
 
     return ESP_OK;
 }
 } /* power_as_number */
-
-namespace power_in_watts {
-
-uint32_t get_id()
-{
-    return (uint32_t)MicrowaveOvenControl::Feature::kPowerInWatts;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    uint32_t power_as_number_feature_map = feature::power_as_number::get_id();
-    if ((get_feature_map_value(cluster) & power_as_number_feature_map) != power_as_number_feature_map) {
-        update_feature_map(cluster, get_id());
-        /* Attributes managed internally */
-        attribute::create_supported_watts(cluster, NULL, 0, 0);
-        attribute::create_selected_watt_index(cluster, 0);
-    } else {
-        ESP_LOGE(TAG, "Cluster shall support either PowerInWatts or PowerAsNumber feature");
-        return ESP_ERR_NOT_SUPPORTED;
-    }
-
-    return ESP_OK;
-}
-} /* power_in_watts */
 
 namespace power_number_limits {
 
@@ -3525,7 +3400,7 @@ namespace tank_percent {
 
 uint32_t get_id()
 {
-    return static_cast<uint32_t>(WaterHeaterManagement::Feature::kEnergyManagement);
+    return static_cast<uint32_t>(WaterHeaterManagement::Feature::kTankPercent);
 }
 
 esp_err_t add(cluster_t *cluster)
@@ -3743,6 +3618,26 @@ esp_err_t add(cluster_t *cluster)
     return ESP_OK;
 }
 } /* vision */
+
+namespace occupancy_event {
+
+uint32_t get_id()
+{
+    return static_cast<uint32_t>(OccupancySensing::Feature::kOccupancyEvent);
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+    event::create_occupancy_changed(cluster);
+
+    return ESP_OK;
+}
+} /* occupancy_event */
 
 } /* feature */
 } /* occupancy_sensing */
@@ -4713,22 +4608,6 @@ esp_err_t add(cluster_t *cluster)
 }
 
 } /* per_zone_sensitivity */
-
-namespace metadata {
-
-uint32_t get_id()
-{
-    return static_cast<uint32_t>(PushAvStreamTransport::Feature::kMetadata);
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Cluster cannot be NULL"));
-    update_feature_map(cluster, get_id());
-    return ESP_OK;
-}
-
-}
 
 } /* feature */
 } /* push_av_stream_transport */

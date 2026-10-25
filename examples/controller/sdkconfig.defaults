@@ -1,54 +1,71 @@
+# Target: the controller is RAM heavy and is built for a SoC with PSRAM by default.
+CONFIG_IDF_TARGET="esp32s3"
+
 # Use 8M flash
 CONFIG_ESPTOOLPY_FLASHSIZE_8MB=y
 
-#enable BT
+# Use a custom partition table
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+
+# Enable BT (used for commissioning)
 CONFIG_BT_ENABLED=y
 CONFIG_BT_NIMBLE_ENABLED=y
 
-# Use a custom partition table
-CONFIG_PARTITION_TABLE_CUSTOM=y
-CONFIG_PARTITION_TABLE_FILENAME="partitions.csv"
+# Use the ESP32 BLE controller interface, keep BLE up after commissioning
+CONFIG_ENABLE_ESP32_BLE_CONTROLLER=y
+CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING=n
 
-# Testing Options
+# Enable controller + commissioner, disable the Matter server
+CONFIG_ENABLE_CHIP_CONTROLLER_BUILD=y
+CONFIG_ESP_MATTER_CONTROLLER_ENABLE=y
+CONFIG_ESP_MATTER_COMMISSIONER_ENABLE=y
+CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER=n
+
+# The controller connects to the network from the console, not via a commissioning driver
+CONFIG_WIFI_NETWORK_COMMISSIONING_DRIVER=n
+
+# Testing options
 CONFIG_USE_TEST_SETUP_PIN_CODE=20212020
 CONFIG_USE_TEST_SETUP_DISCRIMINATOR=0xF0
 
-# Enable chip shell
+# chip shell console
 CONFIG_ENABLE_CHIP_SHELL=y
 CONFIG_ESP_MATTER_CONSOLE_TASK_STACK=4096
+CONFIG_CHIP_SHELL_CMD_LINE_BUF_MAX_LENGTH=512
 
-# lwip
-CONFIG_LWIP_HOOK_IP6_ROUTE_DEFAULT=y
-CONFIG_LWIP_HOOK_ND6_GET_GW_DEFAULT=y
-CONFIG_LWIP_IPV6_AUTOCONFIG=y
-CONFIG_LWIP_IPV6_NUM_ADDRESSES=12
-
-# Increase Stack size
+# Stack sizes
 CONFIG_CHIP_TASK_STACK_SIZE=15360
 CONFIG_ESP_MAIN_TASK_STACK_SIZE=10240
 
 # Increase udp endpoints num for commissioner
 CONFIG_NUM_UDP_ENDPOINTS=16
 
-# Enable Controller and commissioner
-CONFIG_ENABLE_CHIP_CONTROLLER_BUILD=y
-CONFIG_ESP_MATTER_CONTROLLER_ENABLE=y
-
-CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER=n
-CONFIG_ESP_MATTER_COMMISSIONER_ENABLE=y
+# lwip
+CONFIG_LWIP_HOOK_IP6_ROUTE_DEFAULT=y
+CONFIG_LWIP_HOOK_ND6_GET_GW_DEFAULT=y
+CONFIG_LWIP_IPV6_AUTOCONFIG=y
+# unique local addresses for fabrics (MAX_FABRIC) + a link local address (1)
+CONFIG_LWIP_IPV6_NUM_ADDRESSES=6
 
 # Enable HKDF in mbedtls
 CONFIG_MBEDTLS_HKDF_C=y
 
-# Increase LwIP IPv6 address number to 6 (MAX_FABRIC + 1)
-# unique local addresses for fabrics(MAX_FABRIC), a link local address(1)
-CONFIG_LWIP_IPV6_NUM_ADDRESSES=6
-
 # Enable project configurations
 CONFIG_CHIP_PROJECT_CONFIG="main/matter_project_config.h"
 
-# Increase console buffer length
-CONFIG_CHIP_SHELL_CMD_LINE_BUF_MAX_LENGTH=512
-
-# Disable WiFi network commissioning driver
-CONFIG_WIFI_NETWORK_COMMISSIONING_DRIVER=n
+# RAM optimization: run on PSRAM and move heaps + BSS to external RAM to free internal DRAM.
+# The esp_matter component relocates the libCHIP.a / libesp_matter.a BSS automatically once
+# CONFIG_SPIRAM_ALLOW_BSS_SEG_EXTERNAL_MEMORY is set; main/linker.lf covers libmain.a and
+# libopenthread.a. For a module with quad PSRAM, override CONFIG_SPIRAM_MODE_OCT with
+# CONFIG_SPIRAM_MODE_QUAD.
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_MODE_OCT=y
+CONFIG_SPIRAM_SPEED_80M=y
+CONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL=512
+CONFIG_SPIRAM_MALLOC_RESERVE_INTERNAL=16384
+CONFIG_SPIRAM_ALLOW_BSS_SEG_EXTERNAL_MEMORY=y
+CONFIG_SPIRAM_TRY_ALLOCATE_WIFI_LWIP=y
+CONFIG_BT_NIMBLE_MEM_ALLOC_MODE_EXTERNAL=y
+CONFIG_ESP_MATTER_MEM_ALLOC_MODE_EXTERNAL=y
+CONFIG_MBEDTLS_EXTERNAL_MEM_ALLOC=y

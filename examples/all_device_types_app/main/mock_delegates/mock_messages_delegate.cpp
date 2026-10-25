@@ -20,7 +20,9 @@ CHIP_ERROR MockMessagesDelegate::HandlePresentMessagesRequest(
     const chip::BitMask<MessageControlBitmap>  &messageControl, const DataModel::Nullable<uint32_t>  &startTime,
     const DataModel::Nullable<uint64_t>  &duration, const CharSpan  &messageText,
     const chip::Optional<DataModel::DecodableList<chip::app::Clusters::Messages::Structs::MessageResponseOptionStruct::Type>> &
-    responses)
+    responses,
+    const chip::Optional<CharSpan>  &languageCode, const chip::Optional<CharSpan>  &messageUri,
+    chip::FabricIndex fabricIndex)
 {
     // Implement your own logic here.
     ESP_LOGE(LOG_TAG, "%s is not implemented", __func__);

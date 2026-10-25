@@ -64,6 +64,9 @@ inline constexpr uint32_t Id = 0x0008;
 namespace TCUpdateDeadline {
 inline constexpr uint32_t Id = 0x0009;
 } /* TCUpdateDeadline */
+namespace IsCommissioningWithoutPower {
+inline constexpr uint32_t Id = 0x000C;
+} /* IsCommissioningWithoutPower */
 } /* attribute */
 
 namespace command {

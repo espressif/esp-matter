@@ -25,6 +25,8 @@
 #include <service_area_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <data_model/esp_matter_attribute_helpers.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
 using namespace esp_matter;
@@ -108,12 +110,12 @@ attribute_t *create_selected_areas(cluster_t *cluster, uint8_t *value, uint16_t 
 
 attribute_t *create_current_area(cluster_t *cluster, nullable<uint32_t> value)
 {
-    return esp_matter::attribute::create(cluster, CurrentArea::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    return esp_matter::attribute::create(cluster, CurrentArea::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_estimated_end_time(cluster_t *cluster, nullable<uint32_t> value)
 {
-    return esp_matter::attribute::create(cluster, EstimatedEndTime::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY | ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
+    return esp_matter::attribute::create(cluster, EstimatedEndTime::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_attr_val(value));
 }
 
 attribute_t *create_progress(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -142,7 +144,7 @@ command_t *create_skip_area(cluster_t *cluster)
 
 command_t *create_skip_area_response(cluster_t *cluster)
 {
-    VerifyOrReturnValue(has_command(SkipArea, COMMAND_FLAG_ACCEPTED), NULL);
+    VerifyOrReturnValue(is_command_enabled(cluster, command::SkipArea::Id, COMMAND_FLAG_ACCEPTED), NULL);
     return esp_matter::command::create(cluster, SkipAreaResponse::Id, COMMAND_FLAG_GENERATED, NULL);
 }
 
@@ -176,6 +178,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_selected_areas(cluster, NULL, 0, 0);
         command::create_select_areas(cluster);
         command::create_select_areas_response(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterServiceAreaClusterServerInitCallback,
+                                                 ESPMatterServiceAreaClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {

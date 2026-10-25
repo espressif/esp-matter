@@ -31,11 +31,11 @@ See the [docs](https://github.com/espressif/esp-thread-br#hardware-platforms) fo
 
 ### 4.2 Build
 
-The sdkconfig file `sdkconfig.defaults.otbr` is provided to enable the OTBR feature on the controller.
-Build and flash the controller example with the sdkconfig file 'sdkconfig.defaults.otbr'
+`sdkconfig.defaults.otbr` holds the OTBR-specific options and is layered on top of the base
+`sdkconfig.defaults`. Build and flash the controller example with both:
 
 ```
-idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults.otbr" set-target esp32s3 build
+idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.otbr" set-target esp32s3 build
 idf.py -p <PORT> erase-flash flash monitor
 ```
 
@@ -105,12 +105,8 @@ I cannot send commands to the light from the controller:
     -   The esp-matter and esp-idf branch you are using.
 
 ### A1.3 RAM optimization
--   The `sdkconfig.defaults.ram_optimization` file is provided for RAM optimization. These configurations enable SPIRAM (CONFIG_SPIRAM=y) and allow the BSS segment to be placed in SPIRAM (CONFIG_SPIRAM_ALLOW_BSS_SEG_EXTERNAL_MEMORY). With these configurations, [linker file](./main/linker.lf) can move move BSS segments of certain main controller libraries to SPIRAM. Build the example with the sdkconfig:
-```
-idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.ram_optimization" set-target esp32s3 build
-```
--   The OTBR's sdkconfig file `sdkconfig.defaults.otbr` has RAM optimization configurations enabled by default.
--   If you encounter a crash with error message: "PSRAM chip not found or not supported, or wrong PSRAM line mode", please check whether the module has SPIRAM and if the SPIRAM mode is configured correctly:
-    -   For 2MB SPIRAM, set `CONFIG_SPIRAM_MODE_QUAD=y`
-    -   For SPIRAM larger than 2MB, set `CONFIG_SPIRAM_MODE_OCT=y`
--   Refer to [linker](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/optimizations.html#configuration-options-to-optimize-ram-and-flash) for other options to optimize RAM and Flash.
+
+The controller is RAM heavy, so `sdkconfig.defaults` puts the Wi-Fi/LWIP, NimBLE, Matter and mbedTLS allocations plus the BSS segments in PSRAM (`CONFIG_SPIRAM_ALLOW_BSS_SEG_EXTERNAL_MEMORY=y`). The `esp_matter` and `esp_matter_controller` components move the `libCHIP.a` / `libesp_matter.a` / `libesp_matter_controller.a` BSS automatically; [`main/linker.lf`](./main/linker.lf) covers `libmain.a` and `libopenthread.a`.
+
+-   `sdkconfig.defaults` uses octal PSRAM (`CONFIG_SPIRAM_MODE_OCT=y`). If the device crashes at startup with `PSRAM chip not found or not supported, or wrong PSRAM line mode`, set the mode that matches your module, e.g. `CONFIG_SPIRAM_MODE_QUAD=y` for a 2 MB quad-PSRAM part.
+-   See [Configuration options to optimize RAM and Flash](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/optimizations.html) for further options.

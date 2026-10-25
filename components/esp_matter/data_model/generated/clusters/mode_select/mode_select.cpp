@@ -27,28 +27,15 @@
 #include <mode_select_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
-using chip::app::CommandHandler;
-using chip::app::DataModel::Decode;
-using chip::TLV::TLVReader;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 using namespace esp_matter::cluster::delegate_cb;
 
 static const char *TAG = "esp_matter_cluster";
 constexpr uint16_t cluster_revision = 2;
-
-static esp_err_t esp_matter_command_callback_change_to_mode(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                            void *opaque_ptr)
-{
-    chip::app::Clusters::ModeSelect::Commands::ChangeToMode::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfModeSelectClusterChangeToModeCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
 
 namespace esp_matter {
 namespace cluster {
@@ -112,17 +99,16 @@ attribute_t *create_on_mode(cluster_t *cluster, nullable<uint8_t> value)
 namespace command {
 command_t *create_change_to_mode(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ChangeToMode::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_change_to_mode);
+    return esp_matter::command::create(cluster, ChangeToMode::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 } /* command */
 
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfModeSelectClusterServerInitCallback,
-    (function_generic_t)MatterModeSelectClusterServerPreAttributeChangedCallback,
 };
 
-const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -149,6 +135,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_current_mode(cluster, config->current_mode);
         attribute::create_supported_modes(cluster, NULL, 0, 0);
         command::create_change_to_mode(cluster);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterModeSelectClusterServerInitCallback,
+                                                 ESPMatterModeSelectClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {

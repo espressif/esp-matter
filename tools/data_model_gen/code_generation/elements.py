@@ -155,6 +155,26 @@ class Cluster(SpecialConfigElement, BaseCluster):
             getattr(self, "callback_functions", None)
         )
 
+    def needs_attribute_helpers_header(self):
+        """True if a generated conformance check calls is_attribute_enabled()/is_command_enabled().
+
+        Gates the esp_matter_attribute_helpers.h include.
+        """
+        elements = (
+            self.get_attributes()
+            + self.get_commands()
+            + self.get_events()
+            + self.get_features()
+        )
+        for element in elements:
+            condition = element.get_conformance_condition()
+            if condition and (
+                "is_attribute_enabled(" in condition
+                or "is_command_enabled(" in condition
+            ):
+                return True
+        return False
+
     def needs_log_tag(self):
         """True if generated cluster source emits ESP_LOGE using TAG."""
         if self.id != "0xffff":

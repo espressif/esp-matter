@@ -24,7 +24,7 @@
 #include <esp_matter_core.h>
 
 #define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID 0x0301
-#define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_VERSION 7
+#define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_VERSION 8
 
 namespace esp_matter {
 namespace endpoint {

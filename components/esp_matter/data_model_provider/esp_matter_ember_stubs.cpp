@@ -197,7 +197,7 @@ Status get_raw_data_buffer_from_attr_val(const esp_matter_attr_val_t &val, uint8
     }
 
     case ESP_MATTER_VAL_TYPE_UINT64: {
-        if (readLength < sizeof(uint8_t) || !dataPtr) {
+        if (readLength < sizeof(uint64_t) || !dataPtr) {
             return chip::Protocols::InteractionModel::Status::ResourceExhausted;
         }
         using Traits = chip::app::NumericAttributeTraits<uint64_t>;
@@ -583,7 +583,7 @@ EmberAfDefaultAttributeValue get_default_attr_value_from_val(esp_matter_attr_val
 
 namespace chip {
 namespace app {
-// TODO: Remove EnabledEndpointsWithServerCluster when door-lock, power-source-configuration, and ota-requestor server
+// TODO: Remove EnabledEndpointsWithServerCluster when door-lock and power-source-configuration server
 // is decoupled from ember.
 EnabledEndpointsWithServerCluster::EnabledEndpointsWithServerCluster(ClusterId clusterId)
     : mEndpointCount(esp_matter::endpoint::get_count(esp_matter::node::get()))
@@ -623,11 +623,10 @@ void EnabledEndpointsWithServerCluster::EnsureMatchingEndpoint()
 // Override Ember functions
 
 // TODO: Remove the emberAfGetClusterServerEndpointIndex function when laundry-dryer-controls, keypad-input,
-// door-lock, level-control, target-navigator, fan-control, occupancy-sensor, valve-configuration-and-control,
-// media-playback, content-launch, audio-output, power-source, application-basic, low-power, diagnostic-logs,
-// color-control, channel, laundry-washer-controls, wake-on-lan, window-covering, content-control, dishwasher-alarm,
-// on-off, media-input, application-launcher, account-login, thermostat, electrical-energy-measurement,
-// content-app-observer, and boolean-state-configuration clusters are decoupled from ember.
+// door-lock, level-control, target-navigator, media-playback, content-launch, audio-output, power-source,
+// application-basic, low-power, color-control, channel, wake-on-lan, window-covering, content-control,
+// dishwasher-alarm, on-off, media-input, application-launcher, account-login, thermostat, and
+// content-app-observer clusters are decoupled from ember.
 uint16_t emberAfGetClusterServerEndpointIndex(chip::EndpointId endpoint, chip::ClusterId clusterId,
                                               uint16_t fixedClusterServerEndpointCount)
 {
@@ -650,7 +649,7 @@ uint16_t emberAfGetClusterServerEndpointIndex(chip::EndpointId endpoint, chip::C
     return 0xFFFF;
 }
 
-// TODO: Remove the emberAfIsKnownVolatileAttribute function when level-control, mode-select, mode-base, and on-off
+// TODO: Remove the emberAfIsKnownVolatileAttribute function when level-control, mode-select, and on-off
 // clusters are decoupled from ember.
 bool emberAfIsKnownVolatileAttribute(chip::EndpointId endpoint, chip::ClusterId clusterId,
                                      chip::AttributeId attributeId)
@@ -662,9 +661,8 @@ bool emberAfIsKnownVolatileAttribute(chip::EndpointId endpoint, chip::ClusterId 
     return !(esp_matter::attribute::get_flags(attr) & esp_matter::ATTRIBUTE_FLAG_NONVOLATILE);
 }
 
-// TODO: Remove the emberAfContainsServer function when soil-measurement, on-off, mode-base, resource-monitoring,
-// mode-select, color-control, microwave-oven-control, concentration-measurement, air-quality, operational-state,
-// thread-network-diagnostics, general-diagnostics, level-control, and service-area clusters are decoupled from ember.
+// TODO: Remove the emberAfContainsServer function when on-off, mode-select, color-control,
+// level-control, and service-area clusters are decoupled from ember.
 bool emberAfContainsServer(chip::EndpointId endpoint, chip::ClusterId clusterId)
 {
     esp_matter::cluster_t *cluster = esp_matter::cluster::get(endpoint, clusterId);
@@ -674,8 +672,8 @@ bool emberAfContainsServer(chip::EndpointId endpoint, chip::ClusterId clusterId)
     return false;
 }
 
-// TODO: Remove the emberAfContainsAttribute function when level-control, mode-select, resource-monitoring, mode-base,
-// on-off, and pump-configuration-and-control clusters are decoupled from ember
+// TODO: Remove the emberAfContainsAttribute function when level-control, mode-select, on-off, and
+// pump-configuration-and-control clusters are decoupled from ember
 bool emberAfContainsAttribute(chip::EndpointId endpoint, chip::ClusterId clusterId, chip::AttributeId attributeId)
 {
     return esp_matter::attribute::get(endpoint, clusterId, attributeId);
@@ -781,7 +779,8 @@ Status emberAfWriteAttribute(const chip::app::ConcreteAttributePath &path, const
     return status;
 }
 
-// TODO: Remove this function when scenes and thermostat clusters are decoupled from ember APIs
+// TODO: Remove this function when the thermostat and pump-configuration-and-control clusters are decoupled from
+// ember APIs (it is also used internally by emberAfWriteAttribute above).
 // Since the attribute Metadata should always be accessed in Matter context, we return a pointer of static value.
 // But it might be dangerous when the user use this API out of Matter context.
 const EmberAfAttributeMetadata *emberAfLocateAttributeMetadata(chip::EndpointId endpointId, chip::ClusterId clusterId,
@@ -810,4 +809,65 @@ const EmberAfAttributeMetadata *emberAfLocateAttributeMetadata(chip::EndpointId 
         }
     }
     return nullptr;
+}
+
+// te2 (upstream PR 73797) added Attributes::<X>::GetDefault() accessors that resolve an attribute's
+// default value through this endpoint-level hook instead of the ZAP flash tables. esp_matter has no
+// ember flash config, so back it with our own attribute store: at cluster init time (the only caller)
+// the stored value is the creation-time default. Scalars are copied into outDefault's owned storage;
+// strings are serialized into a static Pascal-prefixed buffer that rawData points at (same
+// single-threaded-Matter-context static-pointer pattern as emberAfLocateAttributeMetadata above).
+// TODO: Remove once code-driven clusters obtain their defaults without the ember accessor path.
+namespace chip {
+namespace app {
+Status emberAfGetAttributeDefaultValue(chip::EndpointId endpoint, chip::ClusterId clusterId,
+                                       chip::AttributeId attributeId, AttributeDefaultValue &outDefault)
+{
+    esp_matter::attribute_t *attribute = esp_matter::attribute::get(endpoint, clusterId, attributeId);
+    VerifyOrReturnError(attribute != nullptr, Status::UnsupportedAttribute);
+
+    esp_matter_attr_val_t val;
+    VerifyOrReturnError(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK, Status::Failure);
+
+    const EmberAfAttributeType type = get_ember_attr_type_from_val_type(val.type);
+    const uint16_t size = get_ember_attr_size_from_val(val);
+
+    // Covers every ember scalar plus short (<=255 byte) strings; long strings are not used as
+    // init-time defaults on this path. ponytail: bump if a long-string default ever needs it.
+    static uint8_t sBuffer[UINT8_MAX + 1];
+    VerifyOrReturnError(size <= sizeof(sBuffer), Status::ResourceExhausted);
+
+    Status status = get_raw_data_buffer_from_attr_val(val, sBuffer, sizeof(sBuffer));
+    VerifyOrReturnError(status == Status::Success, status);
+
+    if (emberAfIsStringAttributeType(type) || emberAfIsLongStringAttributeType(type)) {
+        // Strings are zero-copy views; SetOwnedValue rejects them, so point rawData at the buffer.
+        outDefault.rawData = chip::ByteSpan(sBuffer, size);
+        outDefault.type = type;
+        return Status::Success;
+    }
+
+    VerifyOrReturnError(outDefault.SetOwnedValue(chip::ByteSpan(sBuffer, size), type), Status::ResourceExhausted);
+    return Status::Success;
+}
+} // namespace app
+} // namespace chip
+
+// Thermostat migrated to a code-driven cluster upstream, so CHIP no longer emits its ember
+// init / pre-attribute-changed callbacks. The legacy data model still wires them into the
+// thermostat cluster function list, so provide no-op stubs. Generic attribute bounds are still
+// enforced through esp_matter's own store (see emberAfLocateAttributeMetadata above).
+// TODO: Remove these once the thermostat cluster is decoupled from ember APIs.
+void emberAfThermostatClusterServerInitCallback(chip::EndpointId) {}
+
+// Mode select migrated to a code-driven cluster upstream; its ember init now lives only in
+// mode-select-server/CodegenIntegration.cpp, which esp_matter excludes from the build. The
+// generated data model still wires it into the mode_select function list, so stub it here.
+// TODO: Remove once the generated data model stops referencing the ember init callback.
+void emberAfModeSelectClusterServerInitCallback(chip::EndpointId) {}
+
+Status MatterThermostatClusterServerPreAttributeChangedCallback(const chip::app::ConcreteAttributePath &,
+                                                                EmberAfAttributeType, uint16_t, uint8_t *)
+{
+    return Status::Success;
 }

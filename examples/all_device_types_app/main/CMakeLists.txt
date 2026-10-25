@@ -1,6 +1,5 @@
 set(SRC_DIRS_LIST "." "mock_delegates")
 set(INCLUDE_DIRS_LIST "." "mock_delegates")
-set(ldfragments linker.lf)
 # set(PRIV_REQUIRES_LIST device esp_matter esp_matter_console esp_matter_thread_br app_reset console fatfs hal)
 
 # Add the electrical measurement directory to source and include paths
@@ -19,8 +18,7 @@ endif (CONFIG_ENABLE_ESP_DIAGNOSTICS_TRACE)
 
 idf_component_register(SRC_DIRS          ${SRC_DIRS_LIST}
                       PRIV_INCLUDE_DIRS  "." "${ESP_MATTER_PATH}/examples/common/utils" ${PRIV_INCLUDE_DIRS_LIST}
-                      INCLUDE_DIRS       ${INCLUDE_DIRS_LIST}
-                      LDFRAGMENTS        "${ldfragments}")
+                      INCLUDE_DIRS       ${INCLUDE_DIRS_LIST})
 
 target_compile_options(${COMPONENT_LIB} PRIVATE "-DCHIP_HAVE_CONFIG_H")
 

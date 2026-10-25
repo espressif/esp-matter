@@ -32,7 +32,7 @@ constexpr uint16_t cluster_revision = 3;
 } // namespace access_control
 
 namespace basic_information {
-constexpr uint16_t cluster_revision = 6;
+constexpr uint16_t cluster_revision = 7;
 } // namespace basic_information
 
 namespace binding {
@@ -52,7 +52,7 @@ constexpr uint16_t cluster_revision = 2;
 } // namespace general_commissioning
 
 namespace network_commissioning {
-constexpr uint16_t cluster_revision = 2;
+constexpr uint16_t cluster_revision = 3;
 } // namespace network_commissioning
 
 namespace diagnostic_logs {
@@ -72,7 +72,7 @@ constexpr uint16_t cluster_revision = 1;
 } // namespace administrator_commissioning
 
 namespace operational_credentials {
-constexpr uint16_t cluster_revision = 2;
+constexpr uint16_t cluster_revision = 3;
 } // namespace operational_credentials
 
 namespace group_key_management {
@@ -100,11 +100,11 @@ constexpr uint16_t cluster_revision = 2;
 } // namespace unit_localization
 
 namespace bridged_device_basic_information {
-constexpr uint16_t cluster_revision = 6;
+constexpr uint16_t cluster_revision = 7;
 } // namespace bridged_device_basic_information
 
 namespace power_source {
-constexpr uint16_t cluster_revision = 3;
+constexpr uint16_t cluster_revision = 4;
 } // namespace power_source
 
 namespace icd_management {
@@ -124,31 +124,31 @@ constexpr uint16_t cluster_revision = 6;
 } // namespace identify
 
 namespace groups {
-constexpr uint16_t cluster_revision = 4;
+constexpr uint16_t cluster_revision = 5;
 } // namespace groups
 
 namespace scenes_management {
-constexpr uint16_t cluster_revision = 1;
+constexpr uint16_t cluster_revision = 2;
 } // namespace scenes_management
 
 namespace on_off {
-constexpr uint16_t cluster_revision = 6;
+constexpr uint16_t cluster_revision = 7;
 } // namespace on_off
 
 namespace level_control {
-constexpr uint16_t cluster_revision = 7;
+constexpr uint16_t cluster_revision = 8;
 } // namespace level_control
 
 namespace color_control {
-constexpr uint16_t cluster_revision = 9;
+constexpr uint16_t cluster_revision = 10;
 } // namespace color_control
 
 namespace fan_control {
-constexpr uint16_t cluster_revision = 6;
+constexpr uint16_t cluster_revision = 7;
 } // namespace fan_control
 
 namespace thermostat {
-constexpr uint16_t cluster_revision = 11;
+constexpr uint16_t cluster_revision = 12;
 } // namespace thermostat
 
 namespace thermostat_user_interface_configuration {
@@ -160,15 +160,15 @@ constexpr uint16_t cluster_revision = 1;
 } // namespace air_quality
 
 namespace hepa_filter_monitoring {
-constexpr uint16_t cluster_revision = 1;
+constexpr uint16_t cluster_revision = 2;
 } // namespace hepa_filter_monitoring
 
 namespace activated_carbon_filter_monitoring {
-constexpr uint16_t cluster_revision = 1;
+constexpr uint16_t cluster_revision = 2;
 } // namespace activated_carbon_filter_monitoring
 
 namespace concentration_measurement {
-constexpr uint16_t cluster_revision = 5;
+constexpr uint16_t cluster_revision = 6;
 } // namespace concentration_measurement
 
 namespace operational_state {
@@ -176,7 +176,7 @@ constexpr uint16_t cluster_revision = 3;
 } // namespace operational_state
 
 namespace laundry_washer_mode {
-constexpr uint16_t cluster_revision = 3;
+constexpr uint16_t cluster_revision = 4;
 } // namespace laundry_washer_mode
 
 namespace laundry_washer_controls {
@@ -188,7 +188,7 @@ constexpr uint16_t cluster_revision = 1;
 } // namespace laundry_dryer_controls
 
 namespace dish_washer_mode {
-constexpr uint16_t cluster_revision = 3;
+constexpr uint16_t cluster_revision = 4;
 } // namespace dish_washer_mode
 
 namespace dish_washer_alarm {
@@ -220,7 +220,7 @@ constexpr uint16_t cluster_revision = 5;
 } // namespace relative_humidity_measurement
 
 namespace occupancy_sensing {
-constexpr uint16_t cluster_revision = 7;
+constexpr uint16_t cluster_revision = 8;
 } // namespace occupancy_sensing
 
 namespace boolean_state {
@@ -252,7 +252,7 @@ constexpr uint16_t cluster_revision = 5;
 } // namespace flow_measurement
 
 namespace pump_configuration_and_control {
-constexpr uint16_t cluster_revision = 5;
+constexpr uint16_t cluster_revision = 6;
 } // namespace pump_configuration_and_control
 
 namespace mode_select {
@@ -268,23 +268,23 @@ constexpr uint16_t cluster_revision = 1;
 } // namespace refrigerator_alarm
 
 namespace refrigerator_and_tcc_mode {
-constexpr uint16_t cluster_revision = 3;
+constexpr uint16_t cluster_revision = 4;
 } // namespace refrigerator_and_tcc_mode
 
 namespace rvc_run_mode {
-constexpr uint16_t cluster_revision = 4;
+constexpr uint16_t cluster_revision = 5;
 } // namespace rvc_run_mode
 
 namespace rvc_clean_mode {
-constexpr uint16_t cluster_revision = 5;
+constexpr uint16_t cluster_revision = 6;
 } // namespace rvc_clean_mode
 
 namespace water_heater_mode {
-constexpr uint16_t cluster_revision = 1;
+constexpr uint16_t cluster_revision = 2;
 } // namespace water_heater_mode
 
 namespace microwave_oven_mode {
-constexpr uint16_t cluster_revision = 2;
+constexpr uint16_t cluster_revision = 3;
 } // namespace microwave_oven_mode
 
 namespace microwave_oven_control {
@@ -300,7 +300,7 @@ constexpr uint16_t cluster_revision = 1;
 } // namespace keypad_input
 
 namespace power_topology {
-constexpr uint16_t cluster_revision = 1;
+constexpr uint16_t cluster_revision = 2;
 } // namespace power_topology
 
 namespace electrical_power_measurement {
@@ -312,7 +312,7 @@ constexpr uint16_t cluster_revision = 2;
 } // namespace electrical_energy_measurement
 
 namespace energy_evse_mode {
-constexpr uint16_t cluster_revision = 2;
+constexpr uint16_t cluster_revision = 3;
 } // namespace energy_evse_mode
 
 namespace energy_evse {
@@ -320,15 +320,15 @@ constexpr uint16_t cluster_revision = 4;
 } // namespace energy_evse
 
 namespace valve_configuration_and_control {
-constexpr uint16_t cluster_revision = 1;
+constexpr uint16_t cluster_revision = 2;
 } // namespace valve_configuration_and_control
 
 namespace device_energy_management {
-constexpr uint16_t cluster_revision = 4;
+constexpr uint16_t cluster_revision = 5;
 } // namespace device_energy_management
 
 namespace device_energy_management_mode {
-constexpr uint16_t cluster_revision = 2;
+constexpr uint16_t cluster_revision = 3;
 } // namespace device_energy_management_mode
 
 namespace application_basic {
@@ -384,11 +384,11 @@ constexpr uint16_t cluster_revision = 2;
 } // namespace chime
 
 namespace closure_control {
-constexpr uint16_t cluster_revision = 1;
+constexpr uint16_t cluster_revision = 2;
 } // namespace closure_control
 
 namespace closure_dimension {
-constexpr uint16_t cluster_revision = 1;
+constexpr uint16_t cluster_revision = 2;
 } // namespace closure_dimension
 
 namespace camera_av_settings_user_level_management {
@@ -396,11 +396,11 @@ constexpr uint16_t cluster_revision = 1;
 } // namespace camera_av_settings_user_level_management
 
 namespace push_av_stream_transport {
-constexpr uint16_t cluster_revision = 2;
+constexpr uint16_t cluster_revision = 3;
 } // namespace push_av_stream_transport
 
 namespace commodity_tariff {
-constexpr uint16_t cluster_revision = 1;
+constexpr uint16_t cluster_revision = 2;
 } // namespace commodity_tariff
 
 namespace commodity_price {

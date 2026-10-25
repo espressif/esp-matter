@@ -42,7 +42,7 @@ namespace rocking {
 typedef struct config {
     uint8_t rock_support;
     uint8_t rock_setting;
-    config() : rock_support(0), rock_setting(0) {}
+    config() : rock_support(1), rock_setting(0) {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
@@ -52,7 +52,7 @@ namespace wind {
 typedef struct config {
     uint8_t wind_support;
     uint8_t wind_setting;
-    config() : wind_support(0), wind_setting(0) {}
+    config() : wind_support(1), wind_setting(0) {}
 } config_t;
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);

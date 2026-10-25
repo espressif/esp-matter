@@ -117,6 +117,16 @@ __attribute__((weak)) void ESPMatterApplicationLauncherClusterServerShutdownCall
     // Default empty implementation
 }
 
+__attribute__((weak)) void ESPMatterAudioControlClusterServerInitCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterAudioControlClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
+{
+    // Default empty implementation
+}
+
 __attribute__((weak)) void ESPMatterAudioOutputClusterServerInitCallback(EndpointId endpoint)
 {
     // Default empty implementation
@@ -797,6 +807,16 @@ __attribute__((weak)) void ESPMatterLowPowerClusterServerShutdownCallback(Endpoi
     // Default empty implementation
 }
 
+__attribute__((weak)) void ESPMatterMediaFileManagementClusterServerInitCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterMediaFileManagementClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
+{
+    // Default empty implementation
+}
+
 __attribute__((weak)) void ESPMatterMediaInputClusterServerInitCallback(EndpointId endpoint)
 {
     // Default empty implementation
@@ -1333,6 +1353,16 @@ __attribute__((weak)) void ESPMatterThermostatClusterServerInitCallback(Endpoint
 }
 
 __attribute__((weak)) void ESPMatterThermostatClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterThermostatModeClusterServerInitCallback(EndpointId endpoint)
+{
+    // Default empty implementation
+}
+
+__attribute__((weak)) void ESPMatterThermostatModeClusterServerShutdownCallback(EndpointId endpoint, ClusterShutdownType shutdownType)
 {
     // Default empty implementation
 }

@@ -67,7 +67,7 @@ app_driver_handle_t app_driver_button_init();
  * @return error in case of failure.
  */
 esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_t endpoint_id, uint32_t cluster_id,
-                                      uint32_t attribute_id, esp_matter_attr_val_t *val);
+                                      uint32_t attribute_id, const esp_matter_attr_val_t *val);
 
 /** Set defaults for light driver
  *

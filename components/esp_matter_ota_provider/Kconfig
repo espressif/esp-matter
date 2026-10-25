@@ -37,7 +37,7 @@ menu "ESP Matter OTA Provider"
     config ESP_MATTER_OTA_CANDIDATES_UPDATE_PERIODICALLY
         bool "Update OTA Candidates Periodically"
         depends on ESP_MATTER_OTA_PROVIDER_ENABLED
-        default true
+        default y
         help
             Update the OTA candidates cache periodically.
 

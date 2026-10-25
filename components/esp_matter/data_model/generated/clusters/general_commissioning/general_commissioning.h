@@ -48,6 +48,7 @@ attribute_t *create_tc_min_required_version(cluster_t *cluster, uint16_t value);
 attribute_t *create_tc_acknowledgements(cluster_t *cluster, uint16_t value);
 attribute_t *create_tc_acknowledgements_required(cluster_t *cluster, bool value);
 attribute_t *create_tc_update_deadline(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_is_commissioning_without_power(cluster_t *cluster, bool value);
 } /* attribute */
 
 namespace command {

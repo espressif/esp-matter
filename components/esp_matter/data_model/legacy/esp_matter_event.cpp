@@ -15,6 +15,8 @@
 #include <esp_log.h>
 #include <esp_matter_event_impl.h>
 
+// Reused from upstream's codegen integration header (designed for the codegen data model provider);
+// esp-matter only needs the switch-server entry points declared here, not its RegisterServer path.
 #include <app/clusters/switch-server/CodegenIntegration.h>
 #include <lib/support/CodeUtils.h>
 #include <platform/DeviceControlServer.h>
@@ -40,6 +42,11 @@ event_t *create_access_control_extension_changed(cluster_t *cluster)
 event_t *create_fabric_restriction_review_update(cluster_t *cluster)
 {
     return esp_matter::event::create(cluster, AccessControl::Events::FabricRestrictionReviewUpdate::Id);
+}
+
+event_t *create_auxiliary_access_updated(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, AccessControl::Events::AuxiliaryAccessUpdated::Id);
 }
 } // namespace event
 } // namespace access_control
@@ -520,6 +527,17 @@ event_t *create_sensor_fault(cluster_t *cluster)
 
 } // namespace event
 } // namespace boolean_state_configuration
+
+namespace dish_washer_alarm {
+namespace event {
+
+event_t *create_notify(cluster_t *cluster)
+{
+    return esp_matter::event::create(cluster, DishwasherAlarm::Events::Notify::Id);
+}
+
+} // namespace event
+} // namespace dish_washer_alarm
 
 namespace operational_state {
 namespace event {

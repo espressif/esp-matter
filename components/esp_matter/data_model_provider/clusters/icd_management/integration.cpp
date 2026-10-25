@@ -25,11 +25,13 @@
 #include "lib/support/BitMask.h"
 #include "lib/support/Span.h"
 #include "support/CodeUtils.h"
+#include <data_model/esp_matter_attribute_helpers.h>
 
 using namespace chip;
 using namespace chip::app;
 using namespace chip::app::Clusters;
 using namespace chip::app::Clusters::IcdManagement;
+using namespace esp_matter;
 
 namespace {
 #if CHIP_CONFIG_ENABLE_ICD_CIP
@@ -38,17 +40,8 @@ LazyRegisteredServerCluster<ICDManagementClusterWithCIP> gServer;
 LazyRegisteredServerCluster<ICDManagementCluster> gServer;
 #endif
 
-esp_err_t get_attr_val(esp_matter::cluster_t *cluster, uint32_t attribute_id, esp_matter_attr_val_t &val)
-{
-    esp_matter::attribute_t *attr = esp_matter::attribute::get(cluster, attribute_id);
-    if (!attr) {
-        return ESP_FAIL;
-    }
-    return esp_matter::attribute::get_val_internal(attr, &val);
-}
-
 CHIP_ERROR GetClusterConfig(EndpointId endpointId, ICDManagementCluster::OptionalAttributeSet &optionalAttrSet,
-                            BitMask<OptionalCommands> &optionalCommands, BitMask<UserActiveModeTriggerBitmap> &uatHint,
+                            ICDManagementCluster::OptionalCommandSet &optionalCommands, BitMask<UserActiveModeTriggerBitmap> &uatHint,
                             MutableCharSpan &instructionSpan)
 {
     esp_matter::cluster_t *cluster = esp_matter::cluster::get(endpointId, IcdManagement::Id);
@@ -56,15 +49,15 @@ CHIP_ERROR GetClusterConfig(EndpointId endpointId, ICDManagementCluster::Optiona
         return CHIP_ERROR_NOT_FOUND;
     }
     if (esp_matter::command::get(cluster, Commands::StayActiveRequest::Id, esp_matter::COMMAND_FLAG_ACCEPTED)) {
-        optionalCommands.SetField(OptionalCommands::kStayActive, 1);
+        optionalCommands.Set<IcdManagement::Commands::StayActiveRequest::Id>();
     } else {
-        optionalCommands.SetField(OptionalCommands::kStayActive, 0);
+        optionalCommands.Set<IcdManagement::Commands::StayActiveRequest::Id>(false);
     }
     esp_matter_attr_val_t attr_val;
-    if (get_attr_val(cluster, Attributes::UserActiveModeTriggerHint::Id, attr_val) == ESP_OK &&
+    if (get_stored_attr_val(cluster, Attributes::UserActiveModeTriggerHint::Id, attr_val) == ESP_OK &&
             attr_val.type == ESP_MATTER_VAL_TYPE_BITMAP32) {
         uatHint = BitMask<UserActiveModeTriggerBitmap>(attr_val.val.u32);
-        if (get_attr_val(cluster, Attributes::UserActiveModeTriggerInstruction::Id, attr_val) == ESP_OK &&
+        if (get_stored_attr_val(cluster, Attributes::UserActiveModeTriggerInstruction::Id, attr_val) == ESP_OK &&
                 attr_val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING && instructionSpan.size() >= attr_val.val.a.s) {
             memcpy(instructionSpan.data(), (const char *)attr_val.val.a.b, attr_val.val.a.s);
             instructionSpan.reduce_size(attr_val.val.a.s);
@@ -81,7 +74,7 @@ void ESPMatterIcdManagementClusterServerInitCallback(EndpointId endpointId)
     VerifyOrReturn(endpointId == kRootEndpointId);
     if (!gServer.IsConstructed()) {
         ICDManagementCluster::OptionalAttributeSet optionalAttrSet;
-        BitMask<OptionalCommands> optionalCommands;
+        ICDManagementCluster::OptionalCommandSet optionalCommands(0);
         BitMask<UserActiveModeTriggerBitmap> uatHint;
         char instructionBuffer[kUserActiveModeTriggerInstructionMaxLength];
         MutableCharSpan instructionSpan(instructionBuffer);

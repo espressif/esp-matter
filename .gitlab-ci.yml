@@ -2,6 +2,7 @@ include:
     - local: .gitlab/pre_check.yml
     - local: .gitlab/docker.yml
     - local: .gitlab/docs.yml
+    - local: .gitlab/backport.yml
 
 stages:
     - pre_check
@@ -42,7 +43,7 @@ variables:
     MATTER_ZIGBEE_LIGHT_IDF_REF: "73b55e893ffb9761f8cae911ccb05f186f03d22b"
     # This variable represents the short hash of the connectedhomeip submodule.
     # Note: Do change this short hash on submodule update MRs.
-    CHIP_SHORT_HASH: "9dc6ceb89c"
+    CHIP_SHORT_HASH: "99a81bd329"
     DOCKER_IMAGE_NAME: "espressif/chip-idf"
 
 .add_gitlab_ssh_key: &add_gitlab_ssh_key |
@@ -174,7 +175,7 @@ variables:
 
 .build_controller_otbr_example: &build_controller_otbr_example
     - cd $ESP_MATTER_PATH/examples/controller
-    - idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults.otbr" set-target esp32s3 build
+    - idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.otbr" set-target esp32s3 build
 
 .build_lit_icd_example: &build_lit_icd_example
     - cd $ESP_MATTER_PATH/examples/icd_app
@@ -574,8 +575,8 @@ pytest_esp32h2_esp_matter_dut:
       fi
   tags: ["esp32h2", "esp_matter_dut"]
 
-build_unit_test_app_qemu:
-  resource_group: build_unit_test_app_qemu
+build_unit_test_app:
+  resource_group: build_unit_test_app
   extends:
     - .build_examples_template
   artifacts:
@@ -592,46 +593,8 @@ build_unit_test_app_qemu:
     - cd ${ESP_MATTER_PATH}/examples/test_apps/unit_test_app
     - idf.py set-target esp32c3 build
 
-pytest_unit_test_app_qemu:
-  stage: target_test
-  image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
-  needs:
-    - build_unit_test_app_qemu
-  before_script:
-    - *add_gitlab_ssh_key
-    - *get_build_caches
-    - *setup_idf
-    - cd ${ESP_MATTER_PATH}
-    - mkdir -p ${REPOS_PATH}
-    - *setup_matter
-    - *update_build_caches
-  variables:
-    REPOS_PATH: "$CI_PROJECT_DIR/repos"
-  script:
-    - cd ${ESP_MATTER_PATH}
-    - apt-get update && apt-get install -y -q libslirp0
-    - python ${IDF_PATH}/tools/idf_tools.py install qemu-riscv32
-    - eval "$(python ${IDF_PATH}/tools/idf_tools.py export)"
-    - pip install -r tools/ci/requirements-pytest.txt
-    - pytest examples/test_apps/unit_test_app/pytest_unit_test_app.py
-      --target esp32c3
-      -m qemu
-      --embedded-services idf,qemu
-      --junitxml=XUNIT_RESULT.xml
-      --qemu-extra-args="-global driver=timer.esp32c3.timg,property=wdt_disable,value=true"
-  artifacts:
-    paths:
-      - "pytest_embedded_log/"
-    reports:
-      junit: XUNIT_RESULT.xml
-    when: always
-    expire_in: 4 days
-  tags: ["host_test"]
-
-build_unit_test_app_qemu_generated:
-  resource_group: build_unit_test_app_qemu_generated
+build_unit_test_app_generated:
+  resource_group: build_unit_test_app_generated
   extends:
     - .build_examples_template
   artifacts:
@@ -649,13 +612,15 @@ build_unit_test_app_qemu_generated:
     - echo "CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL=y" >> sdkconfig.defaults
     - idf.py set-target esp32c3 build
 
-pytest_unit_test_app_qemu_generated:
+# Unit tests under esp-emu (https://github.com/espressif/esp-emulator),
+# via the pytest-embedded-espemu service.
+pytest_unit_test_app_emu:
   stage: target_test
   image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
   needs:
-    - build_unit_test_app_qemu_generated
+    - build_unit_test_app
   before_script:
     - *add_gitlab_ssh_key
     - *get_build_caches
@@ -668,16 +633,55 @@ pytest_unit_test_app_qemu_generated:
     REPOS_PATH: "$CI_PROJECT_DIR/repos"
   script:
     - cd ${ESP_MATTER_PATH}
-    - apt-get update && apt-get install -y -q libslirp0
-    - python ${IDF_PATH}/tools/idf_tools.py install qemu-riscv32
-    - eval "$(python ${IDF_PATH}/tools/idf_tools.py export)"
+    - curl -fsSL https://raw.githubusercontent.com/espressif/esp-emulator/main/install.sh | sh
+    - export PATH=${HOME}/.local/bin:${PATH}
+    - esp-emu --version
     - pip install -r tools/ci/requirements-pytest.txt
     - pytest examples/test_apps/unit_test_app/pytest_unit_test_app.py
       --target esp32c3
-      -m qemu
-      --embedded-services idf,qemu
+      -m emu
+      --embedded-services idf,espemu
+      --espemu-extra-args="--net user,restrict=yes"
       --junitxml=XUNIT_RESULT.xml
-      --qemu-extra-args="-global driver=timer.esp32c3.timg,property=wdt_disable,value=true"
+  artifacts:
+    paths:
+      - "pytest_embedded_log/"
+    reports:
+      junit: XUNIT_RESULT.xml
+    when: always
+    expire_in: 4 days
+  tags: ["host_test"]
+
+
+pytest_unit_test_app_emu_generated:
+  stage: target_test
+  image: ${DOCKER_IMAGE_NAME}:chip_${CHIP_SHORT_HASH}_idf_${IDF_CHECKOUT_REF}
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "main" || $CI_PIPELINE_SOURCE == "push"
+  needs:
+    - build_unit_test_app_generated
+  before_script:
+    - *add_gitlab_ssh_key
+    - *get_build_caches
+    - *setup_idf
+    - cd ${ESP_MATTER_PATH}
+    - mkdir -p ${REPOS_PATH}
+    - *setup_matter
+    - *update_build_caches
+  variables:
+    REPOS_PATH: "$CI_PROJECT_DIR/repos"
+  script:
+    - cd ${ESP_MATTER_PATH}
+    - curl -fsSL https://raw.githubusercontent.com/espressif/esp-emulator/main/install.sh | sh
+    - export PATH=${HOME}/.local/bin:${PATH}
+    - esp-emu --version
+    - pip install -r tools/ci/requirements-pytest.txt
+    - pytest examples/test_apps/unit_test_app/pytest_unit_test_app.py
+      --target esp32c3
+      -m emu
+      --embedded-services idf,espemu
+      --espemu-extra-args="--net user,restrict=yes"
+      --junitxml=XUNIT_RESULT.xml
   artifacts:
     paths:
       - "pytest_embedded_log/"
@@ -885,114 +889,3 @@ deploy_docs_production:
         DOCS_DEPLOY_PATH: "$DOCS_PROD_PATH"
         DOCS_DEPLOY_URL_BASE: "https://$DOCS_PROD_SERVER/$DOCS_PROD_PATH"
 
-pre_commit_check:
-  image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
-  stage: pre_check
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
-  script:
-    - pip install pre-commit
-    - git fetch origin main
-    - pre-commit install-hooks
-    - |
-      # Get the base commit for comparison
-      BASE_COMMIT=$(git merge-base origin/main HEAD)
-      # Run pre-commit on changed files
-      FILES=$(git diff --name-only --diff-filter=ACMRT ${BASE_COMMIT}...HEAD)
-      if [ -n "$FILES" ]; then
-        echo "Running pre-commit on changed files:"
-        echo "$FILES"
-        # Convert newline-separated files to space-separated and pass to pre-commit
-        echo "$FILES" | xargs pre-commit run --files
-      else
-        echo "No files changed, skipping pre-commit"
-      fi
-
-    # Label release branched MRs with versioned labels
-    # e.g. release/v1.5 -> v1.5
-    - |
-      case "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" in release/*)
-        curl -sf -X PUT -H "PRIVATE-TOKEN: $GITLAB_MR_COMMENT_TOKEN" \
-          "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID?add_labels=${CI_MERGE_REQUEST_TARGET_BRANCH_NAME#release/}" \
-          > /dev/null && echo "Added label ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME#release/}" || echo "Labeling failed (non-fatal)"
-      esac
-
-  tags:
-    - build
-
-cppcheck:
-  image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
-  stage: pre_check
-  allow_failure: true
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
-  before_script:
-    - apt-get update -qq && apt-get install -y -qq cppcheck > /dev/null 2>&1
-  script:
-    - ${ESP_MATTER_PATH}/tools/ci/run_cppcheck.sh
-  after_script:
-    - |
-      if [ -f cppcheck_report.txt ]; then
-        echo "------------------------------------------------------------"
-        echo "cppcheck_report.txt"
-        echo "------------------------------------------------------------"
-        cat cppcheck_report.txt
-        echo "------------------------------------------------------------"
-      fi
-  tags:
-    - build
-
-data_model_gen_unit_tests:
-  image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
-  stage: pre_check
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
-  script:
-    - pip install -r ${ESP_MATTER_PATH}/tools/data_model_gen/requirements.txt
-    - cd ${ESP_MATTER_PATH}/tools/data_model_gen
-    - python tests/run_tests.py -v
-  tags:
-    - build
-
-data_model_gen_check:
-  image: $CI_DOCKER_REGISTRY/esp-env-v6.0:1
-  stage: pre_check
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_COMMIT_BRANCH == "main"
-  script:
-    # Clone CHIP submodule (shallow) for data model generation
-    - git submodule update --init --depth 1 connectedhomeip/connectedhomeip
-    # Install data_model_gen dependencies and pre-commit
-    - pip install -r ${ESP_MATTER_PATH}/tools/data_model_gen/requirements.txt
-    # pinning ruff to 0.15.22 to skip a few checks that are introduced in 0.16.x until we fix them
-    - pip install pre-commit ruff==0.15.22
-    # Regenerate data model from scratch
-    - cd ${ESP_MATTER_PATH}/tools/data_model_gen
-    # ruff check the data_model_gen directory
-    - ruff check .
-    - ruff format .
-    - python data_model_gen.py --clean --no-colored-logs
-    # Format generated code with pre-commit hooks (astyle, codespell, etc.)
-    - cd ${ESP_MATTER_PATH}
-    - pre-commit install-hooks
-    - find components/esp_matter/data_model/generated -name '*.cpp' -o -name '*.h' | xargs pre-commit run --files || true
-    # Fail if generated+formatted files differ from what is committed
-    - |
-      UNTRACKED=$(git ls-files --others --exclude-standard components/esp_matter/data_model/generated/)
-      if ! git diff --quiet components/esp_matter/data_model/generated/ || [ -n "$UNTRACKED" ]; then
-        echo "ERROR: Generated data model code is out of date or not properly formatted."
-        echo ""
-        echo "To fix: run the following locally and commit the result:"
-        echo "  cd tools/data_model_gen && python data_model_gen.py --clean"
-        echo "  pre-commit run --files \$(find components/esp_matter/data_model/generated -name '*.cpp' -o -name '*.h')"
-        echo ""
-        git diff --stat components/esp_matter/data_model/generated/
-        if [ -n "$UNTRACKED" ]; then
-          echo "Untracked files:"
-          echo "$UNTRACKED"
-        fi
-        exit 1
-      fi
-      echo "Generated data model files are up to date and properly formatted."
-  tags:
-    - build

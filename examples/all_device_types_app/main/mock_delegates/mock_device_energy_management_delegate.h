@@ -36,6 +36,12 @@ public:
 
     Protocols::InteractionModel::Status CancelPowerAdjustRequest() override;
 
+    Protocols::InteractionModel::Status PowerRangeAdjustRequest(const Optional<int64_t> minPower,
+                                                                const Optional<int64_t> maxPower,
+                                                                const uint32_t duration, AdjustmentCauseEnum cause) override;
+
+    Protocols::InteractionModel::Status CancelPowerRangeAdjustRequest() override;
+
     Protocols::InteractionModel::Status StartTimeAdjustRequest(const uint32_t requestedStartTime,
                                                                AdjustmentCauseEnum cause) override;
 
@@ -63,6 +69,7 @@ public:
     OptOutStateEnum GetOptOutState() override;
     const DataModel::Nullable<Structs::PowerAdjustCapabilityStruct::Type>  &GetPowerAdjustmentCapability() override;
     const DataModel::Nullable<Structs::ForecastStruct::Type>  &GetForecast() override;
+    const DataModel::Nullable<Structs::PowerRangeAdjustStruct::Type>  &GetPowerRangeAdjustment() override;
 
     // Attribute setter
     CHIP_ERROR SetESAState(ESAStateEnum esaState) override;
@@ -71,6 +78,7 @@ private:
     static constexpr const char * LOG_TAG = "MockDeviceEnergyManagementDelegate";
     DataModel::Nullable<Structs::PowerAdjustCapabilityStruct::Type> mPowerAdjustCapability;
     DataModel::Nullable<Structs::ForecastStruct::Type> mForecast;
+    DataModel::Nullable<Structs::PowerRangeAdjustStruct::Type> mPowerRangeAdjustment;
 };
 
 } // namespace DeviceEnergyManagement

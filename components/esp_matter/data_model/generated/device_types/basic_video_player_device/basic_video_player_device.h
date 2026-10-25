@@ -25,7 +25,7 @@
 #include <esp_matter_core.h>
 
 #define ESP_MATTER_BASIC_VIDEO_PLAYER_DEVICE_TYPE_ID 0x0028
-#define ESP_MATTER_BASIC_VIDEO_PLAYER_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_BASIC_VIDEO_PLAYER_DEVICE_TYPE_VERSION 4
 
 namespace esp_matter {
 namespace endpoint {

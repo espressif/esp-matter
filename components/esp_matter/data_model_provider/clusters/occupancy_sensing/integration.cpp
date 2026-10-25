@@ -25,12 +25,14 @@
 
 #include <unordered_map>
 #include "support/logging/TextOnlyLogging.h"
+#include <data_model/esp_matter_attribute_helpers.h>
 
 using namespace chip;
 using namespace chip::app;
 using namespace chip::app::Clusters;
 using namespace chip::app::Clusters::OccupancySensing;
 using namespace chip::app::Clusters::OccupancySensing::Attributes;
+using namespace esp_matter;
 
 namespace {
 
@@ -40,14 +42,8 @@ DefaultTimerDelegate gDefaultTimerDelegate;
 
 OccupancySensing::Feature getFeature(EndpointId endpointId)
 {
-    esp_matter::attribute_t *attr =
-        esp_matter::attribute::get(endpointId, OccupancySensing::Id, Globals::Attributes::FeatureMap::Id);
-    esp_matter_attr_val_t val;
-    if (attr && esp_matter::attribute::get_val_internal(attr, &val) == ESP_OK &&
-            val.type == ESP_MATTER_VAL_TYPE_BITMAP32) {
-        return static_cast<OccupancySensing::Feature>(val.val.u32);
-    }
-    return static_cast<OccupancySensing::Feature>(0);
+    return static_cast<OccupancySensing::Feature>(
+               read_feature_map_u32(endpointId, OccupancySensing::Id));
 }
 
 } // namespace
@@ -71,8 +67,8 @@ void ESPMatterOccupancySensingClusterServerInitCallback(EndpointId endpointId)
         OccupancySensingCluster::Config config(endpointId);
 
         config.WithFeatures(getFeature(endpointId));
-        if (esp_matter::endpoint::is_attribute_enabled(endpointId, OccupancySensing::Id,
-                                                       OccupancySensing::Attributes::HoldTime::Id)) {
+        if (endpoint::is_attribute_enabled(endpointId, OccupancySensing::Id,
+                                           OccupancySensing::Attributes::HoldTime::Id)) {
             // Initializes hold time with default limits and timer delegate. The Application can use SetHoldTimeLimits() and
             // SetHoldTime() later to customize. Initial defaults come from typical values found in real devices on the
             // market.
@@ -83,12 +79,12 @@ void ESPMatterOccupancySensingClusterServerInitCallback(EndpointId endpointId)
 
             // Show deprecated attributes if enabled in Zap
             config.WithDeprecatedAttributes(
-                      esp_matter::endpoint::is_attribute_enabled(endpointId, OccupancySensing::Id,
-                                                                 Attributes::PIROccupiedToUnoccupiedDelay::Id) ||
-                      esp_matter::endpoint::is_attribute_enabled(endpointId, OccupancySensing::Id,
-                                                                 Attributes::UltrasonicOccupiedToUnoccupiedDelay::Id) ||
-                      esp_matter::endpoint::is_attribute_enabled(endpointId, OccupancySensing::Id,
-                                                                 Attributes::PhysicalContactOccupiedToUnoccupiedDelay::Id));
+                      endpoint::is_attribute_enabled(endpointId, OccupancySensing::Id,
+                                                     Attributes::PIROccupiedToUnoccupiedDelay::Id) ||
+                      endpoint::is_attribute_enabled(endpointId, OccupancySensing::Id,
+                                                     Attributes::UltrasonicOccupiedToUnoccupiedDelay::Id) ||
+                      endpoint::is_attribute_enabled(endpointId, OccupancySensing::Id,
+                                                     Attributes::PhysicalContactOccupiedToUnoccupiedDelay::Id));
         }
         gServers[endpointId].Create(config);
     }

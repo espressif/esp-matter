@@ -23,11 +23,13 @@
 #include <app/clusters/administrator-commissioning-server/AdministratorCommissioningCluster.h>
 
 #include <data_model_provider/esp_matter_data_model_provider.h>
+#include <data_model/esp_matter_attribute_helpers.h>
 
 using namespace chip;
 using namespace chip::app;
 using namespace chip::app::Clusters;
 using namespace chip::app::Clusters::AdministratorCommissioning::Attributes;
+using namespace esp_matter;
 namespace {
 using ClusterImpl = AdministratorCommissioningWithBasicCommissioningWindowCluster;
 
@@ -38,14 +40,9 @@ void ESPMatterAdministratorCommissioningClusterServerInitCallback(EndpointId end
 {
     VerifyOrReturn(endpointId == kRootEndpointId);
     if (!gServer.IsConstructed()) {
-        esp_matter::attribute_t *attribute = esp_matter::attribute::get(endpointId, AdministratorCommissioning::Id,
-                                                                        Globals::Attributes::FeatureMap::Id);
-        VerifyOrReturn(attribute != nullptr);
-        esp_matter_attr_val_t val;
-        VerifyOrReturn(esp_matter::attribute::get_val_internal(attribute, &val) == ESP_OK);
-        VerifyOrReturn(val.type == ESP_MATTER_VAL_TYPE_BITMAP32);
-
-        gServer.Create(endpointId, BitFlags<AdministratorCommissioning::Feature>(val.val.u32),
+        gServer.Create(endpointId,
+                       BitFlags<AdministratorCommissioning::Feature>(
+                           read_feature_map_u32(endpointId, AdministratorCommissioning::Id)),
                        AdministratorCommissioningCluster::Context{ .commissioningWindowManager =
                                                                        Server::GetInstance().GetCommissioningWindowManager(),
                                                                    .fabricTable     = Server::GetInstance().GetFabricTable(),

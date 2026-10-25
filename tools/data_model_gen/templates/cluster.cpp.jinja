@@ -22,6 +22,9 @@
 #include <{{ cluster.esp_name }}_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+{% if cluster.needs_attribute_helpers_header() %}
+#include <data_model/esp_matter_attribute_helpers.h>
+{% endif %}
 {% if cluster.is_migrated_cluster %}
 #include <app/ClusterCallbacks.h>
 {% endif %}

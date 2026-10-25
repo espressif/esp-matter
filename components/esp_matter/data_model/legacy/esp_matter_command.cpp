@@ -26,50 +26,6 @@ using chip::app::CommandHandler;
 using chip::app::DataModel::Decode;
 using chip::TLV::TLVReader;
 
-static const char *TAG = "esp_matter_command";
-
-namespace esp_matter {
-namespace command {
-
-void dispatch_single_cluster_command(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
-{
-    uint16_t endpoint_id = command_path.mEndpointId;
-    uint32_t cluster_id = command_path.mClusterId;
-    uint32_t command_id = command_path.mCommandId;
-    ESP_LOGI(TAG, "Received command 0x%08" PRIX32 " for endpoint 0x%04" PRIX16 "'s cluster 0x%08" PRIX32 "", command_id, endpoint_id, cluster_id);
-
-    cluster_t *cluster = cluster::get(endpoint_id, cluster_id);
-    VerifyOrReturn(cluster);
-    command_t *command = get(cluster, command_id, COMMAND_FLAG_ACCEPTED);
-    VerifyOrReturn(command, ESP_LOGE(TAG, "Command 0x%08" PRIX32 " not found", command_id));
-    esp_err_t err = ESP_OK;
-    TLVReader tlv_reader;
-    tlv_reader.Init(tlv_data);
-    if (command) {
-        callback_t callback = get_user_callback(command);
-        if (callback) {
-            err = callback(command_path, tlv_reader, opaque_ptr);
-        }
-        callback = get_callback(command);
-        if ((err == ESP_OK) && callback) {
-            err = callback(command_path, tlv_data, opaque_ptr);
-        }
-        int flags = get_flags(command);
-        if (flags & COMMAND_FLAG_CUSTOM) {
-            chip::app::CommandHandler *command_obj = (chip::app::CommandHandler *)opaque_ptr;
-            if (!command_obj) {
-                ESP_LOGE(TAG, "Command Object cannot be NULL");
-                return;
-            }
-            command_obj->AddStatus(command_path, err == ESP_OK ? chip::Protocols::InteractionModel::Status::Success :
-                                   chip::Protocols::InteractionModel::Status::Failure);
-        }
-    }
-}
-
-} /* command */
-} /* esp_matter */
-
 static esp_err_t esp_matter_command_callback_off(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                  void *opaque_ptr)
 {
@@ -670,115 +626,6 @@ static esp_err_t esp_matter_command_callback_clear_aliro_reader_config(const Con
     CHIP_ERROR error = Decode(tlv_data, command_data);
     if (error == CHIP_NO_ERROR) {
         emberAfDoorLockClusterClearAliroReaderConfigCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_setpoint_raise_lower(const ConcreteCommandPath &command_path,
-                                                                  TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::Thermostat::Commands::SetpointRaiseLower::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfThermostatClusterSetpointRaiseLowerCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_set_active_schedule_request(const ConcreteCommandPath &command_path,
-                                                                         TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::Thermostat::Commands::SetActiveScheduleRequest::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfThermostatClusterSetActiveScheduleRequestCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_thermostat_atomic_request(const ConcreteCommandPath &command_path,
-                                                                       TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::Thermostat::Commands::AtomicRequest::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfThermostatClusterAtomicRequestCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_set_active_preset_request(const ConcreteCommandPath &command_path,
-                                                                       TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::Thermostat::Commands::SetActivePresetRequest::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfThermostatClusterSetActivePresetRequestCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_up_or_open(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                        void *opaque_ptr)
-{
-    chip::app::Clusters::WindowCovering::Commands::UpOrOpen::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfWindowCoveringClusterUpOrOpenCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_down_or_close(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                           void *opaque_ptr)
-{
-    chip::app::Clusters::WindowCovering::Commands::DownOrClose::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfWindowCoveringClusterDownOrCloseCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_stop_motion(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                         void *opaque_ptr)
-{
-    chip::app::Clusters::WindowCovering::Commands::StopMotion::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfWindowCoveringClusterStopMotionCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_go_to_lift_percentage(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                                   void *opaque_ptr)
-{
-    chip::app::Clusters::WindowCovering::Commands::GoToLiftPercentage::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfWindowCoveringClusterGoToLiftPercentageCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_go_to_tilt_percentage(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
-                                                                   void *opaque_ptr)
-{
-    chip::app::Clusters::WindowCovering::Commands::GoToTiltPercentage::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfWindowCoveringClusterGoToTiltPercentageCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_change_to_mode(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::ModeSelect::Commands::ChangeToMode::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfModeSelectClusterChangeToModeCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
     return ESP_OK;
 }
@@ -1931,30 +1778,48 @@ namespace command {
 command_t *create_setpoint_raise_lower(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, Thermostat::Commands::SetpointRaiseLower::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_setpoint_raise_lower);
+                                       NULL);
 }
 
 command_t *create_set_active_schedule_request(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, Thermostat::Commands::SetActiveScheduleRequest::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_set_active_schedule_request);
+                                       NULL);
 }
 
 command_t *create_set_active_preset_request(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, Thermostat::Commands::SetActivePresetRequest::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_set_active_preset_request);
+                                       NULL);
 }
 
 command_t *create_atomic_request(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, Thermostat::Commands::AtomicRequest::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_thermostat_atomic_request);
+                                       NULL);
 }
 
 command_t *create_atomic_response(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, Thermostat::Commands::AtomicResponse::Id, COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_add_thermostat_suggestion(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Thermostat::Commands::AddThermostatSuggestion::Id, COMMAND_FLAG_ACCEPTED,
+                                       NULL);
+}
+
+command_t *create_add_thermostat_suggestion_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Thermostat::Commands::AddThermostatSuggestionResponse::Id,
+                                       COMMAND_FLAG_GENERATED, NULL);
+}
+
+command_t *create_remove_thermostat_suggestion(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Thermostat::Commands::RemoveThermostatSuggestion::Id, COMMAND_FLAG_ACCEPTED,
+                                       NULL);
 }
 
 } /* command */
@@ -2175,31 +2040,31 @@ namespace command {
 command_t *create_up_or_open(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, WindowCovering::Commands::UpOrOpen::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_up_or_open);
+                                       NULL);
 }
 
 command_t *create_down_or_close(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, WindowCovering::Commands::DownOrClose::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_down_or_close);
+                                       NULL);
 }
 
 command_t *create_stop_motion(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, WindowCovering::Commands::StopMotion::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_stop_motion);
+                                       NULL);
 }
 
 command_t *create_go_to_lift_percentage(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, WindowCovering::Commands::GoToLiftPercentage::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_go_to_lift_percentage);
+                                       NULL);
 }
 
 command_t *create_go_to_tilt_percentage(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, WindowCovering::Commands::GoToTiltPercentage::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_go_to_tilt_percentage);
+                                       NULL);
 }
 
 } /* command */
@@ -2210,7 +2075,7 @@ namespace command {
 
 command_t *create_change_to_mode(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ModeSelect::Commands::ChangeToMode::Id, COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_change_to_mode);
+    return esp_matter::command::create(cluster, ModeSelect::Commands::ChangeToMode::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 } /* command */
@@ -2246,6 +2111,20 @@ command_t *create_reset_condition(cluster_t *cluster)
 
 } /* command */
 } /* resource_monitoring */
+
+namespace dish_washer_alarm {
+namespace command {
+command_t *create_reset(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DishwasherAlarm::Commands::Reset::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+
+command_t *create_modify_enabled_alarms(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, DishwasherAlarm::Commands::ModifyEnabledAlarms::Id, COMMAND_FLAG_ACCEPTED, NULL);
+}
+} /* command */
+} /* dish_washer_alarm */
 
 namespace mode_base {
 namespace command {

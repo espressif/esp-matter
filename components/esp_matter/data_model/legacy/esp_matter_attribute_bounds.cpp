@@ -598,6 +598,16 @@ void add_bounds_cb(cluster_t *cluster)
             esp_matter::attribute::add_bounds(current_attribute, esp_matter_attr_val(min, esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(max, esp_matter_attr_val::uint_sub_type::k_enum));
             break;
         }
+        case Thermostat::Attributes::MaxThermostatSuggestions::Id: {
+            uint8_t min = 5, max = 255;
+            esp_matter::attribute::add_bounds(current_attribute, esp_matter_attr_val(min), esp_matter_attr_val(max));
+            break;
+        }
+        case Thermostat::Attributes::ThermostatSuggestionNotFollowingReason::Id: {
+            nullable<uint16_t> min = 0, max = 255;
+            esp_matter::attribute::add_bounds(current_attribute, esp_matter_attr_val(min, esp_matter_attr_val::uint_sub_type::k_bitmap), esp_matter_attr_val(max, esp_matter_attr_val::uint_sub_type::k_bitmap));
+            break;
+        }
         default:
             break;
         }

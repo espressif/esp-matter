@@ -86,14 +86,8 @@ void ESPMatterClosureDimensionClusterServerInitCallback(EndpointId endpointId)
         if (features.Has(Feature::kPositioning)) {
             esp_matter_attr_val_t resolution_val = esp_matter_uint16(1);
             esp_matter_attr_val_t step_val = esp_matter_uint16(1);
-            attribute_t *attr = attribute::get(cluster, Attributes::Resolution::Id);
-            if (attr) {
-                attribute::get_val_internal(attr, &resolution_val);
-            }
-            attr = attribute::get(cluster, Attributes::StepValue::Id);
-            if (attr) {
-                attribute::get_val_internal(attr, &step_val);
-            }
+            get_stored_attr_val(cluster, Attributes::Resolution::Id, resolution_val);
+            get_stored_attr_val(cluster, Attributes::StepValue::Id, step_val);
             config.WithPositioning(resolution_val.val.u16, step_val.val.u16);
         }
         if (features.Has(Feature::kMotionLatching)) {

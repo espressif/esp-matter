@@ -344,6 +344,12 @@ ActionReturnStatus provider::ReadAttribute(const ReadAttributeRequest &request, 
 
 ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request, AttributeValueDecoder &decoder)
 {
+    return WriteAttribute(request, decoder, true /* call_callbacks */);
+}
+
+ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request, AttributeValueDecoder &decoder,
+                                            bool call_callbacks)
+{
     attribute_t *attribute =
         attribute::get(request.path.mEndpointId, request.path.mClusterId, request.path.mAttributeId);
 
@@ -362,14 +368,16 @@ ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request
     if (decoder_copy.Decode(data_buffer) == CHIP_NO_ERROR) {
         new_val = data_buffer.get_attr_val();
         // PRE_UPDATE callback
-        if (attribute::execute_callback(attribute::PRE_UPDATE, request.path.mEndpointId, request.path.mClusterId,
-                                        request.path.mAttributeId, &new_val) != ESP_OK) {
+        if (call_callbacks &&
+                attribute::execute_callback(attribute::PRE_UPDATE, request.path.mEndpointId, request.path.mClusterId,
+                                            request.path.mAttributeId, &new_val) != ESP_OK) {
             return Protocols::InteractionModel::Status::Failure;
         }
     }
 
     // Helper to execute POST_UPDATE callback
     auto execute_post_update = [&]() {
+        VerifyOrReturn(call_callbacks);
         attribute::execute_callback(attribute::POST_UPDATE, request.path.mEndpointId, request.path.mClusterId,
                                     request.path.mAttributeId, &new_val);
     };

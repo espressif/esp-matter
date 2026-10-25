@@ -19,13 +19,13 @@
 #include <esp_matter.h>
 
 #include <app-common/zap-generated/cluster-enums.h>
-#include <app-common/zap-generated/callback.h>
 #include <zap_common/app/PluginApplicationCallbacks.h>
 #include <esp_matter_delegate_callbacks.h>
 #include <laundry_washer_controls.h>
 #include <laundry_washer_controls_ids.h>
 #include <binding.h>
 #include <esp_matter_data_model_priv.h>
+#include <app/ClusterCallbacks.h>
 
 using namespace chip::app::Clusters;
 using namespace esp_matter;
@@ -113,11 +113,9 @@ attribute_t *create_supported_rinses(cluster_t *cluster, uint8_t *value, uint16_
 
 } /* attribute */
 
-const function_generic_t function_list[] = {
-    (function_generic_t)MatterLaundryWasherControlsClusterServerPreAttributeChangedCallback,
-};
+const function_generic_t *function_list = NULL;
 
-const int function_flags = CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -148,6 +146,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         if (feature_map & feature::rinse::get_id()) {
             VerifyOrReturnValue(feature::rinse::add(cluster, &(config->features.rinse)) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterLaundryWasherControlsClusterServerInitCallback,
+                                                 ESPMatterLaundryWasherControlsClusterServerShutdownCallback);
     }
 
     if (flags & CLUSTER_FLAG_CLIENT) {

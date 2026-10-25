@@ -6,6 +6,6 @@ nvs,      data, nvs,     0x10000,   0xC000,
 nvs_keys, data, nvs_keys,,          0x1000, encrypted
 otadata,  data, ota,     ,          0x2000
 phy_init, data, phy,     ,          0x1000,
-ota_0,    app,  ota_0,   0x20000,   0x1F0000,
-fctry,    data, nvs,     0x210000,  0x6000
-coredump, data, coredump,0x216000,  0x10000
+ota_0,    app,  ota_0,   0x20000,   0x3CA000,
+fctry,    data, nvs,     ,          0x6000
+coredump, data, coredump,,          0x10000

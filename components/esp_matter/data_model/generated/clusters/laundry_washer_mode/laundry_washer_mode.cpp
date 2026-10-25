@@ -34,7 +34,7 @@ using namespace esp_matter::cluster;
 using namespace esp_matter::cluster::delegate_cb;
 
 static const char *TAG = "esp_matter_cluster";
-constexpr uint16_t cluster_revision = 3;
+constexpr uint16_t cluster_revision = 4;
 
 namespace esp_matter {
 namespace cluster {

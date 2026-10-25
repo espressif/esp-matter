@@ -747,33 +747,27 @@ The default configuration disables all unused clusters.
 Moving BSS Segments to PSRAM to Reduce Memory Usage
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The BSS section of ``libCHIP.a`` and ``libesp_matter.a`` libraries can consume significant internal memory.
-For devices with PSRAM, such as Matter Controller or Thread Border Router applications, you can move the BSS segments to PSRAM to significantly reduce the internal memory footprint.
+The BSS section of the Matter libraries can consume significant internal memory.
+For devices with PSRAM, such as Matter Controller or Thread Border Router applications, moving these BSS segments to PSRAM significantly reduces the internal memory footprint.
 
-To move the BSS segments of ``libCHIP.a`` and ``libesp_matter.a`` into PSRAM:
+The ``esp_matter`` component does this automatically. Enable
+``CONFIG_SPIRAM_ALLOW_BSS_SEG_EXTERNAL_MEMORY`` in menuconfig (under ``Component config`` →
+``SPI RAM config`` → ``Allow .bss segment placed in external memory``), and its
+built-in linker fragment places the Matter BSS in PSRAM instead of internal RAM. This
+covers ``libCHIP.a``, ``libesp_matter.a`` and ``libesp_matter_controller.a`` when esp-matter
+is used from a local checkout, and ``libespressif__esp_matter.a`` when it is used from the
+Component Registry.
 
-1. Enable the ``CONFIG_ESP_ALLOW_BSS_SEG_EXTERNAL_MEMORY`` option in menuconfig.
+To move the BSS segments of additional libraries (for example your application's ``libmain.a``),
+add your own ``linker.lf`` fragment and register it via ``LDFRAGMENTS``. See the reference
+:project_file:`linker.lf <examples/controller/main/linker.lf>` and
+:project_file:`CMakeLists.txt <examples/controller/main/CMakeLists.txt>`:
 
-2. Create a ``linker.lf`` file in your project's main component, you can check the example
-   :project_file:`linker.lf <examples/all_device_types_app/main/linker.lf>`.
+::
 
-3. Register the linker fragment in your main component's ``CMakeLists.txt``. See the reference
-   :project_file:`CMakeLists.txt <examples/all_device_types_app/main/CMakeLists.txt>`:
-
-   ::
-
-       set(ldfragments linker.lf)
-       idf_component_register(
-           ...
-           LDFRAGMENTS "${ldfragments}")
-
-The linker then places the BSS segments of both libraries in PSRAM instead of internal RAM.
-You can apply the same ``linker.lf`` pattern to other application libraries as needed.
-
-.. note::
-
-   If you are using the ESP Matter component from the Component Registry, update the ``archive``
-   name in ``linker.lf`` to ``libespressif__esp_matter.a``. See :ref:`ESP Matter Component <esp-matter-component>`.
+    idf_component_register(
+        ...
+        LDFRAGMENTS "linker.lf")
 
 
 References for further optimizations

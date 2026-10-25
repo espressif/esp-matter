@@ -119,7 +119,7 @@ class AttributeExpr(Expr):
         self.attr_name = attr_name
 
     def __call__(self) -> str:
-        return f"has_attribute({self.attr_name})"
+        return f"is_attribute_enabled(cluster, attribute::{self.attr_name}::Id)"
 
     def iterate(self, iterator: ExprIterator):
         iterator.iterate_attribute(self)
@@ -131,7 +131,7 @@ class CommandExpr(Expr):
         self.flag = flag
 
     def __call__(self) -> str:
-        return f"has_command({self.command_name}, {self.flag})"
+        return f"is_command_enabled(cluster, command::{self.command_name}::Id, {self.flag})"
 
     def iterate(self, iterator: ExprIterator):
         iterator.iterate_command(self)
@@ -446,10 +446,12 @@ class Conformance(BaseConformance, Expr):
     is_not_term_present: bool = False
 
     def __init__(self, conformance: Dict[str, Any] = None):
+        # Always define self.conformance so accessors can rely on the attribute existing,
+        # even for an empty/not-applicable conformance (e.g. a feature with no conformance).
+        self.conformance = conformance
         if not conformance:
             self.type = ConformanceDecision.NOT_APPLICABLE
             return
-        self.conformance = conformance
         self.type = get_conformance_type(conformance.get(KEY_TYPE))
         self.choice = parse_choice(conformance)
         self.condition = self._generate_condition(conformance)
@@ -522,6 +524,8 @@ class Conformance(BaseConformance, Expr):
 
     def get_optional_condition(self) -> Expr:
         """Get the conformance condition for optional/otherwise conformance."""
+        if not self.conformance:
+            return None
         condition = self.conformance.get(ConformanceTAG.CONDITION.value)
         if not condition:
             return None

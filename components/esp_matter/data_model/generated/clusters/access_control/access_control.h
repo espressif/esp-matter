@@ -32,6 +32,11 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
 } /* managed_device */
 
+namespace auxiliary {
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+} /* auxiliary */
+
 } /* feature */
 
 namespace attribute {
@@ -46,6 +51,7 @@ attribute_t *create_commissioning_arl(cluster_t *cluster, uint8_t * value, uint1
 #if CHIP_CONFIG_USE_ACCESS_RESTRICTIONS
 attribute_t *create_arl(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 #endif // CHIP_CONFIG_USE_ACCESS_RESTRICTIONS
+attribute_t *create_auxiliary_acl(cluster_t *cluster, uint8_t * value, uint16_t length, uint16_t count);
 } /* attribute */
 
 namespace command {
@@ -59,6 +65,7 @@ namespace event {
 event_t *create_access_control_entry_changed(cluster_t *cluster);
 event_t *create_access_control_extension_changed(cluster_t *cluster);
 event_t *create_fabric_restriction_review_update(cluster_t *cluster);
+event_t *create_auxiliary_access_updated(cluster_t *cluster);
 } /* event */
 
 typedef struct config {

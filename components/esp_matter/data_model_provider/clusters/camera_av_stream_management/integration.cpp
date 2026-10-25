@@ -20,6 +20,7 @@
 #include <data_model_provider/esp_matter_data_model_provider.h>
 #include <unordered_map>
 #include "integration.h"
+#include <data_model/esp_matter_attribute_helpers.h>
 
 using namespace chip;
 using namespace chip::app;
@@ -35,16 +36,6 @@ bool IsClusterEnabled(EndpointId endpointId)
 {
     cluster_t *cluster = cluster::get(endpointId, CameraAvStreamManagement::Id);
     return cluster != nullptr;
-}
-
-uint32_t GetFeatureMap(EndpointId endpointId)
-{
-    attribute_t *attribute = attribute::get(endpointId, CameraAvStreamManagement::Id, Globals::Attributes::FeatureMap::Id);
-    VerifyOrReturnValue(attribute, 0);
-
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-    VerifyOrReturnValue(attribute::get_val_internal(attribute, &val) == ESP_OK, 0);
-    return val.val.u32;
 }
 
 BitFlags<OptionalAttribute> GetOptionalAttributes(EndpointId endpointId)
@@ -132,18 +123,11 @@ void ESPMatterCameraAvStreamManagementClusterServerInitCallback(EndpointId endpo
             return;
         }
 
-        SafeAttributePersistenceProvider * provider = GetSafeAttributePersistenceProvider();
-        if (provider == nullptr) {
-            ChipLogError(AppServer, "SafeAttributePersistenceProvider not available for endpoint %u", endpointId);
-            return;
-        }
-
         ChipLogProgress(AppServer, "Registering Camera AV Stream Management on endpoint %u", endpointId);
-        BitFlags<Feature> features(GetFeatureMap(endpointId));
+        BitFlags<Feature> features(read_feature_map_u32(endpointId, CameraAvStreamManagement::Id));
         BitFlags<OptionalAttribute> optionalAttrs = GetOptionalAttributes(endpointId);
 
         CameraAVStreamManagementCluster::InitArguments initArgs{
-            .context                      = CameraAVStreamManagementCluster::Context{ *provider },
             .delegate                     = *config->delegate,
             .endpointId                   = endpointId,
             .features                     = features,

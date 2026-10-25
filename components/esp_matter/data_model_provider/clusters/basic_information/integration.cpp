@@ -30,7 +30,7 @@ LazyRegisteredServerCluster<BasicInformationCluster> gServer;
 
 bool IsAttrEnabled(uint32_t attrId)
 {
-    return esp_matter::attribute::get(kRootEndpointId, BasicInformation::Id, attrId);
+    return esp_matter::endpoint::is_attribute_enabled(kRootEndpointId, BasicInformation::Id, attrId);
 }
 
 BasicInformationOptionalAttributesSet GetOptionalAttrsSet()

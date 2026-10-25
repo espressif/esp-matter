@@ -299,6 +299,9 @@ command_t *create_set_active_schedule_request(cluster_t *cluster);
 command_t *create_set_active_preset_request(cluster_t *cluster);
 command_t *create_atomic_request(cluster_t *cluster);
 command_t *create_atomic_response(cluster_t *cluster);
+command_t *create_add_thermostat_suggestion(cluster_t *cluster);
+command_t *create_add_thermostat_suggestion_response(cluster_t *cluster);
+command_t *create_remove_thermostat_suggestion(cluster_t *cluster);
 } /* command */
 } /* thermostat */
 
@@ -394,6 +397,13 @@ namespace command = resource_monitoring::command;
 namespace activated_carbon_filter_monitoring {
 namespace command = resource_monitoring::command;
 } /* activated_carbon_filter_monitoring */
+
+namespace dish_washer_alarm {
+namespace command {
+command_t *create_reset(cluster_t *cluster);
+command_t *create_modify_enabled_alarms(cluster_t *cluster);
+} /* command */
+} /* dish_washer_alarm */
 
 namespace mode_base {
 namespace command {

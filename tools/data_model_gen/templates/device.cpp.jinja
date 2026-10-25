@@ -4,7 +4,7 @@
 #include <esp_matter.h>
 #include <esp_matter_core.h>
 {% if device.has_optional_choice_clusters() -%}
-#include <esp_matter_macros.h>
+#include <esp_matter_data_model_priv.h>
 {% endif -%}
 {% if device.esp_name == "root_node" %}
 {% from "exceptions/root_node.jinja" import includes with context %}

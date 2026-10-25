@@ -21,7 +21,7 @@
 // TODO: Migrate to full code-driven integration pattern.
 
 #include <app/ClusterCallbacks.h>
-#include <app/clusters/water-heater-management-server/CodegenIntegration.h>
+#include <clusters/water_heater_management/integration.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
 #include <lib/core/DataModelTypes.h>
 
