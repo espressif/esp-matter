@@ -53,10 +53,6 @@ if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
             endif()
         endforeach()
 
-        list(APPEND SRC_DIRS_LIST "${MATTER_SDK_PATH}/src/app/clusters/on-off-server/codegen"
-                                  "${MATTER_SDK_PATH}/src/app/clusters/level-control/codegen"
-                                  "${MATTER_SDK_PATH}/src/app/clusters/color-control-server/codegen")
-
         get_supported_esp_matter_cluster_dirs(ESP_MATTER_CLUSTER_DIRS_LIST)
         list(APPEND SRC_DIRS_LIST ${ESP_MATTER_CLUSTER_DIRS_LIST})
 
