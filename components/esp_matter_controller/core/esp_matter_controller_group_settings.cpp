@@ -1,4 +1,4 @@
-// Copyright 2022 Espressif Systems (Shanghai) PTE LTD
+// Copyright 2022-2026 Espressif Systems (Shanghai) PTE LTD
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,9 +15,10 @@
 #include <esp_check.h>
 #include <esp_matter_controller_client.h>
 #include <esp_matter_controller_group_settings.h>
-#include <esp_matter_controller_utils.h>
+#include <cstring>
 
 #include <lib/support/AutoRelease.h>
+#include <lib/support/BytesToHex.h>
 
 using chip::FabricIndex;
 using chip::KeysetId;
@@ -161,6 +162,18 @@ esp_err_t unbind_keyset(uint16_t group_id, uint16_t keyset_id)
 
 esp_err_t add_keyset(uint16_t keyset_id, uint8_t key_policy, uint64_t validity_time, char *epoch_key_oct_str)
 {
+    if (key_policy != 0 && key_policy != 1) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    GroupDataProvider::EpochKey epoch_key;
+    const size_t key_chars = 2 * sizeof(epoch_key.key);
+    if (epoch_key_oct_str == nullptr || strlen(epoch_key_oct_str) != key_chars ||
+            chip::Encoding::HexToBytes(epoch_key_oct_str, key_chars, epoch_key.key, sizeof(epoch_key.key)) != sizeof(epoch_key.key)) {
+        ESP_LOGE(TAG, "The epoch key octstring is wrong");
+        return ESP_ERR_INVALID_ARG;
+    }
+    epoch_key.start_time = validity_time;
+
     auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
     FabricIndex fabric_index = controller_instance.get_fabric_index();
 
@@ -176,18 +189,7 @@ esp_err_t add_keyset(uint16_t keyset_id, uint8_t key_policy, uint64_t validity_t
         ESP_LOGE(TAG, "Failed to get the compressed fabric_id");
         return ESP_FAIL;
     }
-    if (key_policy != 0 && key_policy != 1) {
-        return ESP_ERR_INVALID_ARG;
-    }
     GroupDataProvider::KeySet keyset(keyset_id, GroupDataProvider::SecurityPolicy(key_policy), 1);
-    GroupDataProvider::EpochKey epoch_key;
-    epoch_key.start_time = validity_time;
-    uint8_t epoch_key_buf[GroupDataProvider::EpochKey::kLengthBytes];
-    if (oct_str_to_byte_arr(epoch_key_oct_str, epoch_key_buf) != GroupDataProvider::EpochKey::kLengthBytes) {
-        ESP_LOGE(TAG, "The epoch key octstring is wrong");
-        return ESP_ERR_INVALID_ARG;
-    }
-    memcpy(epoch_key.key, epoch_key_buf, GroupDataProvider::EpochKey::kLengthBytes);
     memcpy(keyset.epoch_keys, &epoch_key, sizeof(GroupDataProvider::EpochKey));
     if (CHIP_NO_ERROR != group_data_provider->SetKeySet(fabric_index, compressed_fabric_id_span, keyset)) {
         ESP_LOGE(TAG, "Failed to set keyset");

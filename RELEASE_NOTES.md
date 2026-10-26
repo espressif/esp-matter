@@ -23,6 +23,14 @@ for ownership, callback, and authorization requirements.
   `pairing::interaction` and `commissioning_window::interaction`.
 - Moved ICD registration control to `pairing::options_t::register_icd`; registration
   keys are generated per operation.
+- Commissioning-window requests require an explicit `chip::ScopedNodeId` in
+  `request_t::node`; the node-only destination and implicit fabric lookup are removed.
+
+## Controller utility API removal (Breaking)
+
+- Removed `esp_matter_controller_utils.h`, its conversion helpers, callback aliases,
+  and global fabric-selection functions. Use checked SDK parsers at input boundaries
+  and application-owned fabric selection.
 
 # 11-September-2026
 

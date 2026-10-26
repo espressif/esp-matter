@@ -16,7 +16,7 @@
 
 #include <app/MessageDef/StatusIB.h>
 #include <lib/core/Optional.h>
-#include <lib/core/NodeId.h>
+#include <lib/core/ScopedNodeId.h>
 #include <lib/support/Span.h>
 #include <setup_payload/SetupPayload.h>
 
@@ -45,11 +45,11 @@ struct verifier_t {
     chip::ByteSpan salt;
 };
 
-/** @brief Target and window parameters; method selects params. */
+/** @brief Explicit remote node/fabric and window parameters; method selects params. */
 struct request_t {
     explicit request_t(method_t type = method_t::basic) : method(type) {}
 
-    chip::NodeId node_id = chip::kUndefinedNodeId;
+    chip::ScopedNodeId node;
     uint16_t window_timeout_seconds = 0;
     uint16_t timed_invoke_timeout_ms = 10000;
     method_t method;

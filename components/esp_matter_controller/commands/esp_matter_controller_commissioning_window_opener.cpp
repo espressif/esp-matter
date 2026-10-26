@@ -12,20 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <sdkconfig.h>
-
 #include <esp_matter_controller_commissioning_window_opener.h>
-#include <esp_matter_controller_utils.h>
 #include <esp_matter_client_invoke_command.h>
 #include <app-common/zap-generated/cluster-objects.h>
 #include <crypto/CHIPCryptoPAL.h>
 #include <lib/support/CHIPMem.h>
 #include <lib/support/CodeUtils.h>
 #include <protocols/secure_channel/PASESession.h>
-
-#ifndef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
-#include <esp_matter_controller_client.h>
-#endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 
 using namespace chip;
 using namespace chip::app;
@@ -44,7 +37,8 @@ public:
 
     CHIP_ERROR Start(const request_t &request, commissioning_window::delegate *delegate)
     {
-        VerifyOrReturnError(IsOperationalNodeId(request.node_id) && request.window_timeout_seconds != 0 &&
+        VerifyOrReturnError(IsOperationalNodeId(request.node.GetNodeId()) &&
+                            request.node.GetFabricIndex() != kUndefinedFabricIndex && request.window_timeout_seconds != 0 &&
                             request.timed_invoke_timeout_ms != 0,
                             CHIP_ERROR_INVALID_ARGUMENT);
         VerifyOrReturnError(request.method == method_t::basic || request.method == method_t::passcode ||
@@ -54,7 +48,7 @@ public:
         if (request.method == method_t::basic) {
             Clusters::AdministratorCommissioning::Commands::OpenBasicCommissioningWindow::Type command;
             command.commissioningTimeout = request.window_timeout_seconds;
-            return Submit(request.node_id, command, request.timed_invoke_timeout_ms);
+            return Submit(request.node, command, request.timed_invoke_timeout_ms);
         }
 
         uint32_t iterations;
@@ -106,7 +100,7 @@ public:
         command.iterations = iterations;
         command.salt = salt;
         command.PAKEPasscodeVerifier = verifier;
-        return Submit(request.node_id, command, request.timed_invoke_timeout_ms);
+        return Submit(request.node, command, request.timed_invoke_timeout_ms);
     }
 
     bool Active() const
@@ -129,15 +123,8 @@ private:
     }
 
     template <typename Command>
-    CHIP_ERROR Submit(NodeId node, const Command &command, uint16_t timed_timeout_ms)
+    CHIP_ERROR Submit(const ScopedNodeId &node, const Command &command, uint16_t timed_timeout_ms)
     {
-#ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
-        FabricIndex fabric = esp_matter::controller::get_fabric_index();
-#else // !CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
-        FabricIndex fabric = matter_controller_client::get_instance().get_fabric_index();
-#endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
-        VerifyOrReturnError(fabric != kUndefinedFabricIndex, CHIP_ERROR_INCORRECT_STATE);
-        client::node_target_t target{ ScopedNodeId(node, fabric), client::execution_t::remote };
         chip::app::DataModel::EncodableType<Command> fields(command);
         client::invoke_command::request_t request;
         request.endpoint_id = 0;
@@ -145,7 +132,7 @@ private:
         request.command_id = Command::GetCommandId();
         request.fields = &fields;
         request.options.timed_timeout_ms.SetValue(timed_timeout_ms);
-        return mInvoke.start(target, request, this);
+        return mInvoke.start(node, request, this);
     }
 
     void OnResponse(const esp_matter::client::target_t &, const chip::app::ConcreteCommandPath &, const chip::app::StatusIB &status,
