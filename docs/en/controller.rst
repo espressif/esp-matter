@@ -393,6 +393,122 @@ Access Control List Configuration
 
 The Matter Commissioner should configure the ACL on the Commissionee over PASE session to grant Administer/Operator privilege over CASE authentication type for all the controllers in the Matter fabric.
 
+Commissioning operation APIs
+----------------------------
+
+Include ``esp_matter_controller_pairing_command.h`` for
+``esp_matter::controller::pairing``, or
+``esp_matter_controller_commissioning_window_opener.h`` for
+``esp_matter::controller::commissioning_window``.
+
+Keep each caller-owned operation and its delegate alive until completion or
+``stop()``. Call APIs, inspect state, and destroy active operations in CHIP
+context or while holding the CHIP stack lock. ``start()`` copies any request
+data it retains before returning. A synchronous rejection produces no callbacks.
+
+Pairing
+~~~~~~~
+
+Pairing defaults to ``method_t::setup_code``. Set
+``request_t::params.setup_code.payload`` to a manual code or ``MT:`` QR payload.
+For a resolved address, call ``request.set_address({peer_address, setup_pin})``
+to select ``method_t::address`` and initialize its union member.
+
+Wi-Fi and Thread credentials are independent ``chip::Optional`` values used to
+provision the device network, not to choose a discovery transport. An empty
+Wi-Fi password selects an open network. A present but empty Thread dataset is
+invalid.
+
+Choose the discovery and PASE transport with
+``request_t::params.setup_code.transport``:
+
+- ``transport_t::automatic`` is the default. The SDK discovers the device using
+  payload capabilities, including on-network fallback.
+- ``transport_t::ble`` uses the payload PIN and discriminator over BLE,
+  regardless of advertised transport flags. It requires
+  ``CONFIG_ENABLE_ESP32_BLE_CONTROLLER`` and rejects compound QR payloads with
+  ``CHIP_ERROR_INVALID_ARGUMENT``.
+- ``transport_t::on_network`` uses IP discovery regardless of payload BLE flags.
+
+Forced transports do not fall back to another transport. Payload validation,
+authentication, and the configured attestation policy still apply. Operational
+Matter connections use IP.
+
+.. code-block:: cpp
+
+    namespace pairing = esp_matter::controller::pairing;
+
+    pairing::interaction operation;
+    pairing::request_t request;
+    request.node_id = node_id;
+    request.params.setup_code.payload = setup_code;
+    CHIP_ERROR error = operation.start(request, pairing::options_t(), &delegate);
+
+``OnProgress()`` and ``OnCommissioningStage()`` forward SDK progress. Callbacks
+may run before ``start()`` or ``cancel()`` returns, so initialize any state they
+access before either call. Once the operation accepts a request, it reports SDK
+errors through ``OnDone()``, including errors encountered during ``start()``.
+Completion means commissioning has finished, not just PASE establishment.
+
+The result contains the node, error, last observed work phase, and SDK
+commissioning failure details when available. Result references and pointers
+are valid only during the callback. Do not start, cancel, stop, or destroy a
+pairing operation from a delegate callback.
+
+A commissioner allows one pairing reservation at a time, including cancellation
+cleanup. ``options_t::timeout_ms`` defaults to 300000 ms and must be nonzero.
+Expiry initiates cancellation. ``cancel()`` retains the delegate and reports
+``CHIP_ERROR_CANCELLED`` after cleanup. ``stop()`` detaches the delegate
+immediately, but holds the commissioner reservation until cleanup finishes.
+Starts during cleanup return ``CHIP_ERROR_BUSY``. Neither cancellation nor stop
+rolls back remote changes.
+
+If the SDK reports a discovery or PASE failure only through a status update,
+the operation cancels and reports ``CHIP_ERROR_CONNECTION_ABORTED`` without
+waiting for the overall timeout. A later, more specific PASE error may be
+unavailable.
+
+``options_t::register_icd`` enables ICD registration by default. Each operation
+generates its own registration key and persists the completed registration.
+
+Commissioning windows
+~~~~~~~~~~~~~~~~~~~~~
+
+Choose ``method_t::basic``, ``method_t::passcode``, or ``method_t::verifier`` and
+set an explicit ``chip::ScopedNodeId`` destination. The operation does not look
+up an application or console fabric. Passcode requests generate a PIN and salt
+when omitted, but reject supplied values that are invalid. Basic windows require
+target support for Basic Commissioning.
+
+.. code-block:: cpp
+
+    namespace window = esp_matter::controller::commissioning_window;
+
+    window::interaction operation;
+    window::request_t request(window::method_t::passcode);
+    request.node = chip::ScopedNodeId(node_id, fabric_index);
+    request.window_timeout_seconds = 180;
+    request.params.passcode.discriminator = discriminator;
+    request.params.passcode.iterations = 10000;
+    CHIP_ERROR error = operation.start(request, &delegate);
+
+``OnResponse()`` reports remote status and includes the setup payload after a
+successful passcode-based opening. ``OnDone()`` reports transport or remote
+rejection errors. Callbacks run after submission returns. ``OnDone()`` may
+restart, stop, or destroy the operation; ``OnResponse()`` may not.
+
+Each object allows one pending request. Separate objects may operate
+concurrently. ``active()`` reports local request state, not whether the remote
+window is open. ``stop()`` does not close an already-open window, and a timeout
+does not rule out remote execution.
+
+Unpairing
+~~~~~~~~~
+
+Call ``matter_controller_client::unpair(node, callback)`` to unpair a node. On
+success, it removes the peer's ICD registration before calling the application
+callback.
+
 Client interactions
 -------------------
 

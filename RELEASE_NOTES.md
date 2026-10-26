@@ -1,4 +1,4 @@
-# 22-October-2026
+# 26-October-2026
 
 ## Client interaction API changes (Breaking)
 
@@ -16,6 +16,13 @@
 
 See the [client interaction documentation](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/controller.html#client-interactions)
 for ownership, callback, and authorization requirements.
+
+## Commissioning operation API changes (Breaking)
+
+- Replaced singleton pairing and commissioning-window APIs with caller-owned
+  `pairing::interaction` and `commissioning_window::interaction`.
+- Moved ICD registration control to `pairing::options_t::register_icd`; registration
+  keys are generated per operation.
 
 # 11-September-2026
 

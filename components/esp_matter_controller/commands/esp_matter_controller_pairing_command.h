@@ -1,4 +1,4 @@
-// Copyright 2022 Espressif Systems (Shanghai) PTE LTD
+// Copyright 2026 Espressif Systems (Shanghai) PTE LTD
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,246 +14,138 @@
 
 #pragma once
 
-#include <controller/CHIPDeviceController.h>
 #include <controller/CommissioningDelegate.h>
-#include <esp_matter.h>
-#include <lib/dnssd/Types.h>
-
-using chip::NodeId;
-using chip::ScopedNodeId;
-using chip::SessionHandle;
-using chip::Controller::CommissioningParameters;
-using chip::Messaging::ExchangeManager;
+#include <lib/core/NodeId.h>
+#include <lib/core/Optional.h>
+#include <lib/support/Span.h>
+#include <transport/raw/PeerAddress.h>
 
 namespace esp_matter {
 namespace controller {
 
-typedef struct {
-    // Callback for the success or failure of PASE session establishment. err will be CHIP_NO_ERROR when the
-    // commissioner establishes PASE session with peer node. Otherwise the commissioner fails to establish PASE session.
-    void (*pase_callback)(CHIP_ERROR err);
-    // Callback for the sussess of commissioning
-    void (*commissioning_success_callback)(ScopedNodeId peer_id);
-    // Callback for the failure of commissioning
-    void (*commissioning_failure_callback)(
-        ScopedNodeId peer_id, CHIP_ERROR error, chip::Controller::CommissioningStage stage,
-        std::optional<chip::Credentials::AttestationVerificationResult> additional_err_info);
-    // Callback for the success of unpairing
-    void (*unpair_complete_callback)(NodeId removed_node, CHIP_ERROR error);
-} pairing_command_callbacks_t;
+namespace pairing {
 
-/** Pairing command class to finish commissioning with Matter end-devices **/
-class pairing_command : public chip::Controller::DevicePairingDelegate,
-    public chip::Controller::DeviceDiscoveryDelegate {
-public:
-    /****************** DevicePairingDelegate Interface *****************/
-    // This function will be called when the PASE session is established or the commissioner fails to establish
-    // PASE session.
-    void OnPairingComplete(CHIP_ERROR error) override;
-    // The two functions are invoked upon the completion of the commissioning process, either successfully or
-    // failed.
-    void OnCommissioningSuccess(chip::PeerId peerId) override;
-    void OnCommissioningFailure(
-        chip::PeerId peerId, CHIP_ERROR error, chip::Controller::CommissioningStage stageFailed,
-        chip::Optional<chip::Credentials::AttestationVerificationResult> additionalErrorInfo) override;
-    void OnICDRegistrationComplete(chip::ScopedNodeId deviceId, uint32_t icdCounter) override;
-    void OnICDStayActiveComplete(chip::ScopedNodeId deviceId, uint32_t promisedActiveDuration) override;
-
-    /****************** DeviceDiscoveryDelegate Interface ***************/
-    void OnDiscoveredDevice(const chip::Dnssd::CommissionNodeData &nodeData) override;
-
-    static pairing_command &get_instance()
-    {
-        static pairing_command s_instance;
-        return s_instance;
-    }
-
-    void set_callbacks(pairing_command_callbacks_t callbacks)
-    {
-        m_callbacks = callbacks;
-    }
-
-    void set_icd_registration(bool icd_registration)
-    {
-        m_icd_registration = icd_registration;
-    }
-
-    /**
-     * Pairing a Matter end-device on the same IP network
-     *
-     * @param[in] node_id NodeId assigned to the Matter end-device.
-     * @param[in] pincode Setup PIN code of the Matter end-device.
-     *
-     * @return ESP_OK on success
-     * @return error in case of failure
-     */
-    static esp_err_t pairing_on_network(NodeId node_id, uint32_t pincode);
-#if CONFIG_ENABLE_ESP32_BLE_CONTROLLER
-    /**
-     * Pairing a Matter over Wi-Fi end-device with BLE
-     *
-     * @param[in] node_id NodeId assigned to the Matter end-device.
-     * @param[in] pincode Setup PIN code of the Matter end-device.
-     * @param[in] disc Discriminator of the Matter end-device.
-     * @param[in] ssid SSID of the Wi-Fi AP.
-     * @param[in] pwd Password of the Wi-Fi AP.
-     *
-     * @return ESP_OK on success
-     * @return error in case of failure
-     */
-    static esp_err_t pairing_ble_wifi(NodeId node_id, uint32_t pincode, uint16_t disc, const char *ssid,
-                                      const char *pwd);
-
-    /**
-     * Pairing a Matter over Thread end-device with BLE
-     *
-     * @param[in] node_id NodeId assigned to the Matter end-device.
-     * @param[in] pincode Setup PIN code of the Matter end-device.
-     * @param[in] disc Discriminator of the Matter end-device.
-     * @param[in] dataset_tlvs Dataset TLV string of the Thread network.
-     * @param[in] dataset_len Length of the dataset TLV string.
-     *
-     * @return ESP_OK on success
-     * @return error in case of failure
-     */
-    static esp_err_t pairing_ble_thread(NodeId node_id, uint32_t pincode, uint16_t disc, uint8_t *dataset_tlvs,
-                                        uint8_t dataset_len);
-#endif // CONFIG_ENABLE_ESP32_BLE_CONTROLLER
-
-    /**
-     * Pair a on-network Matter end-device with a pairing code
-     *
-     * @param[in] node_id NodeId assigned to the Matter end-device.
-     * @param[in] payload Pairing code
-     *
-     * @return ESP_OK on success
-     * @return error in case of failure
-     */
-    static esp_err_t pairing_code(NodeId node_id, const char *payload);
-
-    /**
-     * Pair a thread Matter end-device with a pairing code
-     *
-     * @param[in] node_id     NodeId assigned to the Matter end-device.
-     * @param[in] payload     Pairing code
-     * @param[in] dataset_buf Buffer containing the Thread network dataset
-     * @param[in] dataset_len Length of the dataset buffer
-     *
-     * @return ESP_OK on success
-     * @return error in case of failure
-     */
-    static esp_err_t pairing_code_thread(NodeId node_id, const char *payload, uint8_t *dataset_buf,
-                                         uint8_t dataset_len);
-
-    /**
-     * Pair a Wi-Fi Matter end-device with a pairing code
-     *
-     * @param[in] node_id  NodeId assigned to the Matter end-device.
-     * @param[in] ssid     SSID of the Wi-Fi AP.
-     * @param[in] password Password of the Wi-Fi AP.
-     * @param[in] payload  Pairing code
-     *
-     * @return ESP_OK on success
-     * @return error in case of failure
-     */
-    static esp_err_t pairing_code_wifi(NodeId node_id, const char *ssid, const char *password, const char *payload);
-
-    /**
-     * Pair a Matter end-device which supports both Wi-Fi as well as Thread with a pairing code
-     *
-     * @param[in] node_id     NodeId that will be assigned to the Matter end-device.
-     * @param[in] ssid        SSID of the Wi-Fi AP.
-     * @param[in] password    Password of the Wi-Fi AP.
-     * @param[in] payload     Pairing code
-     * @param[in] dataset_buf Buffer containing the Thread network dataset
-     * @param[in] dataset_len Length of the dataset buffer
-     *
-     * @return ESP_OK on success
-     * @return error in case of failure
-     */
-    static esp_err_t pairing_code_wifi_thread(NodeId node_id, const char *ssid, const char *password,
-                                              const char *payload, uint8_t *dataset_buf, uint8_t dataset_len);
-
-    /**
-     * Unpair a Matter end-device which will remove the fabric from the remote device
-     *
-     * @param[in] node_id  NodeId of the Matter end-device to be unpaired.
-     *
-     * @return ESP_OK on success
-     * @return error in case of failure
-     */
-    static esp_err_t unpair_device(NodeId node_id);
-
-private:
-    NodeId m_remote_node_id;
-    uint32_t m_setup_pincode;
-    uint16_t m_discriminator;
-    pairing_command_callbacks_t m_callbacks;
-    bool m_icd_registration;
-    chip::Controller::ICDRegistrationStrategy m_icd_registration_strategy;
-    uint8_t m_icd_symmetric_key_buf[chip::Crypto::kAES_CCM128_Key_Length];
-    chip::ByteSpan m_icd_symmetric_key;
-    bool m_device_is_icd;
-
-    pairing_command()
-        : m_remote_node_id(0)
-        , m_setup_pincode(0)
-        , m_discriminator(0)
-        , m_callbacks{nullptr, nullptr, nullptr, nullptr}
-        , m_icd_registration(true)
-        , m_icd_registration_strategy(chip::Controller::ICDRegistrationStrategy::kBeforeComplete)
-    {
-        LogErrorOnFailure(chip::Crypto::DRBG_get_bytes(m_icd_symmetric_key_buf, sizeof(m_icd_symmetric_key_buf)));
-        m_icd_symmetric_key = chip::ByteSpan(m_icd_symmetric_key_buf);
-    }
-
-    static void remove_fabric_handler(NodeId remote_node, CHIP_ERROR status);
+enum class phase_t : uint8_t {
+    discovery,
+    pase,
+    commissioning,
+    cancelling,
 };
 
-inline esp_err_t pairing_on_network(NodeId node_id, uint32_t pincode)
-{
-    return pairing_command::pairing_on_network(node_id, pincode);
-}
-#if CONFIG_ENABLE_ESP32_BLE_CONTROLLER
-inline esp_err_t pairing_ble_wifi(NodeId node_id, uint32_t pincode, uint16_t disc, const char *ssid,
-                                  const char *pwd)
-{
-    return pairing_command::pairing_ble_wifi(node_id, pincode, disc, ssid, pwd);
-}
+struct wifi_credentials_t {
+    chip::ByteSpan ssid;
+    chip::ByteSpan password; /**< Empty for an open network. */
+};
 
-inline esp_err_t pairing_ble_thread(NodeId node_id, uint32_t pincode, uint16_t disc, uint8_t *dataset_tlvs,
-                                    uint8_t dataset_len)
-{
-    return pairing_command::pairing_ble_thread(node_id, pincode, disc, dataset_tlvs, dataset_len);
-}
-#endif // CONFIG_ENABLE_ESP32_BLE_CONTROLLER
+struct credentials_t {
+    chip::Optional<wifi_credentials_t> wifi;
+    chip::Optional<chip::ByteSpan> thread_dataset;
+};
 
-inline esp_err_t pairing_code(NodeId node_id, const char *payload)
-{
-    return pairing_command::pairing_code(node_id, payload);
-}
+/** @brief Discovery/PASE transport; operational connections use IP. */
+enum class transport_t : uint8_t {
+    automatic,  /**< SDK discovery with on-network fallback. */
+    ble,        /**< BLE only; one payload, transport flags ignored. */
+    on_network, /**< IP discovery only; transport flags ignored. */
+};
 
-inline esp_err_t pairing_code_thread(NodeId node_id, const char *payload, uint8_t *dataset_buf,
-                                     uint8_t dataset_len)
-{
-    return pairing_command::pairing_code_thread(node_id, payload, dataset_buf, dataset_len);
-}
+enum class method_t : uint8_t { setup_code, address };
 
-inline esp_err_t pairing_code_wifi(NodeId node_id, const char *ssid, const char *password, const char *payload)
-{
-    return pairing_command::pairing_code_wifi(node_id, ssid, password, payload);
-}
+struct setup_code_t {
+    const char *payload; /**< QR payload text or manual setup code. */
+    transport_t transport;
+};
 
-inline esp_err_t pairing_code_wifi_thread(NodeId node_id, const char *ssid, const char *password,
-                                          const char *payload, uint8_t *dataset_buf, uint8_t dataset_len)
-{
-    return pairing_command::pairing_code_wifi_thread(node_id, ssid, password, payload, dataset_buf, dataset_len);
-}
+struct address_t {
+    chip::Transport::PeerAddress peer;
+    uint32_t pin;
+};
 
-inline esp_err_t unpair_device(NodeId node_id)
-{
-    return pairing_command::unpair_device(node_id);
-}
+/** @brief Pairing inputs copied by start(); method selects params. */
+struct request_t {
+    chip::NodeId node_id = chip::kUndefinedNodeId;
+    method_t method = method_t::setup_code;
+    credentials_t credentials;
+    struct parameters_t {
+        setup_code_t setup_code = {nullptr, transport_t::automatic};
+        address_t address = {};
+    } params;
+
+    void set_address(address_t value)
+    {
+        params.address = value;
+        method = method_t::address;
+    }
+};
+
+struct options_t {
+    uint32_t timeout_ms = 300000; /**< Overall deadline; nonzero. */
+    bool register_icd = true;
+};
+
+struct completion_t {
+    chip::NodeId node_id;
+    CHIP_ERROR error;
+    phase_t phase; /**< Last phase before completion or cancellation. */
+    const chip::Controller::CompletionStatus *details; /**< Callback-only; nullable. */
+};
+
+class delegate {
+public:
+    virtual ~delegate() = default;
+    /* Callbacks may run inside start() or cancel(). */
+    virtual void OnProgress(phase_t phase) {}
+    virtual void OnCommissioningStage(chip::Controller::CommissioningStage stage) {}
+    virtual void OnDone(const completion_t &result) {}
+};
+
+/**
+ * @brief Caller-owned commissioning observer and cancellation handle.
+ *
+ * Methods and active destruction require CHIP stack context or its lock.
+ * start(), cancel(), stop(), and destruction are prohibited in pairing callbacks.
+ */
+class interaction {
+public:
+    interaction();
+    ~interaction();
+    interaction(const interaction &) = delete;
+    interaction &operator=(const interaction &) = delete;
+
+    /**
+     * @brief Start the commissioner's single pairing operation.
+     *
+     * Copies retained data. Returned errors produce no callbacks; accepted SDK errors use OnDone(), possibly inline.
+     * Cancellation cleanup retains the commissioner. Failure statuses use CONNECTION_ABORTED and may supersede PASE errors.
+     *
+     * @param[in] request Node, setup code or address, and credentials.
+     * @param[in] options Overall deadline and ICD registration.
+     * @param[in] delegate Borrowed until completion or stop(); nullptr logs errors.
+     *
+     * @return CHIP_NO_ERROR if accepted; other CHIP_ERROR values from validation or preparation.
+     */
+    CHIP_ERROR start(const request_t &request, const options_t &options, delegate *delegate);
+    /**
+     * @brief Cancel pairing without detaching the delegate.
+     *
+     * OnDone(CHIP_ERROR_CANCELLED) follows SDK cleanup and may run inline. Remote changes are not undone.
+     *
+     * @return CHIP_NO_ERROR if requested; CHIP_ERROR_INCORRECT_STATE if inactive.
+     */
+    CHIP_ERROR cancel();
+    /**
+     * @brief Detach the delegate immediately and cancel unfinished pairing.
+     *
+     * Cleanup may retain the commissioner. Remote changes are not undone.
+     */
+    void stop();
+    bool active() const;
+
+private:
+    class Session;
+};
+
+} // namespace pairing
 
 } // namespace controller
 } // namespace esp_matter
