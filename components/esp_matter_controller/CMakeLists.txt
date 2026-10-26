@@ -19,19 +19,29 @@ if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
                                   "${MATTER_SDK_PATH}/examples/chip-tool/"
                                   "${CMAKE_CURRENT_SOURCE_DIR}/data_model_provider")
 
+    if (CONFIG_ENABLE_CHIP_SHELL)
+        list(APPEND src_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/console"
+                                  "${CMAKE_CURRENT_SOURCE_DIR}/console/utils")
+        list(APPEND include_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/console")
+    endif()
+
     if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
-        list(APPEND exclude_srcs_list "${CMAKE_CURRENT_SOURCE_DIR}/core/esp_matter_controller_client.cpp"
+        list(APPEND exclude_srcs_list "${CMAKE_CURRENT_SOURCE_DIR}/console/esp_matter_controller_console_groups.cpp"
+                                      "${CMAKE_CURRENT_SOURCE_DIR}/core/esp_matter_controller_client.cpp"
                                       "${CMAKE_CURRENT_SOURCE_DIR}/core/esp_matter_controller_credentials_issuer.cpp"
                                       "${CMAKE_CURRENT_SOURCE_DIR}/core/esp_matter_controller_group_settings.cpp"
-                                      "${CMAKE_CURRENT_SOURCE_DIR}/core/esp_matter_controller_icd_client.cpp")
+                                      "${CMAKE_CURRENT_SOURCE_DIR}/core/esp_matter_controller_icd_client.cpp"
+                                      "${CMAKE_CURRENT_SOURCE_DIR}/console/esp_matter_controller_console_icd.cpp")
     endif()
 
     if (CONFIG_ESP_MATTER_COMMISSIONER_ENABLE)
-        list(APPEND src_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/attestation_verification")
+        list(APPEND src_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/commands/pairing"
+                                  "${CMAKE_CURRENT_SOURCE_DIR}/attestation_verification")
         list(APPEND src_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/attestation_verification/utils")
-        list(APPEND include_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/attestation_verification")
+        list(APPEND include_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/commands/pairing"
+                                      "${CMAKE_CURRENT_SOURCE_DIR}/attestation_verification")
     else()
-        list(APPEND exclude_srcs_list "${CMAKE_CURRENT_SOURCE_DIR}/commands/esp_matter_controller_pairing_command.cpp")
+        list(APPEND exclude_srcs_list "${CMAKE_CURRENT_SOURCE_DIR}/console/esp_matter_controller_console_pairing.cpp")
     endif()
 
     if (CONFIG_CHIP_DEVICE_ENABLE_DYNAMIC_SERVER AND CONFIG_ESP_MATTER_OTA_PROVIDER_ENABLED)
@@ -45,6 +55,7 @@ idf_component_register(SRC_DIRS ${src_dirs_list}
     EXCLUDE_SRCS ${exclude_srcs_list}
     INCLUDE_DIRS ${include_dirs_list}
     PRIV_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/attestation_verification/utils"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/console/utils"
     REQUIRES ${requires_list})
 
 idf_build_set_property(COMPILE_OPTIONS "-Wno-write-strings" APPEND)

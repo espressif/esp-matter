@@ -32,6 +32,23 @@ for ownership, callback, and authorization requirements.
   and global fabric-selection functions. Use checked SDK parsers at input boundaries
   and application-owned fabric selection.
 
+## Controller console changes (Breaking)
+
+- Register controller console modules independently using
+  `esp_matter_controller_console.h`.
+- Server-backed console applications configure fabric selection with
+  `console::set_fabric_index_getter()`.
+- Read, Write, and Subscribe use grouped subcommands. Window requests use
+  `window open-basic` and `window open-passcode`.
+- Group interactions use `matter esp controller invoke group` and
+  `matter esp controller write attr group`. They also accept encoded group node IDs
+  such as `0xFFFFFFFFFFFFXXXX` in existing node arguments and ignore the endpoint.
+- `matter esp group` configures groups and keysets in client-only builds. Invoke
+  and Write modules register their group interactions in server builds too.
+- Write and Invoke take one JSON argument after a final `--` delimiter. Write
+  requires a tagged attribute value. Invoke accepts a command-fields object,
+  including `{}` for commands without fields.
+
 # 11-September-2026
 
 ## Data Model Feature Parity (Legacy ↔ Generated)

@@ -17,7 +17,59 @@ This example implements a Matter controller in RainMaker Matter Fabric. It is al
 
 This example implements a Matter controller in RainMaker Matter Fabric without a Matter server instance. It can be provisioned to a Wi-Fi network via `network_provisioning <https://github.com/espressif/idf-extra-components/tree/master/network_provisioning>`_. And it uses a custom RainMaker service to obtain Administer NOC and device list of the Matter Fabric.
 
-Once you have flashed the controller example onto the device, you can use the `device console <./developing.html#device-console>`__ to commission the device and send commands to the end-device. All of the controller commands begin with the prefix ``matter esp controller``.
+The `device console <./developing.html#device-console>`__ uses these command prefixes:
+
+- ``matter esp controller`` runs controller commands.
+- ``matter esp group`` configures groups and keys.
+- ``matter esp device`` manages devices in the controller example. See the example
+  README for its commands.
+
+Console modules
+---------------
+
+Include ``esp_matter_controller_console.h`` and register each module you need
+once, before starting the shell. The first controller module registers the
+command root.
+
+.. code-block:: cpp
+
+    esp_matter::controller::console::register_read_commands();
+    esp_matter::controller::console::register_write_commands();
+    esp_matter::controller::console::register_invoke_commands();
+    esp_matter::controller::console::register_subscribe_commands();
+    esp_matter::controller::console::register_groups_commands();
+    ESP_ERROR_CHECK_WITHOUT_ABORT(esp_matter::console::init());
+
+The Read module handles attributes and events. The Subscribe module creates,
+lists, and removes subscriptions. Register window, pairing, or ICD commands
+with ``register_window_commands()``, ``register_pairing_commands()``, or
+``register_icd_commands()``.
+
+Pairing requires ``CONFIG_ESP_MATTER_COMMISSIONER_ENABLE``. ICD and group-settings
+registration require a build without Matter server support. Group settings use
+the separate ``matter esp group`` root. Group Invoke and Write belong to the
+Invoke and Write modules and work with or without a Matter server.
+
+Registration can fail if the console has no command-set capacity left. Modules
+use separate translation units and do not register themselves automatically.
+The linker can remove unreferenced handlers, help strings, and state. Referenced
+APIs and shared dependencies remain linked.
+
+An application with its own pairing CLI can call ``pairing::interaction``
+without registering the generic pairing console.
+
+Console input
+~~~~~~~~~~~~~
+
+Only registered modules provide commands. Put options such as ``--timed-ms``
+before ``--``, followed by one JSON argument. Write takes a tagged attribute
+value. Invoke takes a command-fields object, or ``{}`` for no fields. Use shell
+quoting and escape embedded double quotes and backslashes.
+
+The ESP-IDF line editor filters non-ASCII input. Use JSON Unicode escapes such
+as ``\uXXXX``, entered as ``\\uXXXX`` through shell escaping.
+``CONFIG_CHIP_SHELL_CMD_LINE_BUF_MAX_LENGTH`` limits line length, and
+``CONFIG_CHIP_SHELL_CMD_LINE_ARG_MAX_COUNT`` limits the argument count.
 
 Controller features
 -------------------
@@ -33,7 +85,7 @@ The controller should support the following features:
 
 Cluster Invoking commands
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-The ``invoke-cmd`` command sends cluster commands to end-devices. In C++, use
+Use ``invoke`` to send unicast or group cluster commands. In C++, use
 ``invoke_command::interaction`` with a request and an explicit delegate pointer.
 Pass ``nullptr`` to discard successful responses while retaining failure logs.
 ``OnResponse()`` receives the concrete command path, status, and optional response TLV;
@@ -46,7 +98,8 @@ ownership and error-handling requirements.
 
   ::
 
-    matter esp controller invoke-cmd <node-id | group-id> <endpoint-id> <cluster-id> <command-id> <command-data>
+    matter esp controller invoke <node-id> <endpoint-id> <cluster-id> <command-id> [--timed-ms N] -- <command-data>
+    matter esp controller invoke group <group-id> <cluster-id> <command-id> -- <command-data>
 
 .. note::
 
@@ -61,19 +114,19 @@ Here are some examples of the ``command-data`` format.
 
   ::
 
-    matter esp controller invoke-cmd <node-id> <endpoint-id> 8 0 "{\"0:U8\": 10, \"1:U16\": 0, \"2:U8\": 0, \"3:U8\": 0}"
+    matter esp controller invoke <node-id> <endpoint-id> 8 0 -- "{\"0:U8\": 10, \"1:U16\": 0, \"2:U8\": 0, \"3:U8\": 0}"
 
 - For KeySetWrite command in GroupKeyManagement cluster, the ``command-data`` (``{"groupKeySet":{"groupKeySetID": 42, "groupKeySecurityPolicy": 0, "epochKey0": d0d1d2d3d4d5d6d7d8d9dadbdcdddedf, "epochStartTime0": 2220000, "epochKey1": null, "epochStartTime1": null, "epochKey2": null, "epochStartTime2": null}}``) should be:
 
   ::
 
-    matter esp controller invoke-cmd <node-id> <endpoint-id> 63 0 "{\"0:OBJ\": {\"0:U16\": 42, \"1:U8\": 0, \"2:BYT\": \"0NHS09TV1tfY2drb3N3e3w==\", \"3:U64\": 2220000, \"4:NULL\": null, \"5:NULL\": null, \"6:NULL\": null, \"7:NULL\": null}}"
+    matter esp controller invoke <node-id> <endpoint-id> 63 0 -- "{\"0:OBJ\": {\"0:U16\": 42, \"1:U8\": 0, \"2:BYT\": \"0NHS09TV1tfY2drb3N3e3w==\", \"3:U64\": 2220000, \"4:NULL\": null, \"5:NULL\": null, \"6:NULL\": null, \"7:NULL\": null}}"
 
 - For AddGroup command in Groups cluster, the ``command-data`` (``{"groupID": 1, "groupName": "grp1"}``) should be:
 
   ::
 
-    matter esp controller invoke-cmd <node-id> <endpoint-id> 0x4 0 "{\"0:U16\": 1, \"1:STR\": \"grp1\"}"
+    matter esp controller invoke <node-id> <endpoint-id> 0x4 0 -- "{\"0:U16\": 1, \"1:STR\": \"grp1\"}"
 
 Read commands
 ~~~~~~~~~~~~~
@@ -84,13 +137,13 @@ Its delegate receives ``OnReportBegin()``, ``OnAttribute()``, ``OnEvent()``,
 
 Read attribute commands
 ^^^^^^^^^^^^^^^^^^^^^^^
-The ``read-attr`` commands are used for sending the commands of reading attributes on end-devices.
+Use ``read attr`` to read attributes from end-devices.
 
-- Send the read-attribute command:
+- Attribute read syntax:
 
   ::
 
-    matter esp controller read-attr <node-id> <endpoint-ids> <cluster-ids> <attribute-ids>
+    matter esp controller read attr <node-id> <endpoint-ids> <cluster-ids> <attribute-ids>
 
 .. note::
 
@@ -98,17 +151,17 @@ The ``read-attr`` commands are used for sending the commands of reading attribut
 
 Read event commands
 ^^^^^^^^^^^^^^^^^^^
-The ``read-event`` commands are used for sending the commands of reading events on end-devices.
+Use ``read event`` to read events from end-devices.
 
-- Send the read-event command:
+- Event read syntax:
 
   ::
 
-    matter esp controller read-event <node-id> <endpoint-ids> <cluster-ids> <event-ids>
+    matter esp controller read event <node-id> <endpoint-ids> <cluster-ids> <event-ids>
 
 Write attribute commands
 ~~~~~~~~~~~~~~~~~~~~~~~~
-The ``write-attr`` command writes one whole attribute on an end-device.
+``write attr`` writes one complete attribute per command.
 In C++, use ``write_command::interaction`` with a concrete attribute path, value
 encoder, and explicit delegate pointer. Pass ``nullptr`` to discard successful
 responses while retaining failure logs. A delegate gets the path status in
@@ -116,11 +169,12 @@ responses while retaining failure logs. A delegate gets the path status in
 
 ^^^^^^^^^^^^^^^^
 
-- Send the write-attribute command:
+- Attribute write syntax:
 
   ::
 
-    matter esp controller write-attr <node-id> <endpoint-id> <cluster-id> <attribute-id> <attribute-value>
+    matter esp controller write attr <node-id> <endpoint-id> <cluster-id> <attribute-id> [--timed-ms N] -- <attribute-value>
+    matter esp controller write attr group <group-id> <cluster-id> <attribute-id> -- <attribute-value>
 
 .. note::
 
@@ -133,28 +187,28 @@ For StartUpOnOff attribute of OnOff Cluster, you should use the following JSON s
 
   ::
 
-    matter esp controller write-attr <node_id> <endpoint_id> 6 0x4003 "{\"0:U8\": 2}"
-    matter esp controller write-attr <node_id> <endpoint_id> 6 0x4003 "{\"0:NULL\": null}"
+    matter esp controller write attr <node_id> <endpoint_id> 6 0x4003 -- "{\"0:U8\": 2}"
+    matter esp controller write attr <node_id> <endpoint_id> 6 0x4003 -- "{\"0:NULL\": null}"
 
 For Binding attribute of Binding cluster, you should use the following JSON structure as the ``attribute_value`` to represent the binding list ``[{"node":1, "endpoint":1, "cluster":6}]``:
 
   ::
 
-    matter esp controller write-attr <node_id> <endpoint_id> 30 0 "{\"0:ARR-OBJ\":[{\"1:U64\":1, \"3:U16\":1, \"4:U32\": 6}]}"
+    matter esp controller write attr <node_id> <endpoint_id> 30 0 -- "{\"0:ARR-OBJ\":[{\"1:U64\":1, \"3:U16\":1, \"4:U32\": 6}]}"
 
 For ACL attribute of AccessControl cluster, you should use the following JSON structure as the ``attribute_value`` to represent the AccessControlList ``[{"privilege": 5, "authMode": 2, "subjects": [112233], "targets": null}, {"privilege": 4, "authMode": 3, "subjects": [1], "targets": null}]``:
 
   ::
 
-      matter esp controller write-attr <node_id> <endpoint_id> 31 0 "{\"0:ARR-OBJ\":[{\"1:U8\": 5, \"2:U8\": 2, \"3:ARR-U64\": [112233], \"4:NULL\": null}, {\"1:U8\": 4, \"2:U8\": 3, \"3:ARR-U64\": [1], \"4:NULL\": null}]}"
+      matter esp controller write attr <node_id> <endpoint_id> 31 0 -- "{\"0:ARR-OBJ\":[{\"1:U8\": 5, \"2:U8\": 2, \"3:ARR-U64\": [112233], \"4:NULL\": null}, {\"1:U8\": 4, \"2:U8\": 3, \"3:ARR-U64\": [1], \"4:NULL\": null}]}"
 
 To write multiple attributes, issue separate commands. For example, write the ACL
 and Binding attributes in order with:
 
   ::
 
-    matter esp controller write-attr <node_id> <endpoint_id1> 31 0 "{\"0:ARR-OBJ\":[{\"1:U8\": 5, \"2:U8\": 2, \"3:ARR-U64\": [112233], \"4:NULL\": null}, {\"1:U8\": 4, \"2:U8\": 3, \"3:ARR-U64\": [1], \"4:NULL\": null}]}"
-    matter esp controller write-attr <node_id> <endpoint_id2> 30 0 "{\"0:ARR-OBJ\":[{\"1:U64\":1, \"3:U16\":1, \"4:U32\": 6}]}"
+    matter esp controller write attr <node_id> <endpoint_id1> 31 0 -- "{\"0:ARR-OBJ\":[{\"1:U8\": 5, \"2:U8\": 2, \"3:ARR-U64\": [112233], \"4:NULL\": null}, {\"1:U8\": 4, \"2:U8\": 3, \"3:ARR-U64\": [1], \"4:NULL\": null}]}"
+    matter esp controller write attr <node_id> <endpoint_id2> 30 0 -- "{\"0:ARR-OBJ\":[{\"1:U64\":1, \"3:U16\":1, \"4:U32\": 6}]}"
 
 Wait for the first Write's completion before submitting the second if ordering
 is required; console submission success alone does not indicate completion.
@@ -163,7 +217,7 @@ For attributes of type uint64_t or int64_t, if the absolute value is greater tha
 
   ::
 
-    matter esp controller write-attr <node_id> <endpoint_id> 42 0 "{\"0:ARR-OBJ\":[{\"1:U64\": \"9007199254740993\", \"2:U8\": 0}]}"
+    matter esp controller write attr <node_id> <endpoint_id> 42 0 -- "{\"0:ARR-OBJ\":[{\"1:U64\": \"9007199254740993\", \"2:U8\": 0}]}"
 
 Subscribe commands
 ~~~~~~~~~~~~~~~~~~
@@ -174,36 +228,36 @@ or terminated, and perform cleanup outside its callbacks under the CHIP lock.
 
 Subscribe attribute commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The ``sub-attr`` commands are used for sending the commands of subscribing attributes on end-devices.
+Use ``sub add attr`` to subscribe to attribute reports.
 
-- Send the subscribe-attribute command:
+- Attribute subscription syntax:
 
   ::
 
-    matter esp controller sub-attr <node-id> <endpoint-ids> <cluster-ids> <attribute-ids> <min-interval> <max-interval>
+    matter esp controller sub add attr <node-id> <endpoint-ids> <cluster-ids> <attribute-ids> <min-interval> <max-interval>
 
 Subscribe event commands
 ^^^^^^^^^^^^^^^^^^^^^^^^
-The ``sub-event`` commands are used for sending the commands of subscribing events on end-devices.
+Use ``sub add event`` to subscribe to event reports.
 
 - Send the subscribe-event command:
 
   ::
 
-    matter esp controller sub-event <node-id> <endpoint-ids> <cluster-ids> <event-ids> <min-interval> <max-interval>
+    matter esp controller sub add event <node-id> <endpoint-ids> <cluster-ids> <event-ids> <min-interval> <max-interval>
 
 List and remove subscriptions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Use ``sub-list`` to display console-owned subscriptions, including entries that are
-connecting or waiting to retry. Each entry shows its fabric, node, state, and
-subscription ID when available.
+``sub list`` shows console-owned subscriptions, including connecting and
+retrying entries. Each entry shows the fabric, node, state, and subscription ID
+when available.
 
 ::
 
-    matter esp controller sub-list
-    matter esp controller sub-remove <node-id> <subscription-id>
-    matter esp controller sub-remove <node-id> all
-    matter esp controller sub-remove all
+    matter esp controller sub list
+    matter esp controller sub remove <node-id> <subscription-id>
+    matter esp controller sub remove <node-id> all
+    matter esp controller sub remove all
 
 Node-specific removal applies to the active fabric. The literal ``all`` must be
 provided explicitly: missing arguments, invalid IDs, and extra arguments are
@@ -212,26 +266,41 @@ rejected without removing anything. Node and subscription IDs accept decimal or
 
 .. warning::
 
-    ``sub-remove all`` removes subscriptions across all nodes and fabrics.
+    ``sub remove all`` removes subscriptions across all nodes and fabrics.
     Removal also affects subscriptions created outside the console, whereas
-    ``sub-list`` displays only console-owned subscriptions.
+    ``sub list`` displays only console-owned subscriptions.
 
-Group settings commands
-~~~~~~~~~~~~~~~~~~~~~~~
-The ``group-settings`` commands are used to set group information of the controller. If the controller wants to send multicast commands to end-devices, it should be in the same group as the end-devices.
+Group commands
+~~~~~~~~~~~~~~
 
-- Set group information of the controller:
+Group Invoke and Write accept ``group <id>`` or an encoded node ID
+``0xFFFFFFFFFFFFXXXX``, where ``XXXX`` is the nonzero 16-bit group ID. Both use
+the active fabric at submission time. The ``group`` form has no endpoint
+argument; the encoded node form ignores the endpoint argument. Read and
+Subscribe reject group destinations.
 
-  ::
+Completion reports dispatch, not member acknowledgments. Group commands do not
+support timed options. Configure matching groups and keys on the controller
+and targets before sending requests. Manage remote membership through each
+target's Groups cluster.
 
-    matter esp controller group-settings show-groups
-    matter esp controller group-settings add-group <group-id> <group-name>
-    matter esp controller group-settings remove-group <group-id>
-    matter esp controller group-settings show-keysets
-    matter esp controller group-settings add-keyset <ketset-id> <policy> <validity-time> <epoch-key-oct-str>
-    matter esp controller group-settings remove-keyset <ketset-id>
-    matter esp controller group-settings bind-keyset <group-id> <ketset-id>
-    matter esp controller group-settings unbind-keyset <group-id> <ketset-id>
+Equivalent group destinations::
+
+    matter esp controller invoke group 1 6 1 -- {}
+    matter esp controller invoke 0xFFFFFFFFFFFF0001 0 6 1 -- {}
+    matter esp controller write attr group 1 6 0x4003 -- "{\"0:U8\":2}"
+    matter esp controller write attr 0xFFFFFFFFFFFF0001 0 6 0x4003 -- "{\"0:U8\":2}"
+
+Configure controller-local groups and keys in builds without a Matter server::
+
+    matter esp group list
+    matter esp group add <group-id> <group-name>
+    matter esp group remove <group-id>
+    matter esp group keyset list
+    matter esp group keyset add <ketset-id> <policy> <validity-time> <epoch-key-oct-str>
+    matter esp group keyset remove <ketset-id>
+    matter esp group bind <group-id> <ketset-id>
+    matter esp group unbind <group-id> <ketset-id>
 
 Commissioner features
 ---------------------
@@ -243,52 +312,41 @@ The commissioner should support the additional features:
 - Verify the commissionee's Device Attestation Certificate (DAC) chain and Certificate Declaration (CD) during commissioning.
 - Receive the Certificate Signing Request (CSR) and issue NOC for it during commissioning.
 
+ICD clients
+~~~~~~~~~~~
+
+Configuration: controller build without a Matter server.
+
+::
+
+    matter esp controller icd list
+
 Pairing commands
 ~~~~~~~~~~~~~~~~
-The ``pairing`` commands are used for commissioning end-devices and are available when the ``Enable matter commissioner`` option is enabled. Here are three standard pairing methods:
 
-- **Onnetwork pairing:** Prior to executing this commissioning method, it is necessary to connect both the controller and the end-device to the same network and ensure that the commissioning window of the end-device is open. To complete this process, you can use the command ``matter esp wifi connect``. After the devices are connected, the pairing process can be initiated.
+Enable ``CONFIG_ESP_MATTER_COMMISSIONER_ENABLE`` and connect the controller to
+its operational IP network before pairing. Supply a QR payload or manual setup
+code. The SDK chooses the discovery transport by default; forcing BLE requires
+``CONFIG_ENABLE_ESP32_BLE_CONTROLLER``.
 
-  ::
+Supplying a resolved address skips discovery. Link-local IPv6 addresses require
+an address scope or ``--interface``. Optional Wi-Fi and Thread credentials
+provision the device network independently of transport selection.
 
-    matter esp wifi connect <ssid> <password>
-    matter esp controller pairing onnetwork <node_id> <setup_passcode>
+::
 
-- **Ble-wifi pairing:** This pairing method is supported for ESP32S3. Before you execute this commissioning method, connect the controller to the Wi-Fi network and ensure that the end-device is in commissioning mode. You can use the command ``matter esp wifi connect`` to connect the controller to your wifi network. Then we can start the pairing.
+    matter esp controller pair <node> <setup-code> [--transport auto|ble|on-network] [--wifi SSID PASSWORD] [--thread HEX]
+    matter esp controller pair <node> --address IP --pin PIN [--port N] [--interface NAME]
+    matter esp controller unpair <node>
 
-  ::
+UDC pairing requires commissioner discovery. It uses the peer address from a
+pending UDC entry; supply the node ID and setup PIN. Successful request
+submission consumes the entry. An inactive entry expires after 30 seconds.
 
-    matter esp wifi connect <ssid> <password>
-    matter esp controller pairing ble-wifi <node_id> <ssid> <password> <pincode> <discriminator>
+::
 
-- **Ble-thread pairing:** This pairing method is supported for ESP32S3. Before you execute this commissioning method, connect the controller to the Wi-Fi network in which there is a Thread Border Router (BR). And please ensure that the end-device is in commissioning mode. You can use the command ``matter esp wifi connect`` to connect the controller to your Wi-Fi network. Get the dataset tlvs of the Thread network of the Thread BR. Then we can start the pairing.
-
-  ::
-
-    matter esp wifi connect <ssid> <password>
-    matter esp controller pairing ble-thread <node_id> <dataset_tlvs> <pincode> <discriminator>
-
-- **Matter payload based pairing:** This method is similar to the previously mentioned pairing methods, but instead of accepting a PIN code and discriminator, it uses a Matter setup payload as input. The setup payload is parsed to extract the necessary information, which then initiates the pairing process.
-
-For the ``code`` pairing method, commissioner tries to discover the end-device only on the IP network. However, when using ``code-wifi``, ``code-thread``, or ``code-wifi-thread``, and if ``CONFIG_ENABLE_ESP32_BLE_CONTROLLER`` is enabled, controller tries to discover the end-device on both the IP and BLE networks.
-
-Below are supported commands:
-
-  ::
-
-    matter esp controller pairing code <node_id> <setup_payload>
-
-  ::
-
-    matter esp controller pairing code-wifi <node_id> <ssid> <passphrase> <setup_payload>
-
-  ::
-
-    matter esp controller pairing code-thread <node_id> <operationalDataset> <setup_payload>
-
-  ::
-
-    matter esp controller pairing code-wifi-thread <node_id> <ssid> <passphrase> <operationalDataset> <setup_payload>
+    matter esp controller pair udc status
+    matter esp controller pair udc <node> <pin>
 
 Attestation Verification
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -652,8 +710,8 @@ Controller console interactions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Controller commands retain the ``matter esp controller`` prefix. The supported
-subscription commands are ``sub-attr``, ``sub-event``, ``sub-list``, and
-``sub-remove``. Removal takes ``<node-id> <subscription-id>``, ``<node-id> all``,
-or ``all``. Missing arguments never imply all subscriptions. ``sub-list`` shows
+subscription commands are ``sub add attr``, ``sub add event``, ``sub list``, and
+``sub remove``. Removal takes ``<node-id> <subscription-id>``, ``<node-id> all``,
+or ``all``. Missing arguments never imply all subscriptions. ``sub list`` shows
 console-owned subscriptions; removal can affect other owners. Node-specific
-removal uses the active fabric, while ``sub-remove all`` covers every fabric.
+removal uses the active fabric, while ``sub remove all`` covers every fabric.
