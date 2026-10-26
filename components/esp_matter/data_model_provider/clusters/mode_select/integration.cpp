@@ -14,6 +14,8 @@
 
 #include <esp_matter_data_model_priv.h>
 
+#include <clusters/mode_select/integration.h>
+
 #include <app-common/zap-generated/attributes/Accessors.h>
 #include <app/ClusterCallbacks.h>
 #include <app/clusters/mode-select-server/ModeSelectCluster.h>
@@ -162,6 +164,19 @@ void OnSupportedModesManagerSet(ModeSelect::SupportedModesManager *)
 }
 
 } // namespace
+
+namespace chip::app::Clusters::ModeSelect {
+
+ModeSelectCluster * FindClusterOnEndpoint(EndpointId endpointId)
+{
+    auto it = gServers.find(endpointId);
+    if (it == gServers.end() || !it->second.server.IsConstructed()) {
+        return nullptr;
+    }
+    return &it->second.server.Cluster();
+}
+
+} // namespace chip::app::Clusters::ModeSelect
 
 __attribute__((weak)) void MatterModeSelectPluginServerInitCallback()
 {
