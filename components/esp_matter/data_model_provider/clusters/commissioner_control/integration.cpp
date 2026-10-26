@@ -65,16 +65,18 @@ void ESPMatterCommissionerControlClusterServerInitCallback(EndpointId endpointId
                                 "CommissionerControl: cluster missing in esp-matter data model for endpoint %u", endpointId));
 
     if (!gServers[endpointId].IsConstructed()) {
-        Delegate *delegate = nullptr;
-        {
-            auto it = gDelegates.find(endpointId);
-            VerifyOrReturn(it != gDelegates.end() && it->second != nullptr,
-                           ChipLogError(AppServer,
-                                        "CommissionerControl: delegate not set for ep %u "
-                                        "(call MatterCommissionerControlSetDelegate first)",
-                                        endpointId));
+        // Prefer the delegate from MatterCommissionerControlSetDelegate(), else the one from the cluster config.
+        // The config delegate is registered by its delegate init callback, which runs after this callback.
+        Delegate *delegate = static_cast<Delegate *>(cluster::get_delegate_impl(cluster));
+        auto it = gDelegates.find(endpointId);
+        if (it != gDelegates.end() && it->second != nullptr) {
             delegate = it->second;
         }
+        VerifyOrReturn(delegate != nullptr,
+                       ChipLogError(AppServer,
+                                    "CommissionerControl: delegate not set for ep %u "
+                                    "(set it in the cluster config or call MatterCommissionerControlSetDelegate first)",
+                                    endpointId));
 
         gServers[endpointId].Create(endpointId, *delegate);
     }

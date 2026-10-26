@@ -97,16 +97,18 @@ void ESPMatterZoneManagementClusterServerInitCallback(EndpointId endpointId)
                                 "ZoneManagement: cluster missing in esp-matter data model for endpoint %u", endpointId));
 
     if (!gServers[endpointId].IsConstructed()) {
-        Delegate *delegate = nullptr;
-        {
-            auto it = gDelegates.find(endpointId);
-            VerifyOrReturn(it != gDelegates.end() && it->second != nullptr,
-                           ChipLogError(AppServer,
-                                        "ZoneManagement: delegate not set for ep %u "
-                                        "(call MatterZoneManagementSetDelegate first)",
-                                        endpointId));
+        // Prefer the delegate from MatterZoneManagementSetDelegate(), else the one from the cluster config.
+        // The config delegate is registered by its delegate init callback, which runs after this callback.
+        Delegate *delegate = static_cast<Delegate *>(cluster::get_delegate_impl(cluster));
+        auto it = gDelegates.find(endpointId);
+        if (it != gDelegates.end() && it->second != nullptr) {
             delegate = it->second;
         }
+        VerifyOrReturn(delegate != nullptr,
+                       ChipLogError(AppServer,
+                                    "ZoneManagement: delegate not set for ep %u "
+                                    "(set it in the cluster config or call MatterZoneManagementSetDelegate first)",
+                                    endpointId));
 
         BitFlags<Feature> features;
         auto featIt = gFeatures.find(endpointId);
