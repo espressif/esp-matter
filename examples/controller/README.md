@@ -1,6 +1,8 @@
 # Controller
 
-This example creates a Matter Controller using the ESP Matter data model.
+Controller + commissioner example. Required configuration:
+`ESP_MATTER_CONTROLLER_ENABLE=y`, `ESP_MATTER_COMMISSIONER_ENABLE=y`, and
+`ESP_MATTER_ENABLE_MATTER_SERVER=n`.
 
 
 See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
@@ -13,6 +15,97 @@ No additional setup is required.
 
 See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/controller.html) for more information
 about pairing and controlling an end-device using this example.
+
+### Saved devices
+
+- Registry implementation and device commands: `main/devices.cpp`.
+- Capacity: 32 node IDs, stored in Matter's persistent KVS and retained across reboot.
+- Successful pairing saves the node ID. Storage failures report the node as
+  commissioned but not saved.
+- A full registry rejects new nodes before commissioning.
+- Registry load errors do not block boot. Invalid or unsupported data remains
+  unchanged; device commands other than `clear` require an available registry.
+- `matter esp device clear` persists an empty registry and marks it available
+  after a successful write. Active pairing blocks clearing.
+- Clearing the registry does not reset credentials, unpair peers, or stop subscriptions.
+  Matter factory reset clears the registry and credentials.
+- Registry formats are not migrated. Saved node IDs alone cannot restore fabric
+  access without the matching credentials.
+
+### Pairing
+
+- Setup codes: QR payload text or manual setup codes.
+- `--transport auto|ble|on-network`: default `auto`.
+- Network credentials: `--wifi <ssid> <password>` or `--thread <dataset-hex>`.
+- The pairing API copies credentials before command return.
+- `device pair status`: pairing observation state.
+- `device pair cancel`: cancellation request with completion callbacks retained.
+- `device pair stop`: callback detachment and cancellation request.
+
+```text
+matter esp wifi connect <ssid> <password>
+matter esp device pair 1234 <setup-code> --transport on-network
+matter esp device list
+```
+
+### Controller console
+
+- Shell initialization: `esp_matter::console::init()`.
+- Registered controller modules: read, write, invoke, subscription, window and ICD.
+- Independent group module: `matter esp group`.
+- Generic controller pairing CLI: not registered.
+- Node IDs: decimal or `0x`-prefixed hexadecimal.
+- Write and invoke payloads: `--` followed by one JSON argument.
+- JSON fields: shell-quoted payloads with escaped double quotes and backslashes.
+  Empty object: `-- {}`.
+
+```text
+matter esp controller read attr 1234 1 6 0
+matter esp controller invoke 1234 1 6 2 -- {}
+matter esp controller write attr 1234 0 40 5 -- "{\"0:STR\":\"desk lamp\"}"
+matter esp controller sub add attr 1234 0xffff 0xffffffff 0xffffffff 1 60
+matter esp controller sub list
+matter esp controller sub remove 1234 all
+matter esp device remove 1234
+matter esp device list
+```
+
+- `device remove` persists local deletion before best-effort peer fabric removal.
+- Local storage errors fail removal. Peer errors do not restore the record;
+  unreachable peers may remain commissioned.
+- Removal does not stop subscriptions.
+
+### Commissioning windows
+
+```text
+matter esp controller window open-basic 1234 180
+matter esp controller window open-passcode 1234 180 --iterations 10000 --discriminator 3840
+matter esp controller window status
+matter esp controller window stop
+```
+
+- Basic windows require target support.
+- Status and stop apply to the local request.
+- Stop does not revoke an already-open window.
+
+### Group commands
+
+- Group destinations use the active fabric.
+- Destinations: `group <id>` or `0xFFFFFFFFFFFFXXXX` (`XXXX`: 16-bit group ID).
+- Keyword form: no endpoint; encoded form: endpoint ignored.
+- Group invocation: no timed option; success indicates dispatch, not member
+  acknowledgement.
+- Read and Subscribe: unicast only.
+
+```text
+matter esp controller invoke group 1 6 1 -- {}
+matter esp controller invoke 0xFFFFFFFFFFFF0001 0 6 1 -- {}
+matter esp controller write attr group 1 6 0x4003 -- "{\"0:U8\":2}"
+matter esp controller write attr 0xFFFFFFFFFFFF0001 0 6 0x4003 -- "{\"0:U8\":2}"
+```
+
+- `matter esp group list|add|remove|bind|unbind` and `group keyset` manage
+  controller-local configuration, not remote device membership.
 
 ## 3. Controller in Rainmaker Fabric
 
@@ -72,13 +165,14 @@ matter esp ot_cli thread start
 - Pairing the Thread end-device
 
 ```
-matter esp controller pairing ble-thread 1234 <dataset_tlvs> 20202021 3840
+matter esp device pair 1234 <setup-code> --thread <dataset_tlvs> --transport ble
+matter esp device list
 ```
 
 - Control the Thread end-device on the device console (On/Off cluster Toggle command)
 
 ```
-matter esp controller invoke-cmd 1234 1 6 2
+matter esp controller invoke 1234 1 6 2 -- {}
 ```
 
 ## A1 Appendix FAQs
