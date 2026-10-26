@@ -5095,7 +5095,7 @@ attribute_t *create_step_value(cluster_t *cluster, uint16_t value)
 attribute_t *create_unit(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::Unit::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
 }
 
 attribute_t *create_unit_range(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -5113,31 +5113,31 @@ attribute_t *create_limit_range(cluster_t *cluster, uint8_t *value, uint16_t len
 attribute_t *create_translation_direction(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::TranslationDirection::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
 }
 
 attribute_t *create_rotation_axis(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::RotationAxis::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
 }
 
 attribute_t *create_overflow(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::Overflow::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
 }
 
 attribute_t *create_modulation_type(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::ModulationType::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
 }
 
 attribute_t *create_latch_control_modes(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, ClosureDimension::Attributes::LatchControlModes::Id,
-                                         ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_bitmap));
 }
 
 } /* attribute */

@@ -748,7 +748,7 @@ int create(uint8_t device_type_index)
         esp_matter::endpoint::closure_panel::config_t closure_panel_config;
         static chip::app::Clusters::ClosureDimension::MockClosureDimensionDelegate closureDimensionDelegate;
         closure_panel_config.closure_dimension.delegate = &closureDimensionDelegate;
-        closure_panel_config.closure_dimension.feature_flags = cluster::closure_dimension::feature::positioning::get_id();
+        closure_panel_config.closure_dimension.feature_flags = cluster::closure_dimension::feature::positioning::get_id() | cluster::closure_dimension::feature::translation::get_id();
         endpoint = esp_matter::endpoint::closure_panel::create(node, &closure_panel_config, ENDPOINT_FLAG_DESTROYABLE, NULL);
         break;
     }

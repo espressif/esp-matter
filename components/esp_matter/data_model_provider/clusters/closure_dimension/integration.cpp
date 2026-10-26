@@ -52,6 +52,15 @@ void MatterClosureDimensionSetDelegate(EndpointId endpointId, ClosureDimensionCl
     gDelegates[endpointId] = &delegate;
 }
 
+ClosureDimensionCluster * GetClusterInstance(EndpointId endpointId)
+{
+    auto it = gServers.find(endpointId);
+    if (it == gServers.end() || !it->second.IsConstructed()) {
+        return nullptr;
+    }
+    return &it->second.Cluster();
+}
+
 } // namespace ClosureDimension
 } // namespace Clusters
 } // namespace app
@@ -65,22 +74,22 @@ void ESPMatterClosureDimensionClusterServerInitCallback(EndpointId endpointId)
                                 "ClosureDimension: cluster missing in esp-matter data model for endpoint %u", endpointId));
 
     if (!gServers[endpointId].IsConstructed()) {
-        ClosureDimensionClusterDelegate *delegate = nullptr;
-        {
-            auto it = gDelegates.find(endpointId);
-            VerifyOrReturn(it != gDelegates.end() && it->second != nullptr,
-                           ChipLogError(AppServer,
-                                        "ClosureDimension: delegate not set for ep %u (call MatterClosureDimensionSetDelegate first)",
-                                        endpointId));
+        // Prefer the delegate from MatterClosureDimensionSetDelegate(), else the one from the cluster config.
+        // The config delegate is registered by its delegate init callback, which runs after this callback.
+        ClosureDimensionClusterDelegate *delegate = static_cast<ClosureDimensionClusterDelegate *>(cluster::get_delegate_impl(cluster));
+        auto it = gDelegates.find(endpointId);
+        if (it != gDelegates.end() && it->second != nullptr) {
             delegate = it->second;
         }
+        VerifyOrReturn(delegate != nullptr,
+                       ChipLogError(AppServer,
+                                    "ClosureDimension: delegate not set for ep %u (set it in the cluster config or call MatterClosureDimensionSetDelegate first)",
+                                    endpointId));
 
         // Read feature map from esp-matter data model
         BitFlags<ClosureDimension::Feature> features(read_feature_map_u32(endpointId, ClosureDimension::Id));
 
-        // Build Config — feature-specific init params (resolution, stepValue, unit, etc.)
-        // are MANAGED_INTERNALLY attributes. Use Config defaults; the code-driven cluster
-        // initializes them properly via Startup().
+        // Build Config from the feature map and the feature attributes stored in the esp-matter data model
         ClosureDimensionCluster::Config config(endpointId, *delegate);
 
         if (features.Has(Feature::kPositioning)) {
@@ -90,11 +99,46 @@ void ESPMatterClosureDimensionClusterServerInitCallback(EndpointId endpointId)
             get_stored_attr_val(cluster, Attributes::StepValue::Id, step_val);
             config.WithPositioning(resolution_val.val.u16, step_val.val.u16);
         }
+        // Values not present in the esp-matter data model keep the Config defaults.
         if (features.Has(Feature::kMotionLatching)) {
-            config.WithMotionLatching({});
+            esp_matter_attr_val_t latch_val = esp_matter_bitmap8(0);
+            get_stored_attr_val(cluster, Attributes::LatchControlModes::Id, latch_val);
+            config.WithMotionLatching(BitFlags<LatchControlModesBitmap>(latch_val.val.u8));
+        }
+
+        if (features.Has(Feature::kUnit)) {
+            esp_matter_attr_val_t unit_val = esp_matter_enum8(to_underlying(ClosureUnitEnum::kUnknownEnumValue));
+            get_stored_attr_val(cluster, Attributes::Unit::Id, unit_val);
+            config.WithUnit(static_cast<ClosureUnitEnum>(unit_val.val.u8), DataModel::NullNullable);
+        }
+        if (features.Has(Feature::kLimitation)) {
+            config.WithLimitation({});
         }
         if (features.Has(Feature::kSpeed)) {
             config.WithSpeed();
+        }
+        if (features.Has(Feature::kTranslation)) {
+            esp_matter_attr_val_t direction_val =
+                esp_matter_enum8(to_underlying(TranslationDirectionEnum::kUnknownEnumValue));
+            get_stored_attr_val(cluster, Attributes::TranslationDirection::Id, direction_val);
+            config.WithTranslation(static_cast<TranslationDirectionEnum>(direction_val.val.u8));
+        }
+        if (features.Has(Feature::kRotation)) {
+            esp_matter_attr_val_t axis_val = esp_matter_enum8(to_underlying(RotationAxisEnum::kUnknownEnumValue));
+            esp_matter_attr_val_t overflow_val = esp_matter_enum8(to_underlying(OverflowEnum::kUnknownEnumValue));
+            get_stored_attr_val(cluster, Attributes::RotationAxis::Id, axis_val);
+            get_stored_attr_val(cluster, Attributes::Overflow::Id, overflow_val);
+            config.WithRotation(static_cast<RotationAxisEnum>(axis_val.val.u8),
+                                static_cast<OverflowEnum>(overflow_val.val.u8));
+        }
+        if (features.Has(Feature::kModulation)) {
+            esp_matter_attr_val_t modulation_val =
+                esp_matter_enum8(to_underlying(ModulationTypeEnum::kUnknownEnumValue));
+            get_stored_attr_val(cluster, Attributes::ModulationType::Id, modulation_val);
+            config.WithModulation(static_cast<ModulationTypeEnum>(modulation_val.val.u8));
+        }
+        if (features.Has(Feature::kAccess)) {
+            config.WithAccess();
         }
 
         gServers[endpointId].Create(config);
