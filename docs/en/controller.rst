@@ -82,6 +82,7 @@ The controller should support the following features:
 - Send Write Attribute commands to other nodes
 - Send Subscribe Attribute/Event commands to other nodes.
 - Join Matter Groups and manage the Group Key Set.
+- Register and unregister ICD clients.
 
 Cluster Invoking commands
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -302,6 +303,81 @@ Configure controller-local groups and keys in builds without a Matter server::
     matter esp group bind <group-id> <ketset-id>
     matter esp group unbind <group-id> <ketset-id>
 
+ICD client management
+~~~~~~~~~~~~~~~~~~~~~
+
+Use ICD client management with ``CONFIG_ESP_MATTER_CONTROLLER_ENABLE=y`` and
+``CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER=n``. The controller example registers
+the console commands when ``CONFIG_ENABLE_CHIP_SHELL=y``. In a custom application,
+call ``esp_matter::controller::console::register_icd_commands()`` to register them.
+
+ICD console commands
+^^^^^^^^^^^^^^^^^^^^
+
+::
+
+    matter esp controller icd list
+    matter esp controller icd register <node> <check-in-node> <subject> <key-hex> --client-type permanent|ephemeral [--verification-key HEX]
+    matter esp controller icd unregister <node> <check-in-node> [--verification-key HEX]
+    matter esp controller icd status
+    matter esp controller icd stop
+
+``node`` identifies the ICD server. ``check-in-node`` identifies the check-in
+recipient on the controller's current fabric; use the controller's operational
+Node ID to receive check-ins on this controller. ``subject`` identifies the
+subject whose activity the ICD monitors. Node IDs and subjects accept decimal
+or ``0x``-prefixed hexadecimal notation. Supply each key as 32 hexadecimal
+digits, without a ``0x`` prefix. The verification key is optional.
+
+``register`` and ``unregister`` use the current fabric. Unregistration requires
+a local registration with the same ICD server and check-in node. ``list`` shows
+registration metadata across stored fabrics, including the fabric index, node
+IDs, counters, monitored subject, and client type. It omits key material.
+
+The console observes one ICD request at a time. Submission success means the
+request was accepted. Wait for the completion log to confirm that both the
+remote command and local storage update succeeded. ``status`` reports whether
+the console still observes the request.
+
+``stop`` detaches observation and stops work before command dispatch. An
+already-sent command can still complete and update local storage. A request for
+the same peer can return busy while that work finishes, even after ``status``
+reports inactive.
+
+ICD client API
+^^^^^^^^^^^^^^
+
+Include ``esp_matter_controller_icd_client.h`` and use the
+``esp_matter::controller::icd_client`` namespace. Replace calls to the removed
+``controller::list_registered_icd()`` with
+``icd_client::for_each_registered_icd(callback, context)``. Its callback receives
+an ``entry_t`` containing registration metadata. Return ``CHIP_NO_ERROR`` to
+continue iteration, or another error to stop and return that error to the
+caller. Keep storage unchanged during iteration; entry references remain valid
+for the callback duration.
+
+For registration and unregistration, keep an ``icd_client::interaction`` and
+its ``icd_client::delegate`` alive while observing the operation. Populate a
+``request_t`` with ``METHOD_REGISTER`` or ``METHOD_UNREGISTER`` and call
+``start(request, &delegate)``. Pass the required registration key as 16 bytes;
+an omitted verification key uses ``nullptr`` and size zero. ``start()`` copies
+borrowed key data before returning. A synchronous error produces no callbacks.
+An accepted request produces deferred callbacks and one terminal ``OnDone()``,
+unless you detach the delegate with ``stop()``.
+
+``OnResponse()`` provides a valid remote status, including rejection, and an
+ICD counter for a successful registration. The response reference remains valid
+for the callback duration. ``OnDone()`` reports connection, command, or local
+storage errors; ``CHIP_NO_ERROR`` confirms both remote success and the local
+storage update. Remote success can precede a local storage failure.
+
+Use the CHIP stack context for API calls, storage iteration, and destruction
+of an active interaction. ``OnDone()`` may restart, stop, or destroy the
+interaction; ``OnResponse()`` may not. ``stop()`` detaches the delegate and lets
+an already-sent command finish updating storage. ``active()`` reports whether
+the interaction still observes the request. Pending work for the same scoped
+peer can cause ``CHIP_ERROR_BUSY`` even after observation stops.
+
 Commissioner features
 ---------------------
 The commissioner is an enhanced controller that can perform commissioning which is the sequence of operations to bring a Node into a Fabric by assigning an Operational Node ID and Node Operational credentials.
@@ -311,15 +387,6 @@ The commissioner should support the additional features:
 - Obtain the onboarding payload (QR code or manual code) and use it to starting commissioning.
 - Verify the commissionee's Device Attestation Certificate (DAC) chain and Certificate Declaration (CD) during commissioning.
 - Receive the Certificate Signing Request (CSR) and issue NOC for it during commissioning.
-
-ICD clients
-~~~~~~~~~~~
-
-Configuration: controller build without a Matter server.
-
-::
-
-    matter esp controller icd list
 
 Pairing commands
 ~~~~~~~~~~~~~~~~

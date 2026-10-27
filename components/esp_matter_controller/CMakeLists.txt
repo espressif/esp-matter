@@ -30,8 +30,10 @@ if (CONFIG_ESP_MATTER_CONTROLLER_ENABLE)
                                       "${CMAKE_CURRENT_SOURCE_DIR}/core/esp_matter_controller_client.cpp"
                                       "${CMAKE_CURRENT_SOURCE_DIR}/core/esp_matter_controller_credentials_issuer.cpp"
                                       "${CMAKE_CURRENT_SOURCE_DIR}/core/esp_matter_controller_group_settings.cpp"
-                                      "${CMAKE_CURRENT_SOURCE_DIR}/core/esp_matter_controller_icd_client.cpp"
                                       "${CMAKE_CURRENT_SOURCE_DIR}/console/esp_matter_controller_console_icd.cpp")
+    else()
+        list(APPEND src_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/commands/icd")
+        list(APPEND include_dirs_list "${CMAKE_CURRENT_SOURCE_DIR}/commands/icd")
     endif()
 
     if (CONFIG_ESP_MATTER_COMMISSIONER_ENABLE)
