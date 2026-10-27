@@ -15,7 +15,7 @@
 using pir_sensor_cb_t = void (*)(uint16_t endpoint_id, bool occupied, void *user_data);
 
 typedef struct {
-    // This callback functon will be called periodically to report the temperature.
+    // This callback function will be called periodically to report the temperature.
     pir_sensor_cb_t cb = NULL;
     // endpoint_id associated with temperature sensor
     uint16_t endpoint_id;

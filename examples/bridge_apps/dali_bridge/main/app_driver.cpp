@@ -599,7 +599,7 @@ esp_err_t app_driver_dali_scan_with_type(uint64_t *present_mask,
                 color_caps_out[addr] = (uint8_t)reply;
             }
             ESP_LOGI(TAG, " addr=%u DT8 features=0x%02X"
-                          " (XY:%c Tc:%c PrimaryN:%u RGBWAF:%u)",
+                     " (XY:%c Tc:%c PrimaryN:%u RGBWAF:%u)",
                      addr, (uint8_t)reply,
                      (reply & (1 << 0)) ? 'Y' : 'N',
                      (reply & (1 << 1)) ? 'Y' : 'N',

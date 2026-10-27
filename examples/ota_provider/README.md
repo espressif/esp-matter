@@ -13,6 +13,6 @@ No additional setup is required.
 
 To test this OTA Provider example, you need to upload your ota candidate to the DCL(Distributed Compliance Ledger) [TestNet](https://testnet.iotledger.io/models). This candidate should include an OTA image URL which can be used for downloading the OTA image.
 
-For offical products, the ota candidate should be uploaded to the DCL [MainNet](https://dcl.iotledger.io/models).
+For official products, the ota candidate should be uploaded to the DCL [MainNet](https://dcl.iotledger.io/models).
 
 The Matter OTA instruction can be found in [docs](https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/esp32/ota.md).

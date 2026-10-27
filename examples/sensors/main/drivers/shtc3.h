@@ -19,14 +19,14 @@ using shtc3_sensor_cb_t = void (*)(uint16_t endpoint_id, float value, void *user
 
 typedef struct {
     struct {
-        // This callback functon will be called periodically to report the temperature.
+        // This callback function will be called periodically to report the temperature.
         shtc3_sensor_cb_t cb = NULL;
         // endpoint_id associated with temperature sensor
         uint16_t endpoint_id;
     } temperature;
 
     struct {
-        // This callback functon will be called periodically to report the humidity.
+        // This callback function will be called periodically to report the humidity.
         shtc3_sensor_cb_t cb = NULL;
         // endpoint_id associated with humidity sensor
         uint16_t endpoint_id;
