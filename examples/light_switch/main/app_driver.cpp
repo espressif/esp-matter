@@ -322,13 +322,13 @@ void app_driver_client_group_invoke_command_callback(uint8_t fabric_index, clien
 static void app_driver_button_toggle_cb(void *arg, void *data)
 {
     ESP_LOGI(TAG, "Toggle button pressed");
-    client::request_handle_t req_handle;
-    req_handle.type = esp_matter::client::INVOKE_CMD;
-    req_handle.command_path.mClusterId = OnOff::Id;
-    req_handle.command_path.mCommandId = OnOff::Commands::Toggle::Id;
-
-    lock::ScopedChipStackLock lock(portMAX_DELAY);
-    client::cluster_update(switch_endpoint_id, &req_handle);
+    LogErrorOnFailure(chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t) {
+        client::request_handle_t req_handle;
+        req_handle.type = esp_matter::client::INVOKE_CMD;
+        req_handle.command_path.mClusterId = OnOff::Id;
+        req_handle.command_path.mCommandId = OnOff::Commands::Toggle::Id;
+        client::cluster_update(switch_endpoint_id, &req_handle);
+    }));
 }
 
 app_driver_handle_t app_driver_switch_init()
