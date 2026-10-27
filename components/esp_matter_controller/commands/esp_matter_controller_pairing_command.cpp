@@ -118,7 +118,7 @@ void pairing_command::OnDiscoveredDevice(const Dnssd::CommissionNodeData &nodeDa
 
     Inet::InterfaceId interfaceId =
         nodeData.ipAddress[0].IsIPv6LinkLocal() ? nodeData.interfaceId : Inet::InterfaceId::Null();
-    PeerAddress peerAddress = PeerAddress::UDP(nodeData.ipAddress[0], port, interfaceId);
+    chip::Transport::PeerAddress peerAddress = chip::Transport::PeerAddress::UDP(nodeData.ipAddress[0], port, interfaceId);
     RendezvousParameters params = RendezvousParameters().SetSetupPINCode(m_setup_pincode).SetPeerAddress(peerAddress);
     CommissioningParameters commissioning_params = CommissioningParameters();
     NodeId commissioner_node_id = controller_instance.get_commissioner()->GetNodeId();
