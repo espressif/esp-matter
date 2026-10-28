@@ -23,12 +23,6 @@ namespace thermostat_mode {
 
 inline constexpr uint32_t Id = 0x0063;
 
-namespace feature {
-namespace CoreModes {
-inline constexpr uint32_t Id = 0x2;
-} /* CoreModes */
-} /* feature */
-
 namespace attribute {
 namespace SupportedModes {
 inline constexpr uint32_t Id = 0x0000;
