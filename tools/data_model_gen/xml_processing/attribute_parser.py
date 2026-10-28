@@ -95,13 +95,16 @@ class AttributeParser(ClusterElementBaseParser):
         name = elem.get("name")
         code = elem.get("id")
         type_str = resolve_attribute_type(elem, self.cluster.attribute_types)
+        # A derived cluster may set only the conformance; take the rest from the base.
+        base = self.get_base_element(name)
         attr = Attribute(
             name=name,
             id=code,
             type_=type_str,
             is_mandatory=is_mandatory(elem),
-            access=self._access(elem.find("access")),
-            quality=self._quality(elem.find("quality")),
+            access=self._access(elem.find("access")) or safe_get_attr(base, "access"),
+            quality=self._quality(elem.find("quality"))
+            or safe_get_attr(base, "quality"),
             constraint=self._constraint(elem.find("constraint")),
             default_value=elem.get("default"),
         )

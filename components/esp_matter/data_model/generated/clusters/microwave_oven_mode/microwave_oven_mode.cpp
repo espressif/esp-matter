@@ -43,12 +43,12 @@ namespace microwave_oven_mode {
 namespace attribute {
 attribute_t *create_supported_modes(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, SupportedModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length, count));
+    return esp_matter::attribute::create(cluster, SupportedModes::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, CurrentMode::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    return esp_matter::attribute::create(cluster, CurrentMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 } /* attribute */
@@ -76,6 +76,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        attribute::create_current_mode(cluster, config->current_mode);
+        attribute::create_supported_modes(cluster, NULL, 0, 0);
 
         cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterMicrowaveOvenModeClusterServerInitCallback,
                                                  ESPMatterMicrowaveOvenModeClusterServerShutdownCallback);

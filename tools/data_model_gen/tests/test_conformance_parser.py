@@ -887,6 +887,29 @@ class TestReplaceReferencesWithComparisons(unittest.TestCase):
         result = replace_references(condition, self.ATTR_MAP)
         self.assertNotIn("func_name", result.get("greater", {}))
 
+    def test_missing_command_dropped_from_or(self):
+        """A command the cluster lacks is dropped from an OR"""
+        condition = {"or": [{"command": "Pause"}, {"command": "Stop"}]}
+        reference_map = {"Stop": ("0x01", "COMMAND_FLAG_ACCEPTED")}
+        self.assertEqual(
+            replace_references(condition, reference_map),
+            {"or": [{"command": "Stop", "flag": "COMMAND_FLAG_ACCEPTED"}]},
+        )
+
+    def test_missing_command_kept_outside_or(self):
+        """Outside an OR a missing command is kept, so code generation still reports it"""
+        condition = {"and": [{"command": "Pause"}, {"command": "Stop"}]}
+        reference_map = {"Stop": ("0x01", "COMMAND_FLAG_ACCEPTED")}
+        self.assertEqual(
+            replace_references(condition, reference_map),
+            {
+                "and": [
+                    {"command": "Pause"},
+                    {"command": "Stop", "flag": "COMMAND_FLAG_ACCEPTED"},
+                ]
+            },
+        )
+
 
 class TestOtherwiseWithComparisonConformance(unittest.TestCase):
     """End-to-end parse_conformance() for otherwise+comparison pattern."""

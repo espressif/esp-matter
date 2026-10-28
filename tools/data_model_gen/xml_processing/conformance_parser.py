@@ -341,6 +341,14 @@ def replace_references(condition, reference_map):
                         }
                     }
                 return condition
+        or_operands = condition.get(ConformanceTAG.OR.value)
+        if isinstance(or_operands, list):
+            # A command the cluster lacks (e.g. a derived cluster disallows it) can't make an OR true.
+            # If all are missing, keep them so code generation reports it.
+            known = [
+                op for op in or_operands if not _is_missing_command(op, reference_map)
+            ]
+            condition = {**condition, ConformanceTAG.OR.value: known or or_operands}
         return {
             key: replace_references(value, reference_map)
             for key, value in condition.items()
@@ -348,6 +356,14 @@ def replace_references(condition, reference_map):
     elif isinstance(condition, list):
         return [replace_references(item, reference_map) for item in condition]
     return condition
+
+
+def _is_missing_command(operand, reference_map):
+    """True if operand names a command that isn't in the cluster."""
+    command = (
+        operand.get(ConformanceTAG.COMMAND.value) if isinstance(operand, dict) else None
+    )
+    return bool(command) and command not in reference_map
 
 
 def parse_conformance(conformance_elem, feature_map):
