@@ -82,18 +82,21 @@ void MatterClosureControlSetInitialOverallCurrentState(EndpointId endpointId,
 
 void ESPMatterClosureControlClusterServerInitCallback(EndpointId endpointId)
 {
-    VerifyOrReturn(cluster::get(endpointId, ClosureControl::Id) != nullptr,
+    cluster_t *cluster = cluster::get(endpointId, ClosureControl::Id);
+    VerifyOrReturn(cluster != nullptr,
                    ChipLogError(AppServer, "ClosureControl: cluster missing in esp-matter data model for endpoint %u", endpointId));
     if (!gServers[endpointId].IsConstructed()) {
-        ClosureControlClusterDelegate *delegate = nullptr;
-        {
-            auto it = gDelegates.find(endpointId);
-            VerifyOrReturn(it != gDelegates.end() && it->second != nullptr,
-                           ChipLogError(AppServer,
-                                        "ClosureControl: delegate not set for ep %u (call MatterClosureControlSetDelegate first)",
-                                        endpointId));
+        // Prefer the delegate from MatterClosureControlSetDelegate(), else the one from the cluster config.
+        // The config delegate is registered by its delegate init callback, which runs after this callback.
+        ClosureControlClusterDelegate *delegate = static_cast<ClosureControlClusterDelegate *>(cluster::get_delegate_impl(cluster));
+        auto it = gDelegates.find(endpointId);
+        if (it != gDelegates.end() && it->second != nullptr) {
             delegate = it->second;
         }
+        VerifyOrReturn(delegate != nullptr,
+                       ChipLogError(AppServer,
+                                    "ClosureControl: delegate not set for ep %u (set it in the cluster config or call MatterClosureControlSetDelegate first)",
+                                    endpointId));
 
         // Read feature map from esp-matter data model
         BitFlags<ClosureControl::Feature> features(read_feature_map_u32(endpointId, ClosureControl::Id));
@@ -127,6 +130,9 @@ void ESPMatterClosureControlClusterServerInitCallback(EndpointId endpointId)
         }
         if (features.Has(Feature::kManuallyOperable)) {
             config.WithManuallyOperable();
+        }
+        if (features.Has(Feature::kAccess)) {
+            config.WithAccess();
         }
         if (endpoint::is_attribute_enabled(endpointId, ClosureControl::Id, Attributes::CountdownTime::Id)) {
             config.WithCountdownTime();
