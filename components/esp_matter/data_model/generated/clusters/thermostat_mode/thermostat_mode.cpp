@@ -38,38 +38,20 @@ namespace esp_matter {
 namespace cluster {
 namespace thermostat_mode {
 
-namespace feature {
-namespace core_modes {
-uint32_t get_id()
-{
-    return CoreModes::Id;
-}
-
-esp_err_t add(cluster_t *cluster)
-{
-    VerifyOrReturnError(cluster, ESP_ERR_INVALID_ARG);
-    update_feature_map(cluster, get_id());
-
-    return ESP_OK;
-}
-} /* core_modes */
-
-} /* feature */
-
 namespace attribute {
 attribute_t *create_supported_modes(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, SupportedModes::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length, count));
+    return esp_matter::attribute::create(cluster, SupportedModes::Id, ATTRIBUTE_FLAG_MANAGED_INTERNALLY, esp_matter_attr_val(value, length, count));
 }
 
 attribute_t *create_current_mode(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, CurrentMode::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    return esp_matter::attribute::create(cluster, CurrentMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
-attribute_t *create_start_up_mode(cluster_t *cluster, uint8_t value)
+attribute_t *create_start_up_mode(cluster_t *cluster, nullable<uint8_t> value)
 {
-    return esp_matter::attribute::create(cluster, StartUpMode::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value));
+    return esp_matter::attribute::create(cluster, StartUpMode::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value));
 }
 
 } /* attribute */
@@ -106,6 +88,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes not managed internally */
         global::attribute::create_cluster_revision(cluster, cluster_revision);
 
+        attribute::create_current_mode(cluster, config->current_mode);
+        attribute::create_supported_modes(cluster, NULL, 0, 0);
         command::create_change_to_mode(cluster);
         command::create_change_to_mode_response(cluster);
 
