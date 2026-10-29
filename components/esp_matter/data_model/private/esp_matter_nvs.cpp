@@ -195,7 +195,6 @@ static esp_err_t nvs_store_val(const char *nvs_namespace, const char *attribute_
         } else {
             err = nvs_erase_key(handle, attribute_key);
         }
-        nvs_commit(handle);
     } else {
         // This switch case handles primitive data types
         // always store values as primitive data type
@@ -259,7 +258,9 @@ static esp_err_t nvs_store_val(const char *nvs_namespace, const char *attribute_
         }
         }
     }
-    nvs_commit(handle);
+    if (err == ESP_OK) {
+        err = nvs_commit(handle);
+    }
     nvs_close(handle);
     return err;
 }
@@ -272,7 +273,9 @@ static esp_err_t nvs_erase_val(const char *nvs_namespace, const char *attribute_
         return err;
     }
     err = nvs_erase_key(handle, attribute_key);
-    nvs_commit(handle);
+    if (err == ESP_OK) {
+        err = nvs_commit(handle);
+    }
     nvs_close(handle);
     return err;
 }

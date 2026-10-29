@@ -104,8 +104,9 @@ attribute_t *create_endpoint_lists(cluster_t *cluster, uint8_t *value, uint16_t 
 
 attribute_t *create_setup_url(cluster_t *cluster, char *value, uint16_t length)
 {
+    VerifyOrReturnValue(length <= k_max_setup_url_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
     return esp_matter::attribute::create(cluster, Actions::Attributes::SetupURL::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_attr_val(value, length), k_max_setup_url_length);
+                                         esp_matter_attr_val(value, length, true /* long char string */), k_max_setup_url_length);
 }
 
 } /* attribute */
@@ -1353,6 +1354,7 @@ namespace attribute {
 
 attribute_t *create_vendor_name(cluster_t *cluster, char *value, uint16_t length)
 {
+    VerifyOrReturnValue(length <= k_max_vendor_name_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
     return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::VendorName::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_attr_val(value, length), k_max_vendor_name_length);
 }
@@ -1365,6 +1367,7 @@ attribute_t *create_vendor_id(cluster_t *cluster, uint16_t value)
 
 attribute_t *create_product_name(cluster_t *cluster, char *value, uint16_t length)
 {
+    VerifyOrReturnValue(length <= k_max_product_name_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
     return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::ProductName::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_attr_val(value, length), k_max_product_name_length);
 }
@@ -1391,6 +1394,7 @@ attribute_t *create_hardware_version(cluster_t *cluster, uint16_t value)
 
 attribute_t *create_hardware_version_string(cluster_t *cluster, char *value, uint16_t length)
 {
+    VerifyOrReturnValue(length <= k_max_hardware_version_string_length, NULL, ESP_LOGE(TAG, "Could not create attribute, string length out of bound"));
     return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::HardwareVersionString::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, length), k_max_hardware_version_string_length);
 }
@@ -2689,7 +2693,7 @@ attribute_t *create_smoke_sensitivity_level(cluster_t *cluster, uint8_t value)
 
 attribute_t *create_expiry_date(cluster_t *cluster, uint32_t value)
 {
-    return esp_matter::attribute::create(cluster, SmokeCoAlarm::Attributes::ContaminationState::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, SmokeCoAlarm::Attributes::ExpiryDate::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_attr_val(value));
 }
 
