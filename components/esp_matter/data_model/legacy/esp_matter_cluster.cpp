@@ -3150,6 +3150,20 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
                 feature::dynamic_power_flow::add(cluster);
             }
         }
+
+        // AvailableEndpoints is mandatory with NodeTopology/TreeTopology/SetTopology
+        // (Matter 1.6 Application Cluster spec, Power Topology §2.9) -- exactly one of
+        // those three is guaranteed by VALIDATE_FEATURES_EXACT_ONE above, so this is
+        // always required here. Was previously never created, so a client's first
+        // subscription read failed with "Attribute is not managed by esp matter data
+        // model". An empty list is a valid default for a single composed device with
+        // no further topology detail.
+        attribute::create_available_endpoints(cluster, NULL, 0, 0);
+        // ActiveEndpoints is mandatory only with DynamicPowerFlow.
+        if (has(feature::dynamic_power_flow::get_id())) {
+            attribute::create_active_endpoints(cluster, NULL, 0, 0);
+        }
+
         cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterPowerTopologyClusterServerInitCallback,
                                                  ESPMatterPowerTopologyClusterServerShutdownCallback);
     } // if (flags & CLUSTER_FLAG_SERVER)
