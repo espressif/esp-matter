@@ -633,7 +633,7 @@ pytest_unit_test_app_emu:
     REPOS_PATH: "$CI_PROJECT_DIR/repos"
   script:
     - cd ${ESP_MATTER_PATH}
-    - curl -fsSL https://raw.githubusercontent.com/espressif/esp-emulator/main/install.sh | sh
+    - curl -fsSL https://raw.githubusercontent.com/espressif/esp-emulator/b2f2cb1991f09ba9036ba35d894025ef9b44d3cc/install.sh | sh
     - export PATH=${HOME}/.local/bin:${PATH}
     - esp-emu --version
     - pip install -r tools/ci/requirements-pytest.txt
@@ -672,7 +672,7 @@ pytest_unit_test_app_emu_generated:
     REPOS_PATH: "$CI_PROJECT_DIR/repos"
   script:
     - cd ${ESP_MATTER_PATH}
-    - curl -fsSL https://raw.githubusercontent.com/espressif/esp-emulator/main/install.sh | sh
+    - curl -fsSL https://raw.githubusercontent.com/espressif/esp-emulator/b2f2cb1991f09ba9036ba35d894025ef9b44d3cc/install.sh | sh
     - export PATH=${HOME}/.local/bin:${PATH}
     - esp-emu --version
     - pip install -r tools/ci/requirements-pytest.txt
