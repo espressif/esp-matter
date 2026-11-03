@@ -102,14 +102,14 @@ extern "C" void app_main()
     set_openthread_platform_config(&config);
 #endif
 
+    esp_matter::identification::init(1, 0);
+    esp_matter::identification::set_callback(nullptr);
+
     /* Matter start */
     err = esp_matter::start(app_event_cb);
     ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to start Matter, err:%d", err));
 
     init_network_driver();
-
-    esp_matter::identification::init(1, 0);
-    esp_matter::identification::set_callback(nullptr);
 
     /* Starting driver with default values */
     LogErrorOnFailure(chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t arg) {
