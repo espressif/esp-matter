@@ -2689,7 +2689,7 @@ attribute_t *create_smoke_sensitivity_level(cluster_t *cluster, uint8_t value)
 
 attribute_t *create_expiry_date(cluster_t *cluster, uint32_t value)
 {
-    return esp_matter::attribute::create(cluster, SmokeCoAlarm::Attributes::ContaminationState::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, SmokeCoAlarm::Attributes::ExpiryDate::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_attr_val(value));
 }
 
