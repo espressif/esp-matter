@@ -43,8 +43,8 @@ After commissioning with the Apple Home app, the Home app automatically adds a k
 
 Press the boot button (front button on M5Stack Nano) to toggle the lock state. The RGB LED indicates the current state:
 
-- Red: locked
-- Green: unlocked or unlatched
+- Green: locked
+- Red: unlocked or unlatched
 - Amber: locking or unlocking
 - Off: unknown state
 
