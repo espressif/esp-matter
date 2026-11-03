@@ -8,7 +8,7 @@ The OTA Provider will maintain a cache array of OTA candidates, which is used to
 
 2. The OTA Provider will look up the OTA candidates cache array to find whether there is an available update for the specific VendorID and ProductID in the command data.
 
-    a. If there is already a candidate record for the specific VendorID and ProductID with valid SoftwareVersion, the OTA Provider will reply a UpdateAvailable reponse and start BDXTransfer.
+    a. If there is already a candidate record for the specific VendorID and ProductID with valid SoftwareVersion, the OTA Provider will reply a UpdateAvailable response and start BDXTransfer.
 
     b. If there is no record for the specific VendorID, ProductID, and SoftwareVersion, the OTA Provider will try to fetch the candidate from the MainNet or TestNet DCL (Distributed Compliance Ledger).
        b1. If there is an error during candidate fetching, the OTA provider will reply a response with NotAvailable status.

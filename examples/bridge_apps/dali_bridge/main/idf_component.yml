@@ -1,0 +1,4 @@
+dependencies:
+  espressif/dali: "~1.1.0"
+  idf:
+    version: ">=5.5.0"

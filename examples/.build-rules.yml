@@ -105,6 +105,12 @@ examples/bridge_apps/bridge_cli:
       temporary: true
       reason: the other targets are not tested yet
 
+examples/bridge_apps/dali_bridge:
+  enable:
+    - if: IDF_TARGET in ["esp32", "esp32s3", "esp32c3", "esp32c6", "esp32h2"]
+      temporary: true
+      reason: the other targets are not tested yet
+
 examples/sensors:
   enable:
     - if: IDF_TARGET in ["esp32c3"]

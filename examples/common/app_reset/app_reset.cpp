@@ -7,7 +7,7 @@
 */
 
 /* It is recommended to copy this code in your example so that you can modify as per your application's needs,
- * especially for the indicator calbacks, button_factory_reset_pressed_cb() and button_factory_reset_released_cb().
+ * especially for the indicator callbacks, button_factory_reset_pressed_cb() and button_factory_reset_released_cb().
  */
 
 #include <esp_log.h>
