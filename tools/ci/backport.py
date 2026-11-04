@@ -12,6 +12,7 @@
 #        title:       "[vX.Y]: <original title>"
 #        description: "Backporting !<iid>"
 #        assignee:    original MR author
+#        reviewers:   users who approved the original MR
 #
 # Versions that already have a backport MR are skipped, so re-running is safe.
 # When every labelled version has its backport, the original MR gets the
@@ -56,6 +57,10 @@ class GitlabApi:
             reversed(self.request(f"merge_requests/{iid}/commits?per_page=100"))
         )
 
+    def mr_approvers(self, iid):
+        approvals = self.request(f"merge_requests/{iid}/approvals")
+        return [a["user"] for a in approvals.get("approved_by", [])]
+
     def existing_backport(self, iid, target_branch):
         # A backport MR targets the release branch and references !<iid> in its description
         mrs = self.request(
@@ -99,7 +104,7 @@ def git(repo_dir, *args, check=True):
     return result
 
 
-def backport_one(api, repo_dir, mr, version, commits, push_url, dry_run):
+def backport_one(api, repo_dir, mr, version, commits, reviewers, push_url, dry_run):
     """Create branch + MR for one version. Returns created MR dict or None on conflict."""
     iid = mr["iid"]
     target_branch = f"release/v{version}"
@@ -126,6 +131,9 @@ def backport_one(api, repo_dir, mr, version, commits, push_url, dry_run):
         print(
             f'  dry-run: would push {bp_branch} and create MR "[v{version}]: {mr["title"]}"'
         )
+        print(
+            f"  dry-run: reviewers: {', '.join(u['username'] for u in reviewers) or '(none)'}"
+        )
         return {"web_url": "(dry-run)"}
 
     git(repo_dir, "push", push_url, f"HEAD:refs/heads/{bp_branch}")
@@ -137,7 +145,7 @@ def backport_one(api, repo_dir, mr, version, commits, push_url, dry_run):
         "description": f"Backporting !{iid}",
         "remove_source_branch": True,
         "assignee_id": mr["author"]["id"],
-        "reviewer_ids": [],
+        "reviewer_ids": [u["id"] for u in reviewers],
         "labels": "backport",
     }
     new_mr = api.create_mr(payload)
@@ -221,6 +229,9 @@ def main():
     print(f"Backport versions: {', '.join(versions)}")
 
     commits = api.mr_commits(iid)
+    # Request review from whoever approved the original MR
+    reviewers = api.mr_approvers(iid)
+    print(f"Reviewers: {', '.join(u['username'] for u in reviewers) or '(none)'}")
     repo_dir = args.repo_dir
     if git(repo_dir, "status", "--porcelain", "--untracked-files=no").stdout.strip():
         sys.exit(
@@ -245,7 +256,7 @@ def main():
                 created.append((version, existing))
                 continue
             result = backport_one(
-                api, repo_dir, mr, version, commits, push_url, args.dry_run
+                api, repo_dir, mr, version, commits, reviewers, push_url, args.dry_run
             )
             if result:
                 created.append((version, result))
