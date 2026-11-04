@@ -107,19 +107,19 @@ esp_err_t app_driver_init();
             .spi_interface =                       \
                 {                                  \
                     .mosi_io_num = 11,             \
-                    .sclk_io_num = 12,             \
                     .miso_io_num = 13,             \
+                    .sclk_io_num = 12,             \
                 },                                 \
             .spi_device =                          \
                 {                                  \
-                    .cs_ena_pretrans = 2,          \
-                    .input_delay_ns = 100,         \
                     .mode = 0,                     \
+                    .cs_ena_pretrans = 2,          \
                     .clock_speed_hz = 2500 * 1000, \
+                    .input_delay_ns = 100,         \
                     .spics_io_num = 10,            \
                     .queue_size = 5,               \
                 },                                 \
-            .intr_pin = 8,                         \
+            .intr_pin = GPIO_NUM_8,                \
         },                                         \
     }
 #endif // CONFIG_OPENTHREAD_RADIO_SPINEL_UART OR  CONFIG_OPENTHREAD_RADIO_SPINEL_SPI
