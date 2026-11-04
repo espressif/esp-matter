@@ -36,7 +36,6 @@ application.
 #include <app/server/Dnssd.h>
 #include <esp_matter_identify.h>
 #endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
-#include <esp_matter_client.h>
 #include <esp_matter_core.h>
 #include <platform/CHIPDeviceEvent.h>
 #include <platform/CHIPDeviceLayer.h>

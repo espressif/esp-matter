@@ -1,4 +1,4 @@
-// Copyright 2025 Espressif Systems (Shanghai) PTE LTD
+// Copyright 2026 Espressif Systems (Shanghai) PTE LTD
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,10 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <esp_err.h>
+#pragma once
 
-namespace esp_matter {
-namespace controller {
-esp_err_t list_registered_icd();
-} // namespace controller
-} // namespace esp_matter
+#include <esp_err.h>
+#include <lib/core/NodeId.h>
+#include <stddef.h>
+#include <stdint.h>
+
+constexpr size_t kMaxDevices = 32;
+
+struct device_list_t {
+    uint32_t version;
+    uint32_t count;
+    chip::NodeId nodes[kMaxDevices];
+};
+
+// Initialize after commissioner setup, while holding the CHIP stack lock.
+// Registry load errors leave only device clear available.
+esp_err_t devices_init();

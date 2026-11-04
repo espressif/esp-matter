@@ -10,8 +10,10 @@ list(APPEND srcs_list "test_optional_clusters_validation.cpp")
 list(APPEND srcs_list "data_model_common.cpp")
 list(APPEND srcs_list "jsontlv.cpp")
 list(APPEND srcs_list "attribute_helpers.cpp")
+list(APPEND srcs_list "client_basic.cpp")
+list(APPEND srcs_list "client_binding.cpp")
 
 idf_component_register(SRCS ${srcs_list}
                        INCLUDE_DIRS "."
-                       PRIV_INCLUDE_DIRS "../data_model_provider/private" "../data_model/private"
-                       REQUIRES unity esp_matter)
+                       PRIV_INCLUDE_DIRS "../client/private" "../data_model_provider/private" "../data_model/private"
+                       REQUIRES unity esp_matter nvs_flash esp_event)

@@ -1,4 +1,4 @@
-// Copyright 2024 Espressif Systems (Shanghai) PTE LTD
+// Copyright 2026 Espressif Systems (Shanghai) PTE LTD
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,174 +12,195 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <esp_err.h>
-#include <esp_log.h>
-#include <esp_matter_controller_client.h>
-#include <esp_matter_controller_utils.h>
 #include <esp_matter_controller_commissioning_window_opener.h>
-
+#include <esp_matter_client_invoke_command.h>
 #include <app-common/zap-generated/cluster-objects.h>
-#include <app/server/Server.h>
-#include <controller/CHIPCluster.h>
 #include <crypto/CHIPCryptoPAL.h>
-#include <lib/core/CHIPError.h>
-#include <lib/core/NodeId.h>
-#include <lib/core/Optional.h>
-#include <setup_payload/ManualSetupPayloadGenerator.h>
-#include <setup_payload/QRCodeSetupPayloadGenerator.h>
+#include <lib/support/CHIPMem.h>
+#include <lib/support/CodeUtils.h>
+#include <protocols/secure_channel/PASESession.h>
 
-using namespace chip::app::Clusters;
-
-#define TAG "controller"
+using namespace chip;
+using namespace chip::app;
+using namespace chip::Crypto;
 
 namespace esp_matter {
 namespace controller {
+namespace commissioning_window {
 
-esp_err_t commissioning_window_opener::send_open_commissioning_window_command(uint64_t node_id, bool is_enhanced,
-                                                                              uint16_t timeout, uint32_t iteration,
-                                                                              uint16_t discriminator,
-                                                                              uint16_t timed_invoke_timeout_ms)
-{
-    if (!chip::IsOperationalNodeId(node_id)) {
-        return ESP_ERR_INVALID_ARG;
+class interaction::Impl final : public client::invoke_command::delegate {
+public:
+    ~Impl()
+    {
+        VerifyOrDie(!mDeliveringCallbacks);
     }
-    m_is_enhanced = is_enhanced;
-    m_timeout = timeout;
-    m_iteration = iteration;
-    m_discriminator = discriminator;
-    m_timed_invoke_timeout_ms = timed_invoke_timeout_ms;
-#ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
-    chip::Server &server = chip::Server::GetInstance();
-    server.GetCASESessionManager()->FindOrEstablishSession(ScopedNodeId(node_id, get_fabric_index()),
-                                                           &on_device_connected_cb, &on_device_connection_failure_cb);
-    return ESP_OK;
-#else
-    auto &controller_instance = esp_matter::controller::matter_controller_client::get_instance();
-#ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-    if (CHIP_NO_ERROR ==
-            controller_instance.get_commissioner()->GetConnectedDevice(node_id, &on_device_connected_cb,
-                                                                       &on_device_connection_failure_cb)) {
-        return ESP_OK;
-    }
-#else
-    if (CHIP_NO_ERROR ==
-            controller_instance.get_controller()->GetConnectedDevice(node_id, &on_device_connected_cb,
-                                                                     &on_device_connection_failure_cb)) {
-        return ESP_OK;
-    }
-#endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
-#endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
-    return ESP_OK;
-}
-static esp_err_t generate_pase_verifier(uint32_t iteration, uint32_t &pincode, chip::MutableByteSpan &salt,
-                                        chip::Crypto::Spake2pVerifier &verifier)
-{
-    if (chip::Crypto::DRBG_get_bytes(salt.data(), salt.size()) != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to generate salt");
-        return ESP_FAIL;
-    }
-    if (chip::PASESession::GeneratePASEVerifier(verifier, iteration, salt, true, pincode) != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to generate PASE verifier");
-        return ESP_FAIL;
-    }
-    return ESP_OK;
-}
 
-static esp_err_t generate_manual_code(uint32_t pincode, uint16_t discriminator, char *manual_code_buffer,
-                                      size_t buffer_size)
-{
-    chip::SetupPayload payload = chip::SetupPayload();
-    payload.setUpPINCode = pincode;
-    payload.version = 0;
-    payload.discriminator.SetLongValue(discriminator);
-    payload.rendezvousInformation.SetValue(chip::RendezvousInformationFlag::kOnNetwork);
-    char payload_buffer[chip::QRCodeBasicSetupPayloadGenerator::kMaxQRCodeBase38RepresentationLength + 1];
-    chip::MutableCharSpan manual_code(payload_buffer);
-    CHIP_ERROR err = chip::ManualSetupPayloadGenerator(payload).payloadDecimalStringRepresentation(manual_code);
-    if (err != CHIP_NO_ERROR || manual_code.size() >= buffer_size) {
-        return ESP_FAIL;
-    }
-    strncpy(manual_code_buffer, manual_code.data(), manual_code.size());
-    manual_code_buffer[manual_code.size()] = 0;
-    return ESP_OK;
-}
+    CHIP_ERROR Start(const request_t &request, commissioning_window::delegate *delegate)
+    {
+        VerifyOrReturnError(IsOperationalNodeId(request.node.GetNodeId()) &&
+                            request.node.GetFabricIndex() != kUndefinedFabricIndex && request.window_timeout_seconds != 0 &&
+                            request.timed_invoke_timeout_ms != 0,
+                            CHIP_ERROR_INVALID_ARGUMENT);
+        VerifyOrReturnError(request.method == method_t::basic || request.method == method_t::passcode ||
+                            request.method == method_t::verifier, CHIP_ERROR_INVALID_ARGUMENT);
+        mDelegate = delegate;
 
-void commissioning_window_opener::on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr,
-                                                          const SessionHandle &sessionHandle)
-{
-    commissioning_window_opener *window_opener = reinterpret_cast<commissioning_window_opener *>(context);
-    if (!window_opener) {
-        return;
-    }
-    if (window_opener->m_is_enhanced) {
-        uint8_t salt_buffer[chip::Crypto::kSpake2p_Max_PBKDF_Salt_Length];
-        chip::MutableByteSpan salt = chip::MutableByteSpan(salt_buffer);
-        chip::Crypto::Spake2pVerifier verifier;
-        if (generate_pase_verifier(window_opener->m_iteration, window_opener->m_pincode, salt, verifier) != ESP_OK) {
-            return;
+        if (request.method == method_t::basic) {
+            Clusters::AdministratorCommissioning::Commands::OpenBasicCommissioningWindow::Type command;
+            command.commissioningTimeout = request.window_timeout_seconds;
+            return Submit(request.node, command, request.timed_invoke_timeout_ms);
         }
-        chip::Crypto::Spake2pVerifierSerialized serialized_verifier;
-        chip::MutableByteSpan serialized_verifier_span(serialized_verifier);
-        if (verifier.Serialize(serialized_verifier_span) != CHIP_NO_ERROR) {
-            ESP_LOGE(TAG, "Failed to serialize the verifier");
-            return;
-        }
-        AdministratorCommissioning::Commands::OpenCommissioningWindow::Type command_data;
-        command_data.commissioningTimeout = window_opener->m_timeout;
-        command_data.PAKEPasscodeVerifier = serialized_verifier_span;
-        command_data.discriminator = window_opener->m_discriminator;
-        command_data.iterations = window_opener->m_iteration;
-        command_data.salt = salt;
 
-        chip::Controller::ClusterBase cluster(exchangeMgr, sessionHandle, window_opener->m_default_remote_endpoint_id);
-        LogErrorOnFailure(cluster.InvokeCommand(command_data, window_opener, send_command_success_callback, send_command_failure_callback,
-                                                chip::MakeOptional(window_opener->m_timed_invoke_timeout_ms)));
-    } else {
-        AdministratorCommissioning::Commands::OpenBasicCommissioningWindow::Type command_data;
-        command_data.commissioningTimeout = window_opener->m_timeout;
-        chip::Controller::ClusterBase cluster(exchangeMgr, sessionHandle, window_opener->m_default_remote_endpoint_id);
-        LogErrorOnFailure(cluster.InvokeCommand(command_data, window_opener, send_command_success_callback, send_command_failure_callback,
-                                                chip::MakeOptional(window_opener->m_timed_invoke_timeout_ms)));
-    }
-}
-
-void commissioning_window_opener::on_device_connection_failure_fcn(void *context, const ScopedNodeId &peerId,
-                                                                   CHIP_ERROR error)
-{
-    commissioning_window_opener *window_opener = reinterpret_cast<commissioning_window_opener *>(context);
-    if (window_opener) {
-        ESP_LOGE(TAG, "Failed to establish CASE session for open %s commissioning window command",
-                 window_opener->m_is_enhanced ? "enhanced" : "basic");
-    }
-}
-
-void commissioning_window_opener::send_command_success_callback(void *context,
-                                                                const chip::app::DataModel::NullObjectType &data)
-{
-    commissioning_window_opener *window_opener = reinterpret_cast<commissioning_window_opener *>(context);
-    if (!window_opener) {
-        return;
-    }
-    ESP_LOGI(TAG, "Open %s commissioning window finished", window_opener->m_is_enhanced ? "enhanced" : "basic");
-    if (window_opener->m_is_enhanced) {
-        if (window_opener->m_callback) {
-            char manual_code[22];
-            if (generate_manual_code(window_opener->m_pincode, window_opener->m_discriminator, manual_code,
-                                     sizeof(manual_code)) == ESP_OK) {
-                window_opener->m_callback(manual_code);
+        uint32_t iterations;
+        uint16_t discriminator;
+        ByteSpan salt;
+        ByteSpan verifier;
+        Spake2pVerifierSerialized generated_verifier;
+        // salt borrows this buffer until Submit() below.
+        // cppcheck-suppress variableScope
+        uint8_t generated_salt[kSpake2p_Max_PBKDF_Salt_Length];
+        if (request.method == method_t::passcode) {
+            const auto &params = request.params.passcode;
+            iterations = params.iterations;
+            discriminator = params.discriminator;
+            VerifyOrReturnError(!params.setup_pin.HasValue() || SetupPayload::IsValidSetupPIN(params.setup_pin.Value()),
+                                CHIP_ERROR_INVALID_ARGUMENT);
+            if (params.salt.HasValue()) {
+                salt = params.salt.Value();
+            } else {
+                ReturnErrorOnFailure(DRBG_get_bytes(generated_salt, sizeof(generated_salt)));
+                salt = ByteSpan(generated_salt);
             }
+            ReturnErrorOnFailure(ValidateEnhanced(discriminator, iterations, salt));
+            uint32_t pin = params.setup_pin.ValueOr(0);
+            Spake2pVerifier verifier_value;
+            ReturnErrorOnFailure(chip::PASESession::GeneratePASEVerifier(
+                                     verifier_value, iterations, salt, !params.setup_pin.HasValue(), pin));
+            MutableByteSpan serialized(generated_verifier);
+            ReturnErrorOnFailure(verifier_value.Serialize(serialized));
+            verifier = serialized;
+            mPayload.SetValue(SetupPayload());
+            mPayload.Value().version = 0;
+            mPayload.Value().discriminator.SetLongValue(discriminator);
+            mPayload.Value().setUpPINCode = pin;
+            mPayload.Value().rendezvousInformation.SetValue(RendezvousInformationFlag::kOnNetwork);
+        } else {
+            const auto &params = request.params.verifier;
+            iterations = params.iterations;
+            discriminator = params.discriminator;
+            salt = params.salt;
+            verifier = params.verifier;
+            ReturnErrorOnFailure(ValidateEnhanced(discriminator, iterations, salt));
+            VerifyOrReturnError(verifier.data() != nullptr && verifier.size() == kSpake2p_VerifierSerialized_Length,
+                                CHIP_ERROR_INVALID_ARGUMENT);
+        }
+        Clusters::AdministratorCommissioning::Commands::OpenCommissioningWindow::Type command;
+        command.commissioningTimeout = request.window_timeout_seconds;
+        command.discriminator = discriminator;
+        command.iterations = iterations;
+        command.salt = salt;
+        command.PAKEPasscodeVerifier = verifier;
+        return Submit(request.node, command, request.timed_invoke_timeout_ms);
+    }
+
+    bool Active() const
+    {
+        return mInvoke.active();
+    }
+    bool DeliveringCallbacks() const
+    {
+        return mDeliveringCallbacks;
+    }
+
+private:
+    static CHIP_ERROR ValidateEnhanced(uint16_t discriminator, uint32_t iterations, ByteSpan salt)
+    {
+        VerifyOrReturnError(discriminator < (1u << SetupDiscriminator::kLongBits) &&
+                            iterations >= kSpake2p_Min_PBKDF_Iterations && iterations <= kSpake2p_Max_PBKDF_Iterations &&
+                            salt.data() != nullptr && salt.size() >= kSpake2p_Min_PBKDF_Salt_Length &&
+                            salt.size() <= kSpake2p_Max_PBKDF_Salt_Length, CHIP_ERROR_INVALID_ARGUMENT);
+        return CHIP_NO_ERROR;
+    }
+
+    template <typename Command>
+    CHIP_ERROR Submit(const ScopedNodeId &node, const Command &command, uint16_t timed_timeout_ms)
+    {
+        chip::app::DataModel::EncodableType<Command> fields(command);
+        client::invoke_command::request_t request;
+        request.endpoint_id = 0;
+        request.cluster_id = Command::GetClusterId();
+        request.command_id = Command::GetCommandId();
+        request.fields = &fields;
+        request.options.timed_timeout_ms.SetValue(timed_timeout_ms);
+        return mInvoke.start(node, request, this);
+    }
+
+    void OnResponse(const esp_matter::client::target_t &, const chip::app::ConcreteCommandPath &, const chip::app::StatusIB &status,
+                    TLV::TLVReader *) override
+    {
+        if (!status.IsSuccess()) {
+            mResponseError = status.ToChipError();
+        }
+        if (mDelegate != nullptr) {
+            response_t response{status, status.IsSuccess() && mPayload.HasValue() ? &mPayload.Value() : nullptr};
+            mDeliveringCallbacks = true;
+            mDelegate->OnResponse(response);
+            mDeliveringCallbacks = false;
         }
     }
-}
 
-void commissioning_window_opener::send_command_failure_callback(void *context, CHIP_ERROR error)
-{
-    commissioning_window_opener *window_opener = reinterpret_cast<commissioning_window_opener *>(context);
-    if (window_opener) {
-        ESP_LOGE(TAG, "Failed to send open %s commissioning window command",
-                 window_opener->m_is_enhanced ? "enhanced" : "basic");
+    void OnDone(const esp_matter::client::target_t &, CHIP_ERROR error) override
+    {
+        error = error == CHIP_NO_ERROR ? mResponseError : error;
+        commissioning_window::delegate *delegate = mDelegate;
+        mDelegate = nullptr;
+        if (delegate != nullptr) {
+            delegate->OnDone(error);
+        } else if (error != CHIP_NO_ERROR) {
+            ChipLogError(Controller, "Open commissioning window failed: %" CHIP_ERROR_FORMAT, error.Format());
+        }
     }
+
+    client::invoke_command::interaction mInvoke;
+    commissioning_window::delegate *mDelegate = nullptr;
+    Optional<SetupPayload> mPayload;
+    CHIP_ERROR mResponseError = CHIP_NO_ERROR;
+    bool mDeliveringCallbacks = false;
+};
+
+interaction::~interaction()
+{
+    stop();
 }
 
+CHIP_ERROR interaction::start(const request_t &request, commissioning_window::delegate *delegate)
+{
+    VerifyOrDie(mImpl == nullptr || !mImpl->DeliveringCallbacks());
+    VerifyOrReturnError(!active(), CHIP_ERROR_BUSY);
+    stop();
+    auto *impl = chip::Platform::New<Impl>();
+    VerifyOrReturnError(impl != nullptr, CHIP_ERROR_NO_MEMORY);
+    CHIP_ERROR error = impl->Start(request, delegate);
+    if (error != CHIP_NO_ERROR) {
+        chip::Platform::Delete(impl);
+        return error;
+    }
+    mImpl = impl;
+    return CHIP_NO_ERROR;
+}
+
+void interaction::stop()
+{
+    VerifyOrDie(mImpl == nullptr || !mImpl->DeliveringCallbacks());
+    chip::Platform::Delete(mImpl);
+    mImpl = nullptr;
+}
+
+bool interaction::active() const
+{
+    return mImpl != nullptr && mImpl->Active();
+}
+
+} // namespace commissioning_window
 } // namespace controller
 } // namespace esp_matter

@@ -45,6 +45,9 @@ CONFIG_ENABLE_MATTER_OVER_THREAD=n
 # unique local addresses for fabrics(MAX_FABRIC), a link local address(1)
 CONFIG_LWIP_IPV6_NUM_ADDRESSES=6
 
+# Client tests use about 6 KiB of main-task stack on ESP32-C3.
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=8192
+
 # borrowed from unit-test-app
 CONFIG_FREERTOS_WATCHPOINT_END_OF_STACK=y
 CONFIG_HEAP_POISONING_COMPREHENSIVE=y

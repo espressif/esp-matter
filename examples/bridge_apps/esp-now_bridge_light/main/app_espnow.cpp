@@ -17,6 +17,7 @@
 #include "espnow.h"
 #include "espnow_ctrl.h"
 #include "app_espnow.h"
+#include "app_priv.h"
 
 #ifdef CONFIG_ESPNOW_BRIDGE_APP_PS_ENABLE
 #include <esp_wifi.h>
@@ -34,22 +35,14 @@ static void espnow_ctrl_onoff(espnow_addr_t src_addr, bool status)
 {
     ESP_LOGI(TAG, "ESP-NOW button pressed");
 
-    // Update bound light
-    client::request_handle_t req_handle;
-    req_handle.type = esp_matter::client::INVOKE_CMD;
-    req_handle.command_path.mClusterId = OnOff::Id;
-    if (status) {
-        req_handle.command_path.mCommandId = OnOff::Commands::On::Id;
-    } else {
-        req_handle.command_path.mCommandId = OnOff::Commands::Off::Id;
-    }
-
     uint16_t bridged_switch_endpoint_id = app_bridge_get_endpoint(&src_addr);
     ESP_LOGI(TAG, "Using bridge endpoint: %u", bridged_switch_endpoint_id);
 
     if (bridged_switch_endpoint_id != chip::kInvalidEndpointId) {
-        lock::ScopedChipStackLock lock(portMAX_DELAY);
-        client::cluster_update(bridged_switch_endpoint_id, &req_handle);
+        CHIP_ERROR err = app_driver_bound_on_off(bridged_switch_endpoint_id, status);
+        if (err != CHIP_NO_ERROR) {
+            ESP_LOGE(TAG, "Bound On/Off submission failed: %s", chip::ErrorStr(err));
+        }
     } else {
         ESP_LOGE(TAG, "Can't find endpoint for bridged device: " MACSTR, MAC2STR(src_addr));
     }

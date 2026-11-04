@@ -1,4 +1,4 @@
-// Copyright 2022 Espressif Systems (Shanghai) PTE LTD
+// Copyright 2022-2026 Espressif Systems (Shanghai) PTE LTD
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,6 +13,12 @@
 // limitations under the License.
 
 #pragma once
+
+#include <sdkconfig.h>
+
+#ifdef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
+#error "esp_matter_controller_client.h requires Matter server support to be disabled"
+#endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 
 #include <esp_log.h>
 #include <esp_matter_controller_credentials_issuer.h>
@@ -45,50 +51,12 @@
 
 #if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
 #include <controller/CommissionerDiscoveryController.h>
-#endif
+#endif // CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
+
 namespace esp_matter {
 namespace controller {
 
-#ifndef CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
 typedef void (*remove_fabric_callback)(chip::NodeId remoteNodeId, CHIP_ERROR status);
-
-class auto_fabric_remover : private chip::Controller::CurrentFabricRemover {
-public:
-    static esp_err_t remove_fabric(chip::Controller::DeviceController *controller, chip::NodeId remote_node,
-                                   remove_fabric_callback callback)
-    {
-        auto *remover = chip::Platform::New<auto_fabric_remover>(controller, callback);
-        if (remover == nullptr) {
-            return ESP_ERR_NO_MEM;
-        }
-        CHIP_ERROR err = remover->CurrentFabricRemover::RemoveCurrentFabric(remote_node, &remover->m_matter_callback);
-        if (err != CHIP_NO_ERROR) {
-            // If failing to call RemoveCurrentFabric(), delete the remover here. Otherwise the remover will be deleted
-            // in on_remove_current_fabric().
-            chip::Platform::Delete(remover);
-        }
-        return err == CHIP_NO_ERROR ? ESP_OK : ESP_FAIL;
-    }
-
-    auto_fabric_remover(chip::Controller::DeviceController *controller, remove_fabric_callback callback)
-        : chip::Controller::CurrentFabricRemover(controller)
-        , m_matter_callback(on_remove_current_fabric, this)
-        , m_remove_fabric_callback(callback)
-    {
-    }
-
-private:
-    static void on_remove_current_fabric(void *context, chip::NodeId remote_node, CHIP_ERROR status)
-    {
-        auto *self = static_cast<auto_fabric_remover *>(context);
-        if (self && self->m_remove_fabric_callback) {
-            self->m_remove_fabric_callback(remote_node, status);
-        }
-        chip::Platform::Delete(self);
-    }
-    chip::Callback::Callback<chip::Controller::OnCurrentFabricRemove> m_matter_callback;
-    remove_fabric_callback m_remove_fabric_callback;
-};
 
 class controller_check_in_delegate : public chip::app::DefaultCheckInDelegate {
 public:
@@ -186,30 +154,28 @@ public:
     {
         return &m_device_commissioner;
     }
-    esp_err_t unpair(NodeId remote_node, remove_fabric_callback callback = nullptr)
-    {
-        return auto_fabric_remover::remove_fabric(&m_device_commissioner, remote_node, callback);
-    }
+    // Successful removal clears this peer's ICD registration before notifying the caller.
+    esp_err_t unpair(NodeId remote_node, remove_fabric_callback callback = nullptr);
 #if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
     CommissionerDiscoveryController *get_discovery_controller()
     {
         return &m_commissioner_discovery_controller;
     }
-#endif
-#else
+#endif // CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
+#else // !CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     esp_err_t setup_controller(chip::MutableByteSpan &ipk, chip::FabricIndex stored_fabric_index = chip::kUndefinedFabricIndex);
     MatterDeviceController *get_controller()
     {
         return &m_device_controller;
     }
-#endif
+#endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     chip::FabricIndex get_fabric_index()
     {
 #ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
         return m_device_commissioner.GetFabricIndex();
-#else
+#else // !CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
         return m_device_controller.GetFabricIndex();
-#endif
+#endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     }
 
 private:
@@ -290,29 +256,11 @@ private:
     MatterDeviceCommissioner m_device_commissioner;
 #if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
     CommissionerDiscoveryController m_commissioner_discovery_controller;
-#endif
-#else
+#endif // CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
+#else // !CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     MatterDeviceController m_device_controller;
-#endif
+#endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 };
-#endif // CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER
-
-#if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
-class ESPCommissionerCallback : public CommissionerCallback {
-    void ReadyForCommissioning(uint32_t pincode, uint16_t longDiscriminator, PeerAddress peerAddress) override
-    {
-        NodeId gRemoteId = chip::kTestDeviceNodeId;
-        chip::RendezvousParameters params = chip::RendezvousParameters()
-                                            .SetSetupPINCode(pincode)
-                                            .SetDiscriminator(longDiscriminator)
-                                            .SetPeerAddress(peerAddress);
-        do {
-            LogErrorOnFailure(chip::Crypto::DRBG_get_bytes(reinterpret_cast<uint8_t *>(&gRemoteId), sizeof(gRemoteId)));
-        } while (!chip::IsOperationalNodeId(gRemoteId));
-        LogErrorOnFailure(matter_controller_client::get_instance().get_commissioner()->PairDevice(gRemoteId, params));
-    }
-};
-#endif
 
 } // namespace controller
 } // namespace esp_matter

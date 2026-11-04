@@ -1,4 +1,4 @@
-// Copyright 2024-2025 Espressif Systems (Shanghai) PTE LTD
+// Copyright 2024-2026 Espressif Systems (Shanghai) PTE LTD
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
 #include <esp_err.h>
 #include <esp_matter_controller_client.h>
 #include <esp_matter_controller_credentials_issuer.h>
-#include <esp_matter_controller_pairing_command.h>
 
 #include <app/InteractionModelEngine.h>
 #include <controller/CHIPDeviceControllerFactory.h>
@@ -30,6 +29,7 @@
 #include <crypto/CHIPCryptoPAL.h>
 #include <lib/core/CHIPError.h>
 #include <lib/core/DataModelTypes.h>
+#include <lib/support/AutoRelease.h>
 #include <lib/support/CHIPMem.h>
 #include <lib/support/ScopedMemoryBuffer.h>
 #include <lib/support/Span.h>
@@ -39,17 +39,17 @@
 #ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 #include <esp_matter_attestation_trust_store.h>
 #include <esp_matter_da_revocation_delegate.h>
-#endif
+#endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 
 #if CONFIG_ENABLE_ESP32_BLE_CONTROLLER
 #include <platform/internal/BLEManager.h>
-#endif
+#endif // CONFIG_ENABLE_ESP32_BLE_CONTROLLER
 
 #if CHIP_DEVICE_CONFIG_DYNAMIC_SERVER
 #include <app/clusters/ota-provider/ota-provider-cluster.h>
 #include <app/dynamic_server/AccessControl.h>
 #include <esp_matter_ota_provider.h>
-#endif
+#endif // CHIP_DEVICE_CONFIG_DYNAMIC_SERVER
 
 #define TAG "MatterController"
 
@@ -57,10 +57,6 @@ using chip::Platform::ScopedMemoryBufferWithSize;
 
 namespace esp_matter {
 namespace controller {
-
-#if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
-ESPCommissionerCallback commissioner_callback;
-#endif
 
 esp_err_t matter_controller_client::init(NodeId node_id, FabricId fabric_id, uint16_t listen_port)
 {
@@ -108,11 +104,84 @@ esp_err_t matter_controller_client::init(NodeId node_id, FabricId fabric_id, uin
         "Failed to initialize OTA provider");
     data_model::provider::get_instance().set_ota_provider_delegate(&ota_provider);
     chip::app::dynamic_server::InitAccessControl();
-#endif
+#endif // CHIP_DEVICE_CONFIG_DYNAMIC_SERVER
     return ESP_OK;
 }
 
 #ifdef CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
+namespace {
+
+class auto_fabric_remover : private chip::Controller::CurrentFabricRemover {
+public:
+    static esp_err_t remove_fabric(chip::Controller::DeviceController *controller, chip::NodeId node,
+                                   chip::app::DefaultICDClientStorage &storage, remove_fabric_callback callback)
+    {
+        auto *remover = chip::Platform::New<auto_fabric_remover>(controller, node, storage, callback);
+        if (remover == nullptr) {
+            return ESP_ERR_NO_MEM;
+        }
+        CHIP_ERROR err = remover->RemoveCurrentFabric(node, &remover->m_matter_callback);
+        if (err != CHIP_NO_ERROR) {
+            chip::Platform::Delete(remover);
+        }
+        return err == CHIP_NO_ERROR ? ESP_OK : ESP_FAIL;
+    }
+
+    auto_fabric_remover(chip::Controller::DeviceController *controller, chip::NodeId node,
+                        chip::app::DefaultICDClientStorage &storage, remove_fabric_callback callback)
+        : chip::Controller::CurrentFabricRemover(controller),
+          m_matter_callback(on_remove_current_fabric, this), m_callback(callback),
+          m_storage(storage), m_peer(node, controller->GetFabricIndex()) {}
+
+private:
+    void clear_icd_registration()
+    {
+        bool registered = false;
+        {
+            chip::AutoRelease entries(m_storage.IterateICDClientInfo());
+            if (entries.IsNull()) {
+                ESP_LOGE(TAG, "Cannot inspect ICD registrations after unpairing");
+                return;
+            }
+            chip::app::ICDClientInfo info;
+            while (entries->Next(info)) {
+                if (info.peer_node == m_peer) {
+                    registered = true;
+                    break;
+                }
+            }
+        }
+        // DeleteEntry updates its count even when the node is absent.
+        if (registered) {
+            LogErrorOnFailure(m_storage.DeleteEntry(m_peer));
+        }
+    }
+
+    static void on_remove_current_fabric(void *context, chip::NodeId node, CHIP_ERROR error)
+    {
+        auto *self = static_cast<auto_fabric_remover *>(context);
+        if (error == CHIP_NO_ERROR) {
+            self->clear_icd_registration();
+        }
+        if (self->m_callback != nullptr) {
+            self->m_callback(node, error);
+        }
+        chip::Platform::Delete(self);
+    }
+
+    chip::Callback::Callback<chip::Controller::OnCurrentFabricRemove> m_matter_callback;
+    remove_fabric_callback m_callback;
+    chip::app::DefaultICDClientStorage &m_storage;
+    chip::ScopedNodeId m_peer;
+};
+
+} // namespace
+
+esp_err_t matter_controller_client::unpair(NodeId remote_node, remove_fabric_callback callback)
+{
+    return auto_fabric_remover::remove_fabric(&m_device_commissioner, remote_node, m_icd_client_storage, callback);
+}
+
 esp_err_t matter_controller_client::setup_commissioner()
 {
 #if CONFIG_ENABLE_ESP32_BLE_CONTROLLER
@@ -193,15 +262,14 @@ esp_err_t matter_controller_client::setup_commissioner()
 #if CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
     get_discovery_controller()->SetUserDirectedCommissioningServer(
         get_commissioner()->GetUserDirectedCommissioningServer());
-    get_discovery_controller()->SetCommissionerCallback(&commissioner_callback);
-#endif
+#endif // CHIP_DEVICE_CONFIG_ENABLE_COMMISSIONER_DISCOVERY
 
     m_device_commissioner.RegisterPairingDelegate(nullptr);
 
     return ESP_OK;
 }
 
-#else
+#else // !CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 esp_err_t matter_controller_client::setup_controller(chip::MutableByteSpan &ipk, chip::FabricIndex stored_fabric_index)
 {
     chip::Controller::SetupParams controller_params;

@@ -19,12 +19,11 @@
 #include <app_priv.h>
 #include <app_reset.h>
 #if CONFIG_SUBSCRIBE_TO_ON_OFF_SERVER_AFTER_BINDING
-#include <app/clusters/bindings/binding-table.h>
-#include <esp_matter_client.h>
 #include <app/AttributePathParams.h>
 #include <app/ConcreteAttributePath.h>
+#include <app/clusters/bindings/binding-table.h>
+#include <esp_matter_client_subscribe_command.h>
 #include <lib/core/TLVReader.h>
-#include <app/server/Server.h>
 #endif
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
@@ -49,6 +48,35 @@ dynamic_commissionable_data_provider g_dynamic_passcode_provider;
 
 #if CONFIG_SUBSCRIBE_TO_ON_OFF_SERVER_AFTER_BINDING
 static bool do_subscribe = true;
+
+class OnOffSubscriptionDelegate final : public client::subscribe_command::delegate {
+public:
+    void OnAttribute(const esp_matter::client::target_t &, const chip::app::ConcreteDataAttributePath &path,
+                     chip::TLV::TLVReader *, const chip::app::StatusIB &) override
+    {
+        if (path.mClusterId == chip::app::Clusters::OnOff::Id &&
+                path.mAttributeId == chip::app::Clusters::OnOff::Attributes::OnOff::Id) {
+            ESP_LOGI(TAG, "Received OnOff attribute");
+        }
+    }
+
+    void OnReportEnd(const esp_matter::client::target_t &, CHIP_ERROR err) override
+    {
+        if (err != CHIP_NO_ERROR) {
+            ESP_LOGE(TAG, "OnOff subscription report failed: %s", ErrorStr(err));
+        }
+    }
+
+    void OnStateChanged(const esp_matter::client::target_t &, client::subscribe_command::state_t state,
+                        CHIP_ERROR error) override
+    {
+        ESP_LOGI(TAG, "OnOff subscription state=%u: %s",
+                 static_cast<unsigned>(state), ErrorStr(error));
+    }
+};
+
+static OnOffSubscriptionDelegate on_off_subscription_delegate;
+static client::subscribe_command::subscription on_off_subscription;
 #endif
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
@@ -93,22 +121,34 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
                     " groupId=%d local endpoint=%d remote endpoint=%d cluster=" ChipLogFormatMEI,
                     binding.type, binding.fabricIndex, ChipLogValueX64(binding.nodeId), binding.groupId, binding.local,
                     binding.remote, ChipLogValueMEI(binding.clusterId.value_or(0)));
-                if (binding.type == chip::app::Clusters::Binding::MATTER_UNICAST_BINDING && event->BindingsChanged.fabricIndex == binding.fabricIndex) {
+                if (binding.type == chip::app::Clusters::Binding::MATTER_UNICAST_BINDING &&
+                        event->BindingsChanged.fabricIndex == binding.fabricIndex &&
+                        binding.clusterId.value_or(chip::app::Clusters::OnOff::Id) ==
+                        chip::app::Clusters::OnOff::Id) {
                     ESP_LOGI(
                         TAG,
                         "Matched accessingFabricIndex with nodeId=0x" ChipLogFormatX64,
                         ChipLogValueX64(binding.nodeId));
 
-                    uint32_t attribute_id = chip::app::Clusters::OnOff::Attributes::OnOff::Id;
-                    client::request_handle_t req_handle;
-                    req_handle.type = esp_matter::client::SUBSCRIBE_ATTR;
-                    req_handle.attribute_path = {binding.remote, binding.clusterId.value(), attribute_id};
-                    auto &server = chip::Server::GetInstance();
-                    client::connect(server.GetCASESessionManager(), binding.fabricIndex, binding.nodeId, &req_handle);
+                    chip::app::AttributePathParams path(
+                        binding.remote, chip::app::Clusters::OnOff::Id,
+                        chip::app::Clusters::OnOff::Attributes::OnOff::Id);
+                    client::subscribe_command::options_t options;
+                    options.min_interval = 5;
+                    options.max_interval = 10;
+                    client::subscribe_command::request_t request(
+                        chip::Span<const chip::app::AttributePathParams>(&path, 1), options);
+                    CHIP_ERROR err = on_off_subscription.start(
+                                         chip::ScopedNodeId(binding.nodeId, binding.fabricIndex),
+                                         request, on_off_subscription_delegate);
+                    if (err == CHIP_NO_ERROR) {
+                        do_subscribe = false;
+                    } else {
+                        ESP_LOGE(TAG, "OnOff subscription submission failed: %s", ErrorStr(err));
+                    }
                     break;
                 }
             }
-            do_subscribe = false;
         }
 #endif
     }

@@ -1,3 +1,54 @@
+# 26-October-2026
+
+## Client interaction API changes (Breaking)
+
+- `esp_matter::client` exposes Invoke, Read, Write, Subscribe, and Binding APIs through
+  `esp_matter_client.h`. Legacy client callbacks and controller-specific interaction
+  APIs are removed.
+- Keep caller-owned operations and delegates alive until completion or `stop()`.
+  Hold the CHIP stack lock when starting or stopping an operation. Synchronous
+  submission errors do not trigger delegate callbacks. Invoke, Read, and Write
+  allow stop, destruction, and reuse in `OnDone()`. Starting a new operation
+  releases completed state.
+- Group Invoke and Write use `start(group_id, fabric_index, request, &delegate)`.
+  Completion reports dispatch without member acknowledgments. Group Write does not
+  support timed writes, data versions, or chunking.
+
+See the [client interaction documentation](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/controller.html#client-interactions)
+for ownership, callback, and authorization requirements.
+
+## Commissioning operation API changes (Breaking)
+
+- Replaced singleton pairing and commissioning-window APIs with caller-owned
+  `pairing::interaction` and `commissioning_window::interaction`.
+- Moved ICD registration control to `pairing::options_t::register_icd`; registration
+  keys are generated per operation.
+- Commissioning-window requests require an explicit `chip::ScopedNodeId` in
+  `request_t::node`; the node-only destination and implicit fabric lookup are removed.
+
+## Controller utility API removal (Breaking)
+
+- Removed `esp_matter_controller_utils.h`, its conversion helpers, callback aliases,
+  and global fabric-selection functions. Use checked SDK parsers at input boundaries
+  and application-owned fabric selection.
+
+## Controller console changes (Breaking)
+
+- Register controller console modules independently using
+  `esp_matter_controller_console.h`.
+- Server-backed console applications configure fabric selection with
+  `console::set_fabric_index_getter()`.
+- Read, Write, and Subscribe use grouped subcommands. Window requests use
+  `window open-basic` and `window open-passcode`.
+- Group interactions use `matter esp controller invoke group` and
+  `matter esp controller write attr group`. They also accept encoded group node IDs
+  such as `0xFFFFFFFFFFFFXXXX` in existing node arguments and ignore the endpoint.
+- `matter esp group` configures groups and keysets in client-only builds. Invoke
+  and Write modules register their group interactions in server builds too.
+- Write and Invoke take one JSON argument after a final `--` delimiter. Write
+  requires a tagged attribute value. Invoke accepts a command-fields object,
+  including `{}` for commands without fields.
+
 # 11-September-2026
 
 ## Data Model Feature Parity (Legacy ↔ Generated)

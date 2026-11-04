@@ -18,7 +18,6 @@
 #include <esp_http_client.h>
 #include <esp_log.h>
 #include <esp_matter_attestation_trust_store.h>
-#include <esp_matter_controller_utils.h>
 #include <esp_matter_mem.h>
 #include <esp_spiffs.h>
 #include <mbedtls/base64.h>
