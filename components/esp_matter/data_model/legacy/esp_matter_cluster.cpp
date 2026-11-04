@@ -3685,6 +3685,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
         /** Attributes not managed internally **/
         global::attribute::create_cluster_revision(cluster, cluster_revision);
+
+        cluster::set_init_and_shutdown_callbacks(cluster, ESPMatterServiceAreaClusterServerInitCallback,
+                                                 ESPMatterServiceAreaClusterServerShutdownCallback);
     }
 
     /* Commands */
