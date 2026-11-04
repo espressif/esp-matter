@@ -80,4 +80,10 @@ bool read_attribute_raw_value(chip::EndpointId endpointId, chip::ClusterId clust
     return true;
 }
 
+/**
+ * Read an attribute's value directly from the esp-matter data model storage (via get_val_internal)
+ * into @p val. Fails if the attribute is missing or managed by CHIP SDK.
+ */
+esp_err_t get_stored_attr_val(cluster_t *cluster, uint32_t attribute_id, esp_matter_attr_val_t &val);
+
 } // namespace esp_matter

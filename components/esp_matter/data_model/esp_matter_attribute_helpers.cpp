@@ -26,4 +26,11 @@ uint32_t read_feature_map_u32(chip::EndpointId endpointId, chip::ClusterId clust
     return feature_map;
 }
 
+esp_err_t get_stored_attr_val(cluster_t *cluster, uint32_t attribute_id, esp_matter_attr_val_t &val)
+{
+    attribute_t *attr = attribute::get(cluster, attribute_id);
+    VerifyOrReturnValue(attr != nullptr, ESP_FAIL);
+    return attribute::get_val_internal(attr, &val);
+}
+
 } // namespace esp_matter
