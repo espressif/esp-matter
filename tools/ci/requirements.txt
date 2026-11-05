@@ -1,0 +1,9 @@
+# Keep CI dependencies compatible with ESP-IDF 5.4.
+-c https://dl.espressif.com/dl/esp-idf/espidf.constraints.v5.4.txt
+
+idf-ci>=1.0.0,<2.0
+
+netifaces
+tabulate
+prettytable
+requests
