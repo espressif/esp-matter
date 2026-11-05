@@ -24,7 +24,7 @@ from datetime import datetime
 sys.path.append(os.path.join(os.environ.get("ESP_MATTER_PATH", ""), "tools", "ci"))
 
 import pytest
-from _pytest.config import Config, ExitCode
+from _pytest.config import Config
 from _pytest.fixtures import FixtureRequest
 from _pytest.main import Session
 from _pytest.nodes import Item
@@ -217,7 +217,9 @@ class IdfPytestEmbedded:
             session.config.option.target = self.target
 
     @pytest.hookimpl(tryfirst=True)
-    def pytest_collection_modifyitems(self, items: list[Function]) -> None:
+    def pytest_collection_modifyitems(
+        self, config: Config, items: list[Function]
+    ) -> None:
         # sort by file path and callspec.config
         # implement like this since this is a limitation of pytest, couldn't get fixture values while collecting
         # https://github.com/pytest-dev/pytest/discussions/9689
@@ -228,16 +230,23 @@ class IdfPytestEmbedded:
 
         items.sort(key=lambda x: (os.path.dirname(x.path), _get_param_config(x)))
 
-        # set default timeout 10 minutes for each case
+        # set default timeout 40 minutes for each case
         for item in items:
             if "timeout" not in item.keywords:
                 item.add_marker(pytest.mark.timeout(40 * 60))
 
         # filter all the test cases with "--target"
         if self.target:
-            items[:] = [
-                item for item in items if self.target in item_marker_names(item)
-            ]
+            selected_items = []
+            deselected_items = []
+            for item in items:
+                if self.target in item_marker_names(item):
+                    selected_items.append(item)
+                else:
+                    deselected_items.append(item)
+            if deselected_items:
+                config.hook.pytest_deselected(items=deselected_items)
+            items[:] = selected_items
 
     def pytest_runtest_makereport(
         self, item: Function, call: CallInfo[None]
@@ -277,10 +286,6 @@ class IdfPytestEmbedded:
                         "/IDF/", ""
                     )  # our unity test framework
             xml.write(junit)
-
-    def pytest_sessionfinish(self, session: Session, exitstatus: int) -> None:
-        if exitstatus != 0 and exitstatus == ExitCode.NO_TESTS_COLLECTED:
-            session.exitstatus = 0
 
     def pytest_terminal_summary(self, terminalreporter: TerminalReporter) -> None:
         if self.xfail_cases:
