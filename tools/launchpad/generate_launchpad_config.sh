@@ -66,6 +66,9 @@ do
         CHIPSETS+="\"$tUP\","
         image="image."$target" = \""$target"_$app.bin\""
         IMAGES+=("$image")
+        if [ -f "${target}_$app.elf.gz" ]; then
+            IMAGES+=("elf-gz.$target = \"${target}_$app.elf.gz\"")
+        fi
     done
     CHIPSETS+="]"
     # remove last comma

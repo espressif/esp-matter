@@ -81,6 +81,8 @@ jobs:
           APP_BIN=`cat project_description.json | python3 -c 'import sys,json; print(json.load(sys.stdin)["app_bin"])'`
           OUT_BIN="$GITHUB_WORKSPACE/images/$TARGET_CHIP"_${{ matrix.targets.prefix }}_"$APP_BIN"
           esptool.py --chip $TARGET_CHIP merge_bin -o $OUT_BIN `cat flash_args | tr '\n' '\ '`
+          APP_ELF=`cat project_description.json | python3 -c 'import sys,json; print(json.load(sys.stdin)["app_elf"])'`
+          gzip -9nc $APP_ELF > "${OUT_BIN%.bin}.elf.gz"
 
           # read commit ids from pre-stored files
           idf_rev=`cat /opt/espressif/esp-idf-commit.txt`
@@ -140,6 +142,8 @@ jobs:
           APP_BIN=`cat project_description.json | python3 -c 'import sys,json; print(json.load(sys.stdin)["app_bin"])'`
           OUT_BIN="$GITHUB_WORKSPACE/images/$TARGET_CHIP"_${{ matrix.targets.prefix }}_"$APP_BIN"
           esptool.py --chip $TARGET_CHIP merge_bin -o $OUT_BIN `cat flash_args | tr '\n' '\ '`
+          APP_ELF=`cat project_description.json | python3 -c 'import sys,json; print(json.load(sys.stdin)["app_elf"])'`
+          gzip -9nc $APP_ELF > "${OUT_BIN%.bin}.elf.gz"
 
           # record the esp-rainmaker commit
           rmaker_rev=`git rev-parse --short HEAD`
