@@ -33,8 +33,6 @@ Managed Components from Espressif's Component Registry
 * `espressif/esp_secure_cert_mgr`_ is licensed under the Apache License 2.0.
 * `espressif/esp_encrypted_img`_ is licensed under the Apache License 2.0.
 * `espressif/esp_insights`_ is licensed under the Apache License 2.0.
-* `espressif/json_parser`_ is licensed under the Apache License 2.0.
-* `espressif/json_generator`_ is licensed under the Apache License 2.0.
 * `espressif/led_strip`_ is licensed under the Apache License 2.0.
 * `espressif/button`_ is licensed under the Apache License 2.0.
 
@@ -58,7 +56,5 @@ Documentation
 .. _espressif/esp_secure_cert_mgr: https://components.espressif.com/components/espressif/esp_secure_cert_mgr
 .. _espressif/esp_encrypted_img: https://components.espressif.com/components/espressif/esp_encrypted_img
 .. _espressif/esp_insights: https://components.espressif.com/components/espressif/esp_insights
-.. _espressif/json_parser: https://components.espressif.com/components/espressif/json_parser
-.. _espressif/json_generator: https://components.espressif.com/components/espressif/json_generator
 .. _espressif/led_strip: https://components.espressif.com/components/espressif/led_strip
 .. _espressif/button: https://components.espressif.com/components/espressif/button

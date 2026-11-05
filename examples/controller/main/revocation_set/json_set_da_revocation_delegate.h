@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include <json_parser.h>
-
 #include <credentials/attestation_verifier/DeviceAttestationVerifier.h>
 
 namespace chip {

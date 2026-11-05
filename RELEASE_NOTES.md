@@ -1,3 +1,11 @@
+# 05-November-2026
+
+## json_parser and json_generator removed (Breaking)
+
+- esp_matter no longer depends on `espressif/json_parser` or `espressif/json_generator`.
+  An application that uses them must add them to its own `idf_component.yml`.
+- The controller example reads the DAC revocation set with cJSON.
+
 # 26-October-2026
 
 ## Client interaction API changes (Breaking)

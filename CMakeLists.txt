@@ -6,7 +6,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/connectedhomeip/connectedhomeip/config/esp32/c
 set(ESP_COMPONENTS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/components)
 
 set(REQUIRE_COMPONENTS esp_eth freertos lwip bt mbedtls fatfs app_update console openthread nvs_flash spi_flash
-    esp_secure_cert_mgr esp_system esp_timer json_parser spiffs esp_http_client json_generator esp_netif vfs json)
+    esp_secure_cert_mgr esp_system esp_timer spiffs esp_http_client esp_netif vfs json)
 
 if(NOT "${IDF_TARGET}" STREQUAL "esp32h2")
     list(APPEND REQUIRE_COMPONENTS mdns)
