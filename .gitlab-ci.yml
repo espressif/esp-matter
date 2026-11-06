@@ -322,7 +322,7 @@ build_esp_matter_examples_pytest_C6:
     expire_in: 4 days
   script:
     - cd ${ESP_MATTER_PATH}
-    - pip install -r tools/ci/requirements-build.txt
+    - pip install -r tools/ci/requirements.txt
     - python tools/ci/build_apps.py ./examples --pytest_c6
 
 build_esp_matter_examples_pytest_H2:
@@ -356,7 +356,7 @@ build_esp_matter_examples_pytest_H2:
     - cd ${ESP_MATTER_PATH}/examples/light
     - echo "CONFIG_ENABLE_MEMORY_PROFILING=y" >> sdkconfig.defaults
     - cd ${ESP_MATTER_PATH}
-    - pip install -r tools/ci/requirements-build.txt
+    - pip install -r tools/ci/requirements.txt
     - python tools/ci/build_apps.py ./examples --pytest_h2
     - |
       if [ "$CI_PIPELINE_SOURCE" == "merge_request_event" ]; then
@@ -383,7 +383,7 @@ build_esp_matter_examples_pytest_C2:
     - cd ${ESP_MATTER_PATH}/examples/light
     - echo "CONFIG_ENABLE_MEMORY_PROFILING=y" >> sdkconfig.defaults
     - cd ${ESP_MATTER_PATH}
-    - pip install -r tools/ci/requirements-build.txt
+    - pip install -r tools/ci/requirements.txt
     - echo "${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
     - python tools/ci/build_apps.py ./examples --pytest_c2
     - |
@@ -401,7 +401,7 @@ build_esp_matter_examples_pytest_C2:
 .build_generated_data_model_examples_pytest_C3: &build_generated_data_model_examples_pytest_C3
     - cd ${ESP_MATTER_PATH}
     - echo "CONFIG_ESP_MATTER_ENABLE_GENERATED_DATA_MODEL=y" >> ${ESP_MATTER_PATH}/examples/light/sdkconfig.defaults
-    - pip install -r tools/ci/requirements-build.txt
+    - pip install -r tools/ci/requirements.txt
     - python tools/ci/build_apps.py ./examples --pytest_c3
 
 build_override_sdkconfig_examples:
@@ -468,7 +468,7 @@ build_esp_matter_examples:
     - cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
 
     - cd ${ESP_MATTER_PATH}
-    - pip install -r tools/ci/requirements-build.txt
+    - pip install -r tools/ci/requirements.txt
     - python tools/ci/build_apps.py ./examples --no_pytest
       --parallel-count ${CI_NODE_TOTAL:-1}
       --parallel-index ${CI_NODE_INDEX:-1}
@@ -506,7 +506,7 @@ build_nopytest_remaining_examples_manual:
     expire_in: 4 days
   script:
     - cd ${ESP_MATTER_PATH}
-    - pip install -r tools/ci/requirements-build.txt
+    - pip install -r tools/ci/requirements.txt
     - python tools/ci/build_apps.py ./examples --no_pytest_remaining
       --parallel-count ${CI_NODE_TOTAL:-1}
       --parallel-index ${CI_NODE_INDEX:-1}
@@ -531,7 +531,7 @@ build_esp_matter_examples_pytest_C3:
     expire_in: 4 days
   script:
     - cd ${ESP_MATTER_PATH}
-    - pip install -r tools/ci/requirements-build.txt
+    - pip install -r tools/ci/requirements.txt
     - python tools/ci/build_apps.py ./examples --pytest_c3
 
 pytest_esp32c3_esp_matter_dut:
@@ -548,7 +548,7 @@ pytest_esp32c3_esp_matter_dut:
     - cd connectedhomeip/connectedhomeip
     - source out/py-env/bin/activate
     - cd ${ESP_MATTER_PATH}
-    - pip install -r tools/ci/requirements-pytest.txt
+    - pip install -r tools/ci/requirements.txt
     - pytest examples/ --target esp32c3 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml
   tags: ["esp32c3", "esp_matter_dut"]
 
@@ -567,7 +567,7 @@ pytest_esp32c6_esp_matter_dut:
     - source out/py-env/bin/activate
     - cd ${ESP_MATTER_PATH}
     - cp ${ESP_MATTER_PATH}/tools/ci/extended_color_light_wifi_pics_code.txt $ESP_MATTER_PATH/connectedhomeip/connectedhomeip/src/python_testing/
-    - pip install -r tools/ci/requirements-pytest.txt
+    - pip install -r tools/ci/requirements.txt
     - python3 -c "import os; os.environ['TEST_CHUNK'] = '$TEST_CHUNK'"
     - |
       if [ $CI_PIPELINE_SOURCE == "merge_request_event" ]; then
@@ -593,7 +593,7 @@ pytest_esp32c2_esp_matter_dut:
     - cd ${ESP_MATTER_PATH}
     - rm -rf connectedhomeip/connectedhomeip
     - ln -s ${CHIP_SUBMODULE_PATH} connectedhomeip/connectedhomeip
-    - pip install -r tools/ci/requirements-pytest.txt
+    - pip install -r tools/ci/requirements.txt
     - pytest examples/ --target esp32c2 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml --baud 74880 | tee pytest_c2.log
     - |
       if [ "$CI_PIPELINE_SOURCE" == "merge_request_event" ]; then
@@ -612,7 +612,7 @@ pytest_esp32h2_esp_matter_dut:
     - cd ${ESP_MATTER_PATH}
     - rm -rf connectedhomeip/connectedhomeip
     - ln -s ${CHIP_SUBMODULE_PATH} connectedhomeip/connectedhomeip
-    - pip install -r tools/ci/requirements-pytest.txt
+    - pip install -r tools/ci/requirements.txt
     - pytest examples/ --target esp32h2 -m esp_matter_dut --junitxml=XUNIT_RESULT.xml | tee pytest_h2.log
     - |
       if [ "$CI_PIPELINE_SOURCE" == "merge_request_event" ]; then
@@ -660,7 +660,7 @@ pytest_unit_test_app_qemu:
     - apt-get update && apt-get install -y -q libslirp0
     - python ${IDF_PATH}/tools/idf_tools.py install qemu-riscv32
     - eval "$(python ${IDF_PATH}/tools/idf_tools.py export)"
-    - pip install -r tools/ci/requirements-pytest.txt
+    - pip install -r tools/ci/requirements.txt
     - pytest examples/unit_test_app/pytest_unit_test_app.py
       --target esp32c3
       -m qemu
