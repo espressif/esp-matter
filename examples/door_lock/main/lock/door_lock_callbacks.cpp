@@ -191,7 +191,7 @@ void emberAfDoorLockClusterInitCallback(EndpointId endpoint)
     // when storage cannot be authorized.
     err = BoltLockManager::Instance().Init(BoltLockManager::State::kLockingCompleted, HandleBoltStateChange);
     VerifyOrDie(err == CHIP_NO_ERROR);
-    Server::GetInstance().GetFabricTable().AddFabricDelegate(&sDoorLockCallbacks);
+    VerifyOrDie(Server::GetInstance().GetFabricTable().AddFabricDelegate(&sDoorLockCallbacks) == CHIP_NO_ERROR);
     DataModelCallbacks::SetInstance(&sDoorLockCallbacks);
     VerifyOrDie(server.SetLockState(endpoint, DlLockState::kLocked, OperationSourceEnum::kUnspecified));
 }
