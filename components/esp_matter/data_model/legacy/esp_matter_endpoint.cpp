@@ -1769,6 +1769,37 @@ esp_err_t add(endpoint_t *endpoint, config_t *config)
 
 } /* thread_border_router */
 
+namespace network_infrastructure_manager {
+
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_NETWORK_INFRASTRUCTURE_MANAGER_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_NETWORK_INFRASTRUCTURE_MANAGER_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    return common::create<config_t>(node, config, flags, priv_data, add);
+}
+
+esp_err_t add(endpoint_t *endpoint, config_t *config)
+{
+    esp_err_t err = add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+    VerifyOrReturnError(err == ESP_OK, err);
+
+    thread_network_diagnostics::create(endpoint, &(config->thread_network_diagnostics), CLUSTER_FLAG_SERVER);
+    wifi_network_management::create(endpoint, &(config->wifi_network_management), CLUSTER_FLAG_SERVER);
+    thread_border_router_management::create(endpoint, &(config->thread_border_router_management), CLUSTER_FLAG_SERVER);
+    thread_network_directory::create(endpoint, &(config->thread_network_directory), CLUSTER_FLAG_SERVER);
+    return ESP_OK;
+}
+
+} /* network_infrastructure_manager */
+
 #ifndef CONFIG_CUSTOM_NETWORK_CONFIG
 namespace secondary_network_interface {
 uint32_t get_device_type_id()
