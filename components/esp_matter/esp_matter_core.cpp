@@ -42,6 +42,9 @@
 #include <platform/CHIPDeviceLayer.h>
 #include <platform/DeviceInfoProvider.h>
 #include <platform/DiagnosticDataProvider.h>
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD && CHIP_SYSTEM_CONFIG_USE_OPENTHREAD_ENDPOINT
+#include <inet/EndPointStateOpenThread.h>
+#endif
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI
 #ifdef CONFIG_CHIP_ENABLE_EXTERNAL_PLATFORM
 #ifndef EXTERNAL_ESP32UTILS_HEADER
@@ -200,6 +203,17 @@ static void esp_matter_chip_init_task(intptr_t context)
         initParams.dataModelProvider = chip::app::CodegenDataModelProviderInstance(initParams.persistentStorageDelegate);
 #endif
     }
+
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD && CHIP_SYSTEM_CONFIG_USE_OPENTHREAD_ENDPOINT
+    if (!initParams.endpointNativeParams) {
+        static chip::Inet::EndPointStateOpenThread::OpenThreadEndpointInitParam nativeParams;
+        nativeParams.lockCb = [] { ThreadStackMgr().LockThreadStack(); };
+        nativeParams.unlockCb = [] { ThreadStackMgr().UnlockThreadStack(); };
+        nativeParams.openThreadInstancePtr = chip::DeviceLayer::ThreadStackMgrImpl().OTInstance();
+        VerifyOrDie(nativeParams.openThreadInstancePtr != nullptr);
+        initParams.endpointNativeParams = &nativeParams;
+    }
+#endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD && CHIP_SYSTEM_CONFIG_USE_OPENTHREAD_ENDPOINT
 
 #ifdef CONFIG_ESP_MATTER_ENABLE_DATA_MODEL
     {
