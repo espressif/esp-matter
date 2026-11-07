@@ -28,7 +28,13 @@ CONFIG_COMPILER_SAVE_RESTORE_LIBCALLS=y
 # BLE
 CONFIG_BT_ENABLED=y
 CONFIG_BT_NIMBLE_ENABLED=y
-CONFIG_BT_NIMBLE_ROLE_CENTRAL=n
+# CHIPoBLE C2 is declared indicate-only, so every compliant commissioner
+# subscribes for indications and sends ATT Handle Value Confirmations.
+# NimBLE compiles the BLE_ATT_OP_INDICATE_RSP dispatch entry only under
+# MYNEWT_VAL(BLE_GATTC), which needs the central role, so with the role
+# off the device answers those confirmations with Request Not Supported
+# and BLE commissioning cannot get past PBKDFParamResponse.
+CONFIG_BT_NIMBLE_ROLE_CENTRAL=y
 CONFIG_BT_NIMBLE_ROLE_OBSERVER=n
 CONFIG_BT_NIMBLE_ENABLE_CONN_REATTEMPT=n
 
