@@ -147,10 +147,12 @@ static esp_err_t app_driver_status_led_set(BoltLockManager::State state)
     uint32_t color = SET_IRGB(0, 0, 0, 0);
     switch (state) {
     case BoltLockManager::State::kLockingCompleted:
-        color = SET_IRGB(0, kStatusLedLevel, 0, 0);
+        // Green indicates the secure (locked) state, matching common smart-lock conventions.
+        color = SET_IRGB(0, 0, kStatusLedLevel, 0);
         break;
     case BoltLockManager::State::kUnlockingCompleted:
-        color = SET_IRGB(0, 0, kStatusLedLevel, 0);
+        // Red indicates the attention-needed (unlocked) state.
+        color = SET_IRGB(0, kStatusLedLevel, 0, 0);
         break;
     case BoltLockManager::State::kLockingInitiated:
     case BoltLockManager::State::kUnlockingInitiated:
