@@ -94,6 +94,7 @@
 #include <clusters/tls_client_management/integration.h>
 #include <clusters/tls_certificate_management/integration.h>
 #include <clusters/zone_management/integration.h>
+#include <clusters/service_area/integration.h>
 #include <data_model/esp_matter_attribute_helpers.h>
 
 using namespace chip::app::Clusters;
@@ -622,9 +623,31 @@ void ThreadBorderRouterManagementDelegateInitCB(void *delegate, uint16_t endpoin
     }
 }
 
+static void ServiceAreaShutdownCB(void *managed_instance, uint16_t /*endpoint_id*/)
+{
+    chip::Platform::Delete(static_cast<ServiceArea::Instance*>(managed_instance));
+}
+
 void ServiceAreaDelegateInitCB(void *delegate, uint16_t endpoint_id)
 {
-    // TODO: This cluster has two delegates. We need to update existing delegate logic to accommodate multiple delegates.
+    VerifyOrReturn(delegate != nullptr);
+    cluster_t *cl = cluster::get(endpoint_id, ServiceArea::Id);
+    VerifyOrReturn(cl != nullptr);
+    ServiceArea::Instance *serviceAreaInstance = static_cast<ServiceArea::Instance*>(get_delegate_managed_instance(cl));
+    if (!serviceAreaInstance) {
+        // The cluster needs a second, storage delegate, which is registered with ServiceArea::SetStorageDelegate().
+        ServiceArea::StorageDelegate *storage_delegate = ServiceArea::GetStorageDelegate(endpoint_id);
+        VerifyOrReturn(storage_delegate != nullptr,
+                       ChipLogError(AppServer, "ServiceArea: no storage delegate for ep %u, call ServiceArea::SetStorageDelegate() first",
+                                    endpoint_id));
+        ServiceArea::Delegate *service_area_delegate = static_cast<ServiceArea::Delegate*>(delegate);
+        uint32_t feature_map = read_feature_map_u32(endpoint_id, ServiceArea::Id);
+        serviceAreaInstance = chip::Platform::New<ServiceArea::Instance>(storage_delegate, service_area_delegate, endpoint_id,
+                                                                         chip::BitMask<ServiceArea::Feature>(feature_map));
+        VerifyOrReturn(serviceAreaInstance != nullptr, ChipLogError(AppServer, "ServiceArea: failed to allocate instance for ep %u", endpoint_id));
+        set_delegate_shutdown_callback_and_managed_instance(cl, ServiceAreaShutdownCB, serviceAreaInstance);
+    }
+    LogErrorOnFailure(serviceAreaInstance->Init());
 }
 
 static void WaterHeaterManagementShutdownCB(void *managed_instance, uint16_t /*endpoint_id*/)
