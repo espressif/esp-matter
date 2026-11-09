@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <app/clusters/closure-dimension-server/ClosureDimensionCluster.h>
 #include <app/clusters/closure-dimension-server/ClosureDimensionClusterDelegate.h>
 #include <lib/core/DataModelTypes.h>
 
@@ -23,6 +24,9 @@ namespace Clusters {
 namespace ClosureDimension {
 
 void MatterClosureDimensionSetDelegate(EndpointId endpointId, ClosureDimensionClusterDelegate &delegate);
+
+/// Returns the cluster instance registered on the given endpoint, nullptr otherwise
+ClosureDimensionCluster * GetClusterInstance(EndpointId endpointId);
 
 } // namespace ClosureDimension
 } // namespace Clusters
