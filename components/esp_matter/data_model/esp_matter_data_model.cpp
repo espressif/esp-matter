@@ -555,10 +555,18 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint16_t flags, e
     return (attribute_t *)attribute;
 }
 
+static void deferred_attribute_write(chip::System::Layer *layer, void *attribute_ptr);
+
 static esp_err_t free_attribute(attribute_t *attribute)
 {
     VerifyOrReturnError(attribute, ESP_ERR_INVALID_ARG, ESP_LOGE(TAG, "Attribute cannot be NULL"));
     _attribute_t *current_attribute = (_attribute_t *)attribute;
+
+    /* Cancel any pending deferred-write timer that still holds this pointer, else it fires on freed memory.
+       CancelTimer is a no-op if the timer is not active. */
+    if (current_attribute->flags & ATTRIBUTE_FLAG_DEFERRED) {
+        chip::DeviceLayer::SystemLayer().CancelTimer(deferred_attribute_write, current_attribute);
+    }
 
     if (current_attribute->flags & ATTRIBUTE_FLAG_MANAGED_INTERNALLY) {
         // For attribute managed internally, free as the _attribute_base_t pointer.

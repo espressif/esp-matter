@@ -46,7 +46,7 @@ attribute_t *create_endpoint_unique_id(cluster_t *cluster, uint8_t *value, uint1
 namespace actions {
 namespace attribute {
 
-constexpr uint16_t k_max_setup_url_length = 256;
+constexpr uint16_t k_max_setup_url_length = 512;
 
 attribute_t *create_action_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_endpoint_lists(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
