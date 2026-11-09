@@ -2396,7 +2396,7 @@ command_t *create_select_areas_response(cluster_t *cluster)
 
 command_t *create_skip_area(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ServiceArea::Commands::SkipAreaResponse::Id, COMMAND_FLAG_ACCEPTED, NULL);
+    return esp_matter::command::create(cluster, ServiceArea::Commands::SkipArea::Id, COMMAND_FLAG_ACCEPTED, NULL);
 }
 
 command_t *create_skip_area_response(cluster_t *cluster)
