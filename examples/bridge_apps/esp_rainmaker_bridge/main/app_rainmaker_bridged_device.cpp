@@ -64,6 +64,7 @@ esp_err_t app_rainmaker_bridged_device_t::store_dev_addr()
         return map_matter_error(err);
     }
     uint16_t endpoint_id = esp_matter::endpoint::get_id(m_dev->endpoint);
+    ESP_RETURN_ON_FALSE(m_dev_addr_ctx, ESP_ERR_INVALID_STATE, TAG, "Device address not set");
     ESP_RETURN_ON_ERROR(nvs_set_blob(scopedNvsHandle, esp_matter_bridge::nvs_key_allocator::endpoint_dev_addr(endpoint_id).KeyName(), m_dev_addr_ctx,
                                      sizeof(rainmaker_device_addr_t)), TAG, "Error storing the device address");
     ESP_RETURN_ON_ERROR(nvs_commit(scopedNvsHandle), TAG, "Error committing NVS");

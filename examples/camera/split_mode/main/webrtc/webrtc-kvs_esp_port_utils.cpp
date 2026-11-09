@@ -10,6 +10,7 @@
 #include "webrtc-provider-manager.h"
 #include <iomanip>
 #include <jsmn.h>
+#include <lib/support/CodeUtils.h>
 #include <signaling_serializer.h>
 #include <sstream>
 #include <string.h>
@@ -178,6 +179,8 @@ static int extract_json_field(const char * json, const char * key, char * out_bu
 
 void webrtc_bridge_message_received_cb(const void * data, int len)
 {
+    VerifyOrReturn(data != nullptr && len > 0,
+                   ChipLogError(Camera, "webrtc_bridge_message_received_cb: invalid data or length"));
     // handle message
     ChipLogProgress(Camera, "Received Message from P4-Streamer: %.*s", len, (const char *) data);
 

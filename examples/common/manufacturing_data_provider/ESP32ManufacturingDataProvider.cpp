@@ -151,27 +151,32 @@ CHIP_ERROR ESP32ManufacturingDataProvider::SetProvidersAsPerPrecedence()
 
 CHIP_ERROR ESP32ManufacturingDataProvider::GetSetupDiscriminator(uint16_t  &setupDiscriminator)
 {
+    VerifyOrReturnError(mCommissionableDataProvider != nullptr, CHIP_ERROR_INCORRECT_STATE);
     return mCommissionableDataProvider->GetSetupDiscriminator(setupDiscriminator);
 }
 
 CHIP_ERROR ESP32ManufacturingDataProvider::GetSpake2pIterationCount(uint32_t  &iterationCount)
 {
+    VerifyOrReturnError(mCommissionableDataProvider != nullptr, CHIP_ERROR_INCORRECT_STATE);
     return mCommissionableDataProvider->GetSpake2pIterationCount(iterationCount);
 }
 
 CHIP_ERROR ESP32ManufacturingDataProvider::GetSpake2pSalt(MutableByteSpan  &saltBuf)
 {
+    VerifyOrReturnError(mCommissionableDataProvider != nullptr, CHIP_ERROR_INCORRECT_STATE);
     return mCommissionableDataProvider->GetSpake2pSalt(saltBuf);
 }
 
 CHIP_ERROR ESP32ManufacturingDataProvider::GetSpake2pVerifier(MutableByteSpan  &verifierBuf, size_t  &verifierLen)
 {
+    VerifyOrReturnError(mCommissionableDataProvider != nullptr, CHIP_ERROR_INCORRECT_STATE);
     return mCommissionableDataProvider->GetSpake2pVerifier(verifierBuf, verifierLen);
 }
 
 CHIP_ERROR ESP32ManufacturingDataProvider::GetRotatingDeviceIdUniqueId(MutableByteSpan  &uniqueIdSpan)
 {
 #if CHIP_DEVICE_CONFIG_ENABLE_DEVICE_INSTANCE_INFO_PROVIDER && CHIP_ENABLE_ROTATING_DEVICE_ID
+    VerifyOrReturnError(mDeviceInstanceInfoProvider != nullptr, CHIP_ERROR_INCORRECT_STATE);
     return mDeviceInstanceInfoProvider->GetRotatingDeviceIdUniqueId(uniqueIdSpan);
 #else
     return CHIP_ERROR_NOT_IMPLEMENTED;

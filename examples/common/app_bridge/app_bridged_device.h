@@ -106,6 +106,10 @@ typedef void (*free_device_callback_t)(app_bridged_device_t *device);
 esp_err_t app_bridge_initialize(node_t *node, esp_matter_bridge::bridge_device_type_callback_t device_type_cb,
                                 create_device_callback_t create_cb, free_device_callback_t free_cb);
 
+/* Create a bridged device: allocate it, attach its Matter endpoint and address context, add it to
+ * the bridged-device list, and persist it. On any failure the partially-built device is fully
+ * torn down and freed, and an error is returned.
+ */
 esp_err_t app_bridge_create_new_device(node_t *node, uint16_t parent_endpoint_id, uint32_t matter_device_type_id,
                                        void *addr_ctx, void *priv_data);
 

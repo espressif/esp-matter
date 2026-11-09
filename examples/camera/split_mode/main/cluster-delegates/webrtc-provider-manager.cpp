@@ -765,7 +765,9 @@ void WebRTCProviderManager::OnDeviceConnected(void * context, Messaging::Exchang
         transport->MoveToState(WebrtcTransport::State::Idle);
 
         // remove from current sessions list
-        self->mWebRTCTransportProvider->RemoveSession(sessionId);
+        if (self->mWebRTCTransportProvider != nullptr) {
+            self->mWebRTCTransportProvider->RemoveSession(sessionId);
+        }
         self->mWebrtcTransportMap.erase(sessionId);
         break;
     }
@@ -1042,6 +1044,11 @@ CHIP_ERROR WebRTCProviderManager::SendEndCommand(Messaging::ExchangeManager  &ex
 
 CHIP_ERROR WebRTCProviderManager::AcquireAudioVideoStreams(uint16_t sessionId)
 {
+    if (mCameraDevice == nullptr) {
+        ChipLogError(Camera, "CameraDeviceInterface not initialized");
+        return CHIP_ERROR_INCORRECT_STATE;
+    }
+
     WebrtcTransport * transport = GetTransport(sessionId);
     if (transport == nullptr) {
         ChipLogError(Camera, "WebTransport not found for the sessionId: %u", sessionId);
@@ -1056,6 +1063,11 @@ CHIP_ERROR WebRTCProviderManager::AcquireAudioVideoStreams(uint16_t sessionId)
 
 CHIP_ERROR WebRTCProviderManager::ReleaseAudioVideoStreams(uint16_t sessionId)
 {
+    if (mCameraDevice == nullptr) {
+        ChipLogError(Camera, "CameraDeviceInterface not initialized");
+        return CHIP_ERROR_INCORRECT_STATE;
+    }
+
     WebrtcTransport * transport = GetTransport(sessionId);
     if (transport == nullptr) {
         ChipLogError(Camera, "WebTransport not found for the sessionId: %u", sessionId);

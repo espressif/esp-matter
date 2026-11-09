@@ -107,10 +107,21 @@ esp_err_t app_bridge_create_new_device(node_t *node, uint16_t parent_endpoint_id
         esp_matter_bridge::create_device(node, parent_endpoint_id, matter_device_type_id, bridged_device));
     if (!(bridged_device->get_matter_device())) {
         ESP_LOGE(TAG, "Failed to create the bridged device");
-        g_free_device_cb(bridged_device);
+        if (g_free_device_cb) {
+            g_free_device_cb(bridged_device);
+        }
         return ESP_ERR_NO_MEM;
     }
-    bridged_device->set_dev_addr(addr_ctx);
+    /* Set the device address before linking into the list. On failure, tear the half-built device
+     * down so the list never holds a device with a null address context (see function contract). */
+    if (bridged_device->set_dev_addr(addr_ctx) != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to set the bridged device address");
+        esp_matter_bridge::remove_device(bridged_device->get_matter_device());
+        if (g_free_device_cb) {
+            g_free_device_cb(bridged_device);
+        }
+        return ESP_ERR_NO_MEM;
+    }
     bridged_device->set_priv_data(priv_data);
     bridged_device->set_next(g_bridged_device_list);
     g_bridged_device_list = bridged_device;
