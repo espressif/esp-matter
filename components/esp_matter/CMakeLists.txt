@@ -42,16 +42,52 @@ if (NOT CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
 endif()
 
 if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
-    list(APPEND SRC_DIRS_LIST    "${MATTER_SDK_PATH}/src/app/server"
-                                 "${MATTER_SDK_PATH}/src/app/reporting"
-                                 "${MATTER_SDK_PATH}/src/app/persistence"
-                                 "${MATTER_SDK_PATH}/src/app/server-cluster"
-                                 "client/binding")
+    # server, reporting, persistence, and server-cluster are already in libCHIP.a. CHIP_APP_SRCS
+    # collects the CHIP files it leaves to the app; they are added after idf_component_register().
+    set(CHIP_APP_SRCS "${MATTER_SDK_PATH}/src/app/server/DefaultTermsAndConditionsProvider.cpp"
+                      "${MATTER_SDK_PATH}/src/app/server/TermsAndConditionsManager.cpp"
+                      "${MATTER_SDK_PATH}/src/app/server/JointFabricAdministrator.cpp"
+                      "${MATTER_SDK_PATH}/src/app/server/JointFabricDatastore.cpp"
+                      "${MATTER_SDK_PATH}/src/app/server/ThreadRendezvousAnnouncement.cpp"
+                      "${MATTER_SDK_PATH}/src/app/persistence/DeferredAttributePersistenceProvider.cpp")
+    list(APPEND SRC_DIRS_LIST "client/binding")
     list(APPEND INCLUDE_DIRS_LIST "client/binding")
     if (CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
         include("utils/cluster_select/cluster_dir.cmake")
         get_supported_cluster_dirs(SUPPORTED_CLUSTER_DIRS)
+        set(CHIP_CLUSTERS_DIR "${MATTER_SDK_PATH}/src/app/clusters")
+
+        # CHIP_LIB_CLUSTER_DIRS: dir names from source_set("clusters") public_deps (already in libCHIP.a).
+        # Re-run configure when that list changes (e.g. CHIP update).
+        set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CHIP_CLUSTERS_DIR}/BUILD.gn")
+        file(READ "${CHIP_CLUSTERS_DIR}/BUILD.gn" CHIP_CLUSTERS_BUILD_GN)
+        string(REGEX MATCH "source_set\\(\"clusters\"\\)[^]]*public_deps = \\[([^]]*)\\]" _ "${CHIP_CLUSTERS_BUILD_GN}")
+        if (NOT CMAKE_MATCH_1)
+            message(FATAL_ERROR "esp_matter: could not read the \"clusters\" group from "
+                                "${CHIP_CLUSTERS_DIR}/BUILD.gn; update the parser above")
+        endif()
+        string(REGEX MATCHALL "\"[a-z0-9-]+\"" CHIP_LIB_CLUSTER_DIRS "${CMAKE_MATCH_1}")
+        list(TRANSFORM CHIP_LIB_CLUSTER_DIRS REPLACE "\"" "")
+
         foreach(CLUSTER_DIR ${SUPPORTED_CLUSTER_DIRS})
+            get_filename_component(CLUSTER_NAME "${CLUSTER_DIR}" NAME)
+            if (CLUSTER_NAME IN_LIST CHIP_LIB_CLUSTER_DIRS)
+                # libCHIP.a leaves out the app-side files CHIP lists in app_config_dependent_sources.cmake.
+                # Compile those, except Codegen* (esp_matter has its own integration) and codegen/
+                # (added as SRC_DIRS below).
+                set(APP_CFG_FILE "${CLUSTER_DIR}/app_config_dependent_sources.cmake")
+                if (EXISTS "${APP_CFG_FILE}")
+                    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${APP_CFG_FILE}")
+                    file(STRINGS "${APP_CFG_FILE}" APP_CFG_SRCS REGEX "\"\\$\\{CLUSTER_DIR\\}/[^\"]+\\.(c|cpp)\"")
+                    foreach(APP_CFG_SRC ${APP_CFG_SRCS})
+                        string(REGEX REPLACE ".*\"\\$\\{CLUSTER_DIR\\}/([^\"]+)\".*" "\\1" APP_CFG_SRC "${APP_CFG_SRC}")
+                        if (NOT APP_CFG_SRC MATCHES "^(Codegen|codegen/)")
+                            list(APPEND CHIP_APP_SRCS "${CLUSTER_DIR}/${APP_CFG_SRC}")
+                        endif()
+                    endforeach()
+                endif()
+                continue()
+            endif()
             # If the cluster directory has .c/.cpp file, add it to SRC_DIRS_LIST
             file(GLOB C_CPP_FILES "${CLUSTER_DIR}/*.c" "${CLUSTER_DIR}/*.cpp")
             if (C_CPP_FILES)
@@ -62,6 +98,11 @@ if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
                 list(APPEND EXCLUDE_SRCS_LIST ${CODEGEN_FILES})
             endif()
         endforeach()
+
+        # Not in any CHIP source list; apps add it themselves.
+        if (CONFIG_SUPPORT_GENERAL_DIAGNOSTICS_CLUSTER)
+            list(APPEND CHIP_APP_SRCS "${CHIP_CLUSTERS_DIR}/general-diagnostics-server/GenericFaultTestEventTriggerHandler.cpp")
+        endif()
 
         get_supported_esp_matter_cluster_dirs(ESP_MATTER_CLUSTER_DIRS_LIST)
         list(APPEND SRC_DIRS_LIST ${ESP_MATTER_CLUSTER_DIRS_LIST})
@@ -150,8 +191,10 @@ if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
     endif(CONFIG_ESP_MATTER_ENABLE_DATA_MODEL)
 endif(CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
 
-target_sources(${COMPONENT_LIB} PRIVATE ${MATTER_SDK_PATH}/src/app/StorageDelegateWrapper.cpp
-                                        ${MATTER_SDK_PATH}/src/app/SafeAttributePersistenceProvider.cpp)
+# Added here because idf_component_register() ignores SRC_DIRS when SRCS is given.
+if (CHIP_APP_SRCS)
+    target_sources(${COMPONENT_LIB} PRIVATE ${CHIP_APP_SRCS})
+endif()
 
 target_compile_options(${COMPONENT_LIB} PUBLIC
                        "-DCHIP_ADDRESS_RESOLVE_IMPL_INCLUDE_HEADER=<lib/address_resolve/AddressResolve_DefaultImpl.h>")
