@@ -127,8 +127,13 @@ variables:
 
 .setup_kvs_sdk: &setup_kvs_sdk
   - cd ${CI_PROJECT_DIR}
-  - git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/espressif/esp-port-for-amazon-kvs-sdk.git
   - export KVS_SDK_PATH=${CI_PROJECT_DIR}/esp-port-for-amazon-kvs-sdk
+  - git init ${KVS_SDK_PATH}
+  - cd ${KVS_SDK_PATH}
+  - git fetch --depth 1 https://github.com/espressif/esp-port-for-amazon-kvs-sdk.git ${KVS_SDK_COMMIT}
+  - git checkout FETCH_HEAD
+  - git submodule update --init --recursive --depth 1
+  - cd ${CI_PROJECT_DIR}
 
 .build_matter_examples: &build_matter_examples
     - export MATTER_EXAMPLES_PATH=$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/examples
@@ -756,6 +761,7 @@ build_esp_matter_camera_example:
     - *setup_ninja_shim
   variables:
     KVS_SDK_PATH: ${CI_PROJECT_DIR}/esp-port-for-amazon-kvs-sdk
+    KVS_SDK_COMMIT: 592cd48be05dc8ac0113666e3eb6707eaa519ee6
   script:
     - cd ${ESP_MATTER_PATH}/examples/camera/split_mode
     - idf.py set-target esp32c6
