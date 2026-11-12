@@ -120,6 +120,14 @@ class Conformance(BaseConformance):
         for child in conformance_elem:
             if child.tag not in SUPPORTED_CONFORMANCE_TAGS:
                 continue
+            if _conformance_features_unavailable(child, self.feature_map):
+                # A branch that depends on an unavailable feature cannot be satisfied.
+                # It is excluded so that the following branch defines the conformance
+                # and the missing feature does not weaken the parsed condition.
+                logger.debug(
+                    f"Excluding otherwise branch {child.tag}: feature unavailable"
+                )
+                continue
             child_type = get_conformance_type(child.tag).to_string()
             sub_condition = self._build_sub_condition(child, child_type)
             self._add_to_conditions(sub_conditions, child_type, sub_condition)
@@ -517,6 +525,30 @@ def _conformance_features_unavailable(elem, feature_map):
     return any(_conformance_features_unavailable(c, feature_map) for c in children)
 
 
+def _get_applicable_otherwise_branch(conformance_element, feature_map):
+    """
+    Select the branch of an otherwiseConform element that applies.
+
+    Branches are evaluated in document order. A branch that depends on a feature
+    absent from the feature map cannot be satisfied and is skipped, so the next
+    branch defines the effective conformance of the element.
+
+    Args:
+        conformance_element: The otherwiseConform element
+        feature_map: The feature map of the cluster
+
+    Returns:
+        The first applicable conformance branch element, or None if no branch applies
+    """
+    for branch in conformance_element:
+        if not branch.tag.endswith("Conform"):
+            continue
+        if _conformance_features_unavailable(branch, feature_map):
+            continue
+        return branch
+    return None
+
+
 def is_restricted_by_conformance(feature_map, element):
     """
     Check if the conformance is provisional, deprecated, disallowed or if depends on any disallowed feature.
@@ -545,18 +577,16 @@ def is_restricted_by_conformance(feature_map, element):
         return True
 
     if conformance_element.tag == OTHERWISE_CONFORM:
-        first_child = next(iter(conformance_element), None)
-        if first_child is not None:
-            if first_child.tag == MANDATORY_CONFORM:
-                # Check if all required features exist in feature map
-                feature_list = first_child.findall(".//feature")
-                for feature in feature_list:
-                    feature_name = feature.get("name")
-                    if feature_name not in feature_map:
-                        return True
-                return False
-            elif first_child.tag in get_restricted_tags():
-                return True
+        branch = _get_applicable_otherwise_branch(conformance_element, feature_map)
+        if branch is None:
+            logger.debug(
+                f"Skipping - no applicable otherwise conformance branch for element {element_name}"
+            )
+            return True
+        if branch.tag in get_restricted_tags():
+            logger.debug(f"Skipping - {branch.tag} applies for element {element_name}")
+            return True
+        return False
 
     # Check for Zigbee-specific optional conformance
     condition = conformance_element.find("condition")

@@ -121,6 +121,11 @@ inline constexpr uint32_t Id = 0x001C;
 inline constexpr uint8_t Min = 0;
 inline constexpr uint8_t Max = 8;
 } /* SystemMode */
+namespace ThermostatRunningMode {
+inline constexpr uint32_t Id = 0x001E;
+inline constexpr uint8_t Min = 0;
+inline constexpr uint8_t Max = 2;
+} /* ThermostatRunningMode */
 namespace TemperatureSetpointHold {
 inline constexpr uint32_t Id = 0x0023;
 inline constexpr uint8_t Min = 0;

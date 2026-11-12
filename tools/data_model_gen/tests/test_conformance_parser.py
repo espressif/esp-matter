@@ -464,8 +464,10 @@ class TestConformanceRestrictions(unittest.TestCase):
         should_skip = is_restricted_by_conformance({}, elem)
         self.assertTrue(should_skip)
 
-    def test_skip_missing_feature_in_mandatory(self):
-        """Test skipping when mandatory conformance references non-existent feature"""
+    def test_otherwise_uses_next_branch_when_mandatory_feature_unavailable(self):
+        """An otherwise conformance whose mandatory branch references a feature absent
+        from the feature map is evaluated by the following branch. With an optional
+        fallback the element is kept."""
         xml = """<attribute id="0x0001" name="TestAttr">
             <otherwiseConform>
                 <mandatoryConform>
@@ -476,8 +478,78 @@ class TestConformanceRestrictions(unittest.TestCase):
         </attribute>"""
         elem = ET.fromstring(xml)
         feature_map = {"LT": MockFeature("Lighting", "LT")}  # NONEXISTENT not in map
-        should_skip = is_restricted_by_conformance(feature_map, elem)
-        self.assertTrue(should_skip)
+        self.assertFalse(is_restricted_by_conformance(feature_map, elem))
+
+    def test_otherwise_and_term_with_unavailable_feature_uses_optional_branch(self):
+        """A mandatory branch with an andTerm is unavailable when any of its features is
+        absent. The element is kept and its parsed conformance holds only the optional
+        branch. Reference: Thermostat ThermostatRunningMode, M[TEVT & AUTO] otherwise
+        O[AUTO], with TEVT provisional."""
+        xml = """<attribute id="0x001E" name="ThermostatRunningMode">
+            <otherwiseConform>
+                <mandatoryConform>
+                    <andTerm>
+                        <feature name="TEVT"/>
+                        <feature name="AUTO"/>
+                    </andTerm>
+                </mandatoryConform>
+                <optionalConform>
+                    <feature name="AUTO"/>
+                </optionalConform>
+            </otherwiseConform>
+        </attribute>"""
+        elem = ET.fromstring(xml)
+        feature_map = {"AUTO": MockFeature("AutoMode", "AUTO")}
+        self.assertFalse(is_restricted_by_conformance(feature_map, elem))
+
+        result = Conformance(feature_map).parse(elem.find("otherwiseConform"))
+        self.assertEqual(result.type, ConformanceDecision.OTHERWISE)
+        self.assertNotIn("mandatory", result.condition)
+        self.assertEqual(result.condition["optional"], {"feature": "auto_mode"})
+
+    def test_otherwise_restricted_when_applicable_branch_is_disallowed(self):
+        """When the mandatory branch is unavailable and the next branch is disallowConform,
+        the element is restricted."""
+        xml = """<attribute id="0x0001" name="TestAttr">
+            <otherwiseConform>
+                <mandatoryConform>
+                    <feature name="NONEXISTENT"/>
+                </mandatoryConform>
+                <disallowConform/>
+            </otherwiseConform>
+        </attribute>"""
+        elem = ET.fromstring(xml)
+        self.assertTrue(is_restricted_by_conformance({}, elem))
+
+    def test_otherwise_restricted_when_no_branch_applies(self):
+        """An otherwise conformance with no applicable branch restricts the element."""
+        xml = """<attribute id="0x0001" name="TestAttr">
+            <otherwiseConform>
+                <mandatoryConform>
+                    <feature name="NONEXISTENT"/>
+                </mandatoryConform>
+            </otherwiseConform>
+        </attribute>"""
+        elem = ET.fromstring(xml)
+        self.assertTrue(is_restricted_by_conformance({}, elem))
+
+    def test_otherwise_keeps_first_branch_when_feature_available(self):
+        """When the mandatory branch references an available feature it remains the
+        effective conformance and the optional branch is retained after it."""
+        xml = """<attribute id="0x0001" name="TestAttr">
+            <otherwiseConform>
+                <mandatoryConform>
+                    <feature name="LT"/>
+                </mandatoryConform>
+                <optionalConform/>
+            </otherwiseConform>
+        </attribute>"""
+        elem = ET.fromstring(xml)
+        feature_map = {"LT": MockFeature("Lighting", "LT")}
+        self.assertFalse(is_restricted_by_conformance(feature_map, elem))
+        result = Conformance(feature_map).parse(elem.find("otherwiseConform"))
+        self.assertEqual(result.condition["mandatory"], {"feature": "lighting"})
+        self.assertIn("optional", result.condition)
 
     def test_dont_skip_valid_mandatory(self):
         """Test that valid mandatory conformance is not skipped"""

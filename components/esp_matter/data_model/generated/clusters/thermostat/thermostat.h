@@ -124,6 +124,7 @@ attribute_t *create_min_setpoint_dead_band(cluster_t *cluster, int8_t value);
 attribute_t *create_remote_sensing(cluster_t *cluster, uint8_t value);
 attribute_t *create_control_sequence_of_operation(cluster_t *cluster, uint8_t value);
 attribute_t *create_system_mode(cluster_t *cluster, uint8_t value);
+attribute_t *create_thermostat_running_mode(cluster_t *cluster, uint8_t value);
 attribute_t *create_temperature_setpoint_hold(cluster_t *cluster, uint8_t value);
 attribute_t *create_temperature_setpoint_hold_duration(cluster_t *cluster, nullable<uint16_t> value);
 attribute_t *create_thermostat_running_state(cluster_t *cluster, uint16_t value);
