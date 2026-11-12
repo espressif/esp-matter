@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <app/clusters/commissioner-control-server/CommissionerControlCluster.h>
 #include <app/clusters/commissioner-control-server/Delegate.h>
 #include <lib/core/DataModelTypes.h>
 
@@ -23,6 +24,9 @@ namespace Clusters {
 namespace CommissionerControl {
 
 void MatterCommissionerControlSetDelegate(EndpointId endpointId, Delegate *delegate);
+
+/// Returns the cluster instance registered on the given endpoint, or nullptr if not found.
+CommissionerControlCluster * FindClusterOnEndpoint(EndpointId endpointId);
 
 } // namespace CommissionerControl
 } // namespace Clusters

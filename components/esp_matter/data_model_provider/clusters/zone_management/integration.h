@@ -35,6 +35,9 @@ void MatterZoneManagementSetConfig(EndpointId endpointId, uint8_t maxUserDefined
 
 void MatterZoneManagementSetFeatures(EndpointId endpointId, BitFlags<Feature> features);
 
+/// Returns the cluster instance registered on the given endpoint, or nullptr if not found.
+ZoneManagementCluster * FindClusterOnEndpoint(EndpointId endpointId);
+
 } // namespace ZoneManagement
 } // namespace Clusters
 } // namespace app

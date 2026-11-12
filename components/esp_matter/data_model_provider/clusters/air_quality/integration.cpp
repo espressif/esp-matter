@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "integration.h"
 #include <esp_matter_data_model_priv.h>
 
 #include <app/ClusterCallbacks.h>
@@ -34,6 +35,19 @@ using namespace esp_matter;
 namespace {
 std::unordered_map<EndpointId, LazyRegisteredServerCluster<AirQualityCluster>> gServers;
 } // namespace
+
+namespace chip::app::Clusters::AirQuality {
+
+AirQualityCluster * FindClusterOnEndpoint(EndpointId endpointId)
+{
+    auto it = gServers.find(endpointId);
+    if (it == gServers.end() || !it->second.IsConstructed()) {
+        return nullptr;
+    }
+    return &it->second.Cluster();
+}
+
+} // namespace chip::app::Clusters::AirQuality
 
 void ESPMatterAirQualityClusterServerInitCallback(EndpointId endpointId)
 {
