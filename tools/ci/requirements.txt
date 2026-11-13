@@ -1,0 +1,10 @@
+# Keep CI dependencies compatible with ESP-IDF 6.0.
+-c https://dl.espressif.com/dl/esp-idf/espidf.constraints.v6.0.txt
+
+# idf-ci 1.3.0 added pytest-embedded-espemu for esp-emu CI jobs
+idf-ci>=1.3.0,<2.0
+
+netifaces
+tabulate
+prettytable
+requests
