@@ -95,8 +95,7 @@ static esp_err_t controller_invoke_command_handler(int argc, char **argv)
     if (command->group) {
         err = command->operation.start(chip::GroupIdFromNodeId(node_id), active_fabric_index(), request, command);
     } else {
-        chip::ScopedNodeId target(node_id, active_fabric_index());
-        err = command->operation.start(target, request, command);
+        err = command->operation.start(chip::ScopedNodeId(node_id, active_fabric_index()), request, command);
     }
     if (err != CHIP_NO_ERROR) {
         chip::Platform::Delete(command);

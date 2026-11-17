@@ -41,6 +41,10 @@ if (NOT CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
                                   "esp_matter_ota.cpp")
 endif()
 
+if (NOT CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE)
+    list(APPEND EXCLUDE_SRCS_LIST "client/private/esp_matter_client_local_control.cpp")
+endif()
+
 if (CONFIG_ESP_MATTER_ENABLE_MATTER_SERVER)
     # server, reporting, persistence, and server-cluster are already in libCHIP.a. CHIP_APP_SRCS
     # collects the CHIP files it leaves to the app; they are added after idf_component_register().

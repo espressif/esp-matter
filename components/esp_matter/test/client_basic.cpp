@@ -62,12 +62,11 @@ TEST_CASE("client interactions reject unavailable CHIP runtime without callbacks
     chip::app::AttributePathParams path(1, 6, 0);
     const chip::Span<const chip::app::AttributePathParams> paths(&path, 1);
     const chip::ScopedNodeId peer(42, 1);
-    const chip::ScopedNodeId target = peer;
     ValidationDelegate delegate;
     esp_matter::client::read_command::interaction read;
     esp_matter::client::subscribe_command::subscription subscription;
 
-    TEST_ASSERT_TRUE(read.start(target, esp_matter::client::read_command::request_t(paths), delegate) ==
+    TEST_ASSERT_TRUE(read.start(peer, esp_matter::client::read_command::request_t(paths), delegate) ==
                      CHIP_ERROR_INCORRECT_STATE);
     TEST_ASSERT_TRUE(subscription.start(peer, esp_matter::client::subscribe_command::request_t(paths), delegate) ==
                      CHIP_ERROR_INCORRECT_STATE);
@@ -80,7 +79,7 @@ TEST_CASE("client interactions reject unavailable CHIP runtime without callbacks
         .command_id = 1,
     };
     esp_matter::client::invoke_command::interaction invoke;
-    TEST_ASSERT_TRUE(invoke.start(target, request, nullptr) == CHIP_ERROR_INCORRECT_STATE);
+    TEST_ASSERT_TRUE(invoke.start(peer, request, nullptr) == CHIP_ERROR_INCORRECT_STATE);
     TEST_ASSERT_FALSE(invoke.active());
     TEST_ASSERT_TRUE(invoke.start(1, 1, request, nullptr) == CHIP_ERROR_INCORRECT_STATE);
     esp_matter::client::json_encodable value(R"({"0:U16":1})");

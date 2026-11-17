@@ -1,5 +1,16 @@
 menu "ESP Matter"
 
+    config ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+        bool "Enable local Matter client interactions"
+        depends on ESP_MATTER_ENABLE_MATTER_SERVER && ESP_MATTER_ENABLE_DATA_MODEL
+        default n
+        help
+            Enable client Read, Write, and Invoke against the Matter server
+            hosted in the same process. Local control requires an initialized
+            data-model provider, uses internal device identity, and does not
+            perform remote Matter ACL evaluation. The application must
+            authorize requests before submission.
+
     config ESP_MATTER_MAX_DEVICE_TYPE_COUNT
         int "Maximum device types per endpoint"
         range 1 255

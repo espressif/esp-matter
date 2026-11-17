@@ -12,6 +12,8 @@ list(APPEND srcs_list "jsontlv.cpp")
 list(APPEND srcs_list "attribute_helpers.cpp")
 list(APPEND srcs_list "client_basic.cpp")
 list(APPEND srcs_list "client_binding.cpp")
+list(APPEND srcs_list "client_local.cpp"
+                      "$ENV{ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/src/app/server-cluster/testing/EmptyProvider.cpp")
 
 idf_component_register(SRCS ${srcs_list}
                        INCLUDE_DIRS "."

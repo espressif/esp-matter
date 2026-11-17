@@ -52,12 +52,23 @@ inline CHIP_ERROR ValidateFabricIndex(chip::FabricIndex fabric_index)
 
 inline CHIP_ERROR ValidateRemoteTarget(const chip::ScopedNodeId &target)
 {
-    VerifyOrReturnError(target.IsOperational(), CHIP_ERROR_INVALID_ARGUMENT);
-    chip::FabricTable *fabric_table = GetFabricTable();
-    VerifyOrReturnError(fabric_table != nullptr, CHIP_ERROR_INCORRECT_STATE);
-    const chip::FabricInfo *fabric = fabric_table->FindFabricWithIndex(target.GetFabricIndex());
-    VerifyOrReturnError(fabric != nullptr, CHIP_ERROR_INVALID_FABRIC_INDEX);
-    VerifyOrReturnError(fabric->GetNodeId() != target.GetNodeId(), CHIP_ERROR_INVALID_ARGUMENT);
+    execution_t execution;
+    ReturnErrorOnFailure(resolve_target(target, execution));
+    VerifyOrReturnError(execution == execution_t::remote, CHIP_ERROR_INVALID_ARGUMENT);
+    return CHIP_NO_ERROR;
+}
+
+inline CHIP_ERROR ResolveNodeTarget(const chip::ScopedNodeId &target, execution_t &execution)
+{
+    ReturnErrorOnFailure(resolve_target(target, execution));
+    if (execution == execution_t::local) {
+#ifdef CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+        VerifyOrReturnError(chip::app::InteractionModelEngine::GetInstance()->GetDataModelProvider() != nullptr,
+                            CHIP_ERROR_INCORRECT_STATE);
+#else  // !CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+        return CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE;
+#endif // CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+    }
     return CHIP_NO_ERROR;
 }
 

@@ -643,16 +643,30 @@ Client interactions
 Keep each caller-owned operation and its delegate alive until completion or
 ``stop()``.
 
-Targets and authorization
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Target selection and authorization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use ``chip::ScopedNodeId(node_id, fabric_index)`` for unicast destinations. The
-node must be a remote operational node, and the fabric must exist in the
-initialized Interaction Model runtime. Self-targets are rejected. For group
-Invoke and Write, use ``start(group_id, fabric_index, request, &delegate)``.
+Pass ``chip::ScopedNodeId(node_id, fabric_index)`` to ``start()`` for unicast
+Invoke, Read, and Write. The interaction validates the node and fabric against
+the initialized Interaction Model runtime. A Matter server's own node executes
+locally; other nodes use CASE. Callbacks include the execution route in ``target_t``.
 
-Apply application authorization policy before submitting a request. The remote
-peer enforces Matter ACL checks.
+Local Invoke, Read, and Write require
+``CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE``, which requires the Matter server
+and esp-matter data model. When this option is disabled, ``start()`` rejects local
+targets with ``CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE``. Local operations revalidate
+the fabric and self-target before dispatch. Removing the fabric before dispatch
+ends the operation with an error without accessing the data model.
+Subscribe accepts only a remote ``ScopedNodeId``. For group Invoke and Write, use
+``start(group_id, fabric_index, request, &delegate)``.
+
+The application must authorize each destination and path before submission.
+Remote peers enforce Matter ACLs. Local unicast bypasses Matter ACL checks. If
+authorization depends on whether execution is local or remote, call
+``client::resolve_target(node, execution)`` under the CHIP stack lock before
+``start()``. Otherwise, ``start()`` selects the route itself. ``resolve_target()``
+selects the route even when local control is disabled. ``start()`` still checks
+availability.
 
 Ownership and callbacks
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -714,12 +728,35 @@ array container. ``client::json_encodable`` accepts, for example, ``{"0:U16":42}
 
 Read and Subscribe requests take spans of Matter attribute and event paths and
 copy them during ``start()``. Read supports wildcard paths and is fabric-filtered
-by default. Subscribe uses CHIP automatic resubscription according to its request options.
+by default. Subscribe is remote-only and uses CHIP automatic resubscription
+according to its request options.
+
+Local Invoke has no network exchange or secure session. It rejects these commands
+from the pinned SDK with ``UnsupportedCommand`` before calling their handlers:
+
+* Operational Credentials: ``AttestationRequest``, ``CSRRequest``, ``AddNOC``,
+  ``UpdateNOC``, ``RemoveFabric``, and ``SignVIDVerificationRequest``.
+* General Commissioning: ``CommissioningComplete``.
+
+Other commands retain normal validation. Custom handlers must support a null
+exchange. Review the rejection list when updating CHIP.
+
+Local Read supports attributes only. It grows its encoding buffer and reassembles
+chunked lists before calling ``OnAttribute()``. Each encoded report and reassembled
+value is limited to 65535 bytes. Memory or capacity exhaustion produces a
+``ResourceExhausted`` status for that attribute.
+
+Local Write snapshots each value before dispatch. The limit is 65535 encoded
+bytes per value, subject to available memory. JSON input uses the adapter's
+``chip::kMaxAppMessageLen`` buffer limit. Consecutive writes to the same list share
+the provider's begin and success/failure notifications. Each sequence finishes
+before its status callbacks. These notifications do not make writes to unrelated
+attributes atomic.
 
 Use ``write.start(group_id, fabric_index, request, &delegate)`` for Group Write.
 Group Write omits endpoints and does not support data versions, timed writes, or
 chunking. ``OnDone()`` reports dispatch after ``start()`` returns. There are
-no path responses or member acknowledgments.
+no path responses or member acknowledgments. Group Write always uses the network.
 
 Write always uses a span, including the one-attribute case:
 
@@ -762,6 +799,9 @@ dispatcher. ``stop()`` cancels all its pending dispatches and native operations
 across local endpoints, detaches delegates and suppresses later callbacks.
 Keep delegates alive until then. The next ``dispatch()`` or ``stop()`` releases
 completed handles.
+
+Group Invoke also dispatches to matching local endpoints when local control is
+enabled. Local group commands undergo Matter ACL checks.
 
 Removed bindings stop subscriptions; dispatched finite operations may finish.
 Fabric removal cancels affected work. New bindings apply on the next dispatch.

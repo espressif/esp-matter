@@ -106,11 +106,10 @@ template <typename Path> static esp_err_t controller_subscribe_handler(int argc,
     ESP_RETURN_ON_ERROR(parse_path_columns(argv[1], argv[2], argv[3], paths), TAG, "Failed to parse paths");
 
     esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
-    chip::ScopedNodeId target(node_id, active_fabric_index());
     auto *entry = chip::Platform::New<ConsoleSubscription>();
     ESP_RETURN_ON_FALSE(entry != nullptr, ESP_ERR_NO_MEM, TAG, "Failed to allocate subscription");
     client::subscribe_command::request_t request(paths.Span(), options);
-    CHIP_ERROR err = entry->subscription.start(target, request, *entry);
+    CHIP_ERROR err = entry->subscription.start(chip::ScopedNodeId(node_id, active_fabric_index()), request, *entry);
     if (err != CHIP_NO_ERROR) {
         chip::Platform::Delete(entry);
         return ESP_FAIL;

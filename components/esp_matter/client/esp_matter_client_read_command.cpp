@@ -21,6 +21,10 @@
 #include <app/ReadClient.h>
 #include <platform/CHIPDeviceLayer.h>
 
+#ifdef CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+#include "esp_matter_client_local_control.h"
+#endif // CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+
 namespace esp_matter {
 namespace client {
 namespace read_command {
@@ -32,10 +36,13 @@ using chip::app::StatusIB;
 
 class interaction::Impl final : public operation::CaseConnection, public ReadClient::Callback {
 public:
-    Impl(const chip::ScopedNodeId &target, const options_t &options, delegate &delegate)
+    Impl(const target_t &target, const options_t &options, delegate &delegate)
         : mTarget(target), mOptions(options),
           mDelegate(&delegate), mBufferedCallback(*this)
     {
+        if (options.response_timeout != chip::System::Clock::kZero) {
+            mDeadline.SetValue(chip::System::SystemClock().GetMonotonicTimestamp() + options.response_timeout);
+        }
     }
 
     ~Impl()
@@ -94,7 +101,7 @@ public:
         mReportOpen = true;
         if (mDelegate != nullptr) {
             operation::CallbackScope scope(mInCallback);
-            mDelegate->OnReportBegin(target_t(mTarget));
+            mDelegate->OnReportBegin(mTarget);
         }
     }
 
@@ -103,7 +110,7 @@ public:
     {
         if (mDelegate != nullptr) {
             operation::CallbackScope scope(mInCallback);
-            mDelegate->OnAttribute(target_t(mTarget), path, value, status);
+            mDelegate->OnAttribute(mTarget, path, value, status);
         }
     }
 
@@ -112,7 +119,7 @@ public:
     {
         if (mDelegate != nullptr) {
             operation::CallbackScope scope(mInCallback);
-            mDelegate->OnEvent(target_t(mTarget), header, value, status);
+            mDelegate->OnEvent(mTarget, header, value, status);
         }
     }
 
@@ -121,7 +128,7 @@ public:
         mReportOpen = false;
         if (mDelegate != nullptr) {
             operation::CallbackScope scope(mInCallback);
-            mDelegate->OnReportEnd(target_t(mTarget), CHIP_NO_ERROR);
+            mDelegate->OnReportEnd(mTarget, CHIP_NO_ERROR);
         }
     }
 
@@ -131,7 +138,7 @@ public:
             mReportOpen = false;
             if (mDelegate != nullptr) {
                 operation::CallbackScope scope(mInCallback);
-                mDelegate->OnReportEnd(target_t(mTarget), err);
+                mDelegate->OnReportEnd(mTarget, err);
             }
         }
         mTerminalError = err;
@@ -146,18 +153,35 @@ private:
     static void Begin(chip::System::Layer *, void *context)
     {
         auto *self = static_cast<Impl *>(context);
-        CHIP_ERROR err = self->Start(self->mTarget);
+        if (self->mTarget.execution == execution_t::local) {
+#ifdef CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+            ReadPrepareParams params;
+            self->mPaths.Fill(params);
+            request_t request(attribute_paths_t(params.mpAttributePathParamsList, params.mAttributePathParamsListSize),
+                              self->mOptions);
+            CHIP_ERROR err;
+            {
+                operation::CallbackScope scope(self->mInCallback);
+                err = read_local(chip::ScopedNodeId(self->mTarget.node_id, self->mTarget.fabric_index), request, self->mDeadline, *self->mDelegate);
+            }
+            self->mPaths.Free();
+            self->Finish(err);
+#endif // CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+            return;
+        }
+        CHIP_ERROR err = self->Start(chip::ScopedNodeId(self->mTarget.node_id, self->mTarget.fabric_index));
         if (err != CHIP_NO_ERROR) {
             self->Finish(err);
         }
     }
 
-    chip::ScopedNodeId mTarget;
+    target_t mTarget;
     options_t mOptions;
     delegate *mDelegate;
     operation::OwnedReadPaths mPaths;
     chip::app::BufferedReadCallback mBufferedCallback;
     chip::Platform::UniquePtr<ReadClient> mClient;
+    chip::Optional<chip::System::Clock::Timestamp> mDeadline;
     CHIP_ERROR mTerminalError = CHIP_NO_ERROR;
     bool mReportOpen = false;
     bool mInCallback = false;
@@ -185,8 +209,11 @@ CHIP_ERROR interaction::start(const chip::ScopedNodeId &scoped_node_id, const re
     VerifyOrReturnError(!active(), CHIP_ERROR_BUSY);
     stop();
     ReturnErrorOnFailure(operation::ValidateReadPaths(request.attribute_paths, request.event_paths));
-    ReturnErrorOnFailure(operation::ValidateRemoteTarget(scoped_node_id));
-    mImpl = chip::Platform::New<Impl>(scoped_node_id, request.options, delegate);
+    execution_t execution;
+    ReturnErrorOnFailure(operation::ResolveNodeTarget(scoped_node_id, execution));
+    VerifyOrReturnError(execution != execution_t::local || request.event_paths.empty(),
+                        CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
+    mImpl = chip::Platform::New<Impl>(target_t(scoped_node_id, execution), request.options, delegate);
     VerifyOrReturnError(mImpl != nullptr, CHIP_ERROR_NO_MEMORY);
     CHIP_ERROR err = mImpl->Prepare(request);
     if (err != CHIP_NO_ERROR) {

@@ -125,6 +125,9 @@ private:
     template <typename Command>
     CHIP_ERROR Submit(const ScopedNodeId &node, const Command &command, uint16_t timed_timeout_ms)
     {
+        client::execution_t execution;
+        ReturnErrorOnFailure(client::resolve_target(node, execution));
+        VerifyOrReturnError(execution == client::execution_t::remote, CHIP_ERROR_INVALID_ARGUMENT);
         chip::app::DataModel::EncodableType<Command> fields(command);
         client::invoke_command::request_t request;
         request.endpoint_id = 0;

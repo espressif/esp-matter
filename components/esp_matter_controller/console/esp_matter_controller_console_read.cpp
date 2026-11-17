@@ -64,11 +64,10 @@ template <typename Path> static esp_err_t controller_read_handler(int argc, char
     ScopedMemoryBufferWithSize<Path> paths;
     ESP_RETURN_ON_ERROR(parse_path_columns(argv[1], argv[2], argv[3], paths), TAG, "Failed to parse paths");
     esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
-    chip::ScopedNodeId target(node_id, active_fabric_index());
     client::read_command::request_t request(paths.Span());
     auto *command = chip::Platform::New<ConsoleReadDelegate>();
     ESP_RETURN_ON_FALSE(command != nullptr, ESP_ERR_NO_MEM, TAG, "Failed to allocate Read");
-    CHIP_ERROR err = command->operation.start(target, request, *command);
+    CHIP_ERROR err = command->operation.start(chip::ScopedNodeId(node_id, active_fabric_index()), request, *command);
     if (err != CHIP_NO_ERROR) {
         chip::Platform::Delete(command);
     }

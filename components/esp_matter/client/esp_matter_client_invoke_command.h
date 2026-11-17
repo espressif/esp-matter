@@ -71,11 +71,13 @@ public:
     interaction &operator=(const interaction &) = delete;
 
     /**
-     * @brief Invoke a command on a remote node.
+     * @brief Invoke a command on a local or remote node.
      *
      * Consumes fields before return; nullptr fields encode an empty structure.
+     * Local Invoke requests, including protocol framing, must fit within chip::app::kMaxSecureSduLengthBytes.
+     * Known SDK commands requiring an exchange are rejected locally; custom handlers must tolerate a null exchange.
      *
-     * @param[in] scoped_node_id Remote node and fabric.
+     * @param[in] scoped_node_id Node and fabric. Self-targets execute locally; other nodes use CASE.
      * @param[in] request Command path, fields, and options.
      * @param[in] delegate Borrowed until completion or stop(); nullptr logs failures and discards responses.
      *
@@ -84,10 +86,10 @@ public:
     CHIP_ERROR start(const chip::ScopedNodeId &scoped_node_id, const request_t &request, delegate *delegate);
 
     /**
-     * @brief Send a groupcast.
+     * @brief Send a groupcast and queue matching local endpoints with group access checks.
      *
      * No OnResponse() callbacks. OnDone(CHIP_NO_ERROR) confirms dispatch, not member acknowledgment.
-     * A synchronous failure cancels queued completion.
+     * A synchronous failure cancels queued local dispatch and completion.
      *
      * @param[in] group_id Destination group.
      * @param[in] fabric_index Fabric containing the group.
@@ -107,7 +109,7 @@ public:
     /**
      * @brief Detach the delegate synchronously and prevent further callbacks.
      *
-     * Idempotent. Dispatched commands are not undone.
+     * Idempotent. Dispatched commands and retained local protocol handlers may finish independently.
      */
     void stop();
 

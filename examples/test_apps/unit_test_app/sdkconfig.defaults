@@ -18,6 +18,8 @@ CONFIG_PARTITION_TABLE_OFFSET=0xC000
 # Enable chip shell
 CONFIG_ENABLE_CHIP_SHELL=y
 
+CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE=y
+
 # Disable WiFi — unit tests don't need networking and WiFi PHY calibration hangs in QEMU
 CONFIG_ENABLE_WIFI_STATION=n
 CONFIG_ENABLE_WIFI_AP=n

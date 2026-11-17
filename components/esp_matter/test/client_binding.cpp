@@ -12,21 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "client_common.h"
+#include "client_fixture.h"
 
 #include <esp_matter_client_binding.h>
-#include <esp_matter_client_invoke_command.h>
+#include <esp_matter_client.h>
 #include <app/clusters/bindings/BindingManager.h>
-#include <app/InteractionModelEngine.h>
-#include <credentials/GroupDataProviderImpl.h>
-#include <app/reporting/ReportSchedulerImpl.h>
-#include <app/server-cluster/testing/FabricTestFixture.h>
-#include <crypto/DefaultSessionKeystore.h>
-#include <platform/DefaultTimerDelegate.h>
-#include <transport/TransportMgr.h>
-#include <transport/raw/tests/NetworkTestHelpers.h>
-#include <lib/support/TestPersistentStorageDelegate.h>
-#include <unity.h>
 
 namespace {
 
@@ -35,32 +25,10 @@ using namespace esp_matter::client;
 using namespace esp_matter::test;
 using namespace chip::app::Clusters::Binding;
 
-class BindingFixture {
+class BindingFixture : public ClientFixture {
 public:
-    BindingFixture() : mFabric(&mStorage), mScheduler(&mTimerDelegate)
+    BindingFixture()
     {
-        TEST_ASSERT_TRUE(mFabric.SetUpTestFabric(mFabricIndex) == CHIP_NO_ERROR);
-        auto &transport = mTransport.GetTransport().GetImplAtIndex<0>();
-        transport.InitLoopbackTransport(&chip::DeviceLayer::SystemLayer());
-        // Exercise native send-error completion without a network peer or dropped packets.
-        transport.mMessageSendError = CHIP_ERROR_WRITE_FAILED;
-        TEST_ASSERT_TRUE(mTransport.Init("binding-test") == CHIP_NO_ERROR);
-        TEST_ASSERT_TRUE(mSessions.Init(&chip::DeviceLayer::SystemLayer(), &mTransport, nullptr,
-                                        &mStorage, &mFabric.GetFabricTable(), mKeystore) == CHIP_NO_ERROR);
-        TEST_ASSERT_TRUE(mExchanges.Init(&mSessions) == CHIP_NO_ERROR);
-        mGroups.SetStorageDelegate(&mStorage);
-        mGroups.SetSessionKeystore(&mKeystore);
-        TEST_ASSERT_TRUE(mGroups.Init() == CHIP_NO_ERROR);
-        chip::CASESessionManagerConfig config;
-        config.sessionInitParams.sessionManager = &mSessions;
-        config.sessionInitParams.exchangeMgr = &mExchanges;
-        config.sessionInitParams.fabricTable = &mFabric.GetFabricTable();
-        config.sessionInitParams.groupDataProvider = &mGroups;
-        config.clientPool = &mCaseClients;
-        config.sessionSetupPool = &mSetups;
-        TEST_ASSERT_TRUE(mCase.Init(&chip::DeviceLayer::SystemLayer(), config) == CHIP_NO_ERROR);
-        TEST_ASSERT_TRUE(chip::app::InteractionModelEngine::GetInstance()->Init(
-                             &mExchanges, &mFabric.GetFabricTable(), &mScheduler, &mCase) == CHIP_NO_ERROR);
         binding::initialize();
         ManagerInitParams params = {
             .mFabricTable = &mFabric.GetFabricTable(),
@@ -76,19 +44,6 @@ public:
         ClearBindings();
         Table::GetInstance().SetPersistentStorage(nullptr);
         mFabric.GetFabricTable().RemoveFabricDelegate(&Manager::GetInstance());
-        auto *engine = chip::app::InteractionModelEngine::GetInstance();
-        engine->Shutdown();
-        // SDK Shutdown leaves runtime pointers installed; restore the pristine unit-test runtime.
-        engine->~InteractionModelEngine();
-        new (engine) chip::app::InteractionModelEngine();
-        mCase.Shutdown();
-        mGroups.Finish();
-        mSessions.ExpireAllSecureSessions();
-        mExchanges.Shutdown();
-        mSessions.Shutdown();
-        mTransport.Close();
-        mTransport.GetTransport().GetImplAtIndex<0>().ShutdownLoopbackTransport();
-        TEST_ASSERT_TRUE(mFabric.TearDownTestFabric(mFabricIndex) == CHIP_NO_ERROR);
     }
 
     void ClearBindings()
@@ -105,40 +60,6 @@ public:
     {
         TEST_ASSERT_TRUE(Table::GetInstance().Add(entry) == CHIP_NO_ERROR);
     }
-
-    void Connect(chip::NodeId node, chip::FabricIndex fabric = 1)
-    {
-        const auto *info = mFabric.GetFabricTable().FindFabricWithIndex(fabric);
-        TEST_ASSERT_NOT_NULL(info);
-        TEST_ASSERT_LESS_THAN(2, mConnected);
-        TEST_ASSERT_TRUE(mSessions.InjectCaseSessionWithTestKey(
-                             mInjected[mConnected], mConnected + 1, mConnected + 10, info->GetNodeId(), node, fabric,
-                             chip::Transport::PeerAddress::UDP(chip::Inet::IPAddress::Any, 5540),
-                             chip::CryptoContext::SessionRole::kInitiator) == CHIP_NO_ERROR);
-        ++mConnected;
-    }
-
-    void AddFabric(chip::FabricIndex fabric)
-    {
-        TEST_ASSERT_TRUE(mFabric.AddAdditionalTestFabric(fabric) == CHIP_NO_ERROR);
-    }
-
-private:
-    chip::TestPersistentStorageDelegate mStorage;
-    chip::Testing::FabricTestFixture mFabric;
-    chip::FabricIndex mFabricIndex = 1;
-    chip::TransportMgr<chip::Testing::LoopbackTransport> mTransport;
-    chip::Crypto::DefaultSessionKeystore mKeystore;
-    chip::SessionManager mSessions;
-    chip::SessionHolder mInjected[2];
-    size_t mConnected = 0;
-    chip::Messaging::ExchangeManager mExchanges;
-    chip::app::DefaultTimerDelegate mTimerDelegate;
-    chip::app::reporting::ReportSchedulerImpl mScheduler;
-    chip::Credentials::GroupDataProviderImpl mGroups;
-    chip::CASEClientPool<2> mCaseClients;
-    chip::OperationalSessionSetupPool<2> mSetups;
-    chip::CASESessionManager mCase;
 };
 
 class FiniteDelegate final : public invoke_command::delegate, public read_command::delegate,
@@ -169,6 +90,48 @@ public:
 };
 
 } // namespace
+
+TEST_CASE("server self-targets never fall back to CASE", "[client-binding][target]")
+{
+    init_client_test_stack();
+    chip::DeviceLayer::StackLock lock;
+    auto fixture = chip::Platform::MakeUnique<BindingFixture>();
+    TEST_ASSERT_NOT_NULL(fixture.get());
+    const chip::ScopedNodeId self = fixture->SelfNode();
+    execution_t execution;
+    TEST_ASSERT_TRUE(resolve_target(self, execution) == CHIP_NO_ERROR);
+    TEST_ASSERT_TRUE(execution == execution_t::local);
+
+    // Without a local provider, self-targets must fail rather than open a CASE session.
+#ifdef CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+    const CHIP_ERROR expected = CHIP_ERROR_INCORRECT_STATE;
+#else
+    const CHIP_ERROR expected = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE;
+#endif
+    FiniteDelegate delegate;
+    invoke_command::interaction invoke;
+    invoke_command::request_t request = {.endpoint_id = 1, .cluster_id = 6, .command_id = 1};
+    TEST_ASSERT_TRUE(invoke.start(self, request, &delegate) == expected);
+    TEST_ASSERT_FALSE(invoke.active());
+
+    chip::app::AttributePathParams path(1, 6, 0);
+    chip::Span<const chip::app::AttributePathParams> paths(&path, 1);
+    read_command::interaction read;
+    TEST_ASSERT_TRUE(read.start(self, read_command::request_t(paths), delegate) == expected);
+
+    json_encodable value(R"({"0:U8":1})");
+    write_command::attribute_write_t attribute{chip::app::ConcreteDataAttributePath(1, 6, 0), &value};
+    write_command::interaction write;
+    TEST_ASSERT_TRUE(write.start(self, {{&attribute, 1}, {}}, &delegate) == expected);
+
+    subscribe_command::subscription subscription;
+    SubscriptionDelegate subscription_delegate;
+    TEST_ASSERT_TRUE(subscription.start(self, subscribe_command::request_t(paths), subscription_delegate) ==
+                     CHIP_ERROR_INVALID_ARGUMENT);
+    drain_client_test_timers();
+    TEST_ASSERT_EQUAL(0, delegate.count);
+    TEST_ASSERT_EQUAL(0, subscription_delegate.states);
+}
 
 TEST_CASE("binding dispatcher selects matching unicast destinations", "[client-binding]")
 {
