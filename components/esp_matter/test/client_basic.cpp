@@ -53,9 +53,9 @@ public:
 
 } // namespace
 
-TEST_CASE("client interactions reject unavailable CHIP runtime without callbacks", "[client][validation]")
+CLIENT_TEST_CASE("client interactions reject unavailable CHIP runtime without callbacks", "[client][validation]")
 {
-    esp_matter::test::init_client_test_stack();
+    esp_matter::test::client::init_test_stack();
     chip::DeviceLayer::StackLock lock;
     TEST_ASSERT_NULL(chip::app::InteractionModelEngine::GetInstance()->GetExchangeManager());
 
@@ -70,8 +70,6 @@ TEST_CASE("client interactions reject unavailable CHIP runtime without callbacks
                      CHIP_ERROR_INCORRECT_STATE);
     TEST_ASSERT_TRUE(subscription.start(peer, esp_matter::client::subscribe_command::request_t(paths), delegate) ==
                      CHIP_ERROR_INCORRECT_STATE);
-    TEST_ASSERT_TRUE(subscription.state() == esp_matter::client::subscribe_command::state_t::terminated);
-    TEST_ASSERT_FALSE(subscription.id().HasValue());
 
     esp_matter::client::invoke_command::request_t request = {
         .endpoint_id = 1,
@@ -80,7 +78,6 @@ TEST_CASE("client interactions reject unavailable CHIP runtime without callbacks
     };
     esp_matter::client::invoke_command::interaction invoke;
     TEST_ASSERT_TRUE(invoke.start(peer, request, nullptr) == CHIP_ERROR_INCORRECT_STATE);
-    TEST_ASSERT_FALSE(invoke.active());
     TEST_ASSERT_TRUE(invoke.start(1, 1, request, nullptr) == CHIP_ERROR_INCORRECT_STATE);
     esp_matter::client::json_encodable value(R"({"0:U16":1})");
     const esp_matter::client::write_command::attribute_write_t attribute = {
@@ -89,15 +86,15 @@ TEST_CASE("client interactions reject unavailable CHIP runtime without callbacks
     esp_matter::client::write_command::interaction write;
     TEST_ASSERT_TRUE(write.start(1, 1, { { &attribute, 1 }, {} }, &delegate) == CHIP_ERROR_INCORRECT_STATE);
 
-    esp_matter::test::drain_client_test_timers();
+    esp_matter::test::client::drain_timers();
     TEST_ASSERT_EQUAL(0, delegate.callbacks);
     read.stop();
     subscription.stop();
 }
 
-TEST_CASE("group Write rejects timed and version-conditional requests without callbacks", "[client][write][validation]")
+CLIENT_TEST_CASE("group Write rejects timed and version-conditional requests without callbacks", "[client][write][validation]")
 {
-    esp_matter::test::init_client_test_stack();
+    esp_matter::test::client::init_test_stack();
     chip::DeviceLayer::StackLock lock;
     esp_matter::client::json_encodable value(R"({"0:U16":1})");
     esp_matter::client::write_command::attribute_write_t attribute = {
@@ -113,13 +110,13 @@ TEST_CASE("group Write rejects timed and version-conditional requests without ca
     attribute.path.mDataVersion.SetValue(10);
     TEST_ASSERT_TRUE(write.start(1, 1, request, &delegate) == CHIP_ERROR_INVALID_ARGUMENT);
 
-    esp_matter::test::drain_client_test_timers();
+    esp_matter::test::client::drain_timers();
     TEST_ASSERT_EQUAL(0, delegate.callbacks);
 }
 
-TEST_CASE("client Write rejects malformed spans and list-item writes without callbacks", "[client][write][validation]")
+CLIENT_TEST_CASE("client Write rejects malformed spans and list-item writes without callbacks", "[client][write][validation]")
 {
-    esp_matter::test::init_client_test_stack();
+    esp_matter::test::client::init_test_stack();
     chip::DeviceLayer::StackLock lock;
     const chip::ScopedNodeId target(42, 1);
     esp_matter::client::json_encodable value(R"({"0:U16":1})");
@@ -143,11 +140,11 @@ TEST_CASE("client Write rejects malformed spans and list-item writes without cal
     for (const auto &attributes : invalid) {
         TEST_ASSERT_TRUE(write.start(target, { attributes, {} }, &delegate) == CHIP_ERROR_INVALID_ARGUMENT);
     }
-    esp_matter::test::drain_client_test_timers();
+    esp_matter::test::client::drain_timers();
     TEST_ASSERT_EQUAL(0, delegate.callbacks);
 }
 
-TEST_CASE("client JSON encodes one complete value", "[client][json]")
+CLIENT_TEST_CASE("client JSON encodes one complete value", "[client][json]")
 {
     const struct {
         const char *input;

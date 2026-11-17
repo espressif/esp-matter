@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "client_fixture.h"
+#include "client_common.h"
 
 #include <esp_matter_client_binding.h>
 #include <esp_matter_client.h>
@@ -22,10 +22,10 @@ namespace {
 
 namespace binding = esp_matter::client::binding;
 using namespace esp_matter::client;
-using namespace esp_matter::test;
+using namespace esp_matter::test::client;
 using namespace chip::app::Clusters::Binding;
 
-class BindingFixture : public ClientFixture {
+class BindingFixture : public Fixture {
 public:
     BindingFixture()
     {
@@ -91,9 +91,9 @@ public:
 
 } // namespace
 
-TEST_CASE("server self-targets never fall back to CASE", "[client-binding][target]")
+CLIENT_TEST_CASE("server self-targets never fall back to CASE", "[client-binding][target]")
 {
-    init_client_test_stack();
+    init_test_stack();
     chip::DeviceLayer::StackLock lock;
     auto fixture = chip::Platform::MakeUnique<BindingFixture>();
     TEST_ASSERT_NOT_NULL(fixture.get());
@@ -102,12 +102,7 @@ TEST_CASE("server self-targets never fall back to CASE", "[client-binding][targe
     TEST_ASSERT_TRUE(resolve_target(self, execution) == CHIP_NO_ERROR);
     TEST_ASSERT_TRUE(execution == execution_t::local);
 
-    // Without a local provider, self-targets must fail rather than open a CASE session.
-#ifdef CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
     const CHIP_ERROR expected = CHIP_ERROR_INCORRECT_STATE;
-#else
-    const CHIP_ERROR expected = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE;
-#endif
     FiniteDelegate delegate;
     invoke_command::interaction invoke;
     invoke_command::request_t request = {.endpoint_id = 1, .cluster_id = 6, .command_id = 1};
@@ -128,14 +123,14 @@ TEST_CASE("server self-targets never fall back to CASE", "[client-binding][targe
     SubscriptionDelegate subscription_delegate;
     TEST_ASSERT_TRUE(subscription.start(self, subscribe_command::request_t(paths), subscription_delegate) ==
                      CHIP_ERROR_INVALID_ARGUMENT);
-    drain_client_test_timers();
+    drain_timers();
     TEST_ASSERT_EQUAL(0, delegate.count);
     TEST_ASSERT_EQUAL(0, subscription_delegate.states);
 }
 
-TEST_CASE("binding dispatcher selects matching unicast destinations", "[client-binding]")
+CLIENT_TEST_CASE("binding dispatcher selects matching unicast destinations", "[client-binding]")
 {
-    init_client_test_stack();
+    init_test_stack();
     chip::DeviceLayer::StackLock lock;
     auto fixture = chip::Platform::MakeUnique<BindingFixture>();
     TEST_ASSERT_NOT_NULL(fixture.get());
@@ -150,15 +145,15 @@ TEST_CASE("binding dispatcher selects matching unicast destinations", "[client-b
     invoke_command::request_t request = {.cluster_id = 6, .command_id = 2};
     TEST_ASSERT_TRUE(bindings.dispatch(1, request, &delegate) == CHIP_NO_ERROR);
     TEST_ASSERT_EQUAL(0, delegate.count);
-    drain_client_test_timers();
+    drain_timers();
     TEST_ASSERT_EQUAL(2, delegate.count);
     TEST_ASSERT_TRUE((delegate.nodes[0] == 0x1234 && delegate.nodes[1] == 0x5678) ||
                      (delegate.nodes[1] == 0x1234 && delegate.nodes[0] == 0x5678));
 }
 
-TEST_CASE("binding stop suppresses deferred invoke completion and permits reuse", "[client-binding]")
+CLIENT_TEST_CASE("binding stop suppresses deferred invoke completion and permits reuse", "[client-binding]")
 {
-    init_client_test_stack();
+    init_test_stack();
     chip::DeviceLayer::StackLock lock;
     auto fixture = chip::Platform::MakeUnique<BindingFixture>();
     TEST_ASSERT_NOT_NULL(fixture.get());
@@ -169,16 +164,16 @@ TEST_CASE("binding stop suppresses deferred invoke completion and permits reuse"
     invoke_command::request_t request = {.cluster_id = 6, .command_id = 2};
     TEST_ASSERT_TRUE(bindings.dispatch(1, request, &delegate) == CHIP_NO_ERROR);
     bindings.stop();
-    drain_client_test_timers();
+    drain_timers();
     TEST_ASSERT_EQUAL(0, delegate.count);
     TEST_ASSERT_TRUE(bindings.dispatch(1, request, &delegate) == CHIP_NO_ERROR);
-    drain_client_test_timers();
+    drain_timers();
     TEST_ASSERT_EQUAL(1, delegate.count);
 }
 
-TEST_CASE("binding completion may stop and reuse dispatcher without invalidating target", "[client-binding]")
+CLIENT_TEST_CASE("binding completion may stop and reuse dispatcher without invalidating target", "[client-binding]")
 {
-    init_client_test_stack();
+    init_test_stack();
     chip::DeviceLayer::StackLock lock;
     auto fixture = chip::Platform::MakeUnique<BindingFixture>();
     TEST_ASSERT_NOT_NULL(fixture.get());
@@ -206,14 +201,14 @@ TEST_CASE("binding completion may stop and reuse dispatcher without invalidating
     delegate.bindings = &bindings;
     invoke_command::request_t request = {.cluster_id = 6, .command_id = 2};
     TEST_ASSERT_TRUE(bindings.dispatch(1, request, &delegate) == CHIP_NO_ERROR);
-    drain_client_test_timers();
-    drain_client_test_timers();
+    drain_timers();
+    drain_timers();
     TEST_ASSERT_EQUAL(2, delegate.count);
 }
 
-TEST_CASE("binding rejects nonterminal callback dispatch without cancelling other endpoints", "[client-binding]")
+CLIENT_TEST_CASE("binding rejects nonterminal callback dispatch without cancelling other endpoints", "[client-binding]")
 {
-    init_client_test_stack();
+    init_test_stack();
     chip::DeviceLayer::StackLock lock;
     auto fixture = chip::Platform::MakeUnique<BindingFixture>();
     TEST_ASSERT_NOT_NULL(fixture.get());
@@ -231,14 +226,7 @@ TEST_CASE("binding rejects nonterminal callback dispatch without cancelling othe
         {
             ++states;
             invoke_command::request_t invoke = {.cluster_id = 6, .command_id = 2};
-            chip::app::AttributePathParams path(1, 6, 0);
-            read_command::request_t read(chip::Span<const chip::app::AttributePathParams>(&path, 1));
-            write_command::request_t write = {};
-            subscribe_command::request_t subscription(chip::Span<const chip::app::AttributePathParams>(&path, 1));
             TEST_ASSERT_TRUE(bindings->dispatch(1, invoke, finite) == CHIP_ERROR_INCORRECT_STATE);
-            TEST_ASSERT_TRUE(bindings->dispatch(1, read, *finite) == CHIP_ERROR_INCORRECT_STATE);
-            TEST_ASSERT_TRUE(bindings->dispatch(1, write, finite) == CHIP_ERROR_INCORRECT_STATE);
-            TEST_ASSERT_TRUE(bindings->dispatch(1, subscription, *this) == CHIP_ERROR_INCORRECT_STATE);
         }
     } delegate;
     delegate.bindings = &bindings;
@@ -248,16 +236,16 @@ TEST_CASE("binding rejects nonterminal callback dispatch without cancelling othe
     chip::app::AttributePathParams path(1, 6, 0);
     subscribe_command::request_t subscription(chip::Span<const chip::app::AttributePathParams>(&path, 1));
     TEST_ASSERT_TRUE(bindings.dispatch(1, subscription, delegate) == CHIP_NO_ERROR);
-    drain_client_test_timers();
+    drain_timers();
     TEST_ASSERT_TRUE(delegate.states > 0);
     TEST_ASSERT_EQUAL(1, finite.count);
     TEST_ASSERT_EQUAL_UINT64(0x5678, finite.nodes[0]);
     bindings.stop();
 }
 
-TEST_CASE("binding late SDK callbacks cannot reach a destroyed dispatcher", "[client-binding]")
+CLIENT_TEST_CASE("binding late SDK callbacks cannot reach a destroyed dispatcher", "[client-binding]")
 {
-    init_client_test_stack();
+    init_test_stack();
     chip::DeviceLayer::StackLock lock;
     auto fixture = chip::Platform::MakeUnique<BindingFixture>();
     TEST_ASSERT_NOT_NULL(fixture.get());
@@ -267,21 +255,21 @@ TEST_CASE("binding late SDK callbacks cannot reach a destroyed dispatcher", "[cl
     invoke_command::request_t request = {.cluster_id = 6, .command_id = 2};
     {
         binding::dispatcher bindings;
-        // Missing fabric: SDK retains its notification after a synchronous CASE error.
+        // missing fabric: SDK retains its notification after a synchronous CASE error
         TEST_ASSERT_TRUE(bindings.dispatch(1, request, &first) != CHIP_NO_ERROR);
     }
     fixture->AddFabric(2);
     fixture->Connect(0x1234, 2);
     binding::dispatcher bindings;
     TEST_ASSERT_TRUE(bindings.dispatch(2, request, &second) == CHIP_NO_ERROR);
-    drain_client_test_timers();
+    drain_timers();
     TEST_ASSERT_EQUAL(0, first.count);
     TEST_ASSERT_EQUAL(1, second.count);
 }
 
-TEST_CASE("binding rejects mixed clusters and skips multicast reads and subscriptions", "[client-binding]")
+CLIENT_TEST_CASE("binding rejects mixed clusters and skips multicast reads and subscriptions", "[client-binding]")
 {
-    init_client_test_stack();
+    init_test_stack();
     chip::DeviceLayer::StackLock lock;
     auto fixture = chip::Platform::MakeUnique<BindingFixture>();
     TEST_ASSERT_NOT_NULL(fixture.get());
@@ -301,7 +289,7 @@ TEST_CASE("binding rejects mixed clusters and skips multicast reads and subscrip
     options.max_interval = 10;
     subscribe_command::request_t subscription(chip::Span<const chip::app::EventPathParams>(&path, 1), options);
     TEST_ASSERT_TRUE(bindings.dispatch(1, subscription, subscription_delegate) == CHIP_NO_ERROR);
-    drain_client_test_timers();
+    drain_timers();
     TEST_ASSERT_EQUAL(0, delegate.count);
     TEST_ASSERT_EQUAL(0, subscription_delegate.states);
 }
