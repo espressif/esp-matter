@@ -49,6 +49,18 @@ device_t *resume_device(esp_matter::node_t *node, uint16_t device_endpoint_id, v
 
 esp_err_t set_device_type(device_t *bridged_device, uint32_t device_type_id, void *priv_data);
 
+/** Remove a bridged device
+ *
+ * This erases the persistent info of the device, destroys its endpoint and frees the device.
+ *
+ * @note The device is always freed, also when this function returns an error. The caller must drop all
+ * its references to the device and must not use it after this call.
+ *
+ * @param[in] bridged_device The bridged device to remove.
+ *
+ * @return ESP_OK on success.
+ * @return error if the endpoint could not be destroyed or the persistent info could not be erased.
+ */
 esp_err_t remove_device(device_t *bridged_device);
 
 esp_err_t initialize(esp_matter::node_t *node, bridge_device_type_callback_t device_type_cb);
