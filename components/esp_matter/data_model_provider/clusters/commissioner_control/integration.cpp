@@ -52,6 +52,15 @@ void MatterCommissionerControlSetDelegate(EndpointId endpointId, Delegate *deleg
     gDelegates[endpointId] = delegate;
 }
 
+CommissionerControlCluster * FindClusterOnEndpoint(EndpointId endpointId)
+{
+    auto it = gServers.find(endpointId);
+    if (it == gServers.end() || !it->second.IsConstructed()) {
+        return nullptr;
+    }
+    return &it->second.Cluster();
+}
+
 } // namespace CommissionerControl
 } // namespace Clusters
 } // namespace app

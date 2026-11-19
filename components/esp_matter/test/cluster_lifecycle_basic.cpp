@@ -18,6 +18,8 @@
 #include <clusters/ElectricalEnergyMeasurement/Enums.h>
 #include <clusters/OccupancySensing/Enums.h>
 #include <clusters/shared/Enums.h>
+#include <clusters/air_quality/integration.h>
+#include <clusters/smoke_co_alarm/integration.h>
 #include <clusters/soil_measurement/integration.h>
 
 using namespace esp_matter;
@@ -172,6 +174,20 @@ static void verify_cluster_lifecycle_no_heap_leak(chip::ClusterId cluster_id,
     TEST_CASE("endpoint lifecycle preserves and frees " CLUSTER_NAME " cluster", "[cluster_lifecycle][basic]") \
     { \
         verify_cluster_lifecycle_no_heap_leak<CONFIG_TYPE>(CLUSTER_ID, CREATE_FN); \
+    }
+
+// After the endpoint is enabled, the integration's FindClusterOnEndpoint() must return the registered instance.
+template <typename ClusterType, ClusterType *(*FindFn)(chip::EndpointId)>
+static void assert_cluster_instance_registered(uint16_t endpoint_id)
+{
+    TEST_ASSERT_NOT_NULL(FindFn(endpoint_id));
+}
+
+#define TEST_CLUSTER_LIFECYCLE_WITH_ACCESSOR(CLUSTER_NAME, CLUSTER_ID, CONFIG_TYPE, CREATE_FN, CLUSTER_TYPE, FIND_FN) \
+    TEST_CASE("endpoint lifecycle preserves and frees " CLUSTER_NAME " cluster", "[cluster_lifecycle][basic]") \
+    { \
+        verify_cluster_lifecycle_no_heap_leak<CONFIG_TYPE>(CLUSTER_ID, CREATE_FN, \
+                                                           assert_cluster_instance_registered<CLUSTER_TYPE, FIND_FN>); \
     }
 
 static cluster_t *create_electrical_energy_measurement_cluster(endpoint_t *endpoint,
@@ -333,8 +349,9 @@ static cluster_t *create_energy_preference_cluster(endpoint_t *endpoint, cluster
 TEST_CLUSTER_LIFECYCLE("ActivatedCarbonFilterMonitoring", chip::app::Clusters::ActivatedCarbonFilterMonitoring::Id,
                        cluster::activated_carbon_filter_monitoring::config_t,
                        cluster::activated_carbon_filter_monitoring::create)
-TEST_CLUSTER_LIFECYCLE("AirQuality", chip::app::Clusters::AirQuality::Id, cluster::air_quality::config_t,
-                       cluster::air_quality::create)
+TEST_CLUSTER_LIFECYCLE_WITH_ACCESSOR("AirQuality", chip::app::Clusters::AirQuality::Id, cluster::air_quality::config_t,
+                                     cluster::air_quality::create, chip::app::Clusters::AirQualityCluster,
+                                     chip::app::Clusters::AirQuality::FindClusterOnEndpoint)
 TEST_CLUSTER_LIFECYCLE("Binding", chip::app::Clusters::Binding::Id, cluster::binding::config_t,
                        cluster::binding::create)
 TEST_CLUSTER_LIFECYCLE("BooleanState", chip::app::Clusters::BooleanState::Id,
@@ -396,8 +413,10 @@ TEST_CLUSTER_LIFECYCLE("RvcRunMode", chip::app::Clusters::RvcRunMode::Id, cluste
                        create_rvc_run_mode_cluster)
 TEST_CLUSTER_LIFECYCLE("ScenesManagement", chip::app::Clusters::ScenesManagement::Id,
                        cluster::scenes_management::config_t, cluster::scenes_management::create)
-TEST_CLUSTER_LIFECYCLE("SmokeCoAlarm", chip::app::Clusters::SmokeCoAlarm::Id, cluster::smoke_co_alarm::config_t,
-                       create_smoke_co_alarm_cluster)
+TEST_CLUSTER_LIFECYCLE_WITH_ACCESSOR("SmokeCoAlarm", chip::app::Clusters::SmokeCoAlarm::Id,
+                                     cluster::smoke_co_alarm::config_t, create_smoke_co_alarm_cluster,
+                                     chip::app::Clusters::SmokeCoAlarmCluster,
+                                     chip::app::Clusters::SmokeCoAlarm::FindClusterOnEndpoint)
 TEST_CLUSTER_LIFECYCLE("SoilMeasurement", chip::app::Clusters::SoilMeasurement::Id, cluster::soil_measurement::config_t,
                        create_soil_measurement_cluster)
 TEST_CLUSTER_LIFECYCLE("Switch", chip::app::Clusters::Switch::Id, cluster::switch_cluster::config_t,

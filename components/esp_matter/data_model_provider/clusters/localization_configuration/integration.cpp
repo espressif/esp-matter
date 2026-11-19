@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "integration.h"
 #include <app/clusters/localization-configuration-server/LocalizationConfigurationCluster.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
 #include <esp_matter_attribute_utils.h>
@@ -31,6 +32,18 @@ using namespace esp_matter;
 namespace {
 LazyRegisteredServerCluster<LocalizationConfigurationCluster> gServer;
 }
+
+namespace chip::app::Clusters::LocalizationConfiguration {
+
+LocalizationConfigurationCluster * FindClusterOnEndpoint(EndpointId endpointId)
+{
+    if (endpointId != kRootEndpointId || !gServer.IsConstructed()) {
+        return nullptr;
+    }
+    return &gServer.Cluster();
+}
+
+} // namespace chip::app::Clusters::LocalizationConfiguration
 
 void ESPMatterLocalizationConfigurationClusterServerInitCallback(EndpointId endpointId)
 {

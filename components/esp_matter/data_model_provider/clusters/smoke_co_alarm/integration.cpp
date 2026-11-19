@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "integration.h"
 #include <esp_matter_data_model_priv.h>
 
 #include <app/ClusterCallbacks.h>
@@ -109,6 +110,17 @@ __attribute__((weak)) void MatterSmokeCoAlarmPluginServerShutdownCallback() {}
 namespace chip {
 namespace app {
 namespace Clusters {
+
+namespace SmokeCoAlarm {
+SmokeCoAlarmCluster * FindClusterOnEndpoint(EndpointId endpointId)
+{
+    auto it = gServers.find(endpointId);
+    if (it == gServers.end() || !it->second.server.IsConstructed()) {
+        return nullptr;
+    }
+    return &it->second.server.Cluster();
+}
+} // namespace SmokeCoAlarm
 
 void SetSmokeCoAlarmDefaultDelegate(EndpointId endpointId, SmokeCoAlarmDelegate * delegate)
 {

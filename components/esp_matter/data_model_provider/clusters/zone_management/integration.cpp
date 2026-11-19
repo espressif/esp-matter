@@ -84,6 +84,15 @@ void MatterZoneManagementSetFeatures(EndpointId endpointId, BitFlags<Feature> fe
     gFeatures[endpointId] = features;
 }
 
+ZoneManagementCluster * FindClusterOnEndpoint(EndpointId endpointId)
+{
+    auto it = gServers.find(endpointId);
+    if (it == gServers.end() || !it->second.IsConstructed()) {
+        return nullptr;
+    }
+    return &it->second.Cluster();
+}
+
 } // namespace ZoneManagement
 } // namespace Clusters
 } // namespace app
