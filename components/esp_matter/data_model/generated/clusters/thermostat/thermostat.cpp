@@ -321,6 +321,13 @@ attribute_t *create_system_mode(cluster_t *cluster, uint8_t value)
     return attribute;
 }
 
+attribute_t *create_thermostat_running_mode(cluster_t *cluster, uint8_t value)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, ThermostatRunningMode::Id, ATTRIBUTE_FLAG_NONE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
+    esp_matter::attribute::add_bounds(attribute, esp_matter_attr_val(static_cast<uint8_t>(ThermostatRunningMode::Min), esp_matter_attr_val::uint_sub_type::k_enum), esp_matter_attr_val(static_cast<uint8_t>(ThermostatRunningMode::Max), esp_matter_attr_val::uint_sub_type::k_enum));
+    return attribute;
+}
+
 attribute_t *create_temperature_setpoint_hold(cluster_t *cluster, uint8_t value)
 {
     attribute_t *attribute = esp_matter::attribute::create(cluster, TemperatureSetpointHold::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_attr_val(value, esp_matter_attr_val::uint_sub_type::k_enum));
