@@ -161,3 +161,23 @@ jobs:
       - name: Inspect image
         run: |
           docker buildx imagetools inspect ${{ env.DOCKERHUB_REPO }}:${{ steps.meta.outputs.version }}
+
+      # Sync the Docker Hub repository overview from the in-repo README.
+      # Only on main (TAG_NAME=latest) so release/tag builds don't publish a stale overview.
+      - name: Checkout (for Docker Hub overview)
+        if: ${{ env.TAG_NAME == 'latest' }}
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/docker/matter_builds/DOCKERHUB.md
+          sparse-checkout-cone-mode: false
+      # DOCKER_PASSWORD must be a password or a PAT with read/write/delete scope;
+      # a push-only token cannot update the repository description.
+      - name: Sync Docker Hub overview
+        if: ${{ env.TAG_NAME == 'latest' }}
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.DOCKERHUB_REPO }}
+          short-description: "Espressif's SDK for Matter - build Matter apps for ESP32 SoCs"
+          readme-filepath: ./tools/docker/matter_builds/DOCKERHUB.md
