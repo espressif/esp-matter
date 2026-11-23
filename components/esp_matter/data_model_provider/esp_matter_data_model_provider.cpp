@@ -365,7 +365,13 @@ ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request
     reader_copy.Init(accessor.GetReader());
     AttributeValueDecoder decoder_copy(reader_copy, decoder.GetSubjectDescriptor());
     attribute_data_decode_buffer data_buffer(current_val_type);
-    if (decoder_copy.Decode(data_buffer) == CHIP_NO_ERROR) {
+
+    // new_val is only valid (and only read) when decoded is true;
+    // this single flag gates both PRE_UPDATE here and POST_UPDATE below for every
+    // write branch, so a decode failure can never forward an uninitialized new_val to a callback.
+    const bool decoded = (decoder_copy.Decode(data_buffer) == CHIP_NO_ERROR);
+
+    if (decoded) {
         new_val = data_buffer.get_attr_val();
         // PRE_UPDATE callback
         if (call_callbacks &&
@@ -375,9 +381,10 @@ ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request
         }
     }
 
-    // Helper to execute POST_UPDATE callback
+    // Helper to execute POST_UPDATE callback. Shared by the mRegistry, AAI and esp-matter write
+    // paths; skips when the value was not decoded so new_val is never read uninitialized.
     auto execute_post_update = [&]() {
-        VerifyOrReturn(call_callbacks);
+        VerifyOrReturn(call_callbacks && decoded);
         attribute::execute_callback(attribute::POST_UPDATE, request.path.mEndpointId, request.path.mClusterId,
                                     request.path.mAttributeId, &new_val);
     };
@@ -417,8 +424,8 @@ ActionReturnStatus provider::WriteAttribute(const WriteAttributeRequest &request
         return *aai_result;
     }
 
-    if (new_val.type == ESP_MATTER_VAL_TYPE_INVALID) {
-        // If previous decoding fails we should not call the pre attribute change callback.
+    if (!decoded) {
+        // Decoding failed earlier; do not proceed with the attribute change.
         return Protocols::InteractionModel::Status::Failure;
     }
     // Use set_val_internal with call_callbacks=false since we already called PRE_UPDATE
