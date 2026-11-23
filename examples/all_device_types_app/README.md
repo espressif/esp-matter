@@ -5,10 +5,12 @@ MATTER data model implements. It has been tested with multiple ecosystem Apple, 
 
 See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
 
-**ESP32-C6:** With factory options enabled, this app exceeds the default partition size on ESP32-C6 (size overflow). A custom partition table `partitions.c6.csv` is therefore used for the C6 target. On ESP32-C6 this example is for **demonstration only** and is **not OTA-able** (single app partition, no OTA slots).
+**Not OTA-able:** This app covers all device types, so the firmware no longer fits in a dual OTA partition layout (size overflow). This example is for **demonstration only** and is **not OTA-able**.
 
 **This example only implements mandatory clusters, attributes, commands, events, etc from the spec.**
 If you want to add any optional data model bits please add them in [create api](https://github.com/espressif/esp-matter/blob/0c4e0a07c804102f25460ba7e2442f97d109aa0c/examples/all_device_types_app/main/esp_matter_console_helpers.cpp#L173) under your desired device type case using [data model creation development guide](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#developing-your-product).
+
+**Mock delegates are placeholders, not reference implementations.** The delegates in [main/mock_delegates](main/mock_delegates) only let the clusters start: most methods log that they are not implemented and return success without storing or acting on anything, so a cluster can report success for a command that had no effect. Implement the delegates in your application before using those clusters.
 
 ## 1. Additional Environment Setup
 
@@ -69,7 +71,7 @@ This example's partition table and sdkconfig.default are already modified
     > diagnosticlogs retrieve-logs-request 2 1 1 0 --TransferFileDesignator crash-summary.bin
     ```
 
-#### To build the app with a specific PROJECT_VER and PROJECT_VER_NUMBER for OTA firmware, use the following command from the command line:
+#### To build the app with a specific PROJECT_VER and PROJECT_VER_NUMBER (reported as the software version), use the following command from the command line:
 
    For e.g.:
 

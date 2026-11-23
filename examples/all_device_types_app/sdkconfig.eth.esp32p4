@@ -30,8 +30,8 @@ CONFIG_NEWLIB_NANO_FORMAT=y
 # Enable shell
 CONFIG_ENABLE_CHIP_SHELL=y
 
-# Enable OTA Requestor
-CONFIG_ENABLE_OTA_REQUESTOR=y
+# Disable OTA Requestor: the partition tables have no OTA slots
+CONFIG_ENABLE_OTA_REQUESTOR=n
 
 # Ethernet configuration
 CONFIG_ETH_MDC_GPIO=31

@@ -20,9 +20,7 @@ CONFIG_OPENTHREAD_PLATFORM_MSGPOOL_MANAGEMENT=y
 # Disable lwip ipv6 autoconfig
 CONFIG_LWIP_IPV6_AUTOCONFIG=n
 
-# Use a custom partition table (larger app slots than partitions.csv for Wi-Fi + Thread build)
 CONFIG_PARTITION_TABLE_CUSTOM=y
-CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.c6.csv"
 
 # LwIP config for OpenThread
 CONFIG_LWIP_IPV6_NUM_ADDRESSES=8
@@ -32,8 +30,8 @@ CONFIG_LWIP_MULTICAST_PING=y
 CONFIG_USE_MINIMAL_MDNS=n
 CONFIG_ENABLE_EXTENDED_DISCOVERY=y
 
-# Enable OTA Requestor
-CONFIG_ENABLE_OTA_REQUESTOR=y
+# Disable OTA Requestor: the partition tables have no OTA slots
+CONFIG_ENABLE_OTA_REQUESTOR=n
 
 # Enable Wi-Fi Station
 CONFIG_ENABLE_WIFI_STATION=y

@@ -1,3 +1,1 @@
 CONFIG_IDF_TARGET="esp32c6"
-# Use larger OTA partitions for all_device_types_app (avoids overflow with factory options)
-CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.c6.csv"
