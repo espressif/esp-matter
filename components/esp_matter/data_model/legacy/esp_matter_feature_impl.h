@@ -1817,82 +1817,105 @@ namespace camera_av_stream_management {
 
 namespace feature {
 namespace audio {
-
+typedef struct config {
+    bool microphone_muted;
+    uint8_t microphone_volume_level;
+    uint8_t microphone_max_level;
+    uint8_t microphone_min_level;
+    config() : microphone_muted(false), microphone_volume_level(0), microphone_max_level(0), microphone_min_level(0) {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* audio */
 
 namespace video {
-
+typedef struct config {
+    uint8_t max_concurrent_encoders;
+    uint32_t max_encoded_pixel_rate;
+    uint16_t current_frame_rate;
+    bool local_video_recording_enabled;
+    config() : max_concurrent_encoders(0), max_encoded_pixel_rate(0), current_frame_rate(0), local_video_recording_enabled(false) {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* video */
 
 namespace snapshot {
-
+typedef struct config {
+    uint8_t max_concurrent_encoders;
+    uint32_t max_encoded_pixel_rate;
+    bool local_snapshot_recording_enabled;
+    config() : max_concurrent_encoders(0), max_encoded_pixel_rate(0), local_snapshot_recording_enabled(false) {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* snapshot */
 
 namespace privacy {
-
+typedef struct config {
+    bool soft_recording_privacy_mode_enabled;
+    bool soft_livestream_privacy_mode_enabled;
+    config() : soft_recording_privacy_mode_enabled(false), soft_livestream_privacy_mode_enabled(false) {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* privacy */
 
 namespace speaker {
-
+typedef struct config {
+    uint8_t two_way_talk_support;
+    bool speaker_muted;
+    uint8_t speaker_volume_level;
+    uint8_t speaker_max_level;
+    uint8_t speaker_min_level;
+    config() : two_way_talk_support(0), speaker_muted(false), speaker_volume_level(0), speaker_max_level(0), speaker_min_level(0) {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* speaker */
 
 namespace image_control {
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
-
 } /* image_control */
 
 namespace watermark {
-
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
-
 } /* watermark */
 
 namespace on_screen_display {
-typedef struct config {
-    config()  {}
-} config_t;
-
 uint32_t get_id();
 esp_err_t add(cluster_t *cluster);
-
 } /* on_screen_display */
 
 namespace local_storage {
-
+typedef struct config {
+    bool local_video_recording_enabled;
+    bool local_snapshot_recording_enabled;
+    config() : local_video_recording_enabled(false), local_snapshot_recording_enabled(false) {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* local_storage */
 
 namespace high_dynamic_range {
-
+typedef struct config {
+    bool hdr_mode_enabled;
+    config() : hdr_mode_enabled(false) {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* high_dynamic_range */
 
 namespace night_vision {
-
+typedef struct config {
+    bool night_vision_uses_infrared;
+    uint8_t night_vision;
+    config() : night_vision_uses_infrared(false), night_vision(0) {}
+} config_t;
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
-
+esp_err_t add(cluster_t *cluster, config_t *config);
 } /* night_vision */
 
 } /* feature */

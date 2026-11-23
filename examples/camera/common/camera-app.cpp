@@ -128,31 +128,37 @@ void CameraApp::CreateAndInitializeCameraAVStreamMgmt(CameraAvStreamManagement::
     }
 
     if (mCameraDevice->GetCameraHALInterface().GetCameraSupportsSoftPrivacy()) {
-        camera_av_stream_management::feature::privacy::add(avsm_cluster);
+        camera_av_stream_management::feature::privacy::config_t privacy_config;
+        camera_av_stream_management::feature::privacy::add(avsm_cluster, &privacy_config);
     }
 
     // Check microphone support to set Audio feature
     if (mCameraDevice->GetCameraHALInterface().HasMicrophone()) {
-        camera_av_stream_management::feature::audio::add(avsm_cluster);
+        camera_av_stream_management::feature::audio::config_t audio_config;
+        camera_av_stream_management::feature::audio::add(avsm_cluster, &audio_config);
         camera_av_stream_management::attribute::create_microphone_agc_enabled(avsm_cluster, true);
 
     }
 
     if (mCameraDevice->GetCameraHALInterface().HasLocalStorage()) {
-        camera_av_stream_management::feature::local_storage::add(avsm_cluster);
+        camera_av_stream_management::feature::local_storage::config_t local_storage_config;
+        camera_av_stream_management::feature::local_storage::add(avsm_cluster, &local_storage_config);
     }
 
     // Check if camera has speaker
     if (mCameraDevice->GetCameraHALInterface().HasSpeaker()) {
-        camera_av_stream_management::feature::speaker::add(avsm_cluster);
+        camera_av_stream_management::feature::speaker::config_t speaker_config;
+        camera_av_stream_management::feature::speaker::add(avsm_cluster, &speaker_config);
     }
 
     if (mCameraDevice->GetCameraHALInterface().GetCameraSupportsHDR()) {
-        camera_av_stream_management::feature::high_dynamic_range::add(avsm_cluster);
+        camera_av_stream_management::feature::high_dynamic_range::config_t high_dynamic_range_config;
+        camera_av_stream_management::feature::high_dynamic_range::add(avsm_cluster, &high_dynamic_range_config);
     }
 
     if (mCameraDevice->GetCameraHALInterface().GetCameraSupportsNightVision()) {
-        camera_av_stream_management::feature::night_vision::add(avsm_cluster);
+        camera_av_stream_management::feature::night_vision::config_t night_vision_config;
+        camera_av_stream_management::feature::night_vision::add(avsm_cluster, &night_vision_config);
         camera_av_stream_management::attribute::create_night_vision_illum(avsm_cluster, to_underlying(TriStateAutoEnum::kOn));
     }
 

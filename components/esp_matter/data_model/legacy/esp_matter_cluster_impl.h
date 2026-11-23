@@ -979,6 +979,16 @@ namespace camera_av_stream_management {
 typedef struct config {
     uint32_t max_content_buffer_size;
     uint32_t max_network_bandwidth;
+    struct {
+        feature::audio::config_t audio;
+        feature::video::config_t video;
+        feature::snapshot::config_t snapshot;
+        feature::privacy::config_t privacy;
+        feature::speaker::config_t speaker;
+        feature::local_storage::config_t local_storage;
+        feature::high_dynamic_range::config_t high_dynamic_range;
+        feature::night_vision::config_t night_vision;
+    } features;
     uint32_t feature_flags;
     void *delegate;
     config() : max_content_buffer_size(0), max_network_bandwidth(0), feature_flags(0), delegate(nullptr) {}

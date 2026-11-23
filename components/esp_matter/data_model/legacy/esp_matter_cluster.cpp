@@ -3939,20 +3939,20 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         VALIDATE_FEATURES_AT_LEAST_ONE("Audio,Video,Snapshot",
                                        feature::audio::get_id(), feature::video::get_id(), feature::snapshot::get_id());
         if (has(feature::audio::get_id())) {
-            VerifyOrReturnValue(feature::audio::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            VerifyOrReturnValue(feature::audio::add(cluster, &config->features.audio) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
             if (has(feature::speaker::get_id())) {
-                VerifyOrReturnValue(feature::speaker::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+                VerifyOrReturnValue(feature::speaker::add(cluster, &config->features.speaker) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
             }
         }
         if (has(feature::video::get_id())) {
-            VerifyOrReturnValue(feature::video::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            VerifyOrReturnValue(feature::video::add(cluster, &config->features.video) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
         if (has(feature::snapshot::get_id())) {
-            VerifyOrReturnValue(feature::snapshot::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            VerifyOrReturnValue(feature::snapshot::add(cluster, &config->features.snapshot) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
         // Add features based on feature map
         if (has(feature::local_storage::get_id())) {
-            VerifyOrReturnValue(feature::local_storage::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            VerifyOrReturnValue(feature::local_storage::add(cluster, &config->features.local_storage) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
 
         if (has(feature::video::get_id()) || has(feature::snapshot::get_id())) {
@@ -3966,14 +3966,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
                 VerifyOrReturnValue(feature::on_screen_display::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
             }
             if (has(feature::high_dynamic_range::get_id())) {
-                VerifyOrReturnValue(feature::high_dynamic_range::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+                VerifyOrReturnValue(feature::high_dynamic_range::add(cluster, &config->features.high_dynamic_range) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
             }
             if (has(feature::night_vision::get_id())) {
-                VerifyOrReturnValue(feature::night_vision::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+                VerifyOrReturnValue(feature::night_vision::add(cluster, &config->features.night_vision) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
             }
         }
         if (has(feature::privacy::get_id())) {
-            VerifyOrReturnValue(feature::privacy::add(cluster) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
+            VerifyOrReturnValue(feature::privacy::add(cluster, &config->features.privacy) == ESP_OK, ABORT_CLUSTER_CREATE(cluster));
         }
         command::create_set_stream_priorities(cluster);
 
