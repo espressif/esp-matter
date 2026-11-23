@@ -43,35 +43,35 @@ uint32_t MockMicrowaveOvenControlDelegate::GetMaxCookTimeSec() const
 {
     // Implement your own logic here.
     ESP_LOGE(LOG_TAG, "%s is not implemented", __func__);
-    return 0;
+    return 86400;
 }
 
 uint8_t MockMicrowaveOvenControlDelegate::GetPowerSettingNum() const
 {
     // Implement your own logic here.
     ESP_LOGE(LOG_TAG, "%s is not implemented", __func__);
-    return 0;
+    return 100;
 }
 
 uint8_t MockMicrowaveOvenControlDelegate::GetMinPowerNum() const
 {
     // Implement your own logic here.
     ESP_LOGE(LOG_TAG, "%s is not implemented", __func__);
-    return 0;
+    return 10;
 }
 
 uint8_t MockMicrowaveOvenControlDelegate::GetMaxPowerNum() const
 {
     // Implement your own logic here.
     ESP_LOGE(LOG_TAG, "%s is not implemented", __func__);
-    return 0;
+    return 100;
 }
 
 uint8_t MockMicrowaveOvenControlDelegate::GetPowerStepNum() const
 {
     // Implement your own logic here.
     ESP_LOGE(LOG_TAG, "%s is not implemented", __func__);
-    return 0;
+    return 10;
 }
 
 uint8_t MockMicrowaveOvenControlDelegate::GetCurrentWattIndex() const

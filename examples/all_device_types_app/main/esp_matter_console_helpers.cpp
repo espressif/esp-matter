@@ -576,6 +576,7 @@ int create(uint8_t device_type_index)
         microwave_oven_config.microwave_oven_control.delegate = &microwaveOvenControlDelegate;
         microwave_oven_config.operational_state.delegate = &operationalStateDelegate;
         microwave_oven_config.microwave_oven_mode.delegate = &microwaveOvenModeDelegate;
+        microwave_oven_config.microwave_oven_control.feature_flags = cluster::microwave_oven_control::feature::power_as_number::get_id();
         endpoint = esp_matter::endpoint::microwave_oven::create(node, &microwave_oven_config, ENDPOINT_FLAG_DESTROYABLE, NULL);
         break;
     }
