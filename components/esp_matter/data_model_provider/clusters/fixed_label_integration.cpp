@@ -43,13 +43,15 @@ void ESPMatterFixedLabelClusterServerInitCallback(EndpointId endpointId)
 
 void ESPMatterFixedLabelClusterServerShutdownCallback(EndpointId endpointId)
 {
-    CHIP_ERROR err =
-        esp_matter::data_model::provider::get_instance().registry().Unregister(&gServers[endpointId].Cluster());
+    auto it = gServers.find(endpointId);
+    VerifyOrReturn(it != gServers.end() && it->second.IsConstructed());
+    CHIP_ERROR err = esp_matter::data_model::provider::get_instance().registry().Unregister(&it->second.Cluster());
     if (err != CHIP_NO_ERROR) {
         ChipLogError(AppServer, "Failed to unregister FixedLabel on endpoint %u - Error: %" CHIP_ERROR_FORMAT,
                      endpointId, err.Format());
     }
-    gServers[endpointId].Destroy();
+    it->second.Destroy();
+    gServers.erase(it);
 }
 
 void MatterFixedLabelPluginServerInitCallback() {}
