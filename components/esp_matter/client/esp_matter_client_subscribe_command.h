@@ -117,7 +117,7 @@ public:
      * @brief Subscribe to remote attributes or events.
      *
      * Copies paths before return. The initial state callback runs inside start(), after handle initialization;
-     * callback-visible state must be ready before this call.
+     * callback-visible state must be ready before this call. Local subscriptions are unsupported.
      *
      * @param[in] scoped_node_id Remote peer and fabric.
      * @param[in] request Attribute/event paths and subscription options.

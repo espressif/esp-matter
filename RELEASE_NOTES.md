@@ -6,6 +6,16 @@
   An application that uses them must add them to its own `idf_component.yml`.
 - The controller example reads the DAC revocation set with cJSON.
 
+# 3-Nov-2026
+
+## Local control (Breaking)
+
+- Invoke, Read, and Write accept `chip::ScopedNodeId` and select local or remote
+  execution inside `start()`. Use `resolve_target(node, execution)` only when
+  authorization requires inspecting the route before submission.
+- `CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE` enables local Invoke, Read, and
+  Write. Applications must authorize local operations. Subscriptions are remote-only.
+
 # 26-October-2026
 
 ## Client interaction API changes (Breaking)

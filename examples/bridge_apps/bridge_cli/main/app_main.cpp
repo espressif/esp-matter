@@ -17,6 +17,8 @@
 
 #include <common_macros.h>
 
+#include "local_console.h"
+
 static const char *TAG = "app_main";
 
 using namespace esp_matter;
@@ -97,6 +99,7 @@ extern "C" void app_main()
     esp_matter::console::diagnostics_register_commands();
     esp_matter::console::wifi_register_commands();
     esp_matter::console::bridge_register_commands();
+    local_console::register_commands();
     esp_matter::console::factoryreset_register_commands();
     esp_matter::console::init();
 #endif

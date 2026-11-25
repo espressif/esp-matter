@@ -74,7 +74,7 @@ public:
 };
 
 /**
- * @brief Caller-owned remote Read.
+ * @brief Caller-owned local or remote Read.
  *
  * Accepted requests finish with one OnDone(), unless stopped.
  * Returned errors produce no callbacks. Accepted CASE and dispatch failures are asynchronous.
@@ -96,7 +96,7 @@ public:
     /**
      * @brief Read attributes or events from a node.
      *
-     * @param[in] scoped_node_id Remote node and fabric.
+     * @param[in] scoped_node_id Node and fabric. Self-targets execute locally; other nodes use CASE.
      * @param[in] request Paths copied before return, and request options.
      * @param[in] delegate Borrowed until completion or stop().
      *

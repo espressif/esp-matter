@@ -160,13 +160,20 @@ void DispatchRequest::OnBoundDeviceChanged(const TableEntry &binding, chip::Oper
     if (group && (dispatch_request->mType == Type::read || dispatch_request->mType == Type::subscribe)) {
         return;
     }
+    chip::ScopedNodeId peer(group ? chip::kUndefinedNodeId : binding.nodeId, binding.fabricIndex);
+    if (!group) {
+        CHIP_ERROR err = operation::ValidateRemoteTarget(peer);
+        if (err != CHIP_NO_ERROR) {
+            ESP_LOGE(TAG, "Binding peer rejected: %s", chip::ErrorStr(err));
+            return;
+        }
+    }
     auto *operation = chip::Platform::New<Operation>();
     if (operation == nullptr) {
         ESP_LOGE(TAG, "No memory for bound operation");
         return;
     }
     operation->binding = binding;
-    chip::ScopedNodeId peer(group ? chip::kUndefinedNodeId : binding.nodeId, binding.fabricIndex);
     CHIP_ERROR err = CHIP_ERROR_NO_MEMORY;
     switch (dispatch_request->mType) {
     case Type::invoke: {

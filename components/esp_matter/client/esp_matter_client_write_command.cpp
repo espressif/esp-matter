@@ -23,6 +23,10 @@
 #include <esp_log.h>
 #include <platform/CHIPDeviceLayer.h>
 
+#ifdef CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+#include "esp_matter_client_local_control.h"
+#endif // CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+
 namespace esp_matter {
 namespace client {
 namespace write_command {
@@ -77,7 +81,7 @@ CHIP_ERROR ValidateRequest(const request_t &request, bool group = false)
 } // namespace
 
 class interaction::Impl final : public operation::CaseConnection,
-    public WriteClient::Callback {
+    public WriteClient::Callback, public delegate {
 public:
     Impl(const target_t &target, const request_t &request, delegate *delegate)
         : mTarget(target), mOptions(request.options), mDelegate(delegate), mChunkedCallback(this) {}
@@ -88,6 +92,9 @@ public:
         mDelegate = nullptr;
         chip::DeviceLayer::SystemLayer().CancelTimer(Begin, this);
         Cancel();
+#ifdef CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+        stop_local(mLocal);
+#endif // CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
         mClient.reset();
     }
 
@@ -98,6 +105,17 @@ public:
 
     CHIP_ERROR Prepare(const request_t &request)
     {
+        if (mOptions.timed_timeout_ms.HasValue()) {
+            mDeadline.SetValue(chip::System::SystemClock().GetMonotonicTimestamp() +
+                               chip::System::Clock::Milliseconds32(mOptions.timed_timeout_ms.Value()));
+        }
+#ifdef CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+        if (mTarget.type == target_type_t::node && mTarget.execution == execution_t::local) {
+            chip::ScopedNodeId target(mTarget.node_id, mTarget.fabric_index);
+            ReturnErrorOnFailure(prepare_local(target, request, mDeadline, mLocal));
+            return chip::DeviceLayer::SystemLayer().StartTimer(chip::System::Clock::kZero, Begin, this);
+        }
+#endif // CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
         auto *engine = chip::app::InteractionModelEngine::GetInstance();
         auto *exchange_manager = engine == nullptr ? nullptr : engine->GetExchangeManager();
         VerifyOrReturnError(exchange_manager != nullptr, CHIP_ERROR_INCORRECT_STATE);
@@ -124,8 +142,13 @@ public:
 
     void OnResponse(const WriteClient *, const ConcreteDataAttributePath &path, StatusIB status) override
     {
+        operation::CallbackScope scope(mInCallback);
+        OnResponse(mTarget, path, status);
+    }
+
+    void OnResponse(const target_t &, const ConcreteDataAttributePath &path, const StatusIB &status) override
+    {
         if (mDelegate != nullptr) {
-            operation::CallbackScope scope(mInCallback);
             mDelegate->OnResponse(mTarget, path, status);
         } else if (!status.IsSuccess()) {
             ESP_LOGE(TAG, "Write response failed: %s", chip::ErrorStr(status.ToChipError()));
@@ -135,6 +158,11 @@ public:
     void OnError(const WriteClient *, CHIP_ERROR err) override
     {
         mTerminalError = err;
+    }
+
+    void OnDone(const target_t &, CHIP_ERROR err) override
+    {
+        Finish(err);
     }
 
     void OnDone(WriteClient *) override
@@ -157,6 +185,10 @@ public:
             return;
         }
         mClient.reset();
+#ifdef CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+        stop_local(mLocal);
+        mLocal = nullptr;
+#endif // CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
         mActive = false;
         delegate *delegate = mDelegate;
         mDelegate = nullptr;
@@ -173,6 +205,17 @@ private:
     static void Begin(chip::System::Layer *, void *context)
     {
         auto *self = static_cast<Impl *>(context);
+#ifdef CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+        if (self->mTarget.type == target_type_t::node && self->mTarget.execution == execution_t::local) {
+            CHIP_ERROR err;
+            {
+                operation::CallbackScope scope(self->mInCallback);
+                err = run_local(self->mLocal, *self);
+            }
+            self->Finish(err);
+            return;
+        }
+#endif // CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
         if (self->mTarget.type == target_type_t::group) {
             self->Finish(self->mTerminalError);
             return;
@@ -188,6 +231,10 @@ private:
     delegate *mDelegate;
     chip::app::ChunkedWriteCallback mChunkedCallback;
     chip::Platform::UniquePtr<WriteClient> mClient;
+    chip::Optional<chip::System::Clock::Timestamp> mDeadline;
+#ifdef CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+    LocalWriteOperation *mLocal = nullptr;
+#endif // CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
     CHIP_ERROR mTerminalError = CHIP_NO_ERROR;
     bool mInCallback = false;
     bool mActive = true;
@@ -214,9 +261,10 @@ CHIP_ERROR interaction::start(const chip::ScopedNodeId &scoped_node_id, const re
     VerifyOrReturnError(!active(), CHIP_ERROR_BUSY);
     stop();
     ReturnErrorOnFailure(ValidateRequest(request));
-    ReturnErrorOnFailure(operation::ValidateRemoteTarget(scoped_node_id));
+    execution_t execution;
+    ReturnErrorOnFailure(operation::ResolveNodeTarget(scoped_node_id, execution));
 
-    mImpl = chip::Platform::New<Impl>(target_t(scoped_node_id), request, delegate);
+    mImpl = chip::Platform::New<Impl>(target_t(scoped_node_id, execution), request, delegate);
     VerifyOrReturnError(mImpl != nullptr, CHIP_ERROR_NO_MEMORY);
     CHIP_ERROR err = mImpl->Prepare(request);
     if (err != CHIP_NO_ERROR) {

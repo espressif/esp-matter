@@ -22,6 +22,10 @@
 #include <platform/CHIPDeviceLayer.h>
 #include <transport/GroupSession.h>
 
+#ifdef CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+#include "esp_matter_client_local_control.h"
+#endif // CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+
 namespace esp_matter {
 namespace client {
 namespace invoke_command {
@@ -43,7 +47,7 @@ CHIP_ERROR EncodeFields(const chip::app::DataModel::EncodableToTLV *value, opera
 } // namespace
 
 class interaction::Impl final : public operation::CaseConnection,
-    public CommandSender::ExtendableCallback {
+    public CommandSender::ExtendableCallback, public delegate {
 public:
     Impl(const target_t &target, const request_t &request, delegate *delegate)
         : mTarget(target), mRequest(request), mDelegate(delegate)
@@ -58,6 +62,9 @@ public:
         chip::DeviceLayer::SystemLayer().CancelTimer(Begin, this);
         Cancel();
         mSender.reset();
+#ifdef CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+        stop_local(mLocal);
+#endif // CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
     }
 
     bool active() const
@@ -67,7 +74,13 @@ public:
 
     CHIP_ERROR Prepare(const request_t &request)
     {
-        ReturnErrorOnFailure(EncodeFields(request.fields, mFields));
+        if (mTarget.execution == execution_t::local) {
+#ifdef CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+            ReturnErrorOnFailure(prepare_local(chip::ScopedNodeId(mTarget.node_id, mTarget.fabric_index), request, mLocal));
+#endif // CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+        } else {
+            ReturnErrorOnFailure(EncodeFields(request.fields, mFields));
+        }
         return chip::DeviceLayer::SystemLayer().StartTimer(chip::System::Clock::kZero, Begin, this);
     }
 
@@ -83,18 +96,27 @@ public:
         CommandSender sender(nullptr, exchange_manager);
         CommandSender::AddRequestDataParameters parameters;
         ReturnErrorOnFailure(sender.AddRequestData(path, fields, parameters));
-        // Reserve queued completion before the network side effect.
+#ifdef CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+        ReturnErrorOnFailure(prepare_local(mTarget.group_id, mTarget.fabric_index, request, fields, mLocal));
+#endif // CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+        // Reserve queued completion and local dispatch before the network side effect.
         ReturnErrorOnFailure(chip::DeviceLayer::SystemLayer().StartTimer(chip::System::Clock::kZero, Begin, this));
         return sender.SendGroupCommandRequest(chip::SessionHandle(group_session));
     }
 
     void OnResponse(CommandSender *, const CommandSender::ResponseData &response) override
     {
+        OnResponse(mTarget, response.path, response.statusIB, response.data);
+    }
+
+    void OnResponse(const target_t &, const chip::app::ConcreteCommandPath &path,
+                    const chip::app::StatusIB &status, chip::TLV::TLVReader *value) override
+    {
         if (mDelegate != nullptr) {
             operation::CallbackScope scope(mInCallback);
-            mDelegate->OnResponse(mTarget, response.path, response.statusIB, response.data);
-        } else if (!response.statusIB.IsSuccess()) {
-            ESP_LOGE(TAG, "Invoke response failed: %s", chip::ErrorStr(response.statusIB.ToChipError()));
+            mDelegate->OnResponse(mTarget, path, status, value);
+        } else if (!status.IsSuccess()) {
+            ESP_LOGE(TAG, "Invoke response failed: %s", chip::ErrorStr(status.ToChipError()));
         }
     }
 
@@ -106,6 +128,11 @@ public:
     void OnDone(CommandSender *) override
     {
         Finish(mTerminalError);
+    }
+
+    void OnDone(const target_t &, CHIP_ERROR err) override
+    {
+        Finish(err);
     }
 
     CHIP_ERROR Send(chip::Messaging::ExchangeManager &exchange_manager, const chip::SessionHandle &session) override
@@ -145,7 +172,16 @@ private:
     static void Begin(chip::System::Layer *, void *context)
     {
         auto *self = static_cast<Impl *>(context);
+        if (self->mTarget.execution == execution_t::local) {
+#ifdef CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+            run_local(self->mLocal, self);
+#endif // CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+            return;
+        }
         if (self->mTarget.type == target_type_t::group) {
+#ifdef CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+            run_local(self->mLocal, nullptr);
+#endif // CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
             self->Finish(CHIP_NO_ERROR);
         } else {
             CHIP_ERROR err = self->Start(chip::ScopedNodeId(self->mTarget.node_id, self->mTarget.fabric_index));
@@ -159,6 +195,9 @@ private:
     request_t mRequest;
     delegate *mDelegate;
     operation::EncodedElement mFields;
+#ifdef CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
+    LocalInvokeOperation *mLocal = nullptr;
+#endif // CONFIG_ESP_MATTER_CLIENT_LOCAL_CONTROL_ENABLE
     chip::Platform::UniquePtr<CommandSender> mSender;
     CHIP_ERROR mTerminalError = CHIP_NO_ERROR;
     bool mActive = true;
@@ -190,8 +229,9 @@ CHIP_ERROR interaction::start(const chip::ScopedNodeId &scoped_node_id, const re
     VerifyOrReturnError(request.endpoint_id != chip::kInvalidEndpointId &&
                         request.cluster_id != chip::kInvalidClusterId &&
                         request.command_id != chip::kInvalidCommandId, CHIP_ERROR_INVALID_ARGUMENT);
-    ReturnErrorOnFailure(operation::ValidateRemoteTarget(scoped_node_id));
-    mImpl = chip::Platform::New<Impl>(target_t(scoped_node_id), request, delegate);
+    execution_t execution;
+    ReturnErrorOnFailure(operation::ResolveNodeTarget(scoped_node_id, execution));
+    mImpl = chip::Platform::New<Impl>(target_t(scoped_node_id, execution), request, delegate);
     VerifyOrReturnError(mImpl != nullptr, CHIP_ERROR_NO_MEMORY);
     CHIP_ERROR err = mImpl->Prepare(request);
     if (err != CHIP_NO_ERROR) {

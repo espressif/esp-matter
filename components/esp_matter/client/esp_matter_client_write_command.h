@@ -81,9 +81,10 @@ public:
      * @brief Write one or more complete attribute values.
      *
      * Copies paths and consumes encoders before return. List-item operations are unsupported; complete lists use ReplaceAll.
-     * Non-timed lists support Matter chunking; timed requests requiring chunking fail synchronously.
+     * Remote non-timed lists support Matter chunking; timed requests requiring chunking fail synchronously.
+     * Local values are captured before dispatch, with a limit of 65535 encoded bytes per value, subject to available memory.
      *
-     * @param[in] scoped_node_id Remote node and fabric.
+     * @param[in] scoped_node_id Node and fabric. Self-targets execute locally; other nodes use CASE.
      * @param[in] request Attribute paths, value encoders, and options.
      * @param[in] delegate Borrowed until completion or stop(); nullptr logs failures and discards successful responses.
      *

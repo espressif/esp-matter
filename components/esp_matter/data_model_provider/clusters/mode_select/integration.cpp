@@ -18,7 +18,7 @@
 
 #include <app-common/zap-generated/attributes/Accessors.h>
 #include <app/ClusterCallbacks.h>
-#include <app/clusters/mode-select-server/ModeSelectCluster.h>
+#include <app/clusters/mode-select-server/CodegenIntegration.h>
 #include <app/clusters/mode-select-server/SupportedModesManager.h>
 #include <clusters/ModeSelect/ClusterId.h>
 #include <data_model/esp_matter_attribute_helpers.h>
