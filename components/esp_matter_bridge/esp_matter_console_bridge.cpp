@@ -127,14 +127,14 @@ static esp_err_t remove_bridge_device_handler(int argc, char *argv[])
         return ESP_ERR_NOT_FOUND;
     }
 
-    ESP_RETURN_ON_ERROR(esp_matter_bridge::remove_device(current_device->device), TAG,
-                        "Failed to remove bridged device");
+    esp_matter_bridge::device_t *device = current_device->device;
     if (!previous_device) {
         cli_device = current_device->next;
     } else {
         previous_device->next = current_device->next;
     }
     esp_matter_mem_free(current_device);
+    ESP_RETURN_ON_ERROR(esp_matter_bridge::remove_device(device), TAG, "Failed to remove bridged device");
     ESP_LOGI(TAG, "Removed bridged device (endpoint id 0x%04" PRIX16 ") successfully", endpoint_id);
     return ESP_OK;
 }

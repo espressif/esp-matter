@@ -100,3 +100,10 @@ def test_attribute_create_value_persistence(dut: Dut) -> None:
 @pytest.mark.esp32c3
 def test_optional_clusters(dut: Dut) -> None:
     run_group(dut, "optional_clusters")
+
+
+@pytest.mark.host_test
+@pytest.mark.emu
+@pytest.mark.esp32c3
+def test_bridge(dut: Dut) -> None:
+    run_group(dut, "bridge")

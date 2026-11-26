@@ -134,6 +134,8 @@ static esp_err_t store_bridged_endpoint_ids()
                        sizeof(bridged_endpoint_id_array));
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed on nvs_set_blob when storing bridged_endpoint_ids");
+        nvs_close(handle);
+        return err;
     }
     err = nvs_commit(handle);
     if (err != ESP_OK) {
@@ -207,6 +209,7 @@ esp_err_t erase_bridged_device_info(uint16_t endpoint_id)
             bridged_endpoint_id_array[idx] = chip::kInvalidEndpointId;
         }
     }
+    // Keep the persistent info if the endpoint id array is not stored, so that the stored state stays consistent.
     err = store_bridged_endpoint_ids();
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "failed to store the endpoint_id array");
@@ -222,8 +225,17 @@ esp_err_t erase_bridged_device_info(uint16_t endpoint_id)
         return err;
     }
     err = nvs_erase_key(handle, nvs_key_allocator::endpoint_pesistent_info(endpoint_id).KeyName());
-    nvs_commit(handle);
+    if (err == ESP_ERR_NVS_NOT_FOUND) {
+        nvs_close(handle);
+        return ESP_OK;
+    }
+    if (err == ESP_OK) {
+        err = nvs_commit(handle);
+    }
     nvs_close(handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to erase the persistent info of endpoint %u, err: %d", endpoint_id, err);
+    }
     return err;
 }
 
@@ -353,6 +365,8 @@ device_t *create_device(node_t *node, uint16_t parent_endpoint_id, uint32_t devi
     }
     if (store_bridged_endpoint_ids() != ESP_OK) {
         ESP_LOGE(TAG, "Failed to persist bridged endpoint IDs");
+        remove_device(dev);
+        return NULL;
     }
     return dev;
 }
@@ -360,10 +374,15 @@ device_t *create_device(node_t *node, uint16_t parent_endpoint_id, uint32_t devi
 device_t *resume_device(node_t *node, uint16_t device_endpoint_id, void *priv_data)
 {
     esp_err_t err = ESP_OK;
-    device_persistent_info_t persistent_info;
+    device_persistent_info_t persistent_info = {};
     err = read_device_persistent_info(&persistent_info, device_endpoint_id);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to read the persistent info for the resumed device");
+        return NULL;
+    }
+    if (persistent_info.device_endpoint_id != device_endpoint_id) {
+        ESP_LOGE(TAG, "Stored endpoint id %u does not match the requested endpoint id %u",
+                 persistent_info.device_endpoint_id, device_endpoint_id);
         return NULL;
     }
     if (!parent_endpoint_is_valid(node, persistent_info.parent_endpoint_id)) {
@@ -406,13 +425,17 @@ esp_err_t remove_device(device_t *bridged_device)
     if (!bridged_device) {
         return ESP_ERR_INVALID_ARG;
     }
-    erase_bridged_device_info(bridged_device->persistent_info.device_endpoint_id);
+    esp_err_t erase_err = erase_bridged_device_info(bridged_device->persistent_info.device_endpoint_id);
+    if (erase_err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to erase the bridged device info");
+    }
     esp_err_t error = endpoint::destroy(bridged_device->node, bridged_device->endpoint);
     if (error != ESP_OK) {
         ESP_LOGE(TAG, "Failed to delete bridged endpoint");
     }
+    // The device is always freed, also on an error. The caller must not use it after this call.
     esp_matter_mem_free(bridged_device);
-    return error;
+    return (error != ESP_OK) ? error : erase_err;
 }
 
 esp_err_t initialize(node_t *node, bridge_device_type_callback_t device_type_cb)

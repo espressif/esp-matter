@@ -10,7 +10,7 @@ set(EXTRA_COMPONENT_DIRS "${ESP_MATTER_PATH}/components"
                          "${MATTER_SDK_PATH}/config/esp32/components")
 
 # Set the components to include the tests for.
-set(TEST_COMPONENTS "esp_matter" CACHE STRING "List of components to test")
+set(TEST_COMPONENTS "esp_matter esp_matter_bridge" CACHE STRING "List of components to test")
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(unit_test_app)
