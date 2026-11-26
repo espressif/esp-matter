@@ -12,7 +12,6 @@ CONFIG_LWIP_IPV6_AUTOCONFIG=y
 
 # Use a custom partition table
 CONFIG_PARTITION_TABLE_CUSTOM=y
-CONFIG_PARTITION_TABLE_FILENAME="partitions.csv"
 CONFIG_PARTITION_TABLE_OFFSET=0xC000
 
 # Enable chip shell
@@ -32,8 +31,8 @@ CONFIG_ESP_WIFI_SOFTAP_SUPPORT=n
 # Remove this after `ENABLE_WIFI_AP` config has been deleted from chip component
 CONFIG_ENABLE_WIFI_AP=n
 
-# Enable OTA Requestor
-CONFIG_ENABLE_OTA_REQUESTOR=y
+# Disable OTA Requestor: the partition tables have no OTA slots
+CONFIG_ENABLE_OTA_REQUESTOR=n
 
 # Enable HKDF in mbedtls
 CONFIG_MBEDTLS_HKDF_C=y
