@@ -33,7 +33,8 @@ namespace {
 const char *TAG = "aliro_reader";
 constexpr size_t kResponseCapacity = 8192;
 
-esp_err_t Authenticate(esp_aliro_reader_handle_t reader, esp_aliro_session_handle_t &session, AliroProof &proof)
+esp_err_t Authenticate(esp_aliro_reader_handle_t reader, esp_aliro_session_handle_t &session, AliroProof &proof,
+                       esp_aliro_crypto_engine_type_t &engine, esp_aliro_reader_status_t &status)
 {
     {
         esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
@@ -95,45 +96,52 @@ esp_err_t Authenticate(esp_aliro_reader_handle_t reader, esp_aliro_session_handl
     if (err != ESP_OK) {
         return err;
     }
-    return AliroDocument::Verify(response.get(), responseSize, authentication, proof);
+    engine = ESP_ALIRO_CRYPTO_ENGINE_STEP_UP;
+    err = AliroDocument::Verify(response.get(), responseSize, authentication, proof);
+    if (err == ESP_ERR_INVALID_RESPONSE) {
+        status = ESP_ALIRO_READER_STATUS_INVALID_ACCESS_RIGHTS;
+    }
+    return err;
 }
 
-bool AuthorizeAndUnlock(esp_aliro_session_handle_t session, const AliroProof &proof,
-                        DoorLockStorage::Match &match, OperationErrorEnum &error)
+esp_aliro_reader_status_t AuthorizeAndUnlock(esp_aliro_session_handle_t session, const AliroProof &proof,
+                                             DoorLockStorage::Match &match, OperationErrorEnum &error)
 {
     DoorLockStorage &store = DoorLockStorage::Instance();
     if (!BoltLockManager::Instance().IsLocked()) {
-        ESP_LOGW(TAG, "Denied: lock is not fully locked");
-        return false;
+        ESP_LOGW(TAG, "Unlock not attempted: lock is not fully locked");
+        return ESP_ALIRO_READER_STATUS_UNKNOWN;
     }
     if (!store.Ready() || store.Generation() != proof.generation) {
-        ESP_LOGW(TAG, "Denied: stale authentication result");
-        return false;
+        ESP_LOGW(TAG, "Unlock not attempted: stale authentication result");
+        return ESP_ALIRO_READER_STATUS_UNKNOWN;
     }
     // Identity was resolved under this generation; only this operation may mutate
     // storage until actuator acceptance, while the CHIP lock remains held.
     match = proof.credential;
     if (proof.issuerPath) {
         if (!AliroDocument::CurrentTimeValid(proof)) {
-            return false;
+            ESP_LOGW(TAG, "Unlock not attempted: document time no longer valid");
+            return ESP_ALIRO_READER_STATUS_UNKNOWN;
         }
         if (proof.hasIteration && !store.LearnIteration(match.credentialIndex, proof.iteration)) {
-            return false;
+            ESP_LOGE(TAG, "Failed to persist the document access iteration");
+            return ESP_ALIRO_READER_STATUS_HARDWARE_ISSUE;
         }
         if (!proof.capabilityAllowed) {
             ESP_LOGW(TAG, "Denied: unsupported/denied Matter AccessData");
-            return false;
+            return ESP_ALIRO_READER_STATUS_INVALID_ACCESS_RIGHTS;
         }
     }
     if (!DoorLockAuthorization::Authorize(match, OperationSourceEnum::kAliro, error)) {
-        return false;
+        return ESP_ALIRO_READER_STATUS_INVALID_ACCESS_RIGHTS;
     }
 
     // Authorization linearizes at synchronous actuator acceptance under the
     // CHIP lock held by the NFC task.
     esp_err_t committed = esp_aliro_session_commit_fast_transaction(session);
     if (committed != ESP_OK) {
-        ESP_LOGE(TAG, "Denied: fast-state commit failed: %d", committed);
+        ESP_LOGE(TAG, "Fast-state commit failed: %d", committed);
     }
     // Policy is serialized by CHIP. Recheck time after the SDK commit, before
     // actuator acceptance. A failed commit may also have partially changed fast state.
@@ -141,7 +149,7 @@ bool AuthorizeAndUnlock(esp_aliro_session_handle_t session, const AliroProof &pr
         if (AliroDoorLockDelegate::Instance().ClearFast() != ESP_OK) {
             store.Unavailable("denied-fast-clear");
         }
-        return false;
+        return committed != ESP_OK ? ESP_ALIRO_READER_STATUS_HARDWARE_ISSUE : ESP_ALIRO_READER_STATUS_UNKNOWN;
     }
 
     BoltLockManager::Attribution attribution;
@@ -155,7 +163,7 @@ bool AuthorizeAndUnlock(esp_aliro_session_handle_t session, const AliroProof &pr
         if (AliroDoorLockDelegate::Instance().ClearFast() != ESP_OK) {
             store.Unavailable("rejected-fast-clear");
         }
-        return false;
+        return ESP_ALIRO_READER_STATUS_HARDWARE_ISSUE;
     }
     // Learning is optional and must not grant a reusable credential for a denied
     // tap. Keep this operation attributed to the issuer that authorized it.
@@ -165,7 +173,7 @@ bool AuthorizeAndUnlock(esp_aliro_session_handle_t session, const AliroProof &pr
             ESP_LOGW(TAG, "Endpoint learning failed after actuator acceptance");
         }
     }
-    return true;
+    return ESP_ALIRO_READER_STATUS_SECURED;
 }
 
 } // namespace
@@ -207,31 +215,34 @@ void AliroDoorLockDelegate::ReaderTask(void *context)
         }
 
         esp_aliro_session_handle_t session = 0;
+        esp_aliro_crypto_engine_type_t engine = ESP_ALIRO_CRYPTO_ENGINE_EXPEDITED;
+        esp_aliro_reader_status_t status = ESP_ALIRO_READER_STATUS_UNKNOWN;
         AliroProof proof;
         DoorLockStorage::Match match;
         OperationErrorEnum error = OperationErrorEnum::kInvalidCredential;
-        bool accepted = false;
-        esp_err_t err = Authenticate(reader, session, proof);
+        esp_err_t err = Authenticate(reader, session, proof, engine, status);
         if (err == ESP_OK) {
             error = OperationErrorEnum::kRestricted;
             if (platform.TryLockChipStack()) {
-                accepted = AuthorizeAndUnlock(session, proof, match, error);
+                status = AuthorizeAndUnlock(session, proof, match, error);
                 platform.UnlockChipStack();
             } else {
-                ESP_LOGW(TAG, "Unlock denied: CHIP stack busy");
+                ESP_LOGW(TAG, "Unlock not attempted: CHIP stack busy");
             }
-            if (!accepted) {
-                err = ESP_ERR_INVALID_STATE;
-            }
-        }
-        if (accepted) {
-            err = esp_aliro_session_run_exchange(session, m5nfc_message_exchange,
-                                                 proof.issuerPath ? ESP_ALIRO_CRYPTO_ENGINE_STEP_UP
-                                                 : ESP_ALIRO_CRYPTO_ENGINE_EXPEDITED);
-            ESP_LOGI(TAG, "Final transport %s%s", err == ESP_OK ? "completed" : "failed",
-                     err == ESP_OK ? "" : " after actuator acceptance (not rolled back)");
         } else {
-            ESP_LOGW(TAG, "Transaction denied/failed: %s", esp_err_to_name(err));
+            ESP_LOGW(TAG, "Authentication/document processing failed: %d", err);
+        }
+        const bool accepted = status == ESP_ALIRO_READER_STATUS_SECURED;
+        if (session) {
+            // A queued SDK authentication rejection overrides UNKNOWN and uses the expedited engine.
+            const esp_err_t finish = esp_aliro_session_finish(session, m5nfc_message_exchange, engine, status);
+            if (finish == ESP_OK) {
+                ESP_LOGI(TAG, "Final EXCHANGE completed (requested Reader Status 0x%04x)",
+                         static_cast<unsigned>(status));
+            } else if (err == ESP_OK || finish != ESP_ERR_INVALID_STATE) {
+                ESP_LOGW(TAG, "Final EXCHANGE failed: %d%s", finish,
+                         accepted ? " after actuator acceptance (not rolled back)" : "");
+            }
         }
 
         ESP_LOGI(TAG, "NFC minimum stack free=%u bytes heap free=%u minimum=%u bytes",
