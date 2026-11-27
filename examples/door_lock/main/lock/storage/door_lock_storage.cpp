@@ -48,6 +48,26 @@ void CredentialKey(CredentialTypeEnum type, uint16_t index, char (&key)[24])
     snprintf(key, sizeof(key), "dl/c/%u/%u", static_cast<unsigned>(type), index);
 }
 
+void WeekdayScheduleKey(uint8_t scheduleIndex, uint16_t userIndex, char (&key)[24])
+{
+    snprintf(key, sizeof(key), "dl/ws/%u/%u", scheduleIndex, userIndex);
+}
+
+void YeardayScheduleKey(uint8_t scheduleIndex, uint16_t userIndex, char (&key)[24])
+{
+    snprintf(key, sizeof(key), "dl/ys/%u/%u", scheduleIndex, userIndex);
+}
+
+void HolidayScheduleKey(uint8_t scheduleIndex, char (&key)[24])
+{
+    snprintf(key, sizeof(key), "dl/hs/%u", scheduleIndex);
+}
+
+bool ValidScheduleStatus(DlScheduleStatus status)
+{
+    return status == DlScheduleStatus::kAvailable || status == DlScheduleStatus::kOccupied;
+}
+
 void EnrollmentEvent(EndpointId endpoint, DataOperationTypeEnum operation, uint16_t user, uint16_t index)
 {
     Events::LockUserChange::Type event;
@@ -65,10 +85,13 @@ void EnrollmentEvent(EndpointId endpoint, DataOperationTypeEnum operation, uint1
 
 struct Metadata {
     uint32_t magic = 0x444C4958;
-    uint32_t version = 2;
+    uint32_t version = 3;
     uint16_t users = 0;
     uint8_t perUser = 0;
     uint16_t slots[DoorLockStorage::kCredentialTypeCount] = {};
+    uint8_t weekdaySchedulesPerUser = 0;
+    uint8_t yeardaySchedulesPerUser = 0;
+    uint8_t holidaySchedules = 0;
 };
 
 } // namespace
@@ -113,6 +136,9 @@ bool DoorLockStorage::Load()
     expected.users = mLimits.numberOfUsers;
     expected.perUser = mLimits.numberOfCredentialsPerUser;
     memcpy(expected.slots, mLimits.credentialSlotsByType, sizeof(expected.slots));
+    expected.weekdaySchedulesPerUser = mLimits.numberOfWeekdaySchedulesPerUser;
+    expected.yeardaySchedulesPerUser = mLimits.numberOfYeardaySchedulesPerUser;
+    expected.holidaySchedules = mLimits.numberOfHolidaySchedules;
     uint16_t size = sizeof(stored);
     CHIP_ERROR err = mStorage->SyncGetKeyValue(kMetadataKey, &stored, size);
     mReady = true;
@@ -133,13 +159,37 @@ bool DoorLockStorage::Load()
                 }
             }
         }
+        for (uint16_t u = 1; mReady && u <= mLimits.numberOfUsers; ++u) {
+            for (uint8_t s = 1; mReady && s <= mLimits.numberOfWeekdaySchedulesPerUser; ++s) {
+                ScheduleRecord<EmberAfPluginDoorLockWeekDaySchedule> schedule;
+                if (!ReadWeekdaySchedule(s, u, schedule) || schedule.status != DlScheduleStatus::kAvailable) {
+                    Unavailable("metadata-missing");
+                }
+            }
+            for (uint8_t s = 1; mReady && s <= mLimits.numberOfYeardaySchedulesPerUser; ++s) {
+                ScheduleRecord<EmberAfPluginDoorLockYearDaySchedule> schedule;
+                if (!ReadYeardaySchedule(s, u, schedule) || schedule.status != DlScheduleStatus::kAvailable) {
+                    Unavailable("metadata-missing");
+                }
+            }
+        }
+        for (uint8_t s = 1; mReady && s <= mLimits.numberOfHolidaySchedules; ++s) {
+            ScheduleRecord<EmberAfPluginDoorLockHolidaySchedule> schedule;
+            if (!ReadHolidaySchedule(s, schedule) || schedule.status != DlScheduleStatus::kAvailable) {
+                Unavailable("metadata-missing");
+            }
+        }
         err = mReady ? mStorage->SyncSetKeyValue(kMetadataKey, &expected, sizeof(expected)) : CHIP_ERROR_INCORRECT_STATE;
     } else if (err == CHIP_ERROR_BUFFER_TOO_SMALL ||
                (err == CHIP_NO_ERROR && (size != sizeof(stored) || stored.version != expected.version))) {
         ESP_LOGE(TAG, "Storage version/format mismatch; migration is not supported on this demo");
         abort();
     } else if (err == CHIP_NO_ERROR && (stored.magic != expected.magic || stored.users != expected.users ||
-                                        stored.perUser != expected.perUser || memcmp(stored.slots, expected.slots, sizeof(stored.slots)) != 0)) {
+                                        stored.perUser != expected.perUser ||
+                                        memcmp(stored.slots, expected.slots, sizeof(stored.slots)) != 0 ||
+                                        stored.weekdaySchedulesPerUser != expected.weekdaySchedulesPerUser ||
+                                        stored.yeardaySchedulesPerUser != expected.yeardaySchedulesPerUser ||
+                                        stored.holidaySchedules != expected.holidaySchedules)) {
         err = CHIP_ERROR_INVALID_ARGUMENT;
     }
     mReady = mReady && err == CHIP_NO_ERROR;
@@ -208,7 +258,10 @@ bool DoorLockStorage::ValidateDatabase()
 bool DoorLockStorage::CheckLimits() const
 {
     if (mLimits.numberOfUsers == 0 || mLimits.numberOfUsers > kMaxUsers || mLimits.numberOfUsers == UINT16_MAX ||
-            mLimits.numberOfCredentialsPerUser == 0 || mLimits.numberOfCredentialsPerUser > kMaxCredentialsPerUser) {
+            mLimits.numberOfCredentialsPerUser == 0 || mLimits.numberOfCredentialsPerUser > kMaxCredentialsPerUser ||
+            mLimits.numberOfWeekdaySchedulesPerUser > kMaxWeekdaySchedulesPerUser ||
+            mLimits.numberOfYeardaySchedulesPerUser > kMaxYeardaySchedulesPerUser ||
+            mLimits.numberOfHolidaySchedules > kMaxHolidaySchedules) {
         return false;
     }
     for (uint8_t t = 0; t < kCredentialTypeCount; ++t) {
@@ -573,6 +626,172 @@ bool DoorLockStorage::SetCredential(uint16_t index, FabricIndex creator, FabricI
         DiscardPendingUser();
     }
     return saved;
+}
+
+bool DoorLockStorage::WeekdayScheduleValid(uint8_t scheduleIndex, uint16_t userIndex) const
+{
+    return scheduleIndex != 0 && scheduleIndex <= mLimits.numberOfWeekdaySchedulesPerUser && userIndex != 0 &&
+           userIndex <= mLimits.numberOfUsers;
+}
+
+bool DoorLockStorage::YeardayScheduleValid(uint8_t scheduleIndex, uint16_t userIndex) const
+{
+    return scheduleIndex != 0 && scheduleIndex <= mLimits.numberOfYeardaySchedulesPerUser && userIndex != 0 &&
+           userIndex <= mLimits.numberOfUsers;
+}
+
+bool DoorLockStorage::HolidayScheduleValid(uint8_t scheduleIndex) const
+{
+    return scheduleIndex != 0 && scheduleIndex <= mLimits.numberOfHolidaySchedules;
+}
+
+bool DoorLockStorage::ReadWeekdaySchedule(uint8_t scheduleIndex, uint16_t userIndex,
+                                          ScheduleRecord<EmberAfPluginDoorLockWeekDaySchedule> &out)
+{
+    out = {};
+    if (!WeekdayScheduleValid(scheduleIndex, userIndex)) {
+        return false;
+    }
+    char key[24];
+    WeekdayScheduleKey(scheduleIndex, userIndex, key);
+    if (!Read(key, &out, sizeof(out))) {
+        return false;
+    }
+    if (!ValidScheduleStatus(out.status)) {
+        Unavailable("schedule-malformed");
+        return false;
+    }
+    return true;
+}
+
+bool DoorLockStorage::ReadYeardaySchedule(uint8_t scheduleIndex, uint16_t userIndex,
+                                          ScheduleRecord<EmberAfPluginDoorLockYearDaySchedule> &out)
+{
+    out = {};
+    if (!YeardayScheduleValid(scheduleIndex, userIndex)) {
+        return false;
+    }
+    char key[24];
+    YeardayScheduleKey(scheduleIndex, userIndex, key);
+    if (!Read(key, &out, sizeof(out))) {
+        return false;
+    }
+    if (!ValidScheduleStatus(out.status)) {
+        Unavailable("schedule-malformed");
+        return false;
+    }
+    return true;
+}
+
+bool DoorLockStorage::ReadHolidaySchedule(uint8_t scheduleIndex, ScheduleRecord<EmberAfPluginDoorLockHolidaySchedule> &out)
+{
+    out = {};
+    if (!HolidayScheduleValid(scheduleIndex)) {
+        return false;
+    }
+    char key[24];
+    HolidayScheduleKey(scheduleIndex, key);
+    if (!Read(key, &out, sizeof(out))) {
+        return false;
+    }
+    if (!ValidScheduleStatus(out.status)) {
+        Unavailable("schedule-malformed");
+        return false;
+    }
+    return true;
+}
+
+DlStatus DoorLockStorage::GetWeekdaySchedule(uint8_t scheduleIndex, uint16_t userIndex,
+                                             EmberAfPluginDoorLockWeekDaySchedule &out)
+{
+    ScheduleRecord<EmberAfPluginDoorLockWeekDaySchedule> record;
+    if (!ReadWeekdaySchedule(scheduleIndex, userIndex, record)) {
+        return DlStatus::kFailure;
+    }
+    if (record.status != DlScheduleStatus::kOccupied) {
+        return DlStatus::kNotFound;
+    }
+    out = record.schedule;
+    return DlStatus::kSuccess;
+}
+
+DlStatus DoorLockStorage::SetWeekdaySchedule(uint8_t scheduleIndex, uint16_t userIndex, DlScheduleStatus status,
+                                             DaysMaskMap daysMask, uint8_t startHour, uint8_t startMinute,
+                                             uint8_t endHour, uint8_t endMinute)
+{
+    if (!WeekdayScheduleValid(scheduleIndex, userIndex)) {
+        return DlStatus::kFailure;
+    }
+    char key[24];
+    WeekdayScheduleKey(scheduleIndex, userIndex, key);
+    if (status == DlScheduleStatus::kAvailable) {
+        return SaveRecord(key, nullptr, 0) ? DlStatus::kSuccess : DlStatus::kFailure;
+    }
+    ScheduleRecord<EmberAfPluginDoorLockWeekDaySchedule> record;
+    record.status = DlScheduleStatus::kOccupied;
+    record.schedule = {daysMask, startHour, startMinute, endHour, endMinute};
+    return SaveRecord(key, &record, sizeof(record)) ? DlStatus::kSuccess : DlStatus::kFailure;
+}
+
+DlStatus DoorLockStorage::GetYeardaySchedule(uint8_t scheduleIndex, uint16_t userIndex,
+                                             EmberAfPluginDoorLockYearDaySchedule &out)
+{
+    ScheduleRecord<EmberAfPluginDoorLockYearDaySchedule> record;
+    if (!ReadYeardaySchedule(scheduleIndex, userIndex, record)) {
+        return DlStatus::kFailure;
+    }
+    if (record.status != DlScheduleStatus::kOccupied) {
+        return DlStatus::kNotFound;
+    }
+    out = record.schedule;
+    return DlStatus::kSuccess;
+}
+
+DlStatus DoorLockStorage::SetYeardaySchedule(uint8_t scheduleIndex, uint16_t userIndex, DlScheduleStatus status,
+                                             uint32_t localStartTime, uint32_t localEndTime)
+{
+    if (!YeardayScheduleValid(scheduleIndex, userIndex)) {
+        return DlStatus::kFailure;
+    }
+    char key[24];
+    YeardayScheduleKey(scheduleIndex, userIndex, key);
+    if (status == DlScheduleStatus::kAvailable) {
+        return SaveRecord(key, nullptr, 0) ? DlStatus::kSuccess : DlStatus::kFailure;
+    }
+    ScheduleRecord<EmberAfPluginDoorLockYearDaySchedule> record;
+    record.status = DlScheduleStatus::kOccupied;
+    record.schedule = {localStartTime, localEndTime};
+    return SaveRecord(key, &record, sizeof(record)) ? DlStatus::kSuccess : DlStatus::kFailure;
+}
+
+DlStatus DoorLockStorage::GetHolidaySchedule(uint8_t scheduleIndex, EmberAfPluginDoorLockHolidaySchedule &out)
+{
+    ScheduleRecord<EmberAfPluginDoorLockHolidaySchedule> record;
+    if (!ReadHolidaySchedule(scheduleIndex, record)) {
+        return DlStatus::kFailure;
+    }
+    if (record.status != DlScheduleStatus::kOccupied) {
+        return DlStatus::kNotFound;
+    }
+    out = record.schedule;
+    return DlStatus::kSuccess;
+}
+
+DlStatus DoorLockStorage::SetHolidaySchedule(uint8_t scheduleIndex, DlScheduleStatus status, uint32_t localStartTime,
+                                             uint32_t localEndTime, OperatingModeEnum operatingMode)
+{
+    if (!HolidayScheduleValid(scheduleIndex)) {
+        return DlStatus::kFailure;
+    }
+    char key[24];
+    HolidayScheduleKey(scheduleIndex, key);
+    if (status == DlScheduleStatus::kAvailable) {
+        return SaveRecord(key, nullptr, 0) ? DlStatus::kSuccess : DlStatus::kFailure;
+    }
+    ScheduleRecord<EmberAfPluginDoorLockHolidaySchedule> record;
+    record.status = DlScheduleStatus::kOccupied;
+    record.schedule = {localStartTime, localEndTime, operatingMode};
+    return SaveRecord(key, &record, sizeof(record)) ? DlStatus::kSuccess : DlStatus::kFailure;
 }
 
 bool DoorLockStorage::FindCredentialByData(const ByteSpan &data, std::initializer_list<CredentialTypeEnum> types,

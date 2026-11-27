@@ -28,6 +28,10 @@ static_assert(kUsers < 0xfffe, "Reserve the all-users sentinel and avoid index w
 constexpr uint8_t kCredentialsPerUser = 4;
 // Total number of PIN credential slots, shared by all users.
 constexpr uint16_t kPinCredentialSlots = 6;
+// Week Day remains at one until the SDK exposes its count as a feature configuration.
+constexpr uint8_t kWeekdaySchedulesPerUser = 1;
+constexpr uint8_t kYeardaySchedulesPerUser = 1;
+constexpr uint8_t kHolidaySchedules = 1;
 
 // Total number of Aliro credential issuer key slots.
 constexpr uint16_t kAliroCredentialIssuerKeySlots = 2;

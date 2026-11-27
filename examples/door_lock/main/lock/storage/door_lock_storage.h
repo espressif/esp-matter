@@ -28,11 +28,17 @@ public:
     static constexpr uint8_t kCredentialTypeCount = static_cast<uint8_t>(CredentialTypeEnum::kAliroNonEvictableEndpointKey) + 1;
     static constexpr uint8_t kMaxCredentialSize = 65;
     static constexpr uint8_t kMaxUserNameSize = DOOR_LOCK_MAX_USER_NAME_SIZE;
+    static constexpr uint8_t kMaxWeekdaySchedulesPerUser = DoorLockCapabilities::kWeekdaySchedulesPerUser;
+    static constexpr uint8_t kMaxYeardaySchedulesPerUser = DoorLockCapabilities::kYeardaySchedulesPerUser;
+    static constexpr uint8_t kMaxHolidaySchedules = DoorLockCapabilities::kHolidaySchedules;
 
     struct Limits {
         uint16_t numberOfUsers = 0;
         uint8_t numberOfCredentialsPerUser = 0;
         uint16_t credentialSlotsByType[kCredentialTypeCount] = {};
+        uint8_t numberOfWeekdaySchedulesPerUser = 0;
+        uint8_t numberOfYeardaySchedulesPerUser = 0;
+        uint8_t numberOfHolidaySchedules = 0;
     };
 
     struct UserRecord {
@@ -106,6 +112,16 @@ public:
     bool GetCredential(uint16_t index, CredentialTypeEnum type, EmberAfPluginDoorLockCredentialInfo &out);
     bool SetCredential(uint16_t index, chip::FabricIndex creator, chip::FabricIndex modifier, DlCredentialStatus status,
                        CredentialTypeEnum type, const chip::ByteSpan &data);
+    DlStatus GetWeekdaySchedule(uint8_t scheduleIndex, uint16_t userIndex, EmberAfPluginDoorLockWeekDaySchedule &out);
+    DlStatus SetWeekdaySchedule(uint8_t scheduleIndex, uint16_t userIndex, DlScheduleStatus status,
+                                DaysMaskMap daysMask, uint8_t startHour, uint8_t startMinute, uint8_t endHour,
+                                uint8_t endMinute);
+    DlStatus GetYeardaySchedule(uint8_t scheduleIndex, uint16_t userIndex, EmberAfPluginDoorLockYearDaySchedule &out);
+    DlStatus SetYeardaySchedule(uint8_t scheduleIndex, uint16_t userIndex, DlScheduleStatus status,
+                                uint32_t localStartTime, uint32_t localEndTime);
+    DlStatus GetHolidaySchedule(uint8_t scheduleIndex, EmberAfPluginDoorLockHolidaySchedule &out);
+    DlStatus SetHolidaySchedule(uint8_t scheduleIndex, DlScheduleStatus status, uint32_t localStartTime,
+                                uint32_t localEndTime, OperatingModeEnum operatingMode);
     // Lookup proves a unique stored key match; Authorize checks its current owner and policy.
     bool ValidatePIN(const chip::ByteSpan &pin, Match &out);
     /** A miss sets found=false; errors and ambiguous identities return false. */
@@ -131,6 +147,20 @@ private:
     bool ReadEndpointSlots(EndpointSlots &out);
     bool WriteUser(uint16_t index, const UserRecord &user);
     bool UserCredentials(uint16_t owner, CredentialStruct(&out)[kMaxCredentialsPerUser], uint8_t &count);
+
+    template <class Schedule>
+    struct ScheduleRecord {
+        DlScheduleStatus status = DlScheduleStatus::kAvailable;
+        Schedule schedule = {};
+    };
+    bool WeekdayScheduleValid(uint8_t scheduleIndex, uint16_t userIndex) const;
+    bool YeardayScheduleValid(uint8_t scheduleIndex, uint16_t userIndex) const;
+    bool HolidayScheduleValid(uint8_t scheduleIndex) const;
+    bool ReadWeekdaySchedule(uint8_t scheduleIndex, uint16_t userIndex,
+                             ScheduleRecord<EmberAfPluginDoorLockWeekDaySchedule> &out);
+    bool ReadYeardaySchedule(uint8_t scheduleIndex, uint16_t userIndex,
+                             ScheduleRecord<EmberAfPluginDoorLockYearDaySchedule> &out);
+    bool ReadHolidaySchedule(uint8_t scheduleIndex, ScheduleRecord<EmberAfPluginDoorLockHolidaySchedule> &out);
 
     chip::EndpointId mEndpoint = 0;
     chip::PersistentStorageDelegate *mStorage = nullptr;
